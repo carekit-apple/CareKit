@@ -1,0 +1,1 @@
+git clone --recurse-submodules git@gitlab.sd.apple.com:MedTech/CareKit.git

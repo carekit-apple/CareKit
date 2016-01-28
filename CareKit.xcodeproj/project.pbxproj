@@ -10,8 +10,17 @@
 		8605A5BE1C4F04EC00DD65FF /* CareKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 8605A5BD1C4F04EC00DD65FF /* CareKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8605A5C51C4F04EC00DD65FF /* CareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8605A5BA1C4F04EC00DD65FF /* CareKit.framework */; };
 		8605A5CA1C4F04EC00DD65FF /* CareKitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8605A5C91C4F04EC00DD65FF /* CareKitTests.m */; };
-		8605A5D61C4F052700DD65FF /* OCKMedication.h in Headers */ = {isa = PBXBuildFile; fileRef = 8605A5D41C4F052700DD65FF /* OCKMedication.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		8605A5D71C4F052700DD65FF /* OCKMedication.m in Sources */ = {isa = PBXBuildFile; fileRef = 8605A5D51C4F052700DD65FF /* OCKMedication.m */; };
+		8605A5E41C4F098800DD65FF /* ResearchKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8605A5DF1C4F095400DD65FF /* ResearchKit.framework */; };
+		865A6CFE1C5AA6260054F9F0 /* OCKDefines.h in Headers */ = {isa = PBXBuildFile; fileRef = 865A6CF41C5AA6260054F9F0 /* OCKDefines.h */; };
+		865A6CFF1C5AA6260054F9F0 /* OCKHelpers.h in Headers */ = {isa = PBXBuildFile; fileRef = 865A6CF51C5AA6260054F9F0 /* OCKHelpers.h */; };
+		865A6D001C5AA6260054F9F0 /* OCKHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 865A6CF61C5AA6260054F9F0 /* OCKHelpers.m */; };
+		865A6D021C5AA6260054F9F0 /* OCKTreatment.h in Headers */ = {isa = PBXBuildFile; fileRef = 865A6CF81C5AA6260054F9F0 /* OCKTreatment.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		865A6D031C5AA6260054F9F0 /* OCKTreatment.m in Sources */ = {isa = PBXBuildFile; fileRef = 865A6CF91C5AA6260054F9F0 /* OCKTreatment.m */; };
+		865A6D041C5AA6260054F9F0 /* OCKTreatmentPlanManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 865A6CFA1C5AA6260054F9F0 /* OCKTreatmentPlanManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		865A6D051C5AA6260054F9F0 /* OCKTreatmentPlanManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 865A6CFB1C5AA6260054F9F0 /* OCKTreatmentPlanManager.m */; };
+		865A6D061C5AA6260054F9F0 /* OCKTreatmentType.h in Headers */ = {isa = PBXBuildFile; fileRef = 865A6CFC1C5AA6260054F9F0 /* OCKTreatmentType.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		865A6D071C5AA6260054F9F0 /* OCKTreatmentType.m in Sources */ = {isa = PBXBuildFile; fileRef = 865A6CFD1C5AA6260054F9F0 /* OCKTreatmentType.m */; };
+		865A6D0E1C5AD18B0054F9F0 /* whatever.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865A6D0D1C5AD18B0054F9F0 /* whatever.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,9 +61,18 @@
 		8605A5C41C4F04EC00DD65FF /* CareKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CareKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8605A5C91C4F04EC00DD65FF /* CareKitTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CareKitTests.m; sourceTree = "<group>"; };
 		8605A5CB1C4F04EC00DD65FF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		8605A5D41C4F052700DD65FF /* OCKMedication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKMedication.h; sourceTree = "<group>"; };
-		8605A5D51C4F052700DD65FF /* OCKMedication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKMedication.m; sourceTree = "<group>"; };
 		865A6CD51C5A95180054F9F0 /* ResearchKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ResearchKit.xcodeproj; path = dependency/ResearchKit.xcodeproj; sourceTree = SOURCE_ROOT; };
+		865A6CF41C5AA6260054F9F0 /* OCKDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKDefines.h; sourceTree = "<group>"; };
+		865A6CF51C5AA6260054F9F0 /* OCKHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKHelpers.h; sourceTree = "<group>"; };
+		865A6CF61C5AA6260054F9F0 /* OCKHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKHelpers.m; sourceTree = "<group>"; };
+		865A6CF81C5AA6260054F9F0 /* OCKTreatment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKTreatment.h; sourceTree = "<group>"; };
+		865A6CF91C5AA6260054F9F0 /* OCKTreatment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKTreatment.m; sourceTree = "<group>"; };
+		865A6CFA1C5AA6260054F9F0 /* OCKTreatmentPlanManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKTreatmentPlanManager.h; sourceTree = "<group>"; };
+		865A6CFB1C5AA6260054F9F0 /* OCKTreatmentPlanManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKTreatmentPlanManager.m; sourceTree = "<group>"; };
+		865A6CFC1C5AA6260054F9F0 /* OCKTreatmentType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKTreatmentType.h; sourceTree = "<group>"; };
+		865A6CFD1C5AA6260054F9F0 /* OCKTreatmentType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKTreatmentType.m; sourceTree = "<group>"; };
+		865A6D0C1C5AD18A0054F9F0 /* CareKitTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CareKitTests-Bridging-Header.h"; sourceTree = "<group>"; };
+		865A6D0D1C5AD18B0054F9F0 /* whatever.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = whatever.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,8 +116,15 @@
 			isa = PBXGroup;
 			children = (
 				865A6CD51C5A95180054F9F0 /* ResearchKit.xcodeproj */,
-				8605A5D41C4F052700DD65FF /* OCKMedication.h */,
-				8605A5D51C4F052700DD65FF /* OCKMedication.m */,
+				865A6CF41C5AA6260054F9F0 /* OCKDefines.h */,
+				865A6CF51C5AA6260054F9F0 /* OCKHelpers.h */,
+				865A6CF61C5AA6260054F9F0 /* OCKHelpers.m */,
+				865A6CF81C5AA6260054F9F0 /* OCKTreatment.h */,
+				865A6CF91C5AA6260054F9F0 /* OCKTreatment.m */,
+				865A6CFA1C5AA6260054F9F0 /* OCKTreatmentPlanManager.h */,
+				865A6CFB1C5AA6260054F9F0 /* OCKTreatmentPlanManager.m */,
+				865A6CFC1C5AA6260054F9F0 /* OCKTreatmentType.h */,
+				865A6CFD1C5AA6260054F9F0 /* OCKTreatmentType.m */,
 				8605A5BD1C4F04EC00DD65FF /* CareKit.h */,
 				8605A5BF1C4F04EC00DD65FF /* Info.plist */,
 			);
@@ -111,6 +136,8 @@
 			children = (
 				8605A5C91C4F04EC00DD65FF /* CareKitTests.m */,
 				8605A5CB1C4F04EC00DD65FF /* Info.plist */,
+				865A6D0D1C5AD18B0054F9F0 /* whatever.swift */,
+				865A6D0C1C5AD18A0054F9F0 /* CareKitTests-Bridging-Header.h */,
 			);
 			path = CareKitTests;
 			sourceTree = "<group>";
@@ -131,8 +158,12 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				865A6D041C5AA6260054F9F0 /* OCKTreatmentPlanManager.h in Headers */,
 				8605A5BE1C4F04EC00DD65FF /* CareKit.h in Headers */,
-				8605A5D61C4F052700DD65FF /* OCKMedication.h in Headers */,
+				865A6D061C5AA6260054F9F0 /* OCKTreatmentType.h in Headers */,
+				865A6CFE1C5AA6260054F9F0 /* OCKDefines.h in Headers */,
+				865A6D021C5AA6260054F9F0 /* OCKTreatment.h in Headers */,
+				865A6CFF1C5AA6260054F9F0 /* OCKHelpers.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -256,7 +287,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8605A5D71C4F052700DD65FF /* OCKMedication.m in Sources */,
+				865A6D031C5AA6260054F9F0 /* OCKTreatment.m in Sources */,
+				865A6D051C5AA6260054F9F0 /* OCKTreatmentPlanManager.m in Sources */,
+				865A6D001C5AA6260054F9F0 /* OCKHelpers.m in Sources */,
+				865A6D071C5AA6260054F9F0 /* OCKTreatmentType.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -265,6 +299,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8605A5CA1C4F04EC00DD65FF /* CareKitTests.m in Sources */,
+				865A6D0E1C5AD18B0054F9F0 /* whatever.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -413,20 +448,25 @@
 		8605A5D21C4F04EC00DD65FF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = CareKitTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = org.carekit.CareKitTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "CareKitTests/CareKitTests-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
 		8605A5D31C4F04EC00DD65FF /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = CareKitTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = org.carekit.CareKitTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "CareKitTests/CareKitTests-Bridging-Header.h";
 			};
 			name = Release;
 		};

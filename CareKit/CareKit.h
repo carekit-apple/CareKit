@@ -7,8 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <CareKit/OCKMedication.h>
-
-
+#import <CareKit/OCKTreatmentPlanManager.h>
+#import <CareKit/OCKTreatmentType.h>
+#import <CareKit/OCKTreatment.h>
 
 

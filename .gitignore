@@ -19,3 +19,4 @@ DerivedData
 
 .DS_Store
 *.pyc
+*.xcscmblueprint

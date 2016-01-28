@@ -12,7 +12,6 @@
 		8605A5CA1C4F04EC00DD65FF /* CareKitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8605A5C91C4F04EC00DD65FF /* CareKitTests.m */; };
 		8605A5D61C4F052700DD65FF /* OCKMedication.h in Headers */ = {isa = PBXBuildFile; fileRef = 8605A5D41C4F052700DD65FF /* OCKMedication.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8605A5D71C4F052700DD65FF /* OCKMedication.m in Sources */ = {isa = PBXBuildFile; fileRef = 8605A5D51C4F052700DD65FF /* OCKMedication.m */; };
-		8605A5E41C4F098800DD65FF /* ResearchKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8605A5DF1C4F095400DD65FF /* ResearchKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -23,23 +22,23 @@
 			remoteGlobalIDString = 8605A5B91C4F04EC00DD65FF;
 			remoteInfo = CareKit;
 		};
-		8605A5DE1C4F095400DD65FF /* PBXContainerItemProxy */ = {
+		865A6CDB1C5A95180054F9F0 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 8605A5D81C4F095300DD65FF /* ResearchKit.xcodeproj */;
+			containerPortal = 865A6CD51C5A95180054F9F0 /* ResearchKit.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = B183A5951A8535D100C76870;
 			remoteInfo = ResearchKit;
 		};
-		8605A5E01C4F095400DD65FF /* PBXContainerItemProxy */ = {
+		865A6CDD1C5A95180054F9F0 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 8605A5D81C4F095300DD65FF /* ResearchKit.xcodeproj */;
+			containerPortal = 865A6CD51C5A95180054F9F0 /* ResearchKit.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 86CC8E9A1AC09332001CCD89;
 			remoteInfo = ResearchKitTests;
 		};
-		8605A5E21C4F097E00DD65FF /* PBXContainerItemProxy */ = {
+		865A6CE01C5A95510054F9F0 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 8605A5D81C4F095300DD65FF /* ResearchKit.xcodeproj */;
+			containerPortal = 865A6CD51C5A95180054F9F0 /* ResearchKit.xcodeproj */;
 			proxyType = 1;
 			remoteGlobalIDString = B183A4731A8535D100C76870;
 			remoteInfo = ResearchKit;
@@ -55,7 +54,7 @@
 		8605A5CB1C4F04EC00DD65FF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8605A5D41C4F052700DD65FF /* OCKMedication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKMedication.h; sourceTree = "<group>"; };
 		8605A5D51C4F052700DD65FF /* OCKMedication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKMedication.m; sourceTree = "<group>"; };
-		8605A5D81C4F095300DD65FF /* ResearchKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ResearchKit.xcodeproj; path = dependency/ResearchKit.xcodeproj; sourceTree = SOURCE_ROOT; };
+		865A6CD51C5A95180054F9F0 /* ResearchKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ResearchKit.xcodeproj; path = dependency/ResearchKit.xcodeproj; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,7 +62,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8605A5E41C4F098800DD65FF /* ResearchKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -99,7 +97,7 @@
 		8605A5BC1C4F04EC00DD65FF /* CareKit */ = {
 			isa = PBXGroup;
 			children = (
-				8605A5D81C4F095300DD65FF /* ResearchKit.xcodeproj */,
+				865A6CD51C5A95180054F9F0 /* ResearchKit.xcodeproj */,
 				8605A5D41C4F052700DD65FF /* OCKMedication.h */,
 				8605A5D51C4F052700DD65FF /* OCKMedication.m */,
 				8605A5BD1C4F04EC00DD65FF /* CareKit.h */,
@@ -117,11 +115,11 @@
 			path = CareKitTests;
 			sourceTree = "<group>";
 		};
-		8605A5D91C4F095300DD65FF /* Products */ = {
+		865A6CD61C5A95180054F9F0 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8605A5DF1C4F095400DD65FF /* ResearchKit.framework */,
-				8605A5E11C4F095400DD65FF /* ResearchKitTests.xctest */,
+				865A6CDC1C5A95180054F9F0 /* ResearchKit.framework */,
+				865A6CDE1C5A95180054F9F0 /* ResearchKitTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -153,7 +151,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				8605A5E31C4F097E00DD65FF /* PBXTargetDependency */,
+				865A6CE11C5A95510054F9F0 /* PBXTargetDependency */,
 			);
 			name = CareKit;
 			productName = CareKit;
@@ -207,8 +205,8 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = 8605A5D91C4F095300DD65FF /* Products */;
-					ProjectRef = 8605A5D81C4F095300DD65FF /* ResearchKit.xcodeproj */;
+					ProductGroup = 865A6CD61C5A95180054F9F0 /* Products */;
+					ProjectRef = 865A6CD51C5A95180054F9F0 /* ResearchKit.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -220,18 +218,18 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		8605A5DF1C4F095400DD65FF /* ResearchKit.framework */ = {
+		865A6CDC1C5A95180054F9F0 /* ResearchKit.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = ResearchKit.framework;
-			remoteRef = 8605A5DE1C4F095400DD65FF /* PBXContainerItemProxy */;
+			remoteRef = 865A6CDB1C5A95180054F9F0 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		8605A5E11C4F095400DD65FF /* ResearchKitTests.xctest */ = {
+		865A6CDE1C5A95180054F9F0 /* ResearchKitTests.xctest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
 			path = ResearchKitTests.xctest;
-			remoteRef = 8605A5E01C4F095400DD65FF /* PBXContainerItemProxy */;
+			remoteRef = 865A6CDD1C5A95180054F9F0 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -278,10 +276,10 @@
 			target = 8605A5B91C4F04EC00DD65FF /* CareKit */;
 			targetProxy = 8605A5C61C4F04EC00DD65FF /* PBXContainerItemProxy */;
 		};
-		8605A5E31C4F097E00DD65FF /* PBXTargetDependency */ = {
+		865A6CE11C5A95510054F9F0 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = ResearchKit;
-			targetProxy = 8605A5E21C4F097E00DD65FF /* PBXContainerItemProxy */;
+			targetProxy = 865A6CE01C5A95510054F9F0 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -381,6 +379,9 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+				);
 				INFOPLIST_FILE = CareKit/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -397,6 +398,9 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+				);
 				INFOPLIST_FILE = CareKit/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";

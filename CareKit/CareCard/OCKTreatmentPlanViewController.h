@@ -12,16 +12,15 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class OCKTreatmentPlan;
+@class OCKCarePlanStore;
 
 @interface OCKTreatmentPlanViewController : UINavigationController
 
-+ (instancetype)treatmentPlanViewControllerWithTreatmentPlans:(NSArray<OCKTreatmentPlan *> *)plans;
++ (instancetype)treatmentPlanViewControllerWithCarePlanStore:(OCKCarePlanStore *)store;
 
-- (instancetype)initWithTreatmentPlans:(NSArray<OCKTreatmentPlan *> *)plans;
+- (instancetype)initWithCarePlanStore:(OCKCarePlanStore *)store;
 
-@property (nonatomic, copy) NSArray<OCKTreatmentPlan *> *plans;
-@property (nonatomic, readonly) OCKTreatmentPlan *currentTreatmentPlan;
+@property (nonatomic, readonly) OCKCarePlanStore *store;
 
 @end
 

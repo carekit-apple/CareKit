@@ -57,26 +57,26 @@ static const CGFloat TopMargin = 10.0;
     
     if (!_frequencyButtons) {
         _frequencyButtons = [NSArray new];
-        _treatment.completed = 0;
-        NSMutableArray *buttons = [NSMutableArray new];
-        for (NSInteger i = 0; i < _treatment.frequency; i++) {
-            UIButton *frequencyButton = [UIButton new];
-            frequencyButton.backgroundColor = _treatment.tintColor;
-            frequencyButton.translatesAutoresizingMaskIntoConstraints = NO;
-            [frequencyButton addTarget:self
-                                action:@selector(toggleFrequencyButton:)
-                      forControlEvents:UIControlEventTouchUpInside];
-            [buttons addObject:frequencyButton];
-            [self.contentView addSubview:frequencyButton];
-        }
-        _frequencyButtons = [buttons copy];
+//        _treatment.completed = 0;
+//        NSMutableArray *buttons = [NSMutableArray new];
+//        for (NSInteger i = 0; i < _treatment.frequency; i++) {
+//            UIButton *frequencyButton = [UIButton new];
+//            frequencyButton.backgroundColor = _treatment.tintColor;
+//            frequencyButton.translatesAutoresizingMaskIntoConstraints = NO;
+//            [frequencyButton addTarget:self
+//                                action:@selector(toggleFrequencyButton:)
+//                      forControlEvents:UIControlEventTouchUpInside];
+//            [buttons addObject:frequencyButton];
+//            [self.contentView addSubview:frequencyButton];
+//        }
+//        _frequencyButtons = [buttons copy];
     }
     
     if (!_leadingEdge) {
         _leadingEdge = [UILabel new];
         [self addSubview:_leadingEdge];
     }
-    _leadingEdge.backgroundColor = _treatment.tintColor;
+//    _leadingEdge.backgroundColor = _treatment.tintColor;
     
     [self setUpContraints];
 }
@@ -190,14 +190,14 @@ static const CGFloat TopMargin = 10.0;
 }
 
 - (void)toggleFrequencyButton:(id)sender {
-    UIButton *button = (UIButton *)sender;
-    if (button.backgroundColor == _treatment.tintColor) {
-        _treatment.completed++;
-        button.backgroundColor = [UIColor lightGrayColor];
-    } else {
-        _treatment.completed--;
-        button.backgroundColor = _treatment.tintColor;
-    }
+//    UIButton *button = (UIButton *)sender;
+//    if (button.backgroundColor == _treatment.tintColor) {
+//        _treatment.completed++;
+//        button.backgroundColor = [UIColor lightGrayColor];
+//    } else {
+//        _treatment.completed--;
+//        button.backgroundColor = _treatment.tintColor;
+//    }
     
     if (_delegate &&
         [_delegate respondsToSelector:@selector(treatmentCellDidUpdateFrequency:)]) {

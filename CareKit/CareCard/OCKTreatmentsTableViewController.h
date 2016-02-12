@@ -13,14 +13,14 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class OCKTreatment, OCKCareCard, OCKWeekPageViewController;
+@class OCKTreatment, OCKCareCard, OCKWeekPageViewController, OCKCarePlanStore;
 
 @interface OCKTreatmentsTableViewController : UITableViewController <OCKTreatmentCellDelegate>
 
-- (instancetype)initWithTreatments:(nullable NSArray<OCKTreatment *> *)treatments;
+- (instancetype)initWithCarePlanStore:(OCKCarePlanStore *)store;
 
+@property (nonatomic, readonly) OCKCarePlanStore *store;
 @property (nonatomic, readonly) OCKWeekPageViewController *weekPageViewController;
-@property (nonatomic, copy, nullable) NSArray<OCKTreatment *> *treatments;
 @property (nonatomic, readonly) OCKCareCard *careCard;
 
 @end

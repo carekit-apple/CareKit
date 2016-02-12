@@ -23,10 +23,10 @@ static const CGFloat CareCardHeight = 200.0;
     OCKCareCardView *_careCardView;
 }
 
-- (instancetype)initWithTreatments:(NSArray<OCKTreatment *> *)treatments {
+- (instancetype)initWithCarePlanStore:(OCKCarePlanStore *)store {
     self = [super initWithStyle:UITableViewStylePlain];
     if (self) {
-        _treatments = [treatments copy];
+        _store = store;
     }
     return self;
 }
@@ -35,12 +35,6 @@ static const CGFloat CareCardHeight = 200.0;
     [super viewDidLoad];
     
     [self prepareView];
-}
-
-- (void)setTreatments:(NSArray<OCKTreatment *> *)treatments {
-    _treatments = [treatments copy];
-    [self generateCareCardView];
-    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
 }
 
 - (void)prepareView {
@@ -63,12 +57,12 @@ static const CGFloat CareCardHeight = 200.0;
 - (void)updateCareCardView {
     NSInteger totalFrequency = 0;
     NSInteger totalCompleted = 0;
-    for (id treatment in _treatments) {
-        NSInteger frequency = ((OCKTreatment *)treatment).frequency;
-        NSInteger completed = ((OCKTreatment *)treatment).completed;
-        totalFrequency += frequency;
-        totalCompleted += completed;
-    }
+//    for (id treatment in _treatments) {
+//        NSInteger frequency = ((OCKTreatment *)treatment).frequency;
+//        NSInteger completed = ((OCKTreatment *)treatment).completed;
+//        totalFrequency += frequency;
+//        totalCompleted += completed;
+//    }
     
     CGFloat adherence = (CGFloat)totalCompleted/totalFrequency;
     OCKCareCard *updatedCard = _careCardView.careCard;
@@ -121,13 +115,13 @@ static const CGFloat CareCardHeight = 200.0;
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.treatments.count;
+    return 1;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     OCKTreatmentTableViewCell *cell = [OCKTreatmentTableViewCell new];
-    cell.treatment = self.treatments[indexPath.row];
-    cell.delegate = self;
+//    cell.treatment = self.treatments[indexPath.row];
+//    cell.delegate = self;
     return cell;
 }
 

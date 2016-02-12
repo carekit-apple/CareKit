@@ -9,32 +9,23 @@
 
 #import "OCKEvaluationPlanViewController.h"
 #import "OCKEvaluationTableViewController.h"
-#import "OCKEvaluationPlan.h"
 
 
 @implementation OCKEvaluationPlanViewController {
     OCKEvaluationTableViewController *_tableViewController;
 }
 
-+ (instancetype)evaluationPlanViewControllerWithEvaluationPlans:(NSArray<OCKEvaluationPlan *> *)plans {
-    return [[OCKEvaluationPlanViewController alloc] initWithEvaluationPlans:plans];
++ (instancetype)evaluationPlanViewControllerWithCarePlanStore:(OCKCarePlanStore *)store {
+    return [[OCKEvaluationPlanViewController alloc] initWithCarePlanStore:store];
 }
 
-- (instancetype)initWithEvaluationPlans:(NSArray<OCKEvaluationPlan *> *)plans {
-    OCKEvaluationPlan *plan = [plans firstObject];
-    _tableViewController = [[OCKEvaluationTableViewController alloc] initWithEvaluations:plan.evaluations];
-    
+- (instancetype)initWithCarePlanStore:(OCKCarePlanStore *)store {
+    _tableViewController = [[OCKEvaluationTableViewController alloc] initWithCarePlanStore:store];
     self = [super initWithRootViewController:_tableViewController];
     if (self) {
-        _plans = [plans copy];
+        _store = store;
     }
     return self;
-}
-
-- (void)setPlans:(NSArray<OCKEvaluationPlan *> *)plans {
-    _plans = plans;
-    OCKEvaluationPlan *plan = [_plans firstObject];
-    _tableViewController.evaluations = plan.evaluations;
 }
 
 - (void)setTitle:(NSString *)title {

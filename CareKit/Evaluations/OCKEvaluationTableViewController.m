@@ -26,11 +26,11 @@
     return nil;
 }
 
-- (instancetype)initWithEvaluations:(NSArray<OCKEvaluation *> *)evaluations {
+- (instancetype)initWithCarePlanStore:(OCKCarePlanStore *)store {
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
         self.title = @"Evaluations";
-        _evaluations = [evaluations copy];
+        _store = store;
     }
     return self;
 }
@@ -43,47 +43,47 @@
 }
 
 
-#pragma mark - UITableViewDelegate
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    ORKTaskViewController *taskViewController = [[ORKTaskViewController alloc] initWithTask:_evaluations[indexPath.row].task
-                                                                            restorationData:nil
-                                                                                   delegate:self];
-    [self presentViewController:taskViewController animated:YES completion:nil];
-}
-
-
-#pragma mark - UITableViewDataSource
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.evaluations.count;
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *CellIdentifier = @"EvaluationCell";
-    OCKEvaluationTableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (!cell) {
-        cell = [[OCKEvaluationTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
-                                                 reuseIdentifier:CellIdentifier];
-    }
-    cell.evaluation = _evaluations[indexPath.row];
-    return cell;
-}
+//#pragma mark - UITableViewDelegate
+//
+//- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+//    ORKTaskViewController *taskViewController = [[ORKTaskViewController alloc] initWithTask:_evaluations[indexPath.row].task
+//                                                                            restorationData:nil
+//                                                                                   delegate:self];
+//    [self presentViewController:taskViewController animated:YES completion:nil];
+//}
+//
+//
+//#pragma mark - UITableViewDataSource
+//
+//- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+//    return 1;
+//}
+//
+//- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+//    return self.evaluations.count;
+//}
+//
+//- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+//    static NSString *CellIdentifier = @"EvaluationCell";
+//    OCKEvaluationTableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+//    if (!cell) {
+//        cell = [[OCKEvaluationTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+//                                                 reuseIdentifier:CellIdentifier];
+//    }
+//    cell.evaluation = _evaluations[indexPath.row];
+//    return cell;
+//}
 
 
 #pragma mark - ORKTaskViewControllerDelegate
 
 - (void)taskViewController:(ORKTaskViewController *)taskViewController didFinishWithReason:(ORKTaskViewControllerFinishReason)reason error:(NSError *)error {
-    NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
-    OCKEvaluation *selectedEvaluation = _evaluations[indexPath.row];
-    selectedEvaluation.value = [selectedEvaluation.delegate normalizedValueOfEvaluation:selectedEvaluation forTaskResult:taskViewController.result];
-    [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    
-    [self dismissViewControllerAnimated:taskViewController completion:nil];
+//    NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
+//    OCKEvaluation *selectedEvaluation = _evaluations[indexPath.row];
+//    selectedEvaluation.value = [selectedEvaluation.delegate normalizedValueOfEvaluation:selectedEvaluation forTaskResult:taskViewController.result];
+//    [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+//    
+//    [self dismissViewControllerAnimated:taskViewController completion:nil];
 }
 
 @end

@@ -63,14 +63,14 @@ const static CGFloat TrailingMargin = 35.0;
         [self.contentView addSubview:_valueLabel];
     }
     _valueLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleTitle1];
-    _valueLabel.text = [self stringFromSliderValue:_evaluation.value];
-    _valueLabel.textColor = _evaluation.tintColor;
+//    _valueLabel.text = [self stringFromSliderValue:_evaluation.value];
+//    _valueLabel.textColor = _evaluation.tintColor;
     
     if (!_leadingEdge) {
         _leadingEdge = [UILabel new];
         [self addSubview:_leadingEdge];
     }
-    _leadingEdge.backgroundColor = _evaluation.tintColor;
+//    _leadingEdge.backgroundColor = _evaluation.tintColor;
     
     [self setUpConstraints];
 }

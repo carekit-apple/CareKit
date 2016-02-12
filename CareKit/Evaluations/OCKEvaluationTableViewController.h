@@ -13,15 +13,15 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class OCKEvaluation;
+@class OCKCarePlanStore;
 
 @interface OCKEvaluationTableViewController : UITableViewController <ORKTaskViewControllerDelegate>
 
 + (instancetype)new NS_UNAVAILABLE;
 
-- (instancetype)initWithEvaluations:(NSArray<OCKEvaluation *> *)evaluations;
+- (instancetype)initWithCarePlanStore:(OCKCarePlanStore *)store;
 
-@property (nonatomic, copy) NSArray<OCKEvaluation *> *evaluations;
+@property (nonatomic, readonly) OCKCarePlanStore *store;
 
 @end
 

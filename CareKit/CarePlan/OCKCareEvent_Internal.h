@@ -17,7 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithNumberOfDaysSinceStart:(NSUInteger)numberOfDaysSinceStart
                            occurrenceIndexOfDay:(NSUInteger)occurrenceIndexOfDay;
 
-@property (nonatomic) BOOL completed;
+@property (nonatomic) OCKCareEventState state;
 
 @property (nonatomic, strong) NSDate *reportingDate;
 
@@ -32,7 +32,7 @@ NS_ASSUME_NONNULL_BEGIN
                                     evaluation:(OCKEvaluation *)evaluation;
 
 @property (nonatomic, strong) NSNumber *evaluationValue;
-
+@property (nonatomic, copy) NSString *evaluationValueString;
 @property (nonatomic, strong) id<NSSecureCoding> evaluationResult;
 
 @end
@@ -59,7 +59,7 @@ insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
 
 @property (nullable, nonatomic, retain) NSNumber *occurrenceIndexOfDay;
 @property (nullable, nonatomic, retain) NSNumber *numberOfDaysSinceStart;
-@property (nullable, nonatomic, retain) NSNumber *completed;
+@property (nullable, nonatomic, retain) NSNumber *state;
 @property (nullable, nonatomic, retain) NSDate *completionDate;
 @property (nullable, nonatomic, retain) NSDate *reportingDate;
 
@@ -80,6 +80,7 @@ insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
 @interface OCKCDEvaluationEvent (CoreDataProperties)
 
 @property (nullable, nonatomic, retain) NSNumber *evaluationValue;
+@property (nullable, nonatomic, retain) NSString *evaluationValueString;
 @property (nullable, nonatomic, retain) id<NSSecureCoding> evaluationResult;
 @property (nullable, nonatomic, retain) OCKCDEvaluation *evaluation;
 

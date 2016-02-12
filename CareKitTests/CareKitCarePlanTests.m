@@ -125,19 +125,32 @@
     XCTAssertNil(error);
     XCTAssertEqual(events.count, 1);
     XCTAssertEqual(events.firstObject.count, 3);
-    XCTAssertEqual(events[0][0].completed, NO);
-    XCTAssertEqual(events[0][1].completed, NO);
-    XCTAssertEqual(events[0][2].completed, NO);
+    XCTAssertEqual(events[0][0].state, OCKCareEventStateInitial);
+    XCTAssertEqual(events[0][1].state, OCKCareEventStateInitial);
+    XCTAssertEqual(events[0][2].state, OCKCareEventStateInitial);
     
-    [store updateTreatmentEvent:events[0][0] completed:YES completionDate:[NSDate date] error:&error];
+    XCTestExpectation *expectation = [self expectationWithDescription:@"updateEvent"];
+    
+    [store updateTreatmentEvent:events[0][0]
+                      completed:YES
+                 completionDate:[NSDate date]
+              completionHandler:^(BOOL success, OCKTreatmentEvent * _Nonnull event, NSError * _Nonnull error) {
+        XCTAssertNil(error);
+        XCTAssertTrue(success);
+        [expectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:1.0 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
+    
     events = [store treatmentEventsOnDay:[NSDate date] error:&error];
     XCTAssertNil(error);
     XCTAssertEqual(events.count, 1);
     XCTAssertEqual(events.firstObject.count, 3);
-    XCTAssertEqual(events[0][0].completed, YES);
+    XCTAssertEqual(events[0][0].state, OCKCareEventStateCompleted);
     XCTAssertNotNil(events[0][0].completionDate);
-    XCTAssertEqual(events[0][1].completed, NO);
-    XCTAssertEqual(events[0][2].completed, NO);
+    XCTAssertEqual(events[0][1].state, OCKCareEventStateInitial);
+    XCTAssertEqual(events[0][2].state, OCKCareEventStateInitial);
     XCTAssertTrue([self isEventChangeDelegateCalled]);
     
     NSArray<OCKTreatmentEvent *> *eventsOfTreatment = [store eventsOfTreatment:treatments[0] startDate:[NSDate date] endDate:[NSDate dateWithTimeIntervalSinceNow:100*24*60*60] error:&error];
@@ -150,12 +163,23 @@
     XCTAssertEqual(eventsOfTreatment[3*3].numberOfDaysSinceStart, 3);
     XCTAssertEqual(eventsOfTreatment[5*3].numberOfDaysSinceStart, 5);
     
+    store.delegate = nil;
     [self measureBlock:^{
         
         for (OCKTreatmentEvent* event in eventsOfTreatment) {
-            [store updateTreatmentEvent:event completed:YES completionDate:[NSDate date] error:nil];
-            XCTAssertTrue([self isEventChangeDelegateCalled]);
+            XCTestExpectation *expectation = [self expectationWithDescription:@"updateEvent"];
+            [store updateTreatmentEvent:event completed:YES
+                         completionDate:[NSDate date]
+                      completionHandler:^(BOOL success, OCKTreatmentEvent * _Nonnull event, NSError * _Nonnull error) {
+                          XCTAssertNil(error);
+                          XCTAssertTrue(success);
+                          [expectation fulfill];
+            }];
         }
+        
+        [self waitForExpectationsWithTimeout:10.0 handler:^(NSError * _Nullable error) {
+            XCTAssertNil(error);
+        }];
     }];
    
     
@@ -237,21 +261,37 @@
         XCTAssertNil(error);
         XCTAssertEqual(events.count, 1);
         XCTAssertEqual(events.firstObject.count, 3);
-        XCTAssertEqual(events[0][0].completed, NO);
-        XCTAssertEqual(events[0][1].completed, NO);
-        XCTAssertEqual(events[0][2].completed, NO);
+        XCTAssertEqual(events[0][0].state, OCKCareEventStateInitial);
+        XCTAssertEqual(events[0][1].state, OCKCareEventStateInitial);
+        XCTAssertEqual(events[0][2].state, OCKCareEventStateInitial);
         
-        [store updateEvaluationEvent:events[0][0] evaluationValue:@(9.5) evaluationResult:NSStringFromClass([self class]) completionDate:[NSDate date] error:&error];
+        XCTestExpectation* expectation = [self expectationWithDescription:@"updateEvent"];
+        [store updateEvaluationEvent:events[0][0]
+                     evaluationValue:@(9.5)
+               evaluationValueString:@"9.5"
+                    evaluationResult:NSStringFromClass([self class])
+                      completionDate:[NSDate date]
+                   completionHandler:^(BOOL success, OCKEvaluationEvent * _Nonnull event, NSError * _Nonnull error) {
+                       XCTAssertTrue(success);
+                       XCTAssertNotNil(event);
+                       XCTAssertNil(error);
+                       [expectation fulfill];
+                   }];
+        [self waitForExpectationsWithTimeout:1.0 handler:^(NSError * _Nullable error) {
+            XCTAssertNil(error);
+        }];
+        
         events = [store evaluationEventsOnDay:[NSDate date] error:&error];
         XCTAssertNil(error);
         XCTAssertEqual(events.count, 1);
         XCTAssertEqual(events.firstObject.count, 3);
-        XCTAssertEqual(events[0][0].completed, YES);
+        XCTAssertEqual(events[0][0].state, OCKCareEventStateCompleted);
         XCTAssertNotNil(events[0][0].completionDate);
         XCTAssertEqualObjects(events[0][0].evaluationValue, @(9.5));
+        XCTAssertEqualObjects(events[0][0].evaluationValueString, @"9.5");
         XCTAssertEqualObjects(events[0][0].evaluationResult, NSStringFromClass([self class]));
-        XCTAssertEqual(events[0][1].completed, NO);
-        XCTAssertEqual(events[0][2].completed, NO);
+        XCTAssertEqual(events[0][1].state, OCKCareEventStateInitial);
+        XCTAssertEqual(events[0][2].state, OCKCareEventStateInitial);
         XCTAssertTrue([self isEventChangeDelegateCalled]);
         
         NSArray<OCKEvaluationEvent *> *eventsOfEvaluation = [store eventsOfEvaluation:evaluations[0] startDate:[NSDate date] endDate:[NSDate dateWithTimeIntervalSinceNow:8*24*60*60] error:&error];

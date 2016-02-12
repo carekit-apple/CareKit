@@ -34,6 +34,8 @@
 #import <UIKit/UIKit.h>
 #import "OCKDefines.h"
 
+OCK_EXTERN NSString *const OCKErrorDomain OCK_AVAILABLE_DECL;
+
 #if ( defined(OCK_LOG_LEVEL_NONE) && OCK_LOG_LEVEL_NONE )
 #  undef OCK_LOG_LEVEL_DEBUG
 #  undef OCK_LOG_LEVEL_WARNING

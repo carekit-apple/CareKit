@@ -32,7 +32,9 @@
 #import "OCKHelpers.h"
 #import <CoreText/CoreText.h>
 #import <UIKit/UIKit.h>
-#import "OCKTreatmentPlanManager.h"
+#import "OCKCarePlanStore.h"
+
+NSString *const OCKErrorDomain = @"OCKErrorDomain";
 
 NSURL *OCKCreateRandomBaseURL() {
     return [NSURL URLWithString:[NSString stringWithFormat:@"http://carekit.%@/", [NSUUID UUID].UUIDString]];
@@ -43,7 +45,7 @@ NSBundle *OCKAssetsBundle(void) {
     
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        __bundle = [NSBundle bundleForClass:[OCKTreatmentPlanManager class]];
+        __bundle = [NSBundle bundleForClass:[OCKCarePlanStore class]];
     });
     
     return __bundle;
@@ -229,7 +231,7 @@ NSBundle *OCKBundle() {
     
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        __bundle = [NSBundle bundleForClass:[OCKTreatmentPlanManager class]];
+        __bundle = [NSBundle bundleForClass:[OCKCarePlanStore class]];
     });
     
     return __bundle;

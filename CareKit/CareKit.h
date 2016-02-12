@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <CareKit/OCKMedication.h>
-
-
-
-
+#import <CareKit/OCKCarePlanStore.h>
+#import <CareKit/OCKEvaluation.h>
+#import <CareKit/OCKTreatment.h>
+#import <CareKit/OCKCarePlanItem.h>
+#import <CareKit/OCKCareSchedule.h>
+#import <CareKit/OCKCareEvent.h>

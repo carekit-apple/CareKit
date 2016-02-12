@@ -95,6 +95,7 @@
 		8605A5BE1C4F04EC00DD65FF /* CareKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 8605A5BD1C4F04EC00DD65FF /* CareKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8605A5C51C4F04EC00DD65FF /* CareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8605A5BA1C4F04EC00DD65FF /* CareKit.framework */; };
 		8605A5CA1C4F04EC00DD65FF /* CareKitCarePlanTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8605A5C91C4F04EC00DD65FF /* CareKitCarePlanTests.m */; };
+		8656C0DE1C6E98DA00A6D5D1 /* OCKCarePlanStore_Internal.h in Headers */ = {isa = PBXBuildFile; fileRef = 8656C0DD1C6E98DA00A6D5D1 /* OCKCarePlanStore_Internal.h */; };
 		865A6D0E1C5AD18B0054F9F0 /* whatever.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865A6D0D1C5AD18B0054F9F0 /* whatever.swift */; };
 		86FA84FC1C5C466A0013114A /* OCKCarePlanStore.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 86FA84FA1C5C466A0013114A /* OCKCarePlanStore.xcdatamodeld */; };
 /* End PBXBuildFile section */
@@ -222,6 +223,7 @@
 		8605A5C41C4F04EC00DD65FF /* CareKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CareKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8605A5C91C4F04EC00DD65FF /* CareKitCarePlanTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CareKitCarePlanTests.m; sourceTree = "<group>"; };
 		8605A5CB1C4F04EC00DD65FF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8656C0DD1C6E98DA00A6D5D1 /* OCKCarePlanStore_Internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKCarePlanStore_Internal.h; sourceTree = "<group>"; };
 		865A6CD51C5A95180054F9F0 /* ResearchKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ResearchKit.xcodeproj; path = dependency/ResearchKit.xcodeproj; sourceTree = SOURCE_ROOT; };
 		865A6D0C1C5AD18A0054F9F0 /* CareKitTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CareKitTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		865A6D0D1C5AD18B0054F9F0 /* whatever.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = whatever.swift; sourceTree = "<group>"; };
@@ -251,6 +253,7 @@
 			isa = PBXGroup;
 			children = (
 				2445EAC11C6D66CC00F51A95 /* OCKCarePlanStore.h */,
+				8656C0DD1C6E98DA00A6D5D1 /* OCKCarePlanStore_Internal.h */,
 				2445EAC21C6D66CC00F51A95 /* OCKCarePlanStore.m */,
 				24B31A4F1C6E603700C3C196 /* Items */,
 				24B31A511C6E609300C3C196 /* Events */,
@@ -587,6 +590,7 @@
 				2445EB2F1C6D67A100F51A95 /* OCKConnectTableViewController.h in Headers */,
 				2445EB0B1C6D673000F51A95 /* OCKChartTableViewController_Internal.h in Headers */,
 				2445EB1D1C6D673000F51A95 /* OCKPieChart_Internal.h in Headers */,
+				8656C0DE1C6E98DA00A6D5D1 /* OCKCarePlanStore_Internal.h in Headers */,
 				2445EADC1C6D66CC00F51A95 /* OCKEvaluation_Internal.h in Headers */,
 				2445EB721C6D685D00F51A95 /* OCKTreatmentPlanViewController.h in Headers */,
 				2445EB181C6D673000F51A95 /* OCKLineChart_Internal.h in Headers */,

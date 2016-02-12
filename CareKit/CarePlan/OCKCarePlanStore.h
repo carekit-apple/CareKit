@@ -103,11 +103,11 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  Mark an `OCKTreatmentEvent` to be completed.
  */
-- (BOOL)updateTreatmentEvent:(OCKTreatmentEvent *)treatmentEvent
+- (void)updateTreatmentEvent:(OCKTreatmentEvent *)treatmentEvent
                    completed:(BOOL)completed
               completionDate:(NSDate *)completionDate
-                       error:(NSError **)error;
-
+           completionHandler:(void (^)(BOOL success, OCKTreatmentEvent *event, NSError *error))completionHandler;
+//:
 /**
  Fetch all the events of an `OCKTreatment` by giving a date range.
  */
@@ -163,11 +163,12 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  Store the evaluationResult in an `OCKEvaluationEvent`.
  */
-- (BOOL)updateEvaluationEvent:(OCKEvaluationEvent *)evaluationEvent
+- (void)updateEvaluationEvent:(OCKEvaluationEvent *)evaluationEvent
               evaluationValue:(NSNumber *)evaluationValue
+        evaluationValueString:(NSString *)evaluationValueString
              evaluationResult:(nullable id<NSSecureCoding>)evaluationResult
                completionDate:(NSDate *)completionDate
-                        error:(NSError **)error;
+            completionHandler:(void (^)(BOOL success, OCKEvaluationEvent *event, NSError *error))completionHandler;
 
 /**
  Fetch all the events of an `OCKEvaluation` by giving a date range.

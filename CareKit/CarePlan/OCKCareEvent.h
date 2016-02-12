@@ -12,13 +12,18 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+typedef NS_ENUM(NSInteger, OCKCareEventState) {
+    OCKCareEventStateInitial,
+    OCKCareEventStateNotCompleted,
+    OCKCareEventStateCompleted
+};
 @interface OCKCareEvent : NSObject 
 
 @property (nonatomic, readonly) NSUInteger occurrenceIndexOfDay;
 
 @property (nonatomic, readonly) NSUInteger numberOfDaysSinceStart;
 
-@property (nonatomic, readonly) BOOL completed;
+@property (nonatomic, readonly) OCKCareEventState state;
 
 @property (nonatomic, strong, readonly, nullable) NSDate *reportingDate;
 
@@ -38,6 +43,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, readonly) OCKEvaluation *evaluation;
 
 @property (nonatomic, strong, readonly, nullable) NSNumber *evaluationValue;
+
+@property (nonatomic, copy, readonly, nullable) NSString *evaluationValueString;
 
 @property (nonatomic, strong, readonly, nullable) id<NSSecureCoding> evaluationResult;
 

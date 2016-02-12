@@ -18,7 +18,7 @@
     if (self) {
         _occurrenceIndexOfDay = cdObject.occurrenceIndexOfDay.unsignedIntegerValue;
         _numberOfDaysSinceStart = cdObject.numberOfDaysSinceStart.unsignedIntegerValue;
-        _completed = cdObject.completed.boolValue;
+        _state = cdObject.state.integerValue;
         _reportingDate = cdObject.reportingDate;
         _completionDate = cdObject.completionDate;
     }
@@ -40,7 +40,7 @@
     OCKCareEvent* event = [[[self class] allocWithZone:zone] init];
     event->_occurrenceIndexOfDay = _occurrenceIndexOfDay;
     event->_numberOfDaysSinceStart = _numberOfDaysSinceStart;
-    event->_completed = _completed;
+    event->_state = _state;
     event->_reportingDate = _reportingDate;
     event->_completionDate = _completionDate;
     return event;
@@ -86,6 +86,7 @@
         if (cdObject.evaluation) {
             _evaluation = [[OCKEvaluation alloc] initWithCoreDataObject:cdObject.evaluation];
         }
+        _evaluationValueString = cdObject.evaluationValueString;
         _evaluationValue = cdObject.evaluationValue;
         _evaluationResult = cdObject.evaluationResult;
     }
@@ -125,7 +126,7 @@ insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
     if (self) {
         self.occurrenceIndexOfDay = @(careEvent.occurrenceIndexOfDay);
         self.numberOfDaysSinceStart = @(careEvent.numberOfDaysSinceStart);
-        self.completed = @(careEvent.completed);
+        self.state = @(careEvent.state);
         self.reportingDate = careEvent.reportingDate;
         self.completionDate = careEvent.completionDate;
     }
@@ -134,7 +135,7 @@ insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
 
 - (void)updateWithEvent:(OCKCareEvent *)careEvent {
     NSParameterAssert(careEvent);
-    self.completed = @(careEvent.completed);
+    self.state = @(careEvent.state);
     self.completionDate = careEvent.completionDate;
     self.reportingDate = careEvent.reportingDate;
 }
@@ -146,7 +147,7 @@ insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
 
 @dynamic occurrenceIndexOfDay;
 @dynamic numberOfDaysSinceStart;
-@dynamic completed;
+@dynamic state;
 @dynamic completionDate;
 @dynamic reportingDate;
 
@@ -166,6 +167,7 @@ insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
     if (self) {
         self.evaluation = cdEvaluation;
         self.evaluationValue = evaluationEvent.evaluationValue;
+        self.evaluationValueString = evaluationEvent.evaluationValueString;
         self.evaluationResult = evaluationEvent.evaluationResult;
     }
     return self;
@@ -175,6 +177,7 @@ insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
     [super updateWithEvent:evaluationEvent];
     self.evaluationResult = evaluationEvent.evaluationResult;
     self.evaluationValue = evaluationEvent.evaluationValue;
+    self.evaluationValueString = evaluationEvent.evaluationValueString;
 }
 
 @end
@@ -183,6 +186,7 @@ insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
 @implementation OCKCDEvaluationEvent (CoreDataProperties)
 
 @dynamic evaluationValue;
+@dynamic evaluationValueString;
 @dynamic evaluationResult;
 @dynamic evaluation;
 

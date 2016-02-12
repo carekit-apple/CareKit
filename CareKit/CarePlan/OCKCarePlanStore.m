@@ -7,6 +7,7 @@
 //
 
 #import "OCKCarePlanStore.h"
+#import "OCKCarePlanStore_Internal.h"
 #import "OCKCarePlanItem_Internal.h"
 #import "OCKTreatment_Internal.h"
 #import "OCKEvaluation_Internal.h"
@@ -233,9 +234,11 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
 
 - (NSArray<OCKTreatment *> *)fetchAllTreatmentsWithError:(NSError **)error {
     __block NSArray<OCKTreatment *> *treatments;
+    __weak typeof(self) weakSelf = self;
     [[self contextWithError:error] performBlockAndWait:^{
         if (_cachedTreatments == nil) {
-            _cachedTreatments = [self block_fetchItemsWithEntityName:OCKEntityNameTreatment class:[OCKTreatment class] error:error];
+            __strong typeof(weakSelf) strongSelf = weakSelf;
+            _cachedTreatments = [strongSelf block_fetchItemsWithEntityName:OCKEntityNameTreatment class:[OCKTreatment class] error:error];
         }
         treatments = [_cachedTreatments copy];
     }];
@@ -250,8 +253,13 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
 }
 
 - (void)handleTreatmentListChange:(BOOL)result {
-    if (result && _delegate && [_delegate respondsToSelector:@selector(carePlanStoreTreatmentListDidChange:)]) {
-        [_delegate carePlanStoreTreatmentListDidChange:self];
+    if (result){
+        if (_treatmentUIDelegate && [_treatmentUIDelegate respondsToSelector:@selector(carePlanStoreTreatmentListDidChange:)]) {
+            [_treatmentUIDelegate carePlanStoreTreatmentListDidChange:self];
+        }
+        if (_delegate && [_delegate respondsToSelector:@selector(carePlanStoreTreatmentListDidChange:)]) {
+            [_delegate carePlanStoreTreatmentListDidChange:self];
+        }
     }
 }
 
@@ -259,9 +267,10 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     NSParameterAssert(treatment);
     
     __block BOOL result = NO;
+    __weak typeof(self) weakSelf = self;
     [[self contextWithError:error] performBlockAndWait:^{
-        
-        result = [self block_addItemWithEntityName:OCKEntityNameTreatment coreDataClass:[OCKCDTreatment class] sourceItem:treatment error:error];
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        result = [strongSelf block_addItemWithEntityName:OCKEntityNameTreatment coreDataClass:[OCKCDTreatment class] sourceItem:treatment error:error];
         if (result) {
             _cachedTreatments = nil;
         }
@@ -276,8 +285,10 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     NSParameterAssert(treatment);
     
     __block BOOL result = NO;
+    __weak typeof(self) weakSelf = self;
     [[self contextWithError:error] performBlockAndWait:^{
-        result = [self block_removeItemWithEntityName:OCKEntityNameTreatment identifier:treatment.identifier error:error];
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        result = [strongSelf block_removeItemWithEntityName:OCKEntityNameTreatment identifier:treatment.identifier error:error];
         if (result) {
             _cachedTreatments = nil;
         }
@@ -292,16 +303,18 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     NSParameterAssert(treatment);
     
     __block BOOL result = NO;
+    __weak typeof(self) weakSelf = self;
     [[self contextWithError:error] performBlockAndWait:^{
-        result = [self block_alterItemWithEntityName:OCKEntityNameTreatment
-                                          identifier:treatment.identifier
-                                             opBlock:^BOOL(NSManagedObject *cdObject) {
-                                                 OCKCDTreatment *cdTreatment = (OCKCDTreatment *)cdObject;
-                                                 OCKCareSchedule *schedule = cdTreatment.schedule;
-                                                 schedule.endDate = date;
-                                                 cdTreatment.schedule = schedule;
-                                                 return YES;
-                                             } error:error];
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        result = [strongSelf block_alterItemWithEntityName:OCKEntityNameTreatment
+                                                identifier:treatment.identifier
+                                                   opBlock:^BOOL(NSManagedObject *cdObject) {
+                                                       OCKCDTreatment *cdTreatment = (OCKCDTreatment *)cdObject;
+                                                       OCKCareSchedule *schedule = cdTreatment.schedule;
+                                                       schedule.endDate = date;
+                                                       cdTreatment.schedule = schedule;
+                                                       return YES;
+                                                   } error:error];
         if (result) {
             _cachedTreatments = nil;
         }
@@ -340,15 +353,16 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     if (numberOfEvents > 0) {
         
         NSUInteger numberOfDaySinceStart = [schedule numberOfDaySinceStart:day];
-        
+        __weak typeof(self) weakSelf = self;
         [context performBlockAndWait:^{
+            __strong typeof(weakSelf) strongSelf = weakSelf;
             NSPredicate *predicate = [NSPredicate predicateWithFormat:@"%K = %d AND %K = %@",
                                       OCKAttributeNameDayIndex, numberOfDaySinceStart, @"treatment.identifier", treatment.identifier];
             
-            NSArray<OCKTreatmentEvent *> *savedEvents = (NSArray<OCKTreatmentEvent *> *)[self block_fetchItemsWithEntityName:OCKEntityNameTreatmentEvent
-                                                                                                             predicate:predicate
-                                                                                                                 class:[OCKTreatmentEvent class]
-                                                                                                                 error:error];
+            NSArray<OCKTreatmentEvent *> *savedEvents = (NSArray<OCKTreatmentEvent *> *)[strongSelf block_fetchItemsWithEntityName:OCKEntityNameTreatmentEvent
+                                                                                                                         predicate:predicate
+                                                                                                                             class:[OCKTreatmentEvent class]
+                                                                                                                             error:error];
             
             for (NSInteger index = 0 ; index < numberOfEvents ; index++ ) {
                 OCKTreatmentEvent *event = [savedEvents filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"occurrenceIndexOfDay = %d", index]].firstObject;
@@ -363,21 +377,24 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     return [eventGroup copy];
 }
 
-- (BOOL)updateTreatmentEvent:(OCKTreatmentEvent *)treatmentEvent
+- (void)updateTreatmentEvent:(OCKTreatmentEvent *)treatmentEvent
                    completed:(BOOL)completed
               completionDate:(NSDate *)completionDate
-                       error:(NSError **)error {
+           completionHandler:(void (^)(BOOL success, OCKTreatmentEvent *event, NSError *error))completionHandler {
     
     NSParameterAssert(treatmentEvent);
+    NSParameterAssert(completionHandler);
     NSDate *reportingDate = [NSDate date];
     
-    __block NSManagedObjectContext *context = [self contextWithError:error];
+    NSError *error;
+    __block NSManagedObjectContext *context = [self contextWithError:&error];
     if (context == nil) {
-        return NO;
+        completionHandler(NO, treatmentEvent, error);
+        return;
     }
     
     OCKTreatmentEvent *copiedTreatmentEvent = [treatmentEvent copy];
-    copiedTreatmentEvent.completed = completed;
+    copiedTreatmentEvent.state = completed ? OCKCareEventStateCompleted : OCKCareEventStateNotCompleted;
     // Discard `completionDate` if completed flag is NO
     copiedTreatmentEvent.completionDate = completed ? completionDate : nil;
     copiedTreatmentEvent.reportingDate = reportingDate;
@@ -389,7 +406,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     __block NSError *errorOut;
     __block BOOL found = NO;
     
-    [context performBlockAndWait:^{
+    [context performBlock:^{
         
         NSArray<OCKCDTreatmentEvent *> *cdTreatmentEvents = [context executeFetchRequest:fetchRequest error:&errorOut];
         
@@ -432,18 +449,21 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
             }
         }
         
-        if (error && errorOut) {
-            *error = errorOut;
-        }
+        BOOL result = errorOut == nil && found;
+        
+        dispatch_async(dispatch_get_main_queue(), ^(){
+            completionHandler(result, result ? copiedTreatmentEvent : treatmentEvent, errorOut);
+            
+            if (result) {
+                if(_treatmentUIDelegate && [_treatmentUIDelegate respondsToSelector:@selector(carePlanStore:didReceiveUpdateOfTreatmentEvent:)]) {
+                    [_treatmentUIDelegate carePlanStore:self didReceiveUpdateOfTreatmentEvent:copiedTreatmentEvent];
+                }
+                if(_delegate && [_delegate respondsToSelector:@selector(carePlanStore:didReceiveUpdateOfTreatmentEvent:)]) {
+                    [_delegate carePlanStore:self didReceiveUpdateOfTreatmentEvent:copiedTreatmentEvent];
+                }
+            }
+        });
     }];
-    
-    BOOL result = errorOut == nil && found;
-    
-    if (result && _delegate && [_delegate respondsToSelector:@selector(carePlanStore:didReceiveUpdateOfTreatmentEvent:)]) {
-        [_delegate carePlanStore:self didReceiveUpdateOfTreatmentEvent:copiedTreatmentEvent];
-    }
-    
-    return result;
 }
 
 - (NSArray<OCKTreatmentEvent *> *)eventsOfTreatment:(OCKTreatment *)treatment
@@ -498,8 +518,13 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
 }
 
 - (void)handleEvaluationListChange:(BOOL)result {
-    if (result && _delegate && [_delegate respondsToSelector:@selector(carePlanStoreEvaluationListDidChange:)]) {
-        [_delegate carePlanStoreEvaluationListDidChange:self];
+    if (result) {
+        if (_evaluationUIDelegate && [_evaluationUIDelegate respondsToSelector:@selector(carePlanStoreEvaluationListDidChange:)]) {
+            [_evaluationUIDelegate carePlanStoreEvaluationListDidChange:self];
+        }
+        if(_delegate && [_delegate respondsToSelector:@selector(carePlanStoreEvaluationListDidChange:)]) {
+            [_delegate carePlanStoreEvaluationListDidChange:self];
+        }
     }
 }
 
@@ -508,8 +533,10 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
 
     NSManagedObjectContext *context = [self contextWithError:error];
     __block BOOL result = NO;
+    __weak typeof(self) weakSelf = self;
     [context performBlockAndWait:^{
-        result = [self block_addItemWithEntityName:OCKEntityNameEvaluation coreDataClass:[OCKCDEvaluation class] sourceItem:evaluation error:error];
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        result = [strongSelf block_addItemWithEntityName:OCKEntityNameEvaluation coreDataClass:[OCKCDEvaluation class] sourceItem:evaluation error:error];
         if (result) {
             _cachedEvaluations = nil;
         }
@@ -525,16 +552,18 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     
     NSManagedObjectContext *context = [self contextWithError:error];
     __block BOOL result = NO;
+    __weak typeof(self) weakSelf = self;
     [context performBlockAndWait:^{
-        result = [self block_alterItemWithEntityName:OCKEntityNameEvaluation
-                                    identifier:evaluation.identifier
-                                       opBlock:^BOOL(NSManagedObject *cdObject) {
-                                           OCKCDEvaluation *evaluation = (OCKCDEvaluation *)cdObject;
-                                           OCKCareSchedule *schedule = evaluation.schedule;
-                                           schedule.endDate = date;
-                                           evaluation.schedule = schedule;
-                                           return YES;
-                                       } error:error];
+         __strong typeof(weakSelf) strongSelf = weakSelf;
+        result = [strongSelf block_alterItemWithEntityName:OCKEntityNameEvaluation
+                                                identifier:evaluation.identifier
+                                                   opBlock:^BOOL(NSManagedObject *cdObject) {
+                                                       OCKCDEvaluation *evaluation = (OCKCDEvaluation *)cdObject;
+                                                       OCKCareSchedule *schedule = evaluation.schedule;
+                                                       schedule.endDate = date;
+                                                       evaluation.schedule = schedule;
+                                                       return YES;
+                                                   } error:error];
         if(result) {
             _cachedEvaluations = nil;
         }
@@ -550,8 +579,10 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     
     NSManagedObjectContext *context = [self contextWithError:error];
     __block BOOL result = NO;
+    __weak typeof(self) weakSelf = self;
     [context performBlockAndWait:^{
-        result = [self block_removeItemWithEntityName:OCKEntityNameEvaluation identifier:evaluation.identifier error:error];
+         __strong typeof(weakSelf) strongSelf = weakSelf;
+        result = [strongSelf block_removeItemWithEntityName:OCKEntityNameEvaluation identifier:evaluation.identifier error:error];
         if (result) {
             _cachedEvaluations = nil;
         }
@@ -635,25 +666,30 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     return [events copy];
 }
 
-- (BOOL)updateEvaluationEvent:(OCKEvaluationEvent *)evaluationEvent
+- (void)updateEvaluationEvent:(OCKEvaluationEvent *)evaluationEvent
               evaluationValue:(NSNumber *)evaluationValue
+        evaluationValueString:(NSString *)evaluationValueString
              evaluationResult:(id<NSSecureCoding>)evaluationResult
                completionDate:(NSDate *)completionDate
-                        error:(NSError **)error {
-    NSParameterAssert(evaluationEvent);
-    NSDate *reportingDate = [NSDate date];
+            completionHandler:(void (^)(BOOL success, OCKEvaluationEvent *event, NSError *error))completionHandler {
     
-    __block NSManagedObjectContext *context = [self contextWithError:error];
+    NSParameterAssert(evaluationEvent);
+    NSParameterAssert(completionHandler);
+    NSDate *reportingDate = [NSDate date];
+    NSError *error;
+    __block NSManagedObjectContext *context = [self contextWithError:&error];
     if (context == nil) {
-        return NO;
+        completionHandler(NO, evaluationEvent, error);
+        return;
     }
     
     OCKEvaluationEvent *copiedEvaluationEvent = [evaluationEvent copy];
-    copiedEvaluationEvent.completed = YES;
+    copiedEvaluationEvent.state = OCKCareEventStateCompleted;
     copiedEvaluationEvent.completionDate = completionDate;
     copiedEvaluationEvent.reportingDate = reportingDate;
     copiedEvaluationEvent.evaluationValue = evaluationValue;
     copiedEvaluationEvent.evaluationResult = evaluationResult;
+    copiedEvaluationEvent.evaluationValueString = evaluationValueString;
     
     __block NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:OCKEntityNameEvaluationEvent];
     fetchRequest.predicate = [NSPredicate predicateWithFormat:@"%K = %d AND %K = %d",
@@ -710,19 +746,21 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
         
         result = errorOut == nil && found;
         
-        if (error && errorOut) {
-            *error = errorOut;
-        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            completionHandler(result, result ? copiedEvaluationEvent : evaluationEvent, errorOut);
+            
+            if (result){
+                if(_evaluationUIDelegate && [_evaluationUIDelegate respondsToSelector:@selector(carePlanStore:didReceiveUpdateOfEvaluationEvent:)]) {
+                    [_evaluationUIDelegate carePlanStore:self didReceiveUpdateOfEvaluationEvent:copiedEvaluationEvent];
+                }
+                if(_delegate && [_delegate respondsToSelector:@selector(carePlanStore:didReceiveUpdateOfEvaluationEvent:)]) {
+                    [_delegate carePlanStore:self didReceiveUpdateOfEvaluationEvent:copiedEvaluationEvent];
+                }
+            }
+        });
     }];
     
-    if (result && _delegate && [_delegate respondsToSelector:@selector(carePlanStore:didReceiveUpdateOfEvaluationEvent:)]) {
-        [_delegate carePlanStore:self didReceiveUpdateOfEvaluationEvent:copiedEvaluationEvent];
-    }
-    
-    return result;
 }
-
-
 
 #pragma mark - coredata
 

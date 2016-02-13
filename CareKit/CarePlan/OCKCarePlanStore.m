@@ -24,7 +24,7 @@ static NSManagedObjectContext *createManagedObjectContext(NSURL *modelURL, NSURL
     if (![persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType
                                                   configuration:nil
                                                             URL:storeURL
-                                                        options:nil
+                                                        options:@{NSFileProtectionKey: NSFileProtectionComplete}
                                                           error:error]) {
         return nil;
     }

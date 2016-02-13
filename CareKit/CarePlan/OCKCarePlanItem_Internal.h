@@ -29,7 +29,8 @@ NS_ASSUME_NONNULL_BEGIN
                         text:(nullable NSString *)text
                        color:(nullable UIColor *)color
                     schedule:(OCKCareSchedule *)schedule
-                    optional:(BOOL)optional;
+                    optional:(BOOL)optional
+   onlyMutableDuringEventDay:(BOOL)onlyMutableDuringEventDay;
 
 @end
 
@@ -48,6 +49,7 @@ insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
 @property (nullable, nonatomic, retain) NSString *title;
 @property (nullable, nonatomic, retain) NSString *type;
 @property (nullable, nonatomic, retain) NSNumber *optional;
+@property (nullable, nonatomic, retain) NSNumber *onlyMutableDuringEventDay;
 
 @end
 

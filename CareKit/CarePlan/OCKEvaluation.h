@@ -20,13 +20,15 @@ NS_ASSUME_NONNULL_BEGIN
                        color:(nullable UIColor *)color
                     schedule:(OCKCareSchedule *)schedule
                         task:(nullable id<ORKTask, NSSecureCoding>)task
-                    optional:(BOOL)optional;
+                    optional:(BOOL)optional
+                  retryLimit:(NSUInteger)retryLimit;
 
 @property (nonatomic, strong, readonly, nullable) id<ORKTask, NSSecureCoding> task;
-//TODO: not working yet
-@property (nonatomic, strong, readonly, nullable) ORKHealthKitQuantityTypeAnswerFormat *answerFormat;
-//TODO: not working yet
-@property (nonatomic, readonly) BOOL allowRedo;
+
+/*
+ * 0 stands for unlimited
+ */
+@property (nonatomic, readonly) NSUInteger retryLimit;
 
 @end
 

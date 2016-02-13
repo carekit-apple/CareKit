@@ -17,7 +17,8 @@
                         text:(NSString *)text
                        color:(UIColor *)color
                     schedule:(OCKCareSchedule *)schedule
-                    optional:(BOOL)optional {
+                    optional:(BOOL)optional
+   onlyMutableDuringEventDay:(BOOL)onlyMutableDuringEventDay{
     
     NSParameterAssert(type);
     NSParameterAssert(schedule);
@@ -31,6 +32,7 @@
         _color = color;
         _schedule = schedule;
         _optional = optional;
+        _onlyMutableDuringEventDay = onlyMutableDuringEventDay;
     }
     return self;
 }
@@ -47,6 +49,7 @@
         _color = cdObject.color;
         _schedule = cdObject.schedule;
         _optional = [cdObject.optional boolValue];
+        _onlyMutableDuringEventDay = [cdObject.onlyMutableDuringEventDay boolValue];
     }
     return self;
 }
@@ -65,6 +68,7 @@
         OCK_DECODE_OBJ_CLASS(coder, schedule, OCKCareSchedule);
         OCK_DECODE_OBJ_CLASS(coder, type, NSString);
         OCK_DECODE_BOOL(coder, optional);
+        OCK_DECODE_BOOL(coder, onlyMutableDuringEventDay);
     }
     return self;
 }
@@ -78,6 +82,7 @@
     OCK_ENCODE_OBJ(coder, schedule);
     OCK_ENCODE_OBJ(coder, type);
     OCK_ENCODE_BOOL(coder, optional);
+    OCK_ENCODE_BOOL(coder, onlyMutableDuringEventDay);
 }
 
 - (BOOL)isEqual:(id)object {
@@ -91,7 +96,8 @@
             OCKEqualObjects(self.schedule, castObject.schedule) &&
             OCKEqualObjects(self.type, castObject.type) &&
             OCKEqualObjects(self.identifier, castObject.identifier) &&
-            (self.optional == castObject.optional)
+            (self.optional == castObject.optional) &&
+            (self.onlyMutableDuringEventDay == castObject.onlyMutableDuringEventDay)
             );
 }
 
@@ -104,6 +110,7 @@
     item->_schedule = _schedule;
     item->_type = _type;
     item->_optional = _optional;
+    item->_onlyMutableDuringEventDay = _onlyMutableDuringEventDay;
     return item;
 }
 
@@ -126,10 +133,12 @@ insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
         self.schedule = item.schedule;
         self.type = item.type;
         self.optional = @(item.optional);
+        self.onlyMutableDuringEventDay = @(item.onlyMutableDuringEventDay);
     }
     return self;
 }
 
+@dynamic onlyMutableDuringEventDay;
 @dynamic color;
 @dynamic identifier;
 @dynamic schedule;

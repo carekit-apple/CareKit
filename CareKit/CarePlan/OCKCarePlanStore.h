@@ -26,6 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @protocol OCKCarePlanStoreDelegate <NSObject>
 
+@optional
 - (void)carePlanStore:(OCKCarePlanStore *)store didReceiveUpdateOfEvaluationEvent:(OCKEvaluationEvent *)event;
 
 - (void)carePlanStore:(OCKCarePlanStore *)store didReceiveUpdateOfTreatmentEvent:(OCKTreatmentEvent *)event;
@@ -111,10 +112,10 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  Fetch all the events of an `OCKTreatment` by giving a date range.
  */
-- (NSArray<OCKTreatmentEvent *> *)eventsOfTreatment:(OCKTreatment *)treatment
-                                          startDate:(NSDate *)startDate
-                                            endDate:(NSDate *)endDate
-                                              error:(NSError **)error;
+- (void)enumerateEventsOfTreatment:(OCKTreatment *)treatment
+                         startDate:(NSDate *)startDate
+                           endDate:(NSDate *)endDate
+                        usingBlock:(void (^)(OCKTreatmentEvent *event, BOOL *stop, NSError *error))block;
 
 @end
 
@@ -173,10 +174,10 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  Fetch all the events of an `OCKEvaluation` by giving a date range.
  */
-- (NSArray<OCKEvaluationEvent *> *)eventsOfEvaluation:(OCKEvaluation *)evaluation
-                                            startDate:(NSDate *)startDate
-                                              endDate:(NSDate *)endDate
-                                                error:(NSError **)error;
+- (void)enumerateEventsOfEvaluation:(OCKEvaluation *)evaluation
+                          startDate:(NSDate *)startDate
+                            endDate:(NSDate *)endDate
+                         usingBlock:(void (^)(OCKEvaluationEvent *event, BOOL *stop, NSError *error))block;
 
 @end
 

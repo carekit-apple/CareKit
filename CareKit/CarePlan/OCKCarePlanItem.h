@@ -30,8 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, readonly) BOOL optional;
 
-// TODO: not working yet!
-@property (nonatomic, readonly) BOOL onlyMutableInEventDay;
+@property (nonatomic, readonly) BOOL onlyMutableDuringEventDay;
 
 @end
 

@@ -466,29 +466,36 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     }];
 }
 
-- (NSArray<OCKTreatmentEvent *> *)eventsOfTreatment:(OCKTreatment *)treatment
-                                          startDate:(NSDate *)startDate
-                                            endDate:(NSDate *)endDate
-                                              error:(NSError **)error {
+- (void)enumerateEventsOfTreatment:(OCKTreatment *)treatment
+                         startDate:(NSDate *)startDate
+                           endDate:(NSDate *)endDate
+                        usingBlock:(void (^)(OCKTreatmentEvent *event, BOOL *stop, NSError *error))block {
     NSParameterAssert(treatment);
     NSParameterAssert(startDate);
     NSParameterAssert(endDate);
+    NSParameterAssert(block);
     
     if (startDate.timeIntervalSince1970 > endDate.timeIntervalSince1970) {
-        return [NSArray new];
+        return;
     }
-    
-    NSMutableArray *events = [NSMutableArray array];
     
     NSDate *date = startDate;
     NSCalendar *calendar = treatment.schedule.calendar;
     
+    BOOL stop = NO;
     do {
-        [events addObjectsFromArray:[self eventsOfTreatment:treatment onDay:date error:error]];
+        NSError *error;
+        
+        NSArray<OCKTreatmentEvent *> *events = [self eventsOfTreatment:treatment onDay:date error:&error];
+        for (OCKTreatmentEvent* event in events) {
+            block(event, &stop, error);
+            if (stop) {
+                break;
+            }
+        }
         date = [calendar startOfDayForDate:[calendar dateByAddingUnit:NSCalendarUnitDay value:1 toDate:date options:0]];
-    } while (date.timeIntervalSince1970 <= endDate.timeIntervalSince1970);
+    } while (stop == NO && date.timeIntervalSince1970 <= endDate.timeIntervalSince1970);
     
-    return [events copy];
 }
 
 #pragma mark - evaluation
@@ -641,29 +648,35 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     return [eventGroup copy];
 }
 
-- (NSArray<OCKEvaluationEvent *> *)eventsOfEvaluation:(OCKEvaluation *)evaluation
-                                            startDate:(NSDate *)startDate
-                                              endDate:(NSDate *)endDate
-                                                error:(NSError **)error {
+- (void)enumerateEventsOfEvaluation:(OCKEvaluation *)evaluation
+                          startDate:(NSDate *)startDate
+                            endDate:(NSDate *)endDate
+                         usingBlock:(void (^)(OCKEvaluationEvent *event, BOOL *stop, NSError *error))block {
     NSParameterAssert(evaluation);
     NSParameterAssert(startDate);
     NSParameterAssert(endDate);
+    NSParameterAssert(block);
     
     if (startDate.timeIntervalSince1970 >= endDate.timeIntervalSince1970) {
-        return [NSArray new];
+        return;
     }
-    
-    NSMutableArray *events = [NSMutableArray array];
     
     NSDate *date = startDate;
     NSCalendar *calendar = evaluation.schedule.calendar;
-   
-    do {
-        [events addObjectsFromArray:[self eventsOfEvaluation:evaluation onDay:date error:error]];
-        date = [calendar startOfDayForDate:[calendar dateByAddingUnit:NSCalendarUnitDay value:1 toDate:date options:0]];
-    } while (date.timeIntervalSince1970 <= endDate.timeIntervalSince1970);
     
-    return [events copy];
+    BOOL stop = NO;
+    do {
+        NSError *error;
+        
+        NSArray<OCKEvaluationEvent *> *events = [self eventsOfEvaluation:evaluation onDay:date error:&error];
+        for (OCKEvaluationEvent* event in events) {
+            block(event, &stop, error);
+            if (stop) {
+                break;
+            }
+        }
+        date = [calendar startOfDayForDate:[calendar dateByAddingUnit:NSCalendarUnitDay value:1 toDate:date options:0]];
+    } while (stop == NO && date.timeIntervalSince1970 <= endDate.timeIntervalSince1970);
 }
 
 - (void)updateEvaluationEvent:(OCKEvaluationEvent *)evaluationEvent

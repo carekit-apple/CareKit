@@ -19,7 +19,8 @@ NS_ASSUME_NONNULL_BEGIN
                         text:(nullable NSString *)text
                        color:(nullable UIColor *)color
                     schedule:(OCKCareSchedule *)schedule
-                    optional:(BOOL)optional;
+                    optional:(BOOL)optional
+   onlyMutableDuringEventDay:(BOOL)onlyMutableDuringEventDay;
 
 @end
 

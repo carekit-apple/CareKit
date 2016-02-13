@@ -14,8 +14,14 @@
 
 @implementation OCKTreatment
 
-- (instancetype)initWithType:(NSString *)type title:(NSString *)title text:(NSString *)text color:(UIColor *)color schedule:(OCKCareSchedule *)schedule optional:(BOOL)optional {
-    return [super initWithType:type title:title text:text color:color schedule:schedule optional:optional];
+- (instancetype)initWithType:(NSString *)type
+                       title:(NSString *)title
+                        text:(NSString *)text
+                       color:(UIColor *)color
+                    schedule:(OCKCareSchedule *)schedule
+                    optional:(BOOL)optional
+   onlyMutableDuringEventDay:(BOOL)onlyMutableDuringEventDay {
+    return [super initWithType:type title:title text:text color:color schedule:schedule optional:optional onlyMutableDuringEventDay:onlyMutableDuringEventDay];
 }
 
 @end

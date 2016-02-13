@@ -13,14 +13,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @class OCKCarePlanStore, OCKEvaluation;
-
-@protocol OCKEvaluationTableViewDelegate <NSObject>
-
-@required
-
-- (void)tableViewDidSelectEvaluation:(OCKEvaluation *)evaluation;
-
-@end
+@protocol OCKEvaluationTableViewDelegate;
 
 @interface OCKEvaluationTableViewController : UITableViewController
 

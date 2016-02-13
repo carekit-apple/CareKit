@@ -12,13 +12,24 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class OCKCarePlanStore;
+@class OCKCarePlanStore, OCKEvaluation;
+
+@protocol OCKEvaluationTableViewDelegate <NSObject>
+
+@required
+
+- (void)tableViewDidSelectEvaluation:(OCKEvaluation *)evaluation;
+
+@end
+
 
 @interface OCKEvaluationPlanViewController : UINavigationController
 
-+ (instancetype)evaluationPlanViewControllerWithCarePlanStore:(OCKCarePlanStore *)store;
++ (instancetype)evaluationPlanViewControllerWithCarePlanStore:(OCKCarePlanStore *)store
+                                                     delegate:(id<OCKEvaluationTableViewDelegate>)delegate;
 
-- (instancetype)initWithCarePlanStore:(OCKCarePlanStore *)store;
+- (instancetype)initWithCarePlanStore:(OCKCarePlanStore *)store
+                             delegate:(id<OCKEvaluationTableViewDelegate>)delegate;
 
 @property (nonatomic, readonly) OCKCarePlanStore *store;
 

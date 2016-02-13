@@ -15,12 +15,16 @@
     OCKEvaluationTableViewController *_tableViewController;
 }
 
-+ (instancetype)evaluationPlanViewControllerWithCarePlanStore:(OCKCarePlanStore *)store {
-    return [[OCKEvaluationPlanViewController alloc] initWithCarePlanStore:store];
++ (instancetype)evaluationPlanViewControllerWithCarePlanStore:(OCKCarePlanStore *)store
+                                                     delegate:(id<OCKEvaluationTableViewDelegate>)delegate {
+    return [[OCKEvaluationPlanViewController alloc] initWithCarePlanStore:store
+                                                                 delegate:delegate];
 }
 
-- (instancetype)initWithCarePlanStore:(OCKCarePlanStore *)store {
-    _tableViewController = [[OCKEvaluationTableViewController alloc] initWithCarePlanStore:store];
+- (instancetype)initWithCarePlanStore:(OCKCarePlanStore *)store
+                             delegate:(id<OCKEvaluationTableViewDelegate>)delegate {
+    _tableViewController = [[OCKEvaluationTableViewController alloc] initWithCarePlanStore:store
+                                                                                  delegate:delegate];
     self = [super initWithRootViewController:_tableViewController];
     if (self) {
         _store = store;

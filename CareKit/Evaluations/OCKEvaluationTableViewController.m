@@ -28,11 +28,13 @@
     return nil;
 }
 
-- (instancetype)initWithCarePlanStore:(OCKCarePlanStore *)store {
+- (instancetype)initWithCarePlanStore:(OCKCarePlanStore *)store
+                             delegate:(id<OCKEvaluationTableViewDelegate>)delegate {
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
         self.title = @"Evaluations";
         _store = store;
+        _delegate = delegate;
     }
     return self;
 }
@@ -50,7 +52,7 @@
 #pragma mark - Helpers
 
 - (void)fetchEvaluations {
-    _evaluations = [store.evaluations copy];
+    _evaluations = [_store.evaluations copy];
 }
 
 

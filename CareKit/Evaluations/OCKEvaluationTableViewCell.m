@@ -169,11 +169,4 @@ const static CGFloat TrailingMargin = 35.0;
 }
 
 
-#pragma mark - Helpers
-
-- (NSString *)stringFromSliderValue:(CGFloat)value {
-    NSNumber *number = [NSNumber numberWithFloat:10*value];
-    return [NSString stringWithFormat:@"%d", number.intValue];
-}
-
 @end

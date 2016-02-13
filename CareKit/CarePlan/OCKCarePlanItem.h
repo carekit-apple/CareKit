@@ -12,24 +12,51 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/**
+ Abstract care plan item Class
+ */
 @interface OCKCarePlanItem : NSObject <NSSecureCoding, NSCopying>
 
 - (instancetype)init NS_UNAVAILABLE;
 
+/**
+ Unique identifier of this item.
+ */
 @property (nonatomic, readonly) NSString *identifier;
 
+/**
+ Type is a string can be used to group different items into sets .
+ */
 @property (nonatomic, readonly) NSString *type;
 
+/**
+ Displaybale title.
+ */
 @property (nonatomic, readonly, nullable) NSString *title;
 
+/**
+ Displaybale text.
+ */
 @property (nonatomic, readonly, nullable) NSString *text;
 
+/**
+ A color can be used to render UI.
+ */
 @property (nonatomic, readonly, nullable) UIColor *color;
 
+/**
+ Schedule defines the start/end and reoccurence pattern.
+ */
 @property (nonatomic, readonly) OCKCareSchedule *schedule;
 
+/**
+ Whether this plan item is optional
+ */
 @property (nonatomic, readonly) BOOL optional;
 
+/**
+ Allow user to report completion outside the day for a event
+ */
 @property (nonatomic, readonly) BOOL onlyMutableDuringEventDay;
 
 @end

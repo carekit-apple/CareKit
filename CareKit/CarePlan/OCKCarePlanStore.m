@@ -384,7 +384,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     
     NSParameterAssert(treatmentEvent);
     NSParameterAssert(completionHandler);
-    NSDate *reportingDate = [NSDate date];
+    NSDate *eventChangeDate = [NSDate date];
     
     NSError *error;
     __block NSManagedObjectContext *context = [self contextWithError:&error];
@@ -397,7 +397,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     copiedTreatmentEvent.state = completed ? OCKCareEventStateCompleted : OCKCareEventStateNotCompleted;
     // Discard `completionDate` if completed flag is NO
     copiedTreatmentEvent.completionDate = completed ? completionDate : nil;
-    copiedTreatmentEvent.reportingDate = reportingDate;
+    copiedTreatmentEvent.eventChangeDate = eventChangeDate;
     
     __block NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:OCKEntityNameTreatmentEvent];
     fetchRequest.predicate = [NSPredicate predicateWithFormat:@"%K = %d AND %K = %d",
@@ -688,7 +688,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     
     NSParameterAssert(evaluationEvent);
     NSParameterAssert(completionHandler);
-    NSDate *reportingDate = [NSDate date];
+    NSDate *eventChangeDate = [NSDate date];
     NSError *error;
     __block NSManagedObjectContext *context = [self contextWithError:&error];
     if (context == nil) {
@@ -699,7 +699,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     OCKEvaluationEvent *copiedEvaluationEvent = [evaluationEvent copy];
     copiedEvaluationEvent.state = OCKCareEventStateCompleted;
     copiedEvaluationEvent.completionDate = completionDate;
-    copiedEvaluationEvent.reportingDate = reportingDate;
+    copiedEvaluationEvent.eventChangeDate = eventChangeDate;
     copiedEvaluationEvent.evaluationValue = evaluationValue;
     copiedEvaluationEvent.evaluationResult = evaluationResult;
     copiedEvaluationEvent.evaluationValueString = evaluationValueString;

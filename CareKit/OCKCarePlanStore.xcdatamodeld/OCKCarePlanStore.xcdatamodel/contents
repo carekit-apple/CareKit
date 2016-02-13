@@ -2,9 +2,9 @@
 <model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="9525" systemVersion="15D21" minimumToolsVersion="Xcode 7.0">
     <entity name="OCKCDCareEvent" representedClassName="OCKCDCareEvent" syncable="YES">
         <attribute name="completionDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="eventChangeDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="numberOfDaysSinceStart" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="occurrenceIndexOfDay" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
-        <attribute name="reportingDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="state" optional="YES" attributeType="Integer 64" syncable="YES"/>
     </entity>
     <entity name="OCKCDCarePlanItem" representedClassName="OCKCDCarePlanItem" syncable="YES">

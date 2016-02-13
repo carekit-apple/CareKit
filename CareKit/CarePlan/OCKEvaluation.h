@@ -23,10 +23,16 @@ NS_ASSUME_NONNULL_BEGIN
                     optional:(BOOL)optional
                   retryLimit:(NSUInteger)retryLimit;
 
+
+/**
+ A task object defines the evaluation.
+ Optional.
+ */
 @property (nonatomic, strong, readonly, nullable) id<ORKTask, NSSecureCoding> task;
 
-/*
- * 0 stands for unlimited
+/**
+ How many times user can retry an evaluation during a day.
+ 0 stands for unlimited.
  */
 @property (nonatomic, readonly) NSUInteger retryLimit;
 

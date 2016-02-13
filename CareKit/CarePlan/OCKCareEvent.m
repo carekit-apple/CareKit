@@ -19,7 +19,7 @@
         _occurrenceIndexOfDay = cdObject.occurrenceIndexOfDay.unsignedIntegerValue;
         _numberOfDaysSinceStart = cdObject.numberOfDaysSinceStart.unsignedIntegerValue;
         _state = cdObject.state.integerValue;
-        _reportingDate = cdObject.reportingDate;
+        _eventChangeDate = cdObject.eventChangeDate;
         _completionDate = cdObject.completionDate;
     }
     return self;
@@ -41,7 +41,7 @@
     event->_occurrenceIndexOfDay = _occurrenceIndexOfDay;
     event->_numberOfDaysSinceStart = _numberOfDaysSinceStart;
     event->_state = _state;
-    event->_reportingDate = _reportingDate;
+    event->_eventChangeDate = _eventChangeDate;
     event->_completionDate = _completionDate;
     return event;
 }
@@ -127,7 +127,7 @@ insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
         self.occurrenceIndexOfDay = @(careEvent.occurrenceIndexOfDay);
         self.numberOfDaysSinceStart = @(careEvent.numberOfDaysSinceStart);
         self.state = @(careEvent.state);
-        self.reportingDate = careEvent.reportingDate;
+        self.eventChangeDate = careEvent.eventChangeDate;
         self.completionDate = careEvent.completionDate;
     }
     return self;
@@ -137,7 +137,7 @@ insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
     NSParameterAssert(careEvent);
     self.state = @(careEvent.state);
     self.completionDate = careEvent.completionDate;
-    self.reportingDate = careEvent.reportingDate;
+    self.eventChangeDate = careEvent.eventChangeDate;
 }
 
 @end
@@ -149,7 +149,7 @@ insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
 @dynamic numberOfDaysSinceStart;
 @dynamic state;
 @dynamic completionDate;
-@dynamic reportingDate;
+@dynamic eventChangeDate;
 
 @end
 

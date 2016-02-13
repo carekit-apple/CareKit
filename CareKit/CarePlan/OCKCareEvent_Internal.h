@@ -19,7 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic) OCKCareEventState state;
 
-@property (nonatomic, strong) NSDate *reportingDate;
+@property (nonatomic, strong) NSDate *eventChangeDate;
 
 @property (nonatomic, strong) NSDate *completionDate;
 
@@ -61,7 +61,7 @@ insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
 @property (nullable, nonatomic, retain) NSNumber *numberOfDaysSinceStart;
 @property (nullable, nonatomic, retain) NSNumber *state;
 @property (nullable, nonatomic, retain) NSDate *completionDate;
-@property (nullable, nonatomic, retain) NSDate *reportingDate;
+@property (nullable, nonatomic, retain) NSDate *eventChangeDate;
 
 @end
 

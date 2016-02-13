@@ -17,16 +17,38 @@ typedef NS_ENUM(NSInteger, OCKCareEventState) {
     OCKCareEventStateNotCompleted,
     OCKCareEventStateCompleted
 };
+
+/**
+ Abstract Event Class
+ */
 @interface OCKCareEvent : NSObject 
 
+/**
+ The index of this event for its associated OCKCarePlanItem.
+ */
 @property (nonatomic, readonly) NSUInteger occurrenceIndexOfDay;
 
+/**
+ Which day this event is in. Counting from the start day.
+ E.g. If this event is on start day, this value is `0`.
+ The combination of `occurrenceIndexOfDay` and `numberOfDaysSinceStart` uniquely identifys an event.
+ */
 @property (nonatomic, readonly) NSUInteger numberOfDaysSinceStart;
 
+/**
+ The state of this event (Initial / NotCompleted / Completed).
+ All event starts with `Initial`.
+ */
 @property (nonatomic, readonly) OCKCareEventState state;
 
-@property (nonatomic, strong, readonly, nullable) NSDate *reportingDate;
+/**
+ When the event was changed.
+ */
+@property (nonatomic, strong, readonly, nullable) NSDate *eventChangeDate;
 
+/**
+ When the event was completed.
+ */
 @property (nonatomic, strong, readonly, nullable) NSDate *completionDate;
 
 @end
@@ -34,18 +56,33 @@ typedef NS_ENUM(NSInteger, OCKCareEventState) {
 
 @interface OCKTreatmentEvent : OCKCareEvent
 
+/**
+ The treatment this event is belonging to.
+ */
 @property (nonatomic, strong, readonly) OCKTreatment *treatment;
 
 @end
 
 @interface OCKEvaluationEvent : OCKCareEvent
 
+/**
+ The evaluation this event is belonging to.
+ */
 @property (nonatomic, strong, readonly) OCKEvaluation *evaluation;
 
+/**
+ The evaluation result value can be plotted.
+ */
 @property (nonatomic, strong, readonly, nullable) NSNumber *evaluationValue;
 
+/**
+ The evaluation result value can be displayed in UI.
+ */
 @property (nonatomic, copy, readonly, nullable) NSString *evaluationValueString;
 
+/**
+ The actual result object.
+ */
 @property (nonatomic, strong, readonly, nullable) id<NSSecureCoding> evaluationResult;
 
 @end

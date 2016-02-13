@@ -8,20 +8,29 @@
 
 
 #import <UIKit/UIKit.h>
-#import <ResearchKit/ResearchKit.h>
 
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class OCKCarePlanStore;
+@class OCKCarePlanStore, OCKEvaluation;
 
-@interface OCKEvaluationTableViewController : UITableViewController <ORKTaskViewControllerDelegate>
+@protocol OCKEvaluationTableViewDelegate <NSObject>
+
+@required
+
+- (void)tableViewDidSelectEvaluation:(OCKEvaluation *)evaluation;
+
+@end
+
+@interface OCKEvaluationTableViewController : UITableViewController
 
 + (instancetype)new NS_UNAVAILABLE;
 
-- (instancetype)initWithCarePlanStore:(OCKCarePlanStore *)store;
+- (instancetype)initWithCarePlanStore:(OCKCarePlanStore *)store
+                             delegate:(id<OCKEvaluationTableViewDelegate>)delegate;
 
 @property (nonatomic, readonly) OCKCarePlanStore *store;
+@property (nonatomic) id<OCKEvaluationTableViewDelegate> delegate;
 
 @end
 

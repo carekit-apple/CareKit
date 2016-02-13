@@ -14,7 +14,9 @@
 #import "OCKHelpers.h"
 
 
-@implementation OCKEvaluationTableViewController
+@implementation OCKEvaluationTableViewController {
+    NSArray<OCKEvaluation *> *_evaluations;
+}
 
 + (instancetype)new {
     OCKThrowMethodUnavailableException();
@@ -38,52 +40,49 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    [self fetchEvaluations];
+    
     self.tableView.sectionHeaderHeight = 20.0;
     self.tableView.rowHeight = 85.0;
 }
 
 
-//#pragma mark - UITableViewDelegate
-//
-//- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-//    ORKTaskViewController *taskViewController = [[ORKTaskViewController alloc] initWithTask:_evaluations[indexPath.row].task
-//                                                                            restorationData:nil
-//                                                                                   delegate:self];
-//    [self presentViewController:taskViewController animated:YES completion:nil];
-//}
-//
-//
-//#pragma mark - UITableViewDataSource
-//
-//- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-//    return 1;
-//}
-//
-//- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-//    return self.evaluations.count;
-//}
-//
-//- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-//    static NSString *CellIdentifier = @"EvaluationCell";
-//    OCKEvaluationTableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-//    if (!cell) {
-//        cell = [[OCKEvaluationTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
-//                                                 reuseIdentifier:CellIdentifier];
-//    }
-//    cell.evaluation = _evaluations[indexPath.row];
-//    return cell;
-//}
+#pragma mark - Helpers
+
+- (void)fetchEvaluations {
+    _evaluations = [store.evaluations copy];
+}
 
 
-#pragma mark - ORKTaskViewControllerDelegate
+#pragma mark - UITableViewDelegate
 
-- (void)taskViewController:(ORKTaskViewController *)taskViewController didFinishWithReason:(ORKTaskViewControllerFinishReason)reason error:(NSError *)error {
-//    NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
-//    OCKEvaluation *selectedEvaluation = _evaluations[indexPath.row];
-//    selectedEvaluation.value = [selectedEvaluation.delegate normalizedValueOfEvaluation:selectedEvaluation forTaskResult:taskViewController.result];
-//    [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-//    
-//    [self dismissViewControllerAnimated:taskViewController completion:nil];
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (_delegate &&
+        [_delegate respondsToSelector:@selector(tableViewDidSelectEvaluation:)]) {
+        [_delegate tableViewDidSelectEvaluation:_evaluations[indexPath.row]];
+    }
+}
+
+
+#pragma mark - UITableViewDataSource
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return _evaluations.count;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    static NSString *CellIdentifier = @"EvaluationCell";
+    OCKEvaluationTableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (!cell) {
+        cell = [[OCKEvaluationTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                                 reuseIdentifier:CellIdentifier];
+    }
+    cell.evaluation = _evaluations[indexPath.row];
+    return cell;
 }
 
 @end

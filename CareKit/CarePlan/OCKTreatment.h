@@ -7,19 +7,21 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <CareKit/OCKCarePlanItem.h>
+#import <CareKit/OCKCarePlanActivity.h>
 
 NS_ASSUME_NONNULL_BEGIN
 @class OCKCarePlanItem;
 
-@interface OCKTreatment : OCKCarePlanItem
+@interface OCKTreatment : OCKCarePlanActivity
 
-- (instancetype)initWithType:(nullable NSString *)type
-                       title:(nullable NSString *)title
-                        text:(nullable NSString *)text
-                       color:(nullable UIColor *)color
-                    schedule:(OCKCareSchedule *)schedule
-                    optional:(BOOL)optional;
+- (instancetype)initWithIdentifier:(NSString *)identifier
+                              type:(nullable NSString *)type
+                             title:(nullable NSString *)title
+                              text:(nullable NSString *)text
+                             color:(nullable UIColor *)color
+                          schedule:(OCKCareSchedule *)schedule
+                          optional:(BOOL)optional
+         onlyMutableDuringEventDay:(BOOL)onlyMutableDuringEventDay;
 
 @end
 

@@ -8,18 +8,18 @@
 
 #import <CareKit/CareKit.h>
 #import <CoreData/CoreData.h>
-#import "OCKCarePlanItem_Internal.h"
+#import "OCKCarePlanActivity_Internal.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface OCKCareEvent () <OCKCoreDataObjectMirroring, NSCopying>
+@interface OCKCarePlanEvent () <OCKCoreDataObjectMirroring, NSCopying>
 
 - (instancetype)initWithNumberOfDaysSinceStart:(NSUInteger)numberOfDaysSinceStart
                            occurrenceIndexOfDay:(NSUInteger)occurrenceIndexOfDay;
 
 @property (nonatomic) OCKCareEventState state;
 
-@property (nonatomic, strong) NSDate *reportingDate;
+@property (nonatomic, strong) NSDate *eventChangeDate;
 
 @property (nonatomic, strong) NSDate *completionDate;
 
@@ -49,9 +49,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithEntity:(NSEntityDescription *)entity
 insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
-                     careEvent:(OCKCareEvent *)careEvent;
+                     careEvent:(OCKCarePlanEvent *)careEvent;
 
-- (void)updateWithEvent:(OCKCareEvent *)careEvent;
+- (void)updateWithEvent:(OCKCarePlanEvent *)careEvent;
 
 @end
 
@@ -61,7 +61,7 @@ insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
 @property (nullable, nonatomic, retain) NSNumber *numberOfDaysSinceStart;
 @property (nullable, nonatomic, retain) NSNumber *state;
 @property (nullable, nonatomic, retain) NSDate *completionDate;
-@property (nullable, nonatomic, retain) NSDate *reportingDate;
+@property (nullable, nonatomic, retain) NSDate *eventChangeDate;
 
 @end
 

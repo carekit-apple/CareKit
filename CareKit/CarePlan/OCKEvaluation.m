@@ -21,16 +21,20 @@
 }
 
 
-- (instancetype)initWithType:(nullable NSString *)type
-                       title:(nullable NSString *)title
-                        text:(nullable NSString *)text
-                       color:(nullable UIColor *)color
-                    schedule:(OCKCareSchedule *)schedule
-                        task:(nullable id<ORKTask, NSSecureCoding>) task
-                    optional:(BOOL)optional {
-    self = [super initWithType:type title:title text:text color:color schedule:schedule optional:optional];
+- (instancetype)initWithIdentifier:(NSString *)identifier
+                              type:(nullable NSString *)type
+                             title:(nullable NSString *)title
+                              text:(nullable NSString *)text
+                             color:(nullable UIColor *)color
+                          schedule:(OCKCareSchedule *)schedule
+                              task:(nullable id<ORKTask, NSSecureCoding>) task
+                          optional:(BOOL)optional
+                        retryLimit:(NSUInteger)retryLimit {
+    
+    self = [super initWithIdentifier:identifier type:type title:title text:text color:color schedule:schedule optional:optional onlyMutableDuringEventDay:YES];
     if (self) {
         _task = task;
+        _retryLimit = retryLimit;
     }
     return self;
 }
@@ -39,13 +43,15 @@
     self = [super initWithCoder:coder];
     if (self) {
         OCK_DECODE_OBJ(coder, task);
+        OCK_DECODE_INTEGER(coder, retryLimit);
     }
     return self;
 }
 
 - (void)encodeWithCoder:(NSCoder *)coder {
     [super encodeWithCoder:coder];
-    OCK_DECODE_OBJ(coder, task);
+    OCK_ENCODE_OBJ(coder, task);
+    OCK_ENCODE_INTEGER(coder, retryLimit);
 }
 
 - (BOOL)isEqual:(id)object {
@@ -53,13 +59,14 @@
     
     __typeof(self) castObject = object;
     return (equal &&
-            OCKEqualObjects(self.task, castObject.task)
-            );
+            OCKEqualObjects(self.task, castObject.task) &&
+            (self.retryLimit == castObject.retryLimit));
 }
 
 - (instancetype)copyWithZone:(NSZone *)zone {
     OCKEvaluation *evaluation = [super copyWithZone:zone];
     evaluation->_task = self.task;
+    evaluation->_retryLimit = self.retryLimit;
     return evaluation;
 }
 
@@ -78,6 +85,7 @@ insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
     
     if (self) {
         self.task = evaluation.task;
+        self.retryLimit = @(evaluation.retryLimit);
     }
     return self;
 }
@@ -88,6 +96,7 @@ insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
 @implementation OCKCDEvaluation (CoreDataProperties)
 
 @dynamic task;
+@dynamic retryLimit;
 @dynamic events;
 
 @end

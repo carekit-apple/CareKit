@@ -6,12 +6,12 @@
 //  Copyright © 2016 carekit.org. All rights reserved.
 //
 
-#import "OCKCareEvent.h"
-#import "OCKCareEvent_Internal.h"
+#import "OCKCarePlanEvent.h"
+#import "OCKCarePlanEvent_Internal.h"
 #import "OCKTreatment_Internal.h"
 #import "OCKEvaluation_Internal.h"
 
-@implementation OCKCareEvent
+@implementation OCKCarePlanEvent
 
 - (instancetype)initWithCoreDataObject:(OCKCDCareEvent *)cdObject {
     self = [super init];
@@ -19,7 +19,7 @@
         _occurrenceIndexOfDay = cdObject.occurrenceIndexOfDay.unsignedIntegerValue;
         _numberOfDaysSinceStart = cdObject.numberOfDaysSinceStart.unsignedIntegerValue;
         _state = cdObject.state.integerValue;
-        _reportingDate = cdObject.reportingDate;
+        _eventChangeDate = cdObject.eventChangeDate;
         _completionDate = cdObject.completionDate;
     }
     return self;
@@ -37,11 +37,11 @@
 }
 
 - (instancetype)copyWithZone:(NSZone *)zone {
-    OCKCareEvent* event = [[[self class] allocWithZone:zone] init];
+    OCKCarePlanEvent* event = [[[self class] allocWithZone:zone] init];
     event->_occurrenceIndexOfDay = _occurrenceIndexOfDay;
     event->_numberOfDaysSinceStart = _numberOfDaysSinceStart;
     event->_state = _state;
-    event->_reportingDate = _reportingDate;
+    event->_eventChangeDate = _eventChangeDate;
     event->_completionDate = _completionDate;
     return event;
 }
@@ -118,7 +118,7 @@
 
 - (instancetype)initWithEntity:(NSEntityDescription *)entity
 insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
-                     careEvent:(OCKCareEvent *)careEvent {
+                     careEvent:(OCKCarePlanEvent *)careEvent {
     
     NSParameterAssert(careEvent);
     
@@ -127,17 +127,17 @@ insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
         self.occurrenceIndexOfDay = @(careEvent.occurrenceIndexOfDay);
         self.numberOfDaysSinceStart = @(careEvent.numberOfDaysSinceStart);
         self.state = @(careEvent.state);
-        self.reportingDate = careEvent.reportingDate;
+        self.eventChangeDate = careEvent.eventChangeDate;
         self.completionDate = careEvent.completionDate;
     }
     return self;
 }
 
-- (void)updateWithEvent:(OCKCareEvent *)careEvent {
+- (void)updateWithEvent:(OCKCarePlanEvent *)careEvent {
     NSParameterAssert(careEvent);
     self.state = @(careEvent.state);
     self.completionDate = careEvent.completionDate;
-    self.reportingDate = careEvent.reportingDate;
+    self.eventChangeDate = careEvent.eventChangeDate;
 }
 
 @end
@@ -149,7 +149,7 @@ insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
 @dynamic numberOfDaysSinceStart;
 @dynamic state;
 @dynamic completionDate;
-@dynamic reportingDate;
+@dynamic eventChangeDate;
 
 @end
 

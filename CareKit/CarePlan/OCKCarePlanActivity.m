@@ -6,31 +6,35 @@
 //  Copyright © 2016 carekit.org. All rights reserved.
 //
 
-#import "OCKCarePlanItem.h"
-#import "OCKCarePlanItem_Internal.h"
+#import "OCKCarePlanActivity.h"
+#import "OCKCarePlanActivity_Internal.h"
 #import "OCKHelpers.h"
 
-@implementation OCKCarePlanItem
+@implementation OCKCarePlanActivity
 
-- (instancetype)initWithType:(NSString *)type
-                       title:(NSString *)title
-                        text:(NSString *)text
-                       color:(UIColor *)color
-                    schedule:(OCKCareSchedule *)schedule
-                    optional:(BOOL)optional {
+- (instancetype)initWithIdentifier:(NSString *)identifier
+                              type:(NSString *)type
+                             title:(NSString *)title
+                              text:(NSString *)text
+                             color:(UIColor *)color
+                          schedule:(OCKCareSchedule *)schedule
+                          optional:(BOOL)optional
+         onlyMutableDuringEventDay:(BOOL)onlyMutableDuringEventDay{
     
     NSParameterAssert(type);
+    NSParameterAssert(identifier);
     NSParameterAssert(schedule);
     
     self = [super init];
     if (self) {
-        _identifier = [[NSUUID UUID] UUIDString];
-        _type = type;
+        _identifier = [identifier copy];
+        _type = [type copy];
         _title = [title copy];
         _text = [text copy];
         _color = color;
         _schedule = schedule;
         _optional = optional;
+        _onlyMutableDuringEventDay = onlyMutableDuringEventDay;
     }
     return self;
 }
@@ -47,6 +51,7 @@
         _color = cdObject.color;
         _schedule = cdObject.schedule;
         _optional = [cdObject.optional boolValue];
+        _onlyMutableDuringEventDay = [cdObject.onlyMutableDuringEventDay boolValue];
     }
     return self;
 }
@@ -65,6 +70,7 @@
         OCK_DECODE_OBJ_CLASS(coder, schedule, OCKCareSchedule);
         OCK_DECODE_OBJ_CLASS(coder, type, NSString);
         OCK_DECODE_BOOL(coder, optional);
+        OCK_DECODE_BOOL(coder, onlyMutableDuringEventDay);
     }
     return self;
 }
@@ -78,6 +84,7 @@
     OCK_ENCODE_OBJ(coder, schedule);
     OCK_ENCODE_OBJ(coder, type);
     OCK_ENCODE_BOOL(coder, optional);
+    OCK_ENCODE_BOOL(coder, onlyMutableDuringEventDay);
 }
 
 - (BOOL)isEqual:(id)object {
@@ -91,12 +98,13 @@
             OCKEqualObjects(self.schedule, castObject.schedule) &&
             OCKEqualObjects(self.type, castObject.type) &&
             OCKEqualObjects(self.identifier, castObject.identifier) &&
-            (self.optional == castObject.optional)
+            (self.optional == castObject.optional) &&
+            (self.onlyMutableDuringEventDay == castObject.onlyMutableDuringEventDay)
             );
 }
 
 - (instancetype)copyWithZone:(NSZone *)zone {
-    OCKCarePlanItem *item = [[[self class] allocWithZone:zone] init];
+    OCKCarePlanActivity *item = [[[self class] allocWithZone:zone] init];
     item->_title = [_title copy];
     item->_identifier = [_identifier copy];
     item->_text = [_text copy];
@@ -104,6 +112,7 @@
     item->_schedule = _schedule;
     item->_type = _type;
     item->_optional = _optional;
+    item->_onlyMutableDuringEventDay = _onlyMutableDuringEventDay;
     return item;
 }
 
@@ -114,7 +123,7 @@
 
 - (instancetype)initWithEntity:(NSEntityDescription *)entity
 insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
-                          item:(OCKCarePlanItem *)item {
+                          item:(OCKCarePlanActivity *)item {
     
     NSParameterAssert(item);
     self = [self initWithEntity:entity insertIntoManagedObjectContext:context];
@@ -126,10 +135,12 @@ insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
         self.schedule = item.schedule;
         self.type = item.type;
         self.optional = @(item.optional);
+        self.onlyMutableDuringEventDay = @(item.onlyMutableDuringEventDay);
     }
     return self;
 }
 
+@dynamic onlyMutableDuringEventDay;
 @dynamic color;
 @dynamic identifier;
 @dynamic schedule;

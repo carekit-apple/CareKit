@@ -27,7 +27,10 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol OCKCarePlanStoreDelegate <NSObject>
 
 @optional
+<<<<<<< HEAD
 
+=======
+>>>>>>> f98b0eb3ecd933deb1e37ef2fd5240388e94cc80
 - (void)carePlanStore:(OCKCarePlanStore *)store didReceiveUpdateOfEvaluationEvent:(OCKEvaluationEvent *)event;
 
 - (void)carePlanStore:(OCKCarePlanStore *)store didReceiveUpdateOfTreatmentEvent:(OCKTreatmentEvent *)event;
@@ -50,7 +53,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  Initializer of the store.
  */
-- (instancetype)initWithPersistenceDirectoryURL:(NSURL *)url;
+- (instancetype)initWithPersistenceDirectoryURL:(NSURL *)url NS_DESIGNATED_INITIALIZER;
 
 /**
  This delegate can be used to subscribe to the notifications of changes in this store.
@@ -69,6 +72,11 @@ NS_ASSUME_NONNULL_BEGIN
  Get all treatments.
  */
 @property (nonatomic, copy ,readonly) NSArray<OCKTreatment *> *treatments;
+
+/**
+ Get treatment by providing an identifier.
+ */
+- (OCKTreatment *)treatmentForIdentifier:(NSString *)identifier error:(NSError **)error;
 
 /**
  Get all treatments with a specified type.
@@ -113,10 +121,10 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  Fetch all the events of an `OCKTreatment` by giving a date range.
  */
-- (NSArray<OCKTreatmentEvent *> *)eventsOfTreatment:(OCKTreatment *)treatment
-                                          startDate:(NSDate *)startDate
-                                            endDate:(NSDate *)endDate
-                                              error:(NSError **)error;
+- (void)enumerateEventsOfTreatment:(OCKTreatment *)treatment
+                         startDate:(NSDate *)startDate
+                           endDate:(NSDate *)endDate
+                        usingBlock:(void (^)(OCKTreatmentEvent *event, BOOL *stop, NSError *error))block;
 
 @end
 
@@ -130,6 +138,11 @@ NS_ASSUME_NONNULL_BEGIN
  Get all evaluations.
  */
 @property (nonatomic, copy ,readonly) NSArray<OCKEvaluation *> *evaluations;
+
+/**
+ Get evaluation by providing an identifier.
+ */
+- (OCKEvaluation *)evaluationForIdentifier:(NSString *)identifier error:(NSError **)error;
 
 /**
  Get all evaluations with a specified type.
@@ -175,10 +188,10 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  Fetch all the events of an `OCKEvaluation` by giving a date range.
  */
-- (NSArray<OCKEvaluationEvent *> *)eventsOfEvaluation:(OCKEvaluation *)evaluation
-                                            startDate:(NSDate *)startDate
-                                              endDate:(NSDate *)endDate
-                                                error:(NSError **)error;
+- (void)enumerateEventsOfEvaluation:(OCKEvaluation *)evaluation
+                          startDate:(NSDate *)startDate
+                            endDate:(NSDate *)endDate
+                         usingBlock:(void (^)(OCKEvaluationEvent *event, BOOL *stop, NSError *error))block;
 
 @end
 

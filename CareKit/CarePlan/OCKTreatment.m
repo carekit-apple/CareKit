@@ -9,13 +9,20 @@
 #import "OCKTreatment.h"
 #import "OCKTreatment_Internal.h"
 #import "OCKHelpers.h"
-#import "OCKCarePlanItem.h"
-#import "OCKCarePlanItem_Internal.h"
+#import "OCKCarePlanActivity.h"
+#import "OCKCarePlanActivity_Internal.h"
 
 @implementation OCKTreatment
 
-- (instancetype)initWithType:(NSString *)type title:(NSString *)title text:(NSString *)text color:(UIColor *)color schedule:(OCKCareSchedule *)schedule optional:(BOOL)optional {
-    return [super initWithType:type title:title text:text color:color schedule:schedule optional:optional];
+- (instancetype)initWithIdentifier:(NSString *)identifier
+                              type:(NSString *)type
+                             title:(NSString *)title
+                              text:(NSString *)text
+                             color:(UIColor *)color
+                          schedule:(OCKCareSchedule *)schedule
+                          optional:(BOOL)optional
+         onlyMutableDuringEventDay:(BOOL)onlyMutableDuringEventDay {
+    return [super initWithIdentifier:identifier type:type title:title text:text color:color schedule:schedule optional:optional onlyMutableDuringEventDay:onlyMutableDuringEventDay];
 }
 
 @end

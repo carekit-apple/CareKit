@@ -8,7 +8,7 @@
 
 
 #import "OCKEvaluationTableViewCell.h"
-#import "OCKEvaluation.h"
+#import "OCKCareEvent.h"
 
 
 const static CGFloat LeadingMargin = 20.0;
@@ -23,8 +23,8 @@ const static CGFloat TrailingMargin = 35.0;
     UILabel *_leadingEdge;
 }
 
-- (void)setEvaluation:(OCKEvaluation *)evaluation {
-    _evaluation = evaluation;
+- (void)setEvaluationEvent:(OCKEvaluationEvent *)evaluationEvent {
+    _evaluationEvent = evaluationEvent;
     [self prepareView];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -43,7 +43,7 @@ const static CGFloat TrailingMargin = 35.0;
         [self.contentView addSubview:_titleLabel];
     }
     _titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
-    _titleLabel.text = _evaluation.title;
+    _titleLabel.text = _evaluationEvent.evaluation.title;
     
     if (!_textLabel) {
         _textLabel = [UILabel new];
@@ -54,7 +54,7 @@ const static CGFloat TrailingMargin = 35.0;
         [self.contentView addSubview:_textLabel];
     }
     _textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
-    _textLabel.text = _evaluation.text;
+    _textLabel.text = _evaluationEvent.evaluation.text;
     
     if (!_valueLabel) {
         _valueLabel = [UILabel new];;
@@ -62,15 +62,15 @@ const static CGFloat TrailingMargin = 35.0;
         _valueLabel.textAlignment = NSTextAlignmentRight;
         [self.contentView addSubview:_valueLabel];
     }
+    _valueLabel.text = (_evaluationEvent.evaluationValueString.length > 0) ? _evaluationEvent.evaluationValueString : @"--";
     _valueLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleTitle1];
-//    _valueLabel.text = [self stringFromSliderValue:_evaluation.value];
-//    _valueLabel.textColor = _evaluation.tintColor;
+    _valueLabel.textColor = _evaluationEvent.evaluation.color;
     
     if (!_leadingEdge) {
         _leadingEdge = [UILabel new];
         [self addSubview:_leadingEdge];
     }
-//    _leadingEdge.backgroundColor = _evaluation.tintColor;
+    _leadingEdge.backgroundColor = _evaluationEvent.evaluation.color;
     
     [self setUpConstraints];
 }
@@ -150,10 +150,6 @@ const static CGFloat TrailingMargin = 35.0;
                                        ]];
     
     [NSLayoutConstraint activateConstraints:constraints];
-}
-
-- (UITableViewCellSelectionStyle)selectionStyle {
-    return UITableViewCellSelectionStyleNone;
 }
 
 - (UIEdgeInsets)layoutMargins {

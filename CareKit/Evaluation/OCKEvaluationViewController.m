@@ -1,5 +1,5 @@
 //
-//  OCKEvaluationPlanViewController.m
+//  OCKEvaluationViewController.m
 //  CareKit
 //
 //  Created by Umer Khan on 2/2/16.
@@ -7,18 +7,20 @@
 //
 
 
-#import "OCKEvaluationPlanViewController.h"
+#import "OCKEvaluationViewController.h"
 #import "OCKEvaluationTableViewController.h"
+#import "OCKCarePlanStore.h"
+#import "OCKCareEvent.h"
 
 
-@implementation OCKEvaluationPlanViewController {
+@implementation OCKEvaluationViewController {
     OCKEvaluationTableViewController *_tableViewController;
 }
 
-+ (instancetype)evaluationPlanViewControllerWithCarePlanStore:(OCKCarePlanStore *)store
++ (instancetype)evaluationViewControllerWithCarePlanStore:(OCKCarePlanStore *)store
                                                      delegate:(id<OCKEvaluationTableViewDelegate>)delegate {
-    return [[OCKEvaluationPlanViewController alloc] initWithCarePlanStore:store
-                                                                 delegate:delegate];
+    return [[OCKEvaluationViewController alloc] initWithCarePlanStore:store
+                                                             delegate:delegate];
 }
 
 - (instancetype)initWithCarePlanStore:(OCKCarePlanStore *)store

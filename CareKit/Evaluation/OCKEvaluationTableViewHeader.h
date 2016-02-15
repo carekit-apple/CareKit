@@ -14,8 +14,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface OCKEvaluationTableViewHeader : UIView
 
-@property (nonatomic, copy, nullable) NSString *title;
-@property (nonatomic, copy, nullable) NSString *text;
+@property (nonatomic, copy) NSString *date;
+@property (nonatomic) NSNumber *progress;
 
 @end
 

@@ -15,7 +15,7 @@
 
 
 @implementation OCKEvaluationTableViewController {
-    NSArray<OCKEvaluation *> *_evaluations;
+    NSArray<NSArray<OCKEvaluationEvent *> *> *_evaluationEvents;
 }
 
 + (instancetype)new {
@@ -42,17 +42,23 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self fetchEvaluations];
-    
     self.tableView.sectionHeaderHeight = 20.0;
     self.tableView.rowHeight = 85.0;
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    [self fetchEvaluationEvents];
+    [self.tableView reloadData];
+}
 
 #pragma mark - Helpers
 
-- (void)fetchEvaluations {
-    _evaluations = [_store.evaluations copy];
+- (void)fetchEvaluationEvents {
+    NSError *error;
+    _evaluationEvents = [_store evaluationEventsOnDay:[NSDate date] error:&error];
+    NSAssert(!error, error.localizedDescription);
 }
 
 
@@ -60,11 +66,10 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (_delegate &&
-        [_delegate respondsToSelector:@selector(tableViewDidSelectEvaluation:)]) {
-        [_delegate tableViewDidSelectEvaluation:_evaluations[indexPath.row]];
+        [_delegate respondsToSelector:@selector(tableViewDidSelectEvaluationEvent:)]) {
+        [_delegate tableViewDidSelectEvaluationEvent:[_evaluationEvents[indexPath.row] firstObject]];
     }
 }
-
 
 #pragma mark - UITableViewDataSource
 
@@ -73,7 +78,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return _evaluations.count;
+    return _evaluationEvents.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -83,7 +88,7 @@
         cell = [[OCKEvaluationTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
                                                  reuseIdentifier:CellIdentifier];
     }
-    cell.evaluation = _evaluations[indexPath.row];
+    cell.evaluationEvent = [_evaluationEvents[indexPath.row] firstObject];
     return cell;
 }
 

@@ -1,5 +1,5 @@
 //
-//  OCKEvaluationPlanViewController.h
+//  OCKEvaluationViewController.h
 //  CareKit
 //
 //  Created by Umer Khan on 2/2/16.
@@ -12,21 +12,19 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class OCKCarePlanStore, OCKEvaluation;
+@class OCKCarePlanStore, OCKEvaluationEvent;
 
 @protocol OCKEvaluationTableViewDelegate <NSObject>
 
-@required
-
-- (void)tableViewDidSelectEvaluation:(OCKEvaluation *)evaluation;
+- (void)tableViewDidSelectEvaluationEvent:(OCKEvaluationEvent *)evaluationEvent;
 
 @end
 
 
-@interface OCKEvaluationPlanViewController : UINavigationController
+@interface OCKEvaluationViewController : UINavigationController
 
-+ (instancetype)evaluationPlanViewControllerWithCarePlanStore:(OCKCarePlanStore *)store
-                                                     delegate:(id<OCKEvaluationTableViewDelegate>)delegate;
++ (instancetype)evaluationViewControllerWithCarePlanStore:(OCKCarePlanStore *)store
+                                                 delegate:(id<OCKEvaluationTableViewDelegate>)delegate;
 
 - (instancetype)initWithCarePlanStore:(OCKCarePlanStore *)store
                              delegate:(id<OCKEvaluationTableViewDelegate>)delegate;

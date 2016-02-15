@@ -191,7 +191,6 @@
 - (void)testEvaluations {
 
     [self measureBlock:^{
-        
         NSURL *directoryURL = [NSURL fileURLWithPath:[self cleanTestPath]];
         OCKCarePlanStore *store = [[OCKCarePlanStore alloc] initWithPersistenceDirectoryURL:directoryURL];
         store.delegate = self;

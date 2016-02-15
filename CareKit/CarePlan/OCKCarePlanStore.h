@@ -26,6 +26,8 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @protocol OCKCarePlanStoreDelegate <NSObject>
 
+@optional
+
 - (void)carePlanStore:(OCKCarePlanStore *)store didReceiveUpdateOfEvaluationEvent:(OCKEvaluationEvent *)event;
 
 - (void)carePlanStore:(OCKCarePlanStore *)store didReceiveUpdateOfTreatmentEvent:(OCKTreatmentEvent *)event;

@@ -19,8 +19,8 @@
 // CareCard
 #import <CareKit/OCKTreatmentPlanViewController.h>
 
-// Evaluations
-#import <CareKit/OCKEvaluationPlanViewController.h>
+// Evaluation
+#import <CareKit/OCKEvaluationViewController.h>
 
 // Dashboard
 #import <CareKit/OCKDashboardViewController.h>
@@ -37,3 +37,6 @@
 // Connect
 #import <CareKit/OCKConnectViewController.h>
 #import <CareKit/OCKContact.h>
+
+// Other
+#import <CareKit/OCKColors.h>

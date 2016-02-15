@@ -64,14 +64,6 @@
 		2445EB321C6D67A100F51A95 /* OCKConnectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2445EB2A1C6D67A100F51A95 /* OCKConnectViewController.m */; };
 		2445EB331C6D67A100F51A95 /* OCKContact.h in Headers */ = {isa = PBXBuildFile; fileRef = 2445EB2B1C6D67A100F51A95 /* OCKContact.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2445EB341C6D67A100F51A95 /* OCKContact.m in Sources */ = {isa = PBXBuildFile; fileRef = 2445EB2C1C6D67A100F51A95 /* OCKContact.m */; };
-		2445EB481C6D67E800F51A95 /* OCKEvaluationPlanViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 2445EB3B1C6D67E800F51A95 /* OCKEvaluationPlanViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		2445EB491C6D67E800F51A95 /* OCKEvaluationPlanViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2445EB3C1C6D67E800F51A95 /* OCKEvaluationPlanViewController.m */; };
-		2445EB4A1C6D67E800F51A95 /* OCKEvaluationTableViewCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 2445EB3D1C6D67E800F51A95 /* OCKEvaluationTableViewCell.h */; };
-		2445EB4B1C6D67E800F51A95 /* OCKEvaluationTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2445EB3E1C6D67E800F51A95 /* OCKEvaluationTableViewCell.m */; };
-		2445EB4C1C6D67E800F51A95 /* OCKEvaluationTableViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 2445EB3F1C6D67E800F51A95 /* OCKEvaluationTableViewController.h */; };
-		2445EB4D1C6D67E800F51A95 /* OCKEvaluationTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2445EB401C6D67E800F51A95 /* OCKEvaluationTableViewController.m */; };
-		2445EB4E1C6D67E800F51A95 /* OCKEvaluationTableViewHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 2445EB411C6D67E800F51A95 /* OCKEvaluationTableViewHeader.h */; };
-		2445EB4F1C6D67E800F51A95 /* OCKEvaluationTableViewHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 2445EB421C6D67E800F51A95 /* OCKEvaluationTableViewHeader.m */; };
 		2445EB671C6D685D00F51A95 /* OCKCareCard.h in Headers */ = {isa = PBXBuildFile; fileRef = 2445EB511C6D685D00F51A95 /* OCKCareCard.h */; };
 		2445EB681C6D685D00F51A95 /* OCKCareCard.m in Sources */ = {isa = PBXBuildFile; fileRef = 2445EB521C6D685D00F51A95 /* OCKCareCard.m */; };
 		2445EB691C6D685D00F51A95 /* OCKCareCardView.h in Headers */ = {isa = PBXBuildFile; fileRef = 2445EB531C6D685D00F51A95 /* OCKCareCardView.h */; };
@@ -92,6 +84,15 @@
 		24B31A701C6E71A600C3C196 /* OCKDefines.h in Headers */ = {isa = PBXBuildFile; fileRef = 24B31A6D1C6E71A600C3C196 /* OCKDefines.h */; };
 		24B31A711C6E71A600C3C196 /* OCKHelpers.h in Headers */ = {isa = PBXBuildFile; fileRef = 24B31A6E1C6E71A600C3C196 /* OCKHelpers.h */; };
 		24B31A721C6E71A600C3C196 /* OCKHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 24B31A6F1C6E71A600C3C196 /* OCKHelpers.m */; };
+		24E318151C6EB08A0094C45B /* OCKEvaluationViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 24E3180D1C6EB08A0094C45B /* OCKEvaluationViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		24E318161C6EB08A0094C45B /* OCKEvaluationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 24E3180E1C6EB08A0094C45B /* OCKEvaluationViewController.m */; };
+		24E318171C6EB08A0094C45B /* OCKEvaluationTableViewCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 24E3180F1C6EB08A0094C45B /* OCKEvaluationTableViewCell.h */; };
+		24E318181C6EB08A0094C45B /* OCKEvaluationTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 24E318101C6EB08A0094C45B /* OCKEvaluationTableViewCell.m */; };
+		24E318191C6EB08A0094C45B /* OCKEvaluationTableViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 24E318111C6EB08A0094C45B /* OCKEvaluationTableViewController.h */; };
+		24E3181A1C6EB08A0094C45B /* OCKEvaluationTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 24E318121C6EB08A0094C45B /* OCKEvaluationTableViewController.m */; };
+		24E3181B1C6EB08A0094C45B /* OCKEvaluationTableViewHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 24E318131C6EB08A0094C45B /* OCKEvaluationTableViewHeader.h */; };
+		24E3181C1C6EB08A0094C45B /* OCKEvaluationTableViewHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 24E318141C6EB08A0094C45B /* OCKEvaluationTableViewHeader.m */; };
+		24E3181F1C6EB1B90094C45B /* OCKColors.h in Headers */ = {isa = PBXBuildFile; fileRef = 24E3181E1C6EB1B90094C45B /* OCKColors.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8605A5BE1C4F04EC00DD65FF /* CareKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 8605A5BD1C4F04EC00DD65FF /* CareKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8605A5C51C4F04EC00DD65FF /* CareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8605A5BA1C4F04EC00DD65FF /* CareKit.framework */; };
 		8605A5CA1C4F04EC00DD65FF /* CareKitCarePlanTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8605A5C91C4F04EC00DD65FF /* CareKitCarePlanTests.m */; };
@@ -189,14 +190,6 @@
 		2445EB2A1C6D67A100F51A95 /* OCKConnectViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKConnectViewController.m; sourceTree = "<group>"; };
 		2445EB2B1C6D67A100F51A95 /* OCKContact.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKContact.h; sourceTree = "<group>"; };
 		2445EB2C1C6D67A100F51A95 /* OCKContact.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKContact.m; sourceTree = "<group>"; };
-		2445EB3B1C6D67E800F51A95 /* OCKEvaluationPlanViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKEvaluationPlanViewController.h; sourceTree = "<group>"; };
-		2445EB3C1C6D67E800F51A95 /* OCKEvaluationPlanViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKEvaluationPlanViewController.m; sourceTree = "<group>"; };
-		2445EB3D1C6D67E800F51A95 /* OCKEvaluationTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKEvaluationTableViewCell.h; sourceTree = "<group>"; };
-		2445EB3E1C6D67E800F51A95 /* OCKEvaluationTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKEvaluationTableViewCell.m; sourceTree = "<group>"; };
-		2445EB3F1C6D67E800F51A95 /* OCKEvaluationTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKEvaluationTableViewController.h; sourceTree = "<group>"; };
-		2445EB401C6D67E800F51A95 /* OCKEvaluationTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKEvaluationTableViewController.m; sourceTree = "<group>"; };
-		2445EB411C6D67E800F51A95 /* OCKEvaluationTableViewHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKEvaluationTableViewHeader.h; sourceTree = "<group>"; };
-		2445EB421C6D67E800F51A95 /* OCKEvaluationTableViewHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKEvaluationTableViewHeader.m; sourceTree = "<group>"; };
 		2445EB511C6D685D00F51A95 /* OCKCareCard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKCareCard.h; sourceTree = "<group>"; };
 		2445EB521C6D685D00F51A95 /* OCKCareCard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKCareCard.m; sourceTree = "<group>"; };
 		2445EB531C6D685D00F51A95 /* OCKCareCardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKCareCardView.h; sourceTree = "<group>"; };
@@ -217,6 +210,15 @@
 		24B31A6D1C6E71A600C3C196 /* OCKDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKDefines.h; sourceTree = "<group>"; };
 		24B31A6E1C6E71A600C3C196 /* OCKHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKHelpers.h; sourceTree = "<group>"; };
 		24B31A6F1C6E71A600C3C196 /* OCKHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKHelpers.m; sourceTree = "<group>"; };
+		24E3180D1C6EB08A0094C45B /* OCKEvaluationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKEvaluationViewController.h; sourceTree = "<group>"; };
+		24E3180E1C6EB08A0094C45B /* OCKEvaluationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKEvaluationViewController.m; sourceTree = "<group>"; };
+		24E3180F1C6EB08A0094C45B /* OCKEvaluationTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKEvaluationTableViewCell.h; sourceTree = "<group>"; };
+		24E318101C6EB08A0094C45B /* OCKEvaluationTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKEvaluationTableViewCell.m; sourceTree = "<group>"; };
+		24E318111C6EB08A0094C45B /* OCKEvaluationTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKEvaluationTableViewController.h; sourceTree = "<group>"; };
+		24E318121C6EB08A0094C45B /* OCKEvaluationTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKEvaluationTableViewController.m; sourceTree = "<group>"; };
+		24E318131C6EB08A0094C45B /* OCKEvaluationTableViewHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKEvaluationTableViewHeader.h; sourceTree = "<group>"; };
+		24E318141C6EB08A0094C45B /* OCKEvaluationTableViewHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKEvaluationTableViewHeader.m; sourceTree = "<group>"; };
+		24E3181E1C6EB1B90094C45B /* OCKColors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKColors.h; sourceTree = "<group>"; };
 		8605A5BA1C4F04EC00DD65FF /* CareKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CareKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8605A5BD1C4F04EC00DD65FF /* CareKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CareKit.h; sourceTree = "<group>"; };
 		8605A5BF1C4F04EC00DD65FF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -285,16 +287,6 @@
 			path = Connect;
 			sourceTree = "<group>";
 		};
-		2445EB351C6D67E800F51A95 /* Evaluations */ = {
-			isa = PBXGroup;
-			children = (
-				2445EB3B1C6D67E800F51A95 /* OCKEvaluationPlanViewController.h */,
-				2445EB3C1C6D67E800F51A95 /* OCKEvaluationPlanViewController.m */,
-				2445EB7D1C6D6B1D00F51A95 /* Table View */,
-			);
-			path = Evaluations;
-			sourceTree = "<group>";
-		};
 		2445EB501C6D685D00F51A95 /* CareCard */ = {
 			isa = PBXGroup;
 			children = (
@@ -305,19 +297,6 @@
 				24B31A4E1C6E602000C3C196 /* Care Card */,
 			);
 			path = CareCard;
-			sourceTree = "<group>";
-		};
-		2445EB7D1C6D6B1D00F51A95 /* Table View */ = {
-			isa = PBXGroup;
-			children = (
-				2445EB3F1C6D67E800F51A95 /* OCKEvaluationTableViewController.h */,
-				2445EB401C6D67E800F51A95 /* OCKEvaluationTableViewController.m */,
-				2445EB3D1C6D67E800F51A95 /* OCKEvaluationTableViewCell.h */,
-				2445EB3E1C6D67E800F51A95 /* OCKEvaluationTableViewCell.m */,
-				2445EB411C6D67E800F51A95 /* OCKEvaluationTableViewHeader.h */,
-				2445EB421C6D67E800F51A95 /* OCKEvaluationTableViewHeader.m */,
-			);
-			name = "Table View";
 			sourceTree = "<group>";
 		};
 		24B31A461C6E5F7600C3C196 /* Table View */ = {
@@ -477,8 +456,32 @@
 				24B31A6D1C6E71A600C3C196 /* OCKDefines.h */,
 				24B31A6E1C6E71A600C3C196 /* OCKHelpers.h */,
 				24B31A6F1C6E71A600C3C196 /* OCKHelpers.m */,
+				24E3181E1C6EB1B90094C45B /* OCKColors.h */,
 			);
 			path = Utilities;
+			sourceTree = "<group>";
+		};
+		24E3180C1C6EB08A0094C45B /* Evaluation */ = {
+			isa = PBXGroup;
+			children = (
+				24E3180D1C6EB08A0094C45B /* OCKEvaluationViewController.h */,
+				24E3180E1C6EB08A0094C45B /* OCKEvaluationViewController.m */,
+				24E3181D1C6EB0930094C45B /* Table View */,
+			);
+			path = Evaluation;
+			sourceTree = "<group>";
+		};
+		24E3181D1C6EB0930094C45B /* Table View */ = {
+			isa = PBXGroup;
+			children = (
+				24E318111C6EB08A0094C45B /* OCKEvaluationTableViewController.h */,
+				24E318121C6EB08A0094C45B /* OCKEvaluationTableViewController.m */,
+				24E3180F1C6EB08A0094C45B /* OCKEvaluationTableViewCell.h */,
+				24E318101C6EB08A0094C45B /* OCKEvaluationTableViewCell.m */,
+				24E318131C6EB08A0094C45B /* OCKEvaluationTableViewHeader.h */,
+				24E318141C6EB08A0094C45B /* OCKEvaluationTableViewHeader.m */,
+			);
+			name = "Table View";
 			sourceTree = "<group>";
 		};
 		8605A5B01C4F04EC00DD65FF = {
@@ -507,7 +510,7 @@
 				2445EABA1C6D66CC00F51A95 /* CarePlan */,
 				2445EB241C6D67A100F51A95 /* Connect */,
 				2445EAE31C6D673000F51A95 /* Dashboard */,
-				2445EB351C6D67E800F51A95 /* Evaluations */,
+				24E3180C1C6EB08A0094C45B /* Evaluation */,
 				24B31A6C1C6E71A600C3C196 /* Utilities */,
 				865A6CD51C5A95180054F9F0 /* ResearchKit.xcodeproj */,
 				8605A5BF1C4F04EC00DD65FF /* Info.plist */,
@@ -546,7 +549,7 @@
 				24B31A701C6E71A600C3C196 /* OCKDefines.h in Headers */,
 				2445EB1E1C6D673000F51A95 /* OCKRangeGroup.h in Headers */,
 				2445EB0E1C6D673000F51A95 /* OCKDashboardViewController.h in Headers */,
-				2445EB4A1C6D67E800F51A95 /* OCKEvaluationTableViewCell.h in Headers */,
+				24E3181B1C6EB08A0094C45B /* OCKEvaluationTableViewHeader.h in Headers */,
 				2445EB791C6D685D00F51A95 /* OCKWeekPageViewController.h in Headers */,
 				2445EB671C6D685D00F51A95 /* OCKCareCard.h in Headers */,
 				24B31A711C6E71A600C3C196 /* OCKHelpers.h in Headers */,
@@ -558,8 +561,9 @@
 				2445EB0C1C6D673000F51A95 /* OCKChartTableViewHeaderView.h in Headers */,
 				2445EADD1C6D66CC00F51A95 /* OCKTreatment.h in Headers */,
 				2445EB061C6D673000F51A95 /* OCKChart_Internal.h in Headers */,
+				24E318171C6EB08A0094C45B /* OCKEvaluationTableViewCell.h in Headers */,
+				24E3181F1C6EB1B90094C45B /* OCKColors.h in Headers */,
 				2445EAD71C6D66CC00F51A95 /* OCKCareSchedule.h in Headers */,
-				2445EB4C1C6D67E800F51A95 /* OCKEvaluationTableViewController.h in Headers */,
 				2445EB6B1C6D685D00F51A95 /* OCKHeartWeekView.h in Headers */,
 				2445EAD31C6D66CC00F51A95 /* OCKCarePlanItem_Internal.h in Headers */,
 				2445EAD11C6D66CC00F51A95 /* OCKCarePlanItem.h in Headers */,
@@ -570,7 +574,6 @@
 				2445EB191C6D673000F51A95 /* OCKLinePoint.h in Headers */,
 				2445EADA1C6D66CC00F51A95 /* OCKEvaluation.h in Headers */,
 				2445EB041C6D673000F51A95 /* OCKChart.h in Headers */,
-				2445EB481C6D67E800F51A95 /* OCKEvaluationPlanViewController.h in Headers */,
 				2445EB141C6D673000F51A95 /* OCKLine.h in Headers */,
 				2445EACE1C6D66CC00F51A95 /* OCKCareEvent.h in Headers */,
 				2445EB091C6D673000F51A95 /* OCKChartTableViewController.h in Headers */,
@@ -582,14 +585,15 @@
 				2445EAD01C6D66CC00F51A95 /* OCKCareEvent_Internal.h in Headers */,
 				2445EB101C6D673000F51A95 /* OCKDashboardViewController_Internal.h in Headers */,
 				2445EB161C6D673000F51A95 /* OCKLineChart.h in Headers */,
-				2445EB4E1C6D67E800F51A95 /* OCKEvaluationTableViewHeader.h in Headers */,
 				2445EB2D1C6D67A100F51A95 /* OCKConnectTableViewCell.h in Headers */,
 				2445EB751C6D685D00F51A95 /* OCKTreatmentsTableViewController.h in Headers */,
 				2445EADF1C6D66CC00F51A95 /* OCKTreatment_Internal.h in Headers */,
+				24E318191C6EB08A0094C45B /* OCKEvaluationTableViewController.h in Headers */,
 				2445EAD91C6D66CC00F51A95 /* OCKCareSchedule_Internal.h in Headers */,
 				2445EB2F1C6D67A100F51A95 /* OCKConnectTableViewController.h in Headers */,
 				2445EB0B1C6D673000F51A95 /* OCKChartTableViewController_Internal.h in Headers */,
 				2445EB1D1C6D673000F51A95 /* OCKPieChart_Internal.h in Headers */,
+				24E318151C6EB08A0094C45B /* OCKEvaluationViewController.h in Headers */,
 				8656C0DE1C6E98DA00A6D5D1 /* OCKCarePlanStore_Internal.h in Headers */,
 				2445EADC1C6D66CC00F51A95 /* OCKEvaluation_Internal.h in Headers */,
 				2445EB721C6D685D00F51A95 /* OCKTreatmentPlanViewController.h in Headers */,
@@ -723,13 +727,14 @@
 				2445EB6C1C6D685D00F51A95 /* OCKHeartWeekView.m in Sources */,
 				86FA84FC1C5C466A0013114A /* OCKCarePlanStore.xcdatamodeld in Sources */,
 				2445EADE1C6D66CC00F51A95 /* OCKTreatment.m in Sources */,
+				24E318161C6EB08A0094C45B /* OCKEvaluationViewController.m in Sources */,
 				2445EB151C6D673000F51A95 /* OCKLine.m in Sources */,
 				2445EB0A1C6D673000F51A95 /* OCKChartTableViewController.m in Sources */,
 				2445EB211C6D673000F51A95 /* OCKRangePoint.m in Sources */,
-				2445EB491C6D67E800F51A95 /* OCKEvaluationPlanViewController.m in Sources */,
 				2445EB1C1C6D673000F51A95 /* OCKPieChart.m in Sources */,
 				2445EB0F1C6D673000F51A95 /* OCKDashboardViewController.m in Sources */,
 				2445EB081C6D673000F51A95 /* OCKChartTableViewCell.m in Sources */,
+				24E3181A1C6EB08A0094C45B /* OCKEvaluationTableViewController.m in Sources */,
 				2445EB051C6D673000F51A95 /* OCKChart.m in Sources */,
 				2445EADB1C6D66CC00F51A95 /* OCKEvaluation.m in Sources */,
 				2445EACF1C6D66CC00F51A95 /* OCKCareEvent.m in Sources */,
@@ -739,18 +744,17 @@
 				2445EB1A1C6D673000F51A95 /* OCKLinePoint.m in Sources */,
 				2445EAD81C6D66CC00F51A95 /* OCKCareSchedule.m in Sources */,
 				2445EB231C6D673000F51A95 /* OCKSegment.m in Sources */,
+				24E318181C6EB08A0094C45B /* OCKEvaluationTableViewCell.m in Sources */,
 				2445EB321C6D67A100F51A95 /* OCKConnectViewController.m in Sources */,
-				2445EB4B1C6D67E800F51A95 /* OCKEvaluationTableViewCell.m in Sources */,
 				2445EB761C6D685D00F51A95 /* OCKTreatmentsTableViewController.m in Sources */,
 				2445EB7C1C6D685D00F51A95 /* OCKWeekView.m in Sources */,
+				24E3181C1C6EB08A0094C45B /* OCKEvaluationTableViewHeader.m in Sources */,
 				24B31A721C6E71A600C3C196 /* OCKHelpers.m in Sources */,
 				2445EB121C6D673000F51A95 /* OCKDiscreteChart.m in Sources */,
 				2445EB731C6D685D00F51A95 /* OCKTreatmentPlanViewController.m in Sources */,
 				2445EB0D1C6D673000F51A95 /* OCKChartTableViewHeaderView.m in Sources */,
-				2445EB4D1C6D67E800F51A95 /* OCKEvaluationTableViewController.m in Sources */,
 				2445EB681C6D685D00F51A95 /* OCKCareCard.m in Sources */,
 				2445EB341C6D67A100F51A95 /* OCKContact.m in Sources */,
-				2445EB4F1C6D67E800F51A95 /* OCKEvaluationTableViewHeader.m in Sources */,
 				2445EAD21C6D66CC00F51A95 /* OCKCarePlanItem.m in Sources */,
 				2445EB781C6D685D00F51A95 /* OCKTreatmentTableViewCell.m in Sources */,
 				2445EB1F1C6D673000F51A95 /* OCKRangeGroup.m in Sources */,

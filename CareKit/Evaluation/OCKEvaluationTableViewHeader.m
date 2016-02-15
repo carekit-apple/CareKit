@@ -12,10 +12,7 @@
 
 static const CGFloat HeaderViewLeadingMargin = 15.0;
 
-@implementation OCKEvaluationTableViewHeader {
-    UILabel *_titleLabel;
-    UILabel *_textLabel;
-}
+@implementation OCKEvaluationTableViewHeader
 
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];

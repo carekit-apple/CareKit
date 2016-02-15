@@ -21,7 +21,7 @@ typedef NS_ENUM(NSInteger, OCKCareEventState) {
 /**
  Abstract Event Class
  */
-@interface OCKCareEvent : NSObject 
+@interface OCKCarePlanEvent : NSObject 
 
 /**
  The index of this event for its associated OCKCarePlanItem.
@@ -54,7 +54,7 @@ typedef NS_ENUM(NSInteger, OCKCareEventState) {
 @end
 
 
-@interface OCKTreatmentEvent : OCKCareEvent
+@interface OCKTreatmentEvent : OCKCarePlanEvent
 
 /**
  The treatment this event is belonging to.
@@ -63,7 +63,7 @@ typedef NS_ENUM(NSInteger, OCKCareEventState) {
 
 @end
 
-@interface OCKEvaluationEvent : OCKCareEvent
+@interface OCKEvaluationEvent : OCKCarePlanEvent
 
 /**
  The evaluation this event is belonging to.

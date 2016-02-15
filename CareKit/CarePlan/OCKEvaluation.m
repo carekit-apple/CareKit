@@ -21,16 +21,17 @@
 }
 
 
-- (instancetype)initWithType:(nullable NSString *)type
-                       title:(nullable NSString *)title
-                        text:(nullable NSString *)text
-                       color:(nullable UIColor *)color
-                    schedule:(OCKCareSchedule *)schedule
-                        task:(nullable id<ORKTask, NSSecureCoding>) task
-                    optional:(BOOL)optional
-                  retryLimit:(NSUInteger)retryLimit {
+- (instancetype)initWithIdentifier:(NSString *)identifier
+                              type:(nullable NSString *)type
+                             title:(nullable NSString *)title
+                              text:(nullable NSString *)text
+                             color:(nullable UIColor *)color
+                          schedule:(OCKCareSchedule *)schedule
+                              task:(nullable id<ORKTask, NSSecureCoding>) task
+                          optional:(BOOL)optional
+                        retryLimit:(NSUInteger)retryLimit {
     
-    self = [super initWithType:type title:title text:text color:color schedule:schedule optional:optional onlyMutableDuringEventDay:YES];
+    self = [super initWithIdentifier:identifier type:type title:title text:text color:color schedule:schedule optional:optional onlyMutableDuringEventDay:YES];
     if (self) {
         _task = task;
         _retryLimit = retryLimit;

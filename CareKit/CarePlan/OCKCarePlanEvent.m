@@ -6,12 +6,12 @@
 //  Copyright © 2016 carekit.org. All rights reserved.
 //
 
-#import "OCKCareEvent.h"
-#import "OCKCareEvent_Internal.h"
+#import "OCKCarePlanEvent.h"
+#import "OCKCarePlanEvent_Internal.h"
 #import "OCKTreatment_Internal.h"
 #import "OCKEvaluation_Internal.h"
 
-@implementation OCKCareEvent
+@implementation OCKCarePlanEvent
 
 - (instancetype)initWithCoreDataObject:(OCKCDCareEvent *)cdObject {
     self = [super init];
@@ -37,7 +37,7 @@
 }
 
 - (instancetype)copyWithZone:(NSZone *)zone {
-    OCKCareEvent* event = [[[self class] allocWithZone:zone] init];
+    OCKCarePlanEvent* event = [[[self class] allocWithZone:zone] init];
     event->_occurrenceIndexOfDay = _occurrenceIndexOfDay;
     event->_numberOfDaysSinceStart = _numberOfDaysSinceStart;
     event->_state = _state;
@@ -118,7 +118,7 @@
 
 - (instancetype)initWithEntity:(NSEntityDescription *)entity
 insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
-                     careEvent:(OCKCareEvent *)careEvent {
+                     careEvent:(OCKCarePlanEvent *)careEvent {
     
     NSParameterAssert(careEvent);
     
@@ -133,7 +133,7 @@ insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
     return self;
 }
 
-- (void)updateWithEvent:(OCKCareEvent *)careEvent {
+- (void)updateWithEvent:(OCKCarePlanEvent *)careEvent {
     NSParameterAssert(careEvent);
     self.state = @(careEvent.state);
     self.completionDate = careEvent.completionDate;

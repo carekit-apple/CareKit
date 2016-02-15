@@ -49,7 +49,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  Initializer of the store.
  */
-- (instancetype)initWithPersistenceDirectoryURL:(NSURL *)url;
+- (instancetype)initWithPersistenceDirectoryURL:(NSURL *)url NS_DESIGNATED_INITIALIZER;
 
 /**
  This delegate can be used to subscribe to the notifications of changes in this store.
@@ -68,6 +68,11 @@ NS_ASSUME_NONNULL_BEGIN
  Get all treatments.
  */
 @property (nonatomic, copy ,readonly) NSArray<OCKTreatment *> *treatments;
+
+/**
+ Get treatment by providing an identifier.
+ */
+- (OCKTreatment *)treatmentForIdentifier:(NSString *)identifier error:(NSError **)error;
 
 /**
  Get all treatments with a specified type.
@@ -129,6 +134,11 @@ NS_ASSUME_NONNULL_BEGIN
  Get all evaluations.
  */
 @property (nonatomic, copy ,readonly) NSArray<OCKEvaluation *> *evaluations;
+
+/**
+ Get evaluation by providing an identifier.
+ */
+- (OCKEvaluation *)evaluationForIdentifier:(NSString *)identifier error:(NSError **)error;
 
 /**
  Get all evaluations with a specified type.

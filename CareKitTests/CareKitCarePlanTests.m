@@ -18,7 +18,7 @@
 
 @implementation CareKitTests {
     BOOL _listChanged;
-    OCKCareEvent *_event;
+    OCKCarePlanEvent *_event;
 }
 
 - (NSString *)testPath {
@@ -61,19 +61,21 @@
     
     OCKCareSchedule *schedule = [[OCKCareDailySchedule alloc] initWithStartDate:[NSDate date] occurrencesPerDay:3];
     
-    OCKTreatment *item1 = [[OCKTreatment alloc] initWithType:@"type1"
-                                                       title:@"title1"
-                                                        text:@"text1"
-                                                        color:[UIColor greenColor]
-                                                         schedule:schedule
-                                                    optional:NO onlyMutableDuringEventDay:NO];
+    OCKTreatment *item1 = [[OCKTreatment alloc] initWithIdentifier:@"id1"
+                                                              type:@"type1"
+                                                             title:@"title1"
+                                                              text:@"text1"
+                                                             color:[UIColor greenColor]
+                                                          schedule:schedule
+                                                          optional:NO onlyMutableDuringEventDay:NO];
     
-    OCKTreatment *item2 = [[OCKTreatment alloc] initWithType:@"type2"
-                                                       title:@"title2"
-                                                        text:@"text2"
-                                                       color:[UIColor blueColor]
-                                                    schedule:schedule
-                                                    optional:NO onlyMutableDuringEventDay:NO];
+    OCKTreatment *item2 = [[OCKTreatment alloc] initWithIdentifier:@"id2"
+                                                              type:@"type2"
+                                                             title:@"title2"
+                                                              text:@"text2"
+                                                             color:[UIColor blueColor]
+                                                          schedule:schedule
+                                                          optional:NO onlyMutableDuringEventDay:NO];
     
     NSError *error;
     BOOL result;
@@ -97,6 +99,11 @@
     
     store = [[OCKCarePlanStore alloc] initWithPersistenceDirectoryURL:directoryURL];
     store.delegate = self;
+    
+    XCTAssertEqualObjects([store treatmentForIdentifier:item1.identifier error:&error], item1);
+    XCTAssertNil(error);
+    XCTAssertEqualObjects([store treatmentForIdentifier:item2.identifier error:&error], item2);
+    XCTAssertNil(error);
     
     XCTAssertEqual(store.treatments.count, 2);
     
@@ -209,23 +216,25 @@
         
         OCKCareSchedule *schedule = [[OCKCareDailySchedule alloc] initWithStartDate:[NSDate date] occurrencesPerDay:3];
         
-        OCKEvaluation *item1 = [[OCKEvaluation alloc] initWithType:@"type1"
-                                                             title:@"title1"
-                                                              text:@"text1"
-                                                             color:[UIColor orangeColor]
-                                                          schedule:schedule
-                                                              task:[[ORKOrderedTask alloc] initWithIdentifier:@"id" steps:nil]
-                                                          optional:NO
-                                                        retryLimit:0];
+        OCKEvaluation *item1 = [[OCKEvaluation alloc] initWithIdentifier:@"id1"
+                                                                    type:@"type1"
+                                                                   title:@"title1"
+                                                                    text:@"text1"
+                                                                   color:[UIColor orangeColor]
+                                                                schedule:schedule
+                                                                    task:[[ORKOrderedTask alloc] initWithIdentifier:@"id" steps:nil]
+                                                                optional:NO
+                                                              retryLimit:0];
         
-        OCKEvaluation *item2 = [[OCKEvaluation alloc] initWithType:@"type2"
-                                                             title:@"title2"
-                                                              text:@"text2"
-                                                             color:[UIColor blueColor]
-                                                          schedule:schedule
-                                                              task:nil
-                                                          optional:NO
-                                                        retryLimit:0];
+        OCKEvaluation *item2 = [[OCKEvaluation alloc] initWithIdentifier:@"id2"
+                                                                    type:@"type2"
+                                                                   title:@"title2"
+                                                                    text:@"text2"
+                                                                   color:[UIColor blueColor]
+                                                                schedule:schedule
+                                                                    task:nil
+                                                                optional:NO
+                                                              retryLimit:0];
         
         NSError *error;
         BOOL result;
@@ -247,6 +256,11 @@
         
         store = [[OCKCarePlanStore alloc] initWithPersistenceDirectoryURL:directoryURL];
         store.delegate = self;
+        
+        XCTAssertEqualObjects([store evaluationForIdentifier:item1.identifier error:&error], item1);
+        XCTAssertNil(error);
+        XCTAssertEqualObjects([store evaluationForIdentifier:item2.identifier error:&error], item2);
+        XCTAssertNil(error);
         
         XCTAssertEqual(store.evaluations.count, 2);
         

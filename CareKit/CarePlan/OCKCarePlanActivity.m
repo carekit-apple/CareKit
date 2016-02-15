@@ -6,27 +6,29 @@
 //  Copyright © 2016 carekit.org. All rights reserved.
 //
 
-#import "OCKCarePlanItem.h"
-#import "OCKCarePlanItem_Internal.h"
+#import "OCKCarePlanActivity.h"
+#import "OCKCarePlanActivity_Internal.h"
 #import "OCKHelpers.h"
 
-@implementation OCKCarePlanItem
+@implementation OCKCarePlanActivity
 
-- (instancetype)initWithType:(NSString *)type
-                       title:(NSString *)title
-                        text:(NSString *)text
-                       color:(UIColor *)color
-                    schedule:(OCKCareSchedule *)schedule
-                    optional:(BOOL)optional
-   onlyMutableDuringEventDay:(BOOL)onlyMutableDuringEventDay{
+- (instancetype)initWithIdentifier:(NSString *)identifier
+                              type:(NSString *)type
+                             title:(NSString *)title
+                              text:(NSString *)text
+                             color:(UIColor *)color
+                          schedule:(OCKCareSchedule *)schedule
+                          optional:(BOOL)optional
+         onlyMutableDuringEventDay:(BOOL)onlyMutableDuringEventDay{
     
     NSParameterAssert(type);
+    NSParameterAssert(identifier);
     NSParameterAssert(schedule);
     
     self = [super init];
     if (self) {
-        _identifier = [[NSUUID UUID] UUIDString];
-        _type = type;
+        _identifier = [identifier copy];
+        _type = [type copy];
         _title = [title copy];
         _text = [text copy];
         _color = color;
@@ -102,7 +104,7 @@
 }
 
 - (instancetype)copyWithZone:(NSZone *)zone {
-    OCKCarePlanItem *item = [[[self class] allocWithZone:zone] init];
+    OCKCarePlanActivity *item = [[[self class] allocWithZone:zone] init];
     item->_title = [_title copy];
     item->_identifier = [_identifier copy];
     item->_text = [_text copy];
@@ -121,7 +123,7 @@
 
 - (instancetype)initWithEntity:(NSEntityDescription *)entity
 insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
-                          item:(OCKCarePlanItem *)item {
+                          item:(OCKCarePlanActivity *)item {
     
     NSParameterAssert(item);
     self = [self initWithEntity:entity insertIntoManagedObjectContext:context];

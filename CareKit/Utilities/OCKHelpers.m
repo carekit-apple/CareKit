@@ -36,6 +36,8 @@
 
 NSString *const OCKErrorDomain = @"OCKErrorDomain";
 
+NSString *const OCKInvalidArgumentException = @"OCKInvalidArgumentException";
+
 NSURL *OCKCreateRandomBaseURL() {
     return [NSURL URLWithString:[NSString stringWithFormat:@"http://carekit.%@/", [NSUUID UUID].UUIDString]];
 }

@@ -1,5 +1,5 @@
 //
-//  OCKCarePlanItem.h
+//  OCKCarePlanActivity.h
 //  CareKit
 //
 //  Created by Yuan Zhu on 2/1/16.
@@ -13,9 +13,9 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /**
- Abstract care plan item Class
+ Abstract care plan activity Class
  */
-@interface OCKCarePlanItem : NSObject <NSSecureCoding, NSCopying>
+@interface OCKCarePlanActivity : NSObject <NSSecureCoding, NSCopying>
 
 - (instancetype)init NS_UNAVAILABLE;
 
@@ -30,12 +30,12 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) NSString *type;
 
 /**
- Displaybale title.
+ Displayable title.
  */
 @property (nonatomic, readonly, nullable) NSString *title;
 
 /**
- Displaybale text.
+ Displayable text.
  */
 @property (nonatomic, readonly, nullable) NSString *text;
 

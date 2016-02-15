@@ -6,7 +6,7 @@
 //  Copyright © 2016 carekit.org. All rights reserved.
 //
 
-#import "OCKCarePlanItem.h"
+#import "OCKCarePlanActivity.h"
 #import <CoreData/CoreData.h>
 
 NS_ASSUME_NONNULL_BEGIN
@@ -18,19 +18,16 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 
-@class OCKCDCarePlanItem;
+@interface OCKCarePlanActivity () <OCKCoreDataObjectMirroring>
 
-
-
-@interface OCKCarePlanItem () <OCKCoreDataObjectMirroring>
-
-- (instancetype)initWithType:(nullable NSString *)type
-                       title:(nullable NSString *)title
-                        text:(nullable NSString *)text
-                       color:(nullable UIColor *)color
-                    schedule:(OCKCareSchedule *)schedule
-                    optional:(BOOL)optional
-   onlyMutableDuringEventDay:(BOOL)onlyMutableDuringEventDay;
+- (instancetype)initWithIdentifier:(NSString *)identifier
+                              type:(nullable NSString *)type
+                             title:(nullable NSString *)title
+                              text:(nullable NSString *)text
+                             color:(nullable UIColor *)color
+                          schedule:(OCKCareSchedule *)schedule
+                          optional:(BOOL)optional
+         onlyMutableDuringEventDay:(BOOL)onlyMutableDuringEventDay;
 
 @end
 
@@ -40,7 +37,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithEntity:(NSEntityDescription *)entity
 insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
-                          item:(OCKCarePlanItem *)item;
+                          item:(OCKCarePlanActivity *)item;
 
 @property (nullable, nonatomic, retain) id color;
 @property (nullable, nonatomic, retain) NSString *identifier;

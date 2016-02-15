@@ -7,21 +7,22 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <CareKit/OCKCarePlanItem.h>
+#import <CareKit/OCKCarePlanActivity.h>
 #import <ResearchKit/ResearchKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface OCKEvaluation : OCKCarePlanItem
+@interface OCKEvaluation : OCKCarePlanActivity
 
-- (instancetype)initWithType:(nullable NSString *)type
-                       title:(nullable NSString *)title
-                        text:(nullable NSString *)text
-                       color:(nullable UIColor *)color
-                    schedule:(OCKCareSchedule *)schedule
-                        task:(nullable id<ORKTask, NSSecureCoding>)task
-                    optional:(BOOL)optional
-                  retryLimit:(NSUInteger)retryLimit;
+- (instancetype)initWithIdentifier:(NSString *)identifier
+                              type:(nullable NSString *)type
+                             title:(nullable NSString *)title
+                              text:(nullable NSString *)text
+                             color:(nullable UIColor *)color
+                          schedule:(OCKCareSchedule *)schedule
+                              task:(nullable id<ORKTask, NSSecureCoding>)task
+                          optional:(BOOL)optional
+                        retryLimit:(NSUInteger)retryLimit;
 
 
 /**

@@ -8,10 +8,10 @@
 
 #import "OCKCarePlanStore.h"
 #import "OCKCarePlanStore_Internal.h"
-#import "OCKCarePlanItem_Internal.h"
+#import "OCKCarePlanActivity_Internal.h"
 #import "OCKTreatment_Internal.h"
 #import "OCKEvaluation_Internal.h"
-#import "OCKCareEvent_Internal.h"
+#import "OCKCarePlanEvent_Internal.h"
 #import "OCKCareSchedule_Internal.h"
 #import "OCKHelpers.h"
 #import "OCKDefines.h"
@@ -24,7 +24,7 @@ static NSManagedObjectContext *createManagedObjectContext(NSURL *modelURL, NSURL
     if (![persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType
                                                   configuration:nil
                                                             URL:storeURL
-                                                        options:nil
+                                                        options:@{NSFileProtectionKey: NSFileProtectionComplete}
                                                           error:error]) {
         return nil;
     }
@@ -81,7 +81,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
 
 - (BOOL)block_addItemWithEntityName:(NSString *)entityName
                       coreDataClass:(Class)coreDataClass
-                         sourceItem:(OCKCarePlanItem *)sourceItem
+                         sourceItem:(OCKCarePlanActivity *)sourceItem
                               error:(NSError **)error{
     NSParameterAssert(entityName);
     NSParameterAssert(coreDataClass);
@@ -93,19 +93,32 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     }
     
     NSError *errorOut;
-
-    NSManagedObject *cdObject;
-    cdObject = [[coreDataClass alloc] initWithEntity:[NSEntityDescription entityForName:entityName
-                                                                 inManagedObjectContext:context]
-                      insertIntoManagedObjectContext:context
-                                                item:sourceItem];
     
-    if (![context save:&errorOut]) {
+    OCKCarePlanActivity *item = [self block_fetchItemWithEntityName:entityName
+                                                         identifier:sourceItem.identifier
+                                                              class:[OCKCarePlanActivity class]
+                                                              error:&errorOut];
+    
+    if (item) {
         if (error) {
-            *error = errorOut;
+            NSString *reasonString = [NSString stringWithFormat:@"The activity with same identifier %@ is existing.", sourceItem.identifier];
+            *error = [NSError errorWithDomain:OCKErrorDomain code:OCKErrorInvalidObject userInfo:@{@"reason":reasonString}];
+        }
+    } else {
+    
+        NSManagedObject *cdObject;
+        cdObject = [[coreDataClass alloc] initWithEntity:[NSEntityDescription entityForName:entityName
+                                                                     inManagedObjectContext:context]
+                          insertIntoManagedObjectContext:context
+                                                    item:sourceItem];
+        
+        if (![context save:&errorOut]) {
+            if (error) {
+                *error = errorOut;
+            }
         }
     }
-    
+
     return errorOut ? NO : YES;
 }
 
@@ -142,7 +155,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     return errorOut ? NO : YES;
 }
 
-- (OCKCarePlanItem *)block_fetchItemWithEntityName:(NSString *)name
+- (OCKCarePlanActivity *)block_fetchItemWithEntityName:(NSString *)name
                                         identifier:(NSString *)identifier
                                              class:(Class)containerClass
                                              error:(NSError **)error {
@@ -157,6 +170,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
                                     error:error].firstObject;
     
 }
+
 
 - (BOOL)block_removeItemWithEntityName:(NSString *)name
                             identifier:(NSString *)identifier
@@ -190,7 +204,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     return (found && errorOut == nil);
 }
 
-- (NSArray<OCKCarePlanItem *> *)block_fetchItemsWithEntityName:(NSString *)name
+- (NSArray<OCKCarePlanActivity *> *)block_fetchItemsWithEntityName:(NSString *)name
                                                          class:(Class)containerClass
                                                          error:(NSError **)error {
     NSParameterAssert(name);
@@ -199,7 +213,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
 }
 
 
-- (NSArray<OCKCarePlanItem *> *)block_fetchItemsWithEntityName:(NSString *)name
+- (NSArray<OCKCarePlanActivity *> *)block_fetchItemsWithEntityName:(NSString *)name
                                                      predicate:(NSPredicate *)predicate
                                                          class:(Class)containerClass
                                                          error:(NSError **)error {
@@ -215,7 +229,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     fetchRequest.predicate = predicate;
     
     NSError *errorOut;
-    NSMutableArray<OCKCarePlanItem *> *items = [NSMutableArray new];
+    NSMutableArray<OCKCarePlanActivity *> *items = [NSMutableArray new];
    
         
     NSArray *managedObjects = [context executeFetchRequest:fetchRequest error:&errorOut];
@@ -230,6 +244,12 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
 
 - (NSArray<OCKTreatment *> *)treatments {
     return [self fetchAllTreatmentsWithError:nil];
+}
+
+- (OCKTreatment *)treatmentForIdentifier:(NSString *)identifier error:(NSError **)error {
+    NSParameterAssert(identifier);
+    NSArray *treatments = [self fetchAllTreatmentsWithError:error];
+    return [treatments filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"identifier = %@", identifier]].firstObject;
 }
 
 - (NSArray<OCKTreatment *> *)fetchAllTreatmentsWithError:(NSError **)error {
@@ -384,7 +404,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     
     NSParameterAssert(treatmentEvent);
     NSParameterAssert(completionHandler);
-    NSDate *reportingDate = [NSDate date];
+    NSDate *eventChangeDate = [NSDate date];
     
     NSError *error;
     __block NSManagedObjectContext *context = [self contextWithError:&error];
@@ -397,7 +417,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     copiedTreatmentEvent.state = completed ? OCKCareEventStateCompleted : OCKCareEventStateNotCompleted;
     // Discard `completionDate` if completed flag is NO
     copiedTreatmentEvent.completionDate = completed ? completionDate : nil;
-    copiedTreatmentEvent.reportingDate = reportingDate;
+    copiedTreatmentEvent.eventChangeDate = eventChangeDate;
     
     __block NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:OCKEntityNameTreatmentEvent];
     fetchRequest.predicate = [NSPredicate predicateWithFormat:@"%K = %d AND %K = %d",
@@ -466,29 +486,36 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     }];
 }
 
-- (NSArray<OCKTreatmentEvent *> *)eventsOfTreatment:(OCKTreatment *)treatment
-                                          startDate:(NSDate *)startDate
-                                            endDate:(NSDate *)endDate
-                                              error:(NSError **)error {
+- (void)enumerateEventsOfTreatment:(OCKTreatment *)treatment
+                         startDate:(NSDate *)startDate
+                           endDate:(NSDate *)endDate
+                        usingBlock:(void (^)(OCKTreatmentEvent *event, BOOL *stop, NSError *error))block {
     NSParameterAssert(treatment);
     NSParameterAssert(startDate);
     NSParameterAssert(endDate);
+    NSParameterAssert(block);
     
     if (startDate.timeIntervalSince1970 > endDate.timeIntervalSince1970) {
-        return [NSArray new];
+        return;
     }
-    
-    NSMutableArray *events = [NSMutableArray array];
     
     NSDate *date = startDate;
     NSCalendar *calendar = treatment.schedule.calendar;
     
+    BOOL stop = NO;
     do {
-        [events addObjectsFromArray:[self eventsOfTreatment:treatment onDay:date error:error]];
+        NSError *error;
+        
+        NSArray<OCKTreatmentEvent *> *events = [self eventsOfTreatment:treatment onDay:date error:&error];
+        for (OCKTreatmentEvent* event in events) {
+            block(event, &stop, error);
+            if (stop) {
+                break;
+            }
+        }
         date = [calendar startOfDayForDate:[calendar dateByAddingUnit:NSCalendarUnitDay value:1 toDate:date options:0]];
-    } while (date.timeIntervalSince1970 <= endDate.timeIntervalSince1970);
+    } while (stop == NO && date.timeIntervalSince1970 <= endDate.timeIntervalSince1970);
     
-    return [events copy];
 }
 
 #pragma mark - evaluation
@@ -497,13 +524,21 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     return [self fetchAllEvaluationsWithError:nil];
 }
 
+- (OCKEvaluation *)evaluationForIdentifier:(NSString *)identifier error:(NSError **)error {
+    
+    NSArray<OCKEvaluation *> *evaluations = [self fetchAllEvaluationsWithError:error];
+    return [evaluations filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"identifier = %@", identifier]].firstObject;
+}
+
 - (NSArray<OCKEvaluation *> *)fetchAllEvaluationsWithError:(NSError **)error {
     
     __block NSArray<OCKEvaluation *> *evaluations = nil;
     NSManagedObjectContext *context = [self contextWithError:error];
+     __weak typeof(self) weakSelf = self;
     [context performBlockAndWait:^{
         if (_cachedEvaluations == nil) {
-            _cachedEvaluations = [self block_fetchItemsWithEntityName:OCKEntityNameEvaluation class:[OCKEvaluation class] error:error];
+            __strong typeof(weakSelf) strongSelf = weakSelf;
+            _cachedEvaluations = [strongSelf block_fetchItemsWithEntityName:OCKEntityNameEvaluation class:[OCKEvaluation class] error:error];
         }
         evaluations = [_cachedEvaluations copy];
     }];
@@ -641,29 +676,35 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     return [eventGroup copy];
 }
 
-- (NSArray<OCKEvaluationEvent *> *)eventsOfEvaluation:(OCKEvaluation *)evaluation
-                                            startDate:(NSDate *)startDate
-                                              endDate:(NSDate *)endDate
-                                                error:(NSError **)error {
+- (void)enumerateEventsOfEvaluation:(OCKEvaluation *)evaluation
+                          startDate:(NSDate *)startDate
+                            endDate:(NSDate *)endDate
+                         usingBlock:(void (^)(OCKEvaluationEvent *event, BOOL *stop, NSError *error))block {
     NSParameterAssert(evaluation);
     NSParameterAssert(startDate);
     NSParameterAssert(endDate);
+    NSParameterAssert(block);
     
     if (startDate.timeIntervalSince1970 >= endDate.timeIntervalSince1970) {
-        return [NSArray new];
+        return;
     }
-    
-    NSMutableArray *events = [NSMutableArray array];
     
     NSDate *date = startDate;
     NSCalendar *calendar = evaluation.schedule.calendar;
-   
-    do {
-        [events addObjectsFromArray:[self eventsOfEvaluation:evaluation onDay:date error:error]];
-        date = [calendar startOfDayForDate:[calendar dateByAddingUnit:NSCalendarUnitDay value:1 toDate:date options:0]];
-    } while (date.timeIntervalSince1970 <= endDate.timeIntervalSince1970);
     
-    return [events copy];
+    BOOL stop = NO;
+    do {
+        NSError *error;
+        
+        NSArray<OCKEvaluationEvent *> *events = [self eventsOfEvaluation:evaluation onDay:date error:&error];
+        for (OCKEvaluationEvent* event in events) {
+            block(event, &stop, error);
+            if (stop) {
+                break;
+            }
+        }
+        date = [calendar startOfDayForDate:[calendar dateByAddingUnit:NSCalendarUnitDay value:1 toDate:date options:0]];
+    } while (stop == NO && date.timeIntervalSince1970 <= endDate.timeIntervalSince1970);
 }
 
 - (void)updateEvaluationEvent:(OCKEvaluationEvent *)evaluationEvent
@@ -675,7 +716,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     
     NSParameterAssert(evaluationEvent);
     NSParameterAssert(completionHandler);
-    NSDate *reportingDate = [NSDate date];
+    NSDate *eventChangeDate = [NSDate date];
     NSError *error;
     __block NSManagedObjectContext *context = [self contextWithError:&error];
     if (context == nil) {
@@ -686,7 +727,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     OCKEvaluationEvent *copiedEvaluationEvent = [evaluationEvent copy];
     copiedEvaluationEvent.state = OCKCareEventStateCompleted;
     copiedEvaluationEvent.completionDate = completionDate;
-    copiedEvaluationEvent.reportingDate = reportingDate;
+    copiedEvaluationEvent.eventChangeDate = eventChangeDate;
     copiedEvaluationEvent.evaluationValue = evaluationValue;
     copiedEvaluationEvent.evaluationResult = evaluationResult;
     copiedEvaluationEvent.evaluationValueString = evaluationValueString;

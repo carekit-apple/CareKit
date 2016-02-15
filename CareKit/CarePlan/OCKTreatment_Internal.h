@@ -7,7 +7,7 @@
 //
 
 #import <CareKit/CareKit.h>
-#import "OCKCarePlanItem_Internal.h"
+#import "OCKCarePlanActivity_Internal.h"
 
 @class OCKCDTreatmentEvent;
 

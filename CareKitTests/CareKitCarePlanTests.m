@@ -18,7 +18,7 @@
 
 @implementation CareKitTests {
     BOOL _listChanged;
-    OCKCareEvent *_event;
+    OCKCarePlanEvent *_event;
 }
 
 - (NSString *)testPath {
@@ -61,19 +61,21 @@
     
     OCKCareSchedule *schedule = [[OCKCareDailySchedule alloc] initWithStartDate:[NSDate date] occurrencesPerDay:3];
     
-    OCKTreatment *item1 = [[OCKTreatment alloc] initWithType:@"type1"
-                                                       title:@"title1"
-                                                        text:@"text1"
-                                                        color:[UIColor greenColor]
-                                                         schedule:schedule
-                                                         optional:NO];
+    OCKTreatment *item1 = [[OCKTreatment alloc] initWithIdentifier:@"id1"
+                                                              type:@"type1"
+                                                             title:@"title1"
+                                                              text:@"text1"
+                                                             color:[UIColor greenColor]
+                                                          schedule:schedule
+                                                          optional:NO onlyMutableDuringEventDay:NO];
     
-    OCKTreatment *item2 = [[OCKTreatment alloc] initWithType:@"type2"
-                                                       title:@"title2"
-                                                        text:@"text2"
-                                                       color:[UIColor blueColor]
-                                                    schedule:schedule
-                                                    optional:NO];
+    OCKTreatment *item2 = [[OCKTreatment alloc] initWithIdentifier:@"id2"
+                                                              type:@"type2"
+                                                             title:@"title2"
+                                                              text:@"text2"
+                                                             color:[UIColor blueColor]
+                                                          schedule:schedule
+                                                          optional:NO onlyMutableDuringEventDay:NO];
     
     NSError *error;
     BOOL result;
@@ -97,6 +99,11 @@
     
     store = [[OCKCarePlanStore alloc] initWithPersistenceDirectoryURL:directoryURL];
     store.delegate = self;
+    
+    XCTAssertEqualObjects([store treatmentForIdentifier:item1.identifier error:&error], item1);
+    XCTAssertNil(error);
+    XCTAssertEqualObjects([store treatmentForIdentifier:item2.identifier error:&error], item2);
+    XCTAssertNil(error);
     
     XCTAssertEqual(store.treatments.count, 2);
     
@@ -153,8 +160,22 @@
     XCTAssertEqual(events[0][2].state, OCKCareEventStateInitial);
     XCTAssertTrue([self isEventChangeDelegateCalled]);
     
-    NSArray<OCKTreatmentEvent *> *eventsOfTreatment = [store eventsOfTreatment:treatments[0] startDate:[NSDate date] endDate:[NSDate dateWithTimeIntervalSinceNow:100*24*60*60] error:&error];
-    XCTAssertNil(error);
+    expectation = [self expectationWithDescription:@"enumerateEvents"];
+    NSMutableArray<OCKTreatmentEvent *> *eventsOfTreatment = [[NSMutableArray alloc] init];
+    [store enumerateEventsOfTreatment:treatments[0] startDate:[NSDate date] endDate:[NSDate dateWithTimeIntervalSinceNow:100*24*60*60]
+                           usingBlock:^(OCKTreatmentEvent * _Nonnull event, BOOL * _Nonnull stop, NSError * _Nonnull error) {
+                               XCTAssertNil(error);
+                               XCTAssertNotNil(event);
+                               [eventsOfTreatment addObject:event];
+                               if (eventsOfTreatment.count == 303) {
+                                   [expectation fulfill];
+                               }
+                           }];
+    
+    [self waitForExpectationsWithTimeout:2.0 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
+    
     XCTAssertEqual(eventsOfTreatment.count, 3*101);
     XCTAssertEqual(eventsOfTreatment[0].numberOfDaysSinceStart, 0);
     XCTAssertEqual(eventsOfTreatment[1].numberOfDaysSinceStart, 0);
@@ -181,9 +202,6 @@
             XCTAssertNil(error);
         }];
     }];
-   
-    
-    eventsOfTreatment = [store eventsOfTreatment:treatments[0] startDate:[NSDate date] endDate:[NSDate dateWithTimeIntervalSinceNow:100*24*60*60] error:&error];
     
     NSLog(@"open %@", [self testPath]);
 }
@@ -198,20 +216,25 @@
         
         OCKCareSchedule *schedule = [[OCKCareDailySchedule alloc] initWithStartDate:[NSDate date] occurrencesPerDay:3];
         
-        OCKEvaluation *item1 = [[OCKEvaluation alloc] initWithType:@"type1"
-                                                             title:@"title1"
-                                                              text:@"text1"
-                                                             color:[UIColor orangeColor]
-                                                          schedule:schedule
-                                                              task:[[ORKOrderedTask alloc] initWithIdentifier:@"id" steps:nil] optional:NO];
+        OCKEvaluation *item1 = [[OCKEvaluation alloc] initWithIdentifier:@"id1"
+                                                                    type:@"type1"
+                                                                   title:@"title1"
+                                                                    text:@"text1"
+                                                                   color:[UIColor orangeColor]
+                                                                schedule:schedule
+                                                                    task:[[ORKOrderedTask alloc] initWithIdentifier:@"id" steps:nil]
+                                                                optional:NO
+                                                              retryLimit:0];
         
-        OCKEvaluation *item2 = [[OCKEvaluation alloc] initWithType:@"type2"
-                                                             title:@"title2"
-                                                              text:@"text2"
-                                                             color:[UIColor blueColor]
-                                                          schedule:schedule
-                                                              task:nil
-                                                          optional:NO];
+        OCKEvaluation *item2 = [[OCKEvaluation alloc] initWithIdentifier:@"id2"
+                                                                    type:@"type2"
+                                                                   title:@"title2"
+                                                                    text:@"text2"
+                                                                   color:[UIColor blueColor]
+                                                                schedule:schedule
+                                                                    task:nil
+                                                                optional:NO
+                                                              retryLimit:0];
         
         NSError *error;
         BOOL result;
@@ -233,6 +256,11 @@
         
         store = [[OCKCarePlanStore alloc] initWithPersistenceDirectoryURL:directoryURL];
         store.delegate = self;
+        
+        XCTAssertEqualObjects([store evaluationForIdentifier:item1.identifier error:&error], item1);
+        XCTAssertNil(error);
+        XCTAssertEqualObjects([store evaluationForIdentifier:item2.identifier error:&error], item2);
+        XCTAssertNil(error);
         
         XCTAssertEqual(store.evaluations.count, 2);
         
@@ -294,7 +322,25 @@
         XCTAssertEqual(events[0][2].state, OCKCareEventStateInitial);
         XCTAssertTrue([self isEventChangeDelegateCalled]);
         
-        NSArray<OCKEvaluationEvent *> *eventsOfEvaluation = [store eventsOfEvaluation:evaluations[0] startDate:[NSDate date] endDate:[NSDate dateWithTimeIntervalSinceNow:8*24*60*60] error:&error];
+        
+        expectation = [self expectationWithDescription:@"enumerateEvents"];
+        NSMutableArray<OCKEvaluationEvent *> *eventsOfEvaluation = [[NSMutableArray alloc] init];
+        [store enumerateEventsOfEvaluation:evaluations[0]
+                                 startDate:[NSDate date]
+                                   endDate:[NSDate dateWithTimeIntervalSinceNow:8*24*60*60]
+                               usingBlock:^(OCKEvaluationEvent * _Nonnull event, BOOL * _Nonnull stop, NSError * _Nonnull error) {
+                                   XCTAssertNil(error);
+                                   XCTAssertNotNil(event);
+                                   [eventsOfEvaluation addObject:event];
+                                   if (eventsOfEvaluation.count == 3*9) {
+                                       [expectation fulfill];
+                                   }
+                               }];
+        
+        [self waitForExpectationsWithTimeout:2.0 handler:^(NSError * _Nullable error) {
+            XCTAssertNil(error);
+        }];
+        
         XCTAssertNil(error);
         XCTAssertEqual(eventsOfEvaluation.count, 3*9);
         XCTAssertEqual(eventsOfEvaluation[0].numberOfDaysSinceStart, 0);

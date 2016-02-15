@@ -7,7 +7,7 @@
 //
 
 #import <CareKit/CareKit.h>
-#import "OCKCarePlanItem_Internal.h"
+#import "OCKCarePlanActivity_Internal.h"
 
 @class OCKCDEvaluationEvent;
 
@@ -23,6 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nullable, nonatomic, strong) id<ORKTask, NSSecureCoding> task;
 @property (nullable, nonatomic, retain) NSSet<OCKCDEvaluationEvent *> *events;
+@property (nonatomic, strong) NSNumber *retryLimit;
 
 @end
 

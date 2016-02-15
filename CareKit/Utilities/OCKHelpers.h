@@ -36,6 +36,24 @@
 
 OCK_EXTERN NSString *const OCKErrorDomain OCK_AVAILABLE_DECL;
 
+/// The exception thrown when an invalid argument is passed to a method or function.
+OCK_EXTERN NSString *const OCKInvalidArgumentException OCK_AVAILABLE_DECL;
+
+/// `ORKErrorCode` codes are used for errors in the domain `OCKErrorDomain`.
+typedef NS_ENUM(NSInteger, OCKErrorCode) {
+    /// No matching object was found.
+    OCKErrorObjectNotFound = 1,
+    
+    /// An object was invalid and processing could not continue.
+    OCKErrorInvalidObject,
+    
+    /// An exception was caught during an operation.
+    OCKErrorException,
+    
+    /// Multiple errors were encountered during an operation.
+    OCKErrorMultipleErrors
+} OCK_ENUM_AVAILABLE;
+
 #if ( defined(OCK_LOG_LEVEL_NONE) && OCK_LOG_LEVEL_NONE )
 #  undef OCK_LOG_LEVEL_DEBUG
 #  undef OCK_LOG_LEVEL_WARNING

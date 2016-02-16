@@ -61,13 +61,15 @@
     
     OCKCareSchedule *schedule = [[OCKCareDailySchedule alloc] initWithStartDate:[NSDate date] occurrencesPerDay:3];
     
+    OCKDayRange range = {1, 1};
     OCKTreatment *item1 = [[OCKTreatment alloc] initWithIdentifier:@"id1"
                                                               type:@"type1"
                                                              title:@"title1"
                                                               text:@"text1"
                                                              color:[UIColor greenColor]
                                                           schedule:schedule
-                                                          optional:NO onlyMutableDuringEventDay:NO];
+                                                          optional:NO
+                                              eventMutableDayRange:range];
     
     OCKTreatment *item2 = [[OCKTreatment alloc] initWithIdentifier:@"id2"
                                                               type:@"type2"
@@ -75,7 +77,8 @@
                                                               text:@"text2"
                                                              color:[UIColor blueColor]
                                                           schedule:schedule
-                                                          optional:NO onlyMutableDuringEventDay:NO];
+                                                          optional:NO
+                                              eventMutableDayRange:range];
     
     NSError *error;
     BOOL result;
@@ -141,7 +144,7 @@
     [store updateTreatmentEvent:events[0][0]
                       completed:YES
                  completionDate:[NSDate date]
-              completionHandler:^(BOOL success, OCKTreatmentEvent * _Nonnull event, NSError * _Nonnull error) {
+                     completion:^(BOOL success, OCKTreatmentEvent * _Nonnull event, NSError * _Nonnull error) {
         XCTAssertNil(error);
         XCTAssertTrue(success);
         [expectation fulfill];
@@ -191,7 +194,7 @@
             XCTestExpectation *expectation = [self expectationWithDescription:@"updateEvent"];
             [store updateTreatmentEvent:event completed:YES
                          completionDate:[NSDate date]
-                      completionHandler:^(BOOL success, OCKTreatmentEvent * _Nonnull event, NSError * _Nonnull error) {
+                             completion:^(BOOL success, OCKTreatmentEvent * _Nonnull event, NSError * _Nonnull error) {
                           XCTAssertNil(error);
                           XCTAssertTrue(success);
                           [expectation fulfill];
@@ -223,7 +226,7 @@
                                                                 schedule:schedule
                                                                     task:[[ORKOrderedTask alloc] initWithIdentifier:@"id" steps:nil]
                                                                 optional:NO
-                                                              retryLimit:0];
+                                                              allowRetry:YES];
         
         OCKEvaluation *item2 = [[OCKEvaluation alloc] initWithIdentifier:@"id2"
                                                                     type:@"type2"
@@ -233,7 +236,7 @@
                                                                 schedule:schedule
                                                                     task:nil
                                                                 optional:NO
-                                                              retryLimit:0];
+                                                              allowRetry:NO];
         
         NSError *error;
         BOOL result;
@@ -298,7 +301,7 @@
                evaluationValueString:@"9.5"
                     evaluationResult:NSStringFromClass([self class])
                       completionDate:[NSDate date]
-                   completionHandler:^(BOOL success, OCKEvaluationEvent * _Nonnull event, NSError * _Nonnull error) {
+                          completion:^(BOOL success, OCKEvaluationEvent * _Nonnull event, NSError * _Nonnull error) {
                        XCTAssertTrue(success);
                        XCTAssertNotNil(event);
                        XCTAssertNil(error);

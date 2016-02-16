@@ -351,7 +351,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     NSArray<OCKTreatment *> *items = [self fetchAllTreatmentsWithError:error];
     
     for (OCKTreatment *treatment in items) {
-        NSArray *eventGroup = [self eventsOfTreatment:treatment onDay:(NSDate *)date error:error];
+        NSArray *eventGroup = [self eventsForTreatment:treatment day:(NSDate *)date error:error];
         if (eventGroup.count > 0) {
             [eventGroups addObject:eventGroup];
         }
@@ -359,7 +359,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     return [eventGroups copy];
 }
 
-- (NSArray<OCKTreatmentEvent *> *)eventsOfTreatment:(OCKTreatment *)treatment onDay:(NSDate *)day error:(NSError **)error {
+- (NSArray<OCKTreatmentEvent *> *)eventsForTreatment:(OCKTreatment *)treatment day:(NSDate *)day error:(NSError **)error {
     OCKCareSchedule *schedule = treatment.schedule;
     NSUInteger numberOfEvents = [schedule numberOfEventsOnDay:day];
     
@@ -400,16 +400,16 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
 - (void)updateTreatmentEvent:(OCKTreatmentEvent *)treatmentEvent
                    completed:(BOOL)completed
               completionDate:(NSDate *)completionDate
-           completionHandler:(void (^)(BOOL success, OCKTreatmentEvent *event, NSError *error))completionHandler {
+                  completion:(void (^)(BOOL success, OCKTreatmentEvent *event, NSError *error))completion {
     
     NSParameterAssert(treatmentEvent);
-    NSParameterAssert(completionHandler);
+    NSParameterAssert(completion);
     NSDate *eventChangeDate = [NSDate date];
     
     NSError *error;
     __block NSManagedObjectContext *context = [self contextWithError:&error];
     if (context == nil) {
-        completionHandler(NO, treatmentEvent, error);
+        completion(NO, treatmentEvent, error);
         return;
     }
     
@@ -472,7 +472,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
         BOOL result = errorOut == nil && found;
         
         dispatch_async(dispatch_get_main_queue(), ^(){
-            completionHandler(result, result ? copiedTreatmentEvent : treatmentEvent, errorOut);
+            completion(result, result ? copiedTreatmentEvent : treatmentEvent, errorOut);
             
             if (result) {
                 if(_treatmentUIDelegate && [_treatmentUIDelegate respondsToSelector:@selector(carePlanStore:didReceiveUpdateOfTreatmentEvent:)]) {
@@ -506,7 +506,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     do {
         NSError *error;
         
-        NSArray<OCKTreatmentEvent *> *events = [self eventsOfTreatment:treatment onDay:date error:&error];
+        NSArray<OCKTreatmentEvent *> *events = [self eventsForTreatment:treatment day:date error:&error];
         for (OCKTreatmentEvent* event in events) {
             block(event, &stop, error);
             if (stop) {
@@ -635,7 +635,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     NSArray<OCKEvaluation *> *evaluations = [self fetchAllEvaluationsWithError:error];
     
     for (OCKEvaluation *evaluation in evaluations) {
-        NSArray *eventGroup = [self eventsOfEvaluation:evaluation onDay:date error:error];
+        NSArray *eventGroup = [self eventsForEvaluation:evaluation day:date error:error];
         if (eventGroup.count > 0) {
             [eventGroups addObject:eventGroup];
         }
@@ -643,7 +643,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     return [eventGroups copy];
 }
 
-- (NSArray<OCKEvaluationEvent *> *)eventsOfEvaluation:(OCKEvaluation *)evaluation onDay:(NSDate *)date  error:(NSError **)error {
+- (NSArray<OCKEvaluationEvent *> *)eventsForEvaluation:(OCKEvaluation *)evaluation day:(NSDate *)date  error:(NSError **)error {
     NSParameterAssert(evaluation);
     NSParameterAssert(date);
     
@@ -696,7 +696,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     do {
         NSError *error;
         
-        NSArray<OCKEvaluationEvent *> *events = [self eventsOfEvaluation:evaluation onDay:date error:&error];
+        NSArray<OCKEvaluationEvent *> *events = [self eventsForEvaluation:evaluation day:date error:&error];
         for (OCKEvaluationEvent* event in events) {
             block(event, &stop, error);
             if (stop) {
@@ -712,15 +712,15 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
         evaluationValueString:(NSString *)evaluationValueString
              evaluationResult:(id<NSSecureCoding>)evaluationResult
                completionDate:(NSDate *)completionDate
-            completionHandler:(void (^)(BOOL success, OCKEvaluationEvent *event, NSError *error))completionHandler {
+                   completion:(void (^)(BOOL success, OCKEvaluationEvent *event, NSError *error))completion {
     
     NSParameterAssert(evaluationEvent);
-    NSParameterAssert(completionHandler);
+    NSParameterAssert(completion);
     NSDate *eventChangeDate = [NSDate date];
     NSError *error;
     __block NSManagedObjectContext *context = [self contextWithError:&error];
     if (context == nil) {
-        completionHandler(NO, evaluationEvent, error);
+        completion(NO, evaluationEvent, error);
         return;
     }
     
@@ -788,7 +788,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
         result = errorOut == nil && found;
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            completionHandler(result, result ? copiedEvaluationEvent : evaluationEvent, errorOut);
+            completion(result, result ? copiedEvaluationEvent : evaluationEvent, errorOut);
             
             if (result){
                 if(_evaluationUIDelegate && [_evaluationUIDelegate respondsToSelector:@selector(carePlanStore:didReceiveUpdateOfEvaluationEvent:)]) {

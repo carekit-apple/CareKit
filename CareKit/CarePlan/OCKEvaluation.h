@@ -22,7 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
                           schedule:(OCKCareSchedule *)schedule
                               task:(nullable id<ORKTask, NSSecureCoding>)task
                           optional:(BOOL)optional
-                        retryLimit:(NSUInteger)retryLimit;
+                        allowRetry:(NSUInteger)allowRetry;
 
 
 /**
@@ -32,10 +32,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, readonly, nullable) id<ORKTask, NSSecureCoding> task;
 
 /**
- How many times user can retry an evaluation during a day.
- 0 stands for unlimited.
+ Allow user to retry an evaluation during a day.
  */
-@property (nonatomic, readonly) NSUInteger retryLimit;
+@property (nonatomic, readonly) BOOL allowRetry;
 
 @end
 

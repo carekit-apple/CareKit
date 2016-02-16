@@ -23,7 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nullable, nonatomic, strong) id<ORKTask, NSSecureCoding> task;
 @property (nullable, nonatomic, retain) NSSet<OCKCDEvaluationEvent *> *events;
-@property (nonatomic, strong) NSNumber *retryLimit;
+@property (nonatomic, strong) NSNumber *allowRetry;
 
 @end
 

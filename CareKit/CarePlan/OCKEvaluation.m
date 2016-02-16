@@ -16,6 +16,7 @@
     self = [super initWithCoreDataObject:cdObject];
     if (self) {
         _task = cdObject.task;
+        _allowRetry = cdObject.allowRetry.boolValue;
     }
     return self;
 }
@@ -29,12 +30,14 @@
                           schedule:(OCKCareSchedule *)schedule
                               task:(nullable id<ORKTask, NSSecureCoding>) task
                           optional:(BOOL)optional
-                        retryLimit:(NSUInteger)retryLimit {
+                        allowRetry:(NSUInteger)allowRetry {
     
-    self = [super initWithIdentifier:identifier type:type title:title text:text color:color schedule:schedule optional:optional onlyMutableDuringEventDay:YES];
+    OCKDayRange range = {0, 0};
+    
+    self = [super initWithIdentifier:identifier type:type title:title text:text color:color schedule:schedule optional:optional eventMutableDayRange:range];
     if (self) {
         _task = task;
-        _retryLimit = retryLimit;
+        _allowRetry = allowRetry;
     }
     return self;
 }
@@ -43,7 +46,7 @@
     self = [super initWithCoder:coder];
     if (self) {
         OCK_DECODE_OBJ(coder, task);
-        OCK_DECODE_INTEGER(coder, retryLimit);
+        OCK_DECODE_BOOL(coder, allowRetry);
     }
     return self;
 }
@@ -51,7 +54,7 @@
 - (void)encodeWithCoder:(NSCoder *)coder {
     [super encodeWithCoder:coder];
     OCK_ENCODE_OBJ(coder, task);
-    OCK_ENCODE_INTEGER(coder, retryLimit);
+    OCK_ENCODE_BOOL(coder, allowRetry);
 }
 
 - (BOOL)isEqual:(id)object {
@@ -60,13 +63,13 @@
     __typeof(self) castObject = object;
     return (equal &&
             OCKEqualObjects(self.task, castObject.task) &&
-            (self.retryLimit == castObject.retryLimit));
+            (self.allowRetry == castObject.allowRetry));
 }
 
 - (instancetype)copyWithZone:(NSZone *)zone {
     OCKEvaluation *evaluation = [super copyWithZone:zone];
     evaluation->_task = self.task;
-    evaluation->_retryLimit = self.retryLimit;
+    evaluation->_allowRetry = self.allowRetry;
     return evaluation;
 }
 
@@ -85,7 +88,7 @@ insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
     
     if (self) {
         self.task = evaluation.task;
-        self.retryLimit = @(evaluation.retryLimit);
+        self.allowRetry = @(evaluation.allowRetry);
     }
     return self;
 }
@@ -96,7 +99,7 @@ insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
 @implementation OCKCDEvaluation (CoreDataProperties)
 
 @dynamic task;
-@dynamic retryLimit;
+@dynamic allowRetry;
 @dynamic events;
 
 @end

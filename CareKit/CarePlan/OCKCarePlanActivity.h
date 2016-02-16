@@ -12,6 +12,12 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+
+typedef struct _OCKDayRange {
+    NSUInteger daysBeforeEventDay;
+    NSUInteger daysAfterEventDay;
+} OCKDayRange;
+
 /**
  Abstract care plan activity Class
  */
@@ -55,9 +61,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) BOOL optional;
 
 /**
- Allow user to report completion outside the day for a event
+ When a user is able to respond to an event.
+ [0, 0] means event is only mutable during event day.
+ [1, 1] means event is mutable one day before event day, event day, and one day after event day.
  */
-@property (nonatomic, readonly) BOOL onlyMutableDuringEventDay;
+@property (nonatomic, readonly) OCKDayRange eventMutableDayRange;
 
 @end
 

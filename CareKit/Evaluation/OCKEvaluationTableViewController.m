@@ -17,7 +17,6 @@
 
 @implementation OCKEvaluationTableViewController {
     NSArray<NSArray<OCKEvaluationEvent *> *> *_evaluationEvents;
-    
     NSDateFormatter *_dateFormatter;
 }
 
@@ -57,7 +56,7 @@
 }
 
 - (void)prepareHeaderView {
-    OCKEvaluationTableViewHeader *headerView = [OCKEvaluationTableViewHeader new];
+    OCKEvaluationTableViewHeader *headerView = [[OCKEvaluationTableViewHeader alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 200)];
     
     if (!_dateFormatter) {
         _dateFormatter = [NSDateFormatter new];

@@ -46,12 +46,16 @@
 
 #pragma mark - Helpers
 
-- (NSURL *)storeDirectoryURL {
+- (NSString *)storeDirectoryPath {
     NSArray *searchPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *docPath = [searchPaths objectAtIndex:0];
     NSString *path = [docPath stringByAppendingPathComponent:@"carePlanStore"];
     [[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:nil];
-    return [NSURL fileURLWithPath:path];
+    return path;
+}
+
+- (NSURL *)storeDirectoryURL {
+    return [NSURL fileURLWithPath:[self storeDirectoryPath]];
 }
 
 - (void)setUpCarePlanStore {
@@ -65,7 +69,7 @@
     // Add new evaluations to store.
     NSError *error;
     for (OCKEvaluation *evaluation in _evaluations) {
-        if (![_store.evaluations containsObject:evaluation]) {
+        if (![_store evaluationForIdentifier:evaluation.identifier error:nil]) {
             [_store addEvaluation:evaluation error:&error];
             NSAssert(!error, error.localizedDescription);
         }
@@ -74,7 +78,6 @@
 
 - (void)generateEvaluations {
     NSMutableArray *evaluations = [NSMutableArray new];
-
     {
         OCKCareSchedule *coughEvaluationSchedule = [OCKCareSchedule weeklyScheduleWithStartDate:[NSDate date] occurrencesOnEachDay:@[@1,@1,@0,@1,@0,@1,@1]];
         OCKEvaluation *coughEvaluation = [[OCKEvaluation alloc] initWithIdentifier:@"coughEvaluation"
@@ -88,7 +91,6 @@
                                                                         retryLimit:0];
         [evaluations addObject:coughEvaluation];
     }
-    
     _evaluations = [evaluations copy];
 }
 
@@ -273,7 +275,7 @@
         NSAssert(!error, error.localizedDescription);
         [_store updateEvaluationEvent:evaluationEvent
                       evaluationValue:@(value)
-                evaluationValueString:[NSString stringWithFormat:@"%f", value]
+                evaluationValueString:[NSString stringWithFormat:@"%@", @(value)]
                      evaluationResult:nil
                        completionDate:[NSDate date]
                     completionHandler:^(BOOL success, OCKEvaluationEvent * _Nonnull event, NSError * _Nonnull error) {

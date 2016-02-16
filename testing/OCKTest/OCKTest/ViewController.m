@@ -88,7 +88,7 @@
                                                                           schedule:coughEvaluationSchedule
                                                                               task:nil
                                                                           optional:NO
-                                                                        retryLimit:0];
+                                                                        allowRetry:NO];
         [evaluations addObject:coughEvaluation];
     }
     _evaluations = [evaluations copy];
@@ -269,16 +269,16 @@
         // Grab the evaluation and update it in the store.
         NSError *error;
         OCKEvaluation *evaluation = _evaluations[0];
-        OCKEvaluationEvent *evaluationEvent = [[_store eventsOfEvaluation:evaluation
-                                                                    onDay:[NSDate date]
-                                                                    error:&error] firstObject];
+        OCKEvaluationEvent *evaluationEvent = [[_store eventsForEvaluation:evaluation
+                                                                       day:[NSDate date]
+                                                                     error:&error] firstObject];
         NSAssert(!error, error.localizedDescription);
         [_store updateEvaluationEvent:evaluationEvent
                       evaluationValue:@(value)
                 evaluationValueString:[NSString stringWithFormat:@"%@", @(value)]
                      evaluationResult:nil
                        completionDate:[NSDate date]
-                    completionHandler:^(BOOL success, OCKEvaluationEvent * _Nonnull event, NSError * _Nonnull error) {
+                           completion:^(BOOL success, OCKEvaluationEvent * _Nonnull event, NSError * _Nonnull error) {
                         NSAssert(success, error.localizedDescription);
                     }];
         

@@ -10,7 +10,8 @@
     <entity name="OCKCDCarePlanItem" representedClassName="OCKCDCarePlanItem" syncable="YES">
         <attribute name="color" optional="YES" attributeType="Transformable" syncable="YES"/>
         <attribute name="identifier" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="onlyMutableDuringEventDay" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="mutableDaysAfterEventDay" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="mutableDaysBeforeEventDay" optional="YES" attributeType="Integer 64" syncable="YES"/>
         <attribute name="optional" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="schedule" optional="YES" attributeType="Transformable" syncable="YES"/>
         <attribute name="text" optional="YES" attributeType="String" syncable="YES"/>
@@ -18,7 +19,7 @@
         <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <entity name="OCKCDEvaluation" representedClassName="OCKCDEvaluation" parentEntity="OCKCDCarePlanItem" syncable="YES">
-        <attribute name="retryLimit" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="allowRetry" optional="YES" attributeType="Boolean" defaultValueString="0" syncable="YES"/>
         <attribute name="task" optional="YES" attributeType="Transformable" syncable="YES"/>
         <relationship name="events" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OCKCDEvaluationEvent" inverseName="evaluation" inverseEntity="OCKCDEvaluationEvent" syncable="YES"/>
     </entity>
@@ -36,7 +37,7 @@
     </entity>
     <elements>
         <element name="OCKCDCareEvent" positionX="-288" positionY="-111" width="128" height="120"/>
-        <element name="OCKCDCarePlanItem" positionX="-477" positionY="-1" width="128" height="165"/>
+        <element name="OCKCDCarePlanItem" positionX="-477" positionY="-1" width="128" height="178"/>
         <element name="OCKCDEvaluation" positionX="-182" positionY="153" width="128" height="90"/>
         <element name="OCKCDEvaluationEvent" positionX="-279" positionY="32" width="128" height="105"/>
         <element name="OCKCDTreatment" positionX="-486" positionY="-171" width="128" height="60"/>

@@ -19,7 +19,7 @@
                              color:(UIColor *)color
                           schedule:(OCKCareSchedule *)schedule
                           optional:(BOOL)optional
-         onlyMutableDuringEventDay:(BOOL)onlyMutableDuringEventDay{
+              eventMutableDayRange:(OCKDayRange)eventMutableDayRange{
     
     NSParameterAssert(type);
     NSParameterAssert(identifier);
@@ -34,7 +34,7 @@
         _color = color;
         _schedule = schedule;
         _optional = optional;
-        _onlyMutableDuringEventDay = onlyMutableDuringEventDay;
+        _eventMutableDayRange = eventMutableDayRange;
     }
     return self;
 }
@@ -51,7 +51,10 @@
         _color = cdObject.color;
         _schedule = cdObject.schedule;
         _optional = [cdObject.optional boolValue];
-        _onlyMutableDuringEventDay = [cdObject.onlyMutableDuringEventDay boolValue];
+        OCKDayRange range;
+        range.daysBeforeEventDay = cdObject.mutableDaysBeforeEventDay.unsignedIntegerValue;
+        range.daysAfterEventDay = cdObject.mutableDaysAfterEventDay.unsignedIntegerValue;
+        _eventMutableDayRange =  range;
     }
     return self;
 }
@@ -70,7 +73,10 @@
         OCK_DECODE_OBJ_CLASS(coder, schedule, OCKCareSchedule);
         OCK_DECODE_OBJ_CLASS(coder, type, NSString);
         OCK_DECODE_BOOL(coder, optional);
-        OCK_DECODE_BOOL(coder, onlyMutableDuringEventDay);
+        OCKDayRange range;
+        range.daysBeforeEventDay = [[coder decodeObjectOfClass:[NSNumber class] forKey:@"daysBeforeEventDay"] unsignedIntegerValue];
+        range.daysAfterEventDay = [[coder decodeObjectOfClass:[NSNumber class] forKey:@"daysAfterEventDay"] unsignedIntegerValue];
+        _eventMutableDayRange =  range;
     }
     return self;
 }
@@ -84,7 +90,8 @@
     OCK_ENCODE_OBJ(coder, schedule);
     OCK_ENCODE_OBJ(coder, type);
     OCK_ENCODE_BOOL(coder, optional);
-    OCK_ENCODE_BOOL(coder, onlyMutableDuringEventDay);
+    [coder encodeObject:@(_eventMutableDayRange.daysBeforeEventDay) forKey:@"daysBeforeEventDay"];
+    [coder encodeObject:@(_eventMutableDayRange.daysAfterEventDay) forKey:@"daysAfterEventDay"];
 }
 
 - (BOOL)isEqual:(id)object {
@@ -99,7 +106,8 @@
             OCKEqualObjects(self.type, castObject.type) &&
             OCKEqualObjects(self.identifier, castObject.identifier) &&
             (self.optional == castObject.optional) &&
-            (self.onlyMutableDuringEventDay == castObject.onlyMutableDuringEventDay)
+            (self.eventMutableDayRange.daysBeforeEventDay == castObject.eventMutableDayRange.daysBeforeEventDay) &&
+            (self.eventMutableDayRange.daysAfterEventDay == castObject.eventMutableDayRange.daysAfterEventDay)
             );
 }
 
@@ -112,7 +120,7 @@
     item->_schedule = _schedule;
     item->_type = _type;
     item->_optional = _optional;
-    item->_onlyMutableDuringEventDay = _onlyMutableDuringEventDay;
+    item->_eventMutableDayRange = _eventMutableDayRange;
     return item;
 }
 
@@ -135,12 +143,14 @@ insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
         self.schedule = item.schedule;
         self.type = item.type;
         self.optional = @(item.optional);
-        self.onlyMutableDuringEventDay = @(item.onlyMutableDuringEventDay);
+        self.mutableDaysBeforeEventDay = @(item.eventMutableDayRange.daysBeforeEventDay);
+        self.mutableDaysAfterEventDay = @(item.eventMutableDayRange.daysAfterEventDay);
     }
     return self;
 }
 
-@dynamic onlyMutableDuringEventDay;
+@dynamic mutableDaysBeforeEventDay;
+@dynamic mutableDaysAfterEventDay;
 @dynamic color;
 @dynamic identifier;
 @dynamic schedule;

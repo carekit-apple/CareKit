@@ -21,8 +21,8 @@
                              color:(UIColor *)color
                           schedule:(OCKCareSchedule *)schedule
                           optional:(BOOL)optional
-         onlyMutableDuringEventDay:(BOOL)onlyMutableDuringEventDay {
-    return [super initWithIdentifier:identifier type:type title:title text:text color:color schedule:schedule optional:optional onlyMutableDuringEventDay:onlyMutableDuringEventDay];
+              eventMutableDayRange:(OCKDayRange)eventMutableDayRange {
+    return [super initWithIdentifier:identifier type:type title:title text:text color:color schedule:schedule optional:optional eventMutableDayRange:eventMutableDayRange];
 }
 
 @end

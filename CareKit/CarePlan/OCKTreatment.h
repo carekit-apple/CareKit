@@ -21,7 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
                              color:(nullable UIColor *)color
                           schedule:(OCKCareSchedule *)schedule
                           optional:(BOOL)optional
-         onlyMutableDuringEventDay:(BOOL)onlyMutableDuringEventDay;
+              eventMutableDayRange:(OCKDayRange)eventMutableDayRange;
 
 @end
 

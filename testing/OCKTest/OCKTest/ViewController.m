@@ -11,6 +11,9 @@
 #import <CareKit/CareKit.h>
 
 
+#define DefineStringKey(x) static NSString *const x = @#x
+
+
 @interface ViewController () <OCKEvaluationTableViewDelegate, OCKCarePlanStoreDelegate, ORKTaskViewControllerDelegate>
 
 @end
@@ -18,10 +21,14 @@
 
 @implementation ViewController {
     UITabBarController *_tabBarController;
-    OCKCarePlanStore *_store;
+    OCKDashboardViewController *_dashboardViewController;
+    OCKEvaluationViewController *_evaluationViewController;
+    OCKConnectViewController *_connectViewController;
     
+    OCKCarePlanStore *_store;
     NSArray<OCKEvaluation *> *_evaluations;
 }
+
 
 #pragma mark - View lifecycle
 
@@ -30,68 +37,17 @@
     
     [self setUpCarePlanStore];
     
-    UIViewController *dashboard = [self dashboardViewController];
-    UIViewController *evaluation = [self evaluationViewController];
-    UIViewController *connect = [self connectViewController];
+    _dashboardViewController = [self dashboardViewController];
+    _evaluationViewController = [self evaluationViewController];
+    _connectViewController = [self connectViewController];
     
     _tabBarController = [UITabBarController new];
-    _tabBarController.viewControllers = @[dashboard, evaluation, connect];
+    _tabBarController.viewControllers = @[_dashboardViewController, _evaluationViewController, _connectViewController];
     _tabBarController.selectedIndex = 1;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [self presentViewController:_tabBarController animated:YES completion:nil];
-}
-
-
-#pragma mark - Helpers
-
-- (NSString *)storeDirectoryPath {
-    NSArray *searchPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *docPath = [searchPaths objectAtIndex:0];
-    NSString *path = [docPath stringByAppendingPathComponent:@"carePlanStore"];
-    [[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:nil];
-    return path;
-}
-
-- (NSURL *)storeDirectoryURL {
-    return [NSURL fileURLWithPath:[self storeDirectoryPath]];
-}
-
-- (void)setUpCarePlanStore {
-    // Set up store.
-    _store = [[OCKCarePlanStore alloc] initWithPersistenceDirectoryURL:[self storeDirectoryURL]];
-    _store.delegate = self;
-    
-    // Populate evaluations.
-    [self generateEvaluations];
-    
-    // Add new evaluations to store.
-    NSError *error;
-    for (OCKEvaluation *evaluation in _evaluations) {
-        if (![_store evaluationForIdentifier:evaluation.identifier error:nil]) {
-            [_store addEvaluation:evaluation error:&error];
-            NSAssert(!error, error.localizedDescription);
-        }
-    }
-}
-
-- (void)generateEvaluations {
-    NSMutableArray *evaluations = [NSMutableArray new];
-    {
-        OCKCareSchedule *coughEvaluationSchedule = [OCKCareSchedule weeklyScheduleWithStartDate:[NSDate date] occurrencesOnEachDay:@[@1,@1,@0,@1,@0,@1,@1]];
-        OCKEvaluation *coughEvaluation = [[OCKEvaluation alloc] initWithIdentifier:@"coughEvaluation"
-                                                                              type:@"survey"
-                                                                             title:@"Cough"
-                                                                              text:@"survey"
-                                                                             color:[UIColor greenColor]
-                                                                          schedule:coughEvaluationSchedule
-                                                                              task:nil
-                                                                          optional:NO
-                                                                        allowRetry:NO];
-        [evaluations addObject:coughEvaluation];
-    }
-    _evaluations = [evaluations copy];
 }
 
 
@@ -221,39 +177,237 @@
 }
 
 
-#pragma mark - Evaluation Table View Delegate (OCKEvaluationTableViewDelegate)
+#pragma mark - CarePlan Store
 
-- (void)tableViewDidSelectEvaluationEvent:(OCKEvaluationEvent *)evaluationEvent {
-    ORKAnswerFormat *answerFormat = [ORKAnswerFormat scaleAnswerFormatWithMaximumValue:10
-                                                                          minimumValue:0
-                                                                          defaultValue:NSIntegerMax
-                                                                                  step:1
-                                                                              vertical:NO
-                                                               maximumValueDescription:@"Good"
-                                                               minimumValueDescription:@"Bad"];
-    ORKQuestionStep *step = [ORKQuestionStep questionStepWithIdentifier:@"coughStep"
-                                                                  title:@"How was your cough today?"
-                                                                 answer:answerFormat];
-    step.optional = NO;
+- (NSString *)storeDirectoryPath {
+    NSArray *searchPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *docPath = [searchPaths objectAtIndex:0];
+    NSString *path = [docPath stringByAppendingPathComponent:@"carePlanStore"];
+    [[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:nil];
+    return path;
+}
+
+- (NSURL *)storeDirectoryURL {
+    return [NSURL fileURLWithPath:[self storeDirectoryPath]];
+}
+
+- (void)setUpCarePlanStore {
+    // Reset the store.
+    [[NSFileManager defaultManager] removeItemAtPath:[self storeDirectoryPath] error:nil];
     
-    ORKOrderedTask *task = [[ORKOrderedTask alloc] initWithIdentifier:@"coughSurvey" steps:@[step]];
+    // Set up store.
+    _store = [[OCKCarePlanStore alloc] initWithPersistenceDirectoryURL:[self storeDirectoryURL]];
+    _store.delegate = self;
+    
+    // Populate evaluations.
+    [self generateEvaluations];
+    
+    // Add new evaluations to store.
+    NSError *error;
+    for (OCKEvaluation *evaluation in _evaluations) {
+        if (![_store evaluationForIdentifier:evaluation.identifier error:nil]) {
+            [_store addEvaluation:evaluation error:&error];
+            NSAssert(!error, error.localizedDescription);
+        }
+    }
+}
 
-    ORKTaskViewController *taskViewController = [[ORKTaskViewController alloc] initWithTask:task
-                                                                                taskRunUUID:nil];
+
+#pragma mark - Evaluations
+
+DefineStringKey(PainEvaluation);
+DefineStringKey(MoodEvaluation);
+DefineStringKey(SleepQualityEvaluation);
+DefineStringKey(BloodPressureEvaluation);
+DefineStringKey(WeightEvaluation);
+
+- (void)generateEvaluations {
+    NSMutableArray *evaluations = [NSMutableArray new];
+    
+    {
+        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:[NSDate date] occurrencesOnEachDay:@[@1,@1,@1,@1,@1,@1,@1]];
+        UIColor *color = OCKBlueColor();
+        OCKEvaluation *evaluation = [[OCKEvaluation alloc] initWithIdentifier:PainEvaluation
+                                                                         type:@"survey"
+                                                                        title:@"Pain"
+                                                                         text:@"lower back"
+                                                                        color:color
+                                                                     schedule:schedule
+                                                                         task:nil
+                                                                     optional:NO
+                                                                   allowRetry:NO];
+        [evaluations addObject:evaluation];
+    }
+    
+    {
+        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:[NSDate date] occurrencesOnEachDay:@[@1,@1,@1,@1,@1,@1,@1]];
+        UIColor *color = OCKGreenColor();
+        OCKEvaluation *evaluation = [[OCKEvaluation alloc] initWithIdentifier:MoodEvaluation
+                                                                         type:@"survey"
+                                                                        title:@"Mood"
+                                                                         text:@"survey"
+                                                                        color:color
+                                                                     schedule:schedule
+                                                                         task:nil
+                                                                     optional:NO
+                                                                   allowRetry:NO];
+        [evaluations addObject:evaluation];
+    }
+    
+    {
+        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:[NSDate date] occurrencesOnEachDay:@[@1,@1,@1,@1,@1,@1,@1]];
+        UIColor *color = OCKRedColor();
+        OCKEvaluation *evaluation = [[OCKEvaluation alloc] initWithIdentifier:SleepQualityEvaluation
+                                                                         type:@"survey"
+                                                                        title:@"Sleep Quality"
+                                                                         text:@"last night"
+                                                                        color:color
+                                                                     schedule:schedule
+                                                                         task:nil
+                                                                     optional:NO
+                                                                   allowRetry:NO];
+        [evaluations addObject:evaluation];
+    }
+    
+    {
+        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:[NSDate date] occurrencesOnEachDay:@[@1,@1,@1,@1,@1,@1,@1]];
+        UIColor *color = OCKYellowColor();
+        OCKEvaluation *evaluation = [[OCKEvaluation alloc] initWithIdentifier:BloodPressureEvaluation
+                                                                         type:@"survey"
+                                                                        title:@"Blood Pressure"
+                                                                         text:@"after dinner"
+                                                                        color:color
+                                                                     schedule:schedule
+                                                                         task:nil
+                                                                     optional:NO
+                                                                   allowRetry:NO];
+        [evaluations addObject:evaluation];
+    }
+    
+    {
+        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:[NSDate date] occurrencesOnEachDay:@[@1,@1,@1,@1,@1,@1,@1]];
+        UIColor *color = OCKPurpleColor();
+        OCKEvaluation *evaluation = [[OCKEvaluation alloc] initWithIdentifier:WeightEvaluation
+                                                                         type:@"survey"
+                                                                        title:@"Weight"
+                                                                         text:@"before breakfast"
+                                                                        color:color
+                                                                     schedule:schedule
+                                                                         task:nil
+                                                                     optional:NO
+                                                                   allowRetry:NO];
+        [evaluations addObject:evaluation];
+    }
+    
+    _evaluations = [evaluations copy];
+}
+
+- (void)presentViewControllerForEvaluationIdentifier:(NSString *)identifer {
+    ORKOrderedTask *task;
+    
+    if ([identifer isEqualToString:PainEvaluation]) {
+        ORKScaleAnswerFormat *format = [ORKScaleAnswerFormat scaleAnswerFormatWithMaximumValue:10
+                                                                                  minimumValue:0
+                                                                                  defaultValue:NSIntegerMax
+                                                                                          step:1
+                                                                                      vertical:NO
+                                                                       maximumValueDescription:@"Good"
+                                                                       minimumValueDescription:@"Bad"];
+        
+        ORKQuestionStep *step = [ORKQuestionStep questionStepWithIdentifier:@"pain"
+                                                                      title:@"How was your lower back pain today?"
+                                                                     answer:format];
+    
+        task = [[ORKOrderedTask alloc] initWithIdentifier:@"pain" steps:@[step]];
+    } else if ([identifer isEqualToString:MoodEvaluation]) {
+        ORKScaleAnswerFormat *format = [ORKScaleAnswerFormat scaleAnswerFormatWithMaximumValue:10
+                                                                                  minimumValue:0
+                                                                                  defaultValue:NSIntegerMax
+                                                                                          step:1
+                                                                                      vertical:NO
+                                                                       maximumValueDescription:@"Good"
+                                                                       minimumValueDescription:@"Bad"];
+        
+        ORKQuestionStep *step = [ORKQuestionStep questionStepWithIdentifier:@"mood"
+                                                                      title:@"How was your mood today?"
+                                                                     answer:format];
+        
+        task = [[ORKOrderedTask alloc] initWithIdentifier:@"mood" steps:@[step]];
+        
+    } else if ([identifer isEqualToString:SleepQualityEvaluation]) {
+        ORKScaleAnswerFormat *format = [ORKScaleAnswerFormat scaleAnswerFormatWithMaximumValue:10
+                                                                                  minimumValue:0
+                                                                                  defaultValue:NSIntegerMax
+                                                                                          step:1
+                                                                                      vertical:NO
+                                                                       maximumValueDescription:@"Good"
+                                                                       minimumValueDescription:@"Bad"];
+        
+        ORKQuestionStep *step = [ORKQuestionStep questionStepWithIdentifier:@"sleepQuality"
+                                                                      title:@"How was your sleep quality?"
+                                                                     answer:format];
+        
+        task = [[ORKOrderedTask alloc] initWithIdentifier:@"sleepQuality" steps:@[step]];
+    } else if ([identifer isEqualToString:BloodPressureEvaluation]) {
+        // TO DO: add blood systolic blood pressure
+        HKQuantityType *healthKitType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierBloodPressureDiastolic];
+        ORKHealthKitQuantityTypeAnswerFormat *format = [ORKHealthKitQuantityTypeAnswerFormat answerFormatWithQuantityType:healthKitType
+                                                                                                                     unit:[HKUnit unitFromString:@"mmHg"]
+                                                                                                                    style:ORKNumericAnswerStyleInteger];
+        ORKQuestionStep *step = [ORKQuestionStep questionStepWithIdentifier:@"bloodPressure"
+                                                                      title:@"Blood Pressure from HealthKit"
+                                                                     answer:format];
+        task = [[ORKOrderedTask alloc] initWithIdentifier:@"bloodPressure" steps:@[step]];
+    } else if ([identifer isEqualToString:WeightEvaluation]) {
+        HKQuantityType *healthKitType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierBloodPressureDiastolic];
+        ORKHealthKitQuantityTypeAnswerFormat *format = [ORKHealthKitQuantityTypeAnswerFormat answerFormatWithQuantityType:healthKitType
+                                                                                                                     unit:[HKUnit unitFromString:@"mmHg"]
+                                                                                                                    style:ORKNumericAnswerStyleInteger];
+        ORKQuestionStep *step = [ORKQuestionStep questionStepWithIdentifier:@"bloodPressure"
+                                                                      title:@"Blood Pressure from HealthKit"
+                                                                     answer:format];
+        task = [[ORKOrderedTask alloc] initWithIdentifier:@"bloodPressure" steps:@[step]];
+    }
+    
+    ORKTaskViewController *taskViewController = [[ORKTaskViewController alloc] initWithTask:task taskRunUUID:nil];
     taskViewController.delegate = self;
     
     [_tabBarController presentViewController:taskViewController animated:YES completion:nil];
 }
 
-
-#pragma mark - Care Plan Store Delegate (OCKCarePlanStoreDelegate)
-
-- (void)carePlanStore:(OCKCarePlanStore *)store didReceiveUpdateOfEvaluationEvent:(OCKEvaluationEvent *)event {
+- (void)updateEvaluationEvent:(OCKEvaluationEvent *)event withTaskResult:(ORKTaskResult *)result {
+    NSString *identifier = event.evaluation.identifier;
     
+    if ([identifier isEqualToString:PainEvaluation] ||
+        [identifier isEqualToString:MoodEvaluation] ||
+        [identifier isEqualToString:SleepQualityEvaluation]) {
+        // Fetch the result value.
+        ORKStepResult *stepResult = (ORKStepResult*)[result firstResult];
+        ORKScaleQuestionResult *questionResult = (ORKScaleQuestionResult*)[stepResult firstResult];
+        CGFloat value = [questionResult.scaleAnswer floatValue];
+    
+        [_store updateEvaluationEvent:event
+                      evaluationValue:@(value)
+                evaluationValueString:[NSString stringWithFormat:@"%@", @(value)]
+                     evaluationResult:nil
+                       completionDate:[NSDate date]
+                           completion:^(BOOL success, OCKEvaluationEvent * _Nonnull event, NSError * _Nonnull error) {
+                               NSAssert(success, error.localizedDescription);
+                           }];
+    }
 }
 
-- (void)carePlanStoreEvaluationListDidChange:(OCKCarePlanStore *)store {
-    
+
+#pragma mark - Evaluation Table View Delegate (OCKEvaluationTableViewDelegate)
+
+- (void)tableViewDidSelectEvaluationEvent:(OCKEvaluationEvent *)evaluationEvent {
+    NSInteger validState = (evaluationEvent.state == OCKCareEventStateInitial || evaluationEvent.state == OCKCareEventStateNotCompleted) ||
+    (evaluationEvent.state == OCKCareEventStateCompleted && evaluationEvent.evaluation.allowRetry);
+
+    if (validState) {
+        NSString *identifier = evaluationEvent.evaluation.identifier;
+        [self presentViewControllerForEvaluationIdentifier:identifier];
+    }
 }
 
 
@@ -261,27 +415,9 @@
 
 - (void)taskViewController:(ORKTaskViewController *)taskViewController didFinishWithReason:(ORKTaskViewControllerFinishReason)reason error:(NSError *)error {
     if (reason == ORKTaskViewControllerFinishReasonCompleted) {
-        // Fetch the result value.
-        ORKStepResult *stepResult = (ORKStepResult*)[taskViewController.result firstResult];
-        ORKScaleQuestionResult *questionResult = (ORKScaleQuestionResult*)[stepResult firstResult];
-        CGFloat value = [questionResult.scaleAnswer floatValue];
-        
-        // Grab the evaluation and update it in the store.
-        NSError *error;
-        OCKEvaluation *evaluation = _evaluations[0];
-        OCKEvaluationEvent *evaluationEvent = [[_store eventsForEvaluation:evaluation
-                                                                       day:[NSDate date]
-                                                                     error:&error] firstObject];
-        NSAssert(!error, error.localizedDescription);
-        [_store updateEvaluationEvent:evaluationEvent
-                      evaluationValue:@(value)
-                evaluationValueString:[NSString stringWithFormat:@"%@", @(value)]
-                     evaluationResult:nil
-                       completionDate:[NSDate date]
-                           completion:^(BOOL success, OCKEvaluationEvent * _Nonnull event, NSError * _Nonnull error) {
-                        NSAssert(success, error.localizedDescription);
-                    }];
-        
+        OCKEvaluationEvent *evaluationEvent = _evaluationViewController.lastSelectedEvaluationEvent;
+        ORKTaskResult *taskResult = taskViewController.result;
+        [self updateEvaluationEvent:evaluationEvent withTaskResult:taskResult];
     }
     
     [_tabBarController dismissViewControllerAnimated:taskViewController completion:nil];

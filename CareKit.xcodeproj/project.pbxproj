@@ -755,12 +755,8 @@
 				2445EB0D1C6D673000F51A95 /* OCKChartTableViewHeaderView.m in Sources */,
 				2445EB681C6D685D00F51A95 /* OCKCareCard.m in Sources */,
 				2445EB341C6D67A100F51A95 /* OCKContact.m in Sources */,
-<<<<<<< HEAD
-				2445EAD21C6D66CC00F51A95 /* OCKCarePlanItem.m in Sources */,
-=======
 				2445EB4F1C6D67E800F51A95 /* OCKEvaluationTableViewHeader.m in Sources */,
 				2445EAD21C6D66CC00F51A95 /* OCKCarePlanActivity.m in Sources */,
->>>>>>> f98b0eb3ecd933deb1e37ef2fd5240388e94cc80
 				2445EB781C6D685D00F51A95 /* OCKTreatmentTableViewCell.m in Sources */,
 				2445EB1F1C6D673000F51A95 /* OCKRangeGroup.m in Sources */,
 			);

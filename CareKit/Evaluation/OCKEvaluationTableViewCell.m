@@ -8,7 +8,7 @@
 
 
 #import "OCKEvaluationTableViewCell.h"
-#import "OCKCareEvent.h"
+#import "OCKCarePlanEvent.h"
 
 
 const static CGFloat LeadingMargin = 20.0;

@@ -10,7 +10,7 @@
 #import "OCKEvaluationViewController.h"
 #import "OCKEvaluationTableViewController.h"
 #import "OCKCarePlanStore.h"
-#import "OCKCareEvent.h"
+#import "OCKCarePlanEvent.h"
 
 
 @implementation OCKEvaluationViewController {

@@ -11,11 +11,14 @@
 #import "OCKEvaluation.h"
 #import "OCKEvaluation_Internal.h"
 #import "OCKEvaluationTableViewCell.h"
+#import "OCKEvaluationTableViewHeader.h"
 #import "OCKHelpers.h"
 
 
 @implementation OCKEvaluationTableViewController {
     NSArray<NSArray<OCKEvaluationEvent *> *> *_evaluationEvents;
+    
+    NSDateFormatter *_dateFormatter;
 }
 
 + (instancetype)new {
@@ -53,6 +56,27 @@
     [self.tableView reloadData];
 }
 
+- (void)prepareHeaderView {
+    OCKEvaluationTableViewHeader *headerView = [OCKEvaluationTableViewHeader new];
+    
+    if (!_dateFormatter) {
+        _dateFormatter = [NSDateFormatter new];
+        _dateFormatter.dateFormat = @"MMMM dd, yyyy";
+    }
+    headerView.date = [_dateFormatter stringFromDate:[NSDate date]];
+    
+    NSInteger totalEvents = _evaluationEvents.count;
+    NSInteger completedEvents = 0;
+    for (OCKEvaluationEvent *event in _evaluationEvents) {
+        if (event.evaluationValue) {
+            completedEvents++;
+        }
+    }
+    headerView.progress = completedEvents/totalEvents;
+    
+    self.tableView.tableHeaderView = headerView;
+}
+
 #pragma mark - Helpers
 
 - (void)fetchEvaluationEvents {
@@ -70,6 +94,7 @@
         [_delegate tableViewDidSelectEvaluationEvent:[_evaluationEvents[indexPath.row] firstObject]];
     }
 }
+
 
 #pragma mark - UITableViewDataSource
 

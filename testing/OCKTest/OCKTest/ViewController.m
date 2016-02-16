@@ -77,13 +77,15 @@
 
     {
         OCKCareSchedule *coughEvaluationSchedule = [OCKCareSchedule weeklyScheduleWithStartDate:[NSDate date] occurrencesOnEachDay:@[@1,@1,@0,@1,@0,@1,@1]];
-        OCKEvaluation *coughEvaluation = [[OCKEvaluation alloc] initWithType:@"survey"
-                                                                       title:@"Cough"
-                                                                        text:@"survey"
-                                                                       color:[UIColor greenColor]
-                                                                    schedule:coughEvaluationSchedule
-                                                                        task:nil
-                                                                    optional:NO];
+        OCKEvaluation *coughEvaluation = [[OCKEvaluation alloc] initWithIdentifier:@"coughEvaluation"
+                                                                              type:@"survey"
+                                                                             title:@"Cough"
+                                                                              text:@"survey"
+                                                                             color:[UIColor greenColor]
+                                                                          schedule:coughEvaluationSchedule
+                                                                              task:nil
+                                                                          optional:NO
+                                                                        retryLimit:0];
         [evaluations addObject:coughEvaluation];
     }
     

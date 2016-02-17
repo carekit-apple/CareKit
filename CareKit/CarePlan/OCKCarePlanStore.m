@@ -420,8 +420,8 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     copiedTreatmentEvent.eventChangeDate = eventChangeDate;
     
     __block NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:OCKEntityNameTreatmentEvent];
-    fetchRequest.predicate = [NSPredicate predicateWithFormat:@"%K = %d AND %K = %d",
-                              @"occurrenceIndexOfDay", treatmentEvent.occurrenceIndexOfDay, @"numberOfDaysSinceStart", treatmentEvent.numberOfDaysSinceStart];
+    fetchRequest.predicate = [NSPredicate predicateWithFormat:@"%K = %d AND %K = %d AND %K = %d",
+                              @"occurrenceIndexOfDay", treatmentEvent.occurrenceIndexOfDay, @"numberOfDaysSinceStart", treatmentEvent.numberOfDaysSinceStart, @"treatment", treatmentEvent.treatment];
     
     __block NSError *errorOut;
     __block BOOL found = NO;
@@ -733,8 +733,8 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     copiedEvaluationEvent.evaluationValueString = evaluationValueString;
     
     __block NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:OCKEntityNameEvaluationEvent];
-    fetchRequest.predicate = [NSPredicate predicateWithFormat:@"%K = %d AND %K = %d",
-                              @"occurrenceIndexOfDay", evaluationEvent.occurrenceIndexOfDay, @"numberOfDaysSinceStart", evaluationEvent.numberOfDaysSinceStart];
+    fetchRequest.predicate = [NSPredicate predicateWithFormat:@"%K = %d AND %K = %d AND %K = %d",
+                              @"occurrenceIndexOfDay", evaluationEvent.occurrenceIndexOfDay, @"numberOfDaysSinceStart", evaluationEvent.numberOfDaysSinceStart, @"evaluation", evaluationEvent.evaluation];
     
     __block NSError *errorOut;
     __block BOOL found = NO;

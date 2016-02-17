@@ -30,6 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
                              delegate:(id<OCKEvaluationTableViewDelegate>)delegate;
 
 @property (nonatomic, readonly) OCKCarePlanStore *store;
+@property (nonatomic, readonly) OCKEvaluationEvent *lastSelectedEvaluationEvent;
 
 @end
 

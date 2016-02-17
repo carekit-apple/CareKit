@@ -42,6 +42,7 @@ static const CGFloat VerticalMargin = 10.0;
     
     if (!_progressView) {
         _progressView = [UIProgressView new];
+        [self addSubview:_progressView];
     }
     _progressView.progress = _progress;
     

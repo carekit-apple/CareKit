@@ -14,6 +14,7 @@
 
 #define DefineStringKey(x) static NSString *const x = @#x
 
+BOOL resetStore = NO;
 
 @interface ViewController () <OCKEvaluationTableViewDelegate, OCKCarePlanStoreDelegate, ORKTaskViewControllerDelegate>
 
@@ -194,7 +195,9 @@
 
 - (void)setUpCarePlanStore {
     // Reset the store.
-    [[NSFileManager defaultManager] removeItemAtPath:[self storeDirectoryPath] error:nil];
+    if (resetStore) {
+        [[NSFileManager defaultManager] removeItemAtPath:[self storeDirectoryPath] error:nil];
+    }
     
     // Set up store.
     _store = [[OCKCarePlanStore alloc] initWithPersistenceDirectoryURL:[self storeDirectoryURL]];
@@ -226,7 +229,7 @@ DefineStringKey(WeightEvaluation);
     NSMutableArray *evaluations = [NSMutableArray new];
     
     {
-        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:[NSDate date] occurrencesOnEachDay:@[@1,@1,@1,@1,@1,@1,@1]];
+        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:[NSDate date] occurrencesOnEachDay:@[@1,@0,@1,@0,@1,@0,@1]];
         UIColor *color = OCKBlueColor();
         OCKEvaluation *evaluation = [[OCKEvaluation alloc] initWithIdentifier:PainEvaluation
                                                                          type:@"survey"
@@ -256,7 +259,7 @@ DefineStringKey(WeightEvaluation);
     }
     
     {
-        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:[NSDate date] occurrencesOnEachDay:@[@1,@1,@1,@1,@1,@1,@1]];
+        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:[NSDate date] occurrencesOnEachDay:@[@1,@1,@0,@1,@1,@1,@0]];
         UIColor *color = OCKRedColor();
         OCKEvaluation *evaluation = [[OCKEvaluation alloc] initWithIdentifier:SleepQualityEvaluation
                                                                          type:@"survey"
@@ -271,7 +274,7 @@ DefineStringKey(WeightEvaluation);
     }
     
     {
-        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:[NSDate date] occurrencesOnEachDay:@[@1,@1,@1,@1,@1,@1,@1]];
+        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:[NSDate date] occurrencesOnEachDay:@[@0,@1,@0,@1,@0,@1,@0]];
         UIColor *color = OCKYellowColor();
         OCKEvaluation *evaluation = [[OCKEvaluation alloc] initWithIdentifier:BloodPressureEvaluation
                                                                          type:@"survey"

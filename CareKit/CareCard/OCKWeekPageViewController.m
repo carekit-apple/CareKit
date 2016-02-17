@@ -95,25 +95,12 @@
 #pragma mark - UIPageViewControllerDataSource
 
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController {
-    _heartWeekView.careCards = @[[OCKCareCard careCardWithAdherence:0.5 date:@""],
-                                 [OCKCareCard careCardWithAdherence:0.6 date:@""],
-                                 [OCKCareCard careCardWithAdherence:1.0 date:@""],
-                                 [OCKCareCard careCardWithAdherence:0.35 date:@""],
-                                 [OCKCareCard careCardWithAdherence:1.0 date:@""],
-                                 [OCKCareCard careCardWithAdherence:1.0 date:@""],
-                                 [OCKCareCard careCardWithAdherence:0.0 date:@""]];
-    return [UIViewController new];
+
+    return self;
 }
 
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController {
-    _heartWeekView.careCards = @[[OCKCareCard careCardWithAdherence:0.25 date:@""],
-                                 [OCKCareCard careCardWithAdherence:0.0 date:@""],
-                                 [OCKCareCard careCardWithAdherence:0.5 date:@""],
-                                 [OCKCareCard careCardWithAdherence:1.0 date:@""],
-                                 [OCKCareCard careCardWithAdherence:0.33 date:@""],
-                                 [OCKCareCard careCardWithAdherence:0.1 date:@""],
-                                 [OCKCareCard careCardWithAdherence:0.75 date:@""]];
-;
+
     return self;
 }
 

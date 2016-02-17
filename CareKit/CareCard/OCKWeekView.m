@@ -8,7 +8,7 @@
 
 
 #import "OCKWeekView.h"
-
+#import "OCKColors.h"
 
 const static CGFloat TopMargin = 10.0;
 
@@ -179,7 +179,7 @@ const static CGFloat TopMargin = 10.0;
         ((UILabel *)label).backgroundColor = [UIColor clearColor];
         ((UILabel *)label).textColor = [UIColor blackColor];
     }
-    ((UILabel *)_weekLabels[day]).backgroundColor = [UIColor darkGrayColor];
+    ((UILabel *)_weekLabels[day]).backgroundColor = OCKPinkColor();
     ((UILabel *)_weekLabels[day]).textColor = [UIColor whiteColor];
 }
 

@@ -56,7 +56,7 @@ static const CGFloat ProgressViewWidth = 325.0;
         _progressView = [UIProgressView new];
         [self addSubview:_progressView];
     }
-    _progressView.progress = _progress;
+    [_progressView setProgress:_progress animated:YES];
 
     if (!_textLabel) {
         _textLabel = [UILabel new];
@@ -185,7 +185,7 @@ static const CGFloat ProgressViewWidth = 325.0;
 
 - (void)setProgress:(CGFloat)progress {
     _progress = progress;
-    [self prepareView];
+    [_progressView setProgress:_progress animated:YES];
 }
 
 - (void)setDate:(NSString *)date {

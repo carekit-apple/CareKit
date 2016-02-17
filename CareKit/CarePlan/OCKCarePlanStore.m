@@ -733,8 +733,8 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     copiedEvaluationEvent.evaluationValueString = evaluationValueString;
     
     __block NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:OCKEntityNameEvaluationEvent];
-    fetchRequest.predicate = [NSPredicate predicateWithFormat:@"%K = %d AND %K = %d",
-                              @"occurrenceIndexOfDay", evaluationEvent.occurrenceIndexOfDay, @"numberOfDaysSinceStart", evaluationEvent.numberOfDaysSinceStart];
+    fetchRequest.predicate = [NSPredicate predicateWithFormat:@"%K = %d AND %K = %d AND %K = %d",
+                              @"occurrenceIndexOfDay", evaluationEvent.occurrenceIndexOfDay, @"numberOfDaysSinceStart", evaluationEvent.numberOfDaysSinceStart, @"evaluation", evaluationEvent.evaluation];
     
     __block NSError *errorOut;
     __block BOOL found = NO;

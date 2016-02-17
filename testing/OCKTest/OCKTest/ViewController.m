@@ -9,6 +9,7 @@
 
 #import "ViewController.h"
 #import <CareKit/CareKit.h>
+#import <ResearchKit/ResearchKit.h>
 
 
 #define DefineStringKey(x) static NSString *const x = @#x
@@ -420,7 +421,7 @@ DefineStringKey(WeightEvaluation);
         [self updateEvaluationEvent:evaluationEvent withTaskResult:taskResult];
     }
     
-    [_tabBarController dismissViewControllerAnimated:taskViewController completion:nil];
+    [taskViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 

@@ -12,7 +12,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class OCKCareCard, OCKHeartWeekView, OCKWeekView;
+@class OCKCareCard, OCKHeartWeekView;
 
 @protocol OCKHeartWeekDelegate <NSObject>
 

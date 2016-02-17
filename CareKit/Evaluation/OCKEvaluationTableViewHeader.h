@@ -16,6 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy) NSString *date;
 @property (nonatomic) CGFloat progress;
+@property (nonatomic, copy) NSString *text;
 
 @end
 

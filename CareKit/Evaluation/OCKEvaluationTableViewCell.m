@@ -47,7 +47,6 @@ const static CGFloat TrailingMargin = 35.0;
     
     if (!_textLabel) {
         _textLabel = [UILabel new];
-        _textLabel.textColor = [UIColor lightGrayColor];
         _textLabel.numberOfLines = 2;
         _textLabel.lineBreakMode = NSLineBreakByWordWrapping;
         _textLabel.textAlignment = NSTextAlignmentCenter;

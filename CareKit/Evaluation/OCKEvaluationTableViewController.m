@@ -8,20 +8,22 @@
 
 
 #import "OCKEvaluationTableViewController.h"
+#import "OCKEvaluationTableViewController_Internal.h"
 #import "OCKEvaluation.h"
 #import "OCKEvaluation_Internal.h"
 #import "OCKEvaluationTableViewCell.h"
 #import "OCKEvaluationTableViewHeader.h"
 #import "OCKHelpers.h"
 #import "OCKCarePlanStore_Internal.h"
+#import "OCKWeekPageViewController.h"
 
 
-@interface OCKEvaluationTableViewController() <OCKCarePlanStoreDelegate>
-
-@end
+const static CGFloat CellHeight = 85.0;
+const static CGFloat HeaderViewHeight = 100.0;
 
 
 @implementation OCKEvaluationTableViewController {
+    OCKWeekPageViewController *_weekPageViewController;
     NSArray<NSArray<OCKEvaluationEvent *> *> *_evaluationEvents;
     OCKEvaluationTableViewHeader *_headerView;
     NSDateFormatter *_dateFormatter;
@@ -39,7 +41,7 @@
 
 - (instancetype)initWithCarePlanStore:(OCKCarePlanStore *)store
                              delegate:(id<OCKEvaluationTableViewDelegate>)delegate {
-    self = [super initWithStyle:UITableViewStyleGrouped];
+    self = [super initWithStyle:UITableViewStylePlain];
     if (self) {
         self.title = @"Evaluations";
         _store = store;
@@ -53,77 +55,106 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    _selectedDate = [NSDate date];
+    
     [self fetchEvaluationEvents];
-    
-    self.tableView.rowHeight = 85.0;
+    [self prepareView];
 }
 
-- (void)prepareHeaderView {
+- (void)prepareView {
     if (!_headerView) {
-        _headerView = [[OCKEvaluationTableViewHeader alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 200)];
+        _headerView = [[OCKEvaluationTableViewHeader alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, HeaderViewHeight)];
     }
+    [self updateHeaderView];
     
-    if (!_dateFormatter) {
-        _dateFormatter = [NSDateFormatter new];
-        _dateFormatter.dateFormat = @"MMMM dd, yyyy";
-    }
-    _headerView.date = [_dateFormatter stringFromDate:[NSDate date]];
-    
-    NSInteger totalEvents = _evaluationEvents.count;
-    NSInteger completedEvents = 0;
-    for (OCKEvaluationEvent *event in _evaluationEvents) {
-        if (event.evaluationValue) {
-            completedEvents++;
-        }
-    }
-    _headerView.progress = completedEvents/totalEvents;
-    
-    self.tableView.tableHeaderView = _headerView;
-    
-    [self setUpConstraints];
+    _weekPageViewController = [[OCKWeekPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll
+                                                                   navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal
+                                                                                 options:nil];
+    self.tableView.tableHeaderView = _weekPageViewController.view;
+    self.tableView.tableFooterView = [UIView new];
+
 }
 
-- (void)setUpConstraints {
-    NSMutableArray *constraints = [NSMutableArray new];
-    NSDictionary *views = NSDictionaryOfVariableBindings(_headerView);
-    
-    _headerView.translatesAutoresizingMaskIntoConstraints = NO;
-    
-    [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_headerView]|"
-                                                                             options:NSLayoutFormatDirectionLeadingToTrailing
-                                                                             metrics:nil
-                                                                               views:views]];
-    [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_headerView]|"
-                                                                             options:NSLayoutFormatDirectionLeadingToTrailing
-                                                                             metrics:nil
-                                                                               views:views]];
-    
-    [NSLayoutConstraint activateConstraints:constraints];
-}
+- (void)setSelectedDate:(NSDate *)selectedDate {
+    _selectedDate = selectedDate;
 
+    [self fetchEvaluationEvents];
+}
 
 #pragma mark - Helpers
 
 - (void)fetchEvaluationEvents {
     NSError *error;
-    _evaluationEvents = [_store evaluationEventsOnDay:[NSDate date] error:&error];
+    _evaluationEvents = [_store evaluationEventsOnDay:_selectedDate error:&error];
     NSAssert(!error, error.localizedDescription);
+    
+    [self updateHeaderView];
+    [self.tableView reloadData];
+}
+
+- (void)updateHeaderView {
+    if (!_dateFormatter) {
+        _dateFormatter = [NSDateFormatter new];
+        _dateFormatter.dateFormat = @"MMMM dd, yyyy";
+    }
+    _headerView.date = [_dateFormatter stringFromDate:_selectedDate];
+    
+    NSInteger totalEvents = _evaluationEvents.count;
+    NSInteger completedEvents = 0;
+    for (NSArray<OCKEvaluationEvent *> *events in _evaluationEvents) {
+        OCKEvaluationEvent *evaluationEvent = events.firstObject;
+        if (evaluationEvent.state == OCKCareEventStateCompleted) {
+            completedEvents++;
+        }
+    }
+    _headerView.progress = (totalEvents > 0) ? (float)completedEvents/totalEvents : 0;
+    
+    _headerView.text = [NSString stringWithFormat:@"%@ of %@", [@(completedEvents) stringValue], [@(totalEvents) stringValue]];
+}
+
+- (NSDate *)dateFromSelectedDay:(NSInteger)day {
+    NSDate *referenceDate = _selectedDate;
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    
+    NSDateComponents *components = [calendar components:(NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitWeekOfMonth | NSCalendarUnitWeekday | NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond) fromDate:referenceDate];
+    components.weekday = day;
+    
+    return [calendar dateFromComponents:components];
 }
 
 
 #pragma mark - OCKCarePlanStoreDelegate
 
 - (void)carePlanStore:(OCKCarePlanStore *)store didReceiveUpdateOfEvaluationEvent:(OCKEvaluationEvent *)event {
-    [self carePlanStoreEvaluationListDidChange:store];
+    [self fetchEvaluationEvents];
 }
 
 - (void)carePlanStoreEvaluationListDidChange:(OCKCarePlanStore *)store {
     [self fetchEvaluationEvents];
-    [self.tableView reloadData];
 }
 
 
 #pragma mark - UITableViewDelegate
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return CellHeight;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return tableView.rowHeight;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    return _headerView;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    return HeaderViewHeight;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForHeaderInSection:(NSInteger)section {
+    return HeaderViewHeight;
+}
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     OCKEvaluationEvent *selectedEvaluationEvent = _evaluationEvents[indexPath.row].firstObject;

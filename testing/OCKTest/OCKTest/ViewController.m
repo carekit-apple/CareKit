@@ -318,6 +318,7 @@ DefineStringKey(WeightEvaluation);
         ORKQuestionStep *step = [ORKQuestionStep questionStepWithIdentifier:@"pain"
                                                                       title:@"How was your lower back pain today?"
                                                                      answer:format];
+        step.optional = NO;
     
         task = [[ORKOrderedTask alloc] initWithIdentifier:@"pain" steps:@[step]];
     } else if ([identifer isEqualToString:MoodEvaluation]) {
@@ -332,6 +333,7 @@ DefineStringKey(WeightEvaluation);
         ORKQuestionStep *step = [ORKQuestionStep questionStepWithIdentifier:@"mood"
                                                                       title:@"How was your mood today?"
                                                                      answer:format];
+        step.optional = NO;
         
         task = [[ORKOrderedTask alloc] initWithIdentifier:@"mood" steps:@[step]];
         
@@ -347,26 +349,54 @@ DefineStringKey(WeightEvaluation);
         ORKQuestionStep *step = [ORKQuestionStep questionStepWithIdentifier:@"sleepQuality"
                                                                       title:@"How was your sleep quality?"
                                                                      answer:format];
+        step.optional = NO;
         
         task = [[ORKOrderedTask alloc] initWithIdentifier:@"sleepQuality" steps:@[step]];
     } else if ([identifer isEqualToString:BloodPressureEvaluation]) {
-        // TO DO: add blood systolic blood pressure
-        HKQuantityType *healthKitType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierBloodPressureDiastolic];
-        ORKHealthKitQuantityTypeAnswerFormat *format = [ORKHealthKitQuantityTypeAnswerFormat answerFormatWithQuantityType:healthKitType
-                                                                                                                     unit:[HKUnit unitFromString:@"mmHg"]
-                                                                                                                    style:ORKNumericAnswerStyleInteger];
-        ORKQuestionStep *step = [ORKQuestionStep questionStepWithIdentifier:@"bloodPressure"
-                                                                      title:@"Blood Pressure from HealthKit"
-                                                                     answer:format];
+        ORKFormStep *step = [[ORKFormStep alloc] initWithIdentifier:@"bloodPressure" title:@"Input your blood pressure" text:nil];
+       
+        NSMutableArray *items = [NSMutableArray new];
+        
+        {
+            HKQuantityType *healthKitType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierBloodPressureSystolic];
+            ORKHealthKitQuantityTypeAnswerFormat *format = [ORKHealthKitQuantityTypeAnswerFormat answerFormatWithQuantityType:healthKitType
+                                                                                                                         unit:[HKUnit millimeterOfMercuryUnit]
+                                                                                                                        style:ORKNumericAnswerStyleInteger];
+            
+            ORKFormItem *item = [[ORKFormItem alloc] initWithIdentifier:@"systolicBloodPressure"
+                                                                   text:@"Systolic"
+                                                           answerFormat:format
+                                                               optional:NO];
+            [items addObject:item];
+        }
+        
+        {
+            HKQuantityType *healthKitType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierBloodPressureDiastolic];
+            ORKHealthKitQuantityTypeAnswerFormat *format = [ORKHealthKitQuantityTypeAnswerFormat answerFormatWithQuantityType:healthKitType
+                                                                                                                         unit:[HKUnit millimeterOfMercuryUnit]
+                                                                                                                        style:ORKNumericAnswerStyleInteger];
+            
+            ORKFormItem *item = [[ORKFormItem alloc] initWithIdentifier:@"diastolicBloodPressure"
+                                                                   text:@"Diastolic"
+                                                           answerFormat:format
+                                                               optional:NO];
+            [items addObject:item];
+        }
+        
+        step.formItems = items;
+        step.optional = NO;
+        
         task = [[ORKOrderedTask alloc] initWithIdentifier:@"bloodPressure" steps:@[step]];
     } else if ([identifer isEqualToString:WeightEvaluation]) {
-        HKQuantityType *healthKitType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierBloodPressureDiastolic];
-        ORKHealthKitQuantityTypeAnswerFormat *format = [ORKHealthKitQuantityTypeAnswerFormat answerFormatWithQuantityType:healthKitType
-                                                                                                                     unit:[HKUnit unitFromString:@"mmHg"]
-                                                                                                                    style:ORKNumericAnswerStyleInteger];
-        ORKQuestionStep *step = [ORKQuestionStep questionStepWithIdentifier:@"bloodPressure"
-                                                                      title:@"Blood Pressure from HealthKit"
+        HKQuantityType *quantityType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierBodyMass];
+        ORKHealthKitQuantityTypeAnswerFormat *format = [ORKHealthKitQuantityTypeAnswerFormat answerFormatWithQuantityType:quantityType
+                                                                                                                     unit:[HKUnit poundUnit]
+                                                                                                                    style:ORKNumericAnswerStyleDecimal];
+        ORKQuestionStep *step = [ORKQuestionStep questionStepWithIdentifier:@"weight"
+                                                                      title:@"Input your weight"
                                                                      answer:format];
+        step.optional = NO;
+        
         task = [[ORKOrderedTask alloc] initWithIdentifier:@"bloodPressure" steps:@[step]];
     }
     
@@ -389,7 +419,41 @@ DefineStringKey(WeightEvaluation);
     
         [_store updateEvaluationEvent:event
                       evaluationValue:@(value)
-                evaluationValueString:[NSString stringWithFormat:@"%@", @(value)]
+                evaluationValueString:[@(value) stringValue]
+                     evaluationResult:nil
+                       completionDate:[NSDate date]
+                           completion:^(BOOL success, OCKEvaluationEvent * _Nonnull event, NSError * _Nonnull error) {
+                               NSAssert(success, error.localizedDescription);
+                           }];
+    } else if ([identifier isEqualToString:BloodPressureEvaluation]) {
+        // Fetch the result value.
+        ORKStepResult *stepResult = (ORKStepResult*)[result firstResult];
+        NSArray <ORKResult *> *results = stepResult.results;
+        
+        ORKNumericQuestionResult *result1 = (ORKNumericQuestionResult *)results[0];
+        NSNumber *systolicValue = result1.numericAnswer;
+        ORKNumericQuestionResult *result2 = (ORKNumericQuestionResult *)results[1];
+        NSNumber *diastolicValue = result2.numericAnswer;
+        
+        [_store updateEvaluationEvent:event
+                      evaluationValue:@0
+                evaluationValueString:[NSString stringWithFormat:@"%@/%@", [systolicValue stringValue], [diastolicValue stringValue]]
+                     evaluationResult:nil
+                       completionDate:[NSDate date]
+                           completion:^(BOOL success, OCKEvaluationEvent * _Nonnull event, NSError * _Nonnull error) {
+                               NSAssert(success, error.localizedDescription);
+                           }];
+    } else if ([identifier isEqualToString:WeightEvaluation]) {
+        // Fetch the result value.
+        ORKStepResult *stepResult = (ORKStepResult*)[result firstResult];
+        NSArray <ORKResult *> *results = stepResult.results;
+
+        ORKNumericQuestionResult *result = (ORKNumericQuestionResult *)results[0];
+        NSNumber *weightValue = result.numericAnswer;
+        
+        [_store updateEvaluationEvent:event
+                      evaluationValue:@0
+                evaluationValueString:[weightValue stringValue]
                      evaluationResult:nil
                        completionDate:[NSDate date]
                            completion:^(BOOL success, OCKEvaluationEvent * _Nonnull event, NSError * _Nonnull error) {

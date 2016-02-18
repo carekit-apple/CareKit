@@ -8,9 +8,14 @@
 
 
 #import "OCKEvaluationViewController.h"
+#import "OCKEvaluationViewController_Internal.h"
 #import "OCKEvaluationTableViewController.h"
+#import "OCKEvaluationTableViewController_Internal.h"
 #import "OCKCarePlanStore.h"
 #import "OCKCarePlanEvent.h"
+#import "OCKWeekView.h"
+#import "OCKWeekPageViewController.h"
+#import "OCKEvaluationWeekView.h"
 
 
 @implementation OCKEvaluationViewController {
@@ -34,6 +39,11 @@
     return self;
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    _tableViewController.weekPageViewController.evaluationWeekView.delegate = self;
+}
+
 - (void)setTitle:(NSString *)title {
     [super setTitle:title];
     self.topViewController.title = self.title;
@@ -41,6 +51,15 @@
 
 - (OCKEvaluationEvent *)lastSelectedEvaluationEvent {
     return _tableViewController.lastSelectedEvaluationEvent;
+}
+
+
+#pragma mark - OCKEvaluationWeekViewDelegate
+
+- (void)evaluationWeekViewSelectionDidChange:(OCKEvaluationWeekView *)evaluationWeekView {
+    NSInteger day = evaluationWeekView.selectedDay;
+    _tableViewController.selectedDate = [_tableViewController dateFromSelectedDay:day];
+    
 }
 
 @end

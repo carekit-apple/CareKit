@@ -20,7 +20,7 @@ const static CGFloat TrailingMargin = 35.0;
     UILabel *_textLabel;
     UILabel *_valueLabel;
     
-    UILabel *_leadingEdge;
+    UIView *_leadingEdge;
 }
 
 - (void)setEvaluationEvent:(OCKEvaluationEvent *)evaluationEvent {
@@ -47,7 +47,6 @@ const static CGFloat TrailingMargin = 35.0;
     
     if (!_textLabel) {
         _textLabel = [UILabel new];
-        _textLabel.textColor = [UIColor lightGrayColor];
         _textLabel.numberOfLines = 2;
         _textLabel.lineBreakMode = NSLineBreakByWordWrapping;
         _textLabel.textAlignment = NSTextAlignmentCenter;
@@ -67,8 +66,8 @@ const static CGFloat TrailingMargin = 35.0;
     _valueLabel.textColor = _evaluationEvent.evaluation.color;
     
     if (!_leadingEdge) {
-        _leadingEdge = [UILabel new];
-        [self addSubview:_leadingEdge];
+        _leadingEdge = [UIView new];
+        [self.contentView addSubview:_leadingEdge];
     }
     _leadingEdge.backgroundColor = _evaluationEvent.evaluation.color;
     
@@ -150,10 +149,6 @@ const static CGFloat TrailingMargin = 35.0;
                                        ]];
     
     [NSLayoutConstraint activateConstraints:constraints];
-}
-
-- (UIEdgeInsets)layoutMargins {
-    return UIEdgeInsetsZero;
 }
 
 - (void)didChangePreferredContentSize {

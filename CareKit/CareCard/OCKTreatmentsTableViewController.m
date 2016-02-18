@@ -46,6 +46,7 @@ static const CGFloat CareCardHeight = 200.0;
     _weekPageViewController = [[OCKWeekPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll
                                                                    navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal
                                                                                  options:nil];
+    _weekPageViewController.showHeartWeekView = YES;
     
     self.tableView.tableHeaderView = _weekPageViewController.view;
 }

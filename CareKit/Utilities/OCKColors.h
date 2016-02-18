@@ -21,4 +21,3 @@ blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 #define OCKYellowColor() UIColorFromRGB(0xF7CA18);
 #define OCKOrangeColor() UIColorFromRGB(0xF89406);
 #define OCKGrayColor() UIColorFromRGB(0xBDC3C7);
-

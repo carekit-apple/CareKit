@@ -30,6 +30,7 @@ static const BOOL resetStoreOnLaunch = YES;
     
     OCKCarePlanStore *_store;
     NSArray<OCKEvaluation *> *_evaluations;
+    NSArray<OCKTreatment *> *_treatments;
 }
 
 
@@ -46,7 +47,7 @@ static const BOOL resetStoreOnLaunch = YES;
     _connectViewController = [self connectViewController];
     
     _tabBarController = [UITabBarController new];
-    _tabBarController.viewControllers = @[_dashboardViewController, _evaluationViewController, _connectViewController];
+    _tabBarController.viewControllers = @[_dashboardViewController, _careCardViewController, _evaluationViewController, _connectViewController];
     _tabBarController.selectedIndex = 1;
 }
 
@@ -125,7 +126,7 @@ static const BOOL resetStoreOnLaunch = YES;
 }
 
 - (OCKCareCardViewController *)careCardViewController {
-    return [OCKEvaluationViewController careCardViewControllerWithCarePlanStore:_store];
+    return [OCKCareCardViewController careCardViewControllerWithCarePlanStore:_store];
 }
 
 - (OCKEvaluationViewController *)evaluationViewController {
@@ -208,18 +209,111 @@ static const BOOL resetStoreOnLaunch = YES;
     // Set up store.
     _store = [[OCKCarePlanStore alloc] initWithPersistenceDirectoryURL:[self storeDirectoryURL]];
     _store.delegate = self;
+    NSError *error;
     
-    // Populate evaluations.
-    [self generateEvaluations];
+    // Add new treatments to store.
+    [self generateTreatments];
+    for (OCKTreatment *treatment in _treatments) {
+        if (![_store treatmentForIdentifier:treatment.identifier error:nil]) {
+            [_store addTreatment:treatment error:&error];
+            NSAssert(!error, error.localizedDescription);
+        }
+    }
     
     // Add new evaluations to store.
-    NSError *error;
+    [self generateEvaluations];
     for (OCKEvaluation *evaluation in _evaluations) {
         if (![_store evaluationForIdentifier:evaluation.identifier error:nil]) {
             [_store addEvaluation:evaluation error:&error];
             NSAssert(!error, error.localizedDescription);
         }
     }
+}
+
+
+#pragma mark - CareCard
+
+DefineStringKey(MeditationTreatment);
+DefineStringKey(IbuprofenTreatment);
+DefineStringKey(OutdoorWalkTreatment);
+DefineStringKey(PhysicalTherapyTreatment);
+
+- (void)generateTreatments {
+    NSMutableArray *treatments = [NSMutableArray new];
+    
+    NSDateComponents *components = [NSDateComponents new];
+    components.year = 2016;
+    NSDate *startDate = [[NSCalendar currentCalendar] dateFromComponents:components];
+    
+    {
+        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@2,@1,@2,@1,@2,@3,@3]];
+        UIColor *color = OCKBlueColor();
+        OCKDayRange dayRange;
+        dayRange.daysAfterEventDay = 0;
+        dayRange.daysBeforeEventDay = 0;
+        OCKTreatment *treatment = [[OCKTreatment alloc] initWithIdentifier:MeditationTreatment
+                                                                      type:@"mental"
+                                                                     title:@"Meditation"
+                                                                      text:@"30 mins"
+                                                                     color:color
+                                                                  schedule:schedule
+                                                                  optional:NO
+                                                      eventMutableDayRange:dayRange];
+        [treatments addObject:treatment];
+    }
+    
+    {
+        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@4,@4,@4,@4,@4,@4,@4]];
+        UIColor *color = OCKGreenColor();
+        OCKDayRange dayRange;
+        dayRange.daysAfterEventDay = 0;
+        dayRange.daysBeforeEventDay = 0;
+        OCKTreatment *treatment = [[OCKTreatment alloc] initWithIdentifier:IbuprofenTreatment
+                                                                      type:@"medication"
+                                                                     title:@"Ibuprofen"
+                                                                      text:@"200mg"
+                                                                     color:color
+                                                                  schedule:schedule
+                                                                  optional:NO
+                                                      eventMutableDayRange:dayRange];
+        [treatments addObject:treatment];
+    }
+    
+    {
+        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@2,@1,@2,@1,@2,@1,@2]];
+        UIColor *color = OCKPinkColor();
+        OCKDayRange dayRange;
+        dayRange.daysAfterEventDay = 0;
+        dayRange.daysBeforeEventDay = 0;
+        OCKTreatment *treatment = [[OCKTreatment alloc] initWithIdentifier:OutdoorWalkTreatment
+                                                                      type:@"physical"
+                                                                     title:@"Outdoor Walk"
+                                                                      text:@"15 mins"
+                                                                     color:color
+                                                                  schedule:schedule
+                                                                  optional:NO
+                                                      eventMutableDayRange:dayRange];
+        [treatments addObject:treatment];
+    }
+    
+    {
+        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@1,@0,@1,@0,@1,@0,@1]];
+        UIColor *color = OCKYellowColor();
+        OCKDayRange dayRange;
+        dayRange.daysAfterEventDay = 0;
+        dayRange.daysBeforeEventDay = 0;
+        OCKTreatment *treatment = [[OCKTreatment alloc] initWithIdentifier:OutdoorWalkTreatment
+                                                                      type:@"physical"
+                                                                     title:@"Physical Therapy"
+                                                                      text:@"lower back"
+                                                                     color:color
+                                                                  schedule:schedule
+                                                                  optional:NO
+                                                      eventMutableDayRange:dayRange];
+        [treatments addObject:treatment];
+    }
+    
+    _treatments = [treatments copy];
 }
 
 

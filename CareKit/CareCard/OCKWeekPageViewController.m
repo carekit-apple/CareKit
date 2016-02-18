@@ -53,11 +53,11 @@
         NSDictionary *views = NSDictionaryOfVariableBindings(_careCardWeekView);
         _careCardWeekView.translatesAutoresizingMaskIntoConstraints = NO;
         
-        [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_heartWeekView]|"
+        [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_careCardWeekView]|"
                                                                                  options:NSLayoutFormatDirectionLeadingToTrailing
                                                                                  metrics:nil
                                                                                    views:views]];
-        [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_heartWeekView]|"
+        [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_careCardWeekView]|"
                                                                                  options:NSLayoutFormatDirectionLeadingToTrailing
                                                                                  metrics:nil
                                                                                    views:views]];

@@ -8,41 +8,33 @@
 
 
 #import "OCKWeekPageViewController.h"
-#import "OCKCareCard.h"
 #import "OCKWeekView.h"
-#import "OCKHeartWeekView.h"
+#import "OCKCareCardWeekView.h"
 #import "OCKEvaluationWeekView.h"
 
 
 @implementation OCKWeekPageViewController {
-    OCKHeartWeekView *_heartWeekView;
+    OCKCareCardWeekView *_careCardWeekView;
     OCKEvaluationWeekView *_evaluationWeekView;
 }
 
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    _showHeartWeekView = NO;
+    _showCareCardWeekView = NO;
     [self prepareView];
 }
 
 - (void)prepareView {
-    if (_showHeartWeekView) {
+    if (_showCareCardWeekView) {
         _evaluationWeekView = nil;
-        if (!_heartWeekView) {
-            _heartWeekView = [[OCKHeartWeekView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 40.0)];
-            _heartWeekView.careCards = @[[OCKCareCard careCardWithAdherence:0.5 date:@""],
-                                         [OCKCareCard careCardWithAdherence:0.6 date:@""],
-                                         [OCKCareCard careCardWithAdherence:1.0 date:@""],
-                                         [OCKCareCard careCardWithAdherence:0.35 date:@""],
-                                         [OCKCareCard careCardWithAdherence:1.0 date:@""],
-                                         [OCKCareCard careCardWithAdherence:1.0 date:@""],
-                                         [OCKCareCard careCardWithAdherence:0.0 date:@""]];
-            [self.view addSubview:_heartWeekView];
+        if (!_careCardWeekView) {
+            _careCardWeekView = [[OCKCareCardWeekView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 40.0)];
+            [self.view addSubview:_careCardWeekView];
         }
-        self.view.frame = _heartWeekView.frame;
+        self.view.frame = _careCardWeekView.frame;
     } else {
-        _heartWeekView = nil;
+        _careCardWeekView = nil;
         if (!_evaluationWeekView) {
             _evaluationWeekView = [[OCKEvaluationWeekView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 15.0)];
             _evaluationWeekView.backgroundColor = [UIColor whiteColor];
@@ -57,9 +49,9 @@
 - (void)setUpConstraints {
     NSMutableArray *constraints = [NSMutableArray new];
     
-    if (_heartWeekView) {
-        NSDictionary *views = NSDictionaryOfVariableBindings(_heartWeekView);
-        _heartWeekView.translatesAutoresizingMaskIntoConstraints = NO;
+    if (_careCardWeekView) {
+        NSDictionary *views = NSDictionaryOfVariableBindings(_careCardWeekView);
+        _careCardWeekView.translatesAutoresizingMaskIntoConstraints = NO;
         
         [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_heartWeekView]|"
                                                                                  options:NSLayoutFormatDirectionLeadingToTrailing
@@ -86,8 +78,8 @@
     [NSLayoutConstraint activateConstraints:constraints];
 }
 
-- (void)setShowHeartWeekView:(BOOL)showHeartWeekView {
-    _showHeartWeekView = showHeartWeekView;
+- (void)setShowCareCardWeekView:(BOOL)showHeartWeekView {
+    _showCareCardWeekView = showHeartWeekView;
     [self prepareView];
 }
 

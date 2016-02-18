@@ -1,29 +1,28 @@
 //
-//  OCKEvaluationTableViewController.m
+//  OCKTreatmentsTableViewController.m
 //  CareKit
 //
-//  Created by Umer Khan on 2/2/16.
+//  Created by Umer Khan on 1/27/16.
 //  Copyright © 2016 carekit.org. All rights reserved.
 //
 
 
-#import "OCKEvaluationTableViewController.h"
-#import "OCKEvaluationTableViewController_Internal.h"
-#import "OCKEvaluation.h"
-#import "OCKEvaluation_Internal.h"
-#import "OCKEvaluationTableViewCell.h"
-#import "OCKEvaluationTableViewHeader.h"
+#import "OCKCareCardTableViewController.h"
+#import "OCKCareCardTableViewController_Internal.h"
+#import "OCKCareCardTableViewHeader.h"
 #import "OCKHelpers.h"
-#import "OCKCarePlanStore_Internal.h"
+#import "OCKTreatment.h"
+#import "OCKCareCardTableViewCell.h"
 #import "OCKWeekPageViewController.h"
+#import "OCKCarePlanStore_Internal.h"
 
 
-const static CGFloat CellHeight = 85.0;
-const static CGFloat HeaderViewHeight = 100.0;
+static const CGFloat CellHeight = 85.0;
+static const CGFloat HeaderViewHeight = 200.0;
 
-@implementation OCKEvaluationTableViewController {
-    NSArray<NSArray<OCKEvaluationEvent *> *> *_evaluationEvents;
-    OCKEvaluationTableViewHeader *_headerView;
+@implementation OCKCareCardTableViewController {
+    NSArray<NSArray<OCKTreatmentEvent *> *> *_treatmentEvents;
+    OCKCareCardTableViewHeader *_headerView;
     NSDateFormatter *_dateFormatter;
 }
 
@@ -37,15 +36,12 @@ const static CGFloat HeaderViewHeight = 100.0;
     return nil;
 }
 
-- (instancetype)initWithCarePlanStore:(OCKCarePlanStore *)store
-                             delegate:(id<OCKEvaluationTableViewDelegate>)delegate {
+- (instancetype)initWithCarePlanStore:(OCKCarePlanStore *)store {
     self = [super initWithStyle:UITableViewStylePlain];
     if (self) {
-        self.title = @"Evaluations";
+        self.title = @"CareCard";
         _store = store;
-        _delegate = delegate;
-        _lastSelectedEvaluationEvent = nil;
-        _store.evaluationUIDelegate = self;
+        _store.treatmentUIDelegate = self;
     }
     return self;
 }
@@ -55,7 +51,7 @@ const static CGFloat HeaderViewHeight = 100.0;
     
     _selectedDate = [NSDate date];
     
-    [self fetchEvaluationEvents];
+    [self fetchTreatmentEvents];
     [self prepareView];
 }
 
@@ -67,13 +63,13 @@ const static CGFloat HeaderViewHeight = 100.0;
     NSDateComponents *oldComponents = [calendar components:(NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitWeekOfMonth | NSCalendarUnitWeekday | NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond) fromDate:_selectedDate];
     
     if (newComponents.day > oldComponents.day) {
-        [self fetchEvaluationEvents];
+        [self fetchTreatmentEvents];
     }
 }
 
 - (void)prepareView {
     if (!_headerView) {
-        _headerView = [[OCKEvaluationTableViewHeader alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, HeaderViewHeight)];
+        _headerView = [[OCKCareCardTableViewHeader alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, HeaderViewHeight)];
     }
     [self updateHeaderView];
     
@@ -81,6 +77,7 @@ const static CGFloat HeaderViewHeight = 100.0;
                                                                    navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal
                                                                                  options:nil];
     _weekPageViewController.dataSource = self;
+    _weekPageViewController.showCareCardWeekView = YES;
     
     self.tableView.tableHeaderView = _weekPageViewController.view;
     self.tableView.tableFooterView = [UIView new];
@@ -88,16 +85,16 @@ const static CGFloat HeaderViewHeight = 100.0;
 
 - (void)setSelectedDate:(NSDate *)selectedDate {
     _selectedDate = selectedDate;
-
-    [self fetchEvaluationEvents];
+    
+    [self fetchTreatmentEvents];
 }
 
 
 #pragma mark - Helpers
 
-- (void)fetchEvaluationEvents {
+- (void)fetchTreatmentEvents {
     NSError *error;
-    _evaluationEvents = [_store evaluationEventsOnDay:_selectedDate error:&error];
+    _treatmentEvents = [_store treatmentEventsOnDay:_selectedDate error:&error];
     NSAssert(!error, error.localizedDescription);
     
     [self updateHeaderView];
@@ -111,17 +108,19 @@ const static CGFloat HeaderViewHeight = 100.0;
     }
     _headerView.date = [_dateFormatter stringFromDate:_selectedDate];
     
-    NSInteger totalEvents = _evaluationEvents.count;
+    NSInteger totalEvents = 0;
     NSInteger completedEvents = 0;
-    for (NSArray<OCKEvaluationEvent *> *events in _evaluationEvents) {
-        OCKEvaluationEvent *evaluationEvent = events.firstObject;
-        if (evaluationEvent.state == OCKCareEventStateCompleted) {
-            completedEvents++;
+    for (NSArray<OCKTreatmentEvent* > *events in _treatmentEvents) {
+        totalEvents += events.count;
+        
+        for (OCKTreatmentEvent *event in events) {
+            if (event.state == OCKCareEventStateCompleted) {
+                completedEvents++;
+            }
         }
     }
-    _headerView.progress = (totalEvents > 0) ? (float)completedEvents/totalEvents : 0;
     
-    _headerView.text = [NSString stringWithFormat:@"%@ of %@", [@(completedEvents) stringValue], [@(totalEvents) stringValue]];
+    _headerView.adherence = (totalEvents > 0) ? (float)completedEvents/totalEvents : 0;
 }
 
 - (NSDate *)dateFromSelectedDay:(NSInteger)day {
@@ -135,14 +134,27 @@ const static CGFloat HeaderViewHeight = 100.0;
 }
 
 
+#pragma mark - OCKCareCardCellDelegate
+
+- (void)careCardCellDidUpdateFrequency:(OCKCareCardTableViewCell *)cell ofTreatmentEvent:(OCKTreatmentEvent *)event {
+    // Update the treatment event and mark it as completed.
+    [_store updateTreatmentEvent:event
+                       completed:YES
+                  completionDate:[NSDate date]
+                      completion:^(BOOL success, OCKTreatmentEvent * _Nonnull event, NSError * _Nonnull error) {
+                          NSAssert(success, error.localizedDescription);
+                      }];
+}
+
+
 #pragma mark - OCKCarePlanStoreDelegate
 
 - (void)carePlanStore:(OCKCarePlanStore *)store didReceiveUpdateOfEvaluationEvent:(OCKEvaluationEvent *)event {
-    [self fetchEvaluationEvents];
+    [self fetchTreatmentEvents];
 }
 
 - (void)carePlanStoreEvaluationListDidChange:(OCKCarePlanStore *)store {
-    [self fetchEvaluationEvents];
+    [self fetchTreatmentEvents];
 }
 
 
@@ -192,41 +204,24 @@ const static CGFloat HeaderViewHeight = 100.0;
     return HeaderViewHeight;
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    OCKEvaluationEvent *selectedEvaluationEvent = _evaluationEvents[indexPath.row].firstObject;
-    _lastSelectedEvaluationEvent = selectedEvaluationEvent;
-
-    if (_delegate &&
-        [_delegate respondsToSelector:@selector(tableViewDidSelectEvaluationEvent:)]) {
-        [_delegate tableViewDidSelectEvaluationEvent:selectedEvaluationEvent];
-    }
-}
-
-- (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath {
-    BOOL shouldHighlight = YES;
-    OCKEvaluationEvent *event = _evaluationEvents[indexPath.row].firstObject;
-    if (event.state == OCKCareEventStateCompleted && !event.evaluation.allowRetry) {
-        shouldHighlight = NO;
-    }
-    return shouldHighlight;
-}
-
 
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return _evaluationEvents.count;
+    return _treatmentEvents.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *CellIdentifier = @"EvaluationCell";
-    OCKEvaluationTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    static NSString *CellIdentifier = @"CareCardCell";
+    OCKCareCardTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (!cell) {
-        cell = [[OCKEvaluationTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
-                                                 reuseIdentifier:CellIdentifier];
+        cell = [[OCKCareCardTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                               reuseIdentifier:CellIdentifier];
     }
-    cell.evaluationEvent = _evaluationEvents[indexPath.row].firstObject;
+    cell.treatmentEvents = _treatmentEvents[indexPath.row];
+    cell.delegate = self;
     return cell;
+
 }
 
 @end

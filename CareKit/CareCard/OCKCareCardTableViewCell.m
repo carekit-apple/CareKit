@@ -7,25 +7,28 @@
 //
 
 
-#import "OCKTreatmentTableViewCell.h"
+#import "OCKCareCardTableViewCell.h"
 #import "OCKTreatment.h"
 #import "OCKTreatment_Internal.h"
+#import "OCKColors.h"
 
 
 static const CGFloat HorizontalMargin = 15.0;
 static const CGFloat TopMargin = 10.0;
 
-@implementation OCKTreatmentTableViewCell {
+@implementation OCKCareCardTableViewCell {
     UILabel *_titleLabel;
     UILabel *_textLabel;
-    
-    NSArray <UIButton *> *_frequencyButtons;
-    
+
     UILabel *_leadingEdge;
+
+    NSArray <UIButton *> *_frequencyButtons;
+    OCKTreatment *_treatment;
 }
 
-- (void)setTreatment:(OCKTreatment *)treatment {
-    _treatment = treatment;
+- (void)setTreatmentEvents:(NSArray<OCKTreatmentEvent *> *)treatmentEvents {
+    _treatmentEvents = treatmentEvents;
+    _treatment = treatmentEvents.firstObject.treatment;
     [self prepareView];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -35,6 +38,7 @@ static const CGFloat TopMargin = 10.0;
 }
 
 - (void)prepareView {
+    self.tintColor = _treatment.color;
     self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     
     if (!_titleLabel) {
@@ -57,26 +61,30 @@ static const CGFloat TopMargin = 10.0;
     
     if (!_frequencyButtons) {
         _frequencyButtons = [NSArray new];
-//        _treatment.completed = 0;
-//        NSMutableArray *buttons = [NSMutableArray new];
-//        for (NSInteger i = 0; i < _treatment.frequency; i++) {
-//            UIButton *frequencyButton = [UIButton new];
-//            frequencyButton.backgroundColor = _treatment.tintColor;
-//            frequencyButton.translatesAutoresizingMaskIntoConstraints = NO;
-//            [frequencyButton addTarget:self
-//                                action:@selector(toggleFrequencyButton:)
-//                      forControlEvents:UIControlEventTouchUpInside];
-//            [buttons addObject:frequencyButton];
-//            [self.contentView addSubview:frequencyButton];
-//        }
-//        _frequencyButtons = [buttons copy];
+        
+        NSMutableArray *buttons = [NSMutableArray new];
+        for (OCKTreatmentEvent *event in _treatmentEvents) {
+            UIButton *frequencyButton = [UIButton new];
+            UIColor *completedColor = OCKGrayColor();
+            frequencyButton.backgroundColor = (event.state == OCKCareEventStateCompleted) ? completedColor : _treatment.color;
+            frequencyButton.translatesAutoresizingMaskIntoConstraints = NO;
+            
+            [frequencyButton addTarget:self
+                                action:@selector(toggleFrequencyButton:)
+                      forControlEvents:UIControlEventTouchUpInside];
+            [buttons addObject:frequencyButton];
+            
+            [self.contentView addSubview:frequencyButton];
+        }
+        
+        _frequencyButtons = [buttons copy];
     }
     
     if (!_leadingEdge) {
         _leadingEdge = [UILabel new];
         [self addSubview:_leadingEdge];
     }
-//    _leadingEdge.backgroundColor = _treatment.tintColor;
+    _leadingEdge.backgroundColor = _treatment.color;
     
     [self setUpContraints];
 }
@@ -177,8 +185,20 @@ static const CGFloat TopMargin = 10.0;
     [NSLayoutConstraint activateConstraints:constraints];
 }
 
-- (UIEdgeInsets)layoutMargins {
-    return UIEdgeInsetsZero;
+- (void)toggleFrequencyButton:(id)sender {
+    UIButton *button = (UIButton *)sender;
+    UIColor *completedColor = OCKGrayColor();
+    button.backgroundColor = (button.backgroundColor == _treatment.color) ? completedColor : _treatment.color;
+    
+    // Infer the treatment event from the button index.
+    NSInteger index = [_frequencyButtons indexOfObject:button];
+    OCKTreatmentEvent *selectedEvent = _treatmentEvents[index];
+    
+    if (_delegate &&
+        [_delegate respondsToSelector:@selector(careCardCellDidUpdateFrequency:ofTreatmentEvent:)]) {
+        [_delegate careCardCellDidUpdateFrequency:self ofTreatmentEvent:selectedEvent];
+    }
+    
 }
 
 - (void)didChangePreferredContentSize {
@@ -187,23 +207,6 @@ static const CGFloat TopMargin = 10.0;
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-- (void)toggleFrequencyButton:(id)sender {
-//    UIButton *button = (UIButton *)sender;
-//    if (button.backgroundColor == _treatment.tintColor) {
-//        _treatment.completed++;
-//        button.backgroundColor = [UIColor lightGrayColor];
-//    } else {
-//        _treatment.completed--;
-//        button.backgroundColor = _treatment.tintColor;
-//    }
-    
-    if (_delegate &&
-        [_delegate respondsToSelector:@selector(treatmentCellDidUpdateFrequency:)]) {
-        [_delegate treatmentCellDidUpdateFrequency:self];
-    }
-    
 }
 
 @end

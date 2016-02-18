@@ -10,12 +10,12 @@
 #import <UIKit/UIKit.h>
 
 
-@class OCKHeartWeekView, OCKEvaluationWeekView;
+@class OCKCareCardWeekView, OCKEvaluationWeekView;
 
 @interface OCKWeekPageViewController : UIPageViewController
 
-@property (nonatomic) BOOL showHeartWeekView;
-@property (nonatomic, readonly) OCKHeartWeekView *heartWeekView;
+@property (nonatomic) BOOL showCareCardWeekView;
+@property (nonatomic, readonly) OCKCareCardWeekView *careCardWeekView;
 @property (nonatomic, readonly) OCKEvaluationWeekView *evaluationWeekView;
 
 @end

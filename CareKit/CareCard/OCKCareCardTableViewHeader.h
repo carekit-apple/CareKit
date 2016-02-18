@@ -12,11 +12,12 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class OCKCareCard;
+@class OCKAdherence;
 
-@interface OCKCareCardView : UIView
+@interface OCKCareCardTableViewHeader : UIView
 
-@property (nonatomic) OCKCareCard *careCard;
+@property (nonatomic) CGFloat adherence;
+@property (nonatomic, copy) NSString *date;
 
 @end
 

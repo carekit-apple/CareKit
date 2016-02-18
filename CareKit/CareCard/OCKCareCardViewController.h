@@ -14,9 +14,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @class OCKCarePlanStore;
 
-@interface OCKTreatmentPlanViewController : UINavigationController
+@interface OCKCareCardViewController : UINavigationController
 
-+ (instancetype)treatmentPlanViewControllerWithCarePlanStore:(OCKCarePlanStore *)store;
++ (instancetype)careCardViewControllerWithCarePlanStore:(OCKCarePlanStore *)store;
 
 - (instancetype)initWithCarePlanStore:(OCKCarePlanStore *)store;
 

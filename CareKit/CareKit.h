@@ -17,7 +17,7 @@
 #import <CareKit/OCKCarePlanEvent.h>
 
 // CareCard
-#import <CareKit/OCKTreatmentPlanViewController.h>
+#import <CareKit/OCKCareCardViewController.h>
 
 // Evaluation
 #import <CareKit/OCKEvaluationViewController.h>

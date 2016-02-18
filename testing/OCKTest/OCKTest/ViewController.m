@@ -24,6 +24,7 @@ static const BOOL resetStoreOnLaunch = YES;
 @implementation ViewController {
     UITabBarController *_tabBarController;
     OCKDashboardViewController *_dashboardViewController;
+    OCKCareCardViewController *_careCardViewController;
     OCKEvaluationViewController *_evaluationViewController;
     OCKConnectViewController *_connectViewController;
     
@@ -40,6 +41,7 @@ static const BOOL resetStoreOnLaunch = YES;
     [self setUpCarePlanStore];
     
     _dashboardViewController = [self dashboardViewController];
+    _careCardViewController = [self careCardViewController];
     _evaluationViewController = [self evaluationViewController];
     _connectViewController = [self connectViewController];
     
@@ -120,6 +122,10 @@ static const BOOL resetStoreOnLaunch = YES;
     dashboard.headerText = [formatter stringFromDate:[NSDate date]];
     
     return dashboard;
+}
+
+- (OCKCareCardViewController *)careCardViewController {
+    return [OCKEvaluationViewController careCardViewControllerWithCarePlanStore:_store];
 }
 
 - (OCKEvaluationViewController *)evaluationViewController {

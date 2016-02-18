@@ -14,7 +14,7 @@
 
 #define DefineStringKey(x) static NSString *const x = @#x
 
-static const BOOL resetStoreOnLaunch = NO;
+static const BOOL resetStoreOnLaunch = YES;
 
 @interface ViewController () <OCKEvaluationTableViewDelegate, OCKCarePlanStoreDelegate, ORKTaskViewControllerDelegate>
 
@@ -228,8 +228,12 @@ DefineStringKey(WeightEvaluation);
 - (void)generateEvaluations {
     NSMutableArray *evaluations = [NSMutableArray new];
     
+    NSDateComponents *components = [NSDateComponents new];
+    components.year = 2016;
+    NSDate *startDate = [[NSCalendar currentCalendar] dateFromComponents:components];
+    
     {
-        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:[NSDate date] occurrencesOnEachDay:@[@1,@0,@1,@0,@1,@0,@1]];
+        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@1,@0,@1,@0,@1,@0,@1]];
         UIColor *color = OCKBlueColor();
         OCKEvaluation *evaluation = [[OCKEvaluation alloc] initWithIdentifier:PainEvaluation
                                                                          type:@"survey"
@@ -244,7 +248,7 @@ DefineStringKey(WeightEvaluation);
     }
     
     {
-        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:[NSDate date] occurrencesOnEachDay:@[@1,@1,@1,@1,@1,@1,@1]];
+        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@1,@1,@1,@1,@1,@1,@1]];
         UIColor *color = OCKGreenColor();
         OCKEvaluation *evaluation = [[OCKEvaluation alloc] initWithIdentifier:MoodEvaluation
                                                                          type:@"survey"
@@ -259,7 +263,7 @@ DefineStringKey(WeightEvaluation);
     }
     
     {
-        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:[NSDate date] occurrencesOnEachDay:@[@1,@1,@0,@1,@1,@1,@0]];
+        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@1,@1,@0,@1,@1,@1,@0]];
         UIColor *color = OCKRedColor();
         OCKEvaluation *evaluation = [[OCKEvaluation alloc] initWithIdentifier:SleepQualityEvaluation
                                                                          type:@"survey"
@@ -274,7 +278,7 @@ DefineStringKey(WeightEvaluation);
     }
     
     {
-        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:[NSDate date] occurrencesOnEachDay:@[@0,@1,@0,@1,@0,@1,@0]];
+        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@0,@1,@0,@1,@0,@1,@0]];
         UIColor *color = OCKYellowColor();
         OCKEvaluation *evaluation = [[OCKEvaluation alloc] initWithIdentifier:BloodPressureEvaluation
                                                                          type:@"survey"
@@ -289,7 +293,7 @@ DefineStringKey(WeightEvaluation);
     }
     
     {
-        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:[NSDate date] occurrencesOnEachDay:@[@1,@1,@1,@1,@1,@1,@1]];
+        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@1,@1,@1,@1,@1,@1,@1]];
         UIColor *color = OCKPurpleColor();
         OCKEvaluation *evaluation = [[OCKEvaluation alloc] initWithIdentifier:WeightEvaluation
                                                                          type:@"survey"

@@ -78,9 +78,6 @@ const static CGFloat ValueLabelWidth = 100.0;
         [self.contentView addSubview:_leadingEdge];
     }
     _leadingEdge.backgroundColor = _evaluationEvent.evaluation.color;
-    if (_evaluationEvent.state == OCKCareEventStateCompleted && !_evaluationEvent.evaluation.allowRetry) {
-        _leadingEdge.alpha = 0.25;
-    }
     
     [self setUpConstraints];
 }

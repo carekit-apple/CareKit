@@ -61,6 +61,18 @@ const static CGFloat HeaderViewHeight = 100.0;
     [self prepareView];
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    // Check to see if the date's day component has changed.
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    NSDateComponents *newComponents = [calendar components:(NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitWeekOfMonth | NSCalendarUnitWeekday | NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond) fromDate:[NSDate date]];
+    NSDateComponents *oldComponents = [calendar components:(NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitWeekOfMonth | NSCalendarUnitWeekday | NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond) fromDate:_selectedDate];
+    
+    if (newComponents.day > oldComponents.day) {
+        [self fetchEvaluationEvents];
+    }
+}
+
 - (void)prepareView {
     if (!_headerView) {
         _headerView = [[OCKEvaluationTableViewHeader alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, HeaderViewHeight)];
@@ -71,6 +83,7 @@ const static CGFloat HeaderViewHeight = 100.0;
                                                                    navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal
                                                                                  options:nil];
     _weekPageViewController.dataSource = self;
+    
     self.tableView.tableHeaderView = _weekPageViewController.view;
     self.tableView.tableFooterView = [UIView new];
 }

@@ -9,7 +9,7 @@
 
 #import "OCKCarePlanStore.h"
 
-@interface OCKEvaluationTableViewController() <OCKCarePlanStoreDelegate>
+@interface OCKEvaluationTableViewController() <OCKCarePlanStoreDelegate, UIPageViewControllerDataSource>
 
 @property (nonatomic) NSDate *selectedDate;
 

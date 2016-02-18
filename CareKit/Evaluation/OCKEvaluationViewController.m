@@ -57,9 +57,12 @@
 #pragma mark - OCKEvaluationWeekViewDelegate
 
 - (void)evaluationWeekViewSelectionDidChange:(OCKEvaluationWeekView *)evaluationWeekView {
-    NSInteger day = evaluationWeekView.selectedDay;
-    _tableViewController.selectedDate = [_tableViewController dateFromSelectedDay:day];
-    
+    NSDate *selectedDate = [_tableViewController dateFromSelectedDay:evaluationWeekView.selectedDay];
+    if (selectedDate.timeIntervalSinceNow < 0) {
+        _tableViewController.selectedDate = selectedDate;
+        OCKEvaluationWeekView *evaluationWeekView = _tableViewController.weekPageViewController.evaluationWeekView;
+        [evaluationWeekView.weekView highlightDay:evaluationWeekView.selectedDay];
+    }
 }
 
 @end

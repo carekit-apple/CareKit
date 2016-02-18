@@ -70,6 +70,7 @@ const static CGFloat HeaderViewHeight = 100.0;
     _weekPageViewController = [[OCKWeekPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll
                                                                    navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal
                                                                                  options:nil];
+    _weekPageViewController.dataSource = self;
     self.tableView.tableHeaderView = _weekPageViewController.view;
     self.tableView.tableFooterView = [UIView new];
 
@@ -135,6 +136,30 @@ const static CGFloat HeaderViewHeight = 100.0;
 }
 
 
+#pragma mark - UIPageViewControllerDataSource
+
+- (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController {
+    // TO DO: implementation
+    // Calculate the date one week before the selected date.
+    
+    // Set the new date as the selected date.
+    
+    return pageViewController;
+}
+
+- (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController {
+    // TO DO: implementation
+    
+    // Check if the selected date is from current week, if it is then don't do anything.
+    
+    // Calculate the date one week after the selected date.
+    
+    // Set the new date as the selected date.
+    
+    return pageViewController;
+}
+
+
 #pragma mark - UITableViewDelegate
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -160,11 +185,20 @@ const static CGFloat HeaderViewHeight = 100.0;
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     OCKEvaluationEvent *selectedEvaluationEvent = _evaluationEvents[indexPath.row].firstObject;
     _lastSelectedEvaluationEvent = selectedEvaluationEvent;
-    
+
     if (_delegate &&
         [_delegate respondsToSelector:@selector(tableViewDidSelectEvaluationEvent:)]) {
         [_delegate tableViewDidSelectEvaluationEvent:selectedEvaluationEvent];
     }
+}
+
+- (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath {
+    BOOL shouldHighlight = YES;
+    OCKEvaluationEvent *event = _evaluationEvents[indexPath.row].firstObject;
+    if (event.state == OCKCareEventStateCompleted && !event.evaluation.allowRetry) {
+        shouldHighlight = NO;
+    }
+    return shouldHighlight;
 }
 
 

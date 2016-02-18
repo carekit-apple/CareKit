@@ -15,6 +15,8 @@ const static CGFloat LeadingMargin = 20.0;
 const static CGFloat HorizontalMargin = 5.0;
 const static CGFloat TrailingMargin = 35.0;
 
+const static CGFloat ValueLabelWidth = 100.0;
+
 @implementation OCKEvaluationTableViewCell {
     UILabel *_titleLabel;
     UILabel *_textLabel;
@@ -34,7 +36,13 @@ const static CGFloat TrailingMargin = 35.0;
 }
 
 - (void)prepareView {
-    self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    self.tintColor = _evaluationEvent.evaluation.color;
+    
+    if (_evaluationEvent.state == OCKCareEventStateCompleted) {
+        self.accessoryType = UITableViewCellAccessoryCheckmark;
+    } else {
+        self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    }
     
     if (!_titleLabel) {
         _titleLabel = [UILabel new];
@@ -70,6 +78,9 @@ const static CGFloat TrailingMargin = 35.0;
         [self.contentView addSubview:_leadingEdge];
     }
     _leadingEdge.backgroundColor = _evaluationEvent.evaluation.color;
+    if (_evaluationEvent.state == OCKCareEventStateCompleted && !_evaluationEvent.evaluation.allowRetry) {
+        _leadingEdge.alpha = 0.25;
+    }
     
     [self setUpConstraints];
 }
@@ -125,6 +136,13 @@ const static CGFloat TrailingMargin = 35.0;
                                                                     attribute:NSLayoutAttributeCenterY
                                                                    multiplier:1.0
                                                                      constant:0.0],
+                                       [NSLayoutConstraint constraintWithItem:_valueLabel
+                                                                    attribute:NSLayoutAttributeWidth
+                                                                    relatedBy:NSLayoutRelationEqual
+                                                                       toItem:nil
+                                                                    attribute:NSLayoutAttributeNotAnAttribute
+                                                                   multiplier:1.0
+                                                                     constant:ValueLabelWidth],
                                        [NSLayoutConstraint constraintWithItem:_leadingEdge
                                                                     attribute:NSLayoutAttributeLeading
                                                                     relatedBy:NSLayoutRelationEqual

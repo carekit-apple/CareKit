@@ -14,7 +14,7 @@
 
 #define DefineStringKey(x) static NSString *const x = @#x
 
-BOOL resetStore = NO;
+BOOL resetStoreOnLaunch = YES;
 
 @interface ViewController () <OCKEvaluationTableViewDelegate, OCKCarePlanStoreDelegate, ORKTaskViewControllerDelegate>
 
@@ -195,7 +195,7 @@ BOOL resetStore = NO;
 
 - (void)setUpCarePlanStore {
     // Reset the store.
-    if (resetStore) {
+    if (resetStoreOnLaunch) {
         [[NSFileManager defaultManager] removeItemAtPath:[self storeDirectoryPath] error:nil];
     }
     
@@ -311,7 +311,7 @@ DefineStringKey(WeightEvaluation);
     
     if ([identifer isEqualToString:PainEvaluation]) {
         ORKScaleAnswerFormat *format = [ORKScaleAnswerFormat scaleAnswerFormatWithMaximumValue:10
-                                                                                  minimumValue:0
+                                                                                  minimumValue:1
                                                                                   defaultValue:NSIntegerMax
                                                                                           step:1
                                                                                       vertical:NO
@@ -326,7 +326,7 @@ DefineStringKey(WeightEvaluation);
         task = [[ORKOrderedTask alloc] initWithIdentifier:@"pain" steps:@[step]];
     } else if ([identifer isEqualToString:MoodEvaluation]) {
         ORKScaleAnswerFormat *format = [ORKScaleAnswerFormat scaleAnswerFormatWithMaximumValue:10
-                                                                                  minimumValue:0
+                                                                                  minimumValue:1
                                                                                   defaultValue:NSIntegerMax
                                                                                           step:1
                                                                                       vertical:NO
@@ -342,7 +342,7 @@ DefineStringKey(WeightEvaluation);
         
     } else if ([identifer isEqualToString:SleepQualityEvaluation]) {
         ORKScaleAnswerFormat *format = [ORKScaleAnswerFormat scaleAnswerFormatWithMaximumValue:10
-                                                                                  minimumValue:0
+                                                                                  minimumValue:1
                                                                                   defaultValue:NSIntegerMax
                                                                                           step:1
                                                                                       vertical:NO

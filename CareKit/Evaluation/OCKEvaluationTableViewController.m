@@ -73,7 +73,6 @@ const static CGFloat HeaderViewHeight = 100.0;
     _weekPageViewController.dataSource = self;
     self.tableView.tableHeaderView = _weekPageViewController.view;
     self.tableView.tableFooterView = [UIView new];
-
 }
 
 - (void)setSelectedDate:(NSDate *)selectedDate {

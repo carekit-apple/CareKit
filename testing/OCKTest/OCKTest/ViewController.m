@@ -14,7 +14,7 @@
 
 #define DefineStringKey(x) static NSString *const x = @#x
 
-BOOL resetStoreOnLaunch = YES;
+static const BOOL resetStoreOnLaunch = NO;
 
 @interface ViewController () <OCKEvaluationTableViewDelegate, OCKCarePlanStoreDelegate, ORKTaskViewControllerDelegate>
 
@@ -254,7 +254,7 @@ DefineStringKey(WeightEvaluation);
                                                                      schedule:schedule
                                                                          task:nil
                                                                      optional:NO
-                                                                   allowRetry:NO];
+                                                                   allowRetry:YES];
         [evaluations addObject:evaluation];
     }
     

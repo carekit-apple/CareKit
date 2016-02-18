@@ -13,7 +13,7 @@
 
 const static CGFloat LeadingMargin = 20.0;
 const static CGFloat HorizontalMargin = 5.0;
-const static CGFloat TrailingMargin = 35.0;
+const static CGFloat TrailingMargin = 40.0;
 
 const static CGFloat ValueLabelWidth = 100.0;
 

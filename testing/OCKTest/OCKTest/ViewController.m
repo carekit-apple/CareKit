@@ -572,7 +572,7 @@ DefineStringKey(WeightEvaluation);
 
 #pragma mark - Evaluation Table View Delegate (OCKEvaluationTableViewDelegate)
 
-- (void)tableViewDidSelectEvaluationEvent:(OCKEvaluationEvent *)evaluationEvent {
+- (void)tableViewDidSelectRowWithEvaluationEvent:(OCKEvaluationEvent *)evaluationEvent {
     NSInteger validState = (evaluationEvent.state == OCKCareEventStateInitial || evaluationEvent.state == OCKCareEventStateNotCompleted) ||
     (evaluationEvent.state == OCKCareEventStateCompleted && evaluationEvent.evaluation.allowRetry);
 

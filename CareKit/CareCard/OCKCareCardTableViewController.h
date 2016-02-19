@@ -17,7 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol OCKCareCardTableViewDelegate <NSObject>
 
-- (void)tableViewDidSelectTreatmentEvent:(OCKTreatmentEvent *)treatmentEvent;
+- (void)tableViewDidSelectRowWithTreatmentEvents:(NSArray<OCKTreatmentEvent *> *)events;
 
 @end
 

@@ -197,8 +197,8 @@ const static CGFloat HeaderViewHeight = 100.0;
     _lastSelectedEvaluationEvent = selectedEvaluationEvent;
 
     if (_delegate &&
-        [_delegate respondsToSelector:@selector(tableViewDidSelectEvaluationEvent:)]) {
-        [_delegate tableViewDidSelectEvaluationEvent:selectedEvaluationEvent];
+        [_delegate respondsToSelector:@selector(tableViewDidSelectRowWithEvaluationEvent:)]) {
+        [_delegate tableViewDidSelectRowWithEvaluationEvent:selectedEvaluationEvent];
     }
 }
 

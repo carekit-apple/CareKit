@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol OCKEvaluationTableViewDelegate <NSObject>
 
-- (void)tableViewDidSelectEvaluationEvent:(OCKEvaluationEvent *)evaluationEvent;
+- (void)tableViewDidSelectRowWithEvaluationEvent:(OCKEvaluationEvent *)evaluationEvent;
 
 @end
 

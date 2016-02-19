@@ -15,6 +15,7 @@
 #import "OCKWeekView.h"
 #import "OCKWeekPageViewController.h"
 #import "OCKCareCardWeekView.h"
+#import "OCKCareCardDetailViewController.h"
 
 
 @implementation OCKCareCardViewController {
@@ -61,10 +62,10 @@
 
 #pragma mark - OCKCareCardTableViewDelegate
 
-- (void)tableViewDidSelectTreatmentEvent:(OCKTreatmentEvent *)treatmentEvent {
-    // TODO: Implement this.
-    
-    // Navigate to detail treatment view controller.
+- (void)tableViewDidSelectRowWithTreatmentEvents:(NSArray<OCKTreatmentEvent *> *)events {
+    OCKCareCardDetailViewController *detailViewController = [OCKCareCardDetailViewController new];
+    detailViewController.treatmentEvents = events;
+    [self pushViewController:detailViewController animated:YES];
 }
 
 @end

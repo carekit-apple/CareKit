@@ -138,8 +138,10 @@ static const CGFloat HeaderViewHeight = 200.0;
 
 - (void)careCardCellDidUpdateFrequency:(OCKCareCardTableViewCell *)cell ofTreatmentEvent:(OCKTreatmentEvent *)event {
     // Update the treatment event and mark it as completed.
+    BOOL completed = !(event.state == OCKCareEventStateCompleted);
+    
     [_store updateTreatmentEvent:event
-                       completed:YES
+                       completed:completed
                   completionDate:[NSDate date]
                       completion:^(BOOL success, OCKTreatmentEvent * _Nonnull event, NSError * _Nonnull error) {
                           NSAssert(success, error.localizedDescription);
@@ -149,11 +151,11 @@ static const CGFloat HeaderViewHeight = 200.0;
 
 #pragma mark - OCKCarePlanStoreDelegate
 
-- (void)carePlanStore:(OCKCarePlanStore *)store didReceiveUpdateOfEvaluationEvent:(OCKEvaluationEvent *)event {
+- (void)carePlanStore:(OCKCarePlanStore *)store didReceiveUpdateOfTreatmentEvent:(OCKTreatmentEvent *)event {
     [self fetchTreatmentEvents];
 }
 
-- (void)carePlanStoreEvaluationListDidChange:(OCKCarePlanStore *)store {
+- (void)carePlanStoreTreatmentListDidChange:(OCKCarePlanStore *)store {
     [self fetchTreatmentEvents];
 }
 
@@ -204,6 +206,15 @@ static const CGFloat HeaderViewHeight = 200.0;
     return HeaderViewHeight;
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (_delegate &&
+        [_delegate respondsToSelector:@selector(tableViewDidSelectRowWithTreatmentEvents:)]) {
+        [_delegate tableViewDidSelectRowWithTreatmentEvents:_treatmentEvents[indexPath.row]];
+    }
+    
+    [tableView deselectRowAtIndexPath:indexPath animated:NO];
+}
+
 
 #pragma mark - UITableViewDataSource
 
@@ -212,12 +223,8 @@ static const CGFloat HeaderViewHeight = 200.0;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *CellIdentifier = @"CareCardCell";
-    OCKCareCardTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (!cell) {
-        cell = [[OCKCareCardTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
-                                               reuseIdentifier:CellIdentifier];
-    }
+    OCKCareCardTableViewCell *cell = [[OCKCareCardTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                                                     reuseIdentifier:nil];
     cell.treatmentEvents = _treatmentEvents[indexPath.row];
     cell.delegate = self;
     return cell;

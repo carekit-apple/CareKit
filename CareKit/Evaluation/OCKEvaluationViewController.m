@@ -49,7 +49,7 @@
     self.topViewController.title = self.title;
 }
 
-- (OCKEvaluationEvent *)lastSelectedEvaluationEvent {
+- (OCKCarePlanEvent *)lastSelectedEvaluationEvent {
     return _tableViewController.lastSelectedEvaluationEvent;
 }
 

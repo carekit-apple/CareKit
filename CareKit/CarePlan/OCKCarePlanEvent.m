@@ -8,29 +8,33 @@
 
 #import "OCKCarePlanEvent.h"
 #import "OCKCarePlanEvent_Internal.h"
-#import "OCKTreatment_Internal.h"
-#import "OCKEvaluation_Internal.h"
+#import "OCKCarePlanEventResult_Internal.h"
+
 
 @implementation OCKCarePlanEvent
 
-- (instancetype)initWithCoreDataObject:(OCKCDCareEvent *)cdObject {
+- (instancetype)initWithCoreDataObject:(OCKCDCarePlanEvent *)cdObject {
     self = [super init];
     if (self) {
         _occurrenceIndexOfDay = cdObject.occurrenceIndexOfDay.unsignedIntegerValue;
         _numberOfDaysSinceStart = cdObject.numberOfDaysSinceStart.unsignedIntegerValue;
         _state = cdObject.state.integerValue;
-        _eventChangeDate = cdObject.eventChangeDate;
-        _completionDate = cdObject.completionDate;
+        if (cdObject.result) {
+             _result = [[OCKCarePlanEventResult alloc] initWithCoreDataObject:cdObject.result];
+        }
+        _activity = [[OCKCarePlanActivity alloc] initWithCoreDataObject:cdObject.activity];
     }
     return self;
 }
 
 - (instancetype)initWithNumberOfDaysSinceStart:(NSUInteger)numberOfDaysSinceStart
-                           occurrenceIndexOfDay:(NSUInteger)occurrenceIndexOfDay {
+                           occurrenceIndexOfDay:(NSUInteger)occurrenceIndexOfDay
+                                      activity:(OCKCarePlanActivity *)activity{
     self = [super init];
     if (self) {
         _numberOfDaysSinceStart = numberOfDaysSinceStart;
         _occurrenceIndexOfDay = occurrenceIndexOfDay;
+        _activity = activity;
     }
     
     return self;
@@ -41,179 +45,67 @@
     event->_occurrenceIndexOfDay = _occurrenceIndexOfDay;
     event->_numberOfDaysSinceStart = _numberOfDaysSinceStart;
     event->_state = _state;
-    event->_eventChangeDate = _eventChangeDate;
-    event->_completionDate = _completionDate;
+    event->_activity = _activity;
+    event->_result = _result;
     return event;
 }
 
-@end
-
-@implementation OCKTreatmentEvent
-
-- (instancetype)initWithCoreDataObject:(OCKCDTreatmentEvent *)cdObject {
-    self = [super initWithCoreDataObject:cdObject];
-    if (self) {
-        if (cdObject.treatment) {
-            _treatment = [[OCKTreatment alloc] initWithCoreDataObject:cdObject.treatment];
-        }
-    }
-    return self;
-}
-
-- (instancetype)initWithNumberOfDaysSinceStart:(NSUInteger)numberOfDaysSinceStart
-                           occurrenceIndexOfDay:(NSUInteger)occurrenceIndexOfDay
-                                     treatment:(OCKTreatment *)treatment {
-    self = [super initWithNumberOfDaysSinceStart:numberOfDaysSinceStart occurrenceIndexOfDay:occurrenceIndexOfDay];
-    if (self) {
-        _treatment = treatment;
-    }
-    return self;
-}
-
-- (instancetype)copyWithZone:(NSZone *)zone {
-    OCKTreatmentEvent* event = [super copyWithZone:zone];
-    event->_treatment = _treatment;
-    return event;
-}
-
-@end
-
-@implementation OCKEvaluationEvent
-
-- (instancetype)initWithCoreDataObject:(OCKCDEvaluationEvent *)cdObject {
-    self = [super initWithCoreDataObject:cdObject];
-    if (self) {
-        if (cdObject.evaluation) {
-            _evaluation = [[OCKEvaluation alloc] initWithCoreDataObject:cdObject.evaluation];
-        }
-        _evaluationValueString = cdObject.evaluationValueString;
-        _evaluationValue = cdObject.evaluationValue;
-        _evaluationResult = cdObject.evaluationResult;
-    }
-    return self;
-}
-
-- (instancetype)initWithNumberOfDaysSinceStart:(NSUInteger)numberOfDaysSinceStart
-                          occurrenceIndexOfDay:(NSUInteger)occurrenceIndexOfDay
-                                    evaluation:(OCKEvaluation *)evaluation {
-    self = [super initWithNumberOfDaysSinceStart:numberOfDaysSinceStart occurrenceIndexOfDay:occurrenceIndexOfDay];
-    if (self) {
-        _evaluation = evaluation;
-    }
-    return self;
-}
-
-- (instancetype)copyWithZone:(NSZone *)zone {
-    OCKEvaluationEvent* event = [super copyWithZone:zone];
-    event->_evaluation = _evaluation;
-    event->_evaluationValue = _evaluationValue;
-    event->_evaluationResult = _evaluationResult;
-    return event;
+- (NSString *)description {
+    return [NSString stringWithFormat:@"<%@ %@ %@ %@>", super.description,
+            self.activity.identifier,
+            @(self.numberOfDaysSinceStart),
+            @(self.occurrenceIndexOfDay)];
 }
 
 @end
 
 
-@implementation OCKCDCareEvent
+
+
+@implementation OCKCDCarePlanEvent
 
 - (instancetype)initWithEntity:(NSEntityDescription *)entity
 insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
-                     careEvent:(OCKCarePlanEvent *)careEvent {
+                         event:(OCKCarePlanEvent *)event
+                      cdResult:(OCKCDCarePlanEventResult *)cdResult
+                    cdActivity:(OCKCDCarePlanActivity *)cdActivity {
     
-    NSParameterAssert(careEvent);
+    NSParameterAssert(event);
+    NSParameterAssert(cdActivity);
     
     self = [super initWithEntity:entity insertIntoManagedObjectContext:context];
     if (self) {
-        self.occurrenceIndexOfDay = @(careEvent.occurrenceIndexOfDay);
-        self.numberOfDaysSinceStart = @(careEvent.numberOfDaysSinceStart);
-        self.state = @(careEvent.state);
-        self.eventChangeDate = careEvent.eventChangeDate;
-        self.completionDate = careEvent.completionDate;
+        self.occurrenceIndexOfDay = @(event.occurrenceIndexOfDay);
+        self.numberOfDaysSinceStart = @(event.numberOfDaysSinceStart);
+        self.activity = cdActivity;
+        [self updateWithState:event.state result:cdResult];
     }
     return self;
 }
 
-- (void)updateWithEvent:(OCKCarePlanEvent *)careEvent {
-    NSParameterAssert(careEvent);
-    self.state = @(careEvent.state);
-    self.completionDate = careEvent.completionDate;
-    self.eventChangeDate = careEvent.eventChangeDate;
+- (void)updateWithState:(OCKCarePlanEventState)state result:(OCKCDCarePlanEventResult *)result {
+    self.state = @(state);
+    if (result) {
+        if (self.result) {
+            [self.result updateWithResult:result];
+        } else {
+            self.result = result;
+        }
+    } else {
+        self.result = nil;
+    }
 }
 
 @end
 
 
-@implementation OCKCDCareEvent (CoreDataProperties)
+@implementation OCKCDCarePlanEvent (CoreDataProperties)
 
 @dynamic occurrenceIndexOfDay;
 @dynamic numberOfDaysSinceStart;
 @dynamic state;
-@dynamic completionDate;
-@dynamic eventChangeDate;
+@dynamic result;
+@dynamic activity;
 
 @end
 
-
-@implementation OCKCDEvaluationEvent
-
-- (instancetype)initWithEntity:(NSEntityDescription *)entity
-insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
-               evaluationEvent:(OCKEvaluationEvent *)evaluationEvent
-                  cdEvaluation:(OCKCDEvaluation *)cdEvaluation; {
-
-    NSParameterAssert(cdEvaluation);
-    
-    self = [super initWithEntity:entity insertIntoManagedObjectContext:context careEvent:evaluationEvent];
-    if (self) {
-        self.evaluation = cdEvaluation;
-        self.evaluationValue = evaluationEvent.evaluationValue;
-        self.evaluationValueString = evaluationEvent.evaluationValueString;
-        self.evaluationResult = evaluationEvent.evaluationResult;
-    }
-    return self;
-}
-
-- (void)updateWithEvent:(OCKEvaluationEvent *)evaluationEvent {
-    [super updateWithEvent:evaluationEvent];
-    self.evaluationResult = evaluationEvent.evaluationResult;
-    self.evaluationValue = evaluationEvent.evaluationValue;
-    self.evaluationValueString = evaluationEvent.evaluationValueString;
-}
-
-@end
-
-
-@implementation OCKCDEvaluationEvent (CoreDataProperties)
-
-@dynamic evaluationValue;
-@dynamic evaluationValueString;
-@dynamic evaluationResult;
-@dynamic evaluation;
-
-@end
-
-
-@implementation OCKCDTreatmentEvent
-
-- (instancetype)initWithEntity:(NSEntityDescription *)entity
-insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
-                treatmentEvent:(OCKTreatmentEvent *)treatmentEvent
-                   cdTreatment:(OCKCDTreatment *)cdTreatment {
-    
-    NSParameterAssert(cdTreatment);
-    
-    self = [super initWithEntity:entity insertIntoManagedObjectContext:context careEvent:treatmentEvent];
-    if (self) {
-        self.treatment = cdTreatment;
-    }
-    return self;
-}
-
-@end
-
-
-@implementation OCKCDTreatmentEvent (CoreDataProperties)
-
-@dynamic treatment;
-
-@end

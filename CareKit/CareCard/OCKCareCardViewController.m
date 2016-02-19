@@ -61,7 +61,7 @@
 
 #pragma mark - OCKCareCardTableViewDelegate
 
-- (void)tableViewDidSelectTreatmentEvent:(OCKTreatmentEvent *)treatmentEvent {
+- (void)tableViewDidSelectTreatmentEvent:(OCKCarePlanEvent *)treatmentEvent {
     // TODO: Implement this.
     
     // Navigate to detail treatment view controller.

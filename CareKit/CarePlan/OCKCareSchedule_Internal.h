@@ -12,16 +12,59 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface OCKCareSchedule ()
 
--(void)setEndDate:(NSDate *)date;
+@property (nonatomic, copy) NSArray<NSNumber *> *occurrences;
 
-- (NSCalendar *)calendar;
+@property (nonatomic) NSUInteger timeUnitsToSkip;
 
-- (NSUInteger)numberOfEventsOnDay:(NSDate *)day;
+- (void)setEndDate:(NSDate *)date;
 
 - (NSUInteger)numberOfDaySinceStart:(NSDate *)day;
 
 - (BOOL)isActiveOnDay:(NSDate *)date;
 
 @end
+
+
+@interface OCKCareDailySchedule : OCKCareSchedule
+
+- (instancetype)initWithStartDate:(NSDate *)startDate
+                occurrencesPerDay:(NSUInteger)occurrencesPerDay;
+
+- (instancetype)initWithStartDate:(NSDate *)startDate
+                       daysToSkip:(NSUInteger)daysToSkip
+                occurrencesPerDay:(NSUInteger)occurrencesPerDay
+                          endDate:(nullable NSDate *)endDate
+                         timeZone:(nullable NSTimeZone *)timeZone;
+
+@end
+
+
+@interface OCKCareWeeklySchedule : OCKCareSchedule
+
+- (instancetype)initWithStartDate:(NSDate *)startDate
+             occurrencesOnEachDay:(NSArray<NSNumber *> *)occurrencesFromSundayToSaturday;
+
+- (instancetype)initWithStartDate:(NSDate *)startDate
+                      weeksToSkip:(NSUInteger)weeksToSkip
+             occurrencesOnEachDay:(NSArray<NSNumber *> *)occurrencesFromSundayToSaturday
+                          endDate:(nullable NSDate *)endDate
+                         timeZone:(nullable NSTimeZone *)timeZone;
+
+@end
+
+
+@interface OCKCareMonthlySchedule : OCKCareSchedule
+
+- (instancetype)initWithStartDate:(NSDate *)startDate
+             occurrencesOnEachDay:(NSArray<NSNumber *> *)occurrencesFrom1stTo31th;
+
+- (instancetype)initWithStartDate:(NSDate *)startDate
+                     monthsToSkip:(NSUInteger)monthsToSkip
+             occurrencesOnEachDay:(NSArray<NSNumber *> *)occurrencesFrom1stTo31th
+                          endDate:(nullable NSDate *)endDate
+                         timeZone:(nullable NSTimeZone *)timeZone;
+
+@end
+
 
 NS_ASSUME_NONNULL_END

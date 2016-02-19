@@ -9,99 +9,47 @@
 #import <CareKit/CareKit.h>
 #import <CoreData/CoreData.h>
 #import "OCKCarePlanActivity_Internal.h"
+#import "OCKCarePlanEventResult_Internal.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface OCKCarePlanEvent () <OCKCoreDataObjectMirroring, NSCopying>
 
 - (instancetype)initWithNumberOfDaysSinceStart:(NSUInteger)numberOfDaysSinceStart
-                           occurrenceIndexOfDay:(NSUInteger)occurrenceIndexOfDay;
+                          occurrenceIndexOfDay:(NSUInteger)occurrenceIndexOfDay
+                                      activity:(OCKCarePlanActivity *)activity;
 
-@property (nonatomic) OCKCareEventState state;
+@property (nonatomic) OCKCarePlanEventState state;
 
-@property (nonatomic, strong) NSDate *eventChangeDate;
-
-@property (nonatomic, strong) NSDate *completionDate;
-
-@end
-
-@interface OCKEvaluationEvent ()
-
-- (instancetype)initWithNumberOfDaysSinceStart:(NSUInteger)numberOfDaysSinceStart
-                           occurrenceIndexOfDay:(NSUInteger)occurrenceIndexOfDay
-                                    evaluation:(OCKEvaluation *)evaluation;
-
-@property (nonatomic, strong) NSNumber *evaluationValue;
-@property (nonatomic, copy) NSString *evaluationValueString;
-@property (nonatomic, strong) id<NSSecureCoding> evaluationResult;
+@property (nonatomic, nullable) OCKCarePlanEventResult *result;
 
 @end
 
-@interface OCKTreatmentEvent ()
-
-- (instancetype)initWithNumberOfDaysSinceStart:(NSUInteger)numberOfDaysSinceStart
-                           occurrenceIndexOfDay:(NSUInteger)occurrenceIndexOfDay
-                                    treatment:(OCKTreatment *)treatment;
-@end
-
-
-@interface OCKCDCareEvent : NSManagedObject
+@class OCKCDCarePlanEventResult;
+@interface OCKCDCarePlanEvent : NSManagedObject
 
 - (instancetype)initWithEntity:(NSEntityDescription *)entity
 insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
-                     careEvent:(OCKCarePlanEvent *)careEvent;
+                         event:(OCKCarePlanEvent *)event
+                      cdResult:(nullable OCKCDCarePlanEventResult *)cdResult
+                    cdActivity:(OCKCDCarePlanActivity *)cdActivity;
 
-- (void)updateWithEvent:(OCKCarePlanEvent *)careEvent;
+- (void)updateWithState:(OCKCarePlanEventState)state result:(nullable OCKCDCarePlanEventResult *)result;
 
 @end
 
-@interface OCKCDCareEvent (CoreDataProperties)
+@class OCKCDCarePlanEventResult;
+@interface OCKCDCarePlanEvent (CoreDataProperties)
 
 @property (nullable, nonatomic, retain) NSNumber *occurrenceIndexOfDay;
 @property (nullable, nonatomic, retain) NSNumber *numberOfDaysSinceStart;
 @property (nullable, nonatomic, retain) NSNumber *state;
-@property (nullable, nonatomic, retain) NSDate *completionDate;
-@property (nullable, nonatomic, retain) NSDate *eventChangeDate;
+@property (nullable, nonatomic, retain) OCKCDCarePlanEventResult *result;
+@property (nullable, nonatomic, retain) OCKCDCarePlanActivity *activity;
 
 @end
 
 
-@class OCKCDEvaluation;
-
-@interface OCKCDEvaluationEvent : OCKCDCareEvent
-
-- (instancetype)initWithEntity:(NSEntityDescription *)entity
-insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
-               evaluationEvent:(OCKEvaluationEvent *)evaluationEvent
-                  cdEvaluation:(OCKCDEvaluation *)cdEvaluation;
-
-@end
-
-@interface OCKCDEvaluationEvent (CoreDataProperties)
-
-@property (nullable, nonatomic, retain) NSNumber *evaluationValue;
-@property (nullable, nonatomic, retain) NSString *evaluationValueString;
-@property (nullable, nonatomic, retain) id<NSSecureCoding> evaluationResult;
-@property (nullable, nonatomic, retain) OCKCDEvaluation *evaluation;
-
-@end
-
-@class OCKCDTreatment;
-
-@interface OCKCDTreatmentEvent : OCKCDCareEvent
-
-- (instancetype)initWithEntity:(NSEntityDescription *)entity
-insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
-                treatmentEvent:(OCKTreatmentEvent *)treatmentEvent
-                   cdTreatment:(OCKCDTreatment *)cdTreatment;
-
-@end
-
-@interface OCKCDTreatmentEvent (CoreDataProperties)
-
-@property (nullable, nonatomic, retain) OCKCDTreatment *treatment;
-
-@end
 
 
 

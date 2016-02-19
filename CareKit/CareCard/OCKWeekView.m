@@ -10,7 +10,7 @@
 #import "OCKWeekView.h"
 #import "OCKColors.h"
 
-const static CGFloat TopMargin = 10.0;
+const static CGFloat TopMargin = 12.0;
 
 @implementation OCKWeekView {
     NSMutableArray<UILabel *> *_weekLabels;
@@ -29,7 +29,7 @@ const static CGFloat TopMargin = 10.0;
         _weekLabels = [NSMutableArray new];
         for (int i = 1; i < 8; i++) {
             UILabel *dayLabel = [UILabel new];
-            dayLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleCaption1];
+            dayLabel.font = [UIFont systemFontOfSize:12.0 weight:UIFontWeightThin];
             dayLabel.translatesAutoresizingMaskIntoConstraints = NO;
             dayLabel.layer.cornerRadius = 3;
             dayLabel.clipsToBounds = YES;

@@ -8,20 +8,29 @@
 
 
 #import <UIKit/UIKit.h>
-#import "OCKTreatmentTableViewCell.h"
+#import "OCKCareCardTableViewCell.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class OCKTreatment, OCKCareCard, OCKWeekPageViewController, OCKCarePlanStore;
+@class OCKTreatment, OCKWeekPageViewController, OCKCarePlanStore;
 
-@interface OCKTreatmentsTableViewController : UITableViewController <OCKTreatmentCellDelegate>
+@protocol OCKCareCardTableViewDelegate <NSObject>
+
+- (void)tableViewDidSelectTreatmentEvent:(OCKTreatmentEvent *)treatmentEvent;
+
+@end
+
+
+@interface OCKCareCardTableViewController : UITableViewController <OCKCareCardCellDelegate>
+
++ (instancetype)new NS_UNAVAILABLE;
 
 - (instancetype)initWithCarePlanStore:(OCKCarePlanStore *)store;
 
 @property (nonatomic, readonly) OCKCarePlanStore *store;
+@property (nonatomic) id<OCKCareCardTableViewDelegate> delegate;
 @property (nonatomic, readonly) OCKWeekPageViewController *weekPageViewController;
-@property (nonatomic, readonly) OCKCareCard *careCard;
 
 @end
 

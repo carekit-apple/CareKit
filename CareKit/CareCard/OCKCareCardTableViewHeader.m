@@ -7,8 +7,7 @@
 //
 
 
-#import "OCKCareCardView.h"
-#import "OCKCareCard.h"
+#import "OCKCareCardTableViewHeader.h"
 
 
 static const CGFloat LeadingMargin = 40.0;
@@ -20,7 +19,7 @@ static const CGFloat HorizontalMargin = 5.0;
 
 static const CGFloat HeartViewSize = 150.0;
 
-@implementation OCKCareCardView {
+@implementation OCKCareCardTableViewHeader {
     UILabel *_dateLabel;
     
     UIView *_heartView;
@@ -29,6 +28,8 @@ static const CGFloat HeartViewSize = 150.0;
     
     UILabel *_topEdge;
     UILabel *_bottomEdge;
+    
+    NSNumberFormatter *_numberFormatter;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame {
@@ -55,14 +56,14 @@ static const CGFloat HeartViewSize = 150.0;
         [self addSubview:_dateLabel];
     }
     _dateLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleCaption1];
-    _dateLabel.text = _careCard.date;
+    _dateLabel.text = _date;
     
     if (!_heartView) {
         _heartView = [UIView new];
         _heartView.backgroundColor = [UIColor redColor];
         [self addSubview:_heartView];
     }
-    _heartView.alpha = (_careCard.adherence == 0) ? 0.05 : _careCard.adherence;
+    _heartView.alpha = (_adherence == 0) ? 0.05 : _adherence;
     
     if (!_adherenceLabel) {
         _adherenceLabel = [UILabel new];
@@ -81,7 +82,7 @@ static const CGFloat HeartViewSize = 150.0;
         [self addSubview:_adherencePercentageLabel];
     }
     _adherencePercentageLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleTitle1];
-    _adherencePercentageLabel.text = _careCard.adherencePercentageString;
+    _adherencePercentageLabel.text = self.adherencePercentageString;
     
     if (!_bottomEdge) {
         _bottomEdge = [UILabel new];
@@ -248,8 +249,13 @@ static const CGFloat HeartViewSize = 150.0;
     [NSLayoutConstraint activateConstraints:constraints];
 }
 
-- (void)setCareCard:(OCKCareCard *)careCard {
-    _careCard = careCard;
+- (void)setAdherence:(CGFloat)adherence {
+    _adherence = adherence;
+    [self prepareView];
+}
+
+- (void)setDate:(NSString *)date {
+    _date = date;
     [self prepareView];
 }
 
@@ -259,6 +265,18 @@ static const CGFloat HeartViewSize = 150.0;
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+
+#pragma mark - Helpers
+
+- (NSString *)adherencePercentageString {
+    if (!_numberFormatter) {
+        _numberFormatter = [NSNumberFormatter new];
+        _numberFormatter.numberStyle = NSNumberFormatterPercentStyle;
+        _numberFormatter.maximumFractionDigits = 0;
+    }
+    return [_numberFormatter stringFromNumber:@(_adherence)];
 }
 
 @end

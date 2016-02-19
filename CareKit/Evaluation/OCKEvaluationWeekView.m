@@ -69,6 +69,13 @@ const static CGFloat DayButtonSize = 20.0;
                                                                        toItem:self
                                                                     attribute:NSLayoutAttributeCenterX
                                                                    multiplier:1.0
+                                                                     constant:0.0],
+                                       [NSLayoutConstraint constraintWithItem:_weekView
+                                                                    attribute:NSLayoutAttributeBottom
+                                                                    relatedBy:NSLayoutRelationEqual
+                                                                       toItem:self
+                                                                    attribute:NSLayoutAttributeBottom
+                                                                   multiplier:1.0
                                                                      constant:0.0]
                                        ]];
     
@@ -100,13 +107,11 @@ const static CGFloat DayButtonSize = 20.0;
     UIButton *button = (UIButton *)sender;
     NSInteger day = [_dayButtons indexOfObject:button];
     _selectedDay = day;
-    [_weekView highlightDay:day];
     
     if (_delegate &&
         [_delegate respondsToSelector:@selector(evaluationWeekViewSelectionDidChange:)]) {
         [_delegate evaluationWeekViewSelectionDidChange:self];
     }
 }
-
 
 @end

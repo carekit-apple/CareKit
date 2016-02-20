@@ -9,12 +9,11 @@
 #import <UIKit/UIKit.h>
 
 // CarePlan
-#import <CareKit/OCKCarePlanStore.h>
-#import <CareKit/OCKCarePlanActivity.h>
-#import <CareKit/OCKEvaluation.h>
-#import <CareKit/OCKTreatment.h>
 #import <CareKit/OCKCareSchedule.h>
+#import <CareKit/OCKCarePlanActivity.h>
 #import <CareKit/OCKCarePlanEvent.h>
+#import <CareKit/OCKCarePlanEventResult.h>
+#import <CareKit/OCKCarePlanStore.h>
 
 // CareCard
 #import <CareKit/OCKCareCardViewController.h>

@@ -7,15 +7,16 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <CareKit/OCKEvaluation.h>
-#import <CareKit/OCKTreatment.h>
+#import <CareKit/OCKCarePlanActivity.h>
+#import <CareKit/OCKCarePlanEventResult.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef NS_ENUM(NSInteger, OCKCareEventState) {
-    OCKCareEventStateInitial,
-    OCKCareEventStateNotCompleted,
-    OCKCareEventStateCompleted
+
+typedef NS_ENUM(NSInteger, OCKCarePlanEventState) {
+    OCKCarePlanEventStateInitial,
+    OCKCarePlanEventStateNotCompleted,
+    OCKCarePlanEventStateCompleted
 };
 
 /**
@@ -35,56 +36,20 @@ typedef NS_ENUM(NSInteger, OCKCareEventState) {
  */
 @property (nonatomic, readonly) NSUInteger numberOfDaysSinceStart;
 
+
+
+@property (nonatomic, strong, readonly) OCKCarePlanActivity *activity;
+
 /**
  The state of this event (Initial / NotCompleted / Completed).
  All event starts with `Initial`.
  */
-@property (nonatomic, readonly) OCKCareEventState state;
+@property (nonatomic, readonly) OCKCarePlanEventState state;
 
-/**
- When the event was changed.
- */
-@property (nonatomic, strong, readonly, nullable) NSDate *eventChangeDate;
 
-/**
- When the event was completed.
- */
-@property (nonatomic, strong, readonly, nullable) NSDate *completionDate;
+@property (nonatomic, readonly, nullable) OCKCarePlanEventResult *result;
 
 @end
 
-
-@interface OCKTreatmentEvent : OCKCarePlanEvent
-
-/**
- The treatment this event is belonging to.
- */
-@property (nonatomic, strong, readonly) OCKTreatment *treatment;
-
-@end
-
-@interface OCKEvaluationEvent : OCKCarePlanEvent
-
-/**
- The evaluation this event is belonging to.
- */
-@property (nonatomic, strong, readonly) OCKEvaluation *evaluation;
-
-/**
- The evaluation result value can be plotted.
- */
-@property (nonatomic, strong, readonly, nullable) NSNumber *evaluationValue;
-
-/**
- The evaluation result value can be displayed in UI.
- */
-@property (nonatomic, copy, readonly, nullable) NSString *evaluationValueString;
-
-/**
- The actual result object.
- */
-@property (nonatomic, strong, readonly, nullable) id<NSSecureCoding> evaluationResult;
-
-@end
 
 NS_ASSUME_NONNULL_END

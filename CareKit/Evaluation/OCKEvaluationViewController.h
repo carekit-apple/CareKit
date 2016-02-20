@@ -12,11 +12,11 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class OCKCarePlanStore, OCKEvaluationEvent;
+@class OCKCarePlanStore, OCKCarePlanEvent;
 
 @protocol OCKEvaluationTableViewDelegate <NSObject>
 
-- (void)tableViewDidSelectEvaluationEvent:(OCKEvaluationEvent *)evaluationEvent;
+- (void)tableViewDidSelectEvaluationEvent:(OCKCarePlanEvent *)evaluationEvent;
 
 @end
 
@@ -30,7 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
                              delegate:(id<OCKEvaluationTableViewDelegate>)delegate;
 
 @property (nonatomic, readonly) OCKCarePlanStore *store;
-@property (nonatomic, readonly) OCKEvaluationEvent *lastSelectedEvaluationEvent;
+@property (nonatomic, readonly) OCKCarePlanEvent *lastSelectedEvaluationEvent;
 
 @end
 

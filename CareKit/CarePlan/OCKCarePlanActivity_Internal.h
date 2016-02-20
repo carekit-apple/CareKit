@@ -20,20 +20,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface OCKCarePlanActivity () <OCKCoreDataObjectMirroring>
 
-- (instancetype)initWithIdentifier:(NSString *)identifier
-                              type:(nullable NSString *)type
-                             title:(nullable NSString *)title
-                              text:(nullable NSString *)text
-                             color:(nullable UIColor *)color
-                          schedule:(OCKCareSchedule *)schedule
-                          optional:(BOOL)optional
-              eventMutableDayRange:(OCKDayRange)eventMutableDayRange;
-
 @end
 
 @class OCKCDCarePlanItemType;
 
-@interface OCKCDCarePlanItem : NSManagedObject
+@interface OCKCDCarePlanActivity : NSManagedObject
 
 - (instancetype)initWithEntity:(NSEntityDescription *)entity
 insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
@@ -41,13 +32,16 @@ insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
 
 @property (nullable, nonatomic, retain) id color;
 @property (nullable, nonatomic, retain) NSString *identifier;
-@property (nullable, nonatomic, retain) id schedule;
+@property (nullable, nonatomic, retain) OCKCareSchedule *schedule;
 @property (nullable, nonatomic, retain) NSString *text;
 @property (nullable, nonatomic, retain) NSString *title;
-@property (nullable, nonatomic, retain) NSString *type;
+@property (nullable, nonatomic, retain) NSNumber *type;
+@property (nullable, nonatomic, retain) NSString *groupIdentifier;
 @property (nullable, nonatomic, retain) NSNumber *optional;
 @property (nullable, nonatomic, retain) NSNumber *mutableDaysBeforeEventDay;
 @property (nullable, nonatomic, retain) NSNumber *mutableDaysAfterEventDay;
+@property (nullable, nonatomic, retain) NSNumber *resultResettable;
+@property (nullable, nonatomic, retain) NSDictionary *userInfo;
 
 @end
 

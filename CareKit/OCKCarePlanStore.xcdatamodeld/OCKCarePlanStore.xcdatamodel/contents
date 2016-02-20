@@ -1,46 +1,38 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="9525" systemVersion="15D21" minimumToolsVersion="Xcode 7.0">
-    <entity name="OCKCDCareEvent" representedClassName="OCKCDCareEvent" syncable="YES">
-        <attribute name="completionDate" optional="YES" attributeType="Date" syncable="YES"/>
-        <attribute name="eventChangeDate" optional="YES" attributeType="Date" syncable="YES"/>
-        <attribute name="numberOfDaysSinceStart" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
-        <attribute name="occurrenceIndexOfDay" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
-        <attribute name="state" optional="YES" attributeType="Integer 64" syncable="YES"/>
-    </entity>
-    <entity name="OCKCDCarePlanItem" representedClassName="OCKCDCarePlanItem" syncable="YES">
+    <entity name="OCKCDCarePlanActivity" representedClassName="OCKCDCarePlanActivity" syncable="YES">
         <attribute name="color" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="groupIdentifier" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="identifier" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="mutableDaysAfterEventDay" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="mutableDaysBeforeEventDay" optional="YES" attributeType="Integer 64" syncable="YES"/>
         <attribute name="optional" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="resultResettable" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="schedule" optional="YES" attributeType="Transformable" syncable="YES"/>
         <attribute name="text" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="type" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="userInfo" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <relationship name="events" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="OCKCDCarePlanEvent" inverseName="activity" inverseEntity="OCKCDCarePlanEvent" syncable="YES"/>
     </entity>
-    <entity name="OCKCDEvaluation" representedClassName="OCKCDEvaluation" parentEntity="OCKCDCarePlanItem" syncable="YES">
-        <attribute name="allowRetry" optional="YES" attributeType="Boolean" defaultValueString="0" syncable="YES"/>
-        <attribute name="task" optional="YES" attributeType="Transformable" syncable="YES"/>
-        <relationship name="events" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OCKCDEvaluationEvent" inverseName="evaluation" inverseEntity="OCKCDEvaluationEvent" syncable="YES"/>
+    <entity name="OCKCDCarePlanEvent" representedClassName="OCKCDCarePlanEvent" syncable="YES">
+        <attribute name="numberOfDaysSinceStart" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="occurrenceIndexOfDay" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="state" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <relationship name="activity" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDCarePlanActivity" inverseName="events" inverseEntity="OCKCDCarePlanActivity" syncable="YES"/>
+        <relationship name="result" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="OCKCDCarePlanEventResult" inverseName="event" inverseEntity="OCKCDCarePlanEventResult" syncable="YES"/>
     </entity>
-    <entity name="OCKCDEvaluationEvent" representedClassName="OCKCDEvaluationEvent" parentEntity="OCKCDCareEvent" syncable="YES">
-        <attribute name="evaluationResult" optional="YES" attributeType="Transformable" syncable="YES"/>
-        <attribute name="evaluationValue" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
-        <attribute name="evaluationValueString" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="evaluation" maxCount="1" deletionRule="Deny" destinationEntity="OCKCDEvaluation" inverseName="events" inverseEntity="OCKCDEvaluation" syncable="YES"/>
-    </entity>
-    <entity name="OCKCDTreatment" representedClassName="OCKCDTreatment" parentEntity="OCKCDCarePlanItem" syncable="YES">
-        <relationship name="events" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OCKCDTreatmentEvent" inverseName="treatment" inverseEntity="OCKCDTreatmentEvent" syncable="YES"/>
-    </entity>
-    <entity name="OCKCDTreatmentEvent" representedClassName="OCKCDTreatmentEvent" parentEntity="OCKCDCareEvent" syncable="YES">
-        <relationship name="treatment" optional="YES" maxCount="1" deletionRule="Deny" destinationEntity="OCKCDTreatment" inverseName="events" inverseEntity="OCKCDTreatment" syncable="YES"/>
+    <entity name="OCKCDCarePlanEventResult" representedClassName="OCKCDCarePlanEventResult" syncable="YES">
+        <attribute name="completionDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="creationDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="unitString" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="userInfo" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="valueString" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="event" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDCarePlanEvent" inverseName="result" inverseEntity="OCKCDCarePlanEvent" syncable="YES"/>
     </entity>
     <elements>
-        <element name="OCKCDCareEvent" positionX="-288" positionY="-111" width="128" height="120"/>
-        <element name="OCKCDCarePlanItem" positionX="-477" positionY="-1" width="128" height="178"/>
-        <element name="OCKCDEvaluation" positionX="-182" positionY="153" width="128" height="90"/>
-        <element name="OCKCDEvaluationEvent" positionX="-279" positionY="32" width="128" height="105"/>
-        <element name="OCKCDTreatment" positionX="-486" positionY="-171" width="128" height="60"/>
-        <element name="OCKCDTreatmentEvent" positionX="-324" positionY="-279" width="128" height="58"/>
+        <element name="OCKCDCarePlanActivity" positionX="-560" positionY="-114" width="200" height="240"/>
+        <element name="OCKCDCarePlanEvent" positionX="-288" positionY="-111" width="243" height="120"/>
+        <element name="OCKCDCarePlanEventResult" positionX="-378" positionY="198" width="128" height="135"/>
     </elements>
 </model>

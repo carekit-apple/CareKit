@@ -12,20 +12,20 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class OCKTreatmentEvent, OCKCareCardTableViewCell;
+@class OCKCarePlanEvent, OCKCareCardTableViewCell;
 
 @protocol OCKCareCardCellDelegate <NSObject>
 
 @required
 
-- (void)careCardCellDidUpdateFrequency:(OCKCareCardTableViewCell *)cell ofTreatmentEvent:(OCKTreatmentEvent *)event;
+- (void)careCardCellDidUpdateFrequency:(OCKCareCardTableViewCell *)cell ofTreatmentEvent:(OCKCarePlanEvent *)event;
 
 @end
 
 
 @interface OCKCareCardTableViewCell : UITableViewCell
 
-@property (nonatomic) NSArray<OCKTreatmentEvent *> *treatmentEvents;
+@property (nonatomic) NSArray<OCKCarePlanEvent *> *treatmentEvents;
 @property (nonatomic) id<OCKCareCardCellDelegate> delegate;
 
 @end

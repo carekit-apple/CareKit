@@ -223,8 +223,12 @@ static const CGFloat HeaderViewHeight = 200.0;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    OCKCareCardTableViewCell *cell = [[OCKCareCardTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
-                                                                     reuseIdentifier:nil];
+    static NSString *CellIdentifier = @"CareCardCell";
+    OCKCareCardTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (!cell) {
+        cell = [[OCKCareCardTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                               reuseIdentifier:CellIdentifier];
+    }
     cell.treatmentEvents = _treatmentEvents[indexPath.row];
     cell.delegate = self;
     return cell;

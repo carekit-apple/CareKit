@@ -40,6 +40,7 @@
     [super viewDidAppear:animated];
     _tableViewController.delegate = self;
     _tableViewController.weekPageViewController.careCardWeekView.delegate = self;
+    self.navigationBar.tintColor = self.view.tintColor;
 }
 
 - (void)setTitle:(NSString *)title {
@@ -63,6 +64,8 @@
 #pragma mark - OCKCareCardTableViewDelegate
 
 - (void)tableViewDidSelectRowWithTreatmentEvents:(NSArray<OCKTreatmentEvent *> *)events {
+    self.navigationBar.tintColor = events.firstObject.treatment.color;
+    
     OCKCareCardDetailViewController *detailViewController = [OCKCareCardDetailViewController new];
     detailViewController.treatmentEvents = events;
     [self pushViewController:detailViewController animated:YES];

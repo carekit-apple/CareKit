@@ -36,7 +36,6 @@ static const CGFloat HeartViewSize = 150.0;
     self = [super initWithFrame:frame];
     if (self) {
         self.backgroundColor = [UIColor whiteColor];
-        self.alpha = 0.99;
         [self prepareView];
         
         [[NSNotificationCenter defaultCenter] addObserver:self

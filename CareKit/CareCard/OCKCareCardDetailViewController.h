@@ -12,7 +12,7 @@
 
 @class OCKTreatmentEvent;
 
-@interface OCKCareCardDetailViewController : UIViewController
+@interface OCKCareCardDetailViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic) NSArray<OCKTreatmentEvent *> *treatmentEvents;
 

@@ -10,10 +10,10 @@
 #import <UIKit/UIKit.h>
 
 
-@class OCKTreatmentEvent;
+@class OCKCarePlanEvent;
 
 @interface OCKCareCardDetailTableViewCell : UITableViewCell
 
-@property (nonatomic) OCKTreatmentEvent *treatmentEvent;
+@property (nonatomic) OCKCarePlanEvent *treatmentEvent;
 
 @end

@@ -10,7 +10,6 @@
 
 #import "OCKCareCardTableViewCell.h"
 #import "OCKColors.h"
-#import "OCKTreatmentTableViewCell.h"
 #import "OCKCarePlanActivity.h"
 #import "OCKCarePlanActivity_Internal.h"
 #import "OCKCarePlanEvent.h"
@@ -62,12 +61,12 @@ static const CGFloat TopMargin = 10.0;
 
     _frequencyButtons = [NSArray new];
     NSMutableArray *buttons = [NSMutableArray new];
-    for (OCKTreatmentEvent *event in _treatmentEvents) {
+    for (OCKCarePlanEvent *event in _treatmentEvents) {
         UIButton *frequencyButton = [UIButton new];
-        if (event.state == OCKCareEventStateCompleted) {
+        if (event.state == OCKCarePlanEventStateCompleted) {
             frequencyButton.backgroundColor = [UIColor grayColor];
         } else {
-            frequencyButton.backgroundColor = _treatment.color;
+            frequencyButton.backgroundColor = _treatment.tintColor;
         }
         frequencyButton.translatesAutoresizingMaskIntoConstraints = NO;
         
@@ -188,7 +187,7 @@ static const CGFloat TopMargin = 10.0;
 - (void)toggleFrequencyButton:(id)sender {
     UIButton *button = (UIButton *)sender;
     if (button.backgroundColor == [UIColor grayColor]) {
-        button.backgroundColor = _treatment.color;
+        button.backgroundColor = _treatment.tintColor;
     } else {
         button.backgroundColor = [UIColor grayColor];
     }

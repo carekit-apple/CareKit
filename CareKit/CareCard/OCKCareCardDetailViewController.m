@@ -26,7 +26,7 @@ static const CGFloat VerticalMargin = 15.0;
     
     UILabel *_leadingEdge;
 
-    OCKTreatment *_treatment;
+    OCKCarePlanActivity *_treatment;
 }
 
 - (void)viewDidLoad {
@@ -34,7 +34,7 @@ static const CGFloat VerticalMargin = 15.0;
     self.view.backgroundColor = [UIColor whiteColor];
 }
 
-- (void)setTreatmentEvents:(NSArray<OCKTreatmentEvent *> *)treatmentEvents {
+- (void)setTreatmentEvents:(NSArray<OCKCarePlanEvent *> *)treatmentEvents {
     _treatmentEvents = treatmentEvents;
     [self prepareView];
     
@@ -45,7 +45,7 @@ static const CGFloat VerticalMargin = 15.0;
 }
 
 - (void)prepareView {
-    _treatment = _treatmentEvents.firstObject.treatment;
+    _treatment = _treatmentEvents.firstObject.activity;
     
     if (!_titleLabel) {
         _titleLabel = [UILabel new];
@@ -85,7 +85,7 @@ static const CGFloat VerticalMargin = 15.0;
         _leadingEdge = [UILabel new];
         [self.view addSubview:_leadingEdge];
     }
-    _leadingEdge.backgroundColor = _treatment.color;
+    _leadingEdge.backgroundColor = _treatment.tintColor;
     
     [self setUpConstraints];
 }

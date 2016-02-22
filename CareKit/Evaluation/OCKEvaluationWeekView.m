@@ -105,8 +105,8 @@ const static CGFloat DayButtonSize = 20.0;
 
 - (void)updateDayOfWeek:(id)sender {
     UIButton *button = (UIButton *)sender;
-    NSInteger day = [_dayButtons indexOfObject:button];
-    _selectedDay = day;
+    NSInteger dayOfWeek = [_dayButtons indexOfObject:button] + 1;
+    _selectedDay = dayOfWeek;
     
     if (_delegate &&
         [_delegate respondsToSelector:@selector(evaluationWeekViewSelectionDidChange:)]) {

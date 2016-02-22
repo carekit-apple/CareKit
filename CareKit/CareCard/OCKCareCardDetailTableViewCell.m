@@ -21,17 +21,17 @@ static const CGFloat TrailingMargin = 15.0;
     
     UIView *_leadingEdge;
     
-    OCKTreatment *_treatment;
+    OCKCarePlanActivity *_treatment;
 }
 
-- (void)setTreatmentEvent:(OCKTreatmentEvent *)treatmentEvent {
+- (void)setTreatmentEvent:(OCKCarePlanEvent *)treatmentEvent {
     _treatmentEvent = treatmentEvent;
-    _treatment = treatmentEvent.treatment;
+    _treatment = treatmentEvent.activity;
     [self prepareView];
 }
 
 - (void)prepareView {
-    self.tintColor = _treatment.color;
+    self.tintColor = _treatment.tintColor;
 
     if (!_frequencyButton) {
         _frequencyButton = [UIButton new];
@@ -39,10 +39,10 @@ static const CGFloat TrailingMargin = 15.0;
         [self.contentView addSubview:_frequencyButton];
     }
     
-    if (_treatmentEvent.state == OCKCareEventStateCompleted) {
+    if (_treatmentEvent.state == OCKCarePlanEventStateCompleted) {
         _frequencyButton.backgroundColor = [UIColor grayColor];
     } else {
-        _frequencyButton.backgroundColor = _treatment.color;
+        _frequencyButton.backgroundColor = _treatment.tintColor;
     }
     
     if (!_noValueLabel) {
@@ -50,16 +50,16 @@ static const CGFloat TrailingMargin = 15.0;
         _noValueLabel.text = @"--";
         [self.contentView addSubview:_noValueLabel];
     }
-    _noValueLabel.textColor = _treatment.color;
-    _noValueLabel.hidden = (_treatmentEvent.state == OCKCareEventStateCompleted);
+    _noValueLabel.textColor = _treatment.tintColor;
+    _noValueLabel.hidden = (_treatmentEvent.state == OCKCarePlanEventStateCompleted);
     
-    if (_treatmentEvent.state == OCKCareEventStateCompleted) {
+    if (_treatmentEvent.state == OCKCarePlanEventStateCompleted) {
         if (!_timePicker) {
             _timePicker = [UIDatePicker new];
             _timePicker.datePickerMode = UIDatePickerModeTime;
             [self.contentView addSubview:_timePicker];
         }
-        [_timePicker setDate:_treatmentEvent.completionDate animated:YES];
+        [_timePicker setDate:_treatmentEvent.result.completionDate animated:YES];
     } else {
         _timePicker = nil;
     }
@@ -68,7 +68,7 @@ static const CGFloat TrailingMargin = 15.0;
         _leadingEdge = [UIView new];
         [self addSubview:_leadingEdge];
     }
-    _leadingEdge.backgroundColor = _treatment.color;
+    _leadingEdge.backgroundColor = _treatment.tintColor;
     
     [self setUpConstraints];
 }

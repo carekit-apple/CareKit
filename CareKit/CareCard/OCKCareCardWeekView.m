@@ -102,8 +102,8 @@ const static CGFloat HeartButtonSize = 20.0;
 
 - (void)updateDayOfWeek:(id)sender {
     UIButton *button = (UIButton *)sender;
-    NSInteger day = [_heartButtons indexOfObject:button];
-    _selectedDay = day;
+    NSInteger dayOfWeek = [_heartButtons indexOfObject:button] + 1;
+    _selectedDay = dayOfWeek;
     
     if (_delegate &&
         [_delegate respondsToSelector:@selector(careCardWeekViewSelectionDidChange:)]) {

@@ -15,6 +15,7 @@
 #import "OCKCareCardTableViewCell.h"
 #import "OCKWeekPageViewController.h"
 #import "OCKCarePlanStore_Internal.h"
+#import "OCKCareCardWeekView.h"
 
 
 static const CGFloat CellHeight = 85.0;
@@ -63,7 +64,7 @@ static const CGFloat HeaderViewHeight = 200.0;
     NSDateComponents *oldComponents = [calendar components:(NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitWeekOfMonth | NSCalendarUnitWeekday | NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond) fromDate:_selectedDate];
     
     if (newComponents.day > oldComponents.day) {
-        [self fetchTreatmentEvents];
+        _selectedDate = [NSDate date];
     }
 }
 
@@ -93,12 +94,15 @@ static const CGFloat HeaderViewHeight = 200.0;
 #pragma mark - Helpers
 
 - (void)fetchTreatmentEvents {
-    NSError *error;
-    _treatmentEvents = [_store treatmentEventsOnDay:_selectedDate error:&error];
-    NSAssert(!error, error.localizedDescription);
-    
-    [self updateHeaderView];
-    [self.tableView reloadData];
+    [_store eventsOnDay:_selectedDate
+                   type:OCKCarePlanActivityTypeTreatment
+             completion:^(NSArray<NSArray<OCKCarePlanEvent *> *> * _Nonnull eventsGroupedByActivity, NSError * _Nonnull error) {
+                 NSAssert(!error, error.localizedDescription);
+                 _treatmentEvents = [eventsGroupedByActivity copy];
+                 
+                 [self updateHeaderView];
+                 [self.tableView reloadData];
+             }];
 }
 
 - (void)updateHeaderView {
@@ -138,14 +142,15 @@ static const CGFloat HeaderViewHeight = 200.0;
 
 - (void)careCardCellDidUpdateFrequency:(OCKCareCardTableViewCell *)cell ofTreatmentEvent:(OCKCarePlanEvent *)event {
     // Update the treatment event and mark it as completed.
-    BOOL completed = !(event.state == OCKCareEventStateCompleted);
+    BOOL completed = !(event.state == OCKCarePlanEventStateCompleted);
     
-    [_store updateTreatmentEvent:event
-                       completed:completed
-                  completionDate:[NSDate date]
-                      completion:^(BOOL success, OCKTreatmentEvent * _Nonnull event, NSError * _Nonnull error) {
-                          NSAssert(success, error.localizedDescription);
-                      }];
+    [_store updateEvent:event
+             withResult:nil
+                  state:completed
+             completion:^(BOOL success, OCKCarePlanEvent * _Nonnull event, NSError * _Nonnull error) {
+                 NSAssert(success, error.localizedDescription);
+                 
+             }];
 }
 
 

@@ -25,7 +25,7 @@ const static CGFloat ValueLabelWidth = 100.0;
     UIView *_leadingEdge;
 }
 
-- (void)setEvaluationEvent:(OCKEvaluationEvent *)evaluationEvent {
+- (void)setEvaluationEvent:(OCKCarePlanEvent *)evaluationEvent {
     _evaluationEvent = evaluationEvent;
     [self prepareView];
     
@@ -36,9 +36,9 @@ const static CGFloat ValueLabelWidth = 100.0;
 }
 
 - (void)prepareView {
-    self.tintColor = _evaluationEvent.evaluation.color;
+    self.tintColor = _evaluationEvent.activity.tintColor;
     
-    if (_evaluationEvent.state == OCKCareEventStateCompleted) {
+    if (_evaluationEvent.state == OCKCarePlanEventStateCompleted) {
         self.accessoryType = UITableViewCellAccessoryCheckmark;
     } else {
         self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -51,7 +51,7 @@ const static CGFloat ValueLabelWidth = 100.0;
         [self.contentView addSubview:_titleLabel];
     }
     _titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
-    _titleLabel.text = _evaluationEvent.evaluation.title;
+    _titleLabel.text = _evaluationEvent.activity.title;
     
     if (!_textLabel) {
         _textLabel = [UILabel new];
@@ -61,7 +61,7 @@ const static CGFloat ValueLabelWidth = 100.0;
         [self.contentView addSubview:_textLabel];
     }
     _textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
-    _textLabel.text = _evaluationEvent.evaluation.text;
+    _textLabel.text = _evaluationEvent.activity.text;
     
     if (!_valueLabel) {
         _valueLabel = [UILabel new];;
@@ -69,15 +69,15 @@ const static CGFloat ValueLabelWidth = 100.0;
         _valueLabel.textAlignment = NSTextAlignmentRight;
         [self.contentView addSubview:_valueLabel];
     }
-    _valueLabel.text = (_evaluationEvent.evaluationValueString.length > 0) ? _evaluationEvent.evaluationValueString : @"--";
+    _valueLabel.text = (_evaluationEvent.result.valueString.length > 0) ? _evaluationEvent.result.valueString : @"--";
     _valueLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleTitle1];
-    _valueLabel.textColor = _evaluationEvent.evaluation.color;
+    _valueLabel.textColor = _evaluationEvent.activity.tintColor;
     
     if (!_leadingEdge) {
         _leadingEdge = [UIView new];
         [self.contentView addSubview:_leadingEdge];
     }
-    _leadingEdge.backgroundColor = _evaluationEvent.evaluation.color;
+    _leadingEdge.backgroundColor = _evaluationEvent.activity.tintColor;
     
     [self setUpConstraints];
 }

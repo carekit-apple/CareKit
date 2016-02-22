@@ -9,8 +9,6 @@
 
 #import "OCKEvaluationTableViewController.h"
 #import "OCKEvaluationTableViewController_Internal.h"
-#import "OCKEvaluation.h"
-#import "OCKEvaluation_Internal.h"
 #import "OCKEvaluationTableViewCell.h"
 #import "OCKEvaluationTableViewHeader.h"
 #import "OCKHelpers.h"
@@ -22,7 +20,8 @@ const static CGFloat CellHeight = 85.0;
 const static CGFloat HeaderViewHeight = 100.0;
 
 @implementation OCKEvaluationTableViewController {
-    NSArray<NSArray<OCKEvaluationEvent *> *> *_evaluationEvents;
+    OCKWeekPageViewController *_weekPageViewController;
+    NSArray<NSArray<OCKCarePlanEvent *> *> *_evaluationEvents;
     OCKEvaluationTableViewHeader *_headerView;
     NSDateFormatter *_dateFormatter;
 }
@@ -96,12 +95,14 @@ const static CGFloat HeaderViewHeight = 100.0;
 #pragma mark - Helpers
 
 - (void)fetchEvaluationEvents {
-    NSError *error;
-    _evaluationEvents = [_store evaluationEventsOnDay:_selectedDate error:&error];
-    NSAssert(!error, error.localizedDescription);
-    
-    [self updateHeaderView];
-    [self.tableView reloadData];
+    [_store eventsOnDay:_selectedDate
+                   type:OCKCarePlanActivityTypeAssessment
+             completion:^(NSArray<NSArray<OCKCarePlanEvent *> *> * _Nonnull eventsGroupedByActivity, NSError * _Nonnull error) {
+                 _evaluationEvents = eventsGroupedByActivity;
+                 NSAssert(!error, error.localizedDescription);
+                 [self updateHeaderView];
+                 [self.tableView reloadData];
+             }];
 }
 
 - (void)updateHeaderView {
@@ -113,9 +114,9 @@ const static CGFloat HeaderViewHeight = 100.0;
     
     NSInteger totalEvents = _evaluationEvents.count;
     NSInteger completedEvents = 0;
-    for (NSArray<OCKEvaluationEvent *> *events in _evaluationEvents) {
-        OCKEvaluationEvent *evaluationEvent = events.firstObject;
-        if (evaluationEvent.state == OCKCareEventStateCompleted) {
+    for (NSArray<OCKCarePlanEvent *> *events in _evaluationEvents) {
+        OCKCarePlanEvent *evaluationEvent = events.firstObject;
+        if (evaluationEvent.state == OCKCarePlanEventStateCompleted) {
             completedEvents++;
         }
     }
@@ -137,7 +138,7 @@ const static CGFloat HeaderViewHeight = 100.0;
 
 #pragma mark - OCKCarePlanStoreDelegate
 
-- (void)carePlanStore:(OCKCarePlanStore *)store didReceiveUpdateOfEvaluationEvent:(OCKEvaluationEvent *)event {
+- (void)carePlanStore:(OCKCarePlanStore *)store didReceiveUpdateOfEvent:(OCKCarePlanEvent *)event {
     [self fetchEvaluationEvents];
 }
 
@@ -193,7 +194,7 @@ const static CGFloat HeaderViewHeight = 100.0;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    OCKEvaluationEvent *selectedEvaluationEvent = _evaluationEvents[indexPath.row].firstObject;
+    OCKCarePlanEvent *selectedEvaluationEvent = _evaluationEvents[indexPath.row].firstObject;
     _lastSelectedEvaluationEvent = selectedEvaluationEvent;
 
     if (_delegate &&
@@ -204,8 +205,8 @@ const static CGFloat HeaderViewHeight = 100.0;
 
 - (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath {
     BOOL shouldHighlight = YES;
-    OCKEvaluationEvent *event = _evaluationEvents[indexPath.row].firstObject;
-    if (event.state == OCKCareEventStateCompleted && !event.evaluation.allowRetry) {
+    OCKCarePlanEvent *event = _evaluationEvents[indexPath.row].firstObject;
+    if (event.state == OCKCarePlanEventStateCompleted && !event.activity.resultResettable) {
         shouldHighlight = NO;
     }
     return shouldHighlight;

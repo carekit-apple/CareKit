@@ -14,13 +14,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class OCKTreatment;
-@class OCKTreatmentEvent;
-@class OCKEvaluation;
-@class OCKEvaluationEvent;
 @class OCKCarePlanStore;
-
-
+@class OCKCarePlanActivity;
+@class OCKCarePlanEvent;
 /**
  Implement this delegate to subscribe to the notifications of changes in this store.
  */
@@ -28,13 +24,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @optional
 
-- (void)carePlanStore:(OCKCarePlanStore *)store didReceiveUpdateOfEvaluationEvent:(OCKEvaluationEvent *)event;
+- (void)carePlanStore:(OCKCarePlanStore *)store didReceiveUpdateOfEvent:(OCKCarePlanEvent *)event;
 
-- (void)carePlanStore:(OCKCarePlanStore *)store didReceiveUpdateOfTreatmentEvent:(OCKTreatmentEvent *)event;
-
-- (void)carePlanStoreTreatmentListDidChange:(OCKCarePlanStore *)store;
-
-- (void)carePlanStoreEvaluationListDidChange:(OCKCarePlanStore *)store;
+- (void)carePlanStoreActivityListDidChange:(OCKCarePlanStore *)store;
 
 @end
 
@@ -57,140 +49,76 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, weak) id<OCKCarePlanStoreDelegate> delegate;
 
-@end
 
+- (void)addActivity:(OCKCarePlanActivity *)activity
+         completion:(void (^)(BOOL success, NSError *error))completion;
+
+- (void)activitiesWithCompletion:(void (^)(BOOL success, NSArray<OCKCarePlanActivity *> *activities, NSError *error))completion;
+
+
+- (void)activitiesWithType:(OCKCarePlanActivityType)type
+                completion:(void (^)(BOOL success, NSArray<OCKCarePlanActivity *> *activities, NSError *error))completion;
 
 /**
- Treatment operations.
+ Get activity by providing an identifier.
  */
-@interface OCKCarePlanStore (Treatment)
+- (void)activityForIdentifier:(NSString *)identifier
+                   completion:(void (^)(BOOL success, OCKCarePlanActivity *activity, NSError *error))completion;
+
 
 /**
- Get all treatments.
+ Get all activities with a specified group identifier.
  */
-@property (nonatomic, copy ,readonly) NSArray<OCKTreatment *> *treatments;
+- (void)activitiesWithGroupIdentifier:(NSString *)groupIdentifier
+                           completion:(void (^)(BOOL success, NSArray<OCKCarePlanActivity *> *activities, NSError *error))completion;
 
 /**
- Get treatment by providing an identifier.
+ Update an activity's end date.
  */
-- (OCKTreatment *)treatmentForIdentifier:(NSString *)identifier error:(NSError **)error;
+- (void)setEndDate:(NSDate *)date
+       forActivity:(OCKCarePlanActivity *)activity
+        completion:(void (^)(BOOL success, OCKCarePlanActivity *activity, NSError *error))completion;
 
 /**
- Get all treatments with a specified type.
- */
-- (NSArray<OCKTreatment *> *)treatmentsWithType:(NSString *)type error:(NSError **)error;
-
-/**
- Add a treatment.
- */
-- (BOOL)addTreatment:(OCKTreatment *)treatment error:(NSError **)error;
-
-/**
- Update a treatment's end date.
- */
-- (BOOL)setEndDate:(NSDate *)date forTreatment:(OCKTreatment *)treatment error:(NSError **)error;
-
-/**
- Remove a treatment from this store. 
+ Remove an activity from this store.
  All its related event records will be removed as well.
  */
-- (BOOL)removeTreatment:(OCKTreatment *)treatment error:(NSError **)error;
+- (void)removeActivity:(OCKCarePlanActivity *)activity
+            completion:(void (^)(BOOL success, NSError *error))completion;
 
 /**
- Obtain all `OCKTreatmentEvent` on a giving day.
- @disccussion Returned result grouped by `OCKTreatment`.
- */
-- (NSArray<NSArray<OCKTreatmentEvent *> *> *)treatmentEventsOnDay:(NSDate *)date error:(NSError **)error;
+Obtain all `OCKCarePlanEvent` on a giving day.
+@disccussion Returned result grouped by `OCKCarePlanActivity`.
+*/
+- (void)eventsOnDay:(NSDate *)date
+               type:(OCKCarePlanActivityType)type
+         completion:(void (^)(NSArray<NSArray<OCKCarePlanEvent *> *> *eventsGroupedByActivity, NSError *error))completion;
 
 /**
- Obtain all events of a `OCKTreatment` in a giving day.
+ Obtain all events of a `OCKCarePlanActivity` in a giving day.
  */
-- (NSArray<OCKTreatmentEvent *> *)eventsForTreatment:(OCKTreatment *)treatment day:(NSDate *)day error:(NSError **)error;
+- (void)eventsForActivity:(OCKCarePlanActivity *)activity
+                      day:(NSDate *)day
+               completion:(void (^)(NSArray<OCKCarePlanEvent *> *events, NSError *error))completion;
 
 /**
  Mark an `OCKTreatmentEvent` to be completed.
  */
-- (void)updateTreatmentEvent:(OCKTreatmentEvent *)treatmentEvent
-                   completed:(BOOL)completed
-              completionDate:(NSDate *)completionDate
-                  completion:(void (^)(BOOL success, OCKTreatmentEvent *event, NSError *error))completion;
+- (void)updateEvent:(OCKCarePlanEvent *)event
+         withResult:(nullable OCKCarePlanEventResult *)result
+              state:(OCKCarePlanEventState)state
+         completion:(void (^)(BOOL success, OCKCarePlanEvent *event, NSError *error))completion;
 //:
 /**
  Fetch all the events of an `OCKTreatment` by giving a date range.
  */
-- (void)enumerateEventsOfTreatment:(OCKTreatment *)treatment
-                         startDate:(NSDate *)startDate
-                           endDate:(NSDate *)endDate
-                        usingBlock:(void (^)(OCKTreatmentEvent *event, BOOL *stop, NSError *error))block;
+- (void)enumerateEventsOfActivity:(OCKCarePlanActivity *)activity
+                        startDate:(NSDate *)startDate
+                          endDate:(NSDate *)endDate
+                       usingBlock:(void (^)(OCKCarePlanEvent *event, BOOL *stop, NSError *error))block;
 
 @end
 
-
-/**
- Evaluation operations.
- */
-@interface OCKCarePlanStore (Evaluation)
-
-/**
- Get all evaluations.
- */
-@property (nonatomic, copy ,readonly) NSArray<OCKEvaluation *> *evaluations;
-
-/**
- Get evaluation by providing an identifier.
- */
-- (OCKEvaluation *)evaluationForIdentifier:(NSString *)identifier error:(NSError **)error;
-
-/**
- Get all evaluations with a specified type.
- */
-- (NSArray<OCKEvaluation *> *)evaluationsWithType:(NSString *)type error:(NSError **)error;
-
-/**
- Add an OCKEvaluation.
- */
-- (BOOL)addEvaluation:(OCKEvaluation *)evaluation error:(NSError **)error;
-
-/**
- Remove an OCKEvaluation from this manager.
- */
-- (BOOL)removeEvaluation:(OCKEvaluation *)evaluation error:(NSError **)error;
-
-/**
- Set an end date for an OCKEvaluation.
- */
-- (BOOL)setEndDate:(nullable NSDate *)date forEvaluation:(OCKEvaluation *)evaluation error:(NSError **)error;
-
-/**
- Obtain all `OCKEvaluationEvent` on a giving day.
- @disccussion Returned result grouped by `OCKEvaluation`.
- */
-- (NSArray<NSArray<OCKEvaluationEvent *> *> *)evaluationEventsOnDay:(NSDate *)date error:(NSError **)error;
-
-/**
- Obtain all events of a `OCKEvaluation` in a giving day.
- */
-- (NSArray<OCKEvaluationEvent *> *)eventsForEvaluation:(OCKEvaluation *)evaluation day:(NSDate *)date  error:(NSError **)error;
-
-/**
- Store the evaluationResult in an `OCKEvaluationEvent`.
- */
-- (void)updateEvaluationEvent:(OCKEvaluationEvent *)evaluationEvent
-              evaluationValue:(NSNumber *)evaluationValue
-        evaluationValueString:(NSString *)evaluationValueString
-             evaluationResult:(nullable id<NSSecureCoding>)evaluationResult
-               completionDate:(NSDate *)completionDate
-                   completion:(void (^)(BOOL success, OCKEvaluationEvent *event, NSError *error))completion;
-
-/**
- Fetch all the events of an `OCKEvaluation` by giving a date range.
- */
-- (void)enumerateEventsOfEvaluation:(OCKEvaluation *)evaluation
-                          startDate:(NSDate *)startDate
-                            endDate:(NSDate *)endDate
-                         usingBlock:(void (^)(OCKEvaluationEvent *event, BOOL *stop, NSError *error))block;
-
-@end
 
 
 NS_ASSUME_NONNULL_END

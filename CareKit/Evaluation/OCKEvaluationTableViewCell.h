@@ -12,11 +12,11 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class OCKEvaluationEvent;
+@class OCKCarePlanEvent;
 
 @interface OCKEvaluationTableViewCell : UITableViewCell
 
-@property (nonatomic) OCKEvaluationEvent *evaluationEvent;
+@property (nonatomic) OCKCarePlanEvent *evaluationEvent;
 
 @end
 

@@ -11,7 +11,7 @@
 #import "OCKCareCardTableViewController_Internal.h"
 #import "OCKCareCardTableViewHeader.h"
 #import "OCKHelpers.h"
-#import "OCKTreatment.h"
+#import "OCKCarePlanActivity.h"
 #import "OCKCareCardTableViewCell.h"
 #import "OCKWeekPageViewController.h"
 #import "OCKCarePlanStore_Internal.h"
@@ -21,7 +21,7 @@ static const CGFloat CellHeight = 85.0;
 static const CGFloat HeaderViewHeight = 200.0;
 
 @implementation OCKCareCardTableViewController {
-    NSArray<NSArray<OCKTreatmentEvent *> *> *_treatmentEvents;
+    NSArray<NSArray<OCKCarePlanEvent *> *> *_treatmentEvents;
     OCKCareCardTableViewHeader *_headerView;
     NSDateFormatter *_dateFormatter;
 }
@@ -110,11 +110,11 @@ static const CGFloat HeaderViewHeight = 200.0;
     
     NSInteger totalEvents = 0;
     NSInteger completedEvents = 0;
-    for (NSArray<OCKTreatmentEvent* > *events in _treatmentEvents) {
+    for (NSArray<OCKCarePlanEvent* > *events in _treatmentEvents) {
         totalEvents += events.count;
         
-        for (OCKTreatmentEvent *event in events) {
-            if (event.state == OCKCareEventStateCompleted) {
+        for (OCKCarePlanEvent *event in events) {
+            if (event.state == OCKCarePlanEventStateCompleted) {
                 completedEvents++;
             }
         }
@@ -136,7 +136,7 @@ static const CGFloat HeaderViewHeight = 200.0;
 
 #pragma mark - OCKCareCardCellDelegate
 
-- (void)careCardCellDidUpdateFrequency:(OCKCareCardTableViewCell *)cell ofTreatmentEvent:(OCKTreatmentEvent *)event {
+- (void)careCardCellDidUpdateFrequency:(OCKCareCardTableViewCell *)cell ofTreatmentEvent:(OCKCarePlanEvent *)event {
     // Update the treatment event and mark it as completed.
     BOOL completed = !(event.state == OCKCareEventStateCompleted);
     
@@ -151,7 +151,7 @@ static const CGFloat HeaderViewHeight = 200.0;
 
 #pragma mark - OCKCarePlanStoreDelegate
 
-- (void)carePlanStore:(OCKCarePlanStore *)store didReceiveUpdateOfTreatmentEvent:(OCKTreatmentEvent *)event {
+- (void)carePlanStore:(OCKCarePlanStore *)store didReceiveUpdateOfEvent:(OCKCarePlanEvent *)event {
     [self fetchTreatmentEvents];
 }
 

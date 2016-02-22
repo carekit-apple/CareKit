@@ -65,7 +65,6 @@
 
 - (void)tableViewDidSelectRowWithTreatmentEvents:(NSArray<OCKTreatmentEvent *> *)events {
     self.navigationBar.tintColor = events.firstObject.treatment.color;
-    
     OCKCareCardDetailViewController *detailViewController = [OCKCareCardDetailViewController new];
     detailViewController.treatmentEvents = events;
     [self pushViewController:detailViewController animated:YES];

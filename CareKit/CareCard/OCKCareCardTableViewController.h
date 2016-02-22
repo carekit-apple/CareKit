@@ -13,7 +13,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class OCKTreatment, OCKWeekPageViewController, OCKCarePlanStore;
+@class OCKCarePlanEvent, OCKWeekPageViewController, OCKCarePlanStore;
 
 @protocol OCKCareCardTableViewDelegate <NSObject>
 

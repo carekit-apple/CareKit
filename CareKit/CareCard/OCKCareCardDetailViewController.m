@@ -8,9 +8,7 @@
 
 
 #import "OCKCareCardDetailViewController.h"
-#import "OCKCareCardDetailTableViewCell.h"
 #import "OCKCarePlanActivity.h"
-#import "OCKCarePlanEvent.h"
 
 
 static const CGFloat LeadingMargin = 30.0;
@@ -18,15 +16,15 @@ static const CGFloat TrailingMargin = 50.0;
 static const CGFloat TopMargin = 100.0;
 static const CGFloat VerticalMargin = 15.0;
 
+static const CGFloat ImageViewSize = 160.0;
+
 @implementation OCKCareCardDetailViewController {
     UILabel *_titleLabel;
     UILabel *_textLabel;
     UILabel *_instructionsLabel;
-    UITableView *_tableView;
+    UIImageView *_imageView;
     
     UILabel *_leadingEdge;
-
-    OCKCarePlanActivity *_treatment;
 }
 
 - (void)viewDidLoad {
@@ -34,8 +32,8 @@ static const CGFloat VerticalMargin = 15.0;
     self.view.backgroundColor = [UIColor whiteColor];
 }
 
-- (void)setTreatmentEvents:(NSArray<OCKCarePlanEvent *> *)treatmentEvents {
-    _treatmentEvents = treatmentEvents;
+- (void)setTreatment:(OCKCarePlanActivity *)treatment {
+    _treatment = treatment;
     [self prepareView];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -45,8 +43,6 @@ static const CGFloat VerticalMargin = 15.0;
 }
 
 - (void)prepareView {
-    _treatment = _treatmentEvents.firstObject.activity;
-    
     if (!_titleLabel) {
         _titleLabel = [UILabel new];
         _titleLabel.lineBreakMode = NSLineBreakByTruncatingTail;
@@ -73,13 +69,13 @@ static const CGFloat VerticalMargin = 15.0;
     // TODO: Implement this.
     _instructionsLabel.text = @"Make sure to eat before each event and drink at least 3 glasses of water.";
     
-    if (!_tableView) {
-        _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
-        _tableView.tableFooterView = [UIView new];
-        [self.view addSubview:_tableView];
+    if (!_imageView) {
+        _imageView = [UIImageView new];
+        [self.view addSubview:_imageView];
     }
-    _tableView.dataSource = self;
-    _tableView.delegate = self;
+    // TODO: Implement this.
+    _imageView.image = [UIImage imageNamed:@"test"];
+    _imageView.backgroundColor = _treatment.tintColor;
     
     if (!_leadingEdge) {
         _leadingEdge = [UILabel new];
@@ -96,7 +92,7 @@ static const CGFloat VerticalMargin = 15.0;
     _titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     _textLabel.translatesAutoresizingMaskIntoConstraints = NO;
     _instructionsLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    _tableView.translatesAutoresizingMaskIntoConstraints = NO;
+    _imageView.translatesAutoresizingMaskIntoConstraints = NO;
     _leadingEdge.translatesAutoresizingMaskIntoConstraints = NO;
     
     [constraints addObjectsFromArray:@[
@@ -149,34 +145,34 @@ static const CGFloat VerticalMargin = 15.0;
                                                                     attribute:NSLayoutAttributeBottom
                                                                    multiplier:1.0
                                                                      constant:VerticalMargin],
-                                       [NSLayoutConstraint constraintWithItem:_tableView
+                                       [NSLayoutConstraint constraintWithItem:_imageView
                                                                     attribute:NSLayoutAttributeTop
                                                                     relatedBy:NSLayoutRelationEqual
                                                                        toItem:_instructionsLabel
                                                                     attribute:NSLayoutAttributeBottom
                                                                    multiplier:1.0
-                                                                     constant:VerticalMargin],
-                                       [NSLayoutConstraint constraintWithItem:_tableView
-                                                                    attribute:NSLayoutAttributeBottom
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:self.view
-                                                                    attribute:NSLayoutAttributeBottom
-                                                                   multiplier:1.0
-                                                                     constant:0.0],
-                                       [NSLayoutConstraint constraintWithItem:_tableView
-                                                                    attribute:NSLayoutAttributeWidth
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:self.view
-                                                                    attribute:NSLayoutAttributeWidth
-                                                                   multiplier:1.0
-                                                                     constant:0.0],
-                                       [NSLayoutConstraint constraintWithItem:_tableView
+                                                                     constant:5*VerticalMargin],
+                                       [NSLayoutConstraint constraintWithItem:_imageView
                                                                     attribute:NSLayoutAttributeCenterX
                                                                     relatedBy:NSLayoutRelationEqual
                                                                        toItem:self.view
                                                                     attribute:NSLayoutAttributeCenterX
                                                                    multiplier:1.0
                                                                      constant:0.0],
+                                       [NSLayoutConstraint constraintWithItem:_imageView
+                                                                    attribute:NSLayoutAttributeWidth
+                                                                    relatedBy:NSLayoutRelationEqual
+                                                                       toItem:nil
+                                                                    attribute:NSLayoutAttributeNotAnAttribute
+                                                                   multiplier:1.0
+                                                                     constant:ImageViewSize],
+                                       [NSLayoutConstraint constraintWithItem:_imageView
+                                                                    attribute:NSLayoutAttributeHeight
+                                                                    relatedBy:NSLayoutRelationEqual
+                                                                       toItem:nil
+                                                                    attribute:NSLayoutAttributeNotAnAttribute
+                                                                   multiplier:1.0
+                                                                     constant:ImageViewSize],
                                        [NSLayoutConstraint constraintWithItem:_leadingEdge
                                                                     attribute:NSLayoutAttributeLeading
                                                                     relatedBy:NSLayoutRelationEqual
@@ -212,32 +208,5 @@ static const CGFloat VerticalMargin = 15.0;
 }
 
 
-#pragma mark - UITableViewDelegate
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 100;
-}
-
-- (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath {
-    return NO;
-}
-
-
-#pragma mark - UITableViewDataSource
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return _treatmentEvents.count;
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *CellIdentifier = @"CareCardDetailCell";
-    OCKCareCardDetailTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (!cell) {
-        cell = [[OCKCareCardDetailTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
-                                                     reuseIdentifier:CellIdentifier];
-    }
-    cell.treatmentEvent = _treatmentEvents[indexPath.row];
-    return cell;
-}
 
 @end

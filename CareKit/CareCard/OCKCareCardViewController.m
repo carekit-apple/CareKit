@@ -63,10 +63,9 @@
 
 #pragma mark - OCKCareCardTableViewDelegate
 
-- (void)tableViewDidSelectRowWithTreatmentEvents:(NSArray<OCKCarePlanEvent *> *)events {
-    self.navigationBar.tintColor = events.firstObject.activity.tintColor;
+- (void)tableViewDidSelectRowWithTreatment:(OCKCarePlanActivity *)activity {
     OCKCareCardDetailViewController *detailViewController = [OCKCareCardDetailViewController new];
-    detailViewController.treatmentEvents = events;
+    detailViewController.treatment = activity;
     [self pushViewController:detailViewController animated:YES];
 }
 

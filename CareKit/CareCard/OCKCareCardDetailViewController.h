@@ -10,10 +10,10 @@
 #import <UIKit/UIKit.h>
 
 
-@class OCKCarePlanEvent;
+@class OCKCarePlanActivity;
 
-@interface OCKCareCardDetailViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
+@interface OCKCareCardDetailViewController : UIViewController
 
-@property (nonatomic) NSArray<OCKCarePlanEvent *> *treatmentEvents;
+@property (nonatomic) OCKCarePlanActivity *treatment;
 
 @end

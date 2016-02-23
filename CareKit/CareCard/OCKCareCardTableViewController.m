@@ -212,9 +212,11 @@ static const CGFloat HeaderViewHeight = 200.0;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    OCKCarePlanActivity *selectedActivity = _treatmentEvents[indexPath.row].firstObject.activity;
+    
     if (_delegate &&
-        [_delegate respondsToSelector:@selector(tableViewDidSelectRowWithTreatmentEvents:)]) {
-        [_delegate tableViewDidSelectRowWithTreatmentEvents:_treatmentEvents[indexPath.row]];
+        [_delegate respondsToSelector:@selector(tableViewDidSelectRowWithTreatment:)]) {
+        [_delegate tableViewDidSelectRowWithTreatment:selectedActivity];
     }
     
     [tableView deselectRowAtIndexPath:indexPath animated:NO];

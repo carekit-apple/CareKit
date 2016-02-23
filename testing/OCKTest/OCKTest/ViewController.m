@@ -38,11 +38,8 @@ static const BOOL resetStoreOnLaunch = YES;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
-    [self setUpCarePlanStore];
-
-//    dispatch_sync(dispatch_get_main_queue(), ^{
-//    });
+    
+    [self performSelectorOnMainThread:@selector(setUpCarePlanStore) withObject:nil waitUntilDone:YES];
     
     _dashboardViewController = [self dashboardViewController];
     _careCardViewController = [self careCardViewController];

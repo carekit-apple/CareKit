@@ -293,12 +293,14 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     [self fetchActivitiesWithPredicate:predicate completion:completion];
 }
 
-- (void)handleActivityListChange:(BOOL)result {
+- (void)handleActivityListChange:(BOOL)result type:(OCKCarePlanActivityType)type {
     if (result){
-        if (_careCardUIDelegate && [_careCardUIDelegate respondsToSelector:@selector(carePlanStoreActivityListDidChange:)]) {
+        if (type == OCKCarePlanActivityTypeIntervention &&
+            _careCardUIDelegate && [_careCardUIDelegate respondsToSelector:@selector(carePlanStoreActivityListDidChange:)]) {
             [_careCardUIDelegate carePlanStoreActivityListDidChange:self];
         }
-        if (_checkupsUIDelegate && [_checkupsUIDelegate respondsToSelector:@selector(carePlanStoreActivityListDidChange:)]) {
+        if (type == OCKCarePlanActivityTypeAssessment &&
+            _checkupsUIDelegate && [_checkupsUIDelegate respondsToSelector:@selector(carePlanStoreActivityListDidChange:)]) {
             [_checkupsUIDelegate carePlanStoreActivityListDidChange:self];
         }
         if (_delegate && [_delegate respondsToSelector:@selector(carePlanStoreActivityListDidChange:)]) {
@@ -330,7 +332,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
         }
         dispatch_async(dispatch_get_main_queue(), ^{
             completion(result, errorOut);
-            [self handleActivityListChange:result];
+            [self handleActivityListChange:result type:activity.type];
         });
     }];
 }
@@ -359,7 +361,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
         
         dispatch_async(dispatch_get_main_queue(), ^{
             completion(result, error);
-            [self handleActivityListChange:result];
+            [self handleActivityListChange:result type:activity.type];
         });
     }];
 }
@@ -403,7 +405,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
         }
         dispatch_async(dispatch_get_main_queue(), ^{
             completion(result, modifiedActivity, errorOut);
-            [self handleActivityListChange:result];
+            [self handleActivityListChange:result type:activity.type];
         });
     }];
 }
@@ -615,10 +617,17 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
             completion(result, result ? copiedEvent : event, errorOut);
             
             if (result) {
-                if(_careCardUIDelegate && [_careCardUIDelegate respondsToSelector:@selector(carePlanStore:didReceiveUpdateOfEvent:)]) {
+                
+                OCKCarePlanActivityType type = event.activity.type;
+                
+                if(type == OCKCarePlanActivityTypeIntervention &&
+                   _careCardUIDelegate &&
+                   [_careCardUIDelegate respondsToSelector:@selector(carePlanStore:didReceiveUpdateOfEvent:)]) {
                     [_careCardUIDelegate carePlanStore:self didReceiveUpdateOfEvent:copiedEvent];
                 }
-                if(_checkupsUIDelegate && [_checkupsUIDelegate respondsToSelector:@selector(carePlanStore:didReceiveUpdateOfEvent:)]) {
+                if(type == OCKCarePlanActivityTypeAssessment
+                   && _checkupsUIDelegate
+                   && [_checkupsUIDelegate respondsToSelector:@selector(carePlanStore:didReceiveUpdateOfEvent:)]) {
                     [_checkupsUIDelegate carePlanStore:self didReceiveUpdateOfEvent:copiedEvent];
                 }
                 if(_delegate && [_delegate respondsToSelector:@selector(carePlanStore:didReceiveUpdateOfEvent:)]) {

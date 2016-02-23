@@ -39,6 +39,7 @@ typedef NS_ENUM(NSInteger, OCKCarePlanActivityType) {
                               type:(OCKCarePlanActivityType)type
                              title:(nullable NSString *)title
                               text:(nullable NSString *)text
+                        detailText:(nullable NSString *)detailText
                          tintColor:(nullable UIColor *)tintColor
                           schedule:(OCKCareSchedule *)schedule
                           optional:(BOOL)optional

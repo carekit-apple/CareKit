@@ -35,6 +35,7 @@ insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
 @property (nullable, nonatomic, retain) OCKCareSchedule *schedule;
 @property (nullable, nonatomic, retain) NSString *text;
 @property (nullable, nonatomic, retain) NSString *title;
+@property (nullable, nonatomic, retain) NSString *detailText;
 @property (nullable, nonatomic, retain) NSNumber *type;
 @property (nullable, nonatomic, retain) NSString *groupIdentifier;
 @property (nullable, nonatomic, retain) NSNumber *optional;

@@ -24,6 +24,7 @@
                                type:type
                               title:title
                                text:text
+                         detailText:nil
                           tintColor:tintColor
                            schedule:schedule
                            optional:NO
@@ -38,6 +39,7 @@
                               type:(OCKCarePlanActivityType)type
                              title:(nullable NSString *)title
                               text:(nullable NSString *)text
+                        detailText:(nullable NSString *)detailText
                          tintColor:(nullable UIColor *)tintColor
                           schedule:(OCKCareSchedule *)schedule
                           optional:(BOOL)optional
@@ -55,6 +57,7 @@
         _type = type;
         _title = [title copy];
         _text = [text copy];
+        _detailText = [detailText copy];
         _tintColor = tintColor;
         _schedule = schedule;
         _optional = optional;
@@ -75,6 +78,7 @@
         _type = cdObject.type.integerValue;
         _title = [cdObject.title copy];
         _text = [cdObject.text copy];
+        _detailText = [cdObject.detailText copy];
         _tintColor = cdObject.color;
         _schedule = cdObject.schedule;
         
@@ -97,6 +101,7 @@
         OCK_DECODE_OBJ_CLASS(coder, groupIdentifier, NSString);
         OCK_DECODE_OBJ_CLASS(coder, title, NSString);
         OCK_DECODE_OBJ_CLASS(coder, text, NSString);
+        OCK_DECODE_OBJ_CLASS(coder, detailText, NSString);
         OCK_DECODE_OBJ_CLASS(coder, tintColor, UIColor);
         OCK_DECODE_OBJ_CLASS(coder, schedule, OCKCareSchedule);
         OCK_DECODE_ENUM(coder, type);
@@ -115,6 +120,7 @@
     OCK_ENCODE_OBJ(coder, groupIdentifier);
     OCK_ENCODE_OBJ(coder, title);
     OCK_ENCODE_OBJ(coder, text);
+    OCK_ENCODE_OBJ(coder, detailText);
     OCK_ENCODE_OBJ(coder, tintColor);
     OCK_ENCODE_OBJ(coder, schedule);
     OCK_ENCODE_ENUM(coder, type);
@@ -131,6 +137,7 @@
     return (isClassMatch &&
             OCKEqualObjects(self.title, castObject.title) &&
             OCKEqualObjects(self.text, castObject.text) &&
+            OCKEqualObjects(self.detailText, castObject.detailText) &&
             OCKEqualObjects(self.tintColor, castObject.tintColor) &&
             OCKEqualObjects(self.schedule, castObject.schedule) &&
             (self.type == castObject.type) &&
@@ -149,6 +156,7 @@
     item->_identifier = [_identifier copy];
     item->_groupIdentifier = [_groupIdentifier copy];
     item->_text = [_text copy];
+    item->_detailText = [_detailText copy];
     item->_tintColor = _tintColor;
     item->_schedule = _schedule;
     item->_type = _type;
@@ -175,6 +183,7 @@ insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
         self.groupIdentifier = item.groupIdentifier;
         self.title = item.title;
         self.text = item.text;
+        self.detailText = item.detailText;
         self.color = item.tintColor;
         self.schedule = item.schedule;
         self.type = @(item.type);
@@ -197,6 +206,7 @@ insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
 @dynamic schedule;
 @dynamic text;
 @dynamic title;
+@dynamic detailText;
 @dynamic type;
 @dynamic optional;
 @dynamic resultResettable;

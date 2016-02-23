@@ -68,6 +68,7 @@
                                                                             type:OCKCarePlanActivityTypeIntervention
                                                                            title:@"title1"
                                                                             text:@"text1"
+                                                                      detailText:@"detailText1"
                                                                        tintColor:[UIColor redColor]
                                                                         schedule:schedule
                                                                         optional:YES

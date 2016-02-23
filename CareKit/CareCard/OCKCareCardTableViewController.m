@@ -41,7 +41,7 @@ static const CGFloat HeaderViewHeight = 200.0;
     if (self) {
         self.title = @"CareCard";
         _store = store;
-        _store.treatmentUIDelegate = self;
+        _store.careCardUIDelegate = self;
     }
     return self;
 }

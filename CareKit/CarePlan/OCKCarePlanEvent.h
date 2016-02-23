@@ -20,7 +20,7 @@ typedef NS_ENUM(NSInteger, OCKCarePlanEventState) {
 };
 
 /**
- Abstract Event Class
+ OCKCarePlanEvent is derived from OCKCarePlanActivity and its OCKCareSchedule 
  */
 @interface OCKCarePlanEvent : NSObject 
 
@@ -37,7 +37,9 @@ typedef NS_ENUM(NSInteger, OCKCarePlanEventState) {
 @property (nonatomic, readonly) NSUInteger numberOfDaysSinceStart;
 
 
-
+/**
+ The activity user need to do in this event.
+ */
 @property (nonatomic, strong, readonly) OCKCarePlanActivity *activity;
 
 /**
@@ -46,7 +48,10 @@ typedef NS_ENUM(NSInteger, OCKCarePlanEventState) {
  */
 @property (nonatomic, readonly) OCKCarePlanEventState state;
 
-
+/**
+ 
+ The result object can be attached through OCKCarePlanStore API.
+ */
 @property (nonatomic, readonly, nullable) OCKCarePlanEventResult *result;
 
 @end

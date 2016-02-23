@@ -14,12 +14,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithValueString:(NSString *)valueString
                          unitString:(nullable NSString *)unitString
-                     completionDate:(nullable NSDate *)completionDate
                            userInfo:(nullable NSDictionary *)userInfo;
-
+/*
+ When this result object is created.
+ */
 @property (nonatomic, strong, readonly) NSDate *creationDate;
-
-@property (nonatomic, strong, readonly) NSDate *completionDate;
 
 @property (nonatomic, copy, readonly) NSString *valueString;
 

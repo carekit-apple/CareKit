@@ -13,12 +13,10 @@
 
 - (instancetype)initWithValueString:(NSString *)valueString
                          unitString:(nullable NSString *)unitString
-                     completionDate:(nullable NSDate *)completionDate
                            userInfo:(nullable NSDictionary *)userInfo {
     NSParameterAssert(valueString);
     self = [super init];
     if (self) {
-        _completionDate = completionDate;
         _valueString = valueString;
         _unitString = unitString;
         _userInfo = userInfo;
@@ -31,7 +29,6 @@
     NSParameterAssert(cdObject);
     self = [super init];
     if (self) {
-        _completionDate = cdObject.completionDate;
         _creationDate = cdObject.creationDate;
         _valueString = cdObject.valueString;
         _unitString = cdObject.unitString;
@@ -45,7 +42,6 @@
     
     __typeof(self) castObject = object;
     return (isClassMatch &&
-            OCKEqualObjects(self.completionDate, castObject.completionDate) &&
             OCKEqualObjects(self.creationDate, castObject.creationDate) &&
             OCKEqualObjects(self.valueString, castObject.valueString) &&
             OCKEqualObjects(self.unitString, castObject.unitString) &&
@@ -66,7 +62,6 @@ insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
     NSParameterAssert(cdEvent);
     self = [super initWithEntity:entity insertIntoManagedObjectContext:context];
     if (self) {
-        self.completionDate = result.completionDate;
         self.creationDate = result.creationDate;
         self.valueString = result.valueString;
         self.unitString = result.unitString;
@@ -78,7 +73,6 @@ insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
 
 - (void)updateWithResult:(OCKCDCarePlanEventResult *)result {
     self.creationDate = result.creationDate;
-    self.completionDate = result.completionDate;
     self.valueString = result.valueString;
     self.unitString = result.unitString;
     self.userInfo = result.userInfo;
@@ -89,7 +83,6 @@ insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
 @implementation OCKCDCarePlanEventResult (CoreDataProperties)
 
 @dynamic creationDate;
-@dynamic completionDate;
 @dynamic valueString;
 @dynamic unitString;
 @dynamic userInfo;

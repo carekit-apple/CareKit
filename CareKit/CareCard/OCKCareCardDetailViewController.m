@@ -16,7 +16,7 @@ static const CGFloat TrailingMargin = 50.0;
 static const CGFloat TopMargin = 100.0;
 static const CGFloat VerticalMargin = 15.0;
 
-static const CGFloat ImageViewSize = 160.0;
+static const CGFloat ImageViewSize = 200.0;
 
 @implementation OCKCareCardDetailViewController {
     UILabel *_titleLabel;

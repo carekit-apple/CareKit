@@ -9,6 +9,7 @@
 
 #import "OCKCareCardWeekView.h"
 #import "OCKWeekView.h"
+#import "OCKHeartView.h"
 
 
 const static CGFloat HeartButtonSize = 20.0;
@@ -36,7 +37,6 @@ const static CGFloat HeartButtonSize = 20.0;
     for (int i = 0; i < 7; i++) {
         UIButton *heart = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, HeartButtonSize, HeartButtonSize)];
         heart.translatesAutoresizingMaskIntoConstraints = NO;
-        heart.backgroundColor = [UIColor redColor];
         
         [heart addTarget:self
                   action:@selector(updateDayOfWeek:)

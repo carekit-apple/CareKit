@@ -13,8 +13,11 @@
 #import "OCKCarePlanActivity.h"
 #import "OCKCarePlanActivity_Internal.h"
 #import "OCKCarePlanEvent.h"
+#import "OCKCareCardButton.h"
 
-static const CGFloat HorizontalMargin = 15.0;
+
+static const CGFloat HorizontalMargin = 11.0;
+static const CGFloat LeadingMargin = 15.0;
 static const CGFloat TopMargin = 10.0;
 
 @implementation OCKCareCardTableViewCell {
@@ -23,7 +26,7 @@ static const CGFloat TopMargin = 10.0;
 
     UILabel *_leadingEdge;
 
-    NSArray <UIButton *> *_frequencyButtons;
+    NSArray <OCKCareCardButton *> *_frequencyButtons;
     OCKCarePlanActivity *_treatment;
 }
 
@@ -54,6 +57,7 @@ static const CGFloat TopMargin = 10.0;
     if (!_textLabel) {
         _textLabel = [UILabel new];
         _textLabel.lineBreakMode = NSLineBreakByTruncatingTail;
+        _textLabel.textColor = [UIColor lightGrayColor];
         [self.contentView addSubview:_textLabel];
     }
     _textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
@@ -61,15 +65,11 @@ static const CGFloat TopMargin = 10.0;
 
     _frequencyButtons = [NSArray new];
     NSMutableArray *buttons = [NSMutableArray new];
-    for (OCKCarePlanEvent *event in _treatmentEvents) {
-        UIButton *frequencyButton = [UIButton new];
-        if (event.state == OCKCarePlanEventStateCompleted) {
-            frequencyButton.backgroundColor = [UIColor grayColor];
-        } else {
-            frequencyButton.backgroundColor = _treatment.tintColor;
-        }
+    for (int i = 0; i < _treatmentEvents.count; i++) {
+        OCKCareCardButton *frequencyButton = [OCKCareCardButton new];
+        frequencyButton.tintColor = _treatment.tintColor;
         frequencyButton.translatesAutoresizingMaskIntoConstraints = NO;
-        
+    
         [frequencyButton addTarget:self
                             action:@selector(toggleFrequencyButton:)
                   forControlEvents:UIControlEventTouchUpInside];
@@ -83,7 +83,6 @@ static const CGFloat TopMargin = 10.0;
         _leadingEdge = [UILabel new];
         [self addSubview:_leadingEdge];
     }
-    _leadingEdge.backgroundColor = _treatment.tintColor;
     
     [self setUpContraints];
 }
@@ -123,7 +122,7 @@ static const CGFloat TopMargin = 10.0;
                                                                        toItem:self.contentView
                                                                     attribute:NSLayoutAttributeLeading
                                                                    multiplier:1.0
-                                                                     constant:HorizontalMargin],
+                                                                     constant:LeadingMargin],
                                        [NSLayoutConstraint constraintWithItem:_textLabel
                                                                     attribute:NSLayoutAttributeLeading
                                                                     relatedBy:NSLayoutRelationEqual
@@ -162,7 +161,7 @@ static const CGFloat TopMargin = 10.0;
                                                                    toItem:self.contentView
                                                                 attribute:NSLayoutAttributeLeading
                                                                multiplier:1.0
-                                                                 constant:HorizontalMargin]];
+                                                                 constant:LeadingMargin]];
         } else {
             [constraints addObject:[NSLayoutConstraint constraintWithItem:_frequencyButtons[i]
                                                                 attribute:NSLayoutAttributeLeading
@@ -170,7 +169,7 @@ static const CGFloat TopMargin = 10.0;
                                                                    toItem:_frequencyButtons[i-1]
                                                                 attribute:NSLayoutAttributeTrailing
                                                                multiplier:1.0
-                                                                 constant:5.0]];
+                                                                 constant:HorizontalMargin]];
         }
         [constraints addObject:[NSLayoutConstraint constraintWithItem:_frequencyButtons[i]
                                                             attribute:NSLayoutAttributeTop
@@ -185,12 +184,8 @@ static const CGFloat TopMargin = 10.0;
 }
 
 - (void)toggleFrequencyButton:(id)sender {
-    UIButton *button = (UIButton *)sender;
-    if (button.backgroundColor == [UIColor grayColor]) {
-        button.backgroundColor = _treatment.tintColor;
-    } else {
-        button.backgroundColor = [UIColor grayColor];
-    }
+    OCKCareCardButton *button = (OCKCareCardButton *)sender;
+    button.selected = !button.selected;
     
     // Infer the treatment event from the button index.
     NSInteger index = [_frequencyButtons indexOfObject:button];

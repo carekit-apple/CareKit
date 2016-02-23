@@ -9,7 +9,6 @@
 
 #import "OCKCareCardViewController.h"
 #import "OCKCareCardViewController_Internal.h"
-#import "OCKCareCardTableViewController_Internal.h"
 #import "OCKCarePlanStore.h"
 #import "OCKCarePlanEvent.h"
 #import "OCKWeekView.h"

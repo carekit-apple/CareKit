@@ -8,7 +8,6 @@
 
 
 #import "OCKCareCardTableViewController.h"
-#import "OCKCareCardTableViewController_Internal.h"
 #import "OCKCareCardTableViewHeader.h"
 #import "OCKHelpers.h"
 #import "OCKCarePlanActivity.h"
@@ -16,10 +15,11 @@
 #import "OCKWeekPageViewController.h"
 #import "OCKCarePlanStore_Internal.h"
 #import "OCKCareCardWeekView.h"
+#import "OCKHeartView.h"
 
 
 static const CGFloat CellHeight = 85.0;
-static const CGFloat HeaderViewHeight = 200.0;
+static const CGFloat HeaderViewHeight = 235.0;
 
 @implementation OCKCareCardTableViewController {
     NSArray<NSArray<OCKCarePlanEvent *> *> *_treatmentEvents;
@@ -125,6 +125,7 @@ static const CGFloat HeaderViewHeight = 200.0;
     }
     
     _headerView.adherence = (totalEvents > 0) ? (float)completedEvents/totalEvents : 0;
+    [_headerView.heartView startAnimateWithDuration:5.0];
 }
 
 - (NSDate *)dateFromSelectedDay:(NSInteger)day {
@@ -143,7 +144,8 @@ static const CGFloat HeaderViewHeight = 200.0;
 - (void)careCardCellDidUpdateFrequency:(OCKCareCardTableViewCell *)cell ofTreatmentEvent:(OCKCarePlanEvent *)event {
     // Update the treatment event and mark it as completed.
     BOOL completed = !(event.state == OCKCarePlanEventStateCompleted);
-    
+
+    // TODO: Implement this after fix.
     [_store updateEvent:event
              withResult:nil
                   state:completed

@@ -8,7 +8,6 @@
 
 
 #import "OCKEvaluationTableViewController.h"
-#import "OCKEvaluationTableViewController_Internal.h"
 #import "OCKEvaluationTableViewCell.h"
 #import "OCKEvaluationTableViewHeader.h"
 #import "OCKHelpers.h"

@@ -10,7 +10,6 @@
 #import "OCKEvaluationViewController.h"
 #import "OCKEvaluationViewController_Internal.h"
 #import "OCKEvaluationTableViewController.h"
-#import "OCKEvaluationTableViewController_Internal.h"
 #import "OCKCarePlanStore.h"
 #import "OCKCarePlanEvent.h"
 #import "OCKWeekView.h"

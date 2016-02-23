@@ -14,6 +14,6 @@
 
 @property (nonatomic, readonly) NSArray<UILabel *> *weekLabels;
 
-- (void)highlightDay:(NSInteger)day;
+- (void)highlightDay:(NSInteger)dayOfWeek;
 
 @end

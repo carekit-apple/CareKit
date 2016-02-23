@@ -8,17 +8,18 @@
 
 
 #import "OCKCareCardTableViewController.h"
-#import "OCKCareCardTableViewController_Internal.h"
 #import "OCKCareCardTableViewHeader.h"
 #import "OCKHelpers.h"
 #import "OCKCarePlanActivity.h"
 #import "OCKCareCardTableViewCell.h"
 #import "OCKWeekPageViewController.h"
 #import "OCKCarePlanStore_Internal.h"
+#import "OCKCareCardWeekView.h"
+#import "OCKHeartView.h"
 
 
 static const CGFloat CellHeight = 85.0;
-static const CGFloat HeaderViewHeight = 200.0;
+static const CGFloat HeaderViewHeight = 235.0;
 
 @implementation OCKCareCardTableViewController {
     NSArray<NSArray<OCKCarePlanEvent *> *> *_treatmentEvents;
@@ -63,7 +64,7 @@ static const CGFloat HeaderViewHeight = 200.0;
     NSDateComponents *oldComponents = [calendar components:(NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitWeekOfMonth | NSCalendarUnitWeekday | NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond) fromDate:_selectedDate];
     
     if (newComponents.day > oldComponents.day) {
-        [self fetchTreatmentEvents];
+        _selectedDate = [NSDate date];
     }
 }
 
@@ -94,12 +95,15 @@ static const CGFloat HeaderViewHeight = 200.0;
 
 - (void)fetchTreatmentEvents {
     /*
-    NSError *error;
-    _treatmentEvents = [_store treatmentEventsOnDay:_selectedDate error:&error];
-    NSAssert(!error, error.localizedDescription);
-    
-    [self updateHeaderView];
-    [self.tableView reloadData];
+    [_store eventsOnDay:_selectedDate
+                   type:OCKCarePlanActivityTypeTreatment
+             completion:^(NSArray<NSArray<OCKCarePlanEvent *> *> * _Nonnull eventsGroupedByActivity, NSError * _Nonnull error) {
+                 NSAssert(!error, error.localizedDescription);
+                 _treatmentEvents = [eventsGroupedByActivity copy];
+                 
+                 [self updateHeaderView];
+                 [self.tableView reloadData];
+             }];
      */
 }
 
@@ -123,6 +127,7 @@ static const CGFloat HeaderViewHeight = 200.0;
     }
     
     _headerView.adherence = (totalEvents > 0) ? (float)completedEvents/totalEvents : 0;
+    [_headerView.heartView startAnimateWithDuration:5.0];
 }
 
 - (NSDate *)dateFromSelectedDay:(NSInteger)day {
@@ -140,14 +145,16 @@ static const CGFloat HeaderViewHeight = 200.0;
 
 - (void)careCardCellDidUpdateFrequency:(OCKCareCardTableViewCell *)cell ofTreatmentEvent:(OCKCarePlanEvent *)event {
     // Update the treatment event and mark it as completed.
-    /*
-    [_store updateTreatmentEvent:event
-                       completed:YES
-                  completionDate:[NSDate date]
-                      completion:^(BOOL success, OCKTreatmentEvent * _Nonnull event, NSError * _Nonnull error) {
-                          NSAssert(success, error.localizedDescription);
-                      }];
-     */
+    BOOL completed = !(event.state == OCKCarePlanEventStateCompleted);
+
+    // TODO: Implement this after fix.
+    [_store updateEvent:event
+             withResult:nil
+                  state:completed
+             completion:^(BOOL success, OCKCarePlanEvent * _Nonnull event, NSError * _Nonnull error) {
+                 NSAssert(success, error.localizedDescription);
+                 
+             }];
 }
 
 
@@ -157,7 +164,7 @@ static const CGFloat HeaderViewHeight = 200.0;
     [self fetchTreatmentEvents];
 }
 
-- (void)carePlanStoreEvaluationListDidChange:(OCKCarePlanStore *)store {
+- (void)carePlanStoreTreatmentListDidChange:(OCKCarePlanStore *)store {
     [self fetchTreatmentEvents];
 }
 
@@ -206,6 +213,17 @@ static const CGFloat HeaderViewHeight = 200.0;
 
 - (CGFloat)tableView:(UITableView *)tableView estimatedHeightForHeaderInSection:(NSInteger)section {
     return HeaderViewHeight;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    OCKCarePlanActivity *selectedActivity = _treatmentEvents[indexPath.row].firstObject.activity;
+    
+    if (_delegate &&
+        [_delegate respondsToSelector:@selector(tableViewDidSelectRowWithTreatment:)]) {
+        [_delegate tableViewDidSelectRowWithTreatment:selectedActivity];
+    }
+    
+    [tableView deselectRowAtIndexPath:indexPath animated:NO];
 }
 
 

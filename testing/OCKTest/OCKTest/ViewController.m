@@ -29,8 +29,8 @@ static const BOOL resetStoreOnLaunch = YES;
     OCKConnectViewController *_connectViewController;
     
     OCKCarePlanStore *_store;
-    NSArray<OCKEvaluation *> *_evaluations;
-    NSArray<OCKTreatment *> *_treatments;
+    NSArray<OCKCarePlanActivity *> *_evaluations;
+    NSArray<OCKCarePlanActivity *> *_treatments;
 }
 
 
@@ -39,7 +39,7 @@ static const BOOL resetStoreOnLaunch = YES;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self setUpCarePlanStore];
+    [self performSelectorOnMainThread:@selector(setUpCarePlanStore) withObject:nil waitUntilDone:YES];
     
     _dashboardViewController = [self dashboardViewController];
     _careCardViewController = [self careCardViewController];
@@ -209,24 +209,25 @@ static const BOOL resetStoreOnLaunch = YES;
     // Set up store.
     _store = [[OCKCarePlanStore alloc] initWithPersistenceDirectoryURL:[self storeDirectoryURL]];
     _store.delegate = self;
-    NSError *error;
     
     // Add new treatments to store.
     [self generateTreatments];
-    for (OCKTreatment *treatment in _treatments) {
-        if (![_store treatmentForIdentifier:treatment.identifier error:nil]) {
-            [_store addTreatment:treatment error:&error];
-            NSAssert(!error, error.localizedDescription);
-        }
+    for (OCKCarePlanActivity *treatment in _treatments) {
+        [_store addActivity:treatment completion:^(BOOL success, NSError * _Nonnull error) {
+            if (!success) {
+                NSLog(@"%@", error.localizedDescription);
+            }
+        }];
     }
     
     // Add new evaluations to store.
     [self generateEvaluations];
-    for (OCKEvaluation *evaluation in _evaluations) {
-        if (![_store evaluationForIdentifier:evaluation.identifier error:nil]) {
-            [_store addEvaluation:evaluation error:&error];
-            NSAssert(!error, error.localizedDescription);
-        }
+    for (OCKCarePlanActivity *evaluation in _evaluations) {
+        [_store addActivity:evaluation completion:^(BOOL success, NSError * _Nonnull error) {
+            if (!success) {
+                NSLog(@"%@", error.localizedDescription);
+            }
+        }];
     }
 }
 
@@ -248,68 +249,48 @@ DefineStringKey(PhysicalTherapyTreatment);
     {
         OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@2,@1,@2,@1,@2,@3,@3]];
         UIColor *color = OCKBlueColor();
-        OCKDayRange dayRange;
-        dayRange.daysAfterEventDay = 0;
-        dayRange.daysBeforeEventDay = 0;
-        OCKTreatment *treatment = [[OCKTreatment alloc] initWithIdentifier:MeditationTreatment
-                                                                      type:@"mental"
-                                                                     title:@"Meditation"
-                                                                      text:@"30 mins"
-                                                                     color:color
-                                                                  schedule:schedule
-                                                                  optional:NO
-                                                      eventMutableDayRange:dayRange];
+        OCKCarePlanActivity *treatment = [[OCKCarePlanActivity alloc] initWithIdentifier:MeditationTreatment
+                                                                                    type:OCKCarePlanActivityTypeTreatment
+                                                                                   title:@"Meditation"
+                                                                                    text:@"30 mins"
+                                                                               tintColor:color
+                                                                                schedule:schedule];
         [treatments addObject:treatment];
     }
     
     {
         OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@4,@4,@4,@4,@4,@4,@4]];
         UIColor *color = OCKGreenColor();
-        OCKDayRange dayRange;
-        dayRange.daysAfterEventDay = 0;
-        dayRange.daysBeforeEventDay = 0;
-        OCKTreatment *treatment = [[OCKTreatment alloc] initWithIdentifier:IbuprofenTreatment
-                                                                      type:@"medication"
-                                                                     title:@"Ibuprofen"
-                                                                      text:@"200mg"
-                                                                     color:color
-                                                                  schedule:schedule
-                                                                  optional:NO
-                                                      eventMutableDayRange:dayRange];
+        OCKCarePlanActivity *treatment = [[OCKCarePlanActivity alloc] initWithIdentifier:IbuprofenTreatment
+                                                                                    type:OCKCarePlanActivityTypeTreatment
+                                                                                   title:@"Ibuprofen"
+                                                                                    text:@"200mg"
+                                                                               tintColor:color
+                                                                                schedule:schedule];
         [treatments addObject:treatment];
     }
     
     {
         OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@2,@1,@2,@1,@2,@1,@2]];
         UIColor *color = OCKPinkColor();
-        OCKDayRange dayRange;
-        dayRange.daysAfterEventDay = 0;
-        dayRange.daysBeforeEventDay = 0;
-        OCKTreatment *treatment = [[OCKTreatment alloc] initWithIdentifier:OutdoorWalkTreatment
-                                                                      type:@"physical"
-                                                                     title:@"Outdoor Walk"
-                                                                      text:@"15 mins"
-                                                                     color:color
-                                                                  schedule:schedule
-                                                                  optional:NO
-                                                      eventMutableDayRange:dayRange];
+        OCKCarePlanActivity *treatment = [[OCKCarePlanActivity alloc] initWithIdentifier:OutdoorWalkTreatment
+                                                                                    type:OCKCarePlanActivityTypeTreatment
+                                                                                   title:@"Outdoor Walk"
+                                                                                    text:@"15 mins"
+                                                                               tintColor:color
+                                                                                schedule:schedule];
         [treatments addObject:treatment];
     }
     
     {
         OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@1,@0,@1,@0,@1,@0,@1]];
         UIColor *color = OCKYellowColor();
-        OCKDayRange dayRange;
-        dayRange.daysAfterEventDay = 0;
-        dayRange.daysBeforeEventDay = 0;
-        OCKTreatment *treatment = [[OCKTreatment alloc] initWithIdentifier:OutdoorWalkTreatment
-                                                                      type:@"physical"
-                                                                     title:@"Physical Therapy"
-                                                                      text:@"lower back"
-                                                                     color:color
-                                                                  schedule:schedule
-                                                                  optional:NO
-                                                      eventMutableDayRange:dayRange];
+        OCKCarePlanActivity *treatment = [[OCKCarePlanActivity alloc] initWithIdentifier:PhysicalTherapyTreatment
+                                                                                    type:OCKCarePlanActivityTypeTreatment
+                                                                                   title:@"Physical Therapy"
+                                                                                    text:@"lower back"
+                                                                               tintColor:color
+                                                                                schedule:schedule];
         [treatments addObject:treatment];
     }
     
@@ -335,75 +316,60 @@ DefineStringKey(WeightEvaluation);
     {
         OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@1,@0,@1,@0,@1,@0,@1]];
         UIColor *color = OCKBlueColor();
-        OCKEvaluation *evaluation = [[OCKEvaluation alloc] initWithIdentifier:PainEvaluation
-                                                                         type:@"survey"
-                                                                        title:@"Pain"
-                                                                         text:@"lower back"
-                                                                        color:color
-                                                                     schedule:schedule
-                                                                         task:nil
-                                                                     optional:NO
-                                                                   allowRetry:NO];
+        OCKCarePlanActivity *evaluation = [[OCKCarePlanActivity alloc] initWithIdentifier:PainEvaluation
+                                                                                     type:OCKCarePlanActivityTypeAssessment
+                                                                                    title:@"Pain"
+                                                                                     text:@"lower back"
+                                                                                tintColor:color
+                                                                                 schedule:schedule];
         [evaluations addObject:evaluation];
     }
     
     {
         OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@1,@1,@1,@1,@1,@1,@1]];
         UIColor *color = OCKGreenColor();
-        OCKEvaluation *evaluation = [[OCKEvaluation alloc] initWithIdentifier:MoodEvaluation
-                                                                         type:@"survey"
-                                                                        title:@"Mood"
-                                                                         text:@"survey"
-                                                                        color:color
-                                                                     schedule:schedule
-                                                                         task:nil
-                                                                     optional:NO
-                                                                   allowRetry:YES];
+        OCKCarePlanActivity *evaluation = [[OCKCarePlanActivity alloc] initWithIdentifier:MoodEvaluation
+                                                                                     type:OCKCarePlanActivityTypeAssessment
+                                                                                    title:@"Mood"
+                                                                                     text:@"survey"
+                                                                                tintColor:color
+                                                                                 schedule:schedule];
         [evaluations addObject:evaluation];
     }
     
     {
         OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@1,@1,@0,@1,@1,@1,@0]];
         UIColor *color = OCKRedColor();
-        OCKEvaluation *evaluation = [[OCKEvaluation alloc] initWithIdentifier:SleepQualityEvaluation
-                                                                         type:@"survey"
-                                                                        title:@"Sleep Quality"
-                                                                         text:@"last night"
-                                                                        color:color
-                                                                     schedule:schedule
-                                                                         task:nil
-                                                                     optional:NO
-                                                                   allowRetry:NO];
+        OCKCarePlanActivity *evaluation = [[OCKCarePlanActivity alloc] initWithIdentifier:SleepQualityEvaluation
+                                                                                     type:OCKCarePlanActivityTypeAssessment
+                                                                                    title:@"Sleep Quality"
+                                                                                     text:@"last night"
+                                                                                tintColor:color
+                                                                                 schedule:schedule];
         [evaluations addObject:evaluation];
     }
     
     {
         OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@0,@1,@0,@1,@0,@1,@0]];
         UIColor *color = OCKYellowColor();
-        OCKEvaluation *evaluation = [[OCKEvaluation alloc] initWithIdentifier:BloodPressureEvaluation
-                                                                         type:@"survey"
-                                                                        title:@"Blood Pressure"
-                                                                         text:@"after dinner"
-                                                                        color:color
-                                                                     schedule:schedule
-                                                                         task:nil
-                                                                     optional:NO
-                                                                   allowRetry:NO];
+        OCKCarePlanActivity *evaluation = [[OCKCarePlanActivity alloc] initWithIdentifier:BloodPressureEvaluation
+                                                                                     type:OCKCarePlanActivityTypeAssessment
+                                                                                    title:@"Blood Pressure"
+                                                                                     text:@"after dinner"
+                                                                                tintColor:color
+                                                                                 schedule:schedule];
         [evaluations addObject:evaluation];
     }
     
     {
         OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@1,@1,@1,@1,@1,@1,@1]];
         UIColor *color = OCKPurpleColor();
-        OCKEvaluation *evaluation = [[OCKEvaluation alloc] initWithIdentifier:WeightEvaluation
-                                                                         type:@"survey"
-                                                                        title:@"Weight"
-                                                                         text:@"before breakfast"
-                                                                        color:color
-                                                                     schedule:schedule
-                                                                         task:nil
-                                                                     optional:NO
-                                                                   allowRetry:NO];
+        OCKCarePlanActivity *evaluation = [[OCKCarePlanActivity alloc] initWithIdentifier:WeightEvaluation
+                                                                                     type:OCKCarePlanActivityTypeAssessment
+                                                                                    title:@"Weight"
+                                                                                     text:@"before breakfast"
+                                                                                tintColor:color
+                                                                                 schedule:schedule];
         [evaluations addObject:evaluation];
     }
     
@@ -513,8 +479,8 @@ DefineStringKey(WeightEvaluation);
     [_tabBarController presentViewController:taskViewController animated:YES completion:nil];
 }
 
-- (void)updateEvaluationEvent:(OCKEvaluationEvent *)event withTaskResult:(ORKTaskResult *)result {
-    NSString *identifier = event.evaluation.identifier;
+- (void)updateEvaluationEvent:(OCKCarePlanEvent *)event withTaskResult:(ORKTaskResult *)result {
+    NSString *identifier = event.activity.identifier;
     
     if ([identifier isEqualToString:PainEvaluation] ||
         [identifier isEqualToString:MoodEvaluation] ||
@@ -522,16 +488,20 @@ DefineStringKey(WeightEvaluation);
         // Fetch the result value.
         ORKStepResult *stepResult = (ORKStepResult*)[result firstResult];
         ORKScaleQuestionResult *questionResult = (ORKScaleQuestionResult*)[stepResult firstResult];
-        CGFloat value = [questionResult.scaleAnswer floatValue];
+        NSNumber *value = questionResult.scaleAnswer;
+        
+        OCKCarePlanEventResult *result = [[OCKCarePlanEventResult alloc] initWithValueString:value.stringValue
+                                                                                  unitString:@"/10"
+                                                                              completionDate:[NSDate date]
+                                                                                    userInfo:nil];
+        
+        [_store updateEvent:event
+                 withResult:result
+                      state:OCKCarePlanEventStateCompleted
+                 completion:^(BOOL success, OCKCarePlanEvent * _Nonnull event, NSError * _Nonnull error) {
+                     NSAssert(success, error.localizedDescription);
+                 }];
     
-        [_store updateEvaluationEvent:event
-                      evaluationValue:@(value)
-                evaluationValueString:[@(value) stringValue]
-                     evaluationResult:nil
-                       completionDate:[NSDate date]
-                           completion:^(BOOL success, OCKEvaluationEvent * _Nonnull event, NSError * _Nonnull error) {
-                               NSAssert(success, error.localizedDescription);
-                           }];
     } else if ([identifier isEqualToString:BloodPressureEvaluation]) {
         // Fetch the result value.
         ORKStepResult *stepResult = (ORKStepResult*)[result firstResult];
@@ -542,42 +512,49 @@ DefineStringKey(WeightEvaluation);
         ORKNumericQuestionResult *result2 = (ORKNumericQuestionResult *)results[1];
         NSNumber *diastolicValue = result2.numericAnswer;
         
-        [_store updateEvaluationEvent:event
-                      evaluationValue:@0
-                evaluationValueString:[NSString stringWithFormat:@"%@/%@", [systolicValue stringValue], [diastolicValue stringValue]]
-                     evaluationResult:nil
-                       completionDate:[NSDate date]
-                           completion:^(BOOL success, OCKEvaluationEvent * _Nonnull event, NSError * _Nonnull error) {
-                               NSAssert(success, error.localizedDescription);
-                           }];
+        OCKCarePlanEventResult *result = [[OCKCarePlanEventResult alloc] initWithValueString:[NSString stringWithFormat:@"%@/%@", systolicValue.stringValue, diastolicValue.stringValue]
+                                                                                  unitString:@"mmHg"
+                                                                              completionDate:[NSDate date]
+                                                                                    userInfo:nil];
+        
+        [_store updateEvent:event
+                 withResult:result
+                      state:OCKCarePlanEventStateCompleted
+                 completion:^(BOOL success, OCKCarePlanEvent * _Nonnull event, NSError * _Nonnull error) {
+                     NSAssert(success, error.localizedDescription);
+                 }];
+        
     } else if ([identifier isEqualToString:WeightEvaluation]) {
         // Fetch the result value.
         ORKStepResult *stepResult = (ORKStepResult*)[result firstResult];
         NSArray <ORKResult *> *results = stepResult.results;
 
-        ORKNumericQuestionResult *result = (ORKNumericQuestionResult *)results[0];
-        NSNumber *weightValue = result.numericAnswer;
+        ORKNumericQuestionResult *numericResult = (ORKNumericQuestionResult *)results[0];
+        NSNumber *weightValue = numericResult.numericAnswer;
         
-        [_store updateEvaluationEvent:event
-                      evaluationValue:@0
-                evaluationValueString:[weightValue stringValue]
-                     evaluationResult:nil
-                       completionDate:[NSDate date]
-                           completion:^(BOOL success, OCKEvaluationEvent * _Nonnull event, NSError * _Nonnull error) {
-                               NSAssert(success, error.localizedDescription);
-                           }];
+        OCKCarePlanEventResult *result = [[OCKCarePlanEventResult alloc] initWithValueString:weightValue.stringValue
+                                                                                  unitString:@"lbs"
+                                                                              completionDate:[NSDate date]
+                                                                                    userInfo:nil];
+        
+        [_store updateEvent:event
+                 withResult:result
+                      state:OCKCarePlanEventStateCompleted
+                 completion:^(BOOL success, OCKCarePlanEvent * _Nonnull event, NSError * _Nonnull error) {
+                     NSAssert(success, error.localizedDescription);
+                 }];
     }
 }
 
 
 #pragma mark - Evaluation Table View Delegate (OCKEvaluationTableViewDelegate)
 
-- (void)tableViewDidSelectEvaluationEvent:(OCKEvaluationEvent *)evaluationEvent {
-    NSInteger validState = (evaluationEvent.state == OCKCareEventStateInitial || evaluationEvent.state == OCKCareEventStateNotCompleted) ||
-    (evaluationEvent.state == OCKCareEventStateCompleted && evaluationEvent.evaluation.allowRetry);
+- (void)tableViewDidSelectRowWithEvaluationEvent:(OCKCarePlanEvent *)evaluationEvent {
+    NSInteger validState = (evaluationEvent.state == OCKCarePlanEventStateInitial || evaluationEvent.state == OCKCarePlanEventStateNotCompleted) ||
+    (evaluationEvent.state == OCKCarePlanEventStateCompleted && evaluationEvent.activity.resultResettable);
 
     if (validState) {
-        NSString *identifier = evaluationEvent.evaluation.identifier;
+        NSString *identifier = evaluationEvent.activity.identifier;
         [self presentViewControllerForEvaluationIdentifier:identifier];
     }
 }
@@ -587,7 +564,7 @@ DefineStringKey(WeightEvaluation);
 
 - (void)taskViewController:(ORKTaskViewController *)taskViewController didFinishWithReason:(ORKTaskViewControllerFinishReason)reason error:(NSError *)error {
     if (reason == ORKTaskViewControllerFinishReasonCompleted) {
-        OCKEvaluationEvent *evaluationEvent = _evaluationViewController.lastSelectedEvaluationEvent;
+        OCKCarePlanEvent *evaluationEvent = _evaluationViewController.lastSelectedEvaluationEvent;
         ORKTaskResult *taskResult = taskViewController.result;
         [self updateEvaluationEvent:evaluationEvent withTaskResult:taskResult];
     }

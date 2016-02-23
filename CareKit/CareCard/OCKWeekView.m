@@ -27,7 +27,7 @@ const static CGFloat TopMargin = 12.0;
 - (void)prepareView {
     if (!_weekLabels) {
         _weekLabels = [NSMutableArray new];
-        for (int i = 1; i < 8; i++) {
+        for (int i = 0; i < 7; i++) {
             UILabel *dayLabel = [UILabel new];
             dayLabel.font = [UIFont systemFontOfSize:12.0 weight:UIFontWeightThin];
             dayLabel.translatesAutoresizingMaskIntoConstraints = NO;
@@ -36,25 +36,25 @@ const static CGFloat TopMargin = 12.0;
             
             NSString *day = nil;
             switch (i) {
-                case 1:
+                case 0:
                     day = @"S";
                     break;
-                case 2:
+                case 1:
                     day = @"M";
                     break;
-                case 3:
+                case 2:
                     day = @"T";
                     break;
-                case 4:
+                case 3:
                     day = @"W";
                     break;
-                case 5:
+                case 4:
                     day = @"T";
                     break;
-                case 6:
+                case 5:
                     day = @"F";
                     break;
-                case 7:
+                case 6:
                     day = @"S";
                     break;
             }
@@ -77,7 +77,7 @@ const static CGFloat TopMargin = 12.0;
     
     const CGFloat HorizontalMargin = self.bounds.size.width/9;
     
-    for (int i=0; i < _weekLabels.count; i++) {
+    for (int i = 0; i < _weekLabels.count; i++) {
         if (i == 0) {
             [constraints addObject:[NSLayoutConstraint constraintWithItem:_weekLabels[i]
                                                                 attribute:NSLayoutAttributeWidth
@@ -109,6 +109,14 @@ const static CGFloat TopMargin = 12.0;
     {
         [constraints addObjectsFromArray:@[
                                            // Monday
+                                           [NSLayoutConstraint constraintWithItem:_weekLabels[0]
+                                                                        attribute:NSLayoutAttributeTrailing
+                                                                        relatedBy:NSLayoutRelationEqual
+                                                                           toItem:_weekLabels[1]
+                                                                        attribute:NSLayoutAttributeLeading
+                                                                       multiplier:1.0
+                                                                         constant:-HorizontalMargin],
+                                           // Tuesday
                                            [NSLayoutConstraint constraintWithItem:_weekLabels[1]
                                                                         attribute:NSLayoutAttributeTrailing
                                                                         relatedBy:NSLayoutRelationEqual
@@ -116,7 +124,7 @@ const static CGFloat TopMargin = 12.0;
                                                                         attribute:NSLayoutAttributeLeading
                                                                        multiplier:1.0
                                                                          constant:-HorizontalMargin],
-                                           // Tuesday
+                                           // Wednesday
                                            [NSLayoutConstraint constraintWithItem:_weekLabels[2]
                                                                         attribute:NSLayoutAttributeTrailing
                                                                         relatedBy:NSLayoutRelationEqual
@@ -124,16 +132,8 @@ const static CGFloat TopMargin = 12.0;
                                                                         attribute:NSLayoutAttributeLeading
                                                                        multiplier:1.0
                                                                          constant:-HorizontalMargin],
-                                           // Wednesday
-                                           [NSLayoutConstraint constraintWithItem:_weekLabels[3]
-                                                                        attribute:NSLayoutAttributeTrailing
-                                                                        relatedBy:NSLayoutRelationEqual
-                                                                           toItem:_weekLabels[4]
-                                                                        attribute:NSLayoutAttributeLeading
-                                                                       multiplier:1.0
-                                                                         constant:-HorizontalMargin],
                                            // Thursday (Centered on screen, anchor point).
-                                           [NSLayoutConstraint constraintWithItem:_weekLabels[4]
+                                           [NSLayoutConstraint constraintWithItem:_weekLabels[3]
                                                                         attribute:NSLayoutAttributeCenterX
                                                                         relatedBy:NSLayoutRelationEqual
                                                                            toItem:self
@@ -141,6 +141,14 @@ const static CGFloat TopMargin = 12.0;
                                                                        multiplier:1.0
                                                                          constant:0.0],
                                            // Friday
+                                           [NSLayoutConstraint constraintWithItem:_weekLabels[3]
+                                                                        attribute:NSLayoutAttributeTrailing
+                                                                        relatedBy:NSLayoutRelationEqual
+                                                                           toItem:_weekLabels[4]
+                                                                        attribute:NSLayoutAttributeLeading
+                                                                       multiplier:1.0
+                                                                         constant:-HorizontalMargin],
+                                           // Saturday
                                            [NSLayoutConstraint constraintWithItem:_weekLabels[4]
                                                                         attribute:NSLayoutAttributeTrailing
                                                                         relatedBy:NSLayoutRelationEqual
@@ -148,19 +156,11 @@ const static CGFloat TopMargin = 12.0;
                                                                         attribute:NSLayoutAttributeLeading
                                                                        multiplier:1.0
                                                                          constant:-HorizontalMargin],
-                                           // Saturday
+                                           // Sunday
                                            [NSLayoutConstraint constraintWithItem:_weekLabels[5]
                                                                         attribute:NSLayoutAttributeTrailing
                                                                         relatedBy:NSLayoutRelationEqual
                                                                            toItem:_weekLabels[6]
-                                                                        attribute:NSLayoutAttributeLeading
-                                                                       multiplier:1.0
-                                                                         constant:-HorizontalMargin],
-                                           // Sunday
-                                           [NSLayoutConstraint constraintWithItem:_weekLabels[6]
-                                                                        attribute:NSLayoutAttributeTrailing
-                                                                        relatedBy:NSLayoutRelationEqual
-                                                                           toItem:_weekLabels[0]
                                                                         attribute:NSLayoutAttributeLeading
                                                                        multiplier:1.0
                                                                          constant:-HorizontalMargin]
@@ -170,17 +170,13 @@ const static CGFloat TopMargin = 12.0;
     [NSLayoutConstraint activateConstraints:constraints];
 }
 
-- (NSArray<UILabel *> *)weekLabels {
-    return _weekLabels;
-}
-
-- (void)highlightDay:(NSInteger)day {
+- (void)highlightDay:(NSInteger)dayOfWeek {
     for (id label in _weekLabels) {
         ((UILabel *)label).backgroundColor = [UIColor clearColor];
         ((UILabel *)label).textColor = [UIColor blackColor];
     }
-    ((UILabel *)_weekLabels[day]).backgroundColor = OCKPinkColor();
-    ((UILabel *)_weekLabels[day]).textColor = [UIColor whiteColor];
+    ((UILabel *)_weekLabels[dayOfWeek-1]).backgroundColor = OCKPinkColor();
+    ((UILabel *)_weekLabels[dayOfWeek-1]).textColor = [UIColor whiteColor];
 }
 
 @end

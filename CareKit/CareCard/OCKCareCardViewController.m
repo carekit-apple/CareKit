@@ -9,12 +9,12 @@
 
 #import "OCKCareCardViewController.h"
 #import "OCKCareCardViewController_Internal.h"
-#import "OCKCareCardTableViewController_Internal.h"
 #import "OCKCarePlanStore.h"
 #import "OCKCarePlanEvent.h"
 #import "OCKWeekView.h"
 #import "OCKWeekPageViewController.h"
 #import "OCKCareCardWeekView.h"
+#import "OCKCareCardDetailViewController.h"
 
 
 @implementation OCKCareCardViewController {
@@ -39,6 +39,7 @@
     [super viewDidAppear:animated];
     _tableViewController.delegate = self;
     _tableViewController.weekPageViewController.careCardWeekView.delegate = self;
+    self.navigationBar.tintColor = self.view.tintColor;
 }
 
 - (void)setTitle:(NSString *)title {
@@ -61,10 +62,10 @@
 
 #pragma mark - OCKCareCardTableViewDelegate
 
-- (void)tableViewDidSelectTreatmentEvent:(OCKCarePlanEvent *)treatmentEvent {
-    // TODO: Implement this.
-    
-    // Navigate to detail treatment view controller.
+- (void)tableViewDidSelectRowWithTreatment:(OCKCarePlanActivity *)activity {
+    OCKCareCardDetailViewController *detailViewController = [OCKCareCardDetailViewController new];
+    detailViewController.treatment = activity;
+    [self pushViewController:detailViewController animated:YES];
 }
 
 @end

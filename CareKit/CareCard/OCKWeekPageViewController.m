@@ -18,7 +18,6 @@
     OCKEvaluationWeekView *_evaluationWeekView;
 }
 
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     _showCareCardWeekView = NO;
@@ -78,8 +77,8 @@
     [NSLayoutConstraint activateConstraints:constraints];
 }
 
-- (void)setShowCareCardWeekView:(BOOL)showHeartWeekView {
-    _showCareCardWeekView = showHeartWeekView;
+- (void)setShowCareCardWeekView:(BOOL)showCareCardWeekView {
+    _showCareCardWeekView = showCareCardWeekView;
     [self prepareView];
 }
 

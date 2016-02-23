@@ -12,7 +12,7 @@
 
 
 const static CGFloat LeadingMargin = 20.0;
-const static CGFloat HorizontalMargin = 5.0;
+const static CGFloat VerticalMargin = 5.0;
 const static CGFloat TrailingMargin = 40.0;
 
 const static CGFloat ValueLabelWidth = 100.0;
@@ -38,11 +38,7 @@ const static CGFloat ValueLabelWidth = 100.0;
 - (void)prepareView {
     self.tintColor = _evaluationEvent.activity.tintColor;
     
-    if (_evaluationEvent.state == OCKCarePlanEventStateCompleted) {
-        self.accessoryType = UITableViewCellAccessoryCheckmark;
-    } else {
-        self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-    }
+    self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     
     if (!_titleLabel) {
         _titleLabel = [UILabel new];
@@ -58,6 +54,7 @@ const static CGFloat ValueLabelWidth = 100.0;
         _textLabel.numberOfLines = 2;
         _textLabel.lineBreakMode = NSLineBreakByWordWrapping;
         _textLabel.textAlignment = NSTextAlignmentCenter;
+        _textLabel.textColor = [UIColor lightGrayColor];
         [self.contentView addSubview:_textLabel];
     }
     _textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
@@ -69,7 +66,7 @@ const static CGFloat ValueLabelWidth = 100.0;
         _valueLabel.textAlignment = NSTextAlignmentRight;
         [self.contentView addSubview:_valueLabel];
     }
-    _valueLabel.text = (_evaluationEvent.result.valueString.length > 0) ? _evaluationEvent.result.valueString : @"--";
+    _valueLabel.text = (_evaluationEvent.result.valueString.length > 0) ? _evaluationEvent.result.valueString : @"";
     _valueLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleTitle1];
     _valueLabel.textColor = _evaluationEvent.activity.tintColor;
     
@@ -77,7 +74,7 @@ const static CGFloat ValueLabelWidth = 100.0;
         _leadingEdge = [UIView new];
         [self.contentView addSubview:_leadingEdge];
     }
-    _leadingEdge.backgroundColor = _evaluationEvent.activity.tintColor;
+//    _leadingEdge.backgroundColor = _evaluationEvent.activity.tintColor;
     
     [self setUpConstraints];
 }
@@ -98,27 +95,27 @@ const static CGFloat ValueLabelWidth = 100.0;
                                                                     attribute:NSLayoutAttributeLeading
                                                                    multiplier:1.0
                                                                      constant:LeadingMargin],
-                                       [NSLayoutConstraint constraintWithItem:_titleLabel
+                                       [NSLayoutConstraint constraintWithItem:self.contentView
                                                                     attribute:NSLayoutAttributeCenterY
                                                                     relatedBy:NSLayoutRelationEqual
-                                                                       toItem:self.contentView
+                                                                       toItem:_titleLabel
                                                                     attribute:NSLayoutAttributeCenterY
                                                                    multiplier:1.0
-                                                                     constant:0.0],
+                                                                     constant:2*(_titleLabel.frame.size.height + VerticalMargin)],
                                        [NSLayoutConstraint constraintWithItem:_textLabel
                                                                     attribute:NSLayoutAttributeLeading
                                                                     relatedBy:NSLayoutRelationEqual
                                                                        toItem:_titleLabel
-                                                                    attribute:NSLayoutAttributeTrailing
-                                                                   multiplier:1.0
-                                                                     constant:HorizontalMargin],
-                                       [NSLayoutConstraint constraintWithItem:_textLabel
-                                                                    attribute:NSLayoutAttributeBaseline
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:_titleLabel
-                                                                    attribute:NSLayoutAttributeBaseline
+                                                                    attribute:NSLayoutAttributeLeading
                                                                    multiplier:1.0
                                                                      constant:0.0],
+                                       [NSLayoutConstraint constraintWithItem:_textLabel
+                                                                    attribute:NSLayoutAttributeTop
+                                                                    relatedBy:NSLayoutRelationEqual
+                                                                       toItem:_titleLabel
+                                                                    attribute:NSLayoutAttributeBottom
+                                                                   multiplier:1.0
+                                                                     constant:VerticalMargin],
                                        [NSLayoutConstraint constraintWithItem:self
                                                                     attribute:NSLayoutAttributeTrailing
                                                                     relatedBy:NSLayoutRelationEqual

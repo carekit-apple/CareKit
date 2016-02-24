@@ -241,16 +241,14 @@ DefineStringKey(PhysicalTherapyTreatment);
 
 - (void)generateTreatments {
     NSMutableArray *treatments = [NSMutableArray new];
-    
-    NSDateComponents *components = [NSDateComponents new];
-    components.year = 2016;
-    NSDate *startDate = [[NSCalendar currentCalendar] dateFromComponents:components];
+
+    OCKCarePlanDay *startDate = [[OCKCarePlanDay alloc] initWithYear:2016 month:01 day:01];
     
     {
-        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@2,@1,@2,@1,@2,@3,@3]];
+        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDay:startDate occurrencesOnEachDay:@[@2,@1,@2,@1,@2,@3,@3]];
         UIColor *color = OCKBlueColor();
         OCKCarePlanActivity *treatment = [[OCKCarePlanActivity alloc] initWithIdentifier:MeditationTreatment
-                                                                                    type:OCKCarePlanActivityTypeTreatment
+                                                                                    type:OCKCarePlanActivityTypeIntervention
                                                                                    title:@"Meditation"
                                                                                     text:@"30 mins"
                                                                                tintColor:color
@@ -259,10 +257,10 @@ DefineStringKey(PhysicalTherapyTreatment);
     }
     
     {
-        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@4,@4,@4,@4,@4,@4,@4]];
+        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDay:startDate occurrencesOnEachDay:@[@4,@4,@4,@4,@4,@4,@4]];
         UIColor *color = OCKGreenColor();
         OCKCarePlanActivity *treatment = [[OCKCarePlanActivity alloc] initWithIdentifier:IbuprofenTreatment
-                                                                                    type:OCKCarePlanActivityTypeTreatment
+                                                                                    type:OCKCarePlanActivityTypeIntervention
                                                                                    title:@"Ibuprofen"
                                                                                     text:@"200mg"
                                                                                tintColor:color
@@ -271,10 +269,10 @@ DefineStringKey(PhysicalTherapyTreatment);
     }
     
     {
-        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@2,@1,@2,@1,@2,@1,@2]];
+        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDay:startDate occurrencesOnEachDay:@[@2,@1,@2,@1,@2,@1,@2]];
         UIColor *color = OCKPinkColor();
         OCKCarePlanActivity *treatment = [[OCKCarePlanActivity alloc] initWithIdentifier:OutdoorWalkTreatment
-                                                                                    type:OCKCarePlanActivityTypeTreatment
+                                                                                    type:OCKCarePlanActivityTypeIntervention
                                                                                    title:@"Outdoor Walk"
                                                                                     text:@"15 mins"
                                                                                tintColor:color
@@ -283,10 +281,10 @@ DefineStringKey(PhysicalTherapyTreatment);
     }
     
     {
-        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@1,@0,@1,@0,@1,@0,@1]];
+        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDay:startDate occurrencesOnEachDay:@[@1,@0,@1,@0,@1,@0,@1]];
         UIColor *color = OCKYellowColor();
         OCKCarePlanActivity *treatment = [[OCKCarePlanActivity alloc] initWithIdentifier:PhysicalTherapyTreatment
-                                                                                    type:OCKCarePlanActivityTypeTreatment
+                                                                                    type:OCKCarePlanActivityTypeIntervention
                                                                                    title:@"Physical Therapy"
                                                                                     text:@"lower back"
                                                                                tintColor:color
@@ -308,13 +306,11 @@ DefineStringKey(WeightEvaluation);
 
 - (void)generateEvaluations {
     NSMutableArray *evaluations = [NSMutableArray new];
-    
-    NSDateComponents *components = [NSDateComponents new];
-    components.year = 2016;
-    NSDate *startDate = [[NSCalendar currentCalendar] dateFromComponents:components];
-    
+
+    OCKCarePlanDay *startDate = [[OCKCarePlanDay alloc] initWithYear:2016 month:01 day:01];
+
     {
-        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@1,@0,@1,@0,@1,@0,@1]];
+        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDay:startDate occurrencesOnEachDay:@[@1,@0,@1,@0,@1,@0,@1]];
         UIColor *color = OCKBlueColor();
         OCKCarePlanActivity *evaluation = [[OCKCarePlanActivity alloc] initWithIdentifier:PainEvaluation
                                                                                      type:OCKCarePlanActivityTypeAssessment
@@ -326,7 +322,7 @@ DefineStringKey(WeightEvaluation);
     }
     
     {
-        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@1,@1,@1,@1,@1,@1,@1]];
+        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDay:startDate occurrencesOnEachDay:@[@1,@1,@1,@1,@1,@1,@1]];
         UIColor *color = OCKGreenColor();
         OCKCarePlanActivity *evaluation = [[OCKCarePlanActivity alloc] initWithIdentifier:MoodEvaluation
                                                                                      type:OCKCarePlanActivityTypeAssessment
@@ -338,7 +334,7 @@ DefineStringKey(WeightEvaluation);
     }
     
     {
-        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@1,@1,@0,@1,@1,@1,@0]];
+        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDay:startDate occurrencesOnEachDay:@[@1,@1,@0,@1,@1,@1,@0]];
         UIColor *color = OCKRedColor();
         OCKCarePlanActivity *evaluation = [[OCKCarePlanActivity alloc] initWithIdentifier:SleepQualityEvaluation
                                                                                      type:OCKCarePlanActivityTypeAssessment
@@ -350,7 +346,7 @@ DefineStringKey(WeightEvaluation);
     }
     
     {
-        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@0,@1,@0,@1,@0,@1,@0]];
+        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDay:startDate occurrencesOnEachDay:@[@0,@1,@0,@1,@0,@1,@0]];
         UIColor *color = OCKYellowColor();
         OCKCarePlanActivity *evaluation = [[OCKCarePlanActivity alloc] initWithIdentifier:BloodPressureEvaluation
                                                                                      type:OCKCarePlanActivityTypeAssessment
@@ -362,7 +358,7 @@ DefineStringKey(WeightEvaluation);
     }
     
     {
-        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@1,@1,@1,@1,@1,@1,@1]];
+        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDay:startDate occurrencesOnEachDay:@[@1,@1,@1,@1,@1,@1,@1]];
         UIColor *color = OCKPurpleColor();
         OCKCarePlanActivity *evaluation = [[OCKCarePlanActivity alloc] initWithIdentifier:WeightEvaluation
                                                                                      type:OCKCarePlanActivityTypeAssessment
@@ -491,8 +487,7 @@ DefineStringKey(WeightEvaluation);
         NSNumber *value = questionResult.scaleAnswer;
         
         OCKCarePlanEventResult *result = [[OCKCarePlanEventResult alloc] initWithValueString:value.stringValue
-                                                                                  unitString:@"/10"
-                                                                              completionDate:[NSDate date]
+                                                                                  unitString:@"out of 10"
                                                                                     userInfo:nil];
         
         [_store updateEvent:event
@@ -514,7 +509,6 @@ DefineStringKey(WeightEvaluation);
         
         OCKCarePlanEventResult *result = [[OCKCarePlanEventResult alloc] initWithValueString:[NSString stringWithFormat:@"%@/%@", systolicValue.stringValue, diastolicValue.stringValue]
                                                                                   unitString:@"mmHg"
-                                                                              completionDate:[NSDate date]
                                                                                     userInfo:nil];
         
         [_store updateEvent:event
@@ -534,7 +528,6 @@ DefineStringKey(WeightEvaluation);
         
         OCKCarePlanEventResult *result = [[OCKCarePlanEventResult alloc] initWithValueString:weightValue.stringValue
                                                                                   unitString:@"lbs"
-                                                                              completionDate:[NSDate date]
                                                                                     userInfo:nil];
         
         [_store updateEvent:event

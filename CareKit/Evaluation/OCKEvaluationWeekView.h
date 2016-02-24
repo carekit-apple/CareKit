@@ -25,6 +25,6 @@
 
 @property (nonatomic) id<OCKEvaluationWeekViewDelegate> delegate;
 @property (nonatomic, readonly) OCKWeekView *weekView;
-@property (nonatomic, readonly) NSInteger selectedDay;
+@property (nonatomic, readonly) NSInteger selectedIndex;
 
 @end

@@ -59,9 +59,13 @@ static const CGFloat HeartViewSize = 150.0;
     _dateLabel.text = _date;
     
     if (!_heartView) {
-        _heartView = [OCKHeartView new];
-        _heartView.width = 160;
-        _heartView.layer.backgroundColor = [UIColor clearColor].CGColor;
+        _heartView = [[OCKHeartView alloc] initWithFrame:CGRectMake(0, 0, HeartViewSize, HeartViewSize)];
+        UIImage *heart = [UIImage imageNamed:@"heart"];
+        UIImageView *imageView = [[UIImageView alloc] initWithImage:heart];
+        imageView.frame = _heartView.frame;
+        imageView.contentMode = UIViewContentModeScaleAspectFit;
+        _heartView.maskView = imageView;
+        _heartView.clipsToBounds = YES;
         [self addSubview:_heartView];
     }
     

@@ -59,7 +59,7 @@
     store.delegate = self;
     
     NSCalendar *calendar = [NSCalendar calendarWithIdentifier:NSCalendarIdentifierGregorian];
-    OCKCarePlanDay *startDay = [[OCKCarePlanDay alloc] initWithDate:[NSDate date] calendar:calendar];
+    OCKCarePlanDay *startDay = [[OCKCarePlanDay alloc] initWithYear:2016 month:01 day:01];
     
     OCKCareSchedule *schedule = [OCKCareSchedule dailyScheduleWithStartDay:startDay occurrencesPerDay:3];
     

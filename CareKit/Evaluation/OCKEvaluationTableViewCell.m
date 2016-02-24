@@ -74,7 +74,7 @@ const static CGFloat ValueLabelWidth = 100.0;
         _leadingEdge = [UIView new];
         [self.contentView addSubview:_leadingEdge];
     }
-//    _leadingEdge.backgroundColor = _evaluationEvent.activity.tintColor;
+    _leadingEdge.backgroundColor = _evaluationEvent.activity.tintColor;
     
     [self setUpConstraints];
 }

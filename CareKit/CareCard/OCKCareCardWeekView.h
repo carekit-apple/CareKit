@@ -28,7 +28,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) id<OCKCareCardWeekViewDelegate> delegate;
 @property (nonatomic, copy) NSArray *adherenceValues;
 @property (nonatomic, readonly) OCKWeekView *weekView;
-@property (nonatomic, readonly) NSInteger selectedDay;
+@property (nonatomic, readonly) NSInteger selectedIndex;
 
 @end
 

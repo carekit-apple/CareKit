@@ -10,9 +10,9 @@
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
 
+
 @interface OCKHeartView : UIView
 
-@property (nonatomic) CAShapeLayer *heartLayer;
-@property (nonatomic) CGFloat width;
+@property (nonatomic) UIImage *maskImage;
 
 @end

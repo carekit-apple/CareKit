@@ -51,7 +51,8 @@ const static CGFloat HeaderViewHeight = 100.0;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    _selectedDate = [NSDate date];
+    _selectedDate = [[OCKCarePlanDay alloc] initWithDate:[NSDate date]
+                                                calendar:[NSCalendar currentCalendar]];
     
     [self fetchEvaluationEvents];
     [self prepareView];
@@ -59,13 +60,11 @@ const static CGFloat HeaderViewHeight = 100.0;
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    // Check to see if the date's day component has changed.
-    NSCalendar *calendar = [NSCalendar currentCalendar];
-    NSDateComponents *newComponents = [calendar components:(NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitWeekOfMonth | NSCalendarUnitWeekday | NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond) fromDate:[NSDate date]];
-    NSDateComponents *oldComponents = [calendar components:(NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitWeekOfMonth | NSCalendarUnitWeekday | NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond) fromDate:_selectedDate];
+    OCKCarePlanDay *newDate = [[OCKCarePlanDay alloc] initWithDate:[NSDate date]
+                                                          calendar:[NSCalendar currentCalendar]];
     
-    if (newComponents.day > oldComponents.day) {
-        [self fetchEvaluationEvents];
+    if ([newDate isLaterThan:_selectedDate]) {
+        _selectedDate = newDate;
     }
 }
 
@@ -84,7 +83,7 @@ const static CGFloat HeaderViewHeight = 100.0;
     self.tableView.tableFooterView = [UIView new];
 }
 
-- (void)setSelectedDate:(NSDate *)selectedDate {
+- (void)setSelectedDate:(OCKCarePlanDay *)selectedDate {
     _selectedDate = selectedDate;
 
     [self fetchEvaluationEvents];
@@ -105,11 +104,9 @@ const static CGFloat HeaderViewHeight = 100.0;
 }
 
 - (void)updateHeaderView {
-    if (!_dateFormatter) {
-        _dateFormatter = [NSDateFormatter new];
-        _dateFormatter.dateFormat = @"MMMM dd, yyyy";
-    }
-    _headerView.date = [_dateFormatter stringFromDate:_selectedDate];
+    _headerView.date = [NSDateFormatter localizedStringFromDate:[self dateFromCarePlanDay:_selectedDate]
+                                                      dateStyle:NSDateFormatterLongStyle
+                                                      timeStyle:NSDateFormatterNoStyle];
     
     NSInteger totalEvents = _evaluationEvents.count;
     NSInteger completedEvents = 0;
@@ -124,14 +121,28 @@ const static CGFloat HeaderViewHeight = 100.0;
     _headerView.text = [NSString stringWithFormat:@"%@ of %@", [@(completedEvents) stringValue], [@(totalEvents) stringValue]];
 }
 
-- (NSDate *)dateFromSelectedDay:(NSInteger)day {
-    NSDate *referenceDate = _selectedDate;
-    NSCalendar *calendar = [NSCalendar currentCalendar];
+- (OCKCarePlanDay *)dateFromSelectedIndex:(NSInteger)index {
+    NSDate *oldDate = [self dateFromCarePlanDay:_selectedDate];
     
-    NSDateComponents *components = [calendar components:(NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitWeekOfMonth | NSCalendarUnitWeekday | NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond) fromDate:referenceDate];
-    components.weekday = day;
+    NSDateComponents* components = [[NSCalendar currentCalendar] components:NSCalendarUnitWeekday | NSCalendarUnitWeekOfMonth | NSCalendarUnitYear | NSCalendarUnitMonth
+                                                                   fromDate:oldDate];
     
-    return [calendar dateFromComponents:components];
+    NSDateComponents *newComponents = [NSDateComponents new];
+    newComponents.year = components.year;
+    newComponents.month = components.month;
+    newComponents.weekOfMonth = components.weekOfMonth;
+    newComponents.weekday = index;
+    
+    NSDate *newDate = [[NSCalendar currentCalendar] dateFromComponents:newComponents];
+    return [[OCKCarePlanDay alloc] initWithDate:newDate calendar:[NSCalendar currentCalendar]];
+}
+
+- (NSDate *)dateFromCarePlanDay:(OCKCarePlanDay *)day {
+    NSDateComponents *components = [NSDateComponents new];
+    components.year = _selectedDate.year;
+    components.month = _selectedDate.month;
+    components.day = _selectedDate.day;
+    return [[NSCalendar currentCalendar] dateFromComponents:components];
 }
 
 

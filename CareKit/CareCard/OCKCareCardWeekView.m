@@ -38,7 +38,7 @@ const static CGFloat HeartButtonSize = 20.0;
         UIButton *heart = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, HeartButtonSize, HeartButtonSize)];
         heart.translatesAutoresizingMaskIntoConstraints = NO;
         OCKHeartView *heartView = [OCKHeartView new];
-        heartView.width = HeartButtonSize;
+//        heartView.width = HeartButtonSize;
         [heart addSubview:heartView];
         
         [heart addTarget:self
@@ -106,7 +106,7 @@ const static CGFloat HeartButtonSize = 20.0;
 - (void)updateDayOfWeek:(id)sender {
     UIButton *button = (UIButton *)sender;
     NSInteger dayOfWeek = [_heartButtons indexOfObject:button] + 1;
-    _selectedDay = dayOfWeek;
+    _selectedIndex = dayOfWeek;
     
     if (_delegate &&
         [_delegate respondsToSelector:@selector(careCardWeekViewSelectionDidChange:)]) {

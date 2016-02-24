@@ -56,11 +56,12 @@
 #pragma mark - OCKEvaluationWeekViewDelegate
 
 - (void)evaluationWeekViewSelectionDidChange:(OCKEvaluationWeekView *)evaluationWeekView {
-    NSDate *selectedDate = [_tableViewController dateFromSelectedDay:evaluationWeekView.selectedDay];
-    if (selectedDate.timeIntervalSinceNow < 0) {
+    OCKCarePlanDay *selectedDate = [_tableViewController dateFromSelectedIndex:evaluationWeekView.selectedIndex];
+    OCKCarePlanDay *today = [[OCKCarePlanDay alloc] initWithDate:[NSDate date] calendar:[NSCalendar currentCalendar]];
+    if (![selectedDate isLaterThan:today]) {
         _tableViewController.selectedDate = selectedDate;
         OCKEvaluationWeekView *evaluationWeekView = _tableViewController.weekPageViewController.evaluationWeekView;
-        [evaluationWeekView.weekView highlightDay:evaluationWeekView.selectedDay];
+        [evaluationWeekView.weekView highlightDay:evaluationWeekView.selectedIndex];
     }
 }
 

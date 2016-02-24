@@ -16,6 +16,7 @@
 #import "OCKCarePlanStore_Internal.h"
 #import "OCKCareCardWeekView.h"
 #import "OCKHeartView.h"
+#import "OCKCarePlanDay.h"
 
 
 static const CGFloat CellHeight = 90.0;
@@ -24,7 +25,6 @@ static const CGFloat HeaderViewHeight = 235.0;
 @implementation OCKCareCardTableViewController {
     NSArray<NSArray<OCKCarePlanEvent *> *> *_treatmentEvents;
     OCKCareCardTableViewHeader *_headerView;
-    NSDateFormatter *_dateFormatter;
 }
 
 + (instancetype)new {
@@ -50,7 +50,7 @@ static const CGFloat HeaderViewHeight = 235.0;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    _selectedDate = [NSDate date];
+    _selectedDate = [[OCKCarePlanDay alloc] initWithDate:[NSDate date] calendar:[NSCalendar currentCalendar]];
     
     [self fetchTreatmentEvents];
     [self prepareView];
@@ -58,13 +58,10 @@ static const CGFloat HeaderViewHeight = 235.0;
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    // Check to see if the date's day component has changed.
-    NSCalendar *calendar = [NSCalendar currentCalendar];
-    NSDateComponents *newComponents = [calendar components:(NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitWeekOfMonth | NSCalendarUnitWeekday | NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond) fromDate:[NSDate date]];
-    NSDateComponents *oldComponents = [calendar components:(NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitWeekOfMonth | NSCalendarUnitWeekday | NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond) fromDate:_selectedDate];
+    OCKCarePlanDay *newDate = [[OCKCarePlanDay alloc] initWithDate:[NSDate date] calendar:[NSCalendar currentCalendar]];
     
-    if (newComponents.day > oldComponents.day) {
-        _selectedDate = [NSDate date];
+    if ([newDate isLaterThan:_selectedDate]) {
+        _selectedDate = newDate;
     }
 }
 
@@ -84,7 +81,7 @@ static const CGFloat HeaderViewHeight = 235.0;
     self.tableView.tableFooterView = [UIView new];
 }
 
-- (void)setSelectedDate:(NSDate *)selectedDate {
+- (void)setSelectedDate:(OCKCarePlanDay *)selectedDate {
     _selectedDate = selectedDate;
     
     [self fetchTreatmentEvents];
@@ -94,25 +91,21 @@ static const CGFloat HeaderViewHeight = 235.0;
 #pragma mark - Helpers
 
 - (void)fetchTreatmentEvents {
-    /*
-    [_store eventsOnDay:_selectedDate
-                   type:OCKCarePlanActivityTypeTreatment
+    [_store eventsOfDay:_selectedDate
+                   type:OCKCarePlanActivityTypeIntervention
              completion:^(NSArray<NSArray<OCKCarePlanEvent *> *> * _Nonnull eventsGroupedByActivity, NSError * _Nonnull error) {
                  NSAssert(!error, error.localizedDescription);
                  _treatmentEvents = [eventsGroupedByActivity copy];
-                 
+                
                  [self updateHeaderView];
                  [self.tableView reloadData];
              }];
-     */
 }
 
 - (void)updateHeaderView {
-    if (!_dateFormatter) {
-        _dateFormatter = [NSDateFormatter new];
-        _dateFormatter.dateFormat = @"MMMM dd, yyyy";
-    }
-    _headerView.date = [_dateFormatter stringFromDate:_selectedDate];
+    _headerView.date = [NSDateFormatter localizedStringFromDate:[self dateFromCarePlanDay:_selectedDate]
+                                                      dateStyle:NSDateFormatterLongStyle
+                                                      timeStyle:NSDateFormatterNoStyle];
     
     NSInteger totalEvents = 0;
     NSInteger completedEvents = 0;
@@ -129,30 +122,42 @@ static const CGFloat HeaderViewHeight = 235.0;
     _headerView.adherence = (totalEvents > 0) ? (float)completedEvents/totalEvents : 0;
 }
 
-- (NSDate *)dateFromSelectedDay:(NSInteger)day {
-    NSDate *referenceDate = _selectedDate;
-    NSCalendar *calendar = [NSCalendar currentCalendar];
+- (OCKCarePlanDay *)dateFromSelectedIndex:(NSInteger)index {
+    NSDate *oldDate = [self dateFromCarePlanDay:_selectedDate];
     
-    NSDateComponents *components = [calendar components:(NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitWeekOfMonth | NSCalendarUnitWeekday | NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond) fromDate:referenceDate];
-    components.weekday = day;
+    NSDateComponents* components = [[NSCalendar currentCalendar] components:NSCalendarUnitWeekday | NSCalendarUnitWeekOfMonth | NSCalendarUnitYear | NSCalendarUnitMonth
+                                                                   fromDate:oldDate];
     
-    return [calendar dateFromComponents:components];
+    NSDateComponents *newComponents = [NSDateComponents new];
+    newComponents.year = components.year;
+    newComponents.month = components.month;
+    newComponents.weekOfMonth = components.weekOfMonth;
+    newComponents.weekday = index;
+
+    NSDate *newDate = [[NSCalendar currentCalendar] dateFromComponents:newComponents];
+    return [[OCKCarePlanDay alloc] initWithDate:newDate calendar:[NSCalendar currentCalendar]];
+}
+
+- (NSDate *)dateFromCarePlanDay:(OCKCarePlanDay *)day {
+    NSDateComponents *components = [NSDateComponents new];
+    components.year = _selectedDate.year;
+    components.month = _selectedDate.month;
+    components.day = _selectedDate.day;
+    return [[NSCalendar currentCalendar] dateFromComponents:components];
 }
 
 
 #pragma mark - OCKCareCardCellDelegate
 
 - (void)careCardCellDidUpdateFrequency:(OCKCareCardTableViewCell *)cell ofTreatmentEvent:(OCKCarePlanEvent *)event {
-    // TODO: Implement this after fix.
-
     // Update the treatment event and mark it as completed.
-    BOOL completed = !(event.state == OCKCarePlanEventStateCompleted);
+    OCKCarePlanEventState state = (event.state == OCKCarePlanEventStateCompleted) ? OCKCarePlanEventStateNotCompleted : OCKCarePlanEventStateCompleted;
 
     [_store updateEvent:event
              withResult:nil
-                  state:completed
+                  state:state
              completion:^(BOOL success, OCKCarePlanEvent * _Nonnull event, NSError * _Nonnull error) {
-                 NSAssert(success, error.localizedDescription); 
+                 NSAssert(success, error.localizedDescription);
              }];
 }
 

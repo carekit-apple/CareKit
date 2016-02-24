@@ -51,11 +51,12 @@
 #pragma mark - OCKCareCardWeekViewDelegate
 
 - (void)careCardWeekViewSelectionDidChange:(OCKCareCardWeekView *)careCardWeekView {
-    NSDate *selectedDate = [_tableViewController dateFromSelectedDay:careCardWeekView.selectedDay];
-    if (selectedDate.timeIntervalSinceNow < 0) {
+    OCKCarePlanDay *selectedDate = [_tableViewController dateFromSelectedIndex:careCardWeekView.selectedIndex];
+    OCKCarePlanDay *today = [[OCKCarePlanDay alloc] initWithDate:[NSDate date] calendar:[NSCalendar currentCalendar]];
+    if (![selectedDate isLaterThan:today]) {
         _tableViewController.selectedDate = selectedDate;
         OCKCareCardWeekView *careCardWeekView = _tableViewController.weekPageViewController.careCardWeekView;
-        [careCardWeekView.weekView highlightDay:careCardWeekView.selectedDay];
+        [careCardWeekView.weekView highlightDay:careCardWeekView.selectedIndex];
     }
 }
 

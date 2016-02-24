@@ -63,11 +63,16 @@ static const CGFloat TopMargin = 10.0;
     _textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
     _textLabel.text = _treatment.text;
 
+    for (OCKCareCardButton *button in _frequencyButtons) {
+        [button removeFromSuperview];
+    }
+    
     _frequencyButtons = [NSArray new];
     NSMutableArray *buttons = [NSMutableArray new];
-    for (int i = 0; i < _treatmentEvents.count; i++) {
+    for (OCKCarePlanEvent *event in _treatmentEvents) {
         OCKCareCardButton *frequencyButton = [OCKCareCardButton new];
         frequencyButton.tintColor = _treatment.tintColor;
+        frequencyButton.selected = (event.state == OCKCarePlanEventStateCompleted);
         frequencyButton.translatesAutoresizingMaskIntoConstraints = NO;
     
         [frequencyButton addTarget:self
@@ -83,6 +88,7 @@ static const CGFloat TopMargin = 10.0;
         _leadingEdge = [UILabel new];
         [self addSubview:_leadingEdge];
     }
+    _leadingEdge.backgroundColor = _treatment.tintColor;
     
     [self setUpContraints];
 }

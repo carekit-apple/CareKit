@@ -10,7 +10,7 @@
 #import "OCKCareCardButton.h"
 
 
-static const CGFloat ButtonSize = 32.0;
+static const CGFloat ButtonSize = 35.0;
 
 @implementation OCKCareCardButton {
     CAShapeLayer *_circleLayer;

@@ -16,7 +16,7 @@
 #import "OCKCareCardButton.h"
 
 
-static const CGFloat HorizontalMargin = 11.0;
+static const CGFloat HorizontalMargin = 15.0;
 static const CGFloat LeadingMargin = 15.0;
 static const CGFloat TopMargin = 10.0;
 

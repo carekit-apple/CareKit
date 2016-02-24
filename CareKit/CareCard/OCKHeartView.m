@@ -10,37 +10,58 @@
 #import "OCKHeartView.h"
 
 
-@implementation OCKHeartView {
-    CAShapeLayer *_heartLayer;
-}
+@implementation OCKHeartView
 
-- (instancetype)init {
+- (id)init {
     self = [super init];
     if (self) {
-        _heartLayer = [CAShapeLayer layer];
-        _heartLayer.path = [[UIBezierPath bezierPathWithArcCenter:CGPointMake(150/2, 150/2)
-                                                           radius:150/2
-                                                       startAngle:M_PI + M_PI_2
-                                                         endAngle:-M_PI_2
-                                                        clockwise:NO] CGPath];
-        _heartLayer.fillColor = [UIColor clearColor].CGColor;
-        _heartLayer.strokeColor = self.tintColor.CGColor;
-        _heartLayer.lineWidth = 2.0;
-        [self.layer.sublayers makeObjectsPerformSelector:@selector(removeFromSuperlayer)];
-        [self.layer addSublayer:_heartLayer];
+        self.layer.backgroundColor = [UIColor whiteColor].CGColor;
     }
     return self;
 }
 
-- (void)startAnimateWithDuration:(NSTimeInterval)duration {
-    CAKeyframeAnimation *animation = [CAKeyframeAnimation animationWithKeyPath:@"strokeEnd"];
-    animation.duration = duration * 2;
-    animation.values = @[@(1.0), @(0.0), @(0.0)];
-    animation.keyTimes =  @[@(0.0), @(0.5), @(1.0)];
-    animation.timingFunction=[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
-    [_heartLayer addAnimation:animation forKey:@"drawCircleAnimation"];
+- (void)drawRect:(CGRect)rect {
+    self.layer.backgroundColor = [UIColor whiteColor].CGColor;
+    CGContextRef contextRef = UIGraphicsGetCurrentContext();
+    self.layer.backgroundColor = [UIColor whiteColor].CGColor;
+    CGContextClearRect(contextRef, self.bounds);
+    self.layer.backgroundColor = [UIColor whiteColor].CGColor;
+    
+    _heartLayer = [CAShapeLayer layer];
+    [self.layer addSublayer:_heartLayer];
+    self.layer.backgroundColor = [UIColor whiteColor].CGColor;
+
+    _heartLayer.path = [self heartPathWithWidth:_width].CGPath;
+    self.layer.backgroundColor = [UIColor whiteColor].CGColor;
+    _heartLayer.fillColor = [UIColor clearColor].CGColor;
+    self.layer.backgroundColor = [UIColor whiteColor].CGColor;
+    _heartLayer.strokeColor = [UIColor redColor].CGColor;
+    self.layer.backgroundColor = [UIColor whiteColor].CGColor;
+    _heartLayer.lineWidth = 2.0;
+    self.layer.backgroundColor = [UIColor whiteColor].CGColor;
 }
 
+- (UIBezierPath *)heartPathWithWidth:(CGFloat)width {
+    CGFloat w = 160.0 / 2.5f;
+    CGPoint center = CGPointMake(self.frame.size.width/2.f, self.frame.size.height/2.f);
 
+    UIBezierPath *path = [UIBezierPath new];
+    [path addArcWithCenter:CGPointMake(center.x - w/2.f, center.y - w/2.f)
+                    radius:(w*sqrt(2.f)/2.f)
+                startAngle:((M_PI * 135.f)/180)
+                  endAngle:((M_PI * -45.f)/180)
+                 clockwise:YES];
+    [path addArcWithCenter:CGPointMake(center.x + w/2.f, center.y - w/2.f)
+                    radius:(w*sqrt(2.f)/2.f)
+                startAngle:((M_PI * -135.f)/180)
+                  endAngle:((M_PI * 45.f)/180)
+                 clockwise:YES];
+    
+    [path addLineToPoint:CGPointMake(center.x, center.y + w)];
+    [path addLineToPoint:CGPointMake(center.x - w, center.y)];
+    
+    [path closePath];
+    return path;
+}
 
 @end

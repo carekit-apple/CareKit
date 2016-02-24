@@ -60,6 +60,8 @@ static const CGFloat HeartViewSize = 150.0;
     
     if (!_heartView) {
         _heartView = [OCKHeartView new];
+        _heartView.width = 160;
+        _heartView.layer.backgroundColor = [UIColor clearColor].CGColor;
         [self addSubview:_heartView];
     }
     

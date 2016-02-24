@@ -37,6 +37,9 @@ const static CGFloat HeartButtonSize = 20.0;
     for (int i = 0; i < 7; i++) {
         UIButton *heart = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, HeartButtonSize, HeartButtonSize)];
         heart.translatesAutoresizingMaskIntoConstraints = NO;
+        OCKHeartView *heartView = [OCKHeartView new];
+        heartView.width = HeartButtonSize;
+        [heart addSubview:heartView];
         
         [heart addTarget:self
                   action:@selector(updateDayOfWeek:)

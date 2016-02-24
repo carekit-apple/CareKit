@@ -8,10 +8,11 @@
 
 
 #import <UIKit/UIKit.h>
-
+#import <QuartzCore/QuartzCore.h>
 
 @interface OCKHeartView : UIView
 
-- (void)startAnimateWithDuration:(NSTimeInterval)duration;
+@property (nonatomic) CAShapeLayer *heartLayer;
+@property (nonatomic) CGFloat width;
 
 @end

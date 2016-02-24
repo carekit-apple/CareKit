@@ -32,7 +32,6 @@ insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
 @interface OCKCDCarePlanEventResult (CoreDataProperties)
 
 @property (nullable, nonatomic, retain) NSDate *creationDate;
-@property (nullable, nonatomic, retain) NSDate *completionDate;
 @property (nullable, nonatomic, retain) NSString *valueString;
 @property (nullable, nonatomic, retain) NSString *unitString;
 @property (nullable, nonatomic, retain) id userInfo;

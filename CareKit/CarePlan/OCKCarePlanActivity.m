@@ -19,17 +19,16 @@
                          tintColor:(nullable UIColor *)tintColor
                           schedule:(OCKCareSchedule *)schedule {
     
-    OCKDayRange range = {0, 0};
-    
     return [self initWithIdentifier:identifier
                     groupIdentifier:nil
                                type:type
                               title:title
                                text:text
+                         detailText:nil
                           tintColor:tintColor
                            schedule:schedule
                            optional:NO
-               eventMutableDayRange:range
+              numberOfDaysWriteable:1
                    resultResettable:NO
                            userInfo:nil];
 }
@@ -40,10 +39,11 @@
                               type:(OCKCarePlanActivityType)type
                              title:(nullable NSString *)title
                               text:(nullable NSString *)text
+                        detailText:(nullable NSString *)detailText
                          tintColor:(nullable UIColor *)tintColor
                           schedule:(OCKCareSchedule *)schedule
                           optional:(BOOL)optional
-              eventMutableDayRange:(OCKDayRange)eventMutableDayRange
+             numberOfDaysWriteable:(NSUInteger)numberOfDaysWriteable
                   resultResettable:(BOOL)resultResettable
                           userInfo:(nullable NSDictionary *)userInfo {
     
@@ -57,10 +57,11 @@
         _type = type;
         _title = [title copy];
         _text = [text copy];
+        _detailText = [detailText copy];
         _tintColor = tintColor;
         _schedule = schedule;
         _optional = optional;
-        _eventMutableDayRange = eventMutableDayRange;
+        _numberOfDaysWriteable = numberOfDaysWriteable >= 1 ? numberOfDaysWriteable : 1;
         _resultResettable = resultResettable;
         _userInfo = [userInfo copy];
     }
@@ -77,14 +78,12 @@
         _type = cdObject.type.integerValue;
         _title = [cdObject.title copy];
         _text = [cdObject.text copy];
+        _detailText = [cdObject.detailText copy];
         _tintColor = cdObject.color;
         _schedule = cdObject.schedule;
         
         _optional = [cdObject.optional boolValue];
-        OCKDayRange range;
-        range.daysBeforeEventDay = cdObject.mutableDaysBeforeEventDay.unsignedIntegerValue;
-        range.daysAfterEventDay = cdObject.mutableDaysAfterEventDay.unsignedIntegerValue;
-        _eventMutableDayRange =  range;
+        _numberOfDaysWriteable = [cdObject.numberOfDaysWriteable unsignedIntegerValue];
         _resultResettable = cdObject.resultResettable.boolValue;
         _userInfo = cdObject.userInfo;
     }
@@ -102,14 +101,12 @@
         OCK_DECODE_OBJ_CLASS(coder, groupIdentifier, NSString);
         OCK_DECODE_OBJ_CLASS(coder, title, NSString);
         OCK_DECODE_OBJ_CLASS(coder, text, NSString);
+        OCK_DECODE_OBJ_CLASS(coder, detailText, NSString);
         OCK_DECODE_OBJ_CLASS(coder, tintColor, UIColor);
         OCK_DECODE_OBJ_CLASS(coder, schedule, OCKCareSchedule);
         OCK_DECODE_ENUM(coder, type);
         OCK_DECODE_BOOL(coder, optional);
-        OCKDayRange range;
-        range.daysBeforeEventDay = [[coder decodeObjectOfClass:[NSNumber class] forKey:@"daysBeforeEventDay"] unsignedIntegerValue];
-        range.daysAfterEventDay = [[coder decodeObjectOfClass:[NSNumber class] forKey:@"daysAfterEventDay"] unsignedIntegerValue];
-        _eventMutableDayRange =  range;
+        OCK_DECODE_INTEGER(coder, numberOfDaysWriteable);
         OCK_DECODE_BOOL(coder, resultResettable);
         OCK_DECODE_OBJ_CLASS(coder, userInfo, NSDictionary);
         
@@ -123,12 +120,12 @@
     OCK_ENCODE_OBJ(coder, groupIdentifier);
     OCK_ENCODE_OBJ(coder, title);
     OCK_ENCODE_OBJ(coder, text);
+    OCK_ENCODE_OBJ(coder, detailText);
     OCK_ENCODE_OBJ(coder, tintColor);
     OCK_ENCODE_OBJ(coder, schedule);
     OCK_ENCODE_ENUM(coder, type);
     OCK_ENCODE_BOOL(coder, optional);
-    [coder encodeObject:@(_eventMutableDayRange.daysBeforeEventDay) forKey:@"daysBeforeEventDay"];
-    [coder encodeObject:@(_eventMutableDayRange.daysAfterEventDay) forKey:@"daysAfterEventDay"];
+    OCK_ENCODE_INTEGER(coder, numberOfDaysWriteable);
     OCK_ENCODE_BOOL(coder, resultResettable);
     OCK_ENCODE_OBJ(coder, userInfo);
 }
@@ -140,14 +137,14 @@
     return (isClassMatch &&
             OCKEqualObjects(self.title, castObject.title) &&
             OCKEqualObjects(self.text, castObject.text) &&
+            OCKEqualObjects(self.detailText, castObject.detailText) &&
             OCKEqualObjects(self.tintColor, castObject.tintColor) &&
             OCKEqualObjects(self.schedule, castObject.schedule) &&
             (self.type == castObject.type) &&
             OCKEqualObjects(self.identifier, castObject.identifier) &&
             OCKEqualObjects(self.groupIdentifier, castObject.groupIdentifier) &&
             (self.optional == castObject.optional) &&
-            (self.eventMutableDayRange.daysBeforeEventDay == castObject.eventMutableDayRange.daysBeforeEventDay) &&
-            (self.eventMutableDayRange.daysAfterEventDay == castObject.eventMutableDayRange.daysAfterEventDay) &&
+            (self.numberOfDaysWriteable == castObject.numberOfDaysWriteable) &&
             (self.resultResettable == castObject.resultResettable) &&
             OCKEqualObjects(self.userInfo, castObject.userInfo)
             );
@@ -159,11 +156,12 @@
     item->_identifier = [_identifier copy];
     item->_groupIdentifier = [_groupIdentifier copy];
     item->_text = [_text copy];
+    item->_detailText = [_detailText copy];
     item->_tintColor = _tintColor;
     item->_schedule = _schedule;
     item->_type = _type;
     item->_optional = _optional;
-    item->_eventMutableDayRange = _eventMutableDayRange;
+    item->_numberOfDaysWriteable = _numberOfDaysWriteable;
     item->_resultResettable = _resultResettable;
     item->_userInfo = _userInfo;
     return item;
@@ -185,12 +183,12 @@ insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
         self.groupIdentifier = item.groupIdentifier;
         self.title = item.title;
         self.text = item.text;
+        self.detailText = item.detailText;
         self.color = item.tintColor;
         self.schedule = item.schedule;
         self.type = @(item.type);
         self.optional = @(item.optional);
-        self.mutableDaysBeforeEventDay = @(item.eventMutableDayRange.daysBeforeEventDay);
-        self.mutableDaysAfterEventDay = @(item.eventMutableDayRange.daysAfterEventDay);
+        self.numberOfDaysWriteable = @(item.numberOfDaysWriteable);
         self.userInfo = item.userInfo;
         self.resultResettable  = @(item.resultResettable);
     }
@@ -198,17 +196,17 @@ insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
 }
 
 - (NSString *)description {
-    return [NSString stringWithFormat:@"OCKCDCarePlanActivity %@ %@", ((OCKCareSchedule *)self.schedule).endDate, self.schedule];
+    return [NSString stringWithFormat:@"OCKCDCarePlanActivity %@ %@", ((OCKCareSchedule *)self.schedule).endDay, self.schedule];
 }
 
-@dynamic mutableDaysBeforeEventDay;
-@dynamic mutableDaysAfterEventDay;
+@dynamic numberOfDaysWriteable;
 @dynamic color;
 @dynamic identifier;
 @dynamic groupIdentifier;
 @dynamic schedule;
 @dynamic text;
 @dynamic title;
+@dynamic detailText;
 @dynamic type;
 @dynamic optional;
 @dynamic resultResettable;

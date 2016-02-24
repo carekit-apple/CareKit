@@ -42,7 +42,7 @@ static const CGFloat HeaderViewHeight = 235.0;
     if (self) {
         self.title = @"CareCard";
         _store = store;
-        _store.treatmentUIDelegate = self;
+        _store.careCardUIDelegate = self;
     }
     return self;
 }
@@ -94,6 +94,7 @@ static const CGFloat HeaderViewHeight = 235.0;
 #pragma mark - Helpers
 
 - (void)fetchTreatmentEvents {
+    /*
     [_store eventsOnDay:_selectedDate
                    type:OCKCarePlanActivityTypeTreatment
              completion:^(NSArray<NSArray<OCKCarePlanEvent *> *> * _Nonnull eventsGroupedByActivity, NSError * _Nonnull error) {
@@ -103,6 +104,7 @@ static const CGFloat HeaderViewHeight = 235.0;
                  [self updateHeaderView];
                  [self.tableView reloadData];
              }];
+     */
 }
 
 - (void)updateHeaderView {

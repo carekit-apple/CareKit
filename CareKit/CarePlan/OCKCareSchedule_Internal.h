@@ -16,53 +16,40 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic) NSUInteger timeUnitsToSkip;
 
-- (void)setEndDate:(NSDate *)date;
+- (void)setEndDay:(OCKCarePlanDay *)day;
 
-- (NSUInteger)numberOfDaySinceStart:(NSDate *)day;
-
-- (BOOL)isActiveOnDay:(NSDate *)date;
+- (NSUInteger)numberOfDaySinceStart:(OCKCarePlanDay *)day;
 
 @end
 
 
 @interface OCKCareDailySchedule : OCKCareSchedule
 
-- (instancetype)initWithStartDate:(NSDate *)startDate
-                occurrencesPerDay:(NSUInteger)occurrencesPerDay;
 
-- (instancetype)initWithStartDate:(NSDate *)startDate
-                       daysToSkip:(NSUInteger)daysToSkip
-                occurrencesPerDay:(NSUInteger)occurrencesPerDay
-                          endDate:(nullable NSDate *)endDate
-                         timeZone:(nullable NSTimeZone *)timeZone;
+- (instancetype)initWithStartDay:(OCKCarePlanDay *)startDay
+                      daysToSkip:(NSUInteger)daysToSkip
+               occurrencesPerDay:(NSUInteger)occurrencesPerDay
+                          endDay:(nullable OCKCarePlanDay *)endDay;
 
 @end
 
 
 @interface OCKCareWeeklySchedule : OCKCareSchedule
 
-- (instancetype)initWithStartDate:(NSDate *)startDate
-             occurrencesOnEachDay:(NSArray<NSNumber *> *)occurrencesFromSundayToSaturday;
-
-- (instancetype)initWithStartDate:(NSDate *)startDate
-                      weeksToSkip:(NSUInteger)weeksToSkip
-             occurrencesOnEachDay:(NSArray<NSNumber *> *)occurrencesFromSundayToSaturday
-                          endDate:(nullable NSDate *)endDate
-                         timeZone:(nullable NSTimeZone *)timeZone;
+- (instancetype)initWithStartDay:(OCKCarePlanDay *)startDay
+                     weeksToSkip:(NSUInteger)weeksToSkip
+            occurrencesOnEachDay:(NSArray<NSNumber *> *)occurrencesFromSundayToSaturday
+                          endDay:(nullable OCKCarePlanDay *)endDay;
 
 @end
 
 
 @interface OCKCareMonthlySchedule : OCKCareSchedule
 
-- (instancetype)initWithStartDate:(NSDate *)startDate
-             occurrencesOnEachDay:(NSArray<NSNumber *> *)occurrencesFrom1stTo31th;
-
-- (instancetype)initWithStartDate:(NSDate *)startDate
+- (instancetype)initWithStartDay:(OCKCarePlanDay *)startDay
                      monthsToSkip:(NSUInteger)monthsToSkip
              occurrencesOnEachDay:(NSArray<NSNumber *> *)occurrencesFrom1stTo31th
-                          endDate:(nullable NSDate *)endDate
-                         timeZone:(nullable NSTimeZone *)timeZone;
+                           endDay:(nullable OCKCarePlanDay *)endDay;
 
 @end
 

@@ -14,15 +14,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 typedef NS_ENUM(NSInteger, OCKCarePlanActivityType) {
-    OCKCarePlanActivityTypeTreatment,
+    OCKCarePlanActivityTypeIntervention,
     OCKCarePlanActivityTypeAssessment
 };
-
-
-typedef struct _OCKDayRange {
-    NSUInteger daysBeforeEventDay;
-    NSUInteger daysAfterEventDay;
-} OCKDayRange;
 
 /**
  Abstract care plan activity Class
@@ -45,10 +39,11 @@ typedef struct _OCKDayRange {
                               type:(OCKCarePlanActivityType)type
                              title:(nullable NSString *)title
                               text:(nullable NSString *)text
+                        detailText:(nullable NSString *)detailText
                          tintColor:(nullable UIColor *)tintColor
                           schedule:(OCKCareSchedule *)schedule
                           optional:(BOOL)optional
-              eventMutableDayRange:(OCKDayRange)eventMutableDayRange
+              numberOfDaysWriteable:(NSUInteger)numberOfDaysWriteable
                   resultResettable:(BOOL)resultResettable
                           userInfo:(nullable NSDictionary *)userInfo;
 
@@ -79,7 +74,12 @@ typedef struct _OCKDayRange {
 @property (nonatomic, readonly, nullable) NSString *text;
 
 /**
- A color can be used to render UI.
+ Displayable detailed text.
+ */
+@property (nonatomic, readonly, nullable) NSString *detailText;
+
+/**
+ A color can be used in UI rendering.
  */
 @property (nonatomic, readonly, nullable) UIColor *tintColor;
 
@@ -89,19 +89,20 @@ typedef struct _OCKDayRange {
 @property (nonatomic, readonly) OCKCareSchedule *schedule;
 
 /**
- Whether this plan item is optional
+ Whether this plan item is optional.
+ Optional activity is not counting towards to total adherence rate.
  */
 @property (nonatomic, readonly) BOOL optional;
 
 /**
- When a user is able to respond to an event.
- [0, 0] means event is only mutable during event day. Which is the default value.
- [1, 1] means event is mutable one day before event day, event day, and one day after event day.
+ For the events of this activity, how many days after the begin the event day, user is allowed to modify the response.
+ Default value is 1, and min value is 1 as well. Indicating user can only respond to an event in its event day.
  */
-@property (nonatomic, readonly) OCKDayRange eventMutableDayRange;
+@property (nonatomic, readonly) NSUInteger numberOfDaysWriteable;
 
 /**
- Allow user to reset the result of an event.
+ Allow user to redo an assessment.
+ This attribute only applies to assessments.
  Default value is NO.
  */
 @property (nonatomic, readonly) BOOL resultResettable;

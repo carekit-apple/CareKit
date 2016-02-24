@@ -43,7 +43,7 @@ const static CGFloat HeaderViewHeight = 100.0;
         _store = store;
         _delegate = delegate;
         _lastSelectedEvaluationEvent = nil;
-        _store.evaluationUIDelegate = self;
+        _store.checkupsUIDelegate = self;
     }
     return self;
 }
@@ -94,7 +94,7 @@ const static CGFloat HeaderViewHeight = 100.0;
 #pragma mark - Helpers
 
 - (void)fetchEvaluationEvents {
-    [_store eventsOnDay:_selectedDate
+    [_store eventsOfDay:_selectedDate
                    type:OCKCarePlanActivityTypeAssessment
              completion:^(NSArray<NSArray<OCKCarePlanEvent *> *> * _Nonnull eventsGroupedByActivity, NSError * _Nonnull error) {
                  _evaluationEvents = eventsGroupedByActivity;

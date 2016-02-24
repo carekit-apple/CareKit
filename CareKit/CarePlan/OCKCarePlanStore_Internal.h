@@ -10,8 +10,8 @@
 
 @interface OCKCarePlanStore ()
 
-@property (nonatomic, weak, nullable) id<OCKCarePlanStoreDelegate> treatmentUIDelegate;
+@property (nonatomic, weak, nullable) id<OCKCarePlanStoreDelegate> careCardUIDelegate;
 
-@property (nonatomic, weak, nullable) id<OCKCarePlanStoreDelegate> evaluationUIDelegate;
+@property (nonatomic, weak, nullable) id<OCKCarePlanStoreDelegate> checkupsUIDelegate;
 
 @end

@@ -126,6 +126,11 @@ Obtain all `OCKCarePlanEvent` on a giving day.
                            endDay:(OCKCarePlanDay *)endDay
                        usingBlock:(void (^)(OCKCarePlanEvent *event, BOOL *stop, NSError *error))block;
 
+- (void)dailyCompletionStatusWithType:(OCKCarePlanActivityType)type
+                             startDay:(OCKCarePlanDay *)startDay
+                               endDay:(OCKCarePlanDay *)endDay
+                           usingBlock:(void (^)(OCKCarePlanDay* day, NSUInteger completed, NSUInteger total, NSError *error))block;
+
 @end
 
 

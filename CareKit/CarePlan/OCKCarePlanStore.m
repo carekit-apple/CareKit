@@ -212,9 +212,9 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
 
 
 - (NSArray *)block_fetchItemsWithEntityName:(NSString *)name
-                                                     predicate:(NSPredicate *)predicate
-                                                         class:(Class)containerClass
-                                                         error:(NSError **)error {
+                                  predicate:(NSPredicate *)predicate
+                                      class:(Class)containerClass
+                                      error:(NSError **)error {
     NSParameterAssert(name);
     NSParameterAssert(containerClass);
     
@@ -234,6 +234,23 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
         [items addObject:[[containerClass alloc] initWithCoreDataObject:object]];
     }
     return [items copy];
+}
+
+- (NSUInteger)block_countItemsWithEntityName:(NSString *)name
+                                   predicate:(NSPredicate *)predicate
+                                       error:(NSError **)error {
+    NSParameterAssert(name);
+    
+    NSManagedObjectContext *context = [self contextWithError:error];
+    if (context == nil) {
+        return 0;
+    }
+    
+    NSFetchRequest *fetchRequest = [NSFetchRequest fetchRequestWithEntityName:name];
+    fetchRequest.predicate = predicate;
+    
+    NSUInteger count = [context countForFetchRequest:fetchRequest error:error];
+    return count;
 }
 
 #pragma mark - activities
@@ -260,7 +277,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
 }
 
 - (void)fetchActivitiesWithPredicate:(NSPredicate *)predicate
-                          completion:(void (^)(BOOL success, NSArray<OCKCarePlanActivity *> *activities, NSError *error))completion{
+                          completion:(void (^)(BOOL success, NSArray<OCKCarePlanActivity *> *activities, NSError *error))completion {
     NSError *errorOut = nil;
     NSManagedObjectContext *context = [self contextWithError:&errorOut];
     
@@ -650,25 +667,100 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     if ([startDay isLaterThan:endDay]) {
         return;
     }
-    OCKCarePlanDay *day = startDay;
+    __block OCKCarePlanDay *day = startDay;
     __block BOOL stop = NO;
-    do {
-        [self eventsForActivity:activity
-                            day:day
-                     completion:^(NSArray<OCKCarePlanEvent *> * _Nonnull events, NSError * _Nonnull error) {
-                         if (!stop) {
-                             for (OCKCarePlanEvent* event in events) {
-                                 block(event, &stop, error);
-                                 if (stop) {
-                                     break;
-                                 }
-                             }
-                         }
-                     }];
-       
-        day = [day nextDay];
-    } while (stop == NO && ([day isEarlierThan:endDay] || [day isEqual:endDay]));
+    __weak typeof(self) weakSelf = self;
     
+
+    void __block (^completion)(NSArray<OCKCarePlanEvent *> *, NSError *) = nil;
+    completion = ^(NSArray<OCKCarePlanEvent *> * _Nonnull events, NSError * _Nonnull error) {
+        
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        if (!stop) {
+            for (OCKCarePlanEvent* event in events) {
+                block(event, &stop, error);
+                if (stop) {
+                    break;
+                }
+            }
+            
+            day = [day nextDay];
+            
+            if ((stop == NO && ([day isEarlierThan:endDay] || [day isEqual:endDay]))) {
+                [strongSelf eventsForActivity:activity day:day completion:completion];
+            } else {
+                completion = nil;
+            }
+        }
+    };
+    
+    [self eventsForActivity:activity
+                        day:day
+                 completion:completion];
+}
+
+- (void)dailyCompletionStatusWithType:(OCKCarePlanActivityType)type
+                             startDay:(OCKCarePlanDay *)startDay
+                               endDay:(OCKCarePlanDay *)endDay
+                           usingBlock:(void (^)(OCKCarePlanDay* day, NSUInteger completed, NSUInteger total, NSError *error))block {
+
+    NSParameterAssert(startDay);
+    NSParameterAssert(endDay);
+    NSParameterAssert(block);
+    
+    if ([startDay isLaterThan:endDay]) {
+        return;
+    }
+    
+    NSError *error = nil;
+    __block NSManagedObjectContext *context = [self contextWithError:&error];
+    if (context == nil) {
+        block(nil, 0, 0, error);
+        return;
+    }
+    
+    __weak typeof(self) weakSelf = self;
+    [self fetchActivitiesWithPredicate:[NSPredicate predicateWithFormat:@"type = %d", type]
+                            completion:^(BOOL success, NSArray<OCKCarePlanActivity *> *activities, NSError *error) {
+                                if (error) {
+                                    block(nil, 0, 0, error);
+                                } else {
+                                    [context performBlock:^{
+                                        __strong typeof(weakSelf) strongSelf = weakSelf;
+                                        OCKCarePlanDay *day = startDay;
+                                        do {
+                                            NSUInteger total = 0;
+                                            NSUInteger completed = 0;
+                                            NSMutableArray *predicates = [NSMutableArray new];
+                                            for (OCKCarePlanActivity *activity in activities) {
+                                                NSUInteger count = [activity.schedule numberOfEventsOnDay:day];
+                                                
+                                                if (count > 0) {
+                                                    NSUInteger daysSinceStart = [activity.schedule numberOfDaySinceStart:day];
+                                                    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"activity.identifier = %@ AND numberOfDaysSinceStart = %d AND state = %d", activity.identifier, daysSinceStart, OCKCarePlanEventStateCompleted];
+                                                    [predicates addObject:predicate];
+                                                    total += count;
+                                                }
+                                            }
+                                            
+                                            NSError *errorOut = nil;
+                                            if (total > 0) {
+                                                
+                                                NSCompoundPredicate *compoundPredicate = [NSCompoundPredicate orPredicateWithSubpredicates:predicates];
+                                                
+                                                completed = [strongSelf block_countItemsWithEntityName:OCKEntityNameEvent
+                                                                                             predicate:compoundPredicate
+                                                                                                 error:&errorOut];
+                                            }
+                                            
+                                            dispatch_async(dispatch_get_main_queue(), ^{
+                                                block(day, completed, total, errorOut);
+                                            });
+                                            day = [day nextDay];
+                                        } while ([day isEarlierThan:endDay] || [day isEqual:endDay]);
+                                    }];
+                                }
+                            }];
 }
 
 #pragma mark - coredata

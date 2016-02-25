@@ -467,7 +467,7 @@
                                }
                            }];
     
-    [self waitForExpectationsWithTimeout:2.0 handler:^(NSError * _Nullable error) {
+    [self waitForExpectationsWithTimeout:10.0 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
     }];
     
@@ -497,6 +497,25 @@
         [self waitForExpectationsWithTimeout:10.0 handler:^(NSError * _Nullable error) {
             XCTAssertNil(error);
         }];
+    }];
+    
+    expectation = [self expectationWithDescription:@"completionStatus"];
+    
+    [store dailyCompletionStatusWithType:OCKCarePlanActivityTypeIntervention
+                                startDay:[startDay nextDay]
+                                  endDay:futureDay
+                              usingBlock:^(OCKCarePlanDay * _Nonnull day, NSUInteger completed, NSUInteger total, NSError * _Nonnull error) {
+                                  XCTAssertNil(error);
+                                  XCTAssertNotNil(day);
+                                  XCTAssertEqual(completed, 3);
+                                  XCTAssertEqual(total, 9);
+                                  if ([day isEqual:futureDay]) {
+                                      [expectation fulfill];
+                                  }
+                              }];
+    
+    [self waitForExpectationsWithTimeout:2.0 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
     }];
 }
 

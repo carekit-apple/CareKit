@@ -9,6 +9,7 @@
 
 #import "OCKCareCardTableViewHeader.h"
 #import "OCKHeartView.h"
+#import "OCKColors.h"
 
 
 static const CGFloat LeadingMargin = 40.0;
@@ -60,20 +61,15 @@ static const CGFloat HeartViewSize = 150.0;
     
     if (!_heartView) {
         _heartView = [[OCKHeartView alloc] initWithFrame:CGRectMake(0, 0, HeartViewSize, HeartViewSize)];
-        UIImage *heart = [UIImage imageNamed:@"heart"];
-        UIImageView *imageView = [[UIImageView alloc] initWithImage:heart];
-        imageView.frame = _heartView.frame;
-        imageView.contentMode = UIViewContentModeScaleAspectFit;
-        _heartView.maskView = imageView;
-        _heartView.clipsToBounds = YES;
         [self addSubview:_heartView];
     }
+    _heartView.adherence = _adherence;
     
     if (!_adherencePercentageLabel) {
         _adherencePercentageLabel = [UILabel new];
         _adherencePercentageLabel.numberOfLines = 1;
         _adherencePercentageLabel.lineBreakMode = NSLineBreakByCharWrapping;
-        _adherencePercentageLabel.textColor = [UIColor redColor];
+        _adherencePercentageLabel.textColor = OCKRedColor();
         [self addSubview:_adherencePercentageLabel];
     }
     _adherencePercentageLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
@@ -83,10 +79,11 @@ static const CGFloat HeartViewSize = 150.0;
         _adherenceLabel = [UILabel new];
         _adherenceLabel.numberOfLines = 1;
         _adherenceLabel.lineBreakMode = NSLineBreakByTruncatingTail;
-        _adherenceLabel.text = @"Care Completed";
+        _adherenceLabel.text = @"Care Complete";
         _adherenceLabel.textColor = [UIColor grayColor];
         [self addSubview:_adherenceLabel];
     }
+    
     _adherenceLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
     
     if (!_bottomEdge) {

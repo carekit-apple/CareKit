@@ -7,7 +7,6 @@
 //
 
 
-
 #import "OCKCareCardTableViewCell.h"
 #import "OCKColors.h"
 #import "OCKCarePlanActivity.h"
@@ -17,19 +16,18 @@
 
 
 static const CGFloat HorizontalMargin = 15.0;
-static const CGFloat LeadingMargin = 15.0;
+static const CGFloat LeadingMargin = 20.0;
 static const CGFloat TopMargin = 10.0;
 
 @implementation OCKCareCardTableViewCell {
     UILabel *_titleLabel;
     UILabel *_textLabel;
 
-    UILabel *_leadingEdge;
+    UIView *_leadingEdge;
 
     NSArray <OCKCareCardButton *> *_frequencyButtons;
     OCKCarePlanActivity *_treatment;
 }
-
 
 - (void)setTreatmentEvents:(NSArray<OCKCarePlanEvent *> *)treatmentEvents {
     _treatmentEvents = treatmentEvents;
@@ -45,6 +43,7 @@ static const CGFloat TopMargin = 10.0;
 - (void)prepareView {
     self.tintColor = _treatment.tintColor;
     self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    self.separatorInset = UIEdgeInsetsMake(0, 20, 0, 0);
     
     if (!_titleLabel) {
         _titleLabel = [UILabel new];
@@ -85,7 +84,7 @@ static const CGFloat TopMargin = 10.0;
     _frequencyButtons = [buttons copy];
     
     if (!_leadingEdge) {
-        _leadingEdge = [UILabel new];
+        _leadingEdge = [UIView new];
         [self addSubview:_leadingEdge];
     }
     _leadingEdge.backgroundColor = _treatment.tintColor;
@@ -142,6 +141,13 @@ static const CGFloat TopMargin = 10.0;
                                                                        toItem:self
                                                                     attribute:NSLayoutAttributeLeading
                                                                    multiplier:1.0
+                                                                     constant:5.0],
+                                       [NSLayoutConstraint constraintWithItem:_leadingEdge
+                                                                    attribute:NSLayoutAttributeCenterY
+                                                                    relatedBy:NSLayoutRelationEqual
+                                                                       toItem:self
+                                                                    attribute:NSLayoutAttributeCenterY
+                                                                   multiplier:1.0
                                                                      constant:0.0],
                                        [NSLayoutConstraint constraintWithItem:_leadingEdge
                                                                     attribute:NSLayoutAttributeWidth
@@ -156,7 +162,7 @@ static const CGFloat TopMargin = 10.0;
                                                                        toItem:self
                                                                     attribute:NSLayoutAttributeHeight
                                                                    multiplier:1.0
-                                                                     constant:0.0]
+                                                                     constant:-20.0]
                                        ]];
     
     for (int i = 0; i < _frequencyButtons.count; i++) {

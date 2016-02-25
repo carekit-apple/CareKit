@@ -15,8 +15,8 @@
 #import "OCKWeekPageViewController.h"
 #import "OCKCarePlanStore_Internal.h"
 #import "OCKCareCardWeekView.h"
-#import "OCKHeartView.h"
 #import "OCKCarePlanDay.h"
+#import "OCKHeartView.h"
 
 
 static const CGFloat CellHeight = 90.0;
@@ -106,19 +106,17 @@ static const CGFloat HeaderViewHeight = 235.0;
     _headerView.date = [NSDateFormatter localizedStringFromDate:[self dateFromCarePlanDay:_selectedDate]
                                                       dateStyle:NSDateFormatterLongStyle
                                                       timeStyle:NSDateFormatterNoStyle];
-    
     NSInteger totalEvents = 0;
     NSInteger completedEvents = 0;
     for (NSArray<OCKCarePlanEvent* > *events in _treatmentEvents) {
         totalEvents += events.count;
-        
         for (OCKCarePlanEvent *event in events) {
             if (event.state == OCKCarePlanEventStateCompleted) {
                 completedEvents++;
             }
         }
     }
-    
+
     _headerView.adherence = (totalEvents > 0) ? (float)completedEvents/totalEvents : 0;
 }
 

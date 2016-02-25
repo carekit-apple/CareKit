@@ -10,6 +10,7 @@
 #import "OCKCareCardWeekView.h"
 #import "OCKWeekView.h"
 #import "OCKHeartView.h"
+#import "OCKColors.h"
 
 
 const static CGFloat HeartButtonSize = 20.0;
@@ -17,6 +18,7 @@ const static CGFloat HeartButtonSize = 20.0;
 @implementation OCKCareCardWeekView {
     OCKWeekView *_weekView;
     NSMutableArray <UIButton *> *_heartButtons;
+    OCKHeartView *_heartView;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame {
@@ -37,9 +39,13 @@ const static CGFloat HeartButtonSize = 20.0;
     for (int i = 0; i < 7; i++) {
         UIButton *heart = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, HeartButtonSize, HeartButtonSize)];
         heart.translatesAutoresizingMaskIntoConstraints = NO;
-        OCKHeartView *heartView = [OCKHeartView new];
-//        heartView.width = HeartButtonSize;
-        [heart addSubview:heartView];
+        
+        _heartView = [[OCKHeartView alloc] initWithFrame:CGRectMake(0, 0, HeartButtonSize + 10, HeartButtonSize + 10)];
+        if (_adherenceValues.count == 7) {
+            _heartView.adherence = [_adherenceValues[i] floatValue];
+        }
+        _heartView.userInteractionEnabled = NO;
+        [heart addSubview:_heartView];
         
         [heart addTarget:self
                   action:@selector(updateDayOfWeek:)
@@ -100,7 +106,7 @@ const static CGFloat HeartButtonSize = 20.0;
 
 - (void)setAdherenceValues:(NSArray *)adherenceValues {
     _adherenceValues = adherenceValues;
-    [self populateAdherences];
+    [self prepareView];
 }
 
 - (void)updateDayOfWeek:(id)sender {
@@ -111,17 +117,6 @@ const static CGFloat HeartButtonSize = 20.0;
     if (_delegate &&
         [_delegate respondsToSelector:@selector(careCardWeekViewSelectionDidChange:)]) {
         [_delegate careCardWeekViewSelectionDidChange:self];
-    }
-}
-
-
-#pragma mark - Helpers
-
-- (void)populateAdherences {
-    for (int i = 0; i < 7; i++) {
-        UIButton *button = _heartButtons[i];
-        NSNumber *value = _adherenceValues[i];
-        button.alpha = value.floatValue;
     }
 }
 

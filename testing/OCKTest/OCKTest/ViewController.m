@@ -42,11 +42,27 @@ static const BOOL resetStoreOnLaunch = YES;
     [self performSelectorOnMainThread:@selector(setUpCarePlanStore) withObject:nil waitUntilDone:YES];
     
     _dashboardViewController = [self dashboardViewController];
+    _dashboardViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Insights"
+                                                                        image:[UIImage imageNamed:@"insights"]
+                                                                selectedImage:[UIImage imageNamed:@"insights-filled"]];
+    
     _careCardViewController = [self careCardViewController];
+    _careCardViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Care Card"
+                                                                       image:[UIImage imageNamed:@"carecard"]
+                                                               selectedImage:[UIImage imageNamed:@"carecard-filled"]];
+    
     _evaluationViewController = [self evaluationViewController];
+    _evaluationViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Checkups"
+                                                                         image:[UIImage imageNamed:@"checkups"]
+                                                                 selectedImage:[UIImage imageNamed:@"checkups-filled"]];
+    
     _connectViewController = [self connectViewController];
+    _connectViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Connect"
+                                                                      image:[UIImage imageNamed:@"connect"]
+                                                              selectedImage:[UIImage imageNamed:@"connect-filled"]];
     
     _tabBarController = [UITabBarController new];
+    _tabBarController.tabBar.tintColor = OCKPinkColor();
     _tabBarController.viewControllers = @[_dashboardViewController, _careCardViewController, _evaluationViewController, _connectViewController];
     _tabBarController.selectedIndex = 1;
 }
@@ -143,7 +159,8 @@ static const BOOL resetStoreOnLaunch = YES;
                                                         relation:@"physician"
                                                      phoneNumber:@"123-456-7890"
                                                    messageNumber:@"123-456-7890"
-                                                    emailAddress:@"jsmith@researchkit.org"];
+                                                    emailAddress:@"jsmith@researchkit.org"
+                                                           image:nil];
         contact.tintColor = OCKBlueColor();
         [contacts addObject:contact];
     }
@@ -154,7 +171,8 @@ static const BOOL resetStoreOnLaunch = YES;
                                                         relation:@"dermatologist"
                                                      phoneNumber:@"123-456-7890"
                                                    messageNumber:nil
-                                                    emailAddress:nil];
+                                                    emailAddress:nil
+                                                           image:nil];
         contact.tintColor = OCKPinkColor();
         [contacts addObject:contact];
     }
@@ -166,7 +184,8 @@ static const BOOL resetStoreOnLaunch = YES;
                                                         relation:@"father"
                                                      phoneNumber:@"123-456-7890"
                                                    messageNumber:@"123-456-7890"
-                                                    emailAddress:nil];
+                                                    emailAddress:nil
+                                                           image:nil];
         contact.tintColor = OCKYellowColor();
         [contacts addObject:contact];
     }
@@ -177,7 +196,8 @@ static const BOOL resetStoreOnLaunch = YES;
                                                         relation:@"nurse"
                                                      phoneNumber:@"123-456-7890"
                                                    messageNumber:nil
-                                                    emailAddress:@"nbrooks@researchkit.org"];
+                                                    emailAddress:@"nbrooks@researchkit.org"
+                                                           image:nil];
         contact.tintColor = OCKGreenColor();
         [contacts addObject:contact];
     }

@@ -12,16 +12,16 @@
 
 
 static const CGFloat LeadingMargin = 20.0;
-static const CGFloat TopMargin = 13.0;
-static const CGFloat VerticalMargin = 5.0;
 static const CGFloat HorizontalMargin = 5.0;
+static const CGFloat VerticalMargin = 2.5;
+
+static const CGFloat ImageViewSize = 35.0;
 
 @implementation OCKConnectTableViewCell {
+    UIImageView *_imageView;
     UILabel *_nameLabel;
     UILabel *_relationLabel;
-    
     NSArray<UIButton *> *_buttons;
-    
     UILabel *_leadingEdge;
 }
 
@@ -36,6 +36,16 @@ static const CGFloat HorizontalMargin = 5.0;
 }
 
 - (void)prepareView {
+    if (!_imageView) {
+        _imageView = [UIImageView new];
+        _imageView.layer.cornerRadius = 30.0;
+        _imageView.clipsToBounds = YES;
+        _imageView.layer.borderWidth = 1.0;
+        _imageView.layer.borderColor = [UIColor grayColor].CGColor;
+        [self.contentView addSubview:_imageView];
+    }
+    _imageView.image = (_contact.image) ? _contact.image : [UIImage imageNamed:@"heart" inBundle:[NSBundle bundleForClass:[self class]] compatibleWithTraitCollection:nil];
+    
     if (!_nameLabel) {
         _nameLabel = [UILabel new];
         _nameLabel.lineBreakMode = NSLineBreakByTruncatingTail;
@@ -113,37 +123,66 @@ static const CGFloat HorizontalMargin = 5.0;
 - (void)setUpConstraints {
     NSMutableArray *constraints = [NSMutableArray new];
 
+    _imageView.translatesAutoresizingMaskIntoConstraints = NO;
     _nameLabel.translatesAutoresizingMaskIntoConstraints = NO;
     _relationLabel.translatesAutoresizingMaskIntoConstraints = NO;
     _leadingEdge.translatesAutoresizingMaskIntoConstraints = NO;
     
     [constraints addObjectsFromArray:@[
-                                       [NSLayoutConstraint constraintWithItem:_nameLabel
+                                       [NSLayoutConstraint constraintWithItem:_imageView
+                                                                    attribute:NSLayoutAttributeCenterY
+                                                                    relatedBy:NSLayoutRelationEqual
+                                                                       toItem:self
+                                                                    attribute:NSLayoutAttributeCenterY
+                                                                   multiplier:1.0
+                                                                     constant:0.0],
+                                       [NSLayoutConstraint constraintWithItem:_imageView
                                                                     attribute:NSLayoutAttributeLeading
                                                                     relatedBy:NSLayoutRelationEqual
                                                                        toItem:self
                                                                     attribute:NSLayoutAttributeLeading
                                                                    multiplier:1.0
                                                                      constant:LeadingMargin],
+                                       [NSLayoutConstraint constraintWithItem:_imageView
+                                                                    attribute:NSLayoutAttributeHeight
+                                                                    relatedBy:NSLayoutRelationEqual
+                                                                       toItem:nil
+                                                                    attribute:NSLayoutAttributeNotAnAttribute
+                                                                   multiplier:1.0
+                                                                     constant:ImageViewSize],
+                                       [NSLayoutConstraint constraintWithItem:_imageView
+                                                                    attribute:NSLayoutAttributeWidth
+                                                                    relatedBy:NSLayoutRelationEqual
+                                                                       toItem:nil
+                                                                    attribute:NSLayoutAttributeNotAnAttribute
+                                                                   multiplier:1.0
+                                                                     constant:ImageViewSize],
+                                       [NSLayoutConstraint constraintWithItem:_nameLabel
+                                                                    attribute:NSLayoutAttributeLeading
+                                                                    relatedBy:NSLayoutRelationEqual
+                                                                       toItem:_imageView
+                                                                    attribute:NSLayoutAttributeTrailing
+                                                                   multiplier:1.0
+                                                                     constant:2*HorizontalMargin],
                                        [NSLayoutConstraint constraintWithItem:_relationLabel
                                                                     attribute:NSLayoutAttributeLeading
                                                                     relatedBy:NSLayoutRelationEqual
                                                                        toItem:_nameLabel
-                                                                    attribute:NSLayoutAttributeTrailing
+                                                                    attribute:NSLayoutAttributeLeading
                                                                    multiplier:1.0
-                                                                     constant:HorizontalMargin],
-                                       [NSLayoutConstraint constraintWithItem:_nameLabel
-                                                                    attribute:NSLayoutAttributeTop
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:self
-                                                                    attribute:NSLayoutAttributeTop
-                                                                   multiplier:1.0
-                                                                     constant:TopMargin],
-                                       [NSLayoutConstraint constraintWithItem:_relationLabel
-                                                                    attribute:NSLayoutAttributeBaseline
+                                                                     constant:0.0],
+                                       [NSLayoutConstraint constraintWithItem:self
+                                                                    attribute:NSLayoutAttributeCenterY
                                                                     relatedBy:NSLayoutRelationEqual
                                                                        toItem:_nameLabel
-                                                                    attribute:NSLayoutAttributeBaseline
+                                                                    attribute:NSLayoutAttributeCenterY
+                                                                   multiplier:1.0
+                                                                     constant:2*(_nameLabel.frame.size.height + VerticalMargin)],
+                                       [NSLayoutConstraint constraintWithItem:_relationLabel
+                                                                    attribute:NSLayoutAttributeTop
+                                                                    relatedBy:NSLayoutRelationEqual
+                                                                       toItem:_nameLabel
+                                                                    attribute:NSLayoutAttributeBottom
                                                                    multiplier:1.0
                                                                      constant:0.0],
                                        [NSLayoutConstraint constraintWithItem:_leadingEdge
@@ -151,6 +190,13 @@ static const CGFloat HorizontalMargin = 5.0;
                                                                     relatedBy:NSLayoutRelationEqual
                                                                        toItem:self
                                                                     attribute:NSLayoutAttributeLeading
+                                                                   multiplier:1.0
+                                                                     constant:5.0],
+                                       [NSLayoutConstraint constraintWithItem:_leadingEdge
+                                                                    attribute:NSLayoutAttributeCenterY
+                                                                    relatedBy:NSLayoutRelationEqual
+                                                                       toItem:self
+                                                                    attribute:NSLayoutAttributeCenterY
                                                                    multiplier:1.0
                                                                      constant:0.0],
                                        [NSLayoutConstraint constraintWithItem:_leadingEdge
@@ -166,36 +212,36 @@ static const CGFloat HorizontalMargin = 5.0;
                                                                        toItem:self
                                                                     attribute:NSLayoutAttributeHeight
                                                                    multiplier:1.0
-                                                                     constant:0.0]
+                                                                     constant:-20.0]
                                        ]];
     
     for (int i = 0; i < _buttons.count; i++) {
         if (i == 0) {
             [constraints addObjectsFromArray:@[
                                                [NSLayoutConstraint constraintWithItem:_buttons[i]
-                                                                            attribute:NSLayoutAttributeLeading
+                                                                            attribute:NSLayoutAttributeTrailing
                                                                             relatedBy:NSLayoutRelationEqual
-                                                                               toItem:_nameLabel
-                                                                            attribute:NSLayoutAttributeLeading
+                                                                               toItem:self.contentView
+                                                                            attribute:NSLayoutAttributeTrailing
                                                                            multiplier:1.0
-                                                                             constant:0.0],
+                                                                             constant:-LeadingMargin],
                                                [NSLayoutConstraint constraintWithItem:_buttons[i]
-                                                                            attribute:NSLayoutAttributeTop
+                                                                            attribute:NSLayoutAttributeCenterY
                                                                             relatedBy:NSLayoutRelationEqual
-                                                                               toItem:_nameLabel
-                                                                            attribute:NSLayoutAttributeBottom
+                                                                               toItem:self.contentView
+                                                                            attribute:NSLayoutAttributeCenterY
                                                                            multiplier:1.0
-                                                                             constant:VerticalMargin]
+                                                                             constant:0.0]
                                                ]];
         } else {
             [constraints addObjectsFromArray:@[
                                                [NSLayoutConstraint constraintWithItem:_buttons[i]
-                                                                            attribute:NSLayoutAttributeLeading
+                                                                            attribute:NSLayoutAttributeTrailing
                                                                             relatedBy:NSLayoutRelationEqual
                                                                                toItem:_buttons[i-1]
-                                                                            attribute:NSLayoutAttributeTrailing
+                                                                            attribute:NSLayoutAttributeLeading
                                                                            multiplier:1.0
-                                                                             constant:HorizontalMargin],
+                                                                             constant:-HorizontalMargin],
                                                [NSLayoutConstraint constraintWithItem:_buttons[i]
                                                                             attribute:NSLayoutAttributeBottom
                                                                             relatedBy:NSLayoutRelationEqual

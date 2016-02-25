@@ -69,7 +69,7 @@ static const CGFloat TopMargin = 10.0;
     _frequencyButtons = [NSArray new];
     NSMutableArray *buttons = [NSMutableArray new];
     for (OCKCarePlanEvent *event in _treatmentEvents) {
-        OCKCareCardButton *frequencyButton = [OCKCareCardButton new];
+        OCKCareCardButton *frequencyButton = [[OCKCareCardButton alloc] initWithFrame:CGRectMake(0, 0, 46.0, 41.0)];
         frequencyButton.tintColor = _treatment.tintColor;
         frequencyButton.selected = (event.state == OCKCarePlanEventStateCompleted);
         frequencyButton.translatesAutoresizingMaskIntoConstraints = NO;

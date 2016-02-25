@@ -23,7 +23,7 @@ static const CGFloat CellHeight = 90.0;
 static const CGFloat HeaderViewHeight = 235.0;
 
 @implementation OCKCareCardTableViewController {
-    NSArray<NSArray<OCKCarePlanEvent *> *> *_treatmentEvents;
+    NSMutableArray<NSMutableArray<OCKCarePlanEvent *> *> *_treatmentEvents;
     OCKCareCardTableViewHeader *_headerView;
 }
 
@@ -95,8 +95,12 @@ static const CGFloat HeaderViewHeight = 235.0;
                    type:OCKCarePlanActivityTypeIntervention
              completion:^(NSArray<NSArray<OCKCarePlanEvent *> *> * _Nonnull eventsGroupedByActivity, NSError * _Nonnull error) {
                  NSAssert(!error, error.localizedDescription);
-                 _treatmentEvents = [eventsGroupedByActivity copy];
                 
+                 _treatmentEvents = [NSMutableArray new];
+                 for (NSArray<OCKCarePlanEvent *> *events in eventsGroupedByActivity) {
+                     [_treatmentEvents addObject:[events mutableCopy]];
+                 }
+                 
                  [self updateHeaderView];
                  [self.tableView reloadData];
              }];
@@ -163,7 +167,23 @@ static const CGFloat HeaderViewHeight = 235.0;
 #pragma mark - OCKCarePlanStoreDelegate
 
 - (void)carePlanStore:(OCKCarePlanStore *)store didReceiveUpdateOfEvent:(OCKCarePlanEvent *)event {
-    [self fetchTreatmentEvents];
+    // Find the index that has the right activity.
+    for (NSMutableArray<OCKCarePlanEvent *> *events in _treatmentEvents) {
+        // Once found, look to see if the event matches.
+        if ([events.firstObject.activity.identifier isEqualToString:event.activity.identifier]) {
+            
+            // If the event matches, then replace it.
+            if (events[event.occurrenceIndexOfDay].numberOfDaysSinceStart == event.numberOfDaysSinceStart) {
+                [events replaceObjectAtIndex:event.occurrenceIndexOfDay withObject:event];
+
+                [self updateHeaderView];
+                
+                [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:[_treatmentEvents indexOfObject:events] inSection:0]]
+                                      withRowAnimation:UITableViewRowAnimationNone];
+            }
+            break;
+        }
+    }
 }
 
 - (void)carePlanStoreTreatmentListDidChange:(OCKCarePlanStore *)store {

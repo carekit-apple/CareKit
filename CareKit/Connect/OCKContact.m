@@ -23,13 +23,15 @@
                               relation:(NSString *)relation
                            phoneNumber:(NSString *)phoneNumber
                          messageNumber:(NSString *)messageNumber
-                          emailAddress:(NSString *)emailAddress {
+                          emailAddress:(NSString *)emailAddress
+                                 image:(UIImage *)image {
     return [[OCKContact alloc] initWithContactType:type
                                               name:name
                                           relation:relation
                                        phoneNumber:phoneNumber
                                      messageNumber:messageNumber
-                                      emailAddress:emailAddress];
+                                      emailAddress:emailAddress
+                                             image:image];
 }
 
 + (instancetype)contactWithContactType:(OCKContactType)type {
@@ -38,7 +40,8 @@
                                      relation:nil
                                   phoneNumber:nil
                                 messageNumber:nil
-                                 emailAddress:nil];
+                                 emailAddress:nil
+                                        image:nil];
 }
 
 - (instancetype)initWithContactType:(OCKContactType)type {
@@ -47,7 +50,8 @@
                             relation:nil
                          phoneNumber:nil
                        messageNumber:nil
-                        emailAddress:nil];
+                        emailAddress:nil
+                               image:nil];
 }
 
 - (instancetype)initWithContactType:(OCKContactType)type
@@ -55,7 +59,8 @@
                            relation:(NSString *)relation
                         phoneNumber:(NSString *)phoneNumber
                       messageNumber:(NSString *)messageNumber
-                       emailAddress:(NSString *)emailAddress {
+                       emailAddress:(NSString *)emailAddress
+                              image:(UIImage *)image {
     self = [super init];
     if (self) {
         _type = type;
@@ -64,6 +69,7 @@
         _phoneNumber = [phoneNumber copy];
         _messageNumber = [messageNumber copy];
         _emailAddress = [emailAddress copy];
+        _image = image;
     }
     return self;
 }
@@ -82,7 +88,8 @@
             OCKEqualObjects(self.relation, castObject.relation) &&
             OCKEqualObjects(self.phoneNumber, castObject.phoneNumber) &&
             OCKEqualObjects(self.messageNumber, castObject.messageNumber) &&
-            OCKEqualObjects(self.emailAddress, castObject.emailAddress));
+            OCKEqualObjects(self.emailAddress, castObject.emailAddress) &&
+            OCKEqualObjects(self.image, castObject.image));
 }
 
 
@@ -101,6 +108,7 @@
         OCK_DECODE_OBJ_CLASS(aDecoder, phoneNumber, NSString);
         OCK_DECODE_OBJ_CLASS(aDecoder, messageNumber, NSString);
         OCK_DECODE_OBJ_CLASS(aDecoder, emailAddress, NSString);
+        OCK_DECODE_IMAGE(aDecoder, image);
     }
     return self;
 }
@@ -112,6 +120,7 @@
     OCK_ENCODE_OBJ(aCoder, phoneNumber);
     OCK_ENCODE_OBJ(aCoder, messageNumber);
     OCK_ENCODE_OBJ(aCoder, emailAddress);
+    OCK_ENCODE_IMAGE(aCoder, image);
 }
 
 
@@ -125,6 +134,7 @@
     contact->_phoneNumber = [self.phoneNumber copy];
     contact->_messageNumber = [self.messageNumber copy];
     contact->_emailAddress = [self.emailAddress copy];
+    contact->_image = self.image;
     return contact;
 }
 

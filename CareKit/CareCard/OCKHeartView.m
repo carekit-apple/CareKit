@@ -15,6 +15,9 @@
 @implementation OCKHeartView {
     CATransition *_animation;
     UIView *_maskView;
+    UIView *_fillView;
+    
+    BOOL _isAnimating;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame {
@@ -26,18 +29,9 @@
     return self;
 }
 
-- (void)drawRect:(CGRect)rect {
-    CGRect bottomRect = {CGRectGetMinX(self.bounds), CGRectGetMaxY(self.bounds), CGRectGetMaxX(self.bounds), -_adherence * CGRectGetMaxY(self.bounds)};
-    UIColor *redColor = OCKPinkColor();
-    [redColor setFill];
-    UIRectFill(bottomRect);
-    
-    [self animateFill];
-}
-
 - (void)prepareView {
     if (!_maskView) {
-        _maskView = [[UIView alloc] initWithFrame:self.frame];
+        _maskView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
     }
     
     UIImageView *imageView = [[UIImageView alloc] initWithImage:_maskImage];
@@ -47,26 +41,36 @@
     
     self.maskView = _maskView;
     self.clipsToBounds = YES;
-    self.backgroundColor = OCKGrayColor();
+    self.backgroundColor = [UIColor groupTableViewBackgroundColor];
+    
+    if (!_fillView) {
+        _fillView = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMinX(self.bounds), CGRectGetMaxY(self.bounds), CGRectGetMaxX(self.bounds), CGRectGetMaxY(self.bounds))];
+        _fillView.backgroundColor = OCKPinkColor();
+        [self addSubview:_fillView];
+    }
 }
 
 - (void)animateFill {
-     if (!_animation) {
-         _animation = [CATransition animation];
-         _animation.duration = 1.5;
-         _animation.type = @"rippleEffect";
-         _animation.startProgress = 0.25;
-         _animation.endProgress = 0.99;
-     }
+    if (!_animation) {
+        _animation = [CATransition animation];
+        _animation.duration = 1.25;
+        _animation.type = @"rippleEffect";
+        _animation.delegate = self;
+    }
     
-     if (![self.layer animationForKey:@"ripple"]) {
-         [self.layer addAnimation:_animation forKey:@"ripple"];
-     }
+//    if (!_isAnimating) {
+//        [self.layer addAnimation:_animation forKey:nil];
+//    }
+    
+    [UIView animateWithDuration:0.75 delay:0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+        _fillView.frame = CGRectMake(CGRectGetMinX(self.bounds), CGRectGetMaxY(self.bounds), CGRectGetMaxX(self.bounds), -_adherence * CGRectGetMaxY(self.bounds));
+    } completion:^(BOOL finished) {
+    }];
 }
 
 - (void)setAdherence:(CGFloat)adherence {
     _adherence = adherence;
-    [self setNeedsDisplay];
+    [self animateFill];
 }
 
 - (void)setMaskImage:(UIImage *)maskImage {
@@ -76,6 +80,17 @@
     }
     
     [self prepareView];
+}
+
+
+#pragma mark - CAAnimationDelegate
+
+- (void)animationDidStart:(CAAnimation *)anim {
+    _isAnimating = YES;
+}
+
+- (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag {
+    _isAnimating = NO;
 }
 
 @end

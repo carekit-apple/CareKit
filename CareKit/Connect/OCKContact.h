@@ -26,7 +26,8 @@ typedef NS_ENUM(NSInteger, OCKContactType) {
                               relation:(nullable NSString *)relation
                            phoneNumber:(nullable NSString *)phoneNumber
                          messageNumber:(nullable NSString *)messageNumber
-                          emailAddress:(nullable NSString *)emailAddress;
+                          emailAddress:(nullable NSString *)emailAddress
+                                 image:(nullable UIImage *)image;
 
 - (instancetype)init NS_UNAVAILABLE;
 - (instancetype)initWithContactType:(OCKContactType)type;
@@ -35,7 +36,8 @@ typedef NS_ENUM(NSInteger, OCKContactType) {
                            relation:(nullable NSString *)relation
                         phoneNumber:(nullable NSString *)phoneNumber
                       messageNumber:(nullable NSString *)messageNumber
-                       emailAddress:(nullable NSString *)emailAddress;
+                       emailAddress:(nullable NSString *)emailAddress
+                              image:(nullable UIImage *)image;
 
 @property (nonatomic, readonly) OCKContactType type;
 @property (nonatomic, copy, nullable) NSString *name;
@@ -43,6 +45,7 @@ typedef NS_ENUM(NSInteger, OCKContactType) {
 @property (nonatomic, copy, nullable) NSString *phoneNumber;
 @property (nonatomic, copy, nullable) NSString *messageNumber;
 @property (nonatomic, copy, nullable) NSString *emailAddress;
+@property (nonatomic, nullable) UIImage *image;
 @property (nonatomic, copy, null_resettable) UIColor *tintColor;
 
 @end

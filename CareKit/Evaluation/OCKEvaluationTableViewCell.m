@@ -21,6 +21,7 @@ const static CGFloat ValueLabelWidth = 100.0;
     UILabel *_titleLabel;
     UILabel *_textLabel;
     UILabel *_valueLabel;
+    UILabel *_unitLabel;
     
     UIView *_leadingEdge;
 }
@@ -70,6 +71,16 @@ const static CGFloat ValueLabelWidth = 100.0;
     _valueLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleTitle1];
     _valueLabel.textColor = _evaluationEvent.activity.tintColor;
     
+    if (!_unitLabel) {
+        _unitLabel = [UILabel new];
+        _unitLabel.lineBreakMode = NSLineBreakByTruncatingTail;
+        _unitLabel.textAlignment = NSTextAlignmentRight;
+        _unitLabel.textColor = [UIColor lightGrayColor];
+        [self.contentView addSubview:_unitLabel];
+    }
+    _unitLabel.text = (_evaluationEvent.result.unitString.length > 0) ? _evaluationEvent.result.unitString : @"";
+    _unitLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleCaption2];
+    
     if (!_leadingEdge) {
         _leadingEdge = [UIView new];
         [self.contentView addSubview:_leadingEdge];
@@ -85,6 +96,7 @@ const static CGFloat ValueLabelWidth = 100.0;
     _titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     _textLabel.translatesAutoresizingMaskIntoConstraints = NO;
     _valueLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    _unitLabel.translatesAutoresizingMaskIntoConstraints = NO;
     _leadingEdge.translatesAutoresizingMaskIntoConstraints = NO;
     
     [constraints addObjectsFromArray:@[
@@ -115,7 +127,7 @@ const static CGFloat ValueLabelWidth = 100.0;
                                                                        toItem:_titleLabel
                                                                     attribute:NSLayoutAttributeBottom
                                                                    multiplier:1.0
-                                                                     constant:VerticalMargin],
+                                                                     constant:0.0],
                                        [NSLayoutConstraint constraintWithItem:self
                                                                     attribute:NSLayoutAttributeTrailing
                                                                     relatedBy:NSLayoutRelationEqual
@@ -124,24 +136,45 @@ const static CGFloat ValueLabelWidth = 100.0;
                                                                    multiplier:1.0
                                                                      constant:TrailingMargin],
                                        [NSLayoutConstraint constraintWithItem:_valueLabel
-                                                                    attribute:NSLayoutAttributeCenterY
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:self
-                                                                    attribute:NSLayoutAttributeCenterY
-                                                                   multiplier:1.0
-                                                                     constant:0.0],
-                                       [NSLayoutConstraint constraintWithItem:_valueLabel
                                                                     attribute:NSLayoutAttributeWidth
-                                                                    relatedBy:NSLayoutRelationEqual
+                                                                    relatedBy:NSLayoutRelationLessThanOrEqual
                                                                        toItem:nil
                                                                     attribute:NSLayoutAttributeNotAnAttribute
                                                                    multiplier:1.0
                                                                      constant:ValueLabelWidth],
+                                       [NSLayoutConstraint constraintWithItem:_titleLabel
+                                                                    attribute:NSLayoutAttributeCenterY
+                                                                    relatedBy:NSLayoutRelationEqual
+                                                                       toItem:_valueLabel
+                                                                    attribute:NSLayoutAttributeCenterY
+                                                                   multiplier:1.0
+                                                                     constant:0.0],
+                                       [NSLayoutConstraint constraintWithItem:_unitLabel
+                                                                    attribute:NSLayoutAttributeTop
+                                                                    relatedBy:NSLayoutRelationEqual
+                                                                       toItem:_valueLabel
+                                                                    attribute:NSLayoutAttributeBottom
+                                                                   multiplier:1.0
+                                                                     constant:0.0],
+                                       [NSLayoutConstraint constraintWithItem:_unitLabel
+                                                                    attribute:NSLayoutAttributeTrailing
+                                                                    relatedBy:NSLayoutRelationEqual
+                                                                       toItem:_valueLabel
+                                                                    attribute:NSLayoutAttributeTrailing
+                                                                   multiplier:1.0
+                                                                     constant:0.0],
                                        [NSLayoutConstraint constraintWithItem:_leadingEdge
                                                                     attribute:NSLayoutAttributeLeading
                                                                     relatedBy:NSLayoutRelationEqual
                                                                        toItem:self
                                                                     attribute:NSLayoutAttributeLeading
+                                                                   multiplier:1.0
+                                                                     constant:5.0],
+                                       [NSLayoutConstraint constraintWithItem:_leadingEdge
+                                                                    attribute:NSLayoutAttributeCenterY
+                                                                    relatedBy:NSLayoutRelationEqual
+                                                                       toItem:self
+                                                                    attribute:NSLayoutAttributeCenterY
                                                                    multiplier:1.0
                                                                      constant:0.0],
                                        [NSLayoutConstraint constraintWithItem:_leadingEdge
@@ -157,7 +190,7 @@ const static CGFloat ValueLabelWidth = 100.0;
                                                                        toItem:self
                                                                     attribute:NSLayoutAttributeHeight
                                                                    multiplier:1.0
-                                                                     constant:0.0]
+                                                                     constant:-20.0]
                                        ]];
     
     [NSLayoutConstraint activateConstraints:constraints];

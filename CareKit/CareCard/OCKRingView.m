@@ -134,7 +134,7 @@
                 animation.toValue = @(0.0);
             }
             
-            animation.duration = 2.0 * delta;
+            animation.duration = 1.25; //2.0 * delta;
             animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
             animation.fillMode = kCAFillModeBoth;
             animation.removedOnCompletion = false;

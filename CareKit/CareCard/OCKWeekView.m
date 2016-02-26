@@ -66,9 +66,6 @@ const static CGFloat TopMargin = 12.0;
         }
     }
     
-    NSInteger weekday = [[NSCalendar currentCalendar] component:NSCalendarUnitWeekday fromDate:[NSDate date]];
-    [self highlightDay:weekday];
-    
     [self setUpConstraints];
 }
 
@@ -170,13 +167,13 @@ const static CGFloat TopMargin = 12.0;
     [NSLayoutConstraint activateConstraints:constraints];
 }
 
-- (void)highlightDay:(NSInteger)dayOfWeek {
+- (void)highlightDay:(NSInteger)selectedIndex {
     for (id label in _weekLabels) {
         ((UILabel *)label).backgroundColor = [UIColor clearColor];
         ((UILabel *)label).textColor = [UIColor blackColor];
     }
-    ((UILabel *)_weekLabels[dayOfWeek-1]).backgroundColor = OCKPinkColor();
-    ((UILabel *)_weekLabels[dayOfWeek-1]).textColor = [UIColor whiteColor];
+    ((UILabel *)_weekLabels[selectedIndex]).backgroundColor = OCKPinkColor();
+    ((UILabel *)_weekLabels[selectedIndex]).textColor = [UIColor whiteColor];
 }
 
 @end

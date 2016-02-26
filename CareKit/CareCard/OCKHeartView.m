@@ -23,6 +23,7 @@
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
+        _animate = YES;
         self.maskImage = nil;
         [self prepareView];
     }
@@ -62,10 +63,14 @@
 //        [self.layer addAnimation:_animation forKey:nil];
 //    }
     
-    [UIView animateWithDuration:0.75 delay:0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+    if (_animate) {
+        [UIView animateWithDuration:1.25 delay:0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+            _fillView.frame = CGRectMake(CGRectGetMinX(self.bounds), CGRectGetMaxY(self.bounds), CGRectGetMaxX(self.bounds), -_adherence * CGRectGetMaxY(self.bounds));
+        } completion:^(BOOL finished) {
+        }];
+    } else {
         _fillView.frame = CGRectMake(CGRectGetMinX(self.bounds), CGRectGetMaxY(self.bounds), CGRectGetMaxX(self.bounds), -_adherence * CGRectGetMaxY(self.bounds));
-    } completion:^(BOOL finished) {
-    }];
+    }
 }
 
 - (void)setAdherence:(CGFloat)adherence {

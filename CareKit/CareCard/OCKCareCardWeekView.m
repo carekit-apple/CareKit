@@ -33,17 +33,20 @@ const static CGFloat HeartButtonSize = 20.0;
     if (!_weekView) {
         _weekView = [[OCKWeekView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, 25.0)];
         [self addSubview:_weekView];
+        
+        NSInteger weekday = [[NSCalendar currentCalendar] component:NSCalendarUnitWeekday fromDate:[NSDate date]] - 1;
+        [_weekView highlightDay:weekday];
+        _selectedIndex = weekday;
     }
-
+    
     _heartButtons = [NSMutableArray new];
     for (int i = 0; i < 7; i++) {
         UIButton *heart = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, HeartButtonSize, HeartButtonSize)];
         heart.translatesAutoresizingMaskIntoConstraints = NO;
         
         _heartView = [[OCKHeartView alloc] initWithFrame:CGRectMake(0, 0, HeartButtonSize + 10, HeartButtonSize + 10)];
-        if (_adherenceValues.count == 7) {
-            _heartView.adherence = [_adherenceValues[i] floatValue];
-        }
+        _heartView.animate = NO;
+        _heartView.adherence = [_adherenceValues[i] floatValue];
         _heartView.userInteractionEnabled = NO;
         [heart addSubview:_heartView];
         
@@ -54,7 +57,7 @@ const static CGFloat HeartButtonSize = 20.0;
         [self addSubview:heart];
         [_heartButtons addObject:heart];
     }
-    
+
     [self setUpConstraints];
 }
 
@@ -111,7 +114,7 @@ const static CGFloat HeartButtonSize = 20.0;
 
 - (void)updateDayOfWeek:(id)sender {
     UIButton *button = (UIButton *)sender;
-    NSInteger dayOfWeek = [_heartButtons indexOfObject:button] + 1;
+    NSInteger dayOfWeek = [_heartButtons indexOfObject:button];
     _selectedIndex = dayOfWeek;
     
     if (_delegate &&

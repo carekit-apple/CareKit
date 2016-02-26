@@ -24,6 +24,7 @@ static const CGFloat HeaderViewHeight = 235.0;
 
 @implementation OCKCareCardTableViewController {
     NSMutableArray<NSMutableArray<OCKCarePlanEvent *> *> *_treatmentEvents;
+    NSMutableArray *_weeklyAdherences;
     OCKCareCardTableViewHeader *_headerView;
 }
 
@@ -51,6 +52,9 @@ static const CGFloat HeaderViewHeight = 235.0;
     [super viewDidLoad];
     
     _selectedDate = [[OCKCarePlanDay alloc] initWithDate:[NSDate date] calendar:[NSCalendar currentCalendar]];
+
+    self.tableView.rowHeight = CellHeight;
+    self.tableView.sectionHeaderHeight = HeaderViewHeight;
     
     [self fetchTreatmentEvents];
     [self prepareView];
@@ -76,7 +80,6 @@ static const CGFloat HeaderViewHeight = 235.0;
                                                                                  options:nil];
     _weekPageViewController.dataSource = self;
     _weekPageViewController.showCareCardWeekView = YES;
-    
     self.tableView.tableHeaderView = _weekPageViewController.view;
     self.tableView.tableFooterView = [UIView new];
 }
@@ -102,6 +105,7 @@ static const CGFloat HeaderViewHeight = 235.0;
                  }
                  
                  [self updateHeaderView];
+                 [self updateWeekView];
                  [self.tableView reloadData];
              }];
 }
@@ -121,7 +125,44 @@ static const CGFloat HeaderViewHeight = 235.0;
         }
     }
 
-    _headerView.adherence = (totalEvents > 0) ? (float)completedEvents/totalEvents : 0;
+    float adherence = (totalEvents > 0) ? (float)completedEvents/totalEvents : 0;
+    _headerView.adherence = adherence;
+
+    // Update the week view heart for the selected index.
+    NSInteger selectedIndex = _weekPageViewController.careCardWeekView.selectedIndex;
+    [_weeklyAdherences replaceObjectAtIndex:selectedIndex withObject:@(adherence)];
+    _weekPageViewController.careCardWeekView.adherenceValues = _weeklyAdherences;
+}
+
+- (void)updateWeekView {
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    NSDate *selectedDate = [self dateFromCarePlanDay:_selectedDate];
+    NSDate *startOfWeek;
+    NSTimeInterval interval;
+    [calendar rangeOfUnit:NSCalendarUnitWeekOfMonth
+                startDate:&startOfWeek
+                 interval:&interval
+                  forDate:selectedDate];
+    NSDate *endOfWeek = [startOfWeek dateByAddingTimeInterval:interval-1];
+    
+    NSMutableArray *adherenceValues = [NSMutableArray new];
+    
+    [_store dailyCompletionStatusWithType:OCKCarePlanActivityTypeIntervention
+                                 startDay:[[OCKCarePlanDay alloc] initWithDate:startOfWeek calendar:calendar]
+                                   endDay:[[OCKCarePlanDay alloc] initWithDate:endOfWeek calendar:calendar]
+                               usingBlock:^(OCKCarePlanDay * _Nonnull day, NSUInteger completed, NSUInteger total, NSError * _Nonnull error) {
+                                   if (total == 0) {
+                                       [adherenceValues addObject:@(1)];
+                                   } else {
+                                       [adherenceValues addObject:@((float)completed/total)];
+                                   }
+                                   if (adherenceValues.count == 7) {
+                                       _weekPageViewController.careCardWeekView.adherenceValues = adherenceValues;
+                                       _weeklyAdherences = [adherenceValues mutableCopy];
+                                   }
+                               }];
+    
+    
 }
 
 - (OCKCarePlanDay *)dateFromSelectedIndex:(NSInteger)index {
@@ -134,7 +175,7 @@ static const CGFloat HeaderViewHeight = 235.0;
     newComponents.year = components.year;
     newComponents.month = components.month;
     newComponents.weekOfMonth = components.weekOfMonth;
-    newComponents.weekday = index;
+    newComponents.weekday = index + 1;
 
     NSDate *newDate = [[NSCalendar currentCalendar] dateFromComponents:newComponents];
     return [[OCKCarePlanDay alloc] initWithDate:newDate calendar:[NSCalendar currentCalendar]];
@@ -178,8 +219,9 @@ static const CGFloat HeaderViewHeight = 235.0;
 
                 [self updateHeaderView];
                 
-                [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:[_treatmentEvents indexOfObject:events] inSection:0]]
-                                      withRowAnimation:UITableViewRowAnimationNone];
+                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[_treatmentEvents indexOfObject:events] inSection:0];
+                [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+//                [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionNone animated:YES];
             }
             break;
         }
@@ -217,24 +259,8 @@ static const CGFloat HeaderViewHeight = 235.0;
 
 #pragma mark - UITableViewDelegate
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return CellHeight;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return tableView.rowHeight;
-}
-
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     return _headerView;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return HeaderViewHeight;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForHeaderInSection:(NSInteger)section {
-    return HeaderViewHeight;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {

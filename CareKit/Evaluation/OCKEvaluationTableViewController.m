@@ -131,7 +131,7 @@ const static CGFloat HeaderViewHeight = 100.0;
     newComponents.year = components.year;
     newComponents.month = components.month;
     newComponents.weekOfMonth = components.weekOfMonth;
-    newComponents.weekday = index;
+    newComponents.weekday = index + 1;
     
     NSDate *newDate = [[NSCalendar currentCalendar] dateFromComponents:newComponents];
     return [[OCKCarePlanDay alloc] initWithDate:newDate calendar:[NSCalendar currentCalendar]];

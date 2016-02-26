@@ -12,6 +12,7 @@
 
 @interface OCKHeartView : UIView
 
+@property (nonatomic) BOOL animate;
 @property (nonatomic, null_resettable) UIImage *maskImage;
 @property (nonatomic) CGFloat adherence;
 

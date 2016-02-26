@@ -8,7 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-@interface OCKCircleView : UIView
+@interface OCKRingView : UIView
+
+@property (nonatomic) BOOL disableAnimation;
 
 @property (nonatomic) double value;
 

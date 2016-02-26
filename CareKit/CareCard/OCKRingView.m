@@ -93,6 +93,16 @@
     _circleLayer.strokeColor = self.tintColor.CGColor;
 }
 
+- (void)setHideLabel:(BOOL)hideLabel {
+    _hideLabel = hideLabel;
+    if (_hideLabel) {
+        [_label removeFromSuperview];
+    } else {
+        _label.text = [_numberFormatter stringFromNumber:@(_value)];
+        [self addSubview:_label];
+    }
+}
+
 - (void)setValue:(double)value {
     
     double oldValue = _value;
@@ -132,8 +142,10 @@
             [_circleLayer addAnimation:animation forKey:animation.keyPath];
         }
         
-        _label.text = [_numberFormatter stringFromNumber:@(_value)];
-        [self addSubview:_label];
+        if (_hideLabel == NO) {
+            _label.text = [_numberFormatter stringFromNumber:@(_value)];
+            [self addSubview:_label];
+        }
     }
 }
 

@@ -10,8 +10,13 @@
 
 @interface OCKRingView : UIView
 
+// Default value is NO
+@property (nonatomic) BOOL hideLabel;
+
+// Default value is NO
 @property (nonatomic) BOOL disableAnimation;
 
+// Initial value is 0
 @property (nonatomic) double value;
 
 @end

@@ -13,17 +13,15 @@
 
 
 @implementation OCKHeartView {
-    CATransition *_animation;
     UIView *_maskView;
     UIView *_fillView;
-    
-    BOOL _isAnimating;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
         _animate = YES;
+        _adherence = 0;
         self.maskImage = nil;
         [self prepareView];
     }
@@ -52,17 +50,6 @@
 }
 
 - (void)animateFill {
-    if (!_animation) {
-        _animation = [CATransition animation];
-        _animation.duration = 1.25;
-        _animation.type = @"rippleEffect";
-        _animation.delegate = self;
-    }
-    
-//    if (!_isAnimating) {
-//        [self.layer addAnimation:_animation forKey:nil];
-//    }
-    
     if (_animate) {
         [UIView animateWithDuration:1.25 delay:0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
             _fillView.frame = CGRectMake(CGRectGetMinX(self.bounds), CGRectGetMaxY(self.bounds), CGRectGetMaxX(self.bounds), -_adherence * CGRectGetMaxY(self.bounds));
@@ -74,8 +61,10 @@
 }
 
 - (void)setAdherence:(CGFloat)adherence {
-    _adherence = adherence;
-    [self animateFill];
+    if (_adherence != adherence) {
+        _adherence = adherence;
+        [self animateFill];
+    }
 }
 
 - (void)setMaskImage:(UIImage *)maskImage {
@@ -85,17 +74,6 @@
     }
     
     [self prepareView];
-}
-
-
-#pragma mark - CAAnimationDelegate
-
-- (void)animationDidStart:(CAAnimation *)anim {
-    _isAnimating = YES;
-}
-
-- (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag {
-    _isAnimating = NO;
 }
 
 @end

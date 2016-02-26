@@ -41,7 +41,7 @@ static const CGFloat HeaderViewHeight = 235.0;
 - (instancetype)initWithCarePlanStore:(OCKCarePlanStore *)store {
     self = [super initWithStyle:UITableViewStylePlain];
     if (self) {
-        self.title = @"CareCard";
+        self.title = @"Care Card";
         _store = store;
         _store.careCardUIDelegate = self;
     }

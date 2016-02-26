@@ -72,7 +72,7 @@ static const CGFloat HeartViewSize = 150.0;
         _adherencePercentageLabel.textColor = OCKRedColor();
         [self addSubview:_adherencePercentageLabel];
     }
-    _adherencePercentageLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
+    _adherencePercentageLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
     _adherencePercentageLabel.text = self.adherencePercentageString;
     
     if (!_adherenceLabel) {
@@ -84,7 +84,7 @@ static const CGFloat HeartViewSize = 150.0;
         [self addSubview:_adherenceLabel];
     }
     
-    _adherenceLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
+    _adherenceLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
     
     if (!_bottomEdge) {
         _bottomEdge = [UILabel new];
@@ -177,19 +177,19 @@ static const CGFloat HeartViewSize = 150.0;
                                                                    multiplier:1.0
                                                                      constant:0.0],
                                        [NSLayoutConstraint constraintWithItem:_adherenceLabel
-                                                                    attribute:NSLayoutAttributeCenterX
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:self
-                                                                    attribute:NSLayoutAttributeCenterX
-                                                                   multiplier:1.0
-                                                                     constant:2*(_adherencePercentageLabel.frame.size.width + HorizontalMargin)],
-                                       [NSLayoutConstraint constraintWithItem:_adherenceLabel
                                                                     attribute:NSLayoutAttributeLeading
                                                                     relatedBy:NSLayoutRelationEqual
                                                                        toItem:_adherencePercentageLabel
                                                                     attribute:NSLayoutAttributeTrailing
                                                                    multiplier:1.0
                                                                      constant:HorizontalMargin],
+                                       [NSLayoutConstraint constraintWithItem:_adherenceLabel
+                                                                    attribute:NSLayoutAttributeCenterX
+                                                                    relatedBy:NSLayoutRelationEqual
+                                                                       toItem:self
+                                                                    attribute:NSLayoutAttributeCenterX
+                                                                   multiplier:1.0
+                                                                     constant:2*(_adherencePercentageLabel.frame.size.width + HorizontalMargin)],
                                        [NSLayoutConstraint constraintWithItem:_bottomEdge
                                                                     attribute:NSLayoutAttributeBottom
                                                                     relatedBy:NSLayoutRelationEqual

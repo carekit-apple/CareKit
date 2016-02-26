@@ -10,6 +10,7 @@
 #import "OCKCareCardWeekView.h"
 #import "OCKWeekView.h"
 #import "OCKHeartView.h"
+#import "OCKHeartButton.h"
 #import "OCKColors.h"
 
 
@@ -17,8 +18,7 @@ const static CGFloat HeartButtonSize = 20.0;
 
 @implementation OCKCareCardWeekView {
     OCKWeekView *_weekView;
-    NSMutableArray <UIButton *> *_heartButtons;
-    OCKHeartView *_heartView;
+    NSMutableArray <OCKHeartButton *> *_heartButtons;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame {
@@ -39,25 +39,26 @@ const static CGFloat HeartButtonSize = 20.0;
         _selectedIndex = weekday;
     }
     
-    _heartButtons = [NSMutableArray new];
-    for (int i = 0; i < 7; i++) {
-        UIButton *heart = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, HeartButtonSize, HeartButtonSize)];
-        heart.translatesAutoresizingMaskIntoConstraints = NO;
-        
-        _heartView = [[OCKHeartView alloc] initWithFrame:CGRectMake(0, 0, HeartButtonSize + 10, HeartButtonSize + 10)];
-        _heartView.animate = NO;
-        _heartView.adherence = [_adherenceValues[i] floatValue];
-        _heartView.userInteractionEnabled = NO;
-        [heart addSubview:_heartView];
-        
-        [heart addTarget:self
-                  action:@selector(updateDayOfWeek:)
-        forControlEvents:UIControlEventTouchDown];
-        
-        [self addSubview:heart];
-        [_heartButtons addObject:heart];
+    if (!_heartButtons) {
+        _heartButtons = [NSMutableArray new];
+        for (int i = 0; i < 7; i++) {
+            OCKHeartButton *heart = [[OCKHeartButton alloc] initWithFrame:CGRectMake(0, 0, HeartButtonSize, HeartButtonSize)];
+            heart.translatesAutoresizingMaskIntoConstraints = NO;
+            heart.backgroundColor = [UIColor clearColor];
+            
+            OCKHeartView *heartView = [[OCKHeartView alloc] initWithFrame:CGRectMake(0, 0, HeartButtonSize + 10, HeartButtonSize + 10)];
+            heartView.userInteractionEnabled = NO;
+            heart.heartView = heartView;
+            
+            [heart addTarget:self
+                      action:@selector(updateDayOfWeek:)
+            forControlEvents:UIControlEventTouchDown];
+            
+            [self addSubview:heart];
+            [_heartButtons addObject:heart];
+        }
     }
-
+    
     [self setUpConstraints];
 }
 
@@ -109,11 +110,14 @@ const static CGFloat HeartButtonSize = 20.0;
 
 - (void)setAdherenceValues:(NSArray *)adherenceValues {
     _adherenceValues = adherenceValues;
-    [self prepareView];
+    
+    for (int i = 0; i < _adherenceValues.count; i++) {
+        _heartButtons[i].heartView.adherence = [_adherenceValues[i] floatValue];
+    }
 }
 
 - (void)updateDayOfWeek:(id)sender {
-    UIButton *button = (UIButton *)sender;
+    OCKHeartButton *button = (OCKHeartButton *)sender;
     NSInteger dayOfWeek = [_heartButtons indexOfObject:button];
     _selectedIndex = dayOfWeek;
     

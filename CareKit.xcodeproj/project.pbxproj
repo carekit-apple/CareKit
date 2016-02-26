@@ -74,6 +74,8 @@
 		2445EB7A1C6D685D00F51A95 /* OCKWeekPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2445EB641C6D685D00F51A95 /* OCKWeekPageViewController.m */; };
 		2445EB7B1C6D685D00F51A95 /* OCKWeekView.h in Headers */ = {isa = PBXBuildFile; fileRef = 2445EB651C6D685D00F51A95 /* OCKWeekView.h */; };
 		2445EB7C1C6D685D00F51A95 /* OCKWeekView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2445EB661C6D685D00F51A95 /* OCKWeekView.m */; };
+		245AD95E1C7FE13300940688 /* OCKHeartButton.h in Headers */ = {isa = PBXBuildFile; fileRef = 245AD95C1C7FE13300940688 /* OCKHeartButton.h */; };
+		245AD95F1C7FE13300940688 /* OCKHeartButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 245AD95D1C7FE13300940688 /* OCKHeartButton.m */; };
 		24935CD21C7E341E00B208A9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 24935CD11C7E341E00B208A9 /* Assets.xcassets */; };
 		24A68D321C7E4CF4001EF39A /* OCKHeartView.h in Headers */ = {isa = PBXBuildFile; fileRef = 24A68D301C7E4CF4001EF39A /* OCKHeartView.h */; };
 		24A68D331C7E4CF4001EF39A /* OCKHeartView.m in Sources */ = {isa = PBXBuildFile; fileRef = 24A68D311C7E4CF4001EF39A /* OCKHeartView.m */; };
@@ -210,6 +212,8 @@
 		2445EB641C6D685D00F51A95 /* OCKWeekPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKWeekPageViewController.m; sourceTree = "<group>"; };
 		2445EB651C6D685D00F51A95 /* OCKWeekView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKWeekView.h; sourceTree = "<group>"; };
 		2445EB661C6D685D00F51A95 /* OCKWeekView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKWeekView.m; sourceTree = "<group>"; };
+		245AD95C1C7FE13300940688 /* OCKHeartButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKHeartButton.h; sourceTree = "<group>"; };
+		245AD95D1C7FE13300940688 /* OCKHeartButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKHeartButton.m; sourceTree = "<group>"; };
 		24935CD11C7E341E00B208A9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		24A68D301C7E4CF4001EF39A /* OCKHeartView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKHeartView.h; sourceTree = "<group>"; };
 		24A68D311C7E4CF4001EF39A /* OCKHeartView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKHeartView.m; sourceTree = "<group>"; };
@@ -440,6 +444,8 @@
 				2445EB561C6D685D00F51A95 /* OCKCareCardWeekView.m */,
 				2445EB651C6D685D00F51A95 /* OCKWeekView.h */,
 				2445EB661C6D685D00F51A95 /* OCKWeekView.m */,
+				245AD95C1C7FE13300940688 /* OCKHeartButton.h */,
+				245AD95D1C7FE13300940688 /* OCKHeartButton.m */,
 			);
 			name = "Week View";
 			sourceTree = "<group>";
@@ -660,6 +666,7 @@
 				2445EB2D1C6D67A100F51A95 /* OCKConnectTableViewCell.h in Headers */,
 				24FC503B1C7E317B00F74588 /* OCKCareCardTableViewController.h in Headers */,
 				24E318191C6EB08A0094C45B /* OCKEvaluationTableViewController.h in Headers */,
+				245AD95E1C7FE13300940688 /* OCKHeartButton.h in Headers */,
 				2445EAD91C6D66CC00F51A95 /* OCKCareSchedule_Internal.h in Headers */,
 				86BE2EFF1C77C83D00D66276 /* OCKCareCardViewController.h in Headers */,
 				24E114F41C7402B400ACCDE8 /* OCKEvaluationWeekView.h in Headers */,
@@ -801,6 +808,7 @@
 				241744AD1C7C247C00350094 /* OCKCareCardButton.m in Sources */,
 				86FA84FC1C5C466A0013114A /* OCKCarePlanStore.xcdatamodeld in Sources */,
 				24E318161C6EB08A0094C45B /* OCKEvaluationViewController.m in Sources */,
+				245AD95F1C7FE13300940688 /* OCKHeartButton.m in Sources */,
 				2445EB151C6D673000F51A95 /* OCKLine.m in Sources */,
 				2445EB0A1C6D673000F51A95 /* OCKChartTableViewController.m in Sources */,
 				2445EB211C6D673000F51A95 /* OCKRangePoint.m in Sources */,

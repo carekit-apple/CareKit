@@ -68,6 +68,7 @@ static const BOOL resetStoreOnLaunch = YES;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
     [self presentViewController:_tabBarController animated:YES completion:nil];
 }
 

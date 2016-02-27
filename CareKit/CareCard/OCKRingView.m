@@ -10,6 +10,7 @@
 
 @implementation OCKRingView {
     CAShapeLayer *_circleLayer;
+    CAShapeLayer *_backgroundLayer;
     UILabel *_label;
     NSNumberFormatter *_numberFormatter;
 }
@@ -18,7 +19,6 @@
     self = [super initWithFrame:frame];
     if (self) {
         _value = 0.0;
-        
         _label = [self createLabel];
         [self addSubview:_label];
         
@@ -28,6 +28,10 @@
         [_numberFormatter setMultiplier:@100];
         
         _label.text = [_numberFormatter stringFromNumber:@(_value)];
+        
+        _backgroundLayer = [self createShapeLayerWithValue:1.0];
+        _backgroundLayer.strokeColor = [UIColor lightGrayColor].CGColor;
+        [self.layer addSublayer:_backgroundLayer];
     }
     return self;
 }
@@ -113,7 +117,7 @@
         
         if (_disableAnimation) {
             _circleLayer = [self createShapeLayerWithValue:_value];
-            [self.layer.sublayers makeObjectsPerformSelector:@selector(removeFromSuperlayer)];
+            [_circleLayer removeFromSuperlayer];
             [self.layer addSublayer:_circleLayer];
         } else {
             BOOL reverse = oldValue > _value;
@@ -121,7 +125,7 @@
             double maxValue = MAX(oldValue, _value);
             
             _circleLayer = [self createShapeLayerWithValue:maxValue];
-            [self.layer.sublayers makeObjectsPerformSelector:@selector(removeFromSuperlayer)];
+            [_circleLayer removeFromSuperlayer];
             [self.layer addSublayer:_circleLayer];
             
             CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"strokeStart"];

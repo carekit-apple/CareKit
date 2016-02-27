@@ -34,11 +34,9 @@
     } else {
         _careCardWeekView = nil;
         if (!_evaluationWeekView) {
-            _evaluationWeekView = [[OCKEvaluationWeekView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 15.0)];
-            _evaluationWeekView.backgroundColor = [UIColor whiteColor];
+            _evaluationWeekView = [[OCKEvaluationWeekView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 40.0)];
             [self.view addSubview:_evaluationWeekView];
         }
-        self.view.frame = _evaluationWeekView.frame;
     }
     
     self.view.frame = CGRectMake(0, 0, self.view.frame.size.width, 65.0);

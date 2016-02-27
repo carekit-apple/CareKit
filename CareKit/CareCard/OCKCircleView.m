@@ -6,7 +6,9 @@
 //  Copyright © 2016 carekit.org. All rights reserved.
 //
 
+
 #import "OCKCircleView.h"
+
 
 @implementation OCKCircleView {
     CAShapeLayer *_circleLayer;
@@ -21,7 +23,6 @@
 }
 
 - (CAShapeLayer *)createShapeLayerWithValue:(double)value {
-    
     CGFloat diameter = MIN(self.frame.size.height, self.frame.size.width) * 0.9;
     CAShapeLayer *layer = [CAShapeLayer layer];
     layer.path = [self createPathWithValue:value].CGPath;
@@ -34,7 +35,6 @@
 }
 
 - (UIBezierPath *)createPathWithValue:(double)value {
-    
     CGFloat diameter = MIN(self.frame.size.height, self.frame.size.width) * 0.9;
 
     CGFloat ProgressIndicatorRadius = diameter / 2;
@@ -59,7 +59,6 @@
 }
 
 - (void)setValue:(double)value {
-    
     double oldValue = _value;
     
     _value = MAX(MIN(value, 1), 0);

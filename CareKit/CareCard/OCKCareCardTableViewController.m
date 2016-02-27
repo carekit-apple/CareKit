@@ -221,7 +221,6 @@ static const CGFloat HeaderViewHeight = 235.0;
                 
                 NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[_treatmentEvents indexOfObject:events] inSection:0];
                 [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
-//                [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionNone animated:YES];
             }
             break;
         }

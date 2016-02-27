@@ -8,17 +8,21 @@
 
 
 #import "OCKEvaluationTableViewHeader.h"
+#import "OCKCircleView.h"
+#import "OCKColors.h"
 
 
 static const CGFloat TopMargin = 20.0;
 static const CGFloat VerticalMargin = 10.0;
-static const CGFloat ProgressViewWidth = 325.0;
+
+static const CGFloat CircleViewSize = 165.0;
 
 @implementation OCKEvaluationTableViewHeader {
-    UIView *_topEdge;
     UILabel *_dateLabel;
-    UIProgressView *_progressView;
-    UILabel *_textLabel;
+    
+    OCKCircleView *_circleView;
+    
+    UIView *_topEdge;
     UIView *_bottomEdge;
 }
 
@@ -38,12 +42,6 @@ static const CGFloat ProgressViewWidth = 325.0;
 - (void)prepareView {
     self.backgroundColor = [UIColor whiteColor];
     
-    if (!_topEdge) {
-        _topEdge = [UIView new];
-        _topEdge.backgroundColor = [UIColor groupTableViewBackgroundColor];
-        [self addSubview:_topEdge];
-    }
-    
     if (!_dateLabel) {
         _dateLabel = [UILabel new];
         _dateLabel.lineBreakMode = NSLineBreakByTruncatingTail;
@@ -53,20 +51,17 @@ static const CGFloat ProgressViewWidth = 325.0;
     _dateLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
     _dateLabel.text = _date;
     
-    if (!_progressView) {
-        _progressView = [UIProgressView new];
-        [self addSubview:_progressView];
+    if (!_circleView) {
+        _circleView = [[OCKCircleView alloc] initWithFrame:CGRectMake(0, 0, CircleViewSize, CircleViewSize)];
+        [self addSubview:_circleView];
     }
-    [_progressView setProgress:_progress animated:YES];
-
-    if (!_textLabel) {
-        _textLabel = [UILabel new];
-        _textLabel.lineBreakMode = NSLineBreakByTruncatingTail;
-        _textLabel.textColor = [UIColor lightGrayColor];
-        [self addSubview:_textLabel];
+    _circleView.value = _progress;
+    
+    if (!_topEdge) {
+        _topEdge = [UIView new];
+        _topEdge.backgroundColor = [UIColor groupTableViewBackgroundColor];
+        [self addSubview:_topEdge];
     }
-    _textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
-    _textLabel.text = _text;
     
     if (!_bottomEdge) {
         _bottomEdge = [UIView new];
@@ -82,8 +77,7 @@ static const CGFloat ProgressViewWidth = 325.0;
     
     _topEdge.translatesAutoresizingMaskIntoConstraints = NO;
     _dateLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    _progressView.translatesAutoresizingMaskIntoConstraints = NO;
-    _textLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    _circleView.translatesAutoresizingMaskIntoConstraints = NO;
     _bottomEdge.translatesAutoresizingMaskIntoConstraints = NO;
     
     [constraints addObjectsFromArray:@[
@@ -115,27 +109,27 @@ static const CGFloat ProgressViewWidth = 325.0;
                                                                     attribute:NSLayoutAttributeCenterX
                                                                    multiplier:1.0
                                                                      constant:0.0],
-                                       [NSLayoutConstraint constraintWithItem:_progressView
+                                       [NSLayoutConstraint constraintWithItem:_circleView
                                                                     attribute:NSLayoutAttributeCenterX
                                                                     relatedBy:NSLayoutRelationEqual
                                                                        toItem:self
                                                                     attribute:NSLayoutAttributeCenterX
                                                                    multiplier:1.0
                                                                      constant:0.0],
-                                       [NSLayoutConstraint constraintWithItem:_textLabel
-                                                                    attribute:NSLayoutAttributeCenterX
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:self
-                                                                    attribute:NSLayoutAttributeCenterX
-                                                                   multiplier:1.0
-                                                                     constant:0.0],
-                                       [NSLayoutConstraint constraintWithItem:_progressView
+                                       [NSLayoutConstraint constraintWithItem:_circleView
                                                                     attribute:NSLayoutAttributeWidth
                                                                     relatedBy:NSLayoutRelationEqual
                                                                        toItem:nil
                                                                     attribute:NSLayoutAttributeNotAnAttribute
                                                                    multiplier:1.0
-                                                                     constant:ProgressViewWidth],
+                                                                     constant:CircleViewSize],
+                                       [NSLayoutConstraint constraintWithItem:_circleView
+                                                                    attribute:NSLayoutAttributeHeight
+                                                                    relatedBy:NSLayoutRelationEqual
+                                                                       toItem:nil
+                                                                    attribute:NSLayoutAttributeNotAnAttribute
+                                                                   multiplier:1.0
+                                                                     constant:CircleViewSize],
                                        [NSLayoutConstraint constraintWithItem:_dateLabel
                                                                     attribute:NSLayoutAttributeTop
                                                                     relatedBy:NSLayoutRelationEqual
@@ -143,17 +137,10 @@ static const CGFloat ProgressViewWidth = 325.0;
                                                                     attribute:NSLayoutAttributeTop
                                                                    multiplier:1.0
                                                                      constant:TopMargin],
-                                       [NSLayoutConstraint constraintWithItem:_progressView
+                                       [NSLayoutConstraint constraintWithItem:_circleView
                                                                     attribute:NSLayoutAttributeTop
                                                                     relatedBy:NSLayoutRelationEqual
                                                                        toItem:_dateLabel
-                                                                    attribute:NSLayoutAttributeBottom
-                                                                   multiplier:1.0
-                                                                     constant:VerticalMargin],
-                                       [NSLayoutConstraint constraintWithItem:_textLabel
-                                                                    attribute:NSLayoutAttributeTop
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:_progressView
                                                                     attribute:NSLayoutAttributeBottom
                                                                    multiplier:1.0
                                                                      constant:VerticalMargin],
@@ -186,16 +173,11 @@ static const CGFloat ProgressViewWidth = 325.0;
 
 - (void)setProgress:(CGFloat)progress {
     _progress = progress;
-    [_progressView setProgress:_progress animated:YES];
+    _circleView.value = _progress;
 }
 
 - (void)setDate:(NSString *)date {
     _date = date;
-    [self prepareView];
-}
-
-- (void)setText:(NSString *)text {
-    _text = text;
     [self prepareView];
 }
 

@@ -35,11 +35,6 @@ static const CGFloat ImageViewSize = 200.0;
 - (void)setTreatment:(OCKCarePlanActivity *)treatment {
     _treatment = treatment;
     [self prepareView];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(didChangePreferredContentSize)
-                                                 name:UIContentSizeCategoryDidChangeNotification
-                                               object:nil];
 }
 
 - (void)prepareView {
@@ -198,15 +193,5 @@ static const CGFloat ImageViewSize = 200.0;
     
     [NSLayoutConstraint activateConstraints:constraints];
 }
-
-- (void)didChangePreferredContentSize {
-    [self prepareView];
-}
-
-- (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-
 
 @end

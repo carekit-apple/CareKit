@@ -12,11 +12,8 @@
 #import "OCKColors.h"
 
 
-static const CGFloat LeadingMargin = 40.0;
-static const CGFloat TrailingMargin = 40.0;
 static const CGFloat TopMargin = 15.0;
-static const CGFloat VerticalMargin = 10.0;
-static const CGFloat HorizontalMargin = 5.0;
+static const CGFloat VerticalMargin = 5.0;
 
 static const CGFloat HeartViewSize = 150.0;
 
@@ -38,11 +35,6 @@ static const CGFloat HeartViewSize = 150.0;
     if (self) {
         self.backgroundColor = [UIColor whiteColor];
         [self prepareView];
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(didChangePreferredContentSize)
-                                                     name:UIContentSizeCategoryDidChangeNotification
-                                                   object:nil];
     }
     return self;
 }
@@ -50,9 +42,6 @@ static const CGFloat HeartViewSize = 150.0;
 - (void)prepareView {
     if (!_dateLabel) {
         _dateLabel = [UILabel new];
-        _dateLabel.numberOfLines = 1;
-        _dateLabel.lineBreakMode = NSLineBreakByWordWrapping;
-        _dateLabel.textAlignment = NSTextAlignmentCenter;
         _dateLabel.textColor = [UIColor darkGrayColor];
         [self addSubview:_dateLabel];
     }
@@ -67,24 +56,19 @@ static const CGFloat HeartViewSize = 150.0;
     
     if (!_adherencePercentageLabel) {
         _adherencePercentageLabel = [UILabel new];
-        _adherencePercentageLabel.numberOfLines = 1;
         _adherencePercentageLabel.lineBreakMode = NSLineBreakByCharWrapping;
         _adherencePercentageLabel.textColor = OCKRedColor();
         [self addSubview:_adherencePercentageLabel];
     }
-    _adherencePercentageLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    _adherencePercentageLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleTitle1];
     _adherencePercentageLabel.text = self.adherencePercentageString;
     
     if (!_adherenceLabel) {
         _adherenceLabel = [UILabel new];
-        _adherenceLabel.numberOfLines = 1;
-        _adherenceLabel.lineBreakMode = NSLineBreakByTruncatingTail;
-        _adherenceLabel.text = @"Care Complete";
-        _adherenceLabel.textColor = [UIColor grayColor];
+        _adherenceLabel.text = @"Care completion";
         [self addSubview:_adherenceLabel];
     }
-    
-    _adherenceLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    _adherenceLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
     
     if (!_bottomEdge) {
         _bottomEdge = [UILabel new];
@@ -103,22 +87,14 @@ static const CGFloat HeartViewSize = 150.0;
 
 - (void)setUpConstraints {
     NSMutableArray *constraints = [NSMutableArray new];
-    NSDictionary *views = NSDictionaryOfVariableBindings(_dateLabel);
-    NSDictionary *metrics = @{@"leadingMargin" : @(LeadingMargin),
-                              @"trailingMargin" : @(TrailingMargin)};
     
     _dateLabel.translatesAutoresizingMaskIntoConstraints = NO;
     _heartView.translatesAutoresizingMaskIntoConstraints = NO;
     _adherenceLabel.translatesAutoresizingMaskIntoConstraints = NO;
     _adherencePercentageLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    
     _topEdge.translatesAutoresizingMaskIntoConstraints = NO;
     _bottomEdge.translatesAutoresizingMaskIntoConstraints = NO;
-    
-    [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-leadingMargin-[_dateLabel]-trailingMargin-|"
-                                                                             options:NSLayoutFormatDirectionLeadingToTrailing
-                                                                             metrics:metrics
-                                                                               views:views]];
+
     [constraints addObjectsFromArray:@[
                                        [NSLayoutConstraint constraintWithItem:_dateLabel
                                                                     attribute:NSLayoutAttributeTop
@@ -147,7 +123,7 @@ static const CGFloat HeartViewSize = 150.0;
                                                                        toItem:self
                                                                     attribute:NSLayoutAttributeCenterX
                                                                    multiplier:1.0
-                                                                     constant:0.0],
+                                                                     constant:-HeartViewSize/2.25],
                                        [NSLayoutConstraint constraintWithItem:_heartView
                                                                     attribute:NSLayoutAttributeHeight
                                                                     relatedBy:NSLayoutRelationEqual
@@ -163,33 +139,33 @@ static const CGFloat HeartViewSize = 150.0;
                                                                    multiplier:1.0
                                                                      constant:HeartViewSize],
                                        [NSLayoutConstraint constraintWithItem:_adherencePercentageLabel
-                                                                    attribute:NSLayoutAttributeTop
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:_heartView
-                                                                    attribute:NSLayoutAttributeBottom
-                                                                   multiplier:1.0
-                                                                     constant:VerticalMargin],
-                                       [NSLayoutConstraint constraintWithItem:_adherencePercentageLabel
-                                                                    attribute:NSLayoutAttributeBaseline
+                                                                    attribute:NSLayoutAttributeLeading
                                                                     relatedBy:NSLayoutRelationEqual
                                                                        toItem:_adherenceLabel
-                                                                    attribute:NSLayoutAttributeBaseline
+                                                                    attribute:NSLayoutAttributeLeading
+                                                                   multiplier:1.0
+                                                                     constant:0.0],
+                                       [NSLayoutConstraint constraintWithItem:_adherencePercentageLabel
+                                                                    attribute:NSLayoutAttributeTop
+                                                                    relatedBy:NSLayoutRelationEqual
+                                                                       toItem:_adherenceLabel
+                                                                    attribute:NSLayoutAttributeBottom
                                                                    multiplier:1.0
                                                                      constant:0.0],
                                        [NSLayoutConstraint constraintWithItem:_adherenceLabel
                                                                     attribute:NSLayoutAttributeLeading
                                                                     relatedBy:NSLayoutRelationEqual
-                                                                       toItem:_adherencePercentageLabel
+                                                                       toItem:_heartView
                                                                     attribute:NSLayoutAttributeTrailing
                                                                    multiplier:1.0
-                                                                     constant:HorizontalMargin],
+                                                                     constant:5.0],
                                        [NSLayoutConstraint constraintWithItem:_adherenceLabel
-                                                                    attribute:NSLayoutAttributeCenterX
+                                                                    attribute:NSLayoutAttributeCenterY
                                                                     relatedBy:NSLayoutRelationEqual
-                                                                       toItem:self
-                                                                    attribute:NSLayoutAttributeCenterX
+                                                                       toItem:_heartView
+                                                                    attribute:NSLayoutAttributeCenterY
                                                                    multiplier:1.0
-                                                                     constant:2*(_adherencePercentageLabel.frame.size.width + HorizontalMargin)],
+                                                                     constant:15.0],
                                        [NSLayoutConstraint constraintWithItem:_bottomEdge
                                                                     attribute:NSLayoutAttributeBottom
                                                                     relatedBy:NSLayoutRelationEqual
@@ -245,14 +221,6 @@ static const CGFloat HeartViewSize = 150.0;
 - (void)setDate:(NSString *)date {
     _date = date;
     [self prepareView];
-}
-
-- (void)didChangePreferredContentSize {
-    [self prepareView];
-}
-
-- (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 

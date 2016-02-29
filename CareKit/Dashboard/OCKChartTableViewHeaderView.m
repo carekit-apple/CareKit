@@ -21,11 +21,6 @@ static const CGFloat HeaderViewLeadingMargin = 15.0;
     self = [super initWithFrame:frame];
     if (self) {
         [self prepareView];
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(didChangePreferredContentSize)
-                                                     name:UIContentSizeCategoryDidChangeNotification
-                                                   object:nil];
     }
     return self;
 }
@@ -100,14 +95,6 @@ static const CGFloat HeaderViewLeadingMargin = 15.0;
     _textLabel.text = _text;
     [_textLabel sizeToFit];
     [self setUpConstraints];
-}
-
-- (void)didChangePreferredContentSize {
-    [self prepareView];
-}
-
-- (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end

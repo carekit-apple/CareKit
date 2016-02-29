@@ -11,7 +11,6 @@
 #import "OCKWeekView.h"
 #import "OCKHeartView.h"
 #import "OCKHeartButton.h"
-#import "OCKColors.h"
 
 
 const static CGFloat HeartButtonSize = 20.0;
@@ -44,7 +43,6 @@ const static CGFloat HeartButtonSize = 20.0;
         for (int i = 0; i < 7; i++) {
             OCKHeartButton *heart = [[OCKHeartButton alloc] initWithFrame:CGRectMake(0, 0, HeartButtonSize, HeartButtonSize)];
             heart.translatesAutoresizingMaskIntoConstraints = NO;
-            heart.backgroundColor = [UIColor clearColor];
             
             OCKHeartView *heartView = [[OCKHeartView alloc] initWithFrame:CGRectMake(0, 0, HeartButtonSize + 10, HeartButtonSize + 10)];
             heartView.userInteractionEnabled = NO;
@@ -74,7 +72,7 @@ const static CGFloat HeartButtonSize = 20.0;
                                                                        toItem:self
                                                                     attribute:NSLayoutAttributeTop
                                                                    multiplier:1.0
-                                                                     constant:0.0],
+                                                                     constant:-5.0],
                                        [NSLayoutConstraint constraintWithItem:_weekView
                                                                     attribute:NSLayoutAttributeCenterX
                                                                     relatedBy:NSLayoutRelationEqual
@@ -93,7 +91,7 @@ const static CGFloat HeartButtonSize = 20.0;
                                                                            toItem:_heartButtons[i]
                                                                         attribute:NSLayoutAttributeTop
                                                                        multiplier:1.0
-                                                                         constant:0.0],
+                                                                         constant:-3.0],
                                            [NSLayoutConstraint constraintWithItem:dayLabel
                                                                         attribute:NSLayoutAttributeCenterX
                                                                         relatedBy:NSLayoutRelationEqual

@@ -15,9 +15,8 @@
 #import "OCKCareCardButton.h"
 
 
-static const CGFloat HorizontalMargin = 15.0;
+static const CGFloat HorizontalMargin = 9.0;
 static const CGFloat LeadingMargin = 20.0;
-static const CGFloat TopMargin = 10.0;
 
 @implementation OCKCareCardTableViewCell {
     UILabel *_titleLabel;
@@ -33,11 +32,6 @@ static const CGFloat TopMargin = 10.0;
     _treatmentEvents = treatmentEvents;
     _treatment = treatmentEvents.firstObject.activity;
     [self prepareView];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(didChangePreferredContentSize)
-                                                 name:UIContentSizeCategoryDidChangeNotification
-                                               object:nil];
 }
 
 - (void)prepareView {
@@ -48,18 +42,18 @@ static const CGFloat TopMargin = 10.0;
     if (!_titleLabel) {
         _titleLabel = [UILabel new];
         _titleLabel.lineBreakMode = NSLineBreakByTruncatingTail;
+        _titleLabel.font = [UIFont systemFontOfSize:14.0 weight:UIFontWeightMedium];
         [self.contentView addSubview:_titleLabel];
     }
-    _titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
     _titleLabel.text = _treatment.title;
     
     if (!_textLabel) {
         _textLabel = [UILabel new];
         _textLabel.lineBreakMode = NSLineBreakByTruncatingTail;
         _textLabel.textColor = [UIColor lightGrayColor];
+        _textLabel.font = [UIFont systemFontOfSize:14.0 weight:UIFontWeightThin];
         [self.contentView addSubview:_textLabel];
     }
-    _textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
     _textLabel.text = _treatment.text;
 
     for (OCKCareCardButton *button in _frequencyButtons) {
@@ -101,19 +95,19 @@ static const CGFloat TopMargin = 10.0;
     
     [constraints addObjectsFromArray:@[
                                        [NSLayoutConstraint constraintWithItem:_titleLabel
-                                                                    attribute:NSLayoutAttributeTop
+                                                                    attribute:NSLayoutAttributeCenterY
                                                                     relatedBy:NSLayoutRelationEqual
                                                                        toItem:self.contentView
-                                                                    attribute:NSLayoutAttributeTop
+                                                                    attribute:NSLayoutAttributeCenterY
                                                                    multiplier:1.0
-                                                                     constant:TopMargin],
+                                                                     constant:-20.0],
                                        [NSLayoutConstraint constraintWithItem:_textLabel
-                                                                    attribute:NSLayoutAttributeTop
+                                                                    attribute:NSLayoutAttributeBaseline
                                                                     relatedBy:NSLayoutRelationEqual
-                                                                       toItem:self.contentView
-                                                                    attribute:NSLayoutAttributeTop
+                                                                       toItem:_titleLabel
+                                                                    attribute:NSLayoutAttributeBaseline
                                                                    multiplier:1.0
-                                                                     constant:TopMargin],
+                                                                     constant:0.0],
                                        [NSLayoutConstraint constraintWithItem:_titleLabel
                                                                     attribute:NSLayoutAttributeBaseline
                                                                     relatedBy:NSLayoutRelationEqual
@@ -141,7 +135,7 @@ static const CGFloat TopMargin = 10.0;
                                                                        toItem:self
                                                                     attribute:NSLayoutAttributeLeading
                                                                    multiplier:1.0
-                                                                     constant:5.0],
+                                                                     constant:0.0],
                                        [NSLayoutConstraint constraintWithItem:_leadingEdge
                                                                     attribute:NSLayoutAttributeCenterY
                                                                     relatedBy:NSLayoutRelationEqual
@@ -162,7 +156,7 @@ static const CGFloat TopMargin = 10.0;
                                                                        toItem:self
                                                                     attribute:NSLayoutAttributeHeight
                                                                    multiplier:1.0
-                                                                     constant:-20.0]
+                                                                     constant:0.0]
                                        ]];
     
     for (int i = 0; i < _frequencyButtons.count; i++) {
@@ -208,14 +202,6 @@ static const CGFloat TopMargin = 10.0;
         [_delegate careCardCellDidUpdateFrequency:self ofTreatmentEvent:selectedEvent];
     }
     
-}
-
-- (void)didChangePreferredContentSize {
-    [self prepareView];
-}
-
-- (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end

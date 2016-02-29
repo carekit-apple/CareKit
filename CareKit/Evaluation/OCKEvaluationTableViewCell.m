@@ -12,7 +12,7 @@
 
 
 const static CGFloat LeadingMargin = 20.0;
-const static CGFloat VerticalMargin = 5.0;
+const static CGFloat VerticalMargin = 10.0;
 const static CGFloat TrailingMargin = 40.0;
 
 const static CGFloat ValueLabelWidth = 100.0;
@@ -29,11 +29,6 @@ const static CGFloat ValueLabelWidth = 100.0;
 - (void)setEvaluationEvent:(OCKCarePlanEvent *)evaluationEvent {
     _evaluationEvent = evaluationEvent;
     [self prepareView];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(didChangePreferredContentSize)
-                                                 name:UIContentSizeCategoryDidChangeNotification
-                                               object:nil];
 }
 
 - (void)prepareView {
@@ -43,11 +38,9 @@ const static CGFloat ValueLabelWidth = 100.0;
     
     if (!_titleLabel) {
         _titleLabel = [UILabel new];
-        _titleLabel.numberOfLines = 1;
-        _titleLabel.lineBreakMode = NSLineBreakByTruncatingTail;
+        _titleLabel.font = [UIFont systemFontOfSize:14.0 weight:UIFontWeightMedium];
         [self.contentView addSubview:_titleLabel];
     }
-    _titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
     _titleLabel.text = _evaluationEvent.activity.title;
     
     if (!_textLabel) {
@@ -56,14 +49,13 @@ const static CGFloat ValueLabelWidth = 100.0;
         _textLabel.lineBreakMode = NSLineBreakByWordWrapping;
         _textLabel.textAlignment = NSTextAlignmentCenter;
         _textLabel.textColor = [UIColor lightGrayColor];
+        _textLabel.font = [UIFont systemFontOfSize:14.0 weight:UIFontWeightThin];
         [self.contentView addSubview:_textLabel];
     }
-    _textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
     _textLabel.text = _evaluationEvent.activity.text;
     
     if (!_valueLabel) {
         _valueLabel = [UILabel new];;
-        _valueLabel.lineBreakMode = NSLineBreakByTruncatingTail;
         _valueLabel.textAlignment = NSTextAlignmentRight;
         [self.contentView addSubview:_valueLabel];
     }
@@ -113,7 +105,7 @@ const static CGFloat ValueLabelWidth = 100.0;
                                                                        toItem:_titleLabel
                                                                     attribute:NSLayoutAttributeCenterY
                                                                    multiplier:1.0
-                                                                     constant:2*(_titleLabel.frame.size.height + VerticalMargin)],
+                                                                     constant:VerticalMargin],
                                        [NSLayoutConstraint constraintWithItem:_textLabel
                                                                     attribute:NSLayoutAttributeLeading
                                                                     relatedBy:NSLayoutRelationEqual
@@ -169,7 +161,7 @@ const static CGFloat ValueLabelWidth = 100.0;
                                                                        toItem:self
                                                                     attribute:NSLayoutAttributeLeading
                                                                    multiplier:1.0
-                                                                     constant:5.0],
+                                                                     constant:0.0],
                                        [NSLayoutConstraint constraintWithItem:_leadingEdge
                                                                     attribute:NSLayoutAttributeCenterY
                                                                     relatedBy:NSLayoutRelationEqual
@@ -190,19 +182,10 @@ const static CGFloat ValueLabelWidth = 100.0;
                                                                        toItem:self
                                                                     attribute:NSLayoutAttributeHeight
                                                                    multiplier:1.0
-                                                                     constant:-20.0]
+                                                                     constant:0.0]
                                        ]];
     
     [NSLayoutConstraint activateConstraints:constraints];
 }
-
-- (void)didChangePreferredContentSize {
-    [self prepareView];
-}
-
-- (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
 
 @end

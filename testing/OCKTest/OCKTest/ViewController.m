@@ -62,7 +62,7 @@ static const BOOL resetStoreOnLaunch = NO;
                                                               selectedImage:[UIImage imageNamed:@"connect-filled"]];
     
     _tabBarController = [UITabBarController new];
-    _tabBarController.tabBar.tintColor = OCKPinkColor();
+    _tabBarController.tabBar.tintColor = OCKRedColor();
     _tabBarController.viewControllers = @[_dashboardViewController, _careCardViewController, _evaluationViewController, _connectViewController];
     _tabBarController.selectedIndex = 1;
 }
@@ -132,12 +132,9 @@ static const BOOL resetStoreOnLaunch = NO;
     }
     
     OCKDashboardViewController *dashboard = [OCKDashboardViewController dashboardWithCharts:charts];
-    dashboard.headerTitle = @"Today";
+    dashboard.headerTitle = @"Weekly Charts";
     
-    NSDateFormatter *formatter = [NSDateFormatter new];
-    formatter.dateStyle = NSDateFormatterMediumStyle;
-    formatter.timeStyle = NSDateFormatterNoStyle;
-    dashboard.headerText = [formatter stringFromDate:[NSDate date]];
+    dashboard.headerText = @"2/28 - 3/5";
     
     return dashboard;
 }
@@ -156,25 +153,25 @@ static const BOOL resetStoreOnLaunch = NO;
     
     {
         OCKContact *contact = [OCKContact contactWithContactType:OCKContactTypeClinician
-                                                            name:@"Dr. John Smith"
-                                                        relation:@"physician"
+                                                            name:@"Dr. Giselle Guerrero"
+                                                        relation:@"Physician"
                                                      phoneNumber:@"123-456-7890"
-                                                   messageNumber:@"123-456-7890"
-                                                    emailAddress:@"jsmith@researchkit.org"
-                                                           image:nil];
+                                                   messageNumber:nil
+                                                    emailAddress:@"g_guerrero@carekit.org"
+                                                           image:[UIImage imageNamed:@"doctor"]];
         contact.tintColor = OCKBlueColor();
         [contacts addObject:contact];
     }
     
     {
         OCKContact *contact = [OCKContact contactWithContactType:OCKContactTypeClinician
-                                                            name:@"Dr. Casey Watson"
-                                                        relation:@"dermatologist"
+                                                            name:@"Tom Clark"
+                                                        relation:@"Nurse"
                                                      phoneNumber:@"123-456-7890"
                                                    messageNumber:nil
-                                                    emailAddress:nil
+                                                    emailAddress:@"nbrooks@researchkit.org"
                                                            image:nil];
-        contact.tintColor = OCKPinkColor();
+        contact.tintColor = OCKGreenColor();
         [contacts addObject:contact];
     }
     
@@ -182,24 +179,12 @@ static const BOOL resetStoreOnLaunch = NO;
         
         OCKContact *contact = [OCKContact contactWithContactType:OCKContactTypeEmergencyContact
                                                             name:@"John Appleseed"
-                                                        relation:@"father"
+                                                        relation:@"Father"
                                                      phoneNumber:@"123-456-7890"
                                                    messageNumber:@"123-456-7890"
                                                     emailAddress:nil
                                                            image:nil];
         contact.tintColor = OCKYellowColor();
-        [contacts addObject:contact];
-    }
-    
-    {
-        OCKContact *contact = [OCKContact contactWithContactType:OCKContactTypeClinician
-                                                            name:@"Shelby Brooks"
-                                                        relation:@"nurse"
-                                                     phoneNumber:@"123-456-7890"
-                                                   messageNumber:nil
-                                                    emailAddress:@"nbrooks@researchkit.org"
-                                                           image:nil];
-        contact.tintColor = OCKGreenColor();
         [contacts addObject:contact];
     }
     
@@ -266,12 +251,12 @@ DefineStringKey(PhysicalTherapyTreatment);
     OCKCarePlanDay *startDate = [[OCKCarePlanDay alloc] initWithYear:2016 month:01 day:01];
     
     {
-        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDay:startDate occurrencesOnEachDay:@[@2,@1,@2,@1,@2,@3,@3]];
+        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDay:startDate occurrencesOnEachDay:@[@2,@2,@2,@1,@2,@3,@3]];
         UIColor *color = OCKBlueColor();
         OCKCarePlanActivity *treatment = [[OCKCarePlanActivity alloc] initWithIdentifier:MeditationTreatment
                                                                                     type:OCKCarePlanActivityTypeIntervention
-                                                                                   title:@"Meditation"
-                                                                                    text:@"30 mins"
+                                                                                   title:@"Hamstring Stretch"
+                                                                                    text:@"5 mins"
                                                                                tintColor:color
                                                                                 schedule:schedule];
         [treatments addObject:treatment];
@@ -302,12 +287,12 @@ DefineStringKey(PhysicalTherapyTreatment);
     }
     
     {
-        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDay:startDate occurrencesOnEachDay:@[@1,@0,@1,@0,@1,@0,@1]];
+        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDay:startDate occurrencesOnEachDay:@[@1,@1,@1,@0,@1,@0,@1]];
         UIColor *color = OCKYellowColor();
         OCKCarePlanActivity *treatment = [[OCKCarePlanActivity alloc] initWithIdentifier:PhysicalTherapyTreatment
                                                                                     type:OCKCarePlanActivityTypeIntervention
                                                                                    title:@"Physical Therapy"
-                                                                                    text:@"lower back"
+                                                                                    text:@"Lower back"
                                                                                tintColor:color
                                                                                 schedule:schedule];
         [treatments addObject:treatment];
@@ -331,12 +316,12 @@ DefineStringKey(WeightEvaluation);
     OCKCarePlanDay *startDate = [[OCKCarePlanDay alloc] initWithYear:2016 month:01 day:01];
 
     {
-        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDay:startDate occurrencesOnEachDay:@[@1,@0,@1,@0,@1,@0,@1]];
+        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDay:startDate occurrencesOnEachDay:@[@1,@1,@1,@0,@1,@0,@1]];
         UIColor *color = OCKBlueColor();
         OCKCarePlanActivity *evaluation = [[OCKCarePlanActivity alloc] initWithIdentifier:PainEvaluation
                                                                                      type:OCKCarePlanActivityTypeAssessment
                                                                                     title:@"Pain"
-                                                                                     text:@"lower back"
+                                                                                     text:@"Lower back"
                                                                                 tintColor:color
                                                                                  schedule:schedule];
         [evaluations addObject:evaluation];
@@ -348,19 +333,19 @@ DefineStringKey(WeightEvaluation);
         OCKCarePlanActivity *evaluation = [[OCKCarePlanActivity alloc] initWithIdentifier:MoodEvaluation
                                                                                      type:OCKCarePlanActivityTypeAssessment
                                                                                     title:@"Mood"
-                                                                                     text:@"survey"
+                                                                                     text:@"Survey"
                                                                                 tintColor:color
                                                                                  schedule:schedule];
         [evaluations addObject:evaluation];
     }
     
     {
-        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDay:startDate occurrencesOnEachDay:@[@1,@1,@0,@1,@1,@1,@0]];
+        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDay:startDate occurrencesOnEachDay:@[@1,@0,@0,@1,@1,@1,@0]];
         UIColor *color = OCKRedColor();
         OCKCarePlanActivity *evaluation = [[OCKCarePlanActivity alloc] initWithIdentifier:SleepQualityEvaluation
                                                                                      type:OCKCarePlanActivityTypeAssessment
                                                                                     title:@"Sleep Quality"
-                                                                                     text:@"last night"
+                                                                                     text:@"Last night"
                                                                                 tintColor:color
                                                                                  schedule:schedule];
         [evaluations addObject:evaluation];
@@ -372,7 +357,7 @@ DefineStringKey(WeightEvaluation);
         OCKCarePlanActivity *evaluation = [[OCKCarePlanActivity alloc] initWithIdentifier:BloodPressureEvaluation
                                                                                      type:OCKCarePlanActivityTypeAssessment
                                                                                     title:@"Blood Pressure"
-                                                                                     text:@"after dinner"
+                                                                                     text:@"After dinner"
                                                                                 tintColor:color
                                                                                  schedule:schedule];
         [evaluations addObject:evaluation];
@@ -384,7 +369,7 @@ DefineStringKey(WeightEvaluation);
         OCKCarePlanActivity *evaluation = [[OCKCarePlanActivity alloc] initWithIdentifier:WeightEvaluation
                                                                                      type:OCKCarePlanActivityTypeAssessment
                                                                                     title:@"Weight"
-                                                                                     text:@"before breakfast"
+                                                                                     text:@"Before breakfast"
                                                                                 tintColor:color
                                                                                  schedule:schedule];
         [evaluations addObject:evaluation];

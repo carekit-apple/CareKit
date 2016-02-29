@@ -40,7 +40,6 @@
     [super viewDidLoad];
     
     _connectTableViewCells = nil;
-    self.tableView.sectionHeaderHeight = 20.0;
     self.tableView.rowHeight = 90.0;
     
     NSMutableArray<OCKConnectTableViewCell *> *clinicians = [NSMutableArray new];
@@ -51,7 +50,6 @@
         if (!cell) {
             cell = [[OCKConnectTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
                                                   reuseIdentifier:CellIdentifier];
-            cell.delegate = self;
         }
         cell.contact = contact;
         
@@ -71,36 +69,15 @@
 }
 
 
-#pragma mark - Helpers
-
-- (void)makeCallToNumber:(NSString *)number {
-    NSString *stringURL = [NSString stringWithFormat:@"tel:%@", number];
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:stringURL]];
-}
-
-- (void)sendMessageToNumber:(NSString *)number {
-    MFMessageComposeViewController *messageViewController = [MFMessageComposeViewController new];
-    if ([MFMessageComposeViewController canSendText]) {
-        messageViewController.messageComposeDelegate = self;
-        messageViewController.recipients = @[number];
-        [self presentViewController:messageViewController animated:YES completion:nil];
-    }
-}
-
-- (void)sendEmailToAddress:(NSString *)address {
-    MFMailComposeViewController *emailViewController = [MFMailComposeViewController new];
-    if ([MFMailComposeViewController canSendMail]) {
-        emailViewController.mailComposeDelegate = self;
-        [emailViewController setToRecipients:@[address]];
-        [self presentViewController:emailViewController animated:YES completion:nil];
-    }
-}
-
-
 #pragma mark - UITableViewDelegate
 
-- (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath {
-    return NO;
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (_delegate &&
+        [_delegate respondsToSelector:@selector(tableViewDidSelectRowWithContact:)]) {
+        [_delegate tableViewDidSelectRowWithContact:_connectTableViewCells[indexPath.section][indexPath.row].contact];
+    }
+    
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 
@@ -114,11 +91,11 @@
     NSString *sectionTitle = nil;
     switch (section) {
         case 0:
-            sectionTitle = @"Clinicians";
+            sectionTitle = @"Care Team";
             break;
             
         case 1:
-            sectionTitle = @"Emergency Contacts";
+            sectionTitle = @"Friends & Family";
             break;
     }
     return sectionTitle;
@@ -130,51 +107,6 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     return _connectTableViewCells[indexPath.section][indexPath.row];
-}
-
-
-#pragma mark - OCKConnectTableViewCellDelegate
-
-- (void)connectTableViewCell:(OCKConnectTableViewCell *)cell didSelectConnectType:(OCKConnectType)connectType {
-    switch (connectType) {
-        case OCKConnectTypePhone:
-            [self makeCallToNumber:cell.contact.phoneNumber];
-            break;
-        case OCKConnectTypeMessage:
-            [self sendMessageToNumber:cell.contact.messageNumber];
-            break;
-        case OCKConnectTypeEmail:
-            [self sendEmailToAddress:cell.contact.emailAddress];
-            break;
-    }
-}
-
-
-#pragma mark - MFMessageComposeViewControllerDelegate
-
-- (void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result {
-    [self dismissViewControllerAnimated:YES completion:nil];
-    if (result == MessageComposeResultFailed) {
-        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Error"
-                                                                                 message:@"Message send failed."
-                                                                          preferredStyle:UIAlertControllerStyleAlert];
-        [self presentViewController:alertController animated:YES completion:nil];
-    }
-}
-
-
-#pragma mark - MFMailComposeViewControllerDelegate
-
-- (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error {
-    [self dismissViewControllerAnimated:YES completion:nil];
-    if (result == MFMailComposeResultFailed) {
-        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Error"
-                                                                                 message:@"Email send failed."
-                                                                          preferredStyle:UIAlertControllerStyleAlert];
-        [self presentViewController:alertController animated:YES completion:nil];
-        
-        NSLog(@"%@", error);
-    }
 }
 
 @end

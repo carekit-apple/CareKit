@@ -13,16 +13,16 @@
 #import "OCKHelpers.h"
 #import "OCKCarePlanStore_Internal.h"
 #import "OCKWeekPageViewController.h"
+#import "OCKEvaluationWeekView.h"
 
 
-const static CGFloat CellHeight = 85.0;
-const static CGFloat HeaderViewHeight = 100.0;
+const static CGFloat CellHeight = 90.0;
+const static CGFloat HeaderViewHeight = 150.0;
 
 @implementation OCKEvaluationTableViewController {
-    OCKWeekPageViewController *_weekPageViewController;
     NSArray<NSArray<OCKCarePlanEvent *> *> *_evaluationEvents;
+    NSMutableArray *_weeklyProgress;
     OCKEvaluationTableViewHeader *_headerView;
-    NSDateFormatter *_dateFormatter;
 }
 
 + (instancetype)new {
@@ -39,7 +39,7 @@ const static CGFloat HeaderViewHeight = 100.0;
                              delegate:(id<OCKEvaluationTableViewDelegate>)delegate {
     self = [super initWithStyle:UITableViewStylePlain];
     if (self) {
-        self.title = @"Evaluations";
+        self.title = @"Checkups";
         _store = store;
         _delegate = delegate;
         _lastSelectedEvaluationEvent = nil;
@@ -53,6 +53,8 @@ const static CGFloat HeaderViewHeight = 100.0;
     
     _selectedDate = [[OCKCarePlanDay alloc] initWithDate:[NSDate date]
                                                 calendar:[NSCalendar currentCalendar]];
+    
+    self.tableView.rowHeight = CellHeight;
     
     [self fetchEvaluationEvents];
     [self prepareView];
@@ -78,8 +80,10 @@ const static CGFloat HeaderViewHeight = 100.0;
                                                                    navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal
                                                                                  options:nil];
     _weekPageViewController.dataSource = self;
+    _weekPageViewController.showCareCardWeekView = NO;
     
     self.tableView.tableHeaderView = _weekPageViewController.view;
+    self.tableView.tableHeaderView.backgroundColor = [UIColor whiteColor];
     self.tableView.tableFooterView = [UIView new];
 }
 
@@ -98,7 +102,9 @@ const static CGFloat HeaderViewHeight = 100.0;
              completion:^(NSArray<NSArray<OCKCarePlanEvent *> *> * _Nonnull eventsGroupedByActivity, NSError * _Nonnull error) {
                  _evaluationEvents = eventsGroupedByActivity;
                  NSAssert(!error, error.localizedDescription);
+
                  [self updateHeaderView];
+                 [self updateWeekView];
                  [self.tableView reloadData];
              }];
 }
@@ -116,9 +122,45 @@ const static CGFloat HeaderViewHeight = 100.0;
             completedEvents++;
         }
     }
-    _headerView.progress = (totalEvents > 0) ? (float)completedEvents/totalEvents : 0;
     
-    _headerView.text = [NSString stringWithFormat:@"%@ of %@", [@(completedEvents) stringValue], [@(totalEvents) stringValue]];
+    float progress = (totalEvents > 0) ? (float)completedEvents/totalEvents : 0;
+    _headerView.progress = progress;
+    
+    // Update the week view heart for the selected index.
+    NSInteger selectedIndex = _weekPageViewController.evaluationWeekView.selectedIndex;
+    [_weeklyProgress replaceObjectAtIndex:selectedIndex withObject:@(progress)];
+    _weekPageViewController.evaluationWeekView.progressValues = _weeklyProgress;
+}
+
+- (void)updateWeekView {
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    NSDate *selectedDate = [self dateFromCarePlanDay:_selectedDate];
+    NSDate *startOfWeek;
+    NSTimeInterval interval;
+    [calendar rangeOfUnit:NSCalendarUnitWeekOfMonth
+                startDate:&startOfWeek
+                 interval:&interval
+                  forDate:selectedDate];
+    NSDate *endOfWeek = [startOfWeek dateByAddingTimeInterval:interval-1];
+    
+    NSMutableArray *progressValues = [NSMutableArray new];
+    
+    [_store dailyCompletionStatusWithType:OCKCarePlanActivityTypeAssessment
+                                 startDay:[[OCKCarePlanDay alloc] initWithDate:startOfWeek calendar:calendar]
+                                   endDay:[[OCKCarePlanDay alloc] initWithDate:endOfWeek calendar:calendar]
+                               usingBlock:^(OCKCarePlanDay * _Nonnull day, NSUInteger completed, NSUInteger total, NSError * _Nonnull error) {
+                                   if (total == 0) {
+                                       [progressValues addObject:@(1)];
+                                   } else {
+                                       [progressValues addObject:@((float)completed/total)];
+                                   }
+                                   if (progressValues.count == 7) {
+                                       _weekPageViewController.evaluationWeekView.progressValues = progressValues;
+                                       _weeklyProgress = [progressValues mutableCopy];
+                                   }
+                               }];
+    
+    
 }
 
 - (OCKCarePlanDay *)dateFromSelectedIndex:(NSInteger)index {
@@ -183,24 +225,12 @@ const static CGFloat HeaderViewHeight = 100.0;
 
 #pragma mark - UITableViewDelegate
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return CellHeight;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return tableView.rowHeight;
-}
-
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    return _headerView;
-}
-
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     return HeaderViewHeight;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForHeaderInSection:(NSInteger)section {
-    return HeaderViewHeight;
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    return _headerView;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -224,6 +254,10 @@ const static CGFloat HeaderViewHeight = 100.0;
 
 
 #pragma mark - UITableViewDataSource
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    return @"Surveys";
+}
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return _evaluationEvents.count;

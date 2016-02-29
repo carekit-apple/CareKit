@@ -44,7 +44,7 @@
     
     if (!_fillView) {
         _fillView = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMinX(self.bounds), CGRectGetMaxY(self.bounds), CGRectGetMaxX(self.bounds), CGRectGetMaxY(self.bounds))];
-        _fillView.backgroundColor = OCKPinkColor();
+        _fillView.backgroundColor = OCKRedColor();
         [self addSubview:_fillView];
     }
 }

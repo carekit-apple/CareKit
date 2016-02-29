@@ -12,11 +12,13 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@class OCKCircleView;
+
 @interface OCKEvaluationTableViewHeader : UIView
 
-@property (nonatomic, copy) NSString *date;
 @property (nonatomic) CGFloat progress;
-@property (nonatomic, copy) NSString *text;
+@property (nonatomic) OCKCircleView *circleView;
+@property (nonatomic, copy) NSString *date;
 
 @end
 

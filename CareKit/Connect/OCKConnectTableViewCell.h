@@ -20,17 +20,9 @@ typedef NS_ENUM(NSInteger, OCKConnectType) {
 
 @class OCKContact, OCKConnectTableViewCell;
 
-@protocol OCKConnectTableViewCellDelegate <NSObject>
-
-- (void)connectTableViewCell:(OCKConnectTableViewCell *)cell didSelectConnectType:(OCKConnectType)connectType;
-
-@end
-
-
 @interface OCKConnectTableViewCell : UITableViewCell
 
 @property (nonatomic) OCKContact *contact;
-@property (nonatomic) id<OCKConnectTableViewCellDelegate> delegate;
 
 @end
 

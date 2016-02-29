@@ -8,8 +8,10 @@
 
 
 #import "OCKConnectViewController.h"
+#import "OCKConnectViewController_Internal.h"
 #import "OCKContact.h"
 #import "OCKConnectTableViewController.h"
+#import "OCKConnectDetailViewController.h"
 #import "OCKHelpers.h"
 
 
@@ -41,6 +43,12 @@
     return self;
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    _tableViewController.delegate = self;
+    self.navigationBar.tintColor = self.view.tintColor;
+}
+
 - (void)setContacts:(NSArray<OCKContact *> *)contacts {
     _contacts = [contacts copy];
     _tableViewController.contacts = contacts;
@@ -49,6 +57,14 @@
 - (void)setTitle:(NSString *)title {
     [super setTitle:title];
     self.topViewController.title = self.title;
+}
+
+
+#pragma mark - OCKConnectTableViewDelegate
+
+- (void)tableViewDidSelectRowWithContact:(OCKContact *)contact {
+    OCKConnectDetailViewController *detailViewController = [[OCKConnectDetailViewController alloc] initWithContact:contact];
+    [self pushViewController:detailViewController animated:YES];
 }
 
 @end

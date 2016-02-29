@@ -72,7 +72,7 @@ const static CGFloat HeartButtonSize = 20.0;
                                                                        toItem:self
                                                                     attribute:NSLayoutAttributeTop
                                                                    multiplier:1.0
-                                                                     constant:0.0],
+                                                                     constant:-5.0],
                                        [NSLayoutConstraint constraintWithItem:_weekView
                                                                     attribute:NSLayoutAttributeCenterX
                                                                     relatedBy:NSLayoutRelationEqual
@@ -91,7 +91,7 @@ const static CGFloat HeartButtonSize = 20.0;
                                                                            toItem:_heartButtons[i]
                                                                         attribute:NSLayoutAttributeTop
                                                                        multiplier:1.0
-                                                                         constant:-5.0],
+                                                                         constant:-3.0],
                                            [NSLayoutConstraint constraintWithItem:dayLabel
                                                                         attribute:NSLayoutAttributeCenterX
                                                                         relatedBy:NSLayoutRelationEqual

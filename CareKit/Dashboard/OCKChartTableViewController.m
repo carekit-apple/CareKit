@@ -37,7 +37,7 @@
         
         NSAssert([self isChartArrayValid:charts], @"The chart array can only include objects that are a subclass of OCKChart.");
         
-        self.title = @"Dashboard";
+        self.title = @"Insights";
         _charts = [charts copy];
     }
     return self;

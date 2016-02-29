@@ -8,19 +8,19 @@
 
 
 #import "OCKEvaluationTableViewHeader.h"
-#import "OCKCircleView.h"
+#import "OCKRingView.h"
 #import "OCKColors.h"
 
 
-static const CGFloat TopMargin = 20.0;
-static const CGFloat VerticalMargin = 10.0;
+static const CGFloat TopMargin = 15.0;
+static const CGFloat HorizontalMargin = 10.0;
 
-static const CGFloat CircleViewSize = 165.0;
+static const CGFloat RingViewSize = 120.0;
 
 @implementation OCKEvaluationTableViewHeader {
+    OCKRingView *_ringView;
+    UILabel *_titleLabel;
     UILabel *_dateLabel;
-    
-    OCKCircleView *_circleView;
     
     UIView *_topEdge;
     UIView *_bottomEdge;
@@ -30,17 +30,25 @@ static const CGFloat CircleViewSize = 165.0;
     self = [super initWithFrame:frame];
     if (self) {
         [self prepareView];
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(didChangePreferredContentSize)
-                                                     name:UIContentSizeCategoryDidChangeNotification
-                                                   object:nil];
     }
     return self;
 }
 
 - (void)prepareView {
     self.backgroundColor = [UIColor whiteColor];
+    
+    if (!_ringView) {
+        _ringView = [[OCKRingView alloc] initWithFrame:CGRectMake(0, 0, RingViewSize, RingViewSize)];
+        [self addSubview:_ringView];
+    }
+    _ringView.value = _progress;
+    
+    if (!_titleLabel) {
+        _titleLabel = [UILabel new];
+        _titleLabel.text = @"Activity completion";
+        [self addSubview:_titleLabel];
+    }
+    _titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
     
     if (!_dateLabel) {
         _dateLabel = [UILabel new];
@@ -51,12 +59,6 @@ static const CGFloat CircleViewSize = 165.0;
     _dateLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
     _dateLabel.text = _date;
     
-    if (!_circleView) {
-        _circleView = [[OCKCircleView alloc] initWithFrame:CGRectMake(0, 0, CircleViewSize, CircleViewSize)];
-        [self addSubview:_circleView];
-    }
-    _circleView.value = _progress;
-    
     if (!_topEdge) {
         _topEdge = [UIView new];
         _topEdge.backgroundColor = [UIColor groupTableViewBackgroundColor];
@@ -64,7 +66,7 @@ static const CGFloat CircleViewSize = 165.0;
     }
     
     if (!_bottomEdge) {
-        _bottomEdge = [UIView new];
+        _bottomEdge = [UILabel new];
         _bottomEdge.backgroundColor = [UIColor groupTableViewBackgroundColor];
         [self addSubview:_bottomEdge];
     }
@@ -75,9 +77,10 @@ static const CGFloat CircleViewSize = 165.0;
 - (void)setUpConstraints {
     NSMutableArray *constraints = [NSMutableArray new];
     
-    _topEdge.translatesAutoresizingMaskIntoConstraints = NO;
+    _ringView.translatesAutoresizingMaskIntoConstraints = NO;
+    _titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     _dateLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    _circleView.translatesAutoresizingMaskIntoConstraints = NO;
+    _topEdge.translatesAutoresizingMaskIntoConstraints = NO;
     _bottomEdge.translatesAutoresizingMaskIntoConstraints = NO;
     
     [constraints addObjectsFromArray:@[
@@ -102,48 +105,6 @@ static const CGFloat CircleViewSize = 165.0;
                                                                     attribute:NSLayoutAttributeWidth
                                                                    multiplier:1.0
                                                                      constant:0.0],
-                                       [NSLayoutConstraint constraintWithItem:_dateLabel
-                                                                    attribute:NSLayoutAttributeCenterX
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:self
-                                                                    attribute:NSLayoutAttributeCenterX
-                                                                   multiplier:1.0
-                                                                     constant:0.0],
-                                       [NSLayoutConstraint constraintWithItem:_circleView
-                                                                    attribute:NSLayoutAttributeCenterX
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:self
-                                                                    attribute:NSLayoutAttributeCenterX
-                                                                   multiplier:1.0
-                                                                     constant:0.0],
-                                       [NSLayoutConstraint constraintWithItem:_circleView
-                                                                    attribute:NSLayoutAttributeWidth
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:nil
-                                                                    attribute:NSLayoutAttributeNotAnAttribute
-                                                                   multiplier:1.0
-                                                                     constant:CircleViewSize],
-                                       [NSLayoutConstraint constraintWithItem:_circleView
-                                                                    attribute:NSLayoutAttributeHeight
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:nil
-                                                                    attribute:NSLayoutAttributeNotAnAttribute
-                                                                   multiplier:1.0
-                                                                     constant:CircleViewSize],
-                                       [NSLayoutConstraint constraintWithItem:_dateLabel
-                                                                    attribute:NSLayoutAttributeTop
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:self
-                                                                    attribute:NSLayoutAttributeTop
-                                                                   multiplier:1.0
-                                                                     constant:TopMargin],
-                                       [NSLayoutConstraint constraintWithItem:_circleView
-                                                                    attribute:NSLayoutAttributeTop
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:_dateLabel
-                                                                    attribute:NSLayoutAttributeBottom
-                                                                   multiplier:1.0
-                                                                     constant:VerticalMargin],
                                        [NSLayoutConstraint constraintWithItem:_bottomEdge
                                                                     attribute:NSLayoutAttributeBottom
                                                                     relatedBy:NSLayoutRelationEqual
@@ -165,7 +126,62 @@ static const CGFloat CircleViewSize = 165.0;
                                                                     attribute:NSLayoutAttributeWidth
                                                                    multiplier:1.0
                                                                      constant:0.0],
-                                       
+                                       [NSLayoutConstraint constraintWithItem:_ringView
+                                                                    attribute:NSLayoutAttributeTop
+                                                                    relatedBy:NSLayoutRelationEqual
+                                                                       toItem:self
+                                                                    attribute:NSLayoutAttributeTop
+                                                                   multiplier:1.0
+                                                                     constant:TopMargin],
+                                      [NSLayoutConstraint constraintWithItem:_ringView
+                                                                    attribute:NSLayoutAttributeCenterX
+                                                                    relatedBy:NSLayoutRelationEqual
+                                                                       toItem:self
+                                                                    attribute:NSLayoutAttributeCenterX
+                                                                   multiplier:1.0
+                                                                     constant:-RingViewSize/1.4],
+                                       [NSLayoutConstraint constraintWithItem:_ringView
+                                                                    attribute:NSLayoutAttributeWidth
+                                                                    relatedBy:NSLayoutRelationEqual
+                                                                       toItem:nil
+                                                                    attribute:NSLayoutAttributeNotAnAttribute
+                                                                   multiplier:1.0
+                                                                     constant:RingViewSize],
+                                       [NSLayoutConstraint constraintWithItem:_ringView
+                                                                    attribute:NSLayoutAttributeHeight
+                                                                    relatedBy:NSLayoutRelationEqual
+                                                                       toItem:nil
+                                                                    attribute:NSLayoutAttributeNotAnAttribute
+                                                                   multiplier:1.0
+                                                                     constant:RingViewSize],
+                                       [NSLayoutConstraint constraintWithItem:_dateLabel
+                                                                    attribute:NSLayoutAttributeCenterY
+                                                                    relatedBy:NSLayoutRelationEqual
+                                                                       toItem:_ringView
+                                                                    attribute:NSLayoutAttributeCenterY
+                                                                   multiplier:1.0
+                                                                     constant:TopMargin],
+                                       [NSLayoutConstraint constraintWithItem:_dateLabel
+                                                                    attribute:NSLayoutAttributeLeading
+                                                                    relatedBy:NSLayoutRelationEqual
+                                                                       toItem:_ringView
+                                                                    attribute:NSLayoutAttributeTrailing
+                                                                   multiplier:1.0
+                                                                     constant:HorizontalMargin],
+                                       [NSLayoutConstraint constraintWithItem:_titleLabel
+                                                                    attribute:NSLayoutAttributeBottom
+                                                                    relatedBy:NSLayoutRelationEqual
+                                                                       toItem:_dateLabel
+                                                                    attribute:NSLayoutAttributeTop
+                                                                   multiplier:1.0
+                                                                     constant:0.0],
+                                       [NSLayoutConstraint constraintWithItem:_titleLabel
+                                                                    attribute:NSLayoutAttributeLeading
+                                                                    relatedBy:NSLayoutRelationEqual
+                                                                       toItem:_dateLabel
+                                                                    attribute:NSLayoutAttributeLeading
+                                                                   multiplier:1.0
+                                                                     constant:0.0]
                                        ]];
     
     [NSLayoutConstraint activateConstraints:constraints];
@@ -173,21 +189,12 @@ static const CGFloat CircleViewSize = 165.0;
 
 - (void)setProgress:(CGFloat)progress {
     _progress = progress;
-    _circleView.value = _progress;
+    _ringView.value = _progress;
 }
 
 - (void)setDate:(NSString *)date {
     _date = date;
     [self prepareView];
 }
-
-- (void)didChangePreferredContentSize {
-    [self prepareView];
-}
-
-- (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
 
 @end

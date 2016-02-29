@@ -9,10 +9,11 @@
 
 #import <UIKit/UIKit.h>
 
-@class OCKCircleView;
+
+@class OCKRingView;
 
 @interface OCKRingButton : UIButton
 
-@property (nonatomic) OCKCircleView *circleView;
+@property (nonatomic) OCKRingView *ringView;
 
 @end

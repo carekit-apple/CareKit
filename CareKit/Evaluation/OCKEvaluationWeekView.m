@@ -10,7 +10,7 @@
 #import "OCKEvaluationWeekView.h"
 #import "OCKWeekView.h"
 #import "OCKRingButton.h"
-#import "OCKCircleView.h"
+#import "OCKRingView.h"
 
 
 const static CGFloat RingButtonSize = 20.0;
@@ -44,9 +44,11 @@ const static CGFloat RingButtonSize = 20.0;
             OCKRingButton *ringButton = [[OCKRingButton alloc] initWithFrame:CGRectMake(0, 0, RingButtonSize, RingButtonSize)];
             ringButton.translatesAutoresizingMaskIntoConstraints = NO;
             
-            OCKCircleView *circleView = [[OCKCircleView alloc] initWithFrame:CGRectMake(0, 0, RingButtonSize + 10, RingButtonSize + 10)];
-            circleView.userInteractionEnabled = NO;
-            ringButton.circleView = circleView;
+            OCKRingView *ringView = [[OCKRingView alloc] initWithFrame:CGRectMake(0, 0, RingButtonSize + 10, RingButtonSize + 10)];
+            ringView.userInteractionEnabled = NO;
+            ringView.disableAnimation = YES;
+            ringView.hideLabel = YES;
+            ringButton.ringView = ringView;
             
             [ringButton addTarget:self
                           action:@selector(updateDayOfWeek:)
@@ -72,7 +74,7 @@ const static CGFloat RingButtonSize = 20.0;
                                                                        toItem:self
                                                                     attribute:NSLayoutAttributeTop
                                                                    multiplier:1.0
-                                                                     constant:0.0],
+                                                                     constant:-5.0],
                                        [NSLayoutConstraint constraintWithItem:_weekView
                                                                     attribute:NSLayoutAttributeCenterX
                                                                     relatedBy:NSLayoutRelationEqual
@@ -91,7 +93,7 @@ const static CGFloat RingButtonSize = 20.0;
                                                                            toItem:_ringButtons[i]
                                                                         attribute:NSLayoutAttributeTop
                                                                        multiplier:1.0
-                                                                         constant:-5.0],
+                                                                         constant:-3.0],
                                            [NSLayoutConstraint constraintWithItem:dayLabel
                                                                         attribute:NSLayoutAttributeCenterX
                                                                         relatedBy:NSLayoutRelationEqual
@@ -110,7 +112,7 @@ const static CGFloat RingButtonSize = 20.0;
     _progressValues = progressValues;
     
     for (int i = 0; i < _progressValues.count; i++) {
-        _ringButtons[i].circleView.value = [_progressValues[i] floatValue];
+        _ringButtons[i].ringView.value = [_progressValues[i] floatValue];
     }
 }
 

@@ -17,7 +17,7 @@
 
 
 const static CGFloat CellHeight = 90.0;
-const static CGFloat HeaderViewHeight = 235.0;
+const static CGFloat HeaderViewHeight = 150.0;
 
 @implementation OCKEvaluationTableViewController {
     NSArray<NSArray<OCKCarePlanEvent *> *> *_evaluationEvents;
@@ -39,7 +39,7 @@ const static CGFloat HeaderViewHeight = 235.0;
                              delegate:(id<OCKEvaluationTableViewDelegate>)delegate {
     self = [super initWithStyle:UITableViewStylePlain];
     if (self) {
-        self.title = @"Evaluations";
+        self.title = @"Checkups";
         _store = store;
         _delegate = delegate;
         _lastSelectedEvaluationEvent = nil;
@@ -55,7 +55,6 @@ const static CGFloat HeaderViewHeight = 235.0;
                                                 calendar:[NSCalendar currentCalendar]];
     
     self.tableView.rowHeight = CellHeight;
-    self.tableView.sectionFooterHeight = HeaderViewHeight;
     
     [self fetchEvaluationEvents];
     [self prepareView];
@@ -81,8 +80,10 @@ const static CGFloat HeaderViewHeight = 235.0;
                                                                    navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal
                                                                                  options:nil];
     _weekPageViewController.dataSource = self;
+    _weekPageViewController.showCareCardWeekView = NO;
     
     self.tableView.tableHeaderView = _weekPageViewController.view;
+    self.tableView.tableHeaderView.backgroundColor = [UIColor whiteColor];
     self.tableView.tableFooterView = [UIView new];
 }
 
@@ -253,6 +254,10 @@ const static CGFloat HeaderViewHeight = 235.0;
 
 
 #pragma mark - UITableViewDataSource
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    return @"Surveys";
+}
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return _evaluationEvents.count;

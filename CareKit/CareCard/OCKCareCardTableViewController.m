@@ -19,8 +19,8 @@
 #import "OCKHeartView.h"
 
 
-static const CGFloat CellHeight = 90.0;
-static const CGFloat HeaderViewHeight = 235.0;
+static const CGFloat CellHeight = 85.0;
+static const CGFloat HeaderViewHeight = 200.0;
 
 @implementation OCKCareCardTableViewController {
     NSMutableArray<NSMutableArray<OCKCarePlanEvent *> *> *_treatmentEvents;
@@ -79,7 +79,7 @@ static const CGFloat HeaderViewHeight = 235.0;
                                                                    navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal
                                                                                  options:nil];
     _weekPageViewController.dataSource = self;
-    _weekPageViewController.showCareCardWeekView = YES;
+
     self.tableView.tableHeaderView = _weekPageViewController.view;
     self.tableView.tableFooterView = [UIView new];
 }
@@ -257,6 +257,10 @@ static const CGFloat HeaderViewHeight = 235.0;
 
 
 #pragma mark - UITableViewDelegate
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    return HeaderViewHeight;
+}
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     return _headerView;

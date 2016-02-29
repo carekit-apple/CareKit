@@ -8,17 +8,17 @@
 
 
 #import "OCKRingButton.h"
-#import "OCKCircleView.h"
+#import "OCKRingView.h"
 
 
 @implementation OCKRingButton
 
-- (void)setCircleView:(OCKCircleView *)circleView {
-    [_circleView removeFromSuperview];
+- (void)setRingView:(OCKRingView *)ringView {
+    [_ringView removeFromSuperview];
     
-    _circleView = circleView;
-    _circleView.userInteractionEnabled = NO;
-    [self addSubview:_circleView];
+    _ringView = ringView;
+    _ringView.userInteractionEnabled = NO;
+    [self addSubview:_ringView];
 }
 
 @end

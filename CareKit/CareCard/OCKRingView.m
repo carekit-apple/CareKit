@@ -144,17 +144,19 @@ static const double VALUE_MAX = 1.0;
 }
 
 - (void)updateCheckmark {
+    
+    [CATransaction begin];
     if (_value == VALUE_MAX) {
+        [CATransaction setDisableActions:_disableAnimation];
         [_label removeFromSuperview];
         _circleLayer.fillColor = self.tintColor.CGColor;
         _checkmarkLayer.strokeEnd = 1.0;
     } else {
-        [CATransaction begin];
         [CATransaction setDisableActions:YES];
         _circleLayer.fillColor = [UIColor clearColor].CGColor;
         _checkmarkLayer.strokeEnd = 0.0;
-        [CATransaction commit];
     }
+    [CATransaction commit];
 }
 
 - (void)setValue:(double)value {
@@ -168,11 +170,10 @@ static const double VALUE_MAX = 1.0;
         [self updateLabel];
         
         if (_disableAnimation) {
-            _circleLayer = [self createShapeLayerWithValue:_value];
             [_circleLayer removeFromSuperlayer];
+            _circleLayer = [self createShapeLayerWithValue:_value];
             [self.layer insertSublayer:_circleLayer below:_checkmarkLayer];
             [self updateCheckmark];
-            
         } else {
             
             [CATransaction begin];

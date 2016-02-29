@@ -33,7 +33,7 @@ static const double VALUE_MAX = 1.0;
         [self updateLabel];
         
         _backgroundLayer = [self createShapeLayerWithValue:VALUE_MAX];
-        _backgroundLayer.strokeColor = [UIColor lightGrayColor].CGColor;
+        _backgroundLayer.strokeColor = [UIColor groupTableViewBackgroundColor].CGColor;
         [self.layer addSublayer:_backgroundLayer];
         
         _checkmarkLayer = [self createCheckMarkLayer];
@@ -144,16 +144,19 @@ static const double VALUE_MAX = 1.0;
 }
 
 - (void)updateCheckmark {
-    if (_hideLabel && _value == 1) {
+    
+    [CATransaction begin];
+    if (_value == VALUE_MAX) {
+        [CATransaction setDisableActions:_disableAnimation];
+        [_label removeFromSuperview];
         _circleLayer.fillColor = self.tintColor.CGColor;
         _checkmarkLayer.strokeEnd = 1.0;
     } else {
-        [CATransaction begin];
         [CATransaction setDisableActions:YES];
         _circleLayer.fillColor = [UIColor clearColor].CGColor;
         _checkmarkLayer.strokeEnd = 0.0;
-        [CATransaction commit];
     }
+    [CATransaction commit];
 }
 
 - (void)setValue:(double)value {
@@ -164,12 +167,13 @@ static const double VALUE_MAX = 1.0;
     
     if (oldValue != _value) {
         
+        [self updateLabel];
+        
         if (_disableAnimation) {
-            _circleLayer = [self createShapeLayerWithValue:_value];
             [_circleLayer removeFromSuperlayer];
+            _circleLayer = [self createShapeLayerWithValue:_value];
             [self.layer insertSublayer:_circleLayer below:_checkmarkLayer];
             [self updateCheckmark];
-            [self updateLabel];
         } else {
             
             [CATransaction begin];
@@ -177,9 +181,6 @@ static const double VALUE_MAX = 1.0;
             if (oldValue == VALUE_MAX) {
                 [self updateCheckmark];
             }
-            
-            // Take out _label
-            [_label removeFromSuperview];
             
             BOOL reverse = oldValue > _value;
             double delta = ABS(_value - oldValue);
@@ -200,14 +201,18 @@ static const double VALUE_MAX = 1.0;
             }
             
             animation.beginTime = 0.0;
-            animation.duration = 1.25; //2.0 * delta;
-            animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
+            animation.duration = 1.25;
+            animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
             animation.fillMode = kCAFillModeBoth;
             animation.removedOnCompletion = false;
             
+            BOOL removeLayerOnCompletion = (_value == VALUE_MIN);
             [CATransaction setCompletionBlock:^{
                 [self updateLabel];
                 [self updateCheckmark];
+                if (removeLayerOnCompletion) {
+                    [_circleLayer removeFromSuperlayer];
+                }
             }];
             
             [_circleLayer addAnimation:animation forKey:animation.keyPath];

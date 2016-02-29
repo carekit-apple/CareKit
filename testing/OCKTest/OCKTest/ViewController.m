@@ -14,7 +14,7 @@
 
 #define DefineStringKey(x) static NSString *const x = @#x
 
-static const BOOL resetStoreOnLaunch = NO;
+static const BOOL resetStoreOnLaunch = YES;
 
 @interface ViewController () <OCKEvaluationTableViewDelegate, OCKCarePlanStoreDelegate, ORKTaskViewControllerDelegate>
 
@@ -353,7 +353,7 @@ DefineStringKey(WeightEvaluation);
     
     {
         OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDay:startDate occurrencesOnEachDay:@[@0,@1,@0,@1,@0,@1,@0]];
-        UIColor *color = OCKYellowColor();
+        UIColor *color = OCKPurpleColor();
         OCKCarePlanActivity *evaluation = [[OCKCarePlanActivity alloc] initWithIdentifier:BloodPressureEvaluation
                                                                                      type:OCKCarePlanActivityTypeAssessment
                                                                                     title:@"Blood Pressure"
@@ -365,7 +365,7 @@ DefineStringKey(WeightEvaluation);
     
     {
         OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDay:startDate occurrencesOnEachDay:@[@1,@1,@1,@1,@1,@1,@1]];
-        UIColor *color = OCKPurpleColor();
+        UIColor *color = OCKYellowColor();
         OCKCarePlanActivity *evaluation = [[OCKCarePlanActivity alloc] initWithIdentifier:WeightEvaluation
                                                                                      type:OCKCarePlanActivityTypeAssessment
                                                                                     title:@"Weight"

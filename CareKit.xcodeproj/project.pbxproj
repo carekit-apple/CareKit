@@ -268,8 +268,8 @@
 		865A6CD51C5A95180054F9F0 /* ResearchKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ResearchKit.xcodeproj; path = dependency/ResearchKit.xcodeproj; sourceTree = SOURCE_ROOT; };
 		865A6D0C1C5AD18A0054F9F0 /* CareKitTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CareKitTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		865A6D0D1C5AD18B0054F9F0 /* whatever.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = whatever.swift; sourceTree = "<group>"; };
-		86B747CA1C84DE3C003B9554 /* OCKRingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKRingView.m; sourceTree = "<group>"; };
-		86B747CF1C84E192003B9554 /* OCKRingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKRingView.h; sourceTree = "<group>"; };
+		86B747CA1C84DE3C003B9554 /* OCKRingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OCKRingView.m; path = ../CareCard/OCKRingView.m; sourceTree = "<group>"; };
+		86B747CF1C84E192003B9554 /* OCKRingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OCKRingView.h; path = ../CareCard/OCKRingView.h; sourceTree = "<group>"; };
 		86BE2EFE1C77C83D00D66276 /* OCKCareCardViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKCareCardViewController.h; sourceTree = "<group>"; };
 		86BE2F001C7BDD2C00D66276 /* OCKCarePlanDay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKCarePlanDay.h; sourceTree = "<group>"; };
 		86BE2F011C7BDD2C00D66276 /* OCKCarePlanDay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKCarePlanDay.m; sourceTree = "<group>"; };
@@ -496,8 +496,6 @@
 		24B31A4E1C6E602000C3C196 /* Header View */ = {
 			isa = PBXGroup;
 			children = (
-				86B747CF1C84E192003B9554 /* OCKRingView.h */,
-				86B747CA1C84DE3C003B9554 /* OCKRingView.m */,
 				2445EB531C6D685D00F51A95 /* OCKCareCardTableViewHeader.h */,
 				2445EB541C6D685D00F51A95 /* OCKCareCardTableViewHeader.m */,
 				24A68D301C7E4CF4001EF39A /* OCKHeartView.h */,
@@ -565,6 +563,8 @@
 			children = (
 				24E318131C6EB08A0094C45B /* OCKEvaluationTableViewHeader.h */,
 				24E318141C6EB08A0094C45B /* OCKEvaluationTableViewHeader.m */,
+				86B747CF1C84E192003B9554 /* OCKRingView.h */,
+				86B747CA1C84DE3C003B9554 /* OCKRingView.m */,
 			);
 			name = "Header View";
 			sourceTree = "<group>";

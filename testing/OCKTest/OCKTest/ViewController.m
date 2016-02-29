@@ -276,7 +276,7 @@ DefineStringKey(PhysicalTherapyTreatment);
     
     {
         OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDay:startDate occurrencesOnEachDay:@[@2,@1,@2,@1,@2,@1,@2]];
-        UIColor *color = OCKPinkColor();
+        UIColor *color = OCKPurpleColor();
         OCKCarePlanActivity *treatment = [[OCKCarePlanActivity alloc] initWithIdentifier:OutdoorWalkTreatment
                                                                                     type:OCKCarePlanActivityTypeIntervention
                                                                                    title:@"Outdoor Walk"

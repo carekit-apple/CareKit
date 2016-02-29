@@ -8,13 +8,9 @@
 
 #import "OCKRingView.h"
 
-static const double VALUE_MIN = 0.0;
-static const double VALUE_MAX = 1.0;
-
 @implementation OCKRingView {
     CAShapeLayer *_circleLayer;
     CAShapeLayer *_backgroundLayer;
-    CAShapeLayer *_checkmarkLayer;
     UILabel *_label;
     NSNumberFormatter *_numberFormatter;
 }
@@ -22,24 +18,20 @@ static const double VALUE_MAX = 1.0;
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        _value = VALUE_MIN;
+        _value = 0.0;
         _label = [self createLabel];
+        [self addSubview:_label];
         
         _numberFormatter = [[NSNumberFormatter alloc] init];
         [_numberFormatter setNumberStyle:NSNumberFormatterPercentStyle];
         [_numberFormatter setMaximumFractionDigits:0];
         [_numberFormatter setMultiplier:@100];
         
-        [self updateLabel];
+        _label.text = [_numberFormatter stringFromNumber:@(_value)];
         
-        _backgroundLayer = [self createShapeLayerWithValue:VALUE_MAX];
+        _backgroundLayer = [self createShapeLayerWithValue:1.0];
         _backgroundLayer.strokeColor = [UIColor groupTableViewBackgroundColor].CGColor;
         [self.layer addSublayer:_backgroundLayer];
-        
-        _checkmarkLayer = [self createCheckMarkLayer];
-        _checkmarkLayer.strokeEnd = 0.0;
-        [self.layer addSublayer:_checkmarkLayer];
-        [self updateCheckmark];
     }
     return self;
 }
@@ -67,30 +59,6 @@ static const double VALUE_MAX = 1.0;
                                               clockwise:NO];
     
     return path;
-}
-
-- (CAShapeLayer *)createCheckMarkLayer {
-    
-    CGPoint ringCenter = [self ringCenter];
-    UIBezierPath *path = [UIBezierPath new];
-    
-    [path moveToPoint:CGPointMake(ringCenter.x*37.0/61.0, ringCenter.x*65.0/61.0)];
-    [path addLineToPoint:CGPointMake(ringCenter.x*50.0/61.0, ringCenter.x*78.0/61.0)];
-    [path addLineToPoint:CGPointMake(ringCenter.x*87.0/61.0, ringCenter.x*42.0/61.0)];
-    path.lineCapStyle = kCGLineCapRound;
-    path.lineWidth = [self ringRadius]*2/9;
-    
-    CAShapeLayer *shapeLayer = [CAShapeLayer new];
-    shapeLayer.path = path.CGPath;
-    shapeLayer.lineWidth = path.lineWidth;
-    shapeLayer.lineCap = kCALineCapRound;
-    shapeLayer.lineJoin = kCALineJoinRound;
-    shapeLayer.frame = self.layer.bounds;
-    shapeLayer.strokeColor = [UIColor whiteColor].CGColor;
-    shapeLayer.backgroundColor = [UIColor clearColor].CGColor;
-    shapeLayer.fillColor = nil;
-    
-    return shapeLayer;
 }
 
 - (CGFloat)ringRadius {
@@ -131,10 +99,6 @@ static const double VALUE_MAX = 1.0;
 
 - (void)setHideLabel:(BOOL)hideLabel {
     _hideLabel = hideLabel;
-    [self updateLabel];
-}
-
-- (void)updateLabel {
     if (_hideLabel) {
         [_label removeFromSuperview];
     } else {
@@ -143,77 +107,49 @@ static const double VALUE_MAX = 1.0;
     }
 }
 
-- (void)updateCheckmark {
-    if (_hideLabel && _value == 1) {
-        _circleLayer.fillColor = self.tintColor.CGColor;
-        _checkmarkLayer.strokeEnd = 1.0;
-    } else {
-        [CATransaction begin];
-        [CATransaction setDisableActions:YES];
-        _circleLayer.fillColor = [UIColor clearColor].CGColor;
-        _checkmarkLayer.strokeEnd = 0.0;
-        [CATransaction commit];
-    }
-}
-
 - (void)setValue:(double)value {
     
     double oldValue = _value;
     
-    _value = MAX(MIN(value, VALUE_MAX), VALUE_MIN);
+    _value = MAX(MIN(value, 1), 0);
     
     if (oldValue != _value) {
         
         if (_disableAnimation) {
             _circleLayer = [self createShapeLayerWithValue:_value];
             [_circleLayer removeFromSuperlayer];
-            [self.layer insertSublayer:_circleLayer below:_checkmarkLayer];
-            [self updateCheckmark];
-            [self updateLabel];
+            [self.layer addSublayer:_circleLayer];
         } else {
-            
-            [CATransaction begin];
-            
-            if (oldValue == VALUE_MAX) {
-                [self updateCheckmark];
-            }
-            
-            // Take out _label
-            [_label removeFromSuperview];
-            
             BOOL reverse = oldValue > _value;
             double delta = ABS(_value - oldValue);
             double maxValue = MAX(oldValue, _value);
             
-            [_circleLayer removeFromSuperlayer];
             _circleLayer = [self createShapeLayerWithValue:maxValue];
-            [self.layer insertSublayer:_circleLayer below:_checkmarkLayer];
+            [_circleLayer removeFromSuperlayer];
+            [self.layer addSublayer:_circleLayer];
             
             CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"strokeStart"];
             
             if (reverse) {
-                animation.fromValue = @(VALUE_MIN);
+                animation.fromValue = @(0.0);
                 animation.toValue = @(delta/maxValue);
             } else {
                 animation.fromValue = @(delta/maxValue);
-                animation.toValue = @(VALUE_MIN);
+                animation.toValue = @(0.0);
             }
             
-            animation.beginTime = 0.0;
             animation.duration = 1.25; //2.0 * delta;
             animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
             animation.fillMode = kCAFillModeBoth;
             animation.removedOnCompletion = false;
             
-            [CATransaction setCompletionBlock:^{
-                [self updateLabel];
-                [self updateCheckmark];
-            }];
-            
             [_circleLayer addAnimation:animation forKey:animation.keyPath];
-            [CATransaction commit];
         }
         
+        if (_hideLabel == NO) {
+            _label.text = [_numberFormatter stringFromNumber:@(_value)];
+            [self addSubview:_label];
+        }
     }
 }
 

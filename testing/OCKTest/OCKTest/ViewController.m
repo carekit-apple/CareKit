@@ -287,7 +287,7 @@ DefineStringKey(PhysicalTherapyTreatment);
     }
     
     {
-        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDay:startDate occurrencesOnEachDay:@[@1,@1,@1,@0,@1,@0,@1]];
+        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDay:startDate occurrencesOnEachDay:@[@1,@1,@1,@0,@1,@1,@1]];
         UIColor *color = OCKYellowColor();
         OCKCarePlanActivity *treatment = [[OCKCarePlanActivity alloc] initWithIdentifier:PhysicalTherapyTreatment
                                                                                     type:OCKCarePlanActivityTypeIntervention
@@ -316,7 +316,7 @@ DefineStringKey(WeightEvaluation);
     OCKCarePlanDay *startDate = [[OCKCarePlanDay alloc] initWithYear:2016 month:01 day:01];
 
     {
-        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDay:startDate occurrencesOnEachDay:@[@1,@1,@1,@0,@1,@0,@1]];
+        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDay:startDate occurrencesOnEachDay:@[@1,@1,@1,@0,@1,@1,@1]];
         UIColor *color = OCKBlueColor();
         OCKCarePlanActivity *evaluation = [[OCKCarePlanActivity alloc] initWithIdentifier:PainEvaluation
                                                                                      type:OCKCarePlanActivityTypeAssessment
@@ -340,7 +340,7 @@ DefineStringKey(WeightEvaluation);
     }
     
     {
-        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDay:startDate occurrencesOnEachDay:@[@1,@0,@0,@1,@1,@1,@0]];
+        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDay:startDate occurrencesOnEachDay:@[@1,@0,@0,@1,@1,@0,@0]];
         UIColor *color = OCKRedColor();
         OCKCarePlanActivity *evaluation = [[OCKCarePlanActivity alloc] initWithIdentifier:SleepQualityEvaluation
                                                                                      type:OCKCarePlanActivityTypeAssessment

@@ -15,6 +15,8 @@
 @implementation OCKHeartView {
     UIView *_maskView;
     UIView *_fillView;
+    UIImageView *_imageView;
+    UIImageView *_maskImageView;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame {
@@ -23,30 +25,32 @@
         _animate = YES;
         _adherence = 0;
         self.maskImage = nil;
-        [self prepareView];
     }
     return self;
 }
 
 - (void)prepareView {
-    if (!_maskView) {
-        _maskView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
-    }
+    [_maskView removeFromSuperview];
+    [_fillView removeFromSuperview];
+    [_imageView removeFromSuperview];
+    [_maskImageView removeFromSuperview];
     
-    UIImageView *imageView = [[UIImageView alloc] initWithImage:_maskImage];
-    imageView.frame = _maskView.frame;
-    imageView.contentMode = UIViewContentModeScaleAspectFit;
-    [_maskView addSubview:imageView];
-    
+    _maskView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
+    _maskImageView = [[UIImageView alloc] initWithImage:_maskImage];
+    _maskImageView.frame = _maskView.frame;
+    _maskImageView.contentMode = UIViewContentModeScaleAspectFit;
+    [_maskView addSubview:_maskImageView];
     self.maskView = _maskView;
     self.clipsToBounds = YES;
-    self.backgroundColor = [UIColor groupTableViewBackgroundColor];
     
-    if (!_fillView) {
-        _fillView = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMinX(self.bounds), CGRectGetMaxY(self.bounds), CGRectGetMaxX(self.bounds), CGRectGetMaxY(self.bounds))];
-        _fillView.backgroundColor = OCKRedColor();
-        [self addSubview:_fillView];
-    }
+    _imageView = [[UIImageView alloc] initWithImage:_maskImage];
+    _imageView.frame = _maskView.frame;
+    _imageView.contentMode = UIViewContentModeScaleAspectFit;
+    [self insertSubview:_imageView belowSubview:_maskView];
+    
+    _fillView = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMinX(self.bounds), CGRectGetMaxY(self.bounds), CGRectGetMaxX(self.bounds), CGRectGetMaxY(self.bounds))];
+    _fillView.backgroundColor = OCKRedColor();
+    [self addSubview:_fillView];
 }
 
 - (void)animateFill {
@@ -72,8 +76,10 @@
     if (!_maskImage) {
         _maskImage = [UIImage imageNamed:@"heart" inBundle:[NSBundle bundleForClass:[self class]] compatibleWithTraitCollection:nil];
     }
-    
+
     [self prepareView];
 }
+
+
 
 @end

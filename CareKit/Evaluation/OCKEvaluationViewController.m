@@ -58,7 +58,7 @@
 - (void)evaluationWeekViewSelectionDidChange:(OCKEvaluationWeekView *)evaluationWeekView {
     OCKCarePlanDay *selectedDate = [_tableViewController dateFromSelectedIndex:evaluationWeekView.selectedIndex];
     OCKCarePlanDay *today = [[OCKCarePlanDay alloc] initWithDate:[NSDate date] calendar:[NSCalendar currentCalendar]];
-    if (![selectedDate isLaterThan:today] || true) {
+    if (![selectedDate isLaterThan:today]) {
         _tableViewController.selectedDate = selectedDate;
         OCKEvaluationWeekView *evaluationWeekView = _tableViewController.weekPageViewController.evaluationWeekView;
         [evaluationWeekView.weekView highlightDay:evaluationWeekView.selectedIndex];

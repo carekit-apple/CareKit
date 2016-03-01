@@ -53,7 +53,7 @@
 - (void)careCardWeekViewSelectionDidChange:(OCKCareCardWeekView *)careCardWeekView {
     OCKCarePlanDay *selectedDate = [_tableViewController dateFromSelectedIndex:careCardWeekView.selectedIndex];
     OCKCarePlanDay *today = [[OCKCarePlanDay alloc] initWithDate:[NSDate date] calendar:[NSCalendar currentCalendar]];
-    if (![selectedDate isLaterThan:today] || true) {
+    if (![selectedDate isLaterThan:today]) {
         _tableViewController.selectedDate = selectedDate;
         OCKCareCardWeekView *careCardWeekView = _tableViewController.weekPageViewController.careCardWeekView;
         [careCardWeekView.weekView highlightDay:careCardWeekView.selectedIndex];

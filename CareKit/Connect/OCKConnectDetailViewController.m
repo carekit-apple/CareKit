@@ -195,7 +195,7 @@ static const CGFloat HeaderViewHeight = 225.0;
             cell = [[OCKReportsTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
                                                   reuseIdentifier:ReportsCellIdentifier];
         }
-        cell.title = @"Send reports";
+        cell.title = @"Send weekly reports";
         cell.contact = _contact;
         cell.delegate = self;
         

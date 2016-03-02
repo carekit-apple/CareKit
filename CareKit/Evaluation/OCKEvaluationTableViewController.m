@@ -12,17 +12,19 @@
 #import "OCKEvaluationTableViewHeader.h"
 #import "OCKHelpers.h"
 #import "OCKCarePlanStore_Internal.h"
-#import "OCKWeekPageViewController.h"
+#import "OCKWeekViewController.h"
 #import "OCKEvaluationWeekView.h"
+#import "OCKWeekView.h"
 
 
 const static CGFloat CellHeight = 90.0;
 const static CGFloat HeaderViewHeight = 150.0;
 
 @implementation OCKEvaluationTableViewController {
-    NSArray<NSArray<OCKCarePlanEvent *> *> *_evaluationEvents;
+    NSMutableArray<NSMutableArray<OCKCarePlanEvent *> *> *_evaluationEvents;
     NSMutableArray *_weeklyProgress;
     OCKEvaluationTableViewHeader *_headerView;
+    UIPageViewController *_pageViewController;
 }
 
 + (instancetype)new {
@@ -51,23 +53,12 @@ const static CGFloat HeaderViewHeight = 150.0;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    _selectedDate = [[OCKCarePlanDay alloc] initWithDate:[NSDate date]
-                                                calendar:[NSCalendar currentCalendar]];
+    [self prepareView];
+    
+    self.selectedDate = [[OCKCarePlanDay alloc] initWithDate:[NSDate date]
+                                                    calendar:[NSCalendar currentCalendar]];
     
     self.tableView.rowHeight = CellHeight;
-    
-    [self fetchEvaluationEvents];
-    [self prepareView];
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    OCKCarePlanDay *newDate = [[OCKCarePlanDay alloc] initWithDate:[NSDate date]
-                                                          calendar:[NSCalendar currentCalendar]];
-    
-    if ([newDate isLaterThan:_selectedDate]) {
-        _selectedDate = newDate;
-    }
 }
 
 - (void)prepareView {
@@ -76,20 +67,38 @@ const static CGFloat HeaderViewHeight = 150.0;
     }
     [self updateHeaderView];
     
-    _weekPageViewController = [[OCKWeekPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll
-                                                                   navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal
-                                                                                 options:nil];
-    _weekPageViewController.dataSource = self;
-    _weekPageViewController.showCareCardWeekView = NO;
+    if (!_pageViewController) {
+        _pageViewController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll
+                                                              navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal
+                                                                            options:nil];
+        _pageViewController.dataSource = self;
+        _pageViewController.delegate = self;
+        _pageViewController.view.frame = CGRectMake(0, 0, self.view.frame.size.width, 60.0);
+        
+        OCKWeekViewController *weekController = [OCKWeekViewController new];
+        
+        id delegate = _weekViewController.evaluationWeekView.delegate;
+        _weekViewController = weekController;
+        _weekViewController.showCareCardWeekView = NO;
+        _weekViewController.evaluationWeekView.delegate = delegate;
+        
+        [_pageViewController setViewControllers:@[weekController] direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:nil];
+    }
     
-    self.tableView.tableHeaderView = _weekPageViewController.view;
-    self.tableView.tableHeaderView.backgroundColor = [UIColor whiteColor];
+    self.tableView.tableHeaderView = _pageViewController.view;
     self.tableView.tableFooterView = [UIView new];
 }
 
 - (void)setSelectedDate:(OCKCarePlanDay *)selectedDate {
     _selectedDate = selectedDate;
-
+    OCKCarePlanDay *today = [[OCKCarePlanDay alloc] initWithDate:[NSDate date] calendar:[NSCalendar currentCalendar]];
+    if ([_selectedDate isLaterThan:today]) {
+        _selectedDate = today;
+    }
+    
+    NSDateComponents *components = [[NSCalendar currentCalendar] components:NSCalendarUnitWeekday fromDate:[self dateFromCarePlanDay:_selectedDate]];
+    _weekViewController.evaluationWeekView.selectedIndex = components.weekday-1;
+    
     [self fetchEvaluationEvents];
 }
 
@@ -100,8 +109,12 @@ const static CGFloat HeaderViewHeight = 150.0;
     [_store eventsOfDay:_selectedDate
                    type:OCKCarePlanActivityTypeAssessment
              completion:^(NSArray<NSArray<OCKCarePlanEvent *> *> * _Nonnull eventsGroupedByActivity, NSError * _Nonnull error) {
-                 _evaluationEvents = eventsGroupedByActivity;
                  NSAssert(!error, error.localizedDescription);
+                 
+                 _evaluationEvents = [NSMutableArray new];
+                 for (NSArray<OCKCarePlanEvent *> *events in eventsGroupedByActivity) {
+                     [_evaluationEvents addObject:[events mutableCopy]];
+                 }
 
                  [self updateHeaderView];
                  [self updateWeekView];
@@ -126,10 +139,9 @@ const static CGFloat HeaderViewHeight = 150.0;
     float progress = (totalEvents > 0) ? (float)completedEvents/totalEvents : 0;
     _headerView.progress = progress;
     
-    // Update the week view heart for the selected index.
-    NSInteger selectedIndex = _weekPageViewController.evaluationWeekView.selectedIndex;
+    NSInteger selectedIndex = _weekViewController.evaluationWeekView.selectedIndex;
     [_weeklyProgress replaceObjectAtIndex:selectedIndex withObject:@(progress)];
-    _weekPageViewController.evaluationWeekView.progressValues = _weeklyProgress;
+    _weekViewController.evaluationWeekView.progressValues = _weeklyProgress;
 }
 
 - (void)updateWeekView {
@@ -155,7 +167,7 @@ const static CGFloat HeaderViewHeight = 150.0;
                                        [progressValues addObject:@((float)completed/total)];
                                    }
                                    if (progressValues.count == 7) {
-                                       _weekPageViewController.evaluationWeekView.progressValues = progressValues;
+                                       _weekViewController.evaluationWeekView.progressValues = progressValues;
                                        _weeklyProgress = [progressValues mutableCopy];
                                    }
                                }];
@@ -187,39 +199,79 @@ const static CGFloat HeaderViewHeight = 150.0;
     return [[NSCalendar currentCalendar] dateFromComponents:components];
 }
 
+- (BOOL)selectedDateIsInCurrentWeek {
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    
+    NSDateComponents *components = [calendar components:NSCalendarUnitWeekOfYear fromDate:[NSDate date]];
+    NSUInteger currentWeek = components.weekOfYear;
+    
+    components = [calendar components:NSCalendarUnitWeekOfYear fromDate:[self dateFromCarePlanDay:_selectedDate]];
+    NSUInteger selectedWeek = components.weekOfYear;
+    
+    return (selectedWeek == currentWeek);
+}
+
 
 #pragma mark - OCKCarePlanStoreDelegate
 
 - (void)carePlanStore:(OCKCarePlanStore *)store didReceiveUpdateOfEvent:(OCKCarePlanEvent *)event {
-    [self fetchEvaluationEvents];
-}
+    // Find the index that has the right activity.
+    for (NSMutableArray<OCKCarePlanEvent *> *events in _evaluationEvents) {
+        // Once found, look to see if the event matches.
+        if ([events.firstObject.activity.identifier isEqualToString:event.activity.identifier]) {
+            
+            // If the event matches, then replace it.
+            if (events[event.occurrenceIndexOfDay].numberOfDaysSinceStart == event.numberOfDaysSinceStart) {
+                [events replaceObjectAtIndex:event.occurrenceIndexOfDay withObject:event];
+                
+                [self updateHeaderView];
+                
+                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[_evaluationEvents indexOfObject:events] inSection:0];
+                [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+            }
+            break;
+        }
+    }}
 
 - (void)carePlanStoreEvaluationListDidChange:(OCKCarePlanStore *)store {
     [self fetchEvaluationEvents];
 }
 
 
+#pragma mark - UIPageViewControllerDelegate
+
+- (void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray<UIViewController *> *)previousViewControllers transitionCompleted:(BOOL)completed {
+    OCKWeekViewController *controller = (OCKWeekViewController *)pageViewController.viewControllers.firstObject;
+    controller.evaluationWeekView.delegate = _weekViewController.evaluationWeekView.delegate;
+    
+    
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    NSDateComponents *components = [NSDateComponents new];
+    components.day = (controller.view.tag > _weekViewController.view.tag) ? 7 : -7;
+    NSDate *newDate = [calendar dateByAddingComponents:components toDate:[self dateFromCarePlanDay:_selectedDate] options:0];
+    
+    _weekViewController = controller;
+    self.selectedDate = [[OCKCarePlanDay alloc] initWithDate:newDate calendar:calendar];
+    
+    components = [[NSCalendar currentCalendar] components:NSCalendarUnitWeekday fromDate:[self dateFromCarePlanDay:_selectedDate]];
+    [_weekViewController.evaluationWeekView.weekView highlightDay:components.weekday-1];
+}
+
+
 #pragma mark - UIPageViewControllerDataSource
 
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController {
-    // TO DO: implementation
-    // Calculate the date one week before the selected date.
-    
-    // Set the new date as the selected date.
-    
-    return pageViewController;
+    OCKWeekViewController *controller = [OCKWeekViewController new];
+    controller.showCareCardWeekView = NO;
+    controller.view.tag = viewController.view.tag - 1;
+    return controller;
 }
 
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController {
-    // TO DO: implementation
-    
-    // Check if the selected date is from current week, if it is then don't do anything.
-    
-    // Calculate the date one week after the selected date.
-    
-    // Set the new date as the selected date.
-    
-    return pageViewController;
+    OCKWeekViewController *controller = [OCKWeekViewController new];
+    controller.showCareCardWeekView = NO;
+    controller.view.tag = viewController.view.tag + 1;
+    return (![self selectedDateIsInCurrentWeek]) ? controller : nil;
 }
 
 
@@ -241,23 +293,12 @@ const static CGFloat HeaderViewHeight = 150.0;
         [_delegate respondsToSelector:@selector(tableViewDidSelectRowWithEvaluationEvent:)]) {
         [_delegate tableViewDidSelectRowWithEvaluationEvent:selectedEvaluationEvent];
     }
-}
-
-- (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath {
-    BOOL shouldHighlight = YES;
-    OCKCarePlanEvent *event = _evaluationEvents[indexPath.row].firstObject;
-    if (event.state == OCKCarePlanEventStateCompleted && !event.activity.resultResettable) {
-        shouldHighlight = NO;
-    }
-    return shouldHighlight;
+    
+    [tableView deselectRowAtIndexPath:indexPath animated:NO];
 }
 
 
 #pragma mark - UITableViewDataSource
-
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    return @"Surveys";
-}
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return _evaluationEvents.count;

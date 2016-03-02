@@ -17,6 +17,7 @@
     [_heartView removeFromSuperview];
     
     _heartView = heartView;
+    _heartView.maskImage = [UIImage imageNamed:@"heart-small" inBundle:[NSBundle bundleForClass:[self class]] compatibleWithTraitCollection:nil];
     _heartView.userInteractionEnabled = NO;
     [self addSubview:_heartView];
 }

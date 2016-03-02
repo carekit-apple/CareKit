@@ -12,7 +12,7 @@
 #import "OCKCarePlanStore.h"
 #import "OCKCarePlanEvent.h"
 #import "OCKWeekView.h"
-#import "OCKWeekPageViewController.h"
+#import "OCKWeekViewController.h"
 #import "OCKCareCardWeekView.h"
 #import "OCKCareCardDetailViewController.h"
 
@@ -35,10 +35,18 @@
     return self;
 }
 
+- (void)viewDidLoad {
+    _tableViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Today"
+                                                                                              style:UIBarButtonItemStylePlain
+                                                                                             target:self
+                                                                                             action:@selector(showToday:)];
+    _tableViewController.navigationItem.rightBarButtonItem.tintColor = OCKPinkColor();
+}
+
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     _tableViewController.delegate = self;
-    _tableViewController.weekPageViewController.careCardWeekView.delegate = self;
+    _tableViewController.weekViewController.careCardWeekView.delegate = self;
     self.navigationBar.tintColor = self.view.tintColor;
 }
 
@@ -47,6 +55,9 @@
     self.topViewController.title = self.title;
 }
 
+- (void)showToday:(id)sender {
+    _tableViewController.selectedDate = [[OCKCarePlanDay alloc] initWithDate:[NSDate date] calendar:[NSCalendar currentCalendar]];
+}
 
 #pragma mark - OCKCareCardWeekViewDelegate
 
@@ -55,8 +66,6 @@
     OCKCarePlanDay *today = [[OCKCarePlanDay alloc] initWithDate:[NSDate date] calendar:[NSCalendar currentCalendar]];
     if (![selectedDate isLaterThan:today]) {
         _tableViewController.selectedDate = selectedDate;
-        OCKCareCardWeekView *careCardWeekView = _tableViewController.weekPageViewController.careCardWeekView;
-        [careCardWeekView.weekView highlightDay:careCardWeekView.selectedIndex];
     }
 }
 

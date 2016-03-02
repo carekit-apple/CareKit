@@ -61,8 +61,7 @@ static const CGFloat ImageViewSize = 200.0;
         _instructionsLabel.font = [UIFont systemFontOfSize:18.0 weight:UIFontWeightLight];
         [self.view addSubview:_instructionsLabel];
     }
-    // TODO: Implement this.
-    _instructionsLabel.text = @"Make sure to eat before each event and drink at least 3 glasses of water.";
+    _instructionsLabel.text = _treatment.detailText;
     
     if (!_imageView) {
         _imageView = [UIImageView new];

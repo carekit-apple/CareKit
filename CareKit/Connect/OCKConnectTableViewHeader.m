@@ -56,9 +56,9 @@ static const CGFloat ImageViewSize = 135.0;
     if (!_relationLabel) {
         _relationLabel = [UILabel new];
         _relationLabel.textColor = [UIColor lightGrayColor];
+        _relationLabel.font = [UIFont systemFontOfSize:16.0 weight:UIFontWeightLight];
         [self addSubview:_relationLabel];
     }
-    _relationLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
     _relationLabel.text = _contact.relation;
     
     if (!_leadingEdge) {

@@ -13,7 +13,7 @@
 #import "OCKCarePlanStore.h"
 #import "OCKCarePlanEvent.h"
 #import "OCKWeekView.h"
-#import "OCKWeekPageViewController.h"
+#import "OCKWeekViewController.h"
 #import "OCKEvaluationWeekView.h"
 
 
@@ -38,6 +38,14 @@
     return self;
 }
 
+- (void)viewDidLoad {
+    _tableViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Today"
+                                                                                              style:UIBarButtonItemStylePlain
+                                                                                             target:self
+                                                                                             action:@selector(showToday:)];
+    _tableViewController.navigationItem.rightBarButtonItem.tintColor = OCKPinkColor();
+}
+
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     _tableViewController.weekPageViewController.evaluationWeekView.delegate = self;
@@ -50,6 +58,10 @@
 
 - (OCKCarePlanEvent *)lastSelectedEvaluationEvent {
     return _tableViewController.lastSelectedEvaluationEvent;
+}
+
+- (void)showToday:(id)sender {
+    _tableViewController.selectedDate = [[OCKCarePlanDay alloc] initWithDate:[NSDate date] calendar:[NSCalendar currentCalendar]];
 }
 
 

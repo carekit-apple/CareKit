@@ -7,13 +7,13 @@
 //
 
 
-#import "OCKWeekPageViewController.h"
+#import "OCKWeekViewController.h"
 #import "OCKWeekView.h"
 #import "OCKCareCardWeekView.h"
 #import "OCKEvaluationWeekView.h"
 
 
-@implementation OCKWeekPageViewController {
+@implementation OCKWeekViewController {
     OCKCareCardWeekView *_careCardWeekView;
     OCKEvaluationWeekView *_evaluationWeekView;
 }

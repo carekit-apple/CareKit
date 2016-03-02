@@ -14,7 +14,7 @@
 
 #define DefineStringKey(x) static NSString *const x = @#x
 
-static const BOOL resetStoreOnLaunch = YES;
+static const BOOL resetStoreOnLaunch = NO;
 
 @interface ViewController () <OCKEvaluationTableViewDelegate, OCKCarePlanStoreDelegate, ORKTaskViewControllerDelegate>
 

@@ -33,27 +33,27 @@ const static CGFloat HeartButtonSize = 20.0;
         _weekView = [[OCKWeekView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, 25.0)];
         [self addSubview:_weekView];
         
-        NSInteger weekday = [[NSCalendar currentCalendar] component:NSCalendarUnitWeekday fromDate:[NSDate date]] - 1;
-        [_weekView highlightDay:weekday];
-        _selectedIndex = weekday;
+//        NSInteger weekday = [[NSCalendar currentCalendar] component:NSCalendarUnitWeekday fromDate:[NSDate date]] - 1;
+//        [_weekView highlightDay:weekday];
+//        _selectedIndex = weekday;
     }
     
     if (!_heartButtons) {
         _heartButtons = [NSMutableArray new];
         for (int i = 0; i < 7; i++) {
-            OCKHeartButton *heart = [[OCKHeartButton alloc] initWithFrame:CGRectMake(0, 0, HeartButtonSize, HeartButtonSize)];
-            heart.translatesAutoresizingMaskIntoConstraints = NO;
+            OCKHeartButton *heartButton = [[OCKHeartButton alloc] initWithFrame:CGRectMake(0, 0, HeartButtonSize, HeartButtonSize)];
+            heartButton.translatesAutoresizingMaskIntoConstraints = NO;
             
             OCKHeartView *heartView = [[OCKHeartView alloc] initWithFrame:CGRectMake(0, 0, HeartButtonSize + 10, HeartButtonSize + 10)];
             heartView.userInteractionEnabled = NO;
-            heart.heartView = heartView;
+            heartButton.heartView = heartView;
             
-            [heart addTarget:self
-                      action:@selector(updateDayOfWeek:)
-            forControlEvents:UIControlEventTouchDown];
+            [heartButton addTarget:self
+                            action:@selector(updateDayOfWeek:)
+                  forControlEvents:UIControlEventTouchDown];
             
-            [self addSubview:heart];
-            [_heartButtons addObject:heart];
+            [self addSubview:heartButton];
+            [_heartButtons addObject:heartButton];
         }
     }
     
@@ -112,6 +112,11 @@ const static CGFloat HeartButtonSize = 20.0;
     for (int i = 0; i < _adherenceValues.count; i++) {
         _heartButtons[i].heartView.adherence = [_adherenceValues[i] floatValue];
     }
+}
+
+- (void)setSelectedIndex:(NSInteger)selectedIndex {
+    _selectedIndex = selectedIndex;
+    [_weekView highlightDay:selectedIndex];
 }
 
 - (void)updateDayOfWeek:(id)sender {

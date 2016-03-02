@@ -13,7 +13,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class OCKCarePlanActivity, OCKWeekPageViewController, OCKCarePlanStore, OCKCarePlanDay;
+@class OCKCarePlanActivity, OCKWeekViewController, OCKCarePlanStore, OCKCarePlanDay;
 
 @protocol OCKCareCardTableViewDelegate <NSObject>
 
@@ -22,7 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 
-@interface OCKCareCardTableViewController : UITableViewController <OCKCarePlanStoreDelegate, UIPageViewControllerDataSource, OCKCareCardCellDelegate>
+@interface OCKCareCardTableViewController : UITableViewController <OCKCarePlanStoreDelegate, UIPageViewControllerDelegate, UIPageViewControllerDataSource, OCKCareCardCellDelegate>
 
 + (instancetype)new NS_UNAVAILABLE;
 
@@ -30,7 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, readonly) OCKCarePlanStore *store;
 @property (nonatomic) id<OCKCareCardTableViewDelegate> delegate;
-@property (nonatomic, readonly) OCKWeekPageViewController *weekPageViewController;
+@property (nonatomic, readonly) OCKWeekViewController *weekViewController;
 @property (nonatomic) OCKCarePlanDay *selectedDate;
 
 - (OCKCarePlanDay *)dateFromSelectedIndex:(NSInteger)index;

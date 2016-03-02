@@ -12,11 +12,12 @@
 #import "OCKHelpers.h"
 #import "OCKCarePlanActivity.h"
 #import "OCKCareCardTableViewCell.h"
-#import "OCKWeekPageViewController.h"
+#import "OCKWeekViewController.h"
 #import "OCKCarePlanStore_Internal.h"
 #import "OCKCareCardWeekView.h"
 #import "OCKCarePlanDay.h"
 #import "OCKHeartView.h"
+#import "OCKWeekView.h"
 
 
 static const CGFloat CellHeight = 85.0;
@@ -26,6 +27,7 @@ static const CGFloat HeaderViewHeight = 200.0;
     NSMutableArray<NSMutableArray<OCKCarePlanEvent *> *> *_treatmentEvents;
     NSMutableArray *_weeklyAdherences;
     OCKCareCardTableViewHeader *_headerView;
+    UIPageViewController *_pageViewController;
 }
 
 + (instancetype)new {
@@ -50,23 +52,13 @@ static const CGFloat HeaderViewHeight = 200.0;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+
+    [self prepareView];
     
-    _selectedDate = [[OCKCarePlanDay alloc] initWithDate:[NSDate date] calendar:[NSCalendar currentCalendar]];
+    self.selectedDate = [[OCKCarePlanDay alloc] initWithDate:[NSDate date] calendar:[NSCalendar currentCalendar]];
 
     self.tableView.rowHeight = CellHeight;
     self.tableView.sectionHeaderHeight = HeaderViewHeight;
-    
-    [self fetchTreatmentEvents];
-    [self prepareView];
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    OCKCarePlanDay *newDate = [[OCKCarePlanDay alloc] initWithDate:[NSDate date] calendar:[NSCalendar currentCalendar]];
-    
-    if ([newDate isLaterThan:_selectedDate]) {
-        _selectedDate = newDate;
-    }
 }
 
 - (void)prepareView {
@@ -75,17 +67,36 @@ static const CGFloat HeaderViewHeight = 200.0;
     }
     [self updateHeaderView];
     
-    _weekPageViewController = [[OCKWeekPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll
-                                                                   navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal
-                                                                                 options:nil];
-    _weekPageViewController.dataSource = self;
-
-    self.tableView.tableHeaderView = _weekPageViewController.view;
+    if (!_pageViewController) {
+        _pageViewController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll
+                                                              navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal
+                                                                            options:nil];
+        _pageViewController.dataSource = self;
+        _pageViewController.delegate = self;
+        _pageViewController.view.frame = CGRectMake(0, 0, self.view.frame.size.width, 60.0);
+        
+        OCKWeekViewController *weekController = [OCKWeekViewController new];
+        
+        id delegate = _weekViewController.careCardWeekView.delegate;
+        _weekViewController = weekController;
+        _weekViewController.careCardWeekView.delegate = delegate;
+    
+        [_pageViewController setViewControllers:@[weekController] direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:nil];
+    }
+    
+    self.tableView.tableHeaderView = _pageViewController.view;
     self.tableView.tableFooterView = [UIView new];
 }
 
 - (void)setSelectedDate:(OCKCarePlanDay *)selectedDate {
     _selectedDate = selectedDate;
+    OCKCarePlanDay *today = [[OCKCarePlanDay alloc] initWithDate:[NSDate date] calendar:[NSCalendar currentCalendar]];
+    if ([_selectedDate isLaterThan:today]) {
+        _selectedDate = today;
+    }
+    
+    NSDateComponents *components = [[NSCalendar currentCalendar] components:NSCalendarUnitWeekday fromDate:[self dateFromCarePlanDay:_selectedDate]];
+    _weekViewController.careCardWeekView.selectedIndex = components.weekday-1;
     
     [self fetchTreatmentEvents];
 }
@@ -125,13 +136,12 @@ static const CGFloat HeaderViewHeight = 200.0;
         }
     }
 
-    float adherence = (totalEvents > 0) ? (float)completedEvents/totalEvents : 0;
+    float adherence = (totalEvents > 0) ? (float)completedEvents/totalEvents : 1;
     _headerView.adherence = adherence;
 
-    // Update the week view heart for the selected index.
-    NSInteger selectedIndex = _weekPageViewController.careCardWeekView.selectedIndex;
+    NSInteger selectedIndex = _weekViewController.careCardWeekView.selectedIndex;
     [_weeklyAdherences replaceObjectAtIndex:selectedIndex withObject:@(adherence)];
-    _weekPageViewController.careCardWeekView.adherenceValues = _weeklyAdherences;
+    _weekViewController.careCardWeekView.adherenceValues = _weeklyAdherences;
 }
 
 - (void)updateWeekView {
@@ -157,7 +167,7 @@ static const CGFloat HeaderViewHeight = 200.0;
                                        [adherenceValues addObject:@((float)completed/total)];
                                    }
                                    if (adherenceValues.count == 7) {
-                                       _weekPageViewController.careCardWeekView.adherenceValues = adherenceValues;
+                                       _weekViewController.careCardWeekView.adherenceValues = adherenceValues;
                                        _weeklyAdherences = [adherenceValues mutableCopy];
                                    }
                                }];
@@ -187,6 +197,18 @@ static const CGFloat HeaderViewHeight = 200.0;
     components.month = _selectedDate.month;
     components.day = _selectedDate.day;
     return [[NSCalendar currentCalendar] dateFromComponents:components];
+}
+
+- (BOOL)selectedDateIsInCurrentWeek {
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    
+    NSDateComponents *components = [calendar components:NSCalendarUnitWeekOfYear fromDate:[NSDate date]];
+    NSUInteger currentWeek = components.weekOfYear;
+    
+    components = [calendar components:NSCalendarUnitWeekOfYear fromDate:[self dateFromCarePlanDay:_selectedDate]];
+    NSUInteger selectedWeek = components.weekOfYear;
+    
+    return (selectedWeek == currentWeek);
 }
 
 
@@ -232,27 +254,39 @@ static const CGFloat HeaderViewHeight = 200.0;
 }
 
 
+#pragma mark - UIPageViewControllerDelegate
+
+- (void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray<UIViewController *> *)previousViewControllers transitionCompleted:(BOOL)completed {
+    OCKWeekViewController *controller = (OCKWeekViewController *)pageViewController.viewControllers.firstObject;
+    controller.careCardWeekView.delegate = _weekViewController.careCardWeekView.delegate;
+
+    
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    NSDateComponents *components = [NSDateComponents new];
+    components.day = (controller.view.tag > _weekViewController.view.tag) ? 7 : -7;
+    NSDate *newDate = [calendar dateByAddingComponents:components toDate:[self dateFromCarePlanDay:_selectedDate] options:0];
+
+    _weekViewController = controller;
+    self.selectedDate = [[OCKCarePlanDay alloc] initWithDate:newDate calendar:calendar];
+    
+    components = [[NSCalendar currentCalendar] components:NSCalendarUnitWeekday fromDate:[self dateFromCarePlanDay:_selectedDate]];
+    [_weekViewController.careCardWeekView.weekView highlightDay:components.weekday-1];
+}
+
+
 #pragma mark - UIPageViewControllerDataSource
 
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController {
-    // TO DO: implementation
-    // Calculate the date one week before the selected date.
-    
-    // Set the new date as the selected date.
-    
-    return pageViewController;
+    OCKWeekViewController *controller = [OCKWeekViewController new];
+    controller.view.tag = viewController.view.tag - 1;
+    return controller;
 }
 
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController {
-    // TO DO: implementation
-    
-    // Check if the selected date is from current week, if it is then don't do anything.
-    
-    // Calculate the date one week after the selected date.
-    
-    // Set the new date as the selected date.
-    
-    return pageViewController;
+    OCKWeekViewController *controller = [OCKWeekViewController new];
+    controller.view.tag = viewController.view.tag + 1;
+
+    return (![self selectedDateIsInCurrentWeek]) ? controller : nil;
 }
 
 

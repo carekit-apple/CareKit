@@ -10,9 +10,9 @@
 #import <UIKit/UIKit.h>
 
 
-@class OCKCareCardWeekView, OCKEvaluationWeekView;
+@class OCKCareCardWeekView, OCKEvaluationWeekView, OCKCarePlanDay;
 
-@interface OCKWeekPageViewController : UIPageViewController
+@interface OCKWeekViewController : UIViewController
 
 @property (nonatomic) BOOL showCareCardWeekView;
 @property (nonatomic, readonly) OCKCareCardWeekView *careCardWeekView;

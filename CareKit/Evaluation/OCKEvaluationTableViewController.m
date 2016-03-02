@@ -12,7 +12,7 @@
 #import "OCKEvaluationTableViewHeader.h"
 #import "OCKHelpers.h"
 #import "OCKCarePlanStore_Internal.h"
-#import "OCKWeekPageViewController.h"
+#import "OCKWeekViewController.h"
 #import "OCKEvaluationWeekView.h"
 
 
@@ -76,14 +76,13 @@ const static CGFloat HeaderViewHeight = 150.0;
     }
     [self updateHeaderView];
     
-    _weekPageViewController = [[OCKWeekPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll
-                                                                   navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal
-                                                                                 options:nil];
-    _weekPageViewController.dataSource = self;
-    _weekPageViewController.showCareCardWeekView = NO;
+//    _weekPageViewController = [[OCKWeekPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll
+//                                                                   navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal
+//                                                                                 options:nil];
+//    _weekPageViewController.dataSource = self;
+//    _weekPageViewController.showCareCardWeekView = NO;
     
     self.tableView.tableHeaderView = _weekPageViewController.view;
-    self.tableView.tableHeaderView.backgroundColor = [UIColor whiteColor];
     self.tableView.tableFooterView = [UIView new];
 }
 

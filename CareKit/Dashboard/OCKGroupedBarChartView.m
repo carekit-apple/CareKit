@@ -82,7 +82,7 @@ static const CGFloat BarPointSize = 8.0;
         animation.duration = duration * _bar.value.doubleValue/_maxValue;
         animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];;
         animation.fillMode = kCAFillModeBoth;
-        animation.removedOnCompletion = false;
+        animation.removedOnCompletion = true;
         
         [_barLayer addAnimation:animation forKey:animation.keyPath];
     }
@@ -97,7 +97,7 @@ static const CGFloat BarPointSize = 8.0;
         animation.duration = duration * _bar.value.doubleValue/_maxValue;
         animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];;
         animation.fillMode = kCAFillModeBoth;
-        animation.removedOnCompletion = false;
+        animation.removedOnCompletion = true;
         
         [_valueLabel.layer addAnimation:animation forKey:animation.keyPath];
     }

@@ -58,7 +58,6 @@ static const CGFloat HeaderViewHeight = 200.0;
     self.selectedDate = [[OCKCarePlanDay alloc] initWithDate:[NSDate date] calendar:[NSCalendar currentCalendar]];
 
     self.tableView.rowHeight = CellHeight;
-    self.tableView.sectionHeaderHeight = HeaderViewHeight;
 }
 
 - (void)prepareView {
@@ -285,7 +284,6 @@ static const CGFloat HeaderViewHeight = 200.0;
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController {
     OCKWeekViewController *controller = [OCKWeekViewController new];
     controller.view.tag = viewController.view.tag + 1;
-
     return (![self selectedDateIsInCurrentWeek]) ? controller : nil;
 }
 

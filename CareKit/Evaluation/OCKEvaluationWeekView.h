@@ -26,6 +26,6 @@
 @property (nonatomic) id<OCKEvaluationWeekViewDelegate> delegate;
 @property (nonatomic, copy) NSArray *progressValues;
 @property (nonatomic, readonly) OCKWeekView *weekView;
-@property (nonatomic, readonly) NSInteger selectedIndex;
+@property (nonatomic) NSInteger selectedIndex;
 
 @end

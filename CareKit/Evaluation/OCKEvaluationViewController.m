@@ -48,7 +48,7 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    _tableViewController.weekPageViewController.evaluationWeekView.delegate = self;
+    _tableViewController.weekViewController.evaluationWeekView.delegate = self;
 }
 
 - (void)setTitle:(NSString *)title {
@@ -72,8 +72,6 @@
     OCKCarePlanDay *today = [[OCKCarePlanDay alloc] initWithDate:[NSDate date] calendar:[NSCalendar currentCalendar]];
     if (![selectedDate isLaterThan:today]) {
         _tableViewController.selectedDate = selectedDate;
-        OCKEvaluationWeekView *evaluationWeekView = _tableViewController.weekPageViewController.evaluationWeekView;
-        [evaluationWeekView.weekView highlightDay:evaluationWeekView.selectedIndex];
     }
 }
 

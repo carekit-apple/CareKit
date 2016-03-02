@@ -116,6 +116,11 @@ const static CGFloat RingButtonSize = 20.0;
     }
 }
 
+- (void)setSelectedIndex:(NSInteger)selectedIndex {
+    _selectedIndex = selectedIndex;
+    [_weekView highlightDay:selectedIndex];
+}
+
 - (void)updateDayOfWeek:(id)sender {
     OCKRingButton *button = (OCKRingButton *)sender;
     NSInteger index = [_ringButtons indexOfObject:button];

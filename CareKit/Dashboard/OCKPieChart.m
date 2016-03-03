@@ -127,15 +127,14 @@
 
 #pragma mark - Internal
 
-+ (ORKPieChartView *)pieChartView:(OCKChart *)chart {
-    OCKPieChart *pieChart = (OCKPieChart *)chart;
+- (UIView *)chartView {
+    OCKPieChart *pieChart = self;
     ORKPieChartView *chartView = [ORKPieChartView new];
     chartView.dataSource = pieChart;
     chartView.showsPercentageLabels = pieChart.showsPercentageLabels;
     if (!pieChart.usesLineSegments) {
         chartView.lineWidth = NSIntegerMax;
     }
-    [chartView animateWithDuration:1.0];
     return chartView;
 }
 

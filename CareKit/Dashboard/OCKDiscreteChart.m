@@ -131,14 +131,13 @@
 
 #pragma mark - Internal
 
-+ (ORKDiscreteGraphChartView *)discreteChartView:(OCKChart *)chart {
-    OCKDiscreteChart *discreteChart = (OCKDiscreteChart *)chart;
+- (UIView *)chartView {
+    OCKDiscreteChart *discreteChart = self;
     ORKDiscreteGraphChartView *chartView = [ORKDiscreteGraphChartView new];
     chartView.dataSource = discreteChart;
     chartView.drawsConnectedRanges = discreteChart.drawsConnectedRanges;
     chartView.scrubberThumbColor = chartView.tintColor;
     chartView.scrubberLineColor = chartView.tintColor;
-    [chartView animateWithDuration:1.0];
     return chartView;
 }
 

@@ -15,8 +15,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface OCKDiscreteChart() <ORKGraphChartViewDataSource>
 
-+ (ORKDiscreteGraphChartView *)discreteChartView:(OCKChart *)chart;
-
 @end
 
 NS_ASSUME_NONNULL_END

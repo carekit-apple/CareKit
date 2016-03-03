@@ -58,6 +58,11 @@ static const CGFloat ChartHeight = 175.0;
             (self.height == castObject.height));
 }
 
+- (UIView *)chartView {
+    OCKThrowMethodUnavailableException();
+    return nil;
+}
+
 
 #pragma mark - NSSecureCoding
 

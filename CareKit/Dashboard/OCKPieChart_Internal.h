@@ -13,11 +13,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class ORKPieChartView;
-
 @interface OCKPieChart() <ORKPieChartViewDataSource>
-
-+ (ORKPieChartView *)pieChartView:(OCKChart *)chart;
 
 @end
 

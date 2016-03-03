@@ -115,6 +115,11 @@
 		865A6D0E1C5AD18B0054F9F0 /* whatever.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865A6D0D1C5AD18B0054F9F0 /* whatever.swift */; };
 		86B747CC1C84DE3C003B9554 /* OCKRingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 86B747CA1C84DE3C003B9554 /* OCKRingView.m */; };
 		86B747D01C84E192003B9554 /* OCKRingView.h in Headers */ = {isa = PBXBuildFile; fileRef = 86B747CF1C84E192003B9554 /* OCKRingView.h */; };
+		867C31C91C7D028F00893CE5 /* CareKitPDFTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 867C31C81C7D028F00893CE5 /* CareKitPDFTests.m */; };
+		867C31D11C7D27D100893CE5 /* OCKDocument.h in Headers */ = {isa = PBXBuildFile; fileRef = 867C31CF1C7D27D100893CE5 /* OCKDocument.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		867C31D21C7D27D100893CE5 /* OCKDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 867C31D01C7D27D100893CE5 /* OCKDocument.m */; };
+		86B747A51C7E5438003B9554 /* OCKHTMLPDFWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 86B747A31C7E5438003B9554 /* OCKHTMLPDFWriter.h */; };
+		86B747A61C7E5438003B9554 /* OCKHTMLPDFWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 86B747A41C7E5438003B9554 /* OCKHTMLPDFWriter.m */; };
 		86BE2EFF1C77C83D00D66276 /* OCKCareCardViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 86BE2EFE1C77C83D00D66276 /* OCKCareCardViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		86BE2F021C7BDD2C00D66276 /* OCKCarePlanDay.h in Headers */ = {isa = PBXBuildFile; fileRef = 86BE2F001C7BDD2C00D66276 /* OCKCarePlanDay.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		86BE2F031C7BDD2C00D66276 /* OCKCarePlanDay.m in Sources */ = {isa = PBXBuildFile; fileRef = 86BE2F011C7BDD2C00D66276 /* OCKCarePlanDay.m */; };
@@ -270,6 +275,11 @@
 		865A6D0D1C5AD18B0054F9F0 /* whatever.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = whatever.swift; sourceTree = "<group>"; };
 		86B747CA1C84DE3C003B9554 /* OCKRingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OCKRingView.m; path = ../CareCard/OCKRingView.m; sourceTree = "<group>"; };
 		86B747CF1C84E192003B9554 /* OCKRingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OCKRingView.h; path = ../CareCard/OCKRingView.h; sourceTree = "<group>"; };
+		867C31C81C7D028F00893CE5 /* CareKitPDFTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CareKitPDFTests.m; sourceTree = "<group>"; };
+		867C31CF1C7D27D100893CE5 /* OCKDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKDocument.h; sourceTree = "<group>"; };
+		867C31D01C7D27D100893CE5 /* OCKDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKDocument.m; sourceTree = "<group>"; };
+		86B747A31C7E5438003B9554 /* OCKHTMLPDFWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKHTMLPDFWriter.h; sourceTree = "<group>"; };
+		86B747A41C7E5438003B9554 /* OCKHTMLPDFWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKHTMLPDFWriter.m; sourceTree = "<group>"; };
 		86BE2EFE1C77C83D00D66276 /* OCKCareCardViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKCareCardViewController.h; sourceTree = "<group>"; };
 		86BE2F001C7BDD2C00D66276 /* OCKCarePlanDay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKCarePlanDay.h; sourceTree = "<group>"; };
 		86BE2F011C7BDD2C00D66276 /* OCKCarePlanDay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKCarePlanDay.m; sourceTree = "<group>"; };
@@ -630,6 +640,7 @@
 				2445EB241C6D67A100F51A95 /* Connect */,
 				2445EAE31C6D673000F51A95 /* Dashboard */,
 				24E3180C1C6EB08A0094C45B /* Evaluation */,
+				867C31CE1C7D27A500893CE5 /* PDF */,
 				24B31A6C1C6E71A600C3C196 /* Utilities */,
 				24935CD11C7E341E00B208A9 /* Assets.xcassets */,
 				865A6CD51C5A95180054F9F0 /* ResearchKit.xcodeproj */,
@@ -647,6 +658,7 @@
 				8605A5CB1C4F04EC00DD65FF /* Info.plist */,
 				865A6D0D1C5AD18B0054F9F0 /* whatever.swift */,
 				865A6D0C1C5AD18A0054F9F0 /* CareKitTests-Bridging-Header.h */,
+				867C31C81C7D028F00893CE5 /* CareKitPDFTests.m */,
 			);
 			path = CareKitTests;
 			sourceTree = "<group>";
@@ -658,6 +670,17 @@
 				865A6CDE1C5A95180054F9F0 /* ResearchKitTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		867C31CE1C7D27A500893CE5 /* PDF */ = {
+			isa = PBXGroup;
+			children = (
+				86B747A31C7E5438003B9554 /* OCKHTMLPDFWriter.h */,
+				86B747A41C7E5438003B9554 /* OCKHTMLPDFWriter.m */,
+				867C31CF1C7D27D100893CE5 /* OCKDocument.h */,
+				867C31D01C7D27D100893CE5 /* OCKDocument.m */,
+			);
+			path = PDF;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -701,6 +724,7 @@
 				86ED1C6F1C7526A700B33FC5 /* OCKCarePlanEventResult.h in Headers */,
 				245AD9671C8101C600940688 /* OCKRingButton.h in Headers */,
 				2445EB091C6D673000F51A95 /* OCKChartTableViewController.h in Headers */,
+				867C31D11C7D27D100893CE5 /* OCKDocument.h in Headers */,
 				2445EB071C6D673000F51A95 /* OCKChartTableViewCell.h in Headers */,
 				2445EAD41C6D66CC00F51A95 /* OCKCarePlanStore.h in Headers */,
 				249029FA1C823BBA00051791 /* OCKConnectDetailViewController.h in Headers */,
@@ -727,6 +751,7 @@
 				2445EB2F1C6D67A100F51A95 /* OCKConnectTableViewController.h in Headers */,
 				2445EB0B1C6D673000F51A95 /* OCKChartTableViewController_Internal.h in Headers */,
 				2445EB1D1C6D673000F51A95 /* OCKPieChart_Internal.h in Headers */,
+				86B747A51C7E5438003B9554 /* OCKHTMLPDFWriter.h in Headers */,
 				86BE2F051C7BED7500D66276 /* OCKCarePlanDay_Internal.h in Headers */,
 				24E318151C6EB08A0094C45B /* OCKEvaluationViewController.h in Headers */,
 				8656C0DE1C6E98DA00A6D5D1 /* OCKCarePlanStore_Internal.h in Headers */,
@@ -870,8 +895,10 @@
 				24902A0B1C82CF6E00051791 /* OCKConnectTableViewHeader.m in Sources */,
 				2445EB0A1C6D673000F51A95 /* OCKChartTableViewController.m in Sources */,
 				2445EB211C6D673000F51A95 /* OCKRangePoint.m in Sources */,
+				86B747A61C7E5438003B9554 /* OCKHTMLPDFWriter.m in Sources */,
 				2445EB1C1C6D673000F51A95 /* OCKPieChart.m in Sources */,
 				2445EB0F1C6D673000F51A95 /* OCKDashboardViewController.m in Sources */,
+				867C31D21C7D27D100893CE5 /* OCKDocument.m in Sources */,
 				2445EB081C6D673000F51A95 /* OCKChartTableViewCell.m in Sources */,
 				24E3181A1C6EB08A0094C45B /* OCKEvaluationTableViewController.m in Sources */,
 				2445EB051C6D673000F51A95 /* OCKChart.m in Sources */,
@@ -910,6 +937,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8605A5CA1C4F04EC00DD65FF /* CareKitCarePlanTests.m in Sources */,
+				867C31C91C7D028F00893CE5 /* CareKitPDFTests.m in Sources */,
 				865A6D0E1C5AD18B0054F9F0 /* whatever.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

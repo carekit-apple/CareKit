@@ -15,8 +15,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface OCKLineChart() <ORKGraphChartViewDataSource>
 
-+ (ORKLineGraphChartView *)lineChartView:(OCKChart *)chart;
-
 @end
 
 NS_ASSUME_NONNULL_END

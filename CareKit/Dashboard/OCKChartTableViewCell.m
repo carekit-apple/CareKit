@@ -60,13 +60,8 @@ static const CGFloat BottomMargin = 15.0;
     _textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
     _textLabel.text = _chart.text;
     
-    if ([_chart isKindOfClass:[OCKLineChart class]]) {
-        _chartView = [OCKLineChart lineChartView:_chart];
-    } else if ([_chart isKindOfClass:[OCKDiscreteChart class]]) {
-        _chartView = [OCKDiscreteChart discreteChartView:_chart];
-    } else if ([_chart isKindOfClass:[OCKPieChart class]]) {
-        _chartView = [OCKPieChart pieChartView:_chart];
-    }
+    _chartView = [_chart chartView];
+    
     [self.contentView addSubview:_chartView];
     
     if (!_xAxisLabel) {

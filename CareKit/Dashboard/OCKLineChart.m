@@ -128,15 +128,14 @@
 
 #pragma mark - Internal
 
-+ (ORKLineGraphChartView *)lineChartView:(OCKChart *)chart {
-    OCKLineChart *lineChart = (OCKLineChart *)chart;
+- (UIView *)chartView {
+    OCKLineChart *lineChart = self;
     ORKLineGraphChartView *chartView = [ORKLineGraphChartView new];
     chartView.dataSource = lineChart;
     chartView.showsHorizontalReferenceLines = YES;
     chartView.showsVerticalReferenceLines = YES;
     chartView.scrubberThumbColor = chartView.tintColor;
     chartView.scrubberLineColor = chartView.tintColor;
-    [chartView animateWithDuration:1.0];
     return chartView;
 }
 

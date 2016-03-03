@@ -133,7 +133,7 @@ BOOL OCKIsAxisValid(NSArray<NSString *> *axisTitles, NSArray<NSString *> *axisSu
 
 #pragma mark - OCKGroupedBarChartDataSource
 
-- (NSUInteger)numberOfGroupsInChartView:(OCKGroupedBarChartView *)chartView {
+- (NSInteger)numberOfGroupsInChartView:(OCKGroupedBarChartView *)chartView {
     NSUInteger numberOfGroups = 0;
     for (OCKBarGroup *barGroup in self.groups) {
         NSUInteger numberInBarGroup = barGroup.values.count;
@@ -144,7 +144,7 @@ BOOL OCKIsAxisValid(NSArray<NSString *> *axisTitles, NSArray<NSString *> *axisSu
     return numberOfGroups;
 }
 
-- (NSUInteger)numberOfBarsPerGroupInChartView:(OCKGroupedBarChartView *)chartView {
+- (NSInteger)numberOfBarsPerGroupInChartView:(OCKGroupedBarChartView *)chartView {
     return self.groups.count;
 }
 
@@ -187,7 +187,7 @@ BOOL OCKIsAxisValid(NSArray<NSString *> *axisTitles, NSArray<NSString *> *axisSu
 
 + (void)animateView:(UIView *)view withDuration:(NSTimeInterval)duration {
     OCKGroupedBarChartView *chartView = (OCKGroupedBarChartView *)view;
-    [chartView animationWithDuration:duration];
+    [chartView animateWithDuration:duration];
 }
 
 @end

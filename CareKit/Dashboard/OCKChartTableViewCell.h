@@ -16,4 +16,6 @@
 
 @property (nonatomic) OCKChart *chart;
 
+- (void)animateWithDuration:(NSTimeInterval)duration;
+
 @end

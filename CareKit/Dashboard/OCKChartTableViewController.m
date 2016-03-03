@@ -17,6 +17,7 @@
 
 @implementation OCKChartTableViewController {
     OCKChartTableViewHeaderView *_headerView;
+    BOOL _hasAnimated;
 }
 
 + (instancetype)new {
@@ -55,8 +56,21 @@
         self.tableView.tableHeaderView = _headerView;
     }
 
+    _hasAnimated = NO;
+    
     self.tableView.sectionHeaderHeight = 5.0;
     self.tableView.sectionFooterHeight = 0.0;
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    if (!_hasAnimated) {
+        NSArray *visibleCells = self.tableView.visibleCells;
+        for (OCKChartTableViewCell *cell in visibleCells) {
+            [cell animateWithDuration:1.0];
+        }
+        _hasAnimated = YES;
+    }
 }
 
 - (void)setCharts:(NSArray<OCKChart *> *)charts {
@@ -120,6 +134,7 @@
                                             reuseIdentifier:CellIdentifier];
     }
     cell.chart = self.charts[indexPath.section];
+
     return cell;
 }
 

@@ -455,10 +455,14 @@ static const CGFloat BarPointSize = 8.0;
     [self recreateViews];
 }
 
-- (void)animationWithDuration:(NSTimeInterval)duration {
-    for (OCKGroupedBarChartBarGroupView *groupView in _groupsBox.subviews) {
-        [groupView animationWithDuration:duration];
-    }
+- (void)animateWithDuration:(NSTimeInterval)duration {
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        for (OCKGroupedBarChartBarGroupView *groupView in _groupsBox.subviews) {
+            [groupView animationWithDuration:duration];
+        }
+    });
+
 }
 
 - (void)layoutSubviews {

@@ -13,9 +13,9 @@ NS_ASSUME_NONNULL_BEGIN
 @class OCKGroupedBarChartView;
 @protocol OCKGroupedBarChartViewDataSource <NSObject>
 
-- (NSUInteger)numberOfGroupsInChartView:(OCKGroupedBarChartView *)chartView;
+- (NSInteger)numberOfGroupsInChartView:(OCKGroupedBarChartView *)chartView;
 
-- (NSUInteger)numberOfBarsPerGroupInChartView:(OCKGroupedBarChartView *)chartView;
+- (NSInteger)numberOfBarsPerGroupInChartView:(OCKGroupedBarChartView *)chartView;
 
 - (UIColor *)chartView:(OCKGroupedBarChartView *)chartView colorForBar:(NSUInteger)barIndex;
 
@@ -45,7 +45,7 @@ NS_ASSUME_NONNULL_BEGIN
 /*
  Show filling animation of all the bars.
  */
-- (void)animationWithDuration:(NSTimeInterval)duration;
+- (void)animateWithDuration:(NSTimeInterval)duration;
 
 @end
 

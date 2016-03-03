@@ -22,10 +22,12 @@ static const CGFloat VerticalMargin = 10.0;
     UILabel *_textLabel;
     UIView *_chartView;
     UIView *_leadingEdge;
+    NSMutableArray *_constraints;
 }
 
 - (void)setChart:(OCKChart *)chart {
     _chart = chart;
+    [_chartView removeFromSuperview];
     _chartView = nil;
     [self prepareView];
 }
@@ -54,7 +56,6 @@ static const CGFloat VerticalMargin = 10.0;
     
     _chartView = _chart.chartView;
     [self.contentView addSubview:_chartView];
-    [[_chart class] animateView:_chartView withDuration:5.0];
     
     if (!_leadingEdge) {
         _leadingEdge = [UIView new];
@@ -66,14 +67,17 @@ static const CGFloat VerticalMargin = 10.0;
 }
 
 - (void)setUpConstraints {
-    NSMutableArray *constraints = [NSMutableArray new];
+    
+    [NSLayoutConstraint deactivateConstraints:_constraints];
+    
+    _constraints = [NSMutableArray new];
     
     _titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     _textLabel.translatesAutoresizingMaskIntoConstraints = NO;
     _chartView.translatesAutoresizingMaskIntoConstraints = NO;
     _leadingEdge.translatesAutoresizingMaskIntoConstraints = NO;
     
-    [constraints addObjectsFromArray:@[
+    [_constraints addObjectsFromArray:@[
                                        [NSLayoutConstraint constraintWithItem:_titleLabel
                                                                     attribute:NSLayoutAttributeLeading
                                                                     relatedBy:NSLayoutRelationEqual
@@ -160,7 +164,13 @@ static const CGFloat VerticalMargin = 10.0;
                                                                      constant:0.0]
                                        ]];
     
-    [NSLayoutConstraint activateConstraints:constraints];
+    [NSLayoutConstraint activateConstraints:_constraints];
+}
+
+- (void)animateWithDuration:(NSTimeInterval)duration {
+    if (_chartView) {
+        [[_chart class] animateView:_chartView withDuration:duration];
+    }
 }
 
 @end

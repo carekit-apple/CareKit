@@ -16,7 +16,7 @@
 
 static const BOOL resetStoreOnLaunch = NO;
 
-@interface ViewController () <OCKEvaluationTableViewDelegate, OCKCarePlanStoreDelegate, ORKTaskViewControllerDelegate>
+@interface ViewController () <OCKEvaluationTableViewDelegate, OCKCarePlanStoreDelegate, ORKTaskViewControllerDelegate, OCKGroupedBarChartViewDataSource>
 
 @end
 
@@ -70,6 +70,57 @@ static const BOOL resetStoreOnLaunch = NO;
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [self presentViewController:_tabBarController animated:YES completion:nil];
+    
+    OCKGroupedBarChartView *barChartView = [[OCKGroupedBarChartView alloc] initWithFrame:CGRectMake(10, 20, 355, 400)];
+    barChartView.backgroundColor = [UIColor whiteColor];
+    barChartView.dataSource = self;
+    [_dashboardViewController.view addSubview:barChartView];
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [barChartView animationWithDuration:2.0];
+    });
+
+}
+
+#pragma mark - OCKGroupedBarChartViewDataSource
+
+- (NSUInteger)numberOfGroupsInChartView:(OCKGroupedBarChartView *)chartView {
+    return 5;
+}
+
+- (NSUInteger)numberOfBarsPerGroupInChartView:(OCKGroupedBarChartView *)chartView {
+    return 4;
+}
+
+- (UIColor *)chartView:(OCKGroupedBarChartView *)chartView colorForBar:(NSUInteger)barIndex {
+    
+    return @[
+             [[UIColor redColor] colorWithAlphaComponent:0.5],
+             [[UIColor orangeColor] colorWithAlphaComponent:0.5],
+             [[UIColor purpleColor] colorWithAlphaComponent:0.5],
+             [[UIColor brownColor] colorWithAlphaComponent:0.5]
+             ][barIndex];
+}
+
+- (NSString *)chartView:(OCKGroupedBarChartView *)chartView nameForBar:(NSUInteger)barIndex {
+    return [NSString stringWithFormat:@"Bar %@", @(barIndex)];
+}
+
+- (NSNumber *)chartView:(OCKGroupedBarChartView *)chartView valueForBar:(NSUInteger)barIndex inGroup:(NSUInteger)groupIndex {
+    return @(barIndex+1);
+}
+
+- (NSString *)chartView:(OCKGroupedBarChartView *)chartView stringForBar:(NSUInteger)barIndex inGroup:(NSUInteger)groupIndex {
+    return [@(barIndex+1) description];
+}
+
+- (NSString *)chartView:(OCKGroupedBarChartView *)chartView titleForGroup:(NSUInteger)groupIndex {
+    return [NSString stringWithFormat:@"Group %@", @(groupIndex)];
+}
+
+
+- (NSString *)chartView:(OCKGroupedBarChartView *)chartView textForGroup:(NSUInteger)groupIndex {
+    return [NSString stringWithFormat:@"sub %@", @(groupIndex)];
 }
 
 

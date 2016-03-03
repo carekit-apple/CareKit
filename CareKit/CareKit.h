@@ -33,6 +33,7 @@
 #import <CareKit/OCKRangePoint.h>
 #import <CareKit/OCKPieChart.h>
 #import <CareKit/OCKSegment.h>
+#import <CareKit/OCKGroupedBarChartView.h>
 
 // Connect
 #import <CareKit/OCKConnectViewController.h>

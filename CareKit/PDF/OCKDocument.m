@@ -14,7 +14,7 @@
     OCKHTMLPDFWriter *_writer;
 }
 
-- (instancetype)initWithTitle:(NSString *)title elements:(NSArray<id<OCKHTMLElement>> *)elements {
+- (instancetype)initWithTitle:(NSString *)title elements:(NSArray<id<OCKDocumentElement>> *)elements {
     self = [super init];
     if (self) {
         _elements = [elements copy];
@@ -27,10 +27,10 @@
     NSString *html = @"<!doctype html>\n";
     
     NSString *css = @"";
-    if (_internalStyleSheet.length > 0) {
+    if (_style.length > 0) {
         css = [NSString stringWithFormat:@"<style>\n"
                "%@\n"
-               "</style>\n", _internalStyleSheet];
+               "</style>\n", _style];
     }
     
     html = [html stringByAppendingFormat:@"<html>\n"
@@ -45,7 +45,7 @@
         html = [html stringByAppendingString:[NSString stringWithFormat:@"<h2>%@</h2>\n", _title]];
     }
     
-    for (id<OCKHTMLElement> element in _elements) {
+    for (id<OCKDocumentElement> element in _elements) {
         html = [html stringByAppendingString:[element htmlContent]];
         html = [html stringByAppendingString:@"\n"];
     }

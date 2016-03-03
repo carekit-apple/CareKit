@@ -110,7 +110,7 @@
     OCKDocumentElementUIView *viewElement = [[OCKDocumentElementUIView alloc] initWithView:sampleView];
     
     OCKDocument *doc = [[OCKDocument alloc] initWithTitle:@"This is a title" elements:@[subtitle, paragrah, lineChart, pieChart, paragrah, discreteChart, paragrah, paragrah, viewElement, paragrah]];
-    doc.internalStyleSheet = @"body {\n"
+    doc.style = @"body {\n"
     "font-family: -apple-system, Helvetica, Arial;\n"
     "}\n";
     doc.pageHeader = @"App Name: ABC, User Name: John Appleseed";

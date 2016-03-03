@@ -16,6 +16,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 BOOL OCKIsChartValid(OCKChart * chart);
 
+@property (nonatomic) CGFloat height;
+
+- (UIView *)chartView;
+
 @end
 
 NS_ASSUME_NONNULL_END

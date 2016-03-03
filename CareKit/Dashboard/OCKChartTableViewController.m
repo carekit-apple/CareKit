@@ -8,7 +8,6 @@
 
 
 #import "OCKChartTableViewController.h"
-#import "OCKChartTableViewController_Internal.h"
 #import "OCKChart.h"
 #import "OCKChart_Internal.h"
 #import "OCKChartTableViewCell.h"
@@ -17,7 +16,6 @@
 
 
 @implementation OCKChartTableViewController {
-    NSArray<OCKChartTableViewCell *> *_chartTableViewCells;
     OCKChartTableViewHeaderView *_headerView;
 }
 
@@ -45,37 +43,20 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    _chartTableViewCells = nil;
+
     self.tableView.tableHeaderView = nil;
     
-    if (self.isViewLoaded) {
-        
-        if (_headerTitle || _headerText) {
-            if (!_headerView) {
-                _headerView = [[OCKChartTableViewHeaderView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 75.0)];
-            }
-            _headerView.title = _headerTitle;
-            _headerView.text = _headerText;
-            self.tableView.tableHeaderView = _headerView;
+    if (_headerTitle || _headerText) {
+        if (!_headerView) {
+            _headerView = [[OCKChartTableViewHeaderView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 75.0)];
         }
-
-        self.tableView.sectionHeaderHeight = 5.0;
-        self.tableView.sectionFooterHeight = 0.0;
-        
-        NSMutableArray <UITableViewCell *> *cells = [NSMutableArray new];
-        for (id chart in self.charts) {
-            static NSString *CellIdentifier = @"ChartCell";
-            OCKChartTableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-            if (cell == nil) {
-                cell = [[OCKChartTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
-                                                    reuseIdentifier:CellIdentifier];
-            }
-            cell.chart = chart;
-            [cells addObject:cell];
-        }
-        _chartTableViewCells = [cells copy];
+        _headerView.title = _headerTitle;
+        _headerView.text = _headerText;
+        self.tableView.tableHeaderView = _headerView;
     }
+
+    self.tableView.sectionHeaderHeight = 5.0;
+    self.tableView.sectionFooterHeight = 0.0;
 }
 
 - (void)setCharts:(NSArray<OCKChart *> *)charts {
@@ -113,11 +94,7 @@
 #pragma mark - UITableViewDelegate
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return UITableViewAutomaticDimension;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return tableView.rowHeight;
+    return self.charts[indexPath.section].height + 80.0;
 }
 
 - (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -136,38 +113,14 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return _chartTableViewCells[indexPath.section];
+    static NSString *CellIdentifier = @"ChartCell";
+    OCKChartTableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (cell == nil) {
+        cell = [[OCKChartTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                            reuseIdentifier:CellIdentifier];
+    }
+    cell.chart = self.charts[indexPath.section];
+    return cell;
 }
-
-
-#pragma mark - UIViewControllerRestoration
-
-static NSString *const _OCKChartsRestoreKey = @"charts";
-static NSString *const _OCKHeaderTitleRestoreKey = @"headerTitle";
-static NSString *const _OCKHeaderTextRestoreKey = @"headerText";
-
-- (void)encodeRestorableStateWithCoder:(NSCoder *)coder {
-    [super encodeRestorableStateWithCoder:coder];
-    
-    [coder encodeObject:_charts forKey:_OCKChartsRestoreKey];
-    [coder encodeObject:_headerTitle forKey:_OCKHeaderTitleRestoreKey];
-    [coder encodeObject:_headerText forKey:_OCKHeaderTextRestoreKey];
-}
-
-- (void)decodeRestorableStateWithCoder:(NSCoder *)coder {
-    [super decodeRestorableStateWithCoder:coder];
-    
-    self.charts = [coder decodeObjectOfClass:[NSArray class] forKey:_OCKChartsRestoreKey];
-    self.headerTitle = [coder decodeObjectOfClass:[NSString class] forKey:_OCKHeaderTitleRestoreKey];
-    self.headerText = [coder decodeObjectOfClass:[NSString class] forKey:_OCKHeaderTextRestoreKey];
-}
-
-+ (UIViewController *)viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder {
-    OCKChartTableViewController *viewController = [[[self class] alloc] init];
-    viewController.restorationIdentifier = identifierComponents.lastObject;
-    viewController.restorationClass = self;
-    return viewController;
-}
-
 
 @end

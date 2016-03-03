@@ -10,25 +10,18 @@
 #import "OCKChartTableViewCell.h"
 #import "OCKChart.h"
 #import "OCKChart_Internal.h"
-#import "OCKLineChart_Internal.h"
-#import "OCKDiscreteChart_Internal.h"
-#import "OCKPieChart_Internal.h"
 
 
-static const CGFloat HorizontalMargin = 40.0;
-static const CGFloat VerticalMargin = 20.0;
+static const CGFloat LeadingMargin = 20.0;
+static const CGFloat TrailingMargin = 20.0;
 static const CGFloat TopMargin = 15.0;
-static const CGFloat BottomMargin = 15.0;
+static const CGFloat VerticalMargin = 10.0;
 
 @implementation OCKChartTableViewCell {
     UILabel *_titleLabel;
     UILabel *_textLabel;
-
     UIView *_chartView;
-    UILabel *_xAxisLabel;
-    UILabel *_yAxisLabel;
-    
-    UILabel *_leadingEdge;
+    UIView *_leadingEdge;
 }
 
 - (void)setChart:(OCKChart *)chart {
@@ -47,7 +40,6 @@ static const CGFloat BottomMargin = 15.0;
     }
     _titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
     _titleLabel.text = _chart.title;
-    _titleLabel.textColor = _chart.tintColor;
     
     if (!_textLabel) {
         _textLabel = [UILabel new];
@@ -60,40 +52,12 @@ static const CGFloat BottomMargin = 15.0;
     _textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
     _textLabel.text = _chart.text;
     
-    if ([_chart isKindOfClass:[OCKLineChart class]]) {
-        _chartView = [OCKLineChart lineChartView:_chart];
-    } else if ([_chart isKindOfClass:[OCKDiscreteChart class]]) {
-        _chartView = [OCKDiscreteChart discreteChartView:_chart];
-    } else if ([_chart isKindOfClass:[OCKPieChart class]]) {
-        _chartView = [OCKPieChart pieChartView:_chart];
-    }
+    _chartView = _chart.chartView;
     [self.contentView addSubview:_chartView];
-    
-    if (!_xAxisLabel) {
-        _xAxisLabel = [UILabel new];
-        _xAxisLabel.numberOfLines = 1;
-        _xAxisLabel.lineBreakMode = NSLineBreakByTruncatingTail;
-        [self.contentView addSubview:_xAxisLabel];
-    }
-    _xAxisLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleCaption1];
-    
-    if (!_yAxisLabel) {
-        _yAxisLabel = [UILabel new];
-        _yAxisLabel.numberOfLines = 1;
-        _yAxisLabel.lineBreakMode = NSLineBreakByTruncatingTail;
-        _yAxisLabel.transform = CGAffineTransformMakeRotation(M_PI/2);
-        [self.contentView addSubview:_yAxisLabel];
-    }
-    _yAxisLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleCaption1];
-    
-    if ([_chart conformsToProtocol:@protocol(OCKChartAxisProtocol)]) {
-        OCKChart <OCKChartAxisProtocol> *protocolChart = (OCKChart <OCKChartAxisProtocol> *)_chart;
-        _xAxisLabel.text = protocolChart.xAxisTitle;
-        _yAxisLabel.text = protocolChart.yAxisTitle;
-    }
+    [[_chart class] animateView:_chartView withDuration:5.0];
     
     if (!_leadingEdge) {
-        _leadingEdge = [UILabel new];
+        _leadingEdge = [UIView new];
         [self addSubview:_leadingEdge];
     }
     _leadingEdge.backgroundColor = _chart.tintColor;
@@ -103,68 +67,62 @@ static const CGFloat BottomMargin = 15.0;
 
 - (void)setUpConstraints {
     NSMutableArray *constraints = [NSMutableArray new];
-    NSDictionary *views = NSDictionaryOfVariableBindings(_titleLabel, _textLabel, _chartView, _xAxisLabel, _yAxisLabel, _leadingEdge);
     
     _titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     _textLabel.translatesAutoresizingMaskIntoConstraints = NO;
     _chartView.translatesAutoresizingMaskIntoConstraints = NO;
-    _xAxisLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    _yAxisLabel.translatesAutoresizingMaskIntoConstraints = NO;
     _leadingEdge.translatesAutoresizingMaskIntoConstraints = NO;
-    
-    if (_yAxisLabel.text) {
-        [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-horizontalMargin-[_chartView][_yAxisLabel]-|"
-                                                                                 options:NSLayoutFormatDirectionLeadingToTrailing
-                                                                                 metrics:@{@"horizontalMargin" : @(HorizontalMargin)}
-                                                                                   views:views]];
-    } else {
-        [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-horizontalMargin-[_chartView]-horizontalMargin-|"
-                                                                                 options:NSLayoutFormatDirectionLeadingToTrailing
-                                                                                 metrics:@{@"horizontalMargin" : @(HorizontalMargin)}
-                                                                                   views:views]];
-    }
-    
-    if (_xAxisLabel.text) {
-        [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-topMargin-[_titleLabel]-verticalMargin-[_chartView][_xAxisLabel]-verticalMargin-[_textLabel]-bottomMargin-|"
-                                                                                 options:NSLayoutFormatDirectionLeadingToTrailing
-                                                                                 metrics:@{@"verticalMargin" : @(VerticalMargin),
-                                                                                           @"topMargin" : @(TopMargin),
-                                                                                           @"bottomMargin" : @(BottomMargin)}
-                                                                                   views:views]];
-    } else {
-        [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-topMargin-[_titleLabel]-verticalMargin-[_chartView][_textLabel]-|"
-                                                                                 options:NSLayoutFormatDirectionLeadingToTrailing
-                                                                                 metrics:@{@"verticalMargin" : @(VerticalMargin),
-                                                                                           @"topMargin" : @(TopMargin),
-                                                                                           @"bottomMargin" : @(BottomMargin)}
-                                                                                   views:views]];
-    }
-    
-    [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-20-[_titleLabel]-|"
-                                                                             options:NSLayoutFormatDirectionLeadingToTrailing
-                                                                             metrics:nil
-                                                                               views:views]];
-    
-    [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[_textLabel]-|"
-                                                                             options:NSLayoutFormatDirectionLeadingToTrailing
-                                                                             metrics:nil
-                                                                               views:views]];
     
     [constraints addObjectsFromArray:@[
                                        [NSLayoutConstraint constraintWithItem:_titleLabel
-                                                                    attribute:NSLayoutAttributeCenterX
+                                                                    attribute:NSLayoutAttributeLeading
                                                                     relatedBy:NSLayoutRelationEqual
                                                                        toItem:self.contentView
-                                                                    attribute:NSLayoutAttributeCenterX
+                                                                    attribute:NSLayoutAttributeLeading
+                                                                   multiplier:1.0
+                                                                     constant:LeadingMargin],
+                                       [NSLayoutConstraint constraintWithItem:_titleLabel
+                                                                    attribute:NSLayoutAttributeTop
+                                                                    relatedBy:NSLayoutRelationEqual
+                                                                       toItem:self.contentView
+                                                                    attribute:NSLayoutAttributeTop
+                                                                   multiplier:1.0
+                                                                     constant:TopMargin],
+                                       [NSLayoutConstraint constraintWithItem:_textLabel
+                                                                    attribute:NSLayoutAttributeLeading
+                                                                    relatedBy:NSLayoutRelationEqual
+                                                                       toItem:_titleLabel
+                                                                    attribute:NSLayoutAttributeLeading
+                                                                   multiplier:1.0
+                                                                     constant:0.0],
+                                       [NSLayoutConstraint constraintWithItem:_textLabel
+                                                                    attribute:NSLayoutAttributeTop
+                                                                    relatedBy:NSLayoutRelationEqual
+                                                                       toItem:_titleLabel
+                                                                    attribute:NSLayoutAttributeBottom
                                                                    multiplier:1.0
                                                                      constant:0.0],
                                        [NSLayoutConstraint constraintWithItem:_chartView
-                                                                    attribute:NSLayoutAttributeCenterY
+                                                                    attribute:NSLayoutAttributeLeading
                                                                     relatedBy:NSLayoutRelationEqual
                                                                        toItem:self.contentView
-                                                                    attribute:NSLayoutAttributeCenterY
+                                                                    attribute:NSLayoutAttributeLeading
                                                                    multiplier:1.0
-                                                                     constant:0.0],
+                                                                     constant:LeadingMargin],
+                                       [NSLayoutConstraint constraintWithItem:_chartView
+                                                                    attribute:NSLayoutAttributeTrailing
+                                                                    relatedBy:NSLayoutRelationEqual
+                                                                       toItem:self.contentView
+                                                                    attribute:NSLayoutAttributeTrailing
+                                                                   multiplier:1.0
+                                                                     constant:-TrailingMargin],
+                                       [NSLayoutConstraint constraintWithItem:_chartView
+                                                                    attribute:NSLayoutAttributeTop
+                                                                    relatedBy:NSLayoutRelationEqual
+                                                                       toItem:_textLabel
+                                                                    attribute:NSLayoutAttributeBottom
+                                                                   multiplier:1.0
+                                                                     constant:VerticalMargin],
                                        [NSLayoutConstraint constraintWithItem:_chartView
                                                                     attribute:NSLayoutAttributeHeight
                                                                     relatedBy:NSLayoutRelationEqual
@@ -172,27 +130,6 @@ static const CGFloat BottomMargin = 15.0;
                                                                     attribute:NSLayoutAttributeNotAnAttribute
                                                                    multiplier:1.0
                                                                      constant:_chart.height],
-                                       [NSLayoutConstraint constraintWithItem:_textLabel
-                                                                    attribute:NSLayoutAttributeCenterX
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:self.contentView
-                                                                    attribute:NSLayoutAttributeCenterX
-                                                                   multiplier:1.0
-                                                                     constant:0.0],
-                                       [NSLayoutConstraint constraintWithItem:_xAxisLabel
-                                                                    attribute:NSLayoutAttributeCenterX
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:self.contentView
-                                                                    attribute:NSLayoutAttributeCenterX
-                                                                   multiplier:1.0
-                                                                     constant:0.0],
-                                       [NSLayoutConstraint constraintWithItem:_yAxisLabel
-                                                                    attribute:NSLayoutAttributeCenterY
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:self.contentView
-                                                                    attribute:NSLayoutAttributeCenterY
-                                                                   multiplier:1.0
-                                                                     constant:0.0],
                                        [NSLayoutConstraint constraintWithItem:_leadingEdge
                                                                     attribute:NSLayoutAttributeLeading
                                                                     relatedBy:NSLayoutRelationEqual
@@ -224,15 +161,6 @@ static const CGFloat BottomMargin = 15.0;
                                        ]];
     
     [NSLayoutConstraint activateConstraints:constraints];
-    
-}
-
-- (UITableViewCellSelectionStyle)selectionStyle {
-    return UITableViewCellSelectionStyleNone;
-}
-
-- (UIEdgeInsets)layoutMargins {
-    return UIEdgeInsetsZero;
 }
 
 @end

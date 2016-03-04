@@ -9,19 +9,15 @@
 
 #import "OCKChart.h"
 #import "OCKChart_Internal.h"
-#import "OCKLineChart.h"
-#import "OCKDiscreteChart.h"
-#import "OCKPieChart.h"
 #import "OCKHelpers.h"
+#import "OCKBarChart.h"
 
 
 static NSMutableArray *OCKChartArray() {
     static dispatch_once_t onceToken;
     static NSMutableArray *chartArray = nil;
     dispatch_once(&onceToken, ^{
-        chartArray = [@[[OCKLineChart class],
-                        [OCKDiscreteChart class],
-                        [OCKPieChart class] ] mutableCopy];
+        chartArray = [@[[OCKBarChart class]] mutableCopy];
     });
     return chartArray;
 }
@@ -40,6 +36,9 @@ static const CGFloat ChartHeight = 175.0;
         tintColor = [[[UIApplication sharedApplication] delegate] window].tintColor;
     }
     _tintColor = tintColor;
+}
+
++ (void)animateView:(UIView *)view withDuration:(NSTimeInterval)duration {
 }
 
 - (CGFloat)height {

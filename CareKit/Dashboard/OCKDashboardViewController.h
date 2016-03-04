@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @class OCKChart;
 
-@interface OCKDashboardViewController : UINavigationController <UIViewControllerRestoration>
+@interface OCKDashboardViewController : UINavigationController
 
 + (instancetype)new NS_UNAVAILABLE;
 + (instancetype)dashboardWithCharts:(NSArray<OCKChart *> *)charts;

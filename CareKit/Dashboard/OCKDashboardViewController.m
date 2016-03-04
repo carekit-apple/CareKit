@@ -59,32 +59,4 @@
     _tableViewController.headerText = headerText;
 }
 
-
-static NSString *const _OCKChartsRestoreKey = @"charts";
-static NSString *const _OCKHeaderTitleRestoreKey = @"headerTitle";
-static NSString *const _OCKHeaderTextRestoreKey = @"headerText";
-
-- (void)encodeRestorableStateWithCoder:(NSCoder *)coder {
-    [super encodeRestorableStateWithCoder:coder];
-    
-    [coder encodeObject:_charts forKey:_OCKChartsRestoreKey];
-    [coder encodeObject:_headerTitle forKey:_OCKHeaderTitleRestoreKey];
-    [coder encodeObject:_headerText forKey:_OCKHeaderTextRestoreKey];
-}
-
-- (void)decodeRestorableStateWithCoder:(NSCoder *)coder {
-    [super decodeRestorableStateWithCoder:coder];
-    
-    self.charts = [coder decodeObjectOfClass:[NSArray class] forKey:_OCKChartsRestoreKey];
-    self.headerTitle = [coder decodeObjectOfClass:[NSString class] forKey:_OCKHeaderTitleRestoreKey];
-    self.headerText = [coder decodeObjectOfClass:[NSString class] forKey:_OCKHeaderTextRestoreKey];
-}
-
-+ (UIViewController *)viewControllerWithRestorationIdentifierPath:(NSArray *)identifierComponents coder:(NSCoder *)coder {
-    OCKDashboardViewController *viewController = [[[self class] alloc] init];
-    viewController.restorationIdentifier = identifierComponents.lastObject;
-    viewController.restorationClass = self;
-    return viewController;
-}
-
 @end

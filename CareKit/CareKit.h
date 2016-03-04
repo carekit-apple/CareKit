@@ -25,14 +25,8 @@
 // Dashboard
 #import <CareKit/OCKDashboardViewController.h>
 #import <CareKit/OCKChartTableViewController.h>
-#import <CareKit/OCKLineChart.h>
-#import <CareKit/OCKLine.h>
-#import <CareKit/OCKLinePoint.h>
-#import <CareKit/OCKDiscreteChart.h>
-#import <CareKit/OCKRangeGroup.h>
-#import <CareKit/OCKRangePoint.h>
-#import <CareKit/OCKPieChart.h>
-#import <CareKit/OCKSegment.h>
+#import <CareKit/OCKBarChart.h>
+#import <CareKit/OCKBarGroup.h>
 
 // Connect
 #import <CareKit/OCKConnectViewController.h>

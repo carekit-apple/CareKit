@@ -46,7 +46,7 @@
     }
     
     for (id<OCKDocumentElement> element in _elements) {
-        html = [html stringByAppendingString:[element htmlContent]];
+        html = [html stringByAppendingString:[element HTMLContent]];
         html = [html stringByAppendingString:@"\n"];
     }
     
@@ -76,7 +76,7 @@
     return self;
 }
 
-- (NSString *)htmlContent {
+- (NSString *)HTMLContent {
     NSString *html = @"";
     
     if (_subtitle) {
@@ -88,7 +88,7 @@
 
 @end
 
-@implementation OCKDocumentElementParagrah
+@implementation OCKDocumentElementParagraph
 
 - (instancetype)initWithContent:(NSString *)content {
     self = [super init];
@@ -98,7 +98,7 @@
     return self;
 }
 
-- (NSString *)htmlContent {
+- (NSString *)HTMLContent {
     NSString *html = @"";
     if (_content) {
         html = [html stringByAppendingString:[NSString stringWithFormat:@"<p>%@</p>", _content]];
@@ -108,16 +108,20 @@
 
 @end
 
+static NSString *imageTagFromImage (UIImage *image) {
+    NSData *imageData = UIImagePNGRepresentation(image);
+    NSString *format = @"<img style='vertical-align: middle;' alt=\"\" height='%@' width='%@' src='data:image/png;base64,%@' />\n";
+    NSString *base64String = [imageData base64EncodedStringWithOptions:0];
+    NSString *imageTag = [NSString stringWithFormat:format, @(image.size.height), @(image.size.width), base64String];
+    return imageTag;
+}
+
 static NSString *imageTagFromView (UIView *view) {
     UIGraphicsBeginImageContextWithOptions(view.frame.size, YES, 2.0);
     [view.layer renderInContext:UIGraphicsGetCurrentContext()];
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
-    NSData *imageData = UIImagePNGRepresentation(image);
-    NSString *format = @"<img style='vertical-align: middle;' alt=\"\" height='%@' width='%@' src='data:image/png;base64,%@' />\n";
-    NSString *base64String = [imageData base64EncodedStringWithOptions:0];
-    NSString *imageTag = [NSString stringWithFormat:format, @(view.frame.size.height), @(view.frame.size.width), base64String];
-    return imageTag;
+    return imageTagFromImage(image);
 }
 
 @implementation OCKDocumentElementChart
@@ -130,7 +134,7 @@ static NSString *imageTagFromView (UIView *view) {
     return self;
 }
 
-- (NSString *)htmlContent {
+- (NSString *)HTMLContent {
     NSString *html = @"";
     if (_chart) {
         
@@ -140,31 +144,21 @@ static NSString *imageTagFromView (UIView *view) {
             html = [html stringByAppendingFormat:@"<b>%@</b><br/>\n", _chart.title];
         }
         
-        {
-            UIView *view = [_chart chartView];
-           
-            if ([_chart isKindOfClass:[OCKPieChart class]]) {
-                //TODO: have to put it in a UITableViewCell... to get correct layout
-                UITableViewCell *cell = [[UITableViewCell alloc] init];
-                [cell.contentView addSubview:view];
-                cell.frame = CGRectMake(0, 0, 480, 320);
-            }
-            
-            view.frame = CGRectMake(0, 0, 480, 320);
-            view.backgroundColor = [UIColor whiteColor];
-
-            html = [html stringByAppendingString:imageTagFromView(view)];
+    
+        UIView *view = [_chart chartView];
+        
+        if (view) {
+            // This triggers autolayout.
+            UITableViewCell *cell = [[UITableViewCell alloc] init];
+            [cell.contentView addSubview:view];
+            cell.frame = CGRectMake(0, 0, 480, 320);
         }
         
-        if ([_chart conformsToProtocol:@protocol(OCKChartAxisProtocol)]) {
-            OCKChart <OCKChartAxisProtocol> *protocolChart = (OCKChart <OCKChartAxisProtocol> *)_chart;
-            if (protocolChart.yAxisTitle) {
-                html = [html stringByAppendingFormat:@"<i>%@</i>\n", protocolChart.yAxisTitle];
-            }
-            if (protocolChart.xAxisTitle) {
-                html = [html stringByAppendingFormat:@"<br/><i>%@</i><br/>\n", protocolChart.xAxisTitle];
-            }
-        }
+        view.frame = CGRectMake(0, 0, 480, 320);
+        view.backgroundColor = [UIColor whiteColor];
+        
+        html = [html stringByAppendingString:imageTagFromView(view)];
+    
         
         if (_chart.text) {
             html = [html stringByAppendingFormat:@"<i>%@</i>\n", _chart.text];
@@ -178,22 +172,23 @@ static NSString *imageTagFromView (UIView *view) {
 
 @end
 
-@implementation OCKDocumentElementUIView
+ 
+@implementation OCKDocumentElementImage
 
-- (instancetype)initWithView:(UIView *)view {
+- (instancetype)initWithImage:(UIImage *)image {
     self = [super init];
     if (self) {
-        _view = view;
+        _image = image;
     }
     return self;
 }
 
-- (NSString *)htmlContent {
+- (NSString *)HTMLContent {
     NSString *html = @"";
-    if (_view) {
+    if (_image) {
         
         html = [html stringByAppendingString:@"<p>"];
-        html = [html stringByAppendingString:imageTagFromView(_view)];
+        html = [html stringByAppendingString:imageTagFromImage(_image)];
         html = [html stringByAppendingString:@"</p>"];
     }
     return html;

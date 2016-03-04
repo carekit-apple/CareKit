@@ -13,56 +13,60 @@ NS_ASSUME_NONNULL_BEGIN
 
 /*
  OCKDocumentElement defines the protocol to be adopted by all the elements in OCKDocument.
- It requires an element to output to html content.
+ It requires an element to output to HTML content.
  Developer can create custom element confirming to this protocol to be inlcuded in a document.
  */
 @protocol OCKDocumentElement <NSObject>
 
-- (NSString *)htmlContent;
+- (NSString *)HTMLContent;
 
 @end
 
-/*
+/**
  OCKDocument defines a document object which caontains title, pageHeader, and elements.
  It sopports exporting to HTML or PDF file.
  A document accepts customization via style property.
  */
-@interface OCKDocument : NSObject <OCKDocumentElement>
+@interface OCKDocument : NSObject
 
 - (instancetype)initWithTitle:(NSString *)title elements:(NSArray<id<OCKDocumentElement>> *)elements;
 
-/*
+/**
  Title of the document.
  */
 @property (nonatomic, copy, nullable) NSString *title;
 
-/*
+/**
  pageHeader will be printed in every PDF page.
  It can be used to help identify the source of a file.
  For example, @"App Name: ABC, User ID: 123456";
  */
 @property (nonatomic, copy, nullable) NSString *pageHeader;
 
-/*
+/**
  Accept a CSS style sheet.
  For example, @"body { background-color: red; }";
  */
 @property (nonatomic, copy, nullable) NSString *style;
 
-/*
+/**
  Included elements.
  */
 @property (nonatomic, copy, nullable) NSArray<id <OCKDocumentElement>> *elements;
 
-/*
+/**
+ */
+@property (nonatomic, copy, readonly) NSString *HTMLContent;
+
+/**
  Create PDF from current document object.
  */
 - (void)createPDFWithCompletion:(void (^)(NSData *data, NSError *error))completion;
 
 @end
 
-/*
- Defines an element carries a subtitle in a document.
+/**
+ Defines an element carries a subtitle in document.
  */
 @interface OCKDocumentElementSubtitle : NSObject <OCKDocumentElement>
 
@@ -72,10 +76,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-/*
- Defines an element carries a paragrah of text in a document.
+
+/**
+ Defines an element carries a paragraph of text in document.
  */
-@interface OCKDocumentElementParagrah : NSObject <OCKDocumentElement>
+@interface OCKDocumentElementParagraph : NSObject <OCKDocumentElement>
 
 - (instancetype)initWithContent:(NSString *)content;
 
@@ -83,19 +88,20 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-/*
- Defines an element carries a UIView object to be included in a document as image.
+
+/**
+ Defines an element carries an image object to be included in a document.
  */
-@interface OCKDocumentElementUIView : NSObject <OCKDocumentElement>
+@interface OCKDocumentElementImage : NSObject <OCKDocumentElement>
 
-- (instancetype)initWithView:(UIView *)view;
+- (instancetype)initWithImage:(UIImage *)image;
 
-@property (nonatomic, strong, nullable) UIView *view;
+@property (nonatomic, strong, nullable) UIImage *image;
 
 @end
 
 
-/*
+/**
  Defines an element carries a chart to be included in a document as image.
  */
 @interface OCKDocumentElementChart : NSObject <OCKDocumentElement>

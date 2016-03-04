@@ -14,7 +14,7 @@
 
 #define DefineStringKey(x) static NSString *const x = @#x
 
-static const BOOL resetStoreOnLaunch = NO;
+static const BOOL resetStoreOnLaunch = YES;
 
 @interface ViewController () <OCKEvaluationTableViewDelegate, OCKCarePlanStoreDelegate, ORKTaskViewControllerDelegate>
 
@@ -52,7 +52,7 @@ static const BOOL resetStoreOnLaunch = NO;
                                                                selectedImage:[UIImage imageNamed:@"carecard-filled"]];
     
     _evaluationViewController = [self evaluationViewController];
-    _evaluationViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Checkups"
+    _evaluationViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Progress Card"
                                                                          image:[UIImage imageNamed:@"checkups"]
                                                                  selectedImage:[UIImage imageNamed:@"checkups-filled"]];
     
@@ -72,69 +72,63 @@ static const BOOL resetStoreOnLaunch = NO;
     [self presentViewController:_tabBarController animated:YES completion:nil];
 }
 
-
 #pragma mark - CareKit View Controllers
 
 - (OCKDashboardViewController *)dashboardViewController {
     NSMutableArray *charts = [NSMutableArray new];
     
+    NSArray *axisTitles = @[@"S", @"M", @"T", @"W", @"T", @"F", @"S"];
+    NSArray *axisSubtitles = @[@"2/21", @"", @"", @"", @"", @"", @"2/27"];
+    
     {
-        OCKLinePoint *point1 = [OCKLinePoint linePointWithValue:1.0];
-        OCKLinePoint *point2 = [OCKLinePoint linePointWithValue:2.0];
-        OCKLinePoint *point3 = [OCKLinePoint linePointWithValue:3.0];
-        OCKLinePoint *point4 = [OCKLinePoint linePointWithValue:4.0];
-        OCKLinePoint *point5 = [OCKLinePoint linePointWithValue:5.0];
-        OCKLine *line1 = [OCKLine lineWithLinePoints:@[point1, point2, point3, point4, point5]];
-        line1.color = OCKGrayColor();
-        OCKLine *line2 = [OCKLine lineWithLinePoints:@[point4, point3, point5, point1, point2]];
-        line2.color = OCKYellowColor();
-        OCKLineChart *lineChart = [OCKLineChart lineChartWithTitle:@"Line Chart"
-                                                              text:@"Weekly sales of hardware and software"
-                                                             lines:@[line1, line2]];
-        lineChart.tintColor = OCKYellowColor();
-        [charts addObject:lineChart];
+        UIColor *color = OCKBlueColor();
+        UIColor *lightColor = [color colorWithAlphaComponent:0.5];
+        
+        OCKBarGroup *group1 = [OCKBarGroup barGroupWithTitle:@"Pain"
+                                                      values:@[@9, @8, @7, @7, @5, @4, @2]
+                                                 valueLabels:@[@"9", @"8", @"7", @"7", @"5", @"4", @"2"]
+                                                   tintColor:color];
+        
+        OCKBarGroup *group2 = [OCKBarGroup barGroupWithTitle:@"Ibuprofen"
+                                                      values:@[@3, @4, @5, @7, @8, @9, @9]
+                                                 valueLabels:@[@"30%", @"40%", @"50%", @"70%", @"80%", @"90%", @"90%"]
+                                                   tintColor:lightColor];
+        
+        OCKBarChart *chart = [OCKBarChart barChartWithTitle:@"Pain Scores"
+                                                       text:@"with Ibuprofen"
+                                                 axisTitles:axisTitles
+                                              axisSubtitles:axisSubtitles
+                                                     groups:@[group1, group2]];
+        chart.tintColor = color;
+        [charts addObject:chart];
     }
     
     {
-        OCKRangePoint *range1 = [OCKRangePoint rangePointWithMinimumValue:10.0 maximumValue:20.0];
-        OCKRangePoint *range2 = [OCKRangePoint rangePointWithMinimumValue:15.0 maximumValue:25.0];
-        OCKRangePoint *range3 = [OCKRangePoint rangePointWithMinimumValue:5.0 maximumValue:15.0];
-        OCKRangePoint *range4 = [OCKRangePoint rangePointWithMinimumValue:5.0 maximumValue:30.0];
-        OCKRangePoint *range5 = [OCKRangePoint rangePointWithMinimumValue:15.0 maximumValue:30.0];
+        UIColor *color = OCKPurpleColor();
+        UIColor *lightColor = [color colorWithAlphaComponent:0.5];
         
-        OCKRangeGroup *rangeGroup1 = [OCKRangeGroup rangeGroupWithRangePoints:@[range1, range2, range3, range4, range5]];
-        rangeGroup1.color = OCKBlueColor();
-        OCKRangeGroup *rangeGroup2 = [OCKRangeGroup rangeGroupWithRangePoints:@[range1, range5, range4, range3, range2]];
-        rangeGroup2.color = OCKGrayColor();
+        OCKBarGroup *group1 = [OCKBarGroup barGroupWithTitle:@"Weight"
+                                                      values:@[@1, @4, @5, @5, @7, @9, @10]
+                                                 valueLabels:@[@"165 lbs", @"169 lbs", @"170 lbs", @"170 lbs", @"172 lbs", @"174 lbs", @"175 lbs"]
+                                                   tintColor:color];
         
-        OCKDiscreteChart *discreteChart = [OCKDiscreteChart discreteChartWithGroups:@[rangeGroup1, rangeGroup2]];
-        discreteChart.title = @"Discrete Chart";
-        discreteChart.text = @"Daily sales of hardware and software but I want to test multiple lines, so here's some more text.";
-        discreteChart.tintColor = OCKBlueColor();
-        discreteChart.xAxisTitle = @"Day";
-        discreteChart.yAxisTitle = @"Sales";
-        [charts addObject:discreteChart];
-    }
-    
-    {
-        OCKSegment *segment1 = [OCKSegment segmentWithValue:0.25 color:[UIColor brownColor] title:@"Brown"];
-        OCKSegment *segment2 = [OCKSegment segmentWithValue:0.15 color:[UIColor purpleColor] title:@"Purple"];
-        OCKSegment *segment3 = [OCKSegment segmentWithValue:0.05 color:[UIColor cyanColor] title:@"Cyan"];
-        OCKSegment *segment4 = [OCKSegment segmentWithValue:0.55 color:[UIColor orangeColor] title:@"Orange"];
-        OCKPieChart *pieChart = [OCKPieChart pieChartWithTitle:@"Pie Chart"
-                                                          text:@"Apple employee color preference"
-                                                      segments:@[segment1, segment2, segment3, segment4]];
-        pieChart.showsPercentageLabels = YES;
-        pieChart.usesLineSegments = YES;
-        pieChart.tintColor = OCKRedColor();
-        pieChart.height = 300.0;
-        [charts addObject:pieChart];
+        OCKBarGroup *group2 = [OCKBarGroup barGroupWithTitle:@"Metformin"
+                                                      values:@[@8.5, @7, @5, @4, @3, @3, @2]
+                                                 valueLabels:@[@"85%", @"75%", @"50%", @"54%", @"30%", @"30%", @"20%"]
+                                                   tintColor:lightColor];
+        
+        OCKBarChart *chart = [OCKBarChart barChartWithTitle:@"Weight Measurements"
+                                                       text:@"with Metformin"
+                                                 axisTitles:axisTitles
+                                              axisSubtitles:axisSubtitles
+                                                     groups:@[group1, group2]];
+        chart.tintColor = color;
+        [charts addObject:chart];
     }
     
     OCKDashboardViewController *dashboard = [OCKDashboardViewController dashboardWithCharts:charts];
     dashboard.headerTitle = @"Weekly Charts";
-    
-    dashboard.headerText = @"2/28 - 3/5";
+    dashboard.headerText = @"2/21 - 2/27";
     
     return dashboard;
 }
@@ -157,7 +151,7 @@ static const BOOL resetStoreOnLaunch = NO;
                                                         relation:@"Physician"
                                                      phoneNumber:@"123-456-7890"
                                                    messageNumber:nil
-                                                    emailAddress:@"g_guerrero@carekit.org"
+                                                    emailAddress:@"g_guerrero@hospital.edu"
                                                            image:[UIImage imageNamed:@"doctor"]];
         contact.tintColor = OCKBlueColor();
         [contacts addObject:contact];

@@ -71,15 +71,15 @@
             _fillView.frame = CGRectMake(CGRectGetMinX(self.bounds), CGRectGetMaxY(self.bounds), CGRectGetMaxX(self.bounds), -_adherence * CGRectGetMaxY(self.bounds));
         } completion:^(BOOL finished) {
             
-            if (_adherence == 1 && self.frame.size.height > 30) {
-                theAnimation.repeatCount = HUGE_VALF;
-                [self.layer addAnimation:theAnimation forKey:@"animateOpacity"];
-                _isHeartBeating = YES;
-            } else if (_isHeartBeating) {
-                theAnimation.repeatCount = 0;
-                [self.layer addAnimation:theAnimation forKey:@"animateOpacity"];
-                _isHeartBeating = NO;
-            }
+//            if (_adherence == 1 && self.frame.size.height > 30) {
+//                theAnimation.repeatCount = HUGE_VALF;
+//                [self.layer addAnimation:theAnimation forKey:@"animateOpacity"];
+//                _isHeartBeating = YES;
+//            } else if (_isHeartBeating) {
+//                theAnimation.repeatCount = 0;
+//                [self.layer addAnimation:theAnimation forKey:@"animateOpacity"];
+//                _isHeartBeating = NO;
+//            }
         }];
     } else {
         _fillView.frame = CGRectMake(CGRectGetMinX(self.bounds), CGRectGetMaxY(self.bounds), CGRectGetMaxX(self.bounds), -_adherence * CGRectGetMaxY(self.bounds));

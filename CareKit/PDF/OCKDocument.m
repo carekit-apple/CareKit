@@ -26,12 +26,15 @@
 - (NSString *)htmlContent {
     NSString *html = @"<!doctype html>\n";
     
-    NSString *css = @"";
-    if (_style.length > 0) {
+    NSString *css = @"body {\n"
+    "font-family: -apple-system, Helvetica, Arial;\n"
+    "}\n";
+    if (css.length > 0) {
         css = [NSString stringWithFormat:@"<style>\n"
                "%@\n"
-               "</style>\n", _style];
+               "</style>\n", css];
     }
+    
     
     html = [html stringByAppendingFormat:@"<html>\n"
             "<head>\n"

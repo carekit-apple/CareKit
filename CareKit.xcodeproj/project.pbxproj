@@ -96,7 +96,6 @@
 		8605A5C51C4F04EC00DD65FF /* CareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8605A5BA1C4F04EC00DD65FF /* CareKit.framework */; };
 		8605A5CA1C4F04EC00DD65FF /* CareKitCarePlanTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8605A5C91C4F04EC00DD65FF /* CareKitCarePlanTests.m */; };
 		8656C0DE1C6E98DA00A6D5D1 /* OCKCarePlanStore_Internal.h in Headers */ = {isa = PBXBuildFile; fileRef = 8656C0DD1C6E98DA00A6D5D1 /* OCKCarePlanStore_Internal.h */; };
-		865A6D0E1C5AD18B0054F9F0 /* whatever.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865A6D0D1C5AD18B0054F9F0 /* whatever.swift */; };
 		867C31C91C7D028F00893CE5 /* CareKitPDFTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 867C31C81C7D028F00893CE5 /* CareKitPDFTests.m */; };
 		867C31D11C7D27D100893CE5 /* OCKDocument.h in Headers */ = {isa = PBXBuildFile; fileRef = 867C31CF1C7D27D100893CE5 /* OCKDocument.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		867C31D21C7D27D100893CE5 /* OCKDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 867C31D01C7D27D100893CE5 /* OCKDocument.m */; };
@@ -226,7 +225,6 @@
 		8605A5CB1C4F04EC00DD65FF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8656C0DD1C6E98DA00A6D5D1 /* OCKCarePlanStore_Internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKCarePlanStore_Internal.h; sourceTree = "<group>"; };
 		865A6D0C1C5AD18A0054F9F0 /* CareKitTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CareKitTests-Bridging-Header.h"; sourceTree = "<group>"; };
-		865A6D0D1C5AD18B0054F9F0 /* whatever.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = whatever.swift; sourceTree = "<group>"; };
 		867C31C81C7D028F00893CE5 /* CareKitPDFTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CareKitPDFTests.m; sourceTree = "<group>"; };
 		867C31CF1C7D27D100893CE5 /* OCKDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKDocument.h; sourceTree = "<group>"; };
 		867C31D01C7D27D100893CE5 /* OCKDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKDocument.m; sourceTree = "<group>"; };
@@ -583,7 +581,6 @@
 			children = (
 				8605A5C91C4F04EC00DD65FF /* CareKitCarePlanTests.m */,
 				8605A5CB1C4F04EC00DD65FF /* Info.plist */,
-				865A6D0D1C5AD18B0054F9F0 /* whatever.swift */,
 				865A6D0C1C5AD18A0054F9F0 /* CareKitTests-Bridging-Header.h */,
 				867C31C81C7D028F00893CE5 /* CareKitPDFTests.m */,
 			);
@@ -850,7 +847,6 @@
 			files = (
 				8605A5CA1C4F04EC00DD65FF /* CareKitCarePlanTests.m in Sources */,
 				867C31C91C7D028F00893CE5 /* CareKitPDFTests.m in Sources */,
-				865A6D0E1C5AD18B0054F9F0 /* whatever.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -74,9 +74,6 @@
     OCKDocumentElementImage *imageElement = [[OCKDocumentElementImage alloc] initWithImage:[self createImage]];
     
     OCKDocument *doc = [[OCKDocument alloc] initWithTitle:@"This is a title" elements:@[subtitle, paragrah, barChart, paragrah, imageElement, paragrah]];
-    doc.style = @"body {\n"
-    "font-family: -apple-system, Helvetica, Arial;\n"
-    "}\n";
     doc.pageHeader = @"App Name: ABC, User Name: John Appleseed";
     
     NSString *path = [[self cleanTestPath] stringByAppendingPathComponent:@"x.html"];

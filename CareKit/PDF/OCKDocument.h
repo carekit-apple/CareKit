@@ -44,12 +44,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy, nullable) NSString *pageHeader;
 
 /**
- Accept a CSS style sheet.
- For example, @"body { background-color: red; }";
- */
-@property (nonatomic, copy, nullable) NSString *style;
-
-/**
  Included elements.
  */
 @property (nonatomic, copy, nullable) NSArray<id <OCKDocumentElement>> *elements;

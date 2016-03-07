@@ -133,7 +133,7 @@ BOOL OCKIsAxisValid(NSArray<NSString *> *axisTitles, NSArray<NSString *> *axisSu
 
 #pragma mark - OCKGroupedBarChartDataSource
 
-- (NSInteger)numberOfGroupsInChartView:(OCKGroupedBarChartView *)chartView {
+- (NSInteger)numberOfCategoriesPerDataSeriesInChartView:(OCKGroupedBarChartView *)chartView {
     NSUInteger numberOfGroups = 0;
     for (OCKBarGroup *barGroup in self.groups) {
         NSUInteger numberInBarGroup = barGroup.values.count;
@@ -144,36 +144,36 @@ BOOL OCKIsAxisValid(NSArray<NSString *> *axisTitles, NSArray<NSString *> *axisSu
     return numberOfGroups;
 }
 
-- (NSInteger)numberOfBarsPerGroupInChartView:(OCKGroupedBarChartView *)chartView {
+- (NSInteger)numberOfDataSeriesInChartView:(OCKGroupedBarChartView *)chartView {
     return self.groups.count;
 }
 
-- (UIColor *)chartView:(OCKGroupedBarChartView *)chartView colorForBar:(NSUInteger)barIndex {
-    OCKBarGroup *barGroup = self.groups[barIndex];
+- (UIColor *)chartView:(OCKGroupedBarChartView *)chartView colorForDataSeries:(NSUInteger)dataSeriesIndex {
+    OCKBarGroup *barGroup = self.groups[dataSeriesIndex];
     return barGroup.tintColor;
 }
 
-- (NSString *)chartView:(OCKGroupedBarChartView *)chartView nameForBar:(NSUInteger)barIndex {
-    OCKBarGroup *barGroup = self.groups[barIndex];
+- (NSString *)chartView:(OCKGroupedBarChartView *)chartView nameForDataSeries:(NSUInteger)dataSeriesIndex {
+    OCKBarGroup *barGroup = self.groups[dataSeriesIndex];
     return barGroup.title;
 }
 
-- (NSNumber *)chartView:(OCKGroupedBarChartView *)chartView valueForBar:(NSUInteger)barIndex inGroup:(NSUInteger)groupIndex {
-    OCKBarGroup *barGroup = self.groups[barIndex];
-    return barGroup.values[groupIndex];
+- (NSNumber *)chartView:(OCKGroupedBarChartView *)chartView valueForCategory:(NSUInteger)categoryIndex inDataSeries:(NSUInteger)dataSeriesIndex {
+    OCKBarGroup *barGroup = self.groups[dataSeriesIndex];
+    return barGroup.values[categoryIndex];
 }
 
-- (NSString *)chartView:(OCKGroupedBarChartView *)chartView stringForBar:(NSUInteger)barIndex inGroup:(NSUInteger)groupIndex {
-    OCKBarGroup *barGroup = self.groups[barIndex];
-    return barGroup.valueLabels[groupIndex];
+- (NSString *)chartView:(OCKGroupedBarChartView *)chartView valueStringForCategory:(NSUInteger)categoryIndex inDataSeries:(NSUInteger)dataSeriesIndex {
+    OCKBarGroup *barGroup = self.groups[dataSeriesIndex];
+    return barGroup.valueLabels[categoryIndex];
 }
 
-- (NSString *)chartView:(OCKGroupedBarChartView *)chartView titleForGroup:(NSUInteger)groupIndex {
-    return self.axisTitles[groupIndex];
+- (NSString *)chartView:(OCKGroupedBarChartView *)chartView titleForCategory:(NSUInteger)categoryIndex {
+    return self.axisTitles[categoryIndex];
 }
 
-- (NSString *)chartView:(OCKGroupedBarChartView *)chartView textForGroup:(NSUInteger)groupIndex {
-    return self.axisSubtitles[groupIndex];
+- (NSString *)chartView:(OCKGroupedBarChartView *)chartView subtitleForCategory:(NSUInteger)categoryIndex {
+    return self.axisSubtitles[categoryIndex];
 }
 
 

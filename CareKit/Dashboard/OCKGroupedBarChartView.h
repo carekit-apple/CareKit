@@ -13,23 +13,23 @@ NS_ASSUME_NONNULL_BEGIN
 @class OCKGroupedBarChartView;
 @protocol OCKGroupedBarChartViewDataSource <NSObject>
 
-- (NSInteger)numberOfGroupsInChartView:(OCKGroupedBarChartView *)chartView;
+- (NSInteger)numberOfDataSeriesInChartView:(OCKGroupedBarChartView *)chartView;
 
-- (NSInteger)numberOfBarsPerGroupInChartView:(OCKGroupedBarChartView *)chartView;
+- (NSInteger)numberOfCategoriesPerDataSeriesInChartView:(OCKGroupedBarChartView *)chartView;
 
-- (UIColor *)chartView:(OCKGroupedBarChartView *)chartView colorForBar:(NSUInteger)barIndex;
+- (UIColor *)chartView:(OCKGroupedBarChartView *)chartView colorForDataSeries:(NSUInteger)dataSeriesIndex;
 
-- (NSString *)chartView:(OCKGroupedBarChartView *)chartView nameForBar:(NSUInteger)barIndex;
+- (NSString *)chartView:(OCKGroupedBarChartView *)chartView nameForDataSeries:(NSUInteger)dataSeriesIndex;
 
-- (NSNumber *)chartView:(OCKGroupedBarChartView *)chartView valueForBar:(NSUInteger)barIndex inGroup:(NSUInteger)groupIndex;
+- (NSNumber *)chartView:(OCKGroupedBarChartView *)chartView valueForCategory:(NSUInteger)categoryIndex inDataSeries:(NSUInteger)dataSeriesIndex;
 
-- (nullable NSString *)chartView:(OCKGroupedBarChartView *)chartView stringForBar:(NSUInteger)barIndex inGroup:(NSUInteger)groupIndex;
+- (nullable NSString *)chartView:(OCKGroupedBarChartView *)chartView valueStringForCategory:(NSUInteger)categoryIndex inDataSeries:(NSUInteger)dataSeriesIndex;
 
-- (nullable NSString *)chartView:(OCKGroupedBarChartView *)chartView titleForGroup:(NSUInteger)groupIndex;
+- (nullable NSString *)chartView:(OCKGroupedBarChartView *)chartView titleForCategory:(NSUInteger)categoryIndex;
 
 @optional
 
-- (NSString *)chartView:(OCKGroupedBarChartView *)chartView textForGroup:(NSUInteger)groupIndex;
+- (NSString *)chartView:(OCKGroupedBarChartView *)chartView subtitleForCategory:(NSUInteger)categoryIndex;
 
 @end
 

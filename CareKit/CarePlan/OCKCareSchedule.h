@@ -16,7 +16,6 @@ typedef NS_ENUM(NSInteger, OCKCareScheduleType) {
     OCKCareScheduleTypeMonthly
 };
 
-@class NSDateComponents;
 
 @interface OCKCareSchedule : NSObject <NSSecureCoding, NSCopying>
 

@@ -206,10 +206,10 @@ DefineStringKey(StretchTreatment);
 - (void)generateTreatments {
     NSMutableArray *treatments = [NSMutableArray new];
 
-    OCKCarePlanDay *startDate = [[OCKCarePlanDay alloc] initWithYear:2016 month:01 day:01];
+    NSDateComponents *startDate = [[NSDateComponents alloc] initWithYear:2016 month:01 day:01];
     
     {
-        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDay:startDate occurrencesOnEachDay:@[@4,@2,@4,@4,@4,@3,@3]];
+        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@4,@2,@4,@4,@4,@3,@3]];
         UIColor *color = OCKGreenColor();
         OCKCarePlanActivity *treatment = [[OCKCarePlanActivity alloc] initWithIdentifier:PhysicalTherapyTreatment
                                                                                     type:OCKCarePlanActivityTypeIntervention
@@ -221,7 +221,7 @@ DefineStringKey(StretchTreatment);
     }
     
     {
-        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDay:startDate occurrencesOnEachDay:@[@2,@3,@2,@2,@2,@0,@2]];
+        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@2,@3,@2,@2,@2,@0,@2]];
         UIColor *color = OCKBlueColor();
         OCKCarePlanActivity *treatment = [[OCKCarePlanActivity alloc] initWithIdentifier:IbuprofenTreatment
                                                                          groupIdentifier:nil
@@ -239,7 +239,7 @@ DefineStringKey(StretchTreatment);
     }
     
     {
-        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDay:startDate occurrencesOnEachDay:@[@1,@1,@1,@1,@1,@0,@1]];
+        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@1,@1,@1,@1,@1,@0,@1]];
         UIColor *color = OCKPurpleColor();
         OCKCarePlanActivity *treatment = [[OCKCarePlanActivity alloc] initWithIdentifier:OutdoorWalkTreatment
                                                                                     type:OCKCarePlanActivityTypeIntervention
@@ -251,7 +251,7 @@ DefineStringKey(StretchTreatment);
     }
     
     {
-        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDay:startDate occurrencesOnEachDay:@[@0,@0,@0,@0,@0,@4,@4]];
+        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@0,@0,@0,@0,@0,@4,@4]];
         UIColor *color = OCKBlueColor();
         OCKCarePlanActivity *treatment = [[OCKCarePlanActivity alloc] initWithIdentifier:ExerciseTreatment
                                                                                     type:OCKCarePlanActivityTypeIntervention
@@ -263,7 +263,7 @@ DefineStringKey(StretchTreatment);
     }
     
     {
-        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDay:startDate occurrencesOnEachDay:@[@0,@0,@0,@0,@0,@2,@2]];
+        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@0,@0,@0,@0,@0,@2,@2]];
         UIColor *color = OCKPurpleColor();
         OCKCarePlanActivity *treatment = [[OCKCarePlanActivity alloc] initWithIdentifier:WalkTreatment
                                                                                     type:OCKCarePlanActivityTypeIntervention
@@ -275,7 +275,7 @@ DefineStringKey(StretchTreatment);
     }
     
     {
-        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDay:startDate occurrencesOnEachDay:@[@0,@0,@0,@0,@0,@1,@4]];
+        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@0,@0,@0,@0,@0,@1,@4]];
         UIColor *color = OCKYellowColor();
         OCKCarePlanActivity *treatment = [[OCKCarePlanActivity alloc] initWithIdentifier:StretchTreatment
                                                                                     type:OCKCarePlanActivityTypeIntervention
@@ -304,11 +304,11 @@ DefineStringKey(TemperatureEvaluation);
 - (void)generateEvaluations {
     NSMutableArray *evaluations = [NSMutableArray new];
 
-    OCKCarePlanDay *startDate = [[OCKCarePlanDay alloc] initWithYear:2016 month:01 day:01];
+    NSDateComponents *startDate = [[NSDateComponents alloc] initWithYear:2016 month:01 day:01];
 
     
     {
-        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDay:startDate occurrencesOnEachDay:@[@1,@1,@1,@1,@1,@1,@1]];
+        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@1,@1,@1,@1,@1,@1,@1]];
         UIColor *color = OCKPurpleColor();
         OCKCarePlanActivity *evaluation = [[OCKCarePlanActivity alloc] initWithIdentifier:RangeOfMotionEvaluation
                                                                                      type:OCKCarePlanActivityTypeAssessment
@@ -320,7 +320,7 @@ DefineStringKey(TemperatureEvaluation);
     }
     
     {
-        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDay:startDate occurrencesOnEachDay:@[@1,@1,@1,@0,@1,@1,@1]];
+        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@1,@1,@1,@0,@1,@1,@1]];
         UIColor *color = OCKBlueColor();
         OCKCarePlanActivity *evaluation = [[OCKCarePlanActivity alloc] initWithIdentifier:PainEvaluation
                                                                                      type:OCKCarePlanActivityTypeAssessment
@@ -332,7 +332,7 @@ DefineStringKey(TemperatureEvaluation);
     }
     
     {
-        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDay:startDate occurrencesOnEachDay:@[@1,@1,@1,@1,@1,@1,@1]];
+        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@1,@1,@1,@1,@1,@1,@1]];
         UIColor *color = OCKGreenColor();
         OCKCarePlanActivity *evaluation = [[OCKCarePlanActivity alloc] initWithIdentifier:BleedingEvaluation
                                                                                      type:OCKCarePlanActivityTypeAssessment
@@ -344,7 +344,7 @@ DefineStringKey(TemperatureEvaluation);
     }
     
     {
-        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDay:startDate occurrencesOnEachDay:@[@1,@1,@1,@1,@1,@1,@1]];
+        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@1,@1,@1,@1,@1,@1,@1]];
         UIColor *color = OCKYellowColor();
         OCKCarePlanActivity *evaluation = [[OCKCarePlanActivity alloc] initWithIdentifier:TemperatureEvaluation
                                                                                      type:OCKCarePlanActivityTypeAssessment

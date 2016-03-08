@@ -107,6 +107,8 @@
 		869C6C131C87616B00525137 /* OCKChartLegendCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 869C6C111C87616B00525137 /* OCKChartLegendCell.m */; };
 		869C6C161C8763F800525137 /* OCKChartLegendView.h in Headers */ = {isa = PBXBuildFile; fileRef = 869C6C141C8763F800525137 /* OCKChartLegendView.h */; };
 		869C6C171C8763F800525137 /* OCKChartLegendView.m in Sources */ = {isa = PBXBuildFile; fileRef = 869C6C151C8763F800525137 /* OCKChartLegendView.m */; };
+		869C6C4E1C8F465D00525137 /* NSDateComponents+CarePlan.h in Headers */ = {isa = PBXBuildFile; fileRef = 869C6C4C1C8F465D00525137 /* NSDateComponents+CarePlan.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		869C6C4F1C8F465D00525137 /* NSDateComponents+CarePlan.m in Sources */ = {isa = PBXBuildFile; fileRef = 869C6C4D1C8F465D00525137 /* NSDateComponents+CarePlan.m */; };
 		86B747A51C7E5438003B9554 /* OCKHTMLPDFWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 86B747A31C7E5438003B9554 /* OCKHTMLPDFWriter.h */; };
 		86B747A61C7E5438003B9554 /* OCKHTMLPDFWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 86B747A41C7E5438003B9554 /* OCKHTMLPDFWriter.m */; };
 		86B747CC1C84DE3C003B9554 /* OCKRingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 86B747CA1C84DE3C003B9554 /* OCKRingView.m */; };
@@ -114,9 +116,6 @@
 		86B747D91C84F74E003B9554 /* OCKGroupedBarChartView.h in Headers */ = {isa = PBXBuildFile; fileRef = 86B747D71C84F74E003B9554 /* OCKGroupedBarChartView.h */; };
 		86B747DA1C84F74E003B9554 /* OCKGroupedBarChartView.m in Sources */ = {isa = PBXBuildFile; fileRef = 86B747D81C84F74E003B9554 /* OCKGroupedBarChartView.m */; };
 		86BE2EFF1C77C83D00D66276 /* OCKCareCardViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 86BE2EFE1C77C83D00D66276 /* OCKCareCardViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		86BE2F021C7BDD2C00D66276 /* OCKCarePlanDay.h in Headers */ = {isa = PBXBuildFile; fileRef = 86BE2F001C7BDD2C00D66276 /* OCKCarePlanDay.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		86BE2F031C7BDD2C00D66276 /* OCKCarePlanDay.m in Sources */ = {isa = PBXBuildFile; fileRef = 86BE2F011C7BDD2C00D66276 /* OCKCarePlanDay.m */; };
-		86BE2F051C7BED7500D66276 /* OCKCarePlanDay_Internal.h in Headers */ = {isa = PBXBuildFile; fileRef = 86BE2F041C7BED7500D66276 /* OCKCarePlanDay_Internal.h */; };
 		86ED1C6F1C7526A700B33FC5 /* OCKCarePlanEventResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 86ED1C6D1C7526A700B33FC5 /* OCKCarePlanEventResult.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		86ED1C701C7526A700B33FC5 /* OCKCarePlanEventResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 86ED1C6E1C7526A700B33FC5 /* OCKCarePlanEventResult.m */; };
 		86ED1C811C763CE600B33FC5 /* OCKCarePlanEventResult_Internal.h in Headers */ = {isa = PBXBuildFile; fileRef = 86ED1C801C763CE600B33FC5 /* OCKCarePlanEventResult_Internal.h */; };
@@ -238,6 +237,9 @@
 		869C6C111C87616B00525137 /* OCKChartLegendCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKChartLegendCell.m; sourceTree = "<group>"; };
 		869C6C141C8763F800525137 /* OCKChartLegendView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKChartLegendView.h; sourceTree = "<group>"; };
 		869C6C151C8763F800525137 /* OCKChartLegendView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKChartLegendView.m; sourceTree = "<group>"; };
+		869C6C4C1C8F465D00525137 /* NSDateComponents+CarePlan.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDateComponents+CarePlan.h"; sourceTree = "<group>"; };
+		869C6C4D1C8F465D00525137 /* NSDateComponents+CarePlan.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDateComponents+CarePlan.m"; sourceTree = "<group>"; };
+		869C6C521C8F46E700525137 /* NSDateComponents+CarePlanInternal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSDateComponents+CarePlanInternal.h"; sourceTree = "<group>"; };
 		86B747A31C7E5438003B9554 /* OCKHTMLPDFWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKHTMLPDFWriter.h; sourceTree = "<group>"; };
 		86B747A41C7E5438003B9554 /* OCKHTMLPDFWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKHTMLPDFWriter.m; sourceTree = "<group>"; };
 		86B747CA1C84DE3C003B9554 /* OCKRingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OCKRingView.m; path = ../CareCard/OCKRingView.m; sourceTree = "<group>"; };
@@ -245,9 +247,6 @@
 		86B747D71C84F74E003B9554 /* OCKGroupedBarChartView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKGroupedBarChartView.h; sourceTree = "<group>"; };
 		86B747D81C84F74E003B9554 /* OCKGroupedBarChartView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKGroupedBarChartView.m; sourceTree = "<group>"; };
 		86BE2EFE1C77C83D00D66276 /* OCKCareCardViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKCareCardViewController.h; sourceTree = "<group>"; };
-		86BE2F001C7BDD2C00D66276 /* OCKCarePlanDay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKCarePlanDay.h; sourceTree = "<group>"; };
-		86BE2F011C7BDD2C00D66276 /* OCKCarePlanDay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKCarePlanDay.m; sourceTree = "<group>"; };
-		86BE2F041C7BED7500D66276 /* OCKCarePlanDay_Internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKCarePlanDay_Internal.h; sourceTree = "<group>"; };
 		86ED1C6D1C7526A700B33FC5 /* OCKCarePlanEventResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKCarePlanEventResult.h; sourceTree = "<group>"; };
 		86ED1C6E1C7526A700B33FC5 /* OCKCarePlanEventResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKCarePlanEventResult.m; sourceTree = "<group>"; };
 		86ED1C801C763CE600B33FC5 /* OCKCarePlanEventResult_Internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKCarePlanEventResult_Internal.h; sourceTree = "<group>"; };
@@ -300,11 +299,11 @@
 				2445EAC11C6D66CC00F51A95 /* OCKCarePlanStore.h */,
 				8656C0DD1C6E98DA00A6D5D1 /* OCKCarePlanStore_Internal.h */,
 				2445EAC21C6D66CC00F51A95 /* OCKCarePlanStore.m */,
-				86BE2F001C7BDD2C00D66276 /* OCKCarePlanDay.h */,
-				86BE2F041C7BED7500D66276 /* OCKCarePlanDay_Internal.h */,
-				86BE2F011C7BDD2C00D66276 /* OCKCarePlanDay.m */,
 				24B31A4F1C6E603700C3C196 /* Activities */,
 				24B31A511C6E609300C3C196 /* Events */,
+				869C6C4C1C8F465D00525137 /* NSDateComponents+CarePlan.h */,
+				869C6C521C8F46E700525137 /* NSDateComponents+CarePlanInternal.h */,
+				869C6C4D1C8F465D00525137 /* NSDateComponents+CarePlan.m */,
 			);
 			path = CarePlan;
 			sourceTree = "<group>";
@@ -662,7 +661,6 @@
 				24CC913F1C767E5900DFFF47 /* OCKCareCardDetailViewController.h in Headers */,
 				2445EB311C6D67A100F51A95 /* OCKConnectViewController.h in Headers */,
 				2445EB041C6D673000F51A95 /* OCKChart.h in Headers */,
-				86BE2F021C7BDD2C00D66276 /* OCKCarePlanDay.h in Headers */,
 				2445EACE1C6D66CC00F51A95 /* OCKCarePlanEvent.h in Headers */,
 				86ED1C6F1C7526A700B33FC5 /* OCKCarePlanEventResult.h in Headers */,
 				245AD9671C8101C600940688 /* OCKRingButton.h in Headers */,
@@ -674,6 +672,7 @@
 				2445EB691C6D685D00F51A95 /* OCKCareCardTableViewHeader.h in Headers */,
 				249029FE1C824A4D00051791 /* OCKContactInfoTableViewCell.h in Headers */,
 				86ED1C811C763CE600B33FC5 /* OCKCarePlanEventResult_Internal.h in Headers */,
+				869C6C4E1C8F465D00525137 /* NSDateComponents+CarePlan.h in Headers */,
 				86B747D01C84E192003B9554 /* OCKRingView.h in Headers */,
 				2445EAD01C6D66CC00F51A95 /* OCKCarePlanEvent_Internal.h in Headers */,
 				241744AC1C7C247C00350094 /* OCKCareCardButton.h in Headers */,
@@ -694,7 +693,6 @@
 				2445EB2F1C6D67A100F51A95 /* OCKConnectTableViewController.h in Headers */,
 				86B747A51C7E5438003B9554 /* OCKHTMLPDFWriter.h in Headers */,
 				86B747D91C84F74E003B9554 /* OCKGroupedBarChartView.h in Headers */,
-				86BE2F051C7BED7500D66276 /* OCKCarePlanDay_Internal.h in Headers */,
 				247BD1291C87E36300F2CF9B /* OCKBarGroup.h in Headers */,
 				24E318151C6EB08A0094C45B /* OCKEvaluationViewController.h in Headers */,
 				8656C0DE1C6E98DA00A6D5D1 /* OCKCarePlanStore_Internal.h in Headers */,
@@ -818,10 +816,10 @@
 				2445EB0F1C6D673000F51A95 /* OCKDashboardViewController.m in Sources */,
 				867C31D21C7D27D100893CE5 /* OCKDocument.m in Sources */,
 				2445EB081C6D673000F51A95 /* OCKChartTableViewCell.m in Sources */,
+				869C6C4F1C8F465D00525137 /* NSDateComponents+CarePlan.m in Sources */,
 				24E3181A1C6EB08A0094C45B /* OCKEvaluationTableViewController.m in Sources */,
 				2445EB051C6D673000F51A95 /* OCKChart.m in Sources */,
 				86ED1C701C7526A700B33FC5 /* OCKCarePlanEventResult.m in Sources */,
-				86BE2F031C7BDD2C00D66276 /* OCKCarePlanDay.m in Sources */,
 				2445EACF1C6D66CC00F51A95 /* OCKCarePlanEvent.m in Sources */,
 				249029FF1C824A4D00051791 /* OCKContactInfoTableViewCell.m in Sources */,
 				2445EB7A1C6D685D00F51A95 /* OCKWeekViewController.m in Sources */,

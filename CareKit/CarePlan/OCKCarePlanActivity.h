@@ -19,7 +19,7 @@ typedef NS_ENUM(NSInteger, OCKCarePlanActivityType) {
 };
 
 /**
- Abstract care plan activity Class
+  Care plan activity Class
  */
 @interface OCKCarePlanActivity : NSObject <NSSecureCoding, NSCopying>
 
@@ -55,7 +55,7 @@ typedef NS_ENUM(NSInteger, OCKCarePlanActivityType) {
 /**
  Type is a string can be used to group different items into sets .
  */
-@property (nonatomic, readonly) NSString *groupIdentifier;
+@property (nonatomic, readonly, nullable) NSString *groupIdentifier;
 
 
 /**

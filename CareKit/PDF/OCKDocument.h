@@ -24,8 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  OCKDocument defines a document object which caontains title, pageHeader, and elements.
- It sopports exporting to HTML or PDF file.
- A document accepts customization via style property.
+ It supports exporting to HTML or PDF file.
  */
 @interface OCKDocument : NSObject
 

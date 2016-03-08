@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 // CarePlan
-#import <CareKit/OCKCarePlanDay.h>
+#import <CareKit/NSDateComponents+CarePlan.h>
 #import <CareKit/OCKCareSchedule.h>
 #import <CareKit/OCKCarePlanActivity.h>
 #import <CareKit/OCKCarePlanEvent.h>

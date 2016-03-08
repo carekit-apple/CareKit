@@ -15,6 +15,7 @@
 #import "OCKWeekViewController.h"
 #import "OCKCareCardWeekView.h"
 #import "OCKCareCardDetailViewController.h"
+#import "NSDateComponents+CarePlanInternal.h"
 
 
 @implementation OCKCareCardViewController {
@@ -56,14 +57,14 @@
 }
 
 - (void)showToday:(id)sender {
-    _tableViewController.selectedDate = [[OCKCarePlanDay alloc] initWithDate:[NSDate date] calendar:[NSCalendar currentCalendar]];
+    _tableViewController.selectedDate = [[NSDateComponents alloc] initWithDate:[NSDate date] calendar:[NSCalendar currentCalendar]];
 }
 
 #pragma mark - OCKCareCardWeekViewDelegate
 
 - (void)careCardWeekViewSelectionDidChange:(OCKCareCardWeekView *)careCardWeekView {
-    OCKCarePlanDay *selectedDate = [_tableViewController dateFromSelectedIndex:careCardWeekView.selectedIndex];
-    OCKCarePlanDay *today = [[OCKCarePlanDay alloc] initWithDate:[NSDate date] calendar:[NSCalendar currentCalendar]];
+    NSDateComponents *selectedDate = [_tableViewController dateFromSelectedIndex:careCardWeekView.selectedIndex];
+    NSDateComponents *today = [[NSDateComponents alloc] initWithDate:[NSDate date] calendar:[NSCalendar currentCalendar]];
     if (![selectedDate isLaterThan:today]) {
         _tableViewController.selectedDate = selectedDate;
     }

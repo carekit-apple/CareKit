@@ -13,7 +13,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class OCKCarePlanActivity, OCKWeekViewController, OCKCarePlanStore, OCKCarePlanDay;
+@class OCKCarePlanActivity, OCKWeekViewController, OCKCarePlanStore, NSDateComponents;
 
 @protocol OCKCareCardTableViewDelegate <NSObject>
 
@@ -31,9 +31,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) OCKCarePlanStore *store;
 @property (nonatomic) id<OCKCareCardTableViewDelegate> delegate;
 @property (nonatomic, readonly) OCKWeekViewController *weekViewController;
-@property (nonatomic) OCKCarePlanDay *selectedDate;
+@property (nonatomic) NSDateComponents *selectedDate;
 
-- (OCKCarePlanDay *)dateFromSelectedIndex:(NSInteger)index;
+- (NSDateComponents *)dateFromSelectedIndex:(NSInteger)index;
 
 @end
 

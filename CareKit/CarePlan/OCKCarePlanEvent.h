@@ -51,7 +51,6 @@ typedef NS_ENUM(NSInteger, OCKCarePlanEventState) {
 @property (nonatomic, readonly) OCKCarePlanEventState state;
 
 /**
- 
  The result object can be attached through OCKCarePlanStore API.
  */
 @property (nonatomic, readonly, nullable) OCKCarePlanEventResult *result;

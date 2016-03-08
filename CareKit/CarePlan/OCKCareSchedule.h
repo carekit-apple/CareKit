@@ -16,78 +16,78 @@ typedef NS_ENUM(NSInteger, OCKCareScheduleType) {
     OCKCareScheduleTypeMonthly
 };
 
-@class OCKCarePlanDay;
+@class NSDateComponents;
 
 @interface OCKCareSchedule : NSObject <NSSecureCoding, NSCopying>
 
 - (instancetype)init NS_UNAVAILABLE;
 
-/*
+/**
  Define a schedule has same number of occurrences every day.
- End day can be set later through CarePlanStore.
+ End date can be set later through CarePlanStore.
  */
-+ (instancetype)dailyScheduleWithStartDay:(OCKCarePlanDay *)startDay
-                        occurrencesPerDay:(NSUInteger)occurrencesPerDay;
++ (instancetype)dailyScheduleWithStartDate:(NSDateComponents *)startDate
+                         occurrencesPerDay:(NSUInteger)occurrencesPerDay;
 
-/*
+/**
  Define a schedule is repeating every week.
  Each weekday can have different number of occurrences.
- End day can be set later through CarePlanStore.
+ End date can be set later through CarePlanStore.
  */
-+ (instancetype)weeklyScheduleWithStartDay:(OCKCarePlanDay *)startDay
-                      occurrencesOnEachDay:(NSArray<NSNumber *> *)occurrencesFromSundayToSaturday;
++ (instancetype)weeklyScheduleWithStartDate:(NSDateComponents *)startDate
+                       occurrencesOnEachDay:(NSArray<NSNumber *> *)occurrencesFromSundayToSaturday;
 
-/*
+/**
  Define a schedule is repeating every month.
  Each day in a month can have different number of occurrences.
- End day can be set later through CarePlanStore.
+ End date can be set later through CarePlanStore.
  */
-+ (instancetype)monthlyScheduleWithStartDay:(OCKCarePlanDay *)startDay
-                       occurrencesOnEachDay:(NSArray<NSNumber *> *)occurrencesFrom1stTo31th;
++ (instancetype)monthlyScheduleWithStartDate:(NSDateComponents *)startDate
+                        occurrencesOnEachDay:(NSArray<NSNumber *> *)occurrencesFrom1stTo31th;
 
-/*
+/**
  Define a schedule has same number of occurrences every day.
- End day can be set later through CarePlanStore.
+ End date can be set later through CarePlanStore.
  @param daysToSkip  Number of days betwen two active days, this schedule has no occurrence. 
                     
  */
-+ (instancetype)dailyScheduleWithStartDay:(OCKCarePlanDay *)startDay
-                        occurrencesPerDay:(NSUInteger)occurrencesPerDay
-                               daysToSkip:(NSUInteger)daysToSkip
-                                   endDay:(nullable OCKCarePlanDay *)endDay;
++ (instancetype)dailyScheduleWithStartDate:(NSDateComponents *)startDate
+                         occurrencesPerDay:(NSUInteger)occurrencesPerDay
+                                daysToSkip:(NSUInteger)daysToSkip
+                                   EndDate:(nullable NSDateComponents *)endDate;
 
-/*
+/**
  Define a schedule is repeating every week.
  Each weekday can have different number of occurrences.
  @param daysToSkip  Number of days betwen two active days, this schedule has no occurrence.
  */
-+ (instancetype)weeklyScheduleWithStartDay:(OCKCarePlanDay *)startDay
-                      occurrencesOnEachDay:(NSArray<NSNumber *> *)occurrencesFromSundayToSaturday
-                               weeksToSkip:(NSUInteger)weeksToSkip
-                                    endDay:(nullable OCKCarePlanDay *)endDay;
++ (instancetype)weeklyScheduleWithStartDate:(NSDateComponents *)startDate
+                       occurrencesOnEachDay:(NSArray<NSNumber *> *)occurrencesFromSundayToSaturday
+                                weeksToSkip:(NSUInteger)weeksToSkip
+                                    EndDate:(nullable NSDateComponents *)endDate;
 
-/*
+/**
  Define a schedule is repeating every month.
  Each day in a month can have different number of occurrences.
  @param daysToSkip  Number of days betwen two active days, this schedule has no occurrence. 
  
  */
-+ (instancetype)monthlyScheduleWithStartDay:(OCKCarePlanDay *)startDay
-                       occurrencesOnEachDay:(NSArray<NSNumber *> *)occurrencesFrom1stTo31th
-                               monthsToSkip:(NSUInteger)monthsToSkip
-                                     endDay:(nullable OCKCarePlanDay *)endDay;
++ (instancetype)monthlyScheduleWithStartDate:(NSDateComponents *)startDate
+                        occurrencesOnEachDay:(NSArray<NSNumber *> *)occurrencesFrom1stTo31th
+                                monthsToSkip:(NSUInteger)monthsToSkip
+                                     EndDate:(nullable NSDateComponents *)endDate;
 
 @property (nonatomic, readonly) OCKCareScheduleType type;
 
-@property (nonatomic, strong, readonly) OCKCarePlanDay *startDay;
+@property (nonatomic, strong, readonly) NSDateComponents *startDate;
 
-@property (nonatomic, strong, readonly, nullable) OCKCarePlanDay *endDay;
+@property (nonatomic, strong, readonly, nullable) NSDateComponents *endDate;
 
 @property (nonatomic, copy, readonly) NSArray<NSNumber *> *occurrences;
 
 @property (nonatomic, readonly) NSUInteger timeUnitsToSkip;
 
-- (NSUInteger)numberOfEventsOnDay:(OCKCarePlanDay *)day;
+- (NSUInteger)numberOfEventsOnDate:(NSDateComponents *)date;
 
 @end
 

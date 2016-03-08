@@ -242,7 +242,7 @@ DefineStringKey(PhysicalTherapyTreatment);
 - (void)generateTreatments {
     NSMutableArray *treatments = [NSMutableArray new];
 
-    OCKCarePlanDay *startDate = [[OCKCarePlanDay alloc] initWithYear:2016 month:01 day:01];
+    NSDateComponents *startDate = [[NSDateComponents alloc] initWithYear:2016 month:01 day:01];
     
     {
         OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDay:startDate occurrencesOnEachDay:@[@2,@2,@2,@1,@2,@3,@3]];
@@ -307,7 +307,7 @@ DefineStringKey(WeightEvaluation);
 - (void)generateEvaluations {
     NSMutableArray *evaluations = [NSMutableArray new];
 
-    OCKCarePlanDay *startDate = [[OCKCarePlanDay alloc] initWithYear:2016 month:01 day:01];
+    NSDateComponents *startDate = [[NSDateComponents alloc] initWithYear:2016 month:01 day:01];
 
     {
         OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDay:startDate occurrencesOnEachDay:@[@1,@1,@1,@0,@1,@1,@1]];

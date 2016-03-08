@@ -58,28 +58,17 @@
 
 - (void)animateFill {
     if (_animate) {
-        
         CABasicAnimation *theAnimation;
         theAnimation = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
-        theAnimation.duration = 1.0;
+        theAnimation.duration = 0.25;
         theAnimation.fromValue = [NSNumber numberWithFloat:1.0];
-        theAnimation.toValue = [NSNumber numberWithFloat:0.85];
+        theAnimation.toValue = [NSNumber numberWithFloat:1.15];
         theAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
         theAnimation.autoreverses = YES;
         
         [UIView animateWithDuration:1.25 delay:0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
             _fillView.frame = CGRectMake(CGRectGetMinX(self.bounds), CGRectGetMaxY(self.bounds), CGRectGetMaxX(self.bounds), -_adherence * CGRectGetMaxY(self.bounds));
         } completion:^(BOOL finished) {
-            
-//            if (_adherence == 1 && self.frame.size.height > 30) {
-//                theAnimation.repeatCount = HUGE_VALF;
-//                [self.layer addAnimation:theAnimation forKey:@"animateOpacity"];
-//                _isHeartBeating = YES;
-//            } else if (_isHeartBeating) {
-//                theAnimation.repeatCount = 0;
-//                [self.layer addAnimation:theAnimation forKey:@"animateOpacity"];
-//                _isHeartBeating = NO;
-//            }
         }];
     } else {
         _fillView.frame = CGRectMake(CGRectGetMinX(self.bounds), CGRectGetMaxY(self.bounds), CGRectGetMaxX(self.bounds), -_adherence * CGRectGetMaxY(self.bounds));
@@ -100,6 +89,14 @@
     }
 
     [self prepareView];
+}
+
+- (void)animationDidStart:(CAAnimation *)anim {
+    _isHeartBeating = YES;
+}
+
+- (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag {
+    _isHeartBeating = NO;
 }
 
 

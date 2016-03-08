@@ -10,6 +10,7 @@
 #import "OCKConnectDetailViewController.h"
 #import "OCKContact.h"
 #import "OCKConnectTableViewHeader.h"
+#import "OCKConnectViewController.h"
 
 
 static const CGFloat CellHeight = 70.0;
@@ -42,6 +43,12 @@ static const CGFloat HeaderViewHeight = 225.0;
 
 - (void)setContact:(OCKContact *)contact {
     _contact = contact;
+    [self prepareView];
+    [self.tableView reloadData];
+}
+
+- (void)setSharingDelegate:(id)sharingDelegate {
+    _sharingDelegate = sharingDelegate;
     [self prepareView];
     [self.tableView reloadData];
 }
@@ -104,7 +111,10 @@ static const CGFloat HeaderViewHeight = 225.0;
 #pragma mark - OCKReportsTableViewCellDelegate
 
 - (void)reportsTableViewCellDidSelectShareButton:(OCKReportsTableViewCell *)cell {
-    // TODO: Show share sheet with PDF export embedded.
+    if (_sharingDelegate &&
+        [_sharingDelegate respondsToSelector:@selector(didSelectShareButtonForContact:)]) {
+        [_sharingDelegate didSelectShareButtonForContact:cell.contact];
+    }
 }
 
 
@@ -129,7 +139,7 @@ static const CGFloat HeaderViewHeight = 225.0;
             break;
             
         case 1:
-            sectionTitle = @"Reports";
+            sectionTitle = (_sharingDelegate) ? @"Sharing" : nil;
             break;
     }
     return sectionTitle;
@@ -148,7 +158,7 @@ static const CGFloat HeaderViewHeight = 225.0;
             numberOfRows = numberOfRows + 1;
         }
     } else if (section == 1) {
-        numberOfRows = 1;
+        numberOfRows = (_sharingDelegate) ? 1 : 0;
     }
     return numberOfRows;
 }
@@ -187,7 +197,7 @@ static const CGFloat HeaderViewHeight = 225.0;
         
         return cell;
     
-    } else if (indexPath.section == 1) {
+    } else if (indexPath.section == 1 && _sharingDelegate) {
         static NSString *ReportsCellIdentifier = @"ReportsCell";
 
         OCKReportsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ReportsCellIdentifier];
@@ -195,7 +205,11 @@ static const CGFloat HeaderViewHeight = 225.0;
             cell = [[OCKReportsTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
                                                   reuseIdentifier:ReportsCellIdentifier];
         }
-        cell.title = @"Send weekly reports";
+        if ([_sharingDelegate respondsToSelector:@selector(titleForSharingCellForContact:)]) {
+            cell.title = [_sharingDelegate titleForSharingCellForContact:_contact];
+        } else {
+            cell.title = @"Send reports";
+        }
         cell.contact = _contact;
         cell.delegate = self;
         

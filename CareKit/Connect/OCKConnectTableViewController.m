@@ -14,7 +14,7 @@
 
 
 @implementation OCKConnectTableViewController {
-    NSArray<NSArray<OCKConnectTableViewCell*>*> *_connectTableViewCells;
+    NSArray<NSArray<OCKContact *> *> *_sectionedContacts;
 }
 
 + (instancetype)new {
@@ -30,7 +30,6 @@
 - (instancetype)initWithContacts:(NSArray<OCKContact *> *)contacts {
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
-        self.title = @"Connect";
         _contacts = [contacts copy];
     }
     return self;
@@ -38,34 +37,35 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    _connectTableViewCells = nil;
     self.tableView.rowHeight = 90.0;
     
-    NSMutableArray<OCKConnectTableViewCell *> *clinicians = [NSMutableArray new];
-    NSMutableArray<OCKConnectTableViewCell *> *emergencyContacts = [NSMutableArray new];
-    for (id contact in self.contacts) {
-        static NSString *CellIdentifier = @"ConnectCell";
-        OCKConnectTableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-        if (!cell) {
-            cell = [[OCKConnectTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
-                                                  reuseIdentifier:CellIdentifier];
-        }
-        cell.contact = contact;
-        
-        OCKContactType contactType = ((OCKContact *)contact).type;
-        if (contactType == OCKContactTypeClinician) {
-            [clinicians addObject:cell];
-        } else {
-            [emergencyContacts addObject:cell];
-        }
-    }
-    _connectTableViewCells = @[clinicians, emergencyContacts];
+    [self createSectionedContacts];
 }
 
 - (void)setContacts:(NSArray<OCKContact *> *)contacts {
     _contacts = contacts;
+    [self createSectionedContacts];
     [self.tableView reloadData];
+}
+
+- (void)createSectionedContacts {
+    _sectionedContacts = [NSArray new];
+    
+    NSMutableArray *careTeamContacts = [NSMutableArray new];
+    NSMutableArray *personalContacts = [NSMutableArray new];
+
+    for (OCKContact *contact in _contacts) {
+        switch (contact.type) {
+            case OCKContactTypeClinician:
+                [careTeamContacts addObject:contact];
+                break;
+            case OCKContactTypeEmergencyContact:
+                [personalContacts addObject:contact];
+                break;
+        }
+    }
+    
+    _sectionedContacts = @[[careTeamContacts copy], [personalContacts copy]];
 }
 
 
@@ -74,7 +74,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (_delegate &&
         [_delegate respondsToSelector:@selector(tableViewDidSelectRowWithContact:)]) {
-        [_delegate tableViewDidSelectRowWithContact:_connectTableViewCells[indexPath.section][indexPath.row].contact];
+        [_delegate tableViewDidSelectRowWithContact:_sectionedContacts[indexPath.section][indexPath.row]];
     }
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -84,7 +84,7 @@
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return _connectTableViewCells.count;
+    return _sectionedContacts.count;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
@@ -102,11 +102,18 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return _connectTableViewCells[section].count;
+    return _sectionedContacts[section].count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return _connectTableViewCells[indexPath.section][indexPath.row];
+    static NSString *CellIdentifier = @"ConnectCell";
+    OCKConnectTableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (!cell) {
+        cell = [[OCKConnectTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                              reuseIdentifier:CellIdentifier];
+    }
+    cell.contact = _sectionedContacts[indexPath.section][indexPath.row];
+    return cell;
 }
 
 @end

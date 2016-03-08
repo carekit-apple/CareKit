@@ -33,10 +33,8 @@
 - (instancetype)initWithCharts:(NSArray<OCKChart *> *)charts {
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
-        
         NSAssert([self isChartArrayValid:charts], @"The chart array can only include objects that are a subclass of OCKChart.");
         
-        self.title = @"Insights";
         _charts = [charts copy];
     }
     return self;

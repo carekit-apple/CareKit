@@ -41,7 +41,6 @@ const static CGFloat HeaderViewHeight = 150.0;
                              delegate:(id<OCKEvaluationTableViewDelegate>)delegate {
     self = [super initWithStyle:UITableViewStylePlain];
     if (self) {
-        self.title = @"Checkups";
         _store = store;
         _delegate = delegate;
         _lastSelectedEvaluationEvent = nil;

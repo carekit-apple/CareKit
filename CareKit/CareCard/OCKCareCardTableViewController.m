@@ -43,7 +43,6 @@ static const CGFloat HeaderViewHeight = 200.0;
 - (instancetype)initWithCarePlanStore:(OCKCarePlanStore *)store {
     self = [super initWithStyle:UITableViewStylePlain];
     if (self) {
-        self.title = @"Care Card";
         _store = store;
         _store.careCardUIDelegate = self;
     }
@@ -256,20 +255,22 @@ static const CGFloat HeaderViewHeight = 200.0;
 #pragma mark - UIPageViewControllerDelegate
 
 - (void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray<UIViewController *> *)previousViewControllers transitionCompleted:(BOOL)completed {
-    OCKWeekViewController *controller = (OCKWeekViewController *)pageViewController.viewControllers.firstObject;
-    controller.careCardWeekView.delegate = _weekViewController.careCardWeekView.delegate;
+    if (completed) {
+        OCKWeekViewController *controller = (OCKWeekViewController *)pageViewController.viewControllers.firstObject;
+        controller.careCardWeekView.delegate = _weekViewController.careCardWeekView.delegate;
 
-    
-    NSCalendar *calendar = [NSCalendar currentCalendar];
-    NSDateComponents *components = [NSDateComponents new];
-    components.day = (controller.view.tag > _weekViewController.view.tag) ? 7 : -7;
-    NSDate *newDate = [calendar dateByAddingComponents:components toDate:[self dateFromCarePlanDay:_selectedDate] options:0];
-
-    _weekViewController = controller;
-    self.selectedDate = [[OCKCarePlanDay alloc] initWithDate:newDate calendar:calendar];
-    
-    components = [[NSCalendar currentCalendar] components:NSCalendarUnitWeekday fromDate:[self dateFromCarePlanDay:_selectedDate]];
-    [_weekViewController.careCardWeekView.weekView highlightDay:components.weekday-1];
+        
+        NSCalendar *calendar = [NSCalendar currentCalendar];
+        NSDateComponents *components = [NSDateComponents new];
+        components.day = (controller.view.tag > _weekViewController.view.tag) ? 7 : -7;
+        NSDate *newDate = [calendar dateByAddingComponents:components toDate:[self dateFromCarePlanDay:_selectedDate] options:0];
+        
+        _weekViewController = controller;
+        self.selectedDate = [[OCKCarePlanDay alloc] initWithDate:newDate calendar:calendar];
+        
+        components = [[NSCalendar currentCalendar] components:NSCalendarUnitWeekday fromDate:[self dateFromCarePlanDay:_selectedDate]];
+        [_weekViewController.careCardWeekView.weekView highlightDay:components.weekday-1];
+    }
 }
 
 

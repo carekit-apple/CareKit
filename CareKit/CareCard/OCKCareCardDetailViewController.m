@@ -9,27 +9,30 @@
 
 #import "OCKCareCardDetailViewController.h"
 #import "OCKCarePlanActivity.h"
+#import "OCKCareCardDetailHeaderView.h"
 
 
-static const CGFloat LeadingMargin = 30.0;
-static const CGFloat TrailingMargin = 50.0;
-static const CGFloat TopMargin = 100.0;
-static const CGFloat VerticalMargin = 15.0;
-
-static const CGFloat ImageViewSize = 200.0;
+static const CGFloat HeaderViewHeight = 150.0;
 
 @implementation OCKCareCardDetailViewController {
-    UILabel *_titleLabel;
-    UILabel *_textLabel;
-    UILabel *_instructionsLabel;
-    UIImageView *_imageView;
-    
-    UILabel *_leadingEdge;
+    OCKCareCardDetailHeaderView *_headerView;
+    UIView *_leadingEdge;
+    NSMutableArray *_constraints;
+}
+
+- (instancetype)initWithTreatment:(OCKCarePlanActivity *)treatment {
+    self = [super initWithStyle:UITableViewStyleGrouped];
+    if (self) {
+        _treatment = treatment;
+    }
+    return self;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor whiteColor];
+    
+    [self prepareView];
+    self.tableView.tableFooterView = [UIView new];
 }
 
 - (void)setTreatment:(OCKCarePlanActivity *)treatment {
@@ -38,159 +41,68 @@ static const CGFloat ImageViewSize = 200.0;
 }
 
 - (void)prepareView {
-    if (!_titleLabel) {
-        _titleLabel = [UILabel new];
-        _titleLabel.lineBreakMode = NSLineBreakByTruncatingTail;
-        _titleLabel.font = [UIFont systemFontOfSize:40.0 weight:UIFontWeightRegular];
-        [self.view addSubview:_titleLabel];
+    if (!_headerView) {
+        _headerView = [[OCKCareCardDetailHeaderView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, HeaderViewHeight)];
     }
-    _titleLabel.text = _treatment.title;
+    _headerView.treatment = _treatment;
     
-    if (!_textLabel) {
-        _textLabel = [UILabel new];
-        _textLabel.lineBreakMode = NSLineBreakByTruncatingTail;
-        _textLabel.font = [UIFont systemFontOfSize:25.0 weight:UIFontWeightThin];
-        [self.view addSubview:_textLabel];
-    }
-    _textLabel.text = _treatment.text;
-
-    if (!_instructionsLabel) {
-        _instructionsLabel = [UILabel new];
-        _instructionsLabel.numberOfLines = 10;
-        _instructionsLabel.lineBreakMode = NSLineBreakByWordWrapping;
-        _instructionsLabel.font = [UIFont systemFontOfSize:18.0 weight:UIFontWeightLight];
-        [self.view addSubview:_instructionsLabel];
-    }
-    _instructionsLabel.text = _treatment.detailText;
-    
-    if (!_imageView) {
-        _imageView = [UIImageView new];
-        [self.view addSubview:_imageView];
-    }
-    // TODO: Implement this.
-    _imageView.image = [UIImage imageNamed:@"test"];
-    _imageView.backgroundColor = _treatment.tintColor;
-    
-    if (!_leadingEdge) {
-        _leadingEdge = [UILabel new];
-        [self.view addSubview:_leadingEdge];
-    }
-    _leadingEdge.backgroundColor = _treatment.tintColor;
-    
-    [self setUpConstraints];
+    self.tableView.tableHeaderView = _headerView;
 }
 
-- (void)setUpConstraints {
-    NSMutableArray *constraints = [NSMutableArray new];
+
+#pragma mark - UITableViewDelegate
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return UITableViewAutomaticDimension;
+}
+
+
+#pragma mark - UITableViewDataSource
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return 1;
+}
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    NSInteger numberOfSections = 0;
+    if (_treatment.detailText) {
+        numberOfSections += 1;
+    }
+    // TO DO: Implement this for image content.
+    // And if statemnet to add to the number of sections.
+    numberOfSections += 1;
+    return numberOfSections;
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    NSString *title;
+    switch (section) {
+        case 0:
+            title = @"Detailed Instructions";
+            break;
+            
+        case 1:
+            title = @"Additional Information";
+            break;
+    }
+    return title;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                                   reuseIdentifier:nil];
     
-    _titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    _textLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    _instructionsLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    _imageView.translatesAutoresizingMaskIntoConstraints = NO;
-    _leadingEdge.translatesAutoresizingMaskIntoConstraints = NO;
+    switch (indexPath.section) {
+        case 0:
+            cell.textLabel.text = _treatment.detailText;
+            cell.textLabel.numberOfLines = 0;
+            cell.textLabel.lineBreakMode = NSLineBreakByWordWrapping;
+            break;
+        case 1:
+            break;
+    }
     
-    [constraints addObjectsFromArray:@[
-                                       [NSLayoutConstraint constraintWithItem:_titleLabel
-                                                                    attribute:NSLayoutAttributeTop
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:self.view
-                                                                    attribute:NSLayoutAttributeTop
-                                                                   multiplier:1.0
-                                                                     constant:TopMargin],
-                                       [NSLayoutConstraint constraintWithItem:_titleLabel
-                                                                    attribute:NSLayoutAttributeLeading
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:self.view
-                                                                    attribute:NSLayoutAttributeLeading
-                                                                   multiplier:1.0
-                                                                     constant:LeadingMargin],
-                                       [NSLayoutConstraint constraintWithItem:_titleLabel
-                                                                    attribute:NSLayoutAttributeLeading
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:_textLabel
-                                                                    attribute:NSLayoutAttributeLeading
-                                                                   multiplier:1.0
-                                                                     constant:0.0],
-                                       [NSLayoutConstraint constraintWithItem:_textLabel
-                                                                    attribute:NSLayoutAttributeTop
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:_titleLabel
-                                                                    attribute:NSLayoutAttributeBottom
-                                                                   multiplier:1.0
-                                                                     constant:0.0],
-                                       [NSLayoutConstraint constraintWithItem:_instructionsLabel
-                                                                    attribute:NSLayoutAttributeLeading
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:_textLabel
-                                                                    attribute:NSLayoutAttributeLeading
-                                                                   multiplier:1.0
-                                                                     constant:0.0],
-                                       [NSLayoutConstraint constraintWithItem:_instructionsLabel
-                                                                    attribute:NSLayoutAttributeWidth
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:self.view
-                                                                    attribute:NSLayoutAttributeWidth
-                                                                   multiplier:1.0
-                                                                     constant:-TrailingMargin],
-                                       [NSLayoutConstraint constraintWithItem:_instructionsLabel
-                                                                    attribute:NSLayoutAttributeTop
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:_textLabel
-                                                                    attribute:NSLayoutAttributeBottom
-                                                                   multiplier:1.0
-                                                                     constant:VerticalMargin],
-                                       [NSLayoutConstraint constraintWithItem:_imageView
-                                                                    attribute:NSLayoutAttributeTop
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:_instructionsLabel
-                                                                    attribute:NSLayoutAttributeBottom
-                                                                   multiplier:1.0
-                                                                     constant:5*VerticalMargin],
-                                       [NSLayoutConstraint constraintWithItem:_imageView
-                                                                    attribute:NSLayoutAttributeCenterX
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:self.view
-                                                                    attribute:NSLayoutAttributeCenterX
-                                                                   multiplier:1.0
-                                                                     constant:0.0],
-                                       [NSLayoutConstraint constraintWithItem:_imageView
-                                                                    attribute:NSLayoutAttributeWidth
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:nil
-                                                                    attribute:NSLayoutAttributeNotAnAttribute
-                                                                   multiplier:1.0
-                                                                     constant:ImageViewSize],
-                                       [NSLayoutConstraint constraintWithItem:_imageView
-                                                                    attribute:NSLayoutAttributeHeight
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:nil
-                                                                    attribute:NSLayoutAttributeNotAnAttribute
-                                                                   multiplier:1.0
-                                                                     constant:ImageViewSize],
-                                       [NSLayoutConstraint constraintWithItem:_leadingEdge
-                                                                    attribute:NSLayoutAttributeLeading
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:self.view
-                                                                    attribute:NSLayoutAttributeLeading
-                                                                   multiplier:1.0
-                                                                     constant:0.0],
-                                       [NSLayoutConstraint constraintWithItem:_leadingEdge
-                                                                    attribute:NSLayoutAttributeWidth
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:nil
-                                                                    attribute:NSLayoutAttributeNotAnAttribute
-                                                                   multiplier:1.0
-                                                                     constant:3.0],
-                                       [NSLayoutConstraint constraintWithItem:_leadingEdge
-                                                                    attribute:NSLayoutAttributeHeight
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:self.view
-                                                                    attribute:NSLayoutAttributeHeight
-                                                                   multiplier:1.0
-                                                                     constant:0.0]
-                                       ]];
-    
-    [NSLayoutConstraint activateConstraints:constraints];
+    return cell;
 }
 
 @end

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		24ED94721C88F49B009146DD /* MedicalReport.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 24ED94711C88F49B009146DD /* MedicalReport.pdf */; };
 		8605A5F31C4F0A3800DD65FF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 8605A5F21C4F0A3800DD65FF /* main.m */; };
 		8605A5F61C4F0A3800DD65FF /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8605A5F51C4F0A3800DD65FF /* AppDelegate.m */; };
 		8605A5F91C4F0A3800DD65FF /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8605A5F81C4F0A3800DD65FF /* ViewController.m */; };
@@ -97,6 +98,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		24ED94711C88F49B009146DD /* MedicalReport.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = MedicalReport.pdf; sourceTree = "<group>"; };
 		8605A5EE1C4F0A3800DD65FF /* OCKTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OCKTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8605A5F21C4F0A3800DD65FF /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		8605A5F41C4F0A3800DD65FF /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -189,6 +191,7 @@
 		8605A5F11C4F0A3800DD65FF /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				24ED94711C88F49B009146DD /* MedicalReport.pdf */,
 				8605A5F21C4F0A3800DD65FF /* main.m */,
 			);
 			name = "Supporting Files";
@@ -300,6 +303,7 @@
 				TargetAttributes = {
 					8605A5ED1C4F0A3800DD65FF = {
 						CreatedOnToolsVersion = 7.2;
+						DevelopmentTeam = 8LPYCSXKW2;
 					};
 					8605A6061C4F0A3900DD65FF = {
 						CreatedOnToolsVersion = 7.2;
@@ -377,6 +381,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				24ED94721C88F49B009146DD /* MedicalReport.pdf in Resources */,
 				8605A6011C4F0A3800DD65FF /* LaunchScreen.storyboard in Resources */,
 				8605A5FE1C4F0A3800DD65FF /* Assets.xcassets in Resources */,
 				8605A5FC1C4F0A3800DD65FF /* Main.storyboard in Resources */,
@@ -559,12 +564,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = OCKTest/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = org.carekit.OCKTest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "OCKTest/OCKTest-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -575,12 +583,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = OCKTest/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = org.carekit.OCKTest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "OCKTest/OCKTest-Bridging-Header.h";
 			};
 			name = Release;

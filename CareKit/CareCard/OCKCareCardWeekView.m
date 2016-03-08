@@ -18,6 +18,7 @@ const static CGFloat HeartButtonSize = 20.0;
 @implementation OCKCareCardWeekView {
     OCKWeekView *_weekView;
     NSMutableArray <OCKHeartButton *> *_heartButtons;
+    NSMutableArray *_constraints;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame {
@@ -32,10 +33,6 @@ const static CGFloat HeartButtonSize = 20.0;
     if (!_weekView) {
         _weekView = [[OCKWeekView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, 25.0)];
         [self addSubview:_weekView];
-        
-//        NSInteger weekday = [[NSCalendar currentCalendar] component:NSCalendarUnitWeekday fromDate:[NSDate date]] - 1;
-//        [_weekView highlightDay:weekday];
-//        _selectedIndex = weekday;
     }
     
     if (!_heartButtons) {
@@ -61,49 +58,51 @@ const static CGFloat HeartButtonSize = 20.0;
 }
 
 - (void)setUpConstraints {
-    NSMutableArray *constraints = [NSMutableArray new];
+    [NSLayoutConstraint deactivateConstraints:_constraints];
+    
+    _constraints = [NSMutableArray new];
     
     _weekView.translatesAutoresizingMaskIntoConstraints = NO;
     
-    [constraints addObjectsFromArray:@[
-                                       [NSLayoutConstraint constraintWithItem:_weekView
-                                                                    attribute:NSLayoutAttributeTop
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:self
-                                                                    attribute:NSLayoutAttributeTop
-                                                                   multiplier:1.0
-                                                                     constant:-5.0],
-                                       [NSLayoutConstraint constraintWithItem:_weekView
-                                                                    attribute:NSLayoutAttributeCenterX
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:self
-                                                                    attribute:NSLayoutAttributeCenterX
-                                                                   multiplier:1.0
-                                                                     constant:0.0]
-                                       ]];
+    [_constraints addObjectsFromArray:@[
+                                        [NSLayoutConstraint constraintWithItem:_weekView
+                                                                     attribute:NSLayoutAttributeTop
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeTop
+                                                                    multiplier:1.0
+                                                                      constant:-5.0],
+                                        [NSLayoutConstraint constraintWithItem:_weekView
+                                                                     attribute:NSLayoutAttributeCenterX
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeCenterX
+                                                                    multiplier:1.0
+                                                                      constant:0.0]
+                                        ]];
     
     for (int i = 0; i < _heartButtons.count; i++) {
         UILabel *dayLabel = (UILabel *)_weekView.weekLabels[i];
-        [constraints addObjectsFromArray:@[
-                                           [NSLayoutConstraint constraintWithItem:dayLabel
-                                                                        attribute:NSLayoutAttributeBottom
-                                                                        relatedBy:NSLayoutRelationEqual
-                                                                           toItem:_heartButtons[i]
-                                                                        attribute:NSLayoutAttributeTop
-                                                                       multiplier:1.0
-                                                                         constant:-3.0],
-                                           [NSLayoutConstraint constraintWithItem:dayLabel
-                                                                        attribute:NSLayoutAttributeCenterX
-                                                                        relatedBy:NSLayoutRelationEqual
-                                                                           toItem:_heartButtons[i]
-                                                                        attribute:NSLayoutAttributeCenterX
-                                                                       multiplier:1.0
-                                                                         constant:0.0]
-                                           ]];
+        [_constraints addObjectsFromArray:@[
+                                            [NSLayoutConstraint constraintWithItem:dayLabel
+                                                                         attribute:NSLayoutAttributeBottom
+                                                                         relatedBy:NSLayoutRelationEqual
+                                                                            toItem:_heartButtons[i]
+                                                                         attribute:NSLayoutAttributeTop
+                                                                        multiplier:1.0
+                                                                          constant:-3.0],
+                                            [NSLayoutConstraint constraintWithItem:dayLabel
+                                                                         attribute:NSLayoutAttributeCenterX
+                                                                         relatedBy:NSLayoutRelationEqual
+                                                                            toItem:_heartButtons[i]
+                                                                         attribute:NSLayoutAttributeCenterX
+                                                                        multiplier:1.0
+                                                                          constant:0.0]
+                                            ]];
     }
     
     
-    [NSLayoutConstraint activateConstraints:constraints];
+    [NSLayoutConstraint activateConstraints:_constraints];
 }
 
 - (void)setAdherenceValues:(NSArray *)adherenceValues {

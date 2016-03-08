@@ -43,7 +43,7 @@
                                                                                               style:UIBarButtonItemStylePlain
                                                                                              target:self
                                                                                              action:@selector(showToday:)];
-    _tableViewController.navigationItem.rightBarButtonItem.tintColor = OCKPinkColor();
+    _tableViewController.navigationItem.rightBarButtonItem.tintColor = OCKRedColor();
 }
 
 - (void)viewDidAppear:(BOOL)animated {

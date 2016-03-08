@@ -78,6 +78,9 @@
 - (void)setAdherence:(CGFloat)adherence {
     if (_adherence != adherence) {
         _adherence = adherence;
+        
+        self.maskImage = (_adherence < 0) ? [UIImage imageNamed:@"heart-small-inactive" inBundle:[NSBundle bundleForClass:[self class]] compatibleWithTraitCollection:nil] : nil;
+        
         [self animateFill];
     }
 }
@@ -85,7 +88,8 @@
 - (void)setMaskImage:(UIImage *)maskImage {
     _maskImage = maskImage;
     if (!_maskImage) {
-        _maskImage = [UIImage imageNamed:@"heart" inBundle:[NSBundle bundleForClass:[self class]] compatibleWithTraitCollection:nil];
+        NSString *imageName = (self.frame.size.height > 30) ? @"heart" : @"heart-small";
+        _maskImage = [UIImage imageNamed:imageName inBundle:[NSBundle bundleForClass:[self class]] compatibleWithTraitCollection:nil];
     }
 
     [self prepareView];

@@ -155,15 +155,21 @@ static const CGFloat HeaderViewHeight = 200.0;
     
     NSMutableArray *adherenceValues = [NSMutableArray new];
     
+    OCKCarePlanDay *today = [[OCKCarePlanDay alloc] initWithDate:[NSDate date] calendar:calendar];
+    
     [_store dailyCompletionStatusWithType:OCKCarePlanActivityTypeIntervention
                                  startDay:[[OCKCarePlanDay alloc] initWithDate:startOfWeek calendar:calendar]
                                    endDay:[[OCKCarePlanDay alloc] initWithDate:endOfWeek calendar:calendar]
                                usingBlock:^(OCKCarePlanDay * _Nonnull day, NSUInteger completed, NSUInteger total, NSError * _Nonnull error) {
-                                   if (total == 0) {
+                                   
+                                   if ([day isLaterThan:today]) {
+                                       [adherenceValues addObject:@(-1)];
+                                   } else if (total == 0) {
                                        [adherenceValues addObject:@(1)];
                                    } else {
                                        [adherenceValues addObject:@((float)completed/total)];
                                    }
+                                   
                                    if (adherenceValues.count == 7) {
                                        _weekViewController.careCardWeekView.adherenceValues = adherenceValues;
                                        _weeklyAdherences = [adherenceValues mutableCopy];

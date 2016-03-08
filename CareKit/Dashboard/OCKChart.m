@@ -38,10 +38,6 @@ static const CGFloat ChartHeight = 175.0;
     _tintColor = tintColor;
 }
 
-- (UIView *)chartView {
-    return nil;
-}
-
 + (void)animateView:(UIView *)view withDuration:(NSTimeInterval)duration {
 }
 
@@ -59,6 +55,11 @@ static const CGFloat ChartHeight = 175.0;
             OCKEqualObjects(self.text, castObject.text) &&
             OCKEqualObjects(self.tintColor, castObject.tintColor) &&
             (self.height == castObject.height));
+}
+
+- (UIView *)chartView {
+    OCKThrowMethodUnavailableException();
+    return nil;
 }
 
 

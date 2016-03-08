@@ -18,6 +18,8 @@ const static CGFloat RingButtonSize = 20.0;
 @implementation OCKEvaluationWeekView {
     OCKWeekView *_weekView;
     NSMutableArray<OCKRingButton *> *_ringButtons;
+    
+    NSMutableArray *_constraints;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame {
@@ -51,8 +53,8 @@ const static CGFloat RingButtonSize = 20.0;
             ringButton.ringView = ringView;
             
             [ringButton addTarget:self
-                          action:@selector(updateDayOfWeek:)
-                forControlEvents:UIControlEventTouchDown];
+                           action:@selector(updateDayOfWeek:)
+                 forControlEvents:UIControlEventTouchDown];
             
             [self addSubview:ringButton];
             [_ringButtons addObject:ringButton];
@@ -63,49 +65,51 @@ const static CGFloat RingButtonSize = 20.0;
 }
 
 - (void)setUpConstraints {
-    NSMutableArray *constraints = [NSMutableArray new];
+    [NSLayoutConstraint deactivateConstraints:_constraints];
+    
+    _constraints = [NSMutableArray new];
     
     _weekView.translatesAutoresizingMaskIntoConstraints = NO;
     
-    [constraints addObjectsFromArray:@[
-                                       [NSLayoutConstraint constraintWithItem:_weekView
-                                                                    attribute:NSLayoutAttributeTop
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:self
-                                                                    attribute:NSLayoutAttributeTop
-                                                                   multiplier:1.0
-                                                                     constant:-5.0],
-                                       [NSLayoutConstraint constraintWithItem:_weekView
-                                                                    attribute:NSLayoutAttributeCenterX
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:self
-                                                                    attribute:NSLayoutAttributeCenterX
-                                                                   multiplier:1.0
-                                                                     constant:0.0]
-                                       ]];
+    [_constraints addObjectsFromArray:@[
+                                        [NSLayoutConstraint constraintWithItem:_weekView
+                                                                     attribute:NSLayoutAttributeTop
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeTop
+                                                                    multiplier:1.0
+                                                                      constant:-5.0],
+                                        [NSLayoutConstraint constraintWithItem:_weekView
+                                                                     attribute:NSLayoutAttributeCenterX
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeCenterX
+                                                                    multiplier:1.0
+                                                                      constant:0.0]
+                                        ]];
     
     for (int i = 0; i < _ringButtons.count; i++) {
         UILabel *dayLabel = (UILabel *)_weekView.weekLabels[i];
-        [constraints addObjectsFromArray:@[
-                                           [NSLayoutConstraint constraintWithItem:dayLabel
-                                                                        attribute:NSLayoutAttributeBottom
-                                                                        relatedBy:NSLayoutRelationEqual
-                                                                           toItem:_ringButtons[i]
-                                                                        attribute:NSLayoutAttributeTop
-                                                                       multiplier:1.0
-                                                                         constant:-3.0],
-                                           [NSLayoutConstraint constraintWithItem:dayLabel
-                                                                        attribute:NSLayoutAttributeCenterX
-                                                                        relatedBy:NSLayoutRelationEqual
-                                                                           toItem:_ringButtons[i]
-                                                                        attribute:NSLayoutAttributeCenterX
-                                                                       multiplier:1.0
-                                                                         constant:0.0]
-                                           ]];
+        [_constraints addObjectsFromArray:@[
+                                            [NSLayoutConstraint constraintWithItem:dayLabel
+                                                                         attribute:NSLayoutAttributeBottom
+                                                                         relatedBy:NSLayoutRelationEqual
+                                                                            toItem:_ringButtons[i]
+                                                                         attribute:NSLayoutAttributeTop
+                                                                        multiplier:1.0
+                                                                          constant:-3.0],
+                                            [NSLayoutConstraint constraintWithItem:dayLabel
+                                                                         attribute:NSLayoutAttributeCenterX
+                                                                         relatedBy:NSLayoutRelationEqual
+                                                                            toItem:_ringButtons[i]
+                                                                         attribute:NSLayoutAttributeCenterX
+                                                                        multiplier:1.0
+                                                                          constant:0.0]
+                                            ]];
     }
     
     
-    [NSLayoutConstraint activateConstraints:constraints];
+    [NSLayoutConstraint activateConstraints:_constraints];
 }
 
 - (void)setProgressValues:(NSArray *)progressValues {

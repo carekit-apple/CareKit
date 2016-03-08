@@ -41,14 +41,13 @@
                                                                                               style:UIBarButtonItemStylePlain
                                                                                              target:self
                                                                                              action:@selector(showToday:)];
-    _tableViewController.navigationItem.rightBarButtonItem.tintColor = OCKPinkColor();
+    _tableViewController.navigationItem.rightBarButtonItem.tintColor = OCKRedColor();
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     _tableViewController.delegate = self;
     _tableViewController.weekViewController.careCardWeekView.delegate = self;
-    self.navigationBar.tintColor = self.view.tintColor;
 }
 
 - (void)setTitle:(NSString *)title {
@@ -59,6 +58,7 @@
 - (void)showToday:(id)sender {
     _tableViewController.selectedDate = [[NSDateComponents alloc] initWithDate:[NSDate date] calendar:[NSCalendar currentCalendar]];
 }
+
 
 #pragma mark - OCKCareCardWeekViewDelegate
 
@@ -74,8 +74,7 @@
 #pragma mark - OCKCareCardTableViewDelegate
 
 - (void)tableViewDidSelectRowWithTreatment:(OCKCarePlanActivity *)activity {
-    OCKCareCardDetailViewController *detailViewController = [OCKCareCardDetailViewController new];
-    detailViewController.treatment = activity;
+    OCKCareCardDetailViewController *detailViewController = [[OCKCareCardDetailViewController alloc] initWithTreatment:activity];
     [self pushViewController:detailViewController animated:YES];
 }
 

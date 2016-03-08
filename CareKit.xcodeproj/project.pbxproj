@@ -79,6 +79,8 @@
 		24B31A721C6E71A600C3C196 /* OCKHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 24B31A6F1C6E71A600C3C196 /* OCKHelpers.m */; };
 		24CC913F1C767E5900DFFF47 /* OCKCareCardDetailViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 24CC913D1C767E5900DFFF47 /* OCKCareCardDetailViewController.h */; };
 		24CC91401C767E5900DFFF47 /* OCKCareCardDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 24CC913E1C767E5900DFFF47 /* OCKCareCardDetailViewController.m */; };
+		24D66A331C8A4CE200371E39 /* OCKCareCardDetailHeaderView.h in Headers */ = {isa = PBXBuildFile; fileRef = 24D66A311C8A4CE200371E39 /* OCKCareCardDetailHeaderView.h */; };
+		24D66A341C8A4CE200371E39 /* OCKCareCardDetailHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 24D66A321C8A4CE200371E39 /* OCKCareCardDetailHeaderView.m */; };
 		24E114EC1C73FDB000ACCDE8 /* OCKEvaluationViewController_Internal.h in Headers */ = {isa = PBXBuildFile; fileRef = 24E114EA1C73FDB000ACCDE8 /* OCKEvaluationViewController_Internal.h */; };
 		24E114F41C7402B400ACCDE8 /* OCKEvaluationWeekView.h in Headers */ = {isa = PBXBuildFile; fileRef = 24E114F21C7402B400ACCDE8 /* OCKEvaluationWeekView.h */; };
 		24E114F51C7402B400ACCDE8 /* OCKEvaluationWeekView.m in Sources */ = {isa = PBXBuildFile; fileRef = 24E114F31C7402B400ACCDE8 /* OCKEvaluationWeekView.m */; };
@@ -221,6 +223,8 @@
 		24B31A6F1C6E71A600C3C196 /* OCKHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKHelpers.m; sourceTree = "<group>"; };
 		24CC913D1C767E5900DFFF47 /* OCKCareCardDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKCareCardDetailViewController.h; sourceTree = "<group>"; };
 		24CC913E1C767E5900DFFF47 /* OCKCareCardDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKCareCardDetailViewController.m; sourceTree = "<group>"; };
+		24D66A311C8A4CE200371E39 /* OCKCareCardDetailHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKCareCardDetailHeaderView.h; sourceTree = "<group>"; };
+		24D66A321C8A4CE200371E39 /* OCKCareCardDetailHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKCareCardDetailHeaderView.m; sourceTree = "<group>"; };
 		24E114EA1C73FDB000ACCDE8 /* OCKEvaluationViewController_Internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKEvaluationViewController_Internal.h; sourceTree = "<group>"; };
 		24E114F21C7402B400ACCDE8 /* OCKEvaluationWeekView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKEvaluationWeekView.h; sourceTree = "<group>"; };
 		24E114F31C7402B400ACCDE8 /* OCKEvaluationWeekView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKEvaluationWeekView.m; sourceTree = "<group>"; };
@@ -503,6 +507,8 @@
 			children = (
 				24CC913D1C767E5900DFFF47 /* OCKCareCardDetailViewController.h */,
 				24CC913E1C767E5900DFFF47 /* OCKCareCardDetailViewController.m */,
+				24D66A311C8A4CE200371E39 /* OCKCareCardDetailHeaderView.h */,
+				24D66A321C8A4CE200371E39 /* OCKCareCardDetailHeaderView.m */,
 			);
 			name = "Detail View";
 			sourceTree = "<group>";
@@ -689,6 +695,7 @@
 				245AD95E1C7FE13300940688 /* OCKHeartButton.h in Headers */,
 				247BD1251C87E24E00F2CF9B /* OCKBarChart.h in Headers */,
 				2445EAD91C6D66CC00F51A95 /* OCKCareSchedule_Internal.h in Headers */,
+				24D66A331C8A4CE200371E39 /* OCKCareCardDetailHeaderView.h in Headers */,
 				869C6C161C8763F800525137 /* OCKChartLegendView.h in Headers */,
 				86BE2EFF1C77C83D00D66276 /* OCKCareCardViewController.h in Headers */,
 				869C6C0C1C8760A100525137 /* OCKCenteredCollectionViewLayout.h in Headers */,
@@ -854,6 +861,7 @@
 				2445EAD81C6D66CC00F51A95 /* OCKCareSchedule.m in Sources */,
 				24E318181C6EB08A0094C45B /* OCKEvaluationTableViewCell.m in Sources */,
 				24CC91401C767E5900DFFF47 /* OCKCareCardDetailViewController.m in Sources */,
+				24D66A341C8A4CE200371E39 /* OCKCareCardDetailHeaderView.m in Sources */,
 				24E114F51C7402B400ACCDE8 /* OCKEvaluationWeekView.m in Sources */,
 				2445EB321C6D67A100F51A95 /* OCKConnectViewController.m in Sources */,
 				2445EB761C6D685D00F51A95 /* OCKCareCardTableViewController.m in Sources */,

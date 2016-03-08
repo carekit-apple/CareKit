@@ -24,8 +24,10 @@
     return nil;
 }
 
-+ (instancetype)connectViewControllerWithContacts:(NSArray<OCKContact *> *)contacts {
-    return [[OCKConnectViewController alloc] initWithContacts:contacts];
++ (instancetype)connectViewControllerWithContacts:(NSArray<OCKContact *> *)contacts
+                                  sharingDelegate:(id<OCKConnectSharingDelegate>)sharingDelegate {
+    return [[OCKConnectViewController alloc] initWithContacts:contacts
+                                              sharingDelegate:sharingDelegate];
 }
 
 - (instancetype)init {
@@ -33,12 +35,14 @@
     return nil;
 }
 
-- (instancetype)initWithContacts:(NSArray<OCKContact *> *)contacts {
+- (instancetype)initWithContacts:(NSArray<OCKContact *> *)contacts
+                 sharingDelegate:(id<OCKConnectSharingDelegate>)sharingDelegate {
     _tableViewController = [[OCKConnectTableViewController alloc] initWithContacts:[contacts copy]];
     
     self = [super initWithRootViewController:_tableViewController];
     if (self) {
         _contacts = [contacts copy];
+        _sharingDelegate = sharingDelegate;
     }
     return self;
 }
@@ -64,6 +68,7 @@
 
 - (void)tableViewDidSelectRowWithContact:(OCKContact *)contact {
     OCKConnectDetailViewController *detailViewController = [[OCKConnectDetailViewController alloc] initWithContact:contact];
+    detailViewController.sharingDelegate = _sharingDelegate;
     [self pushViewController:detailViewController animated:YES];
 }
 

@@ -18,6 +18,8 @@ static const CGFloat TrailingMargin = 20.0;
 @implementation OCKReportsTableViewCell {
     UILabel *_titleLabel;
     UIButton *_shareButton;
+    
+    NSMutableArray *_constraints;
 }
 
 - (void)setTitle:(NSString *)title {
@@ -53,43 +55,44 @@ static const CGFloat TrailingMargin = 20.0;
 }
 
 - (void)setUpConstraints {
-    NSMutableArray *constraints = [NSMutableArray new];
+    [NSLayoutConstraint deactivateConstraints:_constraints];
+    _constraints = [NSMutableArray new];
     
     _titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     _shareButton.translatesAutoresizingMaskIntoConstraints = NO;
     
-    [constraints addObjectsFromArray:@[
-                                       [NSLayoutConstraint constraintWithItem:_titleLabel
-                                                                    attribute:NSLayoutAttributeCenterY
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:self
-                                                                    attribute:NSLayoutAttributeCenterY
-                                                                   multiplier:1.0
-                                                                     constant:0.0],
-                                       [NSLayoutConstraint constraintWithItem:_titleLabel
-                                                                    attribute:NSLayoutAttributeLeading
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:self
-                                                                    attribute:NSLayoutAttributeLeading
-                                                                   multiplier:1.0
-                                                                     constant:LeadingMargin],
-                                       [NSLayoutConstraint constraintWithItem:_shareButton
-                                                                    attribute:NSLayoutAttributeTrailing
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:self
-                                                                    attribute:NSLayoutAttributeTrailing
-                                                                   multiplier:1.0
-                                                                     constant:-TrailingMargin],
-                                       [NSLayoutConstraint constraintWithItem:_shareButton
-                                                                    attribute:NSLayoutAttributeCenterY
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:self
-                                                                    attribute:NSLayoutAttributeCenterY
-                                                                   multiplier:1.0
-                                                                     constant:0.0]
-                                       ]];
+    [_constraints addObjectsFromArray:@[
+                                        [NSLayoutConstraint constraintWithItem:_titleLabel
+                                                                     attribute:NSLayoutAttributeCenterY
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeCenterY
+                                                                    multiplier:1.0
+                                                                      constant:0.0],
+                                        [NSLayoutConstraint constraintWithItem:_titleLabel
+                                                                     attribute:NSLayoutAttributeLeading
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeLeading
+                                                                    multiplier:1.0
+                                                                      constant:LeadingMargin],
+                                        [NSLayoutConstraint constraintWithItem:_shareButton
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                    multiplier:1.0
+                                                                      constant:-TrailingMargin],
+                                        [NSLayoutConstraint constraintWithItem:_shareButton
+                                                                     attribute:NSLayoutAttributeCenterY
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeCenterY
+                                                                    multiplier:1.0
+                                                                      constant:0.0]
+                                        ]];
     
-    [NSLayoutConstraint activateConstraints:constraints];
+    [NSLayoutConstraint activateConstraints:_constraints];
 }
 
 - (void)buttonSelected:(id)sender {

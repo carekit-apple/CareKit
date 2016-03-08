@@ -32,5 +32,8 @@
 #import <CareKit/OCKConnectViewController.h>
 #import <CareKit/OCKContact.h>
 
+// PDF Document
+#import <CareKit/OCKDocument.h>
+
 // Other
 #import <CareKit/OCKColors.h>

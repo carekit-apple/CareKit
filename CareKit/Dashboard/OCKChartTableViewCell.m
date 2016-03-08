@@ -54,6 +54,7 @@ static const CGFloat VerticalMargin = 10.0;
     _textLabel.text = _chart.text;
     
     _chartView = _chart.chartView;
+
     [self.contentView addSubview:_chartView];
     
     if (!_leadingEdge) {

@@ -17,7 +17,7 @@
 
 static const BOOL resetStoreOnLaunch = YES;
 
-@interface ViewController () <OCKEvaluationTableViewDelegate, OCKCarePlanStoreDelegate, ORKTaskViewControllerDelegate, OCKConnectSharingDelegate, MFMailComposeViewControllerDelegate>
+@interface ViewController () <OCKEvaluationTableViewDelegate, OCKCarePlanStoreDelegate, ORKTaskViewControllerDelegate, OCKConnectViewControllerDelegate, MFMailComposeViewControllerDelegate>
 
 @end
 
@@ -71,16 +71,17 @@ static const BOOL resetStoreOnLaunch = YES;
     [_evaluationViewController.navigationBar addSubview:image3];
     
     _connectViewController = [self connectViewController];
-    _connectViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Connect"
+    UINavigationController *connectNavigationController = [[UINavigationController alloc] initWithRootViewController:_connectViewController];
+    connectNavigationController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Connect"
                                                                       image:[UIImage imageNamed:@"connect"]
                                                               selectedImage:[UIImage imageNamed:@"connect-filled"]];
     UIImageView *image4 = [[UIImageView alloc] initWithFrame:CGRectMake(0, 7, self.view.frame.size.width, 30)];
     image4.image = [UIImage imageNamed:@"tmc-logo"];
     image4.contentMode = UIViewContentModeScaleAspectFit;
-    [_connectViewController.navigationBar addSubview:image4];
+    [connectNavigationController.navigationBar addSubview:image4];
     
     self.tabBar.tintColor = OCKRedColor();
-    self.viewControllers = @[_dashboardViewController, _careCardViewController, _evaluationViewController, _connectViewController];
+    self.viewControllers = @[_dashboardViewController, _careCardViewController, _evaluationViewController, connectNavigationController];
     self.selectedIndex = 1;
 }
 
@@ -556,16 +557,18 @@ DefineStringKey(TemperatureEvaluation);
         [contacts addObject:contact];
     }
     
-    return [OCKConnectViewController connectViewControllerWithContacts:contacts
-                                                       sharingDelegate:self];
+    OCKConnectViewController *connectViewController = [[OCKConnectViewController alloc] initWithContacts:contacts];
+    connectViewController.delegate = self;
+    return connectViewController;
 }
 
-#pragma mark Connect Sharing Delegate (OCKConnectSharingDelegate)
+#pragma mark Connect View Controller Delegate (OCKConnectViewControllerDelegate)
 
-- (NSString *)titleForSharingCellForContact:(OCKContact *)contact {
+- (NSString *)connectDetailViewController:(OCKConnectDetailViewController *)connectDetailViewController titleForSharingCellForContact:(OCKContact *)contact {
     return @"Send weekly reports";
 }
-- (void)didSelectShareButtonForContact:(OCKContact *)contact {
+
+- (void)connectDetailViewController:(OCKConnectDetailViewController *)connectDetailViewController didSelectShareButtonForContact:(OCKContact *)contact {
     MFMailComposeViewController *emailViewController = [MFMailComposeViewController new];
     if ([MFMailComposeViewController canSendMail]) {
         emailViewController.mailComposeDelegate = self;
@@ -579,6 +582,7 @@ DefineStringKey(TemperatureEvaluation);
         [self presentViewController:emailViewController animated:YES completion:nil];
     }
 }
+
 
 #pragma mark Mail Compose Delegate (MFMailComposeViewControllerDelegate)
 

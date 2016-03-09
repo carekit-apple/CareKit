@@ -109,7 +109,8 @@ const static CGFloat HeartButtonSize = 20.0;
     _adherenceValues = adherenceValues;
     
     for (int i = 0; i < _adherenceValues.count; i++) {
-        _heartButtons[i].heartView.adherence = [_adherenceValues[i] floatValue];
+        CGFloat value = [_adherenceValues[i] floatValue];
+        _heartButtons[i].heartView.adherence = value;
     }
 }
 

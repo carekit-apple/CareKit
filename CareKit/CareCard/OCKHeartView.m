@@ -17,8 +17,6 @@
     UIView *_fillView;
     UIImageView *_imageView;
     UIImageView *_maskImageView;
-    
-    BOOL _isHeartBeating;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame {
@@ -27,7 +25,6 @@
         _animate = YES;
         _adherence = 0;
         self.maskImage = nil;
-        _isHeartBeating = NO;
     }
     return self;
 }
@@ -79,8 +76,6 @@
     if (_adherence != adherence) {
         _adherence = adherence;
         
-        self.maskImage = (_adherence < 0) ? [UIImage imageNamed:@"heart-small-inactive" inBundle:[NSBundle bundleForClass:[self class]] compatibleWithTraitCollection:nil] : nil;
-        
         [self animateFill];
     }
 }
@@ -94,15 +89,5 @@
 
     [self prepareView];
 }
-
-- (void)animationDidStart:(CAAnimation *)anim {
-    _isHeartBeating = YES;
-}
-
-- (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag {
-    _isHeartBeating = NO;
-}
-
-
 
 @end

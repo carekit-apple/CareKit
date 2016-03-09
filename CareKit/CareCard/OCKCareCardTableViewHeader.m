@@ -13,9 +13,8 @@
 
 
 static const CGFloat TopMargin = 15.0;
-static const CGFloat VerticalMargin = 5.0;
 
-static const CGFloat HeartViewSize = 150.0;
+static const CGFloat HeartViewSize = 110.0;
 
 @implementation OCKCareCardTableViewHeader {
     UILabel *_dateLabel;
@@ -133,14 +132,14 @@ static const CGFloat HeartViewSize = 150.0;
                                                                         toItem:_dateLabel
                                                                      attribute:NSLayoutAttributeBottom
                                                                     multiplier:1.0
-                                                                      constant:VerticalMargin],
+                                                                      constant:0.0],
                                         [NSLayoutConstraint constraintWithItem:_heartView
                                                                      attribute:NSLayoutAttributeCenterX
                                                                      relatedBy:NSLayoutRelationEqual
                                                                         toItem:self
                                                                      attribute:NSLayoutAttributeCenterX
                                                                     multiplier:1.0
-                                                                      constant:-HeartViewSize/2.25],
+                                                                      constant:-HeartViewSize/1.5],
                                         [NSLayoutConstraint constraintWithItem:_heartView
                                                                      attribute:NSLayoutAttributeHeight
                                                                      relatedBy:NSLayoutRelationEqual
@@ -182,7 +181,7 @@ static const CGFloat HeartViewSize = 150.0;
                                                                         toItem:_heartView
                                                                      attribute:NSLayoutAttributeCenterY
                                                                     multiplier:1.0
-                                                                      constant:15.0],
+                                                                      constant:-10.0],
                                         [NSLayoutConstraint constraintWithItem:_bottomEdge
                                                                      attribute:NSLayoutAttributeBottom
                                                                      relatedBy:NSLayoutRelationEqual

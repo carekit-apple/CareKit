@@ -38,7 +38,6 @@ static const CGFloat LeadingMargin = 20.0;
 - (void)prepareView {
     self.tintColor = _treatment.tintColor;
     self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-    self.separatorInset = UIEdgeInsetsMake(0, 20, 0, 0);
     
     if (!_titleLabel) {
         _titleLabel = [UILabel new];

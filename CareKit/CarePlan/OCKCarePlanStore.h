@@ -8,7 +8,6 @@
 
 
 #import <Foundation/Foundation.h>
-#import <ResearchKit/ResearchKit.h>
 #import <CareKit/CareKit.h>
 
 

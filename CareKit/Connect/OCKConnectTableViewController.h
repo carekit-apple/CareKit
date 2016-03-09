@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol OCKConnectTableViewDelegate <NSObject>
 
-- (void)tableViewDidSelectRowWithContact:(OCKContact *)contact;
+- (void)tableView:(UITableView *)tableView didSelectRowWithContact:(OCKContact *)contact;
 
 @end
 

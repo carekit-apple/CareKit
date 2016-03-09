@@ -12,32 +12,23 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class OCKContact, OCKConnectViewController;
+@class OCKContact, OCKConnectDetailViewController;
 
-@protocol OCKConnectSharingDelegate <NSObject>
+@protocol OCKConnectViewControllerDelegate <NSObject>
 
-- (NSString *)titleForSharingCellForContact:(OCKContact *)contact;
+- (NSString *)connectDetailViewController:(OCKConnectDetailViewController *)connectDetailViewController titleForSharingCellForContact:(OCKContact *)contact;
 
-- (void)didSelectShareButtonForContact:(OCKContact *)contact;
+- (void)connectDetailViewController:(OCKConnectDetailViewController *)connectDetailViewController didSelectShareButtonForContact:(OCKContact *)contact;
 
 @end
 
 
-@interface OCKConnectViewController : UINavigationController
+@interface OCKConnectViewController : UIViewController
 
-+ (instancetype)new NS_UNAVAILABLE;
-+ (instancetype)connectViewControllerWithContacts:(NSArray<OCKContact *> *)contacts
-                                  sharingDelegate:(nullable id<OCKConnectSharingDelegate>)sharingDelegate;
-
-- (instancetype)init NS_UNAVAILABLE;
-- (instancetype)initWithRootViewController:(UIViewController *)rootViewController NS_UNAVAILABLE;
-- (instancetype)initWithNavigationBarClass:(nullable Class)navigationBarClass toolbarClass:(nullable Class)toolbarClass NS_UNAVAILABLE;
-- (instancetype)initWithNibName:(nullable NSString *)nibNameOrNil bundle:(nullable NSBundle *)nibBundleOrNil NS_UNAVAILABLE;
-- (instancetype)initWithContacts:(NSArray<OCKContact *> *)contacts
-                 sharingDelegate:(nullable id<OCKConnectSharingDelegate>)sharingDelegate;
+- (instancetype)initWithContacts:(NSArray<OCKContact *> *)contacts;
 
 @property (nonatomic, copy) NSArray<OCKContact *> *contacts;
-@property (nonatomic) id<OCKConnectSharingDelegate> sharingDelegate;
+@property (nonatomic, weak, nullable) id<OCKConnectViewControllerDelegate> delegate;
 
 @end
 

@@ -73,8 +73,8 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (_delegate &&
-        [_delegate respondsToSelector:@selector(tableViewDidSelectRowWithContact:)]) {
-        [_delegate tableViewDidSelectRowWithContact:_sectionedContacts[indexPath.section][indexPath.row]];
+        [_delegate respondsToSelector:@selector(tableView:didSelectRowWithContact:)]) {
+        [_delegate tableView:tableView didSelectRowWithContact:_sectionedContacts[indexPath.section][indexPath.row]];
     }
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];

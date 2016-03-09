@@ -24,33 +24,27 @@
     return nil;
 }
 
-+ (instancetype)connectViewControllerWithContacts:(NSArray<OCKContact *> *)contacts
-                                  sharingDelegate:(id<OCKConnectSharingDelegate>)sharingDelegate {
-    return [[OCKConnectViewController alloc] initWithContacts:contacts
-                                              sharingDelegate:sharingDelegate];
-}
-
 - (instancetype)init {
     OCKThrowMethodUnavailableException();
     return nil;
 }
 
-- (instancetype)initWithContacts:(NSArray<OCKContact *> *)contacts
-                 sharingDelegate:(id<OCKConnectSharingDelegate>)sharingDelegate {
-    _tableViewController = [[OCKConnectTableViewController alloc] initWithContacts:[contacts copy]];
-    
-    self = [super initWithRootViewController:_tableViewController];
+- (instancetype)initWithContacts:(NSArray<OCKContact *> *)contacts {
+    self = [super init];
     if (self) {
         _contacts = [contacts copy];
-        _sharingDelegate = sharingDelegate;
+        
+        _tableViewController = [[OCKConnectTableViewController alloc] initWithContacts:[contacts copy]];
+        _tableViewController.delegate = self;
+        [self addChildViewController:_tableViewController];
+        [self.view addSubview:_tableViewController.view];
     }
     return self;
 }
 
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    _tableViewController.delegate = self;
-    self.navigationBar.tintColor = self.view.tintColor;
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    NSAssert(self.navigationController, @"OCKConnectViewController must be embedded in a navigation controller.");
 }
 
 - (void)setContacts:(NSArray<OCKContact *> *)contacts {
@@ -60,16 +54,16 @@
 
 - (void)setTitle:(NSString *)title {
     [super setTitle:title];
-    self.topViewController.title = self.title;
+    _tableViewController.title = self.title;
 }
 
 
 #pragma mark - OCKConnectTableViewDelegate
 
-- (void)tableViewDidSelectRowWithContact:(OCKContact *)contact {
+- (void)tableView:(UITableView *)tableView didSelectRowWithContact:(OCKContact *)contact {
     OCKConnectDetailViewController *detailViewController = [[OCKConnectDetailViewController alloc] initWithContact:contact];
-    detailViewController.sharingDelegate = _sharingDelegate;
-    [self pushViewController:detailViewController animated:YES];
+    detailViewController.delegate = _delegate;
+    [self.navigationController pushViewController:detailViewController animated:YES];
 }
 
 @end

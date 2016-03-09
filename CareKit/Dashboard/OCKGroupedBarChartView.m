@@ -146,8 +146,8 @@ static const CGFloat BarPointSize = 8.0;
     
     NSMutableArray *constraints = [NSMutableArray new];
     
-    [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[barView]-[valueLabel]"
-                                                          options:NSLayoutFormatAlignAllCenterY|NSLayoutFormatDirectionLeadingToTrailing
+    [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[barView]-10.0-[valueLabel]"
+                                                          options:NSLayoutFormatDirectionLeadingToTrailing
                                                           metrics:nil
                                                             views:views]];
     
@@ -161,13 +161,23 @@ static const CGFloat BarPointSize = 8.0;
     
     [constraints addObject:[NSLayoutConstraint constraintWithItem:_barView
                                                         attribute:NSLayoutAttributeHeight
-                                                        relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                        relatedBy:NSLayoutRelationEqual
                                                            toItem:nil
                                                         attribute:NSLayoutAttributeNotAnAttribute
                                                        multiplier:1.0
                                                          constant:BarPointSize]];
     
-    [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[valueLabel]|"
+    [constraints addObject:[NSLayoutConstraint constraintWithItem:_valueLabel
+                                                        attribute:NSLayoutAttributeCenterY
+                                                        relatedBy:NSLayoutRelationEqual
+                                                           toItem:_barView
+                                                        attribute:NSLayoutAttributeCenterY
+                                                       multiplier:1.0
+                                                         constant:0.5]];
+    
+    [_valueLabel setContentHuggingPriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
+    
+    [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[barView]|"
                                                                              options:NSLayoutFormatDirectionLeadingToTrailing
                                                                              metrics:nil
                                                                                views:views]];

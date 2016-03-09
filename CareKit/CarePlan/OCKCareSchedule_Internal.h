@@ -16,9 +16,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic) NSUInteger timeUnitsToSkip;
 
-- (void)setEndDay:(OCKCarePlanDay *)day;
+- (void)setEndDate:(NSDateComponents *)date;
 
-- (NSUInteger)numberOfDaySinceStart:(OCKCarePlanDay *)day;
+- (NSUInteger)numberOfDaySinceStart:(NSDateComponents *)date;
 
 @end
 
@@ -26,30 +26,30 @@ NS_ASSUME_NONNULL_BEGIN
 @interface OCKCareDailySchedule : OCKCareSchedule
 
 
-- (instancetype)initWithStartDay:(OCKCarePlanDay *)startDay
+- (instancetype)initWithStartDate:(NSDateComponents *)startDate
                       daysToSkip:(NSUInteger)daysToSkip
                occurrencesPerDay:(NSUInteger)occurrencesPerDay
-                          endDay:(nullable OCKCarePlanDay *)endDay;
+                          EndDate:(nullable NSDateComponents *)endDate;
 
 @end
 
 
 @interface OCKCareWeeklySchedule : OCKCareSchedule
 
-- (instancetype)initWithStartDay:(OCKCarePlanDay *)startDay
+- (instancetype)initWithStartDate:(NSDateComponents *)startDate
                      weeksToSkip:(NSUInteger)weeksToSkip
             occurrencesOnEachDay:(NSArray<NSNumber *> *)occurrencesFromSundayToSaturday
-                          endDay:(nullable OCKCarePlanDay *)endDay;
+                          EndDate:(nullable NSDateComponents *)endDate;
 
 @end
 
 
 @interface OCKCareMonthlySchedule : OCKCareSchedule
 
-- (instancetype)initWithStartDay:(OCKCarePlanDay *)startDay
+- (instancetype)initWithStartDate:(NSDateComponents *)startDate
                      monthsToSkip:(NSUInteger)monthsToSkip
              occurrencesOnEachDay:(NSArray<NSNumber *> *)occurrencesFrom1stTo31th
-                           endDay:(nullable OCKCarePlanDay *)endDay;
+                           EndDate:(nullable NSDateComponents *)endDate;
 
 @end
 

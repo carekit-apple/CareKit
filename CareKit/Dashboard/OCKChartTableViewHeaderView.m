@@ -10,11 +10,13 @@
 #import "OCKChartTableViewHeaderView.h"
 
 
-static const CGFloat HeaderViewLeadingMargin = 15.0;
+static const CGFloat LeadingMargin = 15.0;
 
 @implementation OCKChartTableViewHeaderView {
     UILabel *_titleLabel;
     UILabel *_textLabel;
+    
+    NSMutableArray *_constraints;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame {
@@ -47,22 +49,14 @@ static const CGFloat HeaderViewLeadingMargin = 15.0;
 }
 
 - (void)setUpConstraints {
-    NSMutableArray *constraints = [NSMutableArray new];
-    NSDictionary *views = NSDictionaryOfVariableBindings(_titleLabel, _textLabel);
+    [NSLayoutConstraint activateConstraints:_constraints];
+    
+    _constraints = [NSMutableArray new];
     
     _titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     _textLabel.translatesAutoresizingMaskIntoConstraints = NO;
     
-    [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-leadingMargin-[_titleLabel]-|"
-                                                                             options:NSLayoutFormatAlignAllCenterY
-                                                                             metrics:@{@"leadingMargin" : @(HeaderViewLeadingMargin)}
-                                                                               views:views]];
-    [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-leadingMargin-[_textLabel]-|"
-                                                                             options:NSLayoutFormatAlignAllCenterY
-                                                                             metrics:@{@"leadingMargin" : @(HeaderViewLeadingMargin)}
-                                                                               views:views]];
-    
-    [constraints addObjectsFromArray:@[
+    [_constraints addObjectsFromArray:@[
                                        [NSLayoutConstraint constraintWithItem:_titleLabel
                                                                     attribute:NSLayoutAttributeCenterY
                                                                     relatedBy:NSLayoutRelationEqual
@@ -71,15 +65,29 @@ static const CGFloat HeaderViewLeadingMargin = 15.0;
                                                                    multiplier:1.0
                                                                      constant:-10.0],
                                        [NSLayoutConstraint constraintWithItem:_titleLabel
+                                                                    attribute:NSLayoutAttributeLeading
+                                                                    relatedBy:NSLayoutRelationEqual
+                                                                       toItem:self
+                                                                    attribute:NSLayoutAttributeLeading
+                                                                   multiplier:1.0
+                                                                     constant:LeadingMargin],
+                                       [NSLayoutConstraint constraintWithItem:_titleLabel
                                                                     attribute:NSLayoutAttributeBottom
                                                                     relatedBy:NSLayoutRelationEqual
                                                                        toItem:_textLabel
                                                                     attribute:NSLayoutAttributeTop
                                                                    multiplier:1.0
-                                                                     constant:0.0]
+                                                                     constant:0.0],
+                                       [NSLayoutConstraint constraintWithItem:_textLabel
+                                                                    attribute:NSLayoutAttributeLeading
+                                                                    relatedBy:NSLayoutRelationEqual
+                                                                       toItem:self
+                                                                    attribute:NSLayoutAttributeLeading
+                                                                   multiplier:1.0
+                                                                     constant:LeadingMargin]
                                        ]];
 
-    [NSLayoutConstraint activateConstraints:constraints];
+    [NSLayoutConstraint activateConstraints:_constraints];
 
 }
 

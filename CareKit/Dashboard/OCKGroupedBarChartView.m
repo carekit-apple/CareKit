@@ -146,8 +146,8 @@ static const CGFloat BarPointSize = 8.0;
     
     NSMutableArray *constraints = [NSMutableArray new];
     
-    [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[barView]-[valueLabel]"
-                                                          options:NSLayoutFormatAlignAllCenterY|NSLayoutFormatDirectionLeadingToTrailing
+    [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[barView]-10.0-[valueLabel]"
+                                                          options:NSLayoutFormatDirectionLeadingToTrailing
                                                           metrics:nil
                                                             views:views]];
     
@@ -161,13 +161,23 @@ static const CGFloat BarPointSize = 8.0;
     
     [constraints addObject:[NSLayoutConstraint constraintWithItem:_barView
                                                         attribute:NSLayoutAttributeHeight
-                                                        relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                        relatedBy:NSLayoutRelationEqual
                                                            toItem:nil
                                                         attribute:NSLayoutAttributeNotAnAttribute
                                                        multiplier:1.0
                                                          constant:BarPointSize]];
     
-    [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[valueLabel]|"
+    [constraints addObject:[NSLayoutConstraint constraintWithItem:_valueLabel
+                                                        attribute:NSLayoutAttributeCenterY
+                                                        relatedBy:NSLayoutRelationEqual
+                                                           toItem:_barView
+                                                        attribute:NSLayoutAttributeCenterY
+                                                       multiplier:1.0
+                                                         constant:0.5]];
+    
+    [_valueLabel setContentHuggingPriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
+    
+    [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[barView]|"
                                                                              options:NSLayoutFormatDirectionLeadingToTrailing
                                                                              metrics:nil
                                                                                views:views]];
@@ -414,35 +424,35 @@ static const CGFloat BarPointSize = 8.0;
     _dataSource = dataSource;
     
     if (_dataSource) {
-        NSUInteger barsPerGroup = [_dataSource numberOfBarsPerGroupInChartView:self];
+        NSUInteger barsPerGroup = [_dataSource numberOfDataSeriesInChartView:self];
         
         _barTypes = [NSMutableArray new];
         for (NSUInteger barIndex = 0; barIndex < barsPerGroup; barIndex++) {
             OCKGroupedBarChartBarType *barType = [OCKGroupedBarChartBarType new];
-            barType.color = [_dataSource chartView:self colorForBar:barIndex];
-            barType.name = [_dataSource chartView:self nameForBar:barIndex];
+            barType.color = [_dataSource chartView:self colorForDataSeries:barIndex];
+            barType.name = [_dataSource chartView:self nameForDataSeries:barIndex];
             [_barTypes addObject:barType];
         }
         
-        NSUInteger numberOfGroups = [_dataSource numberOfGroupsInChartView:self];
+        NSUInteger numberOfGroups = [_dataSource numberOfCategoriesPerDataSeriesInChartView:self];
         
         _maxValue = 0;
         _barGroups = [NSMutableArray new];
         for (NSUInteger groupIndex = 0; groupIndex < numberOfGroups; groupIndex++) {
             OCKGroupedBarChartBarGroup *barGroup = [OCKGroupedBarChartBarGroup new];
-            barGroup.title = [_dataSource chartView:self titleForGroup:groupIndex];
-            if ([_dataSource respondsToSelector:@selector(chartView:textForGroup:)]) {
-                barGroup.text = [_dataSource chartView:self textForGroup:groupIndex];
+            barGroup.title = [_dataSource chartView:self titleForCategory:groupIndex];
+            if ([_dataSource respondsToSelector:@selector(chartView:subtitleForCategory:)]) {
+                barGroup.text = [_dataSource chartView:self subtitleForCategory:groupIndex];
             }
             
             NSMutableArray *bars = [NSMutableArray new];
             for (NSUInteger barIndex = 0; barIndex < barsPerGroup; barIndex++) {
                 OCKGroupedBarChartBar *bar = [OCKGroupedBarChartBar new];
-                bar.value = [_dataSource chartView:self valueForBar:barIndex inGroup:groupIndex];
+                bar.value = [_dataSource chartView:self valueForCategory:groupIndex inDataSeries:barIndex];
                 if (bar.value.doubleValue > _maxValue) {
                     _maxValue = bar.value.doubleValue;
                 }
-                bar.text = [_dataSource chartView:self stringForBar:barIndex inGroup:groupIndex];
+                bar.text = [_dataSource chartView:self valueStringForCategory:groupIndex inDataSeries:barIndex];
                 bar.color = _barTypes[barIndex].color;
                 [bars addObject:bar];
             }

@@ -10,7 +10,7 @@
 #import <UIKit/UIKit.h>
 
 
-@class OCKCareCardWeekView, OCKEvaluationWeekView, OCKCarePlanDay;
+@class OCKCareCardWeekView, OCKEvaluationWeekView;
 
 @interface OCKWeekViewController : UIViewController
 

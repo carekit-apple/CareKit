@@ -6,19 +6,17 @@
 //  Copyright © 2016 carekit.org. All rights reserved.
 //
 
-
-#import <UIKit/UIKit.h>
-#import <MessageUI/MessageUI.h>
 #import "OCKConnectTableViewCell.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
 
 @class OCKContact;
+@protocol OCKConnectSharingDelegate;
 
 @protocol OCKConnectTableViewDelegate <NSObject>
 
-- (void)tableViewDidSelectRowWithContact:(OCKContact *)contact;
+- (void)tableView:(UITableView *)tableView didSelectRowWithContact:(OCKContact *)contact;
 
 @end
 

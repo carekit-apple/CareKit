@@ -196,7 +196,7 @@ insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
 }
 
 - (NSString *)description {
-    return [NSString stringWithFormat:@"OCKCDCarePlanActivity %@ %@", ((OCKCareSchedule *)self.schedule).endDay, self.schedule];
+    return [NSString stringWithFormat:@"OCKCDCarePlanActivity %@ %@", ((OCKCareSchedule *)self.schedule).endDate, self.schedule];
 }
 
 @dynamic numberOfDaysWriteable;

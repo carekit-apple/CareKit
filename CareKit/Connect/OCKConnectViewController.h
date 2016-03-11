@@ -12,20 +12,23 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class OCKContact;
+@class OCKContact, OCKConnectDetailViewController;
 
-@interface OCKConnectViewController : UINavigationController
+@protocol OCKConnectViewControllerDelegate <NSObject>
 
-+ (instancetype)new NS_UNAVAILABLE;
-+ (instancetype)connectViewControllerWithContacts:(NSArray<OCKContact *> *)contacts;
+- (NSString *)connectDetailViewController:(OCKConnectDetailViewController *)connectDetailViewController titleForSharingCellForContact:(OCKContact *)contact;
 
-- (instancetype)init NS_UNAVAILABLE;
-- (instancetype)initWithRootViewController:(UIViewController *)rootViewController NS_UNAVAILABLE;
-- (instancetype)initWithNavigationBarClass:(nullable Class)navigationBarClass toolbarClass:(nullable Class)toolbarClass NS_UNAVAILABLE;
-- (instancetype)initWithNibName:(nullable NSString *)nibNameOrNil bundle:(nullable NSBundle *)nibBundleOrNil NS_UNAVAILABLE;
+- (void)connectDetailViewController:(OCKConnectDetailViewController *)connectDetailViewController didSelectShareButtonForContact:(OCKContact *)contact;
+
+@end
+
+
+@interface OCKConnectViewController : UIViewController
+
 - (instancetype)initWithContacts:(NSArray<OCKContact *> *)contacts;
 
 @property (nonatomic, copy) NSArray<OCKContact *> *contacts;
+@property (nonatomic, weak, nullable) id<OCKConnectViewControllerDelegate> delegate;
 
 @end
 

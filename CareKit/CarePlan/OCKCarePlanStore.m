@@ -8,7 +8,7 @@
 
 #import "OCKCarePlanStore.h"
 #import "OCKCarePlanStore_Internal.h"
-#import "OCKCarePlanDay_Internal.h"
+#import "NSDateComponents+CarePlanInternal.h"
 #import "OCKCarePlanActivity_Internal.h"
 #import "OCKCarePlanEvent_Internal.h"
 #import "OCKCarePlanEventResult_Internal.h"
@@ -383,7 +383,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     }];
 }
 
-- (void)setEndDay:(OCKCarePlanDay *)day
+- (void)setEndDate:(NSDateComponents *)day
       forActivity:(OCKCarePlanActivity *)activity
        completion:(void (^)(BOOL success, OCKCarePlanActivity *activity, NSError *error))completion {
     
@@ -408,7 +408,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
                                                    opBlock:^BOOL(NSManagedObject *cdObject, NSManagedObjectContext *context) {
                                                        OCKCDCarePlanActivity *cdActivity = (OCKCDCarePlanActivity *)cdObject;
                                                        OCKCareSchedule *schedule = [cdActivity.schedule copy];
-                                                       schedule.endDay = day;
+                                                       schedule.endDate = day;
                                                        cdActivity.schedule = schedule;
                                                        return YES;
                                                    } error:&errorOut];
@@ -427,12 +427,12 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     }];
 }
 
-- (void)eventsOfDay:(OCKCarePlanDay *)day
+- (void)eventsOnDate:(NSDateComponents *)date
                type:(OCKCarePlanActivityType)type
          completion:(void (^)(NSArray<NSArray<OCKCarePlanEvent *> *> *eventsGroupedByActivity, NSError *error))completion {
     
     
-    NSParameterAssert(day);
+    NSParameterAssert(date);
     
     __block NSMutableArray *eventGroups = [NSMutableArray array];
     
@@ -443,7 +443,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
                           __block NSError *errorOut = nil;
                           __block NSInteger processedCount = 0;
                           for (OCKCarePlanActivity *item in items) {
-                              [self eventsForActivity:item day:day completion:^(NSArray<OCKCarePlanEvent *> * _Nonnull events, NSError * _Nonnull error) {
+                              [self eventsForActivity:item date:date completion:^(NSArray<OCKCarePlanEvent *> * _Nonnull events, NSError * _Nonnull error) {
                                   if (error == nil && events.count > 0) {
                                       [eventGroups addObject:events];
                                   }
@@ -465,15 +465,15 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
 }
 
 - (void)eventsForActivity:(OCKCarePlanActivity *)activity
-                      day:(OCKCarePlanDay *)day
+                      date:(NSDateComponents *)date
                completion:(void (^)(NSArray<OCKCarePlanEvent *> *events, NSError *error))completion {
     
     NSParameterAssert(activity);
-    NSParameterAssert(day);
+    NSParameterAssert(date);
     NSParameterAssert(completion);
     
     OCKCareSchedule *schedule = activity.schedule;
-    NSUInteger numberOfEvents = [schedule numberOfEventsOnDay:day];
+    NSUInteger numberOfEvents = [schedule numberOfEventsOnDate:date];
     
    
     NSError *error = nil;
@@ -486,7 +486,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     NSMutableArray *eventGroup = [NSMutableArray array];
     if (numberOfEvents > 0) {
         
-        NSUInteger numberOfDaySinceStart = [schedule numberOfDaySinceStart:day];
+        NSUInteger numberOfDaySinceStart = [schedule numberOfDaySinceStart:date];
         __weak typeof(self) weakSelf = self;
         [context performBlock:^{
             __strong typeof(weakSelf) strongSelf = weakSelf;
@@ -656,18 +656,18 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
 }
 
 - (void)enumerateEventsOfActivity:(OCKCarePlanActivity *)activity
-                         startDay:(OCKCarePlanDay *)startDay
-                           endDay:(OCKCarePlanDay *)endDay
+                         startDate:(NSDateComponents *)startDate
+                           endDate:(NSDateComponents *)endDate
                        usingBlock:(void (^)(OCKCarePlanEvent *event, BOOL *stop, NSError *error))block {
     NSParameterAssert(activity);
-    NSParameterAssert(startDay);
-    NSParameterAssert(endDay);
+    NSParameterAssert(startDate);
+    NSParameterAssert(endDate);
     NSParameterAssert(block);
     
-    if ([startDay isLaterThan:endDay]) {
+    if ([startDate isLaterThan:endDate]) {
         return;
     }
-    __block OCKCarePlanDay *day = startDay;
+    __block NSDateComponents *day = startDate;
     __block BOOL stop = NO;
     __weak typeof(self) weakSelf = self;
     
@@ -686,8 +686,8 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
             
             day = [day nextDay];
             
-            if ((stop == NO && ([day isEarlierThan:endDay] || [day isEqual:endDay]))) {
-                [strongSelf eventsForActivity:activity day:day completion:completion];
+            if ((stop == NO && ([day isEarlierThan:endDate] || [day isEqual:endDate]))) {
+                [strongSelf eventsForActivity:activity date:day completion:completion];
             } else {
                 completion = nil;
             }
@@ -695,20 +695,20 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     };
     
     [self eventsForActivity:activity
-                        day:day
+                        date:day
                  completion:completion];
 }
 
 - (void)dailyCompletionStatusWithType:(OCKCarePlanActivityType)type
-                             startDay:(OCKCarePlanDay *)startDay
-                               endDay:(OCKCarePlanDay *)endDay
-                           usingBlock:(void (^)(OCKCarePlanDay* day, NSUInteger completed, NSUInteger total, NSError *error))block {
+                             startDate:(NSDateComponents *)startDate
+                               endDate:(NSDateComponents *)endDate
+                           usingBlock:(void (^)(NSDateComponents* day, NSUInteger completed, NSUInteger total, NSError *error))block {
 
-    NSParameterAssert(startDay);
-    NSParameterAssert(endDay);
+    NSParameterAssert(startDate);
+    NSParameterAssert(endDate);
     NSParameterAssert(block);
     
-    if ([startDay isLaterThan:endDay]) {
+    if ([startDate isLaterThan:endDate]) {
         return;
     }
     
@@ -727,13 +727,13 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
                                 } else {
                                     [context performBlock:^{
                                         __strong typeof(weakSelf) strongSelf = weakSelf;
-                                        OCKCarePlanDay *day = startDay;
+                                        NSDateComponents *day = startDate;
                                         do {
                                             NSUInteger total = 0;
                                             NSUInteger completed = 0;
                                             NSMutableArray *predicates = [NSMutableArray new];
                                             for (OCKCarePlanActivity *activity in activities) {
-                                                NSUInteger count = [activity.schedule numberOfEventsOnDay:day];
+                                                NSUInteger count = [activity.schedule numberOfEventsOnDate:day];
                                                 
                                                 if (count > 0) {
                                                     NSUInteger daysSinceStart = [activity.schedule numberOfDaySinceStart:day];
@@ -757,7 +757,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
                                                 block(day, completed, total, errorOut);
                                             });
                                             day = [day nextDay];
-                                        } while ([day isEarlierThan:endDay] || [day isEqual:endDay]);
+                                        } while ([day isEarlierThan:endDate] || [day isEqual:endDate]);
                                     }];
                                 }
                             }];

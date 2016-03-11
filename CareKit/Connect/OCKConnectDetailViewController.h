@@ -16,12 +16,14 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @class OCKContact;
+@protocol OCKConnectViewControllerDelegate;
 
 @interface OCKConnectDetailViewController : UITableViewController <MFMessageComposeViewControllerDelegate, MFMailComposeViewControllerDelegate, OCKContactInfoTableViewCellDelegate, OCKReportsTableViewCellDelegate>
 
 - (instancetype)initWithContact:(OCKContact *)contact;
 
 @property (nonatomic) OCKContact *contact;
+@property (nonatomic) id<OCKConnectViewControllerDelegate> delegate;
 
 @end
 

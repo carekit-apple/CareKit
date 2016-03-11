@@ -20,12 +20,14 @@ typedef NS_ENUM(NSInteger, OCKCarePlanEventState) {
 };
 
 /**
- OCKCarePlanEvent is derived from OCKCarePlanActivity and its OCKCareSchedule 
+ OCKCarePlanEvent is derived from OCKCarePlanActivity and its OCKCareSchedule.
+ 
  */
 @interface OCKCarePlanEvent : NSObject 
 
 /**
- The index of this event for its associated OCKCarePlanItem.
+ The index of this event on a particular day.
+ For example, if an activity has three occurences in a day, then there would has three CarePlanEvents with index 0, 1, 2 individually. 
  */
 @property (nonatomic, readonly) NSUInteger occurrenceIndexOfDay;
 
@@ -49,7 +51,6 @@ typedef NS_ENUM(NSInteger, OCKCarePlanEventState) {
 @property (nonatomic, readonly) OCKCarePlanEventState state;
 
 /**
- 
  The result object can be attached through OCKCarePlanStore API.
  */
 @property (nonatomic, readonly, nullable) OCKCarePlanEventResult *result;

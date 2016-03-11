@@ -12,7 +12,9 @@
 
 @class OCKCarePlanActivity;
 
-@interface OCKCareCardDetailViewController : UIViewController
+@interface OCKCareCardDetailViewController : UITableViewController
+
+- (instancetype)initWithTreatment:(OCKCarePlanActivity *)treatment;
 
 @property (nonatomic) OCKCarePlanActivity *treatment;
 

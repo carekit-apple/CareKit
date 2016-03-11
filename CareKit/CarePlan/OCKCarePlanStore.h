@@ -8,7 +8,6 @@
 
 
 #import <Foundation/Foundation.h>
-#import <ResearchKit/ResearchKit.h>
 #import <CareKit/CareKit.h>
 
 
@@ -55,60 +54,60 @@ NS_ASSUME_NONNULL_BEGIN
  Add an activity to this store.
  */
 - (void)addActivity:(OCKCarePlanActivity *)activity
-         completion:(void (^)(BOOL success, NSError *error))completion;
+         completion:(void (^)(BOOL success,  NSError * _Nullable error))completion;
 
 /**
  Get all activities from this store.
  */
-- (void)activitiesWithCompletion:(void (^)(BOOL success, NSArray<OCKCarePlanActivity *> *activities, NSError *error))completion;
+- (void)activitiesWithCompletion:(void (^)(BOOL success, NSArray<OCKCarePlanActivity *> *activities, NSError  * _Nullable error))completion;
 
 /**
  Get all activities with specified type from this store.
  */
 - (void)activitiesWithType:(OCKCarePlanActivityType)type
-                completion:(void (^)(BOOL success, NSArray<OCKCarePlanActivity *> *activities, NSError *error))completion;
+                completion:(void (^)(BOOL success, NSArray<OCKCarePlanActivity *> *activities, NSError * _Nullable error))completion;
 
 /**
  Get activity by providing an identifier.
  */
 - (void)activityForIdentifier:(NSString *)identifier
-                   completion:(void (^)(BOOL success, OCKCarePlanActivity *activity, NSError *error))completion;
+                   completion:(void (^)(BOOL success, OCKCarePlanActivity * _Nullable activity, NSError * _Nullable error))completion;
 
 
 /**
  Get all activities with a specified group identifier.
  */
 - (void)activitiesWithGroupIdentifier:(NSString *)groupIdentifier
-                           completion:(void (^)(BOOL success, NSArray<OCKCarePlanActivity *> *activities, NSError *error))completion;
+                           completion:(void (^)(BOOL success, NSArray<OCKCarePlanActivity *> *activities, NSError * _Nullable error))completion;
 
 /**
  Update an activity's end date.
  */
-- (void)setEndDay:(OCKCarePlanDay *)day
-      forActivity:(OCKCarePlanActivity *)activity
-       completion:(void (^)(BOOL success, OCKCarePlanActivity *activity, NSError *error))completion;
+- (void)setEndDate:(NSDateComponents *)date
+       forActivity:(OCKCarePlanActivity *)activity
+        completion:(void (^)(BOOL success, OCKCarePlanActivity * _Nullable activity, NSError * _Nullable error))completion;
 
 /**
  Remove an activity from this store.
  All its related event records will be removed as well.
  */
 - (void)removeActivity:(OCKCarePlanActivity *)activity
-            completion:(void (^)(BOOL success, NSError *error))completion;
+            completion:(void (^)(BOOL success, NSError * _Nullable error))completion;
 
 /**
-Obtain all `OCKCarePlanEvent` on a giving day.
+Obtain all `OCKCarePlanEvent` on a giving date.
 @disccussion Returned result grouped by `OCKCarePlanActivity`.
 */
-- (void)eventsOfDay:(OCKCarePlanDay *)day
-               type:(OCKCarePlanActivityType)type
-         completion:(void (^)(NSArray<NSArray<OCKCarePlanEvent *> *> *eventsGroupedByActivity, NSError *error))completion;
+- (void)eventsOnDate:(NSDateComponents *)date
+                type:(OCKCarePlanActivityType)type
+          completion:(void (^)(NSArray<NSArray<OCKCarePlanEvent *> *> *eventsGroupedByActivity, NSError * _Nullable error))completion;
 
 /**
- Obtain all events of a `OCKCarePlanActivity` in a giving day.
+ Obtain all events of a `OCKCarePlanActivity` in a giving date.
  */
 - (void)eventsForActivity:(OCKCarePlanActivity *)activity
-                      day:(OCKCarePlanDay *)day
-               completion:(void (^)(NSArray<OCKCarePlanEvent *> *events, NSError *error))completion;
+                     date:(NSDateComponents *)date
+               completion:(void (^)(NSArray<OCKCarePlanEvent *> *events, NSError * _Nullable error))completion;
 
 /**
  Mark an `OCKCarePlanEvent` to be completed.
@@ -116,20 +115,20 @@ Obtain all `OCKCarePlanEvent` on a giving day.
 - (void)updateEvent:(OCKCarePlanEvent *)event
          withResult:(nullable OCKCarePlanEventResult *)result
               state:(OCKCarePlanEventState)state
-         completion:(void (^)(BOOL success, OCKCarePlanEvent *event, NSError *error))completion;
+         completion:(void (^)(BOOL success, OCKCarePlanEvent * _Nullable event, NSError * _Nullable error))completion;
 
 /**
  Fetch all the events of an `OCKCarePlanEvent` by giving a date range.
  */
 - (void)enumerateEventsOfActivity:(OCKCarePlanActivity *)activity
-                         startDay:(OCKCarePlanDay *)startDay
-                           endDay:(OCKCarePlanDay *)endDay
-                       usingBlock:(void (^)(OCKCarePlanEvent *event, BOOL *stop, NSError *error))block;
+                        startDate:(NSDateComponents *)startDate
+                          endDate:(NSDateComponents *)endDate
+                       usingBlock:(void (^)(OCKCarePlanEvent * _Nullable event, BOOL *stop, NSError * _Nullable error))block;
 
 - (void)dailyCompletionStatusWithType:(OCKCarePlanActivityType)type
-                             startDay:(OCKCarePlanDay *)startDay
-                               endDay:(OCKCarePlanDay *)endDay
-                           usingBlock:(void (^)(OCKCarePlanDay* day, NSUInteger completed, NSUInteger total, NSError *error))block;
+                            startDate:(NSDateComponents *)startDate
+                              endDate:(NSDateComponents *)endDate
+                           usingBlock:(void (^)(NSDateComponents * _Nullable date, NSUInteger completed, NSUInteger total, NSError * _Nullable error))block;
 
 @end
 

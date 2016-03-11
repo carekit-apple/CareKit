@@ -15,6 +15,7 @@
 #import "OCKWeekView.h"
 #import "OCKWeekViewController.h"
 #import "OCKEvaluationWeekView.h"
+#import "NSDateComponents+CarePlanInternal.h"
 
 
 @implementation OCKEvaluationViewController {
@@ -43,7 +44,7 @@
                                                                                               style:UIBarButtonItemStylePlain
                                                                                              target:self
                                                                                              action:@selector(showToday:)];
-    _tableViewController.navigationItem.rightBarButtonItem.tintColor = OCKPinkColor();
+    _tableViewController.navigationItem.rightBarButtonItem.tintColor = OCKRedColor();
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -61,15 +62,15 @@
 }
 
 - (void)showToday:(id)sender {
-    _tableViewController.selectedDate = [[OCKCarePlanDay alloc] initWithDate:[NSDate date] calendar:[NSCalendar currentCalendar]];
+    _tableViewController.selectedDate = [[NSDateComponents alloc] initWithDate:[NSDate date] calendar:[NSCalendar currentCalendar]];
 }
 
 
 #pragma mark - OCKEvaluationWeekViewDelegate
 
 - (void)evaluationWeekViewSelectionDidChange:(OCKEvaluationWeekView *)evaluationWeekView {
-    OCKCarePlanDay *selectedDate = [_tableViewController dateFromSelectedIndex:evaluationWeekView.selectedIndex];
-    OCKCarePlanDay *today = [[OCKCarePlanDay alloc] initWithDate:[NSDate date] calendar:[NSCalendar currentCalendar]];
+    NSDateComponents *selectedDate = [_tableViewController dateFromSelectedIndex:evaluationWeekView.selectedIndex];
+    NSDateComponents *today = [[NSDateComponents alloc] initWithDate:[NSDate date] calendar:[NSCalendar currentCalendar]];
     if (![selectedDate isLaterThan:today]) {
         _tableViewController.selectedDate = selectedDate;
     }

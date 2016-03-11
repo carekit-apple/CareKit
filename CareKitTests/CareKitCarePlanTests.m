@@ -9,7 +9,7 @@
 
 #import <XCTest/XCTest.h>
 #import <CareKit/CareKit.h>
-#import "OCKCarePlanDay_Internal.h"
+#import "NSDateComponents+CarePlanInternal.h"
 
 @interface CareKitTests : XCTestCase <OCKCarePlanStoreDelegate>
 
@@ -59,9 +59,9 @@
     store.delegate = self;
     
     NSCalendar *calendar = [NSCalendar calendarWithIdentifier:NSCalendarIdentifierGregorian];
-    OCKCarePlanDay *startDay = [[OCKCarePlanDay alloc] initWithYear:2016 month:01 day:01];
+    NSDateComponents *startDate = [[NSDateComponents alloc] initWithYear:2016 month:01 day:01];
     
-    OCKCareSchedule *schedule = [OCKCareSchedule dailyScheduleWithStartDay:startDay occurrencesPerDay:3];
+    OCKCareSchedule *schedule = [OCKCareSchedule dailyScheduleWithStartDate:startDate occurrencesPerDay:3];
     
     OCKCarePlanActivity *item1 = [[OCKCarePlanActivity alloc] initWithIdentifier:@"id1"
                                                                  groupIdentifier:@"gid1"
@@ -76,7 +76,7 @@
                                                                 resultResettable:YES
                                                                         userInfo:@{@"key":@"value1"}];
     
-    OCKCareSchedule *weeklySchedule = [OCKCareSchedule weeklyScheduleWithStartDay:startDay
+    OCKCareSchedule *weeklySchedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate
                                                              occurrencesOnEachDay:@[@3, @3, @3, @3, @3, @3, @3]];
     
     OCKCarePlanActivity *item2 = [[OCKCarePlanActivity alloc] initWithIdentifier:@"id2"
@@ -263,14 +263,14 @@
     XCTAssertEqualObjects(activities[2], item3);
     
     NSDate *endDate = [NSDate dateWithTimeIntervalSinceNow:8*24*60*60];
-    OCKCarePlanDay *endDay = [[OCKCarePlanDay alloc] initWithDate:endDate calendar:[NSCalendar calendarWithIdentifier:NSCalendarIdentifierGregorian]];
+    NSDateComponents *endDateComp = [[NSDateComponents alloc] initWithDate:endDate calendar:[NSCalendar calendarWithIdentifier:NSCalendarIdentifierGregorian]];
     expectation = [self expectationWithDescription:@"setEndDate"];
-    [store setEndDay:endDay
+    [store setEndDate:endDateComp
          forActivity:activities[2]
           completion:^(BOOL success, OCKCarePlanActivity * _Nonnull activity, NSError * _Nonnull error) {
                XCTAssertTrue(success);
                XCTAssertNil(error);
-               XCTAssertEqualObjects(activity.schedule.endDay, endDay);
+               XCTAssertEqualObjects(activity.schedule.endDate, endDateComp);
                [expectation fulfill];
     }];
     [self waitForExpectationsWithTimeout:1.0 handler:^(NSError * _Nullable error) {
@@ -291,7 +291,7 @@
         XCTAssertNil(error);
     }];
     
-    XCTAssertEqualObjects(activities[2].schedule.endDay, endDay, @"%@", activities[2].identifier);
+    XCTAssertEqualObjects(activities[2].schedule.endDate, endDateComp, @"%@", activities[2].identifier);
     XCTAssertTrue([self isListChangeDelegateCalled]);
     
     expectation = [self expectationWithDescription:@"removeActivity"];
@@ -325,7 +325,7 @@
     __block NSArray<NSArray<OCKCarePlanEvent *> *> *eventGroups = nil;
     
     expectation = [self expectationWithDescription:@"fetchTreatmentEvents"];
-    [store eventsOfDay:startDay
+    [store eventsOnDate:startDate
                   type:OCKCarePlanActivityTypeIntervention
             completion:^(NSArray<NSArray<OCKCarePlanEvent *> *> * _Nonnull eventsGroupedByActivity, NSError * _Nonnull error) {
                 eventGroups = eventsGroupedByActivity;
@@ -389,7 +389,7 @@
     XCTAssertTrue([self isEventChangeDelegateCalled]);
     
     expectation = [self expectationWithDescription:@"fetchTreatmentEvents"];
-    [store eventsOfDay:startDay
+    [store eventsOnDate:startDate
                   type:OCKCarePlanActivityTypeIntervention
             completion:^(NSArray<NSArray<OCKCarePlanEvent *> *> * _Nonnull eventsGroupedByActivity, NSError * _Nonnull error) {
                 eventGroups = eventsGroupedByActivity;
@@ -439,7 +439,7 @@
     XCTAssertTrue([self isEventChangeDelegateCalled]);
     
     expectation = [self expectationWithDescription:@"fetchTreatmentEvents"];
-    [store eventsOfDay:startDay
+    [store eventsOnDate:startDate
                   type:OCKCarePlanActivityTypeIntervention
             completion:^(NSArray<NSArray<OCKCarePlanEvent *> *> * _Nonnull eventsGroupedByActivity, NSError * _Nonnull error) {
                 eventGroups = eventsGroupedByActivity;
@@ -456,8 +456,8 @@
     
     expectation = [self expectationWithDescription:@"enumerateEvents"];
     NSMutableArray<OCKCarePlanEvent *> *eventsOfActivity = [[NSMutableArray alloc] init];
-    OCKCarePlanDay *futureDay = [[OCKCarePlanDay alloc] initWithDate:[NSDate dateWithTimeIntervalSinceNow:100*24*60*60] calendar:calendar];
-    [store enumerateEventsOfActivity:activities[0] startDay:startDay endDay:futureDay
+    NSDateComponents *futureDay = [[NSDateComponents alloc] initWithDate:[NSDate dateWithTimeIntervalSinceNow:100*24*60*60] calendar:calendar];
+    [store enumerateEventsOfActivity:activities[0] startDate:startDate endDate:futureDay
                            usingBlock:^(OCKCarePlanEvent * _Nonnull event, BOOL * _Nonnull stop, NSError * _Nonnull error) {
                                XCTAssertNil(error);
                                XCTAssertNotNil(event);
@@ -502,14 +502,14 @@
     expectation = [self expectationWithDescription:@"completionStatus"];
     
     [store dailyCompletionStatusWithType:OCKCarePlanActivityTypeIntervention
-                                startDay:[startDay nextDay]
-                                  endDay:futureDay
-                              usingBlock:^(OCKCarePlanDay * _Nonnull day, NSUInteger completed, NSUInteger total, NSError * _Nonnull error) {
+                                startDate:[startDate nextDay]
+                                  endDate:futureDay
+                              usingBlock:^(NSDateComponents * _Nonnull day, NSUInteger completed, NSUInteger total, NSError * _Nonnull error) {
                                   XCTAssertNil(error);
                                   XCTAssertNotNil(day);
                                   XCTAssertEqual(completed, 3);
                                   XCTAssertEqual(total, 9);
-                                  if ([day isEqual:futureDay]) {
+                                  if ([day isEqualToDate:futureDay]) {
                                       [expectation fulfill];
                                   }
                               }];
@@ -523,79 +523,79 @@
 - (void)testDailySchedules {
     NSCalendar *calendar = [NSCalendar calendarWithIdentifier:NSCalendarIdentifierGregorian];
     NSDate *now = [NSDate date];
-    OCKCarePlanDay *today = [[OCKCarePlanDay alloc] initWithDate:now calendar:calendar];
+    NSDateComponents *today = [[NSDateComponents alloc] initWithDate:now calendar:calendar];
     
     // Every Day
-    OCKCareSchedule *dailySchedule = [OCKCareSchedule dailyScheduleWithStartDay:today occurrencesPerDay:2];
-    XCTAssertEqual([dailySchedule numberOfEventsOnDay:[today nextDay]], 2);
-    XCTAssertEqual([dailySchedule numberOfEventsOnDay:[today dayByAddingDays:2]], 2);
+    OCKCareSchedule *dailySchedule = [OCKCareSchedule dailyScheduleWithStartDate:today occurrencesPerDay:2];
+    XCTAssertEqual([dailySchedule numberOfEventsOnDate:[today nextDay]], 2);
+    XCTAssertEqual([dailySchedule numberOfEventsOnDate:[today dateByAddingDays:2]], 2);
     
     // Skip days
-    dailySchedule = [OCKCareSchedule dailyScheduleWithStartDay:today
+    dailySchedule = [OCKCareSchedule dailyScheduleWithStartDate:today
                                               occurrencesPerDay:3
                                                      daysToSkip:3
-                                                        endDay:nil];
+                                                        EndDate:nil];
                      
-    XCTAssertEqual([dailySchedule numberOfEventsOnDay:today], 3);
-    XCTAssertEqual([dailySchedule numberOfEventsOnDay:[today dayByAddingDays:1]], 0);
-    XCTAssertEqual([dailySchedule numberOfEventsOnDay:[today dayByAddingDays:4]], 3);
+    XCTAssertEqual([dailySchedule numberOfEventsOnDate:today], 3);
+    XCTAssertEqual([dailySchedule numberOfEventsOnDate:[today dateByAddingDays:1]], 0);
+    XCTAssertEqual([dailySchedule numberOfEventsOnDate:[today dateByAddingDays:4]], 3);
     
     // With end day
-    dailySchedule = [OCKCareSchedule dailyScheduleWithStartDay:today
+    dailySchedule = [OCKCareSchedule dailyScheduleWithStartDate:today
                                               occurrencesPerDay:4
                                                      daysToSkip:0
-                                                         endDay:[today dayByAddingDays:3]];
+                                                         EndDate:[today dateByAddingDays:3]];
     
 
-    XCTAssertEqual([dailySchedule numberOfEventsOnDay:today], 4);
-    XCTAssertEqual([dailySchedule numberOfEventsOnDay:[today dayByAddingDays:1]], 4);
-    XCTAssertEqual([dailySchedule numberOfEventsOnDay:[today dayByAddingDays:6]], 0);
+    XCTAssertEqual([dailySchedule numberOfEventsOnDate:today], 4);
+    XCTAssertEqual([dailySchedule numberOfEventsOnDate:[today dateByAddingDays:1]], 4);
+    XCTAssertEqual([dailySchedule numberOfEventsOnDate:[today dateByAddingDays:6]], 0);
     
 }
 
 - (void)testWeeklySchedules {
     NSCalendar *calendar = [NSCalendar calendarWithIdentifier:NSCalendarIdentifierGregorian];
     NSDate *now = [NSDate date];
-    OCKCarePlanDay *today = [[OCKCarePlanDay alloc] initWithDate:now calendar:calendar];
+    NSDateComponents *today = [[NSDateComponents alloc] initWithDate:now calendar:calendar];
     
     NSArray<NSNumber *> *occurrences = @[@(1), @(2), @(3), @(4), @(5), @(6), @(7)];
     
     // Every Week
-    OCKCareSchedule *weeklySchedule = [OCKCareSchedule weeklyScheduleWithStartDay:today occurrencesOnEachDay:occurrences];
+    OCKCareSchedule *weeklySchedule = [OCKCareSchedule weeklyScheduleWithStartDate:today occurrencesOnEachDay:occurrences];
 
     NSUInteger weekday = [calendar component:NSCalendarUnitWeekday fromDate:now];
     NSUInteger occurrencesOnDay = occurrences[weekday - 1].unsignedIntegerValue;
-    XCTAssertEqual([weeklySchedule numberOfEventsOnDay:today], occurrencesOnDay);
-    XCTAssertEqual([weeklySchedule numberOfEventsOnDay:[today dayByAddingDays:1]], occurrences[(weekday)%7].unsignedIntegerValue);
+    XCTAssertEqual([weeklySchedule numberOfEventsOnDate:today], occurrencesOnDay);
+    XCTAssertEqual([weeklySchedule numberOfEventsOnDate:[today dateByAddingDays:1]], occurrences[(weekday)%7].unsignedIntegerValue);
     
     // Skip weeks
-    weeklySchedule = [OCKCareSchedule weeklyScheduleWithStartDay:today
+    weeklySchedule = [OCKCareSchedule weeklyScheduleWithStartDate:today
                                              occurrencesOnEachDay:occurrences
                                                       weeksToSkip:3
-                                                          endDay:nil];
+                                                          EndDate:nil];
     
 
-    XCTAssertEqual([weeklySchedule numberOfEventsOnDay:today], occurrencesOnDay);
-    XCTAssertEqual([weeklySchedule numberOfEventsOnDay:[today dayByAddingDays:7]], 0);
-    XCTAssertEqual([weeklySchedule numberOfEventsOnDay:[today dayByAddingDays:4*7]], occurrencesOnDay);
+    XCTAssertEqual([weeklySchedule numberOfEventsOnDate:today], occurrencesOnDay);
+    XCTAssertEqual([weeklySchedule numberOfEventsOnDate:[today dateByAddingDays:7]], 0);
+    XCTAssertEqual([weeklySchedule numberOfEventsOnDate:[today dateByAddingDays:4*7]], occurrencesOnDay);
     
     
     // With end day
-    weeklySchedule = [OCKCareSchedule weeklyScheduleWithStartDay:today
+    weeklySchedule = [OCKCareSchedule weeklyScheduleWithStartDate:today
                                              occurrencesOnEachDay:occurrences
                                                         weeksToSkip:0
-                                                            endDay:[today dayByAddingDays:3*7]];
+                                                            EndDate:[today dateByAddingDays:3*7]];
     
 
-    XCTAssertEqual([weeklySchedule numberOfEventsOnDay:today], occurrencesOnDay);
-    XCTAssertEqual([weeklySchedule numberOfEventsOnDay:[today dayByAddingDays:1*7]], occurrencesOnDay);
-    XCTAssertEqual([weeklySchedule numberOfEventsOnDay:[today dayByAddingDays:6*7]], 0);
+    XCTAssertEqual([weeklySchedule numberOfEventsOnDate:today], occurrencesOnDay);
+    XCTAssertEqual([weeklySchedule numberOfEventsOnDate:[today dateByAddingDays:1*7]], occurrencesOnDay);
+    XCTAssertEqual([weeklySchedule numberOfEventsOnDate:[today dateByAddingDays:6*7]], 0);
     
 }
 
 - (void)testMonthlySchedules {
 
-    OCKCarePlanDay *startDay = [[OCKCarePlanDay alloc] initWithYear:2016 month:2 day:10];
+    NSDateComponents *startDate = [[NSDateComponents alloc] initWithYear:2016 month:2 day:10];
 
     NSMutableArray<NSNumber *> *occurrences = [NSMutableArray new];
     for (NSInteger i = 1; i <= 31; i++) {
@@ -603,36 +603,36 @@
     }
    
     // Every month
-    OCKCareSchedule *monthlySchedule = [OCKCareSchedule monthlyScheduleWithStartDay:startDay
+    OCKCareSchedule *monthlySchedule = [OCKCareSchedule monthlyScheduleWithStartDate:startDate
                                                                occurrencesOnEachDay:occurrences];
 
     NSUInteger dayInMonth = 10;
     NSUInteger occurrencesOnDay = occurrences[dayInMonth - 1].unsignedIntegerValue;
   
-    XCTAssertEqual([monthlySchedule numberOfEventsOnDay:startDay], occurrencesOnDay);
+    XCTAssertEqual([monthlySchedule numberOfEventsOnDate:startDate], occurrencesOnDay);
   
-    XCTAssertEqual([monthlySchedule numberOfEventsOnDay:[startDay dayByAddingDays:1]], occurrences[dayInMonth+1-1].unsignedIntegerValue);
+    XCTAssertEqual([monthlySchedule numberOfEventsOnDate:[startDate dateByAddingDays:1]], occurrences[dayInMonth+1-1].unsignedIntegerValue);
     
     // Skip month
-    monthlySchedule = [OCKCareSchedule monthlyScheduleWithStartDay:startDay
+    monthlySchedule = [OCKCareSchedule monthlyScheduleWithStartDate:startDate
                                                occurrencesOnEachDay:occurrences
                                                        monthsToSkip:3
-                                                            endDay:nil];
+                                                            EndDate:nil];
 
-    XCTAssertEqual([monthlySchedule numberOfEventsOnDay:startDay], occurrencesOnDay);
-    XCTAssertEqual([monthlySchedule numberOfEventsOnDay:[[OCKCarePlanDay alloc] initWithYear:2016 month:3 day:10]], 0);
-    XCTAssertEqual([monthlySchedule numberOfEventsOnDay:[[OCKCarePlanDay alloc] initWithYear:2016 month:6 day:10]], occurrencesOnDay);
+    XCTAssertEqual([monthlySchedule numberOfEventsOnDate:startDate], occurrencesOnDay);
+    XCTAssertEqual([monthlySchedule numberOfEventsOnDate:[[NSDateComponents alloc] initWithYear:2016 month:3 day:10]], 0);
+    XCTAssertEqual([monthlySchedule numberOfEventsOnDate:[[NSDateComponents alloc] initWithYear:2016 month:6 day:10]], occurrencesOnDay);
     
     
     // With end day
-    monthlySchedule = [OCKCareSchedule monthlyScheduleWithStartDay:startDay
+    monthlySchedule = [OCKCareSchedule monthlyScheduleWithStartDate:startDate
                                                occurrencesOnEachDay:occurrences
                                                        monthsToSkip:0
-                                                                endDay:[[OCKCarePlanDay alloc] initWithYear:2016 month:5 day:10]];
+                                                                EndDate:[[NSDateComponents alloc] initWithYear:2016 month:5 day:10]];
 
-    XCTAssertEqual([monthlySchedule numberOfEventsOnDay:startDay], occurrencesOnDay);
-    XCTAssertEqual([monthlySchedule numberOfEventsOnDay:[[OCKCarePlanDay alloc] initWithYear:2016 month:3 day:10]], occurrencesOnDay);
-    XCTAssertEqual([monthlySchedule numberOfEventsOnDay:[[OCKCarePlanDay alloc] initWithYear:2016 month:8 day:10]], 0);
+    XCTAssertEqual([monthlySchedule numberOfEventsOnDate:startDate], occurrencesOnDay);
+    XCTAssertEqual([monthlySchedule numberOfEventsOnDate:[[NSDateComponents alloc] initWithYear:2016 month:3 day:10]], occurrencesOnDay);
+    XCTAssertEqual([monthlySchedule numberOfEventsOnDate:[[NSDateComponents alloc] initWithYear:2016 month:8 day:10]], 0);
     
 }
 

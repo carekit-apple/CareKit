@@ -82,7 +82,7 @@
     return html;
 }
 
-- (void)createPDFWithCompletion:(void (^)(NSData *data, NSError *error))completion {
+- (void)createPDFDataWithCompletion:(void (^)(NSData *data, NSError *error))completion {
     if (_writer == nil) {
         _writer = [[OCKHTMLPDFWriter alloc] init];
     }

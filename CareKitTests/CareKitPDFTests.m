@@ -104,7 +104,7 @@
     
     XCTestExpectation *expectation = [self expectationWithDescription:@"pdf"];
     
-    [doc createPDFWithCompletion:^(NSData * _Nonnull data, NSError * _Nonnull error) {
+    [doc createPDFDataWithCompletion:^(NSData * _Nonnull data, NSError * _Nonnull error) {
         NSString *path = [[self testPath] stringByAppendingPathComponent:@"x.pdf"];
         [data writeToFile:path atomically:YES];
         NSLog(@"open %@", path);

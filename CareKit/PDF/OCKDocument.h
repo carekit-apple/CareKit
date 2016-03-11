@@ -42,10 +42,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  Content in HTML format.
- 
- @return HTML content.
  */
-- (NSString *)HTMLContent;
+@property (nonatomic, copy, readonly) NSString *HTMLContent;
 
 @end
 
@@ -88,9 +86,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy, readonly) NSString *HTMLContent;
 
 /**
- Create a PDF file based on current document object.
+ Create a PDF file data based on current document object.
  */
-- (void)createPDFWithCompletion:(void (^)(NSData *data, NSError *error))completion;
+- (void)createPDFDataWithCompletion:(void (^)(NSData *PDFdata, NSError *error))completion;
 
 @end
 

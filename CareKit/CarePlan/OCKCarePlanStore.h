@@ -95,7 +95,7 @@ NS_ASSUME_NONNULL_BEGIN
             completion:(void (^)(BOOL success, NSError * _Nullable error))completion;
 
 /**
-Obtain all `OCKCarePlanEvent` on a giving date.
+Obtain all `OCKCarePlanEvent` on a given date.
 @disccussion Returned result grouped by `OCKCarePlanActivity`.
 */
 - (void)eventsOnDate:(NSDateComponents *)date
@@ -103,7 +103,7 @@ Obtain all `OCKCarePlanEvent` on a giving date.
           completion:(void (^)(NSArray<NSArray<OCKCarePlanEvent *> *> *eventsGroupedByActivity, NSError * _Nullable error))completion;
 
 /**
- Obtain all events of a `OCKCarePlanActivity` in a giving date.
+ Obtain all events of a `OCKCarePlanActivity` in a given date.
  */
 - (void)eventsForActivity:(OCKCarePlanActivity *)activity
                      date:(NSDateComponents *)date
@@ -118,7 +118,7 @@ Obtain all `OCKCarePlanEvent` on a giving date.
          completion:(void (^)(BOOL success, OCKCarePlanEvent * _Nullable event, NSError * _Nullable error))completion;
 
 /**
- Fetch all the events of an `OCKCarePlanEvent` by giving a date range.
+ Fetch all the events of an `OCKCarePlanEvent` by given a date range.
  */
 - (void)enumerateEventsOfActivity:(OCKCarePlanActivity *)activity
                         startDate:(NSDateComponents *)startDate

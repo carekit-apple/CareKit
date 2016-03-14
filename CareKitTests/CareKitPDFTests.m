@@ -100,6 +100,8 @@
     
     [[doc HTMLContent] writeToFile:path atomically:YES encoding:NSUTF8StringEncoding error:nil];
     
+    XCTAssertGreaterThan(doc.HTMLContent.length, 0);
+    
     NSLog(@"open %@", path);
     
     XCTestExpectation *expectation = [self expectationWithDescription:@"pdf"];

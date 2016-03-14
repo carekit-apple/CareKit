@@ -47,7 +47,7 @@
     return self;
 }
 
-- (NSString *)htmlContent {
+- (NSString *)HTMLContent {
     NSString *html = @"<!doctype html>\n";
     
     NSString *css = @"body {\n"
@@ -82,11 +82,11 @@
     return html;
 }
 
-- (void)createPDFDataWithCompletion:(void (^)(NSData *data, NSError *error))completion {
+- (void)createPDFDataWithCompletion:(void (^)(NSData *data, NSError * _Nullable error))completion {
     if (_writer == nil) {
         _writer = [[OCKHTMLPDFWriter alloc] init];
     }
-    [_writer writePDFFromHTML:self.htmlContent header:_pageHeader withCompletionBlock:^(NSData *data, NSError *error) {
+    [_writer writePDFFromHTML:self.HTMLContent header:_pageHeader withCompletionBlock:^(NSData *data, NSError *error) {
         completion(data, error);
     }];
 }

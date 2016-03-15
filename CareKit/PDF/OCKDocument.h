@@ -88,7 +88,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  Create a PDF file data based on current document object.
  */
-- (void)createPDFDataWithCompletion:(void (^)(NSData *PDFdata, NSError *error))completion;
+- (void)createPDFDataWithCompletion:(void (^)(NSData *PDFdata, NSError * _Nullable error))completion;
 
 @end
 

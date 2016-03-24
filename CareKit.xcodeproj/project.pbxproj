@@ -188,7 +188,6 @@
 		244A92431CA210F7007B42D6 /* OCKWeekViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKWeekViewController.h; sourceTree = "<group>"; };
 		244A92441CA210F7007B42D6 /* OCKWeekViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKWeekViewController.m; sourceTree = "<group>"; };
 		248499741CA48F3C0086FABC /* fi-FI */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fi-FI"; path = "fi-FI.lproj/CareKit.strings"; sourceTree = "<group>"; };
-		2484997D1CA48F8A0086FABC /* hu-HU */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "hu-HU"; path = "hu-HU.lproj/CareKit.strings"; sourceTree = "<group>"; };
 		248929641C90E70100EBBE1F /* OCKConnectDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKConnectDetailViewController.h; sourceTree = "<group>"; };
 		248929651C90E70100EBBE1F /* OCKConnectDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKConnectDetailViewController.m; sourceTree = "<group>"; };
 		248929661C90E70100EBBE1F /* OCKConnectTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKConnectTableViewCell.h; sourceTree = "<group>"; };
@@ -872,7 +871,6 @@
 				hi,
 				no,
 				"fi-FI",
-				"hu-HU",
 				"es-MX",
 			);
 			mainGroup = 8605A5B01C4F04EC00DD65FF;
@@ -1026,7 +1024,6 @@
 				867707D61CA3068300D1BD80 /* hi */,
 				867707D71CA3080A00D1BD80 /* no */,
 				248499741CA48F3C0086FABC /* fi-FI */,
-				2484997D1CA48F8A0086FABC /* hu-HU */,
 				24312D371CA496B200D94F8F /* es-MX */,
 			);
 			name = CareKit.strings;

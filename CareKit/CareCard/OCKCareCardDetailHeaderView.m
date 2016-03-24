@@ -1,24 +1,44 @@
-//
-//  OCKCareCardDetailHeaderView.m
-//  CareKit
-//
-//  Created by Umer Khan on 3/4/16.
-//  Copyright © 2016 carekit.org. All rights reserved.
-//
+/*
+ Copyright (c) 2016, Apple Inc. All rights reserved.
+ 
+ Redistribution and use in source and binary forms, with or without modification,
+ are permitted provided that the following conditions are met:
+ 
+ 1.  Redistributions of source code must retain the above copyright notice, this
+ list of conditions and the following disclaimer.
+ 
+ 2.  Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation and/or
+ other materials provided with the distribution.
+ 
+ 3.  Neither the name of the copyright holder(s) nor the names of any contributors
+ may be used to endorse or promote products derived from this software without
+ specific prior written permission. No license is granted to the trademarks of
+ the copyright holders even if such marks are included in this software.
+ 
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
+ FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 
 
 #import "OCKCareCardDetailHeaderView.h"
-#import "OCKCarePlanActivity.h"
+#import "OCKHelpers.h"
 
 
 static const CGFloat BottomMargin = 15.0;
-static const CGFloat LeadingMargin = 20.0;
 
 @implementation OCKCareCardDetailHeaderView {
     UILabel *_titleLabel;
     UILabel *_textLabel;
-    UILabel *_leadingEdge;
-    
+    UIView *_bottomEdge;
     NSMutableArray *_constraints;
 }
 
@@ -26,6 +46,11 @@ static const CGFloat LeadingMargin = 20.0;
     self = [super initWithFrame:frame];
     if (self) {
         [self prepareView];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(prepareView)
+                                                     name:UIContentSizeCategoryDidChangeNotification
+                                                   object:nil];
     }
     return self;
 }
@@ -37,47 +62,57 @@ static const CGFloat LeadingMargin = 20.0;
         _titleLabel = [UILabel new];
         [self addSubview:_titleLabel];
     }
-    _titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleTitle1];
-    _titleLabel.text = _treatment.title;
     
     if (!_textLabel) {
         _textLabel = [UILabel new];
         _textLabel.textColor = [UIColor lightGrayColor];
-        _textLabel.font = [UIFont systemFontOfSize:16.0 weight:UIFontWeightLight];
         [self addSubview:_textLabel];
     }
-    _textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleTitle3];
-    _textLabel.text = _treatment.text;
     
-    if (!_leadingEdge) {
-        _leadingEdge = [UILabel new];
-        [self addSubview:_leadingEdge];
+    if (!_bottomEdge) {
+        _bottomEdge = [UIView new];
+        [self addSubview:_bottomEdge];
     }
-    _leadingEdge.backgroundColor = _treatment.tintColor;
     
+    [self updateView];
+    [self updateFonts];
     [self setUpConstraints];
 }
 
+- (void)updateView {
+    self.tintColor = (!_intervention.tintColor) ? OCKAppTintColor() : _intervention.tintColor;
+    _titleLabel.text = _intervention.title;
+    _textLabel.text = _intervention.text;
+    _bottomEdge.backgroundColor = self.tintColor;
+}
+
+- (void)updateFonts {
+    _titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
+    _textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
+}
+
 - (void)setUpConstraints {
+    [NSLayoutConstraint deactivateConstraints:_constraints];
+    
     _constraints = [NSMutableArray new];
     
     _titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     _textLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    _leadingEdge.translatesAutoresizingMaskIntoConstraints = NO;
+    _bottomEdge.translatesAutoresizingMaskIntoConstraints = NO;
     
     [_constraints addObjectsFromArray:@[
                                         [NSLayoutConstraint constraintWithItem:_titleLabel
-                                                                     attribute:NSLayoutAttributeLeading
+                                                                     attribute:NSLayoutAttributeCenterX
                                                                      relatedBy:NSLayoutRelationEqual
                                                                         toItem:self
-                                                                     attribute:NSLayoutAttributeLeading
+                                                                     attribute:NSLayoutAttributeCenterX
                                                                     multiplier:1.0
-                                                                      constant:LeadingMargin],
+                                                                      constant:0.0],
                                         [NSLayoutConstraint constraintWithItem:_textLabel
-                                                                     attribute:NSLayoutAttributeLeading
+                                                                     attribute:NSLayoutAttributeCenterX
                                                                      relatedBy:NSLayoutRelationEqual
-                                                                        toItem:_titleLabel
-                                                                     attribute:NSLayoutAttributeLeading
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeCenterX
                                                                     multiplier:1.0
                                                                       constant:0.0],
                                         [NSLayoutConstraint constraintWithItem:_titleLabel
@@ -94,29 +129,39 @@ static const CGFloat LeadingMargin = 20.0;
                                                                      attribute:NSLayoutAttributeBottom
                                                                     multiplier:1.0
                                                                       constant:BottomMargin],
-                                        [NSLayoutConstraint constraintWithItem:_leadingEdge
-                                                                     attribute:NSLayoutAttributeWidth
+                                        [NSLayoutConstraint constraintWithItem:_bottomEdge
+                                                                     attribute:NSLayoutAttributeBottom
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeBottom
+                                                                    multiplier:1.0
+                                                                      constant:0.0],
+                                        [NSLayoutConstraint constraintWithItem:_bottomEdge
+                                                                     attribute:NSLayoutAttributeHeight
                                                                      relatedBy:NSLayoutRelationEqual
                                                                         toItem:nil
                                                                      attribute:NSLayoutAttributeNotAnAttribute
                                                                     multiplier:1.0
                                                                       constant:3.0],
-                                        [NSLayoutConstraint constraintWithItem:_leadingEdge
-                                                                     attribute:NSLayoutAttributeHeight
+                                        [NSLayoutConstraint constraintWithItem:_bottomEdge
+                                                                     attribute:NSLayoutAttributeWidth
                                                                      relatedBy:NSLayoutRelationEqual
                                                                         toItem:self
-                                                                     attribute:NSLayoutAttributeHeight
+                                                                     attribute:NSLayoutAttributeWidth
                                                                     multiplier:1.0
                                                                       constant:0.0]
                                         ]];
-    
     [NSLayoutConstraint activateConstraints:_constraints];
     
 }
 
-- (void)setTreatment:(OCKCarePlanActivity *)treatment {
-    _treatment = treatment;
-    [self prepareView];
+- (void)setIntervention:(OCKCarePlanActivity *)intervention {
+    _intervention = intervention;
+    [self updateView];
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end

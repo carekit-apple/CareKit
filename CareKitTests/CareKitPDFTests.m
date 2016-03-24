@@ -37,6 +37,7 @@
 
 @end
 
+
 @implementation CareKitPDFTests
 
 - (NSString *)testPath {
@@ -55,22 +56,22 @@
 }
 
 - (OCKChart *)createBarChart {
-    
-    OCKBarGroup *barGroup1 = [[OCKBarGroup alloc] initWithTitle:@"Bars 1"
+    OCKBarSeries *barSeries1 = [[OCKBarSeries alloc] initWithTitle:@"Bars 1"
                                                         values:@[@1, @2, @3, @4, @5]
                                                    valueLabels:@[@"1.0", @"2.0", @"3.0", @"4.0", @"5.0"]
                                                       tintColor:[[UIColor blueColor] colorWithAlphaComponent:0.2]];
     
-    OCKBarGroup *barGroup2 = [[OCKBarGroup alloc] initWithTitle:@"Bars 2"
+    OCKBarSeries *barSeries2 = [[OCKBarSeries alloc] initWithTitle:@"Bars 2"
                                                          values:@[@5, @4, @3, @2, @1]
                                                     valueLabels:@[@"5.0", @"4.0", @"3.0", @"2.0", @"1.0"]
                                                       tintColor:[[UIColor purpleColor] colorWithAlphaComponent:0.2]];
     
     OCKBarChart *barChart = [[OCKBarChart alloc] initWithWithTitle:@"Title"
                                                               text:@"Text"
+                                                         tintColor:[UIColor whiteColor]
                                                         axisTitles:@[@"Day1", @"Day2", @"Day3", @"Day4", @"Day5"]
                                                      axisSubtitles:@[@"M", @"T", @"W", @"T", @"F"]
-                                                            groups:@[barGroup1, barGroup2]];
+                                                        dataSeries:@[barSeries1, barSeries2]];
     
     return barChart;
     
@@ -93,7 +94,11 @@
     OCKDocumentElementChart *barChart = [[OCKDocumentElementChart alloc] initWithChart:[self createBarChart]];
     OCKDocumentElementImage *imageElement = [[OCKDocumentElementImage alloc] initWithImage:[self createImage]];
     
-    OCKDocument *doc = [[OCKDocument alloc] initWithTitle:@"This is a title" elements:@[subtitle, paragrah, barChart, paragrah, imageElement, paragrah]];
+    OCKDocumentElementTable *table = [[OCKDocumentElementTable alloc] init];
+    table.headers = @[@"Mon", @"Tue", @"Wed", @"Thu", @"Fri"];
+    table.rows = @[@[@"1", @"2", @"3", @"4", @"5"], @[@"2", @"3", @"4", @"5", @"6"], @[@"3", @"4", @"5", @"6", @"7"]];
+    
+    OCKDocument *doc = [[OCKDocument alloc] initWithTitle:@"This is a title" elements:@[subtitle, table, paragrah, barChart, paragrah, imageElement, paragrah]];
     doc.pageHeader = @"App Name: ABC, User Name: John Appleseed";
     
     NSString *path = [[self cleanTestPath] stringByAppendingPathComponent:@"x.html"];

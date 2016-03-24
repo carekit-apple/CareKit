@@ -1,10 +1,33 @@
-//
-//  OCKCareSchedule.m
-//  CareKit
-//
-//  Created by Yuan Zhu on 1/29/16.
-//  Copyright © 2016 carekit.org. All rights reserved.
-//
+/*
+ Copyright (c) 2016, Apple Inc. All rights reserved.
+ 
+ Redistribution and use in source and binary forms, with or without modification,
+ are permitted provided that the following conditions are met:
+ 
+ 1.  Redistributions of source code must retain the above copyright notice, this
+ list of conditions and the following disclaimer.
+ 
+ 2.  Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation and/or
+ other materials provided with the distribution.
+ 
+ 3.  Neither the name of the copyright holder(s) nor the names of any contributors
+ may be used to endorse or promote products derived from this software without
+ specific prior written permission. No license is granted to the trademarks of
+ the copyright holders even if such marks are included in this software.
+ 
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
+ FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 
 #import "OCKCareSchedule.h"
 #import "OCKCareSchedule_Internal.h"
@@ -22,77 +45,59 @@
 }
 
 + (instancetype)dailyScheduleWithStartDate:(NSDateComponents *)startDate
-                        occurrencesPerDay:(NSUInteger)occurrencesPerDay {
+                         occurrencesPerDay:(NSUInteger)occurrencesPerDay {
     return [[OCKCareDailySchedule alloc] initWithStartDate:startDate
                                                daysToSkip:0
                                         occurrencesPerDay:occurrencesPerDay
-                                                   EndDate:nil];
+                                                   endDate:nil];
 }
 
 + (instancetype)weeklyScheduleWithStartDate:(NSDateComponents *)startDate
-                      occurrencesOnEachDay:(NSArray<NSNumber *> *)occurrencesFromSundayToSaturday {
+                       occurrencesOnEachDay:(NSArray<NSNumber *> *)occurrencesFromSundayToSaturday {
     return [[OCKCareWeeklySchedule alloc] initWithStartDate:startDate
                                                weeksToSkip:0
                                       occurrencesOnEachDay:occurrencesFromSundayToSaturday
-                                                    EndDate:nil];
-}
-
-+ (instancetype)monthlyScheduleWithStartDate:(NSDateComponents *)startDate
-                       occurrencesOnEachDay:(NSArray<NSNumber *> *)occurrencesFrom1stTo31th {
-    return [[OCKCareMonthlySchedule alloc] initWithStartDate:startDate
-                                               monthsToSkip:0
-                                       occurrencesOnEachDay:occurrencesFrom1stTo31th
-                                                     EndDate:nil];
+                                                    endDate:nil];
 }
 
 + (instancetype)dailyScheduleWithStartDate:(NSDateComponents *)startDate
-                        occurrencesPerDay:(NSUInteger)occurrencesPerDay
-                               daysToSkip:(NSUInteger)daysToSkip
-                                   EndDate:(nullable NSDateComponents *)endDate {
+                         occurrencesPerDay:(NSUInteger)occurrencesPerDay
+                                daysToSkip:(NSUInteger)daysToSkip
+                                   endDate:(nullable NSDateComponents *)endDate {
     return [[OCKCareDailySchedule alloc] initWithStartDate:startDate
                                                daysToSkip:daysToSkip
                                         occurrencesPerDay:occurrencesPerDay
-                                                   EndDate:endDate];
+                                                   endDate:endDate];
 }
 
 + (instancetype)weeklyScheduleWithStartDate:(NSDateComponents *)startDate
-                      occurrencesOnEachDay:(NSArray<NSNumber *> *)occurrencesFromSundayToSaturday
-                               weeksToSkip:(NSUInteger)weeksToSkip
-                                    EndDate:(nullable NSDateComponents *)endDate {
+                       occurrencesOnEachDay:(NSArray<NSNumber *> *)occurrencesFromSundayToSaturday
+                                weeksToSkip:(NSUInteger)weeksToSkip
+                                    endDate:(nullable NSDateComponents *)endDate {
     return [[OCKCareWeeklySchedule alloc] initWithStartDate:startDate
                                                weeksToSkip:weeksToSkip
                                       occurrencesOnEachDay:occurrencesFromSundayToSaturday
-                                                    EndDate:endDate];
+                                                    endDate:endDate];
 }
-
-+ (instancetype)monthlyScheduleWithStartDate:(NSDateComponents *)startDate
-                       occurrencesOnEachDay:(NSArray<NSNumber *> *)occurrencesFrom1stTo31th
-                               monthsToSkip:(NSUInteger)monthsToSkip
-                                     EndDate:(nullable NSDateComponents *)endDate {
-    return [[OCKCareMonthlySchedule alloc] initWithStartDate:startDate
-                                               monthsToSkip:monthsToSkip
-                                       occurrencesOnEachDay:occurrencesFrom1stTo31th
-                                                     EndDate:endDate];
-}
-
 
 - (instancetype)initWithStartDate:(NSDateComponents *)startDate
-                          EndDate:(NSDateComponents *)endDate {
+                          endDate:(NSDateComponents *)endDate
+                      occurrences:(NSArray<NSNumber *> *)occurrences
+                  timeUnitsToSkip:(NSUInteger)timeUnitsToSkip {
     
-    NSParameterAssert(startDate);
+    OCKThrowInvalidArgumentExceptionIfNil(startDate);
     if (endDate) {
         NSAssert(![startDate isLaterThan:endDate], @"startDate should be earlier than endDate.");
     }
     
     self = [super init];
     if (self) {
-        _startDate = startDate;
-        [_startDate adjustEra];
-        _endDate = endDate;
-        [_endDate adjustEra];
+        _startDate = [startDate validatedDateComponents];
+        _endDate = [endDate validatedDateComponents];
+        _occurrences = [occurrences copy];
+        _timeUnitsToSkip = timeUnitsToSkip;
     }
     return self;
-    
 }
 
 + (BOOL)supportsSecureCoding {
@@ -130,15 +135,13 @@
 }
 
 - (instancetype)copyWithZone:(NSZone *)zone {
-    OCKCareSchedule *schedule = [[[self class] alloc] initWithStartDate:self.startDate EndDate:self.endDate];
-    schedule->_timeUnitsToSkip = self.timeUnitsToSkip;
-    schedule->_occurrences = self.occurrences;
+    OCKCareSchedule *schedule = [[[self class] alloc] initWithStartDate:self.startDate endDate:self.endDate occurrences:self.occurrences timeUnitsToSkip:self.timeUnitsToSkip];
     return schedule;
 }
 
 - (BOOL)isDateInRange:(NSDateComponents *)day {
-    return (([day isLaterThan:_startDate] || [day isEqual:_startDate]) &&
-            (_endDate == nil || [day isEarlierThan:_endDate] || [day isEqual:_endDate]));
+    return (([day isLaterThan:_startDate] || [day isEqualToDate:_startDate]) &&
+            (_endDate == nil || [day isEarlierThan:_endDate] || [day isEqualToDate:_endDate]));
 }
 
 - (NSCalendar *)calendar {
@@ -154,23 +157,27 @@
     NSCalendar *calendar = [self calendar];
     NSInteger startDate = [calendar ordinalityOfUnit:NSCalendarUnitDay
                                              inUnit:NSCalendarUnitEra
-                                            forDate:[_startDate dateWithCalendar:calendar]];
+                                            forDate:[_startDate dateWithGregorianCalendar]];
     
     NSInteger endDate = [calendar ordinalityOfUnit:NSCalendarUnitDay
                                            inUnit:NSCalendarUnitEra
-                                          forDate:[day dateWithCalendar:calendar]];
+                                          forDate:[day dateWithGregorianCalendar]];
 
     NSUInteger daysSinceStart = endDate - startDate;
     return daysSinceStart;
 }
 
--(void)setEndDate:(NSDateComponents *)day {
-    NSAssert(![_startDate isLaterThan:day], @"startDate should be earlier than endDate. %@ %@", _startDate, day);
-    _endDate = day;
+-(void)setEndDate:(NSDateComponents *)endDate {
+    NSAssert(![_startDate isLaterThan:endDate], @"startDate should be earlier than endDate. %@ %@", _startDate, endDate);
+    _endDate = [endDate validatedDateComponents];
 }
 
 - (NSString *)description {
     return [NSString stringWithFormat:@"%@ %@ %@", [super description], _startDate, _endDate];
+}
+
+- (OCKCareScheduleType)type {
+    return OCKCareScheduleTypeOther;
 }
 
 @end
@@ -185,13 +192,8 @@
 - (instancetype)initWithStartDate:(NSDateComponents *)startDate
                        daysToSkip:(NSUInteger)daysToSkip
                 occurrencesPerDay:(NSUInteger)occurrencesPerDay
-                          EndDate:(nullable NSDateComponents *)endDate {
-    self = [self initWithStartDate:startDate EndDate:endDate];
-    
-    if (self) {
-        self.timeUnitsToSkip = daysToSkip;
-        self.occurrences = @[@(occurrencesPerDay)];
-    }
+                          endDate:(nullable NSDateComponents *)endDate {
+    self = [self initWithStartDate:startDate endDate:endDate occurrences: @[@(occurrencesPerDay)] timeUnitsToSkip:daysToSkip];
     return self;
 }
 
@@ -208,6 +210,7 @@
 
 @end
 
+
 @implementation OCKCareWeeklySchedule
 
 - (OCKCareScheduleType)type {
@@ -215,19 +218,14 @@
 }
 
 - (instancetype)initWithStartDate:(NSDateComponents *)startDate
-                     weeksToSkip:(NSUInteger)weeksToSkip
-            occurrencesOnEachDay:(NSArray<NSNumber *> *)occurrencesFromSundayToSaturday
-                          EndDate:(nullable NSDateComponents *)endDate {
+                      weeksToSkip:(NSUInteger)weeksToSkip
+             occurrencesOnEachDay:(NSArray<NSNumber *> *)occurrencesFromSundayToSaturday
+                          endDate:(nullable NSDateComponents *)endDate {
     
-    NSParameterAssert(occurrencesFromSundayToSaturday);
+    OCKThrowInvalidArgumentExceptionIfNil(occurrencesFromSundayToSaturday);
     NSParameterAssert(occurrencesFromSundayToSaturday.count == 7);
     
-    self = [self initWithStartDate:startDate EndDate:endDate];
-    
-    if (self) {
-        self.timeUnitsToSkip = weeksToSkip;
-        self.occurrences = [occurrencesFromSundayToSaturday copy];
-    }
+    self = [self initWithStartDate:startDate endDate:endDate occurrences:occurrencesFromSundayToSaturday timeUnitsToSkip:weeksToSkip];
     return self;
 }
 
@@ -238,62 +236,17 @@
         
         NSInteger startWeek = [calendar ordinalityOfUnit:NSCalendarUnitWeekOfYear
                                                  inUnit:NSCalendarUnitEra
-                                                forDate:[self.startDate dateWithCalendar:calendar]];
+                                                forDate:[self.startDate dateWithGregorianCalendar]];
         
         NSInteger endWeek = [calendar ordinalityOfUnit:NSCalendarUnitWeekOfYear
                                                inUnit:NSCalendarUnitEra
-                                              forDate:[day dateWithCalendar:calendar]];
+                                              forDate:[day dateWithGregorianCalendar]];
        
         NSUInteger weeksSinceStart = endWeek - startWeek;
-        NSUInteger weekday = [calendar component:NSCalendarUnitWeekday fromDate:[day dateWithCalendar:calendar]];
+        NSUInteger weekday = [calendar component:NSCalendarUnitWeekday fromDate:[day dateWithGregorianCalendar]];
         occurrences = ((weeksSinceStart % (self.timeUnitsToSkip + 1)) == 0) ? self.occurrences[weekday-1].unsignedIntegerValue : 0;
     }
     return occurrences;
 }
 
 @end
-
-@implementation OCKCareMonthlySchedule
-
-- (OCKCareScheduleType)type {
-    return OCKCareScheduleTypeMonthly;
-}
-
-- (instancetype)initWithStartDate:(NSDateComponents *)startDate
-                    monthsToSkip:(NSUInteger)monthsToSkip
-            occurrencesOnEachDay:(NSArray<NSNumber *> *)occurrencesFrom1stTo31th
-                          EndDate:(nullable NSDateComponents *)endDate {
-    
-    NSParameterAssert(occurrencesFrom1stTo31th);
-    NSParameterAssert(occurrencesFrom1stTo31th.count == 31);
-    
-   self = [self initWithStartDate:startDate EndDate:endDate];
-    
-    if (self) {
-        self.timeUnitsToSkip = monthsToSkip;
-        self.occurrences = [occurrencesFrom1stTo31th copy];
-    }
-    return self;
-}
-
-- (NSUInteger)numberOfEventsOnDate:(NSDateComponents *)day {
-    NSUInteger occurrences = 0;
-    if ([self isDateInRange:day]) {
-        NSCalendar *calendar = [self calendar];
-        NSInteger startMonth = [calendar ordinalityOfUnit:NSCalendarUnitMonth
-                                                  inUnit:NSCalendarUnitEra
-                                                 forDate:[self.startDate dateWithCalendar:calendar]];
-        
-        NSInteger endMonth = [calendar ordinalityOfUnit:NSCalendarUnitMonth
-                                                inUnit:NSCalendarUnitEra
-                                               forDate:[day dateWithCalendar:calendar]];
-        
-        NSUInteger monthsSinceStart = endMonth - startMonth;
-        NSUInteger dayInMonth = [calendar component:NSCalendarUnitDay fromDate:[day dateWithCalendar:calendar]];
-        occurrences = ((monthsSinceStart % (self.timeUnitsToSkip + 1)) == 0) ? self.occurrences[dayInMonth - 1].unsignedIntegerValue : 0;
-    }
-    return occurrences;
-}
-
-@end
-

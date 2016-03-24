@@ -1,29 +1,56 @@
-//
-//  OCKConnectDetailTableViewController.m
-//  CareKit
-//
-//  Created by Umer Khan on 2/27/16.
-//  Copyright © 2016 carekit.org. All rights reserved.
-//
+/*
+ Copyright (c) 2016, Apple Inc. All rights reserved.
+ 
+ Redistribution and use in source and binary forms, with or without modification,
+ are permitted provided that the following conditions are met:
+ 
+ 1.  Redistributions of source code must retain the above copyright notice, this
+ list of conditions and the following disclaimer.
+ 
+ 2.  Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation and/or
+ other materials provided with the distribution.
+ 
+ 3.  Neither the name of the copyright holder(s) nor the names of any contributors
+ may be used to endorse or promote products derived from this software without
+ specific prior written permission. No license is granted to the trademarks of
+ the copyright holders even if such marks are included in this software.
+ 
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
+ FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 
 
 #import "OCKConnectDetailViewController.h"
-#import "OCKContact.h"
 #import "OCKConnectTableViewHeader.h"
-#import "OCKConnectViewController.h"
+#import "OCKDefines_Private.h"
 
 
-static const CGFloat CellHeight = 70.0;
 static const CGFloat HeaderViewHeight = 225.0;
+
+typedef NS_ENUM(NSInteger, OCKConnectDetailSection) {
+    OCKConnectDetailSectionContactInfo = 0,
+    OCKConnectDetailSectionSharing
+};
 
 @implementation OCKConnectDetailViewController {
     OCKConnectTableViewHeader *_headerView;
+    NSArray<NSArray *> *_tableViewData;
 }
 
 - (instancetype)initWithContact:(OCKContact *)contact {
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
         _contact = contact;
+        [self createTableViewDataArray];
     }
     return self;
 }
@@ -31,18 +58,14 @@ static const CGFloat HeaderViewHeight = 225.0;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.tableView.rowHeight = CellHeight;
+    self.tableView.estimatedRowHeight = 44.0;
+    self.tableView.rowHeight = UITableViewAutomaticDimension;
     [self prepareView];
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    
-    [self.tableView reloadData];
 }
 
 - (void)setContact:(OCKContact *)contact {
     _contact = contact;
+    [self createTableViewDataArray];
     [self prepareView];
     [self.tableView reloadData];
 }
@@ -64,6 +87,28 @@ static const CGFloat HeaderViewHeight = 225.0;
 
 
 #pragma mark - Helpers
+
+- (void)createTableViewDataArray {
+    NSMutableArray *contactInfoSection = [NSMutableArray new];
+    if (_contact.phoneNumber) {
+        [contactInfoSection addObject:@(OCKConnectTypePhone)];
+    }
+    if (_contact.messageNumber) {
+        [contactInfoSection addObject:@(OCKConnectTypeMessage)];
+    }
+    if (_contact.emailAddress) {
+        [contactInfoSection addObject:@(OCKConnectTypeEmail)];
+    }
+    
+    NSMutableArray *sharingSection = [NSMutableArray new];
+    if (_delegate) {
+        [sharingSection addObject:[_delegate connectViewController:_masterViewController titleForSharingCellForContact:_contact]];
+    } else {
+        [sharingSection addObject:OCKLocalizedString(@"SHARING_CELL_TITLE", nil)];
+    }
+    
+    _tableViewData = @[[contactInfoSection copy], [sharingSection copy]];
+}
 
 - (void)makeCallToNumber:(NSString *)number {
     NSString *stringURL = [NSString stringWithFormat:@"tel:%@", number];
@@ -94,11 +139,11 @@ static const CGFloat HeaderViewHeight = 225.0;
 - (void)contactInfoTableViewCellDidSelectConnection:(OCKContactInfoTableViewCell *)cell {
     switch (cell.connectType) {
         case OCKConnectTypePhone:
-            [self makeCallToNumber:cell.contact.phoneNumber];
+            [self makeCallToNumber:cell.contact.phoneNumber.stringValue];
             break;
         
         case OCKConnectTypeMessage:
-            [self sendMessageToNumber:cell.contact.messageNumber];
+            [self sendMessageToNumber:cell.contact.messageNumber.stringValue];
             break;
             
         case OCKConnectTypeEmail:
@@ -108,17 +153,21 @@ static const CGFloat HeaderViewHeight = 225.0;
 }
 
 
-#pragma mark - OCKReportsTableViewCellDelegate
+#pragma mark - OCKContactSharingTableViewCellDelegate
 
-- (void)reportsTableViewCellDidSelectShareButton:(OCKReportsTableViewCell *)cell {
+- (void)sharingTableViewCellDidSelectShareButton:(OCKContactSharingTableViewCell *)cell {
     if (_delegate &&
-        [_delegate respondsToSelector:@selector(connectDetailViewController:didSelectShareButtonForContact:)]) {
-        [_delegate connectDetailViewController:self didSelectShareButtonForContact:cell.contact];
+        [_delegate respondsToSelector:@selector(connectViewController:didSelectShareButtonForContact:)]) {
+        [_delegate connectViewController:_masterViewController didSelectShareButtonForContact:cell.contact];
     }
 }
 
 
 #pragma mark - UITableViewDelegate
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return UITableViewAutomaticDimension;
+}
 
 - (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath {
     return NO;
@@ -134,39 +183,24 @@ static const CGFloat HeaderViewHeight = 225.0;
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     NSString *sectionTitle = nil;
     switch (section) {
-        case 0:
-            sectionTitle = @"Contact Info";
+        case OCKConnectDetailSectionContactInfo:
+            sectionTitle = OCKLocalizedString(@"CONTACT_INFO_SECTION_TITLE", nil);
             break;
             
-        case 1:
-            sectionTitle = (_delegate) ? @"Sharing" : nil;
+        case OCKConnectDetailSectionSharing:
+            sectionTitle = OCKLocalizedString(@"CONTACT_SHARING_SECTION_TITLE", nil);
             break;
     }
     return sectionTitle;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    NSInteger numberOfRows = 0;
-    if (section == 0) {
-        if (_contact.phoneNumber) {
-            numberOfRows = numberOfRows + 1;
-        }
-        if (_contact.emailAddress) {
-            numberOfRows = numberOfRows + 1;
-        }
-        if (_contact.messageNumber) {
-            numberOfRows = numberOfRows + 1;
-        }
-    } else if (section == 1) {
-        numberOfRows = (_delegate) ? 1 : 0;
-    }
-    return numberOfRows;
+    return _tableViewData[section].count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 0) {
+    if (indexPath.section == OCKConnectDetailSectionContactInfo) {
         static NSString *ContactCellIdentifier = @"ContactInfoCell";
-        
         OCKContactInfoTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ContactCellIdentifier];
         if (!cell) {
             cell = [[OCKContactInfoTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
@@ -174,48 +208,21 @@ static const CGFloat HeaderViewHeight = 225.0;
         }
         cell.contact = _contact;
         cell.delegate = self;
-        
-        OCKConnectType type;
-        if (indexPath.row == 0) {
-            if (_contact.phoneNumber) {
-                type = OCKConnectTypePhone;
-            } else if (_contact.messageNumber) {
-                type = OCKConnectTypeMessage;
-            } else if (_contact.emailAddress) {
-                type = OCKConnectTypeEmail;
-            }
-        } else if (indexPath.row == 1) {
-            if (_contact.messageNumber) {
-                type = OCKConnectTypeMessage;
-            } else if (_contact.emailAddress) {
-                type = OCKConnectTypeEmail;
-            }
-        } else if (indexPath.row == 2) {
-            type = OCKConnectTypeEmail;
-        }
-        cell.connectType = type;
-        
+        cell.connectType = [_tableViewData[indexPath.section][indexPath.row] intValue];
         return cell;
     
-    } else if (indexPath.section == 1 && _delegate) {
-        static NSString *ReportsCellIdentifier = @"ReportsCell";
-
-        OCKReportsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ReportsCellIdentifier];
+    } else if (indexPath.section == OCKConnectDetailSectionSharing && _delegate) {
+        static NSString *SharingCellIdentifier = @"SharingCell";
+        OCKContactSharingTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:SharingCellIdentifier];
         if (!cell) {
-            cell = [[OCKReportsTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
-                                                  reuseIdentifier:ReportsCellIdentifier];
+            cell = [[OCKContactSharingTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                                         reuseIdentifier:SharingCellIdentifier];
         }
-        if ([_delegate respondsToSelector:@selector(connectDetailViewController:titleForSharingCellForContact:)]) {
-            cell.title = [_delegate connectDetailViewController:self titleForSharingCellForContact:_contact];
-        } else {
-            cell.title = @"Send reports";
-        }
+        cell.title = _tableViewData[indexPath.section][indexPath.row];
         cell.contact = _contact;
         cell.delegate = self;
-        
         return cell;
     }
-    
     return nil;
 }
 
@@ -225,8 +232,8 @@ static const CGFloat HeaderViewHeight = 225.0;
 - (void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result {
     [self dismissViewControllerAnimated:YES completion:nil];
     if (result == MessageComposeResultFailed) {
-        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Error"
-                                                                                 message:@"Message send failed."
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:OCKLocalizedString(@"ERROR_TITLE", nil)
+                                                                                 message:OCKLocalizedString(@"MESSAGE_SEND_ERROR", nil)
                                                                           preferredStyle:UIAlertControllerStyleAlert];
         [self presentViewController:alertController animated:YES completion:nil];
     }
@@ -238,12 +245,10 @@ static const CGFloat HeaderViewHeight = 225.0;
 - (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error {
     [self dismissViewControllerAnimated:YES completion:nil];
     if (result == MFMailComposeResultFailed) {
-        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Error"
-                                                                                 message:@"Email send failed."
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:OCKLocalizedString(@"ERROR_TITLE", nil)
+                                                                                 message:OCKLocalizedString(@"EMAIL_SEND_ERROR", nil)
                                                                           preferredStyle:UIAlertControllerStyleAlert];
         [self presentViewController:alertController animated:YES completion:nil];
-        
-        NSLog(@"%@", error);
     }
 }
 

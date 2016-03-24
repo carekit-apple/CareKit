@@ -2,11 +2,11 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "nurse.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
+      "filename" : "nurse.png",
       "scale" : "2x"
     },
     {

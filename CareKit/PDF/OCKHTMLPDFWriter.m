@@ -94,8 +94,6 @@ static const CGFloat LetterHeight = 11.0f;
         CGPoint drawPoint = CGPointMake(drawX, drawY);
         
         [_header drawAtPoint:drawPoint withAttributes:@{ NSFontAttributeName: font }];
-        
-        NSLog(@"drawHeaderForPageAtIndex");
     }
 }
 

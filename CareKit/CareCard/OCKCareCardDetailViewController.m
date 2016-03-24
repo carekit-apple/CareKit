@@ -1,29 +1,52 @@
-//
-//  OCKCareCardDetailViewController.m
-//  CareKit
-//
-//  Created by Umer Khan on 2/18/16.
-//  Copyright © 2016 carekit.org. All rights reserved.
-//
+/*
+ Copyright (c) 2016, Apple Inc. All rights reserved.
+ 
+ Redistribution and use in source and binary forms, with or without modification,
+ are permitted provided that the following conditions are met:
+ 
+ 1.  Redistributions of source code must retain the above copyright notice, this
+ list of conditions and the following disclaimer.
+ 
+ 2.  Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation and/or
+ other materials provided with the distribution.
+ 
+ 3.  Neither the name of the copyright holder(s) nor the names of any contributors
+ may be used to endorse or promote products derived from this software without
+ specific prior written permission. No license is granted to the trademarks of
+ the copyright holders even if such marks are included in this software.
+ 
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
+ FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 
 
 #import "OCKCareCardDetailViewController.h"
-#import "OCKCarePlanActivity.h"
 #import "OCKCareCardDetailHeaderView.h"
+#import "OCKCareCardInstructionsTableViewCell.h"
+#import "OCKCareCardAdditionalInfoTableViewCell.h"
+#import "OCKDefines_Private.h"
 
 
-static const CGFloat HeaderViewHeight = 150.0;
+static const CGFloat HeaderViewHeight = 100.0;
 
 @implementation OCKCareCardDetailViewController {
     OCKCareCardDetailHeaderView *_headerView;
-    UIView *_leadingEdge;
-    NSMutableArray *_constraints;
+    NSArray *_tableViewCells;
 }
 
-- (instancetype)initWithTreatment:(OCKCarePlanActivity *)treatment {
+- (instancetype)initWithIntervention:(OCKCarePlanActivity *)intervention {
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
-        _treatment = treatment;
+        _intervention = intervention;
     }
     return self;
 }
@@ -32,28 +55,51 @@ static const CGFloat HeaderViewHeight = 150.0;
     [super viewDidLoad];
     
     [self prepareView];
+    
+    self.tableView.estimatedRowHeight = 44.0;
+    self.tableView.rowHeight = UITableViewAutomaticDimension;
     self.tableView.tableFooterView = [UIView new];
-}
-
-- (void)setTreatment:(OCKCarePlanActivity *)treatment {
-    _treatment = treatment;
-    [self prepareView];
 }
 
 - (void)prepareView {
     if (!_headerView) {
         _headerView = [[OCKCareCardDetailHeaderView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, HeaderViewHeight)];
     }
-    _headerView.treatment = _treatment;
+    _headerView.intervention = _intervention;
     
     self.tableView.tableHeaderView = _headerView;
+    
+    [self createTableViewDataArray];
+}
+
+
+#pragma mark - Helpers
+
+- (void)createTableViewDataArray {
+    NSMutableArray *tableViewCells = [NSMutableArray new];
+
+    if (_intervention.instructions) {
+        OCKCareCardInstructionsTableViewCell *cell = [[OCKCareCardInstructionsTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                                                                                     reuseIdentifier:nil];
+        cell.intervention = _intervention;
+        [tableViewCells addObject:cell];
+    }
+    
+    if (_intervention.imageURL) {
+        OCKCareCardAdditionalInfoTableViewCell *cell = [[OCKCareCardAdditionalInfoTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                                                                                     reuseIdentifier:nil];
+        cell.intervention = _intervention;
+        [tableViewCells addObject:cell];
+    }
+
+    _tableViewCells = [tableViewCells copy];
 }
 
 
 #pragma mark - UITableViewDelegate
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return UITableViewAutomaticDimension;
+- (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath {
+    return NO;
 }
 
 
@@ -64,45 +110,27 @@ static const CGFloat HeaderViewHeight = 150.0;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    NSInteger numberOfSections = 0;
-    if (_treatment.detailText) {
-        numberOfSections += 1;
-    }
-    // TO DO: Implement this for image content.
-    // And if statemnet to add to the number of sections.
-    numberOfSections += 1;
-    return numberOfSections;
+    return _tableViewCells.count;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     NSString *title;
+    NSString *instructionsTitle = OCKLocalizedString(@"CARE_CARD_INSTRUCTIONS_SECTION_TITLE", nil);
+    NSString *additionalInfoTitle = OCKLocalizedString(@"CARE_CARD_ADDITIONAL_INFO_SECTION_TITLE", nil);
     switch (section) {
         case 0:
-            title = @"Detailed Instructions";
+            title = (_intervention.instructions) ? instructionsTitle : additionalInfoTitle;
             break;
             
         case 1:
-            title = @"Additional Information";
+            title = additionalInfoTitle;
             break;
     }
     return title;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
-                                                   reuseIdentifier:nil];
-    
-    switch (indexPath.section) {
-        case 0:
-            cell.textLabel.text = _treatment.detailText;
-            cell.textLabel.numberOfLines = 0;
-            cell.textLabel.lineBreakMode = NSLineBreakByWordWrapping;
-            break;
-        case 1:
-            break;
-    }
-    
-    return cell;
+    return _tableViewCells[indexPath.section];
 }
 
 @end

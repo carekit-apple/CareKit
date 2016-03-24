@@ -28,17 +28,18 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
 #import <Foundation/Foundation.h>
 #import <CareKit/CareKit.h>
+
 
 NS_ASSUME_NONNULL_BEGIN
 
 /**
- OCKDocumentElement defines the protocol to be adopted by all the elements in OCKDocument.
- It requires an element to output to HTML content.
- Developer can create custom element confirming to this protocol to be inlcuded in a document.
+ The OCKDocumentElement class defines the protocol to be adopted by all the elements in an OCKDocument object. 
+ You can create custom elements that conform to this protocol to be inlcuded in a document.
  */
-@protocol OCKDocumentElement <NSObject>
+@protocol OCKDocumentElement <NSCopying>
 
 /**
  Content in HTML format.
@@ -48,29 +49,29 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 /**
- OCKDocument defines a document object which caontains title, pageHeader, and elements.
- It supports exporting to HTML or PDF file.
+ The OCKDocument class defines a document object that contains a title, page header, and elements. 
+ It supports exporting to an HTML or PDF file.
  */
-@interface OCKDocument : NSObject
+@interface OCKDocument : NSObject <NSCopying>
 
 /**
- Initializer of OCKDocument.
+ Initializer for an OCKDocument object.
  
  @param title       Title of the document.
- @param elements    Elements to be included in the document.
+ @param elements    An array of elements to be included in the document.
  
- @return    Initialized OCKDocument instance.
+ @return    An initialized OCKDocument instance.
  */
-- (instancetype)initWithTitle:(NSString *)title elements:(NSArray<id<OCKDocumentElement>> *)elements;
+- (instancetype)initWithTitle:(nullable NSString *)title elements:(nullable NSArray<id<OCKDocumentElement>> *)elements;
 
 /**
- Title of the document; printed in large font at the beginging of the file.
+ Title of the document; printed in large font at the beginging of the document.
  */
 @property (nonatomic, copy, nullable) NSString *title;
 
 /**
- pageHeader will be printed in every PDF page above other content.
- It can be used to help identify the source of a file.
+ The page header string will be printed in every PDF page above other content. 
+ It can be used to help identify the source of a file. 
  For example, @"App Name: ABC, User ID: 123456";
  */
 @property (nonatomic, copy, nullable) NSString *pageHeader;
@@ -86,7 +87,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy, readonly) NSString *HTMLContent;
 
 /**
- Create a PDF file data based on current document object.
+ Create PDF file using data from the current document object.
  */
 - (void)createPDFDataWithCompletion:(void (^)(NSData *PDFdata, NSError * _Nullable error))completion;
 
@@ -94,15 +95,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 /**
- Defines a subtitle element to be included in document.
+ Defines a subtitle element to be included in the document.
  */
 @interface OCKDocumentElementSubtitle : NSObject <OCKDocumentElement>
 
 /**
- Initializer of OCKDocumentElementSubtitle.
+ Initializer for an OCKDocumentElementSubtitle object.
  
  @param subtitle    Subtitle string.
- @return    Initialized OCKDocumentElementSubtitle instance.
+ @return    An initialized OCKDocumentElementSubtitle instance.
  */
 - (instancetype)initWithSubtitle:(NSString *)subtitle;
 
@@ -115,15 +116,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 /**
- Defines an text paragraph element to be included in document.
+ Defines a text paragraph element to include in the document.
  */
 @interface OCKDocumentElementParagraph : NSObject <OCKDocumentElement>
 
 /**
- Initializer of OCKDocumentElementParagraph.
+ Initializer for an OCKDocumentElementParagraph object.
  
- @param     content    Paragraph content string.
- @return    Initialized OCKDocumentElementParagraph instance.
+ @param content    Paragraph content string.
+ @return    An initialized OCKDocumentElementParagraph instance.
  */
 - (instancetype)initWithContent:(NSString *)content;
 
@@ -136,15 +137,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 /**
- Defines an image element to be included in a document.
+ Defines an image element to include in the document.
  */
 @interface OCKDocumentElementImage : NSObject <OCKDocumentElement>
 
 /**
- Initializer of OCKDocumentElementImage.
+ Initializer for an OCKDocumentElementImage object.
  
- @param     image    Image object.
- @return    Initialized OCKDocumentElementImage instance.
+ @param image    Image object.
+ @return    An initialized OCKDocumentElementImage instance.
  */
 - (instancetype)initWithImage:(UIImage *)image;
 
@@ -157,23 +158,54 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 /**
- Defines an chart element to be included in a document.
- The title and text of the chart will be included in document as well.
+ Defines a chart element to be included in a document.
+ The title and text of the chart will be included in the document.
  */
 @interface OCKDocumentElementChart : NSObject <OCKDocumentElement>
 
 /**
- Initializer of OCKDocumentElementChart.
+ Initializer for an OCKDocumentElementChart object.
  
  @param     chart    OCKChart object.
- @return    Initialized OCKDocumentElementChart instance.
+ @return    An initialized OCKDocumentElementChart instance.
  */
 - (instancetype)initWithChart:(OCKChart *)chart;
 
 /**
  OCKChart object.
+ You can attach an OCKChart subclass object, for example an `OCKBarChart` object.
  */
 @property (nonatomic, strong, nullable) OCKChart *chart;
+
+@end
+
+
+/**
+ Defines a table element to include in a document.
+ */
+@interface OCKDocumentElementTable : NSObject <OCKDocumentElement>
+
+/**
+ Initializer for an OCKDocumentElementChart object.
+ 
+ @param     headers         An array of table header strings.
+ @param     rows            An array of table rows.
+                            Each row contains an array of string values.
+ @return    An initialized OCKDocumentElementTable instance.
+ */
+- (instancetype)initWithHeaders:(nullable NSArray<NSString *> *)headers
+                           rows:(nullable NSArray<NSArray<NSString *> *> *)rows;
+
+/**
+ An array of table header strings.
+ */
+@property (nonatomic, copy, nullable) NSArray<NSString *> *headers;
+
+/**
+ An array of table rows.
+ Each row contains an array of string values for each table cell in a row.
+ */
+@property (nonatomic, copy, nullable) NSArray<NSArray<NSString *> *> *rows;
 
 @end
 

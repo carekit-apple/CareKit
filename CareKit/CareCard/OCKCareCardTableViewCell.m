@@ -1,10 +1,32 @@
-//
-//  OCKTreatmentTableViewCell.m
-//  CareKit
-//
-//  Created by Umer Khan on 1/27/16.
-//  Copyright © 2016 carekit.org. All rights reserved.
-//
+/*
+ Copyright (c) 2016, Apple Inc. All rights reserved.
+ 
+ Redistribution and use in source and binary forms, with or without modification,
+ are permitted provided that the following conditions are met:
+ 
+ 1.  Redistributions of source code must retain the above copyright notice, this
+ list of conditions and the following disclaimer.
+ 
+ 2.  Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation and/or
+ other materials provided with the distribution.
+ 
+ 3.  Neither the name of the copyright holder(s) nor the names of any contributors
+ may be used to endorse or promote products derived from this software without
+ specific prior written permission. No license is granted to the trademarks of
+ the copyright holders even if such marks are included in this software.
+ 
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
+ FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 
 
 #import "OCKCareCardTableViewCell.h"
@@ -13,48 +35,48 @@
 #import "OCKCarePlanActivity_Internal.h"
 #import "OCKCarePlanEvent.h"
 #import "OCKCareCardButton.h"
+#import "OCKHelpers.h"
 
 
-static const CGFloat HorizontalMargin = 9.0;
-static const CGFloat LeadingMargin = 20.0;
+static const CGFloat TopMargin = 20.0;
+static const CGFloat BottomMargin = 10.0;
+static const CGFloat VerticalMargin = 5.0;
+static const CGFloat ButtonViewSize = 40.0;
 
 @implementation OCKCareCardTableViewCell {
     UILabel *_titleLabel;
     UILabel *_textLabel;
-    
     UIView *_leadingEdge;
-    
     NSArray <OCKCareCardButton *> *_frequencyButtons;
-    OCKCarePlanActivity *_treatment;
+    OCKCarePlanActivity *_intervention;
     NSMutableArray *_constraints;
 }
 
-- (void)setTreatmentEvents:(NSArray<OCKCarePlanEvent *> *)treatmentEvents {
-    _treatmentEvents = treatmentEvents;
-    _treatment = treatmentEvents.firstObject.activity;
+- (void)setInterventionEvents:(NSArray<OCKCarePlanEvent *> *)interventionEvents {
+    if (_interventionEvents.count > 14) {
+        @throw [NSException exceptionWithName:NSGenericException reason:@"OCKCareCardViewController only supports up to 14 events for an intervention activity." userInfo:nil];
+    }
+    _interventionEvents = OCKArrayCopyObjects(interventionEvents);
+    _intervention = _interventionEvents.firstObject.activity;
+    self.tintColor = (!_intervention.tintColor) ? OCKAppTintColor() : _intervention.tintColor;
     [self prepareView];
 }
 
 - (void)prepareView {
-    self.tintColor = _treatment.tintColor;
+    [super prepareView];
+    
     self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     
     if (!_titleLabel) {
         _titleLabel = [UILabel new];
-        _titleLabel.lineBreakMode = NSLineBreakByTruncatingTail;
-        _titleLabel.font = [UIFont systemFontOfSize:14.0 weight:UIFontWeightMedium];
-        [self.contentView addSubview:_titleLabel];
+        [self addSubview:_titleLabel];
     }
-    _titleLabel.text = _treatment.title;
     
     if (!_textLabel) {
         _textLabel = [UILabel new];
-        _textLabel.lineBreakMode = NSLineBreakByTruncatingTail;
         _textLabel.textColor = [UIColor lightGrayColor];
-        _textLabel.font = [UIFont systemFontOfSize:14.0 weight:UIFontWeightThin];
-        [self.contentView addSubview:_textLabel];
+        [self addSubview:_textLabel];
     }
-    _textLabel.text = _treatment.text;
     
     for (OCKCareCardButton *button in _frequencyButtons) {
         [button removeFromSuperview];
@@ -62,9 +84,9 @@ static const CGFloat LeadingMargin = 20.0;
     
     _frequencyButtons = [NSArray new];
     NSMutableArray *buttons = [NSMutableArray new];
-    for (OCKCarePlanEvent *event in _treatmentEvents) {
-        OCKCareCardButton *frequencyButton = [[OCKCareCardButton alloc] initWithFrame:CGRectMake(0, 0, 50, 75)];
-        frequencyButton.tintColor = _treatment.tintColor;
+    for (OCKCarePlanEvent *event in _interventionEvents) {
+        OCKCareCardButton *frequencyButton = [[OCKCareCardButton alloc] initWithFrame:CGRectZero];
+        frequencyButton.tintColor = self.tintColor;
         frequencyButton.selected = (event.state == OCKCarePlanEventStateCompleted);
         frequencyButton.translatesAutoresizingMaskIntoConstraints = NO;
         
@@ -73,35 +95,51 @@ static const CGFloat LeadingMargin = 20.0;
                   forControlEvents:UIControlEventTouchUpInside];
         [buttons addObject:frequencyButton];
         
-        [self.contentView addSubview:frequencyButton];
+        [self addSubview:frequencyButton];
     }
     _frequencyButtons = [buttons copy];
     
-    if (!_leadingEdge) {
-        _leadingEdge = [UIView new];
-        [self addSubview:_leadingEdge];
-    }
-    _leadingEdge.backgroundColor = _treatment.tintColor;
-    
+    [self updateView];
+    [self updateFonts];
     [self setUpConstraints];
+}
+
+- (void)updateView {
+    _titleLabel.text = _intervention.title;
+    _textLabel.text = _intervention.text;
+}
+
+- (void)updateFonts {
+    _titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
+    _textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
 }
 
 - (void)setUpConstraints {
     [NSLayoutConstraint deactivateConstraints:_constraints];
+    
     _constraints = [NSMutableArray new];
     
     _titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     _textLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    _leadingEdge.translatesAutoresizingMaskIntoConstraints = NO;
+    
+    CGFloat LeadingMargin = self.separatorInset.left;
+    CGFloat TrailingMargin = (self.separatorInset.right > 0) ? self.separatorInset.right : 20;
     
     [_constraints addObjectsFromArray:@[
                                         [NSLayoutConstraint constraintWithItem:_titleLabel
-                                                                     attribute:NSLayoutAttributeCenterY
+                                                                     attribute:NSLayoutAttributeTop
                                                                      relatedBy:NSLayoutRelationEqual
-                                                                        toItem:self.contentView
-                                                                     attribute:NSLayoutAttributeCenterY
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeTop
                                                                     multiplier:1.0
-                                                                      constant:-20.0],
+                                                                      constant:TopMargin],
+                                        [NSLayoutConstraint constraintWithItem:_titleLabel
+                                                                     attribute:NSLayoutAttributeLeading
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeLeading
+                                                                    multiplier:1.0
+                                                                      constant:LeadingMargin],
                                         [NSLayoutConstraint constraintWithItem:_textLabel
                                                                      attribute:NSLayoutAttributeBaseline
                                                                      relatedBy:NSLayoutRelationEqual
@@ -109,20 +147,6 @@ static const CGFloat LeadingMargin = 20.0;
                                                                      attribute:NSLayoutAttributeBaseline
                                                                     multiplier:1.0
                                                                       constant:0.0],
-                                        [NSLayoutConstraint constraintWithItem:_titleLabel
-                                                                     attribute:NSLayoutAttributeBaseline
-                                                                     relatedBy:NSLayoutRelationEqual
-                                                                        toItem:_textLabel
-                                                                     attribute:NSLayoutAttributeBaseline
-                                                                    multiplier:1.0
-                                                                      constant:0.0],
-                                        [NSLayoutConstraint constraintWithItem:_titleLabel
-                                                                     attribute:NSLayoutAttributeLeading
-                                                                     relatedBy:NSLayoutRelationEqual
-                                                                        toItem:self.contentView
-                                                                     attribute:NSLayoutAttributeLeading
-                                                                    multiplier:1.0
-                                                                      constant:LeadingMargin],
                                         [NSLayoutConstraint constraintWithItem:_textLabel
                                                                      attribute:NSLayoutAttributeLeading
                                                                      relatedBy:NSLayoutRelationEqual
@@ -130,93 +154,119 @@ static const CGFloat LeadingMargin = 20.0;
                                                                      attribute:NSLayoutAttributeTrailing
                                                                     multiplier:1.0
                                                                       constant:5.0],
-                                        [NSLayoutConstraint constraintWithItem:_leadingEdge
-                                                                     attribute:NSLayoutAttributeLeading
-                                                                     relatedBy:NSLayoutRelationEqual
+                                        [NSLayoutConstraint constraintWithItem:_textLabel
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                     relatedBy:NSLayoutRelationLessThanOrEqual
                                                                         toItem:self
-                                                                     attribute:NSLayoutAttributeLeading
+                                                                     attribute:NSLayoutAttributeTrailing
                                                                     multiplier:1.0
-                                                                      constant:0.0],
-                                        [NSLayoutConstraint constraintWithItem:_leadingEdge
-                                                                     attribute:NSLayoutAttributeCenterY
-                                                                     relatedBy:NSLayoutRelationEqual
-                                                                        toItem:self
-                                                                     attribute:NSLayoutAttributeCenterY
-                                                                    multiplier:1.0
-                                                                      constant:0.0],
-                                        [NSLayoutConstraint constraintWithItem:_leadingEdge
-                                                                     attribute:NSLayoutAttributeWidth
-                                                                     relatedBy:NSLayoutRelationEqual
-                                                                        toItem:nil
-                                                                     attribute:NSLayoutAttributeNotAnAttribute
-                                                                    multiplier:1.0
-                                                                      constant:3.0],
-                                        [NSLayoutConstraint constraintWithItem:_leadingEdge
-                                                                     attribute:NSLayoutAttributeHeight
-                                                                     relatedBy:NSLayoutRelationEqual
-                                                                        toItem:self
-                                                                     attribute:NSLayoutAttributeHeight
-                                                                    multiplier:1.0
-                                                                      constant:0.0]
+                                                                      constant:-TrailingMargin]
                                         ]];
     
     for (int i = 0; i < _frequencyButtons.count; i++) {
         if (i == 0) {
-            [_constraints addObject:[NSLayoutConstraint constraintWithItem:_frequencyButtons[i]
-                                                                 attribute:NSLayoutAttributeLeading
-                                                                 relatedBy:NSLayoutRelationEqual
-                                                                    toItem:self.contentView
-                                                                 attribute:NSLayoutAttributeLeading
-                                                                multiplier:1.0
-                                                                  constant:LeadingMargin]];
+            [_constraints addObjectsFromArray:@[
+                                                [NSLayoutConstraint constraintWithItem:_frequencyButtons[i]
+                                                                             attribute:NSLayoutAttributeLeading
+                                                                             relatedBy:NSLayoutRelationEqual
+                                                                                toItem:self
+                                                                             attribute:NSLayoutAttributeLeading
+                                                                            multiplier:1.0
+                                                                              constant:LeadingMargin],
+                                                [NSLayoutConstraint constraintWithItem:_frequencyButtons[i]
+                                                                             attribute:NSLayoutAttributeTop
+                                                                             relatedBy:NSLayoutRelationEqual
+                                                                                toItem:_titleLabel
+                                                                             attribute:NSLayoutAttributeBottom
+                                                                            multiplier:1.0
+                                                                              constant:VerticalMargin],
+                                                ]];
+        } else if (i == 7) {
+            [_constraints addObjectsFromArray:@[
+                                                [NSLayoutConstraint constraintWithItem:_frequencyButtons[i]
+                                                                             attribute:NSLayoutAttributeLeading
+                                                                             relatedBy:NSLayoutRelationEqual
+                                                                                toItem:self
+                                                                             attribute:NSLayoutAttributeLeading
+                                                                            multiplier:1.0
+                                                                              constant:LeadingMargin],
+                                                [NSLayoutConstraint constraintWithItem:_frequencyButtons[i]
+                                                                             attribute:NSLayoutAttributeTop
+                                                                             relatedBy:NSLayoutRelationEqual
+                                                                                toItem:_frequencyButtons[0]
+                                                                             attribute:NSLayoutAttributeBottom
+                                                                            multiplier:1.0
+                                                                              constant:0.0]
+                                                ]];
         } else {
-            [_constraints addObject:[NSLayoutConstraint constraintWithItem:_frequencyButtons[i]
-                                                                 attribute:NSLayoutAttributeLeading
-                                                                 relatedBy:NSLayoutRelationEqual
-                                                                    toItem:_frequencyButtons[i-1]
-                                                                 attribute:NSLayoutAttributeTrailing
-                                                                multiplier:1.0
-                                                                  constant:HorizontalMargin]];
+            [_constraints addObjectsFromArray:@[
+                                                [NSLayoutConstraint constraintWithItem:_frequencyButtons[i]
+                                                                             attribute:NSLayoutAttributeLeading
+                                                                             relatedBy:NSLayoutRelationEqual
+                                                                                toItem:_frequencyButtons[i-1]
+                                                                             attribute:NSLayoutAttributeTrailing
+                                                                            multiplier:1.0
+                                                                              constant:0.0],
+                                                [NSLayoutConstraint constraintWithItem:_frequencyButtons[i]
+                                                                             attribute:NSLayoutAttributeTop
+                                                                             relatedBy:NSLayoutRelationEqual
+                                                                                toItem:_frequencyButtons[i-1]
+                                                                             attribute:NSLayoutAttributeTop
+                                                                            multiplier:1.0
+                                                                              constant:0.0]
+                                                ]];
         }
+        
         [_constraints addObjectsFromArray:@[
                                             [NSLayoutConstraint constraintWithItem:_frequencyButtons[i]
-                                                             attribute:NSLayoutAttributeTop
-                                                             relatedBy:NSLayoutRelationEqual
-                                                                toItem:_titleLabel
-                                                             attribute:NSLayoutAttributeBottom
-                                                            multiplier:1.0
-                                                              constant:5.0],
+                                                                         attribute:NSLayoutAttributeWidth
+                                                                         relatedBy:NSLayoutRelationEqual
+                                                                            toItem:nil
+                                                                         attribute:NSLayoutAttributeNotAnAttribute
+                                                                        multiplier:1.0
+                                                                          constant:ButtonViewSize],
                                             [NSLayoutConstraint constraintWithItem:_frequencyButtons[i]
                                                                          attribute:NSLayoutAttributeHeight
                                                                          relatedBy:NSLayoutRelationEqual
                                                                             toItem:nil
                                                                          attribute:NSLayoutAttributeNotAnAttribute
                                                                         multiplier:1.0
-                                                                          constant:45.0],
-//                                            [NSLayoutConstraint constraintWithItem:_frequencyButtons[i]
-//                                                                         attribute:NSLayoutAttributeWidth
-//                                                                         relatedBy:NSLayoutRelationEqual
-//                                                                            toItem:nil
-//                                                                         attribute:NSLayoutAttributeNotAnAttribute
-//                                                                        multiplier:1.0
-//                                                                          constant:_frequencyButtons[i].frame.size.width]
+                                                                          constant:ButtonViewSize]
+                                            ]];
+    }
+    
+    int index = (_frequencyButtons.count < 7) ? 0 : 7;
+    for (int i = index; i <_frequencyButtons.count; i++) {
+        [_constraints addObjectsFromArray:@[
+                                            [NSLayoutConstraint constraintWithItem:_frequencyButtons[i]
+                                                                         attribute:NSLayoutAttributeBottom
+                                                                         relatedBy:NSLayoutRelationEqual
+                                                                            toItem:self
+                                                                         attribute:NSLayoutAttributeBottom
+                                                                        multiplier:1.0
+                                                                          constant:-BottomMargin]
                                             ]];
     }
     
     [NSLayoutConstraint activateConstraints:_constraints];
 }
 
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    
+    [self setUpConstraints];
+}
+
 - (void)toggleFrequencyButton:(id)sender {
     OCKCareCardButton *button = (OCKCareCardButton *)sender;
     button.selected = !button.selected;
     
-    // Infer the treatment event from the button index.
     NSInteger index = [_frequencyButtons indexOfObject:button];
-    OCKCarePlanEvent *selectedEvent = _treatmentEvents[index];
+    OCKCarePlanEvent *selectedEvent = _interventionEvents[index];
     
     if (_delegate &&
-        [_delegate respondsToSelector:@selector(careCardCellDidUpdateFrequency:ofTreatmentEvent:)]) {
-        [_delegate careCardCellDidUpdateFrequency:self ofTreatmentEvent:selectedEvent];
+        [_delegate respondsToSelector:@selector(careCardTableViewCell:didUpdateFrequencyofInterventionEvent:)]) {
+        [_delegate careCardTableViewCell:self didUpdateFrequencyofInterventionEvent:selectedEvent];
     }
     
 }

@@ -1,54 +1,60 @@
-//
-//  OCKCarePlanItem.m
-//  CareKit
-//
-//  Created by Yuan Zhu on 2/1/16.
-//  Copyright © 2016 carekit.org. All rights reserved.
-//
+/*
+ Copyright (c) 2016, Apple Inc. All rights reserved.
+ 
+ Redistribution and use in source and binary forms, with or without modification,
+ are permitted provided that the following conditions are met:
+ 
+ 1.  Redistributions of source code must retain the above copyright notice, this
+ list of conditions and the following disclaimer.
+ 
+ 2.  Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation and/or
+ other materials provided with the distribution.
+ 
+ 3.  Neither the name of the copyright holder(s) nor the names of any contributors
+ may be used to endorse or promote products derived from this software without
+ specific prior written permission. No license is granted to the trademarks of
+ the copyright holders even if such marks are included in this software.
+ 
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
+ FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 
 #import "OCKCarePlanActivity.h"
 #import "OCKCarePlanActivity_Internal.h"
 #import "OCKHelpers.h"
 
+
 @implementation OCKCarePlanActivity
 
-- (instancetype)initWithIdentifier:(NSString *)identifier
-                              type:(OCKCarePlanActivityType)type
-                             title:(nullable NSString *)title
-                              text:(nullable NSString *)text
-                         tintColor:(nullable UIColor *)tintColor
-                          schedule:(OCKCareSchedule *)schedule {
-    
-    return [self initWithIdentifier:identifier
-                    groupIdentifier:nil
-                               type:type
-                              title:title
-                               text:text
-                         detailText:nil
-                          tintColor:tintColor
-                           schedule:schedule
-                           optional:NO
-              numberOfDaysWriteable:1
-                   resultResettable:NO
-                           userInfo:nil];
+- (instancetype)init {
+    OCKThrowMethodUnavailableException();
+    return nil;
 }
 
-
 - (instancetype)initWithIdentifier:(NSString *)identifier
-                   groupIdentifier:(nullable NSString *)groupIdentifier
+                   groupIdentifier:(NSString *)groupIdentifier
                               type:(OCKCarePlanActivityType)type
-                             title:(nullable NSString *)title
-                              text:(nullable NSString *)text
-                        detailText:(nullable NSString *)detailText
-                         tintColor:(nullable UIColor *)tintColor
+                             title:(NSString *)title
+                              text:(NSString *)text
+                         tintColor:(UIColor *)tintColor
+                      instructions:(NSString *)instructions
+                          imageURL:(NSURL *)imageURL
                           schedule:(OCKCareSchedule *)schedule
-                          optional:(BOOL)optional
-             numberOfDaysWriteable:(NSUInteger)numberOfDaysWriteable
                   resultResettable:(BOOL)resultResettable
-                          userInfo:(nullable NSDictionary *)userInfo {
+                          userInfo:(NSDictionary *)userInfo {
     
-    NSParameterAssert(identifier);
-    NSParameterAssert(schedule);
+    OCKThrowInvalidArgumentExceptionIfNil(identifier);
+    OCKThrowInvalidArgumentExceptionIfNil(schedule);
     
     self = [super init];
     if (self) {
@@ -57,36 +63,76 @@
         _type = type;
         _title = [title copy];
         _text = [text copy];
-        _detailText = [detailText copy];
         _tintColor = tintColor;
+        _instructions = [instructions copy];
+        _imageURL = imageURL;
         _schedule = schedule;
-        _optional = optional;
-        _numberOfDaysWriteable = numberOfDaysWriteable >= 1 ? numberOfDaysWriteable : 1;
         _resultResettable = resultResettable;
         _userInfo = [userInfo copy];
     }
     return self;
 }
 
++ (instancetype)assessmentWithIdentifier:(NSString *)identifier
+                         groupIdentifier:(NSString *)groupIdentifier
+                                   title:(NSString *)title
+                                    text:(NSString *)text
+                               tintColor:(UIColor *)tintColor
+                        resultResettable:(BOOL)resultResettable
+                                schedule:(OCKCareSchedule *)schedule
+                                userInfo:(NSDictionary *)userInfo {
+    
+    return [[self alloc] initWithIdentifier:identifier
+                            groupIdentifier:groupIdentifier
+                                       type:OCKCarePlanActivityTypeAssessment
+                                      title:title
+                                       text:text
+                                  tintColor:tintColor
+                               instructions:nil
+                                   imageURL:nil
+                                   schedule:schedule
+                           resultResettable:resultResettable
+                                   userInfo:userInfo];
+}
+
++ (instancetype)interventionWithIdentifier:(NSString *)identifier
+                           groupIdentifier:(NSString *)groupIdentifier
+                                     title:(NSString *)title
+                                      text:(NSString *)text
+                                 tintColor:(UIColor *)tintColor
+                              instructions:(NSString *)instructions
+                                  imageURL:(NSURL *)imageURL
+                                  schedule:(OCKCareSchedule *)schedule
+                                  userInfo:(NSDictionary *)userInfo {
+    
+    return [[self alloc] initWithIdentifier:identifier
+                            groupIdentifier:groupIdentifier
+                                       type:OCKCarePlanActivityTypeIntervention
+                                      title:title
+                                       text:text
+                                  tintColor:tintColor
+                               instructions:instructions
+                                   imageURL:imageURL
+                                   schedule:schedule
+                           resultResettable:YES
+                                   userInfo:userInfo];
+}
+
 - (instancetype)initWithCoreDataObject:(OCKCDCarePlanActivity *)cdObject {
     
     NSParameterAssert(cdObject);
-    self = [super init];
-    if (self) {
-        _identifier = cdObject.identifier;
-        _groupIdentifier = cdObject.groupIdentifier;
-        _type = cdObject.type.integerValue;
-        _title = [cdObject.title copy];
-        _text = [cdObject.text copy];
-        _detailText = [cdObject.detailText copy];
-        _tintColor = cdObject.color;
-        _schedule = cdObject.schedule;
-        
-        _optional = [cdObject.optional boolValue];
-        _numberOfDaysWriteable = [cdObject.numberOfDaysWriteable unsignedIntegerValue];
-        _resultResettable = cdObject.resultResettable.boolValue;
-        _userInfo = cdObject.userInfo;
-    }
+    self = [self initWithIdentifier:cdObject.identifier
+                    groupIdentifier:cdObject.groupIdentifier
+                               type:cdObject.type.integerValue
+                              title:cdObject.title
+                               text:cdObject.text
+                          tintColor:cdObject.color
+                       instructions:cdObject.instructions
+                           imageURL:cdObject.imageURL
+                           schedule:cdObject.schedule
+                   resultResettable:cdObject.resultResettable.boolValue
+                           userInfo:cdObject.userInfo];
+    
     return self;
 }
 
@@ -101,31 +147,27 @@
         OCK_DECODE_OBJ_CLASS(coder, groupIdentifier, NSString);
         OCK_DECODE_OBJ_CLASS(coder, title, NSString);
         OCK_DECODE_OBJ_CLASS(coder, text, NSString);
-        OCK_DECODE_OBJ_CLASS(coder, detailText, NSString);
+        OCK_DECODE_OBJ_CLASS(coder, instructions, NSString);
         OCK_DECODE_OBJ_CLASS(coder, tintColor, UIColor);
         OCK_DECODE_OBJ_CLASS(coder, schedule, OCKCareSchedule);
         OCK_DECODE_ENUM(coder, type);
-        OCK_DECODE_BOOL(coder, optional);
-        OCK_DECODE_INTEGER(coder, numberOfDaysWriteable);
+        OCK_DECODE_OBJ_CLASS(coder, imageURL, NSURL);
         OCK_DECODE_BOOL(coder, resultResettable);
         OCK_DECODE_OBJ_CLASS(coder, userInfo, NSDictionary);
-        
     }
     return self;
 }
 
 - (void)encodeWithCoder:(NSCoder *)coder {
-    
     OCK_ENCODE_OBJ(coder, identifier);
     OCK_ENCODE_OBJ(coder, groupIdentifier);
     OCK_ENCODE_OBJ(coder, title);
     OCK_ENCODE_OBJ(coder, text);
-    OCK_ENCODE_OBJ(coder, detailText);
+    OCK_ENCODE_OBJ(coder, instructions);
     OCK_ENCODE_OBJ(coder, tintColor);
     OCK_ENCODE_OBJ(coder, schedule);
     OCK_ENCODE_ENUM(coder, type);
-    OCK_ENCODE_BOOL(coder, optional);
-    OCK_ENCODE_INTEGER(coder, numberOfDaysWriteable);
+    OCK_ENCODE_OBJ(coder, imageURL);
     OCK_ENCODE_BOOL(coder, resultResettable);
     OCK_ENCODE_OBJ(coder, userInfo);
 }
@@ -137,14 +179,13 @@
     return (isClassMatch &&
             OCKEqualObjects(self.title, castObject.title) &&
             OCKEqualObjects(self.text, castObject.text) &&
-            OCKEqualObjects(self.detailText, castObject.detailText) &&
+            OCKEqualObjects(self.instructions, castObject.instructions) &&
             OCKEqualObjects(self.tintColor, castObject.tintColor) &&
             OCKEqualObjects(self.schedule, castObject.schedule) &&
             (self.type == castObject.type) &&
             OCKEqualObjects(self.identifier, castObject.identifier) &&
             OCKEqualObjects(self.groupIdentifier, castObject.groupIdentifier) &&
-            (self.optional == castObject.optional) &&
-            (self.numberOfDaysWriteable == castObject.numberOfDaysWriteable) &&
+            OCKEqualObjects(self.imageURL, castObject.imageURL) &&
             (self.resultResettable == castObject.resultResettable) &&
             OCKEqualObjects(self.userInfo, castObject.userInfo)
             );
@@ -156,12 +197,11 @@
     item->_identifier = [_identifier copy];
     item->_groupIdentifier = [_groupIdentifier copy];
     item->_text = [_text copy];
-    item->_detailText = [_detailText copy];
+    item->_instructions = [_instructions copy];
     item->_tintColor = _tintColor;
     item->_schedule = _schedule;
     item->_type = _type;
-    item->_optional = _optional;
-    item->_numberOfDaysWriteable = _numberOfDaysWriteable;
+    item->_imageURL = _imageURL;
     item->_resultResettable = _resultResettable;
     item->_userInfo = _userInfo;
     return item;
@@ -173,7 +213,7 @@
 @implementation OCKCDCarePlanActivity
 
 - (instancetype)initWithEntity:(NSEntityDescription *)entity
-insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
+insertIntoManagedObjectContext:(NSManagedObjectContext *)context
                           item:(OCKCarePlanActivity *)item {
     
     NSParameterAssert(item);
@@ -183,12 +223,11 @@ insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
         self.groupIdentifier = item.groupIdentifier;
         self.title = item.title;
         self.text = item.text;
-        self.detailText = item.detailText;
+        self.instructions = item.instructions;
         self.color = item.tintColor;
+        self.imageURL = item.imageURL;
         self.schedule = item.schedule;
         self.type = @(item.type);
-        self.optional = @(item.optional);
-        self.numberOfDaysWriteable = @(item.numberOfDaysWriteable);
         self.userInfo = item.userInfo;
         self.resultResettable  = @(item.resultResettable);
     }
@@ -199,18 +238,16 @@ insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
     return [NSString stringWithFormat:@"OCKCDCarePlanActivity %@ %@", ((OCKCareSchedule *)self.schedule).endDate, self.schedule];
 }
 
-@dynamic numberOfDaysWriteable;
 @dynamic color;
 @dynamic identifier;
 @dynamic groupIdentifier;
 @dynamic schedule;
 @dynamic text;
 @dynamic title;
-@dynamic detailText;
+@dynamic instructions;
+@dynamic imageURL;
 @dynamic type;
-@dynamic optional;
 @dynamic resultResettable;
 @dynamic userInfo;
 
 @end
-

@@ -34,6 +34,7 @@
 #import <UIKit/UIKit.h>
 #import "OCKDefines.h"
 
+
 OCK_EXTERN NSString *const OCKErrorDomain OCK_AVAILABLE_DECL;
 
 /// The exception thrown when an invalid argument is passed to a method or function.
@@ -302,3 +303,6 @@ void OCKRemoveConstraintsForRemovedViews(NSMutableArray *constraints, NSArray *r
 void OCKAdjustPageViewControllerNavigationDirectionForRTL(UIPageViewControllerNavigationDirection *direction);
 
 NSString *OCKPaddingWithNumberOfSpaces(NSUInteger numberOfPaddingSpaces);
+
+UIColor *OCKAppTintColor();
+

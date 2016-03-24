@@ -30,9 +30,8 @@
 
 
 #import "OCKDocument.h"
-#import "OCKChart_Internal.h"
 #import "OCKHTMLPDFWriter.h"
-
+#import "OCKHelpers.h"
 
 @implementation OCKDocument {
     OCKHTMLPDFWriter *_writer;
@@ -41,7 +40,7 @@
 - (instancetype)initWithTitle:(NSString *)title elements:(NSArray<id<OCKDocumentElement>> *)elements {
     self = [super init];
     if (self) {
-        _elements = [elements copy];
+        _elements = OCKArrayCopyObjects(elements);
         _title = [title copy];
     }
     return self;
@@ -69,7 +68,9 @@
             "<body>\n", _title.length > 0 ? _title : @"html", css]; // To pass w3c html validation
     
     if (_title) {
-        html = [html stringByAppendingString:[NSString stringWithFormat:@"<h2>%@</h2>\n", _title]];
+        html = [html stringByAppendingString:[NSString stringWithFormat:@"<h2>%@</h2><div style='clear:both; width:100%%;"
+                                              "background-color:#000000; height:1px; margin-top:-17px; margin-bottom:10px;'"
+                                              "></div>\n", _title]];
     }
     
     for (id<OCKDocumentElement> element in _elements) {
@@ -86,9 +87,17 @@
     if (_writer == nil) {
         _writer = [[OCKHTMLPDFWriter alloc] init];
     }
-    [_writer writePDFFromHTML:self.HTMLContent header:_pageHeader withCompletionBlock:^(NSData *data, NSError *error) {
+    [_writer writePDFFromHTML:[self.HTMLContent copy] header:[_pageHeader copy] withCompletionBlock:^(NSData *data, NSError *error) {
         completion(data, error);
     }];
+}
+
+- (instancetype)copyWithZone:(NSZone *)zone {
+    OCKDocument *document = [[[self class] allocWithZone:zone] init];
+    document->_elements = OCKArrayCopyObjects(_elements);
+    document->_title = [_title copy];
+    document->_pageHeader = [_pageHeader copy];
+    return document;
 }
 
 @end
@@ -114,6 +123,12 @@
     return html;
 }
 
+- (instancetype)copyWithZone:(NSZone *)zone {
+    OCKDocumentElementSubtitle *element = [[[self class] allocWithZone:zone] init];
+    element->_subtitle = [_subtitle copy];
+    return element;
+}
+
 @end
 
 
@@ -133,6 +148,12 @@
         html = [html stringByAppendingString:[NSString stringWithFormat:@"<p>%@</p>", _content]];
     }
     return html;
+}
+
+- (instancetype)copyWithZone:(NSZone *)zone {
+    OCKDocumentElementParagraph *element = [[[self class] allocWithZone:zone] init];
+    element->_content = [_content copy];
+    return element;
 }
 
 @end
@@ -201,6 +222,12 @@ static NSString *imageTagFromView (UIView *view) {
     return html;
 }
 
+- (instancetype)copyWithZone:(NSZone *)zone {
+    OCKDocumentElementChart *element = [[[self class] allocWithZone:zone] init];
+    element->_chart = [_chart copy];
+    return element;
+}
+
 @end
 
  
@@ -218,12 +245,79 @@ static NSString *imageTagFromView (UIView *view) {
     NSString *html = @"";
     if (_image) {
         
-        html = [html stringByAppendingString:@"<p>"];
+        html = [html stringByAppendingString:@"<p><center>"];
         html = [html stringByAppendingString:imageTagFromImage(_image)];
-        html = [html stringByAppendingString:@"</p>"];
+        html = [html stringByAppendingString:@"</center></p>"];
+    }
+    return html;
+}
+
+- (instancetype)copyWithZone:(NSZone *)zone {
+    OCKDocumentElementImage *element = [[[self class] allocWithZone:zone] init];
+    element->_image = [_image copy];
+    return element;
+}
+
+@end
+
+
+@implementation OCKDocumentElementTable
+
+- (instancetype)initWithHeaders:(NSArray<NSString *> *)headers
+                           rows:(NSArray<NSArray<NSString *> *> *)rows {
+
+    self = [super init];
+    if (self) {
+        self.headers = OCKArrayCopyObjects(headers);
+        self.rows = OCKArrayCopyObjects(rows);
+    }
+    return self;
+}
+
+- (instancetype)copyWithZone:(NSZone *)zone {
+    OCKDocumentElementTable *element = [[[self class] allocWithZone:zone] init];
+    element->_headers = OCKArrayCopyObjects(_headers);
+    element->_rows = OCKArrayCopyObjects(_rows);
+    return element;
+}
+
+- (NSString *)HTMLContent {
+    NSString *html = @"";
+    if (_headers || _rows) {
+        html = [html stringByAppendingString:@"<table style='width:100%;border: 0px;border-collapse: collapse;'>"];
+
+        if (_headers) {
+            html = [html stringByAppendingString:@"<tr>"];
+            for (NSString *string in _headers) {
+                html = [html stringByAppendingString:@"<th>"];
+                html = [html stringByAppendingString:string];
+                html = [html stringByAppendingString:@"</th>"];
+            }
+            html = [html stringByAppendingString:@"</tr>"];
+        }
+        
+        if (_rows) {
+            NSInteger rowIndex = 0;
+            for (NSArray *row in _rows) {
+                if (rowIndex%2 == 0) {
+                    html = [html stringByAppendingString:@"<tr style='background-color:#eeeeee'>"];
+                } else {
+                    html = [html stringByAppendingString:@"<tr>"];
+                }
+                
+                for (NSString *string in row) {
+                    html = [html stringByAppendingString:@"<td align='center'>"];
+                    html = [html stringByAppendingString:string];
+                    html = [html stringByAppendingString:@"</td>"];
+                }
+                html = [html stringByAppendingString:@"</tr>"];
+                rowIndex++;
+            }
+        }
+        
+        html = [html stringByAppendingString:@"</table>"];
     }
     return html;
 }
 
 @end
-

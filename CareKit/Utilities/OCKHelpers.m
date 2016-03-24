@@ -30,9 +30,9 @@
 
 
 #import "OCKHelpers.h"
+#import <CareKit/CareKit.h>
 #import <CoreText/CoreText.h>
-#import <UIKit/UIKit.h>
-#import "OCKCarePlanStore.h"
+
 
 NSString *const OCKErrorDomain = @"OCKErrorDomain";
 
@@ -47,7 +47,7 @@ NSBundle *OCKAssetsBundle(void) {
     
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        __bundle = [NSBundle bundleForClass:[OCKCarePlanStore class]];
+        __bundle = [NSBundle bundleForClass:[OCKConnectViewController class]];
     });
     
     return __bundle;
@@ -233,7 +233,7 @@ NSBundle *OCKBundle() {
     
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        __bundle = [NSBundle bundleForClass:[OCKCarePlanStore class]];
+        __bundle = [NSBundle bundleForClass:[OCKConnectViewController class]];
     });
     
     return __bundle;
@@ -510,4 +510,8 @@ void OCKAdjustPageViewControllerNavigationDirectionForRTL(UIPageViewControllerNa
 
 NSString *OCKPaddingWithNumberOfSpaces(NSUInteger numberOfPaddingSpaces) {
     return [@"" stringByPaddingToLength:numberOfPaddingSpaces withString:@" " startingAtIndex:0];
+}
+
+UIColor *OCKAppTintColor() {
+    return [[[UIApplication sharedApplication] delegate] window].tintColor;
 }

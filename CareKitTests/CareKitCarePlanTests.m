@@ -1,15 +1,39 @@
-//
-//  CareKitTests.m
-//  CareKitTests
-//
-//  Created by Yuan Zhu on 1/19/16.
-//  Copyright © 2016 carekit.org. All rights reserved.
-//
+/*
+ Copyright (c) 2016, Apple Inc. All rights reserved.
+ 
+ Redistribution and use in source and binary forms, with or without modification,
+ are permitted provided that the following conditions are met:
+ 
+ 1.  Redistributions of source code must retain the above copyright notice, this
+ list of conditions and the following disclaimer.
+ 
+ 2.  Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation and/or
+ other materials provided with the distribution.
+ 
+ 3.  Neither the name of the copyright holder(s) nor the names of any contributors
+ may be used to endorse or promote products derived from this software without
+ specific prior written permission. No license is granted to the trademarks of
+ the copyright holders even if such marks are included in this software.
+ 
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
+ FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 
 
 #import <XCTest/XCTest.h>
 #import <CareKit/CareKit.h>
+#import <CareKit/CareKit_Private.h>
 #import "NSDateComponents+CarePlanInternal.h"
+
 
 @interface CareKitTests : XCTestCase <OCKCarePlanStoreDelegate>
 
@@ -58,47 +82,51 @@
     OCKCarePlanStore *store = [[OCKCarePlanStore alloc] initWithPersistenceDirectoryURL:directoryURL];
     store.delegate = self;
     
-    NSCalendar *calendar = [NSCalendar calendarWithIdentifier:NSCalendarIdentifierGregorian];
     NSDateComponents *startDate = [[NSDateComponents alloc] initWithYear:2016 month:01 day:01];
     
     OCKCareSchedule *schedule = [OCKCareSchedule dailyScheduleWithStartDate:startDate occurrencesPerDay:3];
     
-    OCKCarePlanActivity *item1 = [[OCKCarePlanActivity alloc] initWithIdentifier:@"id1"
+    OCKCarePlanActivity *item1 = [OCKCarePlanActivity interventionWithIdentifier:@"id1"
                                                                  groupIdentifier:@"gid1"
-                                                                            type:OCKCarePlanActivityTypeIntervention
                                                                            title:@"title1"
                                                                             text:@"text1"
-                                                                      detailText:@"detailText1"
                                                                        tintColor:[UIColor redColor]
+                                                                    instructions:@"detailText1"
+                                                                        imageURL:[NSURL fileURLWithPath:@"1.png"]
                                                                         schedule:schedule
-                                                                        optional:YES
-                                                           numberOfDaysWriteable:1
-                                                                resultResettable:YES
                                                                         userInfo:@{@"key":@"value1"}];
     
     OCKCareSchedule *weeklySchedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate
                                                              occurrencesOnEachDay:@[@3, @3, @3, @3, @3, @3, @3]];
     
-    OCKCarePlanActivity *item2 = [[OCKCarePlanActivity alloc] initWithIdentifier:@"id2"
-                                                                            type:OCKCarePlanActivityTypeIntervention
+    OCKCarePlanActivity *item2 = [OCKCarePlanActivity interventionWithIdentifier:@"id2"
+                                                                 groupIdentifier:@"gid2"
                                                                            title:@"title2"
                                                                             text:@"text2"
                                                                        tintColor:[UIColor redColor]
-                                                                        schedule:weeklySchedule];
+                                                                    instructions:@"detailText2"
+                                                                        imageURL:[NSURL fileURLWithPath:@"2.png"]
+                                                                        schedule:weeklySchedule
+                                                                        userInfo:@{@"key":@"value2"}];
     
-    OCKCarePlanActivity *item3 = [[OCKCarePlanActivity alloc] initWithIdentifier:@"id3"
-                                                                            type:OCKCarePlanActivityTypeAssessment
-                                                                           title:@"title3"
-                                                                            text:@"text3"
-                                                                       tintColor:[UIColor redColor]
-                                                                        schedule:schedule];
+    OCKCarePlanActivity *item3 = [OCKCarePlanActivity assessmentWithIdentifier:@"id3"
+                                                               groupIdentifier:@"gid3"
+                                                                         title:@"title3"
+                                                                          text:@"text3"
+                                                                     tintColor:[UIColor greenColor]
+                                                              resultResettable:YES
+                                                                      schedule:schedule
+                                                                      userInfo:@{@"key":@"value3"}];
     
-    OCKCarePlanActivity *item4 = [[OCKCarePlanActivity alloc] initWithIdentifier:@"id4"
-                                                                            type:OCKCarePlanActivityTypeIntervention
+    OCKCarePlanActivity *item4 = [OCKCarePlanActivity interventionWithIdentifier:@"id4"
+                                                                 groupIdentifier:@"gid4"
                                                                            title:@"title4"
                                                                             text:@"text4"
-                                                                       tintColor:[UIColor orangeColor]
-                                                                        schedule:weeklySchedule];
+                                                                       tintColor:[UIColor redColor]
+                                                                    instructions:@"detailText4"
+                                                                        imageURL:[NSURL fileURLWithPath:@"4.png"]
+                                                                        schedule:schedule
+                                                                        userInfo:@{@"key":@"value4"}];
     
     
     __block NSError *error;
@@ -117,9 +145,16 @@
     XCTAssertNil(error);
     XCTAssertTrue([self isListChangeDelegateCalled]);
     
+    // Test making call synced.
+    dispatch_semaphore_t sem = dispatch_semaphore_create(0);
+    [store activitiesWithCompletion:^(BOOL success, NSArray<OCKCarePlanActivity *> * _Nonnull activities, NSError * _Nullable error) {
+        dispatch_semaphore_signal(sem);
+    }];
+    dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER);
     
     expectation = [self expectationWithDescription:@"add2"];
     [store addActivity:item2 completion:^(BOOL success, NSError * _Nonnull error) {
+        XCTAssertFalse([NSThread isMainThread]);
         result = success;
         error = error;
         [expectation fulfill];
@@ -133,6 +168,7 @@
     
     expectation = [self expectationWithDescription:@"add3"];
     [store addActivity:item3 completion:^(BOOL success, NSError * _Nonnull error) {
+        XCTAssertFalse([NSThread isMainThread]);
         result = success;
         error = error;
         [expectation fulfill];
@@ -146,6 +182,7 @@
     
     expectation = [self expectationWithDescription:@"add4"];
     [store addActivity:item4 completion:^(BOOL success, NSError * _Nonnull error) {
+        XCTAssertFalse([NSThread isMainThread]);
         result = success;
         error = error;
         [expectation fulfill];
@@ -160,6 +197,7 @@
     expectation = [self expectationWithDescription:@"activitiesWithType"];
     [store activitiesWithType:OCKCarePlanActivityTypeIntervention
                    completion:^(BOOL success, NSArray<OCKCarePlanActivity *> * _Nonnull activities, NSError * _Nonnull error) {
+                       XCTAssertFalse([NSThread isMainThread]);
                        XCTAssertTrue(success);
                        XCTAssertNil(error);
                        XCTAssertEqual(activities.count, 3);
@@ -186,6 +224,7 @@
     expectation = [self expectationWithDescription:@"activityForIdentifier"];
     [store activityForIdentifier:item1.identifier
                       completion:^(BOOL success, OCKCarePlanActivity * _Nonnull activity, NSError * _Nonnull error) {
+                          XCTAssertFalse([NSThread isMainThread]);
                           XCTAssertTrue(success);
                           XCTAssertEqualObjects(activity, item1);
                           XCTAssertNil(error);
@@ -199,6 +238,7 @@
     expectation = [self expectationWithDescription:@"activityForIdentifier"];
     [store activityForIdentifier:item2.identifier
                       completion:^(BOOL success, OCKCarePlanActivity * _Nonnull activity, NSError * _Nonnull error) {
+                          XCTAssertFalse([NSThread isMainThread]);
                           XCTAssertTrue(success);
                           XCTAssertEqualObjects(activity, item2);
                           XCTAssertNil(error);
@@ -211,6 +251,7 @@
     expectation = [self expectationWithDescription:@"activityForIdentifier"];
     [store activityForIdentifier:item3.identifier
                       completion:^(BOOL success, OCKCarePlanActivity * _Nonnull activity, NSError * _Nonnull error) {
+                          XCTAssertFalse([NSThread isMainThread]);
                           XCTAssertTrue(success);
                           XCTAssertEqualObjects(activity, item3);
                           XCTAssertNil(error);
@@ -223,6 +264,7 @@
     expectation = [self expectationWithDescription:@"activitiesWithType"];
     [store activitiesWithType:OCKCarePlanActivityTypeIntervention
                    completion:^(BOOL success, NSArray<OCKCarePlanActivity *> * _Nonnull activities, NSError * _Nonnull error) {
+                       XCTAssertFalse([NSThread isMainThread]);
                        XCTAssertTrue(success);
                        XCTAssertNil(error);
                        XCTAssertEqual(activities.count, 3);
@@ -235,6 +277,7 @@
     expectation = [self expectationWithDescription:@"activitiesWithType"];
     [store activitiesWithType:OCKCarePlanActivityTypeAssessment
                    completion:^(BOOL success, NSArray<OCKCarePlanActivity *> * _Nonnull activities, NSError * _Nonnull error) {
+                       XCTAssertFalse([NSThread isMainThread]);
                        XCTAssertTrue(success);
                        XCTAssertNil(error);
                        XCTAssertEqual(activities.count, 1);
@@ -248,6 +291,7 @@
     
     expectation = [self expectationWithDescription:@"activities"];
     [store activitiesWithCompletion:^(BOOL success, NSArray<OCKCarePlanActivity *> * _Nonnull activityArray, NSError * _Nonnull error) {
+                        XCTAssertFalse([NSThread isMainThread]);
                        XCTAssertTrue(success);
                        XCTAssertNil(error);
                        XCTAssertEqual(activityArray.count, 4);
@@ -259,6 +303,7 @@
     }];
     
     XCTAssertEqualObjects(activities[0], item1);
+    XCTAssertNotNil(activities[0].imageURL);
     XCTAssertEqualObjects(activities[1], item2);
     XCTAssertEqualObjects(activities[2], item3);
     
@@ -268,6 +313,7 @@
     [store setEndDate:endDateComp
          forActivity:activities[2]
           completion:^(BOOL success, OCKCarePlanActivity * _Nonnull activity, NSError * _Nonnull error) {
+              XCTAssertFalse([NSThread isMainThread]);
                XCTAssertTrue(success);
                XCTAssertNil(error);
                XCTAssertEqualObjects(activity.schedule.endDate, endDateComp);
@@ -280,6 +326,7 @@
     activities = nil;
     expectation = [self expectationWithDescription:@"activities2"];
     [store activitiesWithCompletion:^(BOOL success, NSArray<OCKCarePlanActivity *> * _Nonnull activityArray, NSError * _Nonnull error) {
+        XCTAssertFalse([NSThread isMainThread]);
         XCTAssertTrue(success);
         XCTAssertNil(error);
         XCTAssertEqual(activityArray.count, 4);
@@ -296,6 +343,7 @@
     
     expectation = [self expectationWithDescription:@"removeActivity"];
     [store removeActivity:activities[2] completion:^(BOOL success, NSError * _Nonnull error) {
+        XCTAssertFalse([NSThread isMainThread]);
         XCTAssertTrue(success);
         XCTAssertNil(error);
        [expectation fulfill];
@@ -309,6 +357,7 @@
     
     expectation = [self expectationWithDescription:@"activities"];
     [store activitiesWithCompletion:^(BOOL success, NSArray<OCKCarePlanActivity *> * _Nonnull activityArray, NSError * _Nonnull error) {
+        XCTAssertFalse([NSThread isMainThread]);
         XCTAssertTrue(success);
         XCTAssertNil(error);
         XCTAssertEqual(activityArray.count, 3);
@@ -328,6 +377,7 @@
     [store eventsOnDate:startDate
                   type:OCKCarePlanActivityTypeIntervention
             completion:^(NSArray<NSArray<OCKCarePlanEvent *> *> * _Nonnull eventsGroupedByActivity, NSError * _Nonnull error) {
+                XCTAssertFalse([NSThread isMainThread]);
                 eventGroups = eventsGroupedByActivity;
                 XCTAssertNil(error);
                 [expectation fulfill];
@@ -359,9 +409,10 @@
             withResult:eventResult1
                  state:OCKCarePlanEventStateCompleted
             completion:^(BOOL success, OCKCarePlanEvent * _Nonnull event, NSError * _Nonnull error) {
-        XCTAssertNil(error);
-        XCTAssertTrue(success);
-        [expectation fulfill];
+                XCTAssertFalse([NSThread isMainThread]);
+                XCTAssertNil(error);
+                XCTAssertTrue(success);
+                [expectation fulfill];
     }];
     [self waitForExpectationsWithTimeout:1.0 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
@@ -379,6 +430,7 @@
             withResult:eventResult2
                  state:OCKCarePlanEventStateCompleted
             completion:^(BOOL success, OCKCarePlanEvent * _Nonnull event, NSError * _Nonnull error) {
+                        XCTAssertFalse([NSThread isMainThread]);
                          XCTAssertNil(error);
                          XCTAssertTrue(success);
                          [expectation fulfill];
@@ -392,6 +444,7 @@
     [store eventsOnDate:startDate
                   type:OCKCarePlanActivityTypeIntervention
             completion:^(NSArray<NSArray<OCKCarePlanEvent *> *> * _Nonnull eventsGroupedByActivity, NSError * _Nonnull error) {
+                XCTAssertFalse([NSThread isMainThread]);
                 eventGroups = eventsGroupedByActivity;
                 XCTAssertNil(error);
                 [expectation fulfill];
@@ -429,6 +482,7 @@
             withResult:eventResult3
                  state:OCKCarePlanEventStateCompleted
             completion:^(BOOL success, OCKCarePlanEvent * _Nonnull event, NSError * _Nonnull error) {
+                XCTAssertFalse([NSThread isMainThread]);
                 XCTAssertNil(error);
                 XCTAssertTrue(success);
                 [expectation fulfill];
@@ -442,6 +496,7 @@
     [store eventsOnDate:startDate
                   type:OCKCarePlanActivityTypeIntervention
             completion:^(NSArray<NSArray<OCKCarePlanEvent *> *> * _Nonnull eventsGroupedByActivity, NSError * _Nonnull error) {
+                XCTAssertFalse([NSThread isMainThread]);
                 eventGroups = eventsGroupedByActivity;
                 XCTAssertNil(error);
                 [expectation fulfill];
@@ -455,17 +510,20 @@
     XCTAssertEqualObjects(fetchResult1, eventResult3);
     
     expectation = [self expectationWithDescription:@"enumerateEvents"];
-    NSMutableArray<OCKCarePlanEvent *> *eventsOfActivity = [[NSMutableArray alloc] init];
-    NSDateComponents *futureDay = [[NSDateComponents alloc] initWithDate:[NSDate dateWithTimeIntervalSinceNow:100*24*60*60] calendar:calendar];
-    [store enumerateEventsOfActivity:activities[0] startDate:startDate endDate:futureDay
-                           usingBlock:^(OCKCarePlanEvent * _Nonnull event, BOOL * _Nonnull stop, NSError * _Nonnull error) {
-                               XCTAssertNil(error);
-                               XCTAssertNotNil(event);
-                               [eventsOfActivity addObject:event];
-                               if (eventsOfActivity.count == 303) {
-                                   [expectation fulfill];
-                               }
-                           }];
+    NSMutableArray<OCKCarePlanEvent *> *eventsOfActivity = [NSMutableArray new];
+    NSDateComponents *futureDay = [startDate dateCompByAddingDays:100];
+    [store enumerateEventsOfActivity:activities[0]
+                           startDate:startDate
+                             endDate:futureDay
+                             handler:^(OCKCarePlanEvent * _Nullable event, BOOL * _Nonnull stop) {
+                                 XCTAssertFalse([NSThread isMainThread]);
+                                 [eventsOfActivity addObject:event];
+                             }
+                          completion:^(BOOL completed, NSError * _Nullable error) {
+                              XCTAssertFalse([NSThread isMainThread]);
+                              XCTAssertNil(error);
+                              [expectation fulfill];
+                          }];
     
     [self waitForExpectationsWithTimeout:10.0 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
@@ -488,6 +546,7 @@
                     withResult:nil
                          state:OCKCarePlanEventStateCompleted
                     completion:^(BOOL success, OCKCarePlanEvent * _Nonnull event, NSError * _Nonnull error) {
+                        XCTAssertFalse([NSThread isMainThread]);
                           XCTAssertNil(error);
                           XCTAssertTrue(success, @"%@: %@", event, error);
                           [expectation fulfill];
@@ -501,22 +560,29 @@
     
     expectation = [self expectationWithDescription:@"completionStatus"];
     
+    __block NSInteger count = 0;
     [store dailyCompletionStatusWithType:OCKCarePlanActivityTypeIntervention
                                 startDate:[startDate nextDay]
                                   endDate:futureDay
-                              usingBlock:^(NSDateComponents * _Nonnull day, NSUInteger completed, NSUInteger total, NSError * _Nonnull error) {
+                                 handler:^(NSDateComponents * _Nonnull date, NSUInteger completed, NSUInteger total) {
+                                     XCTAssertFalse([NSThread isMainThread]);
+                                     XCTAssertNotNil(date);
+                                     XCTAssertEqual(completed, 3, @"on %@", date);
+                                     XCTAssertEqual(total, 9);
+                                     count ++;
+                                 }
+                              completion:^(BOOL completed, NSError * _Nullable error) {
+                                  XCTAssertFalse([NSThread isMainThread]);
                                   XCTAssertNil(error);
-                                  XCTAssertNotNil(day);
-                                  XCTAssertEqual(completed, 3);
-                                  XCTAssertEqual(total, 9);
-                                  if ([day isEqualToDate:futureDay]) {
-                                      [expectation fulfill];
-                                  }
+                                  [expectation fulfill];
+                                  
                               }];
     
     [self waitForExpectationsWithTimeout:2.0 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
     }];
+    
+    XCTAssertEqual(count, 100);
 }
 
 
@@ -528,28 +594,28 @@
     // Every Day
     OCKCareSchedule *dailySchedule = [OCKCareSchedule dailyScheduleWithStartDate:today occurrencesPerDay:2];
     XCTAssertEqual([dailySchedule numberOfEventsOnDate:[today nextDay]], 2);
-    XCTAssertEqual([dailySchedule numberOfEventsOnDate:[today dateByAddingDays:2]], 2);
+    XCTAssertEqual([dailySchedule numberOfEventsOnDate:[today dateCompByAddingDays:2]], 2);
     
     // Skip days
     dailySchedule = [OCKCareSchedule dailyScheduleWithStartDate:today
                                               occurrencesPerDay:3
                                                      daysToSkip:3
-                                                        EndDate:nil];
+                                                        endDate:nil];
                      
     XCTAssertEqual([dailySchedule numberOfEventsOnDate:today], 3);
-    XCTAssertEqual([dailySchedule numberOfEventsOnDate:[today dateByAddingDays:1]], 0);
-    XCTAssertEqual([dailySchedule numberOfEventsOnDate:[today dateByAddingDays:4]], 3);
+    XCTAssertEqual([dailySchedule numberOfEventsOnDate:[today dateCompByAddingDays:1]], 0);
+    XCTAssertEqual([dailySchedule numberOfEventsOnDate:[today dateCompByAddingDays:4]], 3);
     
     // With end day
     dailySchedule = [OCKCareSchedule dailyScheduleWithStartDate:today
                                               occurrencesPerDay:4
                                                      daysToSkip:0
-                                                         EndDate:[today dateByAddingDays:3]];
+                                                         endDate:[today dateCompByAddingDays:3]];
     
 
     XCTAssertEqual([dailySchedule numberOfEventsOnDate:today], 4);
-    XCTAssertEqual([dailySchedule numberOfEventsOnDate:[today dateByAddingDays:1]], 4);
-    XCTAssertEqual([dailySchedule numberOfEventsOnDate:[today dateByAddingDays:6]], 0);
+    XCTAssertEqual([dailySchedule numberOfEventsOnDate:[today dateCompByAddingDays:1]], 4);
+    XCTAssertEqual([dailySchedule numberOfEventsOnDate:[today dateCompByAddingDays:6]], 0);
     
 }
 
@@ -566,82 +632,60 @@
     NSUInteger weekday = [calendar component:NSCalendarUnitWeekday fromDate:now];
     NSUInteger occurrencesOnDay = occurrences[weekday - 1].unsignedIntegerValue;
     XCTAssertEqual([weeklySchedule numberOfEventsOnDate:today], occurrencesOnDay);
-    XCTAssertEqual([weeklySchedule numberOfEventsOnDate:[today dateByAddingDays:1]], occurrences[(weekday)%7].unsignedIntegerValue);
+    XCTAssertEqual([weeklySchedule numberOfEventsOnDate:[today dateCompByAddingDays:1]], occurrences[(weekday)%7].unsignedIntegerValue);
     
     // Skip weeks
     weeklySchedule = [OCKCareSchedule weeklyScheduleWithStartDate:today
                                              occurrencesOnEachDay:occurrences
                                                       weeksToSkip:3
-                                                          EndDate:nil];
+                                                          endDate:nil];
     
 
     XCTAssertEqual([weeklySchedule numberOfEventsOnDate:today], occurrencesOnDay);
-    XCTAssertEqual([weeklySchedule numberOfEventsOnDate:[today dateByAddingDays:7]], 0);
-    XCTAssertEqual([weeklySchedule numberOfEventsOnDate:[today dateByAddingDays:4*7]], occurrencesOnDay);
+    XCTAssertEqual([weeklySchedule numberOfEventsOnDate:[today dateCompByAddingDays:7]], 0);
+    XCTAssertEqual([weeklySchedule numberOfEventsOnDate:[today dateCompByAddingDays:4*7]], occurrencesOnDay);
     
     
     // With end day
     weeklySchedule = [OCKCareSchedule weeklyScheduleWithStartDate:today
                                              occurrencesOnEachDay:occurrences
                                                         weeksToSkip:0
-                                                            EndDate:[today dateByAddingDays:3*7]];
+                                                            endDate:[today dateCompByAddingDays:3*7]];
     
 
     XCTAssertEqual([weeklySchedule numberOfEventsOnDate:today], occurrencesOnDay);
-    XCTAssertEqual([weeklySchedule numberOfEventsOnDate:[today dateByAddingDays:1*7]], occurrencesOnDay);
-    XCTAssertEqual([weeklySchedule numberOfEventsOnDate:[today dateByAddingDays:6*7]], 0);
+    XCTAssertEqual([weeklySchedule numberOfEventsOnDate:[today dateCompByAddingDays:1*7]], occurrencesOnDay);
+    XCTAssertEqual([weeklySchedule numberOfEventsOnDate:[today dateCompByAddingDays:6*7]], 0);
     
 }
 
-- (void)testMonthlySchedules {
-
-    NSDateComponents *startDate = [[NSDateComponents alloc] initWithYear:2016 month:2 day:10];
-
-    NSMutableArray<NSNumber *> *occurrences = [NSMutableArray new];
-    for (NSInteger i = 1; i <= 31; i++) {
-        [occurrences addObject:@(i)];
+- (void)testDateComponents {
+    NSDateComponents *dc = [NSDateComponents ock_componentsWithDate:[NSDate date] calendar:[NSCalendar calendarWithIdentifier:NSCalendarIdentifierGregorian]];
+    XCTAssertTrue(dc.weekday > 0 && dc.weekday <=7);
+    
+    NSInteger count = 0;
+    
+    while (count < 1000) {
+        if (dc.weekday == 7) {
+            XCTAssertFalse([dc isInSameWeekAsDate:[dc nextDay]]);
+        } else {
+            XCTAssertTrue([dc isInSameWeekAsDate:[dc nextDay]]);
+        }
+        
+        dc = [dc nextDay];
+        dc = [NSDateComponents ock_componentsWithDate:[dc dateWithGregorianCalendar] calendar:[NSCalendar calendarWithIdentifier:NSCalendarIdentifierGregorian]];
+        count++;
     }
-   
-    // Every month
-    OCKCareSchedule *monthlySchedule = [OCKCareSchedule monthlyScheduleWithStartDate:startDate
-                                                               occurrencesOnEachDay:occurrences];
-
-    NSUInteger dayInMonth = 10;
-    NSUInteger occurrencesOnDay = occurrences[dayInMonth - 1].unsignedIntegerValue;
-  
-    XCTAssertEqual([monthlySchedule numberOfEventsOnDate:startDate], occurrencesOnDay);
-  
-    XCTAssertEqual([monthlySchedule numberOfEventsOnDate:[startDate dateByAddingDays:1]], occurrences[dayInMonth+1-1].unsignedIntegerValue);
-    
-    // Skip month
-    monthlySchedule = [OCKCareSchedule monthlyScheduleWithStartDate:startDate
-                                               occurrencesOnEachDay:occurrences
-                                                       monthsToSkip:3
-                                                            EndDate:nil];
-
-    XCTAssertEqual([monthlySchedule numberOfEventsOnDate:startDate], occurrencesOnDay);
-    XCTAssertEqual([monthlySchedule numberOfEventsOnDate:[[NSDateComponents alloc] initWithYear:2016 month:3 day:10]], 0);
-    XCTAssertEqual([monthlySchedule numberOfEventsOnDate:[[NSDateComponents alloc] initWithYear:2016 month:6 day:10]], occurrencesOnDay);
-    
-    
-    // With end day
-    monthlySchedule = [OCKCareSchedule monthlyScheduleWithStartDate:startDate
-                                               occurrencesOnEachDay:occurrences
-                                                       monthsToSkip:0
-                                                                EndDate:[[NSDateComponents alloc] initWithYear:2016 month:5 day:10]];
-
-    XCTAssertEqual([monthlySchedule numberOfEventsOnDate:startDate], occurrencesOnDay);
-    XCTAssertEqual([monthlySchedule numberOfEventsOnDate:[[NSDateComponents alloc] initWithYear:2016 month:3 day:10]], occurrencesOnDay);
-    XCTAssertEqual([monthlySchedule numberOfEventsOnDate:[[NSDateComponents alloc] initWithYear:2016 month:8 day:10]], 0);
-    
 }
 
 - (void)carePlanStoreActivityListDidChange:(OCKCarePlanStore *)store {
+    XCTAssertTrue([NSThread isMainThread]);
     XCTAssertFalse(_listChanged);
     _listChanged = YES;
 }
 
 - (void)carePlanStore:(OCKCarePlanStore *)store didReceiveUpdateOfEvent:(nonnull OCKCarePlanEvent *)event {
+    XCTAssertTrue([NSThread isMainThread]);
     XCTAssertNil(_event);
     _event = event;
 }

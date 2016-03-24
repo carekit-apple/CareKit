@@ -233,7 +233,7 @@ NSBundle *OCKBundle() {
     
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        __bundle = [NSBundle bundleForClass:[OCKConnectViewController class]];
+        __bundle = [NSBundle bundleForClass:[OCKCarePlanStore class]];
     });
     
     return __bundle;

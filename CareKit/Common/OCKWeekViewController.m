@@ -66,7 +66,8 @@
         }
     } else {
         if (!_symptomTrackerWeekView) {
-            _symptomTrackerWeekView = [[OCKSymptomTrackerWeekView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 40.0)];
+            _symptomTrackerWeekView = [[OCKSymptomTrackerWeekView alloc] initWithFrame:self.view.bounds];
+            _symptomTrackerWeekView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
             [self.view addSubview:_symptomTrackerWeekView];
             [_careCardWeekView removeFromSuperview];
         }

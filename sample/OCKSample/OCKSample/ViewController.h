@@ -30,9 +30,6 @@
 
 
 #import <CareKit/CareKit.h>
-#import <ResearchKit/ResearchKit.h>
-#import <MessageUI/MessageUI.h>
-
 
 @interface ViewController : UITabBarController
 

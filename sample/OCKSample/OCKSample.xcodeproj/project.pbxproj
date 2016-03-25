@@ -449,6 +449,7 @@
 				24312D6B1CA49D0500D94F8F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

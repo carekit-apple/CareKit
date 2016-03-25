@@ -30,6 +30,8 @@
 
 
 #import "ViewController.h"
+#import <ResearchKit/ResearchKit.h>
+#import <MessageUI/MessageUI.h>
 
 
 #define DefineStringKey(x) static NSString *const x = @#x

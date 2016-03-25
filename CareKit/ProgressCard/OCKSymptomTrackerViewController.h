@@ -63,8 +63,9 @@ NS_ASSUME_NONNULL_BEGIN
  
  @param viewController      The view controller providing the callback.
  @param events              An array containing the fetched set of assessment events.
+ @param date                The date for which the events will be displayed.
  */
-- (void)symptomTrackerViewController:(OCKSymptomTrackerViewController *)viewController willDisplayEvents:(NSArray<OCKCarePlanEvent*>*)events;
+- (void)symptomTrackerViewController:(OCKSymptomTrackerViewController *)viewController willDisplayEvents:(NSArray<OCKCarePlanEvent*>*)events ofDate:(NSDateComponents *)date;
 
 @end
 

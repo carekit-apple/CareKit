@@ -254,8 +254,8 @@ static const CGFloat HeaderViewHeight = 150.0;
                       }
                       
                       if (_delegate &&
-                          [_delegate respondsToSelector:@selector(careCardViewController:willDisplayEvents:)]) {
-                          [_delegate careCardViewController:self willDisplayEvents:[_events copy]];
+                          [_delegate respondsToSelector:@selector(careCardViewController:willDisplayEvents:ofDate:)]) {
+                          [_delegate careCardViewController:self willDisplayEvents:[_events copy] ofDate:_selectedDate];
                       }
                       
                       [self updateHeaderView];

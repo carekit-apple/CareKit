@@ -34,7 +34,25 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class OCKCarePlanStore;
+@class OCKCarePlanStore, OCKCareCardViewController;
+
+/**
+ An object that adopts the `OCKCareCardViewControllerDelegate` protocol can use it modify or update the events before they are displayed.
+ */
+@protocol OCKCareCardViewControllerDelegate <NSObject>
+
+@optional
+
+/**
+ Tells the delegate when the a new set of events is fetched from the care plan store.
+ 
+ @param viewController          The view controller providing the callback.
+ @param events                  An array containing the fetched set of intervention events.
+ */
+- (void)careCardViewController:(OCKCareCardViewController *)viewController willDisplayEvents:(NSArray<OCKCarePlanEvent*>*)events;
+
+@end
+
 
 /**
  The `OCKCareCardViewController` class is a view controller that displays the activities and events
@@ -62,6 +80,13 @@ OCK_CLASS_AVAILABLE
  The care card displays activites and events that are of intervention type (see `OCKCarePlanActivityTypeIntervention`).
  */
 @property (nonatomic, readonly) OCKCarePlanStore *store;
+
+/**
+ The delegate can be used to modify or update the internvention events before they are displayed.
+ 
+ See the `OCKCareCardViewControllerDelegate` protocol.
+ */
+@property (nonatomic, weak, nullable) id<OCKCareCardViewControllerDelegate> delegate;
 
 
 /**

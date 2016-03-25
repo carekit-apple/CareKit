@@ -57,6 +57,7 @@
                         tintColor:(UIColor *)tintColor
                        axisTitles:(NSArray<NSString *> *)axisTitles
                     axisSubtitles:(NSArray<NSString *> *)axisSubtitles
+                      chartHeight:(CGFloat)chartHeight
                        dataSeries:(NSArray<OCKBarSeries *> *)dataSeries {
     self = [super init];
     if (self) {
@@ -65,6 +66,7 @@
         self.tintColor = tintColor;
         _axisTitles = OCKArrayCopyObjects(axisTitles);
         _axisSubtitles = OCKArrayCopyObjects(axisSubtitles);
+        _chartHeight = chartHeight;
         _dataSeries = OCKArrayCopyObjects(dataSeries);
     }
     return self;
@@ -77,6 +79,7 @@
     return (isParentSame &&
             OCKEqualObjects(self.axisTitles, castObject.axisTitles) &&
             OCKEqualObjects(self.axisSubtitles, castObject.axisSubtitles) &&
+            (self.chartHeight == castObject.chartHeight) &&
             OCKEqualObjects(self.dataSeries, castObject.dataSeries));
 }
 
@@ -92,6 +95,7 @@
     if (self) {
         OCK_DECODE_OBJ_ARRAY(aDecoder, axisTitles, NSArray);
         OCK_DECODE_OBJ_ARRAY(aDecoder, axisSubtitles, NSArray);
+        OCK_DECODE_DOUBLE(aDecoder, chartHeight);
         OCK_DECODE_OBJ_ARRAY(aDecoder, dataSeries, NSArray);
     }
     return self;
@@ -102,6 +106,7 @@
     OCK_ENCODE_OBJ(aCoder, axisTitles);
     OCK_ENCODE_OBJ(aCoder, axisSubtitles);
     OCK_ENCODE_OBJ(aCoder, dataSeries);
+    OCK_ENCODE_DOUBLE(aCoder, chartHeight);
 }
 
 
@@ -111,6 +116,7 @@
     OCKBarChart *chart = [super copyWithZone:zone];
     chart->_axisTitles = OCKArrayCopyObjects(_axisTitles);
     chart->_axisSubtitles = OCKArrayCopyObjects(_axisSubtitles);
+    chart->_chartHeight = _chartHeight;
     chart->_dataSeries = OCKArrayCopyObjects(_dataSeries);
     return chart;
 }
@@ -132,7 +138,7 @@
 }
 
 - (CGFloat)height {
-    return 250.0;
+    return _chartHeight;
 }
 
 + (void)animateView:(UIView *)view withDuration:(NSTimeInterval)duration {

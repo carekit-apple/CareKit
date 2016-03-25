@@ -399,6 +399,7 @@ static const CGFloat HeaderViewHeight = 150.0;
     OCKWeekViewController *controller = [OCKWeekViewController new];
     controller.weekIndex = ((OCKWeekViewController *)viewController).weekIndex - 1;
     controller.careCardWeekView.smallMaskImage = _smallMaskImage;
+    controller.careCardWeekView.tintColor = _maskImageTintColor;
     return controller;
 }
 
@@ -406,6 +407,7 @@ static const CGFloat HeaderViewHeight = 150.0;
     OCKWeekViewController *controller = [OCKWeekViewController new];
     controller.weekIndex = ((OCKWeekViewController *)viewController).weekIndex + 1;
     controller.careCardWeekView.smallMaskImage = _smallMaskImage;
+    controller.careCardWeekView.tintColor = _maskImageTintColor;
     return (![self.selectedDate isInSameWeekAsDate:[self today]]) ? controller : nil;
 }
 

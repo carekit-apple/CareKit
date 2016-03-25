@@ -59,7 +59,7 @@ NS_ASSUME_NONNULL_BEGIN
  Tells the delegate when a new set of events is fetched from the care plan store.
  
  This is invoked when the date changes or when the care plan store's `carePlanStoreActivityListDidChange` delegate method is called.
- This provides a good opportunity to update the store, such as fetching data from HealthKit, before the user interface is rendered.
+ This provides a good opportunity to update the store such as fetching data from HealthKit.
  
  @param viewController      The view controller providing the callback.
  @param events              An array containing the fetched set of assessment events.

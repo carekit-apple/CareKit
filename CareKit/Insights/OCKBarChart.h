@@ -51,6 +51,7 @@ OCK_CLASS_AVAILABLE
  @param tintColor       The tint color for the chart (see `OCKInsightItem`).
  @param axisTitles      An array of strings representing the y-axis title for each category.
  @param axisSubtitles   An array of strings representing the y-axis subtitle for each category.
+ @param chartHeight     The height for the chart.
  @param dataSets        An array of `OCKDataSet` objects.
  
  @return An initialzed bar chart object.
@@ -60,7 +61,13 @@ OCK_CLASS_AVAILABLE
                         tintColor:(nullable UIColor *)tintColor
                        axisTitles:(nullable NSArray<NSString *> *)axisTitles
                     axisSubtitles:(nullable NSArray<NSString *> *)axisSubtitles
+                      chartHeight:(CGFloat)chartHeight
                        dataSeries:(NSArray<OCKBarSeries *> *)dataSeries;
+
+/**
+ The height for the chart.
+ */
+@property (nonatomic, readonly) CGFloat chartHeight;
 
 /**
  An array of strings representing the axis titles.

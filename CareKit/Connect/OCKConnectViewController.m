@@ -31,18 +31,21 @@
 
 #import "OCKConnectViewController.h"
 #import "OCKContact.h"
-#import "OCKConnectTableViewController.h"
 #import "OCKConnectDetailViewController.h"
 #import "OCKHelpers.h"
+#import "OCKDefines_Private.h"
 
 
-@interface OCKConnectViewController() <OCKConnectTableViewDelegate>
+@interface OCKConnectViewController() <UITableViewDelegate, UITableViewDataSource>
 
 @end
 
 
 @implementation OCKConnectViewController {
-    OCKConnectTableViewController *_tableViewController;
+    UITableView *_tableView;
+    NSMutableArray *_constraints;
+    NSMutableArray<NSArray<OCKContact *>*> *_sectionedContacts;
+    NSMutableArray<NSString *> *_sectionTitles;
 }
 
 + (instancetype)new {
@@ -62,33 +65,144 @@
     if (self) {
         _contacts = [contacts copy];
         
-        _tableViewController = [[OCKConnectTableViewController alloc] initWithContacts:_contacts];
-        _tableViewController.delegate = self;
-        [self addChildViewController:_tableViewController];
-        [self.view addSubview:_tableViewController.view];
+        _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
+        _tableView.dataSource = self;
+        _tableView.delegate = self;
+        [self.view addSubview:_tableView];
+        
+        [self setUpConstraints];
     }
     return self;
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    _tableView.estimatedRowHeight = 44.0;
+    _tableView.rowHeight = UITableViewAutomaticDimension;
+    
+    [self createSectionedContacts];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     NSAssert(self.navigationController, @"OCKConnectViewController must be embedded in a navigation controller.");
+    
 }
 
 - (void)setContacts:(NSArray<OCKContact *> *)contacts {
     NSAssert(_contacts.count > 0, @"OCKConnectViewController requires at least one contact.");
     _contacts = [contacts copy];
-    _tableViewController.contacts = contacts;
+    [_tableView reloadData];
+}
+
+- (void)setUpConstraints {
+    [NSLayoutConstraint deactivateConstraints:_constraints];
+    
+    _constraints = [NSMutableArray new];
+    
+    _tableView.translatesAutoresizingMaskIntoConstraints = NO;
+    
+    [_constraints addObjectsFromArray:@[
+                                        [NSLayoutConstraint constraintWithItem:_tableView
+                                                                     attribute:NSLayoutAttributeTop
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self.view
+                                                                     attribute:NSLayoutAttributeTop
+                                                                    multiplier:1.0
+                                                                      constant:0.0],
+                                        [NSLayoutConstraint constraintWithItem:_tableView
+                                                                     attribute:NSLayoutAttributeBottom
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self.view
+                                                                     attribute:NSLayoutAttributeBottom
+                                                                    multiplier:1.0
+                                                                      constant:0.0],
+                                        [NSLayoutConstraint constraintWithItem:_tableView
+                                                                     attribute:NSLayoutAttributeLeading
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self.view
+                                                                     attribute:NSLayoutAttributeLeading
+                                                                    multiplier:1.0
+                                                                      constant:0.0],
+                                        [NSLayoutConstraint constraintWithItem:_tableView
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self.view
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                    multiplier:1.0
+                                                                      constant:0.0]
+                                        ]];
+    
+    [NSLayoutConstraint activateConstraints:_constraints];
+}
+
+- (void)createSectionedContacts {
+    _sectionedContacts = [NSMutableArray new];
+    _sectionTitles = [NSMutableArray new];
+    
+    NSMutableArray *careTeamContacts = [NSMutableArray new];
+    NSMutableArray *personalContacts = [NSMutableArray new];
+    
+    for (OCKContact *contact in _contacts) {
+        switch (contact.type) {
+            case OCKContactTypeCareTeam:
+                [careTeamContacts addObject:contact];
+                break;
+            case OCKContactTypePersonal:
+                [personalContacts addObject:contact];
+                break;
+        }
+    }
+    
+    if (careTeamContacts.count > 0) {
+        [_sectionedContacts addObject:careTeamContacts];
+        [_sectionTitles addObject:OCKLocalizedString(@"CARE_TEAM_SECTION_TITLE", nil)];
+    }
+    
+    if (personalContacts.count > 0) {
+        [_sectionedContacts addObject:personalContacts];
+        [_sectionTitles addObject:OCKLocalizedString(@"PERSONAL_SECTION_TITLE", nil)];
+    }
 }
 
 
-#pragma mark - OCKConnectTableViewDelegate
+#pragma mark - UITableViewDelegate
 
-- (void)connectTableViewController:(OCKConnectTableViewController *)connectTableViewController didSelectRowWithContact:(OCKContact *)contact {
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    OCKContact *contact = _sectionedContacts[indexPath.section][indexPath.row];
+    
     OCKConnectDetailViewController *detailViewController = [[OCKConnectDetailViewController alloc] initWithContact:contact];
     detailViewController.delegate = _delegate;
     detailViewController.masterViewController = self;
     [self.navigationController pushViewController:detailViewController animated:YES];
+    
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+
+#pragma mark - UITableViewDataSource
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return _sectionedContacts.count;
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    return _sectionTitles[section];
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return _sectionedContacts[section].count;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    static NSString *CellIdentifier = @"ConnectCell";
+    OCKConnectTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (!cell) {
+        cell = [[OCKConnectTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                              reuseIdentifier:CellIdentifier];
+    }
+    cell.contact = _sectionedContacts[indexPath.section][indexPath.row];
+    return cell;
 }
 
 @end

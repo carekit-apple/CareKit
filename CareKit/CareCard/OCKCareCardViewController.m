@@ -369,7 +369,8 @@ static const CGFloat HeaderViewHeight = 150.0;
                 [self updateHeaderView];
                 
                 NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[_events indexOfObject:events] inSection:0];
-                [_tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+                OCKCareCardTableViewCell *cell = [_tableView cellForRowAtIndexPath:indexPath];
+                cell.interventionEvents = events;
             }
             break;
         }

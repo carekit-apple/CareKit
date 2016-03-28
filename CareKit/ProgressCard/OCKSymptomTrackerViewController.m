@@ -219,6 +219,11 @@ static const CGFloat HeaderViewHeight = 150.0;
                           [_events addObject:[events mutableCopy]];
                       }
                       
+                      if (_delegate &&
+                          [_delegate respondsToSelector:@selector(symptomTrackerViewController:willDisplayEvents:ofDate:)]) {
+                          [_delegate symptomTrackerViewController:self willDisplayEvents:[_events copy] ofDate:_selectedDate];
+                      }
+                      
                       [self updateHeaderView];
                       [self updateWeekView];
                       [_tableView reloadData];

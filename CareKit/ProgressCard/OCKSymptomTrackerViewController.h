@@ -38,7 +38,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  An object that adopts the `OCKSymptomTrackerViewControllerDelegate` protocol is responsible for presenting
- the appropriate view controller to perform the assessment.
+ the appropriate view controller to perform the assessment. It also allows the object to modify or update the
+ events before they are displayed.
  */
 @protocol OCKSymptomTrackerViewControllerDelegate <NSObject>
 
@@ -51,6 +52,20 @@ NS_ASSUME_NONNULL_BEGIN
  @param assessmentEvent                   The assessment event that the user selected.
  */
 - (void)symptomTrackerViewController:(OCKSymptomTrackerViewController *)viewController didSelectRowWithAssessmentEvent:(OCKCarePlanEvent *)assessmentEvent;
+
+@optional
+
+/**
+ Tells the delegate when a new set of events is fetched from the care plan store.
+ 
+ This is invoked when the date changes or when the care plan store's `carePlanStoreActivityListDidChange` delegate method is called.
+ This provides a good opportunity to update the store such as fetching data from HealthKit.
+ 
+ @param viewController      The view controller providing the callback.
+ @param events              An array containing the fetched set of assessment events.
+ @param date                The date for which the events will be displayed.
+ */
+- (void)symptomTrackerViewController:(OCKSymptomTrackerViewController *)viewController willDisplayEvents:(NSArray<OCKCarePlanEvent*>*)events ofDate:(NSDateComponents *)date;
 
 @end
 
@@ -84,6 +99,7 @@ OCK_CLASS_AVAILABLE
 
 /**
  The delegate is used to provide the appropriate view controller for a given assessment event.
+ It also allows the fetched events to be modified or updated before they are displayed.
  
  See the `OCKSymptomTrackerViewControllerDelegate` protocol.
  */

@@ -122,6 +122,8 @@ static const CGFloat ButtonViewSize = 40.0;
     _titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     _textLabel.translatesAutoresizingMaskIntoConstraints = NO;
     
+    [_titleLabel setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
+    
     CGFloat LeadingMargin = self.separatorInset.left;
     CGFloat TrailingMargin = (self.separatorInset.right > 0) ? self.separatorInset.right : 20;
     
@@ -154,13 +156,13 @@ static const CGFloat ButtonViewSize = 40.0;
                                                                      attribute:NSLayoutAttributeTrailing
                                                                     multiplier:1.0
                                                                       constant:5.0],
-                                        [NSLayoutConstraint constraintWithItem:_textLabel
+                                        [NSLayoutConstraint constraintWithItem:self
                                                                      attribute:NSLayoutAttributeTrailing
-                                                                     relatedBy:NSLayoutRelationLessThanOrEqual
-                                                                        toItem:self
+                                                                     relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                                        toItem:_textLabel
                                                                      attribute:NSLayoutAttributeTrailing
                                                                     multiplier:1.0
-                                                                      constant:-TrailingMargin]
+                                                                      constant:TrailingMargin]
                                         ]];
     
     for (int i = 0; i < _frequencyButtons.count; i++) {

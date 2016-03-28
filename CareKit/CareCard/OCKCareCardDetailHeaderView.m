@@ -33,7 +33,10 @@
 #import "OCKHelpers.h"
 
 
+static const CGFloat LeadingMargin = 20.0;
+static const CGFloat TrailingMargin = 20.0;
 static const CGFloat BottomMargin = 15.0;
+static const CGFloat TopMargin = 15.0;
 
 @implementation OCKCareCardDetailHeaderView {
     UILabel *_titleLabel;
@@ -60,12 +63,16 @@ static const CGFloat BottomMargin = 15.0;
     
     if (!_titleLabel) {
         _titleLabel = [UILabel new];
+        _titleLabel.numberOfLines = 0;
+        _titleLabel.textAlignment = NSTextAlignmentCenter;
         [self addSubview:_titleLabel];
     }
     
     if (!_textLabel) {
         _textLabel = [UILabel new];
         _textLabel.textColor = [UIColor lightGrayColor];
+        _textLabel.numberOfLines = 0;
+        _textLabel.textAlignment = NSTextAlignmentCenter;
         [self addSubview:_textLabel];
     }
     
@@ -102,19 +109,40 @@ static const CGFloat BottomMargin = 15.0;
     
     [_constraints addObjectsFromArray:@[
                                         [NSLayoutConstraint constraintWithItem:_titleLabel
-                                                                     attribute:NSLayoutAttributeCenterX
+                                                                     attribute:NSLayoutAttributeTop
+                                                                     relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeTop
+                                                                    multiplier:1.0
+                                                                      constant:TopMargin],
+                                        [NSLayoutConstraint constraintWithItem:_titleLabel
+                                                                     attribute:NSLayoutAttributeLeading
                                                                      relatedBy:NSLayoutRelationEqual
                                                                         toItem:self
-                                                                     attribute:NSLayoutAttributeCenterX
+                                                                     attribute:NSLayoutAttributeLeading
                                                                     multiplier:1.0
-                                                                      constant:0.0],
+                                                                      constant:LeadingMargin],
+                                        [NSLayoutConstraint constraintWithItem:_titleLabel
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                    multiplier:1.0
+                                                                      constant:-TrailingMargin],
                                         [NSLayoutConstraint constraintWithItem:_textLabel
-                                                                     attribute:NSLayoutAttributeCenterX
+                                                                     attribute:NSLayoutAttributeLeading
                                                                      relatedBy:NSLayoutRelationEqual
                                                                         toItem:self
-                                                                     attribute:NSLayoutAttributeCenterX
+                                                                     attribute:NSLayoutAttributeLeading
                                                                     multiplier:1.0
-                                                                      constant:0.0],
+                                                                      constant:LeadingMargin],
+                                        [NSLayoutConstraint constraintWithItem:_textLabel
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                    multiplier:1.0
+                                                                      constant:-TrailingMargin],
                                         [NSLayoutConstraint constraintWithItem:_titleLabel
                                                                      attribute:NSLayoutAttributeBottom
                                                                      relatedBy:NSLayoutRelationEqual

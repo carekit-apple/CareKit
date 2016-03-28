@@ -57,8 +57,6 @@
 		248929761C90E70100EBBE1F /* OCKConnectDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 248929651C90E70100EBBE1F /* OCKConnectDetailViewController.m */; };
 		248929771C90E70100EBBE1F /* OCKConnectTableViewCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 248929661C90E70100EBBE1F /* OCKConnectTableViewCell.h */; };
 		248929781C90E70100EBBE1F /* OCKConnectTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 248929671C90E70100EBBE1F /* OCKConnectTableViewCell.m */; };
-		248929791C90E70100EBBE1F /* OCKConnectTableViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 248929681C90E70100EBBE1F /* OCKConnectTableViewController.h */; };
-		2489297A1C90E70100EBBE1F /* OCKConnectTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 248929691C90E70100EBBE1F /* OCKConnectTableViewController.m */; };
 		2489297B1C90E70100EBBE1F /* OCKConnectTableViewHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 2489296A1C90E70100EBBE1F /* OCKConnectTableViewHeader.h */; };
 		2489297C1C90E70100EBBE1F /* OCKConnectTableViewHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 2489296B1C90E70100EBBE1F /* OCKConnectTableViewHeader.m */; };
 		2489297D1C90E70100EBBE1F /* OCKConnectViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 2489296C1C90E70100EBBE1F /* OCKConnectViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -190,8 +188,6 @@
 		248929651C90E70100EBBE1F /* OCKConnectDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKConnectDetailViewController.m; sourceTree = "<group>"; };
 		248929661C90E70100EBBE1F /* OCKConnectTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKConnectTableViewCell.h; sourceTree = "<group>"; };
 		248929671C90E70100EBBE1F /* OCKConnectTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKConnectTableViewCell.m; sourceTree = "<group>"; };
-		248929681C90E70100EBBE1F /* OCKConnectTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKConnectTableViewController.h; sourceTree = "<group>"; };
-		248929691C90E70100EBBE1F /* OCKConnectTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKConnectTableViewController.m; sourceTree = "<group>"; };
 		2489296A1C90E70100EBBE1F /* OCKConnectTableViewHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKConnectTableViewHeader.h; sourceTree = "<group>"; };
 		2489296B1C90E70100EBBE1F /* OCKConnectTableViewHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKConnectTableViewHeader.m; sourceTree = "<group>"; };
 		2489296C1C90E70100EBBE1F /* OCKConnectViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKConnectViewController.h; sourceTree = "<group>"; };
@@ -469,7 +465,7 @@
 				2489296D1C90E70100EBBE1F /* OCKConnectViewController.m */,
 				2489296F1C90E70100EBBE1F /* OCKContact.h */,
 				248929701C90E70100EBBE1F /* OCKContact.m */,
-				2489298F1C90E7E700EBBE1F /* Table View */,
+				2489298F1C90E7E700EBBE1F /* Table View Cell */,
 				248929901C90E80400EBBE1F /* Detail View */,
 			);
 			path = Connect;
@@ -487,15 +483,13 @@
 			path = Utilities;
 			sourceTree = "<group>";
 		};
-		2489298F1C90E7E700EBBE1F /* Table View */ = {
+		2489298F1C90E7E700EBBE1F /* Table View Cell */ = {
 			isa = PBXGroup;
 			children = (
-				248929681C90E70100EBBE1F /* OCKConnectTableViewController.h */,
-				248929691C90E70100EBBE1F /* OCKConnectTableViewController.m */,
 				248929661C90E70100EBBE1F /* OCKConnectTableViewCell.h */,
 				248929671C90E70100EBBE1F /* OCKConnectTableViewCell.m */,
 			);
-			name = "Table View";
+			name = "Table View Cell";
 			sourceTree = "<group>";
 		};
 		248929901C90E80400EBBE1F /* Detail View */ = {
@@ -750,7 +744,6 @@
 				241707D91C9A3AB7005D7123 /* OCKInsightsTableViewHeaderView.h in Headers */,
 				8605A5BE1C4F04EC00DD65FF /* CareKit.h in Headers */,
 				241707C31C9A3AB7005D7123 /* OCKBarChart.h in Headers */,
-				248929791C90E70100EBBE1F /* OCKConnectTableViewController.h in Headers */,
 				86EA9A501C9C644E00B93BB1 /* OCKHTMLPDFWriter.h in Headers */,
 				8677EE1B1C9775EB00588CD6 /* OCKCareSchedule.h in Headers */,
 				8677EE1D1C9775EB00588CD6 /* OCKCareSchedule_Internal.h in Headers */,
@@ -919,7 +912,6 @@
 				244A924A1CA210F7007B42D6 /* OCKWeekViewController.m in Sources */,
 				241707CA1C9A3AB7005D7123 /* OCKChart.m in Sources */,
 				24EA9FC81C9A3D420036028E /* OCKHeartButton.m in Sources */,
-				2489297A1C90E70100EBBE1F /* OCKConnectTableViewController.m in Sources */,
 				8677EE191C9775EB00588CD6 /* OCKCarePlanStore.xcdatamodeld in Sources */,
 				241707D01C9A3AB7005D7123 /* OCKGroupedBarChartView.m in Sources */,
 				241707C41C9A3AB7005D7123 /* OCKBarChart.m in Sources */,

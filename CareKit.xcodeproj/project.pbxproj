@@ -27,8 +27,6 @@
 		241707D41C9A3AB7005D7123 /* OCKInsightsChartTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 241707B81C9A3AB7005D7123 /* OCKInsightsChartTableViewCell.m */; };
 		241707D51C9A3AB7005D7123 /* OCKInsightsMessageTableViewCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 241707B91C9A3AB7005D7123 /* OCKInsightsMessageTableViewCell.h */; };
 		241707D61C9A3AB7005D7123 /* OCKInsightsMessageTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 241707BA1C9A3AB7005D7123 /* OCKInsightsMessageTableViewCell.m */; };
-		241707D71C9A3AB7005D7123 /* OCKInsightsTableViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 241707BB1C9A3AB7005D7123 /* OCKInsightsTableViewController.h */; };
-		241707D81C9A3AB7005D7123 /* OCKInsightsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 241707BC1C9A3AB7005D7123 /* OCKInsightsTableViewController.m */; };
 		241707D91C9A3AB7005D7123 /* OCKInsightsTableViewHeaderView.h in Headers */ = {isa = PBXBuildFile; fileRef = 241707BD1C9A3AB7005D7123 /* OCKInsightsTableViewHeaderView.h */; };
 		241707DA1C9A3AB7005D7123 /* OCKInsightsTableViewHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 241707BE1C9A3AB7005D7123 /* OCKInsightsTableViewHeaderView.m */; };
 		241707DB1C9A3AB7005D7123 /* OCKInsightsViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 241707BF1C9A3AB7005D7123 /* OCKInsightsViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -158,8 +156,6 @@
 		241707B81C9A3AB7005D7123 /* OCKInsightsChartTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKInsightsChartTableViewCell.m; sourceTree = "<group>"; };
 		241707B91C9A3AB7005D7123 /* OCKInsightsMessageTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKInsightsMessageTableViewCell.h; sourceTree = "<group>"; };
 		241707BA1C9A3AB7005D7123 /* OCKInsightsMessageTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKInsightsMessageTableViewCell.m; sourceTree = "<group>"; };
-		241707BB1C9A3AB7005D7123 /* OCKInsightsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKInsightsTableViewController.h; sourceTree = "<group>"; };
-		241707BC1C9A3AB7005D7123 /* OCKInsightsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKInsightsTableViewController.m; sourceTree = "<group>"; };
 		241707BD1C9A3AB7005D7123 /* OCKInsightsTableViewHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKInsightsTableViewHeaderView.h; sourceTree = "<group>"; };
 		241707BE1C9A3AB7005D7123 /* OCKInsightsTableViewHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKInsightsTableViewHeaderView.m; sourceTree = "<group>"; };
 		241707BF1C9A3AB7005D7123 /* OCKInsightsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKInsightsViewController.h; sourceTree = "<group>"; };
@@ -332,8 +328,6 @@
 		241707DF1C9A3AED005D7123 /* Table View */ = {
 			isa = PBXGroup;
 			children = (
-				241707BB1C9A3AB7005D7123 /* OCKInsightsTableViewController.h */,
-				241707BC1C9A3AB7005D7123 /* OCKInsightsTableViewController.m */,
 				241707BD1C9A3AB7005D7123 /* OCKInsightsTableViewHeaderView.h */,
 				241707BE1C9A3AB7005D7123 /* OCKInsightsTableViewHeaderView.m */,
 				241707E41C9A3B4F005D7123 /* Table View Cells */,
@@ -704,7 +698,6 @@
 				244A92491CA210F7007B42D6 /* OCKWeekViewController.h in Headers */,
 				24EA9FB61C9A3D420036028E /* OCKCareCardDetailHeaderView.h in Headers */,
 				248929821C90E70100EBBE1F /* OCKContactInfoTableViewCell.h in Headers */,
-				241707D71C9A3AB7005D7123 /* OCKInsightsTableViewController.h in Headers */,
 				24F8E4761C934FEE003B77BD /* OCKDefines_Private.h in Headers */,
 				241707CF1C9A3AB7005D7123 /* OCKGroupedBarChartView.h in Headers */,
 				24EA9FBC1C9A3D420036028E /* OCKCareCardTableViewCell.h in Headers */,
@@ -907,7 +900,6 @@
 				242DBA971C9F7F8700529386 /* OCKSymptomTrackerViewController.m in Sources */,
 				8677EE0C1C9775EB00588CD6 /* NSDateComponents+CarePlan.m in Sources */,
 				86EA9A4F1C9C644E00B93BB1 /* OCKDocument.m in Sources */,
-				241707D81C9A3AB7005D7123 /* OCKInsightsTableViewController.m in Sources */,
 				241707CE1C9A3AB7005D7123 /* OCKChartLegendView.m in Sources */,
 				244A924A1CA210F7007B42D6 /* OCKWeekViewController.m in Sources */,
 				241707CA1C9A3AB7005D7123 /* OCKChart.m in Sources */,

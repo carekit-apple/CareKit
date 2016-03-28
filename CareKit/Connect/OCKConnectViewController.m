@@ -44,7 +44,8 @@
 @implementation OCKConnectViewController {
     UITableView *_tableView;
     NSMutableArray *_constraints;
-    NSArray<NSArray<OCKContact *>*> *_sectionedContacts;
+    NSMutableArray<NSArray<OCKContact *>*> *_sectionedContacts;
+    NSMutableArray<NSString *> *_sectionTitles;
 }
 
 + (instancetype)new {
@@ -136,7 +137,8 @@
 }
 
 - (void)createSectionedContacts {
-    _sectionedContacts = [NSArray new];
+    _sectionedContacts = [NSMutableArray new];
+    _sectionTitles = [NSMutableArray new];
     
     NSMutableArray *careTeamContacts = [NSMutableArray new];
     NSMutableArray *personalContacts = [NSMutableArray new];
@@ -152,7 +154,15 @@
         }
     }
     
-    _sectionedContacts = @[[careTeamContacts copy], [personalContacts copy]];
+    if (careTeamContacts.count > 0) {
+        [_sectionedContacts addObject:careTeamContacts];
+        [_sectionTitles addObject:OCKLocalizedString(@"CARE_TEAM_SECTION_TITLE", nil)];
+    }
+    
+    if (personalContacts.count > 0) {
+        [_sectionedContacts addObject:personalContacts];
+        [_sectionTitles addObject:OCKLocalizedString(@"PERSONAL_SECTION_TITLE", nil)];
+    }
 }
 
 
@@ -177,13 +187,7 @@
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    NSString *sectionTitle = nil;
-    if (section == 0 && _sectionedContacts[section].count > 0) {
-        sectionTitle = OCKLocalizedString(@"CARE_TEAM_SECTION_TITLE", nil);
-    } else if (_sectionedContacts[section].count > 0) {
-        sectionTitle = OCKLocalizedString(@"PERSONAL_SECTION_TITLE", nil);
-    }
-    return sectionTitle;
+    return _sectionTitles[section];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {

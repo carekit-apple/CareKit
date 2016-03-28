@@ -7,4 +7,7 @@
    <FileRef
       location = "group:testing/OCKTest/OCKTest.xcodeproj">
    </FileRef>
+   <FileRef
+      location = "group:sample/OCKSample/OCKSample.xcodeproj">
+   </FileRef>
 </Workspace>

@@ -419,8 +419,8 @@ DefineStringKey(TemperatureAssessment);
                                                                                   defaultValue:NSIntegerMax
                                                                                           step:1
                                                                                       vertical:NO
-                                                                       maximumValueDescription:nil
-                                                                       minimumValueDescription:nil];
+                                                                       maximumValueDescription:@"Good"
+                                                                       minimumValueDescription:@"Bad"];
         
         ORKQuestionStep *step = [ORKQuestionStep questionStepWithIdentifier:MoodAssessment
                                                                       title:@"On a scale from 1 to 10, how would you rate your mood today?"

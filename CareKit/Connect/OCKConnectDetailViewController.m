@@ -101,7 +101,8 @@ typedef NS_ENUM(NSInteger, OCKConnectDetailSection) {
     }
     
     NSMutableArray *sharingSection = [NSMutableArray new];
-    if (_delegate) {
+    if (_delegate &&
+        [_delegate respondsToSelector:@selector(connectViewController:titleForSharingCellForContact:)]) {
         [sharingSection addObject:[_delegate connectViewController:_masterViewController titleForSharingCellForContact:_contact]];
     } else {
         [sharingSection addObject:OCKLocalizedString(@"SHARING_CELL_TITLE", nil)];

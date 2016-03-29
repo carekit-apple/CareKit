@@ -97,13 +97,11 @@ static const CGFloat TopMargin = 20.0;
 
 - (void)setHeaderTitle:(NSString *)headerTitle {
     _headerTitle = headerTitle;
-    _headerView.title = headerTitle;
     [self updateHeaderView];
 }
 
 - (void)setHeaderSubtitle:(NSString *)headerSubtitle {
     _headerSubtitle = headerSubtitle;
-    _headerView.subtitle = headerSubtitle;
     [self updateHeaderView];
 }
 

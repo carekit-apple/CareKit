@@ -81,9 +81,7 @@ static const CGFloat TopMargin = 20.0;
     if (!_headerView) {
         _headerView = [[OCKInsightsTableViewHeaderView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, HeaderViewHeight)];
     }
-    _headerView.title = _headerTitle;
-    _headerView.subtitle = _headerSubtitle;
-    _tableView.tableHeaderView = _headerView;
+    [self updateHeaderView];
     
     _tableView.estimatedRowHeight = 44.0;
     _tableView.sectionHeaderHeight = 5.0;
@@ -98,11 +96,15 @@ static const CGFloat TopMargin = 20.0;
 }
 
 - (void)setHeaderTitle:(NSString *)headerTitle {
+    _headerTitle = headerTitle;
     _headerView.title = headerTitle;
+    [self updateHeaderView];
 }
 
 - (void)setHeaderSubtitle:(NSString *)headerSubtitle {
+    _headerSubtitle = headerSubtitle;
     _headerView.subtitle = headerSubtitle;
+    [self updateHeaderView];
 }
 
 - (void)setUpConstraints {
@@ -144,6 +146,17 @@ static const CGFloat TopMargin = 20.0;
                                         ]];
     
     [NSLayoutConstraint activateConstraints:_constraints];
+}
+
+- (void)updateHeaderView {
+    _headerView.title = _headerTitle;
+    _headerView.subtitle = _headerSubtitle;
+    if (_headerView.title || _headerView.subtitle) {
+        _tableView.tableHeaderView = _headerView;
+    } else {
+        _tableView.tableHeaderView = nil;
+    }
+    [_tableView reloadData];
 }
 
 

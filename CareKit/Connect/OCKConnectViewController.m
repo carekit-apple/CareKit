@@ -155,12 +155,12 @@
     }
     
     if (careTeamContacts.count > 0) {
-        [_sectionedContacts addObject:careTeamContacts];
+        [_sectionedContacts addObject:[careTeamContacts copy]];
         [_sectionTitles addObject:OCKLocalizedString(@"CARE_TEAM_SECTION_TITLE", nil)];
     }
     
     if (personalContacts.count > 0) {
-        [_sectionedContacts addObject:personalContacts];
+        [_sectionedContacts addObject:[personalContacts copy]];
         [_sectionTitles addObject:OCKLocalizedString(@"PERSONAL_SECTION_TITLE", nil)];
     }
 }

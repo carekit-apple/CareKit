@@ -544,9 +544,9 @@ DefineStringKey(TemperatureAssessment);
                                                                  name:@"Dr. Giselle Guerrero"
                                                              relation:@"Physician"
                                                             tintColor:color
-                                                          phoneNumber:[CNPhoneNumber phoneNumberWithStringValue:@"123-456-7890"]
+                                                          phoneNumber:nil
                                                         messageNumber:nil
-                                                         emailAddress:@"g_guerrero@hospital.edu"
+                                                         emailAddress:nil
                                                                 image:[UIImage imageNamed:@"doctor"]];
         [contacts addObject:contact];
     }

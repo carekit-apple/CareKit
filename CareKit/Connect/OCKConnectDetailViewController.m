@@ -36,14 +36,12 @@
 
 static const CGFloat HeaderViewHeight = 225.0;
 
-typedef NS_ENUM(NSInteger, OCKConnectDetailSection) {
-    OCKConnectDetailSectionContactInfo = 0,
-    OCKConnectDetailSectionSharing
-};
-
 @implementation OCKConnectDetailViewController {
     OCKConnectTableViewHeader *_headerView;
-    NSArray<NSArray *> *_tableViewData;
+    NSMutableArray<NSArray *> *_tableViewData;
+    NSMutableArray<NSString *> *_sectionTitles;
+    NSString *_contactInfoSectionTitle;
+    NSString *_sharingSectionTitle;
 }
 
 - (instancetype)initWithContact:(OCKContact *)contact {
@@ -89,7 +87,12 @@ typedef NS_ENUM(NSInteger, OCKConnectDetailSection) {
 #pragma mark - Helpers
 
 - (void)createTableViewDataArray {
+    _tableViewData = [NSMutableArray new];
+    _sectionTitles = [NSMutableArray new];
+    
     NSMutableArray *contactInfoSection = [NSMutableArray new];
+    NSMutableArray *sharingSection = [NSMutableArray new];
+    
     if (_contact.phoneNumber) {
         [contactInfoSection addObject:@(OCKConnectTypePhone)];
     }
@@ -100,7 +103,6 @@ typedef NS_ENUM(NSInteger, OCKConnectDetailSection) {
         [contactInfoSection addObject:@(OCKConnectTypeEmail)];
     }
     
-    NSMutableArray *sharingSection = [NSMutableArray new];
     if (_delegate &&
         [_delegate respondsToSelector:@selector(connectViewController:titleForSharingCellForContact:)]) {
         [sharingSection addObject:[_delegate connectViewController:_masterViewController titleForSharingCellForContact:_contact]];
@@ -108,7 +110,16 @@ typedef NS_ENUM(NSInteger, OCKConnectDetailSection) {
         [sharingSection addObject:OCKLocalizedString(@"SHARING_CELL_TITLE", nil)];
     }
     
-    _tableViewData = @[[contactInfoSection copy], [sharingSection copy]];
+    if (contactInfoSection.count > 0) {
+        [_tableViewData addObject:[contactInfoSection copy]];
+        _contactInfoSectionTitle = OCKLocalizedString(@"CONTACT_INFO_SECTION_TITLE", nil);
+        [_sectionTitles addObject:_contactInfoSectionTitle];
+    }
+    if (sharingSection.count > 0) {
+        [_tableViewData addObject:[sharingSection copy]];
+        _sharingSectionTitle = OCKLocalizedString(@"CONTACT_SHARING_SECTION_TITLE", nil);
+        [_sectionTitles addObject:_sharingSectionTitle];
+    }
 }
 
 - (void)makeCallToNumber:(NSString *)number {
@@ -178,21 +189,11 @@ typedef NS_ENUM(NSInteger, OCKConnectDetailSection) {
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 2;
+    return _tableViewData.count;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    NSString *sectionTitle = nil;
-    switch (section) {
-        case OCKConnectDetailSectionContactInfo:
-            sectionTitle = OCKLocalizedString(@"CONTACT_INFO_SECTION_TITLE", nil);
-            break;
-            
-        case OCKConnectDetailSectionSharing:
-            sectionTitle = OCKLocalizedString(@"CONTACT_SHARING_SECTION_TITLE", nil);
-            break;
-    }
-    return sectionTitle;
+    return _sectionTitles[section];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -200,7 +201,9 @@ typedef NS_ENUM(NSInteger, OCKConnectDetailSection) {
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == OCKConnectDetailSectionContactInfo) {
+    NSString *sectionTitle = _sectionTitles[indexPath.section];
+    
+    if ([sectionTitle isEqualToString:_contactInfoSectionTitle]) {
         static NSString *ContactCellIdentifier = @"ContactInfoCell";
         OCKContactInfoTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ContactCellIdentifier];
         if (!cell) {
@@ -211,8 +214,7 @@ typedef NS_ENUM(NSInteger, OCKConnectDetailSection) {
         cell.delegate = self;
         cell.connectType = [_tableViewData[indexPath.section][indexPath.row] intValue];
         return cell;
-    
-    } else if (indexPath.section == OCKConnectDetailSectionSharing && _delegate) {
+    } else if ([sectionTitle isEqualToString:_sharingSectionTitle]) {
         static NSString *SharingCellIdentifier = @"SharingCell";
         OCKContactSharingTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:SharingCellIdentifier];
         if (!cell) {

@@ -90,8 +90,8 @@ static const CGFloat HeaderViewHeight = 225.0;
     _tableViewData = [NSMutableArray new];
     _sectionTitles = [NSMutableArray new];
     
-    NSMutableArray *contactInfoSection = [NSMutableArray new];
-    NSMutableArray *sharingSection = [NSMutableArray new];
+    NSMutableArray<NSNumber *> *contactInfoSection = [NSMutableArray new];
+    NSMutableArray<NSString *> *sharingSection = [NSMutableArray new];
     
     if (_contact.phoneNumber) {
         [contactInfoSection addObject:@(OCKConnectTypePhone)];

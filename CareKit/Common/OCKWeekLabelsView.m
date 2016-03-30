@@ -39,6 +39,7 @@ const static CGFloat TopMargin = 12.0;
     NSMutableArray<UILabel *> *_weekLabels;
     NSMutableArray *_constraints;
     NSArray<NSString *> *_weekStrings;
+    NSInteger _selectedIndex;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame {
@@ -175,12 +176,19 @@ const static CGFloat TopMargin = 12.0;
 }
 
 - (void)highlightDay:(NSInteger)selectedIndex {
+    _selectedIndex = selectedIndex;
+    
     for (UILabel *label in _weekLabels) {
         label.backgroundColor = [UIColor clearColor];
         label.textColor = [UIColor blackColor];
     }
-    _weekLabels[selectedIndex].backgroundColor = OCKRedColor();
+    _weekLabels[selectedIndex].backgroundColor = self.tintColor;
     _weekLabels[selectedIndex].textColor = [UIColor whiteColor];
+}
+
+- (void)tintColorDidChange {
+    [super tintColorDidChange];
+    [self highlightDay:_selectedIndex];
 }
 
 @end

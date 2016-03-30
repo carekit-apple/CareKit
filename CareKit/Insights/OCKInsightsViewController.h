@@ -43,7 +43,20 @@ OCK_CLASS_AVAILABLE
 /**
  Returns an initialzed insights view controller using the specified items.
  
- @param charts      An array of `OCKInsight` objects.
+ @param item            An array of `OCKInsightItem` objects.
+ @param headerTitle     A string representing the title in the header view.
+ @param headerSubtitle  A string representing the subtitle in the header view.
+ 
+ @return An initialized insights view controller.
+ */
+- (instancetype)initWithInsightItems:(NSArray<OCKInsightItem *> *)items
+                         headerTitle:(nullable NSString *)headerTitle
+                      headerSubtitle:(nullable NSString *)headerSubtitle;
+
+/**
+ Returns an initialzed insights view controller using the specified items.
+ 
+ @param item      An array of `OCKInsightItem` objects.
  
  @return An initialized insights view controller.
  */

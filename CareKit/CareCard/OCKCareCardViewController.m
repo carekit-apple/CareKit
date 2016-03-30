@@ -74,32 +74,36 @@ static const CGFloat HeaderViewHeight = 150.0;
     if (self) {
         _store = store;
         _store.careCardUIDelegate = self;
-        
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:OCKLocalizedString(@"TODAY_BUTTON_TITLE", nil)
-                                                                                  style:UIBarButtonItemStylePlain
-                                                                                 target:self
-                                                                                 action:@selector(showToday:)];
-        self.navigationItem.rightBarButtonItem.tintColor = OCKRedColor();
-        
-        _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
-        _tableView.dataSource = self;
-        _tableView.delegate = self;
-        [self.view addSubview:_tableView];
-        
-        [self prepareView];
-        
         self.maskImage = nil;
         self.smallMaskImage = nil;
         self.maskImageTintColor = nil;
-        
-        _calendar = [NSCalendar calendarWithIdentifier:NSCalendarIdentifierGregorian];
-        
-        self.selectedDate = [NSDateComponents ock_componentsWithDate:[NSDate date] calendar:_calendar];
-        
-        _tableView.estimatedRowHeight = 90.0;
-        _tableView.rowHeight = UITableViewAutomaticDimension;
     }
     return self;
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:OCKLocalizedString(@"TODAY_BUTTON_TITLE", nil)
+                                                                              style:UIBarButtonItemStylePlain
+                                                                             target:self
+                                                                             action:@selector(showToday:)];
+    self.navigationItem.rightBarButtonItem.tintColor = OCKRedColor();
+    
+    _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
+    _tableView.dataSource = self;
+    _tableView.delegate = self;
+    [self.view addSubview:_tableView];
+    
+    [self prepareView];
+
+    _calendar = [NSCalendar calendarWithIdentifier:NSCalendarIdentifierGregorian];
+    
+    self.selectedDate = [NSDateComponents ock_componentsWithDate:[NSDate date] calendar:_calendar];
+
+    _tableView.estimatedRowHeight = 90.0;
+    _tableView.rowHeight = UITableViewAutomaticDimension;
+    
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -118,7 +122,8 @@ static const CGFloat HeaderViewHeight = 150.0;
     if (!_headerView) {
         _headerView = [[OCKCareCardTableViewHeader alloc] initWithFrame:CGRectMake(0, 0, _tableView.frame.size.width, HeaderViewHeight)];
     }
-    [self updateHeaderView];
+    _headerView.heartView.maskImage = _maskImage;
+    _headerView.tintColor = _maskImageTintColor;
     
     if (!_pageViewController) {
         _pageViewController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll
@@ -130,6 +135,7 @@ static const CGFloat HeaderViewHeight = 150.0;
         OCKWeekViewController *weekController = [OCKWeekViewController new];
         weekController.careCardWeekView.delegate = _weekViewController.careCardWeekView.delegate;
         weekController.careCardWeekView.smallMaskImage = _smallMaskImage;
+        weekController.careCardWeekView.tintColor = _maskImageTintColor;
         _weekViewController = weekController;
         
         [_pageViewController setViewControllers:@[weekController] direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:nil];

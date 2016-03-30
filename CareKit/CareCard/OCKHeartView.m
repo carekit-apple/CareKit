@@ -76,14 +76,6 @@
 
 - (void)animateFill {
     if (_animationEnabled) {
-        CABasicAnimation *theAnimation;
-        theAnimation = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
-        theAnimation.duration = 0.25;
-        theAnimation.fromValue = [NSNumber numberWithFloat:1.0];
-        theAnimation.toValue = [NSNumber numberWithFloat:1.15];
-        theAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
-        theAnimation.autoreverses = YES;
-        
         [UIView animateWithDuration:1.25 delay:0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
             _fillView.frame = CGRectMake(CGRectGetMinX(self.bounds), CGRectGetMaxY(self.bounds), CGRectGetMaxX(self.bounds), -_value * CGRectGetMaxY(self.bounds));
         } completion:^(BOOL finished) {
@@ -96,7 +88,6 @@
 - (void)setValue:(double)value {
     if (_value != value) {
         _value = value;
-        
         [self animateFill];
     }
 }

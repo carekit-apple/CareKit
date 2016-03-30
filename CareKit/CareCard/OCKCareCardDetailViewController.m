@@ -40,7 +40,9 @@ static const CGFloat HeaderViewHeight = 100.0;
 
 @implementation OCKCareCardDetailViewController {
     OCKCareCardDetailHeaderView *_headerView;
-    NSArray *_tableViewCells;
+    NSMutableArray<NSString *> *_sectionTitles;
+    NSString *_instructionsSectionTitle;
+    NSString *_additionalInfoSectionTitle;
 }
 
 - (instancetype)initWithIntervention:(OCKCarePlanActivity *)intervention {
@@ -76,23 +78,17 @@ static const CGFloat HeaderViewHeight = 100.0;
 #pragma mark - Helpers
 
 - (void)createTableViewDataArray {
-    NSMutableArray *tableViewCells = [NSMutableArray new];
-
+    _sectionTitles = [NSMutableArray new];
+    
     if (_intervention.instructions) {
-        OCKCareCardInstructionsTableViewCell *cell = [[OCKCareCardInstructionsTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
-                                                                                                     reuseIdentifier:nil];
-        cell.intervention = _intervention;
-        [tableViewCells addObject:cell];
+        _instructionsSectionTitle = OCKLocalizedString(@"CARE_CARD_INSTRUCTIONS_SECTION_TITLE", nil);
+        [_sectionTitles addObject:_instructionsSectionTitle];
     }
     
     if (_intervention.imageURL) {
-        OCKCareCardAdditionalInfoTableViewCell *cell = [[OCKCareCardAdditionalInfoTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
-                                                                                                     reuseIdentifier:nil];
-        cell.intervention = _intervention;
-        [tableViewCells addObject:cell];
+        _additionalInfoSectionTitle = OCKLocalizedString(@"CARE_CARD_ADDITIONAL_INFO_SECTION_TITLE", nil);
+        [_sectionTitles addObject:_additionalInfoSectionTitle];
     }
-
-    _tableViewCells = [tableViewCells copy];
 }
 
 
@@ -100,6 +96,10 @@ static const CGFloat HeaderViewHeight = 100.0;
 
 - (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath {
     return NO;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return UITableViewAutomaticDimension;
 }
 
 
@@ -110,27 +110,36 @@ static const CGFloat HeaderViewHeight = 100.0;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return _tableViewCells.count;
+    return _sectionTitles.count;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    NSString *title;
-    NSString *instructionsTitle = OCKLocalizedString(@"CARE_CARD_INSTRUCTIONS_SECTION_TITLE", nil);
-    NSString *additionalInfoTitle = OCKLocalizedString(@"CARE_CARD_ADDITIONAL_INFO_SECTION_TITLE", nil);
-    switch (section) {
-        case 0:
-            title = (_intervention.instructions) ? instructionsTitle : additionalInfoTitle;
-            break;
-            
-        case 1:
-            title = additionalInfoTitle;
-            break;
-    }
-    return title;
+    return _sectionTitles[section];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return _tableViewCells[indexPath.section];
+    NSString *sectionTitle = _sectionTitles[indexPath.section];
+    
+    if ([sectionTitle isEqualToString:_instructionsSectionTitle]) {
+        static NSString *InstructionsCellIdentifier = @"InstructionsCell";
+        OCKCareCardInstructionsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:InstructionsCellIdentifier];
+        if (!cell) {
+            cell = [[OCKCareCardInstructionsTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                                               reuseIdentifier:InstructionsCellIdentifier];
+        }
+        cell.intervention = _intervention;
+        return cell;
+    } else if ([sectionTitle isEqualToString:_additionalInfoSectionTitle]) {
+        static NSString *AdditionalInfoCellIdentifier = @"AdditionalInfoCell";
+        OCKCareCardAdditionalInfoTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:AdditionalInfoCellIdentifier];
+        if (!cell) {
+            cell = [[OCKCareCardAdditionalInfoTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                                                 reuseIdentifier:AdditionalInfoCellIdentifier];
+        }
+        cell.intervention = _intervention;
+        return cell;
+    }
+    return nil;
 }
 
 @end

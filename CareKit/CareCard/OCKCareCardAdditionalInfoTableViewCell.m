@@ -58,7 +58,7 @@ static const CGFloat TrailingMargin = 20.0;
 - (void)prepareView {
     if (!_imageView) {
         _imageView = [UIImageView new];
-        _imageView.contentMode = UIViewContentModeScaleAspectFill;
+        _imageView.contentMode = UIViewContentModeScaleAspectFit;
         [self addSubview:_imageView];
     }
     
@@ -82,13 +82,6 @@ static const CGFloat TrailingMargin = 20.0;
                                                                      relatedBy:NSLayoutRelationEqual
                                                                         toItem:self
                                                                      attribute:NSLayoutAttributeCenterX
-                                                                    multiplier:1.0
-                                                                      constant:0.0],
-                                        [NSLayoutConstraint constraintWithItem:_imageView
-                                                                     attribute:NSLayoutAttributeCenterY
-                                                                     relatedBy:NSLayoutRelationEqual
-                                                                        toItem:self
-                                                                     attribute:NSLayoutAttributeCenterY
                                                                     multiplier:1.0
                                                                       constant:0.0],
                                         [NSLayoutConstraint constraintWithItem:_imageView
@@ -123,5 +116,6 @@ static const CGFloat TrailingMargin = 20.0;
     
     [NSLayoutConstraint activateConstraints:_constraints];
 }
+
 
 @end

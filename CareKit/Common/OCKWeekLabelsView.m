@@ -179,7 +179,7 @@ const static CGFloat TopMargin = 12.0;
         label.backgroundColor = [UIColor clearColor];
         label.textColor = [UIColor blackColor];
     }
-    _weekLabels[selectedIndex].backgroundColor = OCKRedColor();
+    _weekLabels[selectedIndex].backgroundColor = self.tintColor;
     _weekLabels[selectedIndex].textColor = [UIColor whiteColor];
 }
 

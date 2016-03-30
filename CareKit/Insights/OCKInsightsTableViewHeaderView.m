@@ -33,6 +33,7 @@
 
 
 static const CGFloat LeadingMargin = 15.0;
+static const CGFloat TrailingMargin = 15.0;
 
 @implementation OCKInsightsTableViewHeaderView {
     UILabel *_titleLabel;
@@ -62,7 +63,6 @@ static const CGFloat LeadingMargin = 15.0;
     
     if (!_subtitleLabel) {
         _subtitleLabel = [UILabel new];
-        _subtitleLabel.numberOfLines = 2;
         _subtitleLabel.textColor = [UIColor darkGrayColor];
         [self addSubview:_subtitleLabel];
     }
@@ -118,7 +118,21 @@ static const CGFloat LeadingMargin = 15.0;
                                                                        toItem:self
                                                                     attribute:NSLayoutAttributeLeading
                                                                    multiplier:1.0
-                                                                     constant:LeadingMargin]
+                                                                     constant:LeadingMargin],
+                                       [NSLayoutConstraint constraintWithItem:_titleLabel
+                                                                    attribute:NSLayoutAttributeTrailing
+                                                                    relatedBy:NSLayoutRelationEqual
+                                                                       toItem:self
+                                                                    attribute:NSLayoutAttributeTrailing
+                                                                   multiplier:1.0
+                                                                     constant:-TrailingMargin],
+                                       [NSLayoutConstraint constraintWithItem:_subtitleLabel
+                                                                    attribute:NSLayoutAttributeTrailing
+                                                                    relatedBy:NSLayoutRelationEqual
+                                                                       toItem:self
+                                                                    attribute:NSLayoutAttributeTrailing
+                                                                   multiplier:1.0
+                                                                     constant:-TrailingMargin]
                                        ]];
 
     [NSLayoutConstraint activateConstraints:_constraints];

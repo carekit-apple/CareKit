@@ -103,11 +103,12 @@ static const CGFloat HeaderViewHeight = 225.0;
         [contactInfoSection addObject:@(OCKConnectTypeEmail)];
     }
     
-    if (_delegate &&
-        [_delegate respondsToSelector:@selector(connectViewController:titleForSharingCellForContact:)]) {
-        [sharingSection addObject:[_delegate connectViewController:_masterViewController titleForSharingCellForContact:_contact]];
-    } else {
-        [sharingSection addObject:OCKLocalizedString(@"SHARING_CELL_TITLE", nil)];
+    if (_delegate) {
+        if ([_delegate respondsToSelector:@selector(connectViewController:titleForSharingCellForContact:)]) {
+            [sharingSection addObject:[_delegate connectViewController:_masterViewController titleForSharingCellForContact:_contact]];
+        } else {
+            [sharingSection addObject:OCKLocalizedString(@"SHARING_CELL_TITLE", nil)];
+        }
     }
     
     if (contactInfoSection.count > 0) {

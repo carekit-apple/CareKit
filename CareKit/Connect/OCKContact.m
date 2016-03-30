@@ -48,6 +48,9 @@
                       messageNumber:(CNPhoneNumber *)messageNumber
                        emailAddress:(NSString *)emailAddress
                               image:(UIImage *)image {
+    NSParameterAssert(name);
+    NSParameterAssert(relation);
+    
     self = [super init];
     if (self) {
         _type = type;

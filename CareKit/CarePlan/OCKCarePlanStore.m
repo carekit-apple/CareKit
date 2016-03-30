@@ -74,6 +74,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     NSArray *_cachedActivities;
     dispatch_queue_t _queue;
     NSManagedObjectContext *_managedObjectContext;
+    HKHealthStore *_healthStore;
 }
 
 - (instancetype)init {
@@ -282,6 +283,58 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     
     NSUInteger count = [context countForFetchRequest:fetchRequest error:error];
     return count;
+}
+
+- (void)block_fetchHKSampleForEvents:(NSArray<OCKCarePlanEvent *> *)events {
+    if (events.count == 0) {
+        return;
+    }
+    
+    if (!_healthStore && [HKHealthStore isHealthDataAvailable]) {
+        _healthStore = [HKHealthStore new];
+    }
+    
+    if (!_healthStore) {
+        return;
+    }
+ 
+    NSArray<OCKCarePlanEvent *> * eventsHasResult = [events filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"result.sampleType != nil"]];
+    NSArray<OCKCarePlanEventResult *> *results = [eventsHasResult valueForKeyPath:@"result"];
+    
+    NSMutableDictionary<HKSampleType *, NSMutableArray<OCKCarePlanEventResult *> *> *dictionary = [NSMutableDictionary new];
+    for (OCKCarePlanEventResult *result in results) {
+        if (dictionary[result.sampleType]) {
+            [dictionary[result.sampleType] addObject:result];
+        } else {
+            dictionary[result.sampleType] = [NSMutableArray arrayWithObject:result];
+        }
+    }
+    
+    NSArray<HKSampleType *> *types = [dictionary allKeys];
+    
+    for (HKSampleType *type in types) {
+        NSMutableArray<OCKCarePlanEventResult *> *sameTypeResults = dictionary[type];
+        NSArray *sampleUUIDs = [sameTypeResults valueForKeyPath:@"sampleUUID"];
+        
+        dispatch_semaphore_t sem = dispatch_semaphore_create(0);
+        HKSampleQuery *query = [[HKSampleQuery alloc] initWithSampleType:type
+                                                               predicate:[HKQuery predicateForObjectsWithUUIDs:[NSSet setWithArray:sampleUUIDs]]
+                                                                   limit:sampleUUIDs.count
+                                                         sortDescriptors:nil
+                                                          resultsHandler:^(HKSampleQuery * _Nonnull query,
+                                                                           NSArray<__kindof HKSample *> * _Nullable results,
+                                                                           NSError * _Nullable error) {
+                                                              
+                                                              for (HKSample *sample in results) {
+                                                                  OCKCarePlanEventResult *result = [sameTypeResults filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"sampleUUID = %@", sample.UUID]].firstObject;
+                                                                  [result setSample:sample];
+                                                              }
+                                                              dispatch_semaphore_signal(sem);
+                                                          }];
+        
+        [_healthStore executeQuery:query];
+        dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER);
+    }
 }
 
 #pragma mark - activities
@@ -499,7 +552,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
 }
 
 - (void)eventsForActivity:(OCKCarePlanActivity *)activity
-                      date:(NSDateComponents *)date
+                     date:(NSDateComponents *)date
                completion:(void (^)(NSArray<OCKCarePlanEvent *> *events, NSError *error))completion {
     
     OCKThrowInvalidArgumentExceptionIfNil(activity);
@@ -540,6 +593,8 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
                                                                                                                            predicate:predicate
                                                                                                                                class:[OCKCarePlanEvent class]
                                                                                                                                error:&error];
+                
+                [self block_fetchHKSampleForEvents:savedEvents];
                 
                 for (NSInteger index = 0 ; index < numberOfEvents ; index++ ) {
                     OCKCarePlanEvent *event = [savedEvents filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"occurrenceIndexOfDay = %d", index]].firstObject;

@@ -17,6 +17,7 @@
 		8605A6171C4F0A3900DD65FF /* OCKTestUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8605A6161C4F0A3900DD65FF /* OCKTestUITests.m */; };
 		864067341CA1BD9900E2C5CA /* DocumentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 864067331CA1BD9900E2C5CA /* DocumentViewController.m */; };
 		866B99391C988469006898DD /* BarChartViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 866B99381C988469006898DD /* BarChartViewController.m */; };
+		867708021CA9DCF000D1BD80 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 867708011CA9DCF000D1BD80 /* HealthKit.framework */; };
 		86B74F541C5A92DC00B9E7C5 /* CareKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 86B74F511C5A92CF00B9E7C5 /* CareKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		86B74F571C5A933B00B9E7C5 /* CareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86B74F511C5A92CF00B9E7C5 /* CareKit.framework */; };
 /* End PBXBuildFile section */
@@ -172,7 +173,9 @@
 		864067331CA1BD9900E2C5CA /* DocumentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocumentViewController.m; sourceTree = "<group>"; };
 		866B99371C988469006898DD /* BarChartViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BarChartViewController.h; sourceTree = "<group>"; };
 		866B99381C988469006898DD /* BarChartViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BarChartViewController.m; sourceTree = "<group>"; };
+		867708011CA9DCF000D1BD80 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
 		86B74F4B1C5A92CF00B9E7C5 /* CareKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CareKit.xcodeproj; path = ../../CareKit.xcodeproj; sourceTree = "<group>"; };
+		86D3D6041CAC61DA005B06EE /* OCKTest.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = OCKTest.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -181,6 +184,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				86B74F571C5A933B00B9E7C5 /* CareKit.framework in Frameworks */,
+				867708021CA9DCF000D1BD80 /* HealthKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -204,6 +208,7 @@
 		8605A5E51C4F0A3800DD65FF = {
 			isa = PBXGroup;
 			children = (
+				867708011CA9DCF000D1BD80 /* HealthKit.framework */,
 				86B74F4B1C5A92CF00B9E7C5 /* CareKit.xcodeproj */,
 				8605A5F01C4F0A3800DD65FF /* OCKTest */,
 				8605A60A1C4F0A3900DD65FF /* OCKTestTests */,
@@ -225,6 +230,7 @@
 		8605A5F01C4F0A3800DD65FF /* OCKTest */ = {
 			isa = PBXGroup;
 			children = (
+				86D3D6041CAC61DA005B06EE /* OCKTest.entitlements */,
 				8605A5F41C4F0A3800DD65FF /* AppDelegate.h */,
 				8605A5F51C4F0A3800DD65FF /* AppDelegate.m */,
 				8605A5F71C4F0A3800DD65FF /* MainTableViewController.h */,
@@ -346,6 +352,11 @@
 				TargetAttributes = {
 					8605A5ED1C4F0A3800DD65FF = {
 						CreatedOnToolsVersion = 7.2;
+						SystemCapabilities = {
+							com.apple.HealthKit = {
+								enabled = 1;
+							};
+						};
 					};
 					8605A6061C4F0A3900DD65FF = {
 						CreatedOnToolsVersion = 7.2;
@@ -661,6 +672,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = OCKTest/OCKTest.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
@@ -680,6 +692,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = OCKTest/OCKTest.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;

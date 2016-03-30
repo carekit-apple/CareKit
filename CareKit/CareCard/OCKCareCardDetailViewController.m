@@ -98,10 +98,6 @@ static const CGFloat HeaderViewHeight = 100.0;
     return NO;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return UITableViewAutomaticDimension;
-}
-
 
 #pragma mark - UITableViewDataSource
 

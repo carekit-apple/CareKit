@@ -290,7 +290,7 @@ DefineStringKey(BandageChangeIntervention);
                                                                                       title:@"Stand and move a little"
                                                                                        text:@"For at least 2 minutes"
                                                                                   tintColor:color
-                                                                               instructions:@"Hello world"
+                                                                               instructions:nil
                                                                                    imageURL:nil
                                                                                    schedule:schedule
                                                                                    userInfo:nil];
@@ -298,16 +298,6 @@ DefineStringKey(BandageChangeIntervention);
     }
     
     {
-        UIGraphicsBeginImageContext(self.view.frame.size);
-        [self.view.layer renderInContext:UIGraphicsGetCurrentContext()];
-        UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-        UIGraphicsEndImageContext();
-        NSData *data = UIImagePNGRepresentation(image);
-        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-        NSString *documentsDirectory = [paths objectAtIndex:0];
-        NSString *path = [documentsDirectory stringByAppendingPathComponent:@"view.png"];
-        [data writeToFile:path atomically:YES];
-        
         OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@4,@4,@4,@4,@4,@0,@0]];
         UIColor *color = OCKGreenColor();
         
@@ -317,7 +307,7 @@ DefineStringKey(BandageChangeIntervention);
                                                                                        text:@"Fluids only, every 6 hours"
                                                                                   tintColor:color
                                                                                instructions:nil
-                                                                                   imageURL:[NSURL fileURLWithPath:path]
+                                                                                   imageURL:nil
                                                                                    schedule:schedule
                                                                                    userInfo:nil];
         [interventions addObject:intervention];

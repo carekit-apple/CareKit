@@ -171,7 +171,7 @@ typedef NS_ENUM(NSInteger, TestItem) {
                                                         valueLabels:@[@"9", @"8", @"7", @"7", @"5", @"4", @"2"]
                                                           tintColor:color];
         
-        OCKBarSeries *series2 = [[OCKBarSeries alloc] initWithTitle:@"Meidcation"
+        OCKBarSeries *series2 = [[OCKBarSeries alloc] initWithTitle:@"Medication"
                                                              values:@[@3, @4, @5, @7, @8, @9, @9]
                                                         valueLabels:@[@"30%", @"40%", @"50%", @"70%", @"80%", @"90%", @"90%"]
                                                           tintColor:lightColor];

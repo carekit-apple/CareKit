@@ -201,7 +201,6 @@ const static CGFloat HeartButtonSize = 20.0;
         button.heartView.tintColor = self.tintColor;
     }
     _weekView.tintColor = self.tintColor;
-    [_weekView highlightDay:_selectedIndex];
 }
 
 @end

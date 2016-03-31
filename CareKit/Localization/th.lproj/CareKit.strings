@@ -31,10 +31,10 @@
 
 /* Care Card */
 "CARE_CARD_HEADER_TITLE" = "การดูแลเสร็จสิ้น";
-"TODAY_BUTTON_TITLE" = "Today";
+"TODAY_BUTTON_TITLE" = "วันนี้";
 
 /* Care Card Detail View */
-"CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "Instructions";
+"CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "ขั้นตอน";
 "CARE_CARD_ADDITIONAL_INFO_SECTION_TITLE" = "ข้อมูลเพิ่มเติม";
 
 /* Symptom Tracker */

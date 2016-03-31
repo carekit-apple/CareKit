@@ -31,18 +31,18 @@
 
 /* Care Card */
 "CARE_CARD_HEADER_TITLE" = "Completamento cura";
-"TODAY_BUTTON_TITLE" = "Today";
+"TODAY_BUTTON_TITLE" = "Oggi";
 
 /* Care Card Detail View */
-"CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "Instructions";
+"CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "Istruzioni";
 "CARE_CARD_ADDITIONAL_INFO_SECTION_TITLE" = "Ulteriori informazioni";
 
 /* Symptom Tracker */
 "SYMPTOM_TRACKER_HEADER_TITLE" = "Completamento attività";
 
 /* Connect Master View */
-"CARE_TEAM_SECTION_TITLE" = "Team medico";
-"PERSONAL_SECTION_TITLE" = "Info personali";
+"CARE_TEAM_SECTION_TITLE" = "Equipe medica";
+"PERSONAL_SECTION_TITLE" = "Contatti personali";
 
 /* Connect Detail View */
 "CONTACT_INFO_SECTION_TITLE" = "Info contatto";

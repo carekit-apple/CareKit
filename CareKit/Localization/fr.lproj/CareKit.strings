@@ -30,15 +30,15 @@
 
 
 /* Care Card */
-"CARE_CARD_HEADER_TITLE" = "Soins réalisés";
-"TODAY_BUTTON_TITLE" = "Today";
+"CARE_CARD_HEADER_TITLE" = "Progression des soins";
+"TODAY_BUTTON_TITLE" = "Aujourd’hui";
 
 /* Care Card Detail View */
 "CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "Instructions";
 "CARE_CARD_ADDITIONAL_INFO_SECTION_TITLE" = "Informations supplémentaires";
 
 /* Symptom Tracker */
-"SYMPTOM_TRACKER_HEADER_TITLE" = "Activité réalisée";
+"SYMPTOM_TRACKER_HEADER_TITLE" = "Progression de l’activité";
 
 /* Connect Master View */
 "CARE_TEAM_SECTION_TITLE" = "Équipe de soins";
@@ -48,7 +48,7 @@
 "CONTACT_INFO_SECTION_TITLE" = "Coordonnées";
 "CONTACT_SHARING_SECTION_TITLE" = "Partage";
 "CONTACT_INFO_PHONE_TITLE" = "téléphone";
-"CONTACT_INFO_MESSAGE_TITLE" = "texte";
+"CONTACT_INFO_MESSAGE_TITLE" = "SMS";
 "CONTACT_INFO_EMAIL_TITLE" = "adresse e-mail";
 "SHARING_CELL_TITLE" = "Envoyer les rapports";
 "ERROR_TITLE" = "Erreur";

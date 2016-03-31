@@ -30,18 +30,18 @@
 
 
 /* Care Card */
-"CARE_CARD_HEADER_TITLE" = "Care 완료";
-"TODAY_BUTTON_TITLE" = "Today";
+"CARE_CARD_HEADER_TITLE" = "진찰 완료";
+"TODAY_BUTTON_TITLE" = "오늘";
 
 /* Care Card Detail View */
-"CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "Instructions";
+"CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "지침";
 "CARE_CARD_ADDITIONAL_INFO_SECTION_TITLE" = "추가 정보";
 
 /* Symptom Tracker */
 "SYMPTOM_TRACKER_HEADER_TITLE" = "실험 완료";
 
 /* Connect Master View */
-"CARE_TEAM_SECTION_TITLE" = "Care 팀";
+"CARE_TEAM_SECTION_TITLE" = "의료진";
 "PERSONAL_SECTION_TITLE" = "개인";
 
 /* Connect Detail View */

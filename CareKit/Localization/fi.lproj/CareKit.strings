@@ -31,14 +31,14 @@
 
 /* Care Card */
 "CARE_CARD_HEADER_TITLE" = "Hoitoa suoritettu";
-"TODAY_BUTTON_TITLE" = "Today";
+"TODAY_BUTTON_TITLE" = "Tänään";
 
 /* Care Card Detail View */
-"CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "Instructions";
+"CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "Ohjeet";
 "CARE_CARD_ADDITIONAL_INFO_SECTION_TITLE" = "Lisätietoja";
 
 /* Symptom Tracker */
-"SYMPTOM_TRACKER_HEADER_TITLE" = "Aktiviteettia suoritettu";
+"SYMPTOM_TRACKER_HEADER_TITLE" = "suoritettu";
 
 /* Connect Master View */
 "CARE_TEAM_SECTION_TITLE" = "Hoitotiimi";
@@ -48,7 +48,7 @@
 "CONTACT_INFO_SECTION_TITLE" = "Yhteystiedot";
 "CONTACT_SHARING_SECTION_TITLE" = "Jakaminen";
 "CONTACT_INFO_PHONE_TITLE" = "puhelin";
-"CONTACT_INFO_MESSAGE_TITLE" = "teksti";
+"CONTACT_INFO_MESSAGE_TITLE" = "tekstiviesti";
 "CONTACT_INFO_EMAIL_TITLE" = "sähköposti";
 "SHARING_CELL_TITLE" = "Lähetä raportit";
 "ERROR_TITLE" = "Virhe";

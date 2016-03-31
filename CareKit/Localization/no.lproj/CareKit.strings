@@ -31,10 +31,10 @@
 
 /* Care Card */
 "CARE_CARD_HEADER_TITLE" = "Fullføring av behandling";
-"TODAY_BUTTON_TITLE" = "Today";
+"TODAY_BUTTON_TITLE" = "I dag";
 
 /* Care Card Detail View */
-"CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "Instructions";
+"CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "Instruksjoner";
 "CARE_CARD_ADDITIONAL_INFO_SECTION_TITLE" = "Tilleggsinformasjon";
 
 /* Symptom Tracker */

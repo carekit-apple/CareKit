@@ -30,18 +30,18 @@
 
 
 /* Care Card */
-"CARE_CARD_HEADER_TITLE" = "Bakım Tamamlama";
-"TODAY_BUTTON_TITLE" = "Today";
+"CARE_CARD_HEADER_TITLE" = "Tıbbi Bakım Durumu";
+"TODAY_BUTTON_TITLE" = "Bugün";
 
 /* Care Card Detail View */
-"CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "Instructions";
+"CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "Yönergeler";
 "CARE_CARD_ADDITIONAL_INFO_SECTION_TITLE" = "Ek Bilgi";
 
 /* Symptom Tracker */
-"SYMPTOM_TRACKER_HEADER_TITLE" = "İş Tamamlama";
+"SYMPTOM_TRACKER_HEADER_TITLE" = "Aktivite Durumu";
 
 /* Connect Master View */
-"CARE_TEAM_SECTION_TITLE" = "Bakım Ekibi";
+"CARE_TEAM_SECTION_TITLE" = "Tıbbi Bakım Ekibi";
 "PERSONAL_SECTION_TITLE" = "Kişisel";
 
 /* Connect Detail View */

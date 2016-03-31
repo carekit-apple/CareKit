@@ -31,10 +31,10 @@
 
 /* Care Card */
 "CARE_CARD_HEADER_TITLE" = "Progresso do Tratamento";
-"TODAY_BUTTON_TITLE" = "Today";
+"TODAY_BUTTON_TITLE" = "Hoje";
 
 /* Care Card Detail View */
-"CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "Instructions";
+"CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "Instruções";
 "CARE_CARD_ADDITIONAL_INFO_SECTION_TITLE" = "Informações Adicionais";
 
 /* Symptom Tracker */
@@ -48,7 +48,7 @@
 "CONTACT_INFO_SECTION_TITLE" = "Informações de Contato";
 "CONTACT_SHARING_SECTION_TITLE" = "Compartilhamento";
 "CONTACT_INFO_PHONE_TITLE" = "telefone";
-"CONTACT_INFO_MESSAGE_TITLE" = "texto";
+"CONTACT_INFO_MESSAGE_TITLE" = "mensagem";
 "CONTACT_INFO_EMAIL_TITLE" = "e-mail";
 "SHARING_CELL_TITLE" = "Enviar relatórios";
 "ERROR_TITLE" = "Erro";

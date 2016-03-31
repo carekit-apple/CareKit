@@ -30,15 +30,15 @@
 
 
 /* Care Card */
-"CARE_CARD_HEADER_TITLE" = "Hoàn thành Chăm sóc";
-"TODAY_BUTTON_TITLE" = "Today";
+"CARE_CARD_HEADER_TITLE" = "H.thành Chăm sóc";
+"TODAY_BUTTON_TITLE" = "Hôm nay";
 
 /* Care Card Detail View */
-"CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "Instructions";
+"CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "Hướng dẫn";
 "CARE_CARD_ADDITIONAL_INFO_SECTION_TITLE" = "Thông tin Bổ sung";
 
 /* Symptom Tracker */
-"SYMPTOM_TRACKER_HEADER_TITLE" = "Hoàn thành Hoạt động";
+"SYMPTOM_TRACKER_HEADER_TITLE" = "H.thành Hoạt động";
 
 /* Connect Master View */
 "CARE_TEAM_SECTION_TITLE" = "Nhóm Chăm sóc";

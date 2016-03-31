@@ -31,17 +31,17 @@
 
 /* Care Card */
 "CARE_CARD_HEADER_TITLE" = "Postęp opieki";
-"TODAY_BUTTON_TITLE" = "Today";
+"TODAY_BUTTON_TITLE" = "Dzisiaj";
 
 /* Care Card Detail View */
-"CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "Instructions";
+"CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "Instrukcje";
 "CARE_CARD_ADDITIONAL_INFO_SECTION_TITLE" = "Informacje dodatkowe";
 
 /* Symptom Tracker */
 "SYMPTOM_TRACKER_HEADER_TITLE" = "Postęp ćwiczenia";
 
 /* Connect Master View */
-"CARE_TEAM_SECTION_TITLE" = "Zespół opieki";
+"CARE_TEAM_SECTION_TITLE" = "Personel medyczny";
 "PERSONAL_SECTION_TITLE" = "Prywatne";
 
 /* Connect Detail View */

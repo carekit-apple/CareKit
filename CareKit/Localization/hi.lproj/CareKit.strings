@@ -31,10 +31,10 @@
 
 /* Care Card */
 "CARE_CARD_HEADER_TITLE" = "देखभाल जाँचसूची";
-"TODAY_BUTTON_TITLE" = "Today";
+"TODAY_BUTTON_TITLE" = "आज";
 
 /* Care Card Detail View */
-"CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "Instructions";
+"CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "निर्देश";
 "CARE_CARD_ADDITIONAL_INFO_SECTION_TITLE" = "अतिरिक्त जानकारी";
 
 /* Symptom Tracker */

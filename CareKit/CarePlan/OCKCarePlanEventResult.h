@@ -45,7 +45,7 @@ OCK_CLASS_AVAILABLE
 
 /**
  Initializer for creating an OCKCarePlanEventResult instance.
- Attach created instance to an OCKCarePlanEvent object using the OCKCarePlanStore API.
+ Attach the created instance to an OCKCarePlanEvent object using the OCKCarePlanStore API.
  
  @param valueString     Value string to be displayed to the user.
  @param unitString      Unit string to be displayed to the user.
@@ -81,22 +81,22 @@ OCK_CLASS_AVAILABLE
 
 
 /**
- Use HealthKit category if you have a HKSample object is aready in HealthKit to avoid saving duplicated health data.
+ To avoid saving duplicates of health data, use the HealthKit category for a HKSample object that is already in HealthKit.
  Simply pass in the HKSample object with value formatting parameters.
- OCKCarePlanStore only stores UUID and sample type from a HKSample object;
- Each time the OCKCarePlanStore object uses UUID and type to fetch the actual sample object from HealthKit.
+ OCKCarePlanStore stores only the UUID and sample type from a HKSample object.
+ The OCKCarePlanStore object uses the UUID and type to fetch the actual sample object from HealthKit.
  
  An OCKCarePlanEventResult object uses the HKSample object with the value formatting parameters to populate `valueString` and `unitString`.
  */
 @interface OCKCarePlanEventResult (HealthKit)
 
 /**
- Initializer for creating an OCKCarePlanEventResult instance with a HKQuantitySample object.
- Attach created instance to an OCKCarePlanEvent object using the OCKCarePlanStore API.
+ Initializer for creating an OCKCarePlanEventResult instance with an HKQuantitySample object.
+ Attach the created instance to an OCKCarePlanEvent object using the OCKCarePlanStore API.
  
- @param quantitySample          A HKQuantitySample object is in HealthKit.
+ @param quantitySample          An HKQuantitySample object that is in HealthKit.
  @param quantityStringFormatter A formatter formats the quantity value to valueString.
- @param displayUnit             A preferred HKUnit object to display value.
+ @param displayUnit             A preferred HKUnit object for displaying the value.
  @param displayUnitStringKey    A localized string key of the unit.
  @param userInfo                Dictionary to save any additional objects that comply with the NSCoding protocol.
  
@@ -109,10 +109,10 @@ OCK_CLASS_AVAILABLE
                               userInfo:(nullable NSDictionary<NSString *, id<NSCoding>> *)userInfo;
 
 /**
- Initializer for creating an OCKCarePlanEventResult instance with a HKQuantitySample object.
- Attach created instance to an OCKCarePlanEvent object using the OCKCarePlanStore API.
+ Initializer for creating an OCKCarePlanEventResult instance with an HKQuantitySample object.
+ Attach the created instance to an OCKCarePlanEvent object using the OCKCarePlanStore API.
  
- @param quantitySample          A HKQuantitySample object is in HealthKit.
+ @param quantitySample          An HKQuantitySample object that is in HealthKit.
  @param quantityStringFormatter A formatter formats the quantity value to valueString.
  @param unitStringKeys          A dictionary of localized string keys for possible system preferred units.
  @param userInfo                Dictionary to save any additional objects that comply with the NSCoding protocol.
@@ -126,12 +126,12 @@ OCK_CLASS_AVAILABLE
 
 /**
  Initializer for creating an OCKCarePlanEventResult instance with a HKCorrelation object.
- Attach created instance to an OCKCarePlanEvent object using the OCKCarePlanStore API.
+ Attach the created instance to an OCKCarePlanEvent object using the OCKCarePlanStore API.
  
- @param correlation             A correlation object is in HealthKit.
+ @param correlation             A correlation object that is in HealthKit.
  (Currently only supports correlation with type HKCorrelationTypeIdentifierBloodPressure)
  @param quantityStringFormatter A formatter formats the systolic and diastolic blood pressure value to valueString.
- @param displayUnit             A preferred HKUnit object to display value.
+ @param displayUnit             A preferred HKUnit object for displaying the value.
  @param unitStringKeys          A dictionary of localized string keys for possible units.
  @param userInfo                Dictionary to save any additional objects that comply with the NSCoding protocol.
  
@@ -145,9 +145,9 @@ OCK_CLASS_AVAILABLE
 
 /**
  Initializer for creating an OCKCarePlanEventResult instance with a HKCategorySample object.
- Attach created instance to an OCKCarePlanEvent object using the OCKCarePlanStore API.
+ Attach the created instance to an OCKCarePlanEvent object using the OCKCarePlanStore API.
  
- @param categorySample          A HKCategorySample object is in HealthKit.
+ @param categorySample          A HKCategorySample object that is in HealthKit.
  @param categoryValueStringKeys An array of localized string keys for the enum values in the HKCategorySample.
  @param userInfo                Dictionary to save any additional objects that comply with the NSCoding protocol.
  
@@ -168,7 +168,7 @@ OCK_CLASS_AVAILABLE
 @property (nonatomic, strong, readonly, nullable) HKSampleType *sampleType;
 
 /**
- Prefered HKUnit object to display the value for a HKQuantitySample or HKCorrelation object.
+ Prefered HKUnit object for displaying the value for an HKQuantitySample or HKCorrelation object.
  If this attribute is nil, the OCKCarePlanEventResult object uses a system preferred HKUnit object.
  */
 @property (nonatomic, strong, readonly, nullable) HKUnit *displayUnit;
@@ -177,23 +177,23 @@ OCK_CLASS_AVAILABLE
  Localized string keys for units.
  If you provide a display unit, then this dictionary only contains one string key for the display unit.
  Otherwise, you need to provide string keys for all possible system preferred HKUnit objects.
- This attribute only applys to the sample is HKQuantitySample or HKCorrelation type.
+ This attribute only applies when the sample is HKQuantitySample or HKCorrelation type.
  */
 @property (nonatomic, copy, readonly, nullable) NSDictionary<HKUnit *, NSString *> * unitStringKeys;
 
 /**
- Formats the quantity value of HKQuantitySample object to value string.
+ Formats the quantity value of a HKQuantitySample object to value string.
  
  If formatter is nil, framework uses
  `[NSNumberFormatter localizedStringFromNumber:@(value) numberStyle:NSNumberFormatterDecimalStyle]`.
- This attribute only applys to the sample is HKQuantitySample or HKCorrelation type.
+ This attribute only applies when the sample is HKQuantitySample or HKCorrelation type.
  */
 @property (nonatomic, strong, readonly, nullable) NSNumberFormatter *quantityStringFormatter;
 
 /**
  Localized string keys for the enum values in the HKCategorySample.
  The OCKCarePlanEventResult object use this string array to map an enum value to a string.
- This attribute only applys to the sample is HKCategorySample type.
+ This attribute only applies when the sample is HKCategorySample type.
  */
 @property (nonatomic, copy, readonly, nullable) NSArray<NSString *> *categoryValueStringKeys;
 

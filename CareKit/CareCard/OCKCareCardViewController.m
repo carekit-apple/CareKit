@@ -88,7 +88,7 @@ static const CGFloat HeaderViewHeight = 150.0;
                                                                               style:UIBarButtonItemStylePlain
                                                                              target:self
                                                                              action:@selector(showToday:)];
-    self.navigationItem.rightBarButtonItem.tintColor = OCKRedColor();
+    self.navigationItem.rightBarButtonItem.tintColor = _maskImageTintColor;
     
     _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
     _tableView.dataSource = self;
@@ -243,6 +243,7 @@ static const CGFloat HeaderViewHeight = 150.0;
 
     _weekViewController.careCardWeekView.tintColor = _maskImageTintColor;
     _headerView.tintColor = _maskImageTintColor;
+    self.navigationItem.rightBarButtonItem.tintColor = _maskImageTintColor;
 }
 
 

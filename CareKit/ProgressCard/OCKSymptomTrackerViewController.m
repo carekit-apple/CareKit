@@ -77,7 +77,6 @@ static const CGFloat HeaderViewHeight = 150.0;
                                                                                   style:UIBarButtonItemStylePlain
                                                                                  target:self
                                                                                  action:@selector(showToday:)];
-        self.navigationItem.rightBarButtonItem.tintColor = OCKRedColor();
         
         _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
         _tableView.dataSource = self;

@@ -31,10 +31,10 @@
 
 /* Care Card */
 "CARE_CARD_HEADER_TITLE" = "Ολοκλήρωση φροντίδας";
-"TODAY_BUTTON_TITLE" = "Today";
+"TODAY_BUTTON_TITLE" = "Σήμερα";
 
 /* Care Card Detail View */
-"CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "Instructions";
+"CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "Οδηγίες";
 "CARE_CARD_ADDITIONAL_INFO_SECTION_TITLE" = "Πρόσθετες πληροφορίες";
 
 /* Symptom Tracker */
@@ -48,7 +48,7 @@
 "CONTACT_INFO_SECTION_TITLE" = "Στοιχεία επικοινωνίας";
 "CONTACT_SHARING_SECTION_TITLE" = "Κοινή χρήση";
 "CONTACT_INFO_PHONE_TITLE" = "τηλέφωνο";
-"CONTACT_INFO_MESSAGE_TITLE" = "κείμενο";
+"CONTACT_INFO_MESSAGE_TITLE" = "μήνυμα";
 "CONTACT_INFO_EMAIL_TITLE" = "email";
 "SHARING_CELL_TITLE" = "Αποστολή αναφορών";
 "ERROR_TITLE" = "Σφάλμα";

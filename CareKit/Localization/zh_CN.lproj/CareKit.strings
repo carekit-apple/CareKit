@@ -31,10 +31,10 @@
 
 /* Care Card */
 "CARE_CARD_HEADER_TITLE" = "医疗任务完成进度";
-"TODAY_BUTTON_TITLE" = "Today";
+"TODAY_BUTTON_TITLE" = "今天";
 
 /* Care Card Detail View */
-"CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "Instructions";
+"CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "说明";
 "CARE_CARD_ADDITIONAL_INFO_SECTION_TITLE" = "其他信息";
 
 /* Symptom Tracker */

@@ -30,11 +30,11 @@
 
 
 /* Care Card */
-"CARE_CARD_HEADER_TITLE" = "Avklarad vård";
-"TODAY_BUTTON_TITLE" = "Today";
+"CARE_CARD_HEADER_TITLE" = "Slutförd vård";
+"TODAY_BUTTON_TITLE" = "Idag";
 
 /* Care Card Detail View */
-"CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "Instructions";
+"CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "Anvisningar";
 "CARE_CARD_ADDITIONAL_INFO_SECTION_TITLE" = "Ytterligare information";
 
 /* Symptom Tracker */
@@ -48,7 +48,7 @@
 "CONTACT_INFO_SECTION_TITLE" = "Kontaktinfo";
 "CONTACT_SHARING_SECTION_TITLE" = "Delar";
 "CONTACT_INFO_PHONE_TITLE" = "telefon";
-"CONTACT_INFO_MESSAGE_TITLE" = "text";
+"CONTACT_INFO_MESSAGE_TITLE" = "SMS";
 "CONTACT_INFO_EMAIL_TITLE" = "e-post";
 "SHARING_CELL_TITLE" = "Skicka rapporter";
 "ERROR_TITLE" = "Fel";

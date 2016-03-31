@@ -31,10 +31,10 @@
 
 /* Care Card */
 "CARE_CARD_HEADER_TITLE" = "Zorg voltooid";
-"TODAY_BUTTON_TITLE" = "Today";
+"TODAY_BUTTON_TITLE" = "Vandaag";
 
 /* Care Card Detail View */
-"CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "Instructions";
+"CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "Instructies";
 "CARE_CARD_ADDITIONAL_INFO_SECTION_TITLE" = "Aanvullende informatie";
 
 /* Symptom Tracker */
@@ -48,7 +48,7 @@
 "CONTACT_INFO_SECTION_TITLE" = "Contactinfo";
 "CONTACT_SHARING_SECTION_TITLE" = "Delen";
 "CONTACT_INFO_PHONE_TITLE" = "telefoon";
-"CONTACT_INFO_MESSAGE_TITLE" = "tekst";
+"CONTACT_INFO_MESSAGE_TITLE" = "bericht";
 "CONTACT_INFO_EMAIL_TITLE" = "e-mail";
 "SHARING_CELL_TITLE" = "Verstuur rapporten";
 "ERROR_TITLE" = "Fout";

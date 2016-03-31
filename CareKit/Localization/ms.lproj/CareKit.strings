@@ -30,25 +30,25 @@
 
 
 /* Care Card */
-"CARE_CARD_HEADER_TITLE" = "Penyiapan Care";
-"TODAY_BUTTON_TITLE" = "Today";
+"CARE_CARD_HEADER_TITLE" = "Penyiapan Rawatan";
+"TODAY_BUTTON_TITLE" = "Hari ini";
 
 /* Care Card Detail View */
-"CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "Instructions";
+"CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "Arahan";
 "CARE_CARD_ADDITIONAL_INFO_SECTION_TITLE" = "Maklumat Tambahan";
 
 /* Symptom Tracker */
 "SYMPTOM_TRACKER_HEADER_TITLE" = "Penyiapan Aktiviti";
 
 /* Connect Master View */
-"CARE_TEAM_SECTION_TITLE" = "Kumpulan Care";
+"CARE_TEAM_SECTION_TITLE" = "Kumpulan Perawat";
 "PERSONAL_SECTION_TITLE" = "Peribadi";
 
 /* Connect Detail View */
-"CONTACT_INFO_SECTION_TITLE" = "Info kenalan";
+"CONTACT_INFO_SECTION_TITLE" = "Info Hubungan";
 "CONTACT_SHARING_SECTION_TITLE" = "Perkongsian";
 "CONTACT_INFO_PHONE_TITLE" = "telefon";
-"CONTACT_INFO_MESSAGE_TITLE" = "teks";
+"CONTACT_INFO_MESSAGE_TITLE" = "mesej";
 "CONTACT_INFO_EMAIL_TITLE" = "e-mel";
 "SHARING_CELL_TITLE" = "Hantar laporan";
 "ERROR_TITLE" = "Ralat";

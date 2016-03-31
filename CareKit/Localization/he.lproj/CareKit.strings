@@ -31,17 +31,17 @@
 
 /* Care Card */
 "CARE_CARD_HEADER_TITLE" = "מידת השלמת הטיפול";
-"TODAY_BUTTON_TITLE" = "Today";
+"TODAY_BUTTON_TITLE" = "היום";
 
 /* Care Card Detail View */
-"CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "Instructions";
+"CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "הנחיות";
 "CARE_CARD_ADDITIONAL_INFO_SECTION_TITLE" = "מידע נוסף";
 
 /* Symptom Tracker */
 "SYMPTOM_TRACKER_HEADER_TITLE" = "מידת השלמת הפעולות";
 
 /* Connect Master View */
-"CARE_TEAM_SECTION_TITLE" = "הצוות הרפואי";
+"CARE_TEAM_SECTION_TITLE" = "צוות טיפולי";
 "PERSONAL_SECTION_TITLE" = "אישי";
 
 /* Connect Detail View */

@@ -31,10 +31,10 @@
 
 /* Care Card */
 "CARE_CARD_HEADER_TITLE" = "Виконання догляду";
-"TODAY_BUTTON_TITLE" = "Today";
+"TODAY_BUTTON_TITLE" = "Сьогодні";
 
 /* Care Card Detail View */
-"CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "Instructions";
+"CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "Інструкції";
 "CARE_CARD_ADDITIONAL_INFO_SECTION_TITLE" = "Додаткова інформація";
 
 /* Symptom Tracker */
@@ -48,7 +48,7 @@
 "CONTACT_INFO_SECTION_TITLE" = "Контактні дані";
 "CONTACT_SHARING_SECTION_TITLE" = "Оприлюднення";
 "CONTACT_INFO_PHONE_TITLE" = "телефон";
-"CONTACT_INFO_MESSAGE_TITLE" = "текст";
+"CONTACT_INFO_MESSAGE_TITLE" = "звістка";
 "CONTACT_INFO_EMAIL_TITLE" = "е-пошта";
 "SHARING_CELL_TITLE" = "Надіслати звіти";
 "ERROR_TITLE" = "Помилка";

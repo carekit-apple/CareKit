@@ -214,9 +214,9 @@ static const BOOL resetStoreOnLaunch = YES;
     
     _insightItems = [items copy];
     
-    OCKInsightsViewController *insights = [[OCKInsightsViewController alloc] initWithInsightItems:items];
-    insights.headerTitle = @"Weekly Charts";
-    insights.headerSubtitle = @"2/21 - 2/27";
+    OCKInsightsViewController *insights = [[OCKInsightsViewController alloc] initWithInsightItems:items
+                                                                                      headerTitle:@"Weekly Charts"
+                                                                                   headerSubtitle:@"2/21 - 2/27"];
     
     return insights;
 }

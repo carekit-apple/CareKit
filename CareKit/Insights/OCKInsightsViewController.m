@@ -57,12 +57,16 @@ static const CGFloat TopMargin = 20.0;
     return nil;
 }
 
-- (instancetype)initWithInsightItems:(NSArray<OCKInsightItem *> *)items {
+- (instancetype)initWithInsightItems:(NSArray<OCKInsightItem *> *)items
+                         headerTitle:(NSString *)headerTitle
+                      headerSubtitle:(NSString *)headerSubtitle {
     NSAssert(items.count > 0, @"OCKInsightsViewController requires at least one insight item.");
     
     self = [super init];
     if (self) {
         _items = [items copy];
+        _headerTitle = [headerTitle copy];
+        _headerSubtitle = [headerSubtitle copy];
         _hasAnimated = NO;
         
         _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
@@ -73,6 +77,12 @@ static const CGFloat TopMargin = 20.0;
         [self setUpConstraints];
     }
     return self;
+}
+
+- (instancetype)initWithInsightItems:(NSArray<OCKInsightItem *> *)items {
+    return [[OCKInsightsViewController alloc] initWithInsightItems:items
+                                                       headerTitle:nil
+                                                    headerSubtitle:nil];
 }
 
 - (void)viewDidLoad {

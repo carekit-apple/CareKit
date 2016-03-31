@@ -200,6 +200,7 @@ const static CGFloat HeartButtonSize = 20.0;
     for (OCKHeartButton *button in _heartButtons) {
         button.heartView.tintColor = self.tintColor;
     }
+    _weekView.tintColor = self.tintColor;
 }
 
 @end

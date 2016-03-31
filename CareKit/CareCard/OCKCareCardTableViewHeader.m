@@ -91,8 +91,6 @@ static const CGFloat HorizontalMargin = 10.0;
     
     if (!_valuePercentageLabel) {
         _valuePercentageLabel = [UILabel new];
-        _valuePercentageLabel.lineBreakMode = NSLineBreakByCharWrapping;
-        _valuePercentageLabel.textColor = OCKRedColor();
         [self addSubview:_valuePercentageLabel];
     }
     
@@ -124,6 +122,7 @@ static const CGFloat HorizontalMargin = 10.0;
     _heartView.value = _value;
     _heartView.tintColor = self.tintColor;
     _valuePercentageLabel.text = self.valuePercentageString;
+    _valuePercentageLabel.textColor = self.tintColor;
 }
 
 - (void)updateFonts {

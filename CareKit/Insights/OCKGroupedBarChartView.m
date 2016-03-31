@@ -100,7 +100,7 @@ static const CGFloat MarginBetweenBars = 2.0;
 - (instancetype)initWithBar:(OCKGroupedBarChartBar *)bar maxValue:(double)maxValue {
     self = [super init];
     if (self) {
-        _maxValue = maxValue;
+        _maxValue = (maxValue == 0)? 1.0 : maxValue ;
         _bar = bar;
         [self prepareView];
     }

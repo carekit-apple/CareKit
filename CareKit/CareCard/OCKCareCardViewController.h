@@ -51,9 +51,9 @@ NS_ASSUME_NONNULL_BEGIN
  
  @param viewController          The view controller providing the callback.
  @param events                  An array containing the fetched set of intervention events.
- @param date                    The date for which the events will be displayed.
+ @param dateComponents          The date components for which the events will be displayed.
  */
-- (void)careCardViewController:(OCKCareCardViewController *)viewController willDisplayEvents:(NSArray<OCKCarePlanEvent*>*)events ofDate:(NSDateComponents *)date;
+- (void)careCardViewController:(OCKCareCardViewController *)viewController willDisplayEvents:(NSArray<OCKCarePlanEvent*>*)events dateComponents:(NSDateComponents *)dateComponents;
 
 @end
 

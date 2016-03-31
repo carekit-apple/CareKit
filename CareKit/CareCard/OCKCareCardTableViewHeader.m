@@ -55,7 +55,6 @@ static const CGFloat HorizontalMargin = 10.0;
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        
         if (!UIAccessibilityIsReduceTransparencyEnabled()) {
             self.backgroundColor = [UIColor clearColor];
             

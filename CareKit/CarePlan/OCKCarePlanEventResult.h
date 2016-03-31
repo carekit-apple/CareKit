@@ -81,9 +81,9 @@ OCK_CLASS_AVAILABLE
 
 
 /**
- To avoid saving duplicates of health data, use the HealthKit category for a HKSample object that is already in HealthKit.
+ To avoid saving duplicates of health data, use the HealthKit category for an HKSample object that is already in HealthKit.
  Simply pass in the HKSample object with value formatting parameters.
- OCKCarePlanStore stores only the UUID and sample type from a HKSample object.
+ OCKCarePlanStore stores only the UUID and sample type from an HKSample object.
  The OCKCarePlanStore object uses the UUID and type to fetch the actual sample object from HealthKit.
  
  An OCKCarePlanEventResult object uses the HKSample object with the value formatting parameters to populate `valueString` and `unitString`.
@@ -125,7 +125,7 @@ OCK_CLASS_AVAILABLE
                               userInfo:(nullable NSDictionary<NSString *, id<NSCoding>> *)userInfo;
 
 /**
- Initializer for creating an OCKCarePlanEventResult instance with a HKCorrelation object.
+ Initializer for creating an OCKCarePlanEventResult instance with an HKCorrelation object.
  Attach the created instance to an OCKCarePlanEvent object using the OCKCarePlanStore API.
  
  @param correlation             A correlation object that is in HealthKit.
@@ -144,7 +144,7 @@ OCK_CLASS_AVAILABLE
                            userInfo:(nullable NSDictionary<NSString *, id<NSCoding>> *)userInfo;
 
 /**
- Initializer for creating an OCKCarePlanEventResult instance with a HKCategorySample object.
+ Initializer for creating an OCKCarePlanEventResult instance with an HKCategorySample object.
  Attach the created instance to an OCKCarePlanEvent object using the OCKCarePlanStore API.
  
  @param categorySample          A HKCategorySample object that is in HealthKit.
@@ -182,7 +182,7 @@ OCK_CLASS_AVAILABLE
 @property (nonatomic, copy, readonly, nullable) NSDictionary<HKUnit *, NSString *> * unitStringKeys;
 
 /**
- Formats the quantity value of a HKQuantitySample object to value string.
+ Formats the quantity value of an HKQuantitySample object to value string.
  
  If formatter is nil, framework uses
  `[NSNumberFormatter localizedStringFromNumber:@(value) numberStyle:NSNumberFormatterDecimalStyle]`.

@@ -24,14 +24,14 @@
     <entity name="OCKCDCarePlanEventResult" representedClassName="OCKCDCarePlanEventResult" syncable="YES">
         <attribute name="categoryValueStringKeys" optional="YES" attributeType="Transformable" syncable="YES"/>
         <attribute name="creationDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="displayUnit" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="quantityStringFormatter" optional="YES" attributeType="Transformable" syncable="YES"/>
         <attribute name="sampleType" optional="YES" attributeType="Transformable" syncable="YES"/>
-        <attribute name="unit" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="sampleUUID" optional="YES" attributeType="Transformable" syncable="YES"/>
         <attribute name="unitString" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="unitStringKeys" optional="YES" attributeType="Transformable" syncable="YES"/>
         <attribute name="userInfo" optional="YES" attributeType="Transformable" syncable="YES"/>
-        <attribute name="uuid" optional="YES" attributeType="Transformable" syncable="YES"/>
         <attribute name="valueString" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="valueStringFormatter" optional="YES" attributeType="Transformable" syncable="YES"/>
         <relationship name="event" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDCarePlanEvent" inverseName="result" inverseEntity="OCKCDCarePlanEvent" syncable="YES"/>
     </entity>
     <elements>

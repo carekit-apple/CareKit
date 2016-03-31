@@ -527,8 +527,7 @@ DefineStringKey(TemperatureAssessment);
                                            
                                            [hkstore saveObject:sample withCompletion:^(BOOL success, NSError * _Nullable error) {
                                                OCKCarePlanEventResult *result = [[OCKCarePlanEventResult alloc] initWithQuantitySample:sample
-                                                                                                                  valueStringFormatter:nil
-                                                                                                                           displayUnit:nil
+                                                                                                               quantityStringFormatter:nil
                                                                                                                         unitStringKeys:@{[HKUnit degreeFahrenheitUnit]: @"\u00B0F",
                                                                                                                                          [HKUnit degreeCelsiusUnit]: @"\u00B0C",}
                                                                                                                               userInfo:nil];

@@ -39,8 +39,8 @@
     HKSampleType *_sampleType;
     NSUUID *_sampleUUID;
     NSArray<NSString *> *_categoryValueStringKeys;
-    NSNumberFormatter *_valueStringFormatter;
-    HKUnit *_unit;
+    NSNumberFormatter *_quantityStringFormatter;
+    HKUnit *_displayUnit;
     NSDictionary<HKUnit *, NSString *> *_unitStringKeys;
     HKSample *_sample;
     HKUnit *_preferredUnit;
@@ -66,7 +66,7 @@
 }
 
 - (instancetype)initWithSample:(HKSample *)sample
-          valueStringFormatter:(nullable NSNumberFormatter *)valueStringFormatter
+       quantityStringFormatter:(nullable NSNumberFormatter *)quantityStringFormatter
                    displayUnit:(nullable HKUnit *)displayUnit
                 unitStringKeys:(NSDictionary<HKUnit *, NSString *> *)unitStringKeys
                       userInfo:(nullable NSDictionary<NSString *, id<NSCoding>> *)userInfo {
@@ -116,11 +116,11 @@
     
     self = [super init];
     if (self) {
-        _valueStringFormatter = valueStringFormatter;
+        _quantityStringFormatter = quantityStringFormatter;
         _sampleType = sample.sampleType;
         _sample = sample;
         _sampleUUID = sample.UUID;
-        _unit = displayUnit;
+        _displayUnit = displayUnit;
         _unitStringKeys = [unitStringKeys copy];
         _userInfo = [userInfo copy];
         _creationDate = [NSDate date];
@@ -129,48 +129,64 @@
 }
 
 - (instancetype)initWithQuantitySample:(HKQuantitySample *)quantitySample
-                  valueStringFormatter:(NSNumberFormatter *)valueStringFormatter
+               quantityStringFormatter:(nullable NSNumberFormatter *)quantityStringFormatter
                            displayUnit:(HKUnit *)displayUnit
+                  displayUnitStringKey:(NSString *)displayUnitStringKey
+                              userInfo:(nullable NSDictionary<NSString *, id<NSCoding>> *)userInfo {
+    
+    NSParameterAssert(displayUnit);
+    NSParameterAssert(displayUnitStringKey);
+    
+    return [self initWithSample:quantitySample
+        quantityStringFormatter:quantityStringFormatter
+                    displayUnit:displayUnit
+                 unitStringKeys:@{displayUnit: displayUnitStringKey}
+                       userInfo:userInfo];
+}
+
+- (instancetype)initWithQuantitySample:(HKQuantitySample *)quantitySample
+               quantityStringFormatter:(NSNumberFormatter *)quantityStringFormatter
                         unitStringKeys:(NSDictionary<HKUnit *, NSString *> *)unitStringKeys
                               userInfo:(NSDictionary<NSString *, id<NSCoding>> *)userInfo {
+    NSParameterAssert(unitStringKeys);
     return [self initWithSample:quantitySample
-           valueStringFormatter:valueStringFormatter
-                    displayUnit:displayUnit
+        quantityStringFormatter:quantityStringFormatter
+                    displayUnit:nil
                  unitStringKeys:unitStringKeys
                        userInfo:userInfo];
 }
 
-- (instancetype)initWitCorrelation:(HKCorrelation *)correlation
-              valueStringFormatter:(NSNumberFormatter *)valueStringFormatter
-                       displayUnit:(HKUnit *)displayUnit
-                    unitStringKeys:(NSDictionary<HKUnit *, NSString *> *)unitStringKeys
-                          userInfo:(NSDictionary<NSString *, id<NSCoding>> *)userInfo {
+- (instancetype)initWithCorrelation:(HKCorrelation *)correlation
+            quantityStringFormatter:(NSNumberFormatter *)quantityStringFormatter
+                        displayUnit:(HKUnit *)displayUnit
+                     unitStringKeys:(NSDictionary<HKUnit *, NSString *> *)unitStringKeys
+                           userInfo:(NSDictionary<NSString *, id<NSCoding>> *)userInfo {
     return [self initWithSample:correlation
-           valueStringFormatter:valueStringFormatter
+        quantityStringFormatter:quantityStringFormatter
                     displayUnit:displayUnit
                  unitStringKeys:unitStringKeys
                        userInfo:userInfo];
 }
 
 - (instancetype)initWithCategorySample:(HKCategorySample *)sample
-                       valueStringKeys:(NSArray<NSString *> *)valueStringKeys
+               categoryValueStringKeys:(NSArray<NSString *> *)categoryValueStringKeys
                               userInfo:(nullable NSDictionary<NSString *, id<NSCoding>> *)userInfo {
     
-    NSParameterAssert(valueStringKeys);
+    NSParameterAssert(categoryValueStringKeys);
     
     self = [self initWithSample:sample
-           valueStringFormatter:nil
+        quantityStringFormatter:nil
                     displayUnit:nil
                  unitStringKeys:nil
                        userInfo:userInfo];
     
-    _categoryValueStringKeys = OCKArrayCopyObjects(valueStringKeys);
+    _categoryValueStringKeys = OCKArrayCopyObjects(categoryValueStringKeys);
     return self;
 }
 
 - (HKUnit *)preferredUnit {
-    if (!_preferredUnit && _unit) {
-        _preferredUnit = _unit;
+    if (!_preferredUnit && _displayUnit) {
+        _preferredUnit = _displayUnit;
     }
     
     if (!_preferredUnit &&
@@ -198,8 +214,8 @@
 }
 
 - (NSString *)stringForDoubleValue:(double)value {
-    if (_valueStringFormatter) {
-        return [_valueStringFormatter stringFromNumber:@(value)];
+    if (_quantityStringFormatter) {
+        return [_quantityStringFormatter stringFromNumber:@(value)];
     }
     return [NSNumberFormatter localizedStringFromNumber:@(value) numberStyle:NSNumberFormatterDecimalStyle];
 }
@@ -238,7 +254,18 @@
 }
 
 - (NSString *)unitString {
-    return _unitString ? : (_sample ?  (_unitStringKeys[[self preferredUnit]] ? : [[self preferredUnit] unitString]) : nil);
+    if (_unitString) {
+        return NSLocalizedString(_unitString, nil);
+    } else if (_sample && [self preferredUnit]) {
+        HKUnit *preferredUnit = [self preferredUnit];
+        if (_unitStringKeys[preferredUnit]) {
+            return NSLocalizedString(_unitStringKeys[preferredUnit], nil);
+        } else {
+            return NSLocalizedString([preferredUnit unitString], nil);
+        }
+    }
+    
+    return nil;
 }
 
 - (instancetype)initWithCoreDataObject:(OCKCDCarePlanEventResult *)cdObject {
@@ -247,11 +274,11 @@
     if (cdObject.sampleType) {
         self = [super init];
         
-        _sampleUUID = cdObject.uuid;
+        _sampleUUID = cdObject.sampleUUID;
         _sampleType = cdObject.sampleType;
-        _unit = cdObject.unit;
+        _displayUnit = cdObject.displayUnit;
         _categoryValueStringKeys = cdObject.categoryValueStringKeys;
-        _valueStringFormatter = cdObject.valueStringFormatter;
+        _quantityStringFormatter = cdObject.quantityStringFormatter;
         _unitStringKeys = cdObject.unitStringKeys;
         
         _userInfo = cdObject.userInfo;
@@ -274,8 +301,8 @@
     return _sampleType;
 }
 
-- (NSNumberFormatter *)valueStringFormatter {
-    return _valueStringFormatter;
+- (NSNumberFormatter *)quantityStringFormatter {
+    return _quantityStringFormatter;
 }
 
 - (NSArray<NSString *> *)categoryValueStringKeys {
@@ -287,7 +314,7 @@
 }
 
 - (HKUnit *)displayUnit {
-    return _unit;
+    return _displayUnit;
 }
 
 - (HKSample *)sample {
@@ -306,6 +333,12 @@
             OCKEqualObjects(self.creationDate, castObject.creationDate) &&
             OCKEqualObjects(self.valueString, castObject.valueString) &&
             OCKEqualObjects(self.unitString, castObject.unitString) &&
+            OCKEqualObjects(self.sampleType, castObject.sampleType) &&
+            OCKEqualObjects(self.sampleUUID, castObject.sampleUUID) &&
+            OCKEqualObjects(self.displayUnit, castObject.displayUnit) &&
+            OCKEqualObjects(self.unitStringKeys, castObject.unitStringKeys) &&
+            OCKEqualObjects(self.quantityStringFormatter, castObject.quantityStringFormatter) &&
+            OCKEqualObjects(self.categoryValueStringKeys, castObject.categoryValueStringKeys) &&
             OCKEqualObjects(self.userInfo, castObject.userInfo)
             );
 }
@@ -329,10 +362,10 @@ insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
         self.userInfo = result.userInfo;
         
         self.sampleType = result.sampleType;
-        self.unit = result.displayUnit;
+        self.displayUnit = result.displayUnit;
         self.unitStringKeys = result.unitStringKeys;
-        self.uuid = result.sampleUUID;
-        self.valueStringFormatter = result.valueStringFormatter;
+        self.sampleUUID = result.sampleUUID;
+        self.quantityStringFormatter = result.quantityStringFormatter;
         self.categoryValueStringKeys = result.categoryValueStringKeys;
         
         self.event = cdEvent;
@@ -347,10 +380,10 @@ insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
     self.userInfo = result.userInfo;
     
     self.sampleType = result.sampleType;
-    self.unit = result.unit;
-    self.uuid = result.uuid;
+    self.displayUnit = result.displayUnit;
+    self.sampleUUID = result.sampleUUID;
     self.unitStringKeys = result.unitStringKeys;
-    self.valueStringFormatter = result.valueStringFormatter;
+    self.quantityStringFormatter = result.quantityStringFormatter;
     self.categoryValueStringKeys = result.categoryValueStringKeys;
 }
 
@@ -365,10 +398,10 @@ insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
 @dynamic userInfo;
 @dynamic event;
 
-@dynamic valueStringFormatter;
-@dynamic uuid;
+@dynamic quantityStringFormatter;
+@dynamic sampleUUID;
 @dynamic sampleType;
-@dynamic unit;
+@dynamic displayUnit;
 @dynamic unitStringKeys;
 @dynamic categoryValueStringKeys;
 

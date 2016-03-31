@@ -174,22 +174,30 @@
     
     OCKCarePlanEventResult *result = nil;
     if ([sample isKindOfClass:[HKQuantitySample class]]) {
-        result = [[OCKCarePlanEventResult alloc] initWithQuantitySample:(HKQuantitySample *)sample
-                                                   valueStringFormatter:formatter
-                                                            displayUnit:unit
-                                                         unitStringKeys:unitStringKeys
-                                                               userInfo:nil];
+        
+        if (unit) {
+            result = [[OCKCarePlanEventResult alloc] initWithQuantitySample:(HKQuantitySample *)sample
+                                                    quantityStringFormatter:formatter
+                                                                displayUnit:unit
+                                                       displayUnitStringKey:unitStringKeys[unit]
+                                                                   userInfo:nil];
+        } else {
+            result = [[OCKCarePlanEventResult alloc] initWithQuantitySample:(HKQuantitySample *)sample
+                                                    quantityStringFormatter:formatter
+                                                             unitStringKeys:unitStringKeys
+                                                                   userInfo:nil];
+        }
         XCTAssertNotNil(result.unitString);
     } else if ([sample isKindOfClass:[HKCorrelation class]]) {
-        result = [[OCKCarePlanEventResult alloc] initWitCorrelation:(HKCorrelation *)sample
-                                               valueStringFormatter:formatter
-                                                        displayUnit:unit
-                                                     unitStringKeys:unitStringKeys
-                                                           userInfo:nil];
+        result = [[OCKCarePlanEventResult alloc] initWithCorrelation:(HKCorrelation *)sample
+                                             quantityStringFormatter:formatter
+                                                         displayUnit:unit
+                                                      unitStringKeys:unitStringKeys
+                                                            userInfo:nil];
         XCTAssertNotNil(result.unitString);
     } else if ([sample isKindOfClass:[HKCategorySample class]]) {
         result = [[OCKCarePlanEventResult alloc] initWithCategorySample:(HKCategorySample *)sample
-                                                        valueStringKeys:@[@"0a", @"1b", @"2c", @"3d"]
+                                                    categoryValueStringKeys:@[@"0a", @"1b", @"2c", @"3d"]
                                                                userInfo:nil];
     }
     

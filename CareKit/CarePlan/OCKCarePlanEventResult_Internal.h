@@ -62,10 +62,10 @@ insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
 @property (nullable, nonatomic, retain) NSString *unitString;
 @property (nullable, nonatomic, retain) id userInfo;
 
-@property (nullable, nonatomic, retain) id valueStringFormatter;
-@property (nullable, nonatomic, retain) id uuid;
+@property (nullable, nonatomic, retain) id quantityStringFormatter;
+@property (nullable, nonatomic, retain) id sampleUUID;
 @property (nullable, nonatomic, retain) id sampleType;
-@property (nullable, nonatomic, retain) id unit;
+@property (nullable, nonatomic, retain) id displayUnit;
 @property (nullable, nonatomic, retain) id unitStringKeys;
 @property (nullable, nonatomic, retain) id categoryValueStringKeys;
 

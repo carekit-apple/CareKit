@@ -70,7 +70,7 @@ static const CGFloat HeaderViewHeight = 225.0;
 
 - (void)setDelegate:(id<OCKConnectViewControllerDelegate>)delegate {
     _delegate = delegate;
-    [self prepareView];
+    [self createTableViewDataArray];
     [self.tableView reloadData];
 }
 

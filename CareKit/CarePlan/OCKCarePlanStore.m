@@ -129,7 +129,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     
     if (item) {
         if (error) {
-            NSString *reasonString = [NSString stringWithFormat:@"An activity with the identifier %@ already exist.", sourceItem.identifier];
+            NSString *reasonString = [NSString stringWithFormat:@"An activity with the identifier %@ already exists.", sourceItem.identifier];
             *error = [NSError errorWithDomain:OCKErrorDomain code:OCKErrorInvalidObject userInfo:@{@"reason":reasonString}];
         }
     } else {

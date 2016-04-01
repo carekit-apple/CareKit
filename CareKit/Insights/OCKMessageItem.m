@@ -35,10 +35,10 @@
 
 @implementation OCKMessageItem
 
-- (instancetype)initWithWithTitle:(NSString *)title
-                             text:(NSString *)text
-                        tintColor:(UIColor *)tintColor
-                      messageType:(OCKMessageItemType)messageType {
+- (instancetype)initWithTitle:(NSString *)title
+                         text:(NSString *)text
+                    tintColor:(UIColor *)tintColor
+                  messageType:(OCKMessageItemType)messageType {
     self = [super init];
     if (self) {
         self.title = [title copy];

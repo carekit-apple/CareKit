@@ -56,13 +56,13 @@ OCK_CLASS_AVAILABLE
  
  @return An initialzed bar chart object.
  */
-- (instancetype)initWithWithTitle:(nullable NSString *)title
-                             text:(nullable NSString *)text
-                        tintColor:(nullable UIColor *)tintColor
-                       axisTitles:(nullable NSArray<NSString *> *)axisTitles
-                    axisSubtitles:(nullable NSArray<NSString *> *)axisSubtitles
-                      chartHeight:(CGFloat)chartHeight
-                       dataSeries:(NSArray<OCKBarSeries *> *)dataSeries;
+- (instancetype)initWithTitle:(nullable NSString *)title
+                         text:(nullable NSString *)text
+                    tintColor:(nullable UIColor *)tintColor
+                   axisTitles:(nullable NSArray<NSString *> *)axisTitles
+                axisSubtitles:(nullable NSArray<NSString *> *)axisSubtitles
+                  chartHeight:(CGFloat)chartHeight
+                   dataSeries:(NSArray<OCKBarSeries *> *)dataSeries;
 
 /**
  The height for the chart.

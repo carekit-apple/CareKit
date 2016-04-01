@@ -115,7 +115,7 @@ static const CGFloat HeaderViewHeight = 150.0;
 }
 
 - (void)showToday:(id)sender {
-    self.selectedDate = [NSDateComponents ock_componentsWithDate:[NSDate date] calendar:[NSCalendar currentCalendar]];
+    self.selectedDate = [NSDateComponents ock_componentsWithDate:[NSDate date] calendar:_calendar];
 }
 
 - (void)prepareView {

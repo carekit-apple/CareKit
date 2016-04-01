@@ -39,6 +39,7 @@
 @required
 
 - (void)weekViewSelectionDidChange:(UIView *)weekView;
+- (BOOL)weekViewCanSelectDayAtIndex:(NSUInteger)index;
 
 @end
 

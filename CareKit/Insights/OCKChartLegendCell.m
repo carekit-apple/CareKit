@@ -117,14 +117,5 @@ const CGFloat DotToLabelPadding = 6.0;
     return YES;
 }
 
-#pragma mark - Accessibility
-
-- (BOOL)isAccessibilityElement {
-    return YES;
-}
-
-- (NSString *)accessibilityLabel {
-    return _titleLabel.accessibilityLabel;
-}
 
 @end

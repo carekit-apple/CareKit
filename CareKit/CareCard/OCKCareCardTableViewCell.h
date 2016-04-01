@@ -45,6 +45,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+@interface CareCardAccessibilityElement : UIAccessibilityElement
+@end
 
 @interface OCKCareCardTableViewCell : OCKTableViewCell
 

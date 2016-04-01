@@ -245,5 +245,9 @@ static const double VALUE_MAX = 1.0;
     }
 }
 
+- (NSString *)accessibilityLabel {
+    return [_label accessibilityLabel];
+}
+
 @end
 

@@ -568,6 +568,7 @@ static const CGFloat MarginBetweenBars = 2.0;
     
     for (OCKGroupedBarChartBarGroup *barGroup in _barGroups) {
         OCKGroupedBarChartBarGroupView *groupView = [[OCKGroupedBarChartBarGroupView alloc] initWithGroup:barGroup maxValue:_maxValue];
+        [self updateGroupViewAccessibility:groupView];
         groupView.translatesAutoresizingMaskIntoConstraints = NO;
 #if LAYOUT_DEBUG
         groupView.backgroundColor = [[UIColor greenColor] colorWithAlphaComponent:0.2];
@@ -634,6 +635,24 @@ static const CGFloat MarginBetweenBars = 2.0;
     }
     
     [NSLayoutConstraint activateConstraints:_constraints];
+}
+
+#pragma mark - Accessibility
+
+- (void)updateGroupViewAccessibility:(OCKGroupedBarChartBarGroupView *)groupView {
+    OCKGroupedBarChartBarGroup *barGroup = groupView.group;
+    NSString *barsString = @"";
+    for (int i = 0; i < [barGroup.bars count]; i++) {
+        OCKGroupedBarChartBar *bar = [barGroup.bars objectAtIndex:i];
+        barsString = [NSString stringWithFormat:@"%@, %@, %@", barsString, _barTypes[i].name,  bar.text];
+    }
+    groupView.accessibilityValue = barsString;
+    groupView.isAccessibilityElement = YES;
+    groupView.accessibilityLabel = [NSString stringWithFormat:@"%@ %@", barGroup.title, barGroup.text];
+}
+
+- (NSArray *)accessibilityElements {
+    return [_groupsBox subviews];
 }
 
 @end

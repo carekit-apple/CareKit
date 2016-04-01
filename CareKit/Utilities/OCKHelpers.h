@@ -203,6 +203,7 @@ void OCKEnableAutoLayoutForViews(NSArray *views);
 
 NSDateComponentsFormatter *OCKTimeIntervalLabelFormatter();
 NSDateComponentsFormatter *OCKDurationStringFormatter();
+NSNumberFormatter *OCKPercentFormatter(NSInteger maxFractionDigits, NSInteger minFractionDigits);
 
 NSDateFormatter *OCKTimeOfDayLabelFormatter();
 NSCalendar *OCKTimeOfDayReferenceCalendar();
@@ -306,3 +307,7 @@ NSString *OCKPaddingWithNumberOfSpaces(NSUInteger numberOfPaddingSpaces);
 
 UIColor *OCKAppTintColor();
 
+
+#define OCKAccessibilityStringForVariables(firstString, ...) _OCKAccessibilityStringForVariables(firstString, ##__VA_ARGS__, __AXStringForVariablesSentinel)
+OCK_EXTERN NSString *const __AXStringForVariablesSentinel;
+NSString *_OCKAccessibilityStringForVariables(id firstArgument, ...);

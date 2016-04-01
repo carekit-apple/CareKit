@@ -34,7 +34,8 @@
 #import "OCKHeartView.h"
 #import "OCKHeartButton.h"
 #import "OCKWeekViewController.h"
-
+#import "OCKHelpers.h"
+#import "OCKDefines_Private.h"
 
 const static CGFloat HeartButtonSize = 20.0;
 
@@ -87,6 +88,9 @@ const static CGFloat HeartButtonSize = 20.0;
             [heartButton addTarget:self
                             action:@selector(updateDayOfWeek:)
                   forControlEvents:UIControlEventTouchDown];
+            
+            UILabel *dayLabel = (UILabel *)_weekView.weekLabels[i];
+            heartButton.accessibilityLabel = [dayLabel accessibilityLabel];
             
             [self addSubview:heartButton];
             [_heartButtons addObject:heartButton];
@@ -163,12 +167,26 @@ const static CGFloat HeartButtonSize = 20.0;
     for (int i = 0; i < _values.count; i++) {
         double value = [_values[i] doubleValue];
         _heartButtons[i].heartView.value = value;
+        
+        NSString *progress = [OCKPercentFormatter(0, 0) stringFromNumber:[NSNumber numberWithDouble:value]];
+        _heartButtons[i].accessibilityValue = [NSString stringWithFormat:OCKLocalizedString(@"AX_WEEK_BUTTON_PROGRESS", nil), progress];
+        
+        if (_delegate &&
+            [_delegate respondsToSelector:@selector(weekViewCanSelectDayAtIndex:)]) {
+            if (![_delegate weekViewCanSelectDayAtIndex:(NSUInteger)i]) {
+                _heartButtons[i].accessibilityTraits |= UIAccessibilityTraitNotEnabled;
+            }
+        }
     }
 }
 
 - (void)setSelectedIndex:(NSInteger)selectedIndex {
     _selectedIndex = selectedIndex;
     [_weekView highlightDay:selectedIndex];
+    for (int i = 0; i < [_heartButtons count]; i++) {
+        UIAccessibilityTraits axTraits = UIAccessibilityTraitButton | (i == selectedIndex ?  UIAccessibilityTraitSelected : 0);
+        [_heartButtons[i] setAccessibilityTraits:axTraits];
+    }
 }
 
 - (void)setSmallMaskImage:(UIImage *)smallMaskImage {

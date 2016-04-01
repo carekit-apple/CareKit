@@ -33,6 +33,7 @@
 #import "OCKHeartView.h"
 #import "OCKColors.h"
 #import "OCKDefines_Private.h"
+#import "OCKHelpers.h"
 
 
 static const CGFloat HeartViewSize = 115.0;
@@ -290,6 +291,16 @@ static const CGFloat HorizontalMargin = 10.0;
         _numberFormatter.maximumFractionDigits = 0;
     }
     return [_numberFormatter stringFromNumber:@(_value)];
+}
+
+#pragma mark - Accessibility
+
+- (BOOL)isAccessibilityElement {
+    return YES;
+}
+
+- (NSString *)accessibilityLabel {
+    return OCKAccessibilityStringForVariables(_valuePercentageLabel, _titleLabel, _dateLabel);
 }
 
 @end

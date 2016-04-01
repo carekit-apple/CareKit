@@ -30,6 +30,8 @@
 
 
 #import "OCKSymptomTrackerTableViewCell.h"
+#import "OCKDefines_Private.h"
+#import "OCKHelpers.h"
 
 
 const static CGFloat TopMargin = 30.0;
@@ -212,6 +214,20 @@ const static CGFloat ValueLabelWidth = 100.0;
     [super layoutSubviews];
     
     [self setUpConstraints];
+}
+
+#pragma mark - Accessibility
+
+- (BOOL)isAccessibilityElement {
+    return YES;
+}
+
+- (NSString *)accessibilityLabel {
+    return OCKAccessibilityStringForVariables(_titleLabel, _textLabel);
+}
+
+- (NSString *)accessibilityValue {
+    return _assessmentEvent.state != OCKCarePlanEventStateCompleted ? OCKLocalizedString(@"AX_SYMPTOM_TRACKER_NOT_STARTED", nil) : OCKAccessibilityStringForVariables(_valueLabel, _unitLabel);
 }
 
 @end

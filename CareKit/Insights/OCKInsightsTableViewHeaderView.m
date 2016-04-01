@@ -30,7 +30,7 @@
 
 
 #import "OCKInsightsTableViewHeaderView.h"
-
+#import "OCKHelpers.h"
 
 static const CGFloat LeadingMargin = 15.0;
 static const CGFloat TrailingMargin = 15.0;
@@ -146,6 +146,16 @@ static const CGFloat TrailingMargin = 15.0;
 - (void)setSubtitle:(NSString *)subtitle {
     _subtitle = subtitle;
     [self prepareView];
+}
+
+#pragma mark - Accessibility
+
+- (BOOL)isAccessibilityElement {
+    return YES;
+}
+
+- (NSString *)accessibilityLabel {
+    return OCKAccessibilityStringForVariables(_titleLabel, _subtitleLabel);
 }
 
 @end

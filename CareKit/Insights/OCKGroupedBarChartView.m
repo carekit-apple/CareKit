@@ -466,7 +466,8 @@ static const CGFloat MarginBetweenBars = 2.0;
         
         NSUInteger numberOfGroups = [_dataSource numberOfCategoriesPerDataSeriesInChartView:self];
         
-        _maxValue = 0;
+        _maxValue = DBL_MIN;
+        double minValue = DBL_MAX;
         _barGroups = [NSMutableArray new];
         for (NSUInteger groupIndex = 0; groupIndex < numberOfGroups; groupIndex++) {
             OCKGroupedBarChartBarGroup *barGroup = [OCKGroupedBarChartBarGroup new];
@@ -482,6 +483,9 @@ static const CGFloat MarginBetweenBars = 2.0;
                 if (bar.value.doubleValue > _maxValue) {
                     _maxValue = bar.value.doubleValue;
                 }
+                if (bar.value.doubleValue < minValue) {
+                    minValue = bar.value.doubleValue;
+                }
                 bar.text = [_dataSource chartView:self valueStringForCategoryAtIndex:groupIndex inDataSeriesAtIndex:barIndex];
                 bar.color = _barTypes[barIndex].color;
                 [bars addObject:bar];
@@ -490,6 +494,16 @@ static const CGFloat MarginBetweenBars = 2.0;
             barGroup.bars = [bars copy];
             
             [_barGroups addObject:barGroup];
+        }
+        
+        // if minValue < 0, use the min value as the baseline to adjust bar values.
+        if (minValue < 0) {
+            for (OCKGroupedBarChartBarGroup *barGroup in _barGroups) {
+                for (OCKGroupedBarChartBar *bar in barGroup.bars) {
+                    bar.value = @(bar.value.doubleValue - minValue);
+                }
+            }
+            _maxValue = _maxValue - minValue;
         }
     }
     [self recreateViews];

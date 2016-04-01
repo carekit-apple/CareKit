@@ -43,7 +43,7 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    OCKGroupedBarChartView *barChartView = [[OCKGroupedBarChartView alloc] initWithFrame:CGRectMake(10, 60, self.view.bounds.size.width - 20, 400)];
+    OCKGroupedBarChartView *barChartView = [[OCKGroupedBarChartView alloc] initWithFrame:CGRectMake(10, 80, self.view.bounds.size.width - 20, 300)];
     barChartView.dataSource = self;
     [self.view addSubview:barChartView];
     
@@ -76,11 +76,17 @@
 }
 
 - (NSNumber *)chartView:(OCKGroupedBarChartView *)chartView valueForCategoryAtIndex:(NSUInteger)categoryIndex inDataSeriesAtIndex:(NSUInteger)dataSeriesIndex {
-    return @(dataSeriesIndex + 1);
+    if (dataSeriesIndex == 1 && categoryIndex == 1) {
+        return @(-1);
+    }
+    return @(dataSeriesIndex);
 }
 
 - (NSString *)chartView:(OCKGroupedBarChartView *)chartView valueStringForCategoryAtIndex:(NSUInteger)categoryIndex inDataSeriesAtIndex:(NSUInteger)dataSeriesIndex {
-    return [@(dataSeriesIndex + 1) description];
+    if (dataSeriesIndex == 1 && categoryIndex == 1) {
+        return @"-1";
+    }
+    return [@(dataSeriesIndex) description];
 }
 
 - (NSString *)chartView:(OCKGroupedBarChartView *)chartView titleForCategoryAtIndex:(NSUInteger)categoryIndex {

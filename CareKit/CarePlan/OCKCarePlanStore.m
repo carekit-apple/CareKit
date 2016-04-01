@@ -87,7 +87,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     BOOL isDirectory = NO;
     BOOL exist = [fileManager fileExistsAtPath:url.path isDirectory:&isDirectory];
     if (exist == NO) {
-        @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"persistenceDirectoryURL is not exist." userInfo:nil];
+        @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"persistenceDirectoryURL does not exist." userInfo:nil];
     }
     if (isDirectory == NO) {
         @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"persistenceDirectoryURL is not a directory." userInfo:nil];
@@ -129,7 +129,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     
     if (item) {
         if (error) {
-            NSString *reasonString = [NSString stringWithFormat:@"The activity with same identifier %@ is existing.", sourceItem.identifier];
+            NSString *reasonString = [NSString stringWithFormat:@"An activity with the identifier %@ already exists.", sourceItem.identifier];
             *error = [NSError errorWithDomain:OCKErrorDomain code:OCKErrorInvalidObject userInfo:@{@"reason":reasonString}];
         }
     } else {

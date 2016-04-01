@@ -148,10 +148,10 @@ static const BOOL resetStoreOnLaunch = YES;
     
     {
         UIColor *color = OCKPinkColor();
-        OCKMessageItem *item = [[OCKMessageItem alloc] initWithWithTitle:@"Medication Adherence"
-                                                                    text:@"Your medication adherence was 90% last week."
-                                                               tintColor:color
-                                                             messageType:OCKMessageItemTypeTip];
+        OCKMessageItem *item = [[OCKMessageItem alloc] initWithTitle:@"Medication Adherence"
+                                                                text:@"Your medication adherence was 90% last week."
+                                                           tintColor:color
+                                                         messageType:OCKMessageItemTypeTip];
         [items addObject:item];
     }
     
@@ -169,22 +169,22 @@ static const BOOL resetStoreOnLaunch = YES;
                                                         valueLabels:@[@"30%", @"40%", @"50%", @"70%", @"80%", @"90%", @"90%"]
                                                           tintColor:lightColor];
         
-        OCKBarChart *chart = [[OCKBarChart alloc] initWithWithTitle:@"Pain Scores"
-                                                               text:@"with Medication"
-                                                          tintColor:color
-                                                         axisTitles:axisTitles
-                                                      axisSubtitles:axisSubtitles
-                                                        chartHeight:250.0
-                                                         dataSeries:@[series1, series2]];
+        OCKBarChart *chart = [[OCKBarChart alloc] initWithTitle:@"Pain Scores"
+                                                           text:@"with Medication"
+                                                      tintColor:color
+                                                     axisTitles:axisTitles
+                                                  axisSubtitles:axisSubtitles
+                                                    chartHeight:250.0
+                                                     dataSeries:@[series1, series2]];
         [items addObject:chart];
     }
     
     {
         UIColor *color = OCKGreenColor();
-        OCKMessageItem *item = [[OCKMessageItem alloc] initWithWithTitle:@"Pain Score Update"
-                                                                    text:@"Your pain score changed from 6 to 3 in the past week."
-                                                               tintColor:color
-                                                             messageType:OCKMessageItemTypeAlert];
+        OCKMessageItem *item = [[OCKMessageItem alloc] initWithTitle:@"Pain Score Update"
+                                                                text:@"Your pain score changed from 6 to 3 in the past week."
+                                                           tintColor:color
+                                                         messageType:OCKMessageItemTypeAlert];
         [items addObject:item];
     }
     
@@ -202,13 +202,13 @@ static const BOOL resetStoreOnLaunch = YES;
                                                         valueLabels:@[@"85%", @"75%", @"50%", @"54%", @"30%", @"30%", @"20%"]
                                                           tintColor:lightColor];
         
-        OCKBarChart *chart = [[OCKBarChart alloc] initWithWithTitle:@"Range of Motion"
-                                                               text:@"with Arm Stretch Completion"
-                                                          tintColor:color
-                                                         axisTitles:axisTitles
-                                                      axisSubtitles:axisSubtitles
-                                                        chartHeight:250.0
-                                                         dataSeries:@[series1, series2]];
+        OCKBarChart *chart = [[OCKBarChart alloc] initWithTitle:@"Range of Motion"
+                                                           text:@"with Arm Stretch Completion"
+                                                      tintColor:color
+                                                     axisTitles:axisTitles
+                                                  axisSubtitles:axisSubtitles
+                                                    chartHeight:250.0
+                                                     dataSeries:@[series1, series2]];
         [items addObject:chart];
     }
     

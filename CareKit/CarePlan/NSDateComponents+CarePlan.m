@@ -56,6 +56,9 @@
 }
 
 + (NSDateComponents *)ock_componentsWithDate:(NSDate *)date calendar:(NSCalendar *)calendar {
+    NSParameterAssert(date);
+    NSParameterAssert(calendar);
+    NSAssert([calendar.calendarIdentifier isEqualToString:NSCalendarIdentifierGregorian], @"(ock_componentsWithDate:calendar:) only accepts gregorian calendar.");
     return [calendar components:NSCalendarUnitEra|NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay|NSCalendarUnitWeekday|NSCalendarUnitWeekOfYear|NSCalendarUnitWeekOfMonth fromDate:date];
 }
 

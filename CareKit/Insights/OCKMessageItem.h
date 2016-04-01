@@ -64,10 +64,10 @@ typedef NS_ENUM(NSInteger, OCKMessageItemType) {
  
  @return An initialzed message item.
  */
-- (instancetype)initWithWithTitle:(nullable NSString *)title
-                             text:(nullable NSString *)text
-                        tintColor:(nullable UIColor *)tintColor
-                      messageType:(OCKMessageItemType)messageType;
+- (instancetype)initWithTitle:(nullable NSString *)title
+                         text:(nullable NSString *)text
+                    tintColor:(nullable UIColor *)tintColor
+                  messageType:(OCKMessageItemType)messageType;
 
 /**
  The message item type.

@@ -57,21 +57,22 @@
 
 - (OCKChart *)createBarChart {
     OCKBarSeries *barSeries1 = [[OCKBarSeries alloc] initWithTitle:@"Bars 1"
-                                                        values:@[@1, @2, @3, @4, @5]
-                                                   valueLabels:@[@"1.0", @"2.0", @"3.0", @"4.0", @"5.0"]
-                                                      tintColor:[[UIColor blueColor] colorWithAlphaComponent:0.2]];
+                                                            values:@[@1, @2, @3, @4, @5]
+                                                       valueLabels:@[@"1.0", @"2.0", @"3.0", @"4.0", @"5.0"]
+                                                         tintColor:[[UIColor blueColor] colorWithAlphaComponent:0.2]];
     
     OCKBarSeries *barSeries2 = [[OCKBarSeries alloc] initWithTitle:@"Bars 2"
-                                                         values:@[@5, @4, @3, @2, @1]
-                                                    valueLabels:@[@"5.0", @"4.0", @"3.0", @"2.0", @"1.0"]
-                                                      tintColor:[[UIColor purpleColor] colorWithAlphaComponent:0.2]];
+                                                            values:@[@5, @4, @3, @2, @1]
+                                                       valueLabels:@[@"5.0", @"4.0", @"3.0", @"2.0", @"1.0"]
+                                                         tintColor:[[UIColor purpleColor] colorWithAlphaComponent:0.2]];
     
-    OCKBarChart *barChart = [[OCKBarChart alloc] initWithWithTitle:@"Title"
-                                                              text:@"Text"
-                                                         tintColor:[UIColor whiteColor]
-                                                        axisTitles:@[@"Day1", @"Day2", @"Day3", @"Day4", @"Day5"]
-                                                     axisSubtitles:@[@"M", @"T", @"W", @"T", @"F"]
-                                                        dataSeries:@[barSeries1, barSeries2]];
+    OCKBarChart *barChart = [[OCKBarChart alloc] initWithTitle:@"Title"
+                                                          text:@"Text"
+                                                     tintColor:[UIColor whiteColor]
+                                                    axisTitles:@[@"Day1", @"Day2", @"Day3", @"Day4", @"Day5"]
+                                                 axisSubtitles:@[@"M", @"T", @"W", @"T", @"F"]
+                                                   chartHeight:400.0
+                                                    dataSeries:@[barSeries1, barSeries2]];
     
     return barChart;
     

@@ -32,6 +32,7 @@
 #import <Foundation/Foundation.h>
 
 
+NS_ASSUME_NONNULL_BEGIN
 /**
  NSDateComponents CarePlan category provides convenient intializers to define date representation in Gregorian calendar.
  
@@ -66,3 +67,6 @@
                     calendar:(NSCalendar *)calendar;
 
 @end
+
+NS_ASSUME_NONNULL_END
+

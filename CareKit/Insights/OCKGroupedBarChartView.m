@@ -541,17 +541,10 @@ static const CGFloat MarginBetweenBars = 2.0;
     
     [_constraints addObject:[NSLayoutConstraint constraintWithItem:_legendsView
                                                          attribute:NSLayoutAttributeWidth
-                                                         relatedBy:NSLayoutRelationLessThanOrEqual
+                                                         relatedBy:NSLayoutRelationEqual
                                                             toItem:self
                                                          attribute:NSLayoutAttributeWidth
                                                         multiplier:1.0 constant:0.0]];
-    
-    [_constraints addObject:[NSLayoutConstraint constraintWithItem:_legendsView
-                                                         attribute:NSLayoutAttributeWidth
-                                                         relatedBy:NSLayoutRelationGreaterThanOrEqual
-                                                            toItem:nil
-                                                         attribute:NSLayoutAttributeNotAnAttribute
-                                                        multiplier:1.0 constant:10.0]];
     
     [_constraints addObject:[NSLayoutConstraint constraintWithItem:_legendsView
                                                          attribute:NSLayoutAttributeCenterX

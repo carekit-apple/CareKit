@@ -54,8 +54,4 @@
     return attributes;
 }
 
-- (CGSize)collectionViewContentSize {
-    return [super collectionViewContentSize];
-}
-
 @end

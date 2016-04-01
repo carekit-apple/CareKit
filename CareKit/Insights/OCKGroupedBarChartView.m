@@ -113,7 +113,7 @@ static const CGFloat MarginBetweenBars = 2.0;
         animation.fromValue = @0;
         animation.toValue = @1;
         animation.duration = duration * _bar.value.doubleValue/_maxValue;
-        animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];;
+        animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
         animation.fillMode = kCAFillModeBoth;
         animation.removedOnCompletion = true;
         
@@ -128,7 +128,7 @@ static const CGFloat MarginBetweenBars = 2.0;
         animation.toValue = [NSValue valueWithCGPoint:position];
         
         animation.duration = duration * _bar.value.doubleValue/_maxValue;
-        animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];;
+        animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
         animation.fillMode = kCAFillModeBoth;
         animation.removedOnCompletion = true;
         

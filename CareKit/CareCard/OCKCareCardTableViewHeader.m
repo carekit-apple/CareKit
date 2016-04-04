@@ -99,6 +99,7 @@ static const CGFloat HorizontalMargin = 10.0;
     if (!_titleLabel) {
         _titleLabel = [UILabel new];
         _titleLabel.text = OCKLocalizedString(@"CARE_CARD_HEADER_TITLE", nil);
+        _titleLabel.numberOfLines = 2;
         [self addSubview:_titleLabel];
     }
     
@@ -181,6 +182,13 @@ static const CGFloat HorizontalMargin = 10.0;
                                                                      attribute:NSLayoutAttributeLeading
                                                                     multiplier:1.0
                                                                       constant:0.0],
+                                        [NSLayoutConstraint constraintWithItem:_titleLabel
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                    multiplier:1.0
+                                                                      constant:-TrailingMargin],
                                         [NSLayoutConstraint constraintWithItem:_dateLabel
                                                                      attribute:NSLayoutAttributeTop
                                                                      relatedBy:NSLayoutRelationEqual

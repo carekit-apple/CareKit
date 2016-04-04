@@ -36,6 +36,7 @@
 
 
 static const CGFloat HeartViewSize = 115.0;
+static const CGFloat TrailingMargin = 20.0;
 static const CGFloat HorizontalMargin = 10.0;
 
 @implementation OCKCareCardTableViewHeader {
@@ -81,6 +82,7 @@ static const CGFloat HorizontalMargin = 10.0;
     if (!_dateLabel) {
         _dateLabel = [UILabel new];
         _dateLabel.textColor = [UIColor darkGrayColor];
+        _dateLabel.numberOfLines = 2;
         [self addSubview:_dateLabel];
     }
     
@@ -214,6 +216,13 @@ static const CGFloat HorizontalMargin = 10.0;
                                                                      attribute:NSLayoutAttributeLeading
                                                                     multiplier:1.0
                                                                       constant:0.0],
+                                        [NSLayoutConstraint constraintWithItem:_dateLabel
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                    multiplier:1.0
+                                                                      constant:-TrailingMargin],
                                         [NSLayoutConstraint constraintWithItem:_bottomEdge
                                                                      attribute:NSLayoutAttributeBottom
                                                                      relatedBy:NSLayoutRelationEqual

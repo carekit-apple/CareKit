@@ -512,15 +512,34 @@ DefineStringKey(TemperatureAssessment);
                      NSAssert(success, error.localizedDescription);
                  }];
     } else if ([identifier isEqualToString:TemperatureAssessment]) {
-        OCKCarePlanEventResult *result = [[OCKCarePlanEventResult alloc] initWithValueString:@"99.1"
-                                                                                  unitString:@"\u00B0F"
-                                                                                    userInfo:nil];
-        [_store updateEvent:assessmentEvent
-                 withResult:result
-                      state:OCKCarePlanEventStateCompleted
-                 completion:^(BOOL success, OCKCarePlanEvent * _Nonnull event, NSError * _Nonnull error) {
-                     NSAssert(success, error.localizedDescription);
-                 }];
+        
+        HKHealthStore *hkstore = [HKHealthStore new];
+        HKQuantityType *type = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierBodyTemperature];
+    
+        [hkstore requestAuthorizationToShareTypes:[NSSet setWithObject:type]
+                                        readTypes:[NSSet setWithObject:type]
+                                       completion:^(BOOL success, NSError * _Nullable error) {
+                                           
+                                           HKQuantitySample *sample = [HKQuantitySample quantitySampleWithType:type
+                                                                                                      quantity:[HKQuantity quantityWithUnit:[HKUnit degreeFahrenheitUnit] doubleValue:99.1]
+                                                                                                     startDate:[NSDate date]
+                                                                                                       endDate:[NSDate date]];
+                                           
+                                           [hkstore saveObject:sample withCompletion:^(BOOL success, NSError * _Nullable error) {
+                                               OCKCarePlanEventResult *result = [[OCKCarePlanEventResult alloc] initWithQuantitySample:sample
+                                                                                                               quantityStringFormatter:nil
+                                                                                                                        unitStringKeys:@{[HKUnit degreeFahrenheitUnit]: @"\u00B0F",
+                                                                                                                                         [HKUnit degreeCelsiusUnit]: @"\u00B0C",}
+                                                                                                                              userInfo:nil];
+                                               [_store updateEvent:assessmentEvent
+                                                        withResult:result
+                                                             state:OCKCarePlanEventStateCompleted
+                                                        completion:^(BOOL success, OCKCarePlanEvent * _Nonnull event, NSError * _Nonnull error) {
+                                                            NSAssert(success, error.localizedDescription);
+                                                        }];
+                                           }];
+                                           
+                                        }];
     }
 }
 

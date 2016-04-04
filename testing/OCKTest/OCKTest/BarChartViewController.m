@@ -43,8 +43,12 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    OCKGroupedBarChartView *barChartView = [[OCKGroupedBarChartView alloc] initWithFrame:CGRectMake(10, 80, self.view.bounds.size.width - 20, 300)];
+    OCKGroupedBarChartView *barChartView = [[OCKGroupedBarChartView alloc] init];
     barChartView.dataSource = self;
+    barChartView.backgroundColor = [[UIColor greenColor] colorWithAlphaComponent:0.1];
+    CGSize size = [barChartView systemLayoutSizeFittingSize:CGSizeMake(self.view.bounds.size.width - 20, 1) withHorizontalFittingPriority:UILayoutPriorityRequired verticalFittingPriority:UILayoutPriorityFittingSizeLevel];
+    barChartView.frame = CGRectMake(10, 80, size.width, size.height);
+    
     [self.view addSubview:barChartView];
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -72,7 +76,7 @@
 }
 
 - (NSString *)chartView:(OCKGroupedBarChartView *)chartView nameForDataSeriesAtIndex:(NSUInteger)dataSeriesIndex {
-    return [NSString stringWithFormat:@"Bar %@", @(dataSeriesIndex)];
+    return [NSString stringWithFormat:@"Data Series Index %@", @(dataSeriesIndex)];
 }
 
 - (NSNumber *)chartView:(OCKGroupedBarChartView *)chartView valueForCategoryAtIndex:(NSUInteger)categoryIndex inDataSeriesAtIndex:(NSUInteger)dataSeriesIndex {

@@ -30,13 +30,13 @@
 
 
 #import "OCKGroupedBarChartView.h"
-#import "OCKChartLegendView.h"
 
 
 // #define LAYOUT_DEBUG 1
 
 static const CGFloat BarPointSize = 8.0;
 static const CGFloat MarginBetweenBars = 2.0;
+static const CGFloat MarginBetweenGroups = 8.0;
 
 @interface OCKGroupedBarChartBar : NSObject
 
@@ -431,6 +431,51 @@ static const CGFloat MarginBetweenBars = 2.0;
 
 @end
 
+@interface OCKChartLegendView : UILabel
+
+- (instancetype)initWithTitles:(NSArray<NSString *> *)titles colors:(NSArray<UIColor *> *)colors;
+
+@end
+
+@implementation OCKChartLegendView
+
+- (instancetype)initWithTitles:(NSArray<NSString *> *)titles colors:(NSArray<UIColor *> *)colors {
+    
+    self = [super init];
+    if (self) {
+        NSMutableAttributedString *string = [NSMutableAttributedString new];
+        
+        for (NSInteger i = 0; i < titles.count; i++) {
+            NSString *title = titles[i];
+            UIColor *color = colors[i];
+            NSDictionary *attrs = @{ NSForegroundColorAttributeName : color };
+            NSAttributedString *attrStr = [[NSAttributedString alloc] initWithString:@"\u25A0" attributes:attrs];
+            
+            [string appendAttributedString:attrStr];
+            
+            // Not wrap the text in one legend.
+            NSArray<NSString *> *array = [title componentsSeparatedByString:@" "];
+            for (NSString *titlePart in array) {
+                [string appendAttributedString:[[NSAttributedString alloc] initWithString:titlePart]];
+                NSAttributedString *attrStr = [[NSAttributedString alloc] initWithString:@"0"
+                                                                              attributes:@{ NSForegroundColorAttributeName : [UIColor clearColor] }];
+                [string appendAttributedString:attrStr];
+            }
+            
+            // Add a seperator between the legends/
+            [string appendAttributedString:[[NSAttributedString alloc] initWithString:@" "]];
+        }
+        
+        self.numberOfLines = 0;
+        self.lineBreakMode = NSLineBreakByWordWrapping;
+        self.font = [UIFont systemFontOfSize:10.0];
+        self.attributedText = string;
+        self.textAlignment = NSTextAlignmentCenter;
+    }
+    return self;
+}
+
+@end
 
 @implementation OCKGroupedBarChartView {
     NSMutableArray<OCKGroupedBarChartBarGroup *> *_barGroups;
@@ -542,20 +587,17 @@ static const CGFloat MarginBetweenBars = 2.0;
                                                                               metrics:nil
                                                                                 views:@{@"_groupsBox": _groupsBox}]];
     
-    
-    
     _legendsView = [[OCKChartLegendView alloc] initWithTitles:[_barTypes valueForKeyPath:@"name"] colors:[_barTypes valueForKeyPath:@"color"] ];
-    _legendsView.labelFont = [UIFont systemFontOfSize:10.0];
     _legendsView.translatesAutoresizingMaskIntoConstraints = NO;
 #if LAYOUT_DEBUG
     _legendsView.backgroundColor = [[UIColor cyanColor] colorWithAlphaComponent:0.2];
 #endif
     _shouldInvalidateLegendViewIntrinsicContentSize = YES;
     [self addSubview:_legendsView];
-    
+
     [_constraints addObject:[NSLayoutConstraint constraintWithItem:_legendsView
                                                          attribute:NSLayoutAttributeWidth
-                                                         relatedBy:NSLayoutRelationEqual
+                                                         relatedBy:NSLayoutRelationLessThanOrEqual
                                                             toItem:self
                                                          attribute:NSLayoutAttributeWidth
                                                         multiplier:1.0 constant:0.0]];
@@ -593,7 +635,7 @@ static const CGFloat MarginBetweenBars = 2.0;
                                                                 relatedBy:NSLayoutRelationEqual
                                                                    toItem:viewAbove
                                                                 attribute:NSLayoutAttributeBottom
-                                                               multiplier:1.0 constant:0.0]];
+                                                               multiplier:1.0 constant:MarginBetweenGroups]];
             
             [_constraints addObject:[NSLayoutConstraint constraintWithItem:groupView
                                                                  attribute:NSLayoutAttributeHeight

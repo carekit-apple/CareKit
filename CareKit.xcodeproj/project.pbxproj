@@ -11,14 +11,8 @@
 		241707C41C9A3AB7005D7123 /* OCKBarChart.m in Sources */ = {isa = PBXBuildFile; fileRef = 241707A81C9A3AB7005D7123 /* OCKBarChart.m */; };
 		241707C51C9A3AB7005D7123 /* OCKBarSeries.h in Headers */ = {isa = PBXBuildFile; fileRef = 241707A91C9A3AB7005D7123 /* OCKBarSeries.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		241707C61C9A3AB7005D7123 /* OCKBarSeries.m in Sources */ = {isa = PBXBuildFile; fileRef = 241707AA1C9A3AB7005D7123 /* OCKBarSeries.m */; };
-		241707C71C9A3AB7005D7123 /* OCKCenteredCollectionViewLayout.h in Headers */ = {isa = PBXBuildFile; fileRef = 241707AB1C9A3AB7005D7123 /* OCKCenteredCollectionViewLayout.h */; };
-		241707C81C9A3AB7005D7123 /* OCKCenteredCollectionViewLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 241707AC1C9A3AB7005D7123 /* OCKCenteredCollectionViewLayout.m */; };
 		241707C91C9A3AB7005D7123 /* OCKChart.h in Headers */ = {isa = PBXBuildFile; fileRef = 241707AD1C9A3AB7005D7123 /* OCKChart.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		241707CA1C9A3AB7005D7123 /* OCKChart.m in Sources */ = {isa = PBXBuildFile; fileRef = 241707AE1C9A3AB7005D7123 /* OCKChart.m */; };
-		241707CB1C9A3AB7005D7123 /* OCKChartLegendCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 241707AF1C9A3AB7005D7123 /* OCKChartLegendCell.h */; };
-		241707CC1C9A3AB7005D7123 /* OCKChartLegendCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 241707B01C9A3AB7005D7123 /* OCKChartLegendCell.m */; };
-		241707CD1C9A3AB7005D7123 /* OCKChartLegendView.h in Headers */ = {isa = PBXBuildFile; fileRef = 241707B11C9A3AB7005D7123 /* OCKChartLegendView.h */; };
-		241707CE1C9A3AB7005D7123 /* OCKChartLegendView.m in Sources */ = {isa = PBXBuildFile; fileRef = 241707B21C9A3AB7005D7123 /* OCKChartLegendView.m */; };
 		241707CF1C9A3AB7005D7123 /* OCKGroupedBarChartView.h in Headers */ = {isa = PBXBuildFile; fileRef = 241707B31C9A3AB7005D7123 /* OCKGroupedBarChartView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		241707D01C9A3AB7005D7123 /* OCKGroupedBarChartView.m in Sources */ = {isa = PBXBuildFile; fileRef = 241707B41C9A3AB7005D7123 /* OCKGroupedBarChartView.m */; };
 		241707D11C9A3AB7005D7123 /* OCKInsightItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 241707B51C9A3AB7005D7123 /* OCKInsightItem.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -140,14 +134,8 @@
 		241707A81C9A3AB7005D7123 /* OCKBarChart.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKBarChart.m; sourceTree = "<group>"; };
 		241707A91C9A3AB7005D7123 /* OCKBarSeries.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKBarSeries.h; sourceTree = "<group>"; };
 		241707AA1C9A3AB7005D7123 /* OCKBarSeries.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKBarSeries.m; sourceTree = "<group>"; };
-		241707AB1C9A3AB7005D7123 /* OCKCenteredCollectionViewLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKCenteredCollectionViewLayout.h; sourceTree = "<group>"; };
-		241707AC1C9A3AB7005D7123 /* OCKCenteredCollectionViewLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKCenteredCollectionViewLayout.m; sourceTree = "<group>"; };
 		241707AD1C9A3AB7005D7123 /* OCKChart.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKChart.h; sourceTree = "<group>"; };
 		241707AE1C9A3AB7005D7123 /* OCKChart.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKChart.m; sourceTree = "<group>"; };
-		241707AF1C9A3AB7005D7123 /* OCKChartLegendCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKChartLegendCell.h; sourceTree = "<group>"; };
-		241707B01C9A3AB7005D7123 /* OCKChartLegendCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKChartLegendCell.m; sourceTree = "<group>"; };
-		241707B11C9A3AB7005D7123 /* OCKChartLegendView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKChartLegendView.h; sourceTree = "<group>"; };
-		241707B21C9A3AB7005D7123 /* OCKChartLegendView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKChartLegendView.m; sourceTree = "<group>"; };
 		241707B31C9A3AB7005D7123 /* OCKGroupedBarChartView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKGroupedBarChartView.h; sourceTree = "<group>"; };
 		241707B41C9A3AB7005D7123 /* OCKGroupedBarChartView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKGroupedBarChartView.m; sourceTree = "<group>"; };
 		241707B51C9A3AB7005D7123 /* OCKInsightItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKInsightItem.h; sourceTree = "<group>"; };
@@ -366,22 +354,8 @@
 			children = (
 				241707B31C9A3AB7005D7123 /* OCKGroupedBarChartView.h */,
 				241707B41C9A3AB7005D7123 /* OCKGroupedBarChartView.m */,
-				241707E31C9A3B3B005D7123 /* Components */,
 			);
 			name = "Chart View";
-			sourceTree = "<group>";
-		};
-		241707E31C9A3B3B005D7123 /* Components */ = {
-			isa = PBXGroup;
-			children = (
-				241707AB1C9A3AB7005D7123 /* OCKCenteredCollectionViewLayout.h */,
-				241707AC1C9A3AB7005D7123 /* OCKCenteredCollectionViewLayout.m */,
-				241707AF1C9A3AB7005D7123 /* OCKChartLegendCell.h */,
-				241707B01C9A3AB7005D7123 /* OCKChartLegendCell.m */,
-				241707B11C9A3AB7005D7123 /* OCKChartLegendView.h */,
-				241707B21C9A3AB7005D7123 /* OCKChartLegendView.m */,
-			);
-			name = Components;
 			sourceTree = "<group>";
 		};
 		241707E41C9A3B4F005D7123 /* Table View Cells */ = {
@@ -730,9 +704,7 @@
 				244A92451CA210F7007B42D6 /* OCKTableViewCell.h in Headers */,
 				8677EE0B1C9775EB00588CD6 /* NSDateComponents+CarePlan.h in Headers */,
 				241707C91C9A3AB7005D7123 /* OCKChart.h in Headers */,
-				241707CB1C9A3AB7005D7123 /* OCKChartLegendCell.h in Headers */,
 				86EA9A4E1C9C644E00B93BB1 /* OCKDocument.h in Headers */,
-				241707CD1C9A3AB7005D7123 /* OCKChartLegendView.h in Headers */,
 				8677EE111C9775EB00588CD6 /* OCKCarePlanEvent.h in Headers */,
 				241707D91C9A3AB7005D7123 /* OCKInsightsTableViewHeaderView.h in Headers */,
 				8605A5BE1C4F04EC00DD65FF /* CareKit.h in Headers */,
@@ -755,7 +727,6 @@
 				242DBA9A1C9F7F8700529386 /* OCKRingButton.h in Headers */,
 				242DBA941C9F7F8700529386 /* OCKSymptomTrackerTableViewHeader.h in Headers */,
 				2489298D1C90E71700EBBE1F /* OCKHelpers.h in Headers */,
-				241707C71C9A3AB7005D7123 /* OCKCenteredCollectionViewLayout.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -900,7 +871,6 @@
 				242DBA971C9F7F8700529386 /* OCKSymptomTrackerViewController.m in Sources */,
 				8677EE0C1C9775EB00588CD6 /* NSDateComponents+CarePlan.m in Sources */,
 				86EA9A4F1C9C644E00B93BB1 /* OCKDocument.m in Sources */,
-				241707CE1C9A3AB7005D7123 /* OCKChartLegendView.m in Sources */,
 				244A924A1CA210F7007B42D6 /* OCKWeekViewController.m in Sources */,
 				241707CA1C9A3AB7005D7123 /* OCKChart.m in Sources */,
 				24EA9FC81C9A3D420036028E /* OCKHeartButton.m in Sources */,
@@ -909,7 +879,6 @@
 				241707C41C9A3AB7005D7123 /* OCKBarChart.m in Sources */,
 				8677EE0F1C9775EB00588CD6 /* OCKCarePlanActivity.m in Sources */,
 				241707D21C9A3AB7005D7123 /* OCKInsightItem.m in Sources */,
-				241707C81C9A3AB7005D7123 /* OCKCenteredCollectionViewLayout.m in Sources */,
 				24EA9FB51C9A3D420036028E /* OCKCareCardButton.m in Sources */,
 				86EA9A511C9C644E00B93BB1 /* OCKHTMLPDFWriter.m in Sources */,
 				241707DC1C9A3AB7005D7123 /* OCKInsightsViewController.m in Sources */,
@@ -923,7 +892,6 @@
 				248929831C90E70100EBBE1F /* OCKContactInfoTableViewCell.m in Sources */,
 				241707D61C9A3AB7005D7123 /* OCKInsightsMessageTableViewCell.m in Sources */,
 				242DBA951C9F7F8700529386 /* OCKSymptomTrackerTableViewHeader.m in Sources */,
-				241707CC1C9A3AB7005D7123 /* OCKChartLegendCell.m in Sources */,
 				241707DA1C9A3AB7005D7123 /* OCKInsightsTableViewHeaderView.m in Sources */,
 				248929761C90E70100EBBE1F /* OCKConnectDetailViewController.m in Sources */,
 				24EA9FBB1C9A3D420036028E /* OCKCareCardInstructionsTableViewCell.m in Sources */,

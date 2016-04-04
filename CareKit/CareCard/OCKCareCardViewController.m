@@ -73,7 +73,6 @@ static const CGFloat HeaderViewHeight = 150.0;
     self = [super init];
     if (self) {
         _store = store;
-        _store.careCardUIDelegate = self;
         self.maskImage = nil;
         self.smallMaskImage = nil;
         self.maskImageTintColor = nil;
@@ -83,6 +82,8 @@ static const CGFloat HeaderViewHeight = 150.0;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    _store.careCardUIDelegate = self;
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:OCKLocalizedString(@"TODAY_BUTTON_TITLE", nil)
                                                                               style:UIBarButtonItemStylePlain

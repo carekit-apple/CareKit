@@ -71,28 +71,33 @@ static const CGFloat HeaderViewHeight = 150.0;
     self = [super init];
     if (self) {
         _store = store;
-        _store.symptomTrackerUIDelegate = self;
-        
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:OCKLocalizedString(@"TODAY_BUTTON_TITLE", nil)
-                                                                                  style:UIBarButtonItemStylePlain
-                                                                                 target:self
-                                                                                 action:@selector(showToday:)];
-        
-        _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
-        _tableView.dataSource = self;
-        _tableView.delegate = self;
-        [self.view addSubview:_tableView];
-        
-        [self prepareView];
-        
-        _calendar = [NSCalendar calendarWithIdentifier:NSCalendarIdentifierGregorian];
-        
-        self.selectedDate = [NSDateComponents ock_componentsWithDate:[NSDate date] calendar:_calendar];
-        
-        _tableView.estimatedRowHeight = 90.0;
-        _tableView.rowHeight = UITableViewAutomaticDimension;
     }
     return self;
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    _store.symptomTrackerUIDelegate = self;
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:OCKLocalizedString(@"TODAY_BUTTON_TITLE", nil)
+                                                                              style:UIBarButtonItemStylePlain
+                                                                             target:self
+                                                                             action:@selector(showToday:)];
+    
+    _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
+    _tableView.dataSource = self;
+    _tableView.delegate = self;
+    [self.view addSubview:_tableView];
+    
+    [self prepareView];
+    
+    _calendar = [NSCalendar calendarWithIdentifier:NSCalendarIdentifierGregorian];
+    
+    self.selectedDate = [NSDateComponents ock_componentsWithDate:[NSDate date] calendar:_calendar];
+    
+    _tableView.estimatedRowHeight = 90.0;
+    _tableView.rowHeight = UITableViewAutomaticDimension;
 }
 
 - (void)viewDidAppear:(BOOL)animated {

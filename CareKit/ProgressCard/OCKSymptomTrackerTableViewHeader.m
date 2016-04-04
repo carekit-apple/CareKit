@@ -35,6 +35,7 @@
 #import "OCKDefines_Private.h"
 
 
+static const CGFloat TrailingMargin = 20.0;
 static const CGFloat HorizontalMargin = 10.0;
 static const CGFloat RingViewSize = 110.0;
 
@@ -85,6 +86,7 @@ static const CGFloat RingViewSize = 110.0;
     if (!_dateLabel) {
         _dateLabel = [UILabel new];
         _dateLabel.textColor = [UIColor darkGrayColor];
+        _dateLabel.numberOfLines = 2;
         [self addSubview:_dateLabel];
     }
     _dateLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
@@ -201,6 +203,13 @@ static const CGFloat RingViewSize = 110.0;
                                                                      attribute:NSLayoutAttributeTrailing
                                                                     multiplier:1.0
                                                                       constant:HorizontalMargin],
+                                        [NSLayoutConstraint constraintWithItem:_dateLabel
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                    multiplier:1.0
+                                                                      constant:-TrailingMargin],
                                         [NSLayoutConstraint constraintWithItem:_titleLabel
                                                                      attribute:NSLayoutAttributeBottom
                                                                      relatedBy:NSLayoutRelationEqual

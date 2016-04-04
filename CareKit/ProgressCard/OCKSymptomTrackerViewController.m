@@ -315,6 +315,11 @@ static const CGFloat HeaderViewHeight = 150.0;
     self.selectedDate = selectedDate;
 }
 
+- (BOOL)weekViewCanSelectDayAtIndex:(NSUInteger)index {
+    NSDateComponents *today = [self today];
+    NSDateComponents *selectedDate = [self dateFromSelectedIndex:index];
+    return ![selectedDate isLaterThan:today];
+}
 
 #pragma mark - OCKCarePlanStoreDelegate
 

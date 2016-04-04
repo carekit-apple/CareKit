@@ -39,6 +39,7 @@ const static CGFloat TopMargin = 12.0;
     NSMutableArray<UILabel *> *_weekLabels;
     NSMutableArray *_constraints;
     NSArray<NSString *> *_weekStrings;
+    NSArray<NSString *> *_axWeekStrings;
     NSInteger _selectedIndex;
 }
 
@@ -54,6 +55,7 @@ const static CGFloat TopMargin = 12.0;
     if (!_weekStrings) {
         NSDateFormatter *dateFormatter = [NSDateFormatter new];
         _weekStrings = dateFormatter.veryShortWeekdaySymbols;
+        _axWeekStrings = dateFormatter.weekdaySymbols;
     }
     
     if (!_weekLabels) {
@@ -65,6 +67,7 @@ const static CGFloat TopMargin = 12.0;
             dayLabel.layer.cornerRadius = 3;
             dayLabel.clipsToBounds = YES;
             dayLabel.text = _weekStrings[i];
+            dayLabel.accessibilityLabel = _axWeekStrings[i];
             dayLabel.textAlignment = NSTextAlignmentCenter;
             
             [self addSubview:dayLabel];

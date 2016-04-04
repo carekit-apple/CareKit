@@ -32,6 +32,7 @@
 #import "OCKSymptomTrackerTableViewHeader.h"
 #import "OCKRingView.h"
 #import "OCKColors.h"
+#import "OCKHelpers.h"
 #import "OCKDefines_Private.h"
 
 
@@ -245,6 +246,16 @@ static const CGFloat RingViewSize = 110.0;
 - (void)setDate:(NSString *)date {
     _date = date;
     _dateLabel.text = _date;
+}
+
+#pragma mark - Accessibility 
+
+- (BOOL)isAccessibilityElement {
+    return YES;
+}
+
+- (NSString *)accessibilityLabel {
+    return OCKAccessibilityStringForVariables(_ringView, _titleLabel, _dateLabel);
 }
 
 @end

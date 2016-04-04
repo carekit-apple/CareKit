@@ -141,4 +141,22 @@ static const CGFloat BottomMargin = 20.0;
     [self setUpConstraints];
 }
 
+#pragma mark - Accessibility
+
+- (BOOL)isAccessibilityElement {
+    return YES;
+}
+
+- (NSString *)accessibilityLabel {
+    return [_titleLabel accessibilityLabel];
+}
+
+- (UIAccessibilityTraits)accessibilityTraits {
+    return UIAccessibilityTraitButton;
+}
+
+- (CGPoint)accessibilityActivationPoint {
+    return [_shareButton accessibilityActivationPoint];
+}
+
 @end

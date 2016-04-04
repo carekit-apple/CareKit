@@ -36,12 +36,17 @@
 #import "OCKCarePlanEvent.h"
 #import "OCKCareCardButton.h"
 #import "OCKHelpers.h"
+#import "OCKDefines_Private.h"
 
 
 static const CGFloat TopMargin = 20.0;
 static const CGFloat BottomMargin = 10.0;
 static const CGFloat VerticalMargin = 5.0;
 static const CGFloat ButtonViewSize = 40.0;
+
+@interface OCKCareCardTableViewCell ()
+@property (nonatomic, retain) NSMutableArray *axChildren;
+@end
 
 @implementation OCKCareCardTableViewCell {
     UILabel *_titleLabel;
@@ -102,6 +107,7 @@ static const CGFloat ButtonViewSize = 40.0;
     [self updateView];
     [self updateFonts];
     [self setUpConstraints];
+    [self updateAccessibilityInfo];
 }
 
 - (void)updateView {
@@ -262,6 +268,7 @@ static const CGFloat ButtonViewSize = 40.0;
 - (void)toggleFrequencyButton:(id)sender {
     OCKCareCardButton *button = (OCKCareCardButton *)sender;
     button.selected = !button.selected;
+    [self updateAccessibilityInfo];
     
     NSInteger index = [_frequencyButtons indexOfObject:button];
     OCKCarePlanEvent *selectedEvent = _interventionEvents[index];
@@ -273,4 +280,44 @@ static const CGFloat ButtonViewSize = 40.0;
     
 }
 
+#pragma mark - Accessibility
+
+- (void)updateAccessibilityInfo {
+    self.axChildren = nil;
+    for (int i = 0; i < _frequencyButtons.count; i++) {
+        OCKCareCardButton *frequencyButton = _frequencyButtons[i];
+        NSString *completionStr = frequencyButton.isSelected ? OCKLocalizedString(@"AX_CARE_CARD_COMPLETED", nil) : OCKLocalizedString(@"AX_CARE_CARD_INCOMPLETE", nil);
+        frequencyButton.accessibilityTraits = UIAccessibilityTraitButton;
+        frequencyButton.accessibilityLabel = [NSString stringWithFormat:OCKLocalizedString(@"AX_CARE_CARD_EVENT_LABEL", nil), completionStr, i+1, _interventionEvents.count, _intervention.title];
+    }    
+}
+
+- (NSArray *)accessibilityElements {
+    if (self.axChildren == nil) {
+        CareCardAccessibilityElement *cellElement = [[CareCardAccessibilityElement alloc] initWithAccessibilityContainer:self];
+        cellElement.accessibilityLabel = OCKAccessibilityStringForVariables(_titleLabel, _textLabel);
+        cellElement.accessibilityHint = OCKLocalizedString(@"AX_CARE_CARD_HINT", nil);
+        self.axChildren = [NSMutableArray arrayWithObject:cellElement];
+        [self.axChildren addObjectsFromArray:_frequencyButtons];
+    }
+    return self.axChildren;
+}
+@end
+
+@implementation CareCardAccessibilityElement
+- (CGRect)accessibilityFrame {
+    return [[self accessibilityContainer] accessibilityFrame];
+}
+
+- (NSString *)accessibilityValue {
+    OCKCareCardTableViewCell *careCardContainer = [self accessibilityContainer];
+    
+    NSUInteger numTasksCompleted = 0;
+    for (OCKCarePlanEvent *event in careCardContainer.interventionEvents) {
+        if (event.state == OCKCarePlanEventStateCompleted) {
+            numTasksCompleted++;
+        }
+    }
+    return [NSString stringWithFormat:OCKLocalizedString(@"AX_CARE_CARD_VALUE", nil), numTasksCompleted, careCardContainer.interventionEvents.count];
+}
 @end

@@ -212,4 +212,22 @@ static const CGFloat IconButtonSize = 35.0;
     [self setUpConstraints];
 }
 
+#pragma mark - Accessibility
+
+- (BOOL)isAccessibilityElement {
+    return YES;
+}
+
+- (NSString *)accessibilityLabel {
+    return OCKAccessibilityStringForVariables(_connectTypeLabel, _textLabel);
+}
+
+- (UIAccessibilityTraits)accessibilityTraits {
+    return UIAccessibilityTraitButton;
+}
+
+- (CGPoint)accessibilityActivationPoint {
+    return [_iconButton accessibilityActivationPoint];
+}
+
 @end

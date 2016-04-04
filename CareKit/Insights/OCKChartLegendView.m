@@ -125,8 +125,6 @@
     cell.titleLabel.text = title;
     cell.titleLabel.font = _labelFont;
     cell.dotView.backgroundColor = _colors[indexPath.item];
-    
-    cell.accessibilityLabel = title;
 
     return cell;
 }

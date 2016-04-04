@@ -34,7 +34,8 @@
 #import "OCKRingButton.h"
 #import "OCKRingView.h"
 #import "OCKWeekViewController.h"
-
+#import "OCKHelpers.h"
+#import "OCKDefines_Private.h"
 
 const static CGFloat RingButtonSize = 20.0;
 
@@ -90,6 +91,9 @@ const static CGFloat RingButtonSize = 20.0;
             [ringButton addTarget:self
                            action:@selector(updateDayOfWeek:)
                  forControlEvents:UIControlEventTouchDown];
+            
+            UILabel *dayLabel = (UILabel *)_weekView.weekLabels[i];
+            ringButton.accessibilityLabel = [dayLabel accessibilityLabel];
             
             [self addSubview:ringButton];
             [_ringButtons addObject:ringButton];
@@ -153,12 +157,28 @@ const static CGFloat RingButtonSize = 20.0;
     for (int i = 0; i < _values.count; i++) {
         CGFloat value = [_values[i] floatValue];
         _ringButtons[i].value = value;
+        
+        NSString *progressString = [OCKPercentFormatter(0, 0) stringFromNumber:[NSNumber numberWithFloat:value]];
+        _ringButtons[i].accessibilityValue = [NSString stringWithFormat:OCKLocalizedString(@"AX_WEEK_BUTTON_PROGRESS", nil), progressString];
+        
+        if (_delegate &&
+            [_delegate respondsToSelector:@selector(weekViewCanSelectDayAtIndex:)]) {
+            if (![_delegate weekViewCanSelectDayAtIndex:(NSUInteger)i]) {
+                _ringButtons[i].accessibilityTraits |= UIAccessibilityTraitNotEnabled;
+            }
+        }
     }
 }
 
 - (void)setSelectedIndex:(NSInteger)selectedIndex {
     _selectedIndex = selectedIndex;
     [_weekView highlightDay:selectedIndex];
+    
+    for ( int i = 0; i < [_ringButtons count]; i++ ) {
+        UIAccessibilityTraits axTraits = UIAccessibilityTraitButton | (i == selectedIndex ?  UIAccessibilityTraitSelected : 0);
+        [_ringButtons[i] setAccessibilityTraits:axTraits];
+    }
+    
 }
 
 - (void)updateDayOfWeek:(id)sender {

@@ -42,7 +42,7 @@
 #import "OCKCarePlanStore_Internal.h"
 #import "OCKHelpers.h"
 #import "OCKDefines_Private.h"
-
+#import "OCKColors.h"
 
 static const CGFloat HeaderViewHeight = 150.0;
 

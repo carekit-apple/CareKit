@@ -265,14 +265,14 @@ static const CGFloat MarginBetweenGroups = 8.0;
     _titleLabel.adjustsFontSizeToFitWidth = YES;
     _titleLabel.text = _group.title;
     _titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    _titleLabel.font = [UIFont systemFontOfSize:12.0];
+    _titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleCaption1];
     [_labelBox addSubview:_titleLabel];
     
     _textLabel = [UILabel new];
     _textLabel.text = _group.text;
     _textLabel.adjustsFontSizeToFitWidth = YES;
     _textLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    _textLabel.font = [UIFont systemFontOfSize:10.0];
+    _textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleCaption2];
     _textLabel.textColor = [UIColor lightGrayColor];
     [_labelBox addSubview:_textLabel];
     
@@ -468,7 +468,7 @@ static const CGFloat MarginBetweenGroups = 8.0;
         
         self.numberOfLines = 0;
         self.lineBreakMode = NSLineBreakByWordWrapping;
-        self.font = [UIFont systemFontOfSize:10.0];
+        self.font = [UIFont preferredFontForTextStyle:UIFontTextStyleCaption2];
         self.attributedText = string;
         self.textAlignment = NSTextAlignmentCenter;
     }

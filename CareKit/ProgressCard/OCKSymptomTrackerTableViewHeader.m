@@ -79,6 +79,7 @@ static const CGFloat RingViewSize = 110.0;
     if (!_titleLabel) {
         _titleLabel = [UILabel new];
         _titleLabel.text = OCKLocalizedString(@"SYMPTOM_TRACKER_HEADER_TITLE", nil);
+        _titleLabel.numberOfLines = 2;
         [self addSubview:_titleLabel];
     }
     _titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
@@ -223,7 +224,14 @@ static const CGFloat RingViewSize = 110.0;
                                                                         toItem:_dateLabel
                                                                      attribute:NSLayoutAttributeLeading
                                                                     multiplier:1.0
-                                                                      constant:0.0]
+                                                                      constant:0.0],
+                                        [NSLayoutConstraint constraintWithItem:_titleLabel
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                    multiplier:1.0
+                                                                      constant:-TrailingMargin]
                                         ]];
     
     [NSLayoutConstraint activateConstraints:_constraints];

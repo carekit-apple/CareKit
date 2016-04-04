@@ -31,7 +31,6 @@
 
 #import "OCKCareCardTableViewHeader.h"
 #import "OCKHeartView.h"
-#import "OCKColors.h"
 #import "OCKDefines_Private.h"
 #import "OCKHelpers.h"
 

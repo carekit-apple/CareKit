@@ -30,7 +30,6 @@
 
 
 #import "OCKHeartView.h"
-#import "OCKColors.h"
 
 
 @implementation OCKHeartView {

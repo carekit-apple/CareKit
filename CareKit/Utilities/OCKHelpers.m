@@ -228,6 +228,20 @@ NSDateFormatter *OCKTimeOfDayLabelFormatter() {
     return timeformatter;
 }
 
+NSNumberFormatter *OCKPercentFormatter(NSInteger maxFractionDigits, NSInteger minFractionDigits) {
+    static NSNumberFormatter *_OCKNumberFormatterWithOptions = nil;
+    static dispatch_once_t _OCKNumberFormatterWithOptionsOnceToken;
+    dispatch_once(&_OCKNumberFormatterWithOptionsOnceToken, ^{
+        _OCKNumberFormatterWithOptions = [[NSNumberFormatter alloc] init];
+        [_OCKNumberFormatterWithOptions setLocale:[NSLocale currentLocale]];
+    });
+    
+    [_OCKNumberFormatterWithOptions setNumberStyle:NSNumberFormatterPercentStyle];
+    [_OCKNumberFormatterWithOptions setMinimumFractionDigits:minFractionDigits];
+    [_OCKNumberFormatterWithOptions setMaximumFractionDigits:maxFractionDigits];
+    return _OCKNumberFormatterWithOptions;
+}
+
 NSBundle *OCKBundle() {
     static NSBundle *__bundle;
     
@@ -515,3 +529,36 @@ NSString *OCKPaddingWithNumberOfSpaces(NSUInteger numberOfPaddingSpaces) {
 UIColor *OCKAppTintColor() {
     return [[[UIApplication sharedApplication] delegate] window].tintColor;
 }
+
+NSString *const __AXStringForVariablesSentinel = @"__AXStringForVariablesSentinel";
+
+NSString *_OCKAccessibilityStringForVariablesWithVariadics(id firstArgument, va_list arguments) {
+    Class stringClass = [NSString class];
+    NSMutableString *axString = [NSMutableString string];
+    
+    if (firstArgument != nil) {
+        [axString appendString:[firstArgument accessibilityLabel]];
+    }
+    
+    BOOL done = NO;
+    while (!done) {
+        id nextArgument = va_arg(arguments, id);
+        if (nextArgument != nil) {
+            done = [nextArgument isKindOfClass:stringClass];
+            if (!done) {
+                [axString appendString:[NSString stringWithFormat:@", %@", [nextArgument accessibilityLabel]]];
+            }
+        }
+    }
+    return axString;
+}
+
+NSString *_OCKAccessibilityStringForVariables(id firstArgument, ...) {
+    va_list args;
+    va_start(args, firstArgument);
+    NSString *result = _OCKAccessibilityStringForVariablesWithVariadics(firstArgument, args);
+    va_end(args);
+    
+    return result;
+}
+

@@ -54,3 +54,13 @@
 "ERROR_TITLE" = "Error";
 "MESSAGE_SEND_ERROR" = "Message send failed";
 "EMAIL_SEND_ERROR" = "Email send failed";
+
+/* ACCESSIBILITY */
+"AX_WEEK_BUTTON_PROGRESS" = "%@ completed"; // '75% completed'
+"AX_CARE_CARD_COMPLETED" = "Completed";
+"AX_CARE_CARD_INCOMPLETE" = "Incomplete";
+"AX_CARE_CARD_EVENT_LABEL" = "%@, %i of %lu, %@"; // 'Completed, 3 of 10, Diet'
+"AX_CARE_CARD_HINT" = "Double tap to view instructions";
+"AX_CARE_CARD_VALUE" = "%lu of %lu completed"; // '1 of 10 completed'
+"AX_SYMPTOM_TRACKER_NOT_STARTED" = "Not Started";
+

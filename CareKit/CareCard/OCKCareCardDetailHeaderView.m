@@ -192,4 +192,14 @@ static const CGFloat TopMargin = 15.0;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+#pragma mark - Accessibility
+
+- (BOOL)isAccessibilityElement {
+    return YES;
+}
+
+- (NSString *)accessibilityLabel {
+    return OCKAccessibilityStringForVariables(_titleLabel, _textLabel);
+}
+
 @end

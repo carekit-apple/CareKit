@@ -52,13 +52,13 @@
     return nil;
 }
 
-- (instancetype)initWithWithTitle:(NSString *)title
-                             text:(NSString *)text
-                        tintColor:(UIColor *)tintColor
-                       axisTitles:(NSArray<NSString *> *)axisTitles
-                    axisSubtitles:(NSArray<NSString *> *)axisSubtitles
-                      chartHeight:(CGFloat)chartHeight
-                       dataSeries:(NSArray<OCKBarSeries *> *)dataSeries {
+- (instancetype)initWithTitle:(NSString *)title
+                         text:(NSString *)text
+                    tintColor:(UIColor *)tintColor
+                   axisTitles:(NSArray<NSString *> *)axisTitles
+                axisSubtitles:(NSArray<NSString *> *)axisSubtitles
+                  chartHeight:(CGFloat)chartHeight
+                   dataSeries:(NSArray<OCKBarSeries *> *)dataSeries {
     self = [super init];
     if (self) {
         self.title = [title copy];
@@ -199,4 +199,3 @@
 }
 
 @end
-

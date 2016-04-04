@@ -32,9 +32,11 @@
 #import "OCKSymptomTrackerTableViewHeader.h"
 #import "OCKRingView.h"
 #import "OCKColors.h"
+#import "OCKHelpers.h"
 #import "OCKDefines_Private.h"
 
 
+static const CGFloat TrailingMargin = 20.0;
 static const CGFloat HorizontalMargin = 10.0;
 static const CGFloat RingViewSize = 110.0;
 
@@ -78,6 +80,7 @@ static const CGFloat RingViewSize = 110.0;
     if (!_titleLabel) {
         _titleLabel = [UILabel new];
         _titleLabel.text = OCKLocalizedString(@"SYMPTOM_TRACKER_HEADER_TITLE", nil);
+        _titleLabel.numberOfLines = 2;
         [self addSubview:_titleLabel];
     }
     _titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
@@ -85,6 +88,7 @@ static const CGFloat RingViewSize = 110.0;
     if (!_dateLabel) {
         _dateLabel = [UILabel new];
         _dateLabel.textColor = [UIColor darkGrayColor];
+        _dateLabel.numberOfLines = 2;
         [self addSubview:_dateLabel];
     }
     _dateLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
@@ -201,6 +205,13 @@ static const CGFloat RingViewSize = 110.0;
                                                                      attribute:NSLayoutAttributeTrailing
                                                                     multiplier:1.0
                                                                       constant:HorizontalMargin],
+                                        [NSLayoutConstraint constraintWithItem:_dateLabel
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                    multiplier:1.0
+                                                                      constant:-TrailingMargin],
                                         [NSLayoutConstraint constraintWithItem:_titleLabel
                                                                      attribute:NSLayoutAttributeBottom
                                                                      relatedBy:NSLayoutRelationEqual
@@ -214,7 +225,14 @@ static const CGFloat RingViewSize = 110.0;
                                                                         toItem:_dateLabel
                                                                      attribute:NSLayoutAttributeLeading
                                                                     multiplier:1.0
-                                                                      constant:0.0]
+                                                                      constant:0.0],
+                                        [NSLayoutConstraint constraintWithItem:_titleLabel
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                    multiplier:1.0
+                                                                      constant:-TrailingMargin]
                                         ]];
     
     [NSLayoutConstraint activateConstraints:_constraints];
@@ -228,6 +246,16 @@ static const CGFloat RingViewSize = 110.0;
 - (void)setDate:(NSString *)date {
     _date = date;
     _dateLabel.text = _date;
+}
+
+#pragma mark - Accessibility 
+
+- (BOOL)isAccessibilityElement {
+    return YES;
+}
+
+- (NSString *)accessibilityLabel {
+    return OCKAccessibilityStringForVariables(_ringView, _titleLabel, _dateLabel);
 }
 
 @end

@@ -155,10 +155,10 @@ typedef NS_ENUM(NSInteger, TestItem) {
     
     {
         UIColor *color = OCKPinkColor();
-        OCKMessageItem *item = [[OCKMessageItem alloc] initWithWithTitle:@"Medication Adherence"
-                                                                    text:@"Your Ibuprofen adherence was 90% last week which resulted in your targeted pain score of 4."
-                                                               tintColor:color
-                                                             messageType:OCKMessageItemTypeTip];
+        OCKMessageItem *item = [[OCKMessageItem alloc] initWithTitle:@"Medication Adherence"
+                                                                text:@"Your Ibuprofen adherence was 90% last week which resulted in your targeted pain score of 4."
+                                                           tintColor:color
+                                                         messageType:OCKMessageItemTypeTip];
         [items addObject:item];
     }
     
@@ -176,23 +176,23 @@ typedef NS_ENUM(NSInteger, TestItem) {
                                                         valueLabels:@[@"30%", @"40%", @"50%", @"70%", @"80%", @"90%", @"90%"]
                                                           tintColor:lightColor];
         
-        OCKBarChart *chart = [[OCKBarChart alloc] initWithWithTitle:@"Pain Scores"
-                                                               text:@"with Medication"
-                                                          tintColor:color
-                                                         axisTitles:axisTitles
-                                                      axisSubtitles:axisSubtitles
-                                                        chartHeight:250.0
-                                                         dataSeries:@[series1, series2]];
+        OCKBarChart *chart = [[OCKBarChart alloc] initWithTitle:@"Pain Scores"
+                                                           text:@"with Medication"
+                                                      tintColor:color
+                                                     axisTitles:axisTitles
+                                                  axisSubtitles:axisSubtitles
+                                                    chartHeight:250.0
+                                                     dataSeries:@[series1, series2]];
         chart.tintColor = color;
         [items addObject:chart];
     }
     
     {
         UIColor *color = OCKGreenColor();
-        OCKMessageItem *item = [[OCKMessageItem alloc] initWithWithTitle:@"Pain Score Update"
-                                                                    text:@"Your pain score changed from 9 to 4 in the past week."
-                                                               tintColor:color
-                                                             messageType:OCKMessageItemTypeAlert];
+        OCKMessageItem *item = [[OCKMessageItem alloc] initWithTitle:@"Pain Score Update"
+                                                                text:@"Your pain score changed from 9 to 4 in the past week."
+                                                           tintColor:color
+                                                         messageType:OCKMessageItemTypeAlert];
         [items addObject:item];
     }
     
@@ -210,13 +210,13 @@ typedef NS_ENUM(NSInteger, TestItem) {
                                                         valueLabels:@[@"85%", @"75%", @"50%", @"54%", @"30%", @"30%", @"20%"]
                                                           tintColor:lightColor];
         
-        OCKBarChart *chart = [[OCKBarChart alloc] initWithWithTitle:@"Range of Motion"
-                                                               text:@"with Arm Stretch Completion"
-                                                          tintColor:color
-                                                         axisTitles:axisTitles
-                                                      axisSubtitles:axisSubtitles
-                                                        chartHeight:500.0
-                                                         dataSeries:@[series1, series2]];
+        OCKBarChart *chart = [[OCKBarChart alloc] initWithTitle:@"Range of Motion"
+                                                           text:@"with Arm Stretch Completion"
+                                                      tintColor:color
+                                                     axisTitles:axisTitles
+                                                  axisSubtitles:axisSubtitles
+                                                    chartHeight:500.0
+                                                     dataSeries:@[series1, series2]];
         chart.tintColor = color;
         [items addObject:chart];
     }
@@ -512,15 +512,34 @@ DefineStringKey(TemperatureAssessment);
                      NSAssert(success, error.localizedDescription);
                  }];
     } else if ([identifier isEqualToString:TemperatureAssessment]) {
-        OCKCarePlanEventResult *result = [[OCKCarePlanEventResult alloc] initWithValueString:@"99.1"
-                                                                                  unitString:@"\u00B0F"
-                                                                                    userInfo:nil];
-        [_store updateEvent:assessmentEvent
-                 withResult:result
-                      state:OCKCarePlanEventStateCompleted
-                 completion:^(BOOL success, OCKCarePlanEvent * _Nonnull event, NSError * _Nonnull error) {
-                     NSAssert(success, error.localizedDescription);
-                 }];
+        
+        HKHealthStore *hkstore = [HKHealthStore new];
+        HKQuantityType *type = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierBodyTemperature];
+    
+        [hkstore requestAuthorizationToShareTypes:[NSSet setWithObject:type]
+                                        readTypes:[NSSet setWithObject:type]
+                                       completion:^(BOOL success, NSError * _Nullable error) {
+                                           
+                                           HKQuantitySample *sample = [HKQuantitySample quantitySampleWithType:type
+                                                                                                      quantity:[HKQuantity quantityWithUnit:[HKUnit degreeFahrenheitUnit] doubleValue:99.1]
+                                                                                                     startDate:[NSDate date]
+                                                                                                       endDate:[NSDate date]];
+                                           
+                                           [hkstore saveObject:sample withCompletion:^(BOOL success, NSError * _Nullable error) {
+                                               OCKCarePlanEventResult *result = [[OCKCarePlanEventResult alloc] initWithQuantitySample:sample
+                                                                                                               quantityStringFormatter:nil
+                                                                                                                        unitStringKeys:@{[HKUnit degreeFahrenheitUnit]: @"\u00B0F",
+                                                                                                                                         [HKUnit degreeCelsiusUnit]: @"\u00B0C",}
+                                                                                                                              userInfo:nil];
+                                               [_store updateEvent:assessmentEvent
+                                                        withResult:result
+                                                             state:OCKCarePlanEventStateCompleted
+                                                        completion:^(BOOL success, OCKCarePlanEvent * _Nonnull event, NSError * _Nonnull error) {
+                                                            NSAssert(success, error.localizedDescription);
+                                                        }];
+                                           }];
+                                           
+                                        }];
     }
 }
 

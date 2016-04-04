@@ -38,6 +38,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface OCKCarePlanEventResult () <OCKCoreDataObjectMirroring>
 
+- (void)setSample:(HKSample *)sample;
+
 @end
 
 @class OCKCDCarePlanEvent;
@@ -59,6 +61,14 @@ insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
 @property (nullable, nonatomic, retain) NSString *valueString;
 @property (nullable, nonatomic, retain) NSString *unitString;
 @property (nullable, nonatomic, retain) id userInfo;
+
+@property (nullable, nonatomic, retain) id quantityStringFormatter;
+@property (nullable, nonatomic, retain) id sampleUUID;
+@property (nullable, nonatomic, retain) id sampleType;
+@property (nullable, nonatomic, retain) id displayUnit;
+@property (nullable, nonatomic, retain) id unitStringKeys;
+@property (nullable, nonatomic, retain) id categoryValueStringKeys;
+
 @property (nullable, nonatomic, retain) OCKCDCarePlanEvent *event;
 
 @end

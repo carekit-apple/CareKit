@@ -68,13 +68,13 @@
                                                        valueLabels:@[@"5.0", @"4.0", @"3.0", @"2.0", @"1.0"]
                                                          tintColor:[[UIColor purpleColor] colorWithAlphaComponent:0.2]];
     
-    OCKBarChart *barChart = [[OCKBarChart alloc] initWithWithTitle:@"Title"
-                                                              text:@"Text"
-                                                         tintColor:[UIColor whiteColor]
-                                                        axisTitles:@[@"Day1", @"Day2", @"Day3", @"Day4", @"Day5"]
-                                                     axisSubtitles:@[@"M", @"T", @"W", @"T", @"F"]
-                                                       chartHeight:250.0
-                                                        dataSeries:@[barSeries1, barSeries2]];
+    OCKBarChart *barChart = [[OCKBarChart alloc] initWithTitle:@"Title"
+                                                          text:@"Text"
+                                                     tintColor:[UIColor whiteColor]
+                                                    axisTitles:@[@"Day1", @"Day2", @"Day3", @"Day4", @"Day5"]
+                                                 axisSubtitles:@[@"M", @"T", @"W", @"T", @"F"]
+                                                   chartHeight:250.0
+                                                    dataSeries:@[barSeries1, barSeries2]];
     
     return barChart;
     

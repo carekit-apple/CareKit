@@ -73,7 +73,6 @@ static const CGFloat HeaderViewHeight = 150.0;
     self = [super init];
     if (self) {
         _store = store;
-        _store.careCardUIDelegate = self;
         self.maskImage = nil;
         self.smallMaskImage = nil;
         self.maskImageTintColor = nil;
@@ -83,6 +82,8 @@ static const CGFloat HeaderViewHeight = 150.0;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    _store.careCardUIDelegate = self;
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:OCKLocalizedString(@"TODAY_BUTTON_TITLE", nil)
                                                                               style:UIBarButtonItemStylePlain
@@ -115,7 +116,7 @@ static const CGFloat HeaderViewHeight = 150.0;
 }
 
 - (void)showToday:(id)sender {
-    self.selectedDate = [NSDateComponents ock_componentsWithDate:[NSDate date] calendar:[NSCalendar currentCalendar]];
+    self.selectedDate = [NSDateComponents ock_componentsWithDate:[NSDate date] calendar:_calendar];
 }
 
 - (void)prepareView {
@@ -349,6 +350,12 @@ static const CGFloat HeaderViewHeight = 150.0;
     OCKCareCardWeekView *careCardWeekView = (OCKCareCardWeekView *)weekView;
     NSDateComponents *selectedDate = [self dateFromSelectedIndex:careCardWeekView.selectedIndex];
     self.selectedDate = selectedDate;
+}
+
+- (BOOL)weekViewCanSelectDayAtIndex:(NSUInteger)index {
+    NSDateComponents *today = [self today];
+    NSDateComponents *selectedDate = [self dateFromSelectedIndex:index];
+    return ![selectedDate isLaterThan:today];
 }
 
 

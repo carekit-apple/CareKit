@@ -201,4 +201,14 @@ static const CGFloat ImageViewSize = 135.0;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+#pragma mark - Accessibility
+
+- (BOOL)isAccessibilityElement {
+    return YES;
+}
+
+- (NSString *)accessibilityLabel {
+    return OCKAccessibilityStringForVariables(_titleLabel, _relationLabel);
+}
+
 @end

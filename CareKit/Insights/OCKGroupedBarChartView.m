@@ -113,7 +113,7 @@ static const CGFloat MarginBetweenGroups = 8.0;
         animation.fromValue = @0;
         animation.toValue = @1;
         animation.duration = duration * _bar.value.doubleValue/_maxValue;
-        animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];;
+        animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
         animation.fillMode = kCAFillModeBoth;
         animation.removedOnCompletion = true;
         
@@ -128,7 +128,7 @@ static const CGFloat MarginBetweenGroups = 8.0;
         animation.toValue = [NSValue valueWithCGPoint:position];
         
         animation.duration = duration * _bar.value.doubleValue/_maxValue;
-        animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];;
+        animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
         animation.fillMode = kCAFillModeBoth;
         animation.removedOnCompletion = true;
         
@@ -617,6 +617,7 @@ static const CGFloat MarginBetweenGroups = 8.0;
     
     for (OCKGroupedBarChartBarGroup *barGroup in _barGroups) {
         OCKGroupedBarChartBarGroupView *groupView = [[OCKGroupedBarChartBarGroupView alloc] initWithGroup:barGroup maxValue:_maxValue];
+        [self updateGroupViewAccessibility:groupView];
         groupView.translatesAutoresizingMaskIntoConstraints = NO;
 #if LAYOUT_DEBUG
         groupView.backgroundColor = [[UIColor greenColor] colorWithAlphaComponent:0.2];
@@ -683,6 +684,24 @@ static const CGFloat MarginBetweenGroups = 8.0;
     }
     
     [NSLayoutConstraint activateConstraints:_constraints];
+}
+
+#pragma mark - Accessibility
+
+- (void)updateGroupViewAccessibility:(OCKGroupedBarChartBarGroupView *)groupView {
+    OCKGroupedBarChartBarGroup *barGroup = groupView.group;
+    NSString *barsString = @"";
+    for (int i = 0; i < [barGroup.bars count]; i++) {
+        OCKGroupedBarChartBar *bar = [barGroup.bars objectAtIndex:i];
+        barsString = [NSString stringWithFormat:@"%@, %@, %@", barsString, _barTypes[i].name,  bar.text];
+    }
+    groupView.accessibilityValue = barsString;
+    groupView.isAccessibilityElement = YES;
+    groupView.accessibilityLabel = [NSString stringWithFormat:@"%@ %@", barGroup.title, barGroup.text];
+}
+
+- (NSArray *)accessibilityElements {
+    return [_groupsBox subviews];
 }
 
 @end

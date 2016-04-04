@@ -33,9 +33,11 @@
 #import "OCKHeartView.h"
 #import "OCKColors.h"
 #import "OCKDefines_Private.h"
+#import "OCKHelpers.h"
 
 
 static const CGFloat HeartViewSize = 115.0;
+static const CGFloat TrailingMargin = 20.0;
 static const CGFloat HorizontalMargin = 10.0;
 
 @implementation OCKCareCardTableViewHeader {
@@ -81,6 +83,7 @@ static const CGFloat HorizontalMargin = 10.0;
     if (!_dateLabel) {
         _dateLabel = [UILabel new];
         _dateLabel.textColor = [UIColor darkGrayColor];
+        _dateLabel.numberOfLines = 2;
         [self addSubview:_dateLabel];
     }
     
@@ -97,6 +100,7 @@ static const CGFloat HorizontalMargin = 10.0;
     if (!_titleLabel) {
         _titleLabel = [UILabel new];
         _titleLabel.text = OCKLocalizedString(@"CARE_CARD_HEADER_TITLE", nil);
+        _titleLabel.numberOfLines = 2;
         [self addSubview:_titleLabel];
     }
     
@@ -179,6 +183,13 @@ static const CGFloat HorizontalMargin = 10.0;
                                                                      attribute:NSLayoutAttributeLeading
                                                                     multiplier:1.0
                                                                       constant:0.0],
+                                        [NSLayoutConstraint constraintWithItem:_titleLabel
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                    multiplier:1.0
+                                                                      constant:-TrailingMargin],
                                         [NSLayoutConstraint constraintWithItem:_dateLabel
                                                                      attribute:NSLayoutAttributeTop
                                                                      relatedBy:NSLayoutRelationEqual
@@ -214,6 +225,13 @@ static const CGFloat HorizontalMargin = 10.0;
                                                                      attribute:NSLayoutAttributeLeading
                                                                     multiplier:1.0
                                                                       constant:0.0],
+                                        [NSLayoutConstraint constraintWithItem:_dateLabel
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                    multiplier:1.0
+                                                                      constant:-TrailingMargin],
                                         [NSLayoutConstraint constraintWithItem:_bottomEdge
                                                                      attribute:NSLayoutAttributeBottom
                                                                      relatedBy:NSLayoutRelationEqual
@@ -290,6 +308,16 @@ static const CGFloat HorizontalMargin = 10.0;
         _numberFormatter.maximumFractionDigits = 0;
     }
     return [_numberFormatter stringFromNumber:@(_value)];
+}
+
+#pragma mark - Accessibility
+
+- (BOOL)isAccessibilityElement {
+    return YES;
+}
+
+- (NSString *)accessibilityLabel {
+    return OCKAccessibilityStringForVariables(_valuePercentageLabel, _titleLabel, _dateLabel);
 }
 
 @end

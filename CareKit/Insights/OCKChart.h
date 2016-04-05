@@ -49,11 +49,6 @@ OCK_CLASS_AVAILABLE
 - (UIView *)chartView;
 
 /**
- Override this method to provide the height for the chart.
- */
-- (CGFloat)height;
-
-/**
  Override this method to provide custom animation for any subclasses of `OCKChart`.
  
  This method is called for visible charts only. It is called once and only when `OCKInsightsViewController` appears.

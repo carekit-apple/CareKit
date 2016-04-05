@@ -71,7 +71,6 @@
                                                      tintColor:[UIColor whiteColor]
                                                     axisTitles:@[@"Day1", @"Day2", @"Day3", @"Day4", @"Day5"]
                                                  axisSubtitles:@[@"M", @"T", @"W", @"T", @"F"]
-                                                   chartHeight:400.0
                                                     dataSeries:@[barSeries1, barSeries2]];
     
     return barChart;

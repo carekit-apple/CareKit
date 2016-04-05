@@ -65,7 +65,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param events              An array containing the fetched set of assessment events grouped by activity.
  @param dateComponents      The date components for which the events will be displayed.
  */
-- (void)symptomTrackerViewController:(OCKSymptomTrackerViewController *)viewController willDisplayEvents:(NSArray<NSArray<OCKCarePlanEvent*>*>*)events dateComponents:(NSDateComponents *)date;
+- (void)symptomTrackerViewController:(OCKSymptomTrackerViewController *)viewController willDisplayEvents:(NSArray<NSArray<OCKCarePlanEvent*>*>*)events dateComponents:(NSDateComponents *)dateComponents;
 
 @end
 

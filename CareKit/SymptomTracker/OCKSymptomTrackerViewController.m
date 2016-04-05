@@ -394,7 +394,7 @@ static const CGFloat HeaderViewHeight = 150.0;
     
     if (_delegate &&
         [_delegate respondsToSelector:@selector(symptomTrackerViewController:didSelectRowWithAssessmentEvent:)]) {
-        [_delegate symptomTrackerViewController:(OCKSymptomTrackerViewController *)self.parentViewController didSelectRowWithAssessmentEvent:selectedEvent];
+        [_delegate symptomTrackerViewController:(OCKSymptomTrackerViewController *)self didSelectRowWithAssessmentEvent:selectedEvent];
     }
     
     [tableView deselectRowAtIndexPath:indexPath animated:NO];

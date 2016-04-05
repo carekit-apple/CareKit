@@ -376,8 +376,7 @@
 				242DBA9F1C9F7FE100529386 /* Header View */,
 				242DBA9E1C9F7FBF00529386 /* Table View Cell */,
 			);
-			name = SymptomTracker;
-			path = ProgressCard;
+			path = SymptomTracker;
 			sourceTree = "<group>";
 		};
 		242DBA9E1C9F7FBF00529386 /* Table View Cell */ = {

@@ -118,7 +118,7 @@ OCK_CLASS_AVAILABLE
 /**
  The tint color that will be used to fill the shape.
  
- If tint color is not specified, the OCKRedColor() will be used (see `OCKColors.h`).
+ If tint color is not specified, a default red color will be used.
  */
 @property (nonatomic, null_resettable) UIColor *maskImageTintColor;
 

@@ -95,7 +95,7 @@ const static CGFloat ValueLabelWidth = 100.0;
     
     _valueLabel.text = (_assessmentEvent.result.valueString.length > 0) ? _assessmentEvent.result.valueString : @"";
     _valueLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleTitle1];
-    _valueLabel.textColor = _assessmentEvent.activity.tintColor;
+    _valueLabel.textColor = self.tintColor;
     
     if (_assessmentEvent.result.unitString.length > 0) {
         if (!_unitLabel) {

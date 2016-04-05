@@ -59,7 +59,6 @@
 		248929831C90E70100EBBE1F /* OCKContactInfoTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 248929721C90E70100EBBE1F /* OCKContactInfoTableViewCell.m */; };
 		248929841C90E70100EBBE1F /* OCKContactSharingTableViewCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 248929731C90E70100EBBE1F /* OCKContactSharingTableViewCell.h */; };
 		248929851C90E70100EBBE1F /* OCKContactSharingTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 248929741C90E70100EBBE1F /* OCKContactSharingTableViewCell.m */; };
-		2489298B1C90E71700EBBE1F /* OCKColors.h in Headers */ = {isa = PBXBuildFile; fileRef = 248929871C90E71700EBBE1F /* OCKColors.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2489298C1C90E71700EBBE1F /* OCKDefines.h in Headers */ = {isa = PBXBuildFile; fileRef = 248929881C90E71700EBBE1F /* OCKDefines.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2489298D1C90E71700EBBE1F /* OCKHelpers.h in Headers */ = {isa = PBXBuildFile; fileRef = 248929891C90E71700EBBE1F /* OCKHelpers.h */; };
 		2489298E1C90E71700EBBE1F /* OCKHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 2489298A1C90E71700EBBE1F /* OCKHelpers.m */; };
@@ -182,7 +181,6 @@
 		248929721C90E70100EBBE1F /* OCKContactInfoTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKContactInfoTableViewCell.m; sourceTree = "<group>"; };
 		248929731C90E70100EBBE1F /* OCKContactSharingTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKContactSharingTableViewCell.h; sourceTree = "<group>"; };
 		248929741C90E70100EBBE1F /* OCKContactSharingTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKContactSharingTableViewCell.m; sourceTree = "<group>"; };
-		248929871C90E71700EBBE1F /* OCKColors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKColors.h; sourceTree = "<group>"; };
 		248929881C90E71700EBBE1F /* OCKDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKDefines.h; sourceTree = "<group>"; };
 		248929891C90E71700EBBE1F /* OCKHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKHelpers.h; sourceTree = "<group>"; };
 		2489298A1C90E71700EBBE1F /* OCKHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKHelpers.m; sourceTree = "<group>"; };
@@ -442,7 +440,6 @@
 		248929861C90E71700EBBE1F /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
-				248929871C90E71700EBBE1F /* OCKColors.h */,
 				248929881C90E71700EBBE1F /* OCKDefines.h */,
 				24F8E4741C934FEE003B77BD /* OCKDefines_Private.h */,
 				248929891C90E71700EBBE1F /* OCKHelpers.h */,
@@ -723,7 +720,6 @@
 				8677EE0D1C9775EB00588CD6 /* NSDateComponents+CarePlanInternal.h in Headers */,
 				241707D31C9A3AB7005D7123 /* OCKInsightsChartTableViewCell.h in Headers */,
 				8677EE251C97776100588CD6 /* CareKit_Private.h in Headers */,
-				2489298B1C90E71700EBBE1F /* OCKColors.h in Headers */,
 				242DBA9A1C9F7F8700529386 /* OCKRingButton.h in Headers */,
 				242DBA941C9F7F8700529386 /* OCKSymptomTrackerTableViewHeader.h in Headers */,
 				2489298D1C90E71700EBBE1F /* OCKHelpers.h in Headers */,

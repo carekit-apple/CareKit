@@ -31,7 +31,6 @@
 
 #import "OCKSymptomTrackerTableViewHeader.h"
 #import "OCKRingView.h"
-#import "OCKColors.h"
 #import "OCKHelpers.h"
 #import "OCKDefines_Private.h"
 

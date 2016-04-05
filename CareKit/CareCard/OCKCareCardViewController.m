@@ -44,6 +44,8 @@
 #import "OCKDefines_Private.h"
 
 
+#define RedColor() OCKColorFromRGB(0xEF445B);
+
 static const CGFloat HeaderViewHeight = 150.0;
 
 @interface OCKCareCardViewController() <OCKWeekViewDelegate, OCKCarePlanStoreDelegate, OCKCareCardCellDelegate, UITableViewDelegate, UITableViewDataSource, UIPageViewControllerDelegate, UIPageViewControllerDataSource>
@@ -239,7 +241,7 @@ static const CGFloat HeaderViewHeight = 150.0;
 - (void)setMaskImageTintColor:(UIColor *)maskImageTintColor {
     _maskImageTintColor = maskImageTintColor;
     if (!_maskImageTintColor) {
-        _maskImageTintColor = OCKRedColor();
+        _maskImageTintColor = RedColor();
     }
 
     _weekViewController.careCardWeekView.tintColor = _maskImageTintColor;

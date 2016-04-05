@@ -30,7 +30,6 @@
 
 
 #import "OCKCareCardTableViewCell.h"
-#import "OCKColors.h"
 #import "OCKCarePlanActivity.h"
 #import "OCKCarePlanActivity_Internal.h"
 #import "OCKCarePlanEvent.h"

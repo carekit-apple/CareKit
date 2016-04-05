@@ -30,8 +30,6 @@
 
 
 #import <UIKit/UIKit.h>
-
-#import <CareKit/OCKColors.h>
 #import <CareKit/OCKDefines.h>
 
 // CarePlan

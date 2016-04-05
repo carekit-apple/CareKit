@@ -30,7 +30,6 @@
 
 
 #import "OCKWeekLabelsView.h"
-#import "OCKColors.h"
 
 
 const static CGFloat TopMargin = 12.0;

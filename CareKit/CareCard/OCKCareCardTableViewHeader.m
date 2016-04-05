@@ -46,8 +46,8 @@ static const CGFloat HorizontalMargin = 10.0;
     UILabel *_titleLabel;
     UILabel *_valuePercentageLabel;
     
-    UILabel *_topEdge;
-    UILabel *_bottomEdge;
+    UIView *_topEdge;
+    UIView *_bottomEdge;
     
     NSNumberFormatter *_numberFormatter;
     NSMutableArray *_constraints;
@@ -104,13 +104,13 @@ static const CGFloat HorizontalMargin = 10.0;
     }
     
     if (!_bottomEdge) {
-        _bottomEdge = [UILabel new];
+        _bottomEdge = [UIView new];
         _bottomEdge.backgroundColor = [UIColor groupTableViewBackgroundColor];
         [self addSubview:_bottomEdge];
     }
     
     if (!_topEdge) {
-        _topEdge = [UILabel new];
+        _topEdge = [UIView new];
         _topEdge.backgroundColor = [UIColor groupTableViewBackgroundColor];
         [self addSubview:_topEdge];
     }

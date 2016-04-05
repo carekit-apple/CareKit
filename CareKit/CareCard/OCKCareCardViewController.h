@@ -50,10 +50,10 @@ NS_ASSUME_NONNULL_BEGIN
  This provides a good opportunity to update the store such as fetching data from HealthKit.
  
  @param viewController          The view controller providing the callback.
- @param events                  An array containing the fetched set of intervention events.
+ @param events                  An array containing the fetched set of intervention events grouped by activity.
  @param dateComponents          The date components for which the events will be displayed.
  */
-- (void)careCardViewController:(OCKCareCardViewController *)viewController willDisplayEvents:(NSArray<OCKCarePlanEvent*>*)events dateComponents:(NSDateComponents *)dateComponents;
+- (void)careCardViewController:(OCKCareCardViewController *)viewController willDisplayEvents:(NSArray<NSArray<OCKCarePlanEvent*>*>*)events dateComponents:(NSDateComponents *)dateComponents;
 
 @end
 

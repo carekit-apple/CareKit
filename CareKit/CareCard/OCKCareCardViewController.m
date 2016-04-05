@@ -44,7 +44,7 @@
 #import "OCKDefines_Private.h"
 
 
-#define RedColor() UIColorFromRGB(0xEF445B);
+#define RedColor() OCKColorFromRGB(0xEF445B);
 
 static const CGFloat HeaderViewHeight = 150.0;
 

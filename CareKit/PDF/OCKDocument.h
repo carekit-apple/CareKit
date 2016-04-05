@@ -186,7 +186,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface OCKDocumentElementTable : NSObject <OCKDocumentElement>
 
 /**
- Initializer for an OCKDocumentElementChart object.
+ Initializer for an OCKDocumentElementTable object.
  
  @param     headers         An array of table header strings.
  @param     rows            An array of table rows.

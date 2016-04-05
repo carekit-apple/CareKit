@@ -34,9 +34,10 @@
 #import "OCKHelpers.h"
 
 
-const static CGFloat TopMargin = 30.0;
-const static CGFloat BottomMargin = 30.0;
-const static CGFloat ValueLabelWidth = 100.0;
+static const CGFloat TopMargin = 30.0;
+static const CGFloat BottomMargin = 30.0;
+static const CGFloat HorizontalMargin = 10.0;
+static const CGFloat ValueLabelWidth = 100.0;
 
 @implementation OCKSymptomTrackerTableViewCell {
     UILabel *_titleLabel;
@@ -177,6 +178,20 @@ const static CGFloat ValueLabelWidth = 100.0;
                                                                      attribute:NSLayoutAttributeBottom
                                                                     multiplier:1.0
                                                                       constant:0.0],
+                                        [NSLayoutConstraint constraintWithItem:_valueLabel
+                                                                     attribute:NSLayoutAttributeLeading
+                                                                     relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                                        toItem:_titleLabel
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                    multiplier:1.0
+                                                                      constant:HorizontalMargin],
+                                        [NSLayoutConstraint constraintWithItem:_valueLabel
+                                                                     attribute:NSLayoutAttributeLeading
+                                                                     relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                                        toItem:_textLabel
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                    multiplier:1.0
+                                                                      constant:2*HorizontalMargin],
                                         [NSLayoutConstraint constraintWithItem:_textLabel
                                                                      attribute:NSLayoutAttributeBottom
                                                                      relatedBy:NSLayoutRelationEqual

@@ -35,6 +35,20 @@
 
 
 #define DefineStringKey(x) static NSString *const x = @#x
+#define DefineStringKey(x) static NSString *const x = @#x
+#define UIColorFromRGB(rgbValue) [UIColor \
+colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 \
+green:((float)((rgbValue & 0xFF00) >> 8))/255.0 \
+blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
+
+#define RedColor() UIColorFromRGB(0xEF445B);
+#define GreenColor() UIColorFromRGB(0x8DC63F);
+#define BlueColor() UIColorFromRGB(0x3EA1EE);
+#define PurpleColor() UIColorFromRGB(0x9B59B6);
+#define PinkColor() UIColorFromRGB(0xF26D7D);
+#define YellowColor() UIColorFromRGB(0xF1DF15);
+#define OrangeColor() UIColorFromRGB(0xF89406);
+#define GrayColor() UIColorFromRGB(0xBDC3C7);
 
 static const BOOL resetStoreOnLaunch = YES;
 
@@ -88,7 +102,7 @@ static const BOOL resetStoreOnLaunch = YES;
                                                                                image:[UIImage imageNamed:@"connect"]
                                                                        selectedImage:[UIImage imageNamed:@"connect-filled"]];
     
-    self.tabBar.tintColor = OCKRedColor();
+    self.tabBar.tintColor = RedColor();
     self.viewControllers = @[insightsNavigationViewController, careCardNavigationViewController, symptomTrackerNavigationViewController, connectNavigationViewController];
     self.selectedIndex = 1;
 }
@@ -147,7 +161,7 @@ static const BOOL resetStoreOnLaunch = YES;
     NSArray *axisSubtitles = @[@"2/21", @"", @"", @"", @"", @"", @"2/27"];
     
     {
-        UIColor *color = OCKPinkColor();
+        UIColor *color = PinkColor();
         OCKMessageItem *item = [[OCKMessageItem alloc] initWithTitle:@"Medication Adherence"
                                                                 text:@"Your medication adherence was 90% last week."
                                                            tintColor:color
@@ -156,7 +170,7 @@ static const BOOL resetStoreOnLaunch = YES;
     }
     
     {
-        UIColor *color = OCKBlueColor();
+        UIColor *color = BlueColor();
         UIColor *lightColor = [color colorWithAlphaComponent:0.5];
         
         OCKBarSeries *series1 = [[OCKBarSeries alloc] initWithTitle:@"Pain"
@@ -180,7 +194,7 @@ static const BOOL resetStoreOnLaunch = YES;
     }
     
     {
-        UIColor *color = OCKGreenColor();
+        UIColor *color = GreenColor();
         OCKMessageItem *item = [[OCKMessageItem alloc] initWithTitle:@"Pain Score Update"
                                                                 text:@"Your pain score changed from 6 to 3 in the past week."
                                                            tintColor:color
@@ -189,7 +203,7 @@ static const BOOL resetStoreOnLaunch = YES;
     }
     
     {
-        UIColor *color = OCKPurpleColor();
+        UIColor *color = PurpleColor();
         UIColor *lightColor = [color colorWithAlphaComponent:0.5];
         
         OCKBarSeries *series1 = [[OCKBarSeries alloc] initWithTitle:@"Range of Motion"
@@ -238,7 +252,7 @@ DefineStringKey(PhysicalTherapyIntervention);
     
     {
         OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@3,@3,@3,@3,@3,@3,@3]];
-        UIColor *color = OCKBlueColor();
+        UIColor *color = BlueColor();
         OCKCarePlanActivity *intervention = [OCKCarePlanActivity interventionWithIdentifier:HamstringStretchIntervention
                                                                             groupIdentifier:nil
                                                                                       title:@"Hamstring Stretch"
@@ -253,7 +267,7 @@ DefineStringKey(PhysicalTherapyIntervention);
     
     {
         OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@4,@4,@4,@4,@4,@4,@4]];
-        UIColor *color = OCKGreenColor();
+        UIColor *color = GreenColor();
         OCKCarePlanActivity *intervention = [OCKCarePlanActivity interventionWithIdentifier:IbuprofenIntervention
                                                                             groupIdentifier:nil
                                                                                       title:@"Ibuprofen"
@@ -268,7 +282,7 @@ DefineStringKey(PhysicalTherapyIntervention);
     
     {
         OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@1,@1,@1,@1,@1,@1,@1]];
-        UIColor *color = OCKPurpleColor();
+        UIColor *color = PurpleColor();
         OCKCarePlanActivity *intervention = [OCKCarePlanActivity interventionWithIdentifier:OutdoorWalkIntervention
                                                                             groupIdentifier:nil
                                                                                       title:@"Outdoor Walk"
@@ -283,7 +297,7 @@ DefineStringKey(PhysicalTherapyIntervention);
     
     {
         OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@1,@1,@1,@1,@1,@1,@1]];
-        UIColor *color = OCKYellowColor();
+        UIColor *color = YellowColor();
         OCKCarePlanActivity *intervention = [OCKCarePlanActivity interventionWithIdentifier:PhysicalTherapyIntervention
                                                                             groupIdentifier:nil
                                                                                       title:@"Physical Therapy"
@@ -319,7 +333,7 @@ DefineStringKey(TemperatureAssessment);
     
     {
         OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@1,@1,@1,@1,@1,@1,@1]];
-        UIColor *color = OCKBlueColor();
+        UIColor *color = BlueColor();
         OCKCarePlanActivity *assessment = [OCKCarePlanActivity assessmentWithIdentifier:PainAssessment
                                                                         groupIdentifier:nil
                                                                                   title:@"Pain"
@@ -334,7 +348,7 @@ DefineStringKey(TemperatureAssessment);
     
     {
         OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@1,@1,@1,@0,@1,@1,@1]];
-        UIColor *color = OCKGreenColor();
+        UIColor *color = GreenColor();
         OCKCarePlanActivity *assessment = [OCKCarePlanActivity assessmentWithIdentifier:MoodAssessment
                                                                         groupIdentifier:nil
                                                                                   title:@"Mood"
@@ -349,7 +363,7 @@ DefineStringKey(TemperatureAssessment);
     
     {
         OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@1,@1,@1,@1,@1,@1,@1]];
-        UIColor *color = OCKPurpleColor();
+        UIColor *color = PurpleColor();
         OCKCarePlanActivity *assessment = [OCKCarePlanActivity assessmentWithIdentifier:BloodGlucoseAssessment
                                                                         groupIdentifier:nil
                                                                                   title:@"Blood Glucose"
@@ -364,7 +378,7 @@ DefineStringKey(TemperatureAssessment);
     
     {
         OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@1,@0,@1,@0,@1,@0,@1]];
-        UIColor *color = OCKYellowColor();
+        UIColor *color = YellowColor();
         OCKCarePlanActivity *assessment = [OCKCarePlanActivity assessmentWithIdentifier:WeightAssessment
                                                                         groupIdentifier:nil
                                                                                   title:@"Weight"
@@ -379,7 +393,7 @@ DefineStringKey(TemperatureAssessment);
     
     {
         OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@1,@1,@1,@1,@1,@1,@1]];
-        UIColor *color = OCKOrangeColor();
+        UIColor *color = OrangeColor();
         OCKCarePlanActivity *assessment = [OCKCarePlanActivity assessmentWithIdentifier:TemperatureAssessment
                                                                         groupIdentifier:nil
                                                                                   title:@"Temperature"
@@ -534,7 +548,7 @@ DefineStringKey(TemperatureAssessment);
     NSMutableArray *contacts = [NSMutableArray new];
     
     {
-        UIColor *color = OCKBlueColor();
+        UIColor *color = BlueColor();
         OCKContact *contact = [[OCKContact alloc] initWithContactType:OCKContactTypeCareTeam
                                                                  name:@"Dr. Giselle Guerrero"
                                                              relation:@"Physician"
@@ -547,7 +561,7 @@ DefineStringKey(TemperatureAssessment);
     }
     
     {
-        UIColor *color = OCKGreenColor();
+        UIColor *color = GreenColor();
         OCKContact *contact = [[OCKContact alloc] initWithContactType:OCKContactTypeCareTeam
                                                                  name:@"Greg Apodaca"
                                                              relation:@"Nurse"
@@ -560,7 +574,7 @@ DefineStringKey(TemperatureAssessment);
     }
     
     {
-        UIColor *color = OCKYellowColor();
+        UIColor *color = YellowColor();
         OCKContact *contact = [[OCKContact alloc] initWithContactType:OCKContactTypePersonal
                                                                  name:@"Kevin Frank"
                                                              relation:@"Father"

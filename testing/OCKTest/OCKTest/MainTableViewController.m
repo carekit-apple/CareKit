@@ -194,7 +194,6 @@ typedef NS_ENUM(NSInteger, TestItem) {
                                                       tintColor:color
                                                      axisTitles:axisTitles
                                                   axisSubtitles:axisSubtitles
-                                                    chartHeight:250.0
                                                      dataSeries:@[series1, series2]];
         chart.tintColor = color;
         [items addObject:chart];
@@ -228,7 +227,6 @@ typedef NS_ENUM(NSInteger, TestItem) {
                                                       tintColor:color
                                                      axisTitles:axisTitles
                                                   axisSubtitles:axisSubtitles
-                                                    chartHeight:500.0
                                                      dataSeries:@[series1, series2]];
         chart.tintColor = color;
         [items addObject:chart];

@@ -59,21 +59,25 @@ static const CGFloat VerticalMargin = 10.0;
         _titleLabel = [UILabel new];
         [self addSubview:_titleLabel];
     }
-    _titleLabel.text = _chart.title;
     
     if (!_textLabel) {
         _textLabel = [UILabel new];
         _textLabel.textColor = [UIColor lightGrayColor];
         [self addSubview:_textLabel];
     }
-    _textLabel.text = _chart.text;
-
+    
     [_chartView removeFromSuperview];
     _chartView = _chart.chartView;
     [self addSubview:_chartView];
     
+    [self updateView];
     [self updateFonts];
     [self setUpConstraints];
+}
+
+- (void)updateView {
+    _titleLabel.text = _chart.title;
+    _textLabel.text = _chart.text;
 }
 
 - (void)updateFonts {
@@ -140,13 +144,6 @@ static const CGFloat VerticalMargin = 10.0;
                                                                      attribute:NSLayoutAttributeBottom
                                                                     multiplier:1.0
                                                                       constant:VerticalMargin],
-                                        [NSLayoutConstraint constraintWithItem:_chartView
-                                                                     attribute:NSLayoutAttributeHeight
-                                                                     relatedBy:NSLayoutRelationEqual
-                                                                        toItem:nil
-                                                                     attribute:NSLayoutAttributeNotAnAttribute
-                                                                    multiplier:1.0
-                                                                      constant:_chart.height],
                                         [NSLayoutConstraint constraintWithItem:_chartView
                                                                      attribute:NSLayoutAttributeBottom
                                                                      relatedBy:NSLayoutRelationEqual

@@ -188,7 +188,6 @@ static const BOOL resetStoreOnLaunch = YES;
                                                       tintColor:color
                                                      axisTitles:axisTitles
                                                   axisSubtitles:axisSubtitles
-                                                    chartHeight:250.0
                                                      dataSeries:@[series1, series2]];
         [items addObject:chart];
     }
@@ -221,7 +220,6 @@ static const BOOL resetStoreOnLaunch = YES;
                                                       tintColor:color
                                                      axisTitles:axisTitles
                                                   axisSubtitles:axisSubtitles
-                                                    chartHeight:250.0
                                                      dataSeries:@[series1, series2]];
         [items addObject:chart];
     }

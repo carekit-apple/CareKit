@@ -30,7 +30,7 @@
 
 
 #import "OCKGroupedBarChartView.h"
-
+#import "OCKLabel.h"
 
 // #define LAYOUT_DEBUG 1
 
@@ -233,8 +233,8 @@ static const CGFloat MarginBetweenGroups = 8.0;
 
 
 @implementation OCKGroupedBarChartBarGroupView {
-    UILabel *_titleLabel;
-    UILabel *_textLabel;
+    OCKLabel *_titleLabel;
+    OCKLabel *_textLabel;
     UIView *_barBox;
     double _maxValue;
 }
@@ -261,18 +261,18 @@ static const CGFloat MarginBetweenGroups = 8.0;
     _labelBox.translatesAutoresizingMaskIntoConstraints = NO;
     [self addSubview:_labelBox];
     
-    _titleLabel = [UILabel new];
+    _titleLabel = [OCKLabel new];
     _titleLabel.adjustsFontSizeToFitWidth = YES;
     _titleLabel.text = _group.title;
     _titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    _titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleCaption1];
+    _titleLabel.textStyle = UIFontTextStyleCaption1;
     [_labelBox addSubview:_titleLabel];
     
-    _textLabel = [UILabel new];
+    _textLabel = [OCKLabel new];
     _textLabel.text = _group.text;
     _textLabel.adjustsFontSizeToFitWidth = YES;
     _textLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    _textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleCaption2];
+    _textLabel.textStyle = UIFontTextStyleCaption2;
     _textLabel.textColor = [UIColor lightGrayColor];
     [_labelBox addSubview:_textLabel];
     
@@ -431,7 +431,7 @@ static const CGFloat MarginBetweenGroups = 8.0;
 
 @end
 
-@interface OCKChartLegendView : UILabel
+@interface OCKChartLegendView : OCKLabel
 
 - (instancetype)initWithTitles:(NSArray<NSString *> *)titles colors:(NSArray<UIColor *> *)colors;
 
@@ -468,7 +468,7 @@ static const CGFloat MarginBetweenGroups = 8.0;
         
         self.numberOfLines = 0;
         self.lineBreakMode = NSLineBreakByWordWrapping;
-        self.font = [UIFont preferredFontForTextStyle:UIFontTextStyleCaption2];
+        self.textStyle = UIFontTextStyleCaption2;
         self.attributedText = string;
         self.textAlignment = NSTextAlignmentCenter;
     }

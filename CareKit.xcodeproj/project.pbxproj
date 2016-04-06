@@ -111,6 +111,8 @@
 		8677EE1D1C9775EB00588CD6 /* OCKCareSchedule_Internal.h in Headers */ = {isa = PBXBuildFile; fileRef = 8677EE091C9775EB00588CD6 /* OCKCareSchedule_Internal.h */; };
 		8677EE1E1C9775EB00588CD6 /* OCKCareSchedule_Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 8677EE0A1C9775EB00588CD6 /* OCKCareSchedule_Private.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		8677EE251C97776100588CD6 /* CareKit_Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 8677EE241C97771A00588CD6 /* CareKit_Private.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		86E803901CB4812F00B5C021 /* OCKLabel.h in Headers */ = {isa = PBXBuildFile; fileRef = 86E8038E1CB4812F00B5C021 /* OCKLabel.h */; };
+		86E803911CB4812F00B5C021 /* OCKLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 86E8038F1CB4812F00B5C021 /* OCKLabel.m */; };
 		86EA9A4E1C9C644E00B93BB1 /* OCKDocument.h in Headers */ = {isa = PBXBuildFile; fileRef = 86EA9A4A1C9C644E00B93BB1 /* OCKDocument.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		86EA9A4F1C9C644E00B93BB1 /* OCKDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 86EA9A4B1C9C644E00B93BB1 /* OCKDocument.m */; };
 		86EA9A501C9C644E00B93BB1 /* OCKHTMLPDFWriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 86EA9A4C1C9C644E00B93BB1 /* OCKHTMLPDFWriter.h */; };
@@ -274,6 +276,8 @@
 		8677EE091C9775EB00588CD6 /* OCKCareSchedule_Internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKCareSchedule_Internal.h; sourceTree = "<group>"; };
 		8677EE0A1C9775EB00588CD6 /* OCKCareSchedule_Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKCareSchedule_Private.h; sourceTree = "<group>"; };
 		8677EE241C97771A00588CD6 /* CareKit_Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CareKit_Private.h; sourceTree = "<group>"; };
+		86E8038E1CB4812F00B5C021 /* OCKLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKLabel.h; sourceTree = "<group>"; };
+		86E8038F1CB4812F00B5C021 /* OCKLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKLabel.m; sourceTree = "<group>"; };
 		86EA9A4A1C9C644E00B93BB1 /* OCKDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKDocument.h; sourceTree = "<group>"; };
 		86EA9A4B1C9C644E00B93BB1 /* OCKDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKDocument.m; sourceTree = "<group>"; };
 		86EA9A4C1C9C644E00B93BB1 /* OCKHTMLPDFWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKHTMLPDFWriter.h; sourceTree = "<group>"; };
@@ -419,6 +423,8 @@
 				244A92421CA210F7007B42D6 /* OCKWeekLabelsView.m */,
 				244A92431CA210F7007B42D6 /* OCKWeekViewController.h */,
 				244A92441CA210F7007B42D6 /* OCKWeekViewController.m */,
+				86E8038E1CB4812F00B5C021 /* OCKLabel.h */,
+				86E8038F1CB4812F00B5C021 /* OCKLabel.m */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -674,6 +680,7 @@
 				24EA9FC01C9A3D420036028E /* OCKCareCardTableViewHeader.h in Headers */,
 				8677EE131C9775EB00588CD6 /* OCKCarePlanEvent_Internal.h in Headers */,
 				24EA9FC51C9A3D420036028E /* OCKCareCardWeekView.h in Headers */,
+				86E803901CB4812F00B5C021 /* OCKLabel.h in Headers */,
 				241707DB1C9A3AB7005D7123 /* OCKInsightsViewController.h in Headers */,
 				241707C51C9A3AB7005D7123 /* OCKBarSeries.h in Headers */,
 				2489298C1C90E71700EBBE1F /* OCKDefines.h in Headers */,
@@ -876,6 +883,7 @@
 				241707D21C9A3AB7005D7123 /* OCKInsightItem.m in Sources */,
 				24EA9FB51C9A3D420036028E /* OCKCareCardButton.m in Sources */,
 				86EA9A511C9C644E00B93BB1 /* OCKHTMLPDFWriter.m in Sources */,
+				86E803911CB4812F00B5C021 /* OCKLabel.m in Sources */,
 				241707DC1C9A3AB7005D7123 /* OCKInsightsViewController.m in Sources */,
 				241707C61C9A3AB7005D7123 /* OCKBarSeries.m in Sources */,
 				24EA9FCA1C9A3D420036028E /* OCKHeartView.m in Sources */,

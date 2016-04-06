@@ -44,6 +44,17 @@ NS_ASSUME_NONNULL_BEGIN
 @optional
 
 /**
+ Tells the delegate when the user selected an intervention event.
+ 
+ This can be implemented to show a custom detail view controller.
+ If not implemented, a default detail view controller will be presented.
+ 
+ @param symptomTrackerViewController      The view controller providing the callback.
+ @param interventionEvent                 The intervention event that the user selected.
+ */
+- (void)careCardViewController:(OCKCareCardViewController *)viewController didSelectRowWithInterventionEvent:(OCKCarePlanEvent *)interventionEvent;
+
+/**
  Tells the delegate when a new set of events is fetched from the care plan store.
  
  This is invoked when the date changes or when the care plan store's `carePlanStoreActivityListDidChange` delegate method is called.

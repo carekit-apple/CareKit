@@ -209,6 +209,11 @@ static const CGFloat HeaderViewHeight = 150.0;
     [self fetchEvents];
 }
 
+- (void)viewWillLayoutSubviews {
+    [super viewWillLayoutSubviews];
+    [self setUpConstraints];
+}
+
 
 #pragma mark - Helpers
 

@@ -249,6 +249,11 @@ static const CGFloat HeaderViewHeight = 150.0;
     self.navigationItem.rightBarButtonItem.tintColor = _maskImageTintColor;
 }
 
+- (void)viewWillLayoutSubviews {
+    [super viewWillLayoutSubviews];
+    [self setUpConstraints];
+}
+
 
 #pragma mark - Helpers
 
@@ -447,8 +452,12 @@ static const CGFloat HeaderViewHeight = 150.0;
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     OCKCarePlanActivity *selectedActivity = _events[indexPath.row].firstObject.activity;
     
-    OCKCareCardDetailViewController *detailViewController = [[OCKCareCardDetailViewController alloc] initWithIntervention:selectedActivity];
-    [self.navigationController pushViewController:detailViewController animated:YES];
+    if (_delegate &&
+        [_delegate respondsToSelector:@selector(careCardViewController:didSelectRowWithInterventionEvent:)]) {
+    } else {
+        OCKCareCardDetailViewController *detailViewController = [[OCKCareCardDetailViewController alloc] initWithIntervention:selectedActivity];
+        [self.navigationController pushViewController:detailViewController animated:YES];
+    }
     
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
 }

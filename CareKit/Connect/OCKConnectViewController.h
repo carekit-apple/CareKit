@@ -79,14 +79,12 @@ OCK_CLASS_AVAILABLE
 
  @return An initialized connect view controller.
  */
-- (instancetype)initWithContacts:(NSArray<OCKContact *> *)contacts;
+- (instancetype)initWithContacts:(nullable NSArray<OCKContact *> *)contacts;
 
 /**
  An array of contacts.
-
- The array must contain at least one contact.
  */
-@property (nonatomic, copy) NSArray<OCKContact *> *contacts;
+@property (nonatomic, copy, nullable) NSArray<OCKContact *> *contacts;
 
 /**
  The delegate is used for the sharing section in the contact detail view.

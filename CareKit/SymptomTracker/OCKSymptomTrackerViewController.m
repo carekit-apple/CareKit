@@ -103,7 +103,7 @@ static const CGFloat HeaderViewHeight = 150.0;
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    NSAssert(self.navigationController, @"OCKProgressCardViewController must be embedded in a navigation controller.");
+    NSAssert(self.navigationController, @"OCKSymptomTrackerViewController must be embedded in a navigation controller.");
     _weekViewController.symptomTrackerWeekView.delegate = self;
 }
 

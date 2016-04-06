@@ -42,7 +42,8 @@
 
 /* Connect Master View */
 "CARE_TEAM_SECTION_TITLE" = "Care Team";
-"PERSONAL_SECTION_TITLE" = "Personal";
+"PERSONAL_SECTION_TITLE" = "Friends & Family";
+"CONNECT_NO_CONTACTS_TITLE" = "No contacts";
 
 /* Connect Detail View */
 "CONTACT_INFO_SECTION_TITLE" = "Contact Info";

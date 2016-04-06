@@ -46,6 +46,7 @@
     NSMutableArray *_constraints;
     NSMutableArray<NSArray<OCKContact *>*> *_sectionedContacts;
     NSMutableArray<NSString *> *_sectionTitles;
+    UILabel *_noContactsLabel;
 }
 
 + (instancetype)new {
@@ -59,8 +60,6 @@
 }
 
 - (instancetype)initWithContacts:(NSArray<OCKContact *> *)contacts {
-    NSAssert(contacts.count > 0, @"OCKConnectViewController requires at least one contact.");
-    
     self = [super init];
     if (self) {
         _contacts = [contacts copy];
@@ -70,7 +69,7 @@
         _tableView.delegate = self;
         [self.view addSubview:_tableView];
         
-        [self setUpConstraints];
+        [self prepareHeaderView];
     }
     return self;
 }
@@ -86,12 +85,12 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     NSAssert(self.navigationController, @"OCKConnectViewController must be embedded in a navigation controller.");
-    
 }
 
 - (void)setContacts:(NSArray<OCKContact *> *)contacts {
-    NSAssert(_contacts.count > 0, @"OCKConnectViewController requires at least one contact.");
     _contacts = [contacts copy];
+    [self prepareHeaderView];
+    [self createSectionedContacts];
     [_tableView reloadData];
 }
 
@@ -133,6 +132,27 @@
                                                                       constant:0.0]
                                         ]];
     
+    if (_contacts.count == 0) {
+        _noContactsLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        
+        [_constraints addObjectsFromArray:@[
+                                            [NSLayoutConstraint constraintWithItem:_noContactsLabel
+                                                                         attribute:NSLayoutAttributeCenterY
+                                                                         relatedBy:NSLayoutRelationEqual
+                                                                            toItem:self.view
+                                                                         attribute:NSLayoutAttributeCenterY
+                                                                        multiplier:1.0
+                                                                          constant:0.0],
+                                            [NSLayoutConstraint constraintWithItem:_noContactsLabel
+                                                                         attribute:NSLayoutAttributeCenterX
+                                                                         relatedBy:NSLayoutRelationEqual
+                                                                            toItem:self.view
+                                                                         attribute:NSLayoutAttributeCenterX
+                                                                        multiplier:1.0
+                                                                          constant:0.0]
+                                            ]];
+    }
+    
     [NSLayoutConstraint activateConstraints:_constraints];
 }
 
@@ -165,6 +185,24 @@
     }
 }
 
+- (void)prepareHeaderView {
+    if (_contacts.count == 0) {
+        if (!_noContactsLabel) {
+            _noContactsLabel = [UILabel new];
+            _noContactsLabel.text = OCKLocalizedString(@"CONNECT_NO_CONTACTS_TITLE", nil);
+            _noContactsLabel.textColor = [UIColor lightGrayColor];
+            _noContactsLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleTitle2];
+        }
+        [self.view addSubview:_noContactsLabel];
+    } else {
+        [_noContactsLabel removeFromSuperview];
+    }
+}
+
+- (void)viewWillLayoutSubviews {
+    [super viewWillLayoutSubviews];
+    [self setUpConstraints];
+}
 
 #pragma mark - UITableViewDelegate
 

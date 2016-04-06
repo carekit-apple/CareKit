@@ -573,12 +573,15 @@ DefineStringKey(TemperatureAssessment);
     {
         UIColor *color = BlueColor();
         OCKContact *contact = [[OCKContact alloc] initWithContactType:OCKContactTypeCareTeam
-                                                                 name:@"Dr. Giselle Guerrero"
+                                                           namePrefix:@"Dr."
+                                                            givenName:@"Giselle"
+                                                           middleName:nil
+                                                           familyName:@"Guerrero"
                                                              relation:@"Physician"
                                                             tintColor:color
-                                                          phoneNumber:nil
-                                                        messageNumber:nil
-                                                         emailAddress:nil
+                                                          phoneNumber:[CNPhoneNumber phoneNumberWithStringValue:@"123-456-7890"]
+                                                        messageNumber:[CNPhoneNumber phoneNumberWithStringValue:@"123-456-7890"]
+                                                         emailAddress:@"g_guerrero@hospital.edu"
                                                                 image:[UIImage imageNamed:@"doctor"]];
         [contacts addObject:contact];
     }
@@ -586,20 +589,26 @@ DefineStringKey(TemperatureAssessment);
     {
         UIColor *color = GreenColor();
         OCKContact *contact = [[OCKContact alloc] initWithContactType:OCKContactTypeCareTeam
-                                                                 name:@"Greg Apodaca"
+                                                           namePrefix:nil
+                                                            givenName:@"Greg"
+                                                           middleName:nil
+                                                           familyName:@"Apodaca"
                                                              relation:@"Nurse"
                                                             tintColor:color
                                                           phoneNumber:[CNPhoneNumber phoneNumberWithStringValue:@"123-456-7890"]
-                                                        messageNumber:nil
-                                                         emailAddress:@"nbrooks@researchkit.org"
-                                                                image:[UIImage imageNamed:@"nurse"]];
+                                                        messageNumber:[CNPhoneNumber phoneNumberWithStringValue:@"123-456-7890"]
+                                                         emailAddress:@"nbrooks@hospital.edu"
+                                                                image:nil];
         [contacts addObject:contact];
     }
     
     {
         UIColor *color = YellowColor();
-        OCKContact *contact = [[OCKContact alloc] initWithContactType:OCKContactTypePersonal
-                                                                 name:@"Kevin Frank"
+        OCKContact *contact = [[OCKContact alloc] initWithContactType:OCKContactTypeCareTeam
+                                                           namePrefix:nil
+                                                            givenName:@"Kevin"
+                                                           middleName:@"Johnson"
+                                                           familyName:@"Frank"
                                                              relation:@"Father"
                                                             tintColor:color
                                                           phoneNumber:[CNPhoneNumber phoneNumberWithStringValue:@"123-456-7890"]

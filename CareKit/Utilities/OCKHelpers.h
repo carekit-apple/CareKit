@@ -33,6 +33,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import "OCKDefines.h"
+#import "OCKContact.h"
 
 
 OCK_EXTERN NSString *const OCKErrorDomain OCK_AVAILABLE_DECL;
@@ -307,6 +308,9 @@ NSString *OCKPaddingWithNumberOfSpaces(NSUInteger numberOfPaddingSpaces);
 
 UIColor *OCKAppTintColor();
 
+NSString *OCKContactMonogramInitials(OCKContact *contact);
+
+NSString *OCKContactNameString(OCKContact *contact);
 
 #define OCKAccessibilityStringForVariables(firstString, ...) _OCKAccessibilityStringForVariables(firstString, ##__VA_ARGS__, __AXStringForVariablesSentinel)
 OCK_EXTERN NSString *const __AXStringForVariablesSentinel;

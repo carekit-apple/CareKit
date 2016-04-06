@@ -40,6 +40,7 @@ static const CGFloat ImageViewSize = 135.0;
 
 @implementation OCKConnectTableViewHeader {
     UIImageView *_imageView;
+    UILabel *_monogramLabel;
     UILabel *_titleLabel;
     UILabel *_relationLabel;
     UIView *_bottomEdge;
@@ -61,7 +62,6 @@ static const CGFloat ImageViewSize = 135.0;
 
 - (void)prepareView {
     self.backgroundColor = [UIColor whiteColor];
-    self.tintColor = (!_contact.tintColor) ? OCKAppTintColor() : _contact.tintColor;
     
     if (!_imageView) {
         _imageView = [UIImageView new];
@@ -71,15 +71,12 @@ static const CGFloat ImageViewSize = 135.0;
         _imageView.contentMode = UIViewContentModeScaleAspectFill;
         [self addSubview:_imageView];
     }
-    _imageView.layer.borderColor = self.tintColor.CGColor;
-    _imageView.image = (_contact.image) ? _contact.image : [UIImage imageNamed:@"contact" inBundle:[NSBundle bundleForClass:[self class]] compatibleWithTraitCollection:nil];
     
     if (!_titleLabel) {
         _titleLabel = [UILabel new];
         [self addSubview:_titleLabel];
     }
     _titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
-    _titleLabel.text = _contact.name;
     
     if (!_relationLabel) {
         _relationLabel = [UILabel new];
@@ -87,15 +84,38 @@ static const CGFloat ImageViewSize = 135.0;
         [self addSubview:_relationLabel];
     }
     _relationLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
-    _relationLabel.text = _contact.relation;
     
     if (!_bottomEdge) {
         _bottomEdge = [UIView new];
         [self addSubview:_bottomEdge];
     }
-    _bottomEdge.backgroundColor = self.tintColor;
     
     [self setUpConstraints];
+}
+
+- (void)updateView {
+    _imageView.layer.borderColor = self.tintColor.CGColor;
+    _bottomEdge.backgroundColor = self.tintColor;
+    
+    if (_contact.image) {
+        _imageView.image = _contact.image;
+        _imageView.backgroundColor = [UIColor clearColor];
+        
+        [_monogramLabel removeFromSuperview];
+    } else {
+        _imageView.backgroundColor = [UIColor grayColor];
+        
+        if (!_monogramLabel) {
+            _monogramLabel = [UILabel new];
+            _monogramLabel.textColor = [UIColor whiteColor];
+            _monogramLabel.font = [UIFont boldSystemFontOfSize:56.0];
+            [self addSubview:_monogramLabel];
+        }
+        _monogramLabel.text = OCKContactMonogramInitials(_contact);
+    }
+    
+    _relationLabel.text = _contact.relation;
+    _titleLabel.text = OCKContactNameString(_contact);
 }
 
 - (void)setUpConstraints {
@@ -188,13 +208,41 @@ static const CGFloat ImageViewSize = 135.0;
                                                                       constant:3.0]
                                         ]];
     
+    if (_monogramLabel) {
+        _monogramLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        
+        [_constraints addObjectsFromArray:@[
+                                            [NSLayoutConstraint constraintWithItem:_monogramLabel
+                                                                         attribute:NSLayoutAttributeCenterX
+                                                                         relatedBy:NSLayoutRelationEqual
+                                                                            toItem:_imageView
+                                                                         attribute:NSLayoutAttributeCenterX
+                                                                        multiplier:1.0
+                                                                          constant:0.0],
+                                            [NSLayoutConstraint constraintWithItem:_monogramLabel
+                                                                         attribute:NSLayoutAttributeCenterY
+                                                                         relatedBy:NSLayoutRelationEqual
+                                                                            toItem:_imageView
+                                                                         attribute:NSLayoutAttributeCenterY
+                                                                        multiplier:1.0
+                                                                          constant:0.0]
+                                            ]];
+    }
+
+    
     [NSLayoutConstraint activateConstraints:_constraints];
     
 }
 
 - (void)setContact:(OCKContact *)contact {
     _contact = contact;
-    [self prepareView];
+    self.tintColor = _contact.tintColor;
+    [self updateView];
+}
+
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    [self setUpConstraints];
 }
 
 - (void)dealloc {

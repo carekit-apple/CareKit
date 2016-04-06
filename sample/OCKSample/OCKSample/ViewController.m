@@ -550,7 +550,10 @@ DefineStringKey(TemperatureAssessment);
     {
         UIColor *color = BlueColor();
         OCKContact *contact = [[OCKContact alloc] initWithContactType:OCKContactTypeCareTeam
-                                                                 name:@"Dr. Giselle Guerrero"
+                                                           namePrefix:@"Dr."
+                                                            givenName:@"Giselle"
+                                                           middleName:nil
+                                                           familyName:@"Guerrero"
                                                              relation:@"Physician"
                                                             tintColor:color
                                                           phoneNumber:[CNPhoneNumber phoneNumberWithStringValue:@"123-456-7890"]
@@ -563,7 +566,10 @@ DefineStringKey(TemperatureAssessment);
     {
         UIColor *color = GreenColor();
         OCKContact *contact = [[OCKContact alloc] initWithContactType:OCKContactTypeCareTeam
-                                                                 name:@"Greg Apodaca"
+                                                           namePrefix:nil
+                                                            givenName:@"Greg"
+                                                           middleName:nil
+                                                           familyName:@"Apodaca"
                                                              relation:@"Nurse"
                                                             tintColor:color
                                                           phoneNumber:[CNPhoneNumber phoneNumberWithStringValue:@"123-456-7890"]
@@ -575,8 +581,11 @@ DefineStringKey(TemperatureAssessment);
     
     {
         UIColor *color = YellowColor();
-        OCKContact *contact = [[OCKContact alloc] initWithContactType:OCKContactTypePersonal
-                                                                 name:@"Kevin Frank"
+        OCKContact *contact = [[OCKContact alloc] initWithContactType:OCKContactTypeCareTeam
+                                                           namePrefix:nil
+                                                            givenName:@"Kevin"
+                                                           middleName:@"Johnson"
+                                                           familyName:@"Frank"
                                                              relation:@"Father"
                                                             tintColor:color
                                                           phoneNumber:[CNPhoneNumber phoneNumberWithStringValue:@"123-456-7890"]

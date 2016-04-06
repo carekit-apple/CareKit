@@ -530,6 +530,32 @@ UIColor *OCKAppTintColor() {
     return [[[UIApplication sharedApplication] delegate] window].tintColor;
 }
 
+NSString *OCKContactMonogramInitials(OCKContact *contact) {
+    NSMutableString *initials = [NSMutableString new];
+    [initials appendString:[contact.givenName substringToIndex:1]];
+    [initials appendString:[contact.familyName substringToIndex:1]];
+    return initials;
+}
+
+NSString *OCKContactNameString(OCKContact *contact) {
+    NSMutableString *nameString = [NSMutableString new];
+    if (contact.namePrefix) {
+        [nameString appendString:contact.namePrefix];
+        [nameString appendString:@" "];
+    }
+    
+    [nameString appendString:contact.givenName];
+    [nameString appendString:@" "];
+
+    if (contact.middleName) {
+        [nameString appendString:contact.middleName];
+        [nameString appendString:@" "];
+    }
+    
+    [nameString appendString:contact.familyName];
+    return nameString;
+}
+
 NSString *const __AXStringForVariablesSentinel = @"__AXStringForVariablesSentinel";
 
 NSString *_OCKAccessibilityStringForVariablesWithVariadics(id firstArgument, va_list arguments) {

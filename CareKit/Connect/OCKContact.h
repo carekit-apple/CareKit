@@ -63,7 +63,10 @@ OCK_CLASS_AVAILABLE
  Returns an initialized contact using the specified values.
  
  @param contactType         The contact type.
- @param name                The contact name.
+ @param namePrefix          The contact name prefix.
+ @param givenName           The contact given name or first name.
+ @param middleName          The contact middle name.
+ @param familyName          The contact family name or last name.
  @param relation            The relationship to the contact.
  @param tintColor           The contact tint color.
  @param phoneNumber         The contact phone number.
@@ -74,7 +77,10 @@ OCK_CLASS_AVAILABLE
  @return An initialized contact object.
  */
 - (instancetype)initWithContactType:(OCKContactType)type
-                               name:(NSString *)name
+                         namePrefix:(nullable NSString *)namePrefix
+                          givenName:(NSString *)givenName
+                         middleName:(nullable NSString *)middleName
+                         familyName:(NSString *)familyName
                            relation:(NSString *)relation
                           tintColor:(nullable UIColor *)tintColor
                         phoneNumber:(nullable CNPhoneNumber *)phoneNumber
@@ -91,9 +97,24 @@ OCK_CLASS_AVAILABLE
 @property (nonatomic, readonly) OCKContactType type;
 
 /**
- A string indicating the name for a contact.
+ A string indicating the name prefix for a contact.
  */
-@property (nonatomic, readonly) NSString *name;
+@property (nonatomic, readonly, nullable) NSString *namePrefix;
+
+/**
+ A string indicating the given name for a contact.
+ */
+@property (nonatomic, readonly) NSString *givenName;
+
+/**
+ A string indicating the middle name for a contact.
+ */
+@property (nonatomic, readonly, nullable) NSString *middleName;
+
+/**
+ A string indicating the family name for a contact.
+ */
+@property (nonatomic, readonly) NSString *familyName;
 
 /**
  A string indicating the relationship to a contact.
@@ -133,6 +154,8 @@ OCK_CLASS_AVAILABLE
 
 /**
  An image for a contact.
+ 
+ If an image is not provided, a monogram will be used for the contact.
  */
 @property (nonatomic, readonly, nullable) UIImage *image;
 

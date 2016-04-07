@@ -50,10 +50,12 @@
                         phoneNumber:(CNPhoneNumber *)phoneNumber
                       messageNumber:(CNPhoneNumber *)messageNumber
                        emailAddress:(NSString *)emailAddress
+                           monogram:(NSString *)monogram
                               image:(UIImage *)image {
     NSParameterAssert(givenName);
     NSParameterAssert(familyName);
     NSParameterAssert(relation);
+    NSParameterAssert(monogram);
     
     self = [super init];
     if (self) {
@@ -67,6 +69,7 @@
         _phoneNumber = [phoneNumber copy];
         _messageNumber = [messageNumber copy];
         _emailAddress = [emailAddress copy];
+        _monogram = [monogram copy];
         _image = image;
     }
     return self;
@@ -87,6 +90,7 @@
             OCKEqualObjects(self.phoneNumber, castObject.phoneNumber) &&
             OCKEqualObjects(self.messageNumber, castObject.messageNumber) &&
             OCKEqualObjects(self.emailAddress, castObject.emailAddress) &&
+            OCKEqualObjects(self.monogram, castObject.monogram) &&
             OCKEqualObjects(self.image, castObject.image));
 }
 
@@ -110,6 +114,7 @@
         OCK_DECODE_OBJ_CLASS(aDecoder, phoneNumber, CNPhoneNumber);
         OCK_DECODE_OBJ_CLASS(aDecoder, messageNumber, CNPhoneNumber);
         OCK_DECODE_OBJ_CLASS(aDecoder, emailAddress, NSString);
+        OCK_DECODE_OBJ_CLASS(aDecoder, monogram, NSString);
         OCK_DECODE_IMAGE(aDecoder, image);
     }
     return self;
@@ -126,6 +131,7 @@
     OCK_ENCODE_OBJ(aCoder, phoneNumber);
     OCK_ENCODE_OBJ(aCoder, messageNumber);
     OCK_ENCODE_OBJ(aCoder, emailAddress);
+    OCK_ENCODE_OBJ(aCoder, monogram);
     OCK_ENCODE_IMAGE(aCoder, image);
 }
 
@@ -144,6 +150,7 @@
     contact->_phoneNumber = self.phoneNumber;
     contact->_messageNumber = self.messageNumber;
     contact->_emailAddress = [self.emailAddress copy];
+    contact->_monogram = [self.monogram copy];
     contact->_image = self.image;
     return contact;
 }

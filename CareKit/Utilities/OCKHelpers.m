@@ -530,13 +530,6 @@ UIColor *OCKAppTintColor() {
     return [[[UIApplication sharedApplication] delegate] window].tintColor;
 }
 
-NSString *OCKContactMonogramInitials(OCKContact *contact) {
-    NSMutableString *initials = [NSMutableString new];
-    [initials appendString:[contact.givenName substringToIndex:1]];
-    [initials appendString:[contact.familyName substringToIndex:1]];
-    return initials;
-}
-
 NSString *OCKContactNameString(OCKContact *contact) {
     NSMutableString *nameString = [NSMutableString new];
     if (contact.namePrefix) {

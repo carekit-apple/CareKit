@@ -79,7 +79,7 @@ static const CGFloat ImageViewSize = 40.0;
             _monogramLabel.font = [UIFont boldSystemFontOfSize:16.0];
             [self addSubview:_monogramLabel];
         }
-        _monogramLabel.text = OCKContactMonogramInitials(_contact);
+        _monogramLabel.text = _contact.monogram;
     }
     
     if (!_nameLabel) {

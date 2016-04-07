@@ -111,7 +111,7 @@ static const CGFloat ImageViewSize = 135.0;
             _monogramLabel.font = [UIFont boldSystemFontOfSize:56.0];
             [self addSubview:_monogramLabel];
         }
-        _monogramLabel.text = OCKContactMonogramInitials(_contact);
+        _monogramLabel.text = _contact.monogram;
     }
     
     _relationLabel.text = _contact.relation;

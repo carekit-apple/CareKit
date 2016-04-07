@@ -616,7 +616,7 @@ DefineStringKey(TemperatureAssessment);
 }
 
 - (NSString *)connectViewController:(OCKConnectViewController *)connectViewController titleForSharingCellForContact:(OCKContact *)contact {
-    return NSLocalizedString(@"Share report", nil);
+    return nil;
 }
 
 @end

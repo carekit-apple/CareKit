@@ -614,7 +614,11 @@ DefineStringKey(TemperatureAssessment);
 #pragma mark - OCKConnectViewControllerDelegate
 
 - (NSString *)connectViewController:(OCKConnectViewController *)connectViewController titleForSharingCellForContact:(OCKContact *)contact {
-    return @"Send weekly reports";
+    NSString *title;
+    if (![contact isEqual:_contacts[1]]){
+        title = @"Send weekly reports";
+    }
+    return title;
 }
 
 - (void)connectViewController:(OCKConnectViewController *)connectViewController didSelectShareButtonForContact:(OCKContact *)contact {

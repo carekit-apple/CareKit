@@ -225,6 +225,8 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
         found = YES;
         [context deleteObject:managedObjects.firstObject];
         saved = [context save:&errorOut];
+    } else if (managedObjects.count == 0 && errorOut == nil) {
+        errorOut = [NSError errorWithDomain:OCKErrorDomain code:OCKErrorObjectNotFound userInfo:@{@"reason" : @"Item not found."}];
     }
     
     if (error && errorOut) {

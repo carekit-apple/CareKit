@@ -236,14 +236,18 @@
     
     
     expectation = [self expectationWithDescription:@"activityForIdentifier"];
-    [store activityForIdentifier:item2.identifier
-                      completion:^(BOOL success, OCKCarePlanActivity * _Nonnull activity, NSError * _Nonnull error) {
-                          XCTAssertFalse([NSThread isMainThread]);
-                          XCTAssertTrue(success);
-                          XCTAssertEqualObjects(activity, item2);
-                          XCTAssertNil(error);
-                          [expectation fulfill];
-                      }];
+    // test calling API from background thread.
+    dispatch_sync(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [store activityForIdentifier:item2.identifier
+                          completion:^(BOOL success, OCKCarePlanActivity * _Nonnull activity, NSError * _Nonnull error) {
+                              XCTAssertFalse([NSThread isMainThread]);
+                              XCTAssertTrue(success);
+                              XCTAssertEqualObjects(activity, item2);
+                              XCTAssertNil(error);
+                              [expectation fulfill];
+                          }];
+    });
+   
     [self waitForExpectationsWithTimeout:1.0 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
     }];
@@ -353,6 +357,18 @@
         XCTAssertNil(error);
     }];
     
+    expectation = [self expectationWithDescription:@"removeActivity again"];
+    [store removeActivity:activities[2] completion:^(BOOL success, NSError * _Nonnull error) {
+        XCTAssertFalse([NSThread isMainThread]);
+        XCTAssertFalse(success);
+        XCTAssertNotNil(error);
+        [expectation fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:1.0 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
+
     XCTAssertTrue([self isListChangeDelegateCalled]);
     
     expectation = [self expectationWithDescription:@"activities"];

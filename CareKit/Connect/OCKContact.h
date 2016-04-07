@@ -160,14 +160,14 @@ OCK_CLASS_AVAILABLE
  
  If a monogram is not provided, the image will be used for the contact.
  */
-@property (nonatomic, readonly) NSString *monogram;
+@property (nonatomic, readonly, nullable) NSString *monogram;
 
 /**
  An image for a contact.
  
  If an image is not provided, a monogram will be used for the contact.
  */
-@property (nonatomic, readonly) UIImage *image;
+@property (nonatomic, readonly, nullable) UIImage *image;
 
 @end
 

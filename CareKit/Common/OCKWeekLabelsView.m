@@ -32,8 +32,8 @@
 #import "OCKWeekLabelsView.h"
 
 static const CGFloat TopMargin = 15.0;
-static const CGFloat LeadingMargin = 11.0;
-static const CGFloat TrailingMargin = 11.0;
+static const CGFloat LeadingMargin = 6.0;
+static const CGFloat TrailingMargin = 6.0;
 
 @implementation OCKWeekLabelsView {
     NSMutableArray<UILabel *> *_weekLabels;
@@ -67,6 +67,7 @@ static const CGFloat TrailingMargin = 11.0;
             dayLabel.layer.cornerRadius = 3;
             dayLabel.clipsToBounds = YES;
             dayLabel.text = _weekStrings[i];
+            dayLabel.textAlignment = NSTextAlignmentCenter;
             dayLabel.accessibilityLabel = _axWeekStrings[i];
             [_weekLabels addObject:dayLabel];
         }
@@ -87,6 +88,18 @@ static const CGFloat TrailingMargin = 11.0;
     _constraints = [NSMutableArray new];
     
     _stackView.translatesAutoresizingMaskIntoConstraints = NO;
+    
+    for (int i = 0; i < _weekLabels.count; i++) {
+        [_constraints addObjectsFromArray:@[
+                                            [NSLayoutConstraint constraintWithItem:_weekLabels[i]
+                                                                         attribute:NSLayoutAttributeWidth
+                                                                         relatedBy:NSLayoutRelationEqual
+                                                                            toItem:nil
+                                                                         attribute:NSLayoutAttributeNotAnAttribute
+                                                                        multiplier:1.0
+                                                                          constant:18.0]
+                                            ]];
+    }
     
     [_constraints addObjectsFromArray:@[
                                         [NSLayoutConstraint constraintWithItem:_stackView

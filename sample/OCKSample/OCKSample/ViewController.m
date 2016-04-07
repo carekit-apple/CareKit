@@ -566,15 +566,15 @@ DefineStringKey(TemperatureAssessment);
                                                             tintColor:color
                                                           phoneNumber:[CNPhoneNumber phoneNumberWithStringValue:@"123-456-7890"]
                                                         messageNumber:[CNPhoneNumber phoneNumberWithStringValue:@"123-456-7890"]
-                                                         emailAddress:@"nbrooks@hospital.edu"
-                                                                image:[UIImage imageNamed:@"nurse"]];
+                                                         emailAddress:@"gapodaca@hospital.edu"
+                                                             monogram:@"GA"];
         [contacts addObject:contact];
     }
     
     {
         UIColor *color = YellowColor();
-        OCKContact *contact = [[OCKContact alloc] initWithContactType:OCKContactTypePersonal
-                                                                 name:@"Kevin Frank"
+        OCKContact *contact = [[OCKContact alloc] initWithContactType:OCKContactTypeCareTeam
+                                                                 name:@"Kevin Johnson"
                                                              relation:@"Father"
                                                             tintColor:color
                                                           phoneNumber:[CNPhoneNumber phoneNumberWithStringValue:@"123-456-7890"]

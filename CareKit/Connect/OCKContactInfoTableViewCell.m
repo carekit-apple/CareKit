@@ -58,7 +58,7 @@ static const CGFloat IconButtonSize = 35.0;
 }
 
 - (void)prepareView {
-    self.tintColor = (!_contact.tintColor) ? OCKAppTintColor() : _contact.tintColor;
+    self.tintColor = _contact.tintColor;
 
     if (!_iconButton) {
         _iconButton = [UIButton new];

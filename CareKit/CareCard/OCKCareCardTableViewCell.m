@@ -62,7 +62,7 @@ static const CGFloat ButtonViewSize = 40.0;
     }
     _interventionEvents = OCKArrayCopyObjects(interventionEvents);
     _intervention = _interventionEvents.firstObject.activity;
-    self.tintColor = (!_intervention.tintColor) ? OCKAppTintColor() : _intervention.tintColor;
+    self.tintColor = _intervention.tintColor;
     [self prepareView];
 }
 

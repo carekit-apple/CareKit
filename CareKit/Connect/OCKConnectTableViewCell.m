@@ -40,6 +40,7 @@ static const CGFloat ImageViewSize = 40.0;
 
 @implementation OCKConnectTableViewCell {
     UIImageView *_imageView;
+    UILabel *_monogramLabel;
     UILabel *_nameLabel;
     UILabel *_relationLabel;
     NSMutableArray *_constraints;
@@ -47,7 +48,7 @@ static const CGFloat ImageViewSize = 40.0;
 
 - (void)setContact:(OCKContact *)contact {
     _contact = contact;
-    self.tintColor = (!_contact.tintColor) ? OCKAppTintColor() : _contact.tintColor;
+    self.tintColor = _contact.tintColor;
     [self prepareView];
 }
 
@@ -64,25 +65,45 @@ static const CGFloat ImageViewSize = 40.0;
         _imageView.contentMode = UIViewContentModeScaleAspectFill;
         [self addSubview:_imageView];
     }
-    _imageView.layer.borderColor = self.tintColor.CGColor;
-    _imageView.image = (_contact.image) ? _contact.image : [UIImage imageNamed:@"contact" inBundle:[NSBundle bundleForClass:[self class]] compatibleWithTraitCollection:nil];
     
     if (!_nameLabel) {
         _nameLabel = [UILabel new];
         [self addSubview:_nameLabel];
     }
-    _nameLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
-    _nameLabel.text = _contact.name;
     
     if (!_relationLabel) {
         _relationLabel = [UILabel new];
         _relationLabel.textColor = [UIColor lightGrayColor];
         [self addSubview:_relationLabel];
     }
+    
+    [self updateView];
+    [self setUpConstraints];
+}
+
+- (void)updateView {
+    _imageView.layer.borderColor = self.tintColor.CGColor;
+    
+    if (_contact.image) {
+        _imageView.image = _contact.image;
+        _imageView.backgroundColor = [UIColor clearColor];
+        [_monogramLabel removeFromSuperview];
+    } else {
+        _imageView.backgroundColor = [UIColor grayColor];
+        if (!_monogramLabel) {
+            _monogramLabel = [UILabel new];
+            _monogramLabel.textColor = [UIColor whiteColor];
+            _monogramLabel.font = [UIFont boldSystemFontOfSize:16.0];
+            [self addSubview:_monogramLabel];
+        }
+        _monogramLabel.text = _contact.monogram;
+    }
+
+    _nameLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
+    _nameLabel.text = _contact.name;
+
     _relationLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
     _relationLabel.text = _contact.relation;
-    
-    [self setUpConstraints];
 }
 
 - (void)setUpConstraints {
@@ -176,6 +197,27 @@ static const CGFloat ImageViewSize = 40.0;
                                                                     multiplier:1.0
                                                                       constant:-BottomMargin],
                                         ]];
+    
+    if (_monogramLabel) {
+        _monogramLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        
+        [_constraints addObjectsFromArray:@[
+                                            [NSLayoutConstraint constraintWithItem:_monogramLabel
+                                                                         attribute:NSLayoutAttributeCenterX
+                                                                         relatedBy:NSLayoutRelationEqual
+                                                                            toItem:_imageView
+                                                                         attribute:NSLayoutAttributeCenterX
+                                                                        multiplier:1.0
+                                                                          constant:0.0],
+                                            [NSLayoutConstraint constraintWithItem:_monogramLabel
+                                                                         attribute:NSLayoutAttributeCenterY
+                                                                         relatedBy:NSLayoutRelationEqual
+                                                                            toItem:_imageView
+                                                                         attribute:NSLayoutAttributeCenterY
+                                                                        multiplier:1.0
+                                                                          constant:0.0]
+                                            ]];
+    }
     
     [NSLayoutConstraint activateConstraints:_constraints];
 }

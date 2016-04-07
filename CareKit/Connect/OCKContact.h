@@ -80,7 +80,31 @@ OCK_CLASS_AVAILABLE
                         phoneNumber:(nullable CNPhoneNumber *)phoneNumber
                       messageNumber:(nullable CNPhoneNumber *)messageNumber
                        emailAddress:(nullable NSString *)emailAddress
-                              image:(nullable UIImage *)image;
+                              image:(UIImage *)image;
+
+/**
+ Returns an initialized contact using the specified values.
+ 
+ @param contactType         The contact type.
+ @param name                The contact name.
+ @param relation            The relationship to the contact.
+ @param tintColor           The contact tint color.
+ @param phoneNumber         The contact phone number.
+ @param messageNumber       The contact message number.
+ @param emailAddress        The contact email address.
+ @param monogram            The contact monogram.
+ 
+ @return An initialized contact object.
+ */
+- (instancetype)initWithContactType:(OCKContactType)type
+                               name:(NSString *)name
+                           relation:(NSString *)relation
+                          tintColor:(nullable UIColor *)tintColor
+                        phoneNumber:(nullable CNPhoneNumber *)phoneNumber
+                      messageNumber:(nullable CNPhoneNumber *)messageNumber
+                       emailAddress:(nullable NSString *)emailAddress
+                           monogram:(NSString *)image;
+
 
 /**
  The contact type.
@@ -132,7 +156,16 @@ OCK_CLASS_AVAILABLE
 @property (nonatomic, readonly, nullable) NSString *emailAddress;
 
 /**
+ A string indicating the monogram for a contact.
+ 
+ If a monogram is not provided, the image will be used for the contact.
+ */
+@property (nonatomic, readonly, nullable) NSString *monogram;
+
+/**
  An image for a contact.
+ 
+ If an image is not provided, a monogram will be used for the contact.
  */
 @property (nonatomic, readonly, nullable) UIImage *image;
 

@@ -48,7 +48,9 @@ static const CGFloat VerticalMargin = 10.0;
 
 - (void)setChart:(OCKChart *)chart {
     _chart = chart;
-    self.tintColor = (!_chart.tintColor) ? OCKAppTintColor() : _chart.tintColor;
+    if (_chart.tintColor) {
+        self.tintColor = _chart.tintColor;
+    }
     [self prepareView];
 }
 

@@ -526,9 +526,6 @@ NSString *OCKPaddingWithNumberOfSpaces(NSUInteger numberOfPaddingSpaces) {
     return [@"" stringByPaddingToLength:numberOfPaddingSpaces withString:@" " startingAtIndex:0];
 }
 
-UIColor *OCKAppTintColor() {
-    return [[[UIApplication sharedApplication] delegate] window].tintColor;
-}
 
 NSString *const __AXStringForVariablesSentinel = @"__AXStringForVariablesSentinel";
 

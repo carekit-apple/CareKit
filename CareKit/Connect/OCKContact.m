@@ -48,8 +48,48 @@
                       messageNumber:(CNPhoneNumber *)messageNumber
                        emailAddress:(NSString *)emailAddress
                               image:(UIImage *)image {
+    return [self initWithContactType:type
+                                name:name
+                            relation:relation
+                           tintColor:tintColor
+                         phoneNumber:phoneNumber
+                       messageNumber:messageNumber
+                        emailAddress:emailAddress
+                            monogram:nil
+                               image:image];
+}
+
+- (instancetype)initWithContactType:(OCKContactType)type
+                               name:(NSString *)name
+                           relation:(NSString *)relation
+                          tintColor:(UIColor *)tintColor
+                        phoneNumber:(CNPhoneNumber *)phoneNumber
+                      messageNumber:(CNPhoneNumber *)messageNumber
+                       emailAddress:(NSString *)emailAddress
+                           monogram:(NSString *)monogram {
+    return [self initWithContactType:type
+                                name:name
+                            relation:relation
+                           tintColor:tintColor
+                         phoneNumber:phoneNumber
+                       messageNumber:messageNumber
+                        emailAddress:emailAddress
+                            monogram:monogram
+                               image:nil];
+}
+
+- (instancetype)initWithContactType:(OCKContactType)type
+                               name:(NSString *)name
+                           relation:(NSString *)relation
+                          tintColor:(UIColor *)tintColor
+                        phoneNumber:(CNPhoneNumber *)phoneNumber
+                      messageNumber:(CNPhoneNumber *)messageNumber
+                       emailAddress:(NSString *)emailAddress
+                           monogram:(NSString *)monogram
+                              image:(UIImage *)image {
     NSParameterAssert(name);
     NSParameterAssert(relation);
+    NSAssert((monogram || image), @"An OCKContact must have either a monogram or an image.");
     
     self = [super init];
     if (self) {
@@ -60,6 +100,7 @@
         _phoneNumber = [phoneNumber copy];
         _messageNumber = [messageNumber copy];
         _emailAddress = [emailAddress copy];
+        _monogram = [monogram copy];
         _image = image;
     }
     return self;
@@ -77,6 +118,7 @@
             OCKEqualObjects(self.phoneNumber, castObject.phoneNumber) &&
             OCKEqualObjects(self.messageNumber, castObject.messageNumber) &&
             OCKEqualObjects(self.emailAddress, castObject.emailAddress) &&
+            OCKEqualObjects(self.monogram, castObject.monogram) &&
             OCKEqualObjects(self.image, castObject.image));
 }
 
@@ -97,6 +139,7 @@
         OCK_DECODE_OBJ_CLASS(aDecoder, phoneNumber, CNPhoneNumber);
         OCK_DECODE_OBJ_CLASS(aDecoder, messageNumber, CNPhoneNumber);
         OCK_DECODE_OBJ_CLASS(aDecoder, emailAddress, NSString);
+        OCK_DECODE_OBJ_CLASS(aDecoder, monogram, NSString);
         OCK_DECODE_IMAGE(aDecoder, image);
     }
     return self;
@@ -110,6 +153,7 @@
     OCK_ENCODE_OBJ(aCoder, phoneNumber);
     OCK_ENCODE_OBJ(aCoder, messageNumber);
     OCK_ENCODE_OBJ(aCoder, emailAddress);
+    OCK_ENCODE_OBJ(aCoder, monogram);
     OCK_ENCODE_IMAGE(aCoder, image);
 }
 
@@ -125,6 +169,7 @@
     contact->_phoneNumber = self.phoneNumber;
     contact->_messageNumber = self.messageNumber;
     contact->_emailAddress = [self.emailAddress copy];
+    contact->_monogram = [self.monogram copy];
     contact->_image = self.image;
     return contact;
 }

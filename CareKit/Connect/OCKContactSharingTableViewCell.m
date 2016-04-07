@@ -53,7 +53,7 @@ static const CGFloat BottomMargin = 20.0;
 }
 
 - (void)prepareView {
-    self.tintColor = (!_contact.tintColor) ? OCKAppTintColor() : _contact.tintColor;
+    self.tintColor = _contact.tintColor;
     
     if (!_titleLabel) {
         _titleLabel = [UILabel new];

@@ -112,6 +112,13 @@ OCK_CLASS_AVAILABLE
  */
 @property (nonatomic, readonly, nullable) OCKCarePlanEvent *lastSelectedAssessmentEvent;
 
+/**
+ The tint color that will be used to fill the ring view.
+ 
+ If the value is not specified, the app's tint color is used.
+ */
+@property (nonatomic, null_resettable) UIColor *progressTintColor;
+
 @end
 
 NS_ASSUME_NONNULL_END

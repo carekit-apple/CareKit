@@ -418,6 +418,7 @@ DefineStringKey(TemperatureAssessment);
 - (OCKSymptomTrackerViewController *)symptomTrackerViewController {
     OCKSymptomTrackerViewController *symptomTrackerViewController = [[OCKSymptomTrackerViewController alloc] initWithCarePlanStore:_store];
     symptomTrackerViewController.delegate = self;
+    symptomTrackerViewController.progressTintColor = [UIColor greenColor];
     return symptomTrackerViewController;
 }
 
@@ -471,20 +472,20 @@ DefineStringKey(TemperatureAssessment);
         [assessments addObject:assessment];
     }
     
-    {
-        OCKCareSchedule *schedule = [OCKCareSchedule dailyScheduleWithStartDate:startDate occurrencesPerDay:1];
-        UIColor *color = YellowColor();
-        
-        OCKCarePlanActivity *assessment = [OCKCarePlanActivity assessmentWithIdentifier:TemperatureAssessment
-                                                                        groupIdentifier:nil
-                                                                                  title:@"Temperature"
-                                                                                   text:@"Oral"
-                                                                              tintColor:color
-                                                                       resultResettable:NO
-                                                                               schedule:schedule
-                                                                               userInfo:nil];
-        [assessments addObject:assessment];
-    }
+//    {
+//        OCKCareSchedule *schedule = [OCKCareSchedule dailyScheduleWithStartDate:startDate occurrencesPerDay:1];
+//        UIColor *color = YellowColor();
+//        
+//        OCKCarePlanActivity *assessment = [OCKCarePlanActivity assessmentWithIdentifier:TemperatureAssessment
+//                                                                        groupIdentifier:nil
+//                                                                                  title:@"Temperature"
+//                                                                                   text:@"Oral"
+//                                                                              tintColor:color
+//                                                                       resultResettable:NO
+//                                                                               schedule:schedule
+//                                                                               userInfo:nil];
+//        [assessments addObject:assessment];
+//    }
     
     _assessments = [assessments copy];
 }

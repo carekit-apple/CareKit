@@ -40,7 +40,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic) double value;
 
-@property (nonatomic) OCKCircleView *circleView;
+@property (nonatomic, readonly) OCKCircleView *circleView;
 
 @property (nonatomic, copy) NSString *date;
 

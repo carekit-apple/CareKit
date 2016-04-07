@@ -64,6 +64,11 @@ static const CGFloat RingViewSize = 110.0;
             self.backgroundColor = [UIColor whiteColor];
         }
         
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(updateFonts)
+                                                     name:UIContentSizeCategoryDidChangeNotification
+                                                   object:nil];
+        
         [self prepareView];
     }
     return self;
@@ -74,7 +79,6 @@ static const CGFloat RingViewSize = 110.0;
         _ringView = [[OCKRingView alloc] initWithFrame:CGRectMake(0, 0, RingViewSize, RingViewSize)];
         [self addSubview:_ringView];
     }
-    _ringView.value = _value;
     
     if (!_titleLabel) {
         _titleLabel = [UILabel new];
@@ -82,7 +86,6 @@ static const CGFloat RingViewSize = 110.0;
         _titleLabel.numberOfLines = 2;
         [self addSubview:_titleLabel];
     }
-    _titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
     
     if (!_dateLabel) {
         _dateLabel = [UILabel new];
@@ -90,8 +93,6 @@ static const CGFloat RingViewSize = 110.0;
         _dateLabel.numberOfLines = 2;
         [self addSubview:_dateLabel];
     }
-    _dateLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
-    _dateLabel.text = _date;
     
     if (!_topEdge) {
         _topEdge = [UIView new];
@@ -105,7 +106,19 @@ static const CGFloat RingViewSize = 110.0;
         [self addSubview:_bottomEdge];
     }
     
+    [self updateView];
+    [self updateFonts];
     [self setUpConstraints];
+}
+
+- (void)updateView {
+    _ringView.value = _value;
+    _dateLabel.text = _date;
+}
+
+- (void)updateFonts {
+    _titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
+    _dateLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
 }
 
 - (void)setUpConstraints {
@@ -239,12 +252,17 @@ static const CGFloat RingViewSize = 110.0;
 
 - (void)setValue:(double)value {
     _value = value;
-    _ringView.value = _value;
+    [self updateView];
 }
 
 - (void)setDate:(NSString *)date {
     _date = date;
-    _dateLabel.text = _date;
+    [self updateView];
+}
+
+- (void)tintColorDidChange {
+    [super tintColorDidChange];
+    [self updateView];
 }
 
 #pragma mark - Accessibility 

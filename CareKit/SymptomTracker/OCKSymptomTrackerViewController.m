@@ -84,6 +84,7 @@ static const CGFloat HeaderViewHeight = 150.0;
                                                                               style:UIBarButtonItemStylePlain
                                                                              target:self
                                                                              action:@selector(showToday:)];
+    self.navigationItem.rightBarButtonItem.tintColor = _progressTintColor;
     
     _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
     _tableView.dataSource = self;
@@ -115,6 +116,7 @@ static const CGFloat HeaderViewHeight = 150.0;
     if (!_headerView) {
         _headerView = [[OCKSymptomTrackerTableViewHeader alloc] initWithFrame:CGRectMake(0, 0, _tableView.frame.size.width, HeaderViewHeight)];
     }
+    _headerView.tintColor = _progressTintColor;
     [self updateHeaderView];
     
     if (!_pageViewController) {
@@ -126,6 +128,7 @@ static const CGFloat HeaderViewHeight = 150.0;
         
         OCKWeekViewController *weekController = [[OCKWeekViewController alloc] initWithShowCareCardWeekView:NO];
         weekController.symptomTrackerWeekView.delegate = _weekViewController.symptomTrackerWeekView.delegate;
+        weekController.symptomTrackerWeekView.tintColor = _progressTintColor;
         _weekViewController = weekController;
         
         [_pageViewController setViewControllers:@[weekController] direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:nil];
@@ -200,6 +203,17 @@ static const CGFloat HeaderViewHeight = 150.0;
     _weekViewController.symptomTrackerWeekView.selectedIndex = self.selectedDate.weekday - 1;
     
     [self fetchEvents];
+}
+
+- (void)setProgressTintColor:(UIColor *)progressTintColor {
+    _progressTintColor = progressTintColor;
+    if (!_progressTintColor) {
+        _progressTintColor = self.view.tintColor;
+    }
+    
+    _weekViewController.symptomTrackerWeekView.tintColor = _progressTintColor;
+    _headerView.tintColor = _progressTintColor;
+    self.navigationItem.rightBarButtonItem.tintColor = _progressTintColor;
 }
 
 
@@ -361,12 +375,14 @@ static const CGFloat HeaderViewHeight = 150.0;
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController {
     OCKWeekViewController *controller = [[OCKWeekViewController alloc] initWithShowCareCardWeekView:NO];
     controller.weekIndex = ((OCKWeekViewController *)viewController).weekIndex - 1;
+    controller.symptomTrackerWeekView.tintColor = _progressTintColor;
     return controller;
 }
 
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController {
     OCKWeekViewController *controller = [[OCKWeekViewController alloc] initWithShowCareCardWeekView:NO];
     controller.weekIndex = ((OCKWeekViewController *)viewController).weekIndex + 1;
+    controller.symptomTrackerWeekView.tintColor = _progressTintColor;
     return (![self.selectedDate isInSameWeekAsDate:[self today]]) ? controller : nil;
 }
 

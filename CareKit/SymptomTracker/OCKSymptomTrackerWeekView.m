@@ -217,4 +217,12 @@ static const CGFloat BottomMargin = 5.0;
     [self setUpConstraints];
 }
 
+- (void)tintColorDidChange {
+    [super tintColorDidChange];
+    for (OCKRingButton *button in _ringButtons) {
+        button.ringView.tintColor = self.tintColor;
+    }
+    _weekView.tintColor = self.tintColor;
+}
+
 @end

@@ -177,24 +177,17 @@ static const CGFloat HeaderViewHeight = 150.0;
                                         [NSLayoutConstraint constraintWithItem:_pageViewController.view
                                                                      attribute:NSLayoutAttributeWidth
                                                                      relatedBy:NSLayoutRelationEqual
-                                                                        toItem:nil
-                                                                     attribute:NSLayoutAttributeNotAnAttribute
+                                                                        toItem:self.view
+                                                                     attribute:NSLayoutAttributeWidth
                                                                     multiplier:1.0
-                                                                      constant:self.view.frame.size.width],
+                                                                      constant:0.0],
                                         [NSLayoutConstraint constraintWithItem:_pageViewController.view
                                                                      attribute:NSLayoutAttributeHeight
                                                                      relatedBy:NSLayoutRelationEqual
                                                                         toItem:nil
                                                                      attribute:NSLayoutAttributeNotAnAttribute
                                                                     multiplier:1.0
-                                                                      constant:60.0],
-                                        [NSLayoutConstraint constraintWithItem:_pageViewController.view
-                                                                     attribute:NSLayoutAttributeCenterX
-                                                                     relatedBy:NSLayoutRelationEqual
-                                                                        toItem:self.view
-                                                                     attribute:NSLayoutAttributeCenterX
-                                                                    multiplier:1.0
-                                                                      constant:0.0]
+                                                                      constant:60.0]
                                         ]];
     
     [NSLayoutConstraint activateConstraints:_constraints];

@@ -37,12 +37,17 @@
 #import "OCKHelpers.h"
 #import "OCKDefines_Private.h"
 
-const static CGFloat HeartButtonSize = 20.0;
+static const CGFloat HeartButtonSize = 20.0;
+static const CGFloat TopMargin = 15.0;
+static const CGFloat LeadingMargin = 15.0;
+static const CGFloat TrailingMargin = 15.0;
+static const CGFloat BottomMargin = 5.0;
 
 @implementation OCKCareCardWeekView {
     OCKWeekLabelsView *_weekView;
     NSMutableArray<OCKHeartButton *> *_heartButtons;
     NSMutableArray *_constraints;
+    UIStackView *_stackView;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame {
@@ -68,7 +73,7 @@ const static CGFloat HeartButtonSize = 20.0;
 
 - (void)prepareView {
     if (!_weekView) {
-        _weekView = [[OCKWeekLabelsView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, 25.0)];
+        _weekView = [[OCKWeekLabelsView alloc] initWithFrame:CGRectZero];
         [self addSubview:_weekView];
     }
     
@@ -76,15 +81,13 @@ const static CGFloat HeartButtonSize = 20.0;
         _heartButtons = [NSMutableArray new];
         for (int i = 0; i < 7; i++) {
             OCKHeartButton *heartButton = [[OCKHeartButton alloc] initWithFrame:CGRectMake(0, 0, HeartButtonSize, HeartButtonSize)];
-            heartButton.translatesAutoresizingMaskIntoConstraints = NO;
             
             OCKHeartView *heartView = [[OCKHeartView alloc] initWithFrame:CGRectMake(0, 0, HeartButtonSize + 10, HeartButtonSize + 10)];
-            heartView.translatesAutoresizingMaskIntoConstraints = NO;
             heartView.userInteractionEnabled = NO;
             heartView.maskImage = _smallMaskImage;
             heartView.tintColor = self.tintColor;
-            heartButton.heartView = heartView;
             
+            heartButton.heartView = heartView;
             [heartButton addTarget:self
                             action:@selector(updateDayOfWeek:)
                   forControlEvents:UIControlEventTouchDown];
@@ -92,9 +95,14 @@ const static CGFloat HeartButtonSize = 20.0;
             UILabel *dayLabel = (UILabel *)_weekView.weekLabels[i];
             heartButton.accessibilityLabel = [dayLabel accessibilityLabel];
             
-            [self addSubview:heartButton];
             [_heartButtons addObject:heartButton];
         }
+    }
+    
+    if (!_stackView) {
+        _stackView = [[UIStackView alloc] initWithArrangedSubviews:_heartButtons];
+        _stackView.distribution = UIStackViewDistributionEqualSpacing;
+        [self addSubview:_stackView];
     }
     
     [self setUpConstraints];
@@ -106,6 +114,7 @@ const static CGFloat HeartButtonSize = 20.0;
     _constraints = [NSMutableArray new];
     
     _weekView.translatesAutoresizingMaskIntoConstraints = NO;
+    _stackView.translatesAutoresizingMaskIntoConstraints = NO;
     
     [_constraints addObjectsFromArray:@[
                                         [NSLayoutConstraint constraintWithItem:_weekView
@@ -114,49 +123,50 @@ const static CGFloat HeartButtonSize = 20.0;
                                                                         toItem:self
                                                                      attribute:NSLayoutAttributeTop
                                                                     multiplier:1.0
-                                                                      constant:-5.0],
+                                                                      constant:-TopMargin],
                                         [NSLayoutConstraint constraintWithItem:_weekView
-                                                                     attribute:NSLayoutAttributeCenterX
+                                                                     attribute:NSLayoutAttributeLeading
                                                                      relatedBy:NSLayoutRelationEqual
                                                                         toItem:self
-                                                                     attribute:NSLayoutAttributeCenterX
+                                                                     attribute:NSLayoutAttributeLeading
                                                                     multiplier:1.0
-                                                                      constant:0.0]
+                                                                      constant:LeadingMargin],
+                                        [NSLayoutConstraint constraintWithItem:_weekView
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                    multiplier:1.0
+                                                                      constant:-TrailingMargin],
+                                        [NSLayoutConstraint constraintWithItem:_stackView
+                                                                     attribute:NSLayoutAttributeLeading
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeLeading
+                                                                    multiplier:1.0
+                                                                      constant:LeadingMargin],
+                                        [NSLayoutConstraint constraintWithItem:_stackView
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                    multiplier:1.0
+                                                                      constant:-TrailingMargin],
+                                        [NSLayoutConstraint constraintWithItem:_stackView
+                                                                     attribute:NSLayoutAttributeTop
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:_weekView
+                                                                     attribute:NSLayoutAttributeBottom
+                                                                    multiplier:1.0
+                                                                      constant:0.0],
+                                        [NSLayoutConstraint constraintWithItem:_stackView
+                                                                     attribute:NSLayoutAttributeBottom
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeBottom
+                                                                    multiplier:1.0
+                                                                      constant:-BottomMargin]
                                         ]];
-    
-    for (int i = 0; i < _heartButtons.count; i++) {
-        UILabel *dayLabel = (UILabel *)_weekView.weekLabels[i];
-        [_constraints addObjectsFromArray:@[
-                                            [NSLayoutConstraint constraintWithItem:dayLabel
-                                                                         attribute:NSLayoutAttributeBottom
-                                                                         relatedBy:NSLayoutRelationEqual
-                                                                            toItem:_heartButtons[i]
-                                                                         attribute:NSLayoutAttributeTop
-                                                                        multiplier:1.0
-                                                                          constant:-3.0],
-                                            [NSLayoutConstraint constraintWithItem:dayLabel
-                                                                         attribute:NSLayoutAttributeCenterX
-                                                                         relatedBy:NSLayoutRelationEqual
-                                                                            toItem:_heartButtons[i]
-                                                                         attribute:NSLayoutAttributeCenterX
-                                                                        multiplier:1.0
-                                                                          constant:0.0],
-                                            [NSLayoutConstraint constraintWithItem:_heartButtons[i]
-                                                                         attribute:NSLayoutAttributeWidth
-                                                                         relatedBy:NSLayoutRelationEqual
-                                                                            toItem:nil
-                                                                         attribute:NSLayoutAttributeNotAnAttribute
-                                                                        multiplier:1.0
-                                                                          constant:HeartButtonSize + 10],
-                                            [NSLayoutConstraint constraintWithItem:_heartButtons[i]
-                                                                         attribute:NSLayoutAttributeHeight
-                                                                         relatedBy:NSLayoutRelationEqual
-                                                                            toItem:nil
-                                                                         attribute:NSLayoutAttributeNotAnAttribute
-                                                                        multiplier:1.0
-                                                                          constant:HeartButtonSize + 10]
-                                            ]];
-    }
     
     [NSLayoutConstraint activateConstraints:_constraints];
 }

@@ -58,8 +58,8 @@ typedef NS_ENUM(NSInteger, OCKMessageItemType) {
  Returns an initialzed message item using the specified values.
  
  @param title           The title for the message item (see `OCKInsightItem`).
- @param text            The description text for the message item (see `OCKInsighItem`).
- @param tintColor       The tint color for the message item (see `OCKInsighItem`).
+ @param text            The description text for the message item (see `OCKInsightItem`).
+ @param tintColor       The tint color for the message item (see `OCKInsightItem`).
  @param messageType     The message item type.
  
  @return An initialzed message item.

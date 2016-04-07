@@ -190,24 +190,17 @@ static const CGFloat HeaderViewHeight = 150.0;
                                         [NSLayoutConstraint constraintWithItem:_pageViewController.view
                                                                      attribute:NSLayoutAttributeWidth
                                                                      relatedBy:NSLayoutRelationEqual
-                                                                        toItem:nil
-                                                                     attribute:NSLayoutAttributeNotAnAttribute
+                                                                        toItem:self.view
+                                                                     attribute:NSLayoutAttributeWidth
                                                                     multiplier:1.0
-                                                                      constant:self.view.frame.size.width],
+                                                                      constant:0.0],
                                         [NSLayoutConstraint constraintWithItem:_pageViewController.view
                                                                      attribute:NSLayoutAttributeHeight
                                                                      relatedBy:NSLayoutRelationEqual
                                                                         toItem:nil
                                                                      attribute:NSLayoutAttributeNotAnAttribute
                                                                     multiplier:1.0
-                                                                      constant:60.0],
-                                        [NSLayoutConstraint constraintWithItem:_pageViewController.view
-                                                                     attribute:NSLayoutAttributeCenterX
-                                                                     relatedBy:NSLayoutRelationEqual
-                                                                        toItem:self.view
-                                                                     attribute:NSLayoutAttributeCenterX
-                                                                    multiplier:1.0
-                                                                      constant:0.0]
+                                                                      constant:60.0]
                                         ]];
     
     [NSLayoutConstraint activateConstraints:_constraints];
@@ -447,8 +440,13 @@ static const CGFloat HeaderViewHeight = 150.0;
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     OCKCarePlanActivity *selectedActivity = _events[indexPath.row].firstObject.activity;
     
-    OCKCareCardDetailViewController *detailViewController = [[OCKCareCardDetailViewController alloc] initWithIntervention:selectedActivity];
-    [self.navigationController pushViewController:detailViewController animated:YES];
+    if (_delegate &&
+        [_delegate respondsToSelector:@selector(careCardViewController:didSelectRowWithInterventionActivity:)]) {
+        [_delegate careCardViewController:self didSelectRowWithInterventionActivity:selectedActivity];
+    } else {
+        OCKCareCardDetailViewController *detailViewController = [[OCKCareCardDetailViewController alloc] initWithIntervention:selectedActivity];
+        [self.navigationController pushViewController:detailViewController animated:YES];
+    }
     
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
 }

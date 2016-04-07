@@ -418,6 +418,7 @@ DefineStringKey(TemperatureAssessment);
 - (OCKSymptomTrackerViewController *)symptomTrackerViewController {
     OCKSymptomTrackerViewController *symptomTrackerViewController = [[OCKSymptomTrackerViewController alloc] initWithCarePlanStore:_store];
     symptomTrackerViewController.delegate = self;
+    symptomTrackerViewController.progressRingTintColor = [UIColor greenColor];
     return symptomTrackerViewController;
 }
 

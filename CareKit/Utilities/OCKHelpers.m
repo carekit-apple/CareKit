@@ -526,37 +526,6 @@ NSString *OCKPaddingWithNumberOfSpaces(NSUInteger numberOfPaddingSpaces) {
     return [@"" stringByPaddingToLength:numberOfPaddingSpaces withString:@" " startingAtIndex:0];
 }
 
-UIColor *OCKAppTintColor() {
-    return [[[UIApplication sharedApplication] delegate] window].tintColor;
-}
-
-NSString *OCKContactNameString(OCKContact *contact) {
-    NSMutableString *nameString = [NSMutableString new];
-    if (contact.namePrefix) {
-        [nameString appendString:contact.namePrefix];
-        [nameString appendString:@" "];
-    }
-    
-    if (OCKCurrentLocalePresentsFamilyNameFirst()) {
-        [nameString appendString:contact.familyName];
-    } else {
-        [nameString appendString:contact.givenName];
-    }
-    [nameString appendString:@" "];
-
-    if (contact.middleName) {
-        [nameString appendString:contact.middleName];
-        [nameString appendString:@" "];
-    }
-    
-    if (OCKCurrentLocalePresentsFamilyNameFirst()) {
-        [nameString appendString:contact.givenName];
-    } else {
-        [nameString appendString:contact.familyName];
-    }
-
-    return nameString;
-}
 
 NSString *const __AXStringForVariablesSentinel = @"__AXStringForVariablesSentinel";
 

@@ -172,7 +172,7 @@
 
 - (UIColor *)chartView:(OCKGroupedBarChartView *)chartView colorForDataSeriesAtIndex:(NSUInteger)dataSeriesIndex {
     OCKBarSeries *dataSeries = _dataSeries[dataSeriesIndex];
-    return dataSeries.tintColor;
+    return (dataSeries.tintColor) ? dataSeries.tintColor : chartView.tintColor;
 }
 
 - (NSString *)chartView:(OCKGroupedBarChartView *)chartView nameForDataSeriesAtIndex:(NSUInteger)dataSeriesIndex {

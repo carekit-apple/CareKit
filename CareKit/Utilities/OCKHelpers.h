@@ -306,12 +306,6 @@ void OCKAdjustPageViewControllerNavigationDirectionForRTL(UIPageViewControllerNa
 
 NSString *OCKPaddingWithNumberOfSpaces(NSUInteger numberOfPaddingSpaces);
 
-UIColor *OCKAppTintColor();
-
-NSString *OCKContactMonogramInitials(OCKContact *contact);
-
-NSString *OCKContactNameString(OCKContact *contact);
-
 #define OCKAccessibilityStringForVariables(firstString, ...) _OCKAccessibilityStringForVariables(firstString, ##__VA_ARGS__, __AXStringForVariablesSentinel)
 OCK_EXTERN NSString *const __AXStringForVariablesSentinel;
 NSString *_OCKAccessibilityStringForVariables(id firstArgument, ...);

@@ -41,10 +41,45 @@
 }
 
 - (instancetype)initWithContactType:(OCKContactType)type
-                         namePrefix:(NSString *)namePrefix
-                          givenName:(NSString *)givenName
-                         middleName:(NSString *)middleName
-                         familyName:(NSString *)familyName
+                               name:(NSString *)name
+                           relation:(NSString *)relation
+                          tintColor:(UIColor *)tintColor
+                        phoneNumber:(CNPhoneNumber *)phoneNumber
+                      messageNumber:(CNPhoneNumber *)messageNumber
+                       emailAddress:(NSString *)emailAddress
+                              image:(UIImage *)image {
+    return [self initWithContactType:type
+                                name:name
+                            relation:relation
+                           tintColor:tintColor
+                         phoneNumber:phoneNumber
+                       messageNumber:messageNumber
+                        emailAddress:emailAddress
+                            monogram:nil
+                               image:image];
+}
+
+- (instancetype)initWithContactType:(OCKContactType)type
+                               name:(NSString *)name
+                           relation:(NSString *)relation
+                          tintColor:(UIColor *)tintColor
+                        phoneNumber:(CNPhoneNumber *)phoneNumber
+                      messageNumber:(CNPhoneNumber *)messageNumber
+                       emailAddress:(NSString *)emailAddress
+                           monogram:(NSString *)monogram {
+    return [self initWithContactType:type
+                                name:name
+                            relation:relation
+                           tintColor:tintColor
+                         phoneNumber:phoneNumber
+                       messageNumber:messageNumber
+                        emailAddress:emailAddress
+                            monogram:monogram
+                               image:nil];
+}
+
+- (instancetype)initWithContactType:(OCKContactType)type
+                               name:(NSString *)name
                            relation:(NSString *)relation
                           tintColor:(UIColor *)tintColor
                         phoneNumber:(CNPhoneNumber *)phoneNumber
@@ -52,18 +87,14 @@
                        emailAddress:(NSString *)emailAddress
                            monogram:(NSString *)monogram
                               image:(UIImage *)image {
-    NSParameterAssert(givenName);
-    NSParameterAssert(familyName);
+    NSParameterAssert(name);
     NSParameterAssert(relation);
-    NSParameterAssert(monogram);
+    NSAssert((monogram || image), @"An OCKContact must have either a monogram or an image.");
     
     self = [super init];
     if (self) {
         _type = type;
-        _namePrefix = [namePrefix copy];
-        _givenName = [givenName copy];
-        _middleName = [middleName copy];
-        _familyName = [familyName copy];
+        _name = [name copy];
         _relation = [relation copy];
         _tintColor = tintColor;
         _phoneNumber = [phoneNumber copy];
@@ -81,10 +112,7 @@
     __typeof(self) castObject = object;
     return (isParentSame &&
             (self.type == castObject.type) &&
-            OCKEqualObjects(self.namePrefix, castObject.namePrefix) &&
-            OCKEqualObjects(self.givenName, castObject.givenName) &&
-            OCKEqualObjects(self.middleName, castObject.middleName) &&
-            OCKEqualObjects(self.familyName, castObject.familyName) &&
+            OCKEqualObjects(self.name, castObject.name) &&
             OCKEqualObjects(self.relation, castObject.relation) &&
             OCKEqualObjects(self.tintColor, castObject.tintColor) &&
             OCKEqualObjects(self.phoneNumber, castObject.phoneNumber) &&
@@ -105,10 +133,7 @@
     self = [super init];
     if (self) {
         OCK_DECODE_ENUM(aDecoder, type);
-        OCK_DECODE_OBJ_CLASS(aDecoder, namePrefix, NSString);
-        OCK_DECODE_OBJ_CLASS(aDecoder, givenName, NSString);
-        OCK_DECODE_OBJ_CLASS(aDecoder, middleName, NSString);
-        OCK_DECODE_OBJ_CLASS(aDecoder, familyName, NSString);
+        OCK_DECODE_OBJ_CLASS(aDecoder, name, NSString);
         OCK_DECODE_OBJ_CLASS(aDecoder, relation, NSString);
         OCK_DECODE_OBJ_CLASS(aDecoder, tintColor, UIColor);
         OCK_DECODE_OBJ_CLASS(aDecoder, phoneNumber, CNPhoneNumber);
@@ -122,10 +147,7 @@
 
 - (void)encodeWithCoder:(NSCoder *)aCoder {
     OCK_ENCODE_ENUM(aCoder, type);
-    OCK_ENCODE_OBJ(aCoder, namePrefix);
-    OCK_ENCODE_OBJ(aCoder, givenName);
-    OCK_ENCODE_OBJ(aCoder, middleName);
-    OCK_ENCODE_OBJ(aCoder, familyName);
+    OCK_ENCODE_OBJ(aCoder, name);
     OCK_ENCODE_OBJ(aCoder, relation);
     OCK_ENCODE_OBJ(aCoder, tintColor);
     OCK_ENCODE_OBJ(aCoder, phoneNumber);
@@ -141,10 +163,7 @@
 - (instancetype)copyWithZone:(NSZone *)zone {
     OCKContact *contact = [[[self class] allocWithZone:zone] init];
     contact->_type = self.type;
-    contact->_namePrefix = [self.namePrefix copy];
-    contact->_givenName = [self.givenName copy];
-    contact->_middleName = [self.middleName copy];
-    contact->_familyName = [self.familyName copy];
+    contact->_name = [self.name copy];
     contact->_relation = [self.relation copy];
     contact->_tintColor = self.tintColor;
     contact->_phoneNumber = self.phoneNumber;

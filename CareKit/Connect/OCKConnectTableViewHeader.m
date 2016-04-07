@@ -115,7 +115,7 @@ static const CGFloat ImageViewSize = 135.0;
     }
     
     _relationLabel.text = _contact.relation;
-    _titleLabel.text = OCKContactNameString(_contact);
+    _titleLabel.text = _contact.name;
 }
 
 - (void)setUpConstraints {

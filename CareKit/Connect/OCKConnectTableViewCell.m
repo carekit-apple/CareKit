@@ -65,6 +65,23 @@ static const CGFloat ImageViewSize = 40.0;
         _imageView.contentMode = UIViewContentModeScaleAspectFill;
         [self addSubview:_imageView];
     }
+    
+    if (!_nameLabel) {
+        _nameLabel = [UILabel new];
+        [self addSubview:_nameLabel];
+    }
+    
+    if (!_relationLabel) {
+        _relationLabel = [UILabel new];
+        _relationLabel.textColor = [UIColor lightGrayColor];
+        [self addSubview:_relationLabel];
+    }
+    
+    [self updateView];
+    [self setUpConstraints];
+}
+
+- (void)updateView {
     _imageView.layer.borderColor = self.tintColor.CGColor;
     
     if (_contact.image) {
@@ -81,23 +98,12 @@ static const CGFloat ImageViewSize = 40.0;
         }
         _monogramLabel.text = _contact.monogram;
     }
-    
-    if (!_nameLabel) {
-        _nameLabel = [UILabel new];
-        [self addSubview:_nameLabel];
-    }
+
     _nameLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
-    _nameLabel.text = OCKContactNameString(_contact);
-    
-    if (!_relationLabel) {
-        _relationLabel = [UILabel new];
-        _relationLabel.textColor = [UIColor lightGrayColor];
-        [self addSubview:_relationLabel];
-    }
+    _nameLabel.text = _contact.name;
+
     _relationLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
     _relationLabel.text = _contact.relation;
-    
-    [self setUpConstraints];
 }
 
 - (void)setUpConstraints {

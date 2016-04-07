@@ -87,7 +87,7 @@ static const CGFloat TopMargin = 15.0;
 }
 
 - (void)updateView {
-    self.tintColor = (!_intervention.tintColor) ? OCKAppTintColor() : _intervention.tintColor;
+    self.tintColor = _intervention.tintColor;
     _titleLabel.text = _intervention.title;
     _textLabel.text = _intervention.text;
     _bottomEdge.backgroundColor = self.tintColor;

@@ -59,7 +59,7 @@ static NSString *TipSymbol = @"\u2731";
 
 - (void)setMessageItem:(OCKMessageItem *)messageItem {
     _messageItem = messageItem;
-    self.tintColor = (!_messageItem.tintColor) ? OCKAppTintColor() : _messageItem.tintColor;
+    self.tintColor = _messageItem.tintColor;
     [self updateView];
 }
 

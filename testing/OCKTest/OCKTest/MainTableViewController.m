@@ -615,7 +615,7 @@ DefineStringKey(TemperatureAssessment);
 
 - (NSString *)connectViewController:(OCKConnectViewController *)connectViewController titleForSharingCellForContact:(OCKContact *)contact {
     NSString *title;
-    if (![contact isEqual:_contacts[1]])){
+    if (![contact isEqual:_contacts[1]]){
         title = @"Send weekly reports";
     }
     return title;

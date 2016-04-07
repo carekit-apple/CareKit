@@ -117,7 +117,7 @@ OCK_CLASS_AVAILABLE
  
  If the value is not specified, the app's tint color is used.
  */
-@property (nonatomic, null_resettable) UIColor *progressTintColor;
+@property (nonatomic, null_resettable) UIColor *progressRingTintColor;
 
 @end
 

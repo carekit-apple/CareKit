@@ -537,7 +537,11 @@ NSString *OCKContactNameString(OCKContact *contact) {
         [nameString appendString:@" "];
     }
     
-    [nameString appendString:contact.givenName];
+    if (OCKCurrentLocalePresentsFamilyNameFirst()) {
+        [nameString appendString:contact.familyName];
+    } else {
+        [nameString appendString:contact.givenName];
+    }
     [nameString appendString:@" "];
 
     if (contact.middleName) {
@@ -545,7 +549,12 @@ NSString *OCKContactNameString(OCKContact *contact) {
         [nameString appendString:@" "];
     }
     
-    [nameString appendString:contact.familyName];
+    if (OCKCurrentLocalePresentsFamilyNameFirst()) {
+        [nameString appendString:contact.givenName];
+    } else {
+        [nameString appendString:contact.familyName];
+    }
+
     return nameString;
 }
 

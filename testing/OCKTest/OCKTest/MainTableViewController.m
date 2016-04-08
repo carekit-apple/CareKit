@@ -267,7 +267,6 @@ DefineStringKey(BandageChangeIntervention);
     
     {
         OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@4,@10,@10,@12,@12,@0,@0]];
-        UIColor *color = BlueColor();
         
         UIGraphicsBeginImageContext(self.view.frame.size);
         [self.view.layer renderInContext:UIGraphicsGetCurrentContext()];
@@ -429,7 +428,6 @@ DefineStringKey(TemperatureAssessment);
     
     {
         OCKCareSchedule *schedule = [OCKCareSchedule dailyScheduleWithStartDate:startDate occurrencesPerDay:1];
-        UIColor *color = PurpleColor();
         
         OCKCarePlanActivity *assessment = [OCKCarePlanActivity assessmentWithIdentifier:RangeOfMotionAssessment
                                                                         groupIdentifier:nil
@@ -596,7 +594,6 @@ DefineStringKey(TemperatureAssessment);
     }
     
     {
-        UIColor *color = YellowColor();
         OCKContact *contact = [[OCKContact alloc] initWithContactType:OCKContactTypeCareTeam
                                                                  name:@"Kevin Johnson"
                                                              relation:@"Father"

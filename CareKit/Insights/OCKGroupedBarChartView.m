@@ -445,7 +445,7 @@ static const CGFloat MarginBetweenGroups = 16.0;
 
 @implementation OCKChartLegendCell {
     UIView *_colorBox;
-    OCKLabel *_label;
+    UILabel *_label;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame {
@@ -456,7 +456,7 @@ static const CGFloat MarginBetweenGroups = 16.0;
         [self addSubview:_colorBox];
         _label = [OCKLabel new];
         _label.translatesAutoresizingMaskIntoConstraints = NO;
-        _label.textStyle = UIFontTextStyleCaption1;
+        _label.font = [UIFont systemFontOfSize:12.0];
         [self addSubview:_label];
         [self setUpConstraints];
     }

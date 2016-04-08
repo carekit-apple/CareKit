@@ -33,6 +33,12 @@
 #import "OCKHTMLPDFWriter.h"
 #import "OCKHelpers.h"
 
+static NSString *htmlStringFromString (NSString *string) {
+    string = [string stringByReplacingOccurrencesOfString:@"\n" withString:@"<br/>"];
+    string = [string stringByReplacingOccurrencesOfString:@"\t" withString:@"&nbsp;&nbsp;&nbsp;&nbsp;"];
+    return string;
+}
+
 @implementation OCKDocument {
     OCKHTMLPDFWriter *_writer;
 }
@@ -79,7 +85,7 @@
     }
     
     html = [html stringByAppendingString:@"</body>\n</html>\n"];
-    
+    html = htmlStringFromString(html);
     return html;
 }
 
@@ -175,7 +181,6 @@ static NSString *imageTagFromView (UIView *view) {
     return imageTagFromImage(image);
 }
 
-
 @implementation OCKDocumentElementChart
 
 - (instancetype)initWithChart:(OCKChart *)chart {
@@ -196,7 +201,6 @@ static NSString *imageTagFromView (UIView *view) {
             html = [html stringByAppendingFormat:@"<b>%@</b><br/>\n", _chart.title];
         }
         
-    
         UIView *view = [_chart chartView];
         
         if (view) {

@@ -301,6 +301,13 @@ static NSString *imageTagFromView (UIView *view) {
         }
         
         if (_rows) {
+            NSInteger maxNumberOfCells = 0;
+            for (NSArray *row in _rows) {
+                if (maxNumberOfCells < row.count) {
+                    maxNumberOfCells = row.count;
+                }
+            }
+            
             NSInteger rowIndex = 0;
             for (NSArray *row in _rows) {
                 if (rowIndex%2 == 0) {
@@ -314,6 +321,13 @@ static NSString *imageTagFromView (UIView *view) {
                     html = [html stringByAppendingString:string];
                     html = [html stringByAppendingString:@"</td>"];
                 }
+                
+                NSInteger diff = maxNumberOfCells - row.count;
+                for (NSInteger i = 0; i < diff ; i++) {
+                    html = [html stringByAppendingString:@"<td align='center'>"];
+                    html = [html stringByAppendingString:@"</td>"];
+                }
+                
                 html = [html stringByAppendingString:@"</tr>"];
                 rowIndex++;
             }

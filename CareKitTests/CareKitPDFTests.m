@@ -96,7 +96,7 @@
     
     OCKDocumentElementTable *table = [[OCKDocumentElementTable alloc] init];
     table.headers = @[@"Mon", @"Tue", @"Wed", @"Thu", @"Fri"];
-    table.rows = @[@[@"1", @"2", @"3", @"4", @"5"], @[@"2", @"3", @"4", @"5", @"6"], @[@"3", @"4", @"5", @"6", @"7"]];
+    table.rows = @[@[@"1", @"2", @"3", @"4", @"5"], @[@"2", @"3", @"4", @"5"], @[@"3", @"4", @"5", @"6"]];
     
     OCKDocument *doc = [[OCKDocument alloc] initWithTitle:@"This is a title" elements:@[subtitle, table, paragrah, barChart, paragrah, imageElement, paragrah]];
     doc.pageHeader = @"App Name: ABC, User Name: John Appleseed";

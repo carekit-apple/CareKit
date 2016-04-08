@@ -62,7 +62,7 @@ static const CGFloat VerticalMargin = 10.0;
     
     if (!_textLabel) {
         _textLabel = [UILabel new];
-        _textLabel.textColor = [UIColor lightGrayColor];
+        _textLabel.textColor = OCKSystemGrayColor();
         [self addSubview:_textLabel];
     }
     

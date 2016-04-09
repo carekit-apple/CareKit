@@ -6,11 +6,12 @@
     },
     {
       "idiom" : "universal",
-      "filename" : "heart.png",
+      "filename" : "Heart-Big-Outline@2x.png",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
+      "filename" : "Heart-Big-Outline@3x.png",
       "scale" : "3x"
     }
   ],

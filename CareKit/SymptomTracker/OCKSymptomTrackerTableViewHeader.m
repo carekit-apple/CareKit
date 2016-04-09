@@ -111,6 +111,7 @@ static const CGFloat RingViewSize = 110.0;
 }
 
 - (void)updateView {
+    _ringView.tintColor = self.tintColor;
     _ringView.value = _value;
     _dateLabel.text = _date;
 }

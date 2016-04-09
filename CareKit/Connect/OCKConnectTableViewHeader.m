@@ -32,6 +32,7 @@
 #import "OCKConnectTableViewHeader.h"
 #import "OCKContact.h"
 #import "OCKHelpers.h"
+#import "OCKLabel.h"
 
 
 static const CGFloat TopMargin = 15.0;
@@ -44,9 +45,9 @@ static const CGFloat ImageViewSize = 135.0;
 
 @implementation OCKConnectTableViewHeader {
     UIImageView *_imageView;
-    UILabel *_monogramLabel;
-    UILabel *_titleLabel;
-    UILabel *_relationLabel;
+    OCKLabel *_monogramLabel;
+    OCKLabel *_titleLabel;
+    OCKLabel *_relationLabel;
     UIView *_bottomEdge;
     NSMutableArray *_constraints;
 }
@@ -55,11 +56,6 @@ static const CGFloat ImageViewSize = 135.0;
     self = [super initWithFrame:frame];
     if (self) {
         [self prepareView];
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(prepareView)
-                                                     name:UIContentSizeCategoryDidChangeNotification
-                                                   object:nil];
     }
     return self;
 }
@@ -77,26 +73,26 @@ static const CGFloat ImageViewSize = 135.0;
     }
     
     if (!_titleLabel) {
-        _titleLabel = [UILabel new];
+        _titleLabel = [OCKLabel new];
+        _titleLabel.textStyle = UIFontTextStyleHeadline;
         _titleLabel.textAlignment = NSTextAlignmentCenter;
         _titleLabel.numberOfLines = 0;
         _titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
         [self addSubview:_titleLabel];
     }
-    _titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
     
     if (!_relationLabel) {
-        _relationLabel = [UILabel new];
+        _relationLabel = [OCKLabel new];
+        _relationLabel.textStyle = UIFontTextStyleSubheadline;
         _relationLabel.textColor = [UIColor lightGrayColor];
         _relationLabel.textAlignment = NSTextAlignmentCenter;
         _relationLabel.numberOfLines = 0;
         _relationLabel.lineBreakMode = NSLineBreakByWordWrapping;
         [self addSubview:_relationLabel];
     }
-    _relationLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
     
     if (!_monogramLabel) {
-        _monogramLabel = [UILabel new];
+        _monogramLabel = [OCKLabel new];
         _monogramLabel.textColor = [UIColor whiteColor];
         _monogramLabel.textAlignment = NSTextAlignmentCenter;
         _monogramLabel.font = [UIFont boldSystemFontOfSize:56.0];
@@ -279,8 +275,9 @@ static const CGFloat ImageViewSize = 135.0;
     _relationLabel.preferredMaxLayoutWidth = _relationLabel.bounds.size.width;
 }
 
-- (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+- (void)tintColorDidChange {
+    [super tintColorDidChange];
+    [self updateView];
 }
 
 #pragma mark - Accessibility

@@ -31,6 +31,7 @@
 
 #import "OCKInsightsChartTableViewCell.h"
 #import "OCKHelpers.h"
+#import "OCKLabel.h"
 
 
 static const CGFloat LeadingMargin = 20.0;
@@ -40,17 +41,15 @@ static const CGFloat BottomMargin = 15.0;
 static const CGFloat VerticalMargin = 10.0;
 
 @implementation OCKInsightsChartTableViewCell {
-    UILabel *_titleLabel;
-    UILabel *_textLabel;
+    OCKLabel *_titleLabel;
+    OCKLabel *_textLabel;
     UIView *_chartView;
     NSMutableArray *_constraints;
 }
 
 - (void)setChart:(OCKChart *)chart {
     _chart = chart;
-    if (_chart.tintColor) {
-        self.tintColor = _chart.tintColor;
-    }
+    self.tintColor = _chart.tintColor;
     [self prepareView];
 }
 
@@ -58,12 +57,14 @@ static const CGFloat VerticalMargin = 10.0;
     [super prepareView];
     
     if (!_titleLabel) {
-        _titleLabel = [UILabel new];
+        _titleLabel = [OCKLabel new];
+        _titleLabel.textStyle = UIFontTextStyleHeadline;
         [self addSubview:_titleLabel];
     }
     
     if (!_textLabel) {
-        _textLabel = [UILabel new];
+        _textLabel = [OCKLabel new];
+        _textLabel.textStyle = UIFontTextStyleSubheadline;
         _textLabel.textColor = [UIColor lightGrayColor];
         _textLabel.numberOfLines = 2;
         _textLabel.lineBreakMode = NSLineBreakByCharWrapping;
@@ -75,18 +76,12 @@ static const CGFloat VerticalMargin = 10.0;
     [self addSubview:_chartView];
     
     [self updateView];
-    [self updateFonts];
     [self setUpConstraints];
 }
 
 - (void)updateView {
     _titleLabel.text = _chart.title;
     _textLabel.text = _chart.text;
-}
-
-- (void)updateFonts {
-    _titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
-    _textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
 }
 
 - (void)setUpConstraints {

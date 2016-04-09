@@ -33,6 +33,7 @@
 #import "OCKRingView.h"
 #import "OCKHelpers.h"
 #import "OCKDefines_Private.h"
+#import "OCKLabel.h"
 
 
 static const CGFloat TopMargin = 50.0;
@@ -43,8 +44,8 @@ static const CGFloat RingViewSize = 110.0;
 
 @implementation OCKSymptomTrackerTableViewHeader {
     OCKRingView *_ringView;
-    UILabel *_titleLabel;
-    UILabel *_dateLabel;
+    OCKLabel *_titleLabel;
+    OCKLabel *_dateLabel;
     UIView *_topEdge;
     UIView *_bottomEdge;
     NSMutableArray *_constraints;
@@ -66,11 +67,6 @@ static const CGFloat RingViewSize = 110.0;
             self.backgroundColor = [UIColor whiteColor];
         }
         
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(updateFonts)
-                                                     name:UIContentSizeCategoryDidChangeNotification
-                                                   object:nil];
-        
         [self prepareView];
     }
     return self;
@@ -83,14 +79,16 @@ static const CGFloat RingViewSize = 110.0;
     }
     
     if (!_titleLabel) {
-        _titleLabel = [UILabel new];
+        _titleLabel = [OCKLabel new];
+        _titleLabel.textStyle = UIFontTextStyleHeadline;
         _titleLabel.text = OCKLocalizedString(@"SYMPTOM_TRACKER_HEADER_TITLE", nil);
         _titleLabel.numberOfLines = 2;
         [self addSubview:_titleLabel];
     }
     
     if (!_dateLabel) {
-        _dateLabel = [UILabel new];
+        _dateLabel = [OCKLabel new];
+        _dateLabel.textStyle = UIFontTextStyleSubheadline;
         _dateLabel.textColor = [UIColor darkGrayColor];
         _dateLabel.numberOfLines = 2;
         [self addSubview:_dateLabel];
@@ -109,18 +107,12 @@ static const CGFloat RingViewSize = 110.0;
     }
     
     [self updateView];
-    [self updateFonts];
     [self setUpConstraints];
 }
 
 - (void)updateView {
     _ringView.value = _value;
     _dateLabel.text = _date;
-}
-
-- (void)updateFonts {
-    _titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
-    _dateLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
 }
 
 - (void)setUpConstraints {
@@ -273,6 +265,7 @@ static const CGFloat RingViewSize = 110.0;
     [super tintColorDidChange];
     [self updateView];
 }
+
 
 #pragma mark - Accessibility 
 

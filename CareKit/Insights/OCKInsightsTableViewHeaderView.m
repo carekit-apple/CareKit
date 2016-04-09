@@ -31,6 +31,7 @@
 
 #import "OCKInsightsTableViewHeaderView.h"
 #import "OCKHelpers.h"
+#import "OCKLabel.h"
 
 
 static const CGFloat TopMargin = 20.0;
@@ -39,8 +40,8 @@ static const CGFloat TrailingMargin = 15.0;
 static const CGFloat BottomMargin = 20.0;
 
 @implementation OCKInsightsTableViewHeaderView {
-    UILabel *_titleLabel;
-    UILabel *_subtitleLabel;
+    OCKLabel *_titleLabel;
+    OCKLabel *_subtitleLabel;
     NSMutableArray *_constraints;
 }
 
@@ -48,24 +49,21 @@ static const CGFloat BottomMargin = 20.0;
     self = [super initWithFrame:frame];
     if (self) {
         [self prepareView];
-
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(updateFonts)
-                                                     name:UIContentSizeCategoryDidChangeNotification
-                                                   object:nil];
     }
     return self;
 }
 
 - (void)prepareView {
     if (!_titleLabel) {
-        _titleLabel = [UILabel new];
+        _titleLabel = [OCKLabel new];
         _titleLabel.textColor = [UIColor darkGrayColor];
+        _titleLabel.textStyle = UIFontTextStyleHeadline;
         [self addSubview:_titleLabel];
     }
     
     if (!_subtitleLabel) {
-        _subtitleLabel = [UILabel new];
+        _subtitleLabel = [OCKLabel new];
+        _subtitleLabel.textStyle = UIFontTextStyleSubheadline;
         _subtitleLabel.numberOfLines = 2;
         _subtitleLabel.lineBreakMode = NSLineBreakByWordWrapping;
         _subtitleLabel.textColor = [UIColor darkGrayColor];
@@ -73,18 +71,12 @@ static const CGFloat BottomMargin = 20.0;
     }
 
     [self updateView];
-    [self updateFonts];
     [self setUpConstraints];
 }
 
 - (void)updateView {
     _titleLabel.text = _title;
     _subtitleLabel.text = _subtitle;
-}
-
-- (void)updateFonts {
-    _titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
-    _subtitleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
 }
 
 - (void)setUpConstraints {
@@ -174,9 +166,6 @@ static const CGFloat BottomMargin = 20.0;
     _subtitleLabel.preferredMaxLayoutWidth = _subtitleLabel.bounds.size.width;
 }
 
-- (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
 
 #pragma mark - Accessibility
 

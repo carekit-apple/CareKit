@@ -31,6 +31,7 @@
 
 #import "OCKContactSharingTableViewCell.h"
 #import "OCKHelpers.h"
+#import "OCKLabel.h"
 
 
 static const CGFloat TopMargin = 20.0;
@@ -38,7 +39,7 @@ static const CGFloat BottomMargin = 20.0;
 static const CGFloat HorizontalMargin = 5.0;
 
 @implementation OCKContactSharingTableViewCell {
-    UILabel *_titleLabel;
+    OCKLabel *_titleLabel;
     UIButton *_shareButton;
     NSMutableArray *_constraints;
 }
@@ -50,19 +51,16 @@ static const CGFloat HorizontalMargin = 5.0;
 
 - (void)setContact:(OCKContact *)contact {
     _contact = contact;
+    self.tintColor = _contact.tintColor;
     [self prepareView];
 }
 
 - (void)prepareView {
-    self.tintColor = _contact.tintColor;
-    
     if (!_titleLabel) {
-        _titleLabel = [UILabel new];
-        _titleLabel.font = [UIFont systemFontOfSize:14.0 weight:UIFontWeightRegular];
+        _titleLabel = [OCKLabel new];
+        _titleLabel.textStyle = UIFontTextStyleBody;
         [self addSubview:_titleLabel];
     }
-    _titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
-    _titleLabel.text = _title;
     
     if (!_shareButton) {
         _shareButton = [UIButton new];
@@ -73,9 +71,14 @@ static const CGFloat HorizontalMargin = 5.0;
         [_shareButton setImage:shareIcon forState:UIControlStateNormal];
         [self addSubview:_shareButton];
     }
-    _shareButton.tintColor = self.tintColor;
     
+    [self updateView];
     [self setUpConstraints];
+}
+
+- (void)updateView {
+    _titleLabel.text = _title;
+    _shareButton.tintColor = self.tintColor;
 }
 
 - (void)setUpConstraints {
@@ -148,6 +151,12 @@ static const CGFloat HorizontalMargin = 5.0;
     [super layoutSubviews];
     [self setUpConstraints];
 }
+
+- (void)tintColorDidChange {
+    [super tintColorDidChange];
+    [self updateView];
+}
+
 
 #pragma mark - Accessibility
 

@@ -33,6 +33,7 @@
 #import "OCKHeartView.h"
 #import "OCKDefines_Private.h"
 #import "OCKHelpers.h"
+#import "OCKLabel.h"
 
 
 static const CGFloat TopMargin = 25.0;
@@ -44,9 +45,9 @@ static const CGFloat HeartViewSize = 110.0;
 @implementation OCKCareCardTableViewHeader {
     UIView *_containerView;
     OCKHeartView *_heartView;
-    UILabel *_titleLabel;
-    UILabel *_dateLabel;
-    UILabel *_valuePercentageLabel;
+    OCKLabel *_titleLabel;
+    OCKLabel *_dateLabel;
+    OCKLabel *_valuePercentageLabel;
     UIView *_topEdge;
     UIView *_bottomEdge;
     NSNumberFormatter *_numberFormatter;
@@ -68,11 +69,6 @@ static const CGFloat HeartViewSize = 110.0;
             self.backgroundColor = [UIColor whiteColor];
         }
         
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(updateFonts)
-                                                     name:UIContentSizeCategoryDidChangeNotification
-                                                   object:nil];
-        
         [self prepareView];
     }
     return self;
@@ -85,7 +81,8 @@ static const CGFloat HeartViewSize = 110.0;
     }
     
     if (!_titleLabel) {
-        _titleLabel = [UILabel new];
+        _titleLabel = [OCKLabel new];
+        _titleLabel.textStyle = UIFontTextStyleHeadline;
         _titleLabel.text = OCKLocalizedString(@"CARE_CARD_HEADER_TITLE", nil);
         _titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
         _titleLabel.numberOfLines = 0;
@@ -93,7 +90,8 @@ static const CGFloat HeartViewSize = 110.0;
     }
     
     if (!_dateLabel) {
-        _dateLabel = [UILabel new];
+        _dateLabel = [OCKLabel new];
+        _dateLabel.textStyle = UIFontTextStyleSubheadline;
         _dateLabel.textColor = [UIColor darkGrayColor];
         _dateLabel.lineBreakMode = NSLineBreakByWordWrapping;
         _dateLabel.numberOfLines = 0;
@@ -101,7 +99,8 @@ static const CGFloat HeartViewSize = 110.0;
     }
     
     if (!_valuePercentageLabel) {
-        _valuePercentageLabel = [UILabel new];
+        _valuePercentageLabel = [OCKLabel new];
+        _valuePercentageLabel.textStyle = UIFontTextStyleTitle1;
         [self addSubview:_valuePercentageLabel];
     }
     
@@ -118,7 +117,6 @@ static const CGFloat HeartViewSize = 110.0;
     }
     
     [self updateView];
-    [self updateFonts];
     [self setUpConstraints];
 }
 
@@ -128,12 +126,6 @@ static const CGFloat HeartViewSize = 110.0;
     _heartView.tintColor = self.tintColor;
     _valuePercentageLabel.text = self.valuePercentageString;
     _valuePercentageLabel.textColor = self.tintColor;
-}
-
-- (void)updateFonts {
-    _dateLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
-    _valuePercentageLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleTitle1];
-    _titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
 }
 
 - (void)setUpConstraints {
@@ -316,10 +308,6 @@ static const CGFloat HeartViewSize = 110.0;
     [self updateView];
 }
 
-- (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
 
 #pragma mark - Helpers
 
@@ -331,6 +319,7 @@ static const CGFloat HeartViewSize = 110.0;
     }
     return [_numberFormatter stringFromNumber:@(_value)];
 }
+
 
 #pragma mark - Accessibility
 

@@ -32,6 +32,7 @@
 #import "OCKSymptomTrackerTableViewCell.h"
 #import "OCKDefines_Private.h"
 #import "OCKHelpers.h"
+#import "OCKLabel.h"
 
 
 static const CGFloat TopMargin = 30.0;
@@ -41,10 +42,10 @@ static const CGFloat ValueLabelWidth = 100.0;
 static const CGFloat UnitLabelWidth = 50.0;
 
 @implementation OCKSymptomTrackerTableViewCell {
-    UILabel *_titleLabel;
-    UILabel *_textLabel;
-    UILabel *_valueLabel;
-    UILabel *_unitLabel;
+    OCKLabel *_titleLabel;
+    OCKLabel *_textLabel;
+    OCKLabel *_valueLabel;
+    OCKLabel *_unitLabel;
     NSMutableArray *_constraints;
 }
 
@@ -68,18 +69,21 @@ static const CGFloat UnitLabelWidth = 50.0;
     self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     
     if (!_titleLabel) {
-        _titleLabel = [UILabel new];
+        _titleLabel = [OCKLabel new];
+        _titleLabel.textStyle = UIFontTextStyleHeadline;
         [self addSubview:_titleLabel];
     }
     
     if (!_textLabel) {
-        _textLabel = [UILabel new];
+        _textLabel = [OCKLabel new];
+        _textLabel.textStyle = UIFontTextStyleSubheadline;
         _textLabel.textColor = [UIColor lightGrayColor];
         [self addSubview:_textLabel];
     }
     
     if (!_valueLabel) {
-        _valueLabel = [UILabel new];;
+        _valueLabel = [OCKLabel new];
+        _valueLabel.textStyle = UIFontTextStyleTitle1;
         _valueLabel.textAlignment = NSTextAlignmentRight;
         [self addSubview:_valueLabel];
     }
@@ -89,25 +93,21 @@ static const CGFloat UnitLabelWidth = 50.0;
 }
 
 - (void)updateView {
-    _titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
     _titleLabel.text = _assessmentEvent.activity.title;
-    
-    _textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
     _textLabel.text = _assessmentEvent.activity.text;
     
     _valueLabel.text = (_assessmentEvent.result.valueString.length > 0) ? _assessmentEvent.result.valueString : @"";
-    _valueLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleTitle1];
     _valueLabel.textColor = self.tintColor;
     
     if (_assessmentEvent.result.unitString.length > 0) {
         if (!_unitLabel) {
-            _unitLabel = [UILabel new];
+            _unitLabel = [OCKLabel new];
+            _unitLabel.textStyle = UIFontTextStyleCaption2;
             _unitLabel.textAlignment = NSTextAlignmentRight;
             _unitLabel.textColor = [UIColor lightGrayColor];
             [self addSubview:_unitLabel];
         }
         _unitLabel.text = _assessmentEvent.result.unitString;
-        _unitLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleCaption2];
     } else {
         [_unitLabel removeFromSuperview];
         _unitLabel = nil;
@@ -249,9 +249,14 @@ static const CGFloat UnitLabelWidth = 50.0;
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    
     [self setUpConstraints];
 }
+
+- (void)tintColorDidChange {
+    [super tintColorDidChange];
+    [self updateView];
+}
+
 
 #pragma mark - Accessibility
 

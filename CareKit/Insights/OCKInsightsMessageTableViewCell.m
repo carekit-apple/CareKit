@@ -31,6 +31,7 @@
 
 #import "OCKInsightsMessageTableViewCell.h"
 #import "OCKHelpers.h"
+#import "OCKLabel.h"
 
 
 static const CGFloat TopMargin = 15.0;
@@ -42,9 +43,9 @@ static NSString *AlertSymbol = @"\u25C9";
 static NSString *TipSymbol = @"\u2731";
 
 @implementation OCKInsightsMessageTableViewCell {
-    UILabel *_titleLabel;
-    UILabel *_textLabel;
-    UILabel *_iconLabel;
+    OCKLabel *_titleLabel;
+    OCKLabel *_textLabel;
+    OCKLabel *_iconLabel;
     NSMutableArray *_constraints;
 }
 
@@ -66,14 +67,16 @@ static NSString *TipSymbol = @"\u2731";
     [super prepareView];
     
     if (!_titleLabel) {
-        _titleLabel = [UILabel new];
+        _titleLabel = [OCKLabel new];
+        _titleLabel.textStyle = UIFontTextStyleHeadline;
         _titleLabel.numberOfLines = 0;
         _titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
         [self addSubview:_titleLabel];
     }
     
     if (!_textLabel) {
-        _textLabel = [UILabel new];
+        _textLabel = [OCKLabel new];
+        _textLabel.textStyle = UIFontTextStyleSubheadline;
         _textLabel.textColor = [UIColor darkGrayColor];
         _textLabel.numberOfLines = 0;
         _textLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -81,12 +84,12 @@ static NSString *TipSymbol = @"\u2731";
     }
     
     if (!_iconLabel) {
-        _iconLabel = [UILabel new];
+        _iconLabel = [OCKLabel new];
+        _iconLabel.textStyle = UIFontTextStyleCallout;
         [self addSubview:_iconLabel];
     }
     
     [self updateView];
-    [self updateFonts];
     [self setUpConstraints];
 }
 
@@ -95,12 +98,6 @@ static NSString *TipSymbol = @"\u2731";
     _textLabel.text = _messageItem.text;
     _iconLabel.text = [self stringForMessageType:_messageItem.messageType];
     _iconLabel.textColor = self.tintColor;
-}
-
-- (void)updateFonts {
-    _titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
-    _textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
-    _iconLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleCallout];
 }
 
 - (void)setUpConstraints {
@@ -181,6 +178,11 @@ static NSString *TipSymbol = @"\u2731";
                                         ]];
     
     [NSLayoutConstraint activateConstraints:_constraints];
+}
+
+- (void)tintColorDidChange {
+    [super tintColorDidChange];
+    [self updateView];
 }
 
 - (NSString *)stringForMessageType:(OCKMessageItemType)type {

@@ -36,6 +36,7 @@
 #import "OCKCareCardButton.h"
 #import "OCKHelpers.h"
 #import "OCKDefines_Private.h"
+#import "OCKLabel.h"
 
 
 static const CGFloat TopMargin = 20.0;
@@ -45,12 +46,15 @@ static const CGFloat HorizontalMargin = 5.0;
 static const CGFloat ButtonViewSize = 40.0;
 
 @interface OCKCareCardTableViewCell ()
+
 @property (nonatomic, retain) NSMutableArray *axChildren;
+
 @end
 
+
 @implementation OCKCareCardTableViewCell {
-    UILabel *_titleLabel;
-    UILabel *_textLabel;
+    OCKLabel *_titleLabel;
+    OCKLabel *_textLabel;
     UIView *_leadingEdge;
     NSArray <OCKCareCardButton *> *_frequencyButtons;
     OCKCarePlanActivity *_intervention;
@@ -73,13 +77,15 @@ static const CGFloat ButtonViewSize = 40.0;
     self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     
     if (!_titleLabel) {
-        _titleLabel = [UILabel new];
+        _titleLabel = [OCKLabel new];
+        _titleLabel.textStyle = UIFontTextStyleHeadline;
         [self addSubview:_titleLabel];
     }
     
     if (!_textLabel) {
-        _textLabel = [UILabel new];
+        _textLabel = [OCKLabel new];
         _textLabel.textColor = [UIColor lightGrayColor];
+        _textLabel.textStyle = UIFontTextStyleSubheadline;
         [self addSubview:_textLabel];
     }
     
@@ -105,7 +111,6 @@ static const CGFloat ButtonViewSize = 40.0;
     _frequencyButtons = [buttons copy];
     
     [self updateView];
-    [self updateFonts];
     [self setUpConstraints];
     [self updateAccessibilityInfo];
 }
@@ -113,11 +118,6 @@ static const CGFloat ButtonViewSize = 40.0;
 - (void)updateView {
     _titleLabel.text = _intervention.title;
     _textLabel.text = _intervention.text;
-}
-
-- (void)updateFonts {
-    _titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
-    _textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
 }
 
 - (void)setUpConstraints {
@@ -287,6 +287,7 @@ static const CGFloat ButtonViewSize = 40.0;
     
 }
 
+
 #pragma mark - Accessibility
 
 - (void)updateAccessibilityInfo {
@@ -309,9 +310,12 @@ static const CGFloat ButtonViewSize = 40.0;
     }
     return self.axChildren;
 }
+
 @end
 
+
 @implementation CareCardAccessibilityElement
+
 - (CGRect)accessibilityFrame {
     return [[self accessibilityContainer] accessibilityFrame];
 }
@@ -327,4 +331,5 @@ static const CGFloat ButtonViewSize = 40.0;
     }
     return [NSString stringWithFormat:OCKLocalizedString(@"AX_CARE_CARD_VALUE", nil), numTasksCompleted, careCardContainer.interventionEvents.count];
 }
+
 @end

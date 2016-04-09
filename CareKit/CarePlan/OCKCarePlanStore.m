@@ -106,6 +106,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     return [_persistenceDirectoryURL.path stringByAppendingPathComponent:CoreDataFileName];
 }
 
+
 #pragma mark - generic coredata operations
 
 - (BOOL)block_addItemWithEntityName:(NSString *)entityName
@@ -338,6 +339,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
         dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER);
     }
 }
+
 
 #pragma mark - activities
 
@@ -881,6 +883,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
                                 }
                             }];
 }
+
 
 #pragma mark - coredata
 

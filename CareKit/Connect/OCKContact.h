@@ -51,6 +51,7 @@ typedef NS_ENUM(NSInteger, OCKContactType) {
     OCKContactTypePersonal
 };
 
+
 /**
  The `OCKContact` class is an object that represents a care contact for the `OCKConnectViewController`.
  */

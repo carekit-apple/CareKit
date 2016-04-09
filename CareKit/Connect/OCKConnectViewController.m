@@ -34,6 +34,7 @@
 #import "OCKConnectDetailViewController.h"
 #import "OCKHelpers.h"
 #import "OCKDefines_Private.h"
+#import "OCKLabel.h"
 
 
 @interface OCKConnectViewController() <UITableViewDelegate, UITableViewDataSource>
@@ -46,7 +47,7 @@
     NSMutableArray *_constraints;
     NSMutableArray<NSArray<OCKContact *>*> *_sectionedContacts;
     NSMutableArray<NSString *> *_sectionTitles;
-    UILabel *_noContactsLabel;
+    OCKLabel *_noContactsLabel;
 }
 
 + (instancetype)new {
@@ -189,10 +190,10 @@
 - (void)prepareHeaderView {
     if (_contacts.count == 0) {
         if (!_noContactsLabel) {
-            _noContactsLabel = [UILabel new];
+            _noContactsLabel = [OCKLabel new];
+            _noContactsLabel.textStyle = UIFontTextStyleTitle2;
             _noContactsLabel.text = OCKLocalizedString(@"CONNECT_NO_CONTACTS_TITLE", nil);
             _noContactsLabel.textColor = [UIColor lightGrayColor];
-            _noContactsLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleTitle2];
         }
         [self.view addSubview:_noContactsLabel];
     } else {

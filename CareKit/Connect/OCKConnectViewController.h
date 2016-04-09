@@ -67,6 +67,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+
 /**
  The `OCKConnectViewController` class is a view controller that displays an array of `OCKContact` objects.
  It includes a master view and a detail view. Therefore, it must be embedded inside a `UINavigationController`.

@@ -104,7 +104,7 @@ OCK_CLASS_AVAILABLE
                         phoneNumber:(nullable CNPhoneNumber *)phoneNumber
                       messageNumber:(nullable CNPhoneNumber *)messageNumber
                        emailAddress:(nullable NSString *)emailAddress
-                           monogram:(NSString *)image;
+                           monogram:(NSString *)monogram;
 
 
 /**

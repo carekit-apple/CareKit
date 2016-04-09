@@ -77,6 +77,14 @@ static const CGFloat ImageViewSize = 40.0;
         [self addSubview:_relationLabel];
     }
     
+    if (!_monogramLabel) {
+        _monogramLabel = [UILabel new];
+        _monogramLabel.textColor = [UIColor whiteColor];
+        _monogramLabel.textAlignment = NSTextAlignmentCenter;
+        _monogramLabel.font = [UIFont boldSystemFontOfSize:16.0];
+        [self addSubview:_monogramLabel];
+    }
+
     [self updateView];
     [self setUpConstraints];
 }
@@ -87,16 +95,11 @@ static const CGFloat ImageViewSize = 40.0;
     if (_contact.image) {
         _imageView.image = _contact.image;
         _imageView.backgroundColor = [UIColor clearColor];
-        [_monogramLabel removeFromSuperview];
+        _monogramLabel.hidden = YES;
     } else {
-        _imageView.backgroundColor = [UIColor grayColor];
-        if (!_monogramLabel) {
-            _monogramLabel = [UILabel new];
-            _monogramLabel.textColor = [UIColor whiteColor];
-            _monogramLabel.font = [UIFont boldSystemFontOfSize:16.0];
-            [self addSubview:_monogramLabel];
-        }
         _monogramLabel.text = _contact.monogram;
+        _imageView.backgroundColor = [UIColor grayColor];
+        _monogramLabel.hidden = NO;
     }
 
     _nameLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
@@ -114,6 +117,7 @@ static const CGFloat ImageViewSize = 40.0;
     _imageView.translatesAutoresizingMaskIntoConstraints = NO;
     _nameLabel.translatesAutoresizingMaskIntoConstraints = NO;
     _relationLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    _monogramLabel.translatesAutoresizingMaskIntoConstraints = NO;
     
     CGFloat LeadingMargin = self.separatorInset.left;
     CGFloat TrailingMargin = (self.separatorInset.right > 0) ? self.separatorInset.right : 40;
@@ -196,28 +200,28 @@ static const CGFloat ImageViewSize = 40.0;
                                                                      attribute:NSLayoutAttributeBottom
                                                                     multiplier:1.0
                                                                       constant:-BottomMargin],
+                                        [NSLayoutConstraint constraintWithItem:_monogramLabel
+                                                                     attribute:NSLayoutAttributeCenterX
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:_imageView
+                                                                     attribute:NSLayoutAttributeCenterX
+                                                                    multiplier:1.0
+                                                                      constant:0.0],
+                                        [NSLayoutConstraint constraintWithItem:_monogramLabel
+                                                                     attribute:NSLayoutAttributeCenterY
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:_imageView
+                                                                     attribute:NSLayoutAttributeCenterY
+                                                                    multiplier:1.0
+                                                                      constant:0.0],
+                                        [NSLayoutConstraint constraintWithItem:_monogramLabel
+                                                                     attribute:NSLayoutAttributeWidth
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:_imageView
+                                                                     attribute:NSLayoutAttributeWidth
+                                                                    multiplier:1.0
+                                                                      constant:-HorizontalMargin]
                                         ]];
-    
-    if (_monogramLabel) {
-        _monogramLabel.translatesAutoresizingMaskIntoConstraints = NO;
-        
-        [_constraints addObjectsFromArray:@[
-                                            [NSLayoutConstraint constraintWithItem:_monogramLabel
-                                                                         attribute:NSLayoutAttributeCenterX
-                                                                         relatedBy:NSLayoutRelationEqual
-                                                                            toItem:_imageView
-                                                                         attribute:NSLayoutAttributeCenterX
-                                                                        multiplier:1.0
-                                                                          constant:0.0],
-                                            [NSLayoutConstraint constraintWithItem:_monogramLabel
-                                                                         attribute:NSLayoutAttributeCenterY
-                                                                         relatedBy:NSLayoutRelationEqual
-                                                                            toItem:_imageView
-                                                                         attribute:NSLayoutAttributeCenterY
-                                                                        multiplier:1.0
-                                                                          constant:0.0]
-                                            ]];
-    }
     
     [NSLayoutConstraint activateConstraints:_constraints];
 }

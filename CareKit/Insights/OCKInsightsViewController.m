@@ -38,7 +38,6 @@
 
 
 static const CGFloat HeaderViewHeight = 60.0;
-static const CGFloat TopMargin = 20.0;
 
 @interface OCKInsightsViewController() <UITableViewDelegate, UITableViewDataSource>
 

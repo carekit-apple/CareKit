@@ -162,7 +162,7 @@ static const BOOL resetStoreOnLaunch = YES;
     
     {
         UIColor *color = PinkColor();
-        OCKMessageItem *item = [[OCKMessageItem alloc] initWithTitle:@"Medication Adherence"
+        OCKMessageItem *item = [[OCKMessageItem alloc] initWithTitle:nil
                                                                 text:@"Your medication adherence was 90% last week."
                                                            tintColor:color
                                                          messageType:OCKMessageItemTypeTip];
@@ -183,8 +183,8 @@ static const BOOL resetStoreOnLaunch = YES;
                                                         valueLabels:@[@"30%", @"40%", @"50%", @"70%", @"80%", @"90%", @"90%"]
                                                           tintColor:lightColor];
         
-        OCKBarChart *chart = [[OCKBarChart alloc] initWithTitle:@"Pain Scores"
-                                                           text:@"with Medication"
+        OCKBarChart *chart = [[OCKBarChart alloc] initWithTitle:nil
+                                                           text:nil
                                                       tintColor:color
                                                      axisTitles:axisTitles
                                                   axisSubtitles:axisSubtitles
@@ -561,13 +561,13 @@ DefineStringKey(TemperatureAssessment);
     {
         UIColor *color = GreenColor();
         OCKContact *contact = [[OCKContact alloc] initWithContactType:OCKContactTypeCareTeam
-                                                                 name:@"Greg Apodaca"
-                                                             relation:@"Nurse"
+                                                                 name:@" "
+                                                             relation:@" "
                                                             tintColor:color
                                                           phoneNumber:[CNPhoneNumber phoneNumberWithStringValue:@"123-456-7890"]
                                                         messageNumber:[CNPhoneNumber phoneNumberWithStringValue:@"123-456-7890"]
                                                          emailAddress:@"gapodaca@hospital.edu"
-                                                             monogram:@"GA"];
+                                                             monogram:@"GAasdfjklasdfjl"];
         [contacts addObject:contact];
     }
     

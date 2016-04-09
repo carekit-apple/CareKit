@@ -39,6 +39,7 @@ static const CGFloat BottomMargin = 15.0;
 static const CGFloat LeadingMargin = 20.0;
 static const CGFloat TrailingMargin = 20.0;
 static const CGFloat VerticalMargin = 20.0;
+static const CGFloat HorizontalMargin = 10.0;
 static const CGFloat ImageViewSize = 135.0;
 
 @implementation OCKConnectTableViewHeader {
@@ -94,6 +95,14 @@ static const CGFloat ImageViewSize = 135.0;
     }
     _relationLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
     
+    if (!_monogramLabel) {
+        _monogramLabel = [UILabel new];
+        _monogramLabel.textColor = [UIColor whiteColor];
+        _monogramLabel.textAlignment = NSTextAlignmentCenter;
+        _monogramLabel.font = [UIFont boldSystemFontOfSize:56.0];
+        [self addSubview:_monogramLabel];
+    }
+    
     if (!_bottomEdge) {
         _bottomEdge = [UIView new];
         [self addSubview:_bottomEdge];
@@ -110,18 +119,11 @@ static const CGFloat ImageViewSize = 135.0;
     if (_contact.image) {
         _imageView.image = _contact.image;
         _imageView.backgroundColor = [UIColor clearColor];
-        
-        [_monogramLabel removeFromSuperview];
+        _monogramLabel.hidden = YES;
     } else {
-        _imageView.backgroundColor = [UIColor grayColor];
-        
-        if (!_monogramLabel) {
-            _monogramLabel = [UILabel new];
-            _monogramLabel.textColor = [UIColor whiteColor];
-            _monogramLabel.font = [UIFont boldSystemFontOfSize:56.0];
-            [self addSubview:_monogramLabel];
-        }
         _monogramLabel.text = _contact.monogram;
+        _imageView.backgroundColor = [UIColor grayColor];
+        _monogramLabel.hidden = NO;
     }
     
     _relationLabel.text = _contact.relation;
@@ -136,6 +138,7 @@ static const CGFloat ImageViewSize = 135.0;
     _imageView.translatesAutoresizingMaskIntoConstraints = NO;
     _titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     _relationLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    _monogramLabel.translatesAutoresizingMaskIntoConstraints = NO;
     _bottomEdge.translatesAutoresizingMaskIntoConstraints = NO;
     
     [_constraints addObjectsFromArray:@[
@@ -216,6 +219,27 @@ static const CGFloat ImageViewSize = 135.0;
                                                                      attribute:NSLayoutAttributeBottom
                                                                     multiplier:1.0
                                                                       constant:-BottomMargin],
+                                        [NSLayoutConstraint constraintWithItem:_monogramLabel
+                                                                     attribute:NSLayoutAttributeCenterX
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:_imageView
+                                                                     attribute:NSLayoutAttributeCenterX
+                                                                    multiplier:1.0
+                                                                      constant:0.0],
+                                        [NSLayoutConstraint constraintWithItem:_monogramLabel
+                                                                     attribute:NSLayoutAttributeCenterY
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:_imageView
+                                                                     attribute:NSLayoutAttributeCenterY
+                                                                    multiplier:1.0
+                                                                      constant:0.0],
+                                        [NSLayoutConstraint constraintWithItem:_monogramLabel
+                                                                     attribute:NSLayoutAttributeWidth
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:_imageView
+                                                                     attribute:NSLayoutAttributeWidth
+                                                                    multiplier:1.0
+                                                                      constant:-HorizontalMargin],
                                         [NSLayoutConstraint constraintWithItem:_bottomEdge
                                                                      attribute:NSLayoutAttributeBottom
                                                                      relatedBy:NSLayoutRelationEqual
@@ -238,28 +262,6 @@ static const CGFloat ImageViewSize = 135.0;
                                                                     multiplier:1.0
                                                                       constant:3.0]
                                         ]];
-    
-    if (_monogramLabel) {
-        _monogramLabel.translatesAutoresizingMaskIntoConstraints = NO;
-        
-        [_constraints addObjectsFromArray:@[
-                                            [NSLayoutConstraint constraintWithItem:_monogramLabel
-                                                                         attribute:NSLayoutAttributeCenterX
-                                                                         relatedBy:NSLayoutRelationEqual
-                                                                            toItem:_imageView
-                                                                         attribute:NSLayoutAttributeCenterX
-                                                                        multiplier:1.0
-                                                                          constant:0.0],
-                                            [NSLayoutConstraint constraintWithItem:_monogramLabel
-                                                                         attribute:NSLayoutAttributeCenterY
-                                                                         relatedBy:NSLayoutRelationEqual
-                                                                            toItem:_imageView
-                                                                         attribute:NSLayoutAttributeCenterY
-                                                                        multiplier:1.0
-                                                                          constant:0.0]
-                                            ]];
-    }
-
     
     [NSLayoutConstraint activateConstraints:_constraints];
     

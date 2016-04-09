@@ -36,7 +36,7 @@
 static const CGFloat LeadingMargin = 20.0;
 static const CGFloat TrailingMargin = 20.0;
 static const CGFloat BottomMargin = 15.0;
-static const CGFloat TopMargin = 15.0;
+static const CGFloat TopMargin = 50.0;
 
 @implementation OCKCareCardDetailHeaderView {
     UILabel *_titleLabel;
@@ -63,6 +63,7 @@ static const CGFloat TopMargin = 15.0;
     
     if (!_titleLabel) {
         _titleLabel = [UILabel new];
+        _titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
         _titleLabel.numberOfLines = 0;
         _titleLabel.textAlignment = NSTextAlignmentCenter;
         [self addSubview:_titleLabel];
@@ -71,6 +72,7 @@ static const CGFloat TopMargin = 15.0;
     if (!_textLabel) {
         _textLabel = [UILabel new];
         _textLabel.textColor = [UIColor lightGrayColor];
+        _textLabel.lineBreakMode = NSLineBreakByWordWrapping;
         _textLabel.numberOfLines = 0;
         _textLabel.textAlignment = NSTextAlignmentCenter;
         [self addSubview:_textLabel];
@@ -110,7 +112,7 @@ static const CGFloat TopMargin = 15.0;
     [_constraints addObjectsFromArray:@[
                                         [NSLayoutConstraint constraintWithItem:_titleLabel
                                                                      attribute:NSLayoutAttributeTop
-                                                                     relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                                     relatedBy:NSLayoutRelationEqual
                                                                         toItem:self
                                                                      attribute:NSLayoutAttributeTop
                                                                     multiplier:1.0
@@ -179,6 +181,7 @@ static const CGFloat TopMargin = 15.0;
                                                                     multiplier:1.0
                                                                       constant:0.0]
                                         ]];
+    
     [NSLayoutConstraint activateConstraints:_constraints];
     
 }
@@ -186,6 +189,12 @@ static const CGFloat TopMargin = 15.0;
 - (void)setIntervention:(OCKCarePlanActivity *)intervention {
     _intervention = intervention;
     [self updateView];
+}
+
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    _titleLabel.preferredMaxLayoutWidth = _titleLabel.bounds.size.width;
+    _textLabel.preferredMaxLayoutWidth = _textLabel.bounds.size.width;
 }
 
 - (void)dealloc {

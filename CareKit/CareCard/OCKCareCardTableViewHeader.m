@@ -35,20 +35,20 @@
 #import "OCKHelpers.h"
 
 
-static const CGFloat HeartViewSize = 115.0;
+static const CGFloat TopMargin = 25.0;
+static const CGFloat BottomMargin = 25.0;
 static const CGFloat TrailingMargin = 20.0;
 static const CGFloat HorizontalMargin = 10.0;
+static const CGFloat HeartViewSize = 110.0;
 
 @implementation OCKCareCardTableViewHeader {
-    UILabel *_dateLabel;
-    
+    UIView *_containerView;
     OCKHeartView *_heartView;
     UILabel *_titleLabel;
+    UILabel *_dateLabel;
     UILabel *_valuePercentageLabel;
-    
     UIView *_topEdge;
     UIView *_bottomEdge;
-    
     NSNumberFormatter *_numberFormatter;
     NSMutableArray *_constraints;
 }
@@ -79,28 +79,30 @@ static const CGFloat HorizontalMargin = 10.0;
 }
 
 - (void)prepareView {
-    if (!_dateLabel) {
-        _dateLabel = [UILabel new];
-        _dateLabel.textColor = [UIColor darkGrayColor];
-        _dateLabel.numberOfLines = 2;
-        [self addSubview:_dateLabel];
-    }
-    
     if (!_heartView) {
         _heartView = [[OCKHeartView alloc] initWithFrame:CGRectMake(0, 0, HeartViewSize, HeartViewSize)];
         [self addSubview:_heartView];
     }
     
-    if (!_valuePercentageLabel) {
-        _valuePercentageLabel = [UILabel new];
-        [self addSubview:_valuePercentageLabel];
-    }
-    
     if (!_titleLabel) {
         _titleLabel = [UILabel new];
         _titleLabel.text = OCKLocalizedString(@"CARE_CARD_HEADER_TITLE", nil);
-        _titleLabel.numberOfLines = 2;
+        _titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        _titleLabel.numberOfLines = 0;
         [self addSubview:_titleLabel];
+    }
+    
+    if (!_dateLabel) {
+        _dateLabel = [UILabel new];
+        _dateLabel.textColor = [UIColor darkGrayColor];
+        _dateLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        _dateLabel.numberOfLines = 0;
+        [self addSubview:_dateLabel];
+    }
+    
+    if (!_valuePercentageLabel) {
+        _valuePercentageLabel = [UILabel new];
+        [self addSubview:_valuePercentageLabel];
     }
     
     if (!_bottomEdge) {
@@ -148,19 +150,19 @@ static const CGFloat HorizontalMargin = 10.0;
     
     [_constraints addObjectsFromArray:@[
                                         [NSLayoutConstraint constraintWithItem:_heartView
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeCenterX
+                                                                    multiplier:1.0
+                                                                      constant:-25.0],
+                                        [NSLayoutConstraint constraintWithItem:_heartView
                                                                      attribute:NSLayoutAttributeCenterY
                                                                      relatedBy:NSLayoutRelationEqual
                                                                         toItem:self
                                                                      attribute:NSLayoutAttributeCenterY
                                                                     multiplier:1.0
                                                                       constant:0.0],
-                                        [NSLayoutConstraint constraintWithItem:_heartView
-                                                                     attribute:NSLayoutAttributeCenterX
-                                                                     relatedBy:NSLayoutRelationEqual
-                                                                        toItem:self
-                                                                     attribute:NSLayoutAttributeCenterX
-                                                                    multiplier:1.0
-                                                                      constant:-HeartViewSize/1.5],
                                         [NSLayoutConstraint constraintWithItem:_heartView
                                                                      attribute:NSLayoutAttributeHeight
                                                                      relatedBy:NSLayoutRelationEqual
@@ -175,27 +177,13 @@ static const CGFloat HorizontalMargin = 10.0;
                                                                      attribute:NSLayoutAttributeNotAnAttribute
                                                                     multiplier:1.0
                                                                       constant:HeartViewSize],
-                                        [NSLayoutConstraint constraintWithItem:_dateLabel
-                                                                     attribute:NSLayoutAttributeLeading
-                                                                     relatedBy:NSLayoutRelationEqual
-                                                                        toItem:_titleLabel
-                                                                     attribute:NSLayoutAttributeLeading
-                                                                    multiplier:1.0
-                                                                      constant:0.0],
                                         [NSLayoutConstraint constraintWithItem:_titleLabel
-                                                                     attribute:NSLayoutAttributeTrailing
-                                                                     relatedBy:NSLayoutRelationEqual
-                                                                        toItem:self
-                                                                     attribute:NSLayoutAttributeTrailing
-                                                                    multiplier:1.0
-                                                                      constant:-TrailingMargin],
-                                        [NSLayoutConstraint constraintWithItem:_dateLabel
                                                                      attribute:NSLayoutAttributeTop
-                                                                     relatedBy:NSLayoutRelationEqual
-                                                                        toItem:_titleLabel
-                                                                     attribute:NSLayoutAttributeBottom
+                                                                     relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeTop
                                                                     multiplier:1.0
-                                                                      constant:0.0],
+                                                                      constant:TopMargin],
                                         [NSLayoutConstraint constraintWithItem:_titleLabel
                                                                      attribute:NSLayoutAttributeLeading
                                                                      relatedBy:NSLayoutRelationEqual
@@ -204,23 +192,23 @@ static const CGFloat HorizontalMargin = 10.0;
                                                                     multiplier:1.0
                                                                       constant:HorizontalMargin],
                                         [NSLayoutConstraint constraintWithItem:_titleLabel
-                                                                     attribute:NSLayoutAttributeCenterY
+                                                                     attribute:NSLayoutAttributeTrailing
                                                                      relatedBy:NSLayoutRelationEqual
-                                                                        toItem:_heartView
-                                                                     attribute:NSLayoutAttributeCenterY
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeTrailing
                                                                     multiplier:1.0
-                                                                      constant:-20.0],
-                                        [NSLayoutConstraint constraintWithItem:_valuePercentageLabel
-                                                                     attribute:NSLayoutAttributeTop
+                                                                      constant:-TrailingMargin],
+                                        [NSLayoutConstraint constraintWithItem:_titleLabel
+                                                                     attribute:NSLayoutAttributeTrailing
                                                                      relatedBy:NSLayoutRelationEqual
-                                                                        toItem:_dateLabel
-                                                                     attribute:NSLayoutAttributeBottom
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeTrailing
                                                                     multiplier:1.0
-                                                                      constant:0.0],
-                                        [NSLayoutConstraint constraintWithItem:_valuePercentageLabel
+                                                                      constant:-TrailingMargin],
+                                        [NSLayoutConstraint constraintWithItem:_dateLabel
                                                                      attribute:NSLayoutAttributeLeading
                                                                      relatedBy:NSLayoutRelationEqual
-                                                                        toItem:_dateLabel
+                                                                        toItem:_titleLabel
                                                                      attribute:NSLayoutAttributeLeading
                                                                     multiplier:1.0
                                                                       constant:0.0],
@@ -231,6 +219,41 @@ static const CGFloat HorizontalMargin = 10.0;
                                                                      attribute:NSLayoutAttributeTrailing
                                                                     multiplier:1.0
                                                                       constant:-TrailingMargin],
+                                        [NSLayoutConstraint constraintWithItem:_dateLabel
+                                                                     attribute:NSLayoutAttributeCenterY
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:_heartView
+                                                                     attribute:NSLayoutAttributeCenterY
+                                                                    multiplier:1.0
+                                                                      constant:0.0],
+                                        [NSLayoutConstraint constraintWithItem:_titleLabel
+                                                                     attribute:NSLayoutAttributeBottom
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:_dateLabel
+                                                                     attribute:NSLayoutAttributeTop
+                                                                    multiplier:1.0
+                                                                      constant:0.0],
+                                        [NSLayoutConstraint constraintWithItem:_valuePercentageLabel
+                                                                     attribute:NSLayoutAttributeLeading
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:_titleLabel
+                                                                     attribute:NSLayoutAttributeLeading
+                                                                    multiplier:1.0
+                                                                      constant:0.0],
+                                        [NSLayoutConstraint constraintWithItem:_valuePercentageLabel
+                                                                     attribute:NSLayoutAttributeTop
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:_dateLabel
+                                                                     attribute:NSLayoutAttributeBottom
+                                                                    multiplier:1.0
+                                                                      constant:0.0],
+                                        [NSLayoutConstraint constraintWithItem:_valuePercentageLabel
+                                                                     attribute:NSLayoutAttributeBottom
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeBottom
+                                                                    multiplier:1.0
+                                                                      constant:-BottomMargin],
                                         [NSLayoutConstraint constraintWithItem:_bottomEdge
                                                                      attribute:NSLayoutAttributeBottom
                                                                      relatedBy:NSLayoutRelationEqual

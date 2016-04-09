@@ -65,6 +65,8 @@ static const CGFloat VerticalMargin = 10.0;
     if (!_textLabel) {
         _textLabel = [UILabel new];
         _textLabel.textColor = [UIColor lightGrayColor];
+        _textLabel.numberOfLines = 2;
+        _textLabel.lineBreakMode = NSLineBreakByCharWrapping;
         [self addSubview:_textLabel];
     }
     
@@ -111,6 +113,20 @@ static const CGFloat VerticalMargin = 10.0;
                                                                      attribute:NSLayoutAttributeLeading
                                                                     multiplier:1.0
                                                                       constant:LeadingMargin],
+                                        [NSLayoutConstraint constraintWithItem:_titleLabel
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                    multiplier:1.0
+                                                                      constant:-TrailingMargin],
+                                        [NSLayoutConstraint constraintWithItem:_textLabel
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                    multiplier:1.0
+                                                                      constant:-TrailingMargin],
                                         [NSLayoutConstraint constraintWithItem:_textLabel
                                                                      attribute:NSLayoutAttributeLeading
                                                                      relatedBy:NSLayoutRelationEqual

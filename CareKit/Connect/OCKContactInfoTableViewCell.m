@@ -194,7 +194,7 @@ static const CGFloat IconButtonSize = 35.0;
                                                                         toItem:_iconButton
                                                                      attribute:NSLayoutAttributeLeading
                                                                     multiplier:1.0
-                                                                      constant:HorizontalMargin],
+                                                                      constant:-HorizontalMargin],
                                         ]];
     
     [NSLayoutConstraint activateConstraints:_constraints];

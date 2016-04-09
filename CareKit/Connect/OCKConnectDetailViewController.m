@@ -83,6 +83,19 @@ static const CGFloat HeaderViewHeight = 225.0;
     self.tableView.tableHeaderView = _headerView;
 }
 
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+    
+    CGFloat height = [_headerView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize].height;
+    CGRect headerViewFrame = _headerView.frame;
+    
+    if (height != headerViewFrame.size.height) {
+        headerViewFrame.size.height = height;
+        _headerView.frame = headerViewFrame;
+        self.tableView.tableHeaderView = _headerView;
+    }
+}
+
 
 #pragma mark - Helpers
 

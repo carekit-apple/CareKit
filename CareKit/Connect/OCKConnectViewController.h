@@ -56,6 +56,8 @@ NS_ASSUME_NONNULL_BEGIN
  Asks the delegate for the title to be shown in the sharing cell for a contact.
  If the method returns nil or is not implemented, the localized string for the `SHARING_CELL_TITLE` key is displayed.
  
+ Single-lined.
+ 
  @param connectViewController       The view controller providing the callback.
  @param contact                     The contact that is currently displayed.
  

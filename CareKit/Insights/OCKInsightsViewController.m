@@ -68,13 +68,6 @@ static const CGFloat TopMargin = 20.0;
         _headerTitle = [headerTitle copy];
         _headerSubtitle = [headerSubtitle copy];
         _hasAnimated = NO;
-        
-        _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
-        _tableView.dataSource = self;
-        _tableView.delegate = self;
-        [self.view addSubview:_tableView];
-        
-        [self setUpConstraints];
     }
     return self;
 }
@@ -88,15 +81,23 @@ static const CGFloat TopMargin = 20.0;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
+    _tableView.dataSource = self;
+    _tableView.delegate = self;
+    [self.view addSubview:_tableView];
+    
+    [self setUpConstraints];
+    
     if (!_headerView) {
         _headerView = [[OCKInsightsTableViewHeaderView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, HeaderViewHeight)];
     }
     [self updateHeaderView];
     
-    _tableView.estimatedRowHeight = 44.0;
-    _tableView.sectionHeaderHeight = 5.0;
-    _tableView.sectionFooterHeight = 0.0;
+    _tableView.estimatedRowHeight = 90.0;
     _tableView.rowHeight = UITableViewAutomaticDimension;
+    
+    _tableView.sectionHeaderHeight = 0.0;
+    _tableView.sectionFooterHeight = 5.0;
 }
 
 - (void)setItems:(NSArray<OCKInsightItem *> *)items {
@@ -129,7 +130,7 @@ static const CGFloat TopMargin = 20.0;
                                                                         toItem:self.view
                                                                      attribute:NSLayoutAttributeTop
                                                                     multiplier:1.0
-                                                                      constant:TopMargin],
+                                                                      constant:0.0],
                                         [NSLayoutConstraint constraintWithItem:_tableView
                                                                      attribute:NSLayoutAttributeBottom
                                                                      relatedBy:NSLayoutRelationEqual
@@ -165,6 +166,20 @@ static const CGFloat TopMargin = 20.0;
         _tableView.tableHeaderView = nil;
     }
     [_tableView reloadData];
+}
+
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+    
+
+    CGFloat height = [_headerView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize].height;
+    CGRect headerViewFrame = _headerView.frame;
+    
+    if (height != headerViewFrame.size.height) {
+        headerViewFrame.size.height = height;
+        _headerView.frame = headerViewFrame;
+        _tableView.tableHeaderView = _headerView;
+    }
 }
 
 

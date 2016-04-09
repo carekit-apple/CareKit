@@ -116,7 +116,7 @@ static const CGFloat ImageViewSize = 40.0;
     _relationLabel.translatesAutoresizingMaskIntoConstraints = NO;
     
     CGFloat LeadingMargin = self.separatorInset.left;
-    CGFloat TrailingMargin = (self.separatorInset.right > 0) ? self.separatorInset.right : 20;
+    CGFloat TrailingMargin = (self.separatorInset.right > 0) ? self.separatorInset.right : 40;
     
     [_constraints addObjectsFromArray:@[
                                         [NSLayoutConstraint constraintWithItem:_imageView

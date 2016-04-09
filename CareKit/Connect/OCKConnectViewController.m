@@ -63,19 +63,20 @@
     self = [super init];
     if (self) {
         _contacts = [contacts copy];
-        
-        _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
-        _tableView.dataSource = self;
-        _tableView.delegate = self;
-        [self.view addSubview:_tableView];
-        
-        [self prepareHeaderView];
     }
     return self;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
+    _tableView.dataSource = self;
+    _tableView.delegate = self;
+    [self.view addSubview:_tableView];
+    
+    [self prepareHeaderView];
+    
     _tableView.estimatedRowHeight = 44.0;
     _tableView.rowHeight = UITableViewAutomaticDimension;
     
@@ -203,6 +204,7 @@
     [super viewWillLayoutSubviews];
     [self setUpConstraints];
 }
+
 
 #pragma mark - UITableViewDelegate
 

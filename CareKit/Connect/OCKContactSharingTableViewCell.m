@@ -35,6 +35,7 @@
 
 static const CGFloat TopMargin = 20.0;
 static const CGFloat BottomMargin = 20.0;
+static const CGFloat HorizontalMargin = 5.0;
 
 @implementation OCKContactSharingTableViewCell {
     UILabel *_titleLabel;
@@ -110,6 +111,13 @@ static const CGFloat BottomMargin = 20.0;
                                                                      attribute:NSLayoutAttributeLeading
                                                                     multiplier:1.0
                                                                       constant:LeadingMargin],
+                                        [NSLayoutConstraint constraintWithItem:_titleLabel
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:_shareButton
+                                                                     attribute:NSLayoutAttributeLeading
+                                                                    multiplier:1.0
+                                                                      constant:-HorizontalMargin],
                                         [NSLayoutConstraint constraintWithItem:_shareButton
                                                                      attribute:NSLayoutAttributeTrailing
                                                                      relatedBy:NSLayoutRelationEqual

@@ -68,11 +68,14 @@ static NSString *TipSymbol = @"\u2731";
     
     if (!_titleLabel) {
         _titleLabel = [UILabel new];
+        _titleLabel.numberOfLines = 0;
+        _titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
         [self addSubview:_titleLabel];
     }
     
     if (!_textLabel) {
         _textLabel = [UILabel new];
+        _textLabel.textColor = [UIColor darkGrayColor];
         _textLabel.numberOfLines = 0;
         _textLabel.lineBreakMode = NSLineBreakByWordWrapping;
         [self addSubview:_textLabel];
@@ -118,6 +121,13 @@ static NSString *TipSymbol = @"\u2731";
                                                                      attribute:NSLayoutAttributeLeading
                                                                     multiplier:1.0
                                                                       constant:LeadingMargin],
+                                        [NSLayoutConstraint constraintWithItem:_iconLabel
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                     relatedBy:NSLayoutRelationLessThanOrEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                    multiplier:1.0
+                                                                      constant:-TrailingMargin],
                                         [NSLayoutConstraint constraintWithItem:_titleLabel
                                                                      attribute:NSLayoutAttributeTop
                                                                      relatedBy:NSLayoutRelationEqual

@@ -38,6 +38,7 @@ static const CGFloat TopMargin = 30.0;
 static const CGFloat BottomMargin = 30.0;
 static const CGFloat HorizontalMargin = 10.0;
 static const CGFloat ValueLabelWidth = 100.0;
+static const CGFloat UnitLabelWidth = 100.0;
 
 @implementation OCKSymptomTrackerTableViewCell {
     UILabel *_titleLabel;
@@ -123,7 +124,7 @@ static const CGFloat ValueLabelWidth = 100.0;
     _valueLabel.translatesAutoresizingMaskIntoConstraints = NO;
     
     CGFloat LeadingMargin = self.separatorInset.left;
-    CGFloat TrailingMargin = (self.separatorInset.right > 0) ? self.separatorInset.right + 25 : 30;
+    CGFloat TrailingMargin = (self.separatorInset.right > 0) ? self.separatorInset.right + 25 : 40;
     
     CGFloat unitLabelOffset = 0;
     
@@ -139,6 +140,20 @@ static const CGFloat ValueLabelWidth = 100.0;
                                                                          attribute:NSLayoutAttributeBottom
                                                                         multiplier:1.0
                                                                           constant:0.0],
+                                            [NSLayoutConstraint constraintWithItem:_unitLabel
+                                                                         attribute:NSLayoutAttributeLeading
+                                                                         relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                                            toItem:_textLabel
+                                                                         attribute:NSLayoutAttributeTrailing
+                                                                        multiplier:1.0
+                                                                          constant:2*HorizontalMargin],
+                                            [NSLayoutConstraint constraintWithItem:_unitLabel
+                                                                         attribute:NSLayoutAttributeWidth
+                                                                         relatedBy:NSLayoutRelationEqual
+                                                                            toItem:nil
+                                                                         attribute:NSLayoutAttributeNotAnAttribute
+                                                                        multiplier:1.0
+                                                                          constant:UnitLabelWidth],
                                             [NSLayoutConstraint constraintWithItem:_unitLabel
                                                                          attribute:NSLayoutAttributeTrailing
                                                                          relatedBy:NSLayoutRelationEqual
@@ -167,10 +182,10 @@ static const CGFloat ValueLabelWidth = 100.0;
                                         [NSLayoutConstraint constraintWithItem:_textLabel
                                                                      attribute:NSLayoutAttributeLeading
                                                                      relatedBy:NSLayoutRelationEqual
-                                                                        toItem:_titleLabel
+                                                                        toItem:self
                                                                      attribute:NSLayoutAttributeLeading
                                                                     multiplier:1.0
-                                                                      constant:0.0],
+                                                                      constant:LeadingMargin],
                                         [NSLayoutConstraint constraintWithItem:_textLabel
                                                                      attribute:NSLayoutAttributeTop
                                                                      relatedBy:NSLayoutRelationEqual
@@ -178,13 +193,6 @@ static const CGFloat ValueLabelWidth = 100.0;
                                                                      attribute:NSLayoutAttributeBottom
                                                                     multiplier:1.0
                                                                       constant:0.0],
-                                        [NSLayoutConstraint constraintWithItem:_valueLabel
-                                                                     attribute:NSLayoutAttributeLeading
-                                                                     relatedBy:NSLayoutRelationGreaterThanOrEqual
-                                                                        toItem:_titleLabel
-                                                                     attribute:NSLayoutAttributeTrailing
-                                                                    multiplier:1.0
-                                                                      constant:HorizontalMargin],
                                         [NSLayoutConstraint constraintWithItem:_valueLabel
                                                                      attribute:NSLayoutAttributeLeading
                                                                      relatedBy:NSLayoutRelationGreaterThanOrEqual
@@ -199,6 +207,13 @@ static const CGFloat ValueLabelWidth = 100.0;
                                                                      attribute:NSLayoutAttributeBottom
                                                                     multiplier:1.0
                                                                       constant:-BottomMargin],
+                                        [NSLayoutConstraint constraintWithItem:_valueLabel
+                                                                     attribute:NSLayoutAttributeLeading
+                                                                     relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                                        toItem:_titleLabel
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                    multiplier:1.0
+                                                                      constant:HorizontalMargin],
                                         [NSLayoutConstraint constraintWithItem:_valueLabel
                                                                      attribute:NSLayoutAttributeTrailing
                                                                      relatedBy:NSLayoutRelationEqual

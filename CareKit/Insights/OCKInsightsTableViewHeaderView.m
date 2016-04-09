@@ -32,8 +32,11 @@
 #import "OCKInsightsTableViewHeaderView.h"
 #import "OCKHelpers.h"
 
+
+static const CGFloat TopMargin = 20.0;
 static const CGFloat LeadingMargin = 15.0;
 static const CGFloat TrailingMargin = 15.0;
+static const CGFloat BottomMargin = 20.0;
 
 @implementation OCKInsightsTableViewHeaderView {
     UILabel *_titleLabel;
@@ -45,7 +48,7 @@ static const CGFloat TrailingMargin = 15.0;
     self = [super initWithFrame:frame];
     if (self) {
         [self prepareView];
-        
+
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(updateFonts)
                                                      name:UIContentSizeCategoryDidChangeNotification
@@ -63,6 +66,8 @@ static const CGFloat TrailingMargin = 15.0;
     
     if (!_subtitleLabel) {
         _subtitleLabel = [UILabel new];
+        _subtitleLabel.numberOfLines = 2;
+        _subtitleLabel.lineBreakMode = NSLineBreakByWordWrapping;
         _subtitleLabel.textColor = [UIColor darkGrayColor];
         [self addSubview:_subtitleLabel];
     }
@@ -91,61 +96,86 @@ static const CGFloat TrailingMargin = 15.0;
     _subtitleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     
     [_constraints addObjectsFromArray:@[
-                                       [NSLayoutConstraint constraintWithItem:_titleLabel
-                                                                    attribute:NSLayoutAttributeCenterY
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:self
-                                                                    attribute:NSLayoutAttributeCenterY
-                                                                   multiplier:1.0
-                                                                     constant:-20.0],
-                                       [NSLayoutConstraint constraintWithItem:_titleLabel
-                                                                    attribute:NSLayoutAttributeLeading
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:self
-                                                                    attribute:NSLayoutAttributeLeading
-                                                                   multiplier:1.0
-                                                                     constant:LeadingMargin],
-                                       [NSLayoutConstraint constraintWithItem:_titleLabel
-                                                                    attribute:NSLayoutAttributeBottom
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:_subtitleLabel
-                                                                    attribute:NSLayoutAttributeTop
-                                                                   multiplier:1.0
-                                                                     constant:0.0],
-                                       [NSLayoutConstraint constraintWithItem:_subtitleLabel
-                                                                    attribute:NSLayoutAttributeLeading
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:self
-                                                                    attribute:NSLayoutAttributeLeading
-                                                                   multiplier:1.0
-                                                                     constant:LeadingMargin],
-                                       [NSLayoutConstraint constraintWithItem:_titleLabel
-                                                                    attribute:NSLayoutAttributeTrailing
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:self
-                                                                    attribute:NSLayoutAttributeTrailing
-                                                                   multiplier:1.0
-                                                                     constant:-TrailingMargin],
-                                       [NSLayoutConstraint constraintWithItem:_subtitleLabel
-                                                                    attribute:NSLayoutAttributeTrailing
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:self
-                                                                    attribute:NSLayoutAttributeTrailing
-                                                                   multiplier:1.0
-                                                                     constant:-TrailingMargin]
-                                       ]];
-
+                                        [NSLayoutConstraint constraintWithItem:_titleLabel
+                                                                     attribute:NSLayoutAttributeTop
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeTop
+                                                                    multiplier:1.0
+                                                                      constant:TopMargin],
+                                        [NSLayoutConstraint constraintWithItem:_titleLabel
+                                                                     attribute:NSLayoutAttributeLeading
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeLeading
+                                                                    multiplier:1.0
+                                                                      constant:LeadingMargin],
+                                        [NSLayoutConstraint constraintWithItem:_titleLabel
+                                                                     attribute:NSLayoutAttributeBottom
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:_subtitleLabel
+                                                                     attribute:NSLayoutAttributeTop
+                                                                    multiplier:1.0
+                                                                      constant:0.0],
+                                        [NSLayoutConstraint constraintWithItem:_subtitleLabel
+                                                                     attribute:NSLayoutAttributeLeading
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeLeading
+                                                                    multiplier:1.0
+                                                                      constant:LeadingMargin],
+                                        [NSLayoutConstraint constraintWithItem:self
+                                                                     attribute:NSLayoutAttributeBottom
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:_subtitleLabel
+                                                                     attribute:NSLayoutAttributeBottom
+                                                                    multiplier:1.0
+                                                                      constant:BottomMargin]
+                                        ]];
+    
+    
+    NSLayoutConstraint *titleTrailingConstraint = [NSLayoutConstraint constraintWithItem:_titleLabel
+                                                                               attribute:NSLayoutAttributeTrailing
+                                                                               relatedBy:NSLayoutRelationEqual
+                                                                                  toItem:self
+                                                                               attribute:NSLayoutAttributeTrailing
+                                                                              multiplier:1.0
+                                                                                constant:-TrailingMargin];
+    titleTrailingConstraint.priority = 999;
+    
+    NSLayoutConstraint *subtitleTrailingConstraint = [NSLayoutConstraint constraintWithItem:_subtitleLabel
+                                                                                  attribute:NSLayoutAttributeTrailing
+                                                                                  relatedBy:NSLayoutRelationEqual
+                                                                                     toItem:self
+                                                                                  attribute:NSLayoutAttributeTrailing
+                                                                                 multiplier:1.0
+                                                                                   constant:-TrailingMargin];
+    subtitleTrailingConstraint.priority = 999;
+    
+    [_constraints addObject:titleTrailingConstraint];
+    [_constraints addObject:subtitleTrailingConstraint];
+    
     [NSLayoutConstraint activateConstraints:_constraints];
 }
 
 - (void)setTitle:(NSString *)title {
     _title = title;
-    [self prepareView];
+    [self updateView];
 }
 
 - (void)setSubtitle:(NSString *)subtitle {
     _subtitle = subtitle;
-    [self prepareView];
+    [self updateView];
+}
+
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    _titleLabel.preferredMaxLayoutWidth = _titleLabel.bounds.size.width;
+    _subtitleLabel.preferredMaxLayoutWidth = _subtitleLabel.bounds.size.width;
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark - Accessibility

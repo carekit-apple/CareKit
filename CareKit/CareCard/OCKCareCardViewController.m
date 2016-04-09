@@ -46,8 +46,6 @@
 
 #define RedColor() OCKColorFromRGB(0xEF445B);
 
-static const CGFloat HeaderViewHeight = 150.0;
-
 @interface OCKCareCardViewController() <OCKWeekViewDelegate, OCKCarePlanStoreDelegate, OCKCareCardCellDelegate, UITableViewDelegate, UITableViewDataSource, UIPageViewControllerDelegate, UIPageViewControllerDataSource>
 
 @property (nonatomic) NSDateComponents *selectedDate;
@@ -106,7 +104,8 @@ static const CGFloat HeaderViewHeight = 150.0;
 
     _tableView.estimatedRowHeight = 90.0;
     _tableView.rowHeight = UITableViewAutomaticDimension;
-    
+    _tableView.estimatedSectionHeaderHeight = 100.0;
+    _tableView.sectionHeaderHeight = UITableViewAutomaticDimension;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -123,7 +122,7 @@ static const CGFloat HeaderViewHeight = 150.0;
 
 - (void)prepareView {
     if (!_headerView) {
-        _headerView = [[OCKCareCardTableViewHeader alloc] initWithFrame:CGRectMake(0, 0, _tableView.frame.size.width, HeaderViewHeight)];
+        _headerView = [[OCKCareCardTableViewHeader alloc] initWithFrame:CGRectZero];
     }
     _headerView.heartView.maskImage = _maskImage;
     _headerView.tintColor = _maskImageTintColor;
@@ -428,10 +427,6 @@ static const CGFloat HeaderViewHeight = 150.0;
 
 
 #pragma mark - UITableViewDelegate
-
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return HeaderViewHeight;
-}
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     return _headerView;

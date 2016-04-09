@@ -573,7 +573,7 @@ DefineStringKey(TemperatureAssessment);
     
     {
         UIColor *color = YellowColor();
-        OCKContact *contact = [[OCKContact alloc] initWithContactType:OCKContactTypeCareTeam
+        OCKContact *contact = [[OCKContact alloc] initWithContactType:OCKContactTypePersonal
                                                                  name:@"Kevin Johnson"
                                                              relation:@"Father"
                                                             tintColor:color

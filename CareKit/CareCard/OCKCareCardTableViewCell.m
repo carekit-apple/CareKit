@@ -41,6 +41,7 @@
 static const CGFloat TopMargin = 20.0;
 static const CGFloat BottomMargin = 10.0;
 static const CGFloat VerticalMargin = 5.0;
+static const CGFloat HorizontalMargin = 5.0;
 static const CGFloat ButtonViewSize = 40.0;
 
 @interface OCKCareCardTableViewCell ()
@@ -140,6 +141,13 @@ static const CGFloat ButtonViewSize = 40.0;
                                                                      attribute:NSLayoutAttributeTop
                                                                     multiplier:1.0
                                                                       constant:TopMargin],
+                                        [NSLayoutConstraint constraintWithItem:_textLabel
+                                                                     attribute:NSLayoutAttributeTop
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeTop
+                                                                    multiplier:1.0
+                                                                      constant:TopMargin],
                                         [NSLayoutConstraint constraintWithItem:_titleLabel
                                                                      attribute:NSLayoutAttributeLeading
                                                                      relatedBy:NSLayoutRelationEqual
@@ -160,7 +168,7 @@ static const CGFloat ButtonViewSize = 40.0;
                                                                         toItem:_titleLabel
                                                                      attribute:NSLayoutAttributeTrailing
                                                                     multiplier:1.0
-                                                                      constant:5.0],
+                                                                      constant:HorizontalMargin],
                                         [NSLayoutConstraint constraintWithItem:self
                                                                      attribute:NSLayoutAttributeTrailing
                                                                      relatedBy:NSLayoutRelationGreaterThanOrEqual

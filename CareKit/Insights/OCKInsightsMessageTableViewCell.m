@@ -37,7 +37,6 @@ static const CGFloat TopMargin = 15.0;
 static const CGFloat LeadingMargin = 20.0;
 static const CGFloat TrailingMargin = 30.0;
 static const CGFloat BottomMargin = 15.0;
-static const CGFloat HorizontalMargin = 10.0;
 
 static NSString *AlertSymbol = @"\u25C9";
 static NSString *TipSymbol = @"\u2731";
@@ -60,7 +59,7 @@ static NSString *TipSymbol = @"\u2731";
 - (void)setMessageItem:(OCKMessageItem *)messageItem {
     _messageItem = messageItem;
     self.tintColor = _messageItem.tintColor;
-    [self updateView];
+    [self prepareView];
 }
 
 - (void)prepareView {
@@ -113,6 +112,8 @@ static NSString *TipSymbol = @"\u2731";
     _textLabel.translatesAutoresizingMaskIntoConstraints = NO;
     _iconLabel.translatesAutoresizingMaskIntoConstraints = NO;
     
+    CGFloat horizontalMargin = (_titleLabel.text) ? 10.0 : 0.0;
+    
     [_constraints addObjectsFromArray:@[
                                         [NSLayoutConstraint constraintWithItem:_titleLabel
                                                                      attribute:NSLayoutAttributeLeading
@@ -138,7 +139,7 @@ static NSString *TipSymbol = @"\u2731";
                                         [NSLayoutConstraint constraintWithItem:_textLabel
                                                                      attribute:NSLayoutAttributeTop
                                                                      relatedBy:NSLayoutRelationEqual
-                                                                        toItem:_titleLabel
+                                                                        toItem:_iconLabel
                                                                      attribute:NSLayoutAttributeBottom
                                                                     multiplier:1.0
                                                                       constant:0.0],
@@ -164,10 +165,10 @@ static NSString *TipSymbol = @"\u2731";
                                                                     multiplier:1.0
                                                                       constant:-BottomMargin],
                                         [NSLayoutConstraint constraintWithItem:_iconLabel
-                                                                     attribute:NSLayoutAttributeCenterY
+                                                                     attribute:NSLayoutAttributeTop
                                                                      relatedBy:NSLayoutRelationEqual
                                                                         toItem:_titleLabel
-                                                                     attribute:NSLayoutAttributeCenterY
+                                                                     attribute:NSLayoutAttributeTop
                                                                     multiplier:1.0
                                                                       constant:0.0],
                                         [NSLayoutConstraint constraintWithItem:_iconLabel
@@ -176,7 +177,7 @@ static NSString *TipSymbol = @"\u2731";
                                                                         toItem:_titleLabel
                                                                      attribute:NSLayoutAttributeTrailing
                                                                     multiplier:1.0
-                                                                      constant:HorizontalMargin]
+                                                                      constant:horizontalMargin]
                                         ]];
     
     [NSLayoutConstraint activateConstraints:_constraints];

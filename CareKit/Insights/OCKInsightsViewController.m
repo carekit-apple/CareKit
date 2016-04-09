@@ -59,8 +59,6 @@ static const CGFloat HeaderViewHeight = 60.0;
 - (instancetype)initWithInsightItems:(NSArray<OCKInsightItem *> *)items
                          headerTitle:(NSString *)headerTitle
                       headerSubtitle:(NSString *)headerSubtitle {
-    NSAssert(items.count > 0, @"OCKInsightsViewController requires at least one insight item.");
-    
     self = [super init];
     if (self) {
         _items = [items copy];
@@ -100,7 +98,6 @@ static const CGFloat HeaderViewHeight = 60.0;
 }
 
 - (void)setItems:(NSArray<OCKInsightItem *> *)items {
-    NSAssert(items.count > 0, @"OCKInsightsViewController requires at least one insight item.");
     _items = [items copy];
     [_tableView reloadData];
 }

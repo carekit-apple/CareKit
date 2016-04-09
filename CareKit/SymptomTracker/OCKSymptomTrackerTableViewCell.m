@@ -38,7 +38,7 @@ static const CGFloat TopMargin = 30.0;
 static const CGFloat BottomMargin = 30.0;
 static const CGFloat HorizontalMargin = 10.0;
 static const CGFloat ValueLabelWidth = 100.0;
-static const CGFloat UnitLabelWidth = 100.0;
+static const CGFloat UnitLabelWidth = 50.0;
 
 @implementation OCKSymptomTrackerTableViewCell {
     UILabel *_titleLabel;
@@ -141,19 +141,26 @@ static const CGFloat UnitLabelWidth = 100.0;
                                                                         multiplier:1.0
                                                                           constant:0.0],
                                             [NSLayoutConstraint constraintWithItem:_unitLabel
-                                                                         attribute:NSLayoutAttributeLeading
-                                                                         relatedBy:NSLayoutRelationGreaterThanOrEqual
-                                                                            toItem:_textLabel
-                                                                         attribute:NSLayoutAttributeTrailing
-                                                                        multiplier:1.0
-                                                                          constant:2*HorizontalMargin],
-                                            [NSLayoutConstraint constraintWithItem:_unitLabel
                                                                          attribute:NSLayoutAttributeWidth
                                                                          relatedBy:NSLayoutRelationEqual
                                                                             toItem:nil
                                                                          attribute:NSLayoutAttributeNotAnAttribute
                                                                         multiplier:1.0
                                                                           constant:UnitLabelWidth],
+                                            [NSLayoutConstraint constraintWithItem:_unitLabel
+                                                                         attribute:NSLayoutAttributeLeading
+                                                                         relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                                            toItem:_titleLabel
+                                                                         attribute:NSLayoutAttributeTrailing
+                                                                        multiplier:1.0
+                                                                          constant:HorizontalMargin],
+                                            [NSLayoutConstraint constraintWithItem:_unitLabel
+                                                                         attribute:NSLayoutAttributeLeading
+                                                                         relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                                            toItem:_textLabel
+                                                                         attribute:NSLayoutAttributeTrailing
+                                                                        multiplier:1.0
+                                                                          constant:0.0],
                                             [NSLayoutConstraint constraintWithItem:_unitLabel
                                                                          attribute:NSLayoutAttributeTrailing
                                                                          relatedBy:NSLayoutRelationEqual

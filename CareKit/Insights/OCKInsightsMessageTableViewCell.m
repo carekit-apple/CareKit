@@ -135,7 +135,14 @@ static NSString *TipSymbol = @"\u2731";
                                                                       constant:TopMargin],
                                         [NSLayoutConstraint constraintWithItem:_textLabel
                                                                      attribute:NSLayoutAttributeTop
-                                                                     relatedBy:NSLayoutRelationEqual
+                                                                     relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                                        toItem:_titleLabel
+                                                                     attribute:NSLayoutAttributeBottom
+                                                                    multiplier:1.0
+                                                                      constant:0.0],
+                                        [NSLayoutConstraint constraintWithItem:_textLabel
+                                                                     attribute:NSLayoutAttributeTop
+                                                                     relatedBy:NSLayoutRelationGreaterThanOrEqual
                                                                         toItem:_iconLabel
                                                                      attribute:NSLayoutAttributeBottom
                                                                     multiplier:1.0

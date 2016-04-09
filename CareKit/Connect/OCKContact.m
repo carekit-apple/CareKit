@@ -87,8 +87,6 @@
                        emailAddress:(NSString *)emailAddress
                            monogram:(NSString *)monogram
                               image:(UIImage *)image {
-    NSAssert(name.length > 0, @"A name is required for an OCKContact.");
-    NSAssert(relation.length > 0, @"A relation is required for an OCKContact.");
     NSAssert((monogram || image), @"An OCKContact must have either a monogram or an image.");
     
     self = [super init];

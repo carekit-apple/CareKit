@@ -138,6 +138,13 @@ static const CGFloat ImageViewSize = 40.0;
                                                                     multiplier:1.0
                                                                       constant:LeadingMargin],
                                         [NSLayoutConstraint constraintWithItem:_imageView
+                                                                     attribute:NSLayoutAttributeBottom
+                                                                     relatedBy:NSLayoutRelationLessThanOrEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeBottom
+                                                                    multiplier:1.0
+                                                                      constant:-BottomMargin],
+                                        [NSLayoutConstraint constraintWithItem:_imageView
                                                                      attribute:NSLayoutAttributeHeight
                                                                      relatedBy:NSLayoutRelationEqual
                                                                         toItem:nil

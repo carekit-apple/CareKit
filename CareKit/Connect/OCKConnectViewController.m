@@ -63,7 +63,7 @@
 - (instancetype)initWithContacts:(NSArray<OCKContact *> *)contacts {
     self = [super init];
     if (self) {
-        _contacts = [contacts copy];
+        _contacts = OCKArrayCopyObjects(contacts);
     }
     return self;
 }
@@ -90,7 +90,7 @@
 }
 
 - (void)setContacts:(NSArray<OCKContact *> *)contacts {
-    _contacts = [contacts copy];
+    _contacts = OCKArrayCopyObjects(contacts);
     [self prepareHeaderView];
     [self createSectionedContacts];
     [_tableView reloadData];

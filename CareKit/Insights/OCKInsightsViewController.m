@@ -61,7 +61,7 @@ static const CGFloat HeaderViewHeight = 60.0;
                       headerSubtitle:(NSString *)headerSubtitle {
     self = [super init];
     if (self) {
-        _items = [items copy];
+        _items = OCKArrayCopyObjects(items);
         _headerTitle = [headerTitle copy];
         _headerSubtitle = [headerSubtitle copy];
         _hasAnimated = NO;
@@ -98,7 +98,7 @@ static const CGFloat HeaderViewHeight = 60.0;
 }
 
 - (void)setItems:(NSArray<OCKInsightItem *> *)items {
-    _items = [items copy];
+    _items = OCKArrayCopyObjects(items);
     [_tableView reloadData];
 }
 

@@ -162,7 +162,7 @@ static const BOOL resetStoreOnLaunch = YES;
     
     {
         UIColor *color = PinkColor();
-        OCKMessageItem *item = [[OCKMessageItem alloc] initWithTitle:nil
+        OCKMessageItem *item = [[OCKMessageItem alloc] initWithTitle:@"Medication Adherence"
                                                                 text:@"Your medication adherence was 90% last week."
                                                            tintColor:color
                                                          messageType:OCKMessageItemTypeTip];
@@ -183,8 +183,8 @@ static const BOOL resetStoreOnLaunch = YES;
                                                         valueLabels:@[@"30%", @"40%", @"50%", @"70%", @"80%", @"90%", @"90%"]
                                                           tintColor:lightColor];
         
-        OCKBarChart *chart = [[OCKBarChart alloc] initWithTitle:nil
-                                                           text:nil
+        OCKBarChart *chart = [[OCKBarChart alloc] initWithTitle:@"Pain Scores"
+                                                           text:@"with Medication"
                                                       tintColor:color
                                                      axisTitles:axisTitles
                                                   axisSubtitles:axisSubtitles
@@ -561,19 +561,19 @@ DefineStringKey(TemperatureAssessment);
     {
         UIColor *color = GreenColor();
         OCKContact *contact = [[OCKContact alloc] initWithContactType:OCKContactTypeCareTeam
-                                                                 name:@" "
-                                                             relation:@" "
+                                                                 name:@"Greg Apodaca"
+                                                             relation:@"Nurse"
                                                             tintColor:color
                                                           phoneNumber:[CNPhoneNumber phoneNumberWithStringValue:@"123-456-7890"]
                                                         messageNumber:[CNPhoneNumber phoneNumberWithStringValue:@"123-456-7890"]
                                                          emailAddress:@"gapodaca@hospital.edu"
-                                                             monogram:@"GAasdfjklasdfjl"];
+                                                             monogram:@"GA"];
         [contacts addObject:contact];
     }
     
     {
         UIColor *color = YellowColor();
-        OCKContact *contact = [[OCKContact alloc] initWithContactType:OCKContactTypePersonal
+        OCKContact *contact = [[OCKContact alloc] initWithContactType:OCKContactTypeCareTeam
                                                                  name:@"Kevin Johnson"
                                                              relation:@"Father"
                                                             tintColor:color

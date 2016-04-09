@@ -74,10 +74,16 @@ static const CGFloat HeaderViewHeight = 225.0;
     [self.tableView reloadData];
 }
 
+- (void)setShowEdgeIndicator:(BOOL)showEdgeIndicator {
+    _showEdgeIndicator = showEdgeIndicator;
+    _headerView.showEdgeIndicator = _showEdgeIndicator;
+}
+
 - (void)prepareView {
     if (!_headerView) {
         _headerView = [[OCKConnectTableViewHeader alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, HeaderViewHeight)];
     }
+    _headerView.showEdgeIndicator = _showEdgeIndicator;
     _headerView.contact = _contact;
     
     self.tableView.tableHeaderView = _headerView;

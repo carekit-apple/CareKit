@@ -133,6 +133,13 @@ OCK_CLASS_AVAILABLE
  */
 @property (nonatomic, null_resettable) UIColor *maskImageTintColor;
 
+/**
+ A boolean to show the edge indicators.
+ 
+ The default value is NO.
+ */
+@property (nonatomic) BOOL showEdgeIndicators;
+
 @end
 
 NS_ASSUME_NONNULL_END

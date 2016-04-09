@@ -269,6 +269,11 @@ static const CGFloat ImageViewSize = 135.0;
     [self updateView];
 }
 
+- (void)setShowEdgeIndicator:(BOOL)showEdgeIndicator {
+    _showEdgeIndicator = showEdgeIndicator;
+    _bottomEdge.hidden = !_showEdgeIndicator;
+}
+
 - (void)layoutSubviews {
     [super layoutSubviews];
     _titleLabel.preferredMaxLayoutWidth = _titleLabel.bounds.size.width;

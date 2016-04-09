@@ -38,6 +38,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic) OCKContact *contact;
 
+@property (nonatomic) BOOL showEdgeIndicator;
+
 @end
 
 NS_ASSUME_NONNULL_END

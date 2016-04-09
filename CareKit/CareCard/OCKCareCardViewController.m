@@ -357,14 +357,26 @@ static const CGFloat HeaderViewHeight = 150.0;
 #pragma mark - OCKCareCardCellDelegate
 
 - (void)careCardTableViewCell:(OCKCareCardTableViewCell *)cell didUpdateFrequencyofInterventionEvent:(OCKCarePlanEvent *)event {
-    OCKCarePlanEventState state = (event.state == OCKCarePlanEventStateCompleted) ? OCKCarePlanEventStateNotCompleted : OCKCarePlanEventStateCompleted;
+    BOOL shouldDisplayViewController = NO;
+    if (_delegate &&
+        [_delegate respondsToSelector:@selector(careCardViewController:shouldDisplayViewControllerForActivity:)]) {
+        shouldDisplayViewController = [_delegate careCardViewController:self shouldDisplayViewControllerForActivity:event.activity];
+        
+    }
     
-    [_store updateEvent:event
-             withResult:nil
-                  state:state
-             completion:^(BOOL success, OCKCarePlanEvent * _Nonnull event, NSError * _Nonnull error) {
-                 NSAssert(success, error.localizedDescription);
-             }];
+    if (shouldDisplayViewController && _delegate &&
+        [_delegate respondsToSelector:@selector(careCardViewController:didSelectInterventionEvent:)]) {
+        [_delegate careCardViewController:self didSelectInterventionEvent:event];
+    } else {
+        OCKCarePlanEventState state = (event.state == OCKCarePlanEventStateCompleted) ? OCKCarePlanEventStateNotCompleted : OCKCarePlanEventStateCompleted;
+        
+        [_store updateEvent:event
+                 withResult:nil
+                      state:state
+                 completion:^(BOOL success, OCKCarePlanEvent * _Nonnull event, NSError * _Nonnull error) {
+                     NSAssert(success, error.localizedDescription);
+                 }];
+    }
 }
 
 

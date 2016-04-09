@@ -52,7 +52,7 @@ blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 
 static const BOOL resetStoreOnLaunch = YES;
 
-@interface ViewController () <OCKSymptomTrackerViewControllerDelegate, OCKCarePlanStoreDelegate, OCKConnectViewControllerDelegate, ORKTaskViewControllerDelegate>
+@interface ViewController () <OCKCareCardViewControllerDelegate, OCKSymptomTrackerViewControllerDelegate, OCKCarePlanStoreDelegate, OCKConnectViewControllerDelegate, ORKTaskViewControllerDelegate>
 
 @end
 
@@ -242,7 +242,9 @@ DefineStringKey(OutdoorWalkIntervention);
 DefineStringKey(PhysicalTherapyIntervention);
 
 - (OCKCareCardViewController *)careCardViewController {
-    return [[OCKCareCardViewController alloc] initWithCarePlanStore:_store];
+    OCKCareCardViewController *viewController = [[OCKCareCardViewController alloc] initWithCarePlanStore:_store];
+    viewController.delegate = self;
+    return viewController;
 }
 - (void)generateInterventions {
     NSMutableArray *interventions = [NSMutableArray new];
@@ -311,6 +313,29 @@ DefineStringKey(PhysicalTherapyIntervention);
     _interventions = [interventions copy];
 }
 
+#pragma mark - Care Card Delegate (OCKCareCardViewControllerDelegate)
+
+- (BOOL)careCardViewController:(OCKCareCardViewController *)viewController shouldDisplayViewControllerForActivity:(OCKCarePlanActivity *)interventionActivity {
+    if ([interventionActivity.identifier isEqualToString:HamstringStretchIntervention]) {
+        return YES;
+    }
+    return NO;
+}
+
+- (void)careCardViewController:(OCKCareCardViewController *)viewController didSelectInterventionEvent:(OCKCarePlanEvent *)interventionEvent {
+    NSLog(@"%@", interventionEvent);
+    OCKCarePlanStore *store = viewController.store;
+    
+    OCKCarePlanEventState state = (interventionEvent.state == OCKCarePlanEventStateCompleted) ? OCKCarePlanEventStateNotCompleted : OCKCarePlanEventStateCompleted;
+    
+    [store updateEvent:interventionEvent
+            withResult:nil
+                 state:state
+            completion:^(BOOL success, OCKCarePlanEvent * _Nullable event, NSError * _Nullable error) {
+                NSAssert(success, error.localizedDescription);
+            }];
+    
+}
 
 #pragma mark - Symptom Tracker
 

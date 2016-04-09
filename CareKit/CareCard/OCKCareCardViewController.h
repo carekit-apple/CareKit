@@ -41,7 +41,35 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @protocol OCKCareCardViewControllerDelegate <NSObject>
 
+@required
+
+/**
+ Asks the delegate if a custom view controller should be displayed for an intervention activity 
+ when the user taps the intervention circle.
+ 
+ If returned YES, the `careCardViewController:didSelectInterventionEvent` method should be implemeted to present
+ the custom view controller.
+ 
+ @param viewController              The view controller providing the callback.
+ @param interventionActivity        The intervention activity that the user selected.
+ */
+- (BOOL)careCardViewController:(OCKCareCardViewController *)viewController shouldDisplayViewControllerForActivity:(OCKCarePlanActivity *)interventionActivity;
+
 @optional
+
+/**
+ Tells the delegate when the user tapped an intervention event.
+ 
+ If the user must perform some activity in order to complete the intervention event,
+ then this method can be implemented to show a custom view controller.
+ 
+ If this method is implemented, the developer is reponsible for reporting the completion status of the event
+ to the care plan store.
+ 
+ @param viewController              The view controller providing the callback.
+ @param interventionActivity        The intervention activity that the user selected.
+ */
+- (void)careCardViewController:(OCKCareCardViewController *)viewController didSelectInterventionEvent:(OCKCarePlanEvent *)interventionEvent;
 
 /**
  Tells the delegate when the user selected an intervention activity.
@@ -49,8 +77,8 @@ NS_ASSUME_NONNULL_BEGIN
  This can be implemented to show a custom detail view controller.
  If not implemented, a default detail view controller will be presented.
  
- @param symptomTrackerViewController      The view controller providing the callback.
- @param interventionActivity              The intervention activity that the user selected.
+ @param viewController              The view controller providing the callback.
+ @param interventionActivity        The intervention activity that the user selected.
  */
 - (void)careCardViewController:(OCKCareCardViewController *)viewController didSelectRowWithInterventionActivity:(OCKCarePlanActivity *)interventionActivity;
 

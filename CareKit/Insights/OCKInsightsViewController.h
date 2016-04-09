@@ -64,9 +64,7 @@ OCK_CLASS_AVAILABLE
 
 /**
  An array of insight items.
- 
- The array must contain at least one item.
- */
+*/
 @property (nonatomic, copy) NSArray<OCKInsightItem*> *items;
 
 /**

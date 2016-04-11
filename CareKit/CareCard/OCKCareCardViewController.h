@@ -44,10 +44,10 @@ NS_ASSUME_NONNULL_BEGIN
 @optional
 
 /**
- Asks the delegate if care card view controller should mark an intervention activity completed when
- the user taps the intervention circle.
+ Asks the delegate if care card view controller should automatically mark the state of an intervention activity when
+ the user selects and deselects the intervention circle button.
  
- If returned NO, the `careCardViewController:didSelectInterventionEvent` method can be implemeted to provide
+ If returned NO, the `careCardViewController:didSelectButtonWithInterventionEvent` method can be implemeted to provide
  custom logic for completion.
  
  @param viewController              The view controller providing the callback.
@@ -65,9 +65,9 @@ NS_ASSUME_NONNULL_BEGIN
  the `careCardViewController:shouldHandleEventCompletionForActivity` to control the completion status of the event.
  
  @param viewController              The view controller providing the callback.
- @param interventionActivity        The intervention activity that the user selected.
+ @param interventionEvent           The intervention event that the user selected.
  */
-- (void)careCardViewController:(OCKCareCardViewController *)viewController didSelectInterventionEvent:(OCKCarePlanEvent *)interventionEvent;
+- (void)careCardViewController:(OCKCareCardViewController *)viewController didSelectButtonWithInterventionEvent:(OCKCarePlanEvent *)interventionEvent;
 
 /**
  Tells the delegate when the user selected an intervention activity.

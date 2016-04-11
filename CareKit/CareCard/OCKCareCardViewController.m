@@ -357,8 +357,8 @@
 
 - (void)careCardTableViewCell:(OCKCareCardTableViewCell *)cell didUpdateFrequencyofInterventionEvent:(OCKCarePlanEvent *)event {
     if (self.delegate &&
-        [self.delegate respondsToSelector:@selector(careCardViewController:didSelectInterventionEvent:)]) {
-        [self.delegate careCardViewController:self didSelectInterventionEvent:event];
+        [self.delegate respondsToSelector:@selector(careCardViewController:didSelectButtonWithInterventionEvent:)]) {
+        [self.delegate careCardViewController:self didSelectButtonWithInterventionEvent:event];
     }
     
     BOOL shouldHandleEventCompletion = YES;

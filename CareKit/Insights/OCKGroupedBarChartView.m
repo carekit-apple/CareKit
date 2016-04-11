@@ -31,13 +31,15 @@
 
 #import "OCKGroupedBarChartView.h"
 #import "OCKLabel.h"
+#import "OCKHelpers.h"
 
 
 // #define LAYOUT_DEBUG 1
 
-static const CGFloat BarPointSize = 8.0;
+static const CGFloat BarPointSize = 12.0;
+static const CGFloat BarEndFontSize = 11.0;
 static const CGFloat MarginBetweenBars = 2.0;
-static const CGFloat MarginBetweenGroups = 8.0;
+static const CGFloat MarginBetweenGroups = 16.0;
 
 @interface OCKGroupedBarChartBar : NSObject
 
@@ -169,7 +171,7 @@ static const CGFloat MarginBetweenGroups = 8.0;
     _valueLabel.text = _bar.text;
     _valueLabel.textColor = _bar.color;
     _valueLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    _valueLabel.font = [UIFont systemFontOfSize:BarPointSize];
+    _valueLabel.font = [UIFont boldSystemFontOfSize:BarEndFontSize];
     
     [self addSubview:_barView];
     [self addSubview:_valueLabel];
@@ -178,7 +180,7 @@ static const CGFloat MarginBetweenGroups = 8.0;
     
     NSMutableArray *constraints = [NSMutableArray new];
     
-    [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[barView]-10.0-[valueLabel]"
+    [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[barView]-6.0-[valueLabel]"
                                                           options:NSLayoutFormatDirectionLeadingToTrailing
                                                           metrics:nil
                                                             views:views]];
@@ -200,12 +202,12 @@ static const CGFloat MarginBetweenGroups = 8.0;
                                                          constant:BarPointSize]];
     
     [constraints addObject:[NSLayoutConstraint constraintWithItem:_valueLabel
-                                                        attribute:NSLayoutAttributeCenterY
+                                                        attribute:NSLayoutAttributeBaseline
                                                         relatedBy:NSLayoutRelationEqual
-                                                           toItem:_barView
-                                                        attribute:NSLayoutAttributeCenterY
+                                                           toItem:self
+                                                        attribute:NSLayoutAttributeTop
                                                        multiplier:1.0
-                                                         constant:0.5]];
+                                                         constant:10.0]];
     
     [_valueLabel setContentHuggingPriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
     
@@ -267,15 +269,17 @@ static const CGFloat MarginBetweenGroups = 8.0;
     _titleLabel.text = _group.title;
     _titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     _titleLabel.textStyle = UIFontTextStyleCaption1;
+    _titleLabel.textColor = OCKSystemGrayColor();
     [_labelBox addSubview:_titleLabel];
     
     _textLabel = [OCKLabel new];
     _textLabel.text = _group.text;
     _textLabel.adjustsFontSizeToFitWidth = YES;
     _textLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    _textLabel.textStyle = UIFontTextStyleCaption2;
-    _textLabel.textColor = [UIColor lightGrayColor];
+    _textLabel.textStyle = UIFontTextStyleCaption1;
+    _textLabel.textColor = OCKSystemGrayColor();
     [_labelBox addSubview:_textLabel];
+    
     
     NSMutableArray *constraints = [NSMutableArray new];
     NSDictionary *labels = @{@"_titleLabel":_titleLabel, @"_textLabel":_textLabel};
@@ -332,7 +336,7 @@ static const CGFloat MarginBetweenGroups = 8.0;
 #endif
     
     
-    [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_labelBox]-[_barBox]|"
+    [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_labelBox]-16.0-[_barBox]|"
                                                                              options:NSLayoutFormatDirectionLeadingToTrailing
                                                                              metrics:nil
                                                                                views:boxes]];
@@ -433,7 +437,85 @@ static const CGFloat MarginBetweenGroups = 8.0;
 @end
 
 
-@interface OCKChartLegendView : OCKLabel
+@interface OCKChartLegendCell : UIView
+
+@property (nonatomic, strong) UIColor *color;
+@property (nonatomic, copy) NSString *text;
+
+@end
+
+@implementation OCKChartLegendCell {
+    UIView *_colorBox;
+    UILabel *_label;
+}
+
+- (instancetype)initWithFrame:(CGRect)frame {
+    self = [super initWithFrame:frame];
+    if (self) {
+        _colorBox = [UIView new];
+        _colorBox.translatesAutoresizingMaskIntoConstraints = NO;
+        [self addSubview:_colorBox];
+        _label = [OCKLabel new];
+        _label.translatesAutoresizingMaskIntoConstraints = NO;
+        _label.font = [UIFont systemFontOfSize:12.0];
+        [self addSubview:_label];
+        [self setUpConstraints];
+    }
+    return self;
+}
+
+- (void)setColor:(UIColor *)color {
+    _colorBox.backgroundColor = color;
+}
+
+- (void)setText:(NSString *)text {
+    _label.text = text;
+}
+
+- (void)setUpConstraints {
+    NSMutableArray<NSLayoutConstraint *> *constraints = [NSMutableArray new];
+    
+    [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_colorBox]-6.0-[_label]-32.0-|"
+                                                                             options:NSLayoutFormatDirectionLeadingToTrailing
+                                                                             metrics:nil
+                                                                               views:@{@"_colorBox":_colorBox, @"_label": _label}]];
+    
+    [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_colorBox]-1.0-|"
+                                                                             options:NSLayoutFormatDirectionLeadingToTrailing
+                                                                             metrics:nil
+                                                                               views:@{@"_colorBox":_colorBox, @"_label": _label}]];
+    
+    [constraints addObject:[NSLayoutConstraint constraintWithItem:_label
+                                                        attribute:NSLayoutAttributeBaseline
+                                                        relatedBy:NSLayoutRelationEqual
+                                                           toItem:_colorBox
+                                                        attribute:NSLayoutAttributeTop
+                                                       multiplier:1.0
+                                                         constant:10.0]];
+    
+    [constraints addObject:[NSLayoutConstraint constraintWithItem:_colorBox
+                                                        attribute:NSLayoutAttributeWidth
+                                                        relatedBy:NSLayoutRelationEqual
+                                                           toItem:_colorBox
+                                                        attribute:NSLayoutAttributeHeight
+                                                       multiplier:1.0
+                                                         constant:0.0]];
+    
+    [constraints addObject:[NSLayoutConstraint constraintWithItem:_colorBox
+                                                        attribute:NSLayoutAttributeHeight
+                                                        relatedBy:NSLayoutRelationEqual
+                                                           toItem:nil
+                                                        attribute:NSLayoutAttributeHeight
+                                                       multiplier:1.0
+                                                         constant:12.0]];
+    
+    [NSLayoutConstraint activateConstraints:constraints];
+}
+
+@end
+
+
+@interface OCKChartLegendView : UILabel
 
 - (instancetype)initWithTitles:(NSArray<NSString *> *)titles colors:(NSArray<UIColor *> *)colors;
 
@@ -448,30 +530,38 @@ static const CGFloat MarginBetweenGroups = 8.0;
     if (self) {
         NSMutableAttributedString *string = [NSMutableAttributedString new];
         
+        UITableViewCell *tc = [UITableViewCell new];
+        
         for (NSInteger i = 0; i < titles.count; i++) {
             NSString *title = titles[i];
             UIColor *color = colors[i];
-            NSDictionary *attrs = @{ NSForegroundColorAttributeName : color };
-            NSAttributedString *attrStr = [[NSAttributedString alloc] initWithString:@"\u25A0" attributes:attrs];
             
+            OCKChartLegendCell *cell = [OCKChartLegendCell new];
+            cell.text = title;
+            cell.color = color;
+            
+            CGSize size = [cell systemLayoutSizeFittingSize:CGSizeMake(1, 1) withHorizontalFittingPriority:UILayoutPriorityFittingSizeLevel verticalFittingPriority:UILayoutPriorityFittingSizeLevel];
+            cell.frame = CGRectMake(0, 0, size.width, size.height);
+            [tc.contentView addSubview:cell];
+            
+            UIGraphicsBeginImageContextWithOptions(cell.frame.size, NO, 2.0);
+            [cell.layer renderInContext:UIGraphicsGetCurrentContext()];
+            UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+            UIGraphicsEndImageContext();
+            
+            NSTextAttachment *attachment = [NSTextAttachment new];
+            attachment.image = image;
+            
+            NSAttributedString *attrStr = [NSAttributedString attributedStringWithAttachment:attachment];
             [string appendAttributedString:attrStr];
-            
-            // Not wrap the text in one legend.
-            NSArray<NSString *> *array = [title componentsSeparatedByString:@" "];
-            for (NSString *titlePart in array) {
-                [string appendAttributedString:[[NSAttributedString alloc] initWithString:titlePart]];
-                NSAttributedString *attrStr = [[NSAttributedString alloc] initWithString:@"0"
-                                                                              attributes:@{ NSForegroundColorAttributeName : [UIColor clearColor] }];
-                [string appendAttributedString:attrStr];
-            }
-            
-            // Add a seperator between the legends/
-            [string appendAttributedString:[[NSAttributedString alloc] initWithString:@" "]];
         }
         
+        NSMutableParagraphStyle *paragraphStyle = [NSMutableParagraphStyle new];
+        paragraphStyle.lineSpacing = 2.0;
+        [string addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, string.length)];
+
         self.numberOfLines = 0;
         self.lineBreakMode = NSLineBreakByWordWrapping;
-        self.textStyle = UIFontTextStyleCaption2;
         self.attributedText = string;
         self.textAlignment = NSTextAlignmentCenter;
     }
@@ -613,7 +703,7 @@ static const CGFloat MarginBetweenGroups = 8.0;
                                                          attribute:NSLayoutAttributeCenterX
                                                         multiplier:1.0 constant:0.0]];
     
-    [_constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_groupsBox]-[_legendsView]|"
+    [_constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_groupsBox]-24.0-[_legendsView]|"
                                                                               options:NSLayoutFormatDirectionLeadingToTrailing
                                                                               metrics:nil
                                                                                 views:@{@"_groupsBox": _groupsBox, @"_legendsView": _legendsView}]];

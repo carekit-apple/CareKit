@@ -65,7 +65,7 @@ static const CGFloat VerticalMargin = 10.0;
     if (!_textLabel) {
         _textLabel = [OCKLabel new];
         _textLabel.textStyle = UIFontTextStyleSubheadline;
-        _textLabel.textColor = [UIColor lightGrayColor];
+        _textLabel.textColor = OCKSystemGrayColor();
         _textLabel.numberOfLines = 2;
         _textLabel.lineBreakMode = NSLineBreakByCharWrapping;
         [self addSubview:_textLabel];

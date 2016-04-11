@@ -132,6 +132,10 @@ UIColor *OCKRGB(uint32_t x) {
     return OCKRGBA(x, 1.0f);
 }
 
+UIColor *OCKSystemGrayColor() {
+    return [UIColor colorWithRed:142./255. green:142./255. blue:147./255. alpha:1.];
+}
+
 UIFontDescriptor *OCKFontDescriptorForLightStylisticAlternative(UIFontDescriptor *descriptor) {
     UIFontDescriptor *fontDescriptor = [descriptor
                                         fontDescriptorByAddingAttributes:

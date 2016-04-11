@@ -188,6 +188,11 @@ static const CGFloat TopMargin = 50.0;
     _titleLabel.preferredMaxLayoutWidth = _titleLabel.bounds.size.width;
     _textLabel.preferredMaxLayoutWidth = _textLabel.bounds.size.width;
 }
+    
+- (void)setShowEdgeIndicator:(BOOL)showEdgeIndicator {
+    _showEdgeIndicator = showEdgeIndicator;
+    _bottomEdge.hidden = !_showEdgeIndicator;
+}
 
 - (void)tintColorDidChange {
     [super tintColorDidChange];

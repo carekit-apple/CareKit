@@ -36,4 +36,6 @@
 
 - (void)prepareView;
 
+@property (nonatomic) BOOL showEdgeIndicator;
+
 @end

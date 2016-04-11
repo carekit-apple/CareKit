@@ -184,6 +184,7 @@ NSBundle *OCKDefaultLocaleBundle();
 // Pass 0xcccccc and get color #cccccc
 UIColor *OCKRGB(uint32_t x);
 UIColor *OCKRGBA(uint32_t x, CGFloat alpha);
+UIColor *OCKSystemGrayColor();
 
 id findInArrayByKey(NSArray * array, NSString *key, id value);
 

@@ -43,6 +43,7 @@
         [self addSubview:_leadingEdge];
     }
     _leadingEdge.backgroundColor = self.tintColor;
+    _leadingEdge.hidden = YES;
     
     [NSLayoutConstraint deactivateConstraints:_constraints];
     
@@ -88,6 +89,11 @@
 - (void)tintColorDidChange {
     [super tintColorDidChange];
     _leadingEdge.backgroundColor = self.tintColor;
+}
+
+- (void)setShowEdgeIndicator:(BOOL)showEdgeIndicator {
+    _showEdgeIndicator = showEdgeIndicator;
+    _leadingEdge.hidden = !_showEdgeIndicator;
 }
 
 @end

@@ -78,7 +78,7 @@ static const CGFloat HeaderViewHeight = 225.0;
     if (!_headerView) {
         _headerView = [[OCKConnectTableViewHeader alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, HeaderViewHeight)];
     }
-    _headerView.contact = _contact;
+    _headerView.contact = self.contact;
     
     self.tableView.tableHeaderView = _headerView;
 }
@@ -106,19 +106,19 @@ static const CGFloat HeaderViewHeight = 225.0;
     NSMutableArray<NSNumber *> *contactInfoSection = [NSMutableArray new];
     NSMutableArray<NSString *> *sharingSection = [NSMutableArray new];
     
-    if (_contact.phoneNumber) {
+    if (self.contact.phoneNumber) {
         [contactInfoSection addObject:@(OCKConnectTypePhone)];
     }
-    if (_contact.messageNumber) {
+    if (self.contact.messageNumber) {
         [contactInfoSection addObject:@(OCKConnectTypeMessage)];
     }
-    if (_contact.emailAddress) {
+    if (self.contact.emailAddress) {
         [contactInfoSection addObject:@(OCKConnectTypeEmail)];
     }
     
     NSString *sharingTitle = OCKLocalizedString(@"SHARING_CELL_TITLE", nil);
-    if (_delegate && [_delegate respondsToSelector:@selector(connectViewController:titleForSharingCellForContact:)]) {
-        NSString *delegateTitle = [_delegate connectViewController:_masterViewController titleForSharingCellForContact:_contact];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(connectViewController:titleForSharingCellForContact:)]) {
+        NSString *delegateTitle = [self.delegate connectViewController:self.masterViewController titleForSharingCellForContact:self.contact];
         if (delegateTitle) {
             sharingTitle = delegateTitle;
         }
@@ -168,7 +168,7 @@ static const CGFloat HeaderViewHeight = 225.0;
         case OCKConnectTypePhone:
             [self makeCallToNumber:cell.contact.phoneNumber.stringValue];
             break;
-        
+            
         case OCKConnectTypeMessage:
             [self sendMessageToNumber:cell.contact.messageNumber.stringValue];
             break;
@@ -183,9 +183,9 @@ static const CGFloat HeaderViewHeight = 225.0;
 #pragma mark - OCKContactSharingTableViewCellDelegate
 
 - (void)sharingTableViewCellDidSelectShareButton:(OCKContactSharingTableViewCell *)cell {
-    if (_delegate &&
-        [_delegate respondsToSelector:@selector(connectViewController:didSelectShareButtonForContact:)]) {
-        [_delegate connectViewController:_masterViewController didSelectShareButtonForContact:cell.contact];
+    if (self.delegate &&
+        [self.delegate respondsToSelector:@selector(connectViewController:didSelectShareButtonForContact:)]) {
+        [self.delegate connectViewController:self.masterViewController didSelectShareButtonForContact:cell.contact];
     }
 }
 
@@ -225,7 +225,7 @@ static const CGFloat HeaderViewHeight = 225.0;
             cell = [[OCKContactInfoTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
                                                       reuseIdentifier:ContactCellIdentifier];
         }
-        cell.contact = _contact;
+        cell.contact = self.contact;
         cell.delegate = self;
         cell.connectType = [_tableViewData[indexPath.section][indexPath.row] intValue];
         return cell;
@@ -237,7 +237,7 @@ static const CGFloat HeaderViewHeight = 225.0;
                                                          reuseIdentifier:SharingCellIdentifier];
         }
         cell.title = _tableViewData[indexPath.section][indexPath.row];
-        cell.contact = _contact;
+        cell.contact = self.contact;
         cell.delegate = self;
         return cell;
     }

@@ -43,7 +43,6 @@ static const CGFloat TrailingMargin = 20.0;
 static const CGFloat RingViewSize = 110.0;
 
 @implementation OCKSymptomTrackerTableViewHeader {
-    OCKRingView *_ringView;
     OCKLabel *_titleLabel;
     OCKLabel *_dateLabel;
     UIView *_topEdge;
@@ -111,9 +110,9 @@ static const CGFloat RingViewSize = 110.0;
 }
 
 - (void)updateView {
-    _ringView.tintColor = self.tintColor;
-    _ringView.value = _value;
-    _dateLabel.text = _date;
+    self.ringView.tintColor = self.tintColor;
+    self.ringView.value = self.value;
+    _dateLabel.text = self.date;
 }
 
 - (void)setUpConstraints {
@@ -121,35 +120,35 @@ static const CGFloat RingViewSize = 110.0;
     
     _constraints = [NSMutableArray new];
     
-    _ringView.translatesAutoresizingMaskIntoConstraints = NO;
+    self.ringView.translatesAutoresizingMaskIntoConstraints = NO;
     _titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     _dateLabel.translatesAutoresizingMaskIntoConstraints = NO;
     _topEdge.translatesAutoresizingMaskIntoConstraints = NO;
     _bottomEdge.translatesAutoresizingMaskIntoConstraints = NO;
     
     [_constraints addObjectsFromArray:@[
-                                        [NSLayoutConstraint constraintWithItem:_ringView
+                                        [NSLayoutConstraint constraintWithItem:self.ringView
                                                                      attribute:NSLayoutAttributeCenterX
                                                                      relatedBy:NSLayoutRelationEqual
                                                                         toItem:self
                                                                      attribute:NSLayoutAttributeCenterX
                                                                     multiplier:1.0
                                                                       constant:-RingViewSize/1.25],
-                                        [NSLayoutConstraint constraintWithItem:_ringView
+                                        [NSLayoutConstraint constraintWithItem:self.ringView
                                                                      attribute:NSLayoutAttributeCenterY
                                                                      relatedBy:NSLayoutRelationEqual
                                                                         toItem:self
                                                                      attribute:NSLayoutAttributeCenterY
                                                                     multiplier:1.0
                                                                       constant:0.0],
-                                        [NSLayoutConstraint constraintWithItem:_ringView
+                                        [NSLayoutConstraint constraintWithItem:self.ringView
                                                                      attribute:NSLayoutAttributeHeight
                                                                      relatedBy:NSLayoutRelationEqual
                                                                         toItem:nil
                                                                      attribute:NSLayoutAttributeNotAnAttribute
                                                                     multiplier:1.0
                                                                       constant:RingViewSize],
-                                        [NSLayoutConstraint constraintWithItem:_ringView
+                                        [NSLayoutConstraint constraintWithItem:self.ringView
                                                                      attribute:NSLayoutAttributeWidth
                                                                      relatedBy:NSLayoutRelationEqual
                                                                         toItem:nil
@@ -166,7 +165,7 @@ static const CGFloat RingViewSize = 110.0;
                                         [NSLayoutConstraint constraintWithItem:_titleLabel
                                                                      attribute:NSLayoutAttributeLeading
                                                                      relatedBy:NSLayoutRelationEqual
-                                                                        toItem:_ringView
+                                                                        toItem:self.ringView
                                                                      attribute:NSLayoutAttributeTrailing
                                                                     multiplier:1.0
                                                                       constant:HorizontalMargin],
@@ -268,14 +267,14 @@ static const CGFloat RingViewSize = 110.0;
 }
 
 
-#pragma mark - Accessibility 
+#pragma mark - Accessibility
 
 - (BOOL)isAccessibilityElement {
     return YES;
 }
 
 - (NSString *)accessibilityLabel {
-    return OCKAccessibilityStringForVariables(_ringView, _titleLabel, _dateLabel);
+    return OCKAccessibilityStringForVariables(self.ringView, _titleLabel, _dateLabel);
 }
 
 @end

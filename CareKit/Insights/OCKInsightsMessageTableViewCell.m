@@ -60,7 +60,7 @@ static NSString *TipSymbol = @"\u2731";
 - (void)setMessageItem:(OCKMessageItem *)messageItem {
     _messageItem = messageItem;
     self.tintColor = _messageItem.tintColor;
-    [self prepareView];
+    [self updateView];
 }
 
 - (void)prepareView {
@@ -94,9 +94,9 @@ static NSString *TipSymbol = @"\u2731";
 }
 
 - (void)updateView {
-    _titleLabel.text = _messageItem.title;
-    _textLabel.text = _messageItem.text;
-    _iconLabel.text = [self stringForMessageType:_messageItem.messageType];
+    _titleLabel.text = self.messageItem.title;
+    _textLabel.text = self.messageItem.text;
+    _iconLabel.text = [self stringForMessageType:self.messageItem.messageType];
     _iconLabel.textColor = self.tintColor;
 }
 

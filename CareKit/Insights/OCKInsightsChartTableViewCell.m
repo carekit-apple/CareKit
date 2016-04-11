@@ -72,7 +72,7 @@ static const CGFloat VerticalMargin = 10.0;
     }
     
     [_chartView removeFromSuperview];
-    _chartView = _chart.chartView;
+    _chartView = self.chart.chartView;
     [self addSubview:_chartView];
     
     [self updateView];
@@ -80,8 +80,8 @@ static const CGFloat VerticalMargin = 10.0;
 }
 
 - (void)updateView {
-    _titleLabel.text = _chart.title;
-    _textLabel.text = _chart.text;
+    _titleLabel.text = self.chart.title;
+    _textLabel.text = self.chart.text;
 }
 
 - (void)setUpConstraints {

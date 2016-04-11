@@ -44,7 +44,7 @@ typedef NS_ENUM(NSInteger, OCKContactType) {
      A care team contact such as a physician or nurse.
      */
     OCKContactTypeCareTeam = 0,
-
+    
     /**
      A personal contact such as a friend or family member.
      */

@@ -64,7 +64,7 @@ static const CGFloat TrailingMargin = 20.0;
         _textLabel.lineBreakMode = NSLineBreakByWordWrapping;
         [self addSubview:_textLabel];
     }
-
+    
     [self setUpConstraints];
 }
 

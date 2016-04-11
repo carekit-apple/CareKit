@@ -112,23 +112,23 @@ static const CGFloat ImageViewSize = 135.0;
     _imageView.layer.borderColor = self.tintColor.CGColor;
     _bottomEdge.backgroundColor = self.tintColor;
     
-    if (_contact.image) {
-        _imageView.image = _contact.image;
+    if (self.contact.image) {
+        _imageView.image = self.contact.image;
         _imageView.backgroundColor = [UIColor clearColor];
         _monogramLabel.hidden = YES;
     } else {
-        _monogramLabel.text = _contact.monogram;
+        _monogramLabel.text = self.contact.monogram;
         _imageView.backgroundColor = [UIColor grayColor];
         _monogramLabel.hidden = NO;
     }
     
-    _relationLabel.text = _contact.relation;
-    _titleLabel.text = _contact.name;
+    _relationLabel.text = self.contact.relation;
+    _titleLabel.text = self.contact.name;
 }
 
 - (void)setUpConstraints {
     [NSLayoutConstraint deactivateConstraints:_constraints];
-
+    
     _constraints = [NSMutableArray new];
     
     _imageView.translatesAutoresizingMaskIntoConstraints = NO;

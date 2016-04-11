@@ -88,23 +88,23 @@ static const CGFloat IconButtonSize = 35.0;
     NSString *imageNamed;
     NSString *title;
     NSString *connectTypeText;
-    switch (_connectType) {
+    switch (self.connectType) {
         case OCKConnectTypePhone:
             imageNamed = @"phone";
             connectTypeText = OCKLocalizedString(@"CONTACT_INFO_PHONE_TITLE", nil);
-            title = _contact.phoneNumber.stringValue;
+            title = self.contact.phoneNumber.stringValue;
             break;
             
         case OCKConnectTypeMessage:
             imageNamed = @"message";
             connectTypeText = OCKLocalizedString(@"CONTACT_INFO_MESSAGE_TITLE", nil);
-            title = _contact.messageNumber.stringValue;
+            title = self.contact.messageNumber.stringValue;
             break;
             
         case OCKConnectTypeEmail:
             imageNamed = @"email";
             connectTypeText = OCKLocalizedString(@"CONTACT_INFO_EMAIL_TITLE", nil);
-            title = _contact.emailAddress;
+            title = self.contact.emailAddress;
             break;
     }
     UIImage *image = [[UIImage imageNamed:imageNamed inBundle:[NSBundle bundleForClass:[self class]] compatibleWithTraitCollection:nil] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
@@ -205,9 +205,9 @@ static const CGFloat IconButtonSize = 35.0;
 }
 
 - (void)buttonSelected:(id)sender {
-    if (_delegate &&
-        [_delegate respondsToSelector:@selector(contactInfoTableViewCellDidSelectConnection:)]) {
-        [_delegate contactInfoTableViewCellDidSelectConnection:self];
+    if (self.delegate &&
+        [self.delegate respondsToSelector:@selector(contactInfoTableViewCellDidSelectConnection:)]) {
+        [self.delegate contactInfoTableViewCellDidSelectConnection:self];
     }
 }
 

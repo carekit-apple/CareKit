@@ -57,7 +57,7 @@
 }
 
 - (void)prepareView {
-    if (_showCareCardWeekView) {
+    if (self.showCareCardWeekView) {
         if (!_careCardWeekView) {
             _careCardWeekView = [[OCKCareCardWeekView alloc] initWithFrame:self.view.bounds];
             _careCardWeekView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;

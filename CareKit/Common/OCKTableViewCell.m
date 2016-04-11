@@ -45,7 +45,7 @@
     _leadingEdge.backgroundColor = self.tintColor;
     
     [NSLayoutConstraint deactivateConstraints:_constraints];
-
+    
     _constraints = [NSMutableArray new];
     
     _leadingEdge.translatesAutoresizingMaskIntoConstraints = NO;

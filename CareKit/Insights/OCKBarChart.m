@@ -109,9 +109,9 @@
 
 - (instancetype)copyWithZone:(NSZone *)zone {
     OCKBarChart *chart = [super copyWithZone:zone];
-    chart->_axisTitles = OCKArrayCopyObjects(_axisTitles);
-    chart->_axisSubtitles = OCKArrayCopyObjects(_axisSubtitles);
-    chart->_dataSeries = OCKArrayCopyObjects(_dataSeries);
+    chart->_axisTitles = OCKArrayCopyObjects(self.axisTitles);
+    chart->_axisSubtitles = OCKArrayCopyObjects(self.axisSubtitles);
+    chart->_dataSeries = OCKArrayCopyObjects(self.dataSeries);
     return chart;
 }
 
@@ -142,50 +142,50 @@
 
 - (NSInteger)numberOfCategoriesPerDataSeriesInChartView:(OCKGroupedBarChartView *)chartView {
     NSUInteger numberOfGroups = 0;
-    for (OCKBarSeries *dataSeries in _dataSeries) {
+    for (OCKBarSeries *dataSeries in self.dataSeries) {
         if (dataSeries.values.count > numberOfGroups) {
             numberOfGroups = dataSeries.values.count;
         }
     }
-    if (_axisTitles.count > numberOfGroups) {
-        numberOfGroups = _axisTitles.count;
+    if (self.axisTitles.count > numberOfGroups) {
+        numberOfGroups = self.axisTitles.count;
     }
-    if (_axisSubtitles.count > numberOfGroups) {
-        numberOfGroups = _axisSubtitles.count;
+    if (self.axisSubtitles.count > numberOfGroups) {
+        numberOfGroups = self.axisSubtitles.count;
     }
     return numberOfGroups;
 }
 
 - (NSInteger)numberOfDataSeriesInChartView:(OCKGroupedBarChartView *)chartView {
-    return _dataSeries.count;
+    return self.dataSeries.count;
 }
 
 - (UIColor *)chartView:(OCKGroupedBarChartView *)chartView colorForDataSeriesAtIndex:(NSUInteger)dataSeriesIndex {
-    OCKBarSeries *dataSeries = _dataSeries[dataSeriesIndex];
+    OCKBarSeries *dataSeries = self.dataSeries[dataSeriesIndex];
     return (dataSeries.tintColor) ? dataSeries.tintColor : chartView.tintColor;
 }
 
 - (NSString *)chartView:(OCKGroupedBarChartView *)chartView nameForDataSeriesAtIndex:(NSUInteger)dataSeriesIndex {
-    OCKBarSeries *dataSeries = _dataSeries[dataSeriesIndex];
+    OCKBarSeries *dataSeries = self.dataSeries[dataSeriesIndex];
     return dataSeries.title;
 }
 
 - (NSNumber *)chartView:(OCKGroupedBarChartView *)chartView valueForCategoryAtIndex:(NSUInteger)categoryIndex inDataSeriesAtIndex:(NSUInteger)dataSeriesIndex {
-    OCKBarSeries *dataSeries = _dataSeries[dataSeriesIndex];
+    OCKBarSeries *dataSeries = self.dataSeries[dataSeriesIndex];
     return [self isCategoryIndex:categoryIndex outofBoundsInArray:dataSeries.values] ? 0 : dataSeries.values[categoryIndex];
 }
 
 - (NSString *)chartView:(OCKGroupedBarChartView *)chartView valueStringForCategoryAtIndex:(NSUInteger)categoryIndex inDataSeriesAtIndex:(NSUInteger)dataSeriesIndex {
-    OCKBarSeries *dataSeries = _dataSeries[dataSeriesIndex];
+    OCKBarSeries *dataSeries = self.dataSeries[dataSeriesIndex];
     return [self isCategoryIndex:categoryIndex outofBoundsInArray:dataSeries.valueLabels] ? nil : dataSeries.valueLabels[categoryIndex];
 }
 
 - (NSString *)chartView:(OCKGroupedBarChartView *)chartView titleForCategoryAtIndex:(NSUInteger)categoryIndex {
-    return ([self isCategoryIndex:categoryIndex outofBoundsInArray:_axisTitles]) ? nil : _axisTitles[categoryIndex];
+    return ([self isCategoryIndex:categoryIndex outofBoundsInArray:self.axisTitles]) ? nil : self.axisTitles[categoryIndex];
 }
 
 - (NSString *)chartView:(OCKGroupedBarChartView *)chartView subtitleForCategoryAtIndex:(NSUInteger)categoryIndex {
-    return [self isCategoryIndex:categoryIndex outofBoundsInArray:_axisSubtitles] ? nil : _axisSubtitles[categoryIndex];
+    return [self isCategoryIndex:categoryIndex outofBoundsInArray:self.axisSubtitles] ? nil : self.axisSubtitles[categoryIndex];
 }
 
 @end

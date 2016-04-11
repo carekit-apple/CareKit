@@ -134,7 +134,7 @@
                                                                       constant:0.0]
                                         ]];
     
-    if (_contacts.count == 0) {
+    if (self.contacts.count == 0) {
         _noContactsLabel.translatesAutoresizingMaskIntoConstraints = NO;
         
         [_constraints addObjectsFromArray:@[
@@ -165,7 +165,7 @@
     NSMutableArray *careTeamContacts = [NSMutableArray new];
     NSMutableArray *personalContacts = [NSMutableArray new];
     
-    for (OCKContact *contact in _contacts) {
+    for (OCKContact *contact in self.contacts) {
         switch (contact.type) {
             case OCKContactTypeCareTeam:
                 [careTeamContacts addObject:contact];
@@ -188,7 +188,7 @@
 }
 
 - (void)prepareHeaderView {
-    if (_contacts.count == 0) {
+    if (self.contacts.count == 0) {
         if (!_noContactsLabel) {
             _noContactsLabel = [OCKLabel new];
             _noContactsLabel.textStyle = UIFontTextStyleTitle2;
@@ -213,7 +213,7 @@
     OCKContact *contact = _sectionedContacts[indexPath.section][indexPath.row];
     
     OCKConnectDetailViewController *detailViewController = [[OCKConnectDetailViewController alloc] initWithContact:contact];
-    detailViewController.delegate = _delegate;
+    detailViewController.delegate = self.delegate;
     detailViewController.masterViewController = self;
     [self.navigationController pushViewController:detailViewController animated:YES];
     

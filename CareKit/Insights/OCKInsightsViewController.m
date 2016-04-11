@@ -103,12 +103,12 @@ static const CGFloat HeaderViewHeight = 60.0;
 }
 
 - (void)setHeaderTitle:(NSString *)headerTitle {
-    _headerTitle = headerTitle;
+    _headerTitle = [headerTitle copy];
     [self updateHeaderView];
 }
 
 - (void)setHeaderSubtitle:(NSString *)headerSubtitle {
-    _headerSubtitle = headerSubtitle;
+    _headerSubtitle = [headerSubtitle copy];
     [self updateHeaderView];
 }
 
@@ -154,8 +154,8 @@ static const CGFloat HeaderViewHeight = 60.0;
 }
 
 - (void)updateHeaderView {
-    _headerView.title = _headerTitle;
-    _headerView.subtitle = _headerSubtitle;
+    _headerView.title = self.headerTitle;
+    _headerView.subtitle = self.headerSubtitle;
     if (_headerView.title || _headerView.subtitle) {
         _tableView.tableHeaderView = _headerView;
     } else {
@@ -167,7 +167,7 @@ static const CGFloat HeaderViewHeight = 60.0;
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
     
-
+    
     CGFloat height = [_headerView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize].height;
     CGRect headerViewFrame = _headerView.frame;
     
@@ -189,7 +189,7 @@ static const CGFloat HeaderViewHeight = 60.0;
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return _items.count;
+    return self.items.count;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -198,7 +198,7 @@ static const CGFloat HeaderViewHeight = 60.0;
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    OCKInsightItem *item = _items[indexPath.section];
+    OCKInsightItem *item = self.items[indexPath.section];
     
     if ([item isKindOfClass:[OCKChart class]]) {
         static NSString *ChartCellIdentifier = @"ChartCell";

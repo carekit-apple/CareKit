@@ -42,8 +42,6 @@
 #import "OCKDefines_Private.h"
 
 
-static const CGFloat HeaderViewHeight = 150.0;
-
 @interface OCKSymptomTrackerViewController() <OCKWeekViewDelegate, OCKCarePlanStoreDelegate, UITableViewDelegate, UITableViewDataSource, UIPageViewControllerDelegate, UIPageViewControllerDataSource>
 
 @property (nonatomic) NSDateComponents *selectedDate;
@@ -84,6 +82,7 @@ static const CGFloat HeaderViewHeight = 150.0;
                                                                               style:UIBarButtonItemStylePlain
                                                                              target:self
                                                                              action:@selector(showToday:)];
+    self.navigationItem.rightBarButtonItem.tintColor = _progressRingTintColor;
     
     _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
     _tableView.dataSource = self;
@@ -98,6 +97,8 @@ static const CGFloat HeaderViewHeight = 150.0;
     
     _tableView.estimatedRowHeight = 90.0;
     _tableView.rowHeight = UITableViewAutomaticDimension;
+    _tableView.estimatedSectionHeaderHeight = 100;
+    _tableView.sectionHeaderHeight = UITableViewAutomaticDimension;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -113,8 +114,9 @@ static const CGFloat HeaderViewHeight = 150.0;
 
 - (void)prepareView {
     if (!_headerView) {
-        _headerView = [[OCKSymptomTrackerTableViewHeader alloc] initWithFrame:CGRectMake(0, 0, _tableView.frame.size.width, HeaderViewHeight)];
+        _headerView = [[OCKSymptomTrackerTableViewHeader alloc] initWithFrame:CGRectZero];
     }
+    _headerView.tintColor = _progressRingTintColor;
     [self updateHeaderView];
     
     if (!_pageViewController) {
@@ -126,6 +128,7 @@ static const CGFloat HeaderViewHeight = 150.0;
         
         OCKWeekViewController *weekController = [[OCKWeekViewController alloc] initWithShowCareCardWeekView:NO];
         weekController.symptomTrackerWeekView.delegate = _weekViewController.symptomTrackerWeekView.delegate;
+        weekController.symptomTrackerWeekView.tintColor = _progressRingTintColor;
         _weekViewController = weekController;
         
         [_pageViewController setViewControllers:@[weekController] direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:nil];
@@ -200,6 +203,17 @@ static const CGFloat HeaderViewHeight = 150.0;
     _weekViewController.symptomTrackerWeekView.selectedIndex = self.selectedDate.weekday - 1;
     
     [self fetchEvents];
+}
+
+- (void)setProgressRingTintColor:(UIColor *)progressRingTintColor {
+    _progressRingTintColor = progressRingTintColor;
+    if (!_progressRingTintColor) {
+        _progressRingTintColor = self.view.tintColor;
+    }
+    
+    _weekViewController.symptomTrackerWeekView.tintColor = _progressRingTintColor;
+    _headerView.tintColor = _progressRingTintColor;
+    self.navigationItem.rightBarButtonItem.tintColor = _progressRingTintColor;
 }
 
 
@@ -314,6 +328,7 @@ static const CGFloat HeaderViewHeight = 150.0;
     return ![selectedDate isLaterThan:today];
 }
 
+
 #pragma mark - OCKCarePlanStoreDelegate
 
 - (void)carePlanStore:(OCKCarePlanStore *)store didReceiveUpdateOfEvent:(OCKCarePlanEvent *)event {
@@ -322,15 +337,12 @@ static const CGFloat HeaderViewHeight = 150.0;
             
             if (events[event.occurrenceIndexOfDay].numberOfDaysSinceStart == event.numberOfDaysSinceStart) {
                 [events replaceObjectAtIndex:event.occurrenceIndexOfDay withObject:event];
+                [self updateHeaderView];
                 
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self updateHeaderView];
-                    
-                    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[_events indexOfObject:events] inSection:0];
-                    [_tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
-                });
+                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[_events indexOfObject:events] inSection:0];
+                OCKSymptomTrackerTableViewCell *cell = [_tableView cellForRowAtIndexPath:indexPath];
+                cell.assessmentEvent = event;
             }
-            break;
         }
     }}
 
@@ -361,21 +373,19 @@ static const CGFloat HeaderViewHeight = 150.0;
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController {
     OCKWeekViewController *controller = [[OCKWeekViewController alloc] initWithShowCareCardWeekView:NO];
     controller.weekIndex = ((OCKWeekViewController *)viewController).weekIndex - 1;
+    controller.symptomTrackerWeekView.tintColor = _progressRingTintColor;
     return controller;
 }
 
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController {
     OCKWeekViewController *controller = [[OCKWeekViewController alloc] initWithShowCareCardWeekView:NO];
     controller.weekIndex = ((OCKWeekViewController *)viewController).weekIndex + 1;
+    controller.symptomTrackerWeekView.tintColor = _progressRingTintColor;
     return (![self.selectedDate isInSameWeekAsDate:[self today]]) ? controller : nil;
 }
 
 
 #pragma mark - UITableViewDelegate
-
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return HeaderViewHeight;
-}
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     return _headerView;

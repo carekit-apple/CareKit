@@ -34,7 +34,7 @@
 
 @interface OCKWeekLabelsView : UIView
 
-@property (nonatomic) NSArray<UILabel *> *weekLabels;
+@property (nonatomic, readonly) NSMutableArray<UILabel *> *weekLabels;
 
 - (void)highlightDay:(NSInteger)selectedIndex;
 

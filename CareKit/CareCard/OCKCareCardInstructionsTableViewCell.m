@@ -30,6 +30,7 @@
 
 
 #import "OCKCareCardInstructionsTableViewCell.h"
+#import "OCKLabel.h"
 
 
 static const CGFloat TopMargin = 15.0;
@@ -38,7 +39,7 @@ static const CGFloat LeadingMargin = 20.0;
 static const CGFloat TrailingMargin = 20.0;
 
 @implementation OCKCareCardInstructionsTableViewCell {
-    UILabel *_textLabel;
+    OCKLabel *_textLabel;
     NSMutableArray *_constraints;
 }
 
@@ -57,21 +58,18 @@ static const CGFloat TrailingMargin = 20.0;
 
 - (void)prepareView {
     if (!_textLabel) {
-        _textLabel = [UILabel new];
+        _textLabel = [OCKLabel new];
+        _textLabel.textStyle = UIFontTextStyleBody;
         _textLabel.numberOfLines = 0;
         _textLabel.lineBreakMode = NSLineBreakByWordWrapping;
         [self addSubview:_textLabel];
     }
-
+    
     [self setUpConstraints];
 }
 
 - (void)updateView {
     _textLabel.text = _intervention.instructions;
-}
-
-- (void)updateFonts {
-    _textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
 }
 
 - (void)setUpConstraints {

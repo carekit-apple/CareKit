@@ -181,9 +181,9 @@ static const CGFloat BottomMargin = 5.0;
         NSString *progressString = [OCKPercentFormatter(0, 0) stringFromNumber:[NSNumber numberWithFloat:value]];
         _ringButtons[i].accessibilityValue = [NSString stringWithFormat:OCKLocalizedString(@"AX_WEEK_BUTTON_PROGRESS", nil), progressString];
         
-        if (_delegate &&
-            [_delegate respondsToSelector:@selector(weekViewCanSelectDayAtIndex:)]) {
-            if (![_delegate weekViewCanSelectDayAtIndex:(NSUInteger)i]) {
+        if (self.delegate &&
+            [self.delegate respondsToSelector:@selector(weekViewCanSelectDayAtIndex:)]) {
+            if (![self.delegate weekViewCanSelectDayAtIndex:(NSUInteger)i]) {
                 _ringButtons[i].accessibilityTraits |= UIAccessibilityTraitNotEnabled;
             }
         }
@@ -194,7 +194,7 @@ static const CGFloat BottomMargin = 5.0;
     _selectedIndex = selectedIndex;
     [_weekView highlightDay:selectedIndex];
     
-    for ( int i = 0; i < [_ringButtons count]; i++ ) {
+    for (int i = 0; i < [_ringButtons count]; i++ ) {
         UIAccessibilityTraits axTraits = UIAccessibilityTraitButton | (i == selectedIndex ?  UIAccessibilityTraitSelected : 0);
         [_ringButtons[i] setAccessibilityTraits:axTraits];
     }
@@ -204,17 +204,25 @@ static const CGFloat BottomMargin = 5.0;
 - (void)updateDayOfWeek:(id)sender {
     OCKRingButton *button = (OCKRingButton *)sender;
     NSInteger index = [_ringButtons indexOfObject:button];
-    _selectedIndex = index;
+    self.selectedIndex = index;
     
-    if (_delegate &&
-        [_delegate respondsToSelector:@selector(weekViewSelectionDidChange:)]) {
-        [_delegate weekViewSelectionDidChange:self];
+    if (self.delegate &&
+        [self.delegate respondsToSelector:@selector(weekViewSelectionDidChange:)]) {
+        [self.delegate weekViewSelectionDidChange:self];
     }
 }
 
 - (void)layoutSubviews {
     [super layoutSubviews];
     [self setUpConstraints];
+}
+
+- (void)tintColorDidChange {
+    [super tintColorDidChange];
+    for (OCKRingButton *button in _ringButtons) {
+        button.ringView.tintColor = self.tintColor;
+    }
+    _weekView.tintColor = self.tintColor;
 }
 
 @end

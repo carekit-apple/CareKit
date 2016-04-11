@@ -36,20 +36,25 @@
 #import "OCKCareCardButton.h"
 #import "OCKHelpers.h"
 #import "OCKDefines_Private.h"
+#import "OCKLabel.h"
 
 
 static const CGFloat TopMargin = 20.0;
 static const CGFloat BottomMargin = 10.0;
 static const CGFloat VerticalMargin = 5.0;
+static const CGFloat HorizontalMargin = 5.0;
 static const CGFloat ButtonViewSize = 40.0;
 
 @interface OCKCareCardTableViewCell ()
+
 @property (nonatomic, retain) NSMutableArray *axChildren;
+
 @end
 
+
 @implementation OCKCareCardTableViewCell {
-    UILabel *_titleLabel;
-    UILabel *_textLabel;
+    OCKLabel *_titleLabel;
+    OCKLabel *_textLabel;
     UIView *_leadingEdge;
     NSArray <OCKCareCardButton *> *_frequencyButtons;
     OCKCarePlanActivity *_intervention;
@@ -57,12 +62,12 @@ static const CGFloat ButtonViewSize = 40.0;
 }
 
 - (void)setInterventionEvents:(NSArray<OCKCarePlanEvent *> *)interventionEvents {
-    if (_interventionEvents.count > 14) {
+    if (interventionEvents.count > 14) {
         @throw [NSException exceptionWithName:NSGenericException reason:@"OCKCareCardViewController only supports up to 14 events for an intervention activity." userInfo:nil];
     }
     _interventionEvents = OCKArrayCopyObjects(interventionEvents);
     _intervention = _interventionEvents.firstObject.activity;
-    self.tintColor = (!_intervention.tintColor) ? OCKAppTintColor() : _intervention.tintColor;
+    self.tintColor = _intervention.tintColor;
     [self prepareView];
 }
 
@@ -72,13 +77,15 @@ static const CGFloat ButtonViewSize = 40.0;
     self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     
     if (!_titleLabel) {
-        _titleLabel = [UILabel new];
+        _titleLabel = [OCKLabel new];
+        _titleLabel.textStyle = UIFontTextStyleHeadline;
         [self addSubview:_titleLabel];
     }
     
     if (!_textLabel) {
-        _textLabel = [UILabel new];
+        _textLabel = [OCKLabel new];
         _textLabel.textColor = [UIColor lightGrayColor];
+        _textLabel.textStyle = UIFontTextStyleSubheadline;
         [self addSubview:_textLabel];
     }
     
@@ -88,7 +95,7 @@ static const CGFloat ButtonViewSize = 40.0;
     
     _frequencyButtons = [NSArray new];
     NSMutableArray *buttons = [NSMutableArray new];
-    for (OCKCarePlanEvent *event in _interventionEvents) {
+    for (OCKCarePlanEvent *event in self.interventionEvents) {
         OCKCareCardButton *frequencyButton = [[OCKCareCardButton alloc] initWithFrame:CGRectZero];
         frequencyButton.tintColor = self.tintColor;
         frequencyButton.selected = (event.state == OCKCarePlanEventStateCompleted);
@@ -104,7 +111,6 @@ static const CGFloat ButtonViewSize = 40.0;
     _frequencyButtons = [buttons copy];
     
     [self updateView];
-    [self updateFonts];
     [self setUpConstraints];
     [self updateAccessibilityInfo];
 }
@@ -112,11 +118,6 @@ static const CGFloat ButtonViewSize = 40.0;
 - (void)updateView {
     _titleLabel.text = _intervention.title;
     _textLabel.text = _intervention.text;
-}
-
-- (void)updateFonts {
-    _titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
-    _textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
 }
 
 - (void)setUpConstraints {
@@ -130,10 +131,17 @@ static const CGFloat ButtonViewSize = 40.0;
     [_titleLabel setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
     
     CGFloat LeadingMargin = self.separatorInset.left;
-    CGFloat TrailingMargin = (self.separatorInset.right > 0) ? self.separatorInset.right : 20;
+    CGFloat TrailingMargin = (self.separatorInset.right > 0) ? self.separatorInset.right : 25;
     
     [_constraints addObjectsFromArray:@[
                                         [NSLayoutConstraint constraintWithItem:_titleLabel
+                                                                     attribute:NSLayoutAttributeTop
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeTop
+                                                                    multiplier:1.0
+                                                                      constant:TopMargin],
+                                        [NSLayoutConstraint constraintWithItem:_textLabel
                                                                      attribute:NSLayoutAttributeTop
                                                                      relatedBy:NSLayoutRelationEqual
                                                                         toItem:self
@@ -160,7 +168,7 @@ static const CGFloat ButtonViewSize = 40.0;
                                                                         toItem:_titleLabel
                                                                      attribute:NSLayoutAttributeTrailing
                                                                     multiplier:1.0
-                                                                      constant:5.0],
+                                                                      constant:HorizontalMargin],
                                         [NSLayoutConstraint constraintWithItem:self
                                                                      attribute:NSLayoutAttributeTrailing
                                                                      relatedBy:NSLayoutRelationGreaterThanOrEqual
@@ -270,7 +278,7 @@ static const CGFloat ButtonViewSize = 40.0;
     [self updateAccessibilityInfo];
     
     NSInteger index = [_frequencyButtons indexOfObject:button];
-    OCKCarePlanEvent *selectedEvent = _interventionEvents[index];
+    OCKCarePlanEvent *selectedEvent = self.interventionEvents[index];
     
     if (_delegate &&
         [_delegate respondsToSelector:@selector(careCardTableViewCell:didUpdateFrequencyofInterventionEvent:)]) {
@@ -278,6 +286,7 @@ static const CGFloat ButtonViewSize = 40.0;
     }
     
 }
+
 
 #pragma mark - Accessibility
 
@@ -287,8 +296,8 @@ static const CGFloat ButtonViewSize = 40.0;
         OCKCareCardButton *frequencyButton = _frequencyButtons[i];
         NSString *completionStr = frequencyButton.isSelected ? OCKLocalizedString(@"AX_CARE_CARD_COMPLETED", nil) : OCKLocalizedString(@"AX_CARE_CARD_INCOMPLETE", nil);
         frequencyButton.accessibilityTraits = UIAccessibilityTraitButton;
-        frequencyButton.accessibilityLabel = [NSString stringWithFormat:OCKLocalizedString(@"AX_CARE_CARD_EVENT_LABEL", nil), completionStr, i+1, _interventionEvents.count, _intervention.title];
-    }    
+        frequencyButton.accessibilityLabel = [NSString stringWithFormat:OCKLocalizedString(@"AX_CARE_CARD_EVENT_LABEL", nil), completionStr, i+1, self.interventionEvents.count, _intervention.title];
+    }
 }
 
 - (NSArray *)accessibilityElements {
@@ -301,9 +310,12 @@ static const CGFloat ButtonViewSize = 40.0;
     }
     return self.axChildren;
 }
+
 @end
 
+
 @implementation CareCardAccessibilityElement
+
 - (CGRect)accessibilityFrame {
     return [[self accessibilityContainer] accessibilityFrame];
 }
@@ -319,4 +331,5 @@ static const CGFloat ButtonViewSize = 40.0;
     }
     return [NSString stringWithFormat:OCKLocalizedString(@"AX_CARE_CARD_VALUE", nil), numTasksCompleted, careCardContainer.interventionEvents.count];
 }
+
 @end

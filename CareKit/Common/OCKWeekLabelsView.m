@@ -31,12 +31,12 @@
 
 #import "OCKWeekLabelsView.h"
 
+
 static const CGFloat TopMargin = 15.0;
-static const CGFloat LeadingMargin = 11.0;
-static const CGFloat TrailingMargin = 11.0;
+static const CGFloat LeadingMargin = 6.0;
+static const CGFloat TrailingMargin = 6.0;
 
 @implementation OCKWeekLabelsView {
-    NSMutableArray<UILabel *> *_weekLabels;
     NSArray<NSString *> *_weekStrings;
     NSArray<NSString *> *_axWeekStrings;
     NSInteger _selectedIndex;
@@ -67,13 +67,14 @@ static const CGFloat TrailingMargin = 11.0;
             dayLabel.layer.cornerRadius = 3;
             dayLabel.clipsToBounds = YES;
             dayLabel.text = _weekStrings[i];
+            dayLabel.textAlignment = NSTextAlignmentCenter;
             dayLabel.accessibilityLabel = _axWeekStrings[i];
             [_weekLabels addObject:dayLabel];
         }
     }
     
     if (!_stackView) {
-        _stackView = [[UIStackView alloc] initWithArrangedSubviews:_weekLabels];
+        _stackView = [[UIStackView alloc] initWithArrangedSubviews:self.weekLabels];
         _stackView.distribution = UIStackViewDistributionEqualCentering;
         [self addSubview:_stackView];
     }
@@ -87,6 +88,18 @@ static const CGFloat TrailingMargin = 11.0;
     _constraints = [NSMutableArray new];
     
     _stackView.translatesAutoresizingMaskIntoConstraints = NO;
+    
+    for (int i = 0; i < self.weekLabels.count; i++) {
+        [_constraints addObjectsFromArray:@[
+                                            [NSLayoutConstraint constraintWithItem:self.weekLabels[i]
+                                                                         attribute:NSLayoutAttributeWidth
+                                                                         relatedBy:NSLayoutRelationEqual
+                                                                            toItem:nil
+                                                                         attribute:NSLayoutAttributeNotAnAttribute
+                                                                        multiplier:1.0
+                                                                          constant:18.0]
+                                            ]];
+    }
     
     [_constraints addObjectsFromArray:@[
                                         [NSLayoutConstraint constraintWithItem:_stackView
@@ -123,12 +136,12 @@ static const CGFloat TrailingMargin = 11.0;
 - (void)highlightDay:(NSInteger)selectedIndex {
     _selectedIndex = selectedIndex;
     
-    for (UILabel *label in _weekLabels) {
+    for (UILabel *label in self.weekLabels) {
         label.backgroundColor = [UIColor clearColor];
         label.textColor = [UIColor blackColor];
     }
-    _weekLabels[selectedIndex].backgroundColor = self.tintColor;
-    _weekLabels[selectedIndex].textColor = [UIColor whiteColor];
+    self.weekLabels[selectedIndex].backgroundColor = self.tintColor;
+    self.weekLabels[selectedIndex].textColor = [UIColor whiteColor];
 }
 
 - (void)tintColorDidChange {

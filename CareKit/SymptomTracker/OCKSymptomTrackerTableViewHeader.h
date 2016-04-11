@@ -34,13 +34,13 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class OCKCircleView;
+@class OCKRingView;
 
 @interface OCKSymptomTrackerTableViewHeader : UIView
 
 @property (nonatomic) double value;
 
-@property (nonatomic) OCKCircleView *circleView;
+@property (nonatomic, readonly) OCKRingView *ringView;
 
 @property (nonatomic, copy) NSString *date;
 

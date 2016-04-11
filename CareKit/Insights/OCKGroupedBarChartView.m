@@ -33,6 +33,7 @@
 #import "OCKLabel.h"
 #import "OCKHelpers.h"
 
+
 // #define LAYOUT_DEBUG 1
 
 static const CGFloat BarPointSize = 12.0;
@@ -569,6 +570,7 @@ static const CGFloat MarginBetweenGroups = 16.0;
 
 @end
 
+
 @implementation OCKGroupedBarChartView {
     NSMutableArray<OCKGroupedBarChartBarGroup *> *_barGroups;
     NSMutableArray<OCKGroupedBarChartBarType *> *_barTypes;
@@ -777,6 +779,7 @@ static const CGFloat MarginBetweenGroups = 16.0;
     
     [NSLayoutConstraint activateConstraints:_constraints];
 }
+
 
 #pragma mark - Accessibility
 

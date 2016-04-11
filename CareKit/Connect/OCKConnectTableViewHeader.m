@@ -32,16 +32,22 @@
 #import "OCKConnectTableViewHeader.h"
 #import "OCKContact.h"
 #import "OCKHelpers.h"
+#import "OCKLabel.h"
 
 
 static const CGFloat TopMargin = 15.0;
+static const CGFloat BottomMargin = 15.0;
+static const CGFloat LeadingMargin = 20.0;
+static const CGFloat TrailingMargin = 20.0;
 static const CGFloat VerticalMargin = 20.0;
+static const CGFloat HorizontalMargin = 10.0;
 static const CGFloat ImageViewSize = 135.0;
 
 @implementation OCKConnectTableViewHeader {
     UIImageView *_imageView;
-    UILabel *_titleLabel;
-    UILabel *_relationLabel;
+    OCKLabel *_monogramLabel;
+    OCKLabel *_titleLabel;
+    OCKLabel *_relationLabel;
     UIView *_bottomEdge;
     NSMutableArray *_constraints;
 }
@@ -50,18 +56,12 @@ static const CGFloat ImageViewSize = 135.0;
     self = [super initWithFrame:frame];
     if (self) {
         [self prepareView];
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(prepareView)
-                                                     name:UIContentSizeCategoryDidChangeNotification
-                                                   object:nil];
     }
     return self;
 }
 
 - (void)prepareView {
     self.backgroundColor = [UIColor whiteColor];
-    self.tintColor = (!_contact.tintColor) ? OCKAppTintColor() : _contact.tintColor;
     
     if (!_imageView) {
         _imageView = [UIImageView new];
@@ -71,41 +71,70 @@ static const CGFloat ImageViewSize = 135.0;
         _imageView.contentMode = UIViewContentModeScaleAspectFill;
         [self addSubview:_imageView];
     }
-    _imageView.layer.borderColor = self.tintColor.CGColor;
-    _imageView.image = (_contact.image) ? _contact.image : [UIImage imageNamed:@"contact" inBundle:[NSBundle bundleForClass:[self class]] compatibleWithTraitCollection:nil];
     
     if (!_titleLabel) {
-        _titleLabel = [UILabel new];
+        _titleLabel = [OCKLabel new];
+        _titleLabel.textStyle = UIFontTextStyleHeadline;
+        _titleLabel.textAlignment = NSTextAlignmentCenter;
+        _titleLabel.numberOfLines = 0;
+        _titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
         [self addSubview:_titleLabel];
     }
-    _titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
-    _titleLabel.text = _contact.name;
     
     if (!_relationLabel) {
-        _relationLabel = [UILabel new];
+        _relationLabel = [OCKLabel new];
+        _relationLabel.textStyle = UIFontTextStyleSubheadline;
         _relationLabel.textColor = [UIColor lightGrayColor];
+        _relationLabel.textAlignment = NSTextAlignmentCenter;
+        _relationLabel.numberOfLines = 0;
+        _relationLabel.lineBreakMode = NSLineBreakByWordWrapping;
         [self addSubview:_relationLabel];
     }
-    _relationLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
-    _relationLabel.text = _contact.relation;
+    
+    if (!_monogramLabel) {
+        _monogramLabel = [OCKLabel new];
+        _monogramLabel.textColor = [UIColor whiteColor];
+        _monogramLabel.textAlignment = NSTextAlignmentCenter;
+        _monogramLabel.font = [UIFont boldSystemFontOfSize:56.0];
+        [self addSubview:_monogramLabel];
+    }
     
     if (!_bottomEdge) {
         _bottomEdge = [UIView new];
         [self addSubview:_bottomEdge];
     }
+    
+    [self updateView];
+    [self setUpConstraints];
+}
+
+- (void)updateView {
+    _imageView.layer.borderColor = self.tintColor.CGColor;
     _bottomEdge.backgroundColor = self.tintColor;
     
-    [self setUpConstraints];
+    if (self.contact.image) {
+        _imageView.image = self.contact.image;
+        _imageView.backgroundColor = [UIColor clearColor];
+        _monogramLabel.hidden = YES;
+    } else {
+        _monogramLabel.text = self.contact.monogram;
+        _imageView.backgroundColor = [UIColor grayColor];
+        _monogramLabel.hidden = NO;
+    }
+    
+    _relationLabel.text = self.contact.relation;
+    _titleLabel.text = self.contact.name;
 }
 
 - (void)setUpConstraints {
     [NSLayoutConstraint deactivateConstraints:_constraints];
-
+    
     _constraints = [NSMutableArray new];
     
     _imageView.translatesAutoresizingMaskIntoConstraints = NO;
     _titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     _relationLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    _monogramLabel.translatesAutoresizingMaskIntoConstraints = NO;
     _bottomEdge.translatesAutoresizingMaskIntoConstraints = NO;
     
     [_constraints addObjectsFromArray:@[
@@ -130,27 +159,6 @@ static const CGFloat ImageViewSize = 135.0;
                                                                      attribute:NSLayoutAttributeTop
                                                                     multiplier:1.0
                                                                       constant:-VerticalMargin],
-                                        [NSLayoutConstraint constraintWithItem:_titleLabel
-                                                                     attribute:NSLayoutAttributeCenterX
-                                                                     relatedBy:NSLayoutRelationEqual
-                                                                        toItem:self
-                                                                     attribute:NSLayoutAttributeCenterX
-                                                                    multiplier:1.0
-                                                                      constant:0.0],
-                                        [NSLayoutConstraint constraintWithItem:_relationLabel
-                                                                     attribute:NSLayoutAttributeCenterX
-                                                                     relatedBy:NSLayoutRelationEqual
-                                                                        toItem:self
-                                                                     attribute:NSLayoutAttributeCenterX
-                                                                    multiplier:1.0
-                                                                      constant:0.0],
-                                        [NSLayoutConstraint constraintWithItem:_titleLabel
-                                                                     attribute:NSLayoutAttributeBottom
-                                                                     relatedBy:NSLayoutRelationEqual
-                                                                        toItem:_relationLabel
-                                                                     attribute:NSLayoutAttributeTop
-                                                                    multiplier:1.0
-                                                                      constant:0.0],
                                         [NSLayoutConstraint constraintWithItem:_imageView
                                                                      attribute:NSLayoutAttributeHeight
                                                                      relatedBy:NSLayoutRelationEqual
@@ -165,6 +173,69 @@ static const CGFloat ImageViewSize = 135.0;
                                                                      attribute:NSLayoutAttributeNotAnAttribute
                                                                     multiplier:1.0
                                                                       constant:ImageViewSize],
+                                        [NSLayoutConstraint constraintWithItem:_titleLabel
+                                                                     attribute:NSLayoutAttributeLeading
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeLeading
+                                                                    multiplier:1.0
+                                                                      constant:LeadingMargin],
+                                        [NSLayoutConstraint constraintWithItem:_titleLabel
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                    multiplier:1.0
+                                                                      constant:-TrailingMargin],
+                                        [NSLayoutConstraint constraintWithItem:_titleLabel
+                                                                     attribute:NSLayoutAttributeBottom
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:_relationLabel
+                                                                     attribute:NSLayoutAttributeTop
+                                                                    multiplier:1.0
+                                                                      constant:0.0],
+                                        [NSLayoutConstraint constraintWithItem:_relationLabel
+                                                                     attribute:NSLayoutAttributeLeading
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeLeading
+                                                                    multiplier:1.0
+                                                                      constant:LeadingMargin],
+                                        [NSLayoutConstraint constraintWithItem:_relationLabel
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                    multiplier:1.0
+                                                                      constant:-TrailingMargin],
+                                        [NSLayoutConstraint constraintWithItem:_relationLabel
+                                                                     attribute:NSLayoutAttributeBottom
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeBottom
+                                                                    multiplier:1.0
+                                                                      constant:-BottomMargin],
+                                        [NSLayoutConstraint constraintWithItem:_monogramLabel
+                                                                     attribute:NSLayoutAttributeCenterX
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:_imageView
+                                                                     attribute:NSLayoutAttributeCenterX
+                                                                    multiplier:1.0
+                                                                      constant:0.0],
+                                        [NSLayoutConstraint constraintWithItem:_monogramLabel
+                                                                     attribute:NSLayoutAttributeCenterY
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:_imageView
+                                                                     attribute:NSLayoutAttributeCenterY
+                                                                    multiplier:1.0
+                                                                      constant:0.0],
+                                        [NSLayoutConstraint constraintWithItem:_monogramLabel
+                                                                     attribute:NSLayoutAttributeWidth
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:_imageView
+                                                                     attribute:NSLayoutAttributeWidth
+                                                                    multiplier:1.0
+                                                                      constant:-HorizontalMargin],
                                         [NSLayoutConstraint constraintWithItem:_bottomEdge
                                                                      attribute:NSLayoutAttributeBottom
                                                                      relatedBy:NSLayoutRelationEqual
@@ -194,11 +265,19 @@ static const CGFloat ImageViewSize = 135.0;
 
 - (void)setContact:(OCKContact *)contact {
     _contact = contact;
-    [self prepareView];
+    self.tintColor = _contact.tintColor;
+    [self updateView];
 }
 
-- (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    _titleLabel.preferredMaxLayoutWidth = _titleLabel.bounds.size.width;
+    _relationLabel.preferredMaxLayoutWidth = _relationLabel.bounds.size.width;
+}
+
+- (void)tintColorDidChange {
+    [super tintColorDidChange];
+    [self updateView];
 }
 
 #pragma mark - Accessibility

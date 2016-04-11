@@ -53,13 +53,9 @@
         _title = [title copy];
         _values = OCKArrayCopyObjects(values);
         _valueLabels = OCKArrayCopyObjects(valueLabels);
-        self.tintColor = tintColor;
+        _tintColor = tintColor;
     }
     return self;
-}
-
-- (void)setTintColor:(UIColor *)tintColor {
-    _tintColor = (!tintColor) ? [[[UIApplication sharedApplication] delegate] window].tintColor : tintColor;
 }
 
 - (BOOL)isEqual:(id)object {

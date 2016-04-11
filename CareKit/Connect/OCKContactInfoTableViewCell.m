@@ -33,6 +33,7 @@
 #import "OCKContact.h"
 #import "OCKDefines_Private.h"
 #import "OCKHelpers.h"
+#import "OCKLabel.h"
 
 
 static const CGFloat TopMargin = 20.0;
@@ -41,14 +42,15 @@ static const CGFloat HorizontalMargin = 5.0;
 static const CGFloat IconButtonSize = 35.0;
 
 @implementation OCKContactInfoTableViewCell {
-    UILabel *_connectTypeLabel;
-    UILabel *_textLabel;
+    OCKLabel *_connectTypeLabel;
+    OCKLabel *_textLabel;
     UIButton *_iconButton;
     NSMutableArray *_constraints;
 }
 
 - (void)setContact:(OCKContact *)contact {
     _contact = contact;
+    self.tintColor = _contact.tintColor;
     [self prepareView];
 }
 
@@ -58,8 +60,6 @@ static const CGFloat IconButtonSize = 35.0;
 }
 
 - (void)prepareView {
-    self.tintColor = (!_contact.tintColor) ? OCKAppTintColor() : _contact.tintColor;
-
     if (!_iconButton) {
         _iconButton = [UIButton new];
         [_iconButton addTarget:self
@@ -67,49 +67,53 @@ static const CGFloat IconButtonSize = 35.0;
               forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:_iconButton];
     }
-    _iconButton.tintColor = self.tintColor;
     
+    if (!_connectTypeLabel) {
+        _connectTypeLabel = [OCKLabel new];
+        _connectTypeLabel.textStyle = UIFontTextStyleFootnote;
+        [self addSubview:_connectTypeLabel];
+    }
+    
+    if (!_textLabel) {
+        _textLabel = [OCKLabel new];
+        _textLabel.textStyle = UIFontTextStyleBody;
+        [self addSubview:_textLabel];
+    }
+    
+    [self updateView];
+    [self setUpConstraints];
+}
+
+- (void)updateView {
     NSString *imageNamed;
     NSString *title;
     NSString *connectTypeText;
-    switch (_connectType) {
+    switch (self.connectType) {
         case OCKConnectTypePhone:
             imageNamed = @"phone";
             connectTypeText = OCKLocalizedString(@"CONTACT_INFO_PHONE_TITLE", nil);
-            title = _contact.phoneNumber.stringValue;
+            title = self.contact.phoneNumber.stringValue;
             break;
             
         case OCKConnectTypeMessage:
             imageNamed = @"message";
             connectTypeText = OCKLocalizedString(@"CONTACT_INFO_MESSAGE_TITLE", nil);
-            title = _contact.messageNumber.stringValue;
+            title = self.contact.messageNumber.stringValue;
             break;
             
         case OCKConnectTypeEmail:
             imageNamed = @"email";
             connectTypeText = OCKLocalizedString(@"CONTACT_INFO_EMAIL_TITLE", nil);
-            title = _contact.emailAddress;
+            title = self.contact.emailAddress;
             break;
     }
     UIImage *image = [[UIImage imageNamed:imageNamed inBundle:[NSBundle bundleForClass:[self class]] compatibleWithTraitCollection:nil] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     [_iconButton setImage:image forState:UIControlStateNormal];
     
-    if (!_connectTypeLabel) {
-        _connectTypeLabel = [UILabel new];
-        [self addSubview:_connectTypeLabel];
-    }
+    _iconButton.tintColor = self.tintColor;
     _connectTypeLabel.textColor = self.tintColor;
-    _connectTypeLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleFootnote];
     _connectTypeLabel.text = connectTypeText;
-    
-    if (!_textLabel) {
-        _textLabel = [UILabel new];
-        [self addSubview:_textLabel];
-    }
-    _textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
     _textLabel.text = title;
-    
-    [self setUpConstraints];
 }
 
 - (void)setUpConstraints {
@@ -194,16 +198,16 @@ static const CGFloat IconButtonSize = 35.0;
                                                                         toItem:_iconButton
                                                                      attribute:NSLayoutAttributeLeading
                                                                     multiplier:1.0
-                                                                      constant:HorizontalMargin],
+                                                                      constant:-HorizontalMargin],
                                         ]];
     
     [NSLayoutConstraint activateConstraints:_constraints];
 }
 
 - (void)buttonSelected:(id)sender {
-    if (_delegate &&
-        [_delegate respondsToSelector:@selector(contactInfoTableViewCellDidSelectConnection:)]) {
-        [_delegate contactInfoTableViewCellDidSelectConnection:self];
+    if (self.delegate &&
+        [self.delegate respondsToSelector:@selector(contactInfoTableViewCellDidSelectConnection:)]) {
+        [self.delegate contactInfoTableViewCellDidSelectConnection:self];
     }
 }
 
@@ -211,6 +215,12 @@ static const CGFloat IconButtonSize = 35.0;
     [super layoutSubviews];
     [self setUpConstraints];
 }
+
+- (void)tintColorDidChange {
+    [super tintColorDidChange];
+    [self updateView];
+}
+
 
 #pragma mark - Accessibility
 

@@ -31,21 +31,21 @@
 
 #import "OCKInsightsMessageTableViewCell.h"
 #import "OCKHelpers.h"
+#import "OCKLabel.h"
 
 
 static const CGFloat TopMargin = 15.0;
 static const CGFloat LeadingMargin = 20.0;
 static const CGFloat TrailingMargin = 30.0;
 static const CGFloat BottomMargin = 15.0;
-static const CGFloat HorizontalMargin = 10.0;
 
 static NSString *AlertSymbol = @"\u25C9";
 static NSString *TipSymbol = @"\u2731";
 
 @implementation OCKInsightsMessageTableViewCell {
-    UILabel *_titleLabel;
-    UILabel *_textLabel;
-    UILabel *_iconLabel;
+    OCKLabel *_titleLabel;
+    OCKLabel *_textLabel;
+    OCKLabel *_iconLabel;
     NSMutableArray *_constraints;
 }
 
@@ -59,7 +59,7 @@ static NSString *TipSymbol = @"\u2731";
 
 - (void)setMessageItem:(OCKMessageItem *)messageItem {
     _messageItem = messageItem;
-    self.tintColor = (!_messageItem.tintColor) ? OCKAppTintColor() : _messageItem.tintColor;
+    self.tintColor = _messageItem.tintColor;
     [self updateView];
 }
 
@@ -67,38 +67,37 @@ static NSString *TipSymbol = @"\u2731";
     [super prepareView];
     
     if (!_titleLabel) {
-        _titleLabel = [UILabel new];
+        _titleLabel = [OCKLabel new];
+        _titleLabel.textStyle = UIFontTextStyleHeadline;
+        _titleLabel.numberOfLines = 0;
+        _titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
         [self addSubview:_titleLabel];
     }
     
     if (!_textLabel) {
-        _textLabel = [UILabel new];
+        _textLabel = [OCKLabel new];
+        _textLabel.textStyle = UIFontTextStyleSubheadline;
+        _textLabel.textColor = [UIColor darkGrayColor];
         _textLabel.numberOfLines = 0;
         _textLabel.lineBreakMode = NSLineBreakByWordWrapping;
         [self addSubview:_textLabel];
     }
     
     if (!_iconLabel) {
-        _iconLabel = [UILabel new];
+        _iconLabel = [OCKLabel new];
+        _iconLabel.textStyle = UIFontTextStyleCallout;
         [self addSubview:_iconLabel];
     }
     
     [self updateView];
-    [self updateFonts];
     [self setUpConstraints];
 }
 
 - (void)updateView {
-    _titleLabel.text = _messageItem.title;
-    _textLabel.text = _messageItem.text;
-    _iconLabel.text = [self stringForMessageType:_messageItem.messageType];
+    _titleLabel.text = self.messageItem.title;
+    _textLabel.text = self.messageItem.text;
+    _iconLabel.text = [self stringForMessageType:self.messageItem.messageType];
     _iconLabel.textColor = self.tintColor;
-}
-
-- (void)updateFonts {
-    _titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
-    _textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
-    _iconLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleCallout];
 }
 
 - (void)setUpConstraints {
@@ -110,6 +109,8 @@ static NSString *TipSymbol = @"\u2731";
     _textLabel.translatesAutoresizingMaskIntoConstraints = NO;
     _iconLabel.translatesAutoresizingMaskIntoConstraints = NO;
     
+    CGFloat horizontalMargin = (_titleLabel.text) ? 10.0 : 0.0;
+    
     [_constraints addObjectsFromArray:@[
                                         [NSLayoutConstraint constraintWithItem:_titleLabel
                                                                      attribute:NSLayoutAttributeLeading
@@ -118,6 +119,13 @@ static NSString *TipSymbol = @"\u2731";
                                                                      attribute:NSLayoutAttributeLeading
                                                                     multiplier:1.0
                                                                       constant:LeadingMargin],
+                                        [NSLayoutConstraint constraintWithItem:_iconLabel
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                     relatedBy:NSLayoutRelationLessThanOrEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                    multiplier:1.0
+                                                                      constant:-TrailingMargin],
                                         [NSLayoutConstraint constraintWithItem:_titleLabel
                                                                      attribute:NSLayoutAttributeTop
                                                                      relatedBy:NSLayoutRelationEqual
@@ -127,8 +135,15 @@ static NSString *TipSymbol = @"\u2731";
                                                                       constant:TopMargin],
                                         [NSLayoutConstraint constraintWithItem:_textLabel
                                                                      attribute:NSLayoutAttributeTop
-                                                                     relatedBy:NSLayoutRelationEqual
+                                                                     relatedBy:NSLayoutRelationGreaterThanOrEqual
                                                                         toItem:_titleLabel
+                                                                     attribute:NSLayoutAttributeBottom
+                                                                    multiplier:1.0
+                                                                      constant:0.0],
+                                        [NSLayoutConstraint constraintWithItem:_textLabel
+                                                                     attribute:NSLayoutAttributeTop
+                                                                     relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                                        toItem:_iconLabel
                                                                      attribute:NSLayoutAttributeBottom
                                                                     multiplier:1.0
                                                                       constant:0.0],
@@ -154,10 +169,10 @@ static NSString *TipSymbol = @"\u2731";
                                                                     multiplier:1.0
                                                                       constant:-BottomMargin],
                                         [NSLayoutConstraint constraintWithItem:_iconLabel
-                                                                     attribute:NSLayoutAttributeCenterY
+                                                                     attribute:NSLayoutAttributeTop
                                                                      relatedBy:NSLayoutRelationEqual
                                                                         toItem:_titleLabel
-                                                                     attribute:NSLayoutAttributeCenterY
+                                                                     attribute:NSLayoutAttributeTop
                                                                     multiplier:1.0
                                                                       constant:0.0],
                                         [NSLayoutConstraint constraintWithItem:_iconLabel
@@ -166,10 +181,15 @@ static NSString *TipSymbol = @"\u2731";
                                                                         toItem:_titleLabel
                                                                      attribute:NSLayoutAttributeTrailing
                                                                     multiplier:1.0
-                                                                      constant:HorizontalMargin]
+                                                                      constant:horizontalMargin]
                                         ]];
     
     [NSLayoutConstraint activateConstraints:_constraints];
+}
+
+- (void)tintColorDidChange {
+    [super tintColorDidChange];
+    [self updateView];
 }
 
 - (NSString *)stringForMessageType:(OCKMessageItemType)type {

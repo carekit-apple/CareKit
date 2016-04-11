@@ -41,7 +41,6 @@ typedef NS_ENUM(NSInteger, OCKConnectType) {
     OCKConnectTypeEmail
 };
 
-
 @interface OCKConnectTableViewCell : OCKTableViewCell
 
 @property (nonatomic) OCKContact *contact;

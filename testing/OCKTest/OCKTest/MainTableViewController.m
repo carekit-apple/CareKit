@@ -191,7 +191,7 @@ typedef NS_ENUM(NSInteger, TestItem) {
         
         OCKBarChart *chart = [[OCKBarChart alloc] initWithTitle:@"Pain Scores"
                                                            text:@"with Medication"
-                                                      tintColor:color
+                                                      tintColor:nil
                                                      axisTitles:axisTitles
                                                   axisSubtitles:axisSubtitles
                                                      dataSeries:@[series1, series2]];
@@ -267,7 +267,6 @@ DefineStringKey(BandageChangeIntervention);
     
     {
         OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@4,@10,@10,@12,@12,@0,@0]];
-        UIColor *color = BlueColor();
         
         UIGraphicsBeginImageContext(self.view.frame.size);
         [self.view.layer renderInContext:UIGraphicsGetCurrentContext()];
@@ -283,7 +282,7 @@ DefineStringKey(BandageChangeIntervention);
                                                                             groupIdentifier:nil
                                                                                       title:@"Hydrocodone/Acetaminophen"
                                                                                        text:@"5mg/300mg"
-                                                                                  tintColor:color
+                                                                                  tintColor:nil
                                                                                instructions:@"Take twice daily with food. May cause drowsiness. It is not recommended to drive with this medication. For any severe side effects, please contact your physician."
                                                                                    imageURL:[NSURL fileURLWithPath:path]
                                                                                    schedule:schedule
@@ -418,6 +417,7 @@ DefineStringKey(TemperatureAssessment);
 - (OCKSymptomTrackerViewController *)symptomTrackerViewController {
     OCKSymptomTrackerViewController *symptomTrackerViewController = [[OCKSymptomTrackerViewController alloc] initWithCarePlanStore:_store];
     symptomTrackerViewController.delegate = self;
+    symptomTrackerViewController.progressRingTintColor = [UIColor greenColor];
     return symptomTrackerViewController;
 }
 
@@ -428,13 +428,12 @@ DefineStringKey(TemperatureAssessment);
     
     {
         OCKCareSchedule *schedule = [OCKCareSchedule dailyScheduleWithStartDate:startDate occurrencesPerDay:1];
-        UIColor *color = PurpleColor();
         
         OCKCarePlanActivity *assessment = [OCKCarePlanActivity assessmentWithIdentifier:RangeOfMotionAssessment
                                                                         groupIdentifier:nil
                                                                                   title:@"Range of Motion"
                                                                                    text:@"Arm movement"
-                                                                              tintColor:color
+                                                                              tintColor:nil
                                                                        resultResettable:NO
                                                                                schedule:schedule
                                                                                userInfo:nil];
@@ -574,9 +573,9 @@ DefineStringKey(TemperatureAssessment);
                                                                  name:@"Dr. Giselle Guerrero"
                                                              relation:@"Physician"
                                                             tintColor:color
-                                                          phoneNumber:nil
-                                                        messageNumber:nil
-                                                         emailAddress:nil
+                                                          phoneNumber:[CNPhoneNumber phoneNumberWithStringValue:@"123-456-7890"]
+                                                        messageNumber:[CNPhoneNumber phoneNumberWithStringValue:@"123-456-7890"]
+                                                         emailAddress:@"g_guerrero@hospital.edu"
                                                                 image:[UIImage imageNamed:@"doctor"]];
         [contacts addObject:contact];
     }
@@ -588,18 +587,17 @@ DefineStringKey(TemperatureAssessment);
                                                              relation:@"Nurse"
                                                             tintColor:color
                                                           phoneNumber:[CNPhoneNumber phoneNumberWithStringValue:@"123-456-7890"]
-                                                        messageNumber:nil
-                                                         emailAddress:@"nbrooks@researchkit.org"
-                                                                image:[UIImage imageNamed:@"nurse"]];
+                                                        messageNumber:[CNPhoneNumber phoneNumberWithStringValue:@"123-456-7890"]
+                                                         emailAddress:@"gapodaca@hospital.edu"
+                                                             monogram:@"GA"];
         [contacts addObject:contact];
     }
     
     {
-        UIColor *color = YellowColor();
-        OCKContact *contact = [[OCKContact alloc] initWithContactType:OCKContactTypePersonal
-                                                                 name:@"Kevin Frank"
+        OCKContact *contact = [[OCKContact alloc] initWithContactType:OCKContactTypeCareTeam
+                                                                 name:@"Kevin Johnson"
                                                              relation:@"Father"
-                                                            tintColor:color
+                                                            tintColor:nil
                                                           phoneNumber:[CNPhoneNumber phoneNumberWithStringValue:@"123-456-7890"]
                                                         messageNumber:[CNPhoneNumber phoneNumberWithStringValue:@"123-456-7890"]
                                                          emailAddress:nil
@@ -614,7 +612,11 @@ DefineStringKey(TemperatureAssessment);
 #pragma mark - OCKConnectViewControllerDelegate
 
 - (NSString *)connectViewController:(OCKConnectViewController *)connectViewController titleForSharingCellForContact:(OCKContact *)contact {
-    return @"Send weekly reports";
+    NSString *title;
+    if (![contact isEqual:_contacts[1]]){
+        title = @"Send weekly reports";
+    }
+    return title;
 }
 
 - (void)connectViewController:(OCKConnectViewController *)connectViewController didSelectShareButtonForContact:(OCKContact *)contact {

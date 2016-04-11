@@ -56,6 +56,8 @@ NS_ASSUME_NONNULL_BEGIN
  Asks the delegate for the title to be shown in the sharing cell for a contact.
  If the method returns nil or is not implemented, the localized string for the `SHARING_CELL_TITLE` key is displayed.
  
+ Single-lined.
+ 
  @param connectViewController       The view controller providing the callback.
  @param contact                     The contact that is currently displayed.
  
@@ -64,6 +66,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (nullable NSString *)connectViewController:(OCKConnectViewController *)connectViewController titleForSharingCellForContact:(OCKContact *)contact;
 
 @end
+
 
 /**
  The `OCKConnectViewController` class is a view controller that displays an array of `OCKContact` objects.
@@ -76,7 +79,7 @@ OCK_CLASS_AVAILABLE
  Returns an initialized connect view controller using the specified contacts.
  
  @param contacts        An array of `OCKContact` objects.
-
+ 
  @return An initialized connect view controller.
  */
 - (instancetype)initWithContacts:(nullable NSArray<OCKContact *> *)contacts;

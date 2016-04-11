@@ -49,6 +49,7 @@ typedef NS_ENUM(NSInteger, OCKMessageItemType) {
     OCKMessageItemTypeAlert
 };
 
+
 /**
  The `OCKMessageItem` is an object that can display text such as tips or alerts.
  */

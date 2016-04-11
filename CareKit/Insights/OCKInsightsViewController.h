@@ -70,14 +70,14 @@ OCK_CLASS_AVAILABLE
 @property (nonatomic, copy) NSArray<OCKInsightItem*> *items;
 
 /**
- A string representing the title in the header view. 
+ A string representing the title in the header view.
  
  Single-lined.
  */
 @property (nonatomic, copy, nullable) NSString *headerTitle;
 
 /**
- A string representing the subtitle in the header view. 
+ A string representing the subtitle in the header view.
  
  Maximum of 2 lines.
  */

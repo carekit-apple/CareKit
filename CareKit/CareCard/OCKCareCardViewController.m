@@ -446,7 +446,7 @@
         [self.delegate careCardViewController:self didSelectRowWithInterventionActivity:selectedActivity];
     } else {
         OCKCareCardDetailViewController *detailViewController = [[OCKCareCardDetailViewController alloc] initWithIntervention:selectedActivity];
-        detailViewController.showEdgeIndicator = _showEdgeIndicators;
+        detailViewController.showEdgeIndicator = self.showEdgeIndicators;
         [self.navigationController pushViewController:detailViewController animated:YES];
     }
     
@@ -469,7 +469,7 @@
     }
     cell.interventionEvents = _events[indexPath.row];
     cell.delegate = self;
-    cell.showEdgeIndicator = _showEdgeIndicators;
+    cell.showEdgeIndicator = self.showEdgeIndicators;
     return cell;
 }
 

@@ -83,7 +83,7 @@
                                                                               style:UIBarButtonItemStylePlain
                                                                              target:self
                                                                              action:@selector(showToday:)];
-    self.navigationItem.rightBarButtonItem.tintColor = _progressRingTintColor;
+    self.navigationItem.rightBarButtonItem.tintColor = self.progressRingTintColor;
     
     _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
     _tableView.dataSource = self;
@@ -117,7 +117,7 @@
     if (!_headerView) {
         _headerView = [[OCKSymptomTrackerTableViewHeader alloc] initWithFrame:CGRectZero];
     }
-    _headerView.tintColor = _progressRingTintColor;
+    _headerView.tintColor = self.progressRingTintColor;
     [self updateHeaderView];
     
     if (!_pageViewController) {
@@ -129,7 +129,7 @@
         
         OCKWeekViewController *weekController = [[OCKWeekViewController alloc] initWithShowCareCardWeekView:NO];
         weekController.symptomTrackerWeekView.delegate = _weekViewController.symptomTrackerWeekView.delegate;
-        weekController.symptomTrackerWeekView.tintColor = _progressRingTintColor;
+        weekController.symptomTrackerWeekView.tintColor = self.progressRingTintColor;
         _weekViewController = weekController;
         
         [_pageViewController setViewControllers:@[weekController] direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:nil];
@@ -382,14 +382,14 @@
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController {
     OCKWeekViewController *controller = [[OCKWeekViewController alloc] initWithShowCareCardWeekView:NO];
     controller.weekIndex = ((OCKWeekViewController *)viewController).weekIndex - 1;
-    controller.symptomTrackerWeekView.tintColor = _progressRingTintColor;
+    controller.symptomTrackerWeekView.tintColor = self.progressRingTintColor;
     return controller;
 }
 
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController {
     OCKWeekViewController *controller = [[OCKWeekViewController alloc] initWithShowCareCardWeekView:NO];
     controller.weekIndex = ((OCKWeekViewController *)viewController).weekIndex + 1;
-    controller.symptomTrackerWeekView.tintColor = _progressRingTintColor;
+    controller.symptomTrackerWeekView.tintColor = self.progressRingTintColor;
     return (![self.selectedDate isInSameWeekAsDate:[self today]]) ? controller : nil;
 }
 

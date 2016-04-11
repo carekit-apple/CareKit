@@ -42,7 +42,8 @@
 
 /* Connect Master View */
 "CARE_TEAM_SECTION_TITLE" = "देखभाल टीम";
-"PERSONAL_SECTION_TITLE" = "व्यक्तिगत";
+"PERSONAL_SECTION_TITLE" = "मित्र और परिवार";
+"CONNECT_NO_CONTACTS_TITLE" = "कोई संपर्क नहीं";
 
 /* Connect Detail View */
 "CONTACT_INFO_SECTION_TITLE" = "संपर्क जानकारी";
@@ -54,3 +55,13 @@
 "ERROR_TITLE" = "त्रुटि";
 "MESSAGE_SEND_ERROR" = "संदेश भेजना विफल";
 "EMAIL_SEND_ERROR" = "ईमेल भेजना विफल";
+
+/* ACCESSIBILITY */
+"AX_WEEK_BUTTON_PROGRESS" = "%@ पूर्ण";
+"AX_CARE_CARD_COMPLETED" = "पूर्ण";
+"AX_CARE_CARD_INCOMPLETE" = "अपूर्ण";
+"AX_CARE_CARD_EVENT_LABEL" = "%1$@, %2$i/%3$lu, %4$@";
+"AX_CARE_CARD_HINT" = "निर्देश देखने के लिए डबल टैप करें";
+"AX_CARE_CARD_VALUE" = "%1$lu/%2$lu completed";
+"AX_SYMPTOM_TRACKER_NOT_STARTED" = "शुरू नहीं किया गया";
+

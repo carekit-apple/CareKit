@@ -42,7 +42,8 @@
 
 /* Connect Master View */
 "CARE_TEAM_SECTION_TITLE" = "Zorgteam";
-"PERSONAL_SECTION_TITLE" = "Persoonlijk";
+"PERSONAL_SECTION_TITLE" = "Vrienden en familie";
+"CONNECT_NO_CONTACTS_TITLE" = "Geen contacten";
 
 /* Connect Detail View */
 "CONTACT_INFO_SECTION_TITLE" = "Contactinfo";
@@ -54,3 +55,13 @@
 "ERROR_TITLE" = "Fout";
 "MESSAGE_SEND_ERROR" = "Versturen van bericht mislukt";
 "EMAIL_SEND_ERROR" = "Versturen van e-mail mislukt";
+
+/* ACCESSIBILITY */
+"AX_WEEK_BUTTON_PROGRESS" = "%@ voltooid";
+"AX_CARE_CARD_COMPLETED" = "Voltooid";
+"AX_CARE_CARD_INCOMPLETE" = "Onvolledig";
+"AX_CARE_CARD_EVENT_LABEL" = "%@, %i van %lu, %@";
+"AX_CARE_CARD_HINT" = "Tik dubbel om de instructies te bekijken";
+"AX_CARE_CARD_VALUE" = "%lu van %lu voltooid";
+"AX_SYMPTOM_TRACKER_NOT_STARTED" = "Niet gestart";
+

@@ -42,7 +42,8 @@
 
 /* Connect Master View */
 "CARE_TEAM_SECTION_TITLE" = "Команда Медпомощи";
-"PERSONAL_SECTION_TITLE" = "Личное";
+"PERSONAL_SECTION_TITLE" = "Друзья и члены семьи";
+"CONNECT_NO_CONTACTS_TITLE" = "Нет контактов";
 
 /* Connect Detail View */
 "CONTACT_INFO_SECTION_TITLE" = "Данные контакта";
@@ -54,3 +55,13 @@
 "ERROR_TITLE" = "Ошибка";
 "MESSAGE_SEND_ERROR" = "Отправка сообщения не удалась";
 "EMAIL_SEND_ERROR" = "Отправка е‑mail не удалась";
+
+/* ACCESSIBILITY */
+"AX_WEEK_BUTTON_PROGRESS" = "Выполнено %@";
+"AX_CARE_CARD_COMPLETED" = "Завершено";
+"AX_CARE_CARD_INCOMPLETE" = "Не завершено";
+"AX_CARE_CARD_EVENT_LABEL" = "%@, %i из %lu, %@";
+"AX_CARE_CARD_HINT" = "Коснуться дважды для просмотра инструкций";
+"AX_CARE_CARD_VALUE" = "Выполнено %lu из %lu";
+"AX_SYMPTOM_TRACKER_NOT_STARTED" = "Не начато";
+

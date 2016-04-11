@@ -42,7 +42,8 @@
 
 /* Connect Master View */
 "CARE_TEAM_SECTION_TITLE" = "Équipe de soins";
-"PERSONAL_SECTION_TITLE" = "Personnel";
+"PERSONAL_SECTION_TITLE" = "Amis et famille";
+"CONNECT_NO_CONTACTS_TITLE" = "Aucun contact";
 
 /* Connect Detail View */
 "CONTACT_INFO_SECTION_TITLE" = "Coordonnées";
@@ -54,3 +55,13 @@
 "ERROR_TITLE" = "Erreur";
 "MESSAGE_SEND_ERROR" = "Échec d’envoi du message";
 "EMAIL_SEND_ERROR" = "Échec d’envoi du courriel";
+
+/* ACCESSIBILITY */
+"AX_WEEK_BUTTON_PROGRESS" = "%@ terminé";
+"AX_CARE_CARD_COMPLETED" = "Terminée";
+"AX_CARE_CARD_INCOMPLETE" = "Incomplète";
+"AX_CARE_CARD_EVENT_LABEL" = "%@, %i de %lu, %@";
+"AX_CARE_CARD_HINT" = "Touchez deux fois pour afficher les instructions.";
+"AX_CARE_CARD_VALUE" = "Progression :%lu de %lu";
+"AX_SYMPTOM_TRACKER_NOT_STARTED" = "Non démarré";
+

@@ -51,7 +51,7 @@
 
 @implementation OCKSymptomTrackerViewController {
     UITableView *_tableView;
-    NSMutableArray<NSMutableArray<OCKCarePlanEvent *> *> *_events;
+    NSMutableArray<OCKCarePlanEvent *> *_events;
     NSMutableArray *_weekValues;
     OCKSymptomTrackerTableViewHeader *_headerView;
     UIPageViewController *_pageViewController;
@@ -231,14 +231,17 @@
               completion:^(NSArray<NSArray<OCKCarePlanEvent *> *> * _Nonnull eventsGroupedByActivity, NSError * _Nonnull error) {
                   NSAssert(!error, error.localizedDescription);
                   dispatch_async(dispatch_get_main_queue(), ^{
-                      _events = [NSMutableArray new];
-                      for (NSArray<OCKCarePlanEvent *> *events in eventsGroupedByActivity) {
-                          [_events addObject:[events mutableCopy]];
-                      }
-                      
                       if (_delegate &&
                           [_delegate respondsToSelector:@selector(symptomTrackerViewController:willDisplayEvents:dateComponents:)]) {
-                          [_delegate symptomTrackerViewController:self willDisplayEvents:[_events copy] dateComponents:_selectedDate];
+                          [_delegate symptomTrackerViewController:self willDisplayEvents:[eventsGroupedByActivity copy] dateComponents:_selectedDate];
+                      }
+                      
+                      _events = [NSMutableArray new];
+                      
+                      for (NSArray<OCKCarePlanEvent *> *events in eventsGroupedByActivity) {
+                          for (OCKCarePlanEvent *event in events) {
+                              [_events addObject:event];
+                          }
                       }
                       
                       [self updateHeaderView];
@@ -253,12 +256,10 @@
                                                       dateStyle:NSDateFormatterLongStyle
                                                       timeStyle:NSDateFormatterNoStyle];
     
-    NSInteger totalEvents = 0;
+    NSInteger totalEvents = _events.count;
     NSInteger completedEvents = 0;
-    for (NSArray<OCKCarePlanEvent *> *events in _events) {
-        totalEvents += events.count;
-        OCKCarePlanEvent *evaluationEvent = events.firstObject;
-        if (evaluationEvent.state == OCKCarePlanEventStateCompleted) {
+    for (OCKCarePlanEvent *event in _events) {
+        if (event.state == OCKCarePlanEventStateCompleted) {
             completedEvents++;
         }
     }
@@ -338,19 +339,21 @@
 #pragma mark - OCKCarePlanStoreDelegate
 
 - (void)carePlanStore:(OCKCarePlanStore *)store didReceiveUpdateOfEvent:(OCKCarePlanEvent *)event {
-    for (NSMutableArray<OCKCarePlanEvent *> *events in _events) {
-        if ([events.firstObject.activity.identifier isEqualToString:event.activity.identifier]) {
+    for (int i = 0; i < _events.count; i++) {
+        OCKCarePlanEvent *eventInArray = _events[i];
+        if ([eventInArray.activity isEqual:event.activity] &&
+            (eventInArray.numberOfDaysSinceStart == event.numberOfDaysSinceStart) &&
+            (eventInArray.occurrenceIndexOfDay == event.occurrenceIndexOfDay)) {
+            [_events replaceObjectAtIndex:i withObject:event];
+            [self updateHeaderView];
             
-            if (events[event.occurrenceIndexOfDay].numberOfDaysSinceStart == event.numberOfDaysSinceStart) {
-                [events replaceObjectAtIndex:event.occurrenceIndexOfDay withObject:event];
-                [self updateHeaderView];
-                
-                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[_events indexOfObject:events] inSection:0];
-                OCKSymptomTrackerTableViewCell *cell = [_tableView cellForRowAtIndexPath:indexPath];
-                cell.assessmentEvent = event;
-            }
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:i inSection:0];
+            OCKSymptomTrackerTableViewCell *cell = [_tableView cellForRowAtIndexPath:indexPath];
+            cell.assessmentEvent = event;
+            break;
         }
-    }}
+    }
+}
 
 - (void)carePlanStoreEvaluationListDidChange:(OCKCarePlanStore *)store {
     [self fetchEvents];
@@ -398,7 +401,7 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    OCKCarePlanEvent *selectedEvent = _events[indexPath.row].firstObject;
+    OCKCarePlanEvent *selectedEvent = _events[indexPath.row];
     _lastSelectedAssessmentEvent = selectedEvent;
     
     if (_delegate &&
@@ -423,8 +426,8 @@
         cell = [[OCKSymptomTrackerTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
                                                      reuseIdentifier:CellIdentifier];
     }
-    cell.assessmentEvent = _events[indexPath.row].firstObject;
-    cell.showEdgeIndicator = _showEdgeIndicators;
+    cell.assessmentEvent = _events[indexPath.row];
+    cell.showEdgeIndicator = self.showEdgeIndicators;
     return cell;
 }
 

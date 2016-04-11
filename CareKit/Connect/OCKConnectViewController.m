@@ -64,6 +64,7 @@
     self = [super init];
     if (self) {
         _contacts = OCKArrayCopyObjects(contacts);
+        _showEdgeIndicators = NO;
     }
     return self;
 }
@@ -206,6 +207,11 @@
     [self setUpConstraints];
 }
 
+- (void)setShowEdgeIndicators:(BOOL)showEdgeIndicators {
+    _showEdgeIndicators = showEdgeIndicators;
+    [_tableView reloadData];
+}
+
 
 #pragma mark - UITableViewDelegate
 
@@ -215,6 +221,7 @@
     OCKConnectDetailViewController *detailViewController = [[OCKConnectDetailViewController alloc] initWithContact:contact];
     detailViewController.delegate = self.delegate;
     detailViewController.masterViewController = self;
+    detailViewController.showEdgeIndicator = _showEdgeIndicators;
     [self.navigationController pushViewController:detailViewController animated:YES];
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -243,6 +250,7 @@
                                               reuseIdentifier:CellIdentifier];
     }
     cell.contact = _sectionedContacts[indexPath.section][indexPath.row];
+    cell.showEdgeIndicator = _showEdgeIndicators;
     return cell;
 }
 

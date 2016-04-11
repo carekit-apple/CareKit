@@ -76,6 +76,7 @@
         self.maskImage = nil;
         self.smallMaskImage = nil;
         self.maskImageTintColor = nil;
+        _showEdgeIndicators = NO;
     }
     return self;
 }
@@ -239,6 +240,11 @@
     _weekViewController.careCardWeekView.tintColor = _maskImageTintColor;
     _headerView.tintColor = _maskImageTintColor;
     self.navigationItem.rightBarButtonItem.tintColor = _maskImageTintColor;
+}
+
+- (void)setShowEdgeIndicators:(BOOL)showEdgeIndicators {
+    _showEdgeIndicators = showEdgeIndicators;
+    [_tableView reloadData];
 }
 
 
@@ -440,6 +446,7 @@
         [self.delegate careCardViewController:self didSelectRowWithInterventionActivity:selectedActivity];
     } else {
         OCKCareCardDetailViewController *detailViewController = [[OCKCareCardDetailViewController alloc] initWithIntervention:selectedActivity];
+        detailViewController.showEdgeIndicator = _showEdgeIndicators;
         [self.navigationController pushViewController:detailViewController animated:YES];
     }
     
@@ -462,6 +469,7 @@
     }
     cell.interventionEvents = _events[indexPath.row];
     cell.delegate = self;
+    cell.showEdgeIndicator = _showEdgeIndicators;
     return cell;
 }
 

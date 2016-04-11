@@ -65,6 +65,7 @@ static const CGFloat HeaderViewHeight = 60.0;
         _headerTitle = [headerTitle copy];
         _headerSubtitle = [headerSubtitle copy];
         _hasAnimated = NO;
+        _showEdgeIndicators = NO;
     }
     return self;
 }
@@ -178,6 +179,11 @@ static const CGFloat HeaderViewHeight = 60.0;
     }
 }
 
+- (void)setShowEdgeIndicators:(BOOL)showEdgeIndicators {
+    _showEdgeIndicators = showEdgeIndicators;
+    [_tableView reloadData];
+}
+
 
 #pragma mark - UITableViewDelegate
 
@@ -208,6 +214,7 @@ static const CGFloat HeaderViewHeight = 60.0;
                                                         reuseIdentifier:ChartCellIdentifier];
         }
         cell.chart = (OCKChart *)item;
+        cell.showEdgeIndicator = _showEdgeIndicators;
         return cell;
     } else if ([item isKindOfClass:[OCKMessageItem class]]) {
         static NSString *MessageCellIdentifier = @"MessageCell";
@@ -217,6 +224,7 @@ static const CGFloat HeaderViewHeight = 60.0;
                                                           reuseIdentifier:MessageCellIdentifier];
         }
         cell.messageItem = (OCKMessageItem *)item;
+        cell.showEdgeIndicator = _showEdgeIndicators;
         return cell;
     }
     

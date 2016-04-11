@@ -49,6 +49,7 @@ static const CGFloat HeaderViewHeight = 100.0;
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
         _intervention = intervention;
+        self.showEdgeIndicator = NO;
     }
     return self;
 }
@@ -67,6 +68,7 @@ static const CGFloat HeaderViewHeight = 100.0;
     if (!_headerView) {
         _headerView = [[OCKCareCardDetailHeaderView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, HeaderViewHeight)];
     }
+    _headerView.showEdgeIndicator = _showEdgeIndicator;
     _headerView.intervention = _intervention;
     
     self.tableView.tableHeaderView = _headerView;
@@ -85,6 +87,11 @@ static const CGFloat HeaderViewHeight = 100.0;
         _headerView.frame = headerViewFrame;
         self.tableView.tableHeaderView = _headerView;
     }
+}
+
+- (void)setShowEdgeIndicator:(BOOL)showEdgeIndicator {
+    _showEdgeIndicator = showEdgeIndicator;
+    _headerView.showEdgeIndicator = _showEdgeIndicator;
 }
 
 

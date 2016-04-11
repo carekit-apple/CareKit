@@ -69,6 +69,7 @@
     self = [super init];
     if (self) {
         _store = store;
+        _showEdgeIndicators = NO;
     }
     return self;
 }
@@ -214,6 +215,11 @@
     _weekViewController.symptomTrackerWeekView.tintColor = _progressRingTintColor;
     _headerView.tintColor = _progressRingTintColor;
     self.navigationItem.rightBarButtonItem.tintColor = _progressRingTintColor;
+}
+
+- (void)setShowEdgeIndicators:(BOOL)showEdgeIndicators {
+    _showEdgeIndicators = showEdgeIndicators;
+    [_tableView reloadData];
 }
 
 
@@ -418,6 +424,7 @@
                                                      reuseIdentifier:CellIdentifier];
     }
     cell.assessmentEvent = _events[indexPath.row].firstObject;
+    cell.showEdgeIndicator = _showEdgeIndicators;
     return cell;
 }
 

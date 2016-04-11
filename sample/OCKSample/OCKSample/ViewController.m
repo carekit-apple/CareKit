@@ -229,6 +229,7 @@ static const BOOL resetStoreOnLaunch = YES;
     OCKInsightsViewController *insights = [[OCKInsightsViewController alloc] initWithInsightItems:items
                                                                                       headerTitle:@"Weekly Charts"
                                                                                    headerSubtitle:@"2/21 - 2/27"];
+    insights.showEdgeIndicators = YES;
     
     return insights;
 }
@@ -242,7 +243,9 @@ DefineStringKey(OutdoorWalkIntervention);
 DefineStringKey(PhysicalTherapyIntervention);
 
 - (OCKCareCardViewController *)careCardViewController {
-    return [[OCKCareCardViewController alloc] initWithCarePlanStore:_store];
+    OCKCareCardViewController *careCardViewController = [[OCKCareCardViewController alloc] initWithCarePlanStore:_store];
+    careCardViewController.showEdgeIndicators = YES;
+    return careCardViewController;
 }
 - (void)generateInterventions {
     NSMutableArray *interventions = [NSMutableArray new];
@@ -323,6 +326,7 @@ DefineStringKey(TemperatureAssessment);
 - (OCKSymptomTrackerViewController *)symptomTrackerViewController {
     OCKSymptomTrackerViewController *symptomTrackerViewController = [[OCKSymptomTrackerViewController alloc] initWithCarePlanStore:_store];
     symptomTrackerViewController.delegate = self;
+    symptomTrackerViewController.showEdgeIndicators = YES;
     return symptomTrackerViewController;
 }
 - (void)generateAssessments {
@@ -588,6 +592,7 @@ DefineStringKey(TemperatureAssessment);
     
     OCKConnectViewController *connectViewController = [[OCKConnectViewController alloc] initWithContacts:contacts];
     connectViewController.delegate = self;
+    connectViewController.showEdgeIndicators = YES;
     return connectViewController;
 }
 

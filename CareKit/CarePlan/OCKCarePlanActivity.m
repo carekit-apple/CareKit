@@ -128,7 +128,7 @@
                                text:cdObject.text
                           tintColor:cdObject.color
                        instructions:cdObject.instructions
-                           imageURL:cdObject.imageURL
+                           imageURL:OCKURLFromBookmarkData(cdObject.imageURL)
                            schedule:cdObject.schedule
                    resultResettable:cdObject.resultResettable.boolValue
                            userInfo:cdObject.userInfo];
@@ -151,7 +151,7 @@
         OCK_DECODE_OBJ_CLASS(coder, tintColor, UIColor);
         OCK_DECODE_OBJ_CLASS(coder, schedule, OCKCareSchedule);
         OCK_DECODE_ENUM(coder, type);
-        OCK_DECODE_OBJ_CLASS(coder, imageURL, NSURL);
+        OCK_DECODE_URL_BOOKMARK(coder, imageURL);
         OCK_DECODE_BOOL(coder, resultResettable);
         OCK_DECODE_OBJ_CLASS(coder, userInfo, NSDictionary);
     }
@@ -167,7 +167,7 @@
     OCK_ENCODE_OBJ(coder, tintColor);
     OCK_ENCODE_OBJ(coder, schedule);
     OCK_ENCODE_ENUM(coder, type);
-    OCK_ENCODE_OBJ(coder, imageURL);
+    OCK_ENCODE_URL_BOOKMARK(coder, imageURL);
     OCK_ENCODE_BOOL(coder, resultResettable);
     OCK_ENCODE_OBJ(coder, userInfo);
 }
@@ -225,7 +225,7 @@ insertIntoManagedObjectContext:(NSManagedObjectContext *)context
         self.text = item.text;
         self.instructions = item.instructions;
         self.color = item.tintColor;
-        self.imageURL = item.imageURL;
+        self.imageURL = OCKBookmarkDataFromURL(item.imageURL);
         self.schedule = item.schedule;
         self.type = @(item.type);
         self.userInfo = item.userInfo;

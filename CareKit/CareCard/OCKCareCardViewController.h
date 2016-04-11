@@ -45,7 +45,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  Asks the delegate if care card view controller should automatically mark the state of an intervention activity when
- the user selects and deselects the intervention circle button.
+ the user selects and deselects the intervention circle button. If this method is not implemented, care card view controller
+ handles all event completion by default.
  
  If returned NO, the `careCardViewController:didSelectButtonWithInterventionEvent` method can be implemeted to provide
  custom logic for completion.

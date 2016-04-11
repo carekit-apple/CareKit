@@ -69,14 +69,14 @@ static const CGFloat BottomMargin = 20.0;
         _subtitleLabel.textColor = [UIColor darkGrayColor];
         [self addSubview:_subtitleLabel];
     }
-
+    
     [self updateView];
     [self setUpConstraints];
 }
 
 - (void)updateView {
-    _titleLabel.text = _title;
-    _subtitleLabel.text = _subtitle;
+    _titleLabel.text = self.title;
+    _subtitleLabel.text = self.subtitle;
 }
 
 - (void)setUpConstraints {
@@ -151,12 +151,12 @@ static const CGFloat BottomMargin = 20.0;
 }
 
 - (void)setTitle:(NSString *)title {
-    _title = title;
+    _title = [title copy];
     [self updateView];
 }
 
 - (void)setSubtitle:(NSString *)subtitle {
-    _subtitle = subtitle;
+    _subtitle = [subtitle copy];
     [self updateView];
 }
 

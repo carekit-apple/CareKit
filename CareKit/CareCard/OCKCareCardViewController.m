@@ -84,13 +84,13 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    _store.careCardUIDelegate = self;
+    self.store.careCardUIDelegate = self;
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:OCKLocalizedString(@"TODAY_BUTTON_TITLE", nil)
                                                                               style:UIBarButtonItemStylePlain
                                                                              target:self
                                                                              action:@selector(showToday:)];
-    self.navigationItem.rightBarButtonItem.tintColor = _maskImageTintColor;
+    self.navigationItem.rightBarButtonItem.tintColor = self.maskImageTintColor;
     
     _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
     _tableView.dataSource = self;
@@ -98,11 +98,11 @@
     [self.view addSubview:_tableView];
     
     [self prepareView];
-
+    
     _calendar = [NSCalendar calendarWithIdentifier:NSCalendarIdentifierGregorian];
     
     self.selectedDate = [NSDateComponents ock_componentsWithDate:[NSDate date] calendar:_calendar];
-
+    
     _tableView.estimatedRowHeight = 90.0;
     _tableView.rowHeight = UITableViewAutomaticDimension;
     _tableView.estimatedSectionHeaderHeight = 100.0;
@@ -125,8 +125,8 @@
     if (!_headerView) {
         _headerView = [[OCKCareCardTableViewHeader alloc] initWithFrame:CGRectZero];
     }
-    _headerView.heartView.maskImage = _maskImage;
-    _headerView.tintColor = _maskImageTintColor;
+    _headerView.heartView.maskImage = self.maskImage;
+    _headerView.tintColor = self.maskImageTintColor;
     
     if (!_pageViewController) {
         _pageViewController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll
@@ -137,8 +137,8 @@
         
         OCKWeekViewController *weekController = [OCKWeekViewController new];
         weekController.careCardWeekView.delegate = _weekViewController.careCardWeekView.delegate;
-        weekController.careCardWeekView.smallMaskImage = _smallMaskImage;
-        weekController.careCardWeekView.tintColor = _maskImageTintColor;
+        weekController.careCardWeekView.smallMaskImage = self.smallMaskImage;
+        weekController.careCardWeekView.tintColor = self.maskImageTintColor;
         _weekViewController = weekController;
         
         [_pageViewController setViewControllers:@[weekController] direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:nil];
@@ -236,7 +236,7 @@
     if (!_maskImageTintColor) {
         _maskImageTintColor = RedColor();
     }
-
+    
     _weekViewController.careCardWeekView.tintColor = _maskImageTintColor;
     _headerView.tintColor = _maskImageTintColor;
     self.navigationItem.rightBarButtonItem.tintColor = _maskImageTintColor;
@@ -251,26 +251,26 @@
 #pragma mark - Helpers
 
 - (void)fetchEvents {
-    [_store eventsOnDate:self.selectedDate
-                    type:OCKCarePlanActivityTypeIntervention
-              completion:^(NSArray<NSArray<OCKCarePlanEvent *> *> * _Nonnull eventsGroupedByActivity, NSError * _Nonnull error) {
-                  NSAssert(!error, error.localizedDescription);
-                  dispatch_async(dispatch_get_main_queue(), ^{
-                      _events = [NSMutableArray new];
-                      for (NSArray<OCKCarePlanEvent *> *events in eventsGroupedByActivity) {
-                          [_events addObject:[events mutableCopy]];
-                      }
-                      
-                      if (_delegate &&
-                          [_delegate respondsToSelector:@selector(careCardViewController:willDisplayEvents:dateComponents:)]) {
-                          [_delegate careCardViewController:self willDisplayEvents:[_events copy] dateComponents:_selectedDate];
-                      }
-                      
-                      [self updateHeaderView];
-                      [self updateWeekView];
-                      [_tableView reloadData];
-                  });
-              }];
+    [self.store eventsOnDate:self.selectedDate
+                        type:OCKCarePlanActivityTypeIntervention
+                  completion:^(NSArray<NSArray<OCKCarePlanEvent *> *> * _Nonnull eventsGroupedByActivity, NSError * _Nonnull error) {
+                      NSAssert(!error, error.localizedDescription);
+                      dispatch_async(dispatch_get_main_queue(), ^{
+                          _events = [NSMutableArray new];
+                          for (NSArray<OCKCarePlanEvent *> *events in eventsGroupedByActivity) {
+                              [_events addObject:[events mutableCopy]];
+                          }
+                          
+                          if (self.delegate &&
+                              [self.delegate respondsToSelector:@selector(careCardViewController:willDisplayEvents:dateComponents:)]) {
+                              [self.delegate careCardViewController:self willDisplayEvents:[_events copy] dateComponents:_selectedDate];
+                          }
+                          
+                          [self updateHeaderView];
+                          [self updateWeekView];
+                          [_tableView reloadData];
+                      });
+                  }];
 }
 
 - (void)updateHeaderView {
@@ -308,24 +308,24 @@
     
     NSMutableArray *values = [NSMutableArray new];
     
-    [_store dailyCompletionStatusWithType:OCKCarePlanActivityTypeIntervention
-                                startDate:[NSDateComponents ock_componentsWithDate:startOfWeek calendar:_calendar]
-                                  endDate:[NSDateComponents ock_componentsWithDate:endOfWeek calendar:_calendar]
-                                  handler:^(NSDateComponents * _Nonnull date, NSUInteger completedEvents, NSUInteger totalEvents) {
-                                      if ([date isLaterThan:[self today]]) {
-                                          [values addObject:@(0)];
-                                      } else if (totalEvents == 0) {
-                                          [values addObject:@(1)];
-                                      } else {
-                                          [values addObject:@((float)completedEvents/totalEvents)];
-                                      }
-                                  } completion:^(BOOL completed, NSError * _Nullable error) {
-                                      NSAssert(!error, error.localizedDescription);
-                                      dispatch_async(dispatch_get_main_queue(), ^{
-                                          _weekViewController.careCardWeekView.values = values;
-                                          _weekValues = [values mutableCopy];
-                                      });
-                                  }];
+    [self.store dailyCompletionStatusWithType:OCKCarePlanActivityTypeIntervention
+                                    startDate:[NSDateComponents ock_componentsWithDate:startOfWeek calendar:_calendar]
+                                      endDate:[NSDateComponents ock_componentsWithDate:endOfWeek calendar:_calendar]
+                                      handler:^(NSDateComponents * _Nonnull date, NSUInteger completedEvents, NSUInteger totalEvents) {
+                                          if ([date isLaterThan:[self today]]) {
+                                              [values addObject:@(0)];
+                                          } else if (totalEvents == 0) {
+                                              [values addObject:@(1)];
+                                          } else {
+                                              [values addObject:@((float)completedEvents/totalEvents)];
+                                          }
+                                      } completion:^(BOOL completed, NSError * _Nullable error) {
+                                          NSAssert(!error, error.localizedDescription);
+                                          dispatch_async(dispatch_get_main_queue(), ^{
+                                              _weekViewController.careCardWeekView.values = values;
+                                              _weekValues = [values mutableCopy];
+                                          });
+                                      }];
 }
 
 - (NSDateComponents *)dateFromSelectedIndex:(NSInteger)index {
@@ -364,12 +364,12 @@
 - (void)careCardTableViewCell:(OCKCareCardTableViewCell *)cell didUpdateFrequencyofInterventionEvent:(OCKCarePlanEvent *)event {
     OCKCarePlanEventState state = (event.state == OCKCarePlanEventStateCompleted) ? OCKCarePlanEventStateNotCompleted : OCKCarePlanEventStateCompleted;
     
-    [_store updateEvent:event
-             withResult:nil
-                  state:state
-             completion:^(BOOL success, OCKCarePlanEvent * _Nonnull event, NSError * _Nonnull error) {
-                 NSAssert(success, error.localizedDescription);
-             }];
+    [self.store updateEvent:event
+                 withResult:nil
+                      state:state
+                 completion:^(BOOL success, OCKCarePlanEvent * _Nonnull event, NSError * _Nonnull error) {
+                     NSAssert(success, error.localizedDescription);
+                 }];
 }
 
 
@@ -418,16 +418,16 @@
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController {
     OCKWeekViewController *controller = [OCKWeekViewController new];
     controller.weekIndex = ((OCKWeekViewController *)viewController).weekIndex - 1;
-    controller.careCardWeekView.smallMaskImage = _smallMaskImage;
-    controller.careCardWeekView.tintColor = _maskImageTintColor;
+    controller.careCardWeekView.smallMaskImage = self.smallMaskImage;
+    controller.careCardWeekView.tintColor = self.maskImageTintColor;
     return controller;
 }
 
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController {
     OCKWeekViewController *controller = [OCKWeekViewController new];
     controller.weekIndex = ((OCKWeekViewController *)viewController).weekIndex + 1;
-    controller.careCardWeekView.smallMaskImage = _smallMaskImage;
-    controller.careCardWeekView.tintColor = _maskImageTintColor;
+    controller.careCardWeekView.smallMaskImage = self.smallMaskImage;
+    controller.careCardWeekView.tintColor = self.maskImageTintColor;
     return (![self.selectedDate isInSameWeekAsDate:[self today]]) ? controller : nil;
 }
 
@@ -441,9 +441,9 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     OCKCarePlanActivity *selectedActivity = _events[indexPath.row].firstObject.activity;
     
-    if (_delegate &&
-        [_delegate respondsToSelector:@selector(careCardViewController:didSelectRowWithInterventionActivity:)]) {
-        [_delegate careCardViewController:self didSelectRowWithInterventionActivity:selectedActivity];
+    if (self.delegate &&
+        [self.delegate respondsToSelector:@selector(careCardViewController:didSelectRowWithInterventionActivity:)]) {
+        [self.delegate careCardViewController:self didSelectRowWithInterventionActivity:selectedActivity];
     } else {
         OCKCareCardDetailViewController *detailViewController = [[OCKCareCardDetailViewController alloc] initWithIntervention:selectedActivity];
         detailViewController.showEdgeIndicator = _showEdgeIndicators;

@@ -39,7 +39,6 @@
     [_ringView removeFromSuperview];
     
     _ringView = ringView;
-    _ringView.userInteractionEnabled = NO;
     [self addSubview:_ringView];
 }
 

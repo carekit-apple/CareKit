@@ -93,13 +93,13 @@ static const CGFloat UnitLabelWidth = 50.0;
 }
 
 - (void)updateView {
-    _titleLabel.text = _assessmentEvent.activity.title;
-    _textLabel.text = _assessmentEvent.activity.text;
+    _titleLabel.text = self.assessmentEvent.activity.title;
+    _textLabel.text = self.assessmentEvent.activity.text;
     
-    _valueLabel.text = (_assessmentEvent.result.valueString.length > 0) ? _assessmentEvent.result.valueString : @"";
+    _valueLabel.text = (self.assessmentEvent.result.valueString.length > 0) ? self.assessmentEvent.result.valueString : @"";
     _valueLabel.textColor = self.tintColor;
     
-    if (_assessmentEvent.result.unitString.length > 0) {
+    if (self.assessmentEvent.result.unitString.length > 0) {
         if (!_unitLabel) {
             _unitLabel = [OCKLabel new];
             _unitLabel.textStyle = UIFontTextStyleCaption2;
@@ -107,7 +107,7 @@ static const CGFloat UnitLabelWidth = 50.0;
             _unitLabel.textColor = [UIColor lightGrayColor];
             [self addSubview:_unitLabel];
         }
-        _unitLabel.text = _assessmentEvent.result.unitString;
+        _unitLabel.text = self.assessmentEvent.result.unitString;
     } else {
         [_unitLabel removeFromSuperview];
         _unitLabel = nil;
@@ -170,7 +170,7 @@ static const CGFloat UnitLabelWidth = 50.0;
                                                                           constant:0.0]
                                             ]];
     }
-
+    
     [_constraints addObjectsFromArray:@[
                                         [NSLayoutConstraint constraintWithItem:_titleLabel
                                                                      attribute:NSLayoutAttributeLeading
@@ -269,7 +269,7 @@ static const CGFloat UnitLabelWidth = 50.0;
 }
 
 - (NSString *)accessibilityValue {
-    return _assessmentEvent.state != OCKCarePlanEventStateCompleted ? OCKLocalizedString(@"AX_SYMPTOM_TRACKER_NOT_STARTED", nil) : OCKAccessibilityStringForVariables(_valueLabel, _unitLabel);
+    return self.assessmentEvent.state != OCKCarePlanEventStateCompleted ? OCKLocalizedString(@"AX_SYMPTOM_TRACKER_NOT_STARTED", nil) : OCKAccessibilityStringForVariables(_valueLabel, _unitLabel);
 }
 
 @end

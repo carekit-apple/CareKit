@@ -77,7 +77,7 @@ static const CGFloat HorizontalMargin = 5.0;
 }
 
 - (void)updateView {
-    _titleLabel.text = _title;
+    _titleLabel.text = self.title;
     _shareButton.tintColor = self.tintColor;
 }
 
@@ -88,7 +88,7 @@ static const CGFloat HorizontalMargin = 5.0;
     
     _titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     _shareButton.translatesAutoresizingMaskIntoConstraints = NO;
-
+    
     CGFloat LeadingMargin = self.separatorInset.left;
     CGFloat TrailingMargin = (self.separatorInset.right > 0) ? self.separatorInset.right : 20;
     
@@ -141,9 +141,9 @@ static const CGFloat HorizontalMargin = 5.0;
 }
 
 - (void)buttonSelected:(id)sender {
-    if (_delegate &&
-        [_delegate respondsToSelector:@selector(sharingTableViewCellDidSelectShareButton:)]) {
-        [_delegate sharingTableViewCellDidSelectShareButton:self];
+    if (self.delegate &&
+        [self.delegate respondsToSelector:@selector(sharingTableViewCellDidSelectShareButton:)]) {
+        [self.delegate sharingTableViewCellDidSelectShareButton:self];
     }
 }
 

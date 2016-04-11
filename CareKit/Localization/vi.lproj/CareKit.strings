@@ -42,7 +42,8 @@
 
 /* Connect Master View */
 "CARE_TEAM_SECTION_TITLE" = "Nhóm Chăm sóc";
-"PERSONAL_SECTION_TITLE" = "Cá nhân";
+"PERSONAL_SECTION_TITLE" = "Bạn bè & Gia đình";
+"CONNECT_NO_CONTACTS_TITLE" = "Không có Liên hệ";
 
 /* Connect Detail View */
 "CONTACT_INFO_SECTION_TITLE" = "Thông tin Liên hệ";
@@ -54,3 +55,13 @@
 "ERROR_TITLE" = "Lỗi";
 "MESSAGE_SEND_ERROR" = "Không gửi được tin nhắn";
 "EMAIL_SEND_ERROR" = "Không gửi được email";
+
+/* ACCESSIBILITY */
+"AX_WEEK_BUTTON_PROGRESS" = "Đã hoàn tất %@";
+"AX_CARE_CARD_COMPLETED" = "Đã hoàn tất";
+"AX_CARE_CARD_INCOMPLETE" = "Chưa hoàn tất";
+"AX_CARE_CARD_EVENT_LABEL" = "%@, %i / %lu, %@";
+"AX_CARE_CARD_HINT" = "Chạm hai lần để xem hướng dẫn";
+"AX_CARE_CARD_VALUE" = "Đã hoàn tất %lu / %lu";
+"AX_SYMPTOM_TRACKER_NOT_STARTED" = "Chưa Bắt đầu";
+

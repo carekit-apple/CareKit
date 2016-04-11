@@ -78,7 +78,7 @@ static const CGFloat HeaderViewHeight = 100.0;
 
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
-
+    
     CGFloat height = [_headerView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize].height;
     CGRect headerViewFrame = _headerView.frame;
     

@@ -438,6 +438,22 @@ NSURL *OCKURLFromBookmarkData(NSData *data) {
     return bookmarkURL;
 }
 
+NSData *OCKBookmarkDataFromURL(NSURL *url) {
+    if (!url) {
+        return nil;
+    }
+    
+    NSError *error = nil;
+    NSData *bookmark = [url bookmarkDataWithOptions:NSURLBookmarkCreationSuitableForBookmarkFile
+                     includingResourceValuesForKeys:nil
+                                      relativeToURL:nil
+                                              error:&error];
+    if (!bookmark) {
+        OCK_Log_Warning(@"Error converting URL to bookmark: %@", error);
+    }
+    return bookmark;
+}
+
 NSString *OCKPathRelativeToURL(NSURL *url, NSURL *baseURL) {
     NSURL *standardizedURL = [url URLByStandardizingPath];
     NSURL *standardizedBaseURL = [baseURL URLByStandardizingPath];

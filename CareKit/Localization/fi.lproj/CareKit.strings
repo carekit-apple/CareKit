@@ -42,7 +42,8 @@
 
 /* Connect Master View */
 "CARE_TEAM_SECTION_TITLE" = "Hoitotiimi";
-"PERSONAL_SECTION_TITLE" = "Henkilökohtaiset";
+"PERSONAL_SECTION_TITLE" = "Ystävät ja perhe";
+"CONNECT_NO_CONTACTS_TITLE" = "Ei yhteystietoja";
 
 /* Connect Detail View */
 "CONTACT_INFO_SECTION_TITLE" = "Yhteystiedot";
@@ -54,3 +55,13 @@
 "ERROR_TITLE" = "Virhe";
 "MESSAGE_SEND_ERROR" = "Viestin lähettäminen epäonnistui";
 "EMAIL_SEND_ERROR" = "Sähköpostin lähettäminen epäonnistui";
+
+/* ACCESSIBILITY */
+"AX_WEEK_BUTTON_PROGRESS" = "%@ suoritettu";
+"AX_CARE_CARD_COMPLETED" = "Suoritettu";
+"AX_CARE_CARD_INCOMPLETE" = "Keskeneräinen";
+"AX_CARE_CARD_EVENT_LABEL" = "%@, %i / %lu, %@";
+"AX_CARE_CARD_HINT" = "Näytä ohjeet kaksoisnapauttamalla";
+"AX_CARE_CARD_VALUE" = "%lu / %lu suoritettu";
+"AX_SYMPTOM_TRACKER_NOT_STARTED" = "Ei aloitettu";
+

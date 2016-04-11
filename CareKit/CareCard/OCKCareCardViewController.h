@@ -106,7 +106,7 @@ OCK_CLASS_AVAILABLE
 
 /**
  The image that will be used to mask the fill shape in the header view.
-
+ 
  In order to provide a custom maskImage, you must have a regular size and small size.
  For example, in the assets catalog, there are "heart" and a "heart-small" assets.
  Both assets must be provided in order to properly render the interface.

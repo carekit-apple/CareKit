@@ -62,7 +62,7 @@ static const CGFloat ButtonViewSize = 40.0;
 }
 
 - (void)setInterventionEvents:(NSArray<OCKCarePlanEvent *> *)interventionEvents {
-    if (_interventionEvents.count > 14) {
+    if (interventionEvents.count > 14) {
         @throw [NSException exceptionWithName:NSGenericException reason:@"OCKCareCardViewController only supports up to 14 events for an intervention activity." userInfo:nil];
     }
     _interventionEvents = OCKArrayCopyObjects(interventionEvents);
@@ -95,7 +95,7 @@ static const CGFloat ButtonViewSize = 40.0;
     
     _frequencyButtons = [NSArray new];
     NSMutableArray *buttons = [NSMutableArray new];
-    for (OCKCarePlanEvent *event in _interventionEvents) {
+    for (OCKCarePlanEvent *event in self.interventionEvents) {
         OCKCareCardButton *frequencyButton = [[OCKCareCardButton alloc] initWithFrame:CGRectZero];
         frequencyButton.tintColor = self.tintColor;
         frequencyButton.selected = (event.state == OCKCarePlanEventStateCompleted);
@@ -278,7 +278,7 @@ static const CGFloat ButtonViewSize = 40.0;
     [self updateAccessibilityInfo];
     
     NSInteger index = [_frequencyButtons indexOfObject:button];
-    OCKCarePlanEvent *selectedEvent = _interventionEvents[index];
+    OCKCarePlanEvent *selectedEvent = self.interventionEvents[index];
     
     if (_delegate &&
         [_delegate respondsToSelector:@selector(careCardTableViewCell:didUpdateFrequencyofInterventionEvent:)]) {
@@ -296,8 +296,8 @@ static const CGFloat ButtonViewSize = 40.0;
         OCKCareCardButton *frequencyButton = _frequencyButtons[i];
         NSString *completionStr = frequencyButton.isSelected ? OCKLocalizedString(@"AX_CARE_CARD_COMPLETED", nil) : OCKLocalizedString(@"AX_CARE_CARD_INCOMPLETE", nil);
         frequencyButton.accessibilityTraits = UIAccessibilityTraitButton;
-        frequencyButton.accessibilityLabel = [NSString stringWithFormat:OCKLocalizedString(@"AX_CARE_CARD_EVENT_LABEL", nil), completionStr, i+1, _interventionEvents.count, _intervention.title];
-    }    
+        frequencyButton.accessibilityLabel = [NSString stringWithFormat:OCKLocalizedString(@"AX_CARE_CARD_EVENT_LABEL", nil), completionStr, i+1, self.interventionEvents.count, _intervention.title];
+    }
 }
 
 - (NSArray *)accessibilityElements {

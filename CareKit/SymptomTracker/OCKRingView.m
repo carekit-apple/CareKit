@@ -84,10 +84,10 @@ static const double VALUE_MAX = 1.0;
     
     CGFloat radius = [self ringRadius];
     UIBezierPath *path = [UIBezierPath bezierPathWithArcCenter:[self ringCenter]
-                                                 radius:radius
-                                             startAngle:2 * M_PI * (value - 0.25)
-                                               endAngle:-M_PI_2
-                                              clockwise:NO];
+                                                        radius:radius
+                                                    startAngle:2 * M_PI * (value - 0.25)
+                                                      endAngle:-M_PI_2
+                                                     clockwise:NO];
     
     return path;
 }
@@ -133,7 +133,7 @@ static const double VALUE_MAX = 1.0;
     label.frame = CGRectMake(0, 0, radius * 1.414, radius);
     label.center = [self ringCenter];
     label.textAlignment = NSTextAlignmentCenter;
-   
+    
     label.adjustsFontSizeToFitWidth = YES;
     label.numberOfLines = 1;
     

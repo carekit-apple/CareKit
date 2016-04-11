@@ -46,7 +46,7 @@
     _leadingEdge.hidden = YES;
     
     [NSLayoutConstraint deactivateConstraints:_constraints];
-
+    
     _constraints = [NSMutableArray new];
     
     _leadingEdge.translatesAutoresizingMaskIntoConstraints = NO;

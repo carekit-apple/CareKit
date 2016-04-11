@@ -79,7 +79,7 @@ OCK_CLASS_AVAILABLE
  Returns an initialized connect view controller using the specified contacts.
  
  @param contacts        An array of `OCKContact` objects.
-
+ 
  @return An initialized connect view controller.
  */
 - (instancetype)initWithContacts:(nullable NSArray<OCKContact *> *)contacts;

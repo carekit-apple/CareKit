@@ -66,7 +66,7 @@ static const CGFloat BottomMargin = 5.0;
         } else {
             self.backgroundColor = [UIColor whiteColor];
         }
-    
+        
         [self prepareView];
     }
     return self;
@@ -85,7 +85,7 @@ static const CGFloat BottomMargin = 5.0;
             
             OCKHeartView *heartView = [[OCKHeartView alloc] initWithFrame:CGRectMake(0, 0, HeartButtonSize + 10, HeartButtonSize + 10)];
             heartView.userInteractionEnabled = NO;
-            heartView.maskImage = _smallMaskImage;
+            heartView.maskImage = self.smallMaskImage;
             heartView.tintColor = self.tintColor;
             
             heartButton.heartView = heartView;
@@ -182,9 +182,9 @@ static const CGFloat BottomMargin = 5.0;
         NSString *progress = [OCKPercentFormatter(0, 0) stringFromNumber:[NSNumber numberWithDouble:value]];
         _heartButtons[i].accessibilityValue = [NSString stringWithFormat:OCKLocalizedString(@"AX_WEEK_BUTTON_PROGRESS", nil), progress];
         
-        if (_delegate &&
-            [_delegate respondsToSelector:@selector(weekViewCanSelectDayAtIndex:)]) {
-            if (![_delegate weekViewCanSelectDayAtIndex:(NSUInteger)i]) {
+        if (self.delegate &&
+            [self.delegate respondsToSelector:@selector(weekViewCanSelectDayAtIndex:)]) {
+            if (![self.delegate weekViewCanSelectDayAtIndex:(NSUInteger)i]) {
                 _heartButtons[i].accessibilityTraits |= UIAccessibilityTraitNotEnabled;
             }
         }
@@ -211,11 +211,11 @@ static const CGFloat BottomMargin = 5.0;
 - (void)updateDayOfWeek:(id)sender {
     OCKHeartButton *button = (OCKHeartButton *)sender;
     NSInteger dayOfWeek = [_heartButtons indexOfObject:button];
-    _selectedIndex = dayOfWeek;
+    self.selectedIndex = dayOfWeek;
     
-    if (_delegate &&
-        [_delegate respondsToSelector:@selector(weekViewSelectionDidChange:)]) {
-        [_delegate weekViewSelectionDidChange:self];
+    if (self.delegate &&
+        [self.delegate respondsToSelector:@selector(weekViewSelectionDidChange:)]) {
+        [self.delegate weekViewSelectionDidChange:self];
     }
 }
 

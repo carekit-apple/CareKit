@@ -42,7 +42,8 @@
 
 /* Connect Master View */
 "CARE_TEAM_SECTION_TITLE" = "医护人员";
-"PERSONAL_SECTION_TITLE" = "个人";
+"PERSONAL_SECTION_TITLE" = "朋友与家人";
+"CONNECT_NO_CONTACTS_TITLE" = "无联系人";
 
 /* Connect Detail View */
 "CONTACT_INFO_SECTION_TITLE" = "联系信息";
@@ -54,3 +55,13 @@
 "ERROR_TITLE" = "错误";
 "MESSAGE_SEND_ERROR" = "信息发送失败";
 "EMAIL_SEND_ERROR" = "电子邮件发送失败";
+
+/* ACCESSIBILITY */
+"AX_WEEK_BUTTON_PROGRESS" = "已完成 %@";
+"AX_CARE_CARD_COMPLETED" = "已完成";
+"AX_CARE_CARD_INCOMPLETE" = "未完成";
+"AX_CARE_CARD_EVENT_LABEL" = "%4$@%1$@ %2$i/%3$lu";
+"AX_CARE_CARD_HINT" = "轻点两下查看说明";
+"AX_CARE_CARD_VALUE" = "已完成 %lu/%lu";
+"AX_SYMPTOM_TRACKER_NOT_STARTED" = "未开始";
+

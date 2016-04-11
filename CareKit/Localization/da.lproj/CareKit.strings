@@ -42,7 +42,8 @@
 
 /* Connect Master View */
 "CARE_TEAM_SECTION_TITLE" = "Plejepersonale";
-"PERSONAL_SECTION_TITLE" = "Personlig";
+"PERSONAL_SECTION_TITLE" = "Venner og familie";
+"CONNECT_NO_CONTACTS_TITLE" = "Ingen kontakter";
 
 /* Connect Detail View */
 "CONTACT_INFO_SECTION_TITLE" = "Kontaktoplysninger";
@@ -54,3 +55,13 @@
 "ERROR_TITLE" = "Fejl";
 "MESSAGE_SEND_ERROR" = "Afsendelse af besked mislykkedes";
 "EMAIL_SEND_ERROR" = "Afsendelse af e-mail mislykkedes";
+
+/* ACCESSIBILITY */
+"AX_WEEK_BUTTON_PROGRESS" = "%@ færdiggjort";
+"AX_CARE_CARD_COMPLETED" = "Færdiggjort";
+"AX_CARE_CARD_INCOMPLETE" = "ikke færdiggjort";
+"AX_CARE_CARD_EVENT_LABEL" = "%@, %i af %lu, %@";
+"AX_CARE_CARD_HINT" = "Tryk to gange for at se instruktioner";
+"AX_CARE_CARD_VALUE" = "%lu af %lu færdiggjort";
+"AX_SYMPTOM_TRACKER_NOT_STARTED" = "Ikke startet";
+

@@ -89,14 +89,14 @@
 
 - (void)testHTML {
     OCKDocumentElementSubtitle *subtitle = [[OCKDocumentElementSubtitle alloc] initWithSubtitle:@"First subtitle"];
-    OCKDocumentElementParagraph *paragrah = [[OCKDocumentElementParagraph alloc] initWithContent:@"Lorem ipsum dolor sit amet, vim primis noster sententiae ne, et albucius apeirian accusata mea, vim at dicunt laoreet. Eu probo omnes inimicus ius, duo at veritus alienum. Nostrud facilisi id pro. Putant oporteat id eos. Admodum antiopam mel in, at per everti quaeque. Lorem ipsum dolor sit amet, vim primis noster sententiae ne, et albucius apeirian accusata mea, vim at dicunt laoreet. Eu probo omnes inimicus ius, duo at veritus alienum. Nostrud facilisi id pro. Putant oporteat id eos. Admodum antiopam mel in, at per everti quaeque. Lorem ipsum dolor sit amet, vim primis noster sententiae ne, et albucius apeirian accusata mea, vim at dicunt laoreet. Eu probo omnes inimicus ius, duo at veritus alienum. Nostrud facilisi id pro. Putant oporteat id eos. Admodum antiopam mel in, at per everti quaeque."];
+    OCKDocumentElementParagraph *paragrah = [[OCKDocumentElementParagraph alloc] initWithContent:@"\tLorem ipsum dolor sit amet\n\n, vim primis noster sententiae ne, et albucius apeirian accusata mea, vim at dicunt laoreet. Eu probo omnes inimicus ius, duo at veritus alienum. Nostrud facilisi id pro. Putant oporteat id eos. Admodum antiopam mel in, at per everti quaeque. Lorem ipsum dolor sit amet, vim primis noster sententiae ne, et albucius apeirian accusata mea, vim at dicunt laoreet. Eu probo omnes inimicus ius, duo at veritus alienum. Nostrud facilisi id pro. Putant oporteat id eos. Admodum antiopam mel in, at per everti quaeque. Lorem ipsum dolor sit amet, vim primis noster sententiae ne, et albucius apeirian accusata mea, vim at dicunt laoreet. Eu probo omnes inimicus ius, duo at veritus alienum. Nostrud facilisi id pro. Putant oporteat id eos. Admodum antiopam mel in, at per everti quaeque."];
     
     OCKDocumentElementChart *barChart = [[OCKDocumentElementChart alloc] initWithChart:[self createBarChart]];
     OCKDocumentElementImage *imageElement = [[OCKDocumentElementImage alloc] initWithImage:[self createImage]];
     
     OCKDocumentElementTable *table = [[OCKDocumentElementTable alloc] init];
     table.headers = @[@"Mon", @"Tue", @"Wed", @"Thu", @"Fri"];
-    table.rows = @[@[@"1", @"2", @"3", @"4", @"5"], @[@"2", @"3", @"4", @"5", @"6"], @[@"3", @"4", @"5", @"6", @"7"]];
+    table.rows = @[@[@"1", @"2", @"3", @"4", @"5"], @[@"2", @"3", @"4", @"5"], @[@"3", @"4", @"5", @"6"]];
     
     OCKDocument *doc = [[OCKDocument alloc] initWithTitle:@"This is a title" elements:@[subtitle, table, paragrah, barChart, paragrah, imageElement, paragrah]];
     doc.pageHeader = @"App Name: ABC, User Name: John Appleseed";

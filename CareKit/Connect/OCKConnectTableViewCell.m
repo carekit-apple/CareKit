@@ -55,7 +55,7 @@ static const CGFloat ImageViewSize = 40.0;
 
 - (void)prepareView {
     [super prepareView];
-
+    
     self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     
     if (!_imageView) {
@@ -87,7 +87,7 @@ static const CGFloat ImageViewSize = 40.0;
         _monogramLabel.font = [UIFont boldSystemFontOfSize:16.0];
         [self addSubview:_monogramLabel];
     }
-
+    
     [self updateView];
     [self setUpConstraints];
 }
@@ -95,18 +95,18 @@ static const CGFloat ImageViewSize = 40.0;
 - (void)updateView {
     _imageView.layer.borderColor = self.tintColor.CGColor;
     
-    if (_contact.image) {
-        _imageView.image = _contact.image;
+    if (self.contact.image) {
+        _imageView.image = self.contact.image;
         _imageView.backgroundColor = [UIColor clearColor];
         _monogramLabel.hidden = YES;
     } else {
-        _monogramLabel.text = _contact.monogram;
+        _monogramLabel.text = self.contact.monogram;
         _imageView.backgroundColor = [UIColor grayColor];
         _monogramLabel.hidden = NO;
     }
-
-    _nameLabel.text = _contact.name;
-    _relationLabel.text = _contact.relation;
+    
+    _nameLabel.text = self.contact.name;
+    _relationLabel.text = self.contact.relation;
 }
 
 - (void)setUpConstraints {

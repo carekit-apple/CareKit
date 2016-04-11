@@ -42,7 +42,8 @@
 
 /* Connect Master View */
 "CARE_TEAM_SECTION_TITLE" = "Ομάδα φροντίδας";
-"PERSONAL_SECTION_TITLE" = "Προσωπικά";
+"PERSONAL_SECTION_TITLE" = "Φίλοι και οικογένεια";
+"CONNECT_NO_CONTACTS_TITLE" = "Δεν υπάρχουν επαφές";
 
 /* Connect Detail View */
 "CONTACT_INFO_SECTION_TITLE" = "Στοιχεία επικοινωνίας";
@@ -54,3 +55,13 @@
 "ERROR_TITLE" = "Σφάλμα";
 "MESSAGE_SEND_ERROR" = "Απέτυχε η αποστολή μηνύματος";
 "EMAIL_SEND_ERROR" = "Απέτυχε η αποστολή email";
+
+/* ACCESSIBILITY */
+"AX_WEEK_BUTTON_PROGRESS" = "%@ ολοκληρώθηκε";
+"AX_CARE_CARD_COMPLETED" = "Ολοκληρωμένη";
+"AX_CARE_CARD_INCOMPLETE" = "Ημιτελής";
+"AX_CARE_CARD_EVENT_LABEL" = "%@, %i από %lu, %@";
+"AX_CARE_CARD_HINT" = "Αγγίξτε δύο φορές για προβολή οδηγιών";
+"AX_CARE_CARD_VALUE" = "%lu από %lu ολοκληρώθηκε";
+"AX_SYMPTOM_TRACKER_NOT_STARTED" = "Δεν έγινε έναρξη";
+

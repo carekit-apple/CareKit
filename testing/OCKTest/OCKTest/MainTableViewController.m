@@ -441,7 +441,7 @@ DefineStringKey(TemperatureAssessment);
     }
     
     {
-        OCKCareSchedule *schedule = [OCKCareSchedule dailyScheduleWithStartDate:startDate occurrencesPerDay:1];
+        OCKCareSchedule *schedule = [OCKCareSchedule dailyScheduleWithStartDate:startDate occurrencesPerDay:3];
         UIColor *color = BlueColor();
         
         OCKCarePlanActivity *assessment = [OCKCarePlanActivity assessmentWithIdentifier:PainAssessment

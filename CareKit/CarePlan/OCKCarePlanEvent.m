@@ -33,6 +33,7 @@
 #import "OCKCarePlanEvent_Internal.h"
 #import "OCKCarePlanEventResult_Internal.h"
 #import "NSDateComponents+CarePlanInternal.h"
+#import "OCKHelpers.h"
 
 
 @implementation OCKCarePlanEvent
@@ -76,6 +77,19 @@
     event->_activity = _activity;
     event->_result = _result;
     return event;
+}
+
+- (BOOL)isEqual:(id)object {
+    if ([self class] != [object class]) {
+        return NO;
+    }
+    
+    __typeof(self) castObject = object;
+    return ((self.occurrenceIndexOfDay == castObject.occurrenceIndexOfDay) &&
+            (self.numberOfDaysSinceStart == castObject.numberOfDaysSinceStart) &&
+            (self.state == castObject.state) &&
+            OCKEqualObjects(self.activity, castObject.activity) &&
+            OCKEqualObjects(self.result, castObject.result));
 }
 
 - (NSString *)description {

@@ -334,7 +334,7 @@ DefineStringKey(TemperatureAssessment);
     NSDateComponents *startDate = [[NSDateComponents alloc] initWithYear:2016 month:01 day:01];
     
     {
-        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@1,@1,@1,@1,@1,@1,@1]];
+        OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@2,@2,@2,@2,@2,@2,@2]];
         UIColor *color = BlueColor();
         OCKCarePlanActivity *assessment = [OCKCarePlanActivity assessmentWithIdentifier:PainAssessment
                                                                         groupIdentifier:nil

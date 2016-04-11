@@ -42,7 +42,8 @@
 
 /* Connect Master View */
 "CARE_TEAM_SECTION_TITLE" = "Zdravotnický tým";
-"PERSONAL_SECTION_TITLE" = "Osobní";
+"PERSONAL_SECTION_TITLE" = "Přátelé a rodina";
+"CONNECT_NO_CONTACTS_TITLE" = "Žádné kontakty";
 
 /* Connect Detail View */
 "CONTACT_INFO_SECTION_TITLE" = "Kontaktní údaje";
@@ -54,3 +55,13 @@
 "ERROR_TITLE" = "Chyba";
 "MESSAGE_SEND_ERROR" = "Odeslání zprávy selhalo";
 "EMAIL_SEND_ERROR" = "Odesílání e-mailu selhalo";
+
+/* ACCESSIBILITY */
+"AX_WEEK_BUTTON_PROGRESS" = "Provedeno %@";
+"AX_CARE_CARD_COMPLETED" = "Dokončeno";
+"AX_CARE_CARD_INCOMPLETE" = "Nedokončeno";
+"AX_CARE_CARD_EVENT_LABEL" = "%@ %i z %lu, %@";
+"AX_CARE_CARD_HINT" = "Poklepáním zobrazíte pokyny";
+"AX_CARE_CARD_VALUE" = "Dokončeno %lu z %lu";
+"AX_SYMPTOM_TRACKER_NOT_STARTED" = "Nezahájeno";
+

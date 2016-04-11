@@ -42,7 +42,8 @@
 
 /* Connect Master View */
 "CARE_TEAM_SECTION_TITLE" = "فريق العناية";
-"PERSONAL_SECTION_TITLE" = "شخصي";
+"PERSONAL_SECTION_TITLE" = "الأصدقاء والعائلة";
+"CONNECT_NO_CONTACTS_TITLE" = "لا توجد جهات اتصال";
 
 /* Connect Detail View */
 "CONTACT_INFO_SECTION_TITLE" = "معلومات جهة الاتصال";
@@ -54,3 +55,13 @@
 "ERROR_TITLE" = "خطأ";
 "MESSAGE_SEND_ERROR" = "فشل إرسال الرسالة";
 "EMAIL_SEND_ERROR" = "فشل إرسال البريد الإلكتروني";
+
+/* ACCESSIBILITY */
+"AX_WEEK_BUTTON_PROGRESS" = "اكتمل %@";
+"AX_CARE_CARD_COMPLETED" = "مكتملة";
+"AX_CARE_CARD_INCOMPLETE" = "غير مكتملة";
+"AX_CARE_CARD_EVENT_LABEL" = "‏%@، %i من %lu، %@";
+"AX_CARE_CARD_HINT" = "اضغط مرتين لعرض التعليمات";
+"AX_CARE_CARD_VALUE" = "اكتمل %lu من %lu";
+"AX_SYMPTOM_TRACKER_NOT_STARTED" = "لم يتم البدء";
+

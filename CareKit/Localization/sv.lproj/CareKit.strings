@@ -42,7 +42,8 @@
 
 /* Connect Master View */
 "CARE_TEAM_SECTION_TITLE" = "Vårdlag";
-"PERSONAL_SECTION_TITLE" = "Personligt";
+"PERSONAL_SECTION_TITLE" = "Släkt och vänner";
+"CONNECT_NO_CONTACTS_TITLE" = "Inga kontakter";
 
 /* Connect Detail View */
 "CONTACT_INFO_SECTION_TITLE" = "Kontaktinfo";
@@ -54,3 +55,13 @@
 "ERROR_TITLE" = "Fel";
 "MESSAGE_SEND_ERROR" = "Kunde inte skicka meddelande";
 "EMAIL_SEND_ERROR" = "Kunde inte skicka e-post";
+
+/* ACCESSIBILITY */
+"AX_WEEK_BUTTON_PROGRESS" = "%@ slutfört";
+"AX_CARE_CARD_COMPLETED" = "Slutförda";
+"AX_CARE_CARD_INCOMPLETE" = "Ofullständigt";
+"AX_CARE_CARD_EVENT_LABEL" = "%@, %i av %lu, %@";
+"AX_CARE_CARD_HINT" = "Tryck snabbt två gånger för att visa anvisningar";
+"AX_CARE_CARD_VALUE" = "%@ av %@ slutförda";
+"AX_SYMPTOM_TRACKER_NOT_STARTED" = "Ej startad";
+

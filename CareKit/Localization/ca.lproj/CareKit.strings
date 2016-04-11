@@ -42,7 +42,8 @@
 
 /* Connect Master View */
 "CARE_TEAM_SECTION_TITLE" = "Equip mèdic";
-"PERSONAL_SECTION_TITLE" = "Personal";
+"PERSONAL_SECTION_TITLE" = "Amics i família";
+"CONNECT_NO_CONTACTS_TITLE" = "Cap contacte";
 
 /* Connect Detail View */
 "CONTACT_INFO_SECTION_TITLE" = "Dades de contacte";
@@ -54,3 +55,13 @@
 "ERROR_TITLE" = "Error";
 "MESSAGE_SEND_ERROR" = "No s’ha enviat el missatge";
 "EMAIL_SEND_ERROR" = "No s’ha enviat el correu";
+
+/* ACCESSIBILITY */
+"AX_WEEK_BUTTON_PROGRESS" = "%@ completat";
+"AX_CARE_CARD_COMPLETED" = "Completat";
+"AX_CARE_CARD_INCOMPLETE" = "Incomplet";
+"AX_CARE_CARD_EVENT_LABEL" = "%@, %i de %lu, %@";
+"AX_CARE_CARD_HINT" = "Prem dues vegades per veure instruccions";
+"AX_CARE_CARD_VALUE" = "%lu de %lu completats";
+"AX_SYMPTOM_TRACKER_NOT_STARTED" = "No iniciat";
+

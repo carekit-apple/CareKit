@@ -201,7 +201,8 @@ OCK_CLASS_AVAILABLE
 
 /**
  Whether or not to allow the user to retake the assessment.
- This attribute only applies to assessments.
+ This attribute has no effect in view controller.
+ But developer can use this parameter to decide the behavior if a user want to redo a completed assessment.
  Default value is NO.
  */
 @property (nonatomic, readonly) BOOL resultResettable;

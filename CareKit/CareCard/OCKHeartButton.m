@@ -51,30 +51,31 @@ static const CGFloat HeartViewSize = 30.0;
     [NSLayoutConstraint deactivateConstraints:_constraints];
     
     _constraints = [NSMutableArray new];
+    self.heartView.translatesAutoresizingMaskIntoConstraints = NO;
     
     [_constraints addObjectsFromArray:@[
-                                        [NSLayoutConstraint constraintWithItem:_heartView
+                                        [NSLayoutConstraint constraintWithItem:self.heartView
                                                                      attribute:NSLayoutAttributeCenterX
                                                                      relatedBy:NSLayoutRelationEqual
                                                                         toItem:self
                                                                      attribute:NSLayoutAttributeCenterX
                                                                     multiplier:1.0
                                                                       constant:0.0],
-                                        [NSLayoutConstraint constraintWithItem:_heartView
+                                        [NSLayoutConstraint constraintWithItem:self.heartView
                                                                      attribute:NSLayoutAttributeCenterY
                                                                      relatedBy:NSLayoutRelationEqual
                                                                         toItem:self
                                                                      attribute:NSLayoutAttributeCenterY
                                                                     multiplier:1.0
                                                                       constant:0.0],
-                                        [NSLayoutConstraint constraintWithItem:_heartView
+                                        [NSLayoutConstraint constraintWithItem:self.heartView
                                                                      attribute:NSLayoutAttributeWidth
                                                                      relatedBy:NSLayoutRelationEqual
                                                                         toItem:nil
                                                                      attribute:NSLayoutAttributeNotAnAttribute
                                                                     multiplier:1.0
                                                                       constant:HeartViewSize],
-                                        [NSLayoutConstraint constraintWithItem:_heartView
+                                        [NSLayoutConstraint constraintWithItem:self.heartView
                                                                      attribute:NSLayoutAttributeHeight
                                                                      relatedBy:NSLayoutRelationEqual
                                                                         toItem:nil

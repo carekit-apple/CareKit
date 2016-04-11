@@ -64,7 +64,7 @@ insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
 @property (nullable, nonatomic, retain) NSString *title;
 @property (nullable, nonatomic, retain) NSString *text;
 @property (nullable, nonatomic, retain) NSString *instructions;
-@property (nullable, nonatomic, retain) NSURL *imageURL;
+@property (nullable, nonatomic, retain) NSData *imageURL;
 @property (nullable, nonatomic, retain) NSNumber *type;
 @property (nullable, nonatomic, retain) NSNumber *resultResettable;
 @property (nullable, nonatomic, retain) NSDictionary *userInfo;

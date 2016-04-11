@@ -40,6 +40,7 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol OCKContactInfoTableViewCellDelegate <NSObject>
 
 @required
+
 - (void)contactInfoTableViewCellDidSelectConnection:(OCKContactInfoTableViewCell *)cell;
 
 @end

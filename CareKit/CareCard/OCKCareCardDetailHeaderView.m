@@ -31,16 +31,17 @@
 
 #import "OCKCareCardDetailHeaderView.h"
 #import "OCKHelpers.h"
+#import "OCKLabel.h"
 
 
 static const CGFloat LeadingMargin = 20.0;
 static const CGFloat TrailingMargin = 20.0;
 static const CGFloat BottomMargin = 15.0;
-static const CGFloat TopMargin = 15.0;
+static const CGFloat TopMargin = 50.0;
 
 @implementation OCKCareCardDetailHeaderView {
-    UILabel *_titleLabel;
-    UILabel *_textLabel;
+    OCKLabel *_titleLabel;
+    OCKLabel *_textLabel;
     UIView *_bottomEdge;
     NSMutableArray *_constraints;
 }
@@ -49,11 +50,6 @@ static const CGFloat TopMargin = 15.0;
     self = [super initWithFrame:frame];
     if (self) {
         [self prepareView];
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(prepareView)
-                                                     name:UIContentSizeCategoryDidChangeNotification
-                                                   object:nil];
     }
     return self;
 }
@@ -62,15 +58,19 @@ static const CGFloat TopMargin = 15.0;
     self.backgroundColor = [UIColor whiteColor];
     
     if (!_titleLabel) {
-        _titleLabel = [UILabel new];
+        _titleLabel = [OCKLabel new];
+        _titleLabel.textStyle = UIFontTextStyleHeadline;
+        _titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
         _titleLabel.numberOfLines = 0;
         _titleLabel.textAlignment = NSTextAlignmentCenter;
         [self addSubview:_titleLabel];
     }
     
     if (!_textLabel) {
-        _textLabel = [UILabel new];
+        _textLabel = [OCKLabel new];
+        _textLabel.textStyle = UIFontTextStyleSubheadline;
         _textLabel.textColor = [UIColor lightGrayColor];
+        _textLabel.lineBreakMode = NSLineBreakByWordWrapping;
         _textLabel.numberOfLines = 0;
         _textLabel.textAlignment = NSTextAlignmentCenter;
         [self addSubview:_textLabel];
@@ -82,7 +82,6 @@ static const CGFloat TopMargin = 15.0;
     }
     
     [self updateView];
-    [self updateFonts];
     [self setUpConstraints];
 }
 
@@ -91,11 +90,6 @@ static const CGFloat TopMargin = 15.0;
     _titleLabel.text = _intervention.title;
     _textLabel.text = _intervention.text;
     _bottomEdge.backgroundColor = self.tintColor;
-}
-
-- (void)updateFonts {
-    _titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
-    _textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
 }
 
 - (void)setUpConstraints {
@@ -110,7 +104,7 @@ static const CGFloat TopMargin = 15.0;
     [_constraints addObjectsFromArray:@[
                                         [NSLayoutConstraint constraintWithItem:_titleLabel
                                                                      attribute:NSLayoutAttributeTop
-                                                                     relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                                     relatedBy:NSLayoutRelationEqual
                                                                         toItem:self
                                                                      attribute:NSLayoutAttributeTop
                                                                     multiplier:1.0
@@ -179,6 +173,7 @@ static const CGFloat TopMargin = 15.0;
                                                                     multiplier:1.0
                                                                       constant:0.0]
                                         ]];
+    
     [NSLayoutConstraint activateConstraints:_constraints];
     
 }
@@ -188,9 +183,17 @@ static const CGFloat TopMargin = 15.0;
     [self updateView];
 }
 
-- (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    _titleLabel.preferredMaxLayoutWidth = _titleLabel.bounds.size.width;
+    _textLabel.preferredMaxLayoutWidth = _textLabel.bounds.size.width;
 }
+
+- (void)tintColorDidChange {
+    [super tintColorDidChange];
+    [self updateView];
+}
+
 
 #pragma mark - Accessibility
 

@@ -41,21 +41,19 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @protocol OCKCareCardViewControllerDelegate <NSObject>
 
-@required
+@optional
 
 /**
- Asks the delegate if a custom view controller should be displayed for an intervention activity 
- when the user taps the intervention circle.
+ Asks the delegate if care card view controller should mark an intervention activity completed when
+ the user taps the intervention circle.
  
- If returned YES, the `careCardViewController:didSelectInterventionEvent` method should be implemeted to present
- the custom view controller.
+ If returned NO, the `careCardViewController:didSelectInterventionEvent` method can be implemeted to provide
+ custom logic for completion.
  
  @param viewController              The view controller providing the callback.
  @param interventionActivity        The intervention activity that the user selected.
  */
-- (BOOL)careCardViewController:(OCKCareCardViewController *)viewController shouldDisplayViewControllerForActivity:(OCKCarePlanActivity *)interventionActivity;
-
-@optional
+- (BOOL)careCardViewController:(OCKCareCardViewController *)viewController shouldHandleEventCompletionForActivity:(OCKCarePlanActivity *)interventionActivity;
 
 /**
  Tells the delegate when the user tapped an intervention event.
@@ -63,8 +61,8 @@ NS_ASSUME_NONNULL_BEGIN
  If the user must perform some activity in order to complete the intervention event,
  then this method can be implemented to show a custom view controller.
  
- If this method is implemented, the developer is reponsible for reporting the completion status of the event
- to the care plan store.
+ If the completion status of the event is dependent on the presented activity, the developer can implement 
+ the `careCardViewController:shouldHandleEventCompletionForActivity` to control the completion status of the event.
  
  @param viewController              The view controller providing the callback.
  @param interventionActivity        The intervention activity that the user selected.
@@ -134,7 +132,7 @@ OCK_CLASS_AVAILABLE
 
 /**
  The image that will be used to mask the fill shape in the header view.
-
+ 
  In order to provide a custom maskImage, you must have a regular size and small size.
  For example, in the assets catalog, there are "heart" and a "heart-small" assets.
  Both assets must be provided in order to properly render the interface.

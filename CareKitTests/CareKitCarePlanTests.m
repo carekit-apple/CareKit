@@ -218,6 +218,11 @@
         XCTAssertNil(error);
     }];
     
+    
+    //////////////////
+    // Rebuild store
+    //////////////////
+    
     store = [[OCKCarePlanStore alloc] initWithPersistenceDirectoryURL:directoryURL];
     store.delegate = self;
     
@@ -233,7 +238,6 @@
     [self waitForExpectationsWithTimeout:1.0 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
     }];
-    
     
     expectation = [self expectationWithDescription:@"activityForIdentifier"];
     // test calling API from background thread.
@@ -308,6 +312,10 @@
     
     XCTAssertEqualObjects(activities[0], item1);
     XCTAssertNotNil(activities[0].imageURL);
+    XCTAssertEqualObjects(activities[0].imageURL, [NSURL fileURLWithPath:@"1.png"]);
+    
+    XCTAssertNotNil(activities[1].imageURL);
+    XCTAssertNotNil(activities[3].imageURL);
     XCTAssertEqualObjects(activities[1], item2);
     XCTAssertEqualObjects(activities[2], item3);
     

@@ -42,8 +42,6 @@
 #import "OCKDefines_Private.h"
 
 
-static const CGFloat HeaderViewHeight = 150.0;
-
 @interface OCKSymptomTrackerViewController() <OCKWeekViewDelegate, OCKCarePlanStoreDelegate, UITableViewDelegate, UITableViewDataSource, UIPageViewControllerDelegate, UIPageViewControllerDataSource>
 
 @property (nonatomic) NSDateComponents *selectedDate;
@@ -99,6 +97,8 @@ static const CGFloat HeaderViewHeight = 150.0;
     
     _tableView.estimatedRowHeight = 90.0;
     _tableView.rowHeight = UITableViewAutomaticDimension;
+    _tableView.estimatedSectionHeaderHeight = 100;
+    _tableView.sectionHeaderHeight = UITableViewAutomaticDimension;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -114,7 +114,7 @@ static const CGFloat HeaderViewHeight = 150.0;
 
 - (void)prepareView {
     if (!_headerView) {
-        _headerView = [[OCKSymptomTrackerTableViewHeader alloc] initWithFrame:CGRectMake(0, 0, _tableView.frame.size.width, HeaderViewHeight)];
+        _headerView = [[OCKSymptomTrackerTableViewHeader alloc] initWithFrame:CGRectZero];
     }
     _headerView.tintColor = _progressRingTintColor;
     [self updateHeaderView];
@@ -328,6 +328,7 @@ static const CGFloat HeaderViewHeight = 150.0;
     return ![selectedDate isLaterThan:today];
 }
 
+
 #pragma mark - OCKCarePlanStoreDelegate
 
 - (void)carePlanStore:(OCKCarePlanStore *)store didReceiveUpdateOfEvent:(OCKCarePlanEvent *)event {
@@ -336,15 +337,12 @@ static const CGFloat HeaderViewHeight = 150.0;
             
             if (events[event.occurrenceIndexOfDay].numberOfDaysSinceStart == event.numberOfDaysSinceStart) {
                 [events replaceObjectAtIndex:event.occurrenceIndexOfDay withObject:event];
+                [self updateHeaderView];
                 
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self updateHeaderView];
-                    
-                    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[_events indexOfObject:events] inSection:0];
-                    [_tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
-                });
+                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[_events indexOfObject:events] inSection:0];
+                OCKSymptomTrackerTableViewCell *cell = [_tableView cellForRowAtIndexPath:indexPath];
+                cell.assessmentEvent = event;
             }
-            break;
         }
     }}
 
@@ -388,10 +386,6 @@ static const CGFloat HeaderViewHeight = 150.0;
 
 
 #pragma mark - UITableViewDelegate
-
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return HeaderViewHeight;
-}
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     return _headerView;

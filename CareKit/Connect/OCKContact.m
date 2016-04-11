@@ -87,8 +87,6 @@
                        emailAddress:(NSString *)emailAddress
                            monogram:(NSString *)monogram
                               image:(UIImage *)image {
-    NSParameterAssert(name);
-    NSParameterAssert(relation);
     NSAssert((monogram || image), @"An OCKContact must have either a monogram or an image.");
     
     self = [super init];

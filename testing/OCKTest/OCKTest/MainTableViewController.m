@@ -257,7 +257,9 @@ DefineStringKey(BandageChangeIntervention);
 }
 
 - (OCKCareCardViewController *)careCardViewController {
-    return [[OCKCareCardViewController alloc] initWithCarePlanStore:_store];
+    OCKCareCardViewController *careCardViewController = [[OCKCareCardViewController alloc] initWithCarePlanStore:_store];
+    careCardViewController.delegate = self;
+    return careCardViewController;
 }
 
 - (void)generateInterventions {
@@ -267,7 +269,6 @@ DefineStringKey(BandageChangeIntervention);
     
     {
         OCKCareSchedule *schedule = [OCKCareSchedule weeklyScheduleWithStartDate:startDate occurrencesOnEachDay:@[@4,@10,@10,@12,@12,@0,@0]];
-        UIColor *color = BlueColor();
         
         UIGraphicsBeginImageContext(self.view.frame.size);
         [self.view.layer renderInContext:UIGraphicsGetCurrentContext()];
@@ -407,6 +408,27 @@ DefineStringKey(BandageChangeIntervention);
     _interventions = [interventions copy];
 }
 
+- (BOOL)careCardViewController:(OCKCareCardViewController *)viewController shouldHandleEventCompletionForActivity:(OCKCarePlanActivity *)interventionActivity {
+    BOOL shouldHandleEventCompletion = YES;
+    if ([interventionActivity.identifier isEqualToString:MoveIntervention]) {
+        shouldHandleEventCompletion = NO;
+    }
+    return shouldHandleEventCompletion;
+}
+
+- (void)careCardViewController:(OCKCareCardViewController *)viewController didSelectInterventionEvent:(OCKCarePlanEvent *)interventionEvent {
+    if ([interventionEvent.activity.identifier isEqualToString:MoveIntervention]) {
+        OCKCarePlanEventState state = (interventionEvent.state == OCKCarePlanEventStateCompleted) ? OCKCarePlanEventStateNotCompleted : OCKCarePlanEventStateCompleted;
+        
+        [viewController.store updateEvent:interventionEvent
+                               withResult:nil
+                                    state:state
+                               completion:^(BOOL success, OCKCarePlanEvent * _Nullable event, NSError * _Nullable error) {
+                                   NSAssert(success, error.localizedDescription);
+                               }];
+    }
+}
+
 
 #pragma mark - OCKSymptomTrackerViewController
 
@@ -429,7 +451,6 @@ DefineStringKey(TemperatureAssessment);
     
     {
         OCKCareSchedule *schedule = [OCKCareSchedule dailyScheduleWithStartDate:startDate occurrencesPerDay:1];
-        UIColor *color = PurpleColor();
         
         OCKCarePlanActivity *assessment = [OCKCarePlanActivity assessmentWithIdentifier:RangeOfMotionAssessment
                                                                         groupIdentifier:nil
@@ -596,7 +617,6 @@ DefineStringKey(TemperatureAssessment);
     }
     
     {
-        UIColor *color = YellowColor();
         OCKContact *contact = [[OCKContact alloc] initWithContactType:OCKContactTypeCareTeam
                                                                  name:@"Kevin Johnson"
                                                              relation:@"Father"

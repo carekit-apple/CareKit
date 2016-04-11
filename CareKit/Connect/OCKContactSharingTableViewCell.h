@@ -39,6 +39,7 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol OCKContactSharingTableViewCellDelegate <NSObject>
 
 @required
+
 - (void)sharingTableViewCellDidSelectShareButton:(OCKContactSharingTableViewCell *)cell;
 
 @end

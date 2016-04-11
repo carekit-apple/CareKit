@@ -42,7 +42,8 @@
 
 /* Connect Master View */
 "CARE_TEAM_SECTION_TITLE" = "ケアチーム";
-"PERSONAL_SECTION_TITLE" = "パーソナル";
+"PERSONAL_SECTION_TITLE" = "友達と家族";
+"CONNECT_NO_CONTACTS_TITLE" = "連絡先なし";
 
 /* Connect Detail View */
 "CONTACT_INFO_SECTION_TITLE" = "連絡先情報";
@@ -54,3 +55,13 @@
 "ERROR_TITLE" = "エラー";
 "MESSAGE_SEND_ERROR" = "メッセージを送信できませんでした";
 "EMAIL_SEND_ERROR" = "メールを送信できませんでした";
+
+/* ACCESSIBILITY */
+"AX_WEEK_BUTTON_PROGRESS" = "%@完了";
+"AX_CARE_CARD_COMPLETED" = "完了";
+"AX_CARE_CARD_INCOMPLETE" = "未完了";
+"AX_CARE_CARD_EVENT_LABEL" = "%@、%i/%lu、%@";
+"AX_CARE_CARD_HINT" = "指示を表示するにはダブルタップします";
+"AX_CARE_CARD_VALUE" = "%lu/%lu完了";
+"AX_SYMPTOM_TRACKER_NOT_STARTED" = "開始されていません";
+

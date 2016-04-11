@@ -44,12 +44,13 @@ typedef NS_ENUM(NSInteger, OCKContactType) {
      A care team contact such as a physician or nurse.
      */
     OCKContactTypeCareTeam = 0,
-
+    
     /**
      A personal contact such as a friend or family member.
      */
     OCKContactTypePersonal
 };
+
 
 /**
  The `OCKContact` class is an object that represents a care contact for the `OCKConnectViewController`.
@@ -103,7 +104,7 @@ OCK_CLASS_AVAILABLE
                         phoneNumber:(nullable CNPhoneNumber *)phoneNumber
                       messageNumber:(nullable CNPhoneNumber *)messageNumber
                        emailAddress:(nullable NSString *)emailAddress
-                           monogram:(NSString *)image;
+                           monogram:(NSString *)monogram;
 
 
 /**

@@ -45,14 +45,17 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@interface CareCardAccessibilityElement : UIAccessibilityElement
-@end
 
 @interface OCKCareCardTableViewCell : OCKTableViewCell
 
 @property (nonatomic, copy) NSArray<OCKCarePlanEvent *> *interventionEvents;
 
 @property (nonatomic, weak) id<OCKCareCardCellDelegate> delegate;
+
+@end
+
+
+@interface CareCardAccessibilityElement : UIAccessibilityElement
 
 @end
 

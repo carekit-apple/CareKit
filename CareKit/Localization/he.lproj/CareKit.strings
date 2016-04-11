@@ -41,8 +41,9 @@
 "SYMPTOM_TRACKER_HEADER_TITLE" = "מידת השלמת הפעולות";
 
 /* Connect Master View */
-"CARE_TEAM_SECTION_TITLE" = "צוות טיפולי";
-"PERSONAL_SECTION_TITLE" = "אישי";
+"CARE_TEAM_SECTION_TITLE" = "הצוות המטפל";
+"PERSONAL_SECTION_TITLE" = "חברים ומשפחה";
+"CONNECT_NO_CONTACTS_TITLE" = "אין אנשי קשר";
 
 /* Connect Detail View */
 "CONTACT_INFO_SECTION_TITLE" = "פרטי איש קשר";
@@ -54,3 +55,13 @@
 "ERROR_TITLE" = "שגיאה";
 "MESSAGE_SEND_ERROR" = "שליחת ההודעה נכשלה";
 "EMAIL_SEND_ERROR" = "שליחת הדוא״ל נכשלה";
+
+/* ACCESSIBILITY */
+"AX_WEEK_BUTTON_PROGRESS" = "‏%@ הושלמו";
+"AX_CARE_CARD_COMPLETED" = "הושלם";
+"AX_CARE_CARD_INCOMPLETE" = "לא הושלם";
+"AX_CARE_CARD_EVENT_LABEL" = "‏%@, %i מתוך %lu, %@";
+"AX_CARE_CARD_HINT" = "הקש/י פעמיים להצגת הנחיות";
+"AX_CARE_CARD_VALUE" = "‏%lu מתוך %lu הושלמו";
+"AX_SYMPTOM_TRACKER_NOT_STARTED" = "לא הופעל";
+

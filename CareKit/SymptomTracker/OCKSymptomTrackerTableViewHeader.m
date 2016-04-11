@@ -33,16 +33,18 @@
 #import "OCKRingView.h"
 #import "OCKHelpers.h"
 #import "OCKDefines_Private.h"
+#import "OCKLabel.h"
 
 
-static const CGFloat TrailingMargin = 20.0;
+static const CGFloat TopMargin = 50.0;
+static const CGFloat BottomMargin = 50.0;
 static const CGFloat HorizontalMargin = 10.0;
+static const CGFloat TrailingMargin = 20.0;
 static const CGFloat RingViewSize = 110.0;
 
 @implementation OCKSymptomTrackerTableViewHeader {
-    OCKRingView *_ringView;
-    UILabel *_titleLabel;
-    UILabel *_dateLabel;
+    OCKLabel *_titleLabel;
+    OCKLabel *_dateLabel;
     UIView *_topEdge;
     UIView *_bottomEdge;
     NSMutableArray *_constraints;
@@ -64,11 +66,6 @@ static const CGFloat RingViewSize = 110.0;
             self.backgroundColor = [UIColor whiteColor];
         }
         
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(updateFonts)
-                                                     name:UIContentSizeCategoryDidChangeNotification
-                                                   object:nil];
-        
         [self prepareView];
     }
     return self;
@@ -81,14 +78,16 @@ static const CGFloat RingViewSize = 110.0;
     }
     
     if (!_titleLabel) {
-        _titleLabel = [UILabel new];
+        _titleLabel = [OCKLabel new];
+        _titleLabel.textStyle = UIFontTextStyleHeadline;
         _titleLabel.text = OCKLocalizedString(@"SYMPTOM_TRACKER_HEADER_TITLE", nil);
         _titleLabel.numberOfLines = 2;
         [self addSubview:_titleLabel];
     }
     
     if (!_dateLabel) {
-        _dateLabel = [UILabel new];
+        _dateLabel = [OCKLabel new];
+        _dateLabel.textStyle = UIFontTextStyleSubheadline;
         _dateLabel.textColor = [UIColor darkGrayColor];
         _dateLabel.numberOfLines = 2;
         [self addSubview:_dateLabel];
@@ -107,18 +106,13 @@ static const CGFloat RingViewSize = 110.0;
     }
     
     [self updateView];
-    [self updateFonts];
     [self setUpConstraints];
 }
 
 - (void)updateView {
-    _ringView.value = _value;
-    _dateLabel.text = _date;
-}
-
-- (void)updateFonts {
-    _titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
-    _dateLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
+    self.ringView.tintColor = self.tintColor;
+    self.ringView.value = self.value;
+    _dateLabel.text = self.date;
 }
 
 - (void)setUpConstraints {
@@ -126,97 +120,69 @@ static const CGFloat RingViewSize = 110.0;
     
     _constraints = [NSMutableArray new];
     
-    _ringView.translatesAutoresizingMaskIntoConstraints = NO;
+    self.ringView.translatesAutoresizingMaskIntoConstraints = NO;
     _titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     _dateLabel.translatesAutoresizingMaskIntoConstraints = NO;
     _topEdge.translatesAutoresizingMaskIntoConstraints = NO;
     _bottomEdge.translatesAutoresizingMaskIntoConstraints = NO;
     
     [_constraints addObjectsFromArray:@[
-                                        [NSLayoutConstraint constraintWithItem:_topEdge
-                                                                     attribute:NSLayoutAttributeTop
+                                        [NSLayoutConstraint constraintWithItem:self.ringView
+                                                                     attribute:NSLayoutAttributeCenterX
                                                                      relatedBy:NSLayoutRelationEqual
                                                                         toItem:self
-                                                                     attribute:NSLayoutAttributeTop
+                                                                     attribute:NSLayoutAttributeCenterX
                                                                     multiplier:1.0
-                                                                      constant:0.0],
-                                        [NSLayoutConstraint constraintWithItem:_topEdge
-                                                                     attribute:NSLayoutAttributeHeight
-                                                                     relatedBy:NSLayoutRelationEqual
-                                                                        toItem:nil
-                                                                     attribute:NSLayoutAttributeNotAnAttribute
-                                                                    multiplier:1.0
-                                                                      constant:1.0],
-                                        [NSLayoutConstraint constraintWithItem:_topEdge
-                                                                     attribute:NSLayoutAttributeWidth
-                                                                     relatedBy:NSLayoutRelationEqual
-                                                                        toItem:self
-                                                                     attribute:NSLayoutAttributeWidth
-                                                                    multiplier:1.0
-                                                                      constant:0.0],
-                                        [NSLayoutConstraint constraintWithItem:_bottomEdge
-                                                                     attribute:NSLayoutAttributeBottom
-                                                                     relatedBy:NSLayoutRelationEqual
-                                                                        toItem:self
-                                                                     attribute:NSLayoutAttributeBottom
-                                                                    multiplier:1.0
-                                                                      constant:0.0],
-                                        [NSLayoutConstraint constraintWithItem:_bottomEdge
-                                                                     attribute:NSLayoutAttributeHeight
-                                                                     relatedBy:NSLayoutRelationEqual
-                                                                        toItem:nil
-                                                                     attribute:NSLayoutAttributeNotAnAttribute
-                                                                    multiplier:1.0
-                                                                      constant:1.0],
-                                        [NSLayoutConstraint constraintWithItem:_bottomEdge
-                                                                     attribute:NSLayoutAttributeWidth
-                                                                     relatedBy:NSLayoutRelationEqual
-                                                                        toItem:self
-                                                                     attribute:NSLayoutAttributeWidth
-                                                                    multiplier:1.0
-                                                                      constant:0.0],
-                                        [NSLayoutConstraint constraintWithItem:_ringView
+                                                                      constant:-RingViewSize/1.25],
+                                        [NSLayoutConstraint constraintWithItem:self.ringView
                                                                      attribute:NSLayoutAttributeCenterY
                                                                      relatedBy:NSLayoutRelationEqual
                                                                         toItem:self
                                                                      attribute:NSLayoutAttributeCenterY
                                                                     multiplier:1.0
                                                                       constant:0.0],
-                                        [NSLayoutConstraint constraintWithItem:_ringView
-                                                                     attribute:NSLayoutAttributeCenterX
-                                                                     relatedBy:NSLayoutRelationEqual
-                                                                        toItem:self
-                                                                     attribute:NSLayoutAttributeCenterX
-                                                                    multiplier:1.0
-                                                                      constant:-RingViewSize/1.4],
-                                        [NSLayoutConstraint constraintWithItem:_ringView
-                                                                     attribute:NSLayoutAttributeWidth
-                                                                     relatedBy:NSLayoutRelationEqual
-                                                                        toItem:nil
-                                                                     attribute:NSLayoutAttributeNotAnAttribute
-                                                                    multiplier:1.0
-                                                                      constant:RingViewSize],
-                                        [NSLayoutConstraint constraintWithItem:_ringView
+                                        [NSLayoutConstraint constraintWithItem:self.ringView
                                                                      attribute:NSLayoutAttributeHeight
                                                                      relatedBy:NSLayoutRelationEqual
                                                                         toItem:nil
                                                                      attribute:NSLayoutAttributeNotAnAttribute
                                                                     multiplier:1.0
                                                                       constant:RingViewSize],
-                                        [NSLayoutConstraint constraintWithItem:_dateLabel
-                                                                     attribute:NSLayoutAttributeCenterY
+                                        [NSLayoutConstraint constraintWithItem:self.ringView
+                                                                     attribute:NSLayoutAttributeWidth
                                                                      relatedBy:NSLayoutRelationEqual
-                                                                        toItem:_ringView
-                                                                     attribute:NSLayoutAttributeCenterY
+                                                                        toItem:nil
+                                                                     attribute:NSLayoutAttributeNotAnAttribute
                                                                     multiplier:1.0
-                                                                      constant:15.0],
-                                        [NSLayoutConstraint constraintWithItem:_dateLabel
+                                                                      constant:RingViewSize],
+                                        [NSLayoutConstraint constraintWithItem:_titleLabel
+                                                                     attribute:NSLayoutAttributeTop
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeTop
+                                                                    multiplier:1.0
+                                                                      constant:TopMargin],
+                                        [NSLayoutConstraint constraintWithItem:_titleLabel
                                                                      attribute:NSLayoutAttributeLeading
                                                                      relatedBy:NSLayoutRelationEqual
-                                                                        toItem:_ringView
+                                                                        toItem:self.ringView
                                                                      attribute:NSLayoutAttributeTrailing
                                                                     multiplier:1.0
                                                                       constant:HorizontalMargin],
+                                        [NSLayoutConstraint constraintWithItem:_titleLabel
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                    multiplier:1.0
+                                                                      constant:-TrailingMargin],
+                                        [NSLayoutConstraint constraintWithItem:_dateLabel
+                                                                     attribute:NSLayoutAttributeLeading
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:_titleLabel
+                                                                     attribute:NSLayoutAttributeLeading
+                                                                    multiplier:1.0
+                                                                      constant:0.0],
                                         [NSLayoutConstraint constraintWithItem:_dateLabel
                                                                      attribute:NSLayoutAttributeTrailing
                                                                      relatedBy:NSLayoutRelationEqual
@@ -224,6 +190,13 @@ static const CGFloat RingViewSize = 110.0;
                                                                      attribute:NSLayoutAttributeTrailing
                                                                     multiplier:1.0
                                                                       constant:-TrailingMargin],
+                                        [NSLayoutConstraint constraintWithItem:_dateLabel
+                                                                     attribute:NSLayoutAttributeBottom
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeBottom
+                                                                    multiplier:1.0
+                                                                      constant:-BottomMargin],
                                         [NSLayoutConstraint constraintWithItem:_titleLabel
                                                                      attribute:NSLayoutAttributeBottom
                                                                      relatedBy:NSLayoutRelationEqual
@@ -231,20 +204,48 @@ static const CGFloat RingViewSize = 110.0;
                                                                      attribute:NSLayoutAttributeTop
                                                                     multiplier:1.0
                                                                       constant:0.0],
-                                        [NSLayoutConstraint constraintWithItem:_titleLabel
-                                                                     attribute:NSLayoutAttributeLeading
-                                                                     relatedBy:NSLayoutRelationEqual
-                                                                        toItem:_dateLabel
-                                                                     attribute:NSLayoutAttributeLeading
-                                                                    multiplier:1.0
-                                                                      constant:0.0],
-                                        [NSLayoutConstraint constraintWithItem:_titleLabel
-                                                                     attribute:NSLayoutAttributeTrailing
+                                        [NSLayoutConstraint constraintWithItem:_bottomEdge
+                                                                     attribute:NSLayoutAttributeBottom
                                                                      relatedBy:NSLayoutRelationEqual
                                                                         toItem:self
-                                                                     attribute:NSLayoutAttributeTrailing
+                                                                     attribute:NSLayoutAttributeBottom
                                                                     multiplier:1.0
-                                                                      constant:-TrailingMargin]
+                                                                      constant:0.0],
+                                        [NSLayoutConstraint constraintWithItem:_bottomEdge
+                                                                     attribute:NSLayoutAttributeHeight
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:nil
+                                                                     attribute:NSLayoutAttributeNotAnAttribute
+                                                                    multiplier:1.0
+                                                                      constant:1.0],
+                                        [NSLayoutConstraint constraintWithItem:_bottomEdge
+                                                                     attribute:NSLayoutAttributeWidth
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeWidth
+                                                                    multiplier:1.0
+                                                                      constant:0.0],
+                                        [NSLayoutConstraint constraintWithItem:_topEdge
+                                                                     attribute:NSLayoutAttributeTop
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeTop
+                                                                    multiplier:1.0
+                                                                      constant:0.0],
+                                        [NSLayoutConstraint constraintWithItem:_topEdge
+                                                                     attribute:NSLayoutAttributeHeight
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:nil
+                                                                     attribute:NSLayoutAttributeNotAnAttribute
+                                                                    multiplier:1.0
+                                                                      constant:1.0],
+                                        [NSLayoutConstraint constraintWithItem:_topEdge
+                                                                     attribute:NSLayoutAttributeWidth
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeWidth
+                                                                    multiplier:1.0
+                                                                      constant:0.0]
                                         ]];
     
     [NSLayoutConstraint activateConstraints:_constraints];
@@ -265,14 +266,15 @@ static const CGFloat RingViewSize = 110.0;
     [self updateView];
 }
 
-#pragma mark - Accessibility 
+
+#pragma mark - Accessibility
 
 - (BOOL)isAccessibilityElement {
     return YES;
 }
 
 - (NSString *)accessibilityLabel {
-    return OCKAccessibilityStringForVariables(_ringView, _titleLabel, _dateLabel);
+    return OCKAccessibilityStringForVariables(self.ringView, _titleLabel, _dateLabel);
 }
 
 @end

@@ -32,18 +32,20 @@
 #import "OCKSymptomTrackerTableViewCell.h"
 #import "OCKDefines_Private.h"
 #import "OCKHelpers.h"
+#import "OCKLabel.h"
 
 
 static const CGFloat TopMargin = 30.0;
 static const CGFloat BottomMargin = 30.0;
 static const CGFloat HorizontalMargin = 10.0;
 static const CGFloat ValueLabelWidth = 100.0;
+static const CGFloat UnitLabelWidth = 50.0;
 
 @implementation OCKSymptomTrackerTableViewCell {
-    UILabel *_titleLabel;
-    UILabel *_textLabel;
-    UILabel *_valueLabel;
-    UILabel *_unitLabel;
+    OCKLabel *_titleLabel;
+    OCKLabel *_textLabel;
+    OCKLabel *_valueLabel;
+    OCKLabel *_unitLabel;
     NSMutableArray *_constraints;
 }
 
@@ -67,18 +69,21 @@ static const CGFloat ValueLabelWidth = 100.0;
     self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     
     if (!_titleLabel) {
-        _titleLabel = [UILabel new];
+        _titleLabel = [OCKLabel new];
+        _titleLabel.textStyle = UIFontTextStyleHeadline;
         [self addSubview:_titleLabel];
     }
     
     if (!_textLabel) {
-        _textLabel = [UILabel new];
+        _textLabel = [OCKLabel new];
+        _textLabel.textStyle = UIFontTextStyleSubheadline;
         _textLabel.textColor = [UIColor lightGrayColor];
         [self addSubview:_textLabel];
     }
     
     if (!_valueLabel) {
-        _valueLabel = [UILabel new];;
+        _valueLabel = [OCKLabel new];
+        _valueLabel.textStyle = UIFontTextStyleTitle1;
         _valueLabel.textAlignment = NSTextAlignmentRight;
         [self addSubview:_valueLabel];
     }
@@ -88,25 +93,21 @@ static const CGFloat ValueLabelWidth = 100.0;
 }
 
 - (void)updateView {
-    _titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
-    _titleLabel.text = _assessmentEvent.activity.title;
+    _titleLabel.text = self.assessmentEvent.activity.title;
+    _textLabel.text = self.assessmentEvent.activity.text;
     
-    _textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
-    _textLabel.text = _assessmentEvent.activity.text;
-    
-    _valueLabel.text = (_assessmentEvent.result.valueString.length > 0) ? _assessmentEvent.result.valueString : @"";
-    _valueLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleTitle1];
+    _valueLabel.text = (self.assessmentEvent.result.valueString.length > 0) ? self.assessmentEvent.result.valueString : @"";
     _valueLabel.textColor = self.tintColor;
     
-    if (_assessmentEvent.result.unitString.length > 0) {
+    if (self.assessmentEvent.result.unitString.length > 0) {
         if (!_unitLabel) {
-            _unitLabel = [UILabel new];
+            _unitLabel = [OCKLabel new];
+            _unitLabel.textStyle = UIFontTextStyleCaption2;
             _unitLabel.textAlignment = NSTextAlignmentRight;
             _unitLabel.textColor = [UIColor lightGrayColor];
             [self addSubview:_unitLabel];
         }
-        _unitLabel.text = _assessmentEvent.result.unitString;
-        _unitLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleCaption2];
+        _unitLabel.text = self.assessmentEvent.result.unitString;
     } else {
         [_unitLabel removeFromSuperview];
         _unitLabel = nil;
@@ -123,7 +124,7 @@ static const CGFloat ValueLabelWidth = 100.0;
     _valueLabel.translatesAutoresizingMaskIntoConstraints = NO;
     
     CGFloat LeadingMargin = self.separatorInset.left;
-    CGFloat TrailingMargin = (self.separatorInset.right > 0) ? self.separatorInset.right + 25 : 30;
+    CGFloat TrailingMargin = (self.separatorInset.right > 0) ? self.separatorInset.right + 25 : 40;
     
     CGFloat unitLabelOffset = 0;
     
@@ -140,6 +141,27 @@ static const CGFloat ValueLabelWidth = 100.0;
                                                                         multiplier:1.0
                                                                           constant:0.0],
                                             [NSLayoutConstraint constraintWithItem:_unitLabel
+                                                                         attribute:NSLayoutAttributeWidth
+                                                                         relatedBy:NSLayoutRelationEqual
+                                                                            toItem:nil
+                                                                         attribute:NSLayoutAttributeNotAnAttribute
+                                                                        multiplier:1.0
+                                                                          constant:UnitLabelWidth],
+                                            [NSLayoutConstraint constraintWithItem:_unitLabel
+                                                                         attribute:NSLayoutAttributeLeading
+                                                                         relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                                            toItem:_titleLabel
+                                                                         attribute:NSLayoutAttributeTrailing
+                                                                        multiplier:1.0
+                                                                          constant:HorizontalMargin],
+                                            [NSLayoutConstraint constraintWithItem:_unitLabel
+                                                                         attribute:NSLayoutAttributeLeading
+                                                                         relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                                            toItem:_textLabel
+                                                                         attribute:NSLayoutAttributeTrailing
+                                                                        multiplier:1.0
+                                                                          constant:0.0],
+                                            [NSLayoutConstraint constraintWithItem:_unitLabel
                                                                          attribute:NSLayoutAttributeTrailing
                                                                          relatedBy:NSLayoutRelationEqual
                                                                             toItem:_valueLabel
@@ -148,7 +170,7 @@ static const CGFloat ValueLabelWidth = 100.0;
                                                                           constant:0.0]
                                             ]];
     }
-
+    
     [_constraints addObjectsFromArray:@[
                                         [NSLayoutConstraint constraintWithItem:_titleLabel
                                                                      attribute:NSLayoutAttributeLeading
@@ -167,10 +189,10 @@ static const CGFloat ValueLabelWidth = 100.0;
                                         [NSLayoutConstraint constraintWithItem:_textLabel
                                                                      attribute:NSLayoutAttributeLeading
                                                                      relatedBy:NSLayoutRelationEqual
-                                                                        toItem:_titleLabel
+                                                                        toItem:self
                                                                      attribute:NSLayoutAttributeLeading
                                                                     multiplier:1.0
-                                                                      constant:0.0],
+                                                                      constant:LeadingMargin],
                                         [NSLayoutConstraint constraintWithItem:_textLabel
                                                                      attribute:NSLayoutAttributeTop
                                                                      relatedBy:NSLayoutRelationEqual
@@ -178,13 +200,6 @@ static const CGFloat ValueLabelWidth = 100.0;
                                                                      attribute:NSLayoutAttributeBottom
                                                                     multiplier:1.0
                                                                       constant:0.0],
-                                        [NSLayoutConstraint constraintWithItem:_valueLabel
-                                                                     attribute:NSLayoutAttributeLeading
-                                                                     relatedBy:NSLayoutRelationGreaterThanOrEqual
-                                                                        toItem:_titleLabel
-                                                                     attribute:NSLayoutAttributeTrailing
-                                                                    multiplier:1.0
-                                                                      constant:HorizontalMargin],
                                         [NSLayoutConstraint constraintWithItem:_valueLabel
                                                                      attribute:NSLayoutAttributeLeading
                                                                      relatedBy:NSLayoutRelationGreaterThanOrEqual
@@ -199,6 +214,13 @@ static const CGFloat ValueLabelWidth = 100.0;
                                                                      attribute:NSLayoutAttributeBottom
                                                                     multiplier:1.0
                                                                       constant:-BottomMargin],
+                                        [NSLayoutConstraint constraintWithItem:_valueLabel
+                                                                     attribute:NSLayoutAttributeLeading
+                                                                     relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                                        toItem:_titleLabel
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                    multiplier:1.0
+                                                                      constant:HorizontalMargin],
                                         [NSLayoutConstraint constraintWithItem:_valueLabel
                                                                      attribute:NSLayoutAttributeTrailing
                                                                      relatedBy:NSLayoutRelationEqual
@@ -227,9 +249,14 @@ static const CGFloat ValueLabelWidth = 100.0;
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    
     [self setUpConstraints];
 }
+
+- (void)tintColorDidChange {
+    [super tintColorDidChange];
+    [self updateView];
+}
+
 
 #pragma mark - Accessibility
 
@@ -242,7 +269,7 @@ static const CGFloat ValueLabelWidth = 100.0;
 }
 
 - (NSString *)accessibilityValue {
-    return _assessmentEvent.state != OCKCarePlanEventStateCompleted ? OCKLocalizedString(@"AX_SYMPTOM_TRACKER_NOT_STARTED", nil) : OCKAccessibilityStringForVariables(_valueLabel, _unitLabel);
+    return self.assessmentEvent.state != OCKCarePlanEventStateCompleted ? OCKLocalizedString(@"AX_SYMPTOM_TRACKER_NOT_STARTED", nil) : OCKAccessibilityStringForVariables(_valueLabel, _unitLabel);
 }
 
 @end

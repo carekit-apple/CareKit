@@ -250,7 +250,7 @@
                                               reuseIdentifier:CellIdentifier];
     }
     cell.contact = _sectionedContacts[indexPath.section][indexPath.row];
-    cell.showEdgeIndicator = _showEdgeIndicators;
+    cell.showEdgeIndicator = self.showEdgeIndicators;
     return cell;
 }
 

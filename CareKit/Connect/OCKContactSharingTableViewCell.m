@@ -40,7 +40,6 @@ static const CGFloat HorizontalMargin = 5.0;
 
 @implementation OCKContactSharingTableViewCell {
     OCKLabel *_titleLabel;
-    UIButton *_shareButton;
     NSMutableArray *_constraints;
 }
 

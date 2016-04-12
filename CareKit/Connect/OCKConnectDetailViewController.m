@@ -190,8 +190,8 @@ static const CGFloat HeaderViewHeight = 225.0;
 
 - (void)sharingTableViewCellDidSelectShareButton:(OCKContactSharingTableViewCell *)cell {
     if (self.delegate &&
-        [self.delegate respondsToSelector:@selector(connectViewController:didSelectShareButtonForContact:)]) {
-        [self.delegate connectViewController:self.masterViewController didSelectShareButtonForContact:cell.contact];
+        [self.delegate respondsToSelector:@selector(connectViewController:didSelectShareButton:contact:)]) {
+        [self.delegate connectViewController:self.masterViewController didSelectShareButton:cell.shareButton contact:cell.contact];
     }
 }
 

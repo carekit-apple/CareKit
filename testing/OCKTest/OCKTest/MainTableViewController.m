@@ -416,7 +416,7 @@ DefineStringKey(BandageChangeIntervention);
     return shouldHandleEventCompletion;
 }
 
-- (void)careCardViewController:(OCKCareCardViewController *)viewController didSelectInterventionEvent:(OCKCarePlanEvent *)interventionEvent {
+- (void)careCardViewController:(OCKCareCardViewController *)viewController didSelectButtonWithInterventionEvent:(OCKCarePlanEvent *)interventionEvent {
     if ([interventionEvent.activity.identifier isEqualToString:MoveIntervention]) {
         OCKCarePlanEventState state = (interventionEvent.state == OCKCarePlanEventStateCompleted) ? OCKCarePlanEventStateNotCompleted : OCKCarePlanEventStateCompleted;
         
@@ -642,7 +642,7 @@ DefineStringKey(TemperatureAssessment);
     return title;
 }
 
-- (void)connectViewController:(OCKConnectViewController *)connectViewController didSelectShareButtonForContact:(OCKContact *)contact {
+- (void)connectViewController:(OCKConnectViewController *)connectViewController didSelectShareButton:(UIButton *)shareButton contact:(OCKContact *)contact {
     NSLog(@"Share button tapped");
 }
 

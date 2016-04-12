@@ -224,7 +224,7 @@ static const CGFloat HeaderViewHeight = 60.0;
                                                           reuseIdentifier:MessageCellIdentifier];
         }
         cell.messageItem = (OCKMessageItem *)item;
-        cell.showEdgeIndicator = _showEdgeIndicators;
+        cell.showEdgeIndicator = self.showEdgeIndicators;
         return cell;
     }
     

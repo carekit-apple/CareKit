@@ -38,7 +38,6 @@
 static const CGFloat TopMargin = 30.0;
 static const CGFloat BottomMargin = 30.0;
 static const CGFloat HorizontalMargin = 10.0;
-static const CGFloat ValueLabelWidth = 100.0;
 static const CGFloat UnitLabelWidth = 50.0;
 
 @implementation OCKSymptomTrackerTableViewCell {
@@ -228,13 +227,6 @@ static const CGFloat UnitLabelWidth = 50.0;
                                                                      attribute:NSLayoutAttributeTrailing
                                                                     multiplier:1.0
                                                                       constant:-TrailingMargin],
-                                        [NSLayoutConstraint constraintWithItem:_valueLabel
-                                                                     attribute:NSLayoutAttributeWidth
-                                                                     relatedBy:NSLayoutRelationLessThanOrEqual
-                                                                        toItem:nil
-                                                                     attribute:NSLayoutAttributeNotAnAttribute
-                                                                    multiplier:1.0
-                                                                      constant:ValueLabelWidth],
                                         [NSLayoutConstraint constraintWithItem:_valueLabel
                                                                      attribute:NSLayoutAttributeCenterY
                                                                      relatedBy:NSLayoutRelationEqual

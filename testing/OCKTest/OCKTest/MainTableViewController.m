@@ -469,8 +469,8 @@ DefineStringKey(TemperatureAssessment);
         
         OCKCarePlanActivity *assessment = [OCKCarePlanActivity assessmentWithIdentifier:PainAssessment
                                                                         groupIdentifier:nil
-                                                                                  title:@"Pain"
-                                                                                   text:@"Scale assessment"
+                                                                                  title:@"Pain jasdfj sadfj "
+                                                                                   text:@"Scale assessment asdfkj sadfkj "
                                                                               tintColor:color
                                                                        resultResettable:NO
                                                                                schedule:schedule
@@ -525,7 +525,7 @@ DefineStringKey(TemperatureAssessment);
                      NSAssert(success, error.localizedDescription);
                  }];
     } else if ([identifier isEqualToString:PainAssessment]) {
-        OCKCarePlanEventResult *result = [[OCKCarePlanEventResult alloc] initWithValueString:@"6"
+        OCKCarePlanEventResult *result = [[OCKCarePlanEventResult alloc] initWithValueString:@"6 asdfkj lkdasf"
                                                                                   unitString:@"of 10"
                                                                                     userInfo:nil];
         [_store updateEvent:assessmentEvent

@@ -35,8 +35,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-#define IS_OS_9_OR_LATER    ([[[UIDevice currentDevice] systemVersion] floatValue] >= 9.0)
-
 /**
  An enumeration of the types of contacts available.
  */

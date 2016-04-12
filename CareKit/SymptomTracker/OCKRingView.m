@@ -41,6 +41,7 @@ static const double VALUE_MAX = 1.0;
     CAShapeLayer *_checkmarkLayer;
     UILabel *_label;
     NSNumberFormatter *_numberFormatter;
+    NSUUID *_transactionID;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame {
@@ -63,7 +64,7 @@ static const double VALUE_MAX = 1.0;
         _checkmarkLayer = [self createCheckMarkLayer];
         _checkmarkLayer.strokeEnd = 0.0;
         [self.layer addSublayer:_checkmarkLayer];
-        [self updateCheckmark];
+        [self updateCheckmarkForValue:_value];
     }
     return self;
 }
@@ -166,10 +167,10 @@ static const double VALUE_MAX = 1.0;
     }
 }
 
-- (void)updateCheckmark {
+- (void)updateCheckmarkForValue:(double)value {
     
     [CATransaction begin];
-    if (_value == VALUE_MAX) {
+    if (value == VALUE_MAX) {
         [CATransaction setDisableActions:_disableAnimation];
         [_label removeFromSuperview];
         _circleLayer.fillColor = self.tintColor.CGColor;
@@ -183,63 +184,68 @@ static const double VALUE_MAX = 1.0;
 }
 
 - (void)setValue:(double)value {
+   
+    value = MAX(MIN(value, VALUE_MAX), VALUE_MIN);
     
-    double oldValue = _value;
-    
-    _value = MAX(MIN(value, VALUE_MAX), VALUE_MIN);
-    
-    if (oldValue != _value) {
-        
-        [self updateLabel];
+    if (value != _value) {
+        double oldValue = _value;
+        _value = value;
         
         if (_disableAnimation) {
+            [self updateLabel];
             [_circleLayer removeFromSuperlayer];
             _circleLayer = [self createShapeLayerWithValue:_value];
             [self.layer insertSublayer:_circleLayer below:_checkmarkLayer];
-            [self updateCheckmark];
+            [self updateCheckmarkForValue:_value];
         } else {
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             
-            [CATransaction begin];
-            
-            if (oldValue == VALUE_MAX) {
-                [self updateCheckmark];
-            }
-            
-            BOOL reverse = oldValue > _value;
-            double delta = ABS(_value - oldValue);
-            double maxValue = MAX(oldValue, _value);
-            
-            [_circleLayer removeFromSuperlayer];
-            _circleLayer = [self createShapeLayerWithValue:maxValue];
-            [self.layer insertSublayer:_circleLayer below:_checkmarkLayer];
-            
-            CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"strokeStart"];
-            
-            if (reverse) {
-                animation.fromValue = @(VALUE_MIN);
-                animation.toValue = @(delta/maxValue);
-            } else {
-                animation.fromValue = @(delta/maxValue);
-                animation.toValue = @(VALUE_MIN);
-            }
-            
-            animation.beginTime = 0.0;
-            animation.duration = 1.25;
-            animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
-            animation.fillMode = kCAFillModeBoth;
-            animation.removedOnCompletion = false;
-            
-            BOOL removeLayerOnCompletion = (_value == VALUE_MIN);
-            [CATransaction setCompletionBlock:^{
+                [_circleLayer removeAllAnimations];
+                NSUUID *caid = [NSUUID UUID];
+                _transactionID = caid;
+
+                [self updateCheckmarkForValue:oldValue];
                 [self updateLabel];
-                [self updateCheckmark];
-                if (removeLayerOnCompletion) {
-                    [_circleLayer removeFromSuperlayer];
+    
+                [CATransaction begin];
+                
+                BOOL reverse = oldValue > _value;
+                double delta = ABS(_value - oldValue);
+                double maxValue = MAX(oldValue, _value);
+                
+                [_circleLayer removeFromSuperlayer];
+                _circleLayer = [self createShapeLayerWithValue:maxValue];
+                [self.layer insertSublayer:_circleLayer below:_checkmarkLayer];
+                
+                CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"strokeStart"];
+                
+                if (reverse) {
+                    animation.fromValue = @(VALUE_MIN);
+                    animation.toValue = @(delta/maxValue);
+                } else {
+                    animation.fromValue = @(delta/maxValue);
+                    animation.toValue = @(VALUE_MIN);
                 }
-            }];
-            
-            [_circleLayer addAnimation:animation forKey:animation.keyPath];
-            [CATransaction commit];
+                
+                animation.beginTime = 0.0;
+                animation.duration = 1.25;
+                animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+                animation.fillMode = kCAFillModeBoth;
+                animation.removedOnCompletion = false;
+                
+                [CATransaction setCompletionBlock:^{
+                    if ([caid isEqual:_transactionID]) {
+                        [self updateLabel];
+                        [self updateCheckmarkForValue:_value];
+                        if (_value == VALUE_MIN) {
+                            [_circleLayer removeFromSuperlayer];
+                        }
+                    }
+                }];
+                
+                [_circleLayer addAnimation:animation forKey:animation.keyPath];
+                [CATransaction commit];
+            });
         }
         
     }

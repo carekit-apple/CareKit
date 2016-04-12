@@ -52,7 +52,7 @@ blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 
 static const BOOL resetStoreOnLaunch = YES;
 
-@interface ViewController () <OCKSymptomTrackerViewControllerDelegate, OCKCarePlanStoreDelegate, OCKConnectViewControllerDelegate, ORKTaskViewControllerDelegate>
+@interface ViewController () <OCKCareCardViewControllerDelegate, OCKSymptomTrackerViewControllerDelegate, OCKCarePlanStoreDelegate, OCKConnectViewControllerDelegate, ORKTaskViewControllerDelegate>
 
 @end
 
@@ -245,6 +245,7 @@ DefineStringKey(PhysicalTherapyIntervention);
 - (OCKCareCardViewController *)careCardViewController {
     OCKCareCardViewController *careCardViewController = [[OCKCareCardViewController alloc] initWithCarePlanStore:_store];
     careCardViewController.showEdgeIndicators = YES;
+    careCardViewController.delegate = self;
     return careCardViewController;
 }
 - (void)generateInterventions {
@@ -314,6 +315,29 @@ DefineStringKey(PhysicalTherapyIntervention);
     _interventions = [interventions copy];
 }
 
+#pragma mark - Care Card Delegate (OCKCareCardViewControllerDelegate)
+
+- (BOOL)careCardViewController:(OCKCareCardViewController *)viewController shouldDisplayViewControllerForActivity:(OCKCarePlanActivity *)interventionActivity {
+    if ([interventionActivity.identifier isEqualToString:HamstringStretchIntervention]) {
+        return YES;
+    }
+    return NO;
+}
+
+- (void)careCardViewController:(OCKCareCardViewController *)viewController didSelectInterventionEvent:(OCKCarePlanEvent *)interventionEvent {
+    NSLog(@"%@", interventionEvent);
+    OCKCarePlanStore *store = viewController.store;
+    
+    OCKCarePlanEventState state = (interventionEvent.state == OCKCarePlanEventStateCompleted) ? OCKCarePlanEventStateNotCompleted : OCKCarePlanEventStateCompleted;
+    
+    [store updateEvent:interventionEvent
+            withResult:nil
+                 state:state
+            completion:^(BOOL success, OCKCarePlanEvent * _Nullable event, NSError * _Nullable error) {
+                NSAssert(success, error.localizedDescription);
+            }];
+    
+}
 
 #pragma mark - Symptom Tracker
 

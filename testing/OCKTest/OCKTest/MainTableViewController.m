@@ -257,7 +257,9 @@ DefineStringKey(BandageChangeIntervention);
 }
 
 - (OCKCareCardViewController *)careCardViewController {
-    return [[OCKCareCardViewController alloc] initWithCarePlanStore:_store];
+    OCKCareCardViewController *careCardViewController = [[OCKCareCardViewController alloc] initWithCarePlanStore:_store];
+    careCardViewController.delegate = self;
+    return careCardViewController;
 }
 
 - (void)generateInterventions {
@@ -404,6 +406,27 @@ DefineStringKey(BandageChangeIntervention);
     }
     
     _interventions = [interventions copy];
+}
+
+- (BOOL)careCardViewController:(OCKCareCardViewController *)viewController shouldHandleEventCompletionForActivity:(OCKCarePlanActivity *)interventionActivity {
+    BOOL shouldHandleEventCompletion = YES;
+    if ([interventionActivity.identifier isEqualToString:MoveIntervention]) {
+        shouldHandleEventCompletion = NO;
+    }
+    return shouldHandleEventCompletion;
+}
+
+- (void)careCardViewController:(OCKCareCardViewController *)viewController didSelectInterventionEvent:(OCKCarePlanEvent *)interventionEvent {
+    if ([interventionEvent.activity.identifier isEqualToString:MoveIntervention]) {
+        OCKCarePlanEventState state = (interventionEvent.state == OCKCarePlanEventStateCompleted) ? OCKCarePlanEventStateNotCompleted : OCKCarePlanEventStateCompleted;
+        
+        [viewController.store updateEvent:interventionEvent
+                               withResult:nil
+                                    state:state
+                               completion:^(BOOL success, OCKCarePlanEvent * _Nullable event, NSError * _Nullable error) {
+                                   NSAssert(success, error.localizedDescription);
+                               }];
+    }
 }
 
 

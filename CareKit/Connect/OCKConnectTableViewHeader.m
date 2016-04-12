@@ -65,7 +65,7 @@ static const CGFloat ImageViewSize = 135.0;
     
     if (!_imageView) {
         _imageView = [UIImageView new];
-        _imageView.layer.cornerRadius = 70.0;
+        _imageView.layer.cornerRadius = 65.0;
         _imageView.clipsToBounds = YES;
         _imageView.layer.borderWidth = 1.0;
         _imageView.contentMode = UIViewContentModeScaleAspectFill;

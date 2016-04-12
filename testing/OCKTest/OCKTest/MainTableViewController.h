@@ -32,6 +32,6 @@
 #import <CareKit/CareKit_Private.h>
 
 
-@interface MainTableViewController : UITableViewController <OCKSymptomTrackerViewControllerDelegate, OCKConnectViewControllerDelegate>
+@interface MainTableViewController : UITableViewController <OCKSymptomTrackerViewControllerDelegate, OCKConnectViewControllerDelegate, OCKCareCardViewControllerDelegate>
 
 @end

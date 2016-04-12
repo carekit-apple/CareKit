@@ -44,13 +44,40 @@ NS_ASSUME_NONNULL_BEGIN
 @optional
 
 /**
+ Asks the delegate if care card view controller should automatically mark the state of an intervention activity when
+ the user selects and deselects the intervention circle button. If this method is not implemented, care card view controller
+ handles all event completion by default.
+ 
+ If returned NO, the `careCardViewController:didSelectButtonWithInterventionEvent` method can be implemeted to provide
+ custom logic for completion.
+ 
+ @param viewController              The view controller providing the callback.
+ @param interventionActivity        The intervention activity that the user selected.
+ */
+- (BOOL)careCardViewController:(OCKCareCardViewController *)viewController shouldHandleEventCompletionForActivity:(OCKCarePlanActivity *)interventionActivity;
+
+/**
+ Tells the delegate when the user tapped an intervention event.
+ 
+ If the user must perform some activity in order to complete the intervention event,
+ then this method can be implemented to show a custom view controller.
+ 
+ If the completion status of the event is dependent on the presented activity, the developer can implement 
+ the `careCardViewController:shouldHandleEventCompletionForActivity` to control the completion status of the event.
+ 
+ @param viewController              The view controller providing the callback.
+ @param interventionEvent           The intervention event that the user selected.
+ */
+- (void)careCardViewController:(OCKCareCardViewController *)viewController didSelectButtonWithInterventionEvent:(OCKCarePlanEvent *)interventionEvent;
+
+/**
  Tells the delegate when the user selected an intervention activity.
  
  This can be implemented to show a custom detail view controller.
  If not implemented, a default detail view controller will be presented.
  
- @param symptomTrackerViewController      The view controller providing the callback.
- @param interventionActivity              The intervention activity that the user selected.
+ @param viewController              The view controller providing the callback.
+ @param interventionActivity        The intervention activity that the user selected.
  */
 - (void)careCardViewController:(OCKCareCardViewController *)viewController didSelectRowWithInterventionActivity:(OCKCarePlanActivity *)interventionActivity;
 

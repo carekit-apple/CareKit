@@ -362,14 +362,27 @@
 #pragma mark - OCKCareCardCellDelegate
 
 - (void)careCardTableViewCell:(OCKCareCardTableViewCell *)cell didUpdateFrequencyofInterventionEvent:(OCKCarePlanEvent *)event {
-    OCKCarePlanEventState state = (event.state == OCKCarePlanEventStateCompleted) ? OCKCarePlanEventStateNotCompleted : OCKCarePlanEventStateCompleted;
+    if (self.delegate &&
+        [self.delegate respondsToSelector:@selector(careCardViewController:didSelectButtonWithInterventionEvent:)]) {
+        [self.delegate careCardViewController:self didSelectButtonWithInterventionEvent:event];
+    }
     
-    [self.store updateEvent:event
-                 withResult:nil
-                      state:state
-                 completion:^(BOOL success, OCKCarePlanEvent * _Nonnull event, NSError * _Nonnull error) {
-                     NSAssert(success, error.localizedDescription);
-                 }];
+    BOOL shouldHandleEventCompletion = YES;
+    if (self.delegate &&
+        [self.delegate respondsToSelector:@selector(careCardViewController:shouldHandleEventCompletionForActivity:)]) {
+        shouldHandleEventCompletion = [self.delegate careCardViewController:self shouldHandleEventCompletionForActivity:event.activity];
+    }
+    
+    if (shouldHandleEventCompletion) {
+        OCKCarePlanEventState state = (event.state == OCKCarePlanEventStateCompleted) ? OCKCarePlanEventStateNotCompleted : OCKCarePlanEventStateCompleted;
+        
+        [self.store updateEvent:event
+                     withResult:nil
+                          state:state
+                     completion:^(BOOL success, OCKCarePlanEvent * _Nonnull event, NSError * _Nonnull error) {
+                         NSAssert(success, error.localizedDescription);
+                     }];
+    }
 }
 
 

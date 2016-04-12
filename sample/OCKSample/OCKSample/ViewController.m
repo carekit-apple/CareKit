@@ -639,7 +639,7 @@ DefineStringKey(TemperatureAssessment);
 
 #pragma mark Connect View Controller Delegate (OCKConnectViewControllerDelegate)
 
-- (void)connectViewController:(OCKConnectViewController *)connectViewController didSelectShareButton:(UIButton*)button contact:(OCKContact *)contact {
+- (void)connectViewController:(OCKConnectViewController *)connectViewController didSelectShareButtonForContact:(OCKContact *)contact presentationSourceView:(UIView *)sourceView {
     UIActivityViewController *activityController = [[UIActivityViewController alloc] initWithActivityItems:@[[self generatePDF]] applicationActivities:nil];
     [self presentViewController:activityController animated:YES completion:nil];
 }

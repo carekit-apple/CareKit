@@ -47,10 +47,10 @@ NS_ASSUME_NONNULL_BEGIN
  Tells the delegate when the user selected the share button for a contact.
  
  @param connectViewController       The view controller providing the callback.
- @param shareButton                 The button that the user selected.
  @param contact                     The contact that is currently displayed.
+ @param sourceView                  The button that the user selected.
  */
-- (void)connectViewController:(OCKConnectViewController *)connectViewController didSelectShareButton:(UIButton *)shareButton contact:(OCKContact *)contact;
+- (void)connectViewController:(OCKConnectViewController *)connectViewController didSelectShareButtonForContact:(OCKContact *)contact presentationSourceView:(UIView *)sourceView;
 
 @optional
 /**

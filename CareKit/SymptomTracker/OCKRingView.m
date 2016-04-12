@@ -143,14 +143,12 @@ static const double VALUE_MAX = 1.0;
     return label;
 }
 
-- (void)setTintColor:(UIColor *)tintColor {
-    [super setTintColor:tintColor];
-    _circleLayer.strokeColor = self.tintColor.CGColor;
-}
-
 - (void)tintColorDidChange {
     [super tintColorDidChange];
     _circleLayer.strokeColor = self.tintColor.CGColor;
+    if (_circleLayer.fillColor != [UIColor clearColor].CGColor) {
+        _circleLayer.fillColor = self.tintColor.CGColor;
+    }
 }
 
 - (void)setHideLabel:(BOOL)hideLabel {

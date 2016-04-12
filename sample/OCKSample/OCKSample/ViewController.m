@@ -324,7 +324,7 @@ DefineStringKey(PhysicalTherapyIntervention);
     return NO;
 }
 
-- (void)careCardViewController:(OCKCareCardViewController *)viewController didSelectInterventionEvent:(OCKCarePlanEvent *)interventionEvent {
+- (void)careCardViewController:(OCKCareCardViewController *)viewController didSelectButtonWithInterventionEvent:(OCKCarePlanEvent *)interventionEvent {
     NSLog(@"%@", interventionEvent);
     OCKCarePlanStore *store = viewController.store;
     
@@ -639,7 +639,7 @@ DefineStringKey(TemperatureAssessment);
 
 #pragma mark Connect View Controller Delegate (OCKConnectViewControllerDelegate)
 
-- (void)connectViewController:(OCKConnectViewController *)connectViewController didSelectShareButtonForContact:(OCKContact *)contact {
+- (void)connectViewController:(OCKConnectViewController *)connectViewController didSelectShareButtonForContact:(OCKContact *)contact presentationSourceView:(UIView *)sourceView {
     UIActivityViewController *activityController = [[UIActivityViewController alloc] initWithActivityItems:@[[self generatePDF]] applicationActivities:nil];
     [self presentViewController:activityController animated:YES completion:nil];
 }

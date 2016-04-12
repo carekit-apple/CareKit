@@ -98,11 +98,11 @@ static const CGFloat ImageViewSize = 40.0;
     if (self.contact.image) {
         _imageView.image = self.contact.image;
         _imageView.backgroundColor = [UIColor clearColor];
-        _monogramLabel.hidden = YES;
+        _monogramLabel.text = nil;
     } else {
+        _imageView.image = nil;
+        _imageView.backgroundColor = OCKSystemGrayColor();
         _monogramLabel.text = self.contact.monogram;
-        _imageView.backgroundColor = [UIColor grayColor];
-        _monogramLabel.hidden = NO;
     }
     
     _nameLabel.text = self.contact.name;

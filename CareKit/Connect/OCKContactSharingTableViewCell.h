@@ -53,6 +53,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, weak, nullable) id<OCKContactSharingTableViewCellDelegate> delegate;
 
+@property (nonatomic, readonly) UIButton *shareButton;
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -350,6 +350,7 @@
             NSIndexPath *indexPath = [NSIndexPath indexPathForRow:i inSection:0];
             OCKSymptomTrackerTableViewCell *cell = [_tableView cellForRowAtIndexPath:indexPath];
             cell.assessmentEvent = event;
+            cell.showEdgeIndicator = cell.showEdgeIndicator;
             break;
         }
     }

@@ -398,6 +398,7 @@
                 NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[_events indexOfObject:events] inSection:0];
                 OCKCareCardTableViewCell *cell = [_tableView cellForRowAtIndexPath:indexPath];
                 cell.interventionEvents = events;
+                cell.showEdgeIndicator = cell.showEdgeIndicator;
             }
             break;
         }

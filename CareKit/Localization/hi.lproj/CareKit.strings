@@ -62,6 +62,6 @@
 "AX_CARE_CARD_INCOMPLETE" = "अपूर्ण";
 "AX_CARE_CARD_EVENT_LABEL" = "%1$@, %2$i/%3$lu, %4$@";
 "AX_CARE_CARD_HINT" = "निर्देश देखने के लिए डबल टैप करें";
-"AX_CARE_CARD_VALUE" = "%1$lu/%2$lu completed";
+"AX_CARE_CARD_VALUE" = "%1$lu/%2$lu पूर्ण";
 "AX_SYMPTOM_TRACKER_NOT_STARTED" = "शुरू नहीं किया गया";
 

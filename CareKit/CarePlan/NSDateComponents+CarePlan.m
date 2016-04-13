@@ -121,6 +121,7 @@
     static NSCalendar *calendar;
     if (calendar == nil) {
         calendar = [NSCalendar calendarWithIdentifier:NSCalendarIdentifierGregorian];
+        calendar.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
     }
     return calendar;
 }

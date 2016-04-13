@@ -145,7 +145,11 @@
 }
 
 - (NSCalendar *)calendar {
-    return [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+    if (!_calendar) {
+        _calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+        _calendar.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+    }
+    return _calendar;
 }
 
 - (NSUInteger)numberOfEventsOnDate:(NSDateComponents *)day {

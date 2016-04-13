@@ -197,7 +197,7 @@
         XCTAssertNotNil(result.unitString);
     } else if ([sample isKindOfClass:[HKCategorySample class]]) {
         result = [[OCKCarePlanEventResult alloc] initWithCategorySample:(HKCategorySample *)sample
-                                                    categoryValueStringKeys:@[@"0a", @"1b", @"2c", @"3d"]
+                                                categoryValueStringKeys:@{@0:@"0a", @1:@"1b", @2:@"2c", @3:@"3d"}
                                                                userInfo:nil];
     }
     

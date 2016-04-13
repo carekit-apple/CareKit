@@ -86,13 +86,20 @@
     
     OCKCareSchedule *schedule = [OCKCareSchedule dailyScheduleWithStartDate:startDate occurrencesPerDay:3];
     
+    NSURL *url1 = [NSURL fileURLWithPath:[directoryURL.path stringByAppendingPathComponent:@"1.png"]];
+    [[NSDictionary new] writeToURL:url1 atomically:YES];
+    NSURL *url2 = [NSURL fileURLWithPath:[directoryURL.path stringByAppendingPathComponent:@"2.png"]];
+    [[NSDictionary new] writeToURL:url2 atomically:YES];
+    NSURL *url4 = [NSURL fileURLWithPath:[directoryURL.path stringByAppendingPathComponent:@"4.png"]];
+    [[NSDictionary new] writeToURL:url4 atomically:YES];
+    
     OCKCarePlanActivity *item1 = [OCKCarePlanActivity interventionWithIdentifier:@"id1"
                                                                  groupIdentifier:@"gid1"
                                                                            title:@"title1"
                                                                             text:@"text1"
                                                                        tintColor:[UIColor redColor]
                                                                     instructions:@"detailText1"
-                                                                        imageURL:[NSURL fileURLWithPath:@"1.png"]
+                                                                        imageURL:url1
                                                                         schedule:schedule
                                                                         userInfo:@{@"key":@"value1"}];
     
@@ -105,7 +112,7 @@
                                                                             text:@"text2"
                                                                        tintColor:[UIColor redColor]
                                                                     instructions:@"detailText2"
-                                                                        imageURL:[NSURL fileURLWithPath:@"2.png"]
+                                                                        imageURL:url2
                                                                         schedule:weeklySchedule
                                                                         userInfo:@{@"key":@"value2"}];
     
@@ -124,7 +131,7 @@
                                                                             text:@"text4"
                                                                        tintColor:[UIColor redColor]
                                                                     instructions:@"detailText4"
-                                                                        imageURL:[NSURL fileURLWithPath:@"4.png"]
+                                                                        imageURL:url4
                                                                         schedule:schedule
                                                                         userInfo:@{@"key":@"value4"}];
     
@@ -312,7 +319,7 @@
     
     XCTAssertEqualObjects(activities[0], item1);
     XCTAssertNotNil(activities[0].imageURL);
-    XCTAssertEqualObjects(activities[0].imageURL, [NSURL fileURLWithPath:@"1.png"]);
+    XCTAssertEqualObjects(activities[0].imageURL, url1);
     
     XCTAssertNotNil(activities[1].imageURL);
     XCTAssertNotNil(activities[3].imageURL);

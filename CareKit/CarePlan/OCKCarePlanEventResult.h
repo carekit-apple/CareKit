@@ -149,13 +149,13 @@ OCK_CLASS_AVAILABLE
  Attach the created instance to an OCKCarePlanEvent object using the OCKCarePlanStore API.
  
  @param categorySample          A HKCategorySample object that is in HealthKit.
- @param categoryValueStringKeys An array of localized string keys for the enum values in the HKCategorySample.
+ @param categoryValueStringKeys An dictionary of localized string keys for the enum values in the HKCategorySample.
  @param userInfo                Dictionary to save any additional objects that comply with the NSCoding protocol.
  
  @return Initialized instance.
  */
 - (instancetype)initWithCategorySample:(HKCategorySample *)categorySample
-               categoryValueStringKeys:(NSArray<NSString *> *)categoryValueStringKeys
+               categoryValueStringKeys:(NSDictionary<NSNumber *, NSString *> *)categoryValueStringKeys
                               userInfo:(nullable NSDictionary<NSString *, id<NSCoding>> *)userInfo;
 
 /**
@@ -180,7 +180,7 @@ OCK_CLASS_AVAILABLE
  Otherwise, you need to provide string keys for all possible system preferred HKUnit objects.
  This attribute only applies when the sample is HKQuantitySample or HKCorrelation type.
  */
-@property (nonatomic, copy, readonly, nullable) NSDictionary<HKUnit *, NSString *> * unitStringKeys;
+@property (nonatomic, copy, readonly, nullable) NSDictionary<HKUnit *, NSString *> *unitStringKeys;
 
 /**
  Formats the quantity value of an HKQuantitySample object to value string.
@@ -193,10 +193,10 @@ OCK_CLASS_AVAILABLE
 
 /**
  Localized string keys for the enum values in the HKCategorySample.
- The OCKCarePlanEventResult object use this string array to map an enum value to a string.
+ The OCKCarePlanEventResult object use this string dictionary to map an enum value to a string.
  This attribute only applies when the sample is HKCategorySample type.
  */
-@property (nonatomic, copy, readonly, nullable) NSArray<NSString *> *categoryValueStringKeys;
+@property (nonatomic, copy, readonly, nullable) NSDictionary<NSNumber *, NSString *> *categoryValueStringKeys;
 
 /**
  The HKSample object.

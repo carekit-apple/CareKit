@@ -39,7 +39,7 @@
     
     HKSampleType *_sampleType;
     NSUUID *_sampleUUID;
-    NSArray<NSString *> *_categoryValueStringKeys;
+    NSDictionary<NSNumber *, NSString *> *_categoryValueStringKeys;
     NSNumberFormatter *_quantityStringFormatter;
     HKUnit *_displayUnit;
     NSDictionary<HKUnit *, NSString *> *_unitStringKeys;
@@ -170,7 +170,7 @@
 }
 
 - (instancetype)initWithCategorySample:(HKCategorySample *)sample
-               categoryValueStringKeys:(NSArray<NSString *> *)categoryValueStringKeys
+               categoryValueStringKeys:(NSDictionary<NSNumber *, NSString *> *)categoryValueStringKeys
                               userInfo:(nullable NSDictionary<NSString *, id<NSCoding>> *)userInfo {
     
     NSParameterAssert(categoryValueStringKeys);
@@ -181,7 +181,7 @@
                  unitStringKeys:nil
                        userInfo:userInfo];
     
-    _categoryValueStringKeys = OCKArrayCopyObjects(categoryValueStringKeys);
+    _categoryValueStringKeys = [categoryValueStringKeys copy];
     return self;
 }
 
@@ -231,7 +231,7 @@
         if ([_sample isKindOfClass:[HKCategorySample class]] ) {
             HKCategorySample *categorySample = (HKCategorySample *)_sample;
             NSInteger value = categorySample.value;
-            string = (value >= 0 && value < _categoryValueStringKeys.count) ? NSLocalizedString(_categoryValueStringKeys[value], @"")  : @"";
+            string = (value >= 0) ? NSLocalizedString(_categoryValueStringKeys[@(value)], @"")  : @"";
         } else if ([_sample isKindOfClass:[HKQuantitySample class]]) {
             HKQuantitySample *sample = (HKQuantitySample *)_sample;
             HKUnit *unit = [self preferredUnit];
@@ -306,7 +306,7 @@
     return _quantityStringFormatter;
 }
 
-- (NSArray<NSString *> *)categoryValueStringKeys {
+- (NSDictionary<NSNumber *, NSString *> *)categoryValueStringKeys {
     return _categoryValueStringKeys;
 }
 

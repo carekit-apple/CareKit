@@ -125,6 +125,26 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (NSString *)chartView:(OCKGroupedBarChartView *)chartView subtitleForCategoryAtIndex:(NSUInteger)categoryIndex;
 
+/**
+ Maximum value of scale range.
+ If this method is not implemented, the maximum value is determined automaticly.
+ The specified maximum value will be ignored if it is less than the maximum value of the bar values.
+ 
+ @param     chartView           An object representing the chart view requesting this information.
+ @return    Maximum value of scale range.
+ */
+- (NSNumber *)maximumScaleRangeValueOfChartView:(OCKGroupedBarChartView *)chartView;
+
+/**
+ Minimum value of scale range.
+ If this method is not implemented, the minimum value is determined automaticly.
+ The specified minimum value will be ignored if it is greater than the minimum value of the bar values.
+ 
+ @param     chartView           An object representing the chart view requesting this information.
+ @return    Minimum value of scale range.
+ */
+- (NSNumber *)minimumScaleRangeValueOfChartView:(OCKGroupedBarChartView *)chartView;
+
 @end
 
 

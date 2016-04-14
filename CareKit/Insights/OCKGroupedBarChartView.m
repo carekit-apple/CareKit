@@ -635,6 +635,20 @@ static const CGFloat MarginBetweenGroups = 16.0;
             [_barGroups addObject:barGroup];
         }
         
+        if ([_dataSource respondsToSelector:@selector(minimumScaleRangeValueOfChartView:)]) {
+            NSNumber *sepecifiedMinValue = [_dataSource minimumScaleRangeValueOfChartView:self];
+            if (sepecifiedMinValue.doubleValue < minValue) {
+                minValue = sepecifiedMinValue.doubleValue;
+            }
+        }
+        
+        if ([_dataSource respondsToSelector:@selector(maximumScaleRangeValueOfChartView:)]) {
+            NSNumber *sepecifiedMaxValue = [_dataSource maximumScaleRangeValueOfChartView:self];
+            if (sepecifiedMaxValue.doubleValue > _maxValue) {
+                _maxValue = sepecifiedMaxValue.doubleValue;
+            }
+        }
+        
         // if minValue < 0, use the min value as the baseline to adjust bar values.
         if (minValue < 0) {
             for (OCKGroupedBarChartBarGroup *barGroup in _barGroups) {

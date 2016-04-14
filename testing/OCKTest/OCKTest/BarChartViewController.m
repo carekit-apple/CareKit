@@ -101,4 +101,12 @@
     return [NSString stringWithFormat:@"sub %@", @(categoryIndex)];
 }
 
+- (NSNumber *)maximumScaleRangeValueOfChartView:(OCKGroupedBarChartView *)chartView {
+    return @8;
+}
+
+- (NSNumber *)minimumScaleRangeValueOfChartView:(OCKGroupedBarChartView *)chartView {
+    return @(-8);
+}
+
 @end

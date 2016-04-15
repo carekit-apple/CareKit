@@ -83,6 +83,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
 }
 
 - (instancetype)initWithPersistenceDirectoryURL:(NSURL *)url {
+    NSAssert([NSThread currentThread].isMainThread, @"OCKCarePlanStore initialization must be on main thread");
     OCKThrowInvalidArgumentExceptionIfNil(url);
     NSFileManager *fileManager = [NSFileManager defaultManager];
     BOOL isDirectory = NO;
@@ -98,6 +99,11 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     if (self) {
         _persistenceDirectoryURL = url;
         _queue = dispatch_queue_create("CarePlanStore", DISPATCH_QUEUE_SERIAL);
+        NSError *error = nil;
+        [self setUpContextWithError:&error];
+        if (_managedObjectContext == nil) {
+            @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Failed to create a CoreData context." userInfo:@{@"error": error ? : @""}];
+        }
     }
     return self;
 }
@@ -117,7 +123,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     NSParameterAssert(coreDataClass);
     NSParameterAssert(sourceItem);
 
-    NSManagedObjectContext *context = [self contextWithError:error];
+    NSManagedObjectContext *context = _managedObjectContext;
     if (context == nil) {
         return NO;
     }
@@ -160,7 +166,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     NSParameterAssert(identifier);
     NSParameterAssert(opBlock);
     
-    NSManagedObjectContext *context = [self contextWithError:error];
+    NSManagedObjectContext *context = _managedObjectContext;
     if (context == nil) {
         return NO;
     }
@@ -207,7 +213,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
                                  error:(NSError **)error {
     NSParameterAssert(name);
     NSParameterAssert(identifier);
-    NSManagedObjectContext *context = [self contextWithError:error];
+    NSManagedObjectContext *context = _managedObjectContext;
     if (context == nil) {
         return NO;
     }
@@ -253,7 +259,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     NSParameterAssert(name);
     NSParameterAssert(containerClass);
     
-    NSManagedObjectContext *context = [self contextWithError:error];
+    NSManagedObjectContext *context = _managedObjectContext;
     if (context == nil) {
         return nil;
     }
@@ -276,7 +282,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
                                        error:(NSError **)error {
     NSParameterAssert(name);
     
-    NSManagedObjectContext *context = [self contextWithError:error];
+    NSManagedObjectContext *context = _managedObjectContext;
     if (context == nil) {
         return 0;
     }
@@ -367,7 +373,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
 - (void)fetchActivitiesWithPredicate:(NSPredicate *)predicate
                           completion:(void (^)(BOOL success, NSArray<OCKCarePlanActivity *> *activities, NSError *error))completion {
     NSError *errorOut = nil;
-    NSManagedObjectContext *context = [self contextWithError:&errorOut];
+    NSManagedObjectContext *context = _managedObjectContext;
     
     if (context == nil) {
         completion(NO, nil, errorOut);
@@ -421,7 +427,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     OCKThrowInvalidArgumentExceptionIfNil(activity);
     
     NSError *errorOut = nil;
-    NSManagedObjectContext *context = [self contextWithError:&errorOut];
+    NSManagedObjectContext *context = _managedObjectContext;
     
     if (context == nil) {
         completion(NO, errorOut);
@@ -449,7 +455,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     OCKThrowInvalidArgumentExceptionIfNil(activity);
     
     NSError *errorOut = nil;
-    NSManagedObjectContext *context = [self contextWithError:&errorOut];
+    NSManagedObjectContext *context = _managedObjectContext;
     
     if (context == nil) {
         completion(NO, errorOut);
@@ -480,7 +486,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     OCKThrowInvalidArgumentExceptionIfNil(activity);
     
     NSError *errorOut = nil;
-    NSManagedObjectContext *context = [self contextWithError:&errorOut];
+    NSManagedObjectContext *context = _managedObjectContext;
     
     if (context == nil) {
         completion(NO, nil, errorOut);
@@ -569,7 +575,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     
    
     NSError *error = nil;
-    NSManagedObjectContext *context = [self contextWithError:&error];
+    NSManagedObjectContext *context = _managedObjectContext;
     if (context == nil) {
         completion(nil, error);
         return;
@@ -627,7 +633,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     OCKThrowInvalidArgumentExceptionIfNil(completion);
     
     NSError *error = nil;
-    __block NSManagedObjectContext *context = [self contextWithError:&error];
+    __block NSManagedObjectContext *context = _managedObjectContext;
     if (context == nil) {
         completion(NO, event, error);
         return;
@@ -829,7 +835,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     }
     
     NSError *error = nil;
-    __block NSManagedObjectContext *context = [self contextWithError:&error];
+    __block NSManagedObjectContext *context = _managedObjectContext;
     if (context == nil) {
         dispatch_async(_queue, ^{
             completion(YES, error);
@@ -889,7 +895,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
 
 static NSString * const OCKCarePlanModelName =  @"OCKCarePlanStore";
 
-- (NSManagedObjectContext *)contextWithError:(NSError **)error {
+- (void)setUpContextWithError:(NSError **)error {
     if (_managedObjectContext == nil) {
         NSURL *modelURL = [OCKBundle() URLForResource:OCKCarePlanModelName
                                         withExtension:@"momd"];
@@ -897,7 +903,6 @@ static NSString * const OCKCarePlanModelName =  @"OCKCarePlanStore";
         _managedObjectContext = createManagedObjectContext(modelURL, storeURL, error);
         OCK_Log_Debug(@"%@", storeURL);
     }
-    return _managedObjectContext;
 }
 
 @end

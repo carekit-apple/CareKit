@@ -188,7 +188,9 @@ static const BOOL resetStoreOnLaunch = YES;
                                                       tintColor:color
                                                      axisTitles:axisTitles
                                                   axisSubtitles:axisSubtitles
-                                                     dataSeries:@[series1, series2]];
+                                                     dataSeries:@[series1, series2]
+                                         minimumScaleRangeValue:nil
+                                         maximumScaleRangeValue:@100];
         [items addObject:chart];
     }
     

@@ -47,11 +47,6 @@
     return nil;
 }
 
-- (CGFloat)height {
-    OCKThrowMethodUnavailableException();
-    return 0;
-}
-
 + (void)animateView:(UIView *)view withDuration:(NSTimeInterval)duration {
 }
 

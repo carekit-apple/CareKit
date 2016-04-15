@@ -127,7 +127,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  Maximum value of scale range.
- If this method is not implemented, the maximum value is determined automaticly.
+ If this method is not implemented, the maximum value is determined automatically.
  The specified maximum value will be ignored if it is less than the maximum value of the bar values.
  
  @param     chartView           An object representing the chart view requesting this information.
@@ -137,7 +137,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  Minimum value of scale range.
- If this method is not implemented, the minimum value is determined automaticly.
+ If this method is not implemented, the minimum value is determined automatically.
  The specified minimum value will be ignored if it is greater than the minimum value of the bar values.
  
  @param     chartView           An object representing the chart view requesting this information.

@@ -46,12 +46,36 @@ OCK_CLASS_AVAILABLE
  Returns an initialzed bar chart using the specified values.
  The number of categories is determined by the array with the largest count.
  
- @param title           The title for the chart (see `OCKInsightItem`).
- @param text            The description text for the chart (see `OCKInsightItem`).
- @param tintColor       The tint color for the chart (see `OCKInsightItem`).
- @param axisTitles      An array of strings representing the y-axis title for each category.
- @param axisSubtitles   An array of strings representing the y-axis subtitle for each category.
- @param dataSets        An array of `OCKDataSet` objects.
+ @param title                       The title for the chart (see `OCKInsightItem`).
+ @param text                        The description text for the chart (see `OCKInsightItem`).
+ @param tintColor                   The tint color for the chart (see `OCKInsightItem`).
+ @param axisTitles                  An array of strings representing the y-axis title for each category.
+ @param axisSubtitles               An array of strings representing the y-axis subtitle for each category.
+ @param dataSets                    An array of `OCKDataSet` objects.
+ @param minimumScaleRangeValue      The minimum value of scale range.
+ @param maximumScaleRangeValue      The maximum value of scale range.
+ 
+ @return An initialzed bar chart object.
+ */
+- (instancetype)initWithTitle:(nullable NSString *)title
+                         text:(nullable NSString *)text
+                    tintColor:(nullable UIColor *)tintColor
+                   axisTitles:(nullable NSArray<NSString *> *)axisTitles
+                axisSubtitles:(nullable NSArray<NSString *> *)axisSubtitles
+                   dataSeries:(NSArray<OCKBarSeries *> *)dataSeries
+       minimumScaleRangeValue:(nullable NSNumber *)minimumScaleRangeValue
+       maximumScaleRangeValue:(nullable NSNumber *)maximumScaleRangeValue;
+
+/**
+ Returns an initialzed bar chart using the specified values.
+ The number of categories is determined by the array with the largest count.
+ 
+ @param title                       The title for the chart (see `OCKInsightItem`).
+ @param text                        The description text for the chart (see `OCKInsightItem`).
+ @param tintColor                   The tint color for the chart (see `OCKInsightItem`).
+ @param axisTitles                  An array of strings representing the y-axis title for each category.
+ @param axisSubtitles               An array of strings representing the y-axis subtitle for each category.
+ @param dataSets                    An array of `OCKDataSet` objects.
  
  @return An initialzed bar chart object.
  */
@@ -76,6 +100,24 @@ OCK_CLASS_AVAILABLE
  An array of data series.
  */
 @property (nonatomic, copy, readonly) NSArray<OCKBarSeries *> *dataSeries;
+
+/**
+ Maximum value of scale range.
+ If this value is not specified, the maximum value is determined automatically.
+ 
+ The specified maximum value will be ignored if it is less than the maximum value of the bar values.
+ */
+@property (nonatomic, readonly, nullable) NSNumber *maximumScaleRangeValue;
+
+
+/**
+ Minimum value of scale range.
+ If this value is not specified, the minimum value is determined automatically.
+ 
+ The specified minimum value will be ignored if it is greater than the minimum value of the bar values.
+ */
+@property (nonatomic, readonly, nullable) NSNumber *minimumScaleRangeValue;
+
 
 @end
 

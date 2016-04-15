@@ -40,17 +40,19 @@ static const CGFloat ButtonSize = 30.0;
 }
 
 - (void)drawRect:(CGRect)rect {
-    _circleLayer = [CAShapeLayer layer];
-    _circleLayer.strokeColor = self.tintColor.CGColor;
-    _circleLayer.fillColor = [UIColor clearColor].CGColor;
-    [self updateFillColorForSelection:(self.isSelected || self.isHighlighted)];
-    _circleLayer.lineWidth = 2.5;
-    _circleLayer.path = [UIBezierPath bezierPathWithOvalInRect:CGRectMake(0, 0, ButtonSize, ButtonSize)].CGPath;
-    _circleLayer.fillRule = kCAFillRuleNonZero;
-    [self.layer addSublayer:_circleLayer];
-    
-    [[UIColor clearColor] setFill];
-    UIRectFill(_circleLayer.frame);
+    if (!_circleLayer) {
+        _circleLayer = [CAShapeLayer layer];
+        _circleLayer.strokeColor = self.tintColor.CGColor;
+        _circleLayer.fillColor = [UIColor clearColor].CGColor;
+        [self updateFillColorForSelection:(self.isSelected || self.isHighlighted)];
+        _circleLayer.lineWidth = 2.5;
+        _circleLayer.path = [UIBezierPath bezierPathWithOvalInRect:CGRectMake(0, 0, ButtonSize, ButtonSize)].CGPath;
+        _circleLayer.fillRule = kCAFillRuleNonZero;
+        [self.layer addSublayer:_circleLayer];
+        
+        [[UIColor clearColor] setFill];
+        UIRectFill(_circleLayer.frame);
+    }
 }
 
 - (void)setHighlighted:(BOOL)highlighted {

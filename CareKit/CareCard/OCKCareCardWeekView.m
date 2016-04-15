@@ -54,19 +54,7 @@ static const CGFloat BottomMargin = 5.0;
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        
-        if (!UIAccessibilityIsReduceTransparencyEnabled()) {
-            self.backgroundColor = [UIColor clearColor];
-            
-            UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
-            UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-            blurEffectView.frame = self.bounds;
-            blurEffectView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-            [self addSubview:blurEffectView];
-        } else {
-            self.backgroundColor = [UIColor whiteColor];
-        }
-        
+        self.backgroundColor = [UIColor whiteColor];        
         [self prepareView];
     }
     return self;

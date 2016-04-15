@@ -317,15 +317,11 @@ DefineStringKey(PhysicalTherapyIntervention);
 
 #pragma mark - Care Card Delegate (OCKCareCardViewControllerDelegate)
 
-- (BOOL)careCardViewController:(OCKCareCardViewController *)viewController shouldDisplayViewControllerForActivity:(OCKCarePlanActivity *)interventionActivity {
-    if ([interventionActivity.identifier isEqualToString:HamstringStretchIntervention]) {
-        return YES;
-    }
-    return NO;
+- (BOOL)careCardViewController:(OCKCareCardViewController *)viewController shouldHandleEventCompletionForActivity:(OCKCarePlanActivity *)interventionActivity {
+    return YES;
 }
 
 - (void)careCardViewController:(OCKCareCardViewController *)viewController didSelectButtonWithInterventionEvent:(OCKCarePlanEvent *)interventionEvent {
-    NSLog(@"%@", interventionEvent);
     OCKCarePlanStore *store = viewController.store;
     
     OCKCarePlanEventState state = (interventionEvent.state == OCKCarePlanEventStateCompleted) ? OCKCarePlanEventStateNotCompleted : OCKCarePlanEventStateCompleted;

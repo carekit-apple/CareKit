@@ -122,14 +122,16 @@ static const CGFloat HeaderViewHeight = 225.0;
         [contactInfoSection addObject:@(OCKConnectTypeEmail)];
     }
     
-    NSString *sharingTitle = OCKLocalizedString(@"SHARING_CELL_TITLE", nil);
-    if (self.delegate && [self.delegate respondsToSelector:@selector(connectViewController:titleForSharingCellForContact:)]) {
-        NSString *delegateTitle = [self.delegate connectViewController:self.masterViewController titleForSharingCellForContact:self.contact];
-        if (delegateTitle) {
-            sharingTitle = delegateTitle;
+    if (self.delegate) {
+        NSString *sharingTitle = OCKLocalizedString(@"SHARING_CELL_TITLE", nil);
+        if ([self.delegate respondsToSelector:@selector(connectViewController:titleForSharingCellForContact:)]) {
+            NSString *delegateTitle = [self.delegate connectViewController:self.masterViewController titleForSharingCellForContact:self.contact];
+            if (delegateTitle.length > 0) {
+                sharingTitle = delegateTitle;
+            }
         }
+        [sharingSection addObject:sharingTitle];
     }
-    [sharingSection addObject:sharingTitle];
     
     if (contactInfoSection.count > 0) {
         [_tableViewData addObject:[contactInfoSection copy]];

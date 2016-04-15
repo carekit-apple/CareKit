@@ -274,7 +274,6 @@ static const CGFloat ButtonViewSize = 40.0;
 
 - (void)toggleFrequencyButton:(id)sender {
     OCKCareCardButton *button = (OCKCareCardButton *)sender;
-    button.selected = !button.selected;
     [self updateAccessibilityInfo];
     
     NSInteger index = [_frequencyButtons indexOfObject:button];

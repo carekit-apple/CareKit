@@ -381,6 +381,12 @@
                           state:state
                      completion:^(BOOL success, OCKCarePlanEvent * _Nonnull event, NSError * _Nonnull error) {
                          NSAssert(success, error.localizedDescription);
+                         dispatch_async(dispatch_get_main_queue(), ^{
+                             NSMutableArray *events = [cell.interventionEvents mutableCopy];
+                             [events replaceObjectAtIndex:event.occurrenceIndexOfDay withObject:event];
+                             cell.interventionEvents = events;
+                             cell.showEdgeIndicator = cell.showEdgeIndicator;
+                         });
                      }];
     }
 }

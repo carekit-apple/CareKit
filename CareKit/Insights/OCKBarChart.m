@@ -52,12 +52,15 @@
     return nil;
 }
 
+
 - (instancetype)initWithTitle:(NSString *)title
                          text:(NSString *)text
                     tintColor:(UIColor *)tintColor
                    axisTitles:(NSArray<NSString *> *)axisTitles
                 axisSubtitles:(NSArray<NSString *> *)axisSubtitles
-                   dataSeries:(NSArray<OCKBarSeries *> *)dataSeries {
+                   dataSeries:(NSArray<OCKBarSeries *> *)dataSeries
+       minimumScaleRangeValue:(NSNumber *)minimumScaleRangeValue
+       maximumScaleRangeValue:(NSNumber *)maximumScaleRangeValue {
     self = [super init];
     if (self) {
         self.title = [title copy];
@@ -66,8 +69,26 @@
         _axisTitles = OCKArrayCopyObjects(axisTitles);
         _axisSubtitles = OCKArrayCopyObjects(axisSubtitles);
         _dataSeries = OCKArrayCopyObjects(dataSeries);
+        _minimumScaleRangeValue = minimumScaleRangeValue;
+        _maximumScaleRangeValue = maximumScaleRangeValue;
     }
     return self;
+}
+
+- (instancetype)initWithTitle:(NSString *)title
+                         text:(NSString *)text
+                    tintColor:(UIColor *)tintColor
+                   axisTitles:(NSArray<NSString *> *)axisTitles
+                axisSubtitles:(NSArray<NSString *> *)axisSubtitles
+                   dataSeries:(NSArray<OCKBarSeries *> *)dataSeries {
+    return [[OCKBarChart alloc] initWithTitle:title
+                                         text:text
+                                    tintColor:tintColor
+                                   axisTitles:axisTitles
+                                axisSubtitles:axisSubtitles
+                                   dataSeries:dataSeries
+                       minimumScaleRangeValue:nil
+                       maximumScaleRangeValue:nil];
 }
 
 - (BOOL)isEqual:(id)object {
@@ -77,7 +98,9 @@
     return (isParentSame &&
             OCKEqualObjects(self.axisTitles, castObject.axisTitles) &&
             OCKEqualObjects(self.axisSubtitles, castObject.axisSubtitles) &&
-            OCKEqualObjects(self.dataSeries, castObject.dataSeries));
+            OCKEqualObjects(self.dataSeries, castObject.dataSeries) &&
+            OCKEqualObjects(self.minimumScaleRangeValue, castObject.minimumScaleRangeValue) &&
+            OCKEqualObjects(self.maximumScaleRangeValue, castObject.maximumScaleRangeValue));
 }
 
 
@@ -93,6 +116,8 @@
         OCK_DECODE_OBJ_ARRAY(aDecoder, axisTitles, NSArray);
         OCK_DECODE_OBJ_ARRAY(aDecoder, axisSubtitles, NSArray);
         OCK_DECODE_OBJ_ARRAY(aDecoder, dataSeries, NSArray);
+        OCK_DECODE_OBJ_CLASS(aDecoder, minimumScaleRangeValue, NSNumber);
+        OCK_DECODE_OBJ_CLASS(aDecoder, maximumScaleRangeValue, NSNumber);
     }
     return self;
 }
@@ -102,6 +127,8 @@
     OCK_ENCODE_OBJ(aCoder, axisTitles);
     OCK_ENCODE_OBJ(aCoder, axisSubtitles);
     OCK_ENCODE_OBJ(aCoder, dataSeries);
+    OCK_ENCODE_OBJ(aCoder, minimumScaleRangeValue);
+    OCK_ENCODE_OBJ(aCoder, maximumScaleRangeValue);
 }
 
 
@@ -112,6 +139,8 @@
     chart->_axisTitles = OCKArrayCopyObjects(self.axisTitles);
     chart->_axisSubtitles = OCKArrayCopyObjects(self.axisSubtitles);
     chart->_dataSeries = OCKArrayCopyObjects(self.dataSeries);
+    chart->_minimumScaleRangeValue = self.minimumScaleRangeValue;
+    chart->_maximumScaleRangeValue = self.maximumScaleRangeValue;
     return chart;
 }
 
@@ -123,7 +152,7 @@
 }
 
 
-#pragma mark - OCKGroupedBarChartViewDataSource
+#pragma mark - OCKBarChart
 
 - (UIView *)chartView {
     OCKGroupedBarChartView *barChartView = [OCKGroupedBarChartView new];
@@ -138,7 +167,7 @@
 }
 
 
-#pragma mark - OCKGroupedBarChartDataSource
+#pragma mark - OCKGroupedBarChartViewDataSource
 
 - (NSInteger)numberOfCategoriesPerDataSeriesInChartView:(OCKGroupedBarChartView *)chartView {
     NSUInteger numberOfGroups = 0;
@@ -186,6 +215,14 @@
 
 - (NSString *)chartView:(OCKGroupedBarChartView *)chartView subtitleForCategoryAtIndex:(NSUInteger)categoryIndex {
     return [self isCategoryIndex:categoryIndex outofBoundsInArray:self.axisSubtitles] ? nil : self.axisSubtitles[categoryIndex];
+}
+
+- (NSNumber *)maximumScaleRangeValueOfChartView:(OCKGroupedBarChartView *)chartView {
+    return self.maximumScaleRangeValue;
+}
+
+- (NSNumber *)minimumScaleRangeValueOfChartView:(OCKGroupedBarChartView *)chartView {
+    return self.minimumScaleRangeValue;
 }
 
 @end

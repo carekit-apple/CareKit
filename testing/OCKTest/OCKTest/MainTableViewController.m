@@ -642,7 +642,7 @@ DefineStringKey(TemperatureAssessment);
     return title;
 }
 
-- (void)connectViewController:(OCKConnectViewController *)connectViewController didSelectShareButton:(UIButton *)shareButton contact:(OCKContact *)contact {
+- (void)connectViewController:(OCKConnectViewController *)connectViewController didSelectShareButtonForContact:(OCKContact *)contact presentationSourceView:(UIView *)sourceView {
     NSLog(@"Share button tapped");
 }
 

@@ -1,0 +1,67 @@
+/*
+ Copyright (c) 2016, Apple Inc. All rights reserved.
+ 
+ Redistribution and use in source and binary forms, with or without modification,
+ are permitted provided that the following conditions are met:
+ 
+ 1.  Redistributions of source code must retain the above copyright notice, this
+ list of conditions and the following disclaimer.
+ 
+ 2.  Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation and/or
+ other materials provided with the distribution.
+ 
+ 3.  Neither the name of the copyright holder(s) nor the names of any contributors
+ may be used to endorse or promote products derived from this software without
+ specific prior written permission. No license is granted to the trademarks of
+ the copyright holders even if such marks are included in this software.
+ 
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
+ FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+
+/* Care Card */
+"CARE_CARD_HEADER_TITLE" = "진찰 완료";
+"TODAY_BUTTON_TITLE" = "오늘";
+
+/* Care Card Detail View */
+"CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "지침";
+"CARE_CARD_ADDITIONAL_INFO_SECTION_TITLE" = "추가 정보";
+
+/* Symptom Tracker */
+"SYMPTOM_TRACKER_HEADER_TITLE" = "실험 완료";
+
+/* Connect Master View */
+"CARE_TEAM_SECTION_TITLE" = "의료진";
+"PERSONAL_SECTION_TITLE" = "친구 및 가족";
+"CONNECT_NO_CONTACTS_TITLE" = "연락처 없음";
+
+/* Connect Detail View */
+"CONTACT_INFO_SECTION_TITLE" = "연락처 정보";
+"CONTACT_SHARING_SECTION_TITLE" = "공유";
+"CONTACT_INFO_PHONE_TITLE" = "전화";
+"CONTACT_INFO_MESSAGE_TITLE" = "문자 메시지";
+"CONTACT_INFO_EMAIL_TITLE" = "이메일";
+"SHARING_CELL_TITLE" = "리포트 보내기";
+"ERROR_TITLE" = "오류";
+"MESSAGE_SEND_ERROR" = "메시지 전송 실패";
+"EMAIL_SEND_ERROR" = "이메일 전송 실패";
+
+/* ACCESSIBILITY */
+"AX_WEEK_BUTTON_PROGRESS" = "%@ 완료됨";
+"AX_CARE_CARD_COMPLETED" = "완료됨";
+"AX_CARE_CARD_INCOMPLETE" = "완료되지 않음";
+"AX_CARE_CARD_EVENT_LABEL" = "%@, %i/%lu, %@";
+"AX_CARE_CARD_HINT" = "지침을 보려면 이중 탭하십시오.";
+"AX_CARE_CARD_VALUE" = "%lu/%lu 완료";
+"AX_SYMPTOM_TRACKER_NOT_STARTED" = "시작되지 않음";
+

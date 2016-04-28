@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="10171" systemVersion="15E65" minimumToolsVersion="Xcode 7.0">
+    <entity name="OCKCDCarePlanActivity" representedClassName="OCKCDCarePlanActivity" syncable="YES">
+        <attribute name="color" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="groupIdentifier" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="identifier" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="imageURL" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="instructions" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="resultResettable" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="schedule" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="text" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="type" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="userInfo" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <relationship name="events" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="OCKCDCarePlanEvent" inverseName="activity" inverseEntity="OCKCDCarePlanEvent" syncable="YES"/>
+    </entity>
+    <entity name="OCKCDCarePlanEvent" representedClassName="OCKCDCarePlanEvent" syncable="YES">
+        <attribute name="numberOfDaysSinceStart" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="occurrenceIndexOfDay" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="state" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <relationship name="activity" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDCarePlanActivity" inverseName="events" inverseEntity="OCKCDCarePlanActivity" syncable="YES"/>
+        <relationship name="result" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="OCKCDCarePlanEventResult" inverseName="event" inverseEntity="OCKCDCarePlanEventResult" syncable="YES"/>
+    </entity>
+    <entity name="OCKCDCarePlanEventResult" representedClassName="OCKCDCarePlanEventResult" syncable="YES">
+        <attribute name="categoryValueStringKeys" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="creationDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="displayUnit" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="quantityStringFormatter" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="sampleType" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="sampleUUID" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="unitString" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="unitStringKeys" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="userInfo" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="valueString" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="event" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDCarePlanEvent" inverseName="result" inverseEntity="OCKCDCarePlanEvent" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="OCKCDCarePlanActivity" positionX="-560" positionY="-114" width="200" height="225"/>
+        <element name="OCKCDCarePlanEvent" positionX="-288" positionY="-111" width="243" height="120"/>
+        <element name="OCKCDCarePlanEventResult" positionX="-378" positionY="198" width="128" height="210"/>
+    </elements>
+</model>

@@ -215,7 +215,9 @@
 				8605A6151C4F0A3900DD65FF /* OCKTestUITests */,
 				8605A5EF1C4F0A3800DD65FF /* Products */,
 			);
+			indentWidth = 4;
 			sourceTree = "<group>";
+			tabWidth = 4;
 		};
 		8605A5EF1C4F0A3800DD65FF /* Products */ = {
 			isa = PBXGroup;

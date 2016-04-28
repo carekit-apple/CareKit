@@ -1,0 +1,4 @@
+[submodule "dependency"]
+	path = dependency
+	url = https://github.com/ResearchKit/ResearchKit.git
+	branch = stable

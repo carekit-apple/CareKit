@@ -6,7 +6,7 @@ better understand and manage their health.
 
 * [Getting Started](#gettingstarted)
 * Documentation:
-    * [Programming Guide](http://carekit.org/docs/docs/Overview/GuideOverview.html)
+    * [Programming Guide](http://carekit.org/docs/docs/Overview/Overview.html)
     *  [Framework Reference](http://carekit.org/docs/index.html)
 * [Best Practices](../../wiki/best-practices)
 * [Contributing to CareKit](CONTRIBUTING.md)

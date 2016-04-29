@@ -217,34 +217,62 @@ This sample reads all the activities from the store, and then iterates over the 
 ## Sharing Data with HealthKit
 Because CareKit and HealthKit both focus on health information, you may find it useful to share data between the two stores. Here's a code example that illustrates how this can be achieved:
 
-```objective-c
-- (void)symptomTrackerViewController:(OCKSymptomTrackerViewController *)viewController didSelectRowWithAssessmentEvent:(OCKCarePlanEvent *)assessmentEvent {
-	NSString *identifier = assessmentEvent.activity.identifier;
+```swift
+func symptomTrackerViewController(viewController: OCKSymptomTrackerViewController, didSelectRowWithAssessmentEvent assessmentEvent: OCKCarePlanEvent) {
 
-    if ([identifier isEqualToString:TemperatureAssessment]) {
-		//1. Present a survey to ask for temperature
-		// ...
+    let identifier = assessmentEvent.activity.identifier
 
-		//2. Save the collected temperature into health kit
-		HKHealthStore *hkstore = [HKHealthStore new];
-		HKQuantityType *type = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierBodyTemperature];
+    if identifier == TemperatureAssessment {
+        // 1. Present a survey to ask for temperature
+        // ...
 
-		[hkstore requestAuthorizationToShareTypes:[NSSet setWithObject:type] readTypes:[NSSet setWithObject:type] completion:^(BOOL success, NSError * _Nullable error) {
-		HKQuantitySample *sample = [HKQuantitySample quantitySampleWithType:type quantity:[HKQuantity quantityWithUnit:[HKUnit degreeFahrenheitUnit] doubleValue:99.1] startDate:[NSDate date] endDate:[NSDate date]];
+        // 2. Save the collected temperature into HealthKit
+        let hkStore = HKHealthStore()
+        let type = HKQuantityType.quantityTypeForIdentifier(HKQuantityTypeIdentifierBodyTemperature)!
+        hkStore.requestAuthorizationToShareTypes(
+            Set<HKSampleType>(arrayLiteral: type),
+            readTypes: Set<HKObjectType>(arrayLiteral: type),
+            completion: { (success, error) in
+                let sample = HKQuantitySample(
+                    type: type,
+                    quantity: HKQuantity(unit: HKUnit.degreeFahrenheitUnit(), doubleValue: 99.1),
+                    startDate: NSDate(),
+                    endDate: NSDate()
+                )
 
-		[hkstore saveObject:sample withCompletion:^(BOOL success, NSError * _Nullable error) {
-			// 3. When the collected temperature has been saved into health kit  
-			// Use the saved HKSample object to create a result object and save it to CarePlanStore.
-			// Then each time, CarePlanStore will load the temperature data from HealthKit.
-			OCKCarePlanEventResult *result = [[OCKCarePlanEventResult alloc] initWithQuantitySample:sample quantityStringFormatter:nil unitStringKeys:@{[HKUnit degreeFahrenheitUnit]: @"\u00B0F", [HKUnit degreeCelsiusUnit]: @"\u00B0C",} userInfo:nil];
+                hkStore.saveObject(
+                    sample,
+                    withCompletion: { (success, error) in
+                        // 3. When the collected temperature has been saved into HealthKit
+                        // Use the saved HKSample object to create a result object and save it to CarePlanStore.
+                        // Then each time, CarePlanStore will load the temperature data from HealthKit.
+                        let result = OCKCarePlanEventResult(
+                            quantitySample: sample,
+                            quantityStringFormatter: nil,
+                            unitStringKeys: [
+                                HKUnit.degreeFahrenheitUnit() : "\u{00B0F}",
+                                HKUnit.degreeCelsiusUnit()    : "\u{00B0C}"
+                            ],
+                            userInfo: nil
+                        )
 
-			[_store updateEvent:assessmentEvent withResult:result state:OCKCarePlanEventStateCompleted completion:^(BOOL success, OCKCarePlanEvent * _Nonnull event, NSError * _Nonnull error) {
-				NSAssert(success, error.localizedDescription);
-				}];
-			}];                                        
-		}];
-	}
-}             
+                        self.storeManager.store.updateEvent(
+                            assessmentEvent,
+                            withResult: result,
+                            state: .Completed,
+                            completion: { (success, event, errorOrNil) in
+                                guard success else {
+                                    // Add proper error handling here...
+                                    fatalError(errorOrNil!.localizedDescription)
+                                }
+                            }
+                        )
+                    }
+                )
+            }
+        )
+    }
+}
 ```
 
 In this example, a body temperature value is saved to a HealthKit store after being acquired from CareKit.

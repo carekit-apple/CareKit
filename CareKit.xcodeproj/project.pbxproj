@@ -583,7 +583,9 @@
 				8605A5C81C4F04EC00DD65FF /* CareKitTests */,
 				8605A5BB1C4F04EC00DD65FF /* Products */,
 			);
+			indentWidth = 4;
 			sourceTree = "<group>";
+			tabWidth = 4;
 		};
 		8605A5BB1C4F04EC00DD65FF /* Products */ = {
 			isa = PBXGroup;

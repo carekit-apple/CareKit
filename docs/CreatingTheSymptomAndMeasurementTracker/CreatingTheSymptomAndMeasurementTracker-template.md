@@ -17,7 +17,7 @@ The procedure for creating the Symptom and Measurement Tracker is similar to cre
 
 The Symptom and Measurement Tracker automatically displays the assessment activity events for each day and automatically tracks the user's progress as they complete these events.
 
- <center><img src="CreatingTheSymptomAndMeasurementTrackerImages/Evaluations.png" style="border: solid #e0e0e0 1px;" width="310" alt="Evaulation Screenshot"/>
+ <center><img src="CreatingTheSymptomAndMeasurementTrackerImages/Evaluations.png" style="border: solid #e0e0e0 1px;" width="310" alt="Evaluation Screenshot"/>
 <figcaption>Figure 2: An example evaluation.</figcaption></center>.
 
 ## Instantiate the Care Plan Store

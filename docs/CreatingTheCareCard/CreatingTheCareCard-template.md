@@ -124,7 +124,7 @@ To initialize your care card view controller, pass your care plan store to the c
 let careCardViewController = OCKCareCardViewController(carePlanStore: store)
 ```
 
-You can now present the care card by pushing it onto a navagation controller.
+You can now present the care card by pushing it onto a navigation controller.
 
 ```swift
 // presenting the view controller modally

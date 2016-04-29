@@ -19,7 +19,7 @@ You can display simple text messages using the `OCKMessageItem` class. This clas
 
 The following sample code creates the message shown in Figure 1.
 
-```
+```swift
 // Calculate the percentage of completed events.
 let medicationAdherence = Float(completedEventCount) / Float(totalEventCount)
 
@@ -55,7 +55,7 @@ For more information on reading data from the Care Plan Store, see [Accessing Ca
 
 ### Generating Your Labels
 
-You need to create a number of labels for your charts. The chart may have a title, text, axis labels, and axis sublabels; however, all of these labels are optional. 
+You need to create a number of labels for your charts. The chart may have a title, text, axis labels, and axis sublabels; however, all of these labels are optional.
 
 The title and text appear in the upper left corner, above the chart. In Figure 1, the title is "Back Pain," and the chart does not have a text label.
 
@@ -77,28 +77,28 @@ Because the chart's scale and origin are based on the data across all your serie
 
 ### Creating Your Series
 
-You need to instantiate one or more `OCKBarSeries` objects for your chart. Each distinct piece of data should have its own series. The following sample code demonstrates creating the series for the chart in Figure 1. 
+You need to instantiate one or more `OCKBarSeries` objects for your chart. Each distinct piece of data should have its own series. The following sample code demonstrates creating the series for the chart in Figure 1.
 
-```
+```swift
 // Create a `OCKBarSeries` for each set of data.
 let painBarSeries = OCKBarSeries(
     title: "Pain",
     values: painValues,
     valueLabels: painLabels,
     tintColor: Colors.Blue.color)
-        
+
 let medicationBarSeries = OCKBarSeries(
     title: "Medication Adherence",
     values: medicationValues,
     valueLabels: medicationLabels,
-    tintColor: Colors.LightBlue.color) 
+    tintColor: Colors.LightBlue.color)
 ```
 
 ### Creating Your Chart
 
 Once you have your series, you can create the chart. The following sample code demonstrates creating the chart from Figure 1.
 
-```
+```swift
 // Add the series to a chart.
 let chart = OCKBarChart(
     title: "Back Pain",
@@ -115,7 +115,7 @@ To create your Insights scene, instantiate and present an `OCKInsightsViewContro
 
 The following sample code creates an Insights view controller like the one shown in Figure 1.
 
-```
+```swift
 let insightsViewController = OCKInsightsViewController(
     insightItems: [message, chart],
     headerTitle: "Weekly Charts",
@@ -126,7 +126,7 @@ let insightsViewController = OCKInsightsViewController(
 
 CareKit's messages and charts are immutable objects, which means that you cannot change them after they are created. However, you can update your Insights scene by assigning a new array of insight items to the Insights view controller's `items` property, as shown below:
 
-```
+```swift
 insightsViewController.items = [message, chart]
 ```
 
@@ -137,65 +137,65 @@ CareKit automatically populates the scene with the new charts and messages.
 The following sample code shows a complete run through of all the steps needed to update an Insights View Controller, using the data gathered from the sample code in [Accessing Care Plan Data](../AccessingCarePlanData/AccessingCarePlanData.html).
 
 
-```
+```swift
 // Wait until all the data is gathered, then process the results.
 dispatch_group_notify(gatherDataGroup, mainQueue) {
-    
+
     // Generate the labels and data
     let dateStrings = completionData.map({(entry) -> String in
-        
+
         guard let date = calendar.dateFromComponents(entry.dateComponent) else {
             fatalError("Unable to create date")
         }
-        
+
         return NSDateFormatter.localizedStringFromDate(date, dateStyle: .ShortStyle, timeStyle: .NoStyle)
     })
-    
+
     let completionValues = completionData.map({ (entry) -> Double in
         return entry.value
     })
-    
+
     let completionValueLabels = completionValues.map({ (value) -> String in
         return NSNumberFormatter.localizedStringFromNumber(value, numberStyle: .PercentStyle)
     })
-    
+
     let rawStressValues = completionData.map({ (entry) -> Double? in
         return stressAssessmentData[entry.dateComponent]
     })
-    
+
     let stressValues = rawStressValues.map({ (valueOrNil) -> Double in
         guard let value = valueOrNil else {
             return 0.0
         }
-        
+
         // Scale to match the completion values
         return value / 10.0
     })
-    
+
     let stressValueLabels = rawStressValues.map({ (valueOrNil) -> String in
         guard let value = valueOrNil else {
             return ""
         }
-        
+
         return NSNumberFormatter.localizedStringFromNumber(value, numberStyle: .DecimalStyle)
     })
-    
+
     // Create the series
-    
+
     let completionSeries = OCKBarSeries(
         title: "Treatment Plan Completed",
         values: completionValues,
         valueLabels: completionValueLabels,
         tintColor: UIColor.blueColor())
-    
+
     let stressAssessmentSeries = OCKBarSeries(
         title: "Stress Assessment",
         values: stressValues,
         valueLabels: stressValueLabels,
         tintColor: UIColor.redColor())
-    
+
     // Create the chart
-    
+
     let chart = OCKBarChart(
         title: "Treatment Plan",
         text: "Compliance and Stress",
@@ -203,19 +203,19 @@ dispatch_group_notify(gatherDataGroup, mainQueue) {
         axisTitles: dateStrings,
         axisSubtitles: nil,
         dataSeries: [completionSeries, stressAssessmentSeries])
-    
+
     // Create the message
-    
+
     let averageCompliance = completionValues.reduce(0.0, combine: +) / Double(completionValues.count)
-    
+
     let messageString = "Over the last week, you completed an average of \(NSNumberFormatter.localizedStringFromNumber(averageCompliance, numberStyle: .PercentStyle)) of your treatment plan per day."
-    
+
     let message = OCKMessageItem(
         title: "Compliance Rate",
         text: messageString,
         tintColor: UIColor.blackColor(),
         messageType: .Alert)
-    
+
     // Update the view controller.
     insightViewControler.items = [chart, message]
 }
@@ -244,13 +244,12 @@ To create a document:
 
 The following sample code creates a subtitle element, a chart element, and a paragraph element.
 
-```
+```swift
 let subheadElement = OCKDocumentElementSubtitle(subtitle: "Weekly Summary")
 
 let chartElement = OCKDocumentElementChart(chart: chart)
 
 let paragraphElement = OCKDocumentElementParagraph(content: "Lorem ipsum dolor sit amet, vim primis noster sententiae ne, et albucius apeirian accusata mea, vim at dicunt laoreet. Eu probo omnes inimicus ius, duo at veritus alienum. Nostrud facilisi id pro. Putant oporteat id eos. Admodum antiopam mel in, at per everti quaeque. Lorem ipsum dolor sit amet, vim primis noster sententiae ne, et albucius apeirian accusata mea, vim at dicunt laoreet. Eu probo omnes inimicus ius, duo at veritus alienum. Nostrud facilisi id pro. Putant oporteat id eos. Admodum antiopam mel in, at per everti quaeque. Lorem ipsum dolor sit amet, vim primis noster sententiae ne, et albucius apeirian accusata mea, vim at dicunt laoreet. Eu probo omnes inimicus ius, duo at veritus alienum. Nostrud facilisi id pro. Putant oporteat id eos. Admodum antiopam mel in, at per everti quaeque.")
-
 ```
 
 **Note:** The `OCKDocumentElementChart` class lets you use CareKit charts in your documents, which means that you can use the same chart in both your reports and your Insights scene.
@@ -259,7 +258,7 @@ let paragraphElement = OCKDocumentElementParagraph(content: "Lorem ipsum dolor s
 
 With the document elements in hand, you can create the document and set its page headers, as shown below:
 
-```
+```swift
 let document = OCKDocument(title: "Weekly Update", elements: [subheadElement, chartElement, paragraphElement])
 
 document.pageHeader = "\(dateString) update for \(userName)"
@@ -269,13 +268,13 @@ document.pageHeader = "\(dateString) update for \(userName)"
 
 After you have created a valid document object, you can access the HTML or PDF data from the document. The code sample below demonstrates creating a PDF version of the document.
 
-```
+```swift
 document.createPDFDataWithCompletion { (PDFData, errorOrNil) in
     if let error = errorOrNil {
         // perform proper error checking here...
         fatalError(error.localizedDescription)
     }
-    
+
     // Do something with the PDF data here...
 }
 ```

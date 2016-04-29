@@ -131,7 +131,7 @@
 
 - (void)tintColorDidChange {
     [super tintColorDidChange];
-    [self prepareView];
+    _fillView.backgroundColor = self.tintColor;
 }
 
 @end

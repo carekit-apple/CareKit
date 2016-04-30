@@ -59,7 +59,7 @@ The user can select an activity to display the activity's detail scene. This sce
 
 Ideally, users should fill out the Care Card as they perform the events; however, they can also go back and edit previous days. Users can navigate to different days by tapping and swiping the hearts along the top of the screen. They cannot view or edit days in the future. 
 
-For more information, see [Creating the Care Card](CreatingTheCareCard).
+For more information, see [Creating the Care Card](../CreatingTheCareCard/CreatingTheCareCard-template.md).
 
 ### Symptom and Measurement Tracker
 
@@ -82,7 +82,7 @@ The large circle shows the percentage of the day’s events completed by the use
  
 Ideally, users should complete all the assignment events during their assigned day; however, you can optionally let users edit previous days. Users can navigates to different days by tapping and swiping the circles along the top of the screen. They cannot view or edit days in the future.
 
-For more information, see [Creating the Symptom & Measurement Tracker](CreatingAssessments). 
+For more information, see [Creating the Symptom & Measurement Tracker](../CreatingTheSymptomAndMeasurementTracker/CreatingTheSymptomAndMeasurementTracker-template.md). 
 
 ### Care Plan Store
 
@@ -92,7 +92,7 @@ Use the Care Plan Store to create or modify the care plan, or to access data abo
 
 Additionally, you can dynamically change the care plan at runtime. CareKit automatically updates both the Care Card and the Symptom and Measurement Tracker in response to any changes to the care plan. You can also monitor the Care Plan Store, letting your app perform any additional updates as needed.
 
-For more information, see [Accessing Care Plan Data](AccessingCarePlanData)
+For more information, see [Accessing Care Plan Data](../AccessingCarePlanData/AccessingCarePlanData-template.md)
 
 ### Insights
 
@@ -105,7 +105,7 @@ Bar charts can be used to show side-by-side comparisons of any data. A typical u
 
 The top right of the Insights scene provides a Share button that lets users share a PDF of the currently displayed charts.
 
-For more information, see [Presenting Care Plan Data](PresentingCarePlanData)
+For more information, see [Presenting Care Plan Data](../PresentingInsights/PresentingInsights-template.md)
 
 ### Connect
 
@@ -120,7 +120,7 @@ As with activities, you can either programmatically create the contacts, or load
 
 <center><img src="OverviewImages/ContactsDetail.png" width="310" style="border: solid #e0e0e0 1px;" alt="Contacts Screenshot"/><figcaption>Figure 6: The contacts detail scene.</figcaption></center>.
 
-For more information, see [Connecting with Care Teams and Emergency Contacts](ConnectingWithCareTeamsAndEmergencyContacts)
+For more information, see [Connecting with Care Teams and Emergency Contacts](../ConnectingWithCareTeamsAndPersonalContacts/ConnectingWithCareTeamsAndPersonalContacts-template.md)
 
 ## Leveraging Existing iOS Technologies
 

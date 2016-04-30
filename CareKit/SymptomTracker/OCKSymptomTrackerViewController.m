@@ -106,6 +106,7 @@
 
     NSAssert(self.navigationController, @"OCKSymptomTrackerViewController must be embedded in a navigation controller.");
     _weekViewController.symptomTrackerWeekView.delegate = self;
+    [_tableView reloadData];
 }
 
 - (void)showToday:(id)sender {

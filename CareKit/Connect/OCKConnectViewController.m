@@ -219,9 +219,11 @@
     OCKContact *contact = _sectionedContacts[indexPath.section][indexPath.row];
     
     OCKConnectDetailViewController *detailViewController = [[OCKConnectDetailViewController alloc] initWithContact:contact];
+    detailViewController.view.tintColor = self.view.tintColor;
     detailViewController.delegate = self.delegate;
     detailViewController.masterViewController = self;
     detailViewController.showEdgeIndicator = _showEdgeIndicators;
+    self.navigationController.navigationBar.tintColor = self.view.tintColor;
     [self.navigationController pushViewController:detailViewController animated:YES];
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];

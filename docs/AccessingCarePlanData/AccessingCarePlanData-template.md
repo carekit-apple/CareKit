@@ -250,8 +250,8 @@ func symptomTrackerViewController(viewController: OCKSymptomTrackerViewControlle
                             quantitySample: sample,
                             quantityStringFormatter: nil,
                             unitStringKeys: [
-                                HKUnit.degreeFahrenheitUnit() : "\u{00B0F}",
-                                HKUnit.degreeCelsiusUnit()    : "\u{00B0C}"
+                                HKUnit.degreeFahrenheitUnit() : "\u{00B0}F", // °F
+                                HKUnit.degreeCelsiusUnit()    : "\u{00B0}C"  // °C
                             ],
                             userInfo: nil
                         )

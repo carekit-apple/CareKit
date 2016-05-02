@@ -72,7 +72,6 @@
 }
 
 - (void)layoutSubviews {
-    
     [super layoutSubviews];
     
     CGSize maskImageSize = _maskImage.size;
@@ -89,7 +88,6 @@
     _imageView.frame = _maskView.frame;
     
     if(_fillView.layer.animationKeys.count == 0) {
-        
         [self updateFillViewFrame];
     }
 }
@@ -106,7 +104,6 @@
 }
 
 - (void)updateFillViewFrame {
-    
     CGRect fillViewFrame = _maskView.frame;
     fillViewFrame.origin.y = CGRectGetMaxY(_maskView.frame);
     fillViewFrame.size.height = -_value * CGRectGetHeight(_maskView.frame);
@@ -123,8 +120,7 @@
 
 - (void)setMaskImage:(UIImage *)maskImage {
     _maskImage = maskImage;
-    
-    if(maskImage) {
+    if(_maskImage) {
         [self prepareView];
     }
 }

@@ -139,12 +139,37 @@
 
 #pragma mark - Monogram
 - (NSString *)getMonogram:(NSString *)name {
-    NSArray *components = [name componentsSeparatedByString:@" "];
-    NSString *first = [NSString stringWithFormat:@"%c", [components[0] characterAtIndex:0]];
-    NSString *last = @"";
-    if (components.count > 1) {
-        last = [NSString stringWithFormat:@"%c", [components[components.count-1] characterAtIndex:0]];
+    
+    NSAssert((name != nil), @"A name must be supplied");
+    NSAssert((name.length > 0), @"A name must have > 0 chars");
+    
+    NSMutableArray *candidateWords = [NSMutableArray arrayWithArray:[name componentsSeparatedByString:@" "]];
+    NSMutableArray *blackListedWords = [NSMutableArray array];
+    
+    for (NSString *word in candidateWords) {
+        if ([word rangeOfString:@"."].location != NSNotFound) {
+            [blackListedWords addObject:word];
+        }
     }
+    
+    [candidateWords removeObjectsInArray:blackListedWords];
+    
+    NSString *first = @"";
+    NSString *last = @"";
+
+    if (candidateWords.count > 0) {
+        first = [NSString stringWithFormat:@"%c", [candidateWords[0] characterAtIndex:0]];
+        if (candidateWords.count > 1) {
+            last = [NSString stringWithFormat:@"%c", [candidateWords[candidateWords.count-1] characterAtIndex:0]];
+        }
+
+    } else {
+        @throw [NSException exceptionWithName:NSInvalidArgumentException reason:[NSString stringWithFormat:@"name %@ has no candidates to generate a monogram", name] userInfo:nil];
+    }
+    
+    blackListedWords = nil;
+    candidateWords = nil;
+    
     return [NSString stringWithFormat:@"%@%@",[first uppercaseString],[last uppercaseString]];
 }
 

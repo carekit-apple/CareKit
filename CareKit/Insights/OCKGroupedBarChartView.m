@@ -119,7 +119,7 @@ static const CGFloat MarginBetweenGroups = 16.0;
         animation.duration = duration * _bar.value.doubleValue/_maxValue;
         animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
         animation.fillMode = kCAFillModeBoth;
-        animation.removedOnCompletion = true;
+        animation.removedOnCompletion = YES;
         
         [_barLayer addAnimation:animation forKey:animation.keyPath];
     }
@@ -134,7 +134,7 @@ static const CGFloat MarginBetweenGroups = 16.0;
         animation.duration = duration * _bar.value.doubleValue/_maxValue;
         animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
         animation.fillMode = kCAFillModeBoth;
-        animation.removedOnCompletion = true;
+        animation.removedOnCompletion = YES;
         
         [_valueLabel.layer addAnimation:animation forKey:animation.keyPath];
     }

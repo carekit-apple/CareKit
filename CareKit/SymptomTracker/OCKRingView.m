@@ -229,7 +229,7 @@ static const double VALUE_MAX = 1.0;
                 animation.duration = 1.25;
                 animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
                 animation.fillMode = kCAFillModeBoth;
-                animation.removedOnCompletion = false;
+                animation.removedOnCompletion = NO;
                 
                 [CATransaction setCompletionBlock:^{
                     if ([caid isEqual:_transactionID]) {

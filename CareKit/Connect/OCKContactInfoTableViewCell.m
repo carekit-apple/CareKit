@@ -61,7 +61,7 @@ static const CGFloat IconButtonSize = 35.0;
 
 - (void)prepareView {
     if (!_iconButton) {
-        _iconButton = [UIButton new];
+        _iconButton = [UIButton buttonWithType:UIButtonTypeSystem];
         [_iconButton addTarget:self
                         action:@selector(buttonSelected:)
               forControlEvents:UIControlEventTouchUpInside];

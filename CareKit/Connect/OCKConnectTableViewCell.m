@@ -98,10 +98,10 @@ static const CGFloat ImageViewSize = 40.0;
     
     if (self.contact.image) {
         _imageView.image = self.contact.image;
-        _imageView.backgroundColor = [UIColor clearColor];
         _monogramLabel.text = nil;
     } else {
         _imageView.image = nil;
+<<<<<<< cbbd275cb2b82d1333c5da03a3cd207a09442c16
         _imageView.backgroundColor = OCKSystemGrayColor();
         
         NSString *monogram = self.contact.monogram;
@@ -109,11 +109,20 @@ static const CGFloat ImageViewSize = 40.0;
         stringRange = [monogram rangeOfComposedCharacterSequencesForRange:stringRange];
         NSString *clippedMonogram = [monogram substringWithRange:stringRange];
         _monogramLabel.text = clippedMonogram;
+=======
+        _monogramLabel.text = self.contact.monogram;
+>>>>>>> Better highlight state for connect cell monogram.
     }
+    
+    [self updateImageViewBackgroundColor];
     
     _nameLabel.text = self.contact.name;
     
     _relationLabel.text = self.contact.relation;
+}
+
+- (void)updateImageViewBackgroundColor {
+    _imageView.backgroundColor = self.contact.image ? [UIColor clearColor] : OCKSystemGrayColor();
 }
 
 - (void)setUpConstraints {
@@ -238,6 +247,16 @@ static const CGFloat ImageViewSize = 40.0;
                                         ]];
     
     [NSLayoutConstraint activateConstraints:_constraints];
+}
+
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
+    [super setSelected:selected animated:animated];
+    [self updateImageViewBackgroundColor];
+}
+
+- (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated {
+    [super setHighlighted:highlighted animated:animated];
+    [self updateImageViewBackgroundColor];
 }
 
 - (void)layoutSubviews {

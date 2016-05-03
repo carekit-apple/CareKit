@@ -49,7 +49,7 @@
                        emailAddress:(NSString *)emailAddress
                            monogram:(NSString *)monogram
                               image:(UIImage *)image {
-    NSAssert((monogram || image), @"An OCKContact must have either a monogram or an image.");
+    //NSAssert((monogram || image), @"An OCKContact must have either a monogram or an image.");
     
     self = [super init];
     if (self) {
@@ -60,6 +60,9 @@
         _phoneNumber = [phoneNumber copy];
         _messageNumber = [messageNumber copy];
         _emailAddress = [emailAddress copy];
+        if (monogram == NULL) {
+            monogram = [self getMonogram:(name)];
+        }
         _monogram = [monogram copy];
         _image = image;
     }
@@ -132,6 +135,17 @@
     contact->_monogram = [self.monogram copy];
     contact->_image = self.image;
     return contact;
+}
+
+#pragma mark - Monogram
+- (NSString *)getMonogram:(NSString *)name {
+    NSArray *components = [name componentsSeparatedByString:@" "];
+    NSString *first = [NSString stringWithFormat:@"%c", [components[0] characterAtIndex:0]];
+    NSString *last = @"";
+    if (components.count > 1) {
+        last = [NSString stringWithFormat:@"%c", [components[components.count-1] characterAtIndex:0]];
+    }
+    return [NSString stringWithFormat:@"%@%@",[first uppercaseString],[last uppercaseString]];
 }
 
 @end

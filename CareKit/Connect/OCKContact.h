@@ -82,7 +82,7 @@ OCK_CLASS_AVAILABLE
                         phoneNumber:(nullable CNPhoneNumber *)phoneNumber
                       messageNumber:(nullable CNPhoneNumber *)messageNumber
                        emailAddress:(nullable NSString *)emailAddress
-                           monogram:(NSString *)monogram
+                           monogram:(nullable NSString *)monogram
                               image:(nullable UIImage *)image;
 
 /**

@@ -67,7 +67,7 @@ static const CGFloat HeartViewSize = 30.0;
                                                                         toItem:self
                                                                      attribute:NSLayoutAttributeCenterY
                                                                     multiplier:1.0
-                                                                      constant:0.0],
+                                                                      constant:8.0],
                                         [NSLayoutConstraint constraintWithItem:self.heartView
                                                                      attribute:NSLayoutAttributeWidth
                                                                      relatedBy:NSLayoutRelationEqual

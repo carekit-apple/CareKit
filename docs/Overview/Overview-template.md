@@ -82,7 +82,7 @@ The large circle shows the percentage of the day’s events completed by the use
  
 Ideally, users should complete all the assignment events during their assigned day; however, you can optionally let users edit previous days. Users can navigates to different days by tapping and swiping the circles along the top of the screen. They cannot view or edit days in the future.
 
-For more information, see [Creating the Symptom & Measurement Tracker](CreatingAssessments). 
+For more information, see [Creating the Symptom & Measurement Tracker](CreatingTheSymptomAndMeasurementTracker). 
 
 ### Care Plan Store
 

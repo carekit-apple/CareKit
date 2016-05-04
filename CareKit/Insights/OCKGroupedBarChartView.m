@@ -40,6 +40,7 @@ static const CGFloat BarPointSize = 12.0;
 static const CGFloat BarEndFontSize = 11.0;
 static const CGFloat MarginBetweenBars = 2.0;
 static const CGFloat MarginBetweenGroups = 16.0;
+static const CGFloat MarginBetweenBarAndLabel = 6.0;
 
 @interface OCKGroupedBarChartBar : NSObject
 
@@ -119,22 +120,19 @@ static const CGFloat MarginBetweenGroups = 16.0;
         animation.duration = duration * _bar.value.doubleValue/_maxValue;
         animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
         animation.fillMode = kCAFillModeBoth;
-        animation.removedOnCompletion = true;
+        animation.removedOnCompletion = YES;
         
         [_barLayer addAnimation:animation forKey:animation.keyPath];
     }
     
     {
-        CGPoint position = CGPointMake(_valueLabel.layer.position.x, _valueLabel.layer.position.y);
-        CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"position"];
-        
-        animation.fromValue = [NSValue valueWithCGPoint:CGPointMake(0, position.y)];
-        animation.toValue = [NSValue valueWithCGPoint:position];
-        
+        CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"position.x"];
+        animation.fromValue = @(MarginBetweenBarAndLabel + CGRectGetWidth(_valueLabel.frame)/2.0);
+        animation.toValue = @(_valueLabel.layer.position.x);
         animation.duration = duration * _bar.value.doubleValue/_maxValue;
         animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
         animation.fillMode = kCAFillModeBoth;
-        animation.removedOnCompletion = true;
+        animation.removedOnCompletion = YES;
         
         [_valueLabel.layer addAnimation:animation forKey:animation.keyPath];
     }
@@ -148,7 +146,6 @@ static const CGFloat MarginBetweenGroups = 16.0;
     if (_barLayer == nil || _barLayer.bounds.size.width != barWidth) {
         
         [_barLayer removeFromSuperlayer];
-        _barLayer = [[CAShapeLayer alloc] init];
         UIBezierPath *path = [[UIBezierPath alloc] init];
         [path moveToPoint:CGPointMake(0, barHeight/2)];
         [path addLineToPoint:CGPointMake(barWidth, barHeight/2)];
@@ -163,6 +160,7 @@ static const CGFloat MarginBetweenGroups = 16.0;
 
 - (void)prepareView {
     _barView = [UIView new];
+    _barLayer = [[CAShapeLayer alloc] init];
 #if LAYOUT_DEBUG
     _barView.backgroundColor = [[UIColor orangeColor] colorWithAlphaComponent:0.2];
 #endif
@@ -181,7 +179,8 @@ static const CGFloat MarginBetweenGroups = 16.0;
     
     NSMutableArray *constraints = [NSMutableArray new];
     
-    [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[barView]-6.0-[valueLabel]"
+    NSString *visualFormat = [NSString stringWithFormat:@"H:|[barView]-%f-[valueLabel]", MarginBetweenBarAndLabel];
+    [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:visualFormat   
                                                           options:NSLayoutFormatDirectionLeadingToTrailing
                                                           metrics:nil
                                                             views:views]];

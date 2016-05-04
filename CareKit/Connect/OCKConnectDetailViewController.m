@@ -204,11 +204,6 @@ static const CGFloat HeaderViewHeight = 225.0;
     return UITableViewAutomaticDimension;
 }
 
-- (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath {
-    return NO;
-}
-
-
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -252,6 +247,18 @@ static const CGFloat HeaderViewHeight = 225.0;
     return nil;
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    NSString *sectionTitle = _sectionTitles[indexPath.section];
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+
+    if ([sectionTitle isEqualToString:_contactInfoSectionTitle]) {
+        [self contactInfoTableViewCellDidSelectConnection:(OCKContactInfoTableViewCell*)cell];
+    } else if ([sectionTitle isEqualToString:_sharingSectionTitle]) {
+        [self sharingTableViewCellDidSelectShareButton:(OCKContactSharingTableViewCell *)cell];
+    }
+}
 
 #pragma mark - MFMessageComposeViewControllerDelegate
 
@@ -264,7 +271,6 @@ static const CGFloat HeaderViewHeight = 225.0;
         [self presentViewController:alertController animated:YES completion:nil];
     }
 }
-
 
 #pragma mark - MFMailComposeViewControllerDelegate
 

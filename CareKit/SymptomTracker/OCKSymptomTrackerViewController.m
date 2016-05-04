@@ -84,8 +84,7 @@
                                                                               style:UIBarButtonItemStylePlain
                                                                              target:self
                                                                              action:@selector(showToday:)];
-    self.navigationItem.rightBarButtonItem.tintColor = self.progressRingTintColor;
-    
+
     _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
     _tableView.dataSource = self;
     _tableView.delegate = self;
@@ -103,9 +102,11 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    
+    self.navigationItem.rightBarButtonItem.tintColor = self.view.tintColor;
+
     NSAssert(self.navigationController, @"OCKSymptomTrackerViewController must be embedded in a navigation controller.");
     _weekViewController.symptomTrackerWeekView.delegate = self;
+    [_tableView reloadData];
 }
 
 - (void)showToday:(id)sender {

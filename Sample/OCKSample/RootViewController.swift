@@ -236,7 +236,6 @@ extension RootViewController: OCKConnectViewControllerDelegate {
     func connectViewController(connectViewController: OCKConnectViewController, didSelectShareButtonForContact contact: OCKContact, presentationSourceView sourceView: UIView) {
         let document = sampleData.generateSampleDocument()
         let activityViewController = UIActivityViewController(activityItems: [document], applicationActivities: nil)
-        activityViewController.popoverPresentationController?.sourceView = sourceView
         
         presentViewController(activityViewController, animated: true, completion: nil)
     }

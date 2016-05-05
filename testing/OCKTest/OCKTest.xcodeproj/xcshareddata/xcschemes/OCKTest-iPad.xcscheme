@@ -14,8 +14,8 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "2DD2F1281CD990F600622794"
-               BuildableName = "OCKTest.app"
+               BlueprintIdentifier = "2D7FEC431CDC0C890097A8F2"
+               BuildableName = "OCKTest-iPad.app"
                BlueprintName = "OCKTest-iPad"
                ReferencedContainer = "container:OCKTest.xcodeproj">
             </BuildableReference>
@@ -32,8 +32,8 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "2DD2F1281CD990F600622794"
-            BuildableName = "OCKTest.app"
+            BlueprintIdentifier = "2D7FEC431CDC0C890097A8F2"
+            BuildableName = "OCKTest-iPad.app"
             BlueprintName = "OCKTest-iPad"
             ReferencedContainer = "container:OCKTest.xcodeproj">
          </BuildableReference>
@@ -55,8 +55,8 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "2DD2F1281CD990F600622794"
-            BuildableName = "OCKTest.app"
+            BlueprintIdentifier = "2D7FEC431CDC0C890097A8F2"
+            BuildableName = "OCKTest-iPad.app"
             BlueprintName = "OCKTest-iPad"
             ReferencedContainer = "container:OCKTest.xcodeproj">
          </BuildableReference>
@@ -74,8 +74,8 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "2DD2F1281CD990F600622794"
-            BuildableName = "OCKTest.app"
+            BlueprintIdentifier = "2D7FEC431CDC0C890097A8F2"
+            BuildableName = "OCKTest-iPad.app"
             BlueprintName = "OCKTest-iPad"
             ReferencedContainer = "container:OCKTest.xcodeproj">
          </BuildableReference>

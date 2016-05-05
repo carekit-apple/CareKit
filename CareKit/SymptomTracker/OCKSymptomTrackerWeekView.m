@@ -42,7 +42,6 @@ static const CGFloat RingButtonSize = 20.0;
 static const CGFloat TopMargin = 15.0;
 static const CGFloat LeadingMargin = 15.0;
 static const CGFloat TrailingMargin = 15.0;
-static const CGFloat BottomMargin = 5.0;
 
 @implementation OCKSymptomTrackerWeekView {
     OCKWeekLabelsView *_weekView;

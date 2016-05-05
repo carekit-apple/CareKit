@@ -475,7 +475,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = CareKitTester/CareKitTester.entitlements;
+				CODE_SIGN_ENTITLEMENTS = OCKTest/OCKTest.entitlements;
 				INFOPLIST_FILE = "$(SRCROOT)/OCKTest/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = org.carekit.OCKTest;
@@ -488,7 +488,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = CareKitTester/CareKitTester.entitlements;
+				CODE_SIGN_ENTITLEMENTS = OCKTest/OCKTest.entitlements;
 				INFOPLIST_FILE = "$(SRCROOT)/OCKTest/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = org.carekit.OCKTest;

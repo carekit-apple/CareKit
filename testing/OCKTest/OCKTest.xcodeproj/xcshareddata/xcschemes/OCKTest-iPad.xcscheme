@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "2DBE4CEE1CD988E600B31591"
-               BuildableName = "CareKitTester.app"
-               BlueprintName = "CareKitTester"
-               ReferencedContainer = "container:CareKitTester.xcodeproj">
+               BlueprintIdentifier = "2DD2F1281CD990F600622794"
+               BuildableName = "OCKTest.app"
+               BlueprintName = "OCKTest-iPad"
+               ReferencedContainer = "container:OCKTest.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -32,10 +32,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "2DBE4CEE1CD988E600B31591"
-            BuildableName = "CareKitTester.app"
-            BlueprintName = "CareKitTester"
-            ReferencedContainer = "container:CareKitTester.xcodeproj">
+            BlueprintIdentifier = "2DD2F1281CD990F600622794"
+            BuildableName = "OCKTest.app"
+            BlueprintName = "OCKTest-iPad"
+            ReferencedContainer = "container:OCKTest.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -55,10 +55,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "2DBE4CEE1CD988E600B31591"
-            BuildableName = "CareKitTester.app"
-            BlueprintName = "CareKitTester"
-            ReferencedContainer = "container:CareKitTester.xcodeproj">
+            BlueprintIdentifier = "2DD2F1281CD990F600622794"
+            BuildableName = "OCKTest.app"
+            BlueprintName = "OCKTest-iPad"
+            ReferencedContainer = "container:OCKTest.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -74,10 +74,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "2DBE4CEE1CD988E600B31591"
-            BuildableName = "CareKitTester.app"
-            BlueprintName = "CareKitTester"
-            ReferencedContainer = "container:CareKitTester.xcodeproj">
+            BlueprintIdentifier = "2DD2F1281CD990F600622794"
+            BuildableName = "OCKTest.app"
+            BlueprintName = "OCKTest-iPad"
+            ReferencedContainer = "container:OCKTest.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

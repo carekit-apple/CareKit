@@ -176,7 +176,6 @@ extension RootViewController: ORKTaskViewControllerDelegate {
 
         // Check assessment can be associated with a HealthKit sample.
         guard let healthSampleBuilder = sampleAssessment as? HealthSampleBuilder else {
-            print("Not Health Kit")
             completion(carePlanResult: carePlanResult, savedToHealthKit: false)
             return
         }
@@ -188,33 +187,33 @@ extension RootViewController: ORKTaskViewControllerDelegate {
         // Requst authorization to store the HealthKit sample.
         let healthStore = HKHealthStore()
         healthStore.requestAuthorizationToShareTypes(sampleTypes, readTypes: sampleTypes) { success, _ in
-            // Check if authorization was granted.
-            if !success {
-                 // Fall back to the simple `OCKCarePlanEventResult`
+            guard success else {
+                 // Check if authorization was grante and fall back to the simple `OCKCarePlanEventResult`
                 completion(carePlanResult: carePlanResult, savedToHealthKit: false)
                 return
             }
 
             // Save the HealthKit sample in the HealthKit store.
             healthStore.saveObject(sample) { success, _ in
-                if success {
-                    /*
-                     The sample was saved to the HealthKit store. Use it
-                     to create an `OCKCarePlanEventResult`
-                     */
-                    let healthKitAssociatedResult = OCKCarePlanEventResult(
-                        quantitySample: sample,
-                        quantityStringFormatter: nil,
-                        displayUnit: healthSampleBuilder.unit,
-                        displayUnitStringKey: healthSampleBuilder.localizedUnitForSample(sample),
-                        userInfo: nil
-                    )
-                    completion(carePlanResult: healthKitAssociatedResult, savedToHealthKit: true)
-                }
-                else {
-                     // Fall back to the simple `OCKCarePlanEventResult`
+                guard success else {
+                    // Fall back to the simple `OCKCarePlanEventResult`
                     completion(carePlanResult: carePlanResult, savedToHealthKit: false)
+                    return
                 }
+
+                /*
+                 The sample was saved to the HealthKit store. Use it
+                 to create an `OCKCarePlanEventResult`
+                 */
+                let healthKitAssociatedResult = OCKCarePlanEventResult(
+                    quantitySample: sample,
+                    quantityStringFormatter: nil,
+                    displayUnit: healthSampleBuilder.unit,
+                    displayUnitStringKey: healthSampleBuilder.localizedUnitForSample(sample),
+                    userInfo: nil
+                )
+
+                completion(carePlanResult: healthKitAssociatedResult, savedToHealthKit: true)
             }
         }
     }

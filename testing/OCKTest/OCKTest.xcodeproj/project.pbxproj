@@ -7,11 +7,26 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2DD2F1181CD98D2300622794 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DD2F1171CD98D2300622794 /* HealthKit.framework */; };
+		2D365AEC1CDC150200B147FC /* Info-iPad.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2D365AEB1CDC150200B147FC /* Info-iPad.plist */; };
+		2D365AF11CDC15A300B147FC /* BarChartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DF2B6461CDC06F7003632BE /* BarChartViewController.swift */; };
+		2D365AF21CDC15A300B147FC /* SymptomTrackerTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DF2B64D1CDC06F7003632BE /* SymptomTrackerTableViewController.swift */; };
+		2D365AF31CDC15A300B147FC /* InsightsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DF2B64B1CDC06F7003632BE /* InsightsTableViewController.swift */; };
+		2D365AF41CDC15A300B147FC /* CareCardTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DF2B6471CDC06F7003632BE /* CareCardTableViewController.swift */; };
+		2D365AF51CDC15A300B147FC /* ConnectTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DF2B6481CDC06F7003632BE /* ConnectTableViewController.swift */; };
+		2D365AF61CDC15A300B147FC /* CustomChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DF2B6491CDC06F7003632BE /* CustomChart.swift */; };
+		2D365AF71CDC15A300B147FC /* DocumentsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DF2B64A1CDC06F7003632BE /* DocumentsTableViewController.swift */; };
+		2D365AF81CDC15A300B147FC /* LoremIpsum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DF2B64C1CDC06F7003632BE /* LoremIpsum.swift */; };
+		2D365AF91CDC15A300B147FC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DF2B6451CDC06F7003632BE /* AppDelegate.swift */; };
+		2D365AFB1CDC15A300B147FC /* CareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DD2F1201CD98F8300622794 /* CareKit.framework */; };
+		2D365AFE1CDC15A300B147FC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2DF2B6591CDC075A003632BE /* Main.storyboard */; };
+		2D365AFF1CDC15A300B147FC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2DF2B6611CDC07D6003632BE /* Assets.xcassets */; };
+		2D365B001CDC15A300B147FC /* Info-iPad.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2D365AEB1CDC150200B147FC /* Info-iPad.plist */; };
+		2D365B011CDC15A300B147FC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2DF2B6571CDC075A003632BE /* LaunchScreen.storyboard */; };
+		2D365B021CDC15A300B147FC /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2DF2B6691CDC07F5003632BE /* Info.plist */; };
+		2D365B031CDC15A300B147FC /* OCKTest.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 2DF2B6661CDC07E3003632BE /* OCKTest.entitlements */; };
+		2D365B051CDC15A300B147FC /* CareKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2DD2F1201CD98F8300622794 /* CareKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		2DD2F1231CD98F8A00622794 /* CareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DD2F1201CD98F8300622794 /* CareKit.framework */; };
 		2DD2F1241CD98F8A00622794 /* CareKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2DD2F1201CD98F8300622794 /* CareKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		2DD2F1361CD990F600622794 /* CareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DD2F1201CD98F8300622794 /* CareKit.framework */; };
-		2DD2F13D1CD990F600622794 /* CareKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2DD2F1201CD98F8300622794 /* CareKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		2DF2B64E1CDC06F7003632BE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DF2B6451CDC06F7003632BE /* AppDelegate.swift */; };
 		2DF2B64F1CDC06F7003632BE /* BarChartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DF2B6461CDC06F7003632BE /* BarChartViewController.swift */; };
 		2DF2B6501CDC06F7003632BE /* CareCardTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DF2B6471CDC06F7003632BE /* CareCardTableViewController.swift */; };
@@ -22,18 +37,20 @@
 		2DF2B6551CDC06F7003632BE /* LoremIpsum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DF2B64C1CDC06F7003632BE /* LoremIpsum.swift */; };
 		2DF2B6561CDC06F7003632BE /* SymptomTrackerTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DF2B64D1CDC06F7003632BE /* SymptomTrackerTableViewController.swift */; };
 		2DF2B65B1CDC075A003632BE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2DF2B6571CDC075A003632BE /* LaunchScreen.storyboard */; };
-		2DF2B65C1CDC075A003632BE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2DF2B6571CDC075A003632BE /* LaunchScreen.storyboard */; };
 		2DF2B65D1CDC075A003632BE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2DF2B6591CDC075A003632BE /* Main.storyboard */; };
-		2DF2B65E1CDC075A003632BE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2DF2B6591CDC075A003632BE /* Main.storyboard */; };
 		2DF2B6621CDC07D6003632BE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2DF2B6611CDC07D6003632BE /* Assets.xcassets */; };
-		2DF2B6631CDC07D6003632BE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2DF2B6611CDC07D6003632BE /* Assets.xcassets */; };
 		2DF2B6671CDC07E3003632BE /* OCKTest.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 2DF2B6661CDC07E3003632BE /* OCKTest.entitlements */; };
-		2DF2B6681CDC07E3003632BE /* OCKTest.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 2DF2B6661CDC07E3003632BE /* OCKTest.entitlements */; };
 		2DF2B66A1CDC07F5003632BE /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2DF2B6691CDC07F5003632BE /* Info.plist */; };
-		2DF2B66B1CDC07F5003632BE /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2DF2B6691CDC07F5003632BE /* Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		2D365AEF1CDC15A300B147FC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2DD2F1191CD98F8300622794 /* CareKit.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 8605A5B91C4F04EC00DD65FF;
+			remoteInfo = CareKit;
+		};
 		2DD2F11F1CD98F8300622794 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 2DD2F1191CD98F8300622794 /* CareKit.xcodeproj */;
@@ -55,16 +72,20 @@
 			remoteGlobalIDString = 8605A5B91C4F04EC00DD65FF;
 			remoteInfo = CareKit;
 		};
-		2DD2F12A1CD990F600622794 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 2DD2F1191CD98F8300622794 /* CareKit.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 8605A5B91C4F04EC00DD65FF;
-			remoteInfo = CareKit;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		2D365B041CDC15A300B147FC /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				2D365B051CDC15A300B147FC /* CareKit.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		2DD2F1271CD98F8A00622794 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -76,24 +97,13 @@
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		2DD2F13C1CD990F600622794 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				2DD2F13D1CD990F600622794 /* CareKit.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		2D365AEB1CDC150200B147FC /* Info-iPad.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Info-iPad.plist"; path = "OCKTest/Info-iPad.plist"; sourceTree = SOURCE_ROOT; };
+		2D365B091CDC15A300B147FC /* OCKTest-iPad.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "OCKTest-iPad.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2DBE4CEF1CD988E600B31591 /* OCKTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OCKTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		2DD2F1171CD98D2300622794 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
 		2DD2F1191CD98F8300622794 /* CareKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CareKit.xcodeproj; path = ../../CareKit.xcodeproj; sourceTree = "<group>"; };
-		2DD2F1411CD990F600622794 /* OCKTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OCKTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2DF2B6451CDC06F7003632BE /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = OCKTest/AppDelegate.swift; sourceTree = SOURCE_ROOT; };
 		2DF2B6461CDC06F7003632BE /* BarChartViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BarChartViewController.swift; path = OCKTest/BarChartViewController.swift; sourceTree = SOURCE_ROOT; };
 		2DF2B6471CDC06F7003632BE /* CareCardTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CareCardTableViewController.swift; path = OCKTest/CareCardTableViewController.swift; sourceTree = SOURCE_ROOT; };
@@ -111,20 +121,19 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		2D365AFA1CDC15A300B147FC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2D365AFB1CDC15A300B147FC /* CareKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		2DBE4CEC1CD988E600B31591 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				2DD2F1231CD98F8A00622794 /* CareKit.framework in Frameworks */,
-				2DD2F1181CD98D2300622794 /* HealthKit.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		2DD2F1351CD990F600622794 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				2DD2F1361CD990F600622794 /* CareKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -135,7 +144,6 @@
 			isa = PBXGroup;
 			children = (
 				2DD2F1191CD98F8300622794 /* CareKit.xcodeproj */,
-				2DD2F1171CD98D2300622794 /* HealthKit.framework */,
 				2DBE4CF11CD988E600B31591 /* OCKTest */,
 			);
 			sourceTree = "<group>";
@@ -144,7 +152,7 @@
 			isa = PBXGroup;
 			children = (
 				2DBE4CEF1CD988E600B31591 /* OCKTest.app */,
-				2DD2F1411CD990F600622794 /* OCKTest.app */,
+				2D365B091CDC15A300B147FC /* OCKTest-iPad.app */,
 			);
 			name = Products;
 			path = ..;
@@ -177,6 +185,7 @@
 				2DF2B6611CDC07D6003632BE /* Assets.xcassets */,
 				2DF2B6661CDC07E3003632BE /* OCKTest.entitlements */,
 				2DF2B6691CDC07F5003632BE /* Info.plist */,
+				2D365AEB1CDC150200B147FC /* Info-iPad.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -193,6 +202,25 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		2D365AED1CDC15A300B147FC /* OCKTest-iPad */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2D365B061CDC15A300B147FC /* Build configuration list for PBXNativeTarget "OCKTest-iPad" */;
+			buildPhases = (
+				2D365AF01CDC15A300B147FC /* Sources */,
+				2D365AFA1CDC15A300B147FC /* Frameworks */,
+				2D365AFD1CDC15A300B147FC /* Resources */,
+				2D365B041CDC15A300B147FC /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				2D365AEE1CDC15A300B147FC /* PBXTargetDependency */,
+			);
+			name = "OCKTest-iPad";
+			productName = CareKitTester;
+			productReference = 2D365B091CDC15A300B147FC /* OCKTest-iPad.app */;
+			productType = "com.apple.product-type.application";
+		};
 		2DBE4CEE1CD988E600B31591 /* OCKTest */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2DBE4D011CD988E600B31591 /* Build configuration list for PBXNativeTarget "OCKTest" */;
@@ -212,25 +240,6 @@
 			productReference = 2DBE4CEF1CD988E600B31591 /* OCKTest.app */;
 			productType = "com.apple.product-type.application";
 		};
-		2DD2F1281CD990F600622794 /* OCKTest-iPad */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 2DD2F13E1CD990F600622794 /* Build configuration list for PBXNativeTarget "OCKTest-iPad" */;
-			buildPhases = (
-				2DD2F12B1CD990F600622794 /* Sources */,
-				2DD2F1351CD990F600622794 /* Frameworks */,
-				2DD2F1381CD990F600622794 /* Resources */,
-				2DD2F13C1CD990F600622794 /* Embed Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				2DD2F1291CD990F600622794 /* PBXTargetDependency */,
-			);
-			name = "OCKTest-iPad";
-			productName = CareKitTester;
-			productReference = 2DD2F1411CD990F600622794 /* OCKTest.app */;
-			productType = "com.apple.product-type.application";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -241,18 +250,18 @@
 				LastUpgradeCheck = 0730;
 				ORGANIZATIONNAME = carekit.org;
 				TargetAttributes = {
+					2D365AED1CDC15A300B147FC = {
+						SystemCapabilities = {
+							com.apple.HealthKit = {
+								enabled = 0;
+							};
+						};
+					};
 					2DBE4CEE1CD988E600B31591 = {
 						CreatedOnToolsVersion = 7.3;
 						SystemCapabilities = {
 							com.apple.HealthKit = {
 								enabled = 1;
-							};
-						};
-					};
-					2DD2F1281CD990F600622794 = {
-						SystemCapabilities = {
-							com.apple.HealthKit = {
-								enabled = 0;
 							};
 						};
 					};
@@ -278,7 +287,7 @@
 			projectRoot = "";
 			targets = (
 				2DBE4CEE1CD988E600B31591 /* OCKTest */,
-				2DD2F1281CD990F600622794 /* OCKTest-iPad */,
+				2D365AED1CDC15A300B147FC /* OCKTest-iPad */,
 			);
 		};
 /* End PBXProject section */
@@ -301,33 +310,51 @@
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
+		2D365AFD1CDC15A300B147FC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2D365AFE1CDC15A300B147FC /* Main.storyboard in Resources */,
+				2D365AFF1CDC15A300B147FC /* Assets.xcassets in Resources */,
+				2D365B001CDC15A300B147FC /* Info-iPad.plist in Resources */,
+				2D365B011CDC15A300B147FC /* LaunchScreen.storyboard in Resources */,
+				2D365B021CDC15A300B147FC /* Info.plist in Resources */,
+				2D365B031CDC15A300B147FC /* OCKTest.entitlements in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		2DBE4CED1CD988E600B31591 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				2DF2B65D1CDC075A003632BE /* Main.storyboard in Resources */,
 				2DF2B6621CDC07D6003632BE /* Assets.xcassets in Resources */,
+				2D365AEC1CDC150200B147FC /* Info-iPad.plist in Resources */,
 				2DF2B65B1CDC075A003632BE /* LaunchScreen.storyboard in Resources */,
 				2DF2B66A1CDC07F5003632BE /* Info.plist in Resources */,
 				2DF2B6671CDC07E3003632BE /* OCKTest.entitlements in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		2DD2F1381CD990F600622794 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				2DF2B65E1CDC075A003632BE /* Main.storyboard in Resources */,
-				2DF2B6631CDC07D6003632BE /* Assets.xcassets in Resources */,
-				2DF2B65C1CDC075A003632BE /* LaunchScreen.storyboard in Resources */,
-				2DF2B66B1CDC07F5003632BE /* Info.plist in Resources */,
-				2DF2B6681CDC07E3003632BE /* OCKTest.entitlements in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		2D365AF01CDC15A300B147FC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2D365AF11CDC15A300B147FC /* BarChartViewController.swift in Sources */,
+				2D365AF21CDC15A300B147FC /* SymptomTrackerTableViewController.swift in Sources */,
+				2D365AF31CDC15A300B147FC /* InsightsTableViewController.swift in Sources */,
+				2D365AF41CDC15A300B147FC /* CareCardTableViewController.swift in Sources */,
+				2D365AF51CDC15A300B147FC /* ConnectTableViewController.swift in Sources */,
+				2D365AF61CDC15A300B147FC /* CustomChart.swift in Sources */,
+				2D365AF71CDC15A300B147FC /* DocumentsTableViewController.swift in Sources */,
+				2D365AF81CDC15A300B147FC /* LoremIpsum.swift in Sources */,
+				2D365AF91CDC15A300B147FC /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		2DBE4CEB1CD988E600B31591 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -344,25 +371,18 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		2DD2F12B1CD990F600622794 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		2D365AEE1CDC15A300B147FC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = CareKit;
+			targetProxy = 2D365AEF1CDC15A300B147FC /* PBXContainerItemProxy */;
+		};
 		2DD2F1261CD98F8A00622794 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = CareKit;
 			targetProxy = 2DD2F1251CD98F8A00622794 /* PBXContainerItemProxy */;
-		};
-		2DD2F1291CD990F600622794 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = CareKit;
-			targetProxy = 2DD2F12A1CD990F600622794 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -386,6 +406,30 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		2D365B071CDC15A300B147FC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = "$(SRCROOT)/OCKTest/Info-iPad.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.carekit.OCKTest-iPad";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		2D365B081CDC15A300B147FC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = "$(SRCROOT)/OCKTest/Info-iPad.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.carekit.OCKTest-iPad";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		2DBE4CFF1CD988E600B31591 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -497,33 +541,18 @@
 			};
 			name = Release;
 		};
-		2DD2F13F1CD990F600622794 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				INFOPLIST_FILE = "$(SRCROOT)/OCKTest/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = org.carekit.OCKTest;
-				PRODUCT_NAME = OCKTest;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		2DD2F1401CD990F600622794 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				INFOPLIST_FILE = "$(SRCROOT)/OCKTest/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = org.carekit.OCKTest;
-				PRODUCT_NAME = OCKTest;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		2D365B061CDC15A300B147FC /* Build configuration list for PBXNativeTarget "OCKTest-iPad" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2D365B071CDC15A300B147FC /* Debug */,
+				2D365B081CDC15A300B147FC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		2DBE4CEA1CD988E600B31591 /* Build configuration list for PBXProject "OCKTest" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -538,15 +567,6 @@
 			buildConfigurations = (
 				2DBE4D021CD988E600B31591 /* Debug */,
 				2DBE4D031CD988E600B31591 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		2DD2F13E1CD990F600622794 /* Build configuration list for PBXNativeTarget "OCKTest-iPad" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				2DD2F13F1CD990F600622794 /* Debug */,
-				2DD2F1401CD990F600622794 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

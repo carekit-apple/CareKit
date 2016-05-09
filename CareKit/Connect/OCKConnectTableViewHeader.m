@@ -123,7 +123,11 @@ static const CGFloat ImageViewSize = 135.0;
     }
     
     _relationLabel.text = self.contact.relation;
-    _titleLabel.text = self.contact.name;
+    if (self.contact.title) {
+        _titleLabel.text = [NSString stringWithFormat:@"%@ %@",self.contact.title, self.contact.name];
+    } else {
+        _titleLabel.text = self.contact.name;
+    }
 }
 
 - (void)setUpConstraints {

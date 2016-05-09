@@ -105,7 +105,12 @@ static const CGFloat ImageViewSize = 40.0;
         _monogramLabel.text = self.contact.monogram;
     }
     
-    _nameLabel.text = self.contact.name;
+    if (self.contact.title) {
+        _nameLabel.text = [NSString stringWithFormat:@"%@ %@",self.contact.title, self.contact.name];
+    } else {
+        _nameLabel.text = self.contact.name;
+    }
+    
     _relationLabel.text = self.contact.relation;
 }
 

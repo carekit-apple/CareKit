@@ -65,6 +65,7 @@ OCK_CLASS_AVAILABLE
  
  @param type                The contact type.
  @param name                The contact name.
+ @param title               The contact academic title.
  @param relation            The relationship to the contact.
  @param tintColor           The contact tint color.
  @param phoneNumber         The contact phone number.
@@ -77,6 +78,7 @@ OCK_CLASS_AVAILABLE
  */
 - (instancetype)initWithContactType:(OCKContactType)type
                                name:(NSString *)name
+                              title:(nullable NSString *)title
                            relation:(NSString *)relation
                           tintColor:(nullable UIColor *)tintColor
                         phoneNumber:(nullable CNPhoneNumber *)phoneNumber
@@ -97,6 +99,11 @@ OCK_CLASS_AVAILABLE
  A string indicating the name for a contact.
  */
 @property (nonatomic, readonly) NSString *name;
+
+/**
+ A string indicating the academin title for a contact.
+ */
+@property (nonatomic, readonly, nullable) NSString *title;
 
 /**
  A string indicating the relationship to a contact.
@@ -137,9 +144,9 @@ OCK_CLASS_AVAILABLE
 /**
  A string indicating the monogram for a contact.
  
- If a monogram is not provided, the image will be used for the contact.
+ If a monogram is not provided, it will be generated automatically.
  */
-@property (nonatomic, readonly) NSString *monogram;
+@property (nonatomic, readonly, nullable) NSString *monogram;
 
 /**
  An image for a contact.

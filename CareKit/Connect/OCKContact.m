@@ -42,6 +42,7 @@
 
 - (instancetype)initWithContactType:(OCKContactType)type
                                name:(NSString *)name
+                              title:(NSString *)title
                            relation:(NSString *)relation
                           tintColor:(UIColor *)tintColor
                         phoneNumber:(CNPhoneNumber *)phoneNumber
@@ -51,10 +52,15 @@
                               image:(UIImage *)image {
     //NSAssert((monogram || image), @"An OCKContact must have either a monogram or an image.");
     
+    if (title) {
+        NSAssert(![title isEqualToString:@""], @"Use nil if not set, don't use empty string");
+    }
+
     self = [super init];
     if (self) {
         _type = type;
         _name = [name copy];
+        _title = [title copy];
         _relation = [relation copy];
         _tintColor = tintColor;
         _phoneNumber = [phoneNumber copy];
@@ -76,6 +82,7 @@
     return (isParentSame &&
             (self.type == castObject.type) &&
             OCKEqualObjects(self.name, castObject.name) &&
+            OCKEqualObjects(self.title, castObject.title) &&
             OCKEqualObjects(self.relation, castObject.relation) &&
             OCKEqualObjects(self.tintColor, castObject.tintColor) &&
             OCKEqualObjects(self.phoneNumber, castObject.phoneNumber) &&
@@ -97,6 +104,7 @@
     if (self) {
         OCK_DECODE_ENUM(aDecoder, type);
         OCK_DECODE_OBJ_CLASS(aDecoder, name, NSString);
+        OCK_DECODE_OBJ_CLASS(aDecoder, title, NSString);
         OCK_DECODE_OBJ_CLASS(aDecoder, relation, NSString);
         OCK_DECODE_OBJ_CLASS(aDecoder, tintColor, UIColor);
         OCK_DECODE_OBJ_CLASS(aDecoder, phoneNumber, CNPhoneNumber);
@@ -111,6 +119,7 @@
 - (void)encodeWithCoder:(NSCoder *)aCoder {
     OCK_ENCODE_ENUM(aCoder, type);
     OCK_ENCODE_OBJ(aCoder, name);
+    OCK_ENCODE_OBJ(aCoder, title);
     OCK_ENCODE_OBJ(aCoder, relation);
     OCK_ENCODE_OBJ(aCoder, tintColor);
     OCK_ENCODE_OBJ(aCoder, phoneNumber);
@@ -127,6 +136,7 @@
     OCKContact *contact = [[[self class] allocWithZone:zone] init];
     contact->_type = self.type;
     contact->_name = [self.name copy];
+    contact->_title = [self.title copy];
     contact->_relation = [self.relation copy];
     contact->_tintColor = self.tintColor;
     contact->_phoneNumber = self.phoneNumber;

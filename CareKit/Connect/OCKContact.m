@@ -66,10 +66,7 @@
         _phoneNumber = [phoneNumber copy];
         _messageNumber = [messageNumber copy];
         _emailAddress = [emailAddress copy];
-        if (monogram == NULL) {
-            monogram = [self getMonogram:(name)];
-        }
-        _monogram = [monogram copy];
+        self.monogram = [monogram copy];
         _image = image;
     }
     return self;
@@ -148,7 +145,14 @@
 }
 
 #pragma mark - Monogram
-- (NSString *)getMonogram:(NSString *)name {
+- (void)setMonogram:(NSString * _Null_unspecified)monogram {
+    if (!monogram) {
+        monogram = [self generateMonogram:_name];
+    }
+    _monogram = [monogram copy];
+}
+
+- (NSString *)generateMonogram:(NSString *)name {
     
     NSAssert((name != nil), @"A name must be supplied");
     NSAssert((name.length > 0), @"A name must have > 0 chars");

@@ -82,15 +82,6 @@
 }
 
 
-#pragma mark - Helpers
-
-- (NSString *)clippedMonogramForString:(NSString *)string {
-    NSRange stringRange = {0, MIN([string length], 2)};
-    stringRange = [string rangeOfComposedCharacterSequencesForRange:stringRange];
-    return [string substringWithRange:stringRange];
-}
-
-
 #pragma mark - NSSecureCoding
 
 + (BOOL)supportsSecureCoding {

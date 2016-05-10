@@ -207,7 +207,9 @@
 				B555657F1CC82FEF00513644 /* Linked frameworks */,
 				B5C1008E1CB12E0C00FAD7E8 /* Products */,
 			);
+			indentWidth = 4;
 			sourceTree = "<group>";
+			tabWidth = 4;
 		};
 		B5C1008E1CB12E0C00FAD7E8 /* Products */ = {
 			isa = PBXGroup;
@@ -520,6 +522,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.example.apple-samplecode.CareKit";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -534,6 +537,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.example.apple-samplecode.CareKit";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};

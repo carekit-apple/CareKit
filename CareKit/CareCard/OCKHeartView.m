@@ -55,34 +55,61 @@
     [_imageView removeFromSuperview];
     [_maskImageView removeFromSuperview];
     
-    _maskView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
+    _maskView = [[UIView alloc] init];
     _maskImageView = [[UIImageView alloc] initWithImage:_maskImage];
-    _maskImageView.frame = _maskView.frame;
     _maskImageView.contentMode = UIViewContentModeScaleAspectFit;
     [_maskView addSubview:_maskImageView];
     self.maskView = _maskView;
     self.clipsToBounds = YES;
     
     _imageView = [[UIImageView alloc] initWithImage:_maskImage];
-    _imageView.frame = _maskView.frame;
     _imageView.contentMode = UIViewContentModeScaleAspectFit;
     [self insertSubview:_imageView belowSubview:_maskView];
     
-    _fillView = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMinX(self.bounds), CGRectGetMaxY(self.bounds), CGRectGetMaxX(self.bounds), CGRectGetMaxY(self.bounds))];
+    _fillView = [[UIView alloc] init];
     _fillView.backgroundColor = self.tintColor;
     [self addSubview:_fillView];
+}
+
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    
+    CGSize maskImageSize = _maskImage.size;
+    
+    CGFloat widthRatio = self.bounds.size.width / maskImageSize.width;
+    CGFloat heightRatio = self.bounds.size.height / maskImageSize.height;
+    CGFloat scale = MIN(widthRatio, heightRatio);
+    CGFloat imageWidth = scale * maskImageSize.width;
+    CGFloat imageHeight = scale * maskImageSize.height;
+    
+    _maskView.frame = CGRectMake(0.0, 0.0, imageWidth, imageHeight);
+    _maskView.center = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
+    _maskImageView.frame = _maskView.bounds;
+    _imageView.frame = _maskView.frame;
+    
+    if(_fillView.layer.animationKeys.count == 0) {
+        [self updateFillViewFrame];
+    }
 }
 
 - (void)animateFill {
     if (self.animationEnabled) {
         [UIView animateWithDuration:1.25 delay:0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
-            _fillView.frame = CGRectMake(CGRectGetMinX(self.bounds), CGRectGetMaxY(self.bounds), CGRectGetMaxX(self.bounds), -_value * CGRectGetMaxY(self.bounds));
+            [self updateFillViewFrame];
         } completion:^(BOOL finished) {
         }];
     } else {
-        _fillView.frame = CGRectMake(CGRectGetMinX(self.bounds), CGRectGetMaxY(self.bounds), CGRectGetMaxX(self.bounds), -_value * CGRectGetMaxY(self.bounds));
+        [self updateFillViewFrame];
     }
 }
+
+- (void)updateFillViewFrame {
+    CGRect fillViewFrame = _maskView.frame;
+    fillViewFrame.origin.y = CGRectGetMaxY(_maskView.frame);
+    fillViewFrame.size.height = -_value * CGRectGetHeight(_maskView.frame);
+    _fillView.frame = fillViewFrame;
+}
+
 
 - (void)setValue:(double)value {
     if (_value != value) {
@@ -93,12 +120,14 @@
 
 - (void)setMaskImage:(UIImage *)maskImage {
     _maskImage = maskImage;
-    [self prepareView];
+    if(_maskImage) {
+        [self prepareView];
+    }
 }
 
 - (void)tintColorDidChange {
     [super tintColorDidChange];
-    [self prepareView];
+    _fillView.backgroundColor = self.tintColor;
 }
 
 @end

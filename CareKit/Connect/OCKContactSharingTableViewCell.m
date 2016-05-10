@@ -62,7 +62,7 @@ static const CGFloat HorizontalMargin = 5.0;
     }
     
     if (!_shareButton) {
-        _shareButton = [UIButton new];
+        _shareButton = [UIButton buttonWithType:UIButtonTypeSystem];
         [_shareButton addTarget:self
                          action:@selector(buttonSelected:)
                forControlEvents:UIControlEventTouchUpInside];

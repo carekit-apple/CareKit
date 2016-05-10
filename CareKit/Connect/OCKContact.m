@@ -147,15 +147,6 @@
     NSAssert((name.length > 0), @"A name must have > 0 chars");
     
     NSMutableArray *candidateWords = [NSMutableArray arrayWithArray:[name componentsSeparatedByString:@" "]];
-    NSMutableArray *blackListedWords = [NSMutableArray array];
-    
-    for (NSString *word in candidateWords) {
-        if ([word rangeOfString:@"."].location != NSNotFound) {
-            [blackListedWords addObject:word];
-        }
-    }
-    
-    [candidateWords removeObjectsInArray:blackListedWords];
     
     NSString *first = @"";
     NSString *last = @"";
@@ -170,7 +161,6 @@
         @throw [NSException exceptionWithName:NSInvalidArgumentException reason:[NSString stringWithFormat:@"name %@ has no candidates to generate a monogram", name] userInfo:nil];
     }
     
-    blackListedWords = nil;
     candidateWords = nil;
     
     return [NSString stringWithFormat:@"%@%@",[first uppercaseString],[last uppercaseString]];

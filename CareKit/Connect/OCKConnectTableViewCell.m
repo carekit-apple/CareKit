@@ -85,6 +85,7 @@ static const CGFloat ImageViewSize = 40.0;
         _monogramLabel.textColor = [UIColor whiteColor];
         _monogramLabel.textAlignment = NSTextAlignmentCenter;
         _monogramLabel.font = [UIFont boldSystemFontOfSize:16.0];
+        _monogramLabel.adjustsFontSizeToFitWidth = YES;
         [self addSubview:_monogramLabel];
     }
     

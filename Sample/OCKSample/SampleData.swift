@@ -57,7 +57,7 @@ class SampleData: NSObject {
             phoneNumber: CNPhoneNumber(stringValue: "888-555-5512"),
             messageNumber: CNPhoneNumber(stringValue: "888-555-5512"),
             emailAddress: "mruiz2@mac.com",
-            monogram: nil,
+            monogram: "MR",
             image: nil),
 
         OCKContact(contactType: .CareTeam,

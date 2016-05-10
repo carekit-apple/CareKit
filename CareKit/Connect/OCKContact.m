@@ -59,11 +59,7 @@
         _phoneNumber = [phoneNumber copy];
         _messageNumber = [messageNumber copy];
         _emailAddress = [emailAddress copy];
-<<<<<<< c434cd8323a26cee9b795b800a6627f60547a5a9
-        self.monogram = [monogram copy];
-=======
-        _monogram = [self clippedMonogramForString:monogram];
->>>>>>> Move clipping of the monogram to two glyphs to the model
+        self.monogram = [self clippedMonogramForString:monogram];
         _image = image;
     }
     return self;
@@ -83,6 +79,15 @@
             OCKEqualObjects(self.emailAddress, castObject.emailAddress) &&
             OCKEqualObjects(self.monogram, castObject.monogram) &&
             OCKEqualObjects(self.image, castObject.image));
+}
+
+
+#pragma mark - Helpers
+
+- (NSString *)clippedMonogramForString:(NSString *)string {
+    NSRange stringRange = {0, MIN([string length], 2)};
+    stringRange = [string rangeOfComposedCharacterSequencesForRange:stringRange];
+    return [string substringWithRange:stringRange];
 }
 
 

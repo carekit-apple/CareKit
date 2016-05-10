@@ -101,7 +101,6 @@ static const CGFloat ImageViewSize = 40.0;
         _monogramLabel.text = nil;
     } else {
         _imageView.image = nil;
-<<<<<<< cbbd275cb2b82d1333c5da03a3cd207a09442c16
         _imageView.backgroundColor = OCKSystemGrayColor();
         
         NSString *monogram = self.contact.monogram;
@@ -109,9 +108,6 @@ static const CGFloat ImageViewSize = 40.0;
         stringRange = [monogram rangeOfComposedCharacterSequencesForRange:stringRange];
         NSString *clippedMonogram = [monogram substringWithRange:stringRange];
         _monogramLabel.text = clippedMonogram;
-=======
-        _monogramLabel.text = self.contact.monogram;
->>>>>>> Better highlight state for connect cell monogram.
     }
     
     [self updateImageViewBackgroundColor];

@@ -145,7 +145,7 @@
 }
 
 #pragma mark - Monogram
-- (void)setMonogram:(NSString * _Null_unspecified)monogram {
+- (void)setMonogram:(NSString *)monogram {
     if (!monogram) {
         monogram = [self generateMonogram:_name];
     }

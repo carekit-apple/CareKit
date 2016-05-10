@@ -65,7 +65,6 @@ OCK_CLASS_AVAILABLE
  
  @param type                The contact type.
  @param name                The contact name.
- @param title               The contact academic title.
  @param relation            The relationship to the contact.
  @param tintColor           The contact tint color.
  @param phoneNumber         The contact phone number.
@@ -78,7 +77,6 @@ OCK_CLASS_AVAILABLE
  */
 - (instancetype)initWithContactType:(OCKContactType)type
                                name:(NSString *)name
-                              title:(nullable NSString *)title
                            relation:(NSString *)relation
                           tintColor:(nullable UIColor *)tintColor
                         phoneNumber:(nullable CNPhoneNumber *)phoneNumber
@@ -99,11 +97,6 @@ OCK_CLASS_AVAILABLE
  A string indicating the name for a contact.
  */
 @property (nonatomic, readonly) NSString *name;
-
-/**
- A string indicating the academin title for a contact.
- */
-@property (nonatomic, readonly, nullable) NSString *title;
 
 /**
  A string indicating the relationship to a contact.

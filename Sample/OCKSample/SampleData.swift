@@ -51,8 +51,7 @@ class SampleData: NSObject {
     */
     let contacts: [OCKContact] = [
         OCKContact(contactType: .CareTeam,
-            name: "Maria Ruiz",
-            title: "Dr.",
+            name: "Dr. Maria Ruiz",
             relation: "Physician",
             tintColor: Colors.Blue.color,
             phoneNumber: CNPhoneNumber(stringValue: "888-555-5512"),
@@ -63,7 +62,6 @@ class SampleData: NSObject {
 
         OCKContact(contactType: .CareTeam,
             name: "Bill James",
-            title: nil,
             relation: "Nurse",
             tintColor: Colors.Green.color,
             phoneNumber: CNPhoneNumber(stringValue: "888-555-5512"),
@@ -74,7 +72,6 @@ class SampleData: NSObject {
 
         OCKContact(contactType: .Personal,
             name: "Tom Van de Clark",
-            title: nil,
             relation: "Father",
             tintColor: Colors.Yellow.color,
             phoneNumber: CNPhoneNumber(stringValue: "888-555-5512"),

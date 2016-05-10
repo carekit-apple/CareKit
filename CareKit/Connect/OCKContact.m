@@ -59,7 +59,11 @@
         _phoneNumber = [phoneNumber copy];
         _messageNumber = [messageNumber copy];
         _emailAddress = [emailAddress copy];
+<<<<<<< c434cd8323a26cee9b795b800a6627f60547a5a9
         self.monogram = [monogram copy];
+=======
+        _monogram = [self clippedMonogramForString:monogram];
+>>>>>>> Move clipping of the monogram to two glyphs to the model
         _image = image;
     }
     return self;
@@ -134,6 +138,12 @@
 }
 
 #pragma mark - Monogram
+
+- (NSString *)clippedMonogramForString:(NSString *)string {
+    NSRange stringRange = {0, MIN([string length], 2)};
+    stringRange = [string rangeOfComposedCharacterSequencesForRange:stringRange];
+    return [string substringWithRange:stringRange];
+}
 
 - (void)setMonogram:(NSString *)monogram {
     if (!monogram) {

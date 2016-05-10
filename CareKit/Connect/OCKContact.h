@@ -137,7 +137,8 @@ OCK_CLASS_AVAILABLE
 /**
  A string indicating the monogram for a contact.
  
- If a monogram is nil, it will be generated automatically.
+ If a monogram is not provided, it will be generated automatically.
+ If a monogram is available, it will be clipped to two glyphs.
  */
 @property (nonatomic, readonly, null_resettable) NSString *monogram;
 

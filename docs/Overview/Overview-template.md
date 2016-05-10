@@ -12,7 +12,7 @@ CareKit supports a wide range of care plans—from managing chronic illnesses, s
 The CareKit framework is organized into six modules, with several additional data types. The most important interactions between the modules and data types are shown in *Figure 1*.
 
 <center><img src="OverviewImages/MainCareKitModules.png" width="50%" alt="CareKit Framework Overview"/> 
-<figcaption>Figure 1: Relationship of items in the CareKit framework.</figcaption></center>.
+<figcaption>Figure 1: Relationship of items in the CareKit framework.</figcaption></center>
 
 ### Modules
 
@@ -45,7 +45,7 @@ The CareKit framework is organized into six modules, with several additional dat
 ### Care Card
 
 <center><img src="OverviewImages/CareCard.png" width="310" style="border: solid #e0e0e0 1px;" alt="Care Card Screenshot"/>
-<figcaption>Figure 2: The Care Card scene.</figcaption></center>.
+<figcaption>Figure 2: The Care Card scene.</figcaption></center>
 
 The Care Card shows the user’s care plan for a particular day. The Care Card tracks the user's progress as they mark off intervention events.
 
@@ -64,7 +64,7 @@ For more information, see [Creating the Care Card](../CreatingTheCareCard/Creati
 ### Symptom and Measurement Tracker
 
 <center><img src="OverviewImages/Evaluations.png" width="310" style="border: solid #e0e0e0 1px;" alt="Assessments Screenshot"/>
-<figcaption>Figure 3: The Symptom and Measurement Tracker scene.</figcaption></center>.
+<figcaption>Figure 3: The Symptom and Measurement Tracker scene.</figcaption></center>
 
 The Symptom and Measurement Tracker module measures the care plan’s effectiveness using both subjective and objective assessments.
 
@@ -97,7 +97,7 @@ For more information, see [Accessing Care Plan Data](../AccessingCarePlanData/Ac
 ### Insights
 
 <center><img src="OverviewImages/Dashboard.png" width="310" style="border: solid #e0e0e0 1px;" alt="Dashboard Screenshot"/>
-<figcaption>Figure 4: The Insights scene.</figcaption></center>.
+<figcaption>Figure 4: The Insights scene.</figcaption></center>
 
 The Insights scene presents charts that shed light on the user's progress towards their treatment goals. Although you can provide your own charts, CareKit includes support for bar charts. 
 
@@ -110,7 +110,7 @@ For more information, see [Presenting Care Plan Data](../PresentingInsights/Pres
 ### Connect
 
 <center><img src="OverviewImages/Contacts.png" width="310" style="border: solid #e0e0e0 1px;" alt="Contacts Screenshot"/>
-<figcaption>Figure 5: The contacts scene.</figcaption></center>.
+<figcaption>Figure 5: The contacts scene.</figcaption></center>
 
 The Connect scene lists key members of the user's care team, as well as members of the user's support network, such as relatives or close friends.
 
@@ -118,7 +118,7 @@ The user can select a contact to view the detail scene for that contact. The det
 
 As with activities, you can either programmatically create the contacts, or load them from a saved file; however, contacts are not saved in the Care Plan Store. Instead, they are managed directly by the connect view controller. Replacing the connection view controller's `contacts` property updates the Connect scene.
 
-<center><img src="OverviewImages/ContactsDetail.png" width="310" style="border: solid #e0e0e0 1px;" alt="Contacts Screenshot"/><figcaption>Figure 6: The contacts detail scene.</figcaption></center>.
+<center><img src="OverviewImages/ContactsDetail.png" width="310" style="border: solid #e0e0e0 1px;" alt="Contacts Screenshot"/><figcaption>Figure 6: The contacts detail scene.</figcaption></center>
 
 For more information, see [Connecting with Care Teams and Emergency Contacts](../ConnectingWithCareTeamsAndPersonalContacts/ConnectingWithCareTeamsAndPersonalContacts-template.md)
 

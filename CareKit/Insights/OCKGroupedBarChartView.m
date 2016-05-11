@@ -145,7 +145,6 @@ static const CGFloat MarginBetweenBarAndLabel = 6.0;
     CGFloat barHeight = _barView.bounds.size.height;
     if (_barLayer == nil || _barLayer.bounds.size.width != barWidth) {
         
-        [_barLayer removeFromSuperlayer];
         UIBezierPath *path = [[UIBezierPath alloc] init];
         [path moveToPoint:CGPointMake(0, barHeight/2)];
         [path addLineToPoint:CGPointMake(barWidth, barHeight/2)];
@@ -154,13 +153,13 @@ static const CGFloat MarginBetweenBarAndLabel = 6.0;
         _barLayer.path = path.CGPath;
         _barLayer.strokeColor = _bar.color.CGColor;
         _barLayer.lineWidth = barHeight;
-        [_barView.layer addSublayer:_barLayer];
     }
 }
 
 - (void)prepareView {
     _barView = [UIView new];
     _barLayer = [[CAShapeLayer alloc] init];
+    [_barView.layer addSublayer:_barLayer];
 #if LAYOUT_DEBUG
     _barView.backgroundColor = [[UIColor orangeColor] colorWithAlphaComponent:0.2];
 #endif

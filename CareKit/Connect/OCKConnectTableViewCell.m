@@ -113,7 +113,6 @@ static const CGFloat ImageViewSize = 40.0;
     [self updateImageViewBackgroundColor];
     
     _nameLabel.text = self.contact.name;
-    
     _relationLabel.text = self.contact.relation;
 }
 

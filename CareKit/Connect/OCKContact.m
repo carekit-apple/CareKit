@@ -148,7 +148,6 @@
 }
 
 - (NSString *)generateMonogram:(NSString *)name {
-    
     NSAssert((name != nil), @"A name must be supplied");
     NSAssert((name.length > 0), @"A name must have > 0 chars");
     

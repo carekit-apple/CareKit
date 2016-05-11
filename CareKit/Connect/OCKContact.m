@@ -49,7 +49,6 @@
                        emailAddress:(NSString *)emailAddress
                            monogram:(NSString *)monogram
                               image:(UIImage *)image {
-
     self = [super init];
     if (self) {
         _type = type;

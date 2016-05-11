@@ -553,7 +553,7 @@ static const CGFloat MarginBetweenBarAndLabel = 6.0;
             cell.frame = CGRectMake(0, 0, size.width, size.height);
             [tc.contentView addSubview:cell];
             
-            UIGraphicsBeginImageContextWithOptions(cell.frame.size, NO, 2.0);
+            UIGraphicsBeginImageContextWithOptions(cell.frame.size, NO, 0.0);
             [cell.layer renderInContext:UIGraphicsGetCurrentContext()];
             UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
             UIGraphicsEndImageContext();

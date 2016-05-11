@@ -101,13 +101,7 @@ static const CGFloat ImageViewSize = 40.0;
         _monogramLabel.text = nil;
     } else {
         _imageView.image = nil;
-        _imageView.backgroundColor = OCKSystemGrayColor();
-        
-        NSString *monogram = self.contact.monogram;
-        NSRange stringRange = {0, MIN([monogram length], 2)};
-        stringRange = [monogram rangeOfComposedCharacterSequencesForRange:stringRange];
-        NSString *clippedMonogram = [monogram substringWithRange:stringRange];
-        _monogramLabel.text = clippedMonogram;
+        _monogramLabel.text = self.contact.monogram;
     }
     
     [self updateImageViewBackgroundColor];

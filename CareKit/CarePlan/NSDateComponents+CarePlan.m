@@ -1,21 +1,21 @@
 /*
  Copyright (c) 2016, Apple Inc. All rights reserved.
- 
+
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
- 
+
  1.  Redistributions of source code must retain the above copyright notice, this
  list of conditions and the following disclaimer.
- 
+
  2.  Redistributions in binary form must reproduce the above copyright notice,
  this list of conditions and the following disclaimer in the documentation and/or
  other materials provided with the distribution.
- 
+
  3.  Neither the name of the copyright holder(s) nor the names of any contributors
  may be used to endorse or promote products derived from this software without
  specific prior written permission. No license is granted to the trademarks of
  the copyright holders even if such marks are included in this software.
- 
+
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -45,13 +45,13 @@
         self.day = day;
         [self adjustEra];
     }
-    
+
     return [self isValidDateInCalendar:[self UTC_gregorianCalendar]] ? self : nil;
 }
 
 - (instancetype)initWithDate:(NSDate *)date
                     calendar:(NSCalendar *)calendar {
-    NSDateComponents *comp = [calendar components:NSCalendarUnitEra|NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay fromDate:date];
+    NSDateComponents *comp = [calendar components:NSCalendarUnitEra|NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay|NSCalendarUnitHour|NSCalendarUnitMinute|NSCalendarUnitSecond fromDate:date];
     return [self initWithDateComponents:comp];
 }
 
@@ -59,10 +59,10 @@
     NSParameterAssert(date);
     NSParameterAssert(calendar);
     NSAssert([calendar.calendarIdentifier isEqualToString:NSCalendarIdentifierGregorian], @"(ock_componentsWithDate:calendar:) only accepts gregorian calendar.");
-    return [calendar components:NSCalendarUnitEra|NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay|NSCalendarUnitWeekday|NSCalendarUnitWeekOfYear|NSCalendarUnitWeekOfMonth fromDate:date];
+    return [calendar components:NSCalendarUnitEra|NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay|NSCalendarUnitWeekday|NSCalendarUnitWeekOfYear|NSCalendarUnitWeekOfMonth|NSCalendarUnitHour|NSCalendarUnitMinute|NSCalendarUnitSecond fromDate:date];
 }
 
-- (BOOL)isInSameWeekAsDate:(NSDateComponents *)anotherDate {    
+- (BOOL)isInSameWeekAsDate:(NSDateComponents *)anotherDate {
     return [[self UTC_gregorianCalendar] isDate:[self UTC_dateWithGregorianCalendar]
                                     equalToDate:[anotherDate UTC_dateWithGregorianCalendar]
                               toUnitGranularity:NSCalendarUnitWeekOfYear];
@@ -71,6 +71,10 @@
 - (instancetype)initWithDateComponents:(NSDateComponents *)dateComp {
     self = [self initWithYear:dateComp.year month:dateComp.month day:dateComp.day];
     self.era = dateComp.era;
+    self.hour = dateComp.hour;
+    self.minute = dateComp.minute;
+    self.second = dateComp.second;
+
     return self;
 }
 
@@ -106,14 +110,17 @@
     dateComp.year = self.year;
     dateComp.month = self.month;
     dateComp.day = self.day;
+    dateComp.hour = self.hour;
+    dateComp.minute = self.minute;
+    dateComp.second = self.second;
     [dateComp adjustEra];
-    
+
     BOOL valid = [dateComp isValidDateInCalendar:[self UTC_gregorianCalendar]];
-    
+
     if (valid == NO) {
         @throw [NSException exceptionWithName:NSInvalidArgumentException reason:[NSString stringWithFormat:@"date components is not valid in Gregorian calendar. \n %@", dateComp] userInfo:@{@"date": dateComp}];
     }
-    
+
     return dateComp;
 }
 
@@ -129,7 +136,7 @@
 - (NSDateComponents *)dateCompByAddingDays:(NSInteger)days {
     NSCalendar *calendar = [self UTC_gregorianCalendar];
     NSDate * nextDate = [calendar dateByAddingUnit:NSCalendarUnitDay value:days toDate:[self UTC_dateWithGregorianCalendar] options:0];
-    NSDateComponents *nextDayComp = [calendar components:NSCalendarUnitEra|NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay fromDate:nextDate];
+    NSDateComponents *nextDayComp = [calendar components:NSCalendarUnitEra|NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay|NSCalendarUnitHour|NSCalendarUnitMinute|NSCalendarUnitSecond fromDate:nextDate];
     return [[NSDateComponents alloc] initWithDateComponents:nextDayComp];
 }
 
@@ -140,7 +147,7 @@
 - (BOOL)isEqualToDate:(NSDateComponents *)date {
     [self adjustEra];
     [date adjustEra];
-    
+
     BOOL isClassMatch = ([self class] == [date class]);
 
     __typeof(self) castObject = date;

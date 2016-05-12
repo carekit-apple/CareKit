@@ -56,6 +56,7 @@ static const CGFloat BottomMargin = 20.0;
 - (void)prepareView {
     if (!_titleLabel) {
         _titleLabel = [OCKLabel new];
+        _titleLabel.backgroundColor = OCKSystemGrayColor();
         _titleLabel.textColor = [UIColor darkGrayColor];
         _titleLabel.textStyle = UIFontTextStyleHeadline;
         [self addSubview:_titleLabel];
@@ -63,6 +64,7 @@ static const CGFloat BottomMargin = 20.0;
     
     if (!_subtitleLabel) {
         _subtitleLabel = [OCKLabel new];
+        _subtitleLabel.backgroundColor = OCKSystemGrayColor();
         _subtitleLabel.textStyle = UIFontTextStyleSubheadline;
         _subtitleLabel.numberOfLines = 2;
         _subtitleLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -158,6 +160,12 @@ static const CGFloat BottomMargin = 20.0;
 - (void)setSubtitle:(NSString *)subtitle {
     _subtitle = [subtitle copy];
     [self updateView];
+}
+
+- (void)setBackgroundColor:(UIColor *)backgroundColor {
+    [super setBackgroundColor:backgroundColor];
+    _titleLabel.backgroundColor = backgroundColor;
+    _subtitleLabel.backgroundColor = backgroundColor;
 }
 
 - (void)layoutSubviews {

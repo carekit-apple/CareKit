@@ -355,7 +355,7 @@
     }
 }
 
-- (void)carePlanStoreEvaluationListDidChange:(OCKCarePlanStore *)store {
+- (void)carePlanStoreActivityListDidChange:(OCKCarePlanStore *)store {
     [self fetchEvents];
 }
 

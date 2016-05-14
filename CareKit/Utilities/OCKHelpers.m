@@ -79,15 +79,6 @@ CGFloat OCKFloorToViewScale(CGFloat value, UIView *view) {
     return AdjustToScale(OCKCGFloor, value, view.contentScaleFactor);
 }
 
-id findInArrayByKey(NSArray * array, NSString *key, id value) {
-    NSPredicate *pred = [NSPredicate predicateWithFormat:@"%K == %@", key, value];
-    NSArray *matches = [array filteredArrayUsingPredicate:pred];
-    if (matches.count) {
-        return matches[0];
-    }
-    return nil;
-}
-
 NSString *OCKStringFromDateISO8601(NSDate *date) {
     static NSDateFormatter *__formatter = nil;
     static dispatch_once_t onceToken;

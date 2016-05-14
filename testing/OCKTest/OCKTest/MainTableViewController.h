@@ -29,7 +29,7 @@
  */
 
 
-#import <CareKit/CareKit_Private.h>
+#import <CareKit/CareKit.h>
 
 
 @interface MainTableViewController : UITableViewController <OCKSymptomTrackerViewControllerDelegate, OCKConnectViewControllerDelegate, OCKCareCardViewControllerDelegate>

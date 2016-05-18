@@ -51,7 +51,7 @@ Pod::Spec.new do |s|
   s.resources             = [ 'CareKit/Assets.xcassets', 
                               'CareKit/Localization/*.lproj', 
                               'CareKit/CarePlan/OCKCarePlanStore.xcdatamodeld' ]
-  s.exclude_files         = [ 'docs', 'Sample', 'DerivedData' ]
+  s.exclude_files         = [ 'docs', 'Sample', 'testing', 'DerivedData' ]
   s.requires_arc          = true
   s.ios.framework         = [ 'HealthKit', 'CoreData' ]
 

@@ -153,6 +153,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		05C32D821CED9C7500C16718 /* ne-NP */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "ne-NP"; path = "ne-NP.lproj/CareKit.strings"; sourceTree = "<group>"; };
 		241707A71C9A3AB7005D7123 /* OCKBarChart.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKBarChart.h; sourceTree = "<group>"; };
 		241707A81C9A3AB7005D7123 /* OCKBarChart.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKBarChart.m; sourceTree = "<group>"; };
 		241707A91C9A3AB7005D7123 /* OCKBarSeries.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKBarSeries.h; sourceTree = "<group>"; };
@@ -856,6 +857,7 @@
 				fr_CA,
 				hi,
 				no,
+				"ne-NP",
 			);
 			mainGroup = 8605A5B01C4F04EC00DD65FF;
 			productRefGroup = 8605A5BB1C4F04EC00DD65FF /* Products */;
@@ -1027,6 +1029,7 @@
 				867707D51CA3061A00D1BD80 /* fr_CA */,
 				867707D61CA3068300D1BD80 /* hi */,
 				867707D71CA3080A00D1BD80 /* no */,
+				05C32D821CED9C7500C16718 /* ne-NP */,
 			);
 			name = CareKit.strings;
 			path = Localization;

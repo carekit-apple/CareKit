@@ -31,7 +31,11 @@
 
 #import <UIKit/UIKit.h>
 
-
+IB_DESIGNABLE
 @interface OCKCareCardButton : UIButton
+
+@property (nonatomic) IBInspectable CGFloat lineWidth;
+@property (nonatomic) IBInspectable CGFloat buttonSize;
+
 
 @end

@@ -80,7 +80,7 @@
 		24935CD21C7E341E00B208A9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 24935CD11C7E341E00B208A9 /* Assets.xcassets */; };
 		24EA9FB21C9A3D420036028E /* OCKCareCardAdditionalInfoTableViewCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 24EA9F931C9A3D420036028E /* OCKCareCardAdditionalInfoTableViewCell.h */; };
 		24EA9FB31C9A3D420036028E /* OCKCareCardAdditionalInfoTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 24EA9F941C9A3D420036028E /* OCKCareCardAdditionalInfoTableViewCell.m */; };
-		24EA9FB41C9A3D420036028E /* OCKCareCardButton.h in Headers */ = {isa = PBXBuildFile; fileRef = 24EA9F951C9A3D420036028E /* OCKCareCardButton.h */; };
+		24EA9FB41C9A3D420036028E /* OCKCareCardButton.h in Headers */ = {isa = PBXBuildFile; fileRef = 24EA9F951C9A3D420036028E /* OCKCareCardButton.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		24EA9FB51C9A3D420036028E /* OCKCareCardButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 24EA9F961C9A3D420036028E /* OCKCareCardButton.m */; };
 		24EA9FB61C9A3D420036028E /* OCKCareCardDetailHeaderView.h in Headers */ = {isa = PBXBuildFile; fileRef = 24EA9F971C9A3D420036028E /* OCKCareCardDetailHeaderView.h */; };
 		24EA9FB71C9A3D420036028E /* OCKCareCardDetailHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 24EA9F981C9A3D420036028E /* OCKCareCardDetailHeaderView.m */; };

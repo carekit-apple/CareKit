@@ -186,8 +186,6 @@ UIColor *OCKRGB(uint32_t x);
 UIColor *OCKRGBA(uint32_t x, CGFloat alpha);
 UIColor *OCKSystemGrayColor();
 
-id findInArrayByKey(NSArray * array, NSString *key, id value);
-
 NSString *OCKStringFromDateISO8601(NSDate *date);
 NSDate *OCKDateFromStringISO8601(NSString *string);
 

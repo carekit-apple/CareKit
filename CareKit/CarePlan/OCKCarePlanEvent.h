@@ -96,6 +96,12 @@ OCK_CLASS_AVAILABLE
 @property (nonatomic, readonly) OCKCarePlanEventState state;
 
 /**
+ The availability of this event, based on its `state`
+ and its activity's `resultResettable` property.
+ */
+@property (nonatomic, readonly) BOOL isAvailable;
+
+/**
  A result object can be attached to event by using the OCKCarePlanStore API.
  */
 @property (nonatomic, readonly, nullable) OCKCarePlanEventResult *result;

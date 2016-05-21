@@ -126,13 +126,8 @@ extension RootViewController: OCKSymptomTrackerViewControllerDelegate {
         guard let activityType = ActivityType(rawValue: assessmentEvent.activity.identifier) else { return }
         guard let sampleAssessment = sampleData.activityWithType(activityType) as? Assessment else { return }
         
-        /*
-            Check if we should show a task for the selected assessment event
-            based on its state.
-        */
-        guard assessmentEvent.state == .Initial ||
-            assessmentEvent.state == .NotCompleted ||
-            (assessmentEvent.state == .Completed && assessmentEvent.activity.resultResettable) else { return }
+        // Check if the task is currently available to the participant
+        guard assessmentEvent.isAvailable else { return }
         
         // Show an `ORKTaskViewController` for the assessment's task.
         let taskViewController = ORKTaskViewController(task: sampleAssessment.task(), taskRunUUID: nil)

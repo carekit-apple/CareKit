@@ -69,6 +69,12 @@
     return [self.activity.schedule.startDate dateCompByAddingDays:self.numberOfDaysSinceStart];
 }
 
+- (BOOL)isAvailable {
+    return _state == OCKCarePlanEventStateInitial ||
+            _state == OCKCarePlanEventStateNotCompleted ||
+            (_state == OCKCarePlanEventStateCompleted && _activity.resultResettable);
+}
+
 - (instancetype)copyWithZone:(NSZone *)zone {
     OCKCarePlanEvent* event = [[[self class] allocWithZone:zone] init];
     event->_occurrenceIndexOfDay = _occurrenceIndexOfDay;

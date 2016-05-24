@@ -34,7 +34,7 @@
 
 Pod::Spec.new do |s|
   s.name                  = 'CareKit'
-  s.version               = '1.0.1'
+  s.version               = '1.0.2'
   s.summary               = 'CareKit is an open source software framework for creating apps that help people better understand and manage their health.'
   s.homepage              = 'https://github.com/carekit-apple/CareKit/'
   s.documentation_url     = 'http://carekit.org/docs/'
@@ -47,11 +47,33 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '9.0'
   s.source                = { :git => 'https://github.com/carekit-apple/carekit.git', :tag => s.version.to_s }
   s.source_files          = 'CareKit/**/*.{h,m}'
-  s.private_header_files  = [ 'CareKit/**/*Private.h', 'CareKit/**/*Internal.h' ]
+  s.private_header_files  = [ 'CareKit/**/OCKCareSchedule_Private.h', 'CareKit/**/CareKit_Private.h' ]
   s.resources             = [ 'CareKit/Assets.xcassets', 
                               'CareKit/Localization/*.lproj', 
                               'CareKit/CarePlan/OCKCarePlanStore.xcdatamodeld' ]
+  s.public_header_files   = ['CareKit/**/CareKit.h',
+                              'CareKit/**/OCKDefines.h',
+                              'CareKit/**/NSDateComponents+CarePlan.h',
+                              'CareKit/**/OCKCareSchedule.h',
+                              'CareKit/**/OCKCarePlanActivity.h',
+                              'CareKit/**/OCKCarePlanEvent.h',
+                              'CareKit/**/OCKCarePlanEventResult.h',
+                              'CareKit/**/OCKCarePlanStore.h',
+                              'CareKit/**/OCKCareCardViewController.h',
+                              'CareKit/**/OCKSymptomTrackerViewController.h',
+                              'CareKit/**/OCKInsightItem.h',
+                              'CareKit/**/OCKMessageItem.h',
+                              'CareKit/**/OCKChart.h',
+                              'CareKit/**/OCKBarSeries.h',
+                              'CareKit/**/OCKBarChart.h',
+                              'CareKit/**/OCKInsightsViewController.h',
+                              'CareKit/**/OCKGroupedBarChartView.h',
+                              'CareKit/**/OCKContact.h',
+                              'CareKit/**/OCKConnectViewController.h',
+                              'CareKit/**/OCKDocument.h']
+                              
   s.exclude_files         = [ 'docs', 'Sample', 'testing', 'DerivedData' ]
+  s.module_map            = 'CareKit.modulemap'
   s.requires_arc          = true
   s.ios.framework         = [ 'HealthKit', 'CoreData' ]
 

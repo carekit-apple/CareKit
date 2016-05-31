@@ -35,7 +35,7 @@
 
 /* Care Card Detail View */
 "CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "Instrukcioj";
-"CARE_CARD_ADDITIONAL_INFO_SECTION_TITLE" = "";
+"CARE_CARD_ADDITIONAL_INFO_SECTION_TITLE" = "Pliaj Informoj";
 
 /* Symptom Tracker */
 "SYMPTOM_TRACKER_HEADER_TITLE" = "";

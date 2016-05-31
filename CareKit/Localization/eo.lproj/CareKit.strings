@@ -31,7 +31,7 @@
 
 /* Care Card */
 "CARE_CARD_HEADER_TITLE" = "Sano Kompletiĝo";
-"TODAY_BUTTON_TITLE" = "";
+"TODAY_BUTTON_TITLE" = "Hodiaŭ";
 
 /* Care Card Detail View */
 "CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "";

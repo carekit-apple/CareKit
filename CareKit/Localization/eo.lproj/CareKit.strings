@@ -54,7 +54,7 @@
 "SHARING_CELL_TITLE" = "Sendas raportoj";
 "ERROR_TITLE" = "Eraro";
 "MESSAGE_SEND_ERROR" = "Mesaĝo sendis sensukcese";
-"EMAIL_SEND_ERROR" = "";
+"EMAIL_SEND_ERROR" = "Retpoŝto sendis sensukcese";
 
 /* ACCESSIBILITY */
 "AX_WEEK_BUTTON_PROGRESS" = ""; // '75% completed'

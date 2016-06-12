@@ -57,7 +57,7 @@
 "EMAIL_SEND_ERROR" = "Retpoŝto sendis sensukcese";
 
 /* ACCESSIBILITY */
-"AX_WEEK_BUTTON_PROGRESS" = ""; // '75% completed'
+"AX_WEEK_BUTTON_PROGRESS" = "%@ kompletigita"; // '75% completed'
 "AX_CARE_CARD_COMPLETED" = "";
 "AX_CARE_CARD_INCOMPLETE" = "";
 "AX_CARE_CARD_EVENT_LABEL" = ""; // 'Completed, 3 of 10, Diet'

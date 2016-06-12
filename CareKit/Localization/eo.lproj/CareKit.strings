@@ -53,7 +53,7 @@
 "CONTACT_INFO_EMAIL_TITLE" = "retpoŝto";
 "SHARING_CELL_TITLE" = "Sendas raportoj";
 "ERROR_TITLE" = "Eraro";
-"MESSAGE_SEND_ERROR" = "";
+"MESSAGE_SEND_ERROR" = "Mesaĝo sendis sensukcese";
 "EMAIL_SEND_ERROR" = "";
 
 /* ACCESSIBILITY */

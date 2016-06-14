@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "2DBE4CEE1CD988E600B31591"
-               BuildableName = "OCKTest.app"
-               BlueprintName = "OCKTest"
+               BlueprintIdentifier = "2D365AED1CDC15A300B147FC"
+               BuildableName = "OCKTest-iPad.app"
+               BlueprintName = "OCKTest-iPad"
                ReferencedContainer = "container:OCKTest.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -32,9 +32,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "2DBE4CEE1CD988E600B31591"
-            BuildableName = "OCKTest.app"
-            BlueprintName = "OCKTest"
+            BlueprintIdentifier = "2D365AED1CDC15A300B147FC"
+            BuildableName = "OCKTest-iPad.app"
+            BlueprintName = "OCKTest-iPad"
             ReferencedContainer = "container:OCKTest.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -55,9 +55,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "2DBE4CEE1CD988E600B31591"
-            BuildableName = "OCKTest.app"
-            BlueprintName = "OCKTest"
+            BlueprintIdentifier = "2D365AED1CDC15A300B147FC"
+            BuildableName = "OCKTest-iPad.app"
+            BlueprintName = "OCKTest-iPad"
             ReferencedContainer = "container:OCKTest.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -74,9 +74,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "2DBE4CEE1CD988E600B31591"
-            BuildableName = "OCKTest.app"
-            BlueprintName = "OCKTest"
+            BlueprintIdentifier = "2D365AED1CDC15A300B147FC"
+            BuildableName = "OCKTest-iPad.app"
+            BlueprintName = "OCKTest-iPad"
             ReferencedContainer = "container:OCKTest.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

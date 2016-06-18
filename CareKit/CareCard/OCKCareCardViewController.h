@@ -131,7 +131,7 @@ OCK_CLASS_AVAILABLE
 @property (nonatomic, weak, nullable) id<OCKCareCardViewControllerDelegate> delegate;
 
 /**
- The last intervention event selected by the user.
+ The last intervention activity selected by the user.
  
  This value is nil if no intervention has been selected yet.
  */

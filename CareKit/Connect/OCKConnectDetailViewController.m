@@ -146,7 +146,10 @@ static const CGFloat HeaderViewHeight = 225.0;
 }
 
 - (void)makeCallToNumber:(NSString *)number {
-    NSString *stringURL = [NSString stringWithFormat:@"tel:%@", number];
+    // Strip non-digit characters
+    NSCharacterSet *nonDigits = [[NSCharacterSet decimalDigitCharacterSet] invertedSet];
+    NSString *stringURL = [[number componentsSeparatedByCharactersInSet:nonDigits] componentsJoinedByString:@""];
+    stringURL = [NSString stringWithFormat:@"tel:%@", stringURL];
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:stringURL]];
 }
 

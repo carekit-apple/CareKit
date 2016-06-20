@@ -145,7 +145,6 @@ static const CGFloat MarginBetweenBarAndLabel = 6.0;
     CGFloat barHeight = _barView.bounds.size.height;
     if (_barLayer == nil || _barLayer.bounds.size.width != barWidth) {
         
-        [_barLayer removeFromSuperlayer];
         UIBezierPath *path = [[UIBezierPath alloc] init];
         [path moveToPoint:CGPointMake(0, barHeight/2)];
         [path addLineToPoint:CGPointMake(barWidth, barHeight/2)];
@@ -154,19 +153,22 @@ static const CGFloat MarginBetweenBarAndLabel = 6.0;
         _barLayer.path = path.CGPath;
         _barLayer.strokeColor = _bar.color.CGColor;
         _barLayer.lineWidth = barHeight;
-        [_barView.layer addSublayer:_barLayer];
     }
 }
 
 - (void)prepareView {
+    self.backgroundColor = [UIColor whiteColor];
+    
     _barView = [UIView new];
     _barLayer = [[CAShapeLayer alloc] init];
+    [_barView.layer addSublayer:_barLayer];
 #if LAYOUT_DEBUG
     _barView.backgroundColor = [[UIColor orangeColor] colorWithAlphaComponent:0.2];
 #endif
     _barView.translatesAutoresizingMaskIntoConstraints = NO;
     
     _valueLabel = [UILabel new];
+    _valueLabel.backgroundColor = self.backgroundColor;
     _valueLabel.text = _bar.text;
     _valueLabel.textColor = _bar.color;
     _valueLabel.translatesAutoresizingMaskIntoConstraints = NO;
@@ -270,11 +272,14 @@ static const CGFloat MarginBetweenBarAndLabel = 6.0;
 }
 
 - (void)prepareView {
+    self.backgroundColor = [UIColor whiteColor];
+    
     _labelBox = [UIView new];
     _labelBox.translatesAutoresizingMaskIntoConstraints = NO;
     [self addSubview:_labelBox];
     
     _titleLabel = [OCKLabel new];
+    _titleLabel.backgroundColor = self.backgroundColor;
     _titleLabel.adjustsFontSizeToFitWidth = YES;
     _titleLabel.text = _group.title;
     _titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
@@ -283,6 +288,7 @@ static const CGFloat MarginBetweenBarAndLabel = 6.0;
     [_labelBox addSubview:_titleLabel];
     
     _textLabel = [OCKLabel new];
+    _textLabel.backgroundColor = self.backgroundColor;
     _textLabel.text = _group.text;
     _textLabel.adjustsFontSizeToFitWidth = YES;
     _textLabel.translatesAutoresizingMaskIntoConstraints = NO;
@@ -462,6 +468,7 @@ static const CGFloat MarginBetweenBarAndLabel = 6.0;
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
+        self.backgroundColor = [UIColor whiteColor];
         _colorBox = [UIView new];
         _colorBox.translatesAutoresizingMaskIntoConstraints = NO;
         [self addSubview:_colorBox];
@@ -554,7 +561,7 @@ static const CGFloat MarginBetweenBarAndLabel = 6.0;
             cell.frame = CGRectMake(0, 0, size.width, size.height);
             [tc.contentView addSubview:cell];
             
-            UIGraphicsBeginImageContextWithOptions(cell.frame.size, NO, 2.0);
+            UIGraphicsBeginImageContextWithOptions(cell.frame.size, YES, 0.0);
             [cell.layer renderInContext:UIGraphicsGetCurrentContext()];
             UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
             UIGraphicsEndImageContext();
@@ -574,6 +581,7 @@ static const CGFloat MarginBetweenBarAndLabel = 6.0;
         self.lineBreakMode = NSLineBreakByWordWrapping;
         self.attributedText = string;
         self.textAlignment = NSTextAlignmentCenter;
+        self.backgroundColor = [UIColor whiteColor];
     }
     return self;
 }

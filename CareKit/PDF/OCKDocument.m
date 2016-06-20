@@ -174,7 +174,7 @@ static NSString *imageTagFromImage (UIImage *image) {
 }
 
 static NSString *imageTagFromView (UIView *view) {
-    UIGraphicsBeginImageContextWithOptions(view.frame.size, YES, 2.0);
+    UIGraphicsBeginImageContextWithOptions(view.frame.size, YES, 0.0);
     [view.layer renderInContext:UIGraphicsGetCurrentContext()];
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();

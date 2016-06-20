@@ -133,14 +133,14 @@ OCK_CLASS_AVAILABLE
 /**
  The last intervention activity selected by the user.
  
- This value is nil if no intervention has been selected yet.
+ This value is nil if no intervention activity has been selected yet.
  */
 @property (nonatomic, readonly, nullable) OCKCarePlanActivity *lastSelectedInterventionActivity;
 
 /**
  The last intervention event selected by the user.
  
- This value is nil if no intervention has been selected yet.
+ This value is nil if no intervention event has been selected yet.
  */
 @property (nonatomic, readonly, nullable) OCKCarePlanEvent *lastSelectedInterventionEvent;
 

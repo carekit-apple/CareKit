@@ -51,7 +51,7 @@ Pod::Spec.new do |s|
   s.resources             = [ 'CareKit/Assets.xcassets', 
                               'CareKit/Localization/*.lproj', 
                               'CareKit/CarePlan/OCKCarePlanStore.xcdatamodeld' ]
-  s.public_header_files   = `./scripts/find_headers.rb --private CareKit CareKit.xcodeproj`.split("\n")
+  s.public_header_files   = `./scripts/find_headers.rb --public CareKit CareKit.xcodeproj`.split("\n")
                               
   s.exclude_files         = [ 'docs', 'Sample', 'testing', 'DerivedData' ]
   s.module_map            = 'CareKit.modulemap'

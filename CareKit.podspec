@@ -47,30 +47,11 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '9.0'
   s.source                = { :git => 'https://github.com/carekit-apple/carekit.git', :tag => s.version.to_s }
   s.source_files          = 'CareKit/**/*.{h,m}'
-  s.private_header_files  = [ 'CareKit/**/OCKCareSchedule_Private.h', 'CareKit/**/CareKit_Private.h' ]
+  s.private_header_files  = `./scripts/find_headers.rb --private CareKit CareKit.xcodeproj`.split("\n")
   s.resources             = [ 'CareKit/Assets.xcassets', 
                               'CareKit/Localization/*.lproj', 
                               'CareKit/CarePlan/OCKCarePlanStore.xcdatamodeld' ]
-  s.public_header_files   = ['CareKit/**/CareKit.h',
-                              'CareKit/**/OCKDefines.h',
-                              'CareKit/**/NSDateComponents+CarePlan.h',
-                              'CareKit/**/OCKCareSchedule.h',
-                              'CareKit/**/OCKCarePlanActivity.h',
-                              'CareKit/**/OCKCarePlanEvent.h',
-                              'CareKit/**/OCKCarePlanEventResult.h',
-                              'CareKit/**/OCKCarePlanStore.h',
-                              'CareKit/**/OCKCareCardViewController.h',
-                              'CareKit/**/OCKSymptomTrackerViewController.h',
-                              'CareKit/**/OCKInsightItem.h',
-                              'CareKit/**/OCKMessageItem.h',
-                              'CareKit/**/OCKChart.h',
-                              'CareKit/**/OCKBarSeries.h',
-                              'CareKit/**/OCKBarChart.h',
-                              'CareKit/**/OCKInsightsViewController.h',
-                              'CareKit/**/OCKGroupedBarChartView.h',
-                              'CareKit/**/OCKContact.h',
-                              'CareKit/**/OCKConnectViewController.h',
-                              'CareKit/**/OCKDocument.h']
+  s.public_header_files   = `./scripts/find_headers.rb --private CareKit CareKit.xcodeproj`.split("\n")
                               
   s.exclude_files         = [ 'docs', 'Sample', 'testing', 'DerivedData' ]
   s.module_map            = 'CareKit.modulemap'

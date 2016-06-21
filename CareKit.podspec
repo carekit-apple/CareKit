@@ -54,7 +54,7 @@ Pod::Spec.new do |s|
   s.public_header_files   = `./scripts/find_headers.rb --public CareKit CareKit.xcodeproj`.split("\n")
                               
   s.exclude_files         = [ 'docs', 'Sample', 'testing', 'DerivedData' ]
-  s.module_map            = 'CareKit.modulemap'
+  s.module_map            = 'CareKit/CareKit.modulemap'
   s.requires_arc          = true
   s.ios.framework         = [ 'HealthKit', 'CoreData' ]
 

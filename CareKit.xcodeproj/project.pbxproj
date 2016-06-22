@@ -1134,6 +1134,7 @@
 				INFOPLIST_FILE = CareKit/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MODULEMAP_FILE = "$(SRCROOT)/CareKit/CareKit.modulemap";
 				PRODUCT_BUNDLE_IDENTIFIER = org.carekit.CareKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1151,6 +1152,7 @@
 				INFOPLIST_FILE = CareKit/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MODULEMAP_FILE = "$(SRCROOT)/CareKit/CareKit.modulemap";
 				PRODUCT_BUNDLE_IDENTIFIER = org.carekit.CareKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;

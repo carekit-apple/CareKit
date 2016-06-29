@@ -32,6 +32,7 @@
 #import "OCKConnectDetailViewController.h"
 #import "OCKConnectTableViewHeader.h"
 #import "OCKDefines_Private.h"
+#import "OCKHelpers.h"
 
 
 static const CGFloat HeaderViewHeight = 225.0;
@@ -153,21 +154,21 @@ static const CGFloat HeaderViewHeight = 225.0;
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:stringURL]];
 }
 
-- (void)sendMessageToNumber:(NSString *)number {
+- (void)sendMessageToNumber:(NSString *)number withDelegate:(id<MFMessageComposeViewControllerDelegate>)messageDelegate usingPresentingViewController:(UIViewController *)presentingViewController {
     MFMessageComposeViewController *messageViewController = [MFMessageComposeViewController new];
     if ([MFMessageComposeViewController canSendText]) {
-        messageViewController.messageComposeDelegate = self;
+        messageViewController.messageComposeDelegate = messageDelegate;
         messageViewController.recipients = @[number];
-        [self presentViewController:messageViewController animated:YES completion:nil];
+        [presentingViewController presentViewController:messageViewController animated:YES completion:nil];
     }
 }
 
-- (void)sendEmailToAddress:(NSString *)address {
+- (void)sendEmailToAddress:(NSString *)address withDelegate:(id<MFMailComposeViewControllerDelegate>)emailDelegate usingPresentingViewController:(UIViewController *)presentingViewController {
     MFMailComposeViewController *emailViewController = [MFMailComposeViewController new];
     if ([MFMailComposeViewController canSendMail]) {
-        emailViewController.mailComposeDelegate = self;
+        emailViewController.mailComposeDelegate = emailDelegate;
         [emailViewController setToRecipients:@[address]];
-        [self presentViewController:emailViewController animated:YES completion:nil];
+        [presentingViewController presentViewController:emailViewController animated:YES completion:nil];
     }
 }
 
@@ -181,11 +182,11 @@ static const CGFloat HeaderViewHeight = 225.0;
             break;
             
         case OCKConnectTypeMessage:
-            [self sendMessageToNumber:cell.contact.messageNumber.stringValue];
+            [self sendMessageToNumber:cell.contact.messageNumber.stringValue withDelegate:self usingPresentingViewController:self];
             break;
             
         case OCKConnectTypeEmail:
-            [self sendEmailToAddress:cell.contact.emailAddress];
+            [self sendMessageToNumber:cell.contact.emailAddress withDelegate:self usingPresentingViewController:self];
             break;
     }
 }
@@ -285,6 +286,31 @@ static const CGFloat HeaderViewHeight = 225.0;
                                                                           preferredStyle:UIAlertControllerStyleAlert];
         [self presentViewController:alertController animated:YES completion:nil];
     }
+}
+
+#pragma mark - Preview Action Items
+
+- (NSArray<id<UIPreviewActionItem>> *)previewActionItems {
+    NSMutableArray<id<UIPreviewActionItem>> *actions = [[NSMutableArray alloc] init];
+    if (self.contact.phoneNumber) {
+        UIPreviewAction *phoneAction = [UIPreviewAction actionWithTitle:OCKLocalizedString(@"CONTACT_INFO_PHONE_TITLE", nil) style:UIPreviewActionStyleDefault handler:^(UIPreviewAction * _Nonnull action, UIViewController * _Nonnull previewViewController) {
+            [self makeCallToNumber:self.contact.phoneNumber.stringValue];
+        }];
+        [actions addObject:phoneAction];
+    }
+    if (self.contact.messageNumber) {
+        UIPreviewAction *messageAction = [UIPreviewAction actionWithTitle:OCKLocalizedString(@"CONTACT_INFO_MESSAGE_TITLE", nil) style:UIPreviewActionStyleDefault handler:^(UIPreviewAction * _Nonnull action, UIViewController * _Nonnull previewViewController) {
+            [self sendMessageToNumber:self.contact.messageNumber.stringValue withDelegate:(id<MFMessageComposeViewControllerDelegate>)self.masterViewController usingPresentingViewController:self.masterViewController];
+        }];
+        [actions addObject:messageAction];
+    }
+    if (self.contact.emailAddress) {
+        UIPreviewAction *emailAction = [UIPreviewAction actionWithTitle:OCKLocalizedString(@"CONTACT_INFO_EMAIL_TITLE", nil) style:UIPreviewActionStyleDefault handler:^(UIPreviewAction * _Nonnull action, UIViewController * _Nonnull previewViewController) {
+            [self sendEmailToAddress:self.contact.emailAddress withDelegate:(id<MFMailComposeViewControllerDelegate>)self.masterViewController usingPresentingViewController:self.masterViewController];
+        }];
+        [actions addObject:emailAction];
+    }
+    return actions;
 }
 
 @end

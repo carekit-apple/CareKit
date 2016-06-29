@@ -37,7 +37,7 @@
 #import "OCKLabel.h"
 
 
-@interface OCKConnectViewController() <UITableViewDelegate, UITableViewDataSource, UIViewControllerPreviewingDelegate>
+@interface OCKConnectViewController() <UITableViewDelegate, UITableViewDataSource, UIViewControllerPreviewingDelegate, MFMessageComposeViewControllerDelegate, MFMailComposeViewControllerDelegate>
 
 @end
 
@@ -266,6 +266,30 @@
     cell.contact = _sectionedContacts[indexPath.section][indexPath.row];
     cell.showEdgeIndicator = self.showEdgeIndicators;
     return cell;
+}
+
+#pragma mark - MFMessageComposeViewControllerDelegate
+
+- (void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result {
+    [self dismissViewControllerAnimated:YES completion:nil];
+    if (result == MessageComposeResultFailed) {
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:OCKLocalizedString(@"ERROR_TITLE", nil)
+                                                                                 message:OCKLocalizedString(@"MESSAGE_SEND_ERROR", nil)
+                                                                          preferredStyle:UIAlertControllerStyleAlert];
+        [self presentViewController:alertController animated:YES completion:nil];
+    }
+}
+
+#pragma mark - MFMailComposeViewControllerDelegate
+
+- (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error {
+    [self dismissViewControllerAnimated:YES completion:nil];
+    if (result == MFMailComposeResultFailed) {
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:OCKLocalizedString(@"ERROR_TITLE", nil)
+                                                                                 message:OCKLocalizedString(@"EMAIL_SEND_ERROR", nil)
+                                                                          preferredStyle:UIAlertControllerStyleAlert];
+        [self presentViewController:alertController animated:YES completion:nil];
+    }
 }
 
 #pragma mark - UIViewControllerPreviewingDelegate

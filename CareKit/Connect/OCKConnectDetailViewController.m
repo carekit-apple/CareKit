@@ -293,22 +293,32 @@ static const CGFloat HeaderViewHeight = 225.0;
 - (NSArray<id<UIPreviewActionItem>> *)previewActionItems {
     NSMutableArray<id<UIPreviewActionItem>> *actions = [[NSMutableArray alloc] init];
     if (self.contact.phoneNumber) {
-        UIPreviewAction *phoneAction = [UIPreviewAction actionWithTitle:OCKLocalizedString(@"CONTACT_INFO_PHONE_TITLE", nil) style:UIPreviewActionStyleDefault handler:^(UIPreviewAction * _Nonnull action, UIViewController * _Nonnull previewViewController) {
+        NSString *phoneTitle = [OCKLocalizedString(@"CONTACT_INFO_PHONE_TITLE", nil) capitalizedStringWithLocale:[NSLocale currentLocale]];
+        UIPreviewAction *phoneAction = [UIPreviewAction actionWithTitle:phoneTitle style:UIPreviewActionStyleDefault handler:^(UIPreviewAction * _Nonnull action, UIViewController * _Nonnull previewViewController) {
             [self makeCallToNumber:self.contact.phoneNumber.stringValue];
         }];
         [actions addObject:phoneAction];
     }
     if (self.contact.messageNumber) {
-        UIPreviewAction *messageAction = [UIPreviewAction actionWithTitle:OCKLocalizedString(@"CONTACT_INFO_MESSAGE_TITLE", nil) style:UIPreviewActionStyleDefault handler:^(UIPreviewAction * _Nonnull action, UIViewController * _Nonnull previewViewController) {
+        NSString *messageTitle = [OCKLocalizedString(@"CONTACT_INFO_MESSAGE_TITLE", nil) capitalizedStringWithLocale:[NSLocale currentLocale]];
+        UIPreviewAction *messageAction = [UIPreviewAction actionWithTitle:messageTitle style:UIPreviewActionStyleDefault handler:^(UIPreviewAction * _Nonnull action, UIViewController * _Nonnull previewViewController) {
             [self sendMessageToNumber:self.contact.messageNumber.stringValue withDelegate:(id<MFMessageComposeViewControllerDelegate>)self.masterViewController usingPresentingViewController:self.masterViewController];
         }];
         [actions addObject:messageAction];
     }
     if (self.contact.emailAddress) {
-        UIPreviewAction *emailAction = [UIPreviewAction actionWithTitle:OCKLocalizedString(@"CONTACT_INFO_EMAIL_TITLE", nil) style:UIPreviewActionStyleDefault handler:^(UIPreviewAction * _Nonnull action, UIViewController * _Nonnull previewViewController) {
+        NSString *emailTitle = [OCKLocalizedString(@"CONTACT_INFO_EMAIL_TITLE", nil) capitalizedStringWithLocale:[NSLocale currentLocale]];
+        UIPreviewAction *emailAction = [UIPreviewAction actionWithTitle:emailTitle style:UIPreviewActionStyleDefault handler:^(UIPreviewAction * _Nonnull action, UIViewController * _Nonnull previewViewController) {
             [self sendEmailToAddress:self.contact.emailAddress withDelegate:(id<MFMailComposeViewControllerDelegate>)self.masterViewController usingPresentingViewController:self.masterViewController];
         }];
         [actions addObject:emailAction];
+    }
+    if (self.delegate) {
+        NSString *shareTitle = [self.delegate connectViewController:self.masterViewController titleForSharingCellForContact:self.contact];
+        UIPreviewAction *shareAction = [UIPreviewAction actionWithTitle:((shareTitle) ? shareTitle : OCKLocalizedString(@"SHARING_CELL_TITLE", nil)) style:UIPreviewActionStyleDefault handler:^(UIPreviewAction * _Nonnull action, UIViewController * _Nonnull previewViewController) {
+            [self.delegate connectViewController:self.masterViewController didSelectShareButtonForContact:self.contact presentationSourceView:nil];
+        }];
+        [actions addObject:shareAction];
     }
     return actions;
 }

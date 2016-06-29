@@ -186,7 +186,7 @@ static const CGFloat HeaderViewHeight = 225.0;
             break;
             
         case OCKConnectTypeEmail:
-            [self sendMessageToNumber:cell.contact.emailAddress withDelegate:self usingPresentingViewController:self];
+            [self sendEmailToAddress:cell.contact.emailAddress withDelegate:self usingPresentingViewController:self];
             break;
     }
 }

@@ -32,6 +32,7 @@
 /* Care Card */
 "CARE_CARD_HEADER_TITLE" = "Care Completion";
 "TODAY_BUTTON_TITLE" = "Today";
+"CARD_CARD_DELETE_TITLE" = "Discontinue After Today";
 
 /* Care Card Detail View */
 "CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "Instructions";

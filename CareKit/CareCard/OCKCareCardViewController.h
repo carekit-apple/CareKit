@@ -57,6 +57,18 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)careCardViewController:(OCKCareCardViewController *)viewController shouldHandleEventCompletionForActivity:(OCKCarePlanActivity *)interventionActivity;
 
 /**
+ Asks the delegate to verify that the given activity can be discontinued [deleted]. If this method is not implemented, all
+ all rows are assumed to not be discontinuable.
+ 
+ If returned YES, and the user chooses to discontinue the activity, the activity's end date will be set to the date of the
+ event that was selected, thereby removing all subsequent events.
+ 
+ @param viewController              The view controller providing the callback.
+ @param interventionActivity        The intervention activity that the user selected.
+ */
+- (BOOL)careCardViewController:(OCKCareCardViewController *)viewController canDiscontinueActivity:(OCKCarePlanActivity *)interventionActivity;
+
+/**
  Tells the delegate when the user tapped an intervention event.
  
  If the user must perform some activity in order to complete the intervention event,

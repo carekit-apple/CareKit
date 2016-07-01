@@ -474,6 +474,20 @@
 }
 
 
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    OCKCarePlanActivity *selectedActivity = _events[indexPath.row].firstObject.activity;
+    OCKCarePlanEvent *event = _events[indexPath.row].firstObject;
+
+    [self.store setEndDate:event.date
+               forActivity:selectedActivity
+                completion:^(BOOL success, OCKCarePlanActivity * _Nullable activity, NSError * _Nullable error) {
+                }];
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return OCKLocalizedString(@"CARD_CARD_DELETE_TITLE", nil);;
+}
+
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -491,6 +505,17 @@
     cell.delegate = self;
     cell.showEdgeIndicator = self.showEdgeIndicators;
     return cell;
+}
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    BOOL canEditRowAtIndexPath = NO;
+    
+    if (self.delegate &&
+        [self.delegate respondsToSelector:@selector(careCardViewController:canDiscontinueActivity:)]) {
+        OCKCarePlanActivity *selectedActivity = _events[indexPath.row].firstObject.activity;
+        canEditRowAtIndexPath = [self.delegate careCardViewController:self canDiscontinueActivity:selectedActivity];
+    }
+    return canEditRowAtIndexPath;
 }
 
 @end

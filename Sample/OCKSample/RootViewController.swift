@@ -85,6 +85,7 @@ class RootViewController: UITabBarController {
     
     private func createCareCardViewController() -> OCKCareCardViewController {
         let viewController = OCKCareCardViewController(carePlanStore: storeManager.store)
+        viewController.delegate = self
         
         // Setup the controller's title and tab bar item
         viewController.title = NSLocalizedString("Care Card", comment: "")
@@ -251,3 +252,16 @@ extension RootViewController: CarePlanStoreManagerDelegate {
         insightsViewController.items = insights
     }
 }
+
+
+extension RootViewController: OCKCareCardViewControllerDelegate {
+    
+    /// Called when the user swipes left on the `OCKCareCardViewController`.
+    func careCardViewController(viewController: OCKCareCardViewController, canDiscontinueActivity interventionActivity: OCKCarePlanActivity) -> Bool {
+        guard let activityType = ActivityType(rawValue: interventionActivity.identifier) else { return false }
+        guard let sampleActivity = sampleData.activityWithType(activityType) else { return false }
+        return sampleActivity.activityType == .OutdoorWalk
+    }
+}
+
+

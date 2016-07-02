@@ -380,6 +380,9 @@
 #pragma mark - OCKCareCardCellDelegate
 
 - (void)careCardTableViewCell:(OCKCareCardTableViewCell *)cell didUpdateFrequencyofInterventionEvent:(OCKCarePlanEvent *)event {
+	_lastSelectedInterventionEvent = event;
+    _lastSelectedInterventionActivity = event.activity;
+	
     if (self.delegate &&
         [self.delegate respondsToSelector:@selector(careCardViewController:didSelectButtonWithInterventionEvent:)]) {
         [self.delegate careCardViewController:self didSelectButtonWithInterventionEvent:event];
@@ -477,8 +480,9 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    OCKCarePlanActivity *selectedActivity = [self activityForIndexPath:indexPath];
-    
+	OCKCarePlanActivity *selectedActivity = [self activityForIndexPath:indexPath];
+    _lastSelectedInterventionActivity = selectedActivity;    
+	
     if ([self delegateCustomizesRowSelection]) {
         [self.delegate careCardViewController:self didSelectRowWithInterventionActivity:selectedActivity];
     } else {

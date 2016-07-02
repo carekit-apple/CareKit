@@ -49,8 +49,6 @@
                        emailAddress:(NSString *)emailAddress
                            monogram:(NSString *)monogram
                               image:(UIImage *)image {
-    NSAssert((monogram || image), @"An OCKContact must have either a monogram or an image.");
-    
     self = [super init];
     if (self) {
         _type = type;
@@ -60,7 +58,7 @@
         _phoneNumber = [phoneNumber copy];
         _messageNumber = [messageNumber copy];
         _emailAddress = [emailAddress copy];
-        _monogram = [self clippedMonogramForString:monogram];
+        self.monogram = [self clippedMonogramForString:monogram];
         _image = image;
     }
     return self;
@@ -80,15 +78,6 @@
             OCKEqualObjects(self.emailAddress, castObject.emailAddress) &&
             OCKEqualObjects(self.monogram, castObject.monogram) &&
             OCKEqualObjects(self.image, castObject.image));
-}
-
-
-#pragma mark - Helpers
-
-- (NSString *)clippedMonogramForString:(NSString *)string {
-    NSRange stringRange = {0, MIN([string length], 2)};
-    stringRange = [string rangeOfComposedCharacterSequencesForRange:stringRange];
-    return [string substringWithRange:stringRange];
 }
 
 
@@ -141,6 +130,45 @@
     contact->_monogram = [self.monogram copy];
     contact->_image = self.image;
     return contact;
+}
+
+#pragma mark - Monogram
+
+- (NSString *)clippedMonogramForString:(NSString *)string {
+    NSRange stringRange = {0, MIN([string length], 2)};
+    stringRange = [string rangeOfComposedCharacterSequencesForRange:stringRange];
+    return [string substringWithRange:stringRange];
+}
+
+- (void)setMonogram:(NSString *)monogram {
+    if (!monogram) {
+        monogram = [self generateMonogram:_name];
+    }
+    _monogram = [monogram copy];
+}
+
+- (NSString *)generateMonogram:(NSString *)name {
+    NSAssert((name != nil), @"A name must be supplied");
+    NSAssert((name.length > 0), @"A name must have > 0 chars");
+    
+    NSMutableArray *candidateWords = [NSMutableArray arrayWithArray:[name componentsSeparatedByString:@" "]];
+    
+    NSString *first = @"";
+    NSString *last = @"";
+
+    if (candidateWords.count > 0) {
+        first = [NSString stringWithFormat:@"%c", [candidateWords[0] characterAtIndex:0]];
+        if (candidateWords.count > 1) {
+            last = [NSString stringWithFormat:@"%c", [candidateWords[candidateWords.count-1] characterAtIndex:0]];
+        }
+
+    } else {
+        @throw [NSException exceptionWithName:NSInvalidArgumentException reason:[NSString stringWithFormat:@"name %@ has no candidates to generate a monogram", name] userInfo:nil];
+    }
+    
+    candidateWords = nil;
+    
+    return [NSString stringWithFormat:@"%@%@",[first uppercaseString],[last uppercaseString]];
 }
 
 @end

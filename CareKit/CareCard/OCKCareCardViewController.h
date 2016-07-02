@@ -130,6 +130,19 @@ OCK_CLASS_AVAILABLE
  */
 @property (nonatomic, weak, nullable) id<OCKCareCardViewControllerDelegate> delegate;
 
+/**
+ The last intervention activity selected by the user.
+ 
+ This value is nil if no intervention activity has been selected yet.
+ */
+@property (nonatomic, readonly, nullable) OCKCarePlanActivity *lastSelectedInterventionActivity;
+
+/**
+ The last intervention event selected by the user.
+ 
+ This value is nil if no intervention event has been selected yet.
+ */
+@property (nonatomic, readonly, nullable) OCKCarePlanEvent *lastSelectedInterventionEvent;
 
 /**
  The image that will be used to mask the fill shape in the header view.

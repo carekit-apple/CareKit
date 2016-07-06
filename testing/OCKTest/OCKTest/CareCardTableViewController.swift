@@ -33,13 +33,18 @@ import CareKit
 
 
 class CareCardTableViewController: UITableViewController, OCKCarePlanStoreDelegate, OCKCareCardViewControllerDelegate {
-
+    private var canDiscontinueActivities = false
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        canDiscontinueActivities = false
+    }
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 8
+        return 9
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -61,6 +66,8 @@ class CareCardTableViewController: UITableViewController, OCKCarePlanStoreDelega
             case 6:
                 cell.textLabel?.text = "Save an Image"
             case 7:
+                cell.textLabel?.text = "Activities can be discontinued (Run 'With Delegate' first)"
+            case 8:
                 cell.textLabel?.text = "Delete all Activites"
             default:
                 cell.textLabel?.text = nil
@@ -294,8 +301,26 @@ class CareCardTableViewController: UITableViewController, OCKCarePlanStoreDelega
             }
             tableView.cellForRowAtIndexPath(indexPath)?.textLabel?.textColor = UIColor.greenColor()
             tableView.cellForRowAtIndexPath(indexPath)?.selected = false
-            
+
         } else if indexPath.row == 7 {
+        
+            // Activities can be discontinued
+
+            canDiscontinueActivities = true
+            
+            let dataPath = documentsDirectory[0].stringByAppendingString("/CarePlan2")
+            if !NSFileManager.defaultManager().fileExistsAtPath(dataPath) {
+                return
+            }
+            let carePlanStore = OCKCarePlanStore.init(persistenceDirectoryURL: NSURL.init(string: dataPath)!)
+            carePlanStore.delegate = self
+            
+            let careCardController = OCKCareCardViewController.init(carePlanStore: carePlanStore)
+            careCardController.delegate = self
+            careCardController.showEdgeIndicators = true
+            self.navigationController?.pushViewController(careCardController, animated: true)
+
+        } else if indexPath.row == 8 {
             
             // Delete all Activites
             
@@ -412,6 +437,11 @@ class CareCardTableViewController: UITableViewController, OCKCarePlanStoreDelega
         }
     }
     
+    /// Called when the user swipes left on the `OCKCareCardViewController`.
+    func careCardViewController(viewController: OCKCareCardViewController, canDiscontinueActivity interventionActivity: OCKCarePlanActivity) -> Bool {
+        return canDiscontinueActivities
+    }
+
     func carePlanStoreActivityListDidChange(store: OCKCarePlanStore) {
        print("carePlanStoreActivityListDidChange")
     }

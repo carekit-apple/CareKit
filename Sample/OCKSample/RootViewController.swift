@@ -260,6 +260,8 @@ extension RootViewController: OCKCareCardViewControllerDelegate {
     func careCardViewController(viewController: OCKCareCardViewController, canDiscontinueActivity interventionActivity: OCKCarePlanActivity) -> Bool {
         guard let activityType = ActivityType(rawValue: interventionActivity.identifier) else { return false }
         guard let sampleActivity = sampleData.activityWithType(activityType) else { return false }
+        
+        // Allow outdoor walks to be discontinued
         return sampleActivity.activityType == .OutdoorWalk
     }
 }

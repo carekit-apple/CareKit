@@ -475,12 +475,15 @@
 
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    OCKCarePlanActivity *selectedActivity = _events[indexPath.row].firstObject.activity;
     OCKCarePlanEvent *event = _events[indexPath.row].firstObject;
+    OCKCarePlanActivity *selectedActivity = event.activity;
 
     [self.store setEndDate:event.date
                forActivity:selectedActivity
                 completion:^(BOOL success, OCKCarePlanActivity * _Nullable activity, NSError * _Nullable error) {
+                    if (!success) {
+                        OCK_Log_Error("%@", error.localizedDescription);
+                    }
                 }];
 }
 
@@ -509,11 +512,17 @@
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
     BOOL canEditRowAtIndexPath = NO;
-    
-    if (self.delegate &&
-        [self.delegate respondsToSelector:@selector(careCardViewController:canDiscontinueActivity:)]) {
-        OCKCarePlanActivity *selectedActivity = _events[indexPath.row].firstObject.activity;
-        canEditRowAtIndexPath = [self.delegate careCardViewController:self canDiscontinueActivity:selectedActivity];
+    OCKCarePlanEvent *selectedEvent = _events[indexPath.row].firstObject;
+    OCKCarePlanActivity *selectedActivity = selectedEvent.activity;
+
+    // if the selected event is the activity's last one, there's no need to discontinue it.
+    NSDate *eventDate = OCKTimeOfDayDateFromComponents(selectedEvent.date);
+    NSDate *activityEndDate = OCKTimeOfDayDateFromComponents(selectedActivity.schedule.endDate);
+    if (![eventDate isEqualToDate:activityEndDate]) {
+        if (self.delegate &&
+            [self.delegate respondsToSelector:@selector(careCardViewController:canDiscontinueActivity:)]) {
+            canEditRowAtIndexPath = [self.delegate careCardViewController:self canDiscontinueActivity:selectedActivity];
+        }
     }
     return canEditRowAtIndexPath;
 }

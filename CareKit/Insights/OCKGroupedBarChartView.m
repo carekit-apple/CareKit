@@ -744,7 +744,7 @@ static const CGFloat MarginBetweenBarAndLabel = 6.0;
 
     [_constraints addObject:[NSLayoutConstraint constraintWithItem:_legendsView
                                                          attribute:NSLayoutAttributeWidth
-                                                         relatedBy:NSLayoutRelationLessThanOrEqual
+                                                         relatedBy:NSLayoutRelationEqual
                                                             toItem:self
                                                          attribute:NSLayoutAttributeWidth
                                                         multiplier:1.0 constant:0.0]];

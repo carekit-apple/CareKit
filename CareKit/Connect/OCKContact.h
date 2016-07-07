@@ -82,7 +82,7 @@ OCK_CLASS_AVAILABLE
                         phoneNumber:(nullable CNPhoneNumber *)phoneNumber
                       messageNumber:(nullable CNPhoneNumber *)messageNumber
                        emailAddress:(nullable NSString *)emailAddress
-                           monogram:(NSString *)monogram
+                           monogram:(null_unspecified NSString *)monogram
                               image:(nullable UIImage *)image;
 
 /**
@@ -137,9 +137,10 @@ OCK_CLASS_AVAILABLE
 /**
  A string indicating the monogram for a contact.
  
- If a monogram is not provided, the image will be used for the contact.
+ If a monogram is not provided, it will be generated automatically.
+ If a monogram is available, it will be clipped to two glyphs.
  */
-@property (nonatomic, readonly) NSString *monogram;
+@property (nonatomic, readonly, null_resettable) NSString *monogram;
 
 /**
  An image for a contact.

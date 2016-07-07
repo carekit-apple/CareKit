@@ -3,7 +3,7 @@
 
 # Accessing Care Plan Data
 
-CareKit stores your treatment plan in a database. This database is located at the URL you provided when you instantiated your app's `OCKCarePlanStore` object. CareKit automatically creates the database the first time you instantiate your care plan store. For more information on instantiating your care plan store, see  [Creating the Care Card > Instantiating the Care Plan Store](../CreatingTheCareCard/CreatingTheCareCard.html#InstantiatingTheCarePlanStore). 
+CareKit stores your treatment plan in a database. This database is located at the URL you provided when you instantiated your app's `OCKCarePlanStore` object. CareKit automatically creates the database the first time you instantiate your care plan store. For more information on instantiating your care plan store, see  [Creating the Care Card > Instantiating the Care Plan Store](../CreatingTheCareCard/CreatingTheCareCard.html#InstantiatingTheCarePlanStore).
 
 CareKit's database is encrypted using standard file system encryption. Specifically, the database uses `NSFileProtectionComplete` encryption, which means the database is stored in an encrypted format on disk and cannot be read from or written to while the device is locked or booting.
 
@@ -14,7 +14,7 @@ Additionally, when working with CareKit data, you don't access this database dir
 * Read activities or events
 * Update events
 
-The Care Plan Store must be created on the main thread, but its methods can be called from any thread. All of the methods are asynchronous. They dispatch the actual work to a FIFO background queue. As soon as the work is complete, the method's completion handler is called on an anonymous background queue. You often need to dispatch these results back to the main queue before updating your app. 
+The Care Plan Store must be created on the main thread, but its methods can be called from any thread. All of the methods are asynchronous. They dispatch the actual work to a FIFO background queue. As soon as the work is complete, the method's completion handler is called on an anonymous background queue. You often need to dispatch these results back to the main queue before updating your app.
 
 For more information on working with asynchronous APIs, see [Concurrency Programming Guide](https://developer.apple.com/library/ios/documentation/General/Conceptual/ConcurrencyProgrammingGuide/Introduction/Introduction.html).
 
@@ -22,12 +22,12 @@ For more information on working with asynchronous APIs, see [Concurrency Program
 
 The Care Plan Store manages two basic data types:
 
-* `OCKCarePlanActivity` objects 
-* `OCKCarePlanEvent` objects 
+* `OCKCarePlanActivity` objects
+* `OCKCarePlanEvent` objects
 
-The activities represent the user's care plan, while the events represent the individual tasks that the user must perform to complete the plan. When you add an activity to the store, CareKit automatically generates the event objects associated with that activity. For example, if the activity indicates taking three doses of medication a day, CareKit generates three events for each day. 
+The activities represent the user's care plan, while the events represent the individual tasks that the user must perform to complete the plan. When you add an activity to the store, CareKit automatically generates the event objects associated with that activity. For example, if the activity indicates taking three doses of medication a day, CareKit generates three events for each day.
 
-Each activity is uniquely identified by its `identifier` property. These identifiers are strings that you provide when you create the activity. You can use any string you wish, but every activity in the Care Plan Store must have a unique string. 
+Each activity is uniquely identified by its `identifier` property. These identifiers are strings that you provide when you create the activity. You can use any string you wish, but every activity in the Care Plan Store must have a unique string.
 
 If an activity already exists in the Care Plan Store, any attempt to add a second activity with the same identifier fails. The store returns an error object with an `OCKErrorDomain` domain and a `OCKErrorInvalidObject` error code.
 
@@ -47,24 +47,25 @@ Use a delegate object to monitor changes to your app's Care Plan Store. This del
 
 As an example, if you want to update your Insights scene whenever the store data changes, implement the `carePlanStore(didReceiveUpdateOfEvent:)` method, and have it call a method that reads new data from the store and updates the Insight items, as shown below:
 
-    func carePlanStore(store: OCKCarePlanStore, didReceiveUpdateOfEvent event: OCKCarePlanEvent) {
-        updateInsights()
-    }
-    
+```swift
+func carePlanStore(store: OCKCarePlanStore, didReceiveUpdateOfEvent event: OCKCarePlanEvent) {
+  updateInsights()
+}
+```    
 
 ## Reading Data from the Store
 
-The Care Plan Store provides methods for reading both activities and events. For activities, you can read the activity for a given identifier, all the activities for a group identifier, or even batch read all the activities in the entire treatment plan. 
+The Care Plan Store provides methods for reading both activities and events. For activities, you can read the activity for a given identifier, all the activities for a group identifier, or even batch read all the activities in the entire treatment plan.
 
 For example, the following sample code reads all the intervention activities currently saved in the store:
 
-```
+```swift
 store.activitiesWithType(.Intervention) { (success, activities, errorOrNil) in
     guard success else {
         // perform proper error handling here
         fatalError(errorOrNil!.localizedDescription)
     }
-    
+
     // now do something with the activities.
 }
 ```
@@ -72,19 +73,19 @@ CareKit is somewhat more restrictive when it comes to reading events. In general
 
 For example, the following sample code reads all of today's events for the ibuprofen activity.
 
-```
+```swift
 guard let calendar = NSCalendar(calendarIdentifier: NSCalendarIdentifierGregorian) else {
     fatalError("This should never fail.")
 }
 
 let today = calendar.components([.Day, .Month, .Year], fromDate: NSDate())
 store.eventsForActivity(ibuprofen, date: today) { (events, errorOrNil) in
-    
+
     if let error = errorOrNil {
         // Perform proper error handling here
         fatalError(error.localizedDescription)
     }
-    
+
     // do something with the events.
 }
 ```
@@ -97,15 +98,15 @@ To help gather data from a range of dates, the Care Plan Store provides two high
 
 The `dailyCompletionStatusWithType(startDate:, endDate:, handler:, completion:)` method calls its handler once for each date in the provided range of dates. However, instead of providing information about specific events, it provides a count of the number of events that the user has completed, and the total number of events for each date.
 
-The `enumerateEventsOfActivity(startDate:, endDate:, handler:, completion:)` method calls its handler once for each event generated by the provided activity during the provided range of dates. 
+The `enumerateEventsOfActivity(startDate:, endDate:, handler:, completion:)` method calls its handler once for each event generated by the provided activity during the provided range of dates.
 
 In both cases, the higher order method calls its completion block once all the events have been handled.
 
-The following sample code demonstrates using these methods to collect data over a range of dates, and then combine that data. 
+The following sample code demonstrates using these methods to collect data over a range of dates, and then combine that data.
 
-```
+```swift
 // These variables will store the data generated by the Care Plan Store.
-var completionData =  [(dateComponent: NSDateComponents, value: Double)]()
+var completionData = [(dateComponent: NSDateComponents, value: Double)]()
 var stressAssessmentData = [NSDateComponents: Double]()
 
 dispatch_group_enter(gatherDataGroup)
@@ -117,7 +118,7 @@ store.dailyCompletionStatusWithType(
         // This block is called once for each date.
         let percentComplete = Double(completed) / Double(total)
         completionData.append((dateComponents, percentComplete))
-        
+
     },
     completion: { (success, errorOrNil) in
         // This block is called after the last date's handler returns.
@@ -125,7 +126,7 @@ store.dailyCompletionStatusWithType(
             // Add proper error handling here...
             fatalError(errorOrNil!.localizedDescription)
         }
-        
+
         dispatch_group_leave(gatherDataGroup)
 })
 
@@ -139,11 +140,11 @@ store.enumerateEventsOfActivity(
         if let event = eventOrNil,
             result = event.result,
             value = Double(result.valueString) {
-            
+
             stressAssessmentData[event.date] = value
-            
+
         }
-        
+
     },
     completion: { (success, errorOrNil) in
         // This block is called after the last event's handler returns.
@@ -151,7 +152,7 @@ store.enumerateEventsOfActivity(
             // Add proper error handling here...
             fatalError(errorOrNil!.localizedDescription)
         }
-        
+
         dispatch_group_leave(gatherDataGroup)
 })
 
@@ -173,26 +174,26 @@ Alternatively, you can create a function that deletes all the activities from th
 
 The sample code below demonstrates a straightforward synchronous method that deletes everything from the store.
 
-```
+```swift
 private func _clearStore() {
     print("*** CLEANING STORE DEBUG ONLY ****")
-    
+
     let deleteGroup = dispatch_group_create()
     let store = self.store
 
     dispatch_group_enter(deleteGroup)
     store.activitiesWithCompletion { (success, activities, errorOrNil) in
-        
+
         guard success else {
             // Perform proper error handling here...
             fatalError(errorOrNil!.localizedDescription)
         }
-        
+
         for activity in activities {
-            
+
             dispatch_group_enter(deleteGroup)
             store.removeActivity(activity) { (success, error) -> Void in
-                
+
                 print("Removing \(activity)")
                 guard success else {
                     fatalError("*** An error occurred: \(error!.localizedDescription)")
@@ -201,10 +202,10 @@ private func _clearStore() {
                 dispatch_group_leave(deleteGroup)
             }
         }
-        
+
         dispatch_group_leave(deleteGroup)
     }
-    
+
     // Wait until all the asynchronous calls are done.
     dispatch_group_wait(deleteGroup, DISPATCH_TIME_FOREVER)
 }
@@ -216,33 +217,62 @@ This sample reads all the activities from the store, and then iterates over the 
 ## Sharing Data with HealthKit
 Because CareKit and HealthKit both focus on health information, you may find it useful to share data between the two stores. Here's a code example that illustrates how this can be achieved:
 
-	- (void)symptomTrackerViewController:(OCKSymptomTrackerViewController *)viewController didSelectRowWithAssessmentEvent:(OCKCarePlanEvent *)assessmentEvent {
-		NSString *identifier = assessmentEvent.activity.identifier;
-    
-	    if ([identifier isEqualToString:TemperatureAssessment]) {
-			//1. Present a survey to ask for temperature
-			// ...
-    
-			//2. Save the collected temperature into health kit 
-			HKHealthStore *hkstore = [HKHealthStore new];
-			HKQuantityType *type = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierBodyTemperature];
-			
-			[hkstore requestAuthorizationToShareTypes:[NSSet setWithObject:type] readTypes:[NSSet setWithObject:type] completion:^(BOOL success, NSError * _Nullable error) {
-			HKQuantitySample *sample = [HKQuantitySample quantitySampleWithType:type quantity:[HKQuantity quantityWithUnit:[HKUnit degreeFahrenheitUnit] doubleValue:99.1] startDate:[NSDate date] endDate:[NSDate date]];
-			                                           
-			[hkstore saveObject:sample withCompletion:^(BOOL success, NSError * _Nullable error) {
-				// 3. When the collected temperature has been saved into health kit  
-				// Use the saved HKSample object to create a result object and save it to CarePlanStore.
-				// Then each time, CarePlanStore will load the temperature data from HealthKit.
-				OCKCarePlanEventResult *result = [[OCKCarePlanEventResult alloc] initWithQuantitySample:sample quantityStringFormatter:nil unitStringKeys:@{[HKUnit degreeFahrenheitUnit]: @"\u00B0F", [HKUnit degreeCelsiusUnit]: @"\u00B0C",} userInfo:nil];
+```swift
+func symptomTrackerViewController(viewController: OCKSymptomTrackerViewController, didSelectRowWithAssessmentEvent assessmentEvent: OCKCarePlanEvent) {
 
-				[_store updateEvent:assessmentEvent withResult:result state:OCKCarePlanEventStateCompleted completion:^(BOOL success, OCKCarePlanEvent * _Nonnull event, NSError * _Nonnull error) {
-					NSAssert(success, error.localizedDescription);
-					}];
-				}];                                        
-			}];
-		}
-	}             
-	
+    let identifier = assessmentEvent.activity.identifier
+
+    if identifier == TemperatureAssessment {
+        // 1. Present a survey to ask for temperature
+        // ...
+
+        // 2. Save the collected temperature into HealthKit
+        let hkStore = HKHealthStore()
+        let type = HKQuantityType.quantityTypeForIdentifier(HKQuantityTypeIdentifierBodyTemperature)!
+        hkStore.requestAuthorizationToShareTypes(
+            Set<HKSampleType>(arrayLiteral: type),
+            readTypes: Set<HKObjectType>(arrayLiteral: type),
+            completion: { (success, error) in
+                let sample = HKQuantitySample(
+                    type: type,
+                    quantity: HKQuantity(unit: HKUnit.degreeFahrenheitUnit(), doubleValue: 99.1),
+                    startDate: NSDate(),
+                    endDate: NSDate()
+                )
+
+                hkStore.saveObject(
+                    sample,
+                    withCompletion: { (success, error) in
+                        // 3. When the collected temperature has been saved into HealthKit
+                        // Use the saved HKSample object to create a result object and save it to CarePlanStore.
+                        // Then each time, CarePlanStore will load the temperature data from HealthKit.
+                        let result = OCKCarePlanEventResult(
+                            quantitySample: sample,
+                            quantityStringFormatter: nil,
+                            unitStringKeys: [
+                                HKUnit.degreeFahrenheitUnit() : "\u{00B0}F", // °F
+                                HKUnit.degreeCelsiusUnit()    : "\u{00B0}C"  // °C
+                            ],
+                            userInfo: nil
+                        )
+
+                        self.storeManager.store.updateEvent(
+                            assessmentEvent,
+                            withResult: result,
+                            state: .Completed,
+                            completion: { (success, event, errorOrNil) in
+                                guard success else {
+                                    // Add proper error handling here...
+                                    fatalError(errorOrNil!.localizedDescription)
+                                }
+                            }
+                        )
+                    }
+                )
+            }
+        )
+    }
+}
+```
+
 In this example, a body temperature value is saved to a HealthKit store after being acquired from CareKit.
-                            

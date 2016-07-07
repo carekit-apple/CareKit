@@ -124,7 +124,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     NSParameterAssert(sourceItem);
 
     NSManagedObjectContext *context = _managedObjectContext;
-    if (context == nil) {
+    if (nil == context) {
         return NO;
     }
     
@@ -134,28 +134,34 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
                                                          identifier:sourceItem.identifier
                                                               class:[OCKCarePlanActivity class]
                                                               error:&errorOut];
-    
-    if (item) {
-        if (error) {
+    if (nil != errorOut) {
+        if (nil != error) {
+            *error = errorOut;
+        }
+        return NO;
+    }
+
+    if (nil != item) {
+        if (nil != error) {
             NSString *reasonString = [NSString stringWithFormat:@"An activity with the identifier %@ already exists.", sourceItem.identifier];
             *error = [NSError errorWithDomain:OCKErrorDomain code:OCKErrorInvalidObject userInfo:@{@"reason":reasonString}];
         }
-    } else {
+        return NO;
+    }
     
-        NSManagedObject *cdObject;
-        cdObject = [[coreDataClass alloc] initWithEntity:[NSEntityDescription entityForName:entityName
-                                                                     inManagedObjectContext:context]
-                          insertIntoManagedObjectContext:context
-                                                    item:sourceItem];
-        
-        if (![context save:&errorOut]) {
-            if (error) {
-                *error = errorOut;
-            }
-        }
+    NSManagedObject *cdObject;
+    cdObject = [[coreDataClass alloc] initWithEntity:[NSEntityDescription entityForName:entityName
+                                                                 inManagedObjectContext:context]
+                      insertIntoManagedObjectContext:context
+                                                item:sourceItem];
+
+    BOOL savedSuccessfully = [context save:&errorOut];
+
+    if (nil != error) {
+        *error = errorOut;
     }
 
-    return errorOut ? NO : YES;
+    return savedSuccessfully;
 }
 
 - (BOOL)block_alterItemWithEntityName:(NSString *)name

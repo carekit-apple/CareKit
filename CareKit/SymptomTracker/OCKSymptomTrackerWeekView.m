@@ -42,7 +42,6 @@ static const CGFloat RingButtonSize = 20.0;
 static const CGFloat TopMargin = 15.0;
 static const CGFloat LeadingMargin = 15.0;
 static const CGFloat TrailingMargin = 15.0;
-static const CGFloat BottomMargin = 5.0;
 
 @implementation OCKSymptomTrackerWeekView {
     OCKWeekLabelsView *_weekView;
@@ -71,7 +70,7 @@ static const CGFloat BottomMargin = 5.0;
         for (int i = 0; i < 7; i++) {
             OCKRingButton *ringButton = [[OCKRingButton alloc] initWithFrame:CGRectMake(0, 0, RingButtonSize, RingButtonSize)];
             
-            OCKRingView *ringView = [[OCKRingView alloc] initWithFrame:CGRectMake(0, 0, RingButtonSize + 10, RingButtonSize + 10)];
+            OCKRingView *ringView = [[OCKRingView alloc] initWithFrame:CGRectMake(0, 25, RingButtonSize + 10, RingButtonSize + 10)];
             ringView.userInteractionEnabled = NO;
             ringView.disableAnimation = YES;
             ringView.hideLabel = YES;
@@ -143,17 +142,17 @@ static const CGFloat BottomMargin = 5.0;
                                         [NSLayoutConstraint constraintWithItem:_stackView
                                                                      attribute:NSLayoutAttributeTop
                                                                      relatedBy:NSLayoutRelationEqual
-                                                                        toItem:_weekView
-                                                                     attribute:NSLayoutAttributeBottom
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeTop
                                                                     multiplier:1.0
-                                                                      constant:2*RingButtonSize],
+                                                                      constant:0.0],
                                         [NSLayoutConstraint constraintWithItem:_stackView
                                                                      attribute:NSLayoutAttributeBottom
                                                                      relatedBy:NSLayoutRelationEqual
                                                                         toItem:self
                                                                      attribute:NSLayoutAttributeBottom
                                                                     multiplier:1.0
-                                                                      constant:-BottomMargin]
+                                                                      constant:0.0]
                                         ]];
     
     [NSLayoutConstraint activateConstraints:_constraints];

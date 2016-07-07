@@ -58,12 +58,14 @@ static const CGFloat VerticalMargin = 10.0;
     
     if (!_titleLabel) {
         _titleLabel = [OCKLabel new];
+        _titleLabel.backgroundColor = [UIColor whiteColor];
         _titleLabel.textStyle = UIFontTextStyleHeadline;
         [self addSubview:_titleLabel];
     }
     
     if (!_textLabel) {
         _textLabel = [OCKLabel new];
+        _textLabel.backgroundColor = [UIColor whiteColor];
         _textLabel.textStyle = UIFontTextStyleSubheadline;
         _textLabel.textColor = OCKSystemGrayColor();
         _textLabel.numberOfLines = 2;

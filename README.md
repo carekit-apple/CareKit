@@ -28,7 +28,7 @@ using the CareKit framework can run on devices with iOS 9.0 or newer.
 Installation
 ------------
 
-The latest stable version of CareKit framework can be cloned with
+The latest stable version of CareKit framework can be cloned with:
 
 ```
 git clone -b stable --recurse-submodules https://github.com/carekit-apple/carekit.git

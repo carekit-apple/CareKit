@@ -121,9 +121,36 @@
     [_tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:NSNotFound inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
 }
 
+- (OCKCareCardTableViewHeader *) createTableViewHeader {
+    
+    if(self.delegate && [self.delegate respondsToSelector:@selector(careCardTableViewHeader)]){
+        return [self.delegate careCardTableViewHeader];
+    }
+    
+    return [[OCKCareCardTableViewHeader alloc] initWithFrame:CGRectZero];
+}
+
+- (OCKWeekViewController *) createWeekViewController {
+    
+    if(self.delegate && [self.delegate respondsToSelector:@selector(careCardWeekViewController)]){
+        return [self.delegate careCardWeekViewController];
+    }
+    
+    return [OCKWeekViewController new];
+}
+
+- (UIView *) createTableFooterView {
+    
+    if(self.delegate && [self.delegate respondsToSelector:@selector(tableFooterView)]){
+        return [self.delegate tableFooterView];
+    }
+    
+    return [UIView new];
+}
+
 - (void)prepareView {
     if (!_headerView) {
-        _headerView = [[OCKCareCardTableViewHeader alloc] initWithFrame:CGRectZero];
+        _headerView = [self createTableViewHeader];
     }
     _headerView.heartView.maskImage = self.maskImage;
     _headerView.tintColor = self.maskImageTintColor;
@@ -135,7 +162,7 @@
         _pageViewController.dataSource = self;
         _pageViewController.delegate = self;
         
-        OCKWeekViewController *weekController = [OCKWeekViewController new];
+        OCKWeekViewController *weekController = [self createWeekViewController];
         weekController.careCardWeekView.delegate = _weekViewController.careCardWeekView.delegate;
         weekController.careCardWeekView.smallMaskImage = self.smallMaskImage;
         weekController.careCardWeekView.tintColor = self.maskImageTintColor;
@@ -144,8 +171,12 @@
         [_pageViewController setViewControllers:@[weekController] direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:nil];
     }
     
+    if (self.delegate && [self.delegate respondsToSelector:@selector(careCardWeekPageViewController:)]){
+        [self.delegate careCardWeekPageViewController:_pageViewController];
+    }
+    
     _tableView.tableHeaderView = _pageViewController.view;
-    _tableView.tableFooterView = [UIView new];
+    _tableView.tableFooterView = [self createTableFooterView];
     
     [self setUpConstraints];
 }

@@ -250,7 +250,7 @@ static const CGFloat ButtonViewSize = 40.0;
                                             ]];
     }
     
-    int index = (_frequencyButtons.count < 7) ? 0 : 7;
+    int index = (_frequencyButtons.count <= 7) ? 0 : 7;
     for (int i = index; i <_frequencyButtons.count; i++) {
         [_constraints addObjectsFromArray:@[
                                             [NSLayoutConstraint constraintWithItem:_frequencyButtons[i]

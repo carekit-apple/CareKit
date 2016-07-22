@@ -30,8 +30,9 @@
 
 
 #import <UIKit/UIKit.h>
+#import <CareKit/CareKit.h>
 
-
+OCK_CLASS_AVAILABLE
 @interface OCKHeartView : UIView
 
 @property (nonatomic) BOOL animationEnabled;

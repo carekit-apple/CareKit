@@ -28,37 +28,57 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#import "OCKContactInfo.h"
+#import "OCKHelpers.h"
 
-#import <UIKit/UIKit.h>
-#import <CareKit/OCKDefines.h>
+@implementation OCKContactInfo
 
-// CarePlan
-#import <CareKit/NSDateComponents+CarePlan.h>
-#import <CareKit/OCKCareSchedule.h>
-#import <CareKit/OCKCarePlanActivity.h>
-#import <CareKit/OCKCarePlanEvent.h>
-#import <CareKit/OCKCarePlanEventResult.h>
-#import <CareKit/OCKCarePlanStore.h>
++ (instancetype)new {
+	OCKThrowMethodUnavailableException();
+	return nil;
+}
 
-// Care Card
-#import <CareKit/OCKCareCardViewController.h>
+- (instancetype)initWithType:(OCKContactInfoType)type displayString:(NSString *)displayString actionURL:(NSURL * _Nullable)actionURL {
+	self = [super init];
+	if (self) {
+		_type = type;
+		_displayString = [displayString copy];
+		_actionURL = [actionURL copy];
+	}
+	
+	return self;
+}
 
-// Symptom Tracker
-#import <CareKit/OCKSymptomTrackerViewController.h>
+#pragma mark - NSSecureCoding
 
-// Insights
-#import <CareKit/OCKInsightItem.h>
-#import <CareKit/OCKMessageItem.h>
-#import <CareKit/OCKChart.h>
-#import <CareKit/OCKBarSeries.h>
-#import <CareKit/OCKBarChart.h>
-#import <CareKit/OCKInsightsViewController.h>
-#import <CareKit/OCKGroupedBarChartView.h>
++ (BOOL)supportsSecureCoding {
+	return YES;
+}
 
-// Connect
-#import <CareKit/OCKContactInfo.h>
-#import <CareKit/OCKContact.h>
-#import <CareKit/OCKConnectViewController.h>
+- (instancetype)initWithCoder:(NSCoder *)aDecoder {
+	self = [super init];
+	if (self) {
+		OCK_DECODE_ENUM(aDecoder, type);
+		OCK_DECODE_OBJ_CLASS(aDecoder, displayString, NSString);
+		OCK_DECODE_OBJ_CLASS(aDecoder, actionURL, NSURL);
+	}
+	return self;
+}
 
-// PDF
-#import <CareKit/OCKDocument.h>
+- (void)encodeWithCoder:(NSCoder *)aCoder {
+	OCK_ENCODE_ENUM(aCoder, type);
+	OCK_ENCODE_OBJ(aCoder, displayString);
+	OCK_ENCODE_OBJ(aCoder, actionURL);
+}
+
+#pragma mark - NSCopying
+
+- (instancetype)copyWithZone:(NSZone *)zone {
+	OCKContactInfo *contactInfo = [[[self class] allocWithZone:zone] init];
+	contactInfo->_type = self.type;
+	contactInfo->_displayString = [self.displayString copy];
+	contactInfo->_actionURL = [self.actionURL copy];
+	return contactInfo;
+}
+
+@end

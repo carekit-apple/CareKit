@@ -109,18 +109,10 @@ static const CGFloat HeaderViewHeight = 225.0;
     _tableViewData = [NSMutableArray new];
     _sectionTitles = [NSMutableArray new];
     
-    NSMutableArray<NSNumber *> *contactInfoSection = [NSMutableArray new];
+    NSMutableArray<OCKContactInfo *> *contactInfoSection = [NSMutableArray new];
     NSMutableArray<NSString *> *sharingSection = [NSMutableArray new];
     
-    if (self.contact.phoneNumber) {
-        [contactInfoSection addObject:@(OCKConnectTypePhone)];
-    }
-    if (self.contact.messageNumber) {
-        [contactInfoSection addObject:@(OCKConnectTypeMessage)];
-    }
-    if (self.contact.emailAddress) {
-        [contactInfoSection addObject:@(OCKConnectTypeEmail)];
-    }
+	[contactInfoSection addObjectsFromArray:self.contact.contactInfoItems];
     
     if (self.delegate) {
         NSString *sharingTitle = OCKLocalizedString(@"SHARING_CELL_TITLE", nil);
@@ -175,19 +167,25 @@ static const CGFloat HeaderViewHeight = 225.0;
 #pragma mark - OCKContactInfoTableViewCellDelegate
 
 - (void)contactInfoTableViewCellDidSelectConnection:(OCKContactInfoTableViewCell *)cell {
-    switch (cell.connectType) {
-        case OCKConnectTypePhone:
-            [self makeCallToNumber:cell.contact.phoneNumber.stringValue];
-            break;
-            
-        case OCKConnectTypeMessage:
-            [self sendMessageToNumber:cell.contact.messageNumber.stringValue];
-            break;
-            
-        case OCKConnectTypeEmail:
-            [self sendEmailToAddress:cell.contact.emailAddress];
-            break;
-    }
+	OCKContactInfo *contactInfo = cell.contactInfo;
+	
+	if (contactInfo.actionURL) {
+		[[UIApplication sharedApplication] openURL:contactInfo.actionURL];
+	} else {
+		switch (contactInfo.type) {
+			case OCKContactInfoTypePhone:
+				[self makeCallToNumber:contactInfo.displayString];
+				break;
+				
+			case OCKContactInfoTypeMessage:
+				[self sendMessageToNumber:contactInfo.displayString];
+				break;
+				
+			case OCKContactInfoTypeEmail:
+				[self sendEmailToAddress:contactInfo.displayString];
+				break;
+		}		
+	}
 }
 
 
@@ -230,10 +228,10 @@ static const CGFloat HeaderViewHeight = 225.0;
         if (!cell) {
             cell = [[OCKContactInfoTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
                                                       reuseIdentifier:ContactCellIdentifier];
+			cell.tintColor = self.contact.tintColor;
         }
-        cell.contact = self.contact;
+        cell.contactInfo = _tableViewData[indexPath.section][indexPath.row];
         cell.delegate = self;
-        cell.connectType = [_tableViewData[indexPath.section][indexPath.row] intValue];
         return cell;
     } else if ([sectionTitle isEqualToString:_sharingSectionTitle]) {
         static NSString *SharingCellIdentifier = @"SharingCell";

@@ -48,9 +48,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface OCKContactInfoTableViewCell : UITableViewCell
 
-@property (nonatomic) OCKContact *contact;
-
-@property (nonatomic) OCKConnectType connectType;
+@property (nonatomic) OCKContactInfo *contactInfo;
 
 @property (nonatomic, weak, nullable) id<OCKContactInfoTableViewCellDelegate> delegate;
 

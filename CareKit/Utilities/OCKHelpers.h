@@ -114,6 +114,7 @@ typedef NS_ENUM(NSInteger, OCKErrorCode) {
 
 #define OCK_DECODE_OBJ_CLASS(d,x,cl)  _ ## x = (cl *)[d decodeObjectOfClass:[cl class] forKey:@STRINGIFY(x)]
 #define OCK_DECODE_OBJ_ARRAY(d,x,cl)  _ ## x = (NSArray *)[d decodeObjectOfClasses:[NSSet setWithObjects:[NSArray class],[cl class],nil] forKey:@STRINGIFY(x)]
+#define OCK_DECODE_OBJ_MUTABLE_ARRAY(d,x)  _ ## x = [((NSArray *)[d decodeObjectOfClass:[NSArray class] forKey:@STRINGIFY(x)]) mutableCopy]
 #define OCK_DECODE_OBJ_MUTABLE_ORDERED_SET(d,x,cl)  _ ## x = [(NSOrderedSet *)[d decodeObjectOfClasses:[NSSet setWithObjects:[NSOrderedSet class],[cl class],nil] forKey:@STRINGIFY(x)] mutableCopy]
 #define OCK_DECODE_OBJ_MUTABLE_DICTIONARY(d,x,kcl,cl)  _ ## x = [(NSDictionary *)[d decodeObjectOfClasses:[NSSet setWithObjects:[NSDictionary class],[kcl class],[cl class],nil] forKey:@STRINGIFY(x)] mutableCopy]
 

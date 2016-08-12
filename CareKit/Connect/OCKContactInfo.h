@@ -28,37 +28,35 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#import <Foundation/Foundation.h>
 
-#import <UIKit/UIKit.h>
-#import <CareKit/OCKDefines.h>
+NS_ASSUME_NONNULL_BEGIN
 
-// CarePlan
-#import <CareKit/NSDateComponents+CarePlan.h>
-#import <CareKit/OCKCareSchedule.h>
-#import <CareKit/OCKCarePlanActivity.h>
-#import <CareKit/OCKCarePlanEvent.h>
-#import <CareKit/OCKCarePlanEventResult.h>
-#import <CareKit/OCKCarePlanStore.h>
+typedef NS_ENUM(NSInteger, OCKContactInfoType) {
+	OCKContactInfoTypePhone = 0,
+	OCKContactInfoTypeMessage,
+	OCKContactInfoTypeEmail
+};
 
-// Care Card
-#import <CareKit/OCKCareCardViewController.h>
+@interface OCKContactInfo : NSObject <NSSecureCoding, NSCopying>
 
-// Symptom Tracker
-#import <CareKit/OCKSymptomTrackerViewController.h>
+@property (nonatomic, readonly) OCKContactInfoType type;
+@property (nonatomic, readonly) NSString *displayString;
+@property (nonatomic, readonly) NSURL *actionURL;
 
-// Insights
-#import <CareKit/OCKInsightItem.h>
-#import <CareKit/OCKMessageItem.h>
-#import <CareKit/OCKChart.h>
-#import <CareKit/OCKBarSeries.h>
-#import <CareKit/OCKBarChart.h>
-#import <CareKit/OCKInsightsViewController.h>
-#import <CareKit/OCKGroupedBarChartView.h>
+- (instancetype)init NS_UNAVAILABLE;
 
-// Connect
-#import <CareKit/OCKContactInfo.h>
-#import <CareKit/OCKContact.h>
-#import <CareKit/OCKConnectViewController.h>
+/**
+ Creates a new contact information item.
+ 
+ @param type The type of contact info, which will define the display icon and the default action if no actionURL is specified.
+ @param displayString The string that will be displayed to the user to represent the contact item.
+ @param actionURL The action to take to initiate the connection. For example "sms:1-314-555-1234", "tel:1-314-555-1234", "facetime:user@example.com"
+ 
+ @return An instance of the contact info.
+ */
+- (instancetype)initWithType:(OCKContactInfoType)type displayString:(NSString *)displayString actionURL:(NSURL * _Nullable)actionURL;
 
-// PDF
-#import <CareKit/OCKDocument.h>
+@end
+
+NS_ASSUME_NONNULL_END

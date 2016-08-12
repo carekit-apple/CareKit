@@ -90,7 +90,13 @@ class ConnectTableViewController: UITableViewController, OCKConnectViewControlle
             let contact6 = OCKContact.init(contactType: OCKContactType.Personal, name: "Avram", relation: "Bro", tintColor: nil, phoneNumber: nil, messageNumber: nil, emailAddress: "avram@example.com", monogram: "Avram", image: nil)
             let contact7 = OCKContact.init(contactType: OCKContactType.Personal, name: "Jim", relation: "Best Friend", tintColor: nil, phoneNumber: nil, messageNumber: nil, emailAddress: "jim12@example.com", monogram: "😊" , image: nil)
             let contact8 = OCKContact.init(contactType: OCKContactType.CareTeam, name: "Dr Yoshiko Wong", relation: "Doctor", tintColor: UIColor.cyanColor(), phoneNumber: nil, messageNumber: CNPhoneNumber.init(stringValue: "888-555-5512"), emailAddress: "drYoshiko@example.com", monogram: "YW", image: nil)
-            let connectViewController = OCKConnectViewController.init(contacts: [contact1, contact2, contact3, contact4, contact5, contact6, contact7, contact8])
+			let contact9 = OCKContact.init(contactType: OCKContactType.CareTeam, name: "Dr Ezra Wodehouse", relation: "Doctor", tintColor: UIColor.brownColor(), monogram: "EW", image: nil)
+			contact9.addContactInfoItem(OCKContactInfo.phoneContactInfo("314-555-1234"))
+			contact9.addContactInfoItem(OCKContactInfo.phoneContactInfo("314-555-4321"))
+			contact9.addContactInfoItem(OCKContactInfo.emailContactInfo("ewodehouse@example.com"))
+			contact9.addContactInfoItem(OCKContactInfo.smsContactInfo("314-555-4321"))
+			
+            let connectViewController = OCKConnectViewController.init(contacts: [contact1, contact2, contact3, contact4, contact5, contact6, contact7, contact8, contact9])
             connectViewController.delegate = self
             connectViewController.showEdgeIndicators = true
             self.navigationController?.pushViewController(connectViewController, animated: true)

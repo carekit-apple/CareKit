@@ -57,6 +57,10 @@ typedef NS_ENUM(NSInteger, OCKContactInfoType) {
  */
 - (instancetype)initWithType:(OCKContactInfoType)type displayString:(NSString *)displayString actionURL:(NSURL * _Nullable)actionURL;
 
++ (OCKContactInfo *)smsContactInfo:(NSString *)smsNumber;
++ (OCKContactInfo *)phoneContactInfo:(NSString *)phoneNumber;
++ (OCKContactInfo *)emailContactInfo:(NSString *)emailAddress;
+
 @end
 
 NS_ASSUME_NONNULL_END

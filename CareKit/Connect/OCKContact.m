@@ -151,6 +151,10 @@
 	return [_contactInfoItemsArray copy];
 }
 
+- (void)addContactInfoItem:(OCKContactInfo *)contactInfo {
+	[_contactInfoItemsArray addObject:contactInfo];
+}
+
 #pragma mark - Monogram
 
 - (NSString *)clippedMonogramForString:(NSString *)string {

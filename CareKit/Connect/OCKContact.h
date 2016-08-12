@@ -151,6 +151,8 @@ OCK_CLASS_AVAILABLE
  */
 @property (nonatomic, nullable) UIImage *image;
 
+- (void)addContactInfoItem:(OCKContactInfo *)contactInfo;
+
 @end
 
 NS_ASSUME_NONNULL_END

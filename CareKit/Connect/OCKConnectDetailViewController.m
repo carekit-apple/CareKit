@@ -32,7 +32,7 @@
 #import "OCKConnectDetailViewController.h"
 #import "OCKConnectTableViewHeader.h"
 #import "OCKDefines_Private.h"
-
+#import "OCKHelpers.h"
 
 static const CGFloat HeaderViewHeight = 225.0;
 
@@ -138,10 +138,7 @@ static const CGFloat HeaderViewHeight = 225.0;
 }
 
 - (void)makeCallToNumber:(NSString *)number {
-    // Strip non-digit characters
-    NSCharacterSet *nonDigits = [[NSCharacterSet decimalDigitCharacterSet] invertedSet];
-    NSString *stringURL = [[number componentsSeparatedByCharactersInSet:nonDigits] componentsJoinedByString:@""];
-    stringURL = [NSString stringWithFormat:@"tel:%@", stringURL];
+    NSString *stringURL = [NSString stringWithFormat:@"tel:%@", OCKStripNonNumericCharacters(number)];
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:stringURL]];
 }
 

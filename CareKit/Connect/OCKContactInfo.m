@@ -49,6 +49,21 @@
 	return self;
 }
 
++ (OCKContactInfo *)smsContactInfo:(NSString *)smsNumber {
+	NSURL *actionURL = [[NSURL alloc] initWithString:[@"sms:" stringByAppendingString:OCKStripNonNumericCharacters(smsNumber)]];
+	return [[OCKContactInfo alloc] initWithType:OCKContactInfoTypeMessage displayString:smsNumber actionURL:actionURL];
+}
+
++ (OCKContactInfo *)phoneContactInfo:(NSString *)phoneNumber {
+	NSURL *actionURL = [[NSURL alloc] initWithString:[@"tel:" stringByAppendingString:OCKStripNonNumericCharacters(phoneNumber)]];
+	return [[OCKContactInfo alloc] initWithType:OCKContactInfoTypePhone displayString:phoneNumber actionURL:actionURL];
+}
+
++ (OCKContactInfo *)emailContactInfo:(NSString *)emailAddress {
+	NSURL *actionURL = [[NSURL alloc] initWithString:[@"mailto:" stringByAppendingString:emailAddress]];
+	return [[OCKContactInfo alloc] initWithType:OCKContactInfoTypeEmail displayString:emailAddress actionURL:actionURL];
+}
+
 #pragma mark - NSSecureCoding
 
 + (BOOL)supportsSecureCoding {

@@ -160,6 +160,11 @@ static const CGFloat HeaderViewHeight = 225.0;
     }
 }
 
+- (void)makeVideoCallToNumber:(NSString *)number {
+	NSString *stringURL = [NSString stringWithFormat:@"facetime://%@", number];
+	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:stringURL]];
+}
+
 
 #pragma mark - OCKContactInfoTableViewCellDelegate
 
@@ -181,7 +186,11 @@ static const CGFloat HeaderViewHeight = 225.0;
 			case OCKContactInfoTypeEmail:
 				[self sendEmailToAddress:contactInfo.displayString];
 				break;
-		}		
+				
+			case OCKContactInfoTypeVideo:
+				[self makeVideoCallToNumber:contactInfo.displayString];
+				break; 
+		}
 	}
 }
 

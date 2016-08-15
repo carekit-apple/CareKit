@@ -51,6 +51,7 @@
 "CONTACT_INFO_PHONE_TITLE" = "телефон";
 "CONTACT_INFO_MESSAGE_TITLE" = "звістка";
 "CONTACT_INFO_EMAIL_TITLE" = "е-пошта";
+"CONTACT_INFO_VIDEO_TITLE" = "відео";
 "SHARING_CELL_TITLE" = "Надіслати звіти";
 "ERROR_TITLE" = "Помилка";
 "MESSAGE_SEND_ERROR" = "Звістку не надіслано";

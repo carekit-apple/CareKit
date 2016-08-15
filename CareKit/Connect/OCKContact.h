@@ -81,7 +81,8 @@ OCK_CLASS_AVAILABLE
                       messageNumber:(nullable CNPhoneNumber *)messageNumber
                        emailAddress:(nullable NSString *)emailAddress
                            monogram:(null_unspecified NSString *)monogram
-                              image:(nullable UIImage *)image;
+                              image:(nullable UIImage *)image 
+DEPRECATED_MSG_ATTRIBUTE("Use initWithContactType:name:relation:tintColor:monogram:image instead");
 
 /**
  Returns an initialized contact using the specified values.
@@ -101,7 +102,6 @@ OCK_CLASS_AVAILABLE
 						  tintColor:(nullable UIColor *)tintColor
 						   monogram:(null_unspecified NSString *)monogram
 							  image:(nullable UIImage *)image;
-
 
 /**
  The contact type.

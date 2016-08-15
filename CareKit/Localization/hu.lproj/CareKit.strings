@@ -51,6 +51,7 @@
 "CONTACT_INFO_PHONE_TITLE" = "telefon";
 "CONTACT_INFO_MESSAGE_TITLE" = "szöveg";
 "CONTACT_INFO_EMAIL_TITLE" = "e-mail";
+"CONTACT_INFO_VIDEO_TITLE" = "videó";
 "SHARING_CELL_TITLE" = "Jelentések küldése";
 "ERROR_TITLE" = "Hiba";
 "MESSAGE_SEND_ERROR" = "Az üzenet küldése sikertelen volt";

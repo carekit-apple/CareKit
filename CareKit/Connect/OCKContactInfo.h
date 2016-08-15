@@ -35,7 +35,8 @@ NS_ASSUME_NONNULL_BEGIN
 typedef NS_ENUM(NSInteger, OCKContactInfoType) {
 	OCKContactInfoTypePhone = 0,
 	OCKContactInfoTypeMessage,
-	OCKContactInfoTypeEmail
+	OCKContactInfoTypeEmail,
+	OCKContactInfoTypeVideo
 };
 
 @interface OCKContactInfo : NSObject <NSSecureCoding, NSCopying>

@@ -96,6 +96,10 @@ static const CGFloat IconButtonSize = 35.0;
             imageNamed = @"email";
             connectTypeText = OCKLocalizedString(@"CONTACT_INFO_EMAIL_TITLE", nil);
             break;
+			
+		case OCKContactInfoTypeVideo:
+			imageNamed = @"video";
+			connectTypeText = OCKLocalizedString(@"CONTACT_INFO_VIDEO_TITLE", nil);
     }
 	UIImage *image = [[UIImage imageNamed:imageNamed inBundle:[NSBundle bundleForClass:[self class]] compatibleWithTraitCollection:nil] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     [_iconButton setImage:image forState:UIControlStateNormal];

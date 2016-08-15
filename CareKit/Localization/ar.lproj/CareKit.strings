@@ -51,6 +51,7 @@
 "CONTACT_INFO_PHONE_TITLE" = "الهاتف";
 "CONTACT_INFO_MESSAGE_TITLE" = "النص";
 "CONTACT_INFO_EMAIL_TITLE" = "البريد الإلكتروني";
+"CONTACT_INFO_VIDEO_TITLE" = "فيديو";
 "SHARING_CELL_TITLE" = "إرسال التقارير";
 "ERROR_TITLE" = "خطأ";
 "MESSAGE_SEND_ERROR" = "فشل إرسال الرسالة";

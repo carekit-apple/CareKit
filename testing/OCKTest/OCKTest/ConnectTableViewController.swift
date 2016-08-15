@@ -95,6 +95,8 @@ class ConnectTableViewController: UITableViewController, OCKConnectViewControlle
 			contact9.addContactInfoItem(OCKContactInfo.phoneContactInfo("314-555-4321"))
 			contact9.addContactInfoItem(OCKContactInfo.emailContactInfo("ewodehouse@example.com"))
 			contact9.addContactInfoItem(OCKContactInfo.smsContactInfo("314-555-4321"))
+			contact9.addContactInfoItem(OCKContactInfo(type: OCKContactInfoType.Video, displayString: "user@example.com", actionURL: nil))
+			contact9.addContactInfoItem(OCKContactInfo(type: OCKContactInfoType.Video, displayString: "314-555-4321", actionURL: nil))
 			
             let connectViewController = OCKConnectViewController.init(contacts: [contact1, contact2, contact3, contact4, contact5, contact6, contact7, contact8, contact9])
             connectViewController.delegate = self

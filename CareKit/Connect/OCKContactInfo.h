@@ -29,6 +29,7 @@
  */
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -44,19 +45,46 @@ typedef NS_ENUM(NSInteger, OCKContactInfoType) {
 @property (nonatomic, readonly) OCKContactInfoType type;
 @property (nonatomic, readonly) NSString *displayString;
 @property (nonatomic, readonly) NSURL *actionURL;
+@property (nonatomic, readonly) NSString *label;
+@property (nonatomic, readonly) UIImage *icon;
 
 - (instancetype)init NS_UNAVAILABLE;
+
+/**
+ Creates a new contact information item. The label and icon will be set to the default for the given contact type.
+ 
+ @param type The type of contact info, which will define the display icon and the default action if no actionURL is specified.
+ @param displayString The string that will be displayed to the user to represent the contact item.
+ @param actionURL The action to take to initiate the connection. For example "sms:1-314-555-1234", "tel:1-314-555-1234", "facetime://user@example.com"
+ 
+ @return An instance of the contact info.
+ */
+- (instancetype)initWithType:(OCKContactInfoType)type displayString:(NSString *)displayString actionURL:(NSURL * _Nullable)actionURL;
+
+/**
+ Creates a new contact information item. The icon will be set to the default for the given contact type.
+ 
+ @param type The type of contact info, which will define the display icon and the default action if no actionURL is specified.
+ @param displayString The string that will be displayed to the user to represent the contact item.
+ @param actionURL The action to take to initiate the connection. For example "sms:1-314-555-1234", "tel:1-314-555-1234", "facetime://user@example.com"
+ @param label The label of the contact info.
+ 
+ @return An instance of the contact info.
+ */
+- (instancetype)initWithType:(OCKContactInfoType)type displayString:(NSString *)displayString actionURL:(NSURL * _Nullable)actionURL label:(NSString *)label;
 
 /**
  Creates a new contact information item.
  
  @param type The type of contact info, which will define the display icon and the default action if no actionURL is specified.
  @param displayString The string that will be displayed to the user to represent the contact item.
- @param actionURL The action to take to initiate the connection. For example "sms:1-314-555-1234", "tel:1-314-555-1234", "facetime:user@example.com"
+ @param actionURL The action to take to initiate the connection. For example "sms:1-314-555-1234", "tel:1-314-555-1234", "facetime://user@example.com"
+ @param label The label of the contact info.
+ @param icon The icon which represents the contact type. The contact tint color will be applied to this icon, which will be converted if needed to UIImageRenderingModeAlwaysTemplate.
  
  @return An instance of the contact info.
  */
-- (instancetype)initWithType:(OCKContactInfoType)type displayString:(NSString *)displayString actionURL:(NSURL * _Nullable)actionURL;
+- (instancetype)initWithType:(OCKContactInfoType)type displayString:(NSString *)displayString actionURL:(NSURL * _Nullable)actionURL label:(NSString *)label icon:(UIImage * _Nullable)icon;
 
 + (OCKContactInfo *)smsContactInfo:(NSString *)smsNumber;
 + (OCKContactInfo *)phoneContactInfo:(NSString *)phoneNumber;

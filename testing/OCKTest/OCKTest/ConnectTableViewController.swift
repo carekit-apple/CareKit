@@ -98,6 +98,7 @@ class ConnectTableViewController: UITableViewController, OCKConnectViewControlle
 			contact9.addContactInfoItem(OCKContactInfo.facetimeVideoContactInfo("user@example.com", displayString: nil))
 			contact9.addContactInfoItem(OCKContactInfo.facetimeVideoContactInfo("3145554321", displayString: "314-555-4321"))
 			contact9.addContactInfoItem(OCKContactInfo.facetimeAudioContactInfo("3145554321", displayString: "314-555-4321"))
+			contact9.addContactInfoItem(OCKContactInfo(type: OCKContactInfoType.Message, displayString: "ezra.wodehouse", actionURL: NSURL(string: "starstuffchat://ezra.wodehouse")!, label: "starstuff chat", icon: UIImage(named: "starstuff")))
 			
             let connectViewController = OCKConnectViewController.init(contacts: [contact1, contact2, contact3, contact4, contact5, contact6, contact7, contact8, contact9])
             connectViewController.delegate = self

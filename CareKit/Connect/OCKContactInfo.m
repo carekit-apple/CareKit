@@ -30,6 +30,7 @@
 
 #import "OCKContactInfo.h"
 #import "OCKHelpers.h"
+#import "OCKDefines_Private.h"
 
 @implementation OCKContactInfo
 
@@ -39,13 +40,60 @@
 }
 
 - (instancetype)initWithType:(OCKContactInfoType)type displayString:(NSString *)displayString actionURL:(NSURL * _Nullable)actionURL {
+	NSString *defaultLabel;
+	
+	switch (type) {
+		case OCKContactInfoTypePhone:
+			defaultLabel = OCKLocalizedString(@"CONTACT_INFO_PHONE_TITLE", nil);
+			break;
+			
+		case OCKContactInfoTypeMessage:
+			defaultLabel = OCKLocalizedString(@"CONTACT_INFO_MESSAGE_TITLE", nil);
+			break;
+			
+		case OCKContactInfoTypeEmail:
+			defaultLabel = OCKLocalizedString(@"CONTACT_INFO_EMAIL_TITLE", nil);
+			break;
+			
+		case OCKContactInfoTypeVideo:
+			defaultLabel = OCKLocalizedString(@"CONTACT_INFO_VIDEO_TITLE", nil);
+			break;
+	}
+	return [self initWithType:type displayString:displayString actionURL:actionURL label:defaultLabel];
+}
+
+- (instancetype)initWithType:(OCKContactInfoType)type displayString:(NSString *)displayString actionURL:(NSURL * _Nullable)actionURL label:(NSString *)label {
+	UIImage *defaultIcon;
+	
+	switch (type) {
+		case OCKContactInfoTypePhone:
+			defaultIcon = [UIImage imageNamed:@"phone" inBundle:OCKBundle() compatibleWithTraitCollection:nil];
+			break;
+			
+		case OCKContactInfoTypeMessage:
+			defaultIcon = [UIImage imageNamed:@"message" inBundle:OCKBundle() compatibleWithTraitCollection:nil];
+			break;
+			
+		case OCKContactInfoTypeEmail:
+			defaultIcon = [UIImage imageNamed:@"email" inBundle:OCKBundle() compatibleWithTraitCollection:nil];
+			break;
+			
+		case OCKContactInfoTypeVideo:
+			defaultIcon = [UIImage imageNamed:@"video" inBundle:OCKBundle() compatibleWithTraitCollection:nil];
+			break;
+	}
+	return [self initWithType:type displayString:displayString actionURL:actionURL label:label icon:defaultIcon];
+}
+
+- (instancetype)initWithType:(OCKContactInfoType)type displayString:(NSString *)displayString actionURL:(NSURL * _Nullable)actionURL label:(NSString *)label icon:(UIImage *)icon {
 	self = [super init];
 	if (self) {
 		_type = type;
 		_displayString = [displayString copy];
 		_actionURL = [actionURL copy];
+		_label = [label copy];
+		_icon = icon.renderingMode == UIImageRenderingModeAlwaysTemplate ? icon : [icon imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
 	}
-	
 	return self;
 }
 
@@ -86,6 +134,8 @@
 		OCK_DECODE_ENUM(aDecoder, type);
 		OCK_DECODE_OBJ_CLASS(aDecoder, displayString, NSString);
 		OCK_DECODE_OBJ_CLASS(aDecoder, actionURL, NSURL);
+		OCK_DECODE_OBJ_CLASS(aDecoder, label, NSString);
+		OCK_DECODE_IMAGE(aDecoder, icon);
 	}
 	return self;
 }
@@ -94,6 +144,8 @@
 	OCK_ENCODE_ENUM(aCoder, type);
 	OCK_ENCODE_OBJ(aCoder, displayString);
 	OCK_ENCODE_OBJ(aCoder, actionURL);
+	OCK_ENCODE_OBJ(aCoder, label);
+	OCK_ENCODE_IMAGE(aCoder, icon);
 }
 
 #pragma mark - NSCopying
@@ -103,6 +155,8 @@
 	contactInfo->_type = self.type;
 	contactInfo->_displayString = [self.displayString copy];
 	contactInfo->_actionURL = [self.actionURL copy];
+	contactInfo->_label = [self.label copy];
+	contactInfo->_icon = self.icon;
 	return contactInfo;
 }
 

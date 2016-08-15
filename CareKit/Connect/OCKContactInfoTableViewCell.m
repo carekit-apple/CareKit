@@ -75,38 +75,14 @@ static const CGFloat IconButtonSize = 35.0;
     }
     
     [self updateView];
-    [self setUpConstraints];
+    [self setUpConstraints]; 
 }
 
 - (void)updateView {
-    NSString *imageNamed;
-    NSString *connectTypeText;
-    switch (self.contactInfo.type) {
-        case OCKContactInfoTypePhone:
-            imageNamed = @"phone";
-            connectTypeText = OCKLocalizedString(@"CONTACT_INFO_PHONE_TITLE", nil);
-            break;
-            
-        case OCKContactInfoTypeMessage:
-            imageNamed = @"message";
-            connectTypeText = OCKLocalizedString(@"CONTACT_INFO_MESSAGE_TITLE", nil);
-            break;
-            
-        case OCKContactInfoTypeEmail:
-            imageNamed = @"email";
-            connectTypeText = OCKLocalizedString(@"CONTACT_INFO_EMAIL_TITLE", nil);
-            break;
-			
-		case OCKContactInfoTypeVideo:
-			imageNamed = @"video";
-			connectTypeText = OCKLocalizedString(@"CONTACT_INFO_VIDEO_TITLE", nil);
-    }
-	UIImage *image = [[UIImage imageNamed:imageNamed inBundle:[NSBundle bundleForClass:[self class]] compatibleWithTraitCollection:nil] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-    [_iconButton setImage:image forState:UIControlStateNormal];
-    
+    [_iconButton setImage:self.contactInfo.icon forState:UIControlStateNormal];
     _iconButton.tintColor = self.tintColor;
     _connectTypeLabel.textColor = self.tintColor;
-    _connectTypeLabel.text = connectTypeText;
+    _connectTypeLabel.text = self.contactInfo.label;
     _textLabel.text = self.contactInfo.displayString;
 }
 

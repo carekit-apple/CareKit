@@ -61,6 +61,8 @@ typedef NS_ENUM(NSInteger, OCKContactInfoType) {
 + (OCKContactInfo *)smsContactInfo:(NSString *)smsNumber;
 + (OCKContactInfo *)phoneContactInfo:(NSString *)phoneNumber;
 + (OCKContactInfo *)emailContactInfo:(NSString *)emailAddress;
++ (OCKContactInfo *)facetimeVideoContactInfo:(NSString *)emailAddressOrRawPhoneNumber displayString:(NSString * _Nullable)displayString;
++ (OCKContactInfo *)facetimeAudioContactInfo:(NSString *)emailAddressOrRawPhoneNumber displayString:(NSString * _Nullable)displayString;
 
 @end
 

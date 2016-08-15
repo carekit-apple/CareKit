@@ -64,6 +64,16 @@
 	return [[OCKContactInfo alloc] initWithType:OCKContactInfoTypeEmail displayString:emailAddress actionURL:actionURL];
 }
 
++ (OCKContactInfo *)facetimeVideoContactInfo:(NSString *)emailAddressOrRawPhoneNumber displayString:(NSString * _Nullable)displayString {
+	NSURL *actionURL = [[NSURL alloc] initWithString:[@"facetime://" stringByAppendingString:emailAddressOrRawPhoneNumber]];
+	return [[OCKContactInfo alloc] initWithType:OCKContactInfoTypeVideo displayString:displayString ?: emailAddressOrRawPhoneNumber actionURL:actionURL];
+}
+
++ (OCKContactInfo *)facetimeAudioContactInfo:(NSString *)emailAddressOrRawPhoneNumber displayString:(NSString * _Nullable)displayString{
+	NSURL *actionURL = [[NSURL alloc] initWithString:[@"facetime-audio://" stringByAppendingString:emailAddressOrRawPhoneNumber]];
+	return [[OCKContactInfo alloc] initWithType:OCKContactInfoTypePhone displayString:displayString ?: emailAddressOrRawPhoneNumber actionURL:actionURL];
+}
+
 #pragma mark - NSSecureCoding
 
 + (BOOL)supportsSecureCoding {

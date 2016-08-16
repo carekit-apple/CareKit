@@ -90,16 +90,17 @@ class ConnectTableViewController: UITableViewController, OCKConnectViewControlle
             let contact6 = OCKContact.init(contactType: OCKContactType.Personal, name: "Avram", relation: "Bro", tintColor: nil, phoneNumber: nil, messageNumber: nil, emailAddress: "avram@example.com", monogram: "Avram", image: nil)
             let contact7 = OCKContact.init(contactType: OCKContactType.Personal, name: "Jim", relation: "Best Friend", tintColor: nil, phoneNumber: nil, messageNumber: nil, emailAddress: "jim12@example.com", monogram: "😊" , image: nil)
             let contact8 = OCKContact.init(contactType: OCKContactType.CareTeam, name: "Dr Yoshiko Wong", relation: "Doctor", tintColor: UIColor.cyanColor(), phoneNumber: nil, messageNumber: CNPhoneNumber.init(stringValue: "888-555-5512"), emailAddress: "drYoshiko@example.com", monogram: "YW", image: nil)
-			let contact9 = OCKContact.init(contactType: OCKContactType.CareTeam, name: "Dr Ezra Wodehouse", relation: "Doctor", tintColor: UIColor.brownColor(), monogram: "EW", image: nil)
-			contact9.addContactInfoItem(OCKContactInfo.phoneContactInfo("314-555-1234"))
-			contact9.addContactInfoItem(OCKContactInfo.phoneContactInfo("314-555-4321"))
-			contact9.addContactInfoItem(OCKContactInfo.emailContactInfo("ewodehouse@example.com"))
-			contact9.addContactInfoItem(OCKContactInfo.smsContactInfo("314-555-4321"))
-			contact9.addContactInfoItem(OCKContactInfo.facetimeVideoContactInfo("user@example.com", displayString: nil))
-			contact9.addContactInfoItem(OCKContactInfo.facetimeVideoContactInfo("3145554321", displayString: "314-555-4321"))
-			contact9.addContactInfoItem(OCKContactInfo.facetimeAudioContactInfo("3145554321", displayString: "314-555-4321"))
-			contact9.addContactInfoItem(OCKContactInfo(type: OCKContactInfoType.Message, displayString: "ezra.wodehouse", actionURL: NSURL(string: "starstuffchat://ezra.wodehouse")!, label: "starstuff chat", icon: UIImage(named: "starstuff")))
-			
+			var contact9Info = [OCKContactInfo]()
+			contact9Info.append(OCKContactInfo.phoneContactInfo("314-555-1234"))
+			contact9Info.append(OCKContactInfo.phoneContactInfo("314-555-4321"))
+			contact9Info.append(OCKContactInfo.emailContactInfo("ewodehouse@example.com"))
+			contact9Info.append(OCKContactInfo.smsContactInfo("314-555-4321"))
+			contact9Info.append(OCKContactInfo.facetimeVideoContactInfo("user@example.com", displayString: nil))
+			contact9Info.append(OCKContactInfo.facetimeVideoContactInfo("3145554321", displayString: "314-555-4321"))
+			contact9Info.append(OCKContactInfo.facetimeAudioContactInfo("3145554321", displayString: "314-555-4321"))
+			contact9Info.append(OCKContactInfo(type: OCKContactInfoType.Message, displayString: "ezra.wodehouse", actionURL: NSURL(string: "starstuffchat://ezra.wodehouse")!, label: "starstuff chat", icon: UIImage(named: "starstuff")))
+			let contact9 = OCKContact.init(contactType: OCKContactType.CareTeam, name: "Dr Ezra Wodehouse", relation: "Doctor", contactInfoItems: contact9Info, tintColor: UIColor.brownColor(), monogram: "EW", image: nil)
+					
             let connectViewController = OCKConnectViewController.init(contacts: [contact1, contact2, contact3, contact4, contact5, contact6, contact7, contact8, contact9])
             connectViewController.delegate = self
             connectViewController.showEdgeIndicators = true

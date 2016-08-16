@@ -32,10 +32,7 @@
 #import "OCKContact.h"
 #import "OCKHelpers.h"
 
-@implementation OCKContact {
-	NSMutableArray<OCKContactInfo *> *_contactInfoItemsArray;
-}
-
+@implementation OCKContact
 
 + (instancetype)new {
     OCKThrowMethodUnavailableException();
@@ -51,26 +48,25 @@
                        emailAddress:(NSString *)emailAddress
                            monogram:(NSString *)monogram
                               image:(UIImage *)image {
-    self = [self initWithContactType:type name:name relation:relation tintColor:tintColor monogram:monogram image:image];
-    if (self) {
-		if (phoneNumber) {
-			[_contactInfoItemsArray addObject:[[OCKContactInfo alloc] initWithType:OCKContactInfoTypePhone displayString:phoneNumber.stringValue actionURL:nil]];
-		}
-		
-		if (messageNumber) {
-			[_contactInfoItemsArray addObject:[[OCKContactInfo alloc] initWithType:OCKContactInfoTypeMessage displayString:messageNumber.stringValue actionURL:nil]];
-		}
-		
-		if (emailAddress) {
-			[_contactInfoItemsArray addObject:[[OCKContactInfo alloc] initWithType:OCKContactInfoTypeEmail displayString:emailAddress actionURL:nil]];
-		}
-    }
-    return self;
+	NSMutableArray *contactInfoItemsArray = [NSMutableArray array]; 
+	if (phoneNumber) {
+		[contactInfoItemsArray addObject:[[OCKContactInfo alloc] initWithType:OCKContactInfoTypePhone displayString:phoneNumber.stringValue actionURL:nil]];
+	}
+	
+	if (messageNumber) {
+		[contactInfoItemsArray addObject:[[OCKContactInfo alloc] initWithType:OCKContactInfoTypeMessage displayString:messageNumber.stringValue actionURL:nil]];
+	}
+	
+	if (emailAddress) {
+		[contactInfoItemsArray addObject:[[OCKContactInfo alloc] initWithType:OCKContactInfoTypeEmail displayString:emailAddress actionURL:nil]];
+	}
+    return [self initWithContactType:type name:name relation:relation contactInfoItems:contactInfoItemsArray tintColor:tintColor monogram:monogram image:image];
 }
 
 - (instancetype)initWithContactType:(OCKContactType)type
 							   name:(NSString *)name
 						   relation:(NSString *)relation
+				   contactInfoItems:(NSArray<OCKContactInfo *> *)contactInfoItems
 						  tintColor:(nullable UIColor *)tintColor
 						   monogram:(null_unspecified NSString *)monogram
 							  image:(nullable UIImage *)image {
@@ -79,10 +75,10 @@
 		_type = type;
 		_name = [name copy];
 		_relation = [relation copy];
+		_contactInfoItems = [contactInfoItems copy];
 		_tintColor = tintColor;
 		self.monogram = [self clippedMonogramForString:monogram];
 		_image = image;
-		_contactInfoItemsArray = [NSMutableArray array];
 	}
 	return self;
 }
@@ -115,7 +111,7 @@
         OCK_DECODE_OBJ_CLASS(aDecoder, name, NSString);
         OCK_DECODE_OBJ_CLASS(aDecoder, relation, NSString);
         OCK_DECODE_OBJ_CLASS(aDecoder, tintColor, UIColor);
-		OCK_DECODE_OBJ_MUTABLE_ARRAY(aDecoder,  contactInfoItemsArray);
+		OCK_DECODE_OBJ_CLASS(aDecoder, contactInfoItems, NSArray);
         OCK_DECODE_OBJ_CLASS(aDecoder, monogram, NSString);
         OCK_DECODE_IMAGE(aDecoder, image);
     }
@@ -127,7 +123,7 @@
     OCK_ENCODE_OBJ(aCoder, name);
     OCK_ENCODE_OBJ(aCoder, relation);
     OCK_ENCODE_OBJ(aCoder, tintColor);
-    OCK_ENCODE_OBJ(aCoder, contactInfoItemsArray);
+    OCK_ENCODE_OBJ(aCoder, contactInfoItems);
     OCK_ENCODE_OBJ(aCoder, monogram);
     OCK_ENCODE_IMAGE(aCoder, image);
 }
@@ -141,18 +137,10 @@
     contact->_name = [self.name copy];
     contact->_relation = [self.relation copy];
     contact->_tintColor = self.tintColor;
-    contact->_contactInfoItemsArray = [self.contactInfoItems mutableCopy];
+    contact->_contactInfoItems = [self.contactInfoItems copy];
     contact->_monogram = [self.monogram copy];
     contact->_image = self.image;
     return contact;
-}
-
-- (NSArray<OCKContactInfo *> *)contactInfoItems {
-	return [_contactInfoItemsArray copy];
-}
-
-- (void)addContactInfoItem:(OCKContactInfo *)contactInfo {
-	[_contactInfoItemsArray addObject:contactInfo];
 }
 
 #pragma mark - Monogram

@@ -11,9 +11,8 @@
 
 - (void)testWhenContactIsSerializedAndDeserializedThenTheDeserializedVersionHasTheSameContent {
 	UIImage *image = [UIImage imageNamed:@"heart" inBundle:[NSBundle bundleForClass:[OCKContact class]] compatibleWithTraitCollection:nil];
-	OCKContact *contact = [[OCKContact alloc] initWithContactType:OCKContactTypePersonal name:@"John Smith" relation:@"Primary Care Physician" tintColor:[UIColor blueColor] monogram:@"JS" image:image];
 	OCKContactInfo *contactInfo = [[OCKContactInfo alloc] initWithType:OCKContactInfoTypePhone displayString:@"contact info 1" actionURL:[[NSURL alloc] initWithString:@"type1://data1"] label:@"label 1" icon:image];
-	[contact addContactInfoItem:contactInfo];
+	OCKContact *contact = [[OCKContact alloc] initWithContactType:OCKContactTypePersonal name:@"John Smith" relation:@"Primary Care Physician" contactInfoItems:@[contactInfo] tintColor:[UIColor blueColor] monogram:@"JS" image:image];
 	
 	NSData *data = [NSKeyedArchiver archivedDataWithRootObject:contact];
 	OCKContact *other = [NSKeyedUnarchiver unarchiveObjectWithData:data];
@@ -35,7 +34,6 @@
 	XCTAssertEqualObjects(contactInfo.label, otherContactInfo.label);
 	XCTAssertEqual(image.size.width, otherContactInfo.icon.size.width);
 	XCTAssertEqual(image.size.height, otherContactInfo.icon.size.height);
-	
 }
 
 - (void)testWhenOCKContactInfoTypePhoneIsCreatedThenLabelAndIconAreCorrect {

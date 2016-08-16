@@ -90,6 +90,7 @@ DEPRECATED_MSG_ATTRIBUTE("Use initWithContactType:name:relation:tintColor:monogr
  @param type                The contact type.
  @param name                The contact name.
  @param relation            The relationship to the contact.
+ @param contactInfoItems    The contact information for the contact.
  @param tintColor           The contact tint color.
  @param monogram            The contact monogram.
  @param image               The contact image.
@@ -99,6 +100,7 @@ DEPRECATED_MSG_ATTRIBUTE("Use initWithContactType:name:relation:tintColor:monogr
 - (instancetype)initWithContactType:(OCKContactType)type
 							   name:(NSString *)name
 						   relation:(NSString *)relation
+				   contactInfoItems:(NSArray<OCKContactInfo *> *)contactInfoItems
 						  tintColor:(nullable UIColor *)tintColor
 						   monogram:(null_unspecified NSString *)monogram
 							  image:(nullable UIImage *)image;
@@ -150,8 +152,6 @@ DEPRECATED_MSG_ATTRIBUTE("Use initWithContactType:name:relation:tintColor:monogr
  is available, it will be displayed instead of the monogram.
  */
 @property (nonatomic, nullable) UIImage *image;
-
-- (void)addContactInfoItem:(OCKContactInfo *)contactInfo;
 
 @end
 

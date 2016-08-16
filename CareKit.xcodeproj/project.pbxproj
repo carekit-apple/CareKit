@@ -102,6 +102,7 @@
 		24EA9FCA1C9A3D420036028E /* OCKHeartView.m in Sources */ = {isa = PBXBuildFile; fileRef = 24EA9FAB1C9A3D420036028E /* OCKHeartView.m */; };
 		24F8E4761C934FEE003B77BD /* OCKDefines_Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 24F8E4741C934FEE003B77BD /* OCKDefines_Private.h */; };
 		24F8E47B1C93515A003B77BD /* CareKit.strings in Resources */ = {isa = PBXBuildFile; fileRef = 24F8E47D1C93515A003B77BD /* CareKit.strings */; };
+		5A6F95081D625A590011A97A /* CareKitContactTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A6F95071D625A590011A97A /* CareKitContactTests.m */; };
 		5A9D2C931D5E432B00D0F13B /* OCKContactInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 5A9D2C911D5E432B00D0F13B /* OCKContactInfo.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5A9D2C941D5E432B00D0F13B /* OCKContactInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A9D2C921D5E432B00D0F13B /* OCKContactInfo.m */; };
 		8605A5BE1C4F04EC00DD65FF /* CareKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 8605A5BD1C4F04EC00DD65FF /* CareKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -262,6 +263,7 @@
 		24F8E49C1C93521C003B77BD /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/CareKit.strings; sourceTree = "<group>"; };
 		24F8E49D1C93521F003B77BD /* ms */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ms; path = ms.lproj/CareKit.strings; sourceTree = "<group>"; };
 		24F8E49E1C935224003B77BD /* vi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/CareKit.strings; sourceTree = "<group>"; };
+		5A6F95071D625A590011A97A /* CareKitContactTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CareKitContactTests.m; sourceTree = "<group>"; };
 		5A9D2C911D5E432B00D0F13B /* OCKContactInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKContactInfo.h; sourceTree = "<group>"; };
 		5A9D2C921D5E432B00D0F13B /* OCKContactInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKContactInfo.m; sourceTree = "<group>"; };
 		8605A5BA1C4F04EC00DD65FF /* CareKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CareKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -627,6 +629,7 @@
 			children = (
 				86EA9A521C9C64C500B93BB1 /* CareKitPDFTests.m */,
 				8605A5C91C4F04EC00DD65FF /* CareKitCarePlanTests.m */,
+				5A6F95071D625A590011A97A /* CareKitContactTests.m */,
 				8605A5CB1C4F04EC00DD65FF /* Info.plist */,
 			);
 			path = CareKitTests;
@@ -973,6 +976,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				86EA9A531C9C64C500B93BB1 /* CareKitPDFTests.m in Sources */,
+				5A6F95081D625A590011A97A /* CareKitContactTests.m in Sources */,
 				8605A5CA1C4F04EC00DD65FF /* CareKitCarePlanTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

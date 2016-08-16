@@ -161,6 +161,13 @@ class ConnectTableViewController: UITableViewController, OCKConnectViewControlle
         }
    
     }
-
+	
+	func connectViewController(connectViewController: OCKConnectViewController, handleContactInfoSelected contactInfo: OCKContactInfo) -> Bool {
+		if contactInfo.actionURL.scheme == "starstuffchat" {
+			print("starstuff chat pressed")
+			return true
+		}
+		return false
+	}
 }
 

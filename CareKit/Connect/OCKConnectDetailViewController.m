@@ -171,25 +171,32 @@ static const CGFloat HeaderViewHeight = 225.0;
 - (void)contactInfoTableViewCellDidSelectConnection:(OCKContactInfoTableViewCell *)cell {
 	OCKContactInfo *contactInfo = cell.contactInfo;
 	
-	if (contactInfo.actionURL) {
-		[[UIApplication sharedApplication] openURL:contactInfo.actionURL];
-	} else {
-		switch (contactInfo.type) {
-			case OCKContactInfoTypePhone:
-				[self makeCallToNumber:contactInfo.displayString];
-				break;
-				
-			case OCKContactInfoTypeMessage:
-				[self sendMessageToNumber:contactInfo.displayString];
-				break;
-				
-			case OCKContactInfoTypeEmail:
-				[self sendEmailToAddress:contactInfo.displayString];
-				break;
-				
-			case OCKContactInfoTypeVideo:
-				[self makeVideoCallToNumber:contactInfo.displayString];
-				break; 
+	BOOL handled = NO;
+	if (self.delegate && [self.delegate respondsToSelector:@selector(connectViewController:handleContactInfoSelected:)]) {
+		handled = [self.delegate connectViewController:self.masterViewController handleContactInfoSelected:contactInfo];
+	}
+	
+	if (!handled) {
+		if (contactInfo.actionURL) {
+			[[UIApplication sharedApplication] openURL:contactInfo.actionURL];
+		} else {
+			switch (contactInfo.type) {
+				case OCKContactInfoTypePhone:
+					[self makeCallToNumber:contactInfo.displayString];
+					break;
+					
+				case OCKContactInfoTypeMessage:
+					[self sendMessageToNumber:contactInfo.displayString];
+					break;
+					
+				case OCKContactInfoTypeEmail:
+					[self sendEmailToAddress:contactInfo.displayString];
+					break;
+					
+				case OCKContactInfoTypeVideo:
+					[self makeVideoCallToNumber:contactInfo.displayString];
+					break; 
+			}
 		}
 	}
 }

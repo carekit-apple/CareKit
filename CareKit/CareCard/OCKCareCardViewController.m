@@ -46,7 +46,7 @@
 
 #define RedColor() OCKColorFromRGB(0xEF445B);
 
-@interface OCKCareCardViewController() <OCKWeekViewDelegate, OCKCarePlanStoreDelegate, OCKCareCardCellDelegate, UITableViewDelegate, UITableViewDataSource, UIPageViewControllerDelegate, UIPageViewControllerDataSource, UIViewControllerPreviewingDelegate>
+@interface OCKCareCardViewController() <OCKWeekViewDelegate, OCKCarePlanStoreDelegate, OCKCareCardCellDelegate, UITableViewDelegate, UITableViewDataSource, UIPageViewControllerDelegate, UIPageViewControllerDataSource>
 
 @property (nonatomic) NSDateComponents *selectedDate;
 
@@ -106,10 +106,6 @@
     _tableView.rowHeight = UITableViewAutomaticDimension;
     _tableView.estimatedSectionHeaderHeight = 100.0;
     _tableView.sectionHeaderHeight = UITableViewAutomaticDimension;
-    
-    if ([self respondsToSelector:@selector(registerForPreviewingWithDelegate:sourceView:)]) {
-        [self registerForPreviewingWithDelegate:self sourceView:_tableView];
-    }
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -347,20 +343,6 @@
     return [NSDateComponents ock_componentsWithDate:[NSDate date] calendar:_calendar];
 }
 
-- (UIViewController *)detailViewControllerForActivity:(OCKCarePlanActivity *)activity {
-    OCKCareCardDetailViewController *detailViewController = [[OCKCareCardDetailViewController alloc] initWithIntervention:activity];
-    detailViewController.showEdgeIndicator = self.showEdgeIndicators;
-    return detailViewController;
-}
-
-- (OCKCarePlanActivity *)activityForIndexPath:(NSIndexPath *)indexPath {
-    return _events[indexPath.row].firstObject.activity;
-}
-
-- (BOOL)delegateCustomizesRowSelection {
-    return self.delegate && [self.delegate respondsToSelector:@selector(careCardViewController:didSelectRowWithInterventionActivity:)];
-}
-
 
 #pragma mark - OCKWeekViewDelegate
 
@@ -380,9 +362,9 @@
 #pragma mark - OCKCareCardCellDelegate
 
 - (void)careCardTableViewCell:(OCKCareCardTableViewCell *)cell didUpdateFrequencyofInterventionEvent:(OCKCarePlanEvent *)event {
-	_lastSelectedInterventionEvent = event;
+    _lastSelectedInterventionEvent = event;
     _lastSelectedInterventionActivity = event.activity;
-	
+    
     if (self.delegate &&
         [self.delegate respondsToSelector:@selector(careCardViewController:didSelectButtonWithInterventionEvent:)]) {
         [self.delegate careCardViewController:self didSelectButtonWithInterventionEvent:event];
@@ -480,13 +462,16 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	OCKCarePlanActivity *selectedActivity = [self activityForIndexPath:indexPath];
-    _lastSelectedInterventionActivity = selectedActivity;    
-	
-    if ([self delegateCustomizesRowSelection]) {
+    OCKCarePlanActivity *selectedActivity = _events[indexPath.row].firstObject.activity;
+    _lastSelectedInterventionActivity = selectedActivity;
+    
+    if (self.delegate &&
+        [self.delegate respondsToSelector:@selector(careCardViewController:didSelectRowWithInterventionActivity:)]) {
         [self.delegate careCardViewController:self didSelectRowWithInterventionActivity:selectedActivity];
     } else {
-        [self.navigationController pushViewController:[self detailViewControllerForActivity:selectedActivity] animated:YES];
+        OCKCareCardDetailViewController *detailViewController = [[OCKCareCardDetailViewController alloc] initWithIntervention:selectedActivity];
+        detailViewController.showEdgeIndicator = self.showEdgeIndicators;
+        [self.navigationController pushViewController:detailViewController animated:YES];
     }
     
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
@@ -509,30 +494,7 @@
     cell.interventionEvents = _events[indexPath.row];
     cell.delegate = self;
     cell.showEdgeIndicator = self.showEdgeIndicators;
-    
     return cell;
-}
-
-#pragma mark - UIViewControllerPreviewingDelegate
-
-- (nullable UIViewController *)previewingContext:(id <UIViewControllerPreviewing>)previewingContext viewControllerForLocation:(CGPoint)location {
-    NSIndexPath *indexPath = [_tableView indexPathForRowAtPoint:location];
-    CGRect headerFrame = [_tableView headerViewForSection:0].frame;
-    
-    if (indexPath &&
-        !CGRectContainsPoint(headerFrame, location) &&
-        ![self delegateCustomizesRowSelection]) {
-        CGRect cellFrame = [_tableView cellForRowAtIndexPath:indexPath].frame;
-        previewingContext.sourceRect = cellFrame;
-        return [self detailViewControllerForActivity:[self activityForIndexPath:indexPath]];
-    }
-    
-    return nil;
-}
-
-- (void)previewingContext:(id <UIViewControllerPreviewing>)previewingContext commitViewController:(UIViewController *)viewControllerToCommit {
-    NSIndexPath *indexPath = [_tableView indexPathForRowAtPoint:previewingContext.sourceRect.origin];
-    [self.navigationController pushViewController:[self detailViewControllerForActivity:[self activityForIndexPath:indexPath]] animated:YES];
 }
 
 @end

@@ -233,7 +233,7 @@ extension RootViewController: ORKTaskViewControllerDelegate {
 extension RootViewController: OCKConnectViewControllerDelegate {
     
     /// Called when the user taps a contact in the `OCKConnectViewController`.
-    func connectViewController(connectViewController: OCKConnectViewController, didSelectShareButtonForContact contact: OCKContact, presentationSourceView sourceView: UIView?) {
+    func connectViewController(connectViewController: OCKConnectViewController, didSelectShareButtonForContact contact: OCKContact, presentationSourceView sourceView: UIView) {
         let document = sampleData.generateSampleDocument()
         let activityViewController = UIActivityViewController(activityItems: [document], applicationActivities: nil)
         activityViewController.popoverPresentationController?.sourceView = sourceView

@@ -213,6 +213,7 @@
 
 - (void)setShowEdgeIndicators:(BOOL)showEdgeIndicators {
     _showEdgeIndicators = showEdgeIndicators;
+    
     [_tableView reloadData];
 }
 
@@ -265,6 +266,7 @@
     }
     cell.contact = _sectionedContacts[indexPath.section][indexPath.row];
     cell.showEdgeIndicator = self.showEdgeIndicators;
+    
     return cell;
 }
 

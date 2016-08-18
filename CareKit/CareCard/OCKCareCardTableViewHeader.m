@@ -57,15 +57,15 @@ static const CGFloat HeartViewSize = 110.0;
     self = [super initWithFrame:frame];
     if (self) {
         if (!UIAccessibilityIsReduceTransparencyEnabled()) {
-            self.backgroundColor = [UIColor clearColor];
+            self.contentView.backgroundColor = [UIColor clearColor];
             
             UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
             UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
             blurEffectView.frame = self.bounds;
             blurEffectView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-            [self addSubview:blurEffectView];
+            self.backgroundView = blurEffectView;
         } else {
-            self.backgroundColor = [UIColor whiteColor];
+            self.contentView.backgroundColor = [UIColor whiteColor];
         }
         
         [self prepareView];

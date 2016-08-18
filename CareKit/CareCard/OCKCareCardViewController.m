@@ -515,7 +515,7 @@
 
 #pragma mark - UIViewControllerPreviewingDelegate
 
-- (nullable UIViewController *)previewingContext:(id <UIViewControllerPreviewing>)previewingContext viewControllerForLocation:(CGPoint)location {
+- (UIViewController *)previewingContext:(id <UIViewControllerPreviewing>)previewingContext viewControllerForLocation:(CGPoint)location {
     NSIndexPath *indexPath = [_tableView indexPathForRowAtPoint:location];
     CGRect headerFrame = [_tableView headerViewForSection:0].frame;
     

@@ -296,7 +296,7 @@
 
 #pragma mark - UIViewControllerPreviewingDelegate
 
-- (nullable UIViewController *)previewingContext:(id <UIViewControllerPreviewing>)previewingContext viewControllerForLocation:(CGPoint)location {
+- (UIViewController *)previewingContext:(id <UIViewControllerPreviewing>)previewingContext viewControllerForLocation:(CGPoint)location {
     NSIndexPath *indexPath = [_tableView indexPathForRowAtPoint:location];
     OCKContact *contact = [self contactForIndexPath:indexPath];
     

@@ -35,6 +35,7 @@
 #import "OCKDefines_Private.h"
 #import "OCKHelpers.h"
 
+
 static const CGFloat HeaderViewHeight = 225.0;
 
 @implementation OCKConnectDetailViewController {

@@ -33,6 +33,7 @@
 #import "OCKContact.h"
 #import "OCKHelpers.h"
 
+
 @implementation OCKContact
 
 + (instancetype)new {

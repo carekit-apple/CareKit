@@ -28,9 +28,11 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
 #import "OCKContactInfo.h"
 #import "OCKHelpers.h"
 #import "OCKDefines_Private.h"
+
 
 @implementation OCKContactInfo
 
@@ -39,7 +41,7 @@
 	return nil;
 }
 
-- (instancetype)initWithType:(OCKContactInfoType)type displayString:(NSString *)displayString actionURL:(NSURL * _Nullable)actionURL {
+- (instancetype)initWithType:(OCKContactInfoType)type displayString:(NSString *)displayString actionURL:(NSURL *)actionURL {
 	NSString *defaultLabel;
 	
 	switch (type) {
@@ -62,7 +64,7 @@
 	return [self initWithType:type displayString:displayString actionURL:actionURL label:defaultLabel];
 }
 
-- (instancetype)initWithType:(OCKContactInfoType)type displayString:(NSString *)displayString actionURL:(NSURL * _Nullable)actionURL label:(NSString *)label {
+- (instancetype)initWithType:(OCKContactInfoType)type displayString:(NSString *)displayString actionURL:(NSURL *)actionURL label:(NSString *)label {
 	UIImage *defaultIcon;
 	
 	switch (type) {
@@ -85,7 +87,7 @@
 	return [self initWithType:type displayString:displayString actionURL:actionURL label:label icon:defaultIcon];
 }
 
-- (instancetype)initWithType:(OCKContactInfoType)type displayString:(NSString *)displayString actionURL:(NSURL * _Nullable)actionURL label:(NSString *)label icon:(UIImage *)icon {
+- (instancetype)initWithType:(OCKContactInfoType)type displayString:(NSString *)displayString actionURL:(NSURL *)actionURL label:(NSString *)label icon:(UIImage *)icon {
 	self = [super init];
 	if (self) {
 		_type = type;
@@ -112,15 +114,16 @@
 	return [[OCKContactInfo alloc] initWithType:OCKContactInfoTypeEmail displayString:emailAddress actionURL:actionURL];
 }
 
-+ (OCKContactInfo *)facetimeVideoContactInfo:(NSString *)emailAddressOrRawPhoneNumber displayString:(NSString * _Nullable)displayString {
++ (OCKContactInfo *)facetimeVideoContactInfo:(NSString *)emailAddressOrRawPhoneNumber displayString:(NSString *)displayString {
 	NSURL *actionURL = [[NSURL alloc] initWithString:[@"facetime://" stringByAppendingString:emailAddressOrRawPhoneNumber]];
 	return [[OCKContactInfo alloc] initWithType:OCKContactInfoTypeVideo displayString:displayString ?: emailAddressOrRawPhoneNumber actionURL:actionURL];
 }
 
-+ (OCKContactInfo *)facetimeAudioContactInfo:(NSString *)emailAddressOrRawPhoneNumber displayString:(NSString * _Nullable)displayString{
++ (OCKContactInfo *)facetimeAudioContactInfo:(NSString *)emailAddressOrRawPhoneNumber displayString:(NSString *)displayString{
 	NSURL *actionURL = [[NSURL alloc] initWithString:[@"facetime-audio://" stringByAppendingString:emailAddressOrRawPhoneNumber]];
 	return [[OCKContactInfo alloc] initWithType:OCKContactInfoTypePhone displayString:displayString ?: emailAddressOrRawPhoneNumber actionURL:actionURL];
 }
+
 
 #pragma mark - NSSecureCoding
 
@@ -147,6 +150,7 @@
 	OCK_ENCODE_OBJ(aCoder, label);
 	OCK_ENCODE_IMAGE(aCoder, icon);
 }
+
 
 #pragma mark - NSCopying
 

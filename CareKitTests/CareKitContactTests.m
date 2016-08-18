@@ -28,14 +28,17 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
 #import <XCTest/XCTest.h>
 #import <CareKit/CareKit.h>
 #import <CareKit/CareKit_private.h>
 #import "OCKDefines_Private.h"
 
+
 @interface CareKitContactTests : XCTestCase
 
 @end
+
 
 @implementation CareKitContactTests
 

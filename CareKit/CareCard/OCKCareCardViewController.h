@@ -34,7 +34,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class OCKCarePlanStore, OCKCareCardViewController;
+@class OCKCarePlanStore, OCKCareCardViewController, OCKCareCardTableViewHeader, OCKWeekViewController;
+
 
 /**
  An object that adopts the `OCKCareCardViewControllerDelegate` protocol can use it modify or update the events before they are displayed.
@@ -42,6 +43,26 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol OCKCareCardViewControllerDelegate <NSObject>
 
 @optional
+
+/**
+ Asks the delegate to create a custom table view header
+ */
+- (OCKCareCardTableViewHeader *) careCardTableViewHeader;
+
+/**
+ Asks the delegate to create a custom week view controller
+ */
+- (OCKWeekViewController *) careCardWeekViewController;
+
+/**
+ Asks the delegate to create a custom view for the footer
+ */
+- (UIView *) tableFooterView;
+
+/**
+ Intercepts the Week View's PageViewController before adding it to the CareCard's table view
+ */
+- (void) careCardWeekPageViewController:(UIPageViewController *) pageViewController;
 
 /**
  Asks the delegate if care card view controller should automatically mark the state of an intervention activity when

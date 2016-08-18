@@ -45,6 +45,7 @@
 @end
 
 
+OCK_CLASS_AVAILABLE
 @interface OCKWeekViewController : UIViewController
 
 - (instancetype)initWithShowCareCardWeekView:(BOOL)showCareCardWeekView;

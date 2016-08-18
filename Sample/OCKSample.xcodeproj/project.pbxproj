@@ -98,6 +98,8 @@
 
 /* Begin PBXFileReference section */
 		2436E42A1CD18BEC00ABE381 /* ResearchKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ResearchKit.xcodeproj; path = ../dependency/ResearchKit.xcodeproj; sourceTree = "<group>"; };
+		27AD74001D303C9100CF2EA9 /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/Main.strings"; sourceTree = "<group>"; };
+		27AD74031D303C9100CF2EA9 /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
 		B555759B1CB3DB8C0028DC37 /* NSCalendar+Dates.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSCalendar+Dates.swift"; sourceTree = "<group>"; };
 		B555759D1CB3DBBE0028DC37 /* OCKInsightItem+EmptyMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OCKInsightItem+EmptyMessage.swift"; sourceTree = "<group>"; };
 		B56848B51CB5085E00D190EE /* InsightsBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InsightsBuilder.swift; sourceTree = "<group>"; };
@@ -413,6 +415,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				B5C100971CB12E0C00FAD7E8 /* Base */,
+				27AD74001D303C9100CF2EA9 /* pt-BR */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -421,6 +424,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				B5C1009C1CB12E0C00FAD7E8 /* Base */,
+				27AD74031D303C9100CF2EA9 /* pt-BR */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";

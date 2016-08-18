@@ -36,6 +36,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol OCKWeekViewDelegate;
 
+OCK_CLASS_AVAILABLE
 @interface OCKSymptomTrackerWeekView : UIView
 
 @property (nonatomic, weak, nullable) id<OCKWeekViewDelegate> delegate;

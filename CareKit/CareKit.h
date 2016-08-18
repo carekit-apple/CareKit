@@ -40,7 +40,17 @@
 #import <CareKit/OCKCarePlanEventResult.h>
 #import <CareKit/OCKCarePlanStore.h>
 
+// Week View
+#import <CareKit/OCKHeartView.h>
+#import <CareKit/OCKCareCardWeekView.h>
+#import <CareKit/OCKSymptomTrackerWeekView.h>
+#import <CareKit/OCKWeekViewController.h>
+
+// Table
+#import <CareKit/OCKTableViewCell.h>
+
 // Care Card
+#import <CareKit/OCKCareCardTableViewHeader.h>
 #import <CareKit/OCKCareCardViewController.h>
 
 // Symptom Tracker

@@ -36,6 +36,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @class OCKHeartView;
 
+OCK_CLASS_AVAILABLE
 @interface OCKCareCardTableViewHeader : UIView
 
 @property (nonatomic) double value;

@@ -50,7 +50,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param contact                     The contact that is currently displayed.
  @param sourceView                  Source view can be used to present a popover on iPad.
  */
-- (void)connectViewController:(OCKConnectViewController *)connectViewController didSelectShareButtonForContact:(OCKContact *)contact presentationSourceView:(UIView *)sourceView;
+- (void)connectViewController:(OCKConnectViewController *)connectViewController didSelectShareButtonForContact:(OCKContact *)contact presentationSourceView:(nullable UIView *)sourceView;
 
 @optional
 /**

@@ -37,7 +37,7 @@
 #import "OCKLabel.h"
 
 
-@interface OCKConnectViewController() <UITableViewDelegate, UITableViewDataSource>
+@interface OCKConnectViewController() <UITableViewDelegate, UITableViewDataSource, UIViewControllerPreviewingDelegate, MFMessageComposeViewControllerDelegate, MFMailComposeViewControllerDelegate>
 
 @end
 
@@ -83,6 +83,10 @@
     _tableView.rowHeight = UITableViewAutomaticDimension;
     
     [self createSectionedContacts];
+    
+    if ([self respondsToSelector:@selector(registerForPreviewingWithDelegate:sourceView:)]) {
+        [self registerForPreviewingWithDelegate:self sourceView:_tableView];
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -209,20 +213,31 @@
 
 - (void)setShowEdgeIndicators:(BOOL)showEdgeIndicators {
     _showEdgeIndicators = showEdgeIndicators;
+    
     [_tableView reloadData];
+}
+
+#pragma mark - Helpers
+
+- (OCKContact *)contactForIndexPath:(NSIndexPath *)indexPath {
+    return _sectionedContacts[indexPath.section][indexPath.row];
+}
+
+- (OCKConnectDetailViewController *)detailViewControllerForContact:(OCKContact *)contact {
+    OCKConnectDetailViewController *detailViewController = [[OCKConnectDetailViewController alloc] initWithContact:contact];
+    detailViewController.delegate = self.delegate;
+    detailViewController.masterViewController = self;
+    detailViewController.showEdgeIndicator = _showEdgeIndicators;
+    return detailViewController;
 }
 
 
 #pragma mark - UITableViewDelegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    OCKContact *contact = _sectionedContacts[indexPath.section][indexPath.row];
+    OCKContact *contact = [self contactForIndexPath:indexPath];
     
-    OCKConnectDetailViewController *detailViewController = [[OCKConnectDetailViewController alloc] initWithContact:contact];
-    detailViewController.delegate = self.delegate;
-    detailViewController.masterViewController = self;
-    detailViewController.showEdgeIndicator = _showEdgeIndicators;
-    [self.navigationController pushViewController:detailViewController animated:YES];
+    [self.navigationController pushViewController:[self detailViewControllerForContact:contact] animated:YES];
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
@@ -251,7 +266,54 @@
     }
     cell.contact = _sectionedContacts[indexPath.section][indexPath.row];
     cell.showEdgeIndicator = self.showEdgeIndicators;
+    
     return cell;
+}
+
+#pragma mark - MFMessageComposeViewControllerDelegate
+
+- (void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result {
+    [self dismissViewControllerAnimated:YES completion:nil];
+    if (result == MessageComposeResultFailed) {
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:OCKLocalizedString(@"ERROR_TITLE", nil)
+                                                                                 message:OCKLocalizedString(@"MESSAGE_SEND_ERROR", nil)
+                                                                          preferredStyle:UIAlertControllerStyleAlert];
+        [self presentViewController:alertController animated:YES completion:nil];
+    }
+}
+
+#pragma mark - MFMailComposeViewControllerDelegate
+
+- (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error {
+    [self dismissViewControllerAnimated:YES completion:nil];
+    if (result == MFMailComposeResultFailed) {
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:OCKLocalizedString(@"ERROR_TITLE", nil)
+                                                                                 message:OCKLocalizedString(@"EMAIL_SEND_ERROR", nil)
+                                                                          preferredStyle:UIAlertControllerStyleAlert];
+        [self presentViewController:alertController animated:YES completion:nil];
+    }
+}
+
+#pragma mark - UIViewControllerPreviewingDelegate
+
+- (UIViewController *)previewingContext:(id <UIViewControllerPreviewing>)previewingContext viewControllerForLocation:(CGPoint)location {
+    NSIndexPath *indexPath = [_tableView indexPathForRowAtPoint:location];
+    OCKContact *contact = [self contactForIndexPath:indexPath];
+    
+    if (indexPath) {
+        CGRect cellFrame = [_tableView cellForRowAtIndexPath:indexPath].frame;
+        previewingContext.sourceRect = cellFrame;
+        return [self detailViewControllerForContact:contact];
+    }
+    
+    return nil;
+}
+
+- (void)previewingContext:(id <UIViewControllerPreviewing>)previewingContext commitViewController:(UIViewController *)viewControllerToCommit {
+    NSIndexPath *indexPath = [_tableView indexPathForRowAtPoint:previewingContext.sourceRect.origin];
+    OCKContact *contact = [self contactForIndexPath:indexPath];
+    
+    [self.navigationController pushViewController:[self detailViewControllerForContact:contact] animated:YES];
 }
 
 @end

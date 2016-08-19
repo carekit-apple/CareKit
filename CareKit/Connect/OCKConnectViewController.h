@@ -31,6 +31,7 @@
 
 
 #import <CareKit/CareKit.h>
+#import <MessageUI/MessageUI.h>
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -51,7 +52,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param contact                     The contact that is currently displayed.
  @param sourceView                  Source view can be used to present a popover on iPad.
  */
-- (void)connectViewController:(OCKConnectViewController *)connectViewController didSelectShareButtonForContact:(OCKContact *)contact presentationSourceView:(UIView *)sourceView;
+- (void)connectViewController:(OCKConnectViewController *)connectViewController didSelectShareButtonForContact:(OCKContact *)contact presentationSourceView:(nullable UIView *)sourceView;
 
 /**
  Asks the delegate for the title to be shown in the sharing cell for a contact.
@@ -86,7 +87,7 @@ NS_ASSUME_NONNULL_BEGIN
  It includes a master view and a detail view. Therefore, it must be embedded inside a `UINavigationController`.
  */
 OCK_CLASS_AVAILABLE
-@interface OCKConnectViewController : UIViewController
+@interface OCKConnectViewController : UIViewController <MFMessageComposeViewControllerDelegate, MFMailComposeViewControllerDelegate>
 
 /**
  Returns an initialized connect view controller using the specified contacts.

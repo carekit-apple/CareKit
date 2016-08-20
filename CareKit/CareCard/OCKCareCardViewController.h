@@ -105,7 +105,7 @@ NS_ASSUME_NONNULL_BEGIN
 OCK_CLASS_AVAILABLE
 @interface OCKCareCardViewController : UIViewController
 
-- (instancetype)init NS_UNAVAILABLE;
+- (instancetype)init;
 
 /**
  Returns an initialized care card view controller using the specified store.
@@ -114,7 +114,7 @@ OCK_CLASS_AVAILABLE
  
  @return An initialized care card view controller.
  */
-- (instancetype)initWithCarePlanStore:(OCKCarePlanStore *)store;
+- (instancetype)initWithCarePlanStore:(nullable OCKCarePlanStore *)store;
 
 /**
  The care plan store that provides the content for the care card.

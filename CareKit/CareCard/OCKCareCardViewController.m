@@ -65,19 +65,28 @@
 }
 
 - (instancetype)init {
-    OCKThrowMethodUnavailableException();
-    return nil;
+    self = [self initWithCarePlanStore:nil];
+    return self;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder {
+    self = [super initWithCoder:aDecoder];
+    if (self) {
+        _store = [OCKCarePlanStore store];
+        [self careCardSetup];
+    }
+    return self;
 }
 
 - (instancetype)initWithCarePlanStore:(OCKCarePlanStore *)store {
     self = [super init];
     if (self) {
-        _store = store;
-        self.maskImage = nil;
-        self.smallMaskImage = nil;
-        self.maskImageTintColor = nil;
-        _showEdgeIndicators = NO;
-        _calendar = [NSCalendar calendarWithIdentifier:NSCalendarIdentifierGregorian];
+        if (store != nil) {
+            _store = store;
+        } else {
+            _store = [OCKCarePlanStore store];
+        }
+        [self careCardSetup];
     }
     return self;
 }
@@ -253,6 +262,14 @@
 
 
 #pragma mark - Helpers
+
+- (void)careCardSetup {
+    self.maskImage = nil;
+    self.smallMaskImage = nil;
+    self.maskImageTintColor = nil;
+    _showEdgeIndicators = NO;
+    _calendar = [NSCalendar calendarWithIdentifier:NSCalendarIdentifierGregorian];
+}
 
 - (void)fetchEvents {
     [self.store eventsOnDate:self.selectedDate

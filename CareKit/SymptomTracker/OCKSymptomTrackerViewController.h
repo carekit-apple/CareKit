@@ -79,7 +79,7 @@ NS_ASSUME_NONNULL_BEGIN
 OCK_CLASS_AVAILABLE
 @interface OCKSymptomTrackerViewController : UIViewController
 
-- (instancetype)init NS_UNAVAILABLE;
+- (instancetype)init;
 
 /**
  Returns an initialized symptom tracker view controller using the specified store.
@@ -88,7 +88,7 @@ OCK_CLASS_AVAILABLE
  
  @return An initialized symptom tracker view controller.
  */
-- (instancetype)initWithCarePlanStore:(OCKCarePlanStore *)store;
+- (instancetype)initWithCarePlanStore:(nullable OCKCarePlanStore *)store;
 
 /**
  The care plan store that provides the content for the symptom tracker.

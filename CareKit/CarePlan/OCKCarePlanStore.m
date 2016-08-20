@@ -82,12 +82,16 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     return nil;
 }
 
-+ (instancetype)store {
++ (instancetype)defaultStore {
     static OCKCarePlanStore *sharedStore = nil;
     static dispatch_once_t storeToken;
     dispatch_once(&storeToken, ^{
-        NSURL *documentDirectory = [[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask].lastObject;
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        NSURL *documentDirectory = [fileManager URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask].firstObject;
         NSURL *storeURL = [documentDirectory URLByAppendingPathComponent:@"CarePlanStore"];
+        if (![fileManager fileExistsAtPath:storeURL.path]) {
+            [fileManager createDirectoryAtURL:storeURL withIntermediateDirectories:YES attributes:nil error:nil];
+        }
         sharedStore = [[self alloc] initWithPersistenceDirectoryURL:storeURL];
     });
     return sharedStore;

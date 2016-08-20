@@ -72,7 +72,7 @@
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
     self = [super initWithCoder:aDecoder];
     if (self) {
-        _store = [OCKCarePlanStore store];
+        _store = [OCKCarePlanStore defaultStore];
         [self careCardSetup];
     }
     return self;
@@ -84,7 +84,7 @@
         if (store != nil) {
             _store = store;
         } else {
-            _store = [OCKCarePlanStore store];
+            _store = [OCKCarePlanStore defaultStore];
         }
         [self careCardSetup];
     }

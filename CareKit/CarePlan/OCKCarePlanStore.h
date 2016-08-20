@@ -92,7 +92,7 @@ OCK_CLASS_AVAILABLE
  
  @return    The app's care plan store.
  */
-+ (instancetype)store NS_SWIFT_NAME(store());
++ (instancetype)defaultStore NS_SWIFT_NAME(defaultStore());
 
 /**
  The initializer requires a local directory URL.

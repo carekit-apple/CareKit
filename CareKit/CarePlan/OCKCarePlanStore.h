@@ -88,6 +88,13 @@ OCK_CLASS_AVAILABLE
 - (instancetype)init NS_UNAVAILABLE;
 
 /**
+ The singleton care plan store for the app.
+ 
+ @return    The app's care plan store.
+ */
++ (instancetype)store NS_SWIFT_NAME(store());
+
+/**
  The initializer requires a local directory URL.
  The directory in the URL must exist, otherwise this initializer raises an exception.
  

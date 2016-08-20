@@ -56,6 +56,15 @@ static const CGFloat HeaderViewHeight = 60.0;
     return nil;
 }
 
+- (instancetype)initWithCoder:(NSCoder *)aDecoder {
+    self = [super initWithCoder:aDecoder];
+    if (self) {
+        _hasAnimated = NO;
+        _showEdgeIndicators = NO;
+    }
+    return self;
+}
+
 - (instancetype)initWithInsightItems:(NSArray<OCKInsightItem *> *)items
                          headerTitle:(NSString *)headerTitle
                       headerSubtitle:(NSString *)headerSubtitle {

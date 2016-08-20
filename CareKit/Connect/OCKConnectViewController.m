@@ -60,6 +60,14 @@
     return nil;
 }
 
+- (instancetype)initWithCoder:(NSCoder *)aDecoder {
+    self = [super initWithCoder:aDecoder];
+    if (self) {
+        _showEdgeIndicators = NO;
+    }
+    return self;
+}
+
 - (instancetype)initWithContacts:(NSArray<OCKContact *> *)contacts {
     self = [super init];
     if (self) {

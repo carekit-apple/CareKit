@@ -153,7 +153,7 @@ OCK_CLASS_AVAILABLE
  
  If no image is specified, the "heart" image will be loaded from the assets catalog.
  */
-@property (nonatomic, null_resettable) UIImage *maskImage;
+@property (nonatomic, null_resettable) IBInspectable UIImage *maskImage;
 
 /**
  The image that will be used to mask the fill shape in the week view.
@@ -164,21 +164,21 @@ OCK_CLASS_AVAILABLE
  
  If no image is specified, the "heart-small" image will be loaded from the assets catalog.
  */
-@property (nonatomic, null_resettable) UIImage *smallMaskImage;
+@property (nonatomic, null_resettable) IBInspectable UIImage *smallMaskImage;
 
 /**
  The tint color that will be used to fill the shape.
  
  If tint color is not specified, a default red color will be used.
  */
-@property (nonatomic, null_resettable) UIColor *maskImageTintColor;
+@property (nonatomic, null_resettable) IBInspectable UIColor *maskImageTintColor;
 
 /**
  A boolean to show the edge indicators.
  
  The default value is NO.
  */
-@property (nonatomic) BOOL showEdgeIndicators;
+@property (nonatomic) IBInspectable BOOL showEdgeIndicators;
 
 @end
 

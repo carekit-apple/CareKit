@@ -117,14 +117,14 @@ OCK_CLASS_AVAILABLE
  
  If the value is not specified, the app's tint color is used.
  */
-@property (nonatomic, null_resettable) UIColor *progressRingTintColor;
+@property (nonatomic, null_resettable) IBInspectable UIColor *progressRingTintColor;
 
 /**
  A boolean to show the edge indicators.
  
  The default value is NO.
  */
-@property (nonatomic) BOOL showEdgeIndicators;
+@property (nonatomic) IBInspectable BOOL showEdgeIndicators;
 
 @end
 

@@ -617,6 +617,111 @@
 }
 
 
+- (void)testSingleton {
+    [self cleanTestPath];
+    
+    [OCKCarePlanStore defaultStore].delegate = self;
+    
+    NSDateComponents *startDate = [[NSDateComponents alloc] initWithYear:2016 month:01 day:01];
+    
+    OCKCareSchedule *schedule = [OCKCareSchedule dailyScheduleWithStartDate:startDate occurrencesPerDay:3];
+    
+    OCKCarePlanActivity *item1 = [OCKCarePlanActivity interventionWithIdentifier:@"id1"
+                                                                 groupIdentifier:@"gid1"
+                                                                           title:@"title1"
+                                                                            text:@"text1"
+                                                                       tintColor:[UIColor redColor]
+                                                                    instructions:@"detailText1"
+                                                                        imageURL:nil
+                                                                        schedule:schedule
+                                                                        userInfo:@{@"key":@"value1"}];
+    
+    OCKCarePlanActivity *item2 = [OCKCarePlanActivity assessmentWithIdentifier:@"id2"
+                                                               groupIdentifier:@"gid2"
+                                                                         title:@"title2"
+                                                                          text:@"text2"
+                                                                     tintColor:[UIColor greenColor]
+                                                              resultResettable:YES
+                                                                      schedule:schedule
+                                                                      userInfo:@{@"key":@"value2"}];
+    
+    
+    __block NSError *error;
+    __block BOOL result;
+    
+    XCTestExpectation *expectation = [self expectationWithDescription:@"add1"];
+    [[OCKCarePlanStore defaultStore] addActivity:item1 completion:^(BOOL success, NSError * _Nonnull error) {
+        result = success;
+        error = error;
+        [expectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:1.0 handler:^(NSError * _Nullable error) {
+        error = error;
+    }];
+    XCTAssertTrue(result);
+    XCTAssertNil(error);
+    XCTAssertTrue([self isListChangeDelegateCalled]);
+    
+    expectation = [self expectationWithDescription:@"add2"];
+    [[OCKCarePlanStore defaultStore] addActivity:item2 completion:^(BOOL success, NSError * _Nonnull error) {
+        XCTAssertFalse([NSThread isMainThread]);
+        result = success;
+        error = error;
+        [expectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:1.0 handler:^(NSError * _Nullable error) {
+        error = error;
+    }];
+    XCTAssertTrue(result);
+    XCTAssertNil(error);
+    XCTAssertTrue([self isListChangeDelegateCalled]);
+    
+    // Test making call synced.
+    dispatch_semaphore_t sem = dispatch_semaphore_create(0);
+    [[OCKCarePlanStore defaultStore] activitiesWithCompletion:^(BOOL success, NSArray<OCKCarePlanActivity *> * _Nonnull activities, NSError * _Nullable error) {
+        dispatch_semaphore_signal(sem);
+    }];
+    dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER);
+    
+    expectation = [self expectationWithDescription:@"activitiesWithType"];
+    [[OCKCarePlanStore defaultStore] activitiesWithType:OCKCarePlanActivityTypeIntervention
+                   completion:^(BOOL success, NSArray<OCKCarePlanActivity *> * _Nonnull activities, NSError * _Nonnull error) {
+                       XCTAssertFalse([NSThread isMainThread]);
+                       XCTAssertTrue(success);
+                       XCTAssertNil(error);
+                       XCTAssertEqual(activities.count, 1);
+                       [expectation fulfill];
+                   }];
+    [self waitForExpectationsWithTimeout:1.0 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
+    expectation = [self expectationWithDescription:@"activitiesWithType"];
+    [[OCKCarePlanStore defaultStore] activitiesWithType:OCKCarePlanActivityTypeAssessment
+                   completion:^(BOOL success, NSArray<OCKCarePlanActivity *> * _Nonnull activities, NSError * _Nonnull error) {
+                       XCTAssertTrue(success);
+                       XCTAssertNil(error);
+                       XCTAssertEqual(activities.count, 1);
+                       [expectation fulfill];
+                   }];
+    [self waitForExpectationsWithTimeout:1.0 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
+    
+    expectation = [self expectationWithDescription:@"activityForIdentifier"];
+    [[OCKCarePlanStore defaultStore] activityForIdentifier:item1.identifier
+                      completion:^(BOOL success, OCKCarePlanActivity * _Nonnull activity, NSError * _Nonnull error) {
+                          XCTAssertFalse([NSThread isMainThread]);
+                          XCTAssertTrue(success);
+                          XCTAssertEqualObjects(activity, item1);
+                          XCTAssertNil(error);
+                          [expectation fulfill];
+                      }];
+    [self waitForExpectationsWithTimeout:1.0 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
+}
+
+
 - (void)testDailySchedules {
     NSCalendar *calendar = [NSCalendar calendarWithIdentifier:NSCalendarIdentifierGregorian];
     NSDate *now = [NSDate date];

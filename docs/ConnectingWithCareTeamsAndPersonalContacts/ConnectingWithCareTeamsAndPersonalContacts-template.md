@@ -25,6 +25,15 @@ let newContact = OCKContact(contactType: .CareTeam,
 ```
 
 ## Presenting the Contact View Controller
+
+### In Storyboard
+
+Setting up the contact view controller is similar to [setting up the care card](../CreatingTheCareCard/CreatingTheCareCard.html#CreateAndPresentTheCareCard). Instead of using `OCKCareCardViewController`, however, use `OCKConnectViewController` instead.
+
+To add the contacts and set the delegate, subclass `OCKConnectViewController` and configure it in `initWithCoder:`.
+
+### In Code
+
 The contact view controller displays both care team and personal contacts. When creating the view controller, you must pass an array of `OCKContact` objects:
 
 ```swift
@@ -36,15 +45,19 @@ viewController.title = NSLocalizedString("Connect", comment: "")
 viewController.tabBarItem = UITabBarItem(title: viewController.title, image: UIImage(named:"connect"), selectedImage: UIImage(named: "connect-filled"))
 ```
 
+<hr/>
+
 Upon creation and display of the contact view controller, the following view appears:
 
 <center><img src="ConnectingWithCareTeamsAndPersonalContactsImages/ContactsView.png" style="border: solid #e0e0e0 1px;" width="310px" alt="Contacts View"/>
-<figcaption>Figure 1: The Contact View</figcaption></center>.
+<figcaption>Figure 1: The Contact View</figcaption></center>
+<br/>
 
 Users can tap on a contact to view the detailed contact information. From this view, the user tap on the appropriate icon to call, text, or email the contact, as well as send reports. Attachments such as photos or documents can be attached to the email as well.
 
 <center><img src="ConnectingWithCareTeamsAndPersonalContactsImages/ContactDetails.png" style="border: solid #e0e0e0 1px;" width="310px" alt="Contacts View"/>
-<figcaption>Figure 2: The Details for a Contact</figcaption></center>.
+<figcaption>Figure 2: The Details for a Contact</figcaption></center>
+<br/>
 
 
 ## Implementing the Connect View Controller Delegate

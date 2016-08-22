@@ -136,7 +136,7 @@ The activity will appear in the Care Card.
 
 ## <a name="#CreateAndPresentTheCareCard"></a>Create and Present the Care Card View Controller
 
-### Using a Storyboard
+### In Storyboard
 
 <sub>**Note**: Custom stores do not work with storyboards.</sub>
 

@@ -134,7 +134,7 @@ For more information on working with URLs and the iOS file system, see [File Sys
 	```
 The activity will appear in the Care Card.
 
-## Create and Present the Care Card View Controller
+## <a name="#CreateAndPresentTheCareCard"></a>Create and Present the Care Card View Controller
 
 ### Using a Storyboard
 
@@ -142,13 +142,13 @@ The activity will appear in the Care Card.
 
 To add your care card view controller to your storyboard, start by dragging in a normal view controller.
 
-<center><img src="CreatingTheCareCardImages/ViewController.png" style="border: solid #e0e0e0 1px;" width="310" alt="Care Card Screenshot"/>
+<center><img src="CreatingTheCareCardImages/ViewController.png" style="border: solid #e0e0e0 1px;" width="310" alt="Default Storyboard View Controller"/>
 <figcaption>Figure 3: The default view controller.</figcaption></center>
 <br/>
 
 Then, open the Identity inspector for the view controller and set its custom class to `OCKCareCardViewController`.
 
-<center><img src="CreatingTheCareCardImages/CareCardCustomClass.png" style="border: solid #e0e0e0 1px;" width="310" alt="Care Card Screenshot"/>
+<center><img src="CreatingTheCareCardImages/CareCardCustomClass.png" style="border: solid #e0e0e0 1px;" width="310" alt="OCKCareCardViewController Custom Class"/>
 <figcaption>Figure 4: Setting the custom class to OCKCareCardViewController.</figcaption></center>
 <br/>
 
@@ -158,7 +158,7 @@ Make sure the view controller is embedded inside a navigation or tab bar control
 
 You can modify some properties of the care card through the storyboard's attributes inspector.
 
-<center><img src="CreatingTheCareCardImages/CareCardInspectables.png" style="border: solid #e0e0e0 1px;" width="310" alt="Care Card Screenshot"/>
+<center><img src="CreatingTheCareCardImages/CareCardInspectables.png" style="border: solid #e0e0e0 1px;" width="310" alt="IBInspectable Care Card Properties"/>
 <figcaption>Figure 5: IBInspectable properties of the care card.</figcaption></center>
 <br/>
 

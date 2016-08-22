@@ -6,33 +6,34 @@
 The Symptom and Measurement Tracker manages assessment actions and events to measure the effectiveness of the user's care plan.
 
  <center><img src="CreatingTheSymptomAndMeasurementTrackerImages/SymptomTracker.png" style="border: solid #e0e0e0 1px;" width="310" alt="Symptom and Measurement Tracker Screenshot"/>
-<figcaption>Figure 1: The Symptom and Measurement Tracker.</figcaption></center>.
+<figcaption>Figure 1: The Symptom and Measurement Tracker.</figcaption></center>
+<br/>
 
 The procedure for creating the Symptom and Measurement Tracker is similar to creating a Care Card, but involves an extra delegate object.
 
-1. Instantiate the app's Care Plan Store.
-2. Add the desired assessment activities to the store.
-3. Create the Symptom and Measurement Tracker delegate.
-4. Instantiate and present the Symptom and Measurement Tracker view controller.
+1. Add the desired assessment activities to the default store (or a custom one).
+2. Create the Symptom and Measurement Tracker delegate.
+3. Instantiate and present the Symptom and Measurement Tracker view controller.
 
 The Symptom and Measurement Tracker automatically displays the assessment activity events for each day and automatically tracks the user's progress as they complete these events.
 
  <center><img src="CreatingTheSymptomAndMeasurementTrackerImages/Evaluations.png" style="border: solid #e0e0e0 1px;" width="310" alt="Evaluation Screenshot"/>
-<figcaption>Figure 2: An example evaluation.</figcaption></center>.
+<figcaption>Figure 2: An example evaluation.</figcaption></center>
+<br/>
 
 ## Instantiate the Care Plan Store
 
 If you haven't already instantiated the Care Plan Store, follow the instructions listed in [Creating the Care Card](../CreatingTheCareCard/CreatingTheCareCard.html).  
 
 
-Remember: You need only a single care plan store per app. The stores are long-lived objects. Create the store once, and keep a reference to it for later use.
+Remember: You need only a single care plan store per app. The stores are long-lived objects.
 
 ## Add Assessment Activities
 
 1. Before adding an activity to the care plan store, you should check to see if that activity already exists.
 
 	```swift
-	store.activityForIdentifier(MyEmotionalSurveyIdentifier) { (success, activityOrNil, errorOrNil) -> Void in
+	OCKCarePlanStore.defaultStore().activityForIdentifier(MyEmotionalSurveyIdentifier) { (success, activityOrNil, errorOrNil) -> Void in
 	    guard success else {
 	        // perform real error handling here.
 	        fatalError("*** An error occurred \(errorOrNil?.localizedDescription) ***")
@@ -142,16 +143,20 @@ If the app cannot get the data passively (for example, there are no matching rec
 
 ## Create the Symptom and Measurement Tracker View Controller
 
-To initialize your Symptom and Measurement Tracker view controller, pass your Care Plan Store and your delegate to the constructor.
+Creating the Symptom and Measurement Tracker is very similar to [creating and presenting the Care Card View Controller](../CreatingTheCareCard/CreatingTheCareCard.html#CreateAndPresentTheCareCard). Follow the instructions, using `OCKSymptomTrackerViewController` instead.
+
+### Setting the Delegate
+
+To set the delegate if you are using a storyboard, subclass `OCKSymptomTrackerViewController` and set the delegate in `initWithCoder:`:
 
 ```swift
-let symptomTrackerController = OCKSymptomTrackerViewController(carePlanStore: store, delegate: self)
+delegate = delegateOfSymptomTracker
 ```
-Next, present the Symptom and Measurement Tracker just like you would present any other view controller. You can add it to a tab bar controller, push it onto a navigation controller, or present it modally.
+
+In code, simply add this line after instantiating the view controller or within a subclass:
 
 ```swift
-// presenting the view controller modally
-presentViewController(symptomTrackerController, animated: true, completion: nil)
+symptomTrackerController.delegate = delegateOfSymptomTracker
 ```
 
 For more information on working with view controllers, see [View Controller Programming Guide for iOS](https://developer.apple.com/library/ios/featuredarticles/ViewControllerPGforiPhoneOS/).

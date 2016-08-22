@@ -60,7 +60,7 @@ The Care Plan Store provides methods for reading both activities and events. For
 For example, the following sample code reads all the intervention activities currently saved in the store:
 
 ```swift
-store.activitiesWithType(.Intervention) { (success, activities, errorOrNil) in
+OCKCarePlanStore.defaultStore().activitiesWithType(.Intervention) { (success, activities, errorOrNil) in
     guard success else {
         // perform proper error handling here
         fatalError(errorOrNil!.localizedDescription)
@@ -79,7 +79,7 @@ guard let calendar = NSCalendar(calendarIdentifier: NSCalendarIdentifierGregoria
 }
 
 let today = calendar.components([.Day, .Month, .Year], fromDate: NSDate())
-store.eventsForActivity(ibuprofen, date: today) { (events, errorOrNil) in
+OCKCarePlanStore.defaultStore().eventsForActivity(ibuprofen, date: today) { (events, errorOrNil) in
 
     if let error = errorOrNil {
         // Perform proper error handling here
@@ -110,7 +110,7 @@ var completionData = [(dateComponent: NSDateComponents, value: Double)]()
 var stressAssessmentData = [NSDateComponents: Double]()
 
 dispatch_group_enter(gatherDataGroup)
-store.dailyCompletionStatusWithType(
+OCKCarePlanStore.defaultStore().dailyCompletionStatusWithType(
     .Intervention,
     startDate: startComponents,
     endDate: endComponents,
@@ -131,7 +131,7 @@ store.dailyCompletionStatusWithType(
 })
 
 dispatch_group_enter(gatherDataGroup)
-store.enumerateEventsOfActivity(
+OCKCarePlanStore.defaultStore().enumerateEventsOfActivity(
     stressQuestion,
     startDate: startComponents,
     endDate: endComponents,
@@ -179,10 +179,9 @@ private func _clearStore() {
     print("*** CLEANING STORE DEBUG ONLY ****")
 
     let deleteGroup = dispatch_group_create()
-    let store = self.store
 
     dispatch_group_enter(deleteGroup)
-    store.activitiesWithCompletion { (success, activities, errorOrNil) in
+    OCKCarePlanStore.defaultStore().activitiesWithCompletion { (success, activities, errorOrNil) in
 
         guard success else {
             // Perform proper error handling here...
@@ -192,7 +191,7 @@ private func _clearStore() {
         for activity in activities {
 
             dispatch_group_enter(deleteGroup)
-            store.removeActivity(activity) { (success, error) -> Void in
+            OCKCarePlanStore.defaultStore().removeActivity(activity) { (success, error) -> Void in
 
                 print("Removing \(activity)")
                 guard success else {
@@ -256,7 +255,7 @@ func symptomTrackerViewController(viewController: OCKSymptomTrackerViewControlle
                             userInfo: nil
                         )
 
-                        self.storeManager.store.updateEvent(
+                        OCKCarePlanStore.defaultStore().updateEvent(
                             assessmentEvent,
                             withResult: result,
                             state: .Completed,

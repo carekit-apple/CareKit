@@ -14,7 +14,7 @@ CareKit automatically displays the intervention activity events for each day and
 <center><img src="CreatingTheCareCardImages/CareCardDetails.png" style="border: solid #e0e0e0 1px;" width="310" alt="Care Card Details Screenshot"/><figcaption>Figure 2: Activity details.</figcaption></center>
 
 
-## Instantiate the Care Plan Store
+## <a name="InstantiatingTheCarePlanStore"></a>Instantiating the Care Plan Store
 
 Your app's care plan store is represented using the `OCKCarePlanStore` class.
 
@@ -134,7 +134,7 @@ For more information on working with URLs and the iOS file system, see [File Sys
 	```
 The activity will appear in the Care Card.
 
-## <a name="#CreateAndPresentTheCareCard"></a>Create and Present the Care Card View Controller
+## <a name="CreateAndPresentTheCareCard"></a>Create and Present the Care Card View Controller
 
 ### In Storyboard
 

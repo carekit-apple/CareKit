@@ -99,27 +99,27 @@
 	return self;
 }
 
-+ (OCKContactInfo *)smsContactInfo:(NSString *)smsNumber {
++ (OCKContactInfo *)sms:(NSString *)smsNumber {
 	NSURL *actionURL = [[NSURL alloc] initWithString:[@"sms:" stringByAppendingString:OCKStripNonNumericCharacters(smsNumber)]];
 	return [[OCKContactInfo alloc] initWithType:OCKContactInfoTypeMessage displayString:smsNumber actionURL:actionURL];
 }
 
-+ (OCKContactInfo *)phoneContactInfo:(NSString *)phoneNumber {
++ (OCKContactInfo *)phone:(NSString *)phoneNumber {
 	NSURL *actionURL = [[NSURL alloc] initWithString:[@"tel:" stringByAppendingString:OCKStripNonNumericCharacters(phoneNumber)]];
 	return [[OCKContactInfo alloc] initWithType:OCKContactInfoTypePhone displayString:phoneNumber actionURL:actionURL];
 }
 
-+ (OCKContactInfo *)emailContactInfo:(NSString *)emailAddress {
++ (OCKContactInfo *)email:(NSString *)emailAddress {
 	NSURL *actionURL = [[NSURL alloc] initWithString:[@"mailto:" stringByAppendingString:emailAddress]];
 	return [[OCKContactInfo alloc] initWithType:OCKContactInfoTypeEmail displayString:emailAddress actionURL:actionURL];
 }
 
-+ (OCKContactInfo *)facetimeVideoContactInfo:(NSString *)emailAddressOrRawPhoneNumber displayString:(NSString *)displayString {
++ (OCKContactInfo *)facetimeVideo:(NSString *)emailAddressOrRawPhoneNumber displayString:(NSString *)displayString {
 	NSURL *actionURL = [[NSURL alloc] initWithString:[@"facetime://" stringByAppendingString:emailAddressOrRawPhoneNumber]];
 	return [[OCKContactInfo alloc] initWithType:OCKContactInfoTypeVideo displayString:displayString ?: emailAddressOrRawPhoneNumber actionURL:actionURL];
 }
 
-+ (OCKContactInfo *)facetimeAudioContactInfo:(NSString *)emailAddressOrRawPhoneNumber displayString:(NSString *)displayString{
++ (OCKContactInfo *)facetimeAudio:(NSString *)emailAddressOrRawPhoneNumber displayString:(NSString *)displayString{
 	NSURL *actionURL = [[NSURL alloc] initWithString:[@"facetime-audio://" stringByAppendingString:emailAddressOrRawPhoneNumber]];
 	return [[OCKContactInfo alloc] initWithType:OCKContactInfoTypePhone displayString:displayString ?: emailAddressOrRawPhoneNumber actionURL:actionURL];
 }

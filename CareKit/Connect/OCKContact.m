@@ -59,7 +59,7 @@
 		[contactInfoItemsArray addObject:[[OCKContactInfo alloc] initWithType:OCKContactInfoTypeMessage displayString:messageNumber.stringValue actionURL:nil]];
 	}
 	
-	if (emailAddress) {
+	if (emailAddress.length) {
 		[contactInfoItemsArray addObject:[[OCKContactInfo alloc] initWithType:OCKContactInfoTypeEmail displayString:emailAddress actionURL:nil]];
 	}
     return [self initWithContactType:type name:name relation:relation contactInfoItems:contactInfoItemsArray tintColor:tintColor monogram:monogram image:image];

@@ -139,21 +139,21 @@ OCK_CLASS_AVAILABLE
  
  @param smsNumber       The mobile phone number.
  */
-+ (OCKContactInfo *)smsContactInfo:(NSString *)smsNumber;
++ (OCKContactInfo *)sms:(NSString *)smsNumber;
 
 /**
  Creates a new contact info with an tel: action URL.
  
  @param phoneNumber     The phone number.
  */
-+ (OCKContactInfo *)phoneContactInfo:(NSString *)phoneNumber;
++ (OCKContactInfo *)phone:(NSString *)phoneNumber;
 
 /**
  Creates a new contact info with a mailto: action URL.
  
  @param emailAddress    The email address.
  */
-+ (OCKContactInfo *)emailContactInfo:(NSString *)emailAddress;
++ (OCKContactInfo *)email:(NSString *)emailAddress;
 
 /**
  Creates a new contact info with a facetime: action URL.
@@ -161,7 +161,7 @@ OCK_CLASS_AVAILABLE
  @param emailAddressOrRawPhoneNumber   The email address or unformatted phone number.
  @param displayString                  The display string to represent the contact info. If nil then defaults to the emailAddressOrRawPhoneNumber.
  */
-+ (OCKContactInfo *)facetimeVideoContactInfo:(NSString *)emailAddressOrRawPhoneNumber displayString:(nullable NSString *)displayString;
++ (OCKContactInfo *)facetimeVideo:(NSString *)emailAddressOrRawPhoneNumber displayString:(nullable NSString *)displayString;
 
 /**
  Creates a new contact info with a facetime-audio: action URL.
@@ -169,7 +169,7 @@ OCK_CLASS_AVAILABLE
  @param emailAddressOrRawPhoneNumber   The email address or unformatted phone number.
  @param displayString                  The display string to represent the contact info. If nil then defaults to the emailAddressOrRawPhoneNumber.
  */
-+ (OCKContactInfo *)facetimeAudioContactInfo:(NSString *)emailAddressOrRawPhoneNumber displayString:(nullable NSString *)displayString;
++ (OCKContactInfo *)facetimeAudio:(NSString *)emailAddressOrRawPhoneNumber displayString:(nullable NSString *)displayString;
 
 @end
 

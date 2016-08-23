@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		051E36211D6C0E29003624F4 /* StoryboardCareCardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051E36201D6C0E29003624F4 /* StoryboardCareCardViewController.swift */; };
+		051E36231D6C1210003624F4 /* StoryboardSymptomTrackerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051E36221D6C1210003624F4 /* StoryboardSymptomTrackerViewController.swift */; };
+		051E36251D6C1411003624F4 /* StoryboardInsightsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051E36241D6C1411003624F4 /* StoryboardInsightsViewController.swift */; };
+		051E36271D6C1508003624F4 /* StoryboardConnectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051E36261D6C1508003624F4 /* StoryboardConnectViewController.swift */; };
 		2D365AEC1CDC150200B147FC /* Info-iPad.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2D365AEB1CDC150200B147FC /* Info-iPad.plist */; };
 		2D365AF11CDC15A300B147FC /* BarChartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DF2B6461CDC06F7003632BE /* BarChartViewController.swift */; };
 		2D365AF21CDC15A300B147FC /* SymptomTrackerTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DF2B64D1CDC06F7003632BE /* SymptomTrackerTableViewController.swift */; };
@@ -100,6 +104,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		051E36201D6C0E29003624F4 /* StoryboardCareCardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StoryboardCareCardViewController.swift; path = OCKTest/StoryboardCareCardViewController.swift; sourceTree = SOURCE_ROOT; };
+		051E36221D6C1210003624F4 /* StoryboardSymptomTrackerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StoryboardSymptomTrackerViewController.swift; path = OCKTest/StoryboardSymptomTrackerViewController.swift; sourceTree = SOURCE_ROOT; };
+		051E36241D6C1411003624F4 /* StoryboardInsightsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StoryboardInsightsViewController.swift; path = OCKTest/StoryboardInsightsViewController.swift; sourceTree = SOURCE_ROOT; };
+		051E36261D6C1508003624F4 /* StoryboardConnectViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StoryboardConnectViewController.swift; path = OCKTest/StoryboardConnectViewController.swift; sourceTree = SOURCE_ROOT; };
 		2D365AEB1CDC150200B147FC /* Info-iPad.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Info-iPad.plist"; path = "OCKTest/Info-iPad.plist"; sourceTree = SOURCE_ROOT; };
 		2D365B091CDC15A300B147FC /* OCKTest-iPad.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "OCKTest-iPad.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2DBE4CEF1CD988E600B31591 /* OCKTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OCKTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -169,6 +177,10 @@
 				2DF2B64D1CDC06F7003632BE /* SymptomTrackerTableViewController.swift */,
 				2DF2B6481CDC06F7003632BE /* ConnectTableViewController.swift */,
 				2DF2B64A1CDC06F7003632BE /* DocumentsTableViewController.swift */,
+				051E36201D6C0E29003624F4 /* StoryboardCareCardViewController.swift */,
+				051E36221D6C1210003624F4 /* StoryboardSymptomTrackerViewController.swift */,
+				051E36241D6C1411003624F4 /* StoryboardInsightsViewController.swift */,
+				051E36261D6C1508003624F4 /* StoryboardConnectViewController.swift */,
 				2DF2B64C1CDC06F7003632BE /* LoremIpsum.swift */,
 				2DF2B6571CDC075A003632BE /* LaunchScreen.storyboard */,
 				2DF2B6591CDC075A003632BE /* Main.storyboard */,
@@ -361,10 +373,14 @@
 			files = (
 				2DF2B64F1CDC06F7003632BE /* BarChartViewController.swift in Sources */,
 				2DF2B6561CDC06F7003632BE /* SymptomTrackerTableViewController.swift in Sources */,
+				051E36251D6C1411003624F4 /* StoryboardInsightsViewController.swift in Sources */,
+				051E36211D6C0E29003624F4 /* StoryboardCareCardViewController.swift in Sources */,
 				2DF2B6541CDC06F7003632BE /* InsightsTableViewController.swift in Sources */,
 				2DF2B6501CDC06F7003632BE /* CareCardTableViewController.swift in Sources */,
 				2DF2B6511CDC06F7003632BE /* ConnectTableViewController.swift in Sources */,
+				051E36271D6C1508003624F4 /* StoryboardConnectViewController.swift in Sources */,
 				2DF2B6521CDC06F7003632BE /* CustomChart.swift in Sources */,
+				051E36231D6C1210003624F4 /* StoryboardSymptomTrackerViewController.swift in Sources */,
 				2DF2B6531CDC06F7003632BE /* DocumentsTableViewController.swift in Sources */,
 				2DF2B6551CDC06F7003632BE /* LoremIpsum.swift in Sources */,
 				2DF2B64E1CDC06F7003632BE /* AppDelegate.swift in Sources */,

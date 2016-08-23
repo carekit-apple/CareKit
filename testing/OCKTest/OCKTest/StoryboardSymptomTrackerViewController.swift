@@ -35,18 +35,18 @@ class StoryboardSymptomTrackerViewController: OCKSymptomTrackerViewController, O
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         
-        let startDateComponents = NSDateComponents.init()
+        let startDateComponents = NSDateComponents()
         startDateComponents.day = 20
         startDateComponents.month = 2
         startDateComponents.year = 2015
         
-        let dailySchedule:OCKCareSchedule = OCKCareSchedule.dailyScheduleWithStartDate(startDateComponents, occurrencesPerDay: 1)
+        let dailySchedule = OCKCareSchedule.dailyScheduleWithStartDate(startDateComponents, occurrencesPerDay: 1)
         
-        OCKCarePlanStore.defaultStore().addActivity(OCKCarePlanActivity.init(identifier: "Storyboard Assessment", groupIdentifier: nil, type: OCKCarePlanActivityType.Assessment, title: "Storyboard Assessment", text: "This view controller is instantiated in the storyboard.", tintColor: nil, instructions: nil, imageURL: nil, schedule: dailySchedule, resultResettable: true, userInfo: nil), completion: { (_, error) in
+        OCKCarePlanStore.defaultStore().addActivity(OCKCarePlanActivity(identifier: "Storyboard Assessment", groupIdentifier: nil, type: .Assessment, title: "Storyboard Assessment", text: "This view controller is instantiated in the storyboard.", tintColor: nil, instructions: nil, imageURL: nil, schedule: dailySchedule, resultResettable: true, userInfo: nil)) { (_, error) in
             if let error = error {
                 print("Adding activity failed with error code \(error.code): \(error.localizedDescription)")
             }
-        })
+        }
         
         delegate = self
     }

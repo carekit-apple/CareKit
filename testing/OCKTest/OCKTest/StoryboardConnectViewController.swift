@@ -35,11 +35,11 @@ class StoryboardConnectViewController: OCKConnectViewController {
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         
-        let contact1 = OCKContact.init(contactType: OCKContactType.CareTeam, name: "Anne Johnson", relation: "Primary Physician @ Nearby Hospital in my State", tintColor: UIColor.purpleColor(), phoneNumber: nil, messageNumber: nil, emailAddress: "annejohnson1@mac.com", monogram: "AJ", image: nil)
-        let contact2 = OCKContact.init(contactType: OCKContactType.CareTeam, name: "Bill James, Lorem Ipsum dolor", relation: "Doctor", tintColor: nil, phoneNumber: CNPhoneNumber.init(stringValue: "1-888-555-5512"), messageNumber: nil, emailAddress: "this_is_a_very_long_username@example.com", monogram: "Bill James, Lorem Ipsum dolor", image: nil)
-        let contact3 = OCKContact.init(contactType: OCKContactType.Personal, name: "Maria Ruiz", relation: "Friend", tintColor: UIColor.greenColor(), phoneNumber: nil, messageNumber: nil, emailAddress: nil, monogram: "MR", image: nil)
-        let contact4 = OCKContact.init(contactType: OCKContactType.Personal, name: "Ravi Patel", relation: "Emergency Contact", tintColor: UIColor.orangeColor(), phoneNumber: CNPhoneNumber.init(stringValue: "8885555512"), messageNumber: CNPhoneNumber.init(stringValue: "888-555-5512"), emailAddress: "", monogram: "RP",image: UIImage.init(named: "Stars"))
-        let contact5 = OCKContact.init(contactType: OCKContactType.Personal, name: "Edge Indicators", relation: "are set in the storyboard.", tintColor: nil, phoneNumber: nil, messageNumber: nil, emailAddress: nil, monogram: "", image: nil)
+        let contact1 = OCKContact(contactType: .CareTeam, name: "Anne Johnson", relation: "Primary Physician @ Nearby Hospital in my State", tintColor: UIColor.purpleColor(), phoneNumber: nil, messageNumber: nil, emailAddress: "annejohnson1@mac.com", monogram: "AJ", image: nil)
+        let contact2 = OCKContact(contactType: .CareTeam, name: "Bill James, Lorem Ipsum dolor", relation: "Doctor", tintColor: nil, phoneNumber: CNPhoneNumber(stringValue: "1-888-555-5512"), messageNumber: nil, emailAddress: "this_is_a_very_long_username@example.com", monogram: "Bill James, Lorem Ipsum dolor", image: nil)
+        let contact3 = OCKContact(contactType: .Personal, name: "Maria Ruiz", relation: "Friend", tintColor: UIColor.greenColor(), phoneNumber: nil, messageNumber: nil, emailAddress: nil, monogram: "MR", image: nil)
+        let contact4 = OCKContact(contactType: .Personal, name: "Ravi Patel", relation: "Emergency Contact", tintColor: UIColor.orangeColor(), phoneNumber: CNPhoneNumber(stringValue: "8885555512"), messageNumber: CNPhoneNumber(stringValue: "888-555-5512"), emailAddress: "", monogram: "RP",image: UIImage(named: "Stars"))
+        let contact5 = OCKContact(contactType: .Personal, name: "Edge Indicators", relation: "are set in the storyboard.", tintColor: nil, phoneNumber: nil, messageNumber: nil, emailAddress: nil, monogram: "", image: nil)
         contacts = [contact1, contact2, contact3, contact4, contact5]
     }
     

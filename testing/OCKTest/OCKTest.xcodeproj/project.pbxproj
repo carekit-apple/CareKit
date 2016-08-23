@@ -148,6 +148,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0580B8CE1D6CBD070077DBA4 /* Storyboard */ = {
+			isa = PBXGroup;
+			children = (
+				051E36201D6C0E29003624F4 /* StoryboardCareCardViewController.swift */,
+				051E36221D6C1210003624F4 /* StoryboardSymptomTrackerViewController.swift */,
+				051E36241D6C1411003624F4 /* StoryboardInsightsViewController.swift */,
+				051E36261D6C1508003624F4 /* StoryboardConnectViewController.swift */,
+			);
+			name = Storyboard;
+			sourceTree = "<group>";
+		};
 		2DBE4CE61CD988E600B31591 = {
 			isa = PBXGroup;
 			children = (
@@ -177,10 +188,7 @@
 				2DF2B64D1CDC06F7003632BE /* SymptomTrackerTableViewController.swift */,
 				2DF2B6481CDC06F7003632BE /* ConnectTableViewController.swift */,
 				2DF2B64A1CDC06F7003632BE /* DocumentsTableViewController.swift */,
-				051E36201D6C0E29003624F4 /* StoryboardCareCardViewController.swift */,
-				051E36221D6C1210003624F4 /* StoryboardSymptomTrackerViewController.swift */,
-				051E36241D6C1411003624F4 /* StoryboardInsightsViewController.swift */,
-				051E36261D6C1508003624F4 /* StoryboardConnectViewController.swift */,
+				0580B8CE1D6CBD070077DBA4 /* Storyboard */,
 				2DF2B64C1CDC06F7003632BE /* LoremIpsum.swift */,
 				2DF2B6571CDC075A003632BE /* LaunchScreen.storyboard */,
 				2DF2B6591CDC075A003632BE /* Main.storyboard */,

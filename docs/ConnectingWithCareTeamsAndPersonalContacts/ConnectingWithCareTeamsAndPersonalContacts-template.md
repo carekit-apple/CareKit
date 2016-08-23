@@ -12,17 +12,15 @@ CareKit defines two types of contacts: Care team contacts and personal contacts.
 
 The following code demonstrates how to create a new care team contact:
 
-```swift
-let newContact = OCKContact(contactType: .CareTeam,
-    name: "Bill James",
-    relation: "Nurse",
-    tintColor: Colors.Green.color,
-    phoneNumber: CNPhoneNumber(stringValue: "888-555-5512"),
-    messageNumber: CNPhoneNumber(stringValue: "888-555-5512"),
-    emailAddress: "billjames@example.com",
-    monogram: "BJ",
-    image: nil)
-```
+    let newContact = OCKContact(contactType: .CareTeam,
+        name: "Bill James",
+        relation: "Nurse",
+        tintColor: Colors.Green.color,
+        phoneNumber: CNPhoneNumber(stringValue: "888-555-5512"),
+        messageNumber: CNPhoneNumber(stringValue: "888-555-5512"),
+        emailAddress: "billjames@example.com",
+        monogram: "BJ",
+        image: nil)
 
 ## Presenting the Contact View Controller
 
@@ -36,16 +34,14 @@ To add the contacts and set the delegate, subclass `OCKConnectViewController` an
 
 The contact view controller displays both care team and personal contacts. When creating the view controller, you must pass an array of `OCKContact` objects:
 
-```swift
-let viewController = OCKConnectViewController(contacts: sampleData.contacts)
-viewController.delegate = self
+    let viewController = OCKConnectViewController(contacts: sampleData.contacts)
+    viewController.delegate = self
 
-// Setup the controller's title and tab bar item
-viewController.title = NSLocalizedString("Connect", comment: "")
-viewController.tabBarItem = UITabBarItem(title: viewController.title, image: UIImage(named:"connect"), selectedImage: UIImage(named: "connect-filled"))
-```
+    // Setup the controller's title and tab bar item
+    viewController.title = NSLocalizedString("Connect", comment: "")
+    viewController.tabBarItem = UITabBarItem(title: viewController.title, image: UIImage(named:"connect"), selectedImage: UIImage(named: "connect-filled"))
 
-<hr/>
+<br/>
 
 Upon creation and display of the contact view controller, the following view appears:
 
@@ -64,16 +60,12 @@ Users can tap on a contact to view the detailed contact information. From this v
 
 When using the Connect View Controller, you must implement one required delegate.
 
-```swift
-func connectViewController(connectViewController: OCKConnectViewController, didSelectShareButtonForContact contact: OCKContact)
-```
+    func connectViewController(connectViewController: OCKConnectViewController, didSelectShareButtonForContact contact: OCKContact)
 
 This delegate method is called when the user touches the Share button for a given contact. The delegate method is called with a reference to the `OCKConnectViewController` and a reference to the `OCKContact` object representing the currently viewed contact.
 
 One common operation is to generate a report or other data, then send it to one of the many sharing services available in the `UIActivityViewController`:
 
-```swift
-let document = someObject.generateSomeDocument()
-let activityViewController = UIActivityViewController(activityItems: [document], applicationActivities: nil)     
-presentViewController(activityViewController, animated: true, completion: nil)
-```
+    let document = someObject.generateSomeDocument()
+    let activityViewController = UIActivityViewController(activityItems: [document], applicationActivities: nil)     
+    presentViewController(activityViewController, animated: true, completion: nil)

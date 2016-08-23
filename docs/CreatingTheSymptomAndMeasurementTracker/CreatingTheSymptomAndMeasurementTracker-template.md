@@ -32,51 +32,47 @@ Remember: You need only a single care plan store per app. The stores are long-li
 
 1. Before adding an activity to the care plan store, you should check to see if that activity already exists.
 
-	```swift
-	OCKCarePlanStore.defaultStore().activityForIdentifier(MyEmotionalSurveyIdentifier) { (success, activityOrNil, errorOrNil) -> Void in
-	    guard success else {
-	        // perform real error handling here.
-	        fatalError("*** An error occurred \(errorOrNil?.localizedDescription) ***")
-	    }
+    	OCKCarePlanStore.defaultStore().activityForIdentifier(MyEmotionalSurveyIdentifier) { (success, activityOrNil, errorOrNil) -> Void in
+    	    guard success else {
+    	        // perform real error handling here.
+    	        fatalError("*** An error occurred \(errorOrNil?.localizedDescription) ***")
+    	    }
 
-	    if let activity = activityOrNil {
+    	    if let activity = activityOrNil {
 
-	        // the activity already exists.
+    	        // the activity already exists.
 
-	    } else {
+    	    } else {
 
-	        // ADD THE ACTIVITY HERE...
+    	        // ADD THE ACTIVITY HERE...
 
-	    }
-	}
-	```
+    	    }
+    	}
+
 	Each activity has a unique identifier. If an identifier is already used in the store, any attempt to add another activity with the same identifier has no effect on the store.
 
 
 2. Create the activity's schedule.
 
-	```swift
-	// take the emotional survey once a day, every day starting March 15, 2016
-	let startDay = NSDateComponents(year: 2016, month: 3, day: 15)
-	let onceADay = OCKCareSchedule.dailyScheduleWithStartDate(startDay, occurrencesPerDay: 1)
-	```
+    	// take the emotional survey once a day, every day starting March 15, 2016
+    	let startDay = NSDateComponents(year: 2016, month: 3, day: 15)
+    	let onceADay = OCKCareSchedule.dailyScheduleWithStartDate(startDay, occurrencesPerDay: 1)
 
 3. Instantiate the assessment activity.
 
-	```swift
-	let emotionalSurvey = OCKCarePlanActivity(
-	    identifier: MyEmotionalSurveyIdentifier,
-	    groupIdentifier: nil,
-	    type: .Assessment,
-	    title: "Daily Emotional Survey",
-	    text: "How are you feeling today?",
-	    tintColor: nil,
-	    instructions: nil,
-	    imageURL: nil,
-	    schedule: onceADay,
-	    resultResettable: false,
-	    userInfo: nil)
-	```
+    	let emotionalSurvey = OCKCarePlanActivity(
+    	    identifier: MyEmotionalSurveyIdentifier,
+    	    groupIdentifier: nil,
+    	    type: .Assessment,
+    	    title: "Daily Emotional Survey",
+    	    text: "How are you feeling today?",
+    	    tintColor: nil,
+    	    instructions: nil,
+    	    imageURL: nil,
+    	    schedule: onceADay,
+    	    resultResettable: false,
+    	    userInfo: nil)
+
 	Activity objects are immutable, which means that you cannot change their properties after they are created.
 
 	To appear on the Symptom and Measurement Tracker, the activity must use the `OCKCarePlanActivityType.Assessment` activity type. Assessment activities also require valid `schedule`, `title`, and  `text` parameters. The schedule sets the number of circles to be filled on each day. CareKit displays the title and text on the Symptom and Measurement Tracker.
@@ -89,7 +85,7 @@ Remember: You need only a single care plan store per app. The stores are long-li
 
 Before you can instantiate the Symptom And Measurement Tracker, you need to create a Symptom And Measurement Tracker delegate. One of your classes must adopt the `OCKEvaluationTableViewDelegate` protocol. This protocol declares a single, required method: the `tableViewDidSelectRowWithEvaluationEvent(evaluationEvent:)` method. The system calls this method whenever the user selects an activity in the Symptom And Measurement Tracker, passing in the current event for that activity.
 
-```swift
+```
 	func tableViewDidSelectRowWithEvaluationEvent(evaluationEvent: OCKCarePlanEvent) {
 		let identifier = evaluationEvent.activity.identifier
 		switch(identifier) {
@@ -114,7 +110,7 @@ If the user cancels the event, you simply dismiss the event view controller. The
 
 If the user saves the event, you need to instantiate an event result object, and then update the event in the store.
 
-```swift
+```
 let result = OCKCarePlanEventResult(valueString: happinessRating, unitString: nil, userInfo: nil)
 
 store.updateEvent(event, withResult: result, state: .Completed) { (success, updatedEvent, error) -> Void in
@@ -143,21 +139,17 @@ If the app cannot get the data passively (for example, there are no matching rec
 
 ## Create the Symptom and Measurement Tracker View Controller
 
-Creating the Symptom and Measurement Tracker is very similar to [creating and presenting the Care Card View Controller](../CreatingTheCareCard/CreatingTheCareCard.html#CreateAndPresentTheCareCard). Follow the instructions, using `OCKSymptomTrackerViewController` instead.
+Creating the Symptom and Measurement Tracker is very similar to [creating and presenting the Care Card View Controller](../CreatingTheCareCard/CreatingTheCareCard.html#CreateAndPresentTheCareCard). Follow the same instructions, using `OCKSymptomTrackerViewController` instead.
 
 ### Setting the Delegate
 
-To set the delegate if you are using a storyboard, subclass `OCKSymptomTrackerViewController` and set the delegate in `initWithCoder:`:
+To set the delegate if you are using a storyboard, subclass `OCKSymptomTrackerViewController` and set the delegate in `initWithCoder:`
 
-```swift
-delegate = delegateOfSymptomTracker
-```
+    delegate = delegateOfSymptomTracker
 
-In code, simply add this line after instantiating the view controller or within a subclass:
+In code, simply add this line after instantiating the view controller:
 
-```swift
-symptomTrackerController.delegate = delegateOfSymptomTracker
-```
+    symptomTrackerController.delegate = delegateOfSymptomTracker
 
 For more information on working with view controllers, see [View Controller Programming Guide for iOS](https://developer.apple.com/library/ios/featuredarticles/ViewControllerPGforiPhoneOS/).
 

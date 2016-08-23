@@ -105,6 +105,11 @@ NS_ASSUME_NONNULL_BEGIN
 OCK_CLASS_AVAILABLE
 @interface OCKCareCardViewController : UIViewController
 
+/**
+ Returns an initialized care card view controller using the default care plan store.
+ 
+ @return An initialized care card view controller.
+ */
 - (instancetype)init;
 
 /**

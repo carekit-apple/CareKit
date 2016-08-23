@@ -90,7 +90,7 @@ OCK_CLASS_AVAILABLE
 /**
  The singleton care plan store for the app.
  
- @return    The app's care plan store.
+ @return    The app's default care plan store.
  */
 + (instancetype)defaultStore;
 

@@ -146,7 +146,7 @@ extension RootViewController: OCKSymptomTrackerViewControllerDelegate {
 
 extension RootViewController: ORKTaskViewControllerDelegate {
     
-    /// Called with then user completes a presented `ORKTaskViewController`.
+    /// Called when the user completes a presented `ORKTaskViewController`.
     func taskViewController(taskViewController: ORKTaskViewController, didFinishWithReason reason: ORKTaskViewControllerFinishReason, error: NSError?) {
         defer {
             dismissViewControllerAnimated(true, completion: nil)

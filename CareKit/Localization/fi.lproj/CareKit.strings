@@ -51,6 +51,7 @@
 "CONTACT_INFO_PHONE_TITLE" = "puhelin";
 "CONTACT_INFO_MESSAGE_TITLE" = "tekstiviesti";
 "CONTACT_INFO_EMAIL_TITLE" = "sähköposti";
+"CONTACT_INFO_VIDEO_TITLE" = "video";
 "SHARING_CELL_TITLE" = "Lähetä raportit";
 "ERROR_TITLE" = "Virhe";
 "MESSAGE_SEND_ERROR" = "Viestin lähettäminen epäonnistui";

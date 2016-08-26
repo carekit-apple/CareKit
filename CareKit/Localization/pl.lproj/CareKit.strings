@@ -51,6 +51,7 @@
 "CONTACT_INFO_PHONE_TITLE" = "telefon";
 "CONTACT_INFO_MESSAGE_TITLE" = "tekst";
 "CONTACT_INFO_EMAIL_TITLE" = "email";
+"CONTACT_INFO_VIDEO_TITLE" = "wideo";
 "SHARING_CELL_TITLE" = "Wyślij raporty";
 "ERROR_TITLE" = "Błąd";
 "MESSAGE_SEND_ERROR" = "Błąd wysyłania wiadomości";

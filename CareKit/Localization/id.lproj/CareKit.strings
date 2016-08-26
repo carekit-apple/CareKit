@@ -51,6 +51,7 @@
 "CONTACT_INFO_PHONE_TITLE" = "telepon";
 "CONTACT_INFO_MESSAGE_TITLE" = "teks";
 "CONTACT_INFO_EMAIL_TITLE" = "email";
+"CONTACT_INFO_VIDEO_TITLE" = "video";
 "SHARING_CELL_TITLE" = "Kirim laporan";
 "ERROR_TITLE" = "Kesalahan";
 "MESSAGE_SEND_ERROR" = "Pesan gagal dikirim";

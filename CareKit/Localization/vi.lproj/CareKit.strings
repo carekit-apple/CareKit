@@ -51,6 +51,7 @@
 "CONTACT_INFO_PHONE_TITLE" = "điện thoại";
 "CONTACT_INFO_MESSAGE_TITLE" = "nhắn tin";
 "CONTACT_INFO_EMAIL_TITLE" = "email";
+"CONTACT_INFO_VIDEO_TITLE" = "video";
 "SHARING_CELL_TITLE" = "Gửi báo cáo";
 "ERROR_TITLE" = "Lỗi";
 "MESSAGE_SEND_ERROR" = "Không gửi được tin nhắn";

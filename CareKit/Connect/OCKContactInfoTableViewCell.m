@@ -1,5 +1,6 @@
 /*
  Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2016, WWT Asynchrony Labs. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -48,14 +49,8 @@ static const CGFloat IconButtonSize = 35.0;
     NSMutableArray *_constraints;
 }
 
-- (void)setContact:(OCKContact *)contact {
-    _contact = contact;
-    self.tintColor = _contact.tintColor;
-    [self prepareView];
-}
-
-- (void)setConnectType:(OCKConnectType)connectType {
-    _connectType = connectType;
+- (void)setContactInfo:(OCKContactInfo *)contactInfo {
+    _contactInfo = contactInfo;
     [self prepareView];
 }
 
@@ -81,39 +76,15 @@ static const CGFloat IconButtonSize = 35.0;
     }
     
     [self updateView];
-    [self setUpConstraints];
+    [self setUpConstraints]; 
 }
 
 - (void)updateView {
-    NSString *imageNamed;
-    NSString *title;
-    NSString *connectTypeText;
-    switch (self.connectType) {
-        case OCKConnectTypePhone:
-            imageNamed = @"phone";
-            connectTypeText = OCKLocalizedString(@"CONTACT_INFO_PHONE_TITLE", nil);
-            title = self.contact.phoneNumber.stringValue;
-            break;
-            
-        case OCKConnectTypeMessage:
-            imageNamed = @"message";
-            connectTypeText = OCKLocalizedString(@"CONTACT_INFO_MESSAGE_TITLE", nil);
-            title = self.contact.messageNumber.stringValue;
-            break;
-            
-        case OCKConnectTypeEmail:
-            imageNamed = @"email";
-            connectTypeText = OCKLocalizedString(@"CONTACT_INFO_EMAIL_TITLE", nil);
-            title = self.contact.emailAddress;
-            break;
-    }
-    UIImage *image = [[UIImage imageNamed:imageNamed inBundle:[NSBundle bundleForClass:[self class]] compatibleWithTraitCollection:nil] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-    [_iconButton setImage:image forState:UIControlStateNormal];
-    
+    [_iconButton setImage:self.contactInfo.icon forState:UIControlStateNormal];
     _iconButton.tintColor = self.tintColor;
     _connectTypeLabel.textColor = self.tintColor;
-    _connectTypeLabel.text = connectTypeText;
-    _textLabel.text = title;
+    _connectTypeLabel.text = self.contactInfo.label;
+    _textLabel.text = self.contactInfo.displayString;
 }
 
 - (void)setUpConstraints {

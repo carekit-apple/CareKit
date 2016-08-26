@@ -305,6 +305,8 @@ void OCKAdjustPageViewControllerNavigationDirectionForRTL(UIPageViewControllerNa
 
 NSString *OCKPaddingWithNumberOfSpaces(NSUInteger numberOfPaddingSpaces);
 
+NSString *OCKStripNonNumericCharacters(NSString *string);
+
 #define OCKAccessibilityStringForVariables(firstString, ...) _OCKAccessibilityStringForVariables(firstString, ##__VA_ARGS__, __AXStringForVariablesSentinel)
 OCK_EXTERN NSString *const __AXStringForVariablesSentinel;
 NSString *_OCKAccessibilityStringForVariables(id firstArgument, ...);

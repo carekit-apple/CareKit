@@ -51,6 +51,7 @@
 "CONTACT_INFO_PHONE_TITLE" = "телефон";
 "CONTACT_INFO_MESSAGE_TITLE" = "текст";
 "CONTACT_INFO_EMAIL_TITLE" = "е‑mail";
+"CONTACT_INFO_VIDEO_TITLE" = "видео";
 "SHARING_CELL_TITLE" = "Отправка отчетов";
 "ERROR_TITLE" = "Ошибка";
 "MESSAGE_SEND_ERROR" = "Отправка сообщения не удалась";

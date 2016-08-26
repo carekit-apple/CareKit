@@ -51,6 +51,7 @@
 "CONTACT_INFO_PHONE_TITLE" = "telefon";
 "CONTACT_INFO_MESSAGE_TITLE" = "SMS";
 "CONTACT_INFO_EMAIL_TITLE" = "e-post";
+"CONTACT_INFO_VIDEO_TITLE" = "video";
 "SHARING_CELL_TITLE" = "Skicka rapporter";
 "ERROR_TITLE" = "Fel";
 "MESSAGE_SEND_ERROR" = "Kunde inte skicka meddelande";

@@ -51,6 +51,7 @@
 "CONTACT_INFO_PHONE_TITLE" = "telefon";
 "CONTACT_INFO_MESSAGE_TITLE" = "SMS";
 "CONTACT_INFO_EMAIL_TITLE" = "e‑mail";
+"CONTACT_INFO_VIDEO_TITLE" = "video";
 "SHARING_CELL_TITLE" = "Odeslat zprávy";
 "ERROR_TITLE" = "Chyba";
 "MESSAGE_SEND_ERROR" = "Odeslání zprávy selhalo";

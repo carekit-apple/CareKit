@@ -51,6 +51,7 @@
 "CONTACT_INFO_PHONE_TITLE" = "telefoon";
 "CONTACT_INFO_MESSAGE_TITLE" = "bericht";
 "CONTACT_INFO_EMAIL_TITLE" = "e-mail";
+"CONTACT_INFO_VIDEO_TITLE" = "video-oproep";
 "SHARING_CELL_TITLE" = "Verstuur rapporten";
 "ERROR_TITLE" = "Fout";
 "MESSAGE_SEND_ERROR" = "Versturen van bericht mislukt";

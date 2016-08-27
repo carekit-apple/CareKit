@@ -51,6 +51,7 @@
 "CONTACT_INFO_PHONE_TITLE" = "τηλέφωνο";
 "CONTACT_INFO_MESSAGE_TITLE" = "μήνυμα";
 "CONTACT_INFO_EMAIL_TITLE" = "email";
+"CONTACT_INFO_VIDEO_TITLE" = "βίντεο";
 "SHARING_CELL_TITLE" = "Αποστολή αναφορών";
 "ERROR_TITLE" = "Σφάλμα";
 "MESSAGE_SEND_ERROR" = "Απέτυχε η αποστολή μηνύματος";

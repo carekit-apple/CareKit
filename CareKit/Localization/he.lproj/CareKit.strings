@@ -51,6 +51,7 @@
 "CONTACT_INFO_PHONE_TITLE" = "טלפון";
 "CONTACT_INFO_MESSAGE_TITLE" = "הודעת טקסט";
 "CONTACT_INFO_EMAIL_TITLE" = "דוא״ל";
+"CONTACT_INFO_VIDEO_TITLE" = "וִידֵאוֹ";
 "SHARING_CELL_TITLE" = "שלח דו״חות";
 "ERROR_TITLE" = "שגיאה";
 "MESSAGE_SEND_ERROR" = "שליחת ההודעה נכשלה";

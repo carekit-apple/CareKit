@@ -88,6 +88,7 @@ static const CGFloat HeaderViewHeight = 60.0;
     
     if (!_headerView) {
         _headerView = [[OCKInsightsTableViewHeaderView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, HeaderViewHeight)];
+        _headerView.backgroundColor = _tableView.backgroundColor;
     }
     [self updateHeaderView];
     

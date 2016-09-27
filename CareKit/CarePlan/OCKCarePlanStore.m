@@ -124,7 +124,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     NSParameterAssert(sourceItem);
 
     NSManagedObjectContext *context = _managedObjectContext;
-    if (context == nil) {
+    if (nil == context) {
         return NO;
     }
     
@@ -134,28 +134,34 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
                                                          identifier:sourceItem.identifier
                                                               class:[OCKCarePlanActivity class]
                                                               error:&errorOut];
-    
-    if (item) {
-        if (error) {
+    if (nil != errorOut) {
+        if (nil != error) {
+            *error = errorOut;
+        }
+        return NO;
+    }
+
+    if (nil != item) {
+        if (nil != error) {
             NSString *reasonString = [NSString stringWithFormat:@"An activity with the identifier %@ already exists.", sourceItem.identifier];
             *error = [NSError errorWithDomain:OCKErrorDomain code:OCKErrorInvalidObject userInfo:@{@"reason":reasonString}];
         }
-    } else {
+        return NO;
+    }
     
-        NSManagedObject *cdObject;
-        cdObject = [[coreDataClass alloc] initWithEntity:[NSEntityDescription entityForName:entityName
-                                                                     inManagedObjectContext:context]
-                          insertIntoManagedObjectContext:context
-                                                    item:sourceItem];
-        
-        if (![context save:&errorOut]) {
-            if (error) {
-                *error = errorOut;
-            }
-        }
+    NSManagedObject *cdObject;
+    cdObject = [[coreDataClass alloc] initWithEntity:[NSEntityDescription entityForName:entityName
+                                                                 inManagedObjectContext:context]
+                      insertIntoManagedObjectContext:context
+                                                item:sourceItem];
+
+    BOOL savedSuccessfully = [context save:&errorOut];
+
+    if (nil != error) {
+        *error = errorOut;
     }
 
-    return errorOut ? NO : YES;
+    return savedSuccessfully;
 }
 
 - (BOOL)block_alterItemWithEntityName:(NSString *)name
@@ -418,6 +424,9 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
             if (_delegate && [_delegate respondsToSelector:@selector(carePlanStoreActivityListDidChange:)]) {
                 [_delegate carePlanStoreActivityListDidChange:self];
             }
+            if (_watchDelegate && [_watchDelegate respondsToSelector:@selector(carePlanStoreActivityListDidChange:)]) {
+                [_watchDelegate carePlanStoreActivityListDidChange:self];
+            }
         });
     }
 }
@@ -595,7 +604,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
             if (!fetchActivity) {
                 error = [NSError errorWithDomain:OCKErrorDomain
                                             code:OCKErrorInvalidObject
-                                        userInfo:@{@"reason":[NSString stringWithFormat:@"Cannot find acitivity with identifier %@", fetchActivity.identifier]}];
+                                        userInfo:@{@"reason":[NSString stringWithFormat:@"Cannot find acitivity with identifier %@", activity.identifier]}];
             } else {
                 NSPredicate *predicate = [NSPredicate predicateWithFormat:@"%K = %d AND %K = %@",
                                           OCKAttributeNameDayIndex, numberOfDaySinceStart, @"activity.identifier", fetchActivity.identifier];
@@ -750,6 +759,9 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
                     }
                     if(_delegate && [_delegate respondsToSelector:@selector(carePlanStore:didReceiveUpdateOfEvent:)]) {
                         [_delegate carePlanStore:self didReceiveUpdateOfEvent:copiedEvent];
+                    }
+                    if(_watchDelegate && [_watchDelegate respondsToSelector:@selector(carePlanStore:didReceiveUpdateOfEvent:)]) {
+                        [_watchDelegate carePlanStore:self didReceiveUpdateOfEvent:copiedEvent];
                     }
                 });
             }

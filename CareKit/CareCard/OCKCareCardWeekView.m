@@ -42,7 +42,6 @@ static const CGFloat HeartButtonSize = 20.0;
 static const CGFloat TopMargin = 15.0;
 static const CGFloat LeadingMargin = 15.0;
 static const CGFloat TrailingMargin = 15.0;
-static const CGFloat BottomMargin = 5.0;
 
 @implementation OCKCareCardWeekView {
     OCKWeekLabelsView *_weekView;
@@ -144,8 +143,8 @@ static const CGFloat BottomMargin = 5.0;
                                         [NSLayoutConstraint constraintWithItem:_stackView
                                                                      attribute:NSLayoutAttributeTop
                                                                      relatedBy:NSLayoutRelationEqual
-                                                                        toItem:_weekView
-                                                                     attribute:NSLayoutAttributeBottom
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeTop
                                                                     multiplier:1.0
                                                                       constant:0.0],
                                         [NSLayoutConstraint constraintWithItem:_stackView
@@ -154,7 +153,7 @@ static const CGFloat BottomMargin = 5.0;
                                                                         toItem:self
                                                                      attribute:NSLayoutAttributeBottom
                                                                     multiplier:1.0
-                                                                      constant:-BottomMargin]
+                                                                      constant:0.0]
                                         ]];
     
     [NSLayoutConstraint activateConstraints:_constraints];

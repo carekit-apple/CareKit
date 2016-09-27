@@ -40,6 +40,7 @@ static const CGFloat BarPointSize = 12.0;
 static const CGFloat BarEndFontSize = 11.0;
 static const CGFloat MarginBetweenBars = 2.0;
 static const CGFloat MarginBetweenGroups = 16.0;
+static const CGFloat MarginBetweenBarAndLabel = 6.0;
 
 @interface OCKGroupedBarChartBar : NSObject
 
@@ -119,22 +120,19 @@ static const CGFloat MarginBetweenGroups = 16.0;
         animation.duration = duration * _bar.value.doubleValue/_maxValue;
         animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
         animation.fillMode = kCAFillModeBoth;
-        animation.removedOnCompletion = true;
+        animation.removedOnCompletion = YES;
         
         [_barLayer addAnimation:animation forKey:animation.keyPath];
     }
     
     {
-        CGPoint position = CGPointMake(_valueLabel.layer.position.x, _valueLabel.layer.position.y);
-        CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"position"];
-        
-        animation.fromValue = [NSValue valueWithCGPoint:CGPointMake(0, position.y)];
-        animation.toValue = [NSValue valueWithCGPoint:position];
-        
+        CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"position.x"];
+        animation.fromValue = @(MarginBetweenBarAndLabel + CGRectGetWidth(_valueLabel.frame)/2.0);
+        animation.toValue = @(_valueLabel.layer.position.x);
         animation.duration = duration * _bar.value.doubleValue/_maxValue;
         animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
         animation.fillMode = kCAFillModeBoth;
-        animation.removedOnCompletion = true;
+        animation.removedOnCompletion = YES;
         
         [_valueLabel.layer addAnimation:animation forKey:animation.keyPath];
     }
@@ -147,8 +145,6 @@ static const CGFloat MarginBetweenGroups = 16.0;
     CGFloat barHeight = _barView.bounds.size.height;
     if (_barLayer == nil || _barLayer.bounds.size.width != barWidth) {
         
-        [_barLayer removeFromSuperlayer];
-        _barLayer = [[CAShapeLayer alloc] init];
         UIBezierPath *path = [[UIBezierPath alloc] init];
         [path moveToPoint:CGPointMake(0, barHeight/2)];
         [path addLineToPoint:CGPointMake(barWidth, barHeight/2)];
@@ -157,18 +153,23 @@ static const CGFloat MarginBetweenGroups = 16.0;
         _barLayer.path = path.CGPath;
         _barLayer.strokeColor = _bar.color.CGColor;
         _barLayer.lineWidth = barHeight;
-        [_barView.layer addSublayer:_barLayer];
     }
 }
 
 - (void)prepareView {
+
+    self.backgroundColor = [UIColor whiteColor];
+    
     _barView = [UIView new];
+    _barLayer = [[CAShapeLayer alloc] init];
+    [_barView.layer addSublayer:_barLayer];
 #if LAYOUT_DEBUG
     _barView.backgroundColor = [[UIColor orangeColor] colorWithAlphaComponent:0.2];
 #endif
     _barView.translatesAutoresizingMaskIntoConstraints = NO;
     
     _valueLabel = [UILabel new];
+    _valueLabel.backgroundColor = self.backgroundColor;
     _valueLabel.text = _bar.text;
     _valueLabel.textColor = _bar.color;
     _valueLabel.translatesAutoresizingMaskIntoConstraints = NO;
@@ -181,7 +182,8 @@ static const CGFloat MarginBetweenGroups = 16.0;
     
     NSMutableArray *constraints = [NSMutableArray new];
     
-    [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[barView]-6.0-[valueLabel]"
+    NSString *visualFormat = [NSString stringWithFormat:@"H:|[barView]-%f-[valueLabel]", MarginBetweenBarAndLabel];
+    [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:visualFormat
                                                           options:NSLayoutFormatDirectionLeadingToTrailing
                                                           metrics:nil
                                                             views:views]];
@@ -271,11 +273,14 @@ static const CGFloat MarginBetweenGroups = 16.0;
 }
 
 - (void)prepareView {
+    self.backgroundColor = [UIColor whiteColor];
+    
     _labelBox = [UIView new];
     _labelBox.translatesAutoresizingMaskIntoConstraints = NO;
     [self addSubview:_labelBox];
     
     _titleLabel = [OCKLabel new];
+    _titleLabel.backgroundColor = self.backgroundColor;
     _titleLabel.adjustsFontSizeToFitWidth = YES;
     _titleLabel.text = _group.title;
     _titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
@@ -284,6 +289,7 @@ static const CGFloat MarginBetweenGroups = 16.0;
     [_labelBox addSubview:_titleLabel];
     
     _textLabel = [OCKLabel new];
+    _textLabel.backgroundColor = self.backgroundColor;
     _textLabel.text = _group.text;
     _textLabel.adjustsFontSizeToFitWidth = YES;
     _textLabel.translatesAutoresizingMaskIntoConstraints = NO;
@@ -463,6 +469,7 @@ static const CGFloat MarginBetweenGroups = 16.0;
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
+        self.backgroundColor = [UIColor whiteColor];
         _colorBox = [UIView new];
         _colorBox.translatesAutoresizingMaskIntoConstraints = NO;
         [self addSubview:_colorBox];
@@ -555,7 +562,7 @@ static const CGFloat MarginBetweenGroups = 16.0;
             cell.frame = CGRectMake(0, 0, size.width, size.height);
             [tc.contentView addSubview:cell];
             
-            UIGraphicsBeginImageContextWithOptions(cell.frame.size, NO, 2.0);
+            UIGraphicsBeginImageContextWithOptions(cell.frame.size, YES, 0.0);
             [cell.layer renderInContext:UIGraphicsGetCurrentContext()];
             UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
             UIGraphicsEndImageContext();
@@ -575,6 +582,7 @@ static const CGFloat MarginBetweenGroups = 16.0;
         self.lineBreakMode = NSLineBreakByWordWrapping;
         self.attributedText = string;
         self.textAlignment = NSTextAlignmentCenter;
+        self.backgroundColor = [UIColor whiteColor];
     }
     return self;
 }
@@ -737,7 +745,7 @@ static const CGFloat MarginBetweenGroups = 16.0;
 
     [_constraints addObject:[NSLayoutConstraint constraintWithItem:_legendsView
                                                          attribute:NSLayoutAttributeWidth
-                                                         relatedBy:NSLayoutRelationLessThanOrEqual
+                                                         relatedBy:NSLayoutRelationEqual
                                                             toItem:self
                                                          attribute:NSLayoutAttributeWidth
                                                         multiplier:1.0 constant:0.0]];

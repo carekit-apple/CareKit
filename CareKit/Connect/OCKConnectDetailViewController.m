@@ -1,5 +1,6 @@
 /*
  Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2016, WWT Asynchrony Labs. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -32,6 +33,7 @@
 #import "OCKConnectDetailViewController.h"
 #import "OCKConnectTableViewHeader.h"
 #import "OCKDefines_Private.h"
+#import "OCKHelpers.h"
 
 
 static const CGFloat HeaderViewHeight = 225.0;
@@ -109,28 +111,14 @@ static const CGFloat HeaderViewHeight = 225.0;
     _tableViewData = [NSMutableArray new];
     _sectionTitles = [NSMutableArray new];
     
-    NSMutableArray<NSNumber *> *contactInfoSection = [NSMutableArray new];
+    NSMutableArray<OCKContactInfo *> *contactInfoSection = [NSMutableArray new];
     NSMutableArray<NSString *> *sharingSection = [NSMutableArray new];
     
-    if (self.contact.phoneNumber) {
-        [contactInfoSection addObject:@(OCKConnectTypePhone)];
-    }
-    if (self.contact.messageNumber) {
-        [contactInfoSection addObject:@(OCKConnectTypeMessage)];
-    }
-    if (self.contact.emailAddress) {
-        [contactInfoSection addObject:@(OCKConnectTypeEmail)];
-    }
+	[contactInfoSection addObjectsFromArray:self.contact.contactInfoItems];
     
     if (self.delegate) {
-        NSString *sharingTitle = OCKLocalizedString(@"SHARING_CELL_TITLE", nil);
-        if ([self.delegate respondsToSelector:@selector(connectViewController:titleForSharingCellForContact:)]) {
-            NSString *delegateTitle = [self.delegate connectViewController:self.masterViewController titleForSharingCellForContact:self.contact];
-            if (delegateTitle.length > 0) {
-                sharingTitle = delegateTitle;
-            }
-        }
-        [sharingSection addObject:sharingTitle];
+		NSString *sharingTitle = [self sharingTitle];
+		[sharingSection addObject:sharingTitle];
     }
     
     if (contactInfoSection.count > 0) {
@@ -145,69 +133,101 @@ static const CGFloat HeaderViewHeight = 225.0;
     }
 }
 
+- (NSString *)sharingTitle {
+	NSString *sharingTitle = OCKLocalizedString(@"SHARING_CELL_TITLE", nil);
+	if ([self.delegate respondsToSelector:@selector(connectViewController:titleForSharingCellForContact:)]) {
+		NSString *delegateTitle = [self.delegate connectViewController:self.masterViewController titleForSharingCellForContact:self.contact];
+		if (delegateTitle.length > 0) {
+			sharingTitle = delegateTitle;
+		}
+	}
+	return sharingTitle;
+}
+
 - (void)makeCallToNumber:(NSString *)number {
-    NSString *stringURL = [NSString stringWithFormat:@"tel:%@", number];
+    NSString *stringURL = [NSString stringWithFormat:@"tel:%@", OCKStripNonNumericCharacters(number)];
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:stringURL]];
 }
 
-- (void)sendMessageToNumber:(NSString *)number {
+- (void)sendMessageToNumber:(NSString *)number delegate:(id<MFMessageComposeViewControllerDelegate>)messageDelegate presentingViewController:(UIViewController *)presentingViewController {
     MFMessageComposeViewController *messageViewController = [MFMessageComposeViewController new];
     if ([MFMessageComposeViewController canSendText]) {
-        messageViewController.messageComposeDelegate = self;
+        messageViewController.messageComposeDelegate = messageDelegate;
         messageViewController.recipients = @[number];
-        [self presentViewController:messageViewController animated:YES completion:nil];
+        [presentingViewController presentViewController:messageViewController animated:YES completion:nil];
     }
 }
 
-- (void)sendEmailToAddress:(NSString *)address {
+- (void)sendEmailToAddress:(NSString *)address delegate:(id<MFMailComposeViewControllerDelegate>)emailDelegate presentingViewController:(UIViewController *)presentingViewController {
     MFMailComposeViewController *emailViewController = [MFMailComposeViewController new];
     if ([MFMailComposeViewController canSendMail]) {
-        emailViewController.mailComposeDelegate = self;
+        emailViewController.mailComposeDelegate = emailDelegate;
         [emailViewController setToRecipients:@[address]];
-        [self presentViewController:emailViewController animated:YES completion:nil];
+        [presentingViewController presentViewController:emailViewController animated:YES completion:nil];
     }
 }
 
+- (void)makeVideoCallToNumber:(NSString *)number {
+	NSString *stringURL = [NSString stringWithFormat:@"facetime://%@", number];
+	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:stringURL]];
+}
+
+- (void)contactInfoOptionSelected:(OCKContactInfo *)contactInfo defaultActionHandler:(UIViewController<MFMessageComposeViewControllerDelegate, MFMailComposeViewControllerDelegate> *)defaultActionHandler {
+	BOOL handled = NO;
+	if (self.delegate && [self.delegate respondsToSelector:@selector(connectViewController:handleContactInfoSelected:)]) {
+		handled = [self.delegate connectViewController:self.masterViewController handleContactInfoSelected:contactInfo];
+	}
+	
+	if (!handled) {
+		if (contactInfo.actionURL) {
+			[[UIApplication sharedApplication] openURL:contactInfo.actionURL];
+		} else {
+			switch (contactInfo.type) {
+				case OCKContactInfoTypePhone:
+					[self makeCallToNumber:contactInfo.displayString];
+					break;
+					
+				case OCKContactInfoTypeMessage:
+					[self sendMessageToNumber:contactInfo.displayString delegate:defaultActionHandler presentingViewController:defaultActionHandler];
+					break;
+					
+				case OCKContactInfoTypeEmail:
+					[self sendEmailToAddress:contactInfo.displayString delegate:defaultActionHandler presentingViewController:defaultActionHandler];
+					break;
+					
+				case OCKContactInfoTypeVideo:
+					[self makeVideoCallToNumber:contactInfo.displayString];
+					break; 
+			}
+		}
+	}
+}
+
+- (void)sharingOptionSelectedWithSourceView:(UIView *)presentationSourceView {
+	if (self.delegate &&
+		[self.delegate respondsToSelector:@selector(connectViewController:didSelectShareButtonForContact:presentationSourceView:)]) {
+		[self.delegate connectViewController:self.masterViewController didSelectShareButtonForContact:self.contact presentationSourceView:presentationSourceView];
+	}
+}
 
 #pragma mark - OCKContactInfoTableViewCellDelegate
 
 - (void)contactInfoTableViewCellDidSelectConnection:(OCKContactInfoTableViewCell *)cell {
-    switch (cell.connectType) {
-        case OCKConnectTypePhone:
-            [self makeCallToNumber:cell.contact.phoneNumber.stringValue];
-            break;
-            
-        case OCKConnectTypeMessage:
-            [self sendMessageToNumber:cell.contact.messageNumber.stringValue];
-            break;
-            
-        case OCKConnectTypeEmail:
-            [self sendEmailToAddress:cell.contact.emailAddress];
-            break;
-    }
+	[self contactInfoOptionSelected:cell.contactInfo defaultActionHandler:self];
 }
 
 
 #pragma mark - OCKContactSharingTableViewCellDelegate
 
 - (void)sharingTableViewCellDidSelectShareButton:(OCKContactSharingTableViewCell *)cell {
-    if (self.delegate &&
-        [self.delegate respondsToSelector:@selector(connectViewController:didSelectShareButtonForContact:presentationSourceView:)]) {
-        [self.delegate connectViewController:self.masterViewController didSelectShareButtonForContact:cell.contact presentationSourceView:cell.shareButton];
-    }
+	[self sharingOptionSelectedWithSourceView:cell.shareButton];
 }
-
 
 #pragma mark - UITableViewDelegate
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return UITableViewAutomaticDimension;
 }
-
-- (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath {
-    return NO;
-}
-
 
 #pragma mark - UITableViewDataSource
 
@@ -232,10 +252,10 @@ static const CGFloat HeaderViewHeight = 225.0;
         if (!cell) {
             cell = [[OCKContactInfoTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
                                                       reuseIdentifier:ContactCellIdentifier];
+			cell.tintColor = self.contact.tintColor;
         }
-        cell.contact = self.contact;
+        cell.contactInfo = _tableViewData[indexPath.section][indexPath.row];
         cell.delegate = self;
-        cell.connectType = [_tableViewData[indexPath.section][indexPath.row] intValue];
         return cell;
     } else if ([sectionTitle isEqualToString:_sharingSectionTitle]) {
         static NSString *SharingCellIdentifier = @"SharingCell";
@@ -252,6 +272,18 @@ static const CGFloat HeaderViewHeight = 225.0;
     return nil;
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    NSString *sectionTitle = _sectionTitles[indexPath.section];
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+
+    if ([sectionTitle isEqualToString:_contactInfoSectionTitle]) {
+        [self contactInfoTableViewCellDidSelectConnection:(OCKContactInfoTableViewCell*)cell];
+    } else if ([sectionTitle isEqualToString:_sharingSectionTitle]) {
+        [self sharingTableViewCellDidSelectShareButton:(OCKContactSharingTableViewCell *)cell];
+    }
+}
 
 #pragma mark - MFMessageComposeViewControllerDelegate
 
@@ -276,6 +308,28 @@ static const CGFloat HeaderViewHeight = 225.0;
                                                                           preferredStyle:UIAlertControllerStyleAlert];
         [self presentViewController:alertController animated:YES completion:nil];
     }
+}
+
+
+#pragma mark - Preview Action Items
+
+- (NSArray<id<UIPreviewActionItem>> *)previewActionItems {
+    NSMutableArray<id<UIPreviewActionItem>> *actions = [[NSMutableArray alloc] init];
+	for (OCKContactInfo *contactInfo in self.contact.contactInfoItems) {
+		NSString *capitalizedTitle = [contactInfo.label capitalizedStringWithLocale:[NSLocale currentLocale]];
+		UIPreviewAction *previewAction = [UIPreviewAction actionWithTitle:capitalizedTitle style:UIPreviewActionStyleDefault handler:^(UIPreviewAction * _Nonnull action, UIViewController * _Nonnull previewViewController) {
+			[self contactInfoOptionSelected:contactInfo defaultActionHandler:self.masterViewController];
+		}];
+		[actions addObject:previewAction];
+	}
+    if (self.delegate) {
+		NSString *sharingTitle = [self sharingTitle];
+		UIPreviewAction *shareAction = [UIPreviewAction actionWithTitle:sharingTitle style:UIPreviewActionStyleDefault handler:^(UIPreviewAction * _Nonnull action, UIViewController * _Nonnull previewViewController) {
+			[self sharingOptionSelectedWithSourceView:nil];
+        }];
+        [actions addObject:shareAction];
+    }
+    return actions;
 }
 
 @end

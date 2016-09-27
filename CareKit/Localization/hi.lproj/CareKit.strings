@@ -51,6 +51,7 @@
 "CONTACT_INFO_PHONE_TITLE" = "फ़ोन";
 "CONTACT_INFO_MESSAGE_TITLE" = "टेक्स्ट";
 "CONTACT_INFO_EMAIL_TITLE" = "ईमेल";
+"CONTACT_INFO_VIDEO_TITLE" = "वीडियो";
 "SHARING_CELL_TITLE" = "रिपोर्ट भेजें";
 "ERROR_TITLE" = "त्रुटि";
 "MESSAGE_SEND_ERROR" = "संदेश भेजना विफल";

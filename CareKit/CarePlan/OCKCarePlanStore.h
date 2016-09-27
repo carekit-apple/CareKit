@@ -103,6 +103,11 @@ OCK_CLASS_AVAILABLE
 @property (nonatomic, weak) id<OCKCarePlanStoreDelegate> delegate;
 
 /**
+You can use the watch delegate to subscribe a watch app to notifications of changes to the store.
+ */
+@property (nonatomic, weak) id<OCKCarePlanStoreDelegate> watchDelegate;
+
+/**
  Add an activity to this store.
  
  The identifiers for activities in the store should be unique. 

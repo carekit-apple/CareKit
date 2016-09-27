@@ -1,5 +1,39 @@
 # CareKit Release Notes
 
+## CareKit 1.1 Release Notes
+
+*CareKit 1.1* supports *iOS* and requires *Xcode 8.0* or later. The minimum supported *Base SDK* is *9.0*.
+
+*CareKit 1.1* includes the following new features and enhancements.
+
+- **Care Card on Apple Watch**
+ 
+ *Contributed by [Apple Inc.](https://github.com/carekit-apple).*
+
+ The *Sample App* (OCKSample project in CareKit's workspace) now includes a watch app. The app works out of the box. Included in the Watch group is the *Watch Connectivity Manager* which abstracts the logic of communicating the *Care Card* data between the phone and the watch. 
+
+ The *Care Plan Store* has also been updated to support Apple Watch.
+
+- **New Test App**
+
+ *Contributed by [Apple Inc.](https://github.com/carekit-apple).*
+
+ The *New Test App* is written entirely in Swift and provides extensive coverage for all CareKit Modules.
+
+- **Other Improvements**
+
+ - **3D Touch Support**
+
+  *Contributed by [Troy Tsubota](https://github.com/tktsubota).*
+
+  The *Care Card* and *Connect* view controllers have been updated to support 3D Touch. In the *Care Card* view controller, a user can 3D Touch on an activity to peek and pop. In the *Connect* view controller, a user can peek, pop, and use perform actions right from the master screen.
+
+  - **FaceTime in Connect**
+
+   *Contributed by [Micah Hainline](https://github.com/micahhainline).*
+
+   *FaceTime* calls can now be made from within the Connect module. Apart from *FaceTime* support, *Connect* now has the ability to create any custom method of communication (such as fax).
+
 
 ## CareKit 1.0 Release Notes
 

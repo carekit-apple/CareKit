@@ -1,5 +1,6 @@
 /*
  Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2016, WWT Asynchrony Labs. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -49,21 +50,39 @@
                        emailAddress:(NSString *)emailAddress
                            monogram:(NSString *)monogram
                               image:(UIImage *)image {
-    NSAssert((monogram || image), @"An OCKContact must have either a monogram or an image.");
-    
-    self = [super init];
-    if (self) {
-        _type = type;
-        _name = [name copy];
-        _relation = [relation copy];
-        _tintColor = tintColor;
-        _phoneNumber = [phoneNumber copy];
-        _messageNumber = [messageNumber copy];
-        _emailAddress = [emailAddress copy];
-        _monogram = [monogram copy];
-        _image = image;
-    }
-    return self;
+	NSMutableArray *contactInfoItemsArray = [NSMutableArray array]; 
+	if (phoneNumber) {
+		[contactInfoItemsArray addObject:[[OCKContactInfo alloc] initWithType:OCKContactInfoTypePhone displayString:phoneNumber.stringValue actionURL:nil]];
+	}
+	
+	if (messageNumber) {
+		[contactInfoItemsArray addObject:[[OCKContactInfo alloc] initWithType:OCKContactInfoTypeMessage displayString:messageNumber.stringValue actionURL:nil]];
+	}
+	
+	if (emailAddress.length) {
+		[contactInfoItemsArray addObject:[[OCKContactInfo alloc] initWithType:OCKContactInfoTypeEmail displayString:emailAddress actionURL:nil]];
+	}
+    return [self initWithContactType:type name:name relation:relation contactInfoItems:contactInfoItemsArray tintColor:tintColor monogram:monogram image:image];
+}
+
+- (instancetype)initWithContactType:(OCKContactType)type
+							   name:(NSString *)name
+						   relation:(NSString *)relation
+				   contactInfoItems:(NSArray<OCKContactInfo *> *)contactInfoItems
+						  tintColor:(nullable UIColor *)tintColor
+						   monogram:(null_unspecified NSString *)monogram
+							  image:(nullable UIImage *)image {
+	self = [super init];
+	if (self) {
+		_type = type;
+		_name = [name copy];
+		_relation = [relation copy];
+		_contactInfoItems = [contactInfoItems copy];
+		_tintColor = tintColor;
+		self.monogram = [self clippedMonogramForString:monogram];
+		_image = image;
+	}
+	return self;
 }
 
 - (BOOL)isEqual:(id)object {
@@ -75,9 +94,7 @@
             OCKEqualObjects(self.name, castObject.name) &&
             OCKEqualObjects(self.relation, castObject.relation) &&
             OCKEqualObjects(self.tintColor, castObject.tintColor) &&
-            OCKEqualObjects(self.phoneNumber, castObject.phoneNumber) &&
-            OCKEqualObjects(self.messageNumber, castObject.messageNumber) &&
-            OCKEqualObjects(self.emailAddress, castObject.emailAddress) &&
+            OCKEqualObjects(self.contactInfoItems, castObject.contactInfoItems) &&
             OCKEqualObjects(self.monogram, castObject.monogram) &&
             OCKEqualObjects(self.image, castObject.image));
 }
@@ -96,9 +113,7 @@
         OCK_DECODE_OBJ_CLASS(aDecoder, name, NSString);
         OCK_DECODE_OBJ_CLASS(aDecoder, relation, NSString);
         OCK_DECODE_OBJ_CLASS(aDecoder, tintColor, UIColor);
-        OCK_DECODE_OBJ_CLASS(aDecoder, phoneNumber, CNPhoneNumber);
-        OCK_DECODE_OBJ_CLASS(aDecoder, messageNumber, CNPhoneNumber);
-        OCK_DECODE_OBJ_CLASS(aDecoder, emailAddress, NSString);
+		OCK_DECODE_OBJ_CLASS(aDecoder, contactInfoItems, NSArray);
         OCK_DECODE_OBJ_CLASS(aDecoder, monogram, NSString);
         OCK_DECODE_IMAGE(aDecoder, image);
     }
@@ -110,9 +125,7 @@
     OCK_ENCODE_OBJ(aCoder, name);
     OCK_ENCODE_OBJ(aCoder, relation);
     OCK_ENCODE_OBJ(aCoder, tintColor);
-    OCK_ENCODE_OBJ(aCoder, phoneNumber);
-    OCK_ENCODE_OBJ(aCoder, messageNumber);
-    OCK_ENCODE_OBJ(aCoder, emailAddress);
+    OCK_ENCODE_OBJ(aCoder, contactInfoItems);
     OCK_ENCODE_OBJ(aCoder, monogram);
     OCK_ENCODE_IMAGE(aCoder, image);
 }
@@ -126,12 +139,49 @@
     contact->_name = [self.name copy];
     contact->_relation = [self.relation copy];
     contact->_tintColor = self.tintColor;
-    contact->_phoneNumber = self.phoneNumber;
-    contact->_messageNumber = self.messageNumber;
-    contact->_emailAddress = [self.emailAddress copy];
+    contact->_contactInfoItems = [self.contactInfoItems copy];
     contact->_monogram = [self.monogram copy];
     contact->_image = self.image;
     return contact;
+}
+
+#pragma mark - Monogram
+
+- (NSString *)clippedMonogramForString:(NSString *)string {
+    NSRange stringRange = {0, MIN([string length], 2)};
+    stringRange = [string rangeOfComposedCharacterSequencesForRange:stringRange];
+    return [string substringWithRange:stringRange];
+}
+
+- (void)setMonogram:(NSString *)monogram {
+    if (!monogram) {
+        monogram = [self generateMonogram:_name];
+    }
+    _monogram = [monogram copy];
+}
+
+- (NSString *)generateMonogram:(NSString *)name {
+    NSAssert((name != nil), @"A name must be supplied");
+    NSAssert((name.length > 0), @"A name must have > 0 chars");
+    
+    NSMutableArray *candidateWords = [NSMutableArray arrayWithArray:[name componentsSeparatedByString:@" "]];
+    
+    NSString *first = @"";
+    NSString *last = @"";
+
+    if (candidateWords.count > 0) {
+        first = [NSString stringWithFormat:@"%c", [candidateWords[0] characterAtIndex:0]];
+        if (candidateWords.count > 1) {
+            last = [NSString stringWithFormat:@"%c", [candidateWords[candidateWords.count-1] characterAtIndex:0]];
+        }
+
+    } else {
+        @throw [NSException exceptionWithName:NSInvalidArgumentException reason:[NSString stringWithFormat:@"name %@ has no candidates to generate a monogram", name] userInfo:nil];
+    }
+    
+    candidateWords = nil;
+    
+    return [NSString stringWithFormat:@"%@%@",[first uppercaseString],[last uppercaseString]];
 }
 
 @end

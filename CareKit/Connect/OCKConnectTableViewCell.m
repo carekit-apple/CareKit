@@ -85,6 +85,7 @@ static const CGFloat ImageViewSize = 40.0;
         _monogramLabel.textColor = [UIColor whiteColor];
         _monogramLabel.textAlignment = NSTextAlignmentCenter;
         _monogramLabel.font = [UIFont boldSystemFontOfSize:16.0];
+        _monogramLabel.adjustsFontSizeToFitWidth = YES;
         [self addSubview:_monogramLabel];
     }
     
@@ -97,16 +98,20 @@ static const CGFloat ImageViewSize = 40.0;
     
     if (self.contact.image) {
         _imageView.image = self.contact.image;
-        _imageView.backgroundColor = [UIColor clearColor];
         _monogramLabel.text = nil;
     } else {
         _imageView.image = nil;
-        _imageView.backgroundColor = OCKSystemGrayColor();
         _monogramLabel.text = self.contact.monogram;
     }
     
+    [self updateImageViewBackgroundColor];
+    
     _nameLabel.text = self.contact.name;
     _relationLabel.text = self.contact.relation;
+}
+
+- (void)updateImageViewBackgroundColor {
+    _imageView.backgroundColor = self.contact.image ? [UIColor clearColor] : OCKSystemGrayColor();
 }
 
 - (void)setUpConstraints {
@@ -231,6 +236,16 @@ static const CGFloat ImageViewSize = 40.0;
                                         ]];
     
     [NSLayoutConstraint activateConstraints:_constraints];
+}
+
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
+    [super setSelected:selected animated:animated];
+    [self updateImageViewBackgroundColor];
+}
+
+- (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated {
+    [super setHighlighted:highlighted animated:animated];
+    [self updateImageViewBackgroundColor];
 }
 
 - (void)layoutSubviews {

@@ -1,5 +1,6 @@
 /*
  Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2016, WWT Asynchrony Labs. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -30,6 +31,7 @@
 
 
 #import <CareKit/CareKit.h>
+#import <MessageUI/MessageUI.h>
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -42,7 +44,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @protocol OCKConnectViewControllerDelegate <NSObject>
 
-@required
+@optional
 /**
  Tells the delegate when the user selected the share button for a contact.
  
@@ -50,9 +52,8 @@ NS_ASSUME_NONNULL_BEGIN
  @param contact                     The contact that is currently displayed.
  @param sourceView                  Source view can be used to present a popover on iPad.
  */
-- (void)connectViewController:(OCKConnectViewController *)connectViewController didSelectShareButtonForContact:(OCKContact *)contact presentationSourceView:(UIView *)sourceView;
+- (void)connectViewController:(OCKConnectViewController *)connectViewController didSelectShareButtonForContact:(OCKContact *)contact presentationSourceView:(nullable UIView *)sourceView;
 
-@optional
 /**
  Asks the delegate for the title to be shown in the sharing cell for a contact.
  If the method returns nil or is not implemented, the localized string for the `SHARING_CELL_TITLE` key is displayed.
@@ -66,6 +67,18 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (nullable NSString *)connectViewController:(OCKConnectViewController *)connectViewController titleForSharingCellForContact:(OCKContact *)contact;
 
+/**
+ Asks the delegate to handle the selection of the contact info. This can be used to provide custom handling for 
+ contacting the contact. If the method is not implemented or if it returns NO then the default handling will be
+ used instead.
+ 
+ @param connectViewController       The view controller providing the callback.
+ @param contactInfo                 The contact info that was selected.
+ 
+ @return YES if the contact info selection was handled, or NO if the default handling should be performed instead.
+ */
+- (BOOL)connectViewController:(OCKConnectViewController *)connectViewController handleContactInfoSelected:(OCKContactInfo *)contactInfo;
+
 @end
 
 
@@ -74,7 +87,7 @@ NS_ASSUME_NONNULL_BEGIN
  It includes a master view and a detail view. Therefore, it must be embedded inside a `UINavigationController`.
  */
 OCK_CLASS_AVAILABLE
-@interface OCKConnectViewController : UIViewController
+@interface OCKConnectViewController : UIViewController <MFMessageComposeViewControllerDelegate, MFMailComposeViewControllerDelegate>
 
 /**
  Returns an initialized connect view controller using the specified contacts.

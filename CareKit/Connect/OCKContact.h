@@ -1,5 +1,6 @@
 /*
  Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2016, WWT Asynchrony Labs. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -82,8 +83,30 @@ OCK_CLASS_AVAILABLE
                         phoneNumber:(nullable CNPhoneNumber *)phoneNumber
                       messageNumber:(nullable CNPhoneNumber *)messageNumber
                        emailAddress:(nullable NSString *)emailAddress
-                           monogram:(NSString *)monogram
-                              image:(nullable UIImage *)image;
+                           monogram:(null_unspecified NSString *)monogram
+                              image:(nullable UIImage *)image 
+DEPRECATED_MSG_ATTRIBUTE("Use initWithContactType:name:relation:tintColor:monogram:image instead");
+
+/**
+ Returns an initialized contact using the specified values.
+ 
+ @param type                The contact type.
+ @param name                The contact name.
+ @param relation            The relationship to the contact.
+ @param contactInfoItems    The contact information for the contact.
+ @param tintColor           The contact tint color.
+ @param monogram            The contact monogram.
+ @param image               The contact image.
+ 
+ @return An initialized contact object.
+ */
+- (instancetype)initWithContactType:(OCKContactType)type
+							   name:(NSString *)name
+						   relation:(NSString *)relation
+				   contactInfoItems:(NSArray<OCKContactInfo *> *)contactInfoItems
+						  tintColor:(nullable UIColor *)tintColor
+						   monogram:(null_unspecified NSString *)monogram
+							  image:(nullable UIImage *)image;
 
 /**
  The contact type.
@@ -111,35 +134,18 @@ OCK_CLASS_AVAILABLE
 @property (nonatomic, readonly, nullable) UIColor *tintColor;
 
 /**
- A CNPhoneNumber indicating the phone number for a contact.
- 
- If a phone number is not specified, the phone table view row will
- not be visible for the contact.
+ The contact info items, which contain information about phone numbers, 
+ sms numbers, and other contact methods. 
  */
-@property (nonatomic, readonly, nullable) CNPhoneNumber *phoneNumber;
-
-/**
- A CNPhoneNumber indicating the message number for a contact.
- 
- If a message number is not specified, the message table view row will
- not be visible for the contact.
- */
-@property (nonatomic, readonly, nullable) CNPhoneNumber *messageNumber;
-
-/**
- A string indicating the email address for a contact.
- 
- If an email address is not specified, the email table view row will
- not be visible for the contact.
- */
-@property (nonatomic, readonly, nullable) NSString *emailAddress;
+@property (nonatomic, readonly) NSArray<OCKContactInfo *> *contactInfoItems;
 
 /**
  A string indicating the monogram for a contact.
  
- If a monogram is not provided, the image will be used for the contact.
+ If a monogram is not provided, it will be generated automatically.
+ If a monogram is available, it will be clipped to two glyphs.
  */
-@property (nonatomic, readonly) NSString *monogram;
+@property (nonatomic, readonly, null_resettable) NSString *monogram;
 
 /**
  An image for a contact.

@@ -9,7 +9,7 @@ There are four scenes available to apps that use CareKit:
 
 **Care Card.** The Care Card scene presents and manages the tasks that the user is expected to perform as part of their treatment. For example, taking a medication, changing a wound dressing, or meditating.
 
-**Symptom & Measurement Tracker.** Ths scene presents and manages tasks that evaluate the effectiveness of the user's care plan. These include the subjective assessment of symptoms (such as pain scales) and objective measurements (such as blood pressure).
+**Symptom & Measurement Tracker.** This scene presents and manages tasks that evaluate the effectiveness of the user's care plan. These include the subjective assessment of symptoms (such as pain scales) and objective measurements (such as blood pressure).
 
 **Insights.** The Insights scene displays charts that provide insight to the user by showing the relationship between treatment and progress. An insight can also include tips and alerts that help the user stay on track with their health goals. 
 

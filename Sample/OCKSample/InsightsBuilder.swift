@@ -33,11 +33,11 @@ import CareKit
 class InsightsBuilder {
     
     /// An array if `OCKInsightItem` to show on the Insights view.
-    private(set) var insights = [OCKInsightItem.emptyInsightsMessage()]
+    fileprivate(set) var insights = [OCKInsightItem.emptyInsightsMessage()]
     
-    private let carePlanStore: OCKCarePlanStore
+    fileprivate let carePlanStore: OCKCarePlanStore
     
-    private let updateOperationQueue = NSOperationQueue()
+    fileprivate let updateOperationQueue = OperationQueue()
     
     required init(carePlanStore: OCKCarePlanStore) {
         self.carePlanStore = carePlanStore
@@ -47,7 +47,7 @@ class InsightsBuilder {
         Enqueues `NSOperation`s to query the `OCKCarePlanStore` and update the
         `insights` property.
     */
-    func updateInsights(completion: ((Bool, [OCKInsightItem]?) -> Void)?) {
+    func updateInsights(_ completion: ((Bool, [OCKInsightItem]?) -> Void)?) {
         // Cancel any in-progress operations. 
         updateOperationQueue.cancelAllOperations()
 
@@ -60,7 +60,7 @@ class InsightsBuilder {
          */
         
         let medicationEventsOperation = QueryActivityEventsOperation(store: carePlanStore,
-                                                                     activityIdentifier: ActivityType.TakeMedication.rawValue,
+                                                                     activityIdentifier: ActivityType.takeMedication.rawValue,
                                                                      startDate: queryDateRange.start,
                                                                      endDate: queryDateRange.end)
 
@@ -69,7 +69,7 @@ class InsightsBuilder {
             current weeks' `BackPain` assessment.
          */
         let backPainEventsOperation = QueryActivityEventsOperation(store: carePlanStore,
-                                                                   activityIdentifier: ActivityType.BackPain.rawValue,
+                                                                   activityIdentifier: ActivityType.backPain.rawValue,
                                                                    startDate: queryDateRange.start,
                                                                    endDate: queryDateRange.end)
 
@@ -83,7 +83,7 @@ class InsightsBuilder {
             Create an operation to aggregate the data from query operations into
             the `BuildInsightsOperation`.
         */
-        let aggregateDataOperation = NSBlockOperation {
+        let aggregateDataOperation = BlockOperation {
             // Copy the queried data from the query operations to the `BuildInsightsOperation`.
             buildInsightsOperation.medicationEvents = medicationEventsOperation.dailyEvents
             buildInsightsOperation.backPainEvents = backPainEventsOperation.dailyEvents
@@ -94,11 +94,11 @@ class InsightsBuilder {
             new insights and call the completion block passed to this method.
         */
         buildInsightsOperation.completionBlock = { [unowned buildInsightsOperation] in
-            let completed = !buildInsightsOperation.cancelled
+            let completed = !buildInsightsOperation.isCancelled
             let newInsights = buildInsightsOperation.insights
             
             // Call the completion block on the main queue.
-            NSOperationQueue.mainQueue().addOperationWithBlock {
+            OperationQueue.main.addOperation {
                 if completed {
                     completion?(true, newInsights)
                 }
@@ -124,15 +124,15 @@ class InsightsBuilder {
         ], waitUntilFinished: false)
     }
     
-    private func calculateQueryDateRange() -> (start: NSDateComponents, end: NSDateComponents) {
-        let calendar = NSCalendar.currentCalendar()
-        let now = NSDate()
+    fileprivate func calculateQueryDateRange() -> (start: DateComponents, end: DateComponents) {
+        let calendar = Calendar.current
+        let now = Date()
         
         let currentWeekRange = calendar.weekDatesForDate(now)
-        let previousWeekRange = calendar.weekDatesForDate(currentWeekRange.start.dateByAddingTimeInterval(-1))
+        let previousWeekRange = calendar.weekDatesForDate(currentWeekRange.start.addingTimeInterval(-1))
         
-        let queryRangeStart = NSDateComponents(date: previousWeekRange.start, calendar: calendar)
-        let queryRangeEnd = NSDateComponents(date: now, calendar: calendar)
+        let queryRangeStart = calendar.dateComponents([.year, .month, .day, .era], from: previousWeekRange.start)
+        let queryRangeEnd = calendar.dateComponents([.year, .month, .day, .era], from: now)
         
         return (start: queryRangeStart, end: queryRangeEnd)
     }
@@ -141,5 +141,5 @@ class InsightsBuilder {
 
 
 protocol InsightsBuilderDelegate: class {
-    func insightsBuilder(insightsBuilder: InsightsBuilder, didUpdateInsights insights: [OCKInsightItem])
+    func insightsBuilder(_ insightsBuilder: InsightsBuilder, didUpdateInsights insights: [OCKInsightItem])
 }

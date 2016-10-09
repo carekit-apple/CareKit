@@ -43,37 +43,37 @@ class CustomChart: OCKChart {
         chart.backgroundColor = self.tintColor
         chart.layer.cornerRadius = self.chartSize / 2.0
         chart.layer.borderWidth = 5
-        chart.layer.borderColor = UIColor.blackColor().CGColor
+        chart.layer.borderColor = UIColor.black.cgColor
         chart.translatesAutoresizingMaskIntoConstraints = false
-        chart.heightAnchor.constraintEqualToConstant(self.chartSize).active = true
+        chart.heightAnchor.constraint(equalToConstant: self.chartSize).isActive = true
         
         let topLeftbubble = UIView.init()
-        topLeftbubble.backgroundColor = UIColor.whiteColor()
+        topLeftbubble.backgroundColor = UIColor.white
         topLeftbubble.layer.cornerRadius = self.bubbleSize / 2.0
         topLeftbubble.translatesAutoresizingMaskIntoConstraints = false
         chart.addSubview(topLeftbubble)
-        topLeftbubble.heightAnchor.constraintEqualToConstant(self.bubbleSize).active = true
-        topLeftbubble.widthAnchor.constraintEqualToConstant(self.bubbleSize).active = true
-        topLeftbubble.topAnchor.constraintEqualToAnchor(chart.topAnchor, constant: 50).active = true
-        topLeftbubble.leftAnchor.constraintEqualToAnchor(chart.leftAnchor, constant: 50).active = true
+        topLeftbubble.heightAnchor.constraint(equalToConstant: self.bubbleSize).isActive = true
+        topLeftbubble.widthAnchor.constraint(equalToConstant: self.bubbleSize).isActive = true
+        topLeftbubble.topAnchor.constraint(equalTo: chart.topAnchor, constant: 50).isActive = true
+        topLeftbubble.leftAnchor.constraint(equalTo: chart.leftAnchor, constant: 50).isActive = true
 
         let bottomRightBubble = UIView.init()
-        bottomRightBubble.backgroundColor = UIColor.whiteColor()
+        bottomRightBubble.backgroundColor = UIColor.white
         bottomRightBubble.layer.cornerRadius = self.bubbleSize / 2.0
         bottomRightBubble.translatesAutoresizingMaskIntoConstraints = false
         chart.addSubview(bottomRightBubble)
-        bottomRightBubble.heightAnchor.constraintEqualToConstant(self.bubbleSize).active = true
-        bottomRightBubble.widthAnchor.constraintEqualToConstant(self.bubbleSize).active = true
-        bottomRightBubble.bottomAnchor.constraintEqualToAnchor(chart.bottomAnchor, constant: -50).active = true
-        bottomRightBubble.rightAnchor.constraintEqualToAnchor(chart.rightAnchor, constant: -50).active = true
+        bottomRightBubble.heightAnchor.constraint(equalToConstant: self.bubbleSize).isActive = true
+        bottomRightBubble.widthAnchor.constraint(equalToConstant: self.bubbleSize).isActive = true
+        bottomRightBubble.bottomAnchor.constraint(equalTo: chart.bottomAnchor, constant: -50).isActive = true
+        bottomRightBubble.rightAnchor.constraint(equalTo: chart.rightAnchor, constant: -50).isActive = true
         
         return chart
         
     }
     
-    override class func animateView(view: UIView, withDuration duration: NSTimeInterval)
+    override class func animate(_ view: UIView, withDuration duration: TimeInterval)
     {
-        UIView.animateWithDuration(duration, delay: 0, options: UIViewAnimationOptions.Autoreverse, animations: {
+        UIView.animate(withDuration: duration, delay: 0, options: UIViewAnimationOptions.autoreverse, animations: {
             view.alpha = 0
             }) { (success) in
                 view.alpha = 1
@@ -92,9 +92,9 @@ class CustomChart: OCKChart {
         self.bubbleSize = 20
         super.init(coder: aDecoder)
     }
-    
-    override func copyWithZone(zone: NSZone) -> AnyObject {
-        let chart:CustomChart = super.copyWithZone(zone) as! CustomChart
+
+    override func copy(with zone: NSZone? = nil) -> Any {
+        let chart:CustomChart = super.copy(with: zone) as! CustomChart
         chart.chartSize = self.chartSize
         chart.bubbleSize = self.bubbleSize
         return chart

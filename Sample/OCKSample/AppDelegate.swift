@@ -34,11 +34,20 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
-
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        window?.tintColor = Colors.Red.color
+    
+    #if swift(>=3.0)
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey : Any]? = nil) -> Bool {
+        window?.tintColor = Colors.red.color
+        return true
+    }
+    
+    #else
+    
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: Any]?) -> Bool {
+        window?.tintColor = Colors.red.color
 
         return true
     }
+    
+    #endif
 }

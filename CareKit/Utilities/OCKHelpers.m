@@ -537,6 +537,10 @@ NSString *OCKPaddingWithNumberOfSpaces(NSUInteger numberOfPaddingSpaces) {
     return [@"" stringByPaddingToLength:numberOfPaddingSpaces withString:@" " startingAtIndex:0];
 }
 
+NSString *OCKStripNonNumericCharacters(NSString *string) {
+	NSCharacterSet *nonDigits = [[NSCharacterSet decimalDigitCharacterSet] invertedSet];
+	return [[string componentsSeparatedByCharactersInSet:nonDigits] componentsJoinedByString:@""];
+}
 
 NSString *const __AXStringForVariablesSentinel = @"__AXStringForVariablesSentinel";
 

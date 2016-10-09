@@ -250,7 +250,7 @@ static const CGFloat ButtonViewSize = 40.0;
                                             ]];
     }
     
-    int index = (_frequencyButtons.count < 7) ? 0 : 7;
+    int index = (_frequencyButtons.count <= 7) ? 0 : 7;
     for (int i = index; i <_frequencyButtons.count; i++) {
         [_constraints addObjectsFromArray:@[
                                             [NSLayoutConstraint constraintWithItem:_frequencyButtons[i]
@@ -301,9 +301,18 @@ static const CGFloat ButtonViewSize = 40.0;
 
 - (NSArray *)accessibilityElements {
     if (self.axChildren == nil) {
+        
+        NSUInteger numTasksCompleted = 0;
+        for (OCKCarePlanEvent *event in self.interventionEvents) {
+            if (event.state == OCKCarePlanEventStateCompleted) {
+                numTasksCompleted++;
+            }
+        }
+        
         CareCardAccessibilityElement *cellElement = [[CareCardAccessibilityElement alloc] initWithAccessibilityContainer:self];
         cellElement.accessibilityLabel = OCKAccessibilityStringForVariables(_titleLabel, _textLabel);
         cellElement.accessibilityHint = OCKLocalizedString(@"AX_CARE_CARD_HINT", nil);
+        cellElement.accessibilityValue = [NSString stringWithFormat:OCKLocalizedString(@"AX_CARE_CARD_VALUE", nil), numTasksCompleted, self.interventionEvents.count];
         self.axChildren = [NSMutableArray arrayWithObject:cellElement];
         [self.axChildren addObjectsFromArray:_frequencyButtons];
     }
@@ -317,18 +326,6 @@ static const CGFloat ButtonViewSize = 40.0;
 
 - (CGRect)accessibilityFrame {
     return [[self accessibilityContainer] accessibilityFrame];
-}
-
-- (NSString *)accessibilityValue {
-    OCKCareCardTableViewCell *careCardContainer = [self accessibilityContainer];
-    
-    NSUInteger numTasksCompleted = 0;
-    for (OCKCarePlanEvent *event in careCardContainer.interventionEvents) {
-        if (event.state == OCKCarePlanEventStateCompleted) {
-            numTasksCompleted++;
-        }
-    }
-    return [NSString stringWithFormat:OCKLocalizedString(@"AX_CARE_CARD_VALUE", nil), numTasksCompleted, careCardContainer.interventionEvents.count];
 }
 
 @end

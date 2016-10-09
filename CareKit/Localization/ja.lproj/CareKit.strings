@@ -51,6 +51,7 @@
 "CONTACT_INFO_PHONE_TITLE" = "電話";
 "CONTACT_INFO_MESSAGE_TITLE" = "テキスト";
 "CONTACT_INFO_EMAIL_TITLE" = "メール";
+"CONTACT_INFO_VIDEO_TITLE" = "ビデオ";
 "SHARING_CELL_TITLE" = "レポートを送信";
 "ERROR_TITLE" = "エラー";
 "MESSAGE_SEND_ERROR" = "メッセージを送信できませんでした";

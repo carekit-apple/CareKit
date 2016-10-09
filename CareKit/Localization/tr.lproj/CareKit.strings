@@ -51,6 +51,7 @@
 "CONTACT_INFO_PHONE_TITLE" = "telefon";
 "CONTACT_INFO_MESSAGE_TITLE" = "mesaj";
 "CONTACT_INFO_EMAIL_TITLE" = "e-posta";
+"CONTACT_INFO_VIDEO_TITLE" = "video";
 "SHARING_CELL_TITLE" = "Rapor gönder";
 "ERROR_TITLE" = "Hata";
 "MESSAGE_SEND_ERROR" = "Mesaj gönderilemedi";

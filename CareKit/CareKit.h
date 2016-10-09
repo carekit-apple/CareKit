@@ -56,6 +56,7 @@
 #import <CareKit/OCKGroupedBarChartView.h>
 
 // Connect
+#import <CareKit/OCKContactInfo.h>
 #import <CareKit/OCKContact.h>
 #import <CareKit/OCKConnectViewController.h>
 

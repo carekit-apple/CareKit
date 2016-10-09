@@ -51,6 +51,7 @@
 "CONTACT_INFO_PHONE_TITLE" = "telefon";
 "CONTACT_INFO_MESSAGE_TITLE" = "tekstmelding";
 "CONTACT_INFO_EMAIL_TITLE" = "e-post";
+"CONTACT_INFO_VIDEO_TITLE" = "video";
 "SHARING_CELL_TITLE" = "Send rapporter";
 "ERROR_TITLE" = "Feil";
 "MESSAGE_SEND_ERROR" = "Sending av tekstmelding mislyktes";

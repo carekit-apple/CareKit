@@ -424,6 +424,9 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
             if (_delegate && [_delegate respondsToSelector:@selector(carePlanStoreActivityListDidChange:)]) {
                 [_delegate carePlanStoreActivityListDidChange:self];
             }
+            if (_watchDelegate && [_watchDelegate respondsToSelector:@selector(carePlanStoreActivityListDidChange:)]) {
+                [_watchDelegate carePlanStoreActivityListDidChange:self];
+            }
         });
     }
 }
@@ -601,7 +604,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
             if (!fetchActivity) {
                 error = [NSError errorWithDomain:OCKErrorDomain
                                             code:OCKErrorInvalidObject
-                                        userInfo:@{@"reason":[NSString stringWithFormat:@"Cannot find acitivity with identifier %@", fetchActivity.identifier]}];
+                                        userInfo:@{@"reason":[NSString stringWithFormat:@"Cannot find acitivity with identifier %@", activity.identifier]}];
             } else {
                 NSPredicate *predicate = [NSPredicate predicateWithFormat:@"%K = %d AND %K = %@",
                                           OCKAttributeNameDayIndex, numberOfDaySinceStart, @"activity.identifier", fetchActivity.identifier];
@@ -756,6 +759,9 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
                     }
                     if(_delegate && [_delegate respondsToSelector:@selector(carePlanStore:didReceiveUpdateOfEvent:)]) {
                         [_delegate carePlanStore:self didReceiveUpdateOfEvent:copiedEvent];
+                    }
+                    if(_watchDelegate && [_watchDelegate respondsToSelector:@selector(carePlanStore:didReceiveUpdateOfEvent:)]) {
+                        [_watchDelegate carePlanStore:self didReceiveUpdateOfEvent:copiedEvent];
                     }
                 });
             }

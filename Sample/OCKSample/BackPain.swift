@@ -38,23 +38,23 @@ import ResearchKit
 struct BackPain: Assessment {
     // MARK: Activity
     
-    let activityType: ActivityType = .BackPain
+    let activityType: ActivityType = .backPain
     
     func carePlanActivity() -> OCKCarePlanActivity {
         // Create a weekly schedule.
-        let startDate = NSDateComponents(year: 2016, month: 01, day: 01)
-        let schedule = OCKCareSchedule.weeklyScheduleWithStartDate(startDate, occurrencesOnEachDay: [1, 1, 1, 1, 1, 1, 1])
+        let startDate = DateComponents(year: 2016, month: 01, day: 01)
+        let schedule = OCKCareSchedule.weeklySchedule(withStartDate: startDate as DateComponents, occurrencesOnEachDay: [1, 1, 1, 1, 1, 1, 1])
         
         // Get the localized strings to use for the assessment.
         let title = NSLocalizedString("Pain", comment: "")
         let summary = NSLocalizedString("Lower Back", comment: "")
         
-        let activity = OCKCarePlanActivity.assessmentWithIdentifier(
-            activityType.rawValue,
+        let activity = OCKCarePlanActivity.assessment(
+            withIdentifier: activityType.rawValue,
             groupIdentifier: nil,
             title: title,
             text: summary,
-            tintColor: Colors.Blue.color,
+            tintColor: Colors.blue.color,
             resultResettable: true,
             schedule: schedule,
             userInfo: nil
@@ -83,7 +83,7 @@ struct BackPain: Assessment {
         )
         
         let questionStep = ORKQuestionStep(identifier: activityType.rawValue, title: question, answer: answerFormat)
-        questionStep.optional = false
+        questionStep.isOptional = false
         
         // Create an ordered task with a single question.
         let task = ORKOrderedTask(identifier: activityType.rawValue, steps: [questionStep])

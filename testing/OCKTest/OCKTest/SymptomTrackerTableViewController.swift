@@ -37,18 +37,18 @@ class SymptomTrackerTableViewController: UITableViewController, OCKSymptomTracke
     
     var healthKitStore:HKHealthStore?
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 5
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        if let cell = tableView.dequeueReusableCellWithIdentifier("cell") {
-            switch indexPath.row {
+        if let cell = tableView.dequeueReusableCell(withIdentifier: "cell") {
+            switch (indexPath as NSIndexPath).row {
             case 0:
                 cell.textLabel?.text = "No Delegate, No Edges"
             case 1:
@@ -57,9 +57,9 @@ class SymptomTrackerTableViewController: UITableViewController, OCKSymptomTracke
                 cell.textLabel?.text = "With Delegate"
             case 3:
                 cell.textLabel?.text = "Track Health Data"
-                if UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiom.Pad {
-                    cell.textLabel?.textColor = UIColor.grayColor()
-                    cell.userInteractionEnabled = false
+                if UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiom.pad {
+                    cell.textLabel?.textColor = UIColor.gray
+                    cell.isUserInteractionEnabled = false
                 }
             case 4:
                 cell.textLabel?.text = "Delete all Activites"
@@ -74,141 +74,138 @@ class SymptomTrackerTableViewController: UITableViewController, OCKSymptomTracke
     }
     
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        let documentsDirectory = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true)
+        let documentsDirectory = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)
         
-        if indexPath.row == 0 {
+        if (indexPath as NSIndexPath).row == 0 {
             
             // No Delegate, No Edges
-            
-            let startDateComponents = NSDateComponents.init()
+            var startDateComponents = DateComponents.init()
             startDateComponents.day = 20
             startDateComponents.month = 3
             startDateComponents.year = 2000
-            let schedule = OCKCareSchedule.dailyScheduleWithStartDate(startDateComponents, occurrencesPerDay: 1)
+            let schedule = OCKCareSchedule.dailySchedule(withStartDate: startDateComponents, occurrencesPerDay: 1)
             let firstGroupId = "Group A1"
-            let carePlanActivity1 = OCKCarePlanActivity.init(identifier: "Assessment Activity #1", groupIdentifier: firstGroupId, type: OCKCarePlanActivityType.Assessment, title: "Assessment Activity Title 1", text: "Read the instructions about this task", tintColor: UIColor.redColor(), instructions: "Perform the described task and report the results. Talk to your doctor if you need help", imageURL: nil, schedule: schedule, resultResettable: true, userInfo: ["Key1":"Value1","Key2":"Value2"])
+            let carePlanActivity1 = OCKCarePlanActivity.init(identifier: "Assessment Activity #1", groupIdentifier: firstGroupId, type: OCKCarePlanActivityType.assessment, title: "Assessment Activity Title 1", text: "Read the instructions about this task", tintColor: UIColor.red, instructions: "Perform the described task and report the results. Talk to your doctor if you need help", imageURL: nil, schedule: schedule, resultResettable: true, userInfo: nil)
 
-            let carePlanActivity2 = OCKCarePlanActivity.init(identifier: "Assessment Activity #2", groupIdentifier: firstGroupId, type: OCKCarePlanActivityType.Assessment, title: "Assessment Activity Title 2", text: "Complete this activity ASAP", tintColor: UIColor.orangeColor(), instructions: nil, imageURL: nil, schedule: schedule, resultResettable: true, userInfo: ["Key1":"Value1","Key2":"Value2"])
+            let carePlanActivity2 = OCKCarePlanActivity.init(identifier: "Assessment Activity #2", groupIdentifier: firstGroupId, type: OCKCarePlanActivityType.assessment, title: "Assessment Activity Title 2", text: "Complete this activity ASAP", tintColor: UIColor.orange, instructions: nil, imageURL: nil, schedule: schedule, resultResettable: true, userInfo: nil)
 
-            let carePlanStore = OCKCarePlanStore.init(persistenceDirectoryURL: NSURL.init(string: documentsDirectory[0])!)
-            carePlanStore .addActivity(carePlanActivity1, completion: { (boolVal, error) in
-                assert(boolVal, (error?.description)!)
+            let carePlanStore = OCKCarePlanStore.init(persistenceDirectoryURL: URL.init(string: documentsDirectory[0])!)
+            carePlanStore .add(carePlanActivity1, completion: { (boolVal, error) in
+                assert(boolVal, (error?.localizedDescription)!)
             })
-            carePlanStore .addActivity(carePlanActivity2, completion: { (boolVal, error) in
-                assert(boolVal, (error?.description)!)
+            carePlanStore .add(carePlanActivity2, completion: { (boolVal, error) in
+                assert(boolVal, (error?.localizedDescription)!)
             })
             let symptomTracker = OCKSymptomTrackerViewController.init(carePlanStore: carePlanStore)
             self.navigationController?.pushViewController(symptomTracker, animated: true)
             
-        } else if indexPath.row == 1 {
+        } else if (indexPath as NSIndexPath).row == 1 {
             
             // No Activities
 
-            let dataPath = documentsDirectory[0].stringByAppendingString("/EmptyAssessmentPlan")
-            if !NSFileManager.defaultManager().fileExistsAtPath(dataPath) {
+            let dataPath = documentsDirectory[0] + "/EmptyAssessmentPlan"
+            if !FileManager.default.fileExists(atPath: dataPath) {
                 do {
-                    try NSFileManager.defaultManager().createDirectoryAtPath(dataPath, withIntermediateDirectories: false, attributes: nil)
+                    try FileManager.default.createDirectory(atPath: dataPath, withIntermediateDirectories: false, attributes: nil)
                 } catch(_) {
                     assertionFailure("Unable to Create Directory for EmptyAssessmentPlan")
                 }
             }
             
-            let carePlanStore = OCKCarePlanStore.init(persistenceDirectoryURL: NSURL.init(string: dataPath)!)
+            let carePlanStore = OCKCarePlanStore.init(persistenceDirectoryURL: URL.init(string: dataPath)!)
 
             let symptomTracker = OCKSymptomTrackerViewController.init(carePlanStore: carePlanStore)
             symptomTracker.showEdgeIndicators = true
             self.navigationController?.pushViewController(symptomTracker, animated: true)
        
-        } else if indexPath.row == 2 {
+        } else if (indexPath as NSIndexPath).row == 2 {
             
             // With Delegate
             
-            let startDateComponents = NSDateComponents.init()
+            var startDateComponents = DateComponents.init()
             startDateComponents.day = 20
             startDateComponents.month = 3
             startDateComponents.year = 0010
             
-            let endDate = NSDate().dateByAddingTimeInterval(-86400.0)
-            let unitFlags: NSCalendarUnit = [.Day, .Month, .Year]
-            let endDateComponents = NSCalendar.currentCalendar().components(unitFlags, fromDate: endDate)
+            let endDate = Date().addingTimeInterval(-86400.0)
+            let endDateComponents = NSCalendar.current.dateComponents([.day, .month, .year], from: endDate)
             
-            let schedule1 = OCKCareSchedule.weeklyScheduleWithStartDate(startDateComponents, occurrencesOnEachDay: [1, 2, 3, 4, 5, 6, 7], weeksToSkip: 0, endDate: endDateComponents)
-            let schedule2 = OCKCareSchedule.dailyScheduleWithStartDate(startDateComponents, occurrencesPerDay: 1, daysToSkip: 0, endDate: nil)
+            let schedule1 = OCKCareSchedule.weeklySchedule(withStartDate: startDateComponents, occurrencesOnEachDay: [1, 2, 3, 4, 5, 6, 7], weeksToSkip: 0, endDate: endDateComponents)
+            let schedule2 = OCKCareSchedule.dailySchedule(withStartDate: startDateComponents, occurrencesPerDay: 1, daysToSkip: 0, endDate: nil)
             let secondGroupId = "Group A2"
-            let carePlanActivity1 = OCKCarePlanActivity.init(identifier: "Assessment Activity #1", groupIdentifier: secondGroupId, type: OCKCarePlanActivityType.Assessment, title: "Activity that ended yesterday ", text: "Read the instructions about this task", tintColor: nil, instructions: "Perform the described task and report the results. Talk to your doctor if you need help", imageURL: nil, schedule: schedule1, resultResettable: false, userInfo: ["Key1":"Value1","Key2":"Value2"])
+            let carePlanActivity1 = OCKCarePlanActivity.init(identifier: "Assessment Activity #1", groupIdentifier: secondGroupId, type: OCKCarePlanActivityType.assessment, title: "Activity that ended yesterday ", text: "Read the instructions about this task", tintColor: nil, instructions: "Perform the described task and report the results. Talk to your doctor if you need help", imageURL: nil, schedule: schedule1, resultResettable: false, userInfo: nil)
             
-            let carePlanActivity2 = OCKCarePlanActivity.assessmentWithIdentifier("Assessment Activity #2", groupIdentifier: secondGroupId, title: "A Daily Activity is one that repeats every day", text: "This is an assessment. Be careful. You are being evaluated every single day.", tintColor: UIColor.purpleColor(), resultResettable: false, schedule: schedule2, userInfo: nil)
+            let carePlanActivity2 = OCKCarePlanActivity.assessment(withIdentifier: "Assessment Activity #2", groupIdentifier: secondGroupId, title: "A Daily Activity is one that repeats every day", text: "This is an assessment. Be careful. You are being evaluated every single day.", tintColor: UIColor.purple, resultResettable: false, schedule: schedule2, userInfo: nil)
             
-            let dataPath = documentsDirectory[0].stringByAppendingString("/CarePlan2")
-            if !NSFileManager.defaultManager().fileExistsAtPath(dataPath) {
+            let dataPath = documentsDirectory[0] + "/CarePlan2"
+            if !FileManager.default.fileExists(atPath: dataPath) {
                 do {
-                    try NSFileManager.defaultManager().createDirectoryAtPath(dataPath, withIntermediateDirectories: false, attributes: nil)
+                    try FileManager.default.createDirectory(atPath: dataPath, withIntermediateDirectories: false, attributes: nil)
                 } catch(_) {
                     assertionFailure("Unable to Create Directory for CarePlan2")
                 }
             }
     
-            let carePlanStore = OCKCarePlanStore.init(persistenceDirectoryURL: NSURL.init(string: dataPath)!)
-            carePlanStore.addActivity(carePlanActivity1, completion: { (boolVal, error) in
-                assert(boolVal, (error?.description)!)
+            let carePlanStore = OCKCarePlanStore.init(persistenceDirectoryURL: URL.init(string: dataPath)!)
+            carePlanStore.add(carePlanActivity1, completion: { (boolVal, error) in
+                assert(boolVal, (error?.localizedDescription)!)
             })
-            carePlanStore.addActivity(carePlanActivity2, completion: { (boolVal, error) in
-                assert(boolVal, (error?.description)!)
+            carePlanStore.add(carePlanActivity2, completion: { (boolVal, error) in
+                assert(boolVal, (error?.localizedDescription)!)
             })
             
             let symptomTracker = OCKSymptomTrackerViewController.init(carePlanStore: carePlanStore)
-            symptomTracker.progressRingTintColor = UIColor.magentaColor()
+            symptomTracker.progressRingTintColor = UIColor.magenta
             symptomTracker.delegate = self
             symptomTracker.showEdgeIndicators = true
             self.navigationController?.pushViewController(symptomTracker, animated: true)
      
-        } else if indexPath.row == 3 {
+        } else if (indexPath as NSIndexPath).row == 3 {
             
             // Track Health Data
-            
-            self.authorizeHealthKit({ (success, error) in
-                assert(success, error.description)
-                dispatch_async(dispatch_get_main_queue()) {
+            self.authorizeHealthKit(completion: { (success, error) in
+                assert(success, (error?.localizedDescription)!)
+                DispatchQueue.main.async {
                     self.saveHKSamples()
                 }
             })
             
-            let startDateComponents = NSDateComponents.init(year: 1, month: 1, day: 1)
-            let schedule = OCKCareSchedule.weeklyScheduleWithStartDate(startDateComponents, occurrencesOnEachDay: [1, 1, 1, 1, 1, 1, 1])
+            let startDateComponents = DateComponents.init(year: 1, month: 1, day: 1)
+            let schedule = OCKCareSchedule.weeklySchedule(withStartDate: startDateComponents, occurrencesOnEachDay: [1, 1, 1, 1, 1, 1, 1])
             
-            let dataPath = documentsDirectory[0].stringByAppendingString("/CarePlanHealth")
-            if !NSFileManager.defaultManager().fileExistsAtPath(dataPath) {
+            let dataPath = documentsDirectory[0] + "/CarePlanHealth"
+            if !FileManager.default.fileExists(atPath: dataPath) {
                 do {
-                    try NSFileManager.defaultManager().createDirectoryAtPath(dataPath, withIntermediateDirectories: false, attributes: nil)
+                    try FileManager.default.createDirectory(atPath: dataPath, withIntermediateDirectories: false, attributes: nil)
                 } catch(_) {
                     assertionFailure("Unable to Create Directory for CarePlanHealth")
                 }
             }
             
-            let carePlanStore = OCKCarePlanStore.init(persistenceDirectoryURL: NSURL.init(string: dataPath)!)
+            let carePlanStore = OCKCarePlanStore.init(persistenceDirectoryURL: URL.init(string: dataPath)!)
             let thirdGroupId = "Group A3"
-            let carePlanActivity1 = OCKCarePlanActivity.assessmentWithIdentifier("Step Count", groupIdentifier: thirdGroupId, title: "Step Count", text: "Get steps from Health app", tintColor: UIColor.init(red: 0.3, green: 0.2, blue: 0.9, alpha: 0.4), resultResettable: true, schedule: schedule, userInfo: ["Type":"Steps"])
-            carePlanStore.addActivity(carePlanActivity1, completion: { (boolVal, error) in
-                assert(boolVal, (error?.description)!)
+            let carePlanActivity1 = OCKCarePlanActivity.assessment(withIdentifier: "Step Count", groupIdentifier: thirdGroupId, title: "Step Count", text: "Get steps from Health app", tintColor: UIColor.init(red: 0.3, green: 0.2, blue: 0.9, alpha: 0.4), resultResettable: true, schedule: schedule, userInfo: ["Type":"Steps"])
+            carePlanStore.add(carePlanActivity1, completion: { (boolVal, error) in
+                assert(boolVal, (error?.localizedDescription)!)
             })
-            let carePlanActivity2 = OCKCarePlanActivity.assessmentWithIdentifier("Body Fat", groupIdentifier: thirdGroupId, title: "Body Fat", text: "Get Body Fat from Health app", tintColor: UIColor.init(red: 0.3, green: 0.2, blue: 0.9, alpha: 0.4), resultResettable: true, schedule: schedule, userInfo:  ["Type":"BodyFat"])
-            carePlanStore.addActivity(carePlanActivity2, completion: { (boolVal, error) in
-                assert(boolVal, (error?.description)!)
+            let carePlanActivity2 = OCKCarePlanActivity.assessment(withIdentifier: "Body Fat", groupIdentifier: thirdGroupId, title: "Body Fat", text: "Get Body Fat from Health app", tintColor: UIColor.init(red: 0.3, green: 0.2, blue: 0.9, alpha: 0.4), resultResettable: true, schedule: schedule, userInfo:  ["Type":"BodyFat"])
+            carePlanStore.add(carePlanActivity2, completion: { (boolVal, error) in
+                assert(boolVal, (error?.localizedDescription)!)
             })
-            let carePlanActivity3 = OCKCarePlanActivity.assessmentWithIdentifier("Sleep Analysis", groupIdentifier: thirdGroupId, title: "Sleep Analysis", text: "Get Sleep Data from Health app", tintColor: UIColor.init(red: 0.3, green: 0.2, blue: 0.9, alpha: 0.4), resultResettable: true, schedule: schedule, userInfo: ["Type":"Sleep"])
-            carePlanStore.addActivity(carePlanActivity3, completion: { (boolVal, error) in
-                assert(boolVal, (error?.description)!)
+            let carePlanActivity3 = OCKCarePlanActivity.assessment(withIdentifier: "Sleep Analysis", groupIdentifier: thirdGroupId, title: "Sleep Analysis", text: "Get Sleep Data from Health app", tintColor: UIColor.init(red: 0.3, green: 0.2, blue: 0.9, alpha: 0.4), resultResettable: true, schedule: schedule, userInfo: ["Type":"Sleep"])
+            carePlanStore.add(carePlanActivity3, completion: { (boolVal, error) in
+                assert(boolVal, (error?.localizedDescription)!)
             })
-            let carePlanActivity4 = OCKCarePlanActivity.assessmentWithIdentifier("Ovulation", groupIdentifier: thirdGroupId, title: "Ovulation", text: "Get Ovulation Data from Health app", tintColor: UIColor.init(red: 0.3, green: 0.2, blue: 0.9, alpha: 0.4), resultResettable: true, schedule: schedule, userInfo: ["Type":"Ovulation"])
-            carePlanStore.addActivity(carePlanActivity4, completion: { (boolVal, error) in
-                assert(boolVal, (error?.description)!)
+            let carePlanActivity4 = OCKCarePlanActivity.assessment(withIdentifier: "Ovulation", groupIdentifier: thirdGroupId, title: "Ovulation", text: "Get Ovulation Data from Health app", tintColor: UIColor.init(red: 0.3, green: 0.2, blue: 0.9, alpha: 0.4), resultResettable: true, schedule: schedule, userInfo: ["Type":"Ovulation"])
+            carePlanStore.add(carePlanActivity4, completion: { (boolVal, error) in
+                assert(boolVal, (error?.localizedDescription)!)
             })
             
-            let carePlanActivity5 = OCKCarePlanActivity.assessmentWithIdentifier("Blood Pressure", groupIdentifier: thirdGroupId, title: "Blood Pressure", text: "Get Blood Pressure from Health app", tintColor: UIColor.init(red: 0.3, green: 0.2, blue: 0.9, alpha: 0.4), resultResettable: true, schedule: schedule, userInfo: ["Type":"Blood Pressure"])
-            carePlanStore.addActivity(carePlanActivity5, completion: { (boolVal, error) in
-                assert(boolVal, (error?.description)!)
+            let carePlanActivity5 = OCKCarePlanActivity.assessment(withIdentifier: "Blood Pressure", groupIdentifier: thirdGroupId, title: "Blood Pressure", text: "Get Blood Pressure from Health app", tintColor: UIColor.init(red: 0.3, green: 0.2, blue: 0.9, alpha: 0.4), resultResettable: true, schedule: schedule, userInfo: ["Type":"Blood Pressure"])
+            carePlanStore.add(carePlanActivity5, completion: { (boolVal, error) in
+                assert(boolVal, (error?.localizedDescription)!)
             })
             
             let symptomTracker = OCKSymptomTrackerViewController.init(carePlanStore: carePlanStore)
@@ -217,58 +214,58 @@ class SymptomTrackerTableViewController: UITableViewController, OCKSymptomTracke
             symptomTracker.progressRingTintColor = UIColor.init(red: 0.3, green: 0.2, blue: 0.9, alpha: 0.4)
             self.navigationController?.pushViewController(symptomTracker, animated: true)
 
-        } else if indexPath.row == 4 {
+        } else if (indexPath as NSIndexPath).row == 4 {
             
             // Delete all Activites
             
-            tableView.cellForRowAtIndexPath(indexPath)?.selected = false
-            let store = OCKCarePlanStore.init(persistenceDirectoryURL: NSURL.init(string: documentsDirectory[0])!)
+            tableView.cellForRow(at: indexPath)?.isSelected = false
+            let store = OCKCarePlanStore.init(persistenceDirectoryURL: URL.init(string: documentsDirectory[0])!)
             
-            store.activitiesWithGroupIdentifier("Group A1", completion: { (boolVal, activities, error) in
+            store.activities(withGroupIdentifier: "Group A1", completion: { (boolVal, activities, error) in
                 for activity:OCKCarePlanActivity in activities
                 {
-                    store.removeActivity(activity, completion: { (boolVal, error) in
+                    store.remove(activity, completion: { (boolVal, error) in
                         if boolVal == true {
-                            tableView.cellForRowAtIndexPath(indexPath)?.textLabel?.textColor = UIColor.greenColor()
+                            tableView.cellForRow(at: indexPath)?.textLabel?.textColor = UIColor.green
                         } else {
-                            tableView.cellForRowAtIndexPath(indexPath)?.textLabel?.textColor = UIColor.redColor()
+                            tableView.cellForRow(at: indexPath)?.textLabel?.textColor = UIColor.red
                         }
-                        assert(boolVal, (error?.description)!)
+                        assert(boolVal, (error?.localizedDescription)!)
                     })
                 }
             })
             
-            if NSFileManager.defaultManager().fileExistsAtPath(documentsDirectory[0].stringByAppendingString("/CarePlan2")) {
-                let dataPath = NSURL.init(string:documentsDirectory[0].stringByAppendingString("/CarePlan2"))
+            if FileManager.default.fileExists(atPath: documentsDirectory[0] + "/CarePlan2") {
+                let dataPath = URL.init(string:documentsDirectory[0] + "/CarePlan2")
                 let store2 = OCKCarePlanStore.init(persistenceDirectoryURL: dataPath!)
-                store2.activitiesWithGroupIdentifier("Group A2", completion: { (boolVal, activities, error) in
+                store2.activities(withGroupIdentifier: "Group A2", completion: { (boolVal, activities, error) in
                     for activity:OCKCarePlanActivity in activities
                     {
-                        store2.removeActivity(activity, completion: { (boolVal, error) in
+                        store2.remove(activity, completion: { (boolVal, error) in
                             if boolVal == true {
-                                tableView.cellForRowAtIndexPath(indexPath)?.textLabel?.textColor = UIColor.greenColor()
+                                tableView.cellForRow(at: indexPath)?.textLabel?.textColor = UIColor.green
                             } else {
-                                tableView.cellForRowAtIndexPath(indexPath)?.textLabel?.textColor = UIColor.redColor()
+                                tableView.cellForRow(at: indexPath)?.textLabel?.textColor = UIColor.red
                             }
-                            assert(boolVal, (error?.description)!)
+                            assert(boolVal, (error?.localizedDescription)!)
                         })
                     }
                 })
             }
             
-            if NSFileManager.defaultManager().fileExistsAtPath(documentsDirectory[0].stringByAppendingString("/CarePlanHealth")) {
-                let dataPath = NSURL.init(string:documentsDirectory[0].stringByAppendingString("/CarePlanHealth"))
+            if FileManager.default.fileExists(atPath: documentsDirectory[0] + "/CarePlanHealth") {
+                let dataPath = URL.init(string:documentsDirectory[0] + "/CarePlanHealth")
                 let store3 = OCKCarePlanStore.init(persistenceDirectoryURL:dataPath!)
-                store3.activitiesWithGroupIdentifier("Group A3", completion: { (boolVal, activities, error) in
+                store3.activities(withGroupIdentifier: "Group A3", completion: { (boolVal, activities, error) in
                     for activity:OCKCarePlanActivity in activities
                     {
-                        store3.removeActivity(activity, completion: { (boolVal, error) in
+                        store3.remove(activity, completion: { (boolVal, error) in
                             if boolVal == true {
-                                tableView.cellForRowAtIndexPath(indexPath)?.textLabel?.textColor = UIColor.greenColor()
+                                tableView.cellForRow(at: indexPath)?.textLabel?.textColor = UIColor.green
                             } else {
-                                tableView.cellForRowAtIndexPath(indexPath)?.textLabel?.textColor = UIColor.redColor()
+                                tableView.cellForRow(at: indexPath)?.textLabel?.textColor = UIColor.red
                             }
-                            assert(boolVal, (error?.description)!)
+                            assert(boolVal, (error?.localizedDescription)!)
                         })
                     }
                 })
@@ -276,60 +273,56 @@ class SymptomTrackerTableViewController: UITableViewController, OCKSymptomTracke
         }
     }
     
-    func authorizeHealthKit(completion: ((success:Bool, error:NSError!) -> Void)!)
-    {
+    func authorizeHealthKit(completion: ((_ success:Bool, _ error:Error?) -> Void)!) {
         healthKitStore = HKHealthStore()
-        let typesSet:Set<HKSampleType> = [HKCategoryType.categoryTypeForIdentifier(HKCategoryTypeIdentifierSleepAnalysis)!, HKCategoryType.categoryTypeForIdentifier(HKCategoryTypeIdentifierOvulationTestResult)!, HKQuantityType.quantityTypeForIdentifier(HKQuantityTypeIdentifierStepCount)!, HKQuantityType.quantityTypeForIdentifier(HKQuantityTypeIdentifierBodyFatPercentage)!, HKQuantityType.quantityTypeForIdentifier(HKQuantityTypeIdentifierBloodPressureSystolic)!, HKQuantityType.quantityTypeForIdentifier(HKQuantityTypeIdentifierBloodPressureDiastolic)!]
+        let typesSet : Set<HKSampleType> = [HKCategoryType.categoryType(forIdentifier: HKCategoryTypeIdentifier.sleepAnalysis)!, HKCategoryType.categoryType(forIdentifier: HKCategoryTypeIdentifier.ovulationTestResult)!, HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.stepCount)!, HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bodyFatPercentage)!, HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bloodPressureSystolic)!, HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bloodPressureDiastolic)!]
         
-            healthKitStore?.requestAuthorizationToShareTypes(typesSet, readTypes: typesSet, completion: { (boolVal, error) in
-                completion(success: boolVal, error: error)
-        })
+        healthKitStore?.requestAuthorization(toShare: typesSet, read: typesSet, completion: completion)
     }
     
-    func readHKSample(sampleType:HKSampleType , completion: ((HKSample!, NSError!) -> Void)!)
-    {
+    func readHKSample(_ sampleType:HKSampleType , completion: ((HKSample?, Error?) -> Void)!) {
         let sortDescriptor = NSSortDescriptor(key:HKSampleSortIdentifierStartDate, ascending: false)
         let limit = 1
         let sampleQuery = HKSampleQuery(sampleType: sampleType, predicate: nil, limit: limit, sortDescriptors: [sortDescriptor])
         { (sampleQuery, results, error ) -> Void in
             
-            if let failureDescription = error?.description { assertionFailure(failureDescription) }
+            if let failureDescription = error?.localizedDescription { assertionFailure(failureDescription) }
             
             let mostRecentSample = results!.first
             if completion != nil {
                 completion(mostRecentSample,nil)
             }
         }
-        healthKitStore!.executeQuery(sampleQuery)
+        healthKitStore!.execute(sampleQuery)
     }
     
     func saveHKSamples() {
         
-        let stepCountType = HKQuantityType.quantityTypeForIdentifier(HKQuantityTypeIdentifierStepCount)!
-        let numSteps = HKQuantity(unit: HKUnit.countUnit(), doubleValue: 10000)
-        let stepsSample = HKQuantitySample(type: stepCountType, quantity: numSteps, startDate: NSDate(), endDate: NSDate())
+        let stepCountType = HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.stepCount)!
+        let numSteps = HKQuantity(unit: HKUnit.count(), doubleValue: 10000)
+        let stepsSample = HKQuantitySample(type: stepCountType, quantity: numSteps, start: Date(), end: Date())
 
-        let bodyFatType = HKQuantityType.quantityTypeForIdentifier(HKQuantityTypeIdentifierBodyFatPercentage)!
-        let bodyFatPercentage = HKQuantity(unit: HKUnit.percentUnit(), doubleValue: 0.25)
-        let bodyFatSample = HKQuantitySample(type: bodyFatType, quantity: bodyFatPercentage, startDate: NSDate(), endDate: NSDate())
+        let bodyFatType = HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bodyFatPercentage)!
+        let bodyFatPercentage = HKQuantity(unit: HKUnit.percent(), doubleValue: 0.25)
+        let bodyFatSample = HKQuantitySample(type: bodyFatType, quantity: bodyFatPercentage, start: Date(), end: Date())
         
-        let sleepType = HKCategoryType.categoryTypeForIdentifier(HKCategoryTypeIdentifierSleepAnalysis)!
-        let sleepSample = HKCategorySample(type: sleepType, value: 1, startDate: NSDate(), endDate: NSDate())
+        let sleepType = HKCategoryType.categoryType(forIdentifier: HKCategoryTypeIdentifier.sleepAnalysis)!
+        let sleepSample = HKCategorySample(type: sleepType, value: 1, start: Date(), end: Date())
       
-        let ovulationType = HKCategoryType.categoryTypeForIdentifier(HKCategoryTypeIdentifierOvulationTestResult)!
-        let ovulationSample = HKCategorySample(type: ovulationType, value: 1, startDate: NSDate(), endDate: NSDate())
+        let ovulationType = HKCategoryType.categoryType(forIdentifier: HKCategoryTypeIdentifier.ovulationTestResult)!
+        let ovulationSample = HKCategorySample(type: ovulationType, value: 1, start: Date(), end: Date())
         
-        let diastolicBPType = HKQuantityType.quantityTypeForIdentifier(HKQuantityTypeIdentifierBloodPressureDiastolic)!
-        let diastolicBP = HKQuantity(unit: HKUnit.millimeterOfMercuryUnit(), doubleValue: 80)
-        let diastolicBPSample = HKQuantitySample(type: diastolicBPType, quantity: diastolicBP, startDate: NSDate(), endDate: NSDate())
+        let diastolicBPType = HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bloodPressureDiastolic)!
+        let diastolicBP = HKQuantity(unit: HKUnit.millimeterOfMercury(), doubleValue: 80)
+        let diastolicBPSample = HKQuantitySample(type: diastolicBPType, quantity: diastolicBP, start: Date(), end: Date())
 
-        let systolicBPType = HKQuantityType.quantityTypeForIdentifier(HKQuantityTypeIdentifierBloodPressureSystolic)!
-        let systolicBP = HKQuantity(unit: HKUnit.millimeterOfMercuryUnit(), doubleValue: 120)
-        let systolicBPSample = HKQuantitySample(type: systolicBPType, quantity: systolicBP, startDate: NSDate(), endDate: NSDate())
+        let systolicBPType = HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bloodPressureSystolic)!
+        let systolicBP = HKQuantity(unit: HKUnit.millimeterOfMercury(), doubleValue: 120)
+        let systolicBPSample = HKQuantitySample(type: systolicBPType, quantity: systolicBP, start: Date(), end: Date())
         
-        let bpSample = HKCorrelation(type: HKCorrelationType.correlationTypeForIdentifier(HKCorrelationTypeIdentifierBloodPressure)!, startDate: NSDate(), endDate: NSDate(), objects: [systolicBPSample, diastolicBPSample])
+        let bpSample = HKCorrelation(type: HKCorrelationType.correlationType(forIdentifier: HKCorrelationTypeIdentifier.bloodPressure)!, start: Date(), end: Date(), objects: [systolicBPSample, diastolicBPSample])
         
-        healthKitStore?.saveObjects([stepsSample, bodyFatSample, sleepSample, ovulationSample, bpSample], withCompletion: { (success, error) in
+        healthKitStore?.save([stepsSample, bodyFatSample, sleepSample, ovulationSample, bpSample], withCompletion: { (success, error) in
             if success == false {
                 print("Error saving Health Samples: \(error?.localizedDescription)")
             } else {
@@ -338,91 +331,91 @@ class SymptomTrackerTableViewController: UITableViewController, OCKSymptomTracke
         })
     }
 
-    func symptomTrackerViewController(viewController: OCKSymptomTrackerViewController, didSelectRowWithAssessmentEvent assessmentEvent: OCKCarePlanEvent) {
+    func symptomTrackerViewController(_ viewController: OCKSymptomTrackerViewController, didSelectRowWithAssessmentEvent assessmentEvent: OCKCarePlanEvent) {
 
         if viewController.progressRingTintColor == UIColor.init(red: 0.3, green: 0.2, blue: 0.9, alpha: 0.4)
         {
-            if String(assessmentEvent.activity.userInfo!["Type"]!) == "Steps" {
-                if (healthKitStore?.authorizationStatusForType(HKQuantityType.quantityTypeForIdentifier(HKQuantityTypeIdentifierStepCount)!)) == HKAuthorizationStatus.SharingAuthorized {
-                    self.readHKSample(HKQuantityType.quantityTypeForIdentifier(
-                        HKQuantityTypeIdentifierStepCount)!, completion: { (sample, error) in
-                            let qResult = OCKCarePlanEventResult.init(quantitySample: sample as! HKQuantitySample, quantityStringFormatter: nil, unitStringKeys: [HKUnit.countUnit():"Steps Today"], userInfo: nil)
-                            viewController.store.updateEvent(assessmentEvent, withResult: qResult, state: OCKCarePlanEventState.Completed, completion: { (boolVal, event, error) in
+            if String(describing: assessmentEvent.activity.userInfo!["Type"]!) == "Steps" {
+                if (healthKitStore?.authorizationStatus(for: HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.stepCount)!)) == HKAuthorizationStatus.sharingAuthorized {
+                    self.readHKSample(HKQuantityType.quantityType(
+                        forIdentifier: HKQuantityTypeIdentifier.stepCount)!, completion: { (sample, error) in
+                            let qResult = OCKCarePlanEventResult.init(quantitySample: sample as! HKQuantitySample, quantityStringFormatter: nil, unitStringKeys: [HKUnit.count():"Steps Today"], userInfo: nil)
+                            viewController.store.update(assessmentEvent, with: qResult, state: OCKCarePlanEventState.completed, completion: { (boolVal, event, error) in
                                 
                             })
                     })
                 }
-            } else if String(assessmentEvent.activity.userInfo!["Type"]!) == "BodyFat" {
-                if (healthKitStore?.authorizationStatusForType(HKQuantityType.quantityTypeForIdentifier(HKQuantityTypeIdentifierBodyFatPercentage)!)) == HKAuthorizationStatus.SharingAuthorized {
-                    self.readHKSample(HKQuantityType.quantityTypeForIdentifier(
-                        HKQuantityTypeIdentifierBodyFatPercentage)!, completion: { (sample, error) in
-                            let qResult = OCKCarePlanEventResult.init(quantitySample: sample as! HKQuantitySample, quantityStringFormatter: nil, displayUnit: HKUnit.percentUnit(), displayUnitStringKey: "X100 %", userInfo: nil)
-                            viewController.store.updateEvent(assessmentEvent, withResult: qResult, state: OCKCarePlanEventState.Completed, completion: { (boolVal, event, error) in
-                                assert(boolVal, (error?.description)!)
+            } else if String(describing: assessmentEvent.activity.userInfo!["Type"]!) == "BodyFat" {
+                if (healthKitStore?.authorizationStatus(for: HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bodyFatPercentage)!)) == HKAuthorizationStatus.sharingAuthorized {
+                    self.readHKSample(HKQuantityType.quantityType(
+                        forIdentifier: HKQuantityTypeIdentifier.bodyFatPercentage)!, completion: { (sample, error) in
+                            let qResult = OCKCarePlanEventResult.init(quantitySample: sample as! HKQuantitySample, quantityStringFormatter: nil, display: HKUnit.percent(), displayUnitStringKey: "X100 %", userInfo: nil)
+                            viewController.store.update(assessmentEvent, with: qResult, state: OCKCarePlanEventState.completed, completion: { (boolVal, event, error) in
+                                assert(boolVal, (error?.localizedDescription)!)
                             })
                     })
                 }
-            } else if String(assessmentEvent.activity.userInfo!["Type"]!) == "Sleep" {
-                if (healthKitStore?.authorizationStatusForType(HKCategoryType.categoryTypeForIdentifier(HKCategoryTypeIdentifierSleepAnalysis)!)) == HKAuthorizationStatus.SharingAuthorized {
-                    self.readHKSample(HKCategoryType.categoryTypeForIdentifier(HKCategoryTypeIdentifierSleepAnalysis)!, completion: { (sample, error) in
+            } else if String(describing: assessmentEvent.activity.userInfo!["Type"]!) == "Sleep" {
+                if (healthKitStore?.authorizationStatus(for: HKCategoryType.categoryType(forIdentifier: HKCategoryTypeIdentifier.sleepAnalysis)!)) == HKAuthorizationStatus.sharingAuthorized {
+                    self.readHKSample(HKCategoryType.categoryType(forIdentifier: HKCategoryTypeIdentifier.sleepAnalysis)!, completion: { (sample, error) in
                         let catResult = OCKCarePlanEventResult.init(categorySample: sample as! HKCategorySample, categoryValueStringKeys: [0 : "In Bed", 1 : "Asleep"], userInfo: nil)
-                            viewController.store.updateEvent(assessmentEvent, withResult: catResult, state: OCKCarePlanEventState.Completed, completion: { (boolVal, event, error) in
-                                assert(boolVal, (error?.description)!)
+                            viewController.store.update(assessmentEvent, with: catResult, state: OCKCarePlanEventState.completed, completion: { (boolVal, event, error) in
+                                assert(boolVal, (error?.localizedDescription)!)
                             })
                     })
                 }
-            } else if String(assessmentEvent.activity.userInfo!["Type"]!) == "Ovulation" {
-                if (healthKitStore?.authorizationStatusForType(HKCategoryType.categoryTypeForIdentifier(HKCategoryTypeIdentifierOvulationTestResult)!)) == HKAuthorizationStatus.SharingAuthorized {
-                    self.readHKSample(HKCategoryType.categoryTypeForIdentifier(HKCategoryTypeIdentifierOvulationTestResult)!, completion: { (sample, error) in
+            } else if String(describing: assessmentEvent.activity.userInfo!["Type"]!) == "Ovulation" {
+                if (healthKitStore?.authorizationStatus(for: HKCategoryType.categoryType(forIdentifier: HKCategoryTypeIdentifier.ovulationTestResult)!)) == HKAuthorizationStatus.sharingAuthorized {
+                    self.readHKSample(HKCategoryType.categoryType(forIdentifier: HKCategoryTypeIdentifier.ovulationTestResult)!, completion: { (sample, error) in
                         let catResult = OCKCarePlanEventResult.init(categorySample: sample as! HKCategorySample, categoryValueStringKeys: [1 : "Negative", 2 : "Positive", 3 : "Intermediate"], userInfo: nil)
-                        viewController.store.updateEvent(assessmentEvent, withResult: catResult, state: OCKCarePlanEventState.Completed, completion: { (boolVal, event, error) in
-                            assert(boolVal, (error?.description)!)
+                        viewController.store.update(assessmentEvent, with: catResult, state: OCKCarePlanEventState.completed, completion: { (boolVal, event, error) in
+                            assert(boolVal, (error?.localizedDescription)!)
                         })
                     })
                 }
-            } else if String(assessmentEvent.activity.userInfo!["Type"]!) == "Blood Pressure" {
-                if (healthKitStore?.authorizationStatusForType(HKCorrelationType.correlationTypeForIdentifier(HKCorrelationTypeIdentifierBloodPressure)!)) == HKAuthorizationStatus.SharingAuthorized {
-                    self.readHKSample(HKCorrelationType.correlationTypeForIdentifier(HKCorrelationTypeIdentifierBloodPressure)!, completion: { (sample, error) in
-                        let correlationResult = OCKCarePlanEventResult.init(correlation: sample as! HKCorrelation, quantityStringFormatter: nil, displayUnit: HKUnit.millimeterOfMercuryUnit(), unitStringKeys: [HKUnit.millimeterOfMercuryUnit():"mm"], userInfo: nil)
-                        viewController.store.updateEvent(assessmentEvent, withResult: correlationResult, state: OCKCarePlanEventState.Completed, completion: { (boolVal, event, error) in
-                            assert(boolVal, (error?.description)!)
+            } else if String(describing: assessmentEvent.activity.userInfo!["Type"]!) == "Blood Pressure" {
+                if (healthKitStore?.authorizationStatus(for: HKCorrelationType.correlationType(forIdentifier: HKCorrelationTypeIdentifier.bloodPressure)!)) == HKAuthorizationStatus.sharingAuthorized {
+                    self.readHKSample(HKCorrelationType.correlationType(forIdentifier: HKCorrelationTypeIdentifier.bloodPressure)!, completion: { (sample, error) in
+                        let correlationResult = OCKCarePlanEventResult.init(correlation: sample as! HKCorrelation, quantityStringFormatter: nil, display: HKUnit.millimeterOfMercury(), unitStringKeys: [HKUnit.millimeterOfMercury():"mm"], userInfo: nil)
+                        viewController.store.update(assessmentEvent, with: correlationResult, state: OCKCarePlanEventState.completed, completion: { (boolVal, event, error) in
+                            assert(boolVal, (error?.localizedDescription)!)
                         })
                     })
                 }
             }
         } else {
-            if assessmentEvent.state == OCKCarePlanEventState.Initial || assessmentEvent.state == OCKCarePlanEventState.NotCompleted {
+            if assessmentEvent.state == OCKCarePlanEventState.initial || assessmentEvent.state == OCKCarePlanEventState.notCompleted {
                 let result = OCKCarePlanEventResult.init(valueString: "Value", unitString: "200g", userInfo: nil)
-                viewController.store.updateEvent(assessmentEvent, withResult: result, state: OCKCarePlanEventState.Completed) { (boolVal, carePlanEvent, error) in
+                viewController.store.update(assessmentEvent, with: result, state: OCKCarePlanEventState.completed) { (boolVal, carePlanEvent, error) in
                         if error != nil {
-                            print("Failed "+error!.description)
+                            print("Failed "+error!.localizedDescription)
                         } else {
                             print("Symptom Event Details\n")
                             print("Occurence: " + String(carePlanEvent!.occurrenceIndexOfDay))
                             print("Days Since Start: " + String(carePlanEvent!.numberOfDaysSinceStart))
-                            print("Date: " + String(carePlanEvent!.date))
+                            print("Date: " + String(describing: carePlanEvent!.date))
                             print("Activity: " + String(carePlanEvent!.activity.title))
                             print("State: " + String(carePlanEvent!.state.rawValue))
                             print("Result Value: " + String(result.valueString))
-                            print("Result Unit: " + String(result.unitString))
-                            print("Result Creation: " + String(result.creationDate))
+                            print("Result Unit: " + String(describing: result.unitString))
+                            print("Result Creation: " + String(describing: result.creationDate))
                         }
                     }
             } else {
                 let result = OCKCarePlanEventResult.init(valueString: "", unitString: nil, userInfo: nil)
-                viewController.store.updateEvent(assessmentEvent, withResult: result, state: OCKCarePlanEventState.NotCompleted) { (boolVal, carePlanEvent, error) in
+                viewController.store.update(assessmentEvent, with: result, state: OCKCarePlanEventState.notCompleted) { (boolVal, carePlanEvent, error) in
                     if error != nil {
-                        print("Failed " + error!.description)
+                        print("Failed " + error!.localizedDescription)
                     } else {
                         print("Symptom Event Details\n")
                         print("Occurence: " + String(carePlanEvent!.occurrenceIndexOfDay))
                         print("Days Since Start: " + String(carePlanEvent!.numberOfDaysSinceStart))
-                        print("Date: " + String(carePlanEvent!.date))
+                        print("Date: " + String(describing: carePlanEvent!.date))
                         print("Activity: " + String(carePlanEvent!.activity.title))
                         print("State: " + String(carePlanEvent!.state.rawValue))
                         print("Result Value: " + String(result.valueString))
-                        print("Result Unit: " + String(result.unitString))
-                        print("Result Creation: " + String(result.creationDate))
+                        print("Result Unit: " + String(describing: result.unitString))
+                        print("Result Creation: " + String(describing: result.creationDate))
                     }
                 }
             }

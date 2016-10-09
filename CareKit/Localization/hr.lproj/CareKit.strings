@@ -51,6 +51,7 @@
 "CONTACT_INFO_PHONE_TITLE" = "telefon";
 "CONTACT_INFO_MESSAGE_TITLE" = "poruka";
 "CONTACT_INFO_EMAIL_TITLE" = "e-mail";
+"CONTACT_INFO_VIDEO_TITLE" = "video";
 "SHARING_CELL_TITLE" = "Pošalji izvještaje";
 "ERROR_TITLE" = "Greška";
 "MESSAGE_SEND_ERROR" = "Slanje poruke nije uspjelo";

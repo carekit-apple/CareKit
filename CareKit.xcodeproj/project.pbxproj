@@ -84,7 +84,7 @@
 		24EA9FB51C9A3D420036028E /* OCKCareCardButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 24EA9F961C9A3D420036028E /* OCKCareCardButton.m */; };
 		24EA9FB61C9A3D420036028E /* OCKCareCardDetailHeaderView.h in Headers */ = {isa = PBXBuildFile; fileRef = 24EA9F971C9A3D420036028E /* OCKCareCardDetailHeaderView.h */; };
 		24EA9FB71C9A3D420036028E /* OCKCareCardDetailHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 24EA9F981C9A3D420036028E /* OCKCareCardDetailHeaderView.m */; };
-		24EA9FB81C9A3D420036028E /* OCKCareCardDetailViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 24EA9F991C9A3D420036028E /* OCKCareCardDetailViewController.h */; };
+		24EA9FB81C9A3D420036028E /* OCKCareCardDetailViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 24EA9F991C9A3D420036028E /* OCKCareCardDetailViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		24EA9FB91C9A3D420036028E /* OCKCareCardDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 24EA9F9A1C9A3D420036028E /* OCKCareCardDetailViewController.m */; };
 		24EA9FBA1C9A3D420036028E /* OCKCareCardInstructionsTableViewCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 24EA9F9B1C9A3D420036028E /* OCKCareCardInstructionsTableViewCell.h */; };
 		24EA9FBB1C9A3D420036028E /* OCKCareCardInstructionsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 24EA9F9C1C9A3D420036028E /* OCKCareCardInstructionsTableViewCell.m */; };
@@ -725,6 +725,7 @@
 				241707D51C9A3AB7005D7123 /* OCKInsightsMessageTableViewCell.h in Headers */,
 				242DBA9C1C9F7F8700529386 /* OCKRingView.h in Headers */,
 				5A9D2C931D5E432B00D0F13B /* OCKContactInfo.h in Headers */,
+				24EA9FB81C9A3D420036028E /* OCKCareCardDetailViewController.h in Headers */,
 				8677EE1A1C9775EB00588CD6 /* OCKCarePlanStore_Internal.h in Headers */,
 				2489297D1C90E70100EBBE1F /* OCKConnectViewController.h in Headers */,
 				24EA9FC91C9A3D420036028E /* OCKHeartView.h in Headers */,
@@ -733,7 +734,6 @@
 				8677EE0E1C9775EB00588CD6 /* OCKCarePlanActivity.h in Headers */,
 				248929771C90E70100EBBE1F /* OCKConnectTableViewCell.h in Headers */,
 				248929751C90E70100EBBE1F /* OCKConnectDetailViewController.h in Headers */,
-				24EA9FB81C9A3D420036028E /* OCKCareCardDetailViewController.h in Headers */,
 				242DBA901C9F7F8700529386 /* OCKSymptomTrackerTableViewCell.h in Headers */,
 				24EA9FC71C9A3D420036028E /* OCKHeartButton.h in Headers */,
 				248929801C90E70100EBBE1F /* OCKContact.h in Headers */,

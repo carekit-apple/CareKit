@@ -51,6 +51,7 @@
 "CONTACT_INFO_PHONE_TITLE" = "telèfon";
 "CONTACT_INFO_MESSAGE_TITLE" = "missatge";
 "CONTACT_INFO_EMAIL_TITLE" = "correu";
+"CONTACT_INFO_ADDRESS_TITLE" = "";
 "CONTACT_INFO_VIDEO_TITLE" = "vídeo";
 "SHARING_CELL_TITLE" = "Enviar informes";
 "ERROR_TITLE" = "Error";

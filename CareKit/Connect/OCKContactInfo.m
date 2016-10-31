@@ -56,6 +56,10 @@
 		case OCKContactInfoTypeEmail:
 			defaultLabel = OCKLocalizedString(@"CONTACT_INFO_EMAIL_TITLE", nil);
 			break;
+            
+        case OCKContactInfoTypeAddress:
+            defaultLabel = OCKLocalizedString(@"CONTACT_INFO_ADDRESS_TITLE", nil);
+            break;
 			
 		case OCKContactInfoTypeVideo:
 			defaultLabel = OCKLocalizedString(@"CONTACT_INFO_VIDEO_TITLE", nil);
@@ -79,6 +83,10 @@
 		case OCKContactInfoTypeEmail:
 			defaultIcon = [UIImage imageNamed:@"email" inBundle:OCKBundle() compatibleWithTraitCollection:nil];
 			break;
+            
+        case OCKContactInfoTypeAddress:
+            defaultIcon = [UIImage imageNamed:@"address" inBundle:OCKBundle() compatibleWithTraitCollection:nil];
+            break;
 			
 		case OCKContactInfoTypeVideo:
 			defaultIcon = [UIImage imageNamed:@"video" inBundle:OCKBundle() compatibleWithTraitCollection:nil];
@@ -112,6 +120,12 @@
 + (OCKContactInfo *)email:(NSString *)emailAddress {
 	NSURL *actionURL = [[NSURL alloc] initWithString:[@"mailto:" stringByAppendingString:emailAddress]];
 	return [[OCKContactInfo alloc] initWithType:OCKContactInfoTypeEmail displayString:emailAddress actionURL:actionURL];
+}
+
++ (OCKContactInfo *)address:(NSString *)address {
+    NSString *queryString = [address stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+    NSURL *actionURL = [[NSURL alloc] initWithString:[@"http://maps.apple.com/?address=" stringByAppendingString:queryString]];
+    return [[OCKContactInfo alloc] initWithType:OCKContactInfoTypeAddress displayString:address actionURL:actionURL];
 }
 
 + (OCKContactInfo *)facetimeVideo:(NSString *)emailAddressOrRawPhoneNumber displayString:(NSString *)displayString {

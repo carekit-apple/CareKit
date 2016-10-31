@@ -167,6 +167,12 @@ static const CGFloat HeaderViewHeight = 225.0;
     }
 }
 
+- (void)openMapsWithAddress:(NSString *)address {
+    NSString *queryString = [address stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+    NSString *stringURL = [@"http://maps.apple.com/?address=" stringByAppendingString:queryString];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:stringURL]];
+}
+
 - (void)makeVideoCallToNumber:(NSString *)number {
 	NSString *stringURL = [NSString stringWithFormat:@"facetime://%@", number];
 	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:stringURL]];
@@ -194,6 +200,10 @@ static const CGFloat HeaderViewHeight = 225.0;
 				case OCKContactInfoTypeEmail:
 					[self sendEmailToAddress:contactInfo.displayString delegate:defaultActionHandler presentingViewController:defaultActionHandler];
 					break;
+                    
+                case OCKContactInfoTypeAddress:
+                    [self openMapsWithAddress:contactInfo.displayString];
+                    break;
 					
 				case OCKContactInfoTypeVideo:
 					[self makeVideoCallToNumber:contactInfo.displayString];

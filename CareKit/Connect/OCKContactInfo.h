@@ -50,6 +50,11 @@ typedef NS_ENUM(NSInteger, OCKContactInfoType) {
 	 A text message contact info.
 	 */
 	OCKContactInfoTypeMessage,
+    
+    /**
+     A physical location address contact info.
+     */
+    OCKContactInfoTypeAddress,
 	
 	/**
 	 An email contact info.
@@ -60,6 +65,7 @@ typedef NS_ENUM(NSInteger, OCKContactInfoType) {
 	 A video call contact info.
 	 */
 	OCKContactInfoTypeVideo
+    
 };
 
 /**
@@ -154,6 +160,13 @@ OCK_CLASS_AVAILABLE
  @param emailAddress    The email address.
  */
 + (OCKContactInfo *)email:(NSString *)emailAddress;
+
+/**
+ Creates a new contact info with a http://maps.apple.com/?address= action URL.
+ 
+ @param locationAddress  The location address.
+ */
++ (OCKContactInfo *)address:(NSString *)locationAddress;
 
 /**
  Creates a new contact info with a facetime: action URL.

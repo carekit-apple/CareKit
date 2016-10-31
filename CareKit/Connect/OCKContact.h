@@ -71,6 +71,7 @@ OCK_CLASS_AVAILABLE
  @param phoneNumber         The contact phone number.
  @param messageNumber       The contact message number.
  @param emailAddress        The contact email address.
+ @param address             The contact physical location address.
  @param monogram            The contact monogram.
  @param image               The contact image.
  
@@ -83,6 +84,7 @@ OCK_CLASS_AVAILABLE
                         phoneNumber:(nullable CNPhoneNumber *)phoneNumber
                       messageNumber:(nullable CNPhoneNumber *)messageNumber
                        emailAddress:(nullable NSString *)emailAddress
+                            address:(nullable NSString *)address
                            monogram:(null_unspecified NSString *)monogram
                               image:(nullable UIImage *)image 
 DEPRECATED_MSG_ATTRIBUTE("Use initWithContactType:name:relation:tintColor:monogram:image instead");

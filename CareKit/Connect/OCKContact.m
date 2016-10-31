@@ -48,6 +48,7 @@
                         phoneNumber:(CNPhoneNumber *)phoneNumber
                       messageNumber:(CNPhoneNumber *)messageNumber
                        emailAddress:(NSString *)emailAddress
+                            address:(NSString *)address
                            monogram:(NSString *)monogram
                               image:(UIImage *)image {
 	NSMutableArray *contactInfoItemsArray = [NSMutableArray array]; 

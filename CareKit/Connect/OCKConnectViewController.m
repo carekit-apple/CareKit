@@ -310,10 +310,7 @@
 }
 
 - (void)previewingContext:(id <UIViewControllerPreviewing>)previewingContext commitViewController:(UIViewController *)viewControllerToCommit {
-    NSIndexPath *indexPath = [_tableView indexPathForRowAtPoint:previewingContext.sourceRect.origin];
-    OCKContact *contact = [self contactForIndexPath:indexPath];
-    
-    [self.navigationController pushViewController:[self detailViewControllerForContact:contact] animated:YES];
+    [self.navigationController pushViewController:viewControllerToCommit animated:YES];
 }
 
 @end

@@ -34,6 +34,7 @@
 #import "OCKHelpers.h"
 #import "OCKDefines_Private.h"
 #import "OCKLabel.h"
+#import "Colors.h"
 
 
 static const CGFloat TopMargin = 50.0;
@@ -82,6 +83,7 @@ static const CGFloat RingViewSize = 110.0;
         _titleLabel.textStyle = UIFontTextStyleHeadline;
         _titleLabel.text = OCKLocalizedString(@"SYMPTOM_TRACKER_HEADER_TITLE", nil);
         _titleLabel.numberOfLines = 2;
+        _titleLabel.textColor = TextColor;
         [self addSubview:_titleLabel];
     }
     

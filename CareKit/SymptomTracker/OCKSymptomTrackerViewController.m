@@ -243,6 +243,23 @@
                           }
                       }
                       
+                      NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+                      [dateFormat setDateFormat:@"hh:mm a"];
+                      
+                      [_events sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+                          OCKCarePlanEvent *event1 = (OCKCarePlanEvent*)obj1;
+                          OCKCarePlanEvent *event2 = (OCKCarePlanEvent*)obj2;
+                          
+                          NSDate *date1 = [dateFormat dateFromString:event1.activity.text];
+                          NSDate *date2 = [dateFormat dateFromString:event2.activity.text];
+                          
+                          if ([date1 compare:date2] == NSOrderedAscending) {
+                              return NSOrderedAscending;
+                          } else {
+                              return NSOrderedDescending;
+                          }
+                      }];
+                      
                       [self updateHeaderView];
                       [self updateWeekView];
                       [_tableView reloadData];
@@ -428,8 +445,50 @@
     }
     cell.assessmentEvent = _events[indexPath.row];
     cell.showEdgeIndicator = self.showEdgeIndicators;
+    
+    //ADDED
+    //Disable any rows that are too far into the future (>1 hour)
+    if (cell.assessmentEvent.activity.userInfo[@"task-time"] != nil) {
+        
+        //Use these to neutralize the dates so that only times will be compared
+        unsigned int allFlags = NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond | NSCalendarUnitMonth | NSCalendarUnitDay | NSCalendarUnitYear;
+        NSCalendar* calendar = [NSCalendar currentCalendar];
+        
+        //get the current dat and its components
+        NSDate *currentDate = [NSDate date];
+        NSDateComponents* currentDateComponents = [calendar components:allFlags fromDate:currentDate];
+        
+        //fix the task date to keep the tim, but match the date of the current date
+        NSDate *taskDate = (NSDate*) cell.assessmentEvent.activity.userInfo[@"task-time"];
+        NSDateComponents* taskComponents = [calendar components:allFlags fromDate:taskDate];
+        taskComponents.year = currentDateComponents.year;
+        taskComponents.month = currentDateComponents.month;
+        taskComponents.day = currentDateComponents.day;
+        NSDate* fixedTaskDate = [calendar dateFromComponents:taskComponents];
+        //
+        //        NSLog(@"Current date: %@", currentDate);
+        //        NSLog(@"Task: %@", fixedTaskDate);
+        
+        //disable any tasks that are in the future
+        NSComparisonResult result = [currentDate compare:fixedTaskDate];
+        if(result == NSOrderedAscending) {
+            //            NSLog(@"today is less");
+            cell.userInteractionEnabled = false;
+            cell.accessoryType = UITableViewCellAccessoryNone;
+            //            cell.hidden = true;
+        } else if(result == NSOrderedDescending) {
+            cell.userInteractionEnabled = true;
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+            //            NSLog(@"newDate is less");
+        } else {
+            cell.userInteractionEnabled = true;
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+            //            NSLog(@"Both dates are same");
+        }
+        //        printf("\n");
+    }
+    
     return cell;
 }
-
 
 @end

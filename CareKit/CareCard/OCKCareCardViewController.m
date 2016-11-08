@@ -270,11 +270,46 @@
                               [self.delegate careCardViewController:self willDisplayEvents:[_events copy] dateComponents:_selectedDate];
                           }
                           
+                          UIColor *yellowColor = [UIColor colorWithRed:0xF5/255.0 green:0xca/255.0 blue:0x7c/255.0 alpha:1.0];
+                          
+                          //MODIFIED
+                          [_events sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+                              OCKCarePlanEvent *event1 = (OCKCarePlanEvent*)((NSArray*)obj1).firstObject;
+                              OCKCarePlanEvent *event2 = (OCKCarePlanEvent*)((NSArray*)obj2).firstObject;
+                              
+                              // Same type
+                              if ([event1.activity.tintColor isEqual:event2.activity.tintColor]) {
+                                  if ([event1.activity.title compare:event2.activity.title] == NSOrderedAscending) {
+                                      return NSOrderedAscending;
+                                  } else {
+                                      return NSOrderedDescending;
+                                  }
+                              } else {
+                                  if ([self color:event1.activity.tintColor isEqualToColor:yellowColor withTolerance:.1]) {
+                                      return NSOrderedAscending;
+                                  } else if ([self color:event2.activity.tintColor isEqualToColor:yellowColor withTolerance:.1]) {
+                                      return NSOrderedDescending;
+                                  } else {
+                                      return NSOrderedSame;
+                                  }
+                              }
+                          }];
+                          
                           [self updateHeaderView];
                           [self updateWeekView];
                           [_tableView reloadData];
                       });
                   }];
+}
+
+- (BOOL) color:(UIColor*)color1 isEqualToColor:(UIColor*)color2 withTolerance:(CGFloat)tolerance {
+    CGFloat r1, g1, b1, a1, r2, g2, b2, a2;
+    [color1 getRed:&r1 green:&g1 blue:&b1 alpha:&a1];
+    [color2 getRed:&r2 green:&g2 blue:&b2 alpha:&a2];
+    return fabs(r1 - r2) <= tolerance &&
+    fabs(g1 - g2) <= tolerance &&
+    fabs(b1 - b2) <= tolerance &&
+    fabs(a1 - a2) <= tolerance;
 }
 
 - (void)updateHeaderView {
@@ -380,9 +415,9 @@
 #pragma mark - OCKCareCardCellDelegate
 
 - (void)careCardTableViewCell:(OCKCareCardTableViewCell *)cell didUpdateFrequencyofInterventionEvent:(OCKCarePlanEvent *)event {
-	_lastSelectedInterventionEvent = event;
+    _lastSelectedInterventionEvent = event;
     _lastSelectedInterventionActivity = event.activity;
-	
+    
     if (self.delegate &&
         [self.delegate respondsToSelector:@selector(careCardViewController:didSelectButtonWithInterventionEvent:)]) {
         [self.delegate careCardViewController:self didSelectButtonWithInterventionEvent:event];
@@ -484,9 +519,9 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	OCKCarePlanActivity *selectedActivity = [self activityForIndexPath:indexPath];
-    _lastSelectedInterventionActivity = selectedActivity;    
-	
+    OCKCarePlanActivity *selectedActivity = [self activityForIndexPath:indexPath];
+    _lastSelectedInterventionActivity = selectedActivity;
+    
     if ([self delegateCustomizesRowSelection]) {
         [self.delegate careCardViewController:self didSelectRowWithInterventionActivity:selectedActivity];
     } else {
@@ -510,10 +545,62 @@
         cell = [[OCKCareCardTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
                                                reuseIdentifier:CellIdentifier];
     }
+    
+    /* !!!!! Uncomment block to track missed Doses !!!!!!
+     
+     //check if any doses have been missed
+     if (sizeof(_events[indexPath.row]) > 0) {
+     
+     //get variables from activity object
+     NSArray<NSDate *> *dates = (NSArray *)_events[indexPath.row][0].activity.userInfo[@"dose_dates"];
+     NSNumber *numberOfDoses = (NSNumber *)_events[indexPath.row][0].activity.userInfo[@"number_of_doses"];
+     NSMutableArray* missedDoses = [[NSMutableArray alloc] init];
+     
+     for (int i = 0; i < numberOfDoses.intValue; i++) {
+     
+     //combine dose time with todays date
+     unsigned unitFlags = NSCalendarUnitYear | NSCalendarUnitMonth |  NSCalendarUnitDay;
+     NSDateComponents *comps = [[NSCalendar currentCalendar] components:unitFlags fromDate:[NSDate new]];
+     NSDate *combinedDate = [[NSCalendar currentCalendar] dateFromComponents:comps];
+     unitFlags = NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond;
+     comps = [[NSCalendar currentCalendar] components:unitFlags fromDate:dates[i]];
+     combinedDate = [[NSCalendar currentCalendar] dateByAddingComponents:comps toDate:combinedDate options:0];
+     
+     //check if the new combined date is in the past
+     if(([self date:combinedDate isBefore:YES otherDate:[NSDate date]])) {
+     [missedDoses addObject:[NSNumber numberWithBool: YES]];
+     } else {
+     [missedDoses addObject:[NSNumber numberWithBool: NO]];
+     }
+     }
+     
+     cell.missedDoses = missedDoses;
+     }
+     
+     */
+    
     cell.interventionEvents = _events[indexPath.row];
     cell.delegate = self;
     cell.showEdgeIndicator = self.showEdgeIndicators;
+    
+    //ADDED - to disable cell for content after completed (except for meds)
+    OCKCarePlanEvent* event = cell.interventionEvents.firstObject;
+    if (![event.activity.groupIdentifier  isEqual: @"medication"] && event.state == OCKCarePlanEventStateCompleted) {
+        cell.userInteractionEnabled = false;
+        cell.accessoryType = UITableViewCellAccessoryNone;
+    }
+    
     return cell;
+}
+
+- (BOOL)date:(NSDate*)date isBefore:(BOOL)before otherDate:(NSDate*)otherDate
+{
+    if(before && ([date compare:otherDate] == NSOrderedAscending))
+        return YES;
+    if (!before && ([date compare:otherDate] == NSOrderedDescending))
+        return YES;
+    
+    return NO;
 }
 
 #pragma mark - UIViewControllerPreviewingDelegate
@@ -521,6 +608,7 @@
 - (UIViewController *)previewingContext:(id <UIViewControllerPreviewing>)previewingContext viewControllerForLocation:(CGPoint)location {
     NSIndexPath *indexPath = [_tableView indexPathForRowAtPoint:location];
     CGRect headerFrame = [_tableView headerViewForSection:0].frame;
+    
     
     if (indexPath &&
         !CGRectContainsPoint(headerFrame, location) &&

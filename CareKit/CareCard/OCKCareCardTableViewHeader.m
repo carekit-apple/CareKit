@@ -34,6 +34,7 @@
 #import "OCKDefines_Private.h"
 #import "OCKHelpers.h"
 #import "OCKLabel.h"
+#import "Colors.h"
 
 
 static const CGFloat TopMargin = 25.0;
@@ -57,15 +58,15 @@ static const CGFloat HeartViewSize = 110.0;
     self = [super initWithFrame:frame];
     if (self) {
         if (!UIAccessibilityIsReduceTransparencyEnabled()) {
-            self.contentView.backgroundColor = [UIColor clearColor];
+            self.backgroundColor = [UIColor clearColor];
             
             UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
             UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
             blurEffectView.frame = self.bounds;
             blurEffectView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-            self.backgroundView = blurEffectView;
+            [self addSubview:blurEffectView];
         } else {
-            self.contentView.backgroundColor = [UIColor whiteColor];
+            self.backgroundColor = [UIColor whiteColor];
         }
         
         [self prepareView];
@@ -85,6 +86,7 @@ static const CGFloat HeartViewSize = 110.0;
         _titleLabel.text = OCKLocalizedString(@"CARE_CARD_HEADER_TITLE", nil);
         _titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
         _titleLabel.numberOfLines = 0;
+        _titleLabel.textColor = TextColor;
         [self addSubview:_titleLabel];
     }
     

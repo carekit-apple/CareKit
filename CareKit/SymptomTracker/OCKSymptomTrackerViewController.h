@@ -91,6 +91,13 @@ OCK_CLASS_AVAILABLE
 - (instancetype)initWithCarePlanStore:(OCKCarePlanStore *)store;
 
 /**
+ *  Show today's date in the week view
+ *
+ *  @param sender id of the sender
+ */
+- (void)showToday:(id)sender;
+
+/**
  The care plan store that provides the content for the symptom tracker.
  
  The symptom tracker displays activites and events that are of assessment type (see `OCKCarePlanActivityTypeAssessment`).
@@ -118,6 +125,9 @@ OCK_CLASS_AVAILABLE
  If the value is not specified, the app's tint color is used.
  */
 @property (nonatomic, null_resettable) UIColor *progressRingTintColor;
+
+//ADDED
+@property (nonatomic) UITableView *tableView;
 
 /**
  A boolean to show the edge indicators.

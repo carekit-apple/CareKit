@@ -50,6 +50,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy) NSArray<OCKCarePlanEvent *> *interventionEvents;
 
+@property (nonatomic, copy) NSMutableArray *missedDoses;
+
 @property (nonatomic, weak) id<OCKCareCardCellDelegate> delegate;
 
 @end

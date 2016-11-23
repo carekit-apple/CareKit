@@ -33,6 +33,7 @@
 #import "OCKDefines_Private.h"
 #import "OCKHelpers.h"
 #import "OCKLabel.h"
+#import "Colors.h"
 
 
 static const CGFloat TopMargin = 30.0;
@@ -69,6 +70,7 @@ static const CGFloat HorizontalMargin = 10.0;
     if (!_titleLabel) {
         _titleLabel = [OCKLabel new];
         _titleLabel.textStyle = UIFontTextStyleHeadline;
+        _titleLabel.textColor = TextColor;
         [self addSubview:_titleLabel];
     }
     

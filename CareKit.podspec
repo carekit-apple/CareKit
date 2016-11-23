@@ -34,7 +34,7 @@
 
 Pod::Spec.new do |s|
   s.name                  = 'CareKit'
-  s.version               = '1.1.1'
+  s.version               = '1.1.2'
   s.summary               = 'CareKit is an open source software framework for creating apps that help people better understand and manage their health.'
   s.homepage              = 'https://github.com/carekit-apple/CareKit/'
   s.documentation_url     = 'http://carekit.org/docs/'
@@ -45,7 +45,7 @@ Pod::Spec.new do |s|
   s.author                = { 'carekit.org' => 'http://carekit.org' }
   s.platform              = :ios, '9.0'
   s.ios.deployment_target = '9.0'
-  s.source                = { :git => 'https://github.com/carekit-apple/carekit.git', :tag => s.version.to_s }
+  s.source                = { :git => 'https://github.com/ryandemo/CareKit.git', :tag => s.version.to_s }
   s.source_files          = 'CareKit/**/*.{h,m}'
   s.private_header_files  = `./scripts/find_headers.rb --private CareKit CareKit.xcodeproj`.split("\n")
   s.resources             = [ 'CareKit/Assets.xcassets', 

@@ -65,6 +65,7 @@ OCK_CLASS_AVAILABLE
  Returns an initialized contact using the specified values.
  
  @param type                The contact type.
+ @param id                  The contact unique id.
  @param name                The contact name.
  @param relation            The relationship to the contact.
  @param tintColor           The contact tint color.
@@ -78,6 +79,7 @@ OCK_CLASS_AVAILABLE
  @return An initialized contact object.
  */
 - (instancetype)initWithContactType:(OCKContactType)type
+                                 id:(NSString *)id
                                name:(NSString *)name
                            relation:(NSString *)relation
                           tintColor:(nullable UIColor *)tintColor
@@ -93,6 +95,7 @@ DEPRECATED_MSG_ATTRIBUTE("Use initWithContactType:name:relation:tintColor:monogr
  Returns an initialized contact using the specified values.
  
  @param type                The contact type.
+ @param id                  The contact unique id.
  @param name                The contact name.
  @param relation            The relationship to the contact.
  @param contactInfoItems    The contact information for the contact.
@@ -103,6 +106,7 @@ DEPRECATED_MSG_ATTRIBUTE("Use initWithContactType:name:relation:tintColor:monogr
  @return An initialized contact object.
  */
 - (instancetype)initWithContactType:(OCKContactType)type
+                                 id:(NSString *)id
 							   name:(NSString *)name
 						   relation:(NSString *)relation
 				   contactInfoItems:(NSArray<OCKContactInfo *> *)contactInfoItems
@@ -122,6 +126,11 @@ DEPRECATED_MSG_ATTRIBUTE("Use initWithContactType:name:relation:tintColor:monogr
  A string indicating the name for a contact.
  */
 @property (nonatomic, readonly) NSString *name;
+
+/**
+ A string indicating the id for a contact.
+ */
+@property (nonatomic, readonly) NSString *id;
 
 /**
  A string indicating the relationship to a contact.

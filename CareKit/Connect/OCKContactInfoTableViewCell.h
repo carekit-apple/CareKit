@@ -52,6 +52,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, weak, nullable) id<OCKContactInfoTableViewCellDelegate> delegate;
 
+//* ADDED VARIABLES *********************
+ @property (nonatomic) NSString *otherTitle;
+ @property (nonatomic) NSString *otherValue;
+//*
+
 @end
 
 NS_ASSUME_NONNULL_END

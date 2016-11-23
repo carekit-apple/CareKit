@@ -42,6 +42,7 @@
 }
 
 - (instancetype)initWithContactType:(OCKContactType)type
+                                 id:(NSString *)id
                                name:(NSString *)name
                            relation:(NSString *)relation
                           tintColor:(UIColor *)tintColor
@@ -63,10 +64,11 @@
 	if (emailAddress.length) {
 		[contactInfoItemsArray addObject:[[OCKContactInfo alloc] initWithType:OCKContactInfoTypeEmail displayString:emailAddress actionURL:nil]];
 	}
-    return [self initWithContactType:type name:name relation:relation contactInfoItems:contactInfoItemsArray tintColor:tintColor monogram:monogram image:image];
+    return [self initWithContactType:type id:id name:name relation:relation contactInfoItems:contactInfoItemsArray tintColor:tintColor monogram:monogram image:image];
 }
 
 - (instancetype)initWithContactType:(OCKContactType)type
+								id:	(NSString *)id
 							   name:(NSString *)name
 						   relation:(NSString *)relation
 				   contactInfoItems:(NSArray<OCKContactInfo *> *)contactInfoItems
@@ -76,6 +78,7 @@
 	self = [super init];
 	if (self) {
 		_type = type;
+		_id = id;
 		_name = [name copy];
 		_relation = [relation copy];
 		_contactInfoItems = [contactInfoItems copy];
@@ -92,6 +95,7 @@
     __typeof(self) castObject = object;
     return (isParentSame &&
             (self.type == castObject.type) &&
+            OCKEqualObjects(self.id, castObject.id) &&
             OCKEqualObjects(self.name, castObject.name) &&
             OCKEqualObjects(self.relation, castObject.relation) &&
             OCKEqualObjects(self.tintColor, castObject.tintColor) &&
@@ -111,6 +115,7 @@
     self = [super init];
     if (self) {
         OCK_DECODE_ENUM(aDecoder, type);
+        OCK_DECODE_OBJ_CLASS(aDecoder, id, NSString);
         OCK_DECODE_OBJ_CLASS(aDecoder, name, NSString);
         OCK_DECODE_OBJ_CLASS(aDecoder, relation, NSString);
         OCK_DECODE_OBJ_CLASS(aDecoder, tintColor, UIColor);
@@ -123,6 +128,7 @@
 
 - (void)encodeWithCoder:(NSCoder *)aCoder {
     OCK_ENCODE_ENUM(aCoder, type);
+    OCK_ENCODE_OBJ(aCoder, id);
     OCK_ENCODE_OBJ(aCoder, name);
     OCK_ENCODE_OBJ(aCoder, relation);
     OCK_ENCODE_OBJ(aCoder, tintColor);
@@ -137,6 +143,7 @@
 - (instancetype)copyWithZone:(NSZone *)zone {
     OCKContact *contact = [[[self class] allocWithZone:zone] init];
     contact->_type = self.type;
+    contact->_id = self.id;
     contact->_name = [self.name copy];
     contact->_relation = [self.relation copy];
     contact->_tintColor = self.tintColor;

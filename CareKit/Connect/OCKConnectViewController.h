@@ -117,6 +117,19 @@ OCK_CLASS_AVAILABLE
  */
 @property (nonatomic) BOOL showEdgeIndicators;
 
+@property (nonatomic) UITableView *tableView;
+
+
+/**
+ *  Delete a contact from a sepcific section/row
+ *
+ *  @param indexPath the section/row to delete
+ *
+ *  @return the contact that was deleted 
+ */
+-(OCKContact*)deleteRowAtIndexPath:(NSIndexPath*)indexPath;
+
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -43,7 +43,7 @@
 
 
 @implementation OCKConnectViewController {
-    UITableView *_tableView;
+//    UITableView *_tableView;
     NSMutableArray *_constraints;
     NSMutableArray<NSArray<OCKContact *>*> *_sectionedContacts;
     NSMutableArray<NSString *> *_sectionTitles;
@@ -82,6 +82,7 @@
     _tableView.estimatedRowHeight = 44.0;
     _tableView.rowHeight = UITableViewAutomaticDimension;
     
+    _tableView.contentInset = UIEdgeInsetsMake(160, 0, 0, 0);
     [self createSectionedContacts];
     
     if ([self respondsToSelector:@selector(registerForPreviewingWithDelegate:sourceView:)]) {
@@ -216,6 +217,23 @@
     
     [_tableView reloadData];
 }
+
+-(OCKContact*)deleteRowAtIndexPath:(NSIndexPath*)indexPath {
+    
+    //update sectioned contacts
+    NSMutableArray *mutableArray = [[_sectionedContacts objectAtIndex:indexPath.section] mutableCopy];
+    OCKContact* deletedContact = [mutableArray objectAtIndex:indexPath.row];
+    [mutableArray removeObjectAtIndex:indexPath.row];
+    
+    //Ensure size of section isnt zero
+//    if ([mutableArray count] == 0) {
+//        [_sectionedContacts removeObjectAtIndex:indexPath.section];
+//        [_sectionTitles removeObjectAtIndex:indexPath.section];
+//    } else {
+        [_sectionedContacts setObject:[NSArray arrayWithArray:mutableArray] atIndexedSubscript:indexPath.section];
+//    }
+    return deletedContact;
+
 
 #pragma mark - Helpers
 

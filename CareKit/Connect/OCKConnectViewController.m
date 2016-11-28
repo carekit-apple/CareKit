@@ -226,14 +226,14 @@
     [mutableArray removeObjectAtIndex:indexPath.row];
     
     //Ensure size of section isnt zero
-//    if ([mutableArray count] == 0) {
-//        [_sectionedContacts removeObjectAtIndex:indexPath.section];
-//        [_sectionTitles removeObjectAtIndex:indexPath.section];
-//    } else {
+    if ([mutableArray count] == 0) {
+        [_sectionedContacts removeObjectAtIndex:indexPath.section];
+        [_sectionTitles removeObjectAtIndex:indexPath.section];
+    } else {
         [_sectionedContacts setObject:[NSArray arrayWithArray:mutableArray] atIndexedSubscript:indexPath.section];
-//    }
+    }
     return deletedContact;
-
+}
 
 #pragma mark - Helpers
 

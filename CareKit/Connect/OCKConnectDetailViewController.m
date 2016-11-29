@@ -118,44 +118,9 @@ static const CGFloat HeaderViewHeight = 225.0;
     _tableViewData = [NSMutableArray new];
     _sectionTitles = [NSMutableArray new];
     
-    //ADDED
-    _rowTitles = [NSMutableArray new];
-    _rowValues = [NSMutableArray new];
-    
     NSMutableArray<NSNumber *> *contactInfoSection = [NSMutableArray new];
     NSMutableArray<NSString *> *sharingSection = [NSMutableArray new];
     
-    /*if (self.contact.phoneNumber) {
-        [contactInfoSection addObject:@(OCKConnectTypePhone)];
-        //ADDED
-        [_rowTitles addObject:@""];
-        [_rowValues addObject:@""];
-    }
-    if (self.contact.messageNumber) {
-        [contactInfoSection addObject:@(OCKConnectTypeMessage)];
-        //ADDED
-        [_rowTitles addObject:@""];
-        [_rowValues addObject:@""];
-    }
-    if (self.contact.emailAddress) {
-        [contactInfoSection addObject:@(OCKConnectTypeEmail)];
-        //ADDED
-        [_rowTitles addObject:@""];
-        [_rowValues addObject:@""];
-    }
-    
-    //** ADD OTHER VARIABLES HERE ***********************
-    
-    if (self.contact.address) {
-        [contactInfoSection addObject:@(OCKConnectTypeOther)];
-        //ADDED
-        [_rowTitles addObject:@"Address"];
-        [_rowValues addObject:self.contact.address];
-    }
-    
-    //***************************************************
-	*/
-
 	[contactInfoSection addObjectsFromArray:self.contact.contactInfoItems];
     
     if (self.delegate) {

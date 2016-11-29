@@ -72,6 +72,7 @@ static const CGFloat IconButtonSize = 35.0;
     if (!_textLabel) {
         _textLabel = [OCKLabel new];
         _textLabel.textStyle = UIFontTextStyleBody;
+        _textLabel.numberOfLines = 0;
         [self addSubview:_textLabel];
     }
     

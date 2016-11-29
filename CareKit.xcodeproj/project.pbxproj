@@ -313,6 +313,7 @@
 		86EA9A4D1C9C644E00B93BB1 /* OCKHTMLPDFWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKHTMLPDFWriter.m; sourceTree = "<group>"; };
 		86EA9A521C9C64C500B93BB1 /* CareKitPDFTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CareKitPDFTests.m; sourceTree = "<group>"; };
 		94F2993C1DD1DBC700366FBB /* Colors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Colors.h; sourceTree = "<group>"; };
+		E58308C11DECC0AB0062C8C4 /* ResearchKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ResearchKit.framework; path = "../../../../../Library/Developer/Xcode/DerivedData/Corrie-dpdwzukpsqdoungngeivkzwoqdmp/Build/Products/Debug-iphoneos/ResearchKit/ResearchKit.framework"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -593,6 +594,7 @@
 				8605A5BC1C4F04EC00DD65FF /* CareKit */,
 				8605A5C81C4F04EC00DD65FF /* CareKitTests */,
 				8605A5BB1C4F04EC00DD65FF /* Products */,
+				E58308C01DECC0AB0062C8C4 /* Frameworks */,
 			);
 			indentWidth = 4;
 			sourceTree = "<group>";
@@ -698,6 +700,14 @@
 				86EA9A4D1C9C644E00B93BB1 /* OCKHTMLPDFWriter.m */,
 			);
 			path = PDF;
+			sourceTree = "<group>";
+		};
+		E58308C01DECC0AB0062C8C4 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E58308C11DECC0AB0062C8C4 /* ResearchKit.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

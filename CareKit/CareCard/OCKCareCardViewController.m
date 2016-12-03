@@ -55,7 +55,6 @@
 
 
 @implementation OCKCareCardViewController {
-    UITableView *_tableView;
     NSMutableArray<NSMutableArray<OCKCarePlanEvent *> *> *_events;
     NSMutableArray *_weekValues;
     OCKCareCardTableViewHeader *_headerView;

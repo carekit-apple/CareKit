@@ -144,6 +144,11 @@ OCK_CLASS_AVAILABLE
  */
 @property (nonatomic, readonly, nullable) OCKCarePlanEvent *lastSelectedInterventionEvent;
 
+/** 
+ A reference to the `UITableView` contained in the view controller
+ */
+@property (nonatomic, nonnull) UITableView *tableView;
+
 /**
  The image that will be used to mask the fill shape in the header view.
  

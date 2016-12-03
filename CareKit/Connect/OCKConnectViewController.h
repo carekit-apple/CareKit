@@ -111,6 +111,11 @@ OCK_CLASS_AVAILABLE
 @property (nonatomic, weak, nullable) id<OCKConnectViewControllerDelegate> delegate;
 
 /**
+ A reference to the `UITableView` contained in the view controller
+ */
+@property (nonatomic, nonnull) UITableView *tableView;
+
+/**
  A boolean to show the edge indicators.
  
  The default value is NO.

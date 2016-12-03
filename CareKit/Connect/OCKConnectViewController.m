@@ -44,7 +44,6 @@
 
 
 @implementation OCKConnectViewController {
-    UITableView *_tableView;
     NSMutableArray *_constraints;
     NSMutableArray<NSArray<OCKContact *>*> *_sectionedContacts;
     NSMutableArray<NSString *> *_sectionTitles;

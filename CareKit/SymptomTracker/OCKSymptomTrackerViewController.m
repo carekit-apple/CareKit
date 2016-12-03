@@ -50,7 +50,6 @@
 
 
 @implementation OCKSymptomTrackerViewController {
-    UITableView *_tableView;
     NSMutableArray<OCKCarePlanEvent *> *_events;
     NSMutableArray *_weekValues;
     OCKSymptomTrackerTableViewHeader *_headerView;

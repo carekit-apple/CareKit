@@ -445,6 +445,7 @@
     }
     cell.assessmentEvent = _events[indexPath.row];
     cell.showEdgeIndicator = self.showEdgeIndicators;
+    cell.userInteractionEnabled = true;
     
     // ADDED
     // Disable any rows that are too far into the future (>1 hour)
@@ -455,6 +456,10 @@
     NSInteger currentDay = [calendar component:NSCalendarUnitDay fromDate:[NSDate date]];
     
     if (eventDay != currentDay) {
+        if (cell.assessmentEvent.state == OCKCarePlanEventStateCompleted) {
+            cell.userInteractionEnabled = false;
+            cell.accessoryType = UITableViewCellAccessoryNone;
+        }
         return cell; // Return the cell now if the date isn't today
         
     } else if (cell.assessmentEvent.activity.userInfo[@"task-time"] != nil) {
@@ -477,7 +482,7 @@
         
         // Disable any tasks that are in the future
         NSComparisonResult result = [currentDate compare:fixedTaskDate];
-        if(result == NSOrderedAscending) {
+        if (result == NSOrderedAscending) {
             cell.userInteractionEnabled = false;
             cell.accessoryType = UITableViewCellAccessoryNone;
         } else if(result == NSOrderedDescending) {

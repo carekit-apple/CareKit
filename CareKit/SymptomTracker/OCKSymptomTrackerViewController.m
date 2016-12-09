@@ -446,46 +446,40 @@
     cell.assessmentEvent = _events[indexPath.row];
     cell.showEdgeIndicator = self.showEdgeIndicators;
     
-    //ADDED
-    //Disable any rows that are too far into the future (>1 hour)
+    // ADDED
+    // Disable any rows that are too far into the future (>1 hour)
     if (cell.assessmentEvent.activity.userInfo[@"task-time"] != nil) {
         
-        //Use these to neutralize the dates so that only times will be compared
+        // Use these to neutralize the dates so that only times will be compared
         unsigned int allFlags = NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond | NSCalendarUnitMonth | NSCalendarUnitDay | NSCalendarUnitYear;
         NSCalendar* calendar = [NSCalendar currentCalendar];
         
-        //get the current dat and its components
+        // Get the current date and its components
         NSDate *currentDate = [NSDate date];
         NSDateComponents* currentDateComponents = [calendar components:allFlags fromDate:currentDate];
         
-        //fix the task date to keep the tim, but match the date of the current date
+        // Fix the task date to keep the tim, but match the date of the current date
         NSDate *taskDate = (NSDate*) cell.assessmentEvent.activity.userInfo[@"task-time"];
         NSDateComponents* taskComponents = [calendar components:allFlags fromDate:taskDate];
         taskComponents.year = currentDateComponents.year;
         taskComponents.month = currentDateComponents.month;
         taskComponents.day = currentDateComponents.day;
+        taskComponents.hour -= 1;
+        if (taskComponents.hour < 0) { taskComponents.hour = 23; taskComponents.day -= 1; }
         NSDate* fixedTaskDate = [calendar dateFromComponents:taskComponents];
-        //
-        //        NSLog(@"Current date: %@", currentDate);
-        //        NSLog(@"Task: %@", fixedTaskDate);
         
-        //disable any tasks that are in the future
+        // Disable any tasks that are in the future
         NSComparisonResult result = [currentDate compare:fixedTaskDate];
         if(result == NSOrderedAscending) {
-            //            NSLog(@"today is less");
             cell.userInteractionEnabled = false;
             cell.accessoryType = UITableViewCellAccessoryNone;
-            //            cell.hidden = true;
         } else if(result == NSOrderedDescending) {
             cell.userInteractionEnabled = true;
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-            //            NSLog(@"newDate is less");
         } else {
             cell.userInteractionEnabled = true;
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-            //            NSLog(@"Both dates are same");
         }
-        //        printf("\n");
     }
     
     return cell;

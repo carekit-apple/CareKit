@@ -448,11 +448,18 @@
     
     // ADDED
     // Disable any rows that are too far into the future (>1 hour)
-    if (cell.assessmentEvent.activity.userInfo[@"task-time"] != nil) {
+    
+    unsigned int allFlags = NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond | NSCalendarUnitMonth | NSCalendarUnitDay | NSCalendarUnitYear;
+    NSCalendar* calendar = [NSCalendar currentCalendar];
+    NSInteger eventDay = cell.assessmentEvent.date.day;
+    NSInteger currentDay = [calendar component:NSCalendarUnitDay fromDate:[NSDate date]];
+    
+    if (eventDay != currentDay) {
+        return cell; // Return the cell now if the date isn't today
         
-        // Use these to neutralize the dates so that only times will be compared
-        unsigned int allFlags = NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond | NSCalendarUnitMonth | NSCalendarUnitDay | NSCalendarUnitYear;
-        NSCalendar* calendar = [NSCalendar currentCalendar];
+    } else if (cell.assessmentEvent.activity.userInfo[@"task-time"] != nil) {
+        
+        // If the date is today, limit the time at which you can take a measurement so people don't do it too early
         
         // Get the current date and its components
         NSDate *currentDate = [NSDate date];

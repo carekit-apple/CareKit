@@ -180,6 +180,8 @@ OCK_CLASS_AVAILABLE
  */
 @property (nonatomic) BOOL showEdgeIndicators;
 
+@property (nonatomic) NSDateComponents *selectedDate;
+
 @end
 
 NS_ASSUME_NONNULL_END

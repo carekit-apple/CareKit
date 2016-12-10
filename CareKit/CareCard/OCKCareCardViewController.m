@@ -48,8 +48,6 @@
 
 @interface OCKCareCardViewController() <OCKWeekViewDelegate, OCKCarePlanStoreDelegate, OCKCareCardCellDelegate, UITableViewDelegate, UITableViewDataSource, UIPageViewControllerDelegate, UIPageViewControllerDataSource, UIViewControllerPreviewingDelegate>
 
-@property (nonatomic) NSDateComponents *selectedDate;
-
 @end
 
 

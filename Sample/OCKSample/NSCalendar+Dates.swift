@@ -30,17 +30,17 @@
 
 import Foundation
 
-extension NSCalendar {
+extension Calendar {
     /**
         Returns a tuple containing the start and end dates for the week that the
         specified date falls in.
      */
-    func weekDatesForDate(date: NSDate) -> (start: NSDate, end: NSDate) {
-        var interval: NSTimeInterval = 0
-        var start: NSDate?
-        rangeOfUnit(.WeekOfYear, startDate: &start, interval: &interval, forDate: date)
-        let end = start!.dateByAddingTimeInterval(interval)
+    func weekDatesForDate(_ date: Date) -> (start: Date, end: Date) {
+        var interval: TimeInterval = 0
+        var start: Date = Date()
+        _ = dateInterval(of: .weekOfYear, start: &start, interval: &interval, for: date)
+        let end = start.addingTimeInterval(interval)
         
-        return (start!, end)
+        return (start as Date, end as Date)
     }
 }

@@ -439,6 +439,9 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
             if (_delegate && [_delegate respondsToSelector:@selector(carePlanStoreActivityListDidChange:)]) {
                 [_delegate carePlanStoreActivityListDidChange:self];
             }
+            if (_watchDelegate && [_watchDelegate respondsToSelector:@selector(carePlanStoreActivityListDidChange:)]) {
+                [_watchDelegate carePlanStoreActivityListDidChange:self];
+            }
         });
     }
 }
@@ -771,6 +774,9 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
                     }
                     if(_delegate && [_delegate respondsToSelector:@selector(carePlanStore:didReceiveUpdateOfEvent:)]) {
                         [_delegate carePlanStore:self didReceiveUpdateOfEvent:copiedEvent];
+                    }
+                    if(_watchDelegate && [_watchDelegate respondsToSelector:@selector(carePlanStore:didReceiveUpdateOfEvent:)]) {
+                        [_watchDelegate carePlanStore:self didReceiveUpdateOfEvent:copiedEvent];
                     }
                 });
             }

@@ -157,6 +157,7 @@ static const CGFloat MarginBetweenBarAndLabel = 6.0;
 }
 
 - (void)prepareView {
+
     self.backgroundColor = [UIColor whiteColor];
     
     _barView = [UIView new];
@@ -182,7 +183,7 @@ static const CGFloat MarginBetweenBarAndLabel = 6.0;
     NSMutableArray *constraints = [NSMutableArray new];
     
     NSString *visualFormat = [NSString stringWithFormat:@"H:|[barView]-%f-[valueLabel]", MarginBetweenBarAndLabel];
-    [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:visualFormat   
+    [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:visualFormat
                                                           options:NSLayoutFormatDirectionLeadingToTrailing
                                                           metrics:nil
                                                             views:views]];

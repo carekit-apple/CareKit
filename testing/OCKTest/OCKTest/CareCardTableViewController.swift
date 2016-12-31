@@ -34,18 +34,18 @@ import CareKit
 
 class CareCardTableViewController: UITableViewController, OCKCarePlanStoreDelegate, OCKCareCardViewControllerDelegate {
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 8
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        if let cell = tableView.dequeueReusableCellWithIdentifier("cell") {
-            switch indexPath.row {
+        if let cell = tableView.dequeueReusableCell(withIdentifier: "cell") {
+            switch (indexPath as NSIndexPath).row {
             case 0:
                 cell.textLabel?.text = "Many Activities, Many Schedules"
             case 1:
@@ -72,52 +72,53 @@ class CareCardTableViewController: UITableViewController, OCKCarePlanStoreDelega
 
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        let documentsDirectory = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true)
+        let documentsDirectory = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)
         
-        if indexPath.row == 0 {
+        if (indexPath as NSIndexPath).row == 0 {
             
             // Many Activities, Many Schedules
           
-            let startDateComponents = NSDateComponents.init()
+            var startDateComponents = DateComponents.init()
             startDateComponents.day = 20
             startDateComponents.month = 2
             startDateComponents.year = 2015
             
-            let dailySchedule:OCKCareSchedule = OCKCareSchedule.dailyScheduleWithStartDate(startDateComponents, occurrencesPerDay: 2)
-            let weeklySchedule = OCKCareSchedule.weeklyScheduleWithStartDate(startDateComponents, occurrencesOnEachDay:[4, 0, 4, 0, 4, 0, 4])
-            let alternateWeeklySchedule = OCKCareSchedule.weeklyScheduleWithStartDate(startDateComponents, occurrencesOnEachDay: [0, 1, 0, 0, 0, 0, 0], weeksToSkip: 1, endDate: nil)
-            let skipDaysSchedule = OCKCareSchedule.dailyScheduleWithStartDate(startDateComponents, occurrencesPerDay: 5, daysToSkip: 2, endDate: nil)
+            let dailySchedule:OCKCareSchedule = OCKCareSchedule.dailySchedule(withStartDate: startDateComponents, occurrencesPerDay: 2)
+            let weeklySchedule = OCKCareSchedule.weeklySchedule(withStartDate: startDateComponents, occurrencesOnEachDay:[4, 0, 4, 0, 4, 0, 4])
+            let alternateWeeklySchedule = OCKCareSchedule.weeklySchedule(withStartDate: startDateComponents, occurrencesOnEachDay: [0, 1, 0, 0, 0, 0, 0], weeksToSkip: 1, endDate: nil)
+            let skipDaysSchedule = OCKCareSchedule.dailySchedule(withStartDate: startDateComponents, occurrencesPerDay: 5, daysToSkip: 2, endDate: nil)
             
             var carePlanActivities = [OCKCarePlanActivity]()
             let firstGroupId = "Group I1"
-            carePlanActivities.append(OCKCarePlanActivity.init(identifier: "Intervention Activity #1", groupIdentifier: firstGroupId, type: OCKCarePlanActivityType.Intervention, title: "Daily Intervention Activity Title 1", text: "Read the instructions about this task", tintColor: nil, instructions: "Perform the described task and report the results. Talk to your doctor if you need help", imageURL: nil, schedule: dailySchedule, resultResettable: true, userInfo: ["Key1":"Value1","Key2":"Value2"]))
+            carePlanActivities.append(OCKCarePlanActivity.init(identifier: "Intervention Activity #1", groupIdentifier: firstGroupId, type: OCKCarePlanActivityType.intervention, title: "Daily Intervention Activity Title 1", text: "Read the instructions about this task", tintColor: nil, instructions: "Perform the described task and report the results. Talk to your doctor if you need help", imageURL: nil, schedule: dailySchedule, resultResettable: true, userInfo: ["Key1":"Value1" as NSCoding,"Key2":"Value2" as NSCoding]))
             
-            carePlanActivities.append(OCKCarePlanActivity.init(identifier: "Intervention Activity #2", groupIdentifier: firstGroupId, type: OCKCarePlanActivityType.Intervention, title: "Alternate-Day Intervention Activity Title 2", text: "Complete this activity ASAP. No Instructions!", tintColor: UIColor.brownColor(), instructions: nil, imageURL: nil, schedule: weeklySchedule, resultResettable: true, userInfo: ["Key1":"Value1", "Key2":"Value2"]))
+            carePlanActivities.append(OCKCarePlanActivity.init(identifier: "Intervention Activity #2", groupIdentifier: firstGroupId, type: OCKCarePlanActivityType.intervention, title: "Alternate-Day Intervention Activity Title 2", text: "Complete this activity ASAP. No Instructions!", tintColor: UIColor.brown, instructions: nil, imageURL: nil, schedule: weeklySchedule, resultResettable: true, userInfo: ["Key1":"Value1" as NSCoding, "Key2":"Value2" as NSCoding]))
             
-            carePlanActivities.append(OCKCarePlanActivity.init(identifier: "Intervention Activity 3", groupIdentifier: firstGroupId, type: OCKCarePlanActivityType.Intervention, title: "Repeats Every Three Days", text: "This is a long line of text. It describes the Activity in detail", tintColor: UIColor.redColor(), instructions: LoremIpsum, imageURL: nil, schedule: skipDaysSchedule, resultResettable: false, userInfo:nil))
+            carePlanActivities.append(OCKCarePlanActivity.init(identifier: "Intervention Activity 3", groupIdentifier: firstGroupId, type: OCKCarePlanActivityType.intervention, title: "Repeats Every Three Days", text: "This is a long line of text. It describes the Activity in detail", tintColor: UIColor.red, instructions: LoremIpsum, imageURL: nil, schedule: skipDaysSchedule, resultResettable: false, userInfo:nil))
             
-            carePlanActivities.append(OCKCarePlanActivity.init(identifier: "Intervention Activity #4", groupIdentifier: firstGroupId, type: OCKCarePlanActivityType.Intervention, title: "Every other-Monday", text: "I am activity #4", tintColor: UIColor.greenColor(), instructions: nil, imageURL: nil, schedule: alternateWeeklySchedule, resultResettable: false, userInfo: nil))
+            carePlanActivities.append(OCKCarePlanActivity.init(identifier: "Intervention Activity #4", groupIdentifier: firstGroupId, type: OCKCarePlanActivityType.intervention, title: "Every other-Monday", text: "I am activity #4", tintColor: UIColor.green, instructions: nil, imageURL: nil, schedule: alternateWeeklySchedule, resultResettable: false, userInfo: nil))
             
-            carePlanActivities.append(OCKCarePlanActivity.init(identifier: "Intervention Activity #5", groupIdentifier: firstGroupId, type: OCKCarePlanActivityType.Intervention, title: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.", text: "This is the text", tintColor: nil, instructions: "Take pain medication", imageURL: nil, schedule: dailySchedule, resultResettable: false, userInfo: nil))
+            carePlanActivities.append(OCKCarePlanActivity.init(identifier: "Intervention Activity #5", groupIdentifier: firstGroupId, type: OCKCarePlanActivityType.intervention, title: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.", text: "This is the text", tintColor: nil, instructions: "Take pain medication", imageURL: nil, schedule: dailySchedule, resultResettable: false, userInfo: nil))
             
-            let activity6 = OCKCarePlanActivity.init(identifier: "Intervention Activity #6", groupIdentifier: firstGroupId, type: OCKCarePlanActivityType.Intervention, title: "Activity Ended Yesterday", text: LoremIpsum, tintColor: UIColor.grayColor(), instructions: LoremIpsum, imageURL: nil, schedule: dailySchedule, resultResettable: true, userInfo: nil)
+            let activity6 = OCKCarePlanActivity.init(identifier: "Intervention Activity #6", groupIdentifier: firstGroupId, type: OCKCarePlanActivityType.intervention, title: "Activity Ended Yesterday", text: LoremIpsum, tintColor: UIColor.gray, instructions: LoremIpsum, imageURL: nil, schedule: dailySchedule, resultResettable: true, userInfo: nil)
             carePlanActivities.append(activity6)
             
-            carePlanActivities.append(OCKCarePlanActivity.interventionWithIdentifier("Intervention Activity #7", groupIdentifier: nil, title: "No Group, No Text Activity", text: nil, tintColor: nil, instructions: nil, imageURL: nil, schedule: dailySchedule, userInfo: nil))
+            carePlanActivities.append(OCKCarePlanActivity.intervention(withIdentifier: "Intervention Activity #7", groupIdentifier: nil, title: "No Group, No Text Activity", text: nil, tintColor: nil, instructions: nil, imageURL: nil, schedule: dailySchedule, userInfo: nil))
             
-            carePlanActivities.append(OCKCarePlanActivity.interventionWithIdentifier("Intervention Activity #8", groupIdentifier: nil, title: "", text: "Missing Title", tintColor: UIColor.purpleColor(), instructions: "Some Instructions", imageURL: nil, schedule: dailySchedule, userInfo: ["":""]))
+            carePlanActivities.append(OCKCarePlanActivity.intervention(withIdentifier: "Intervention Activity #8", groupIdentifier: nil, title: "", text: "Missing Title", tintColor: UIColor.purple, instructions: "Some Instructions", imageURL: nil, schedule: dailySchedule, userInfo: ["":""]))
             
-            let carePlanStore = OCKCarePlanStore.init(persistenceDirectoryURL: NSURL.init(string: documentsDirectory[0])!)
+            let carePlanStore = OCKCarePlanStore.init(persistenceDirectoryURL: URL.init(string: documentsDirectory[0])!)
             
             for carePlanActivity in carePlanActivities {
-                carePlanStore.addActivity(carePlanActivity, completion: { (boolVal, error) in
-                    assert(boolVal, (error?.description)!)
+                carePlanStore.add(carePlanActivity, completion: { (boolVal, error) in
+                    assert(boolVal, (error?.localizedDescription)!)
                 })
             }
             
-            carePlanStore.setEndDate(NSDateComponents.init(date: NSDate().dateByAddingTimeInterval(-86400.0), calendar: NSCalendar.currentCalendar()), forActivity: activity6, completion: { (boolVal, activity, error) in
+            let dateComponents = NSCalendar.current.dateComponents([.year, .month, .day, .era], from: Date().addingTimeInterval(-86400.0))
+            carePlanStore.setEndDate(dateComponents, for: activity6, completion: { (boolVal, activity, error) in
                 
             })
 
@@ -125,103 +126,104 @@ class CareCardTableViewController: UITableViewController, OCKCarePlanStoreDelega
             careCardController.showEdgeIndicators = true
             self.navigationController?.pushViewController(careCardController, animated: true)
             
-        } else if indexPath.row == 1 {
+        } else if (indexPath as NSIndexPath).row == 1 {
             
             // With Delegate & Images
             
-            let dateComponents = NSDateComponents.init(year: 2015, month: 2, day: 20)
-            let schedule = OCKCareSchedule.dailyScheduleWithStartDate(dateComponents, occurrencesPerDay: 6)
+            let dateComponents = DateComponents.init(year: 2015, month: 2, day: 20)
+            let schedule = OCKCareSchedule.dailySchedule(withStartDate: dateComponents, occurrencesPerDay: 6)
             
-            let documentsURL = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first!
-            let imageFileURL = documentsURL.URLByAppendingPathComponent("Triangles.jpg")
+            let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+            let imageFileURL = documentsURL.appendingPathComponent("Triangles.jpg")
             let secondGroupId = "Group I2"
             
-            let carePlanActivity1 = OCKCarePlanActivity.init(identifier: "Intervention Activity 1", groupIdentifier: secondGroupId, type: OCKCarePlanActivityType.Intervention, title: "1. This is the first Intervention Activity", text: "", tintColor: UIColor.redColor(), instructions: "No instructions required", imageURL: imageFileURL, schedule: schedule, resultResettable: true, userInfo: ["Key1":"Value1","Key2":"Value2"])
+            let carePlanActivity1 = OCKCarePlanActivity.init(identifier: "Intervention Activity 1", groupIdentifier: secondGroupId, type: OCKCarePlanActivityType.intervention, title: "1. This is the first Intervention Activity", text: "", tintColor: UIColor.red, instructions: "No instructions required", imageURL: imageFileURL, schedule: schedule, resultResettable: true, userInfo: ["Key1":"Value1" as NSCoding,"Key2":"Value2" as NSCoding])
             
-            let carePlanActivity2 = OCKCarePlanActivity.init(identifier: "Intervention Activity 2", groupIdentifier: secondGroupId, type: OCKCarePlanActivityType.Intervention, title: "2. Another Intervention Activity", text: "Complete this activity ASAP. No Instructions!", tintColor: nil, instructions: nil, imageURL: imageFileURL, schedule: schedule, resultResettable: true, userInfo: nil)
+            let carePlanActivity2 = OCKCarePlanActivity.init(identifier: "Intervention Activity 2", groupIdentifier: secondGroupId, type: OCKCarePlanActivityType.intervention, title: "2. Another Intervention Activity", text: "Complete this activity ASAP. No Instructions!", tintColor: nil, instructions: nil, imageURL: imageFileURL, schedule: schedule, resultResettable: true, userInfo: nil)
             
-            let carePlanActivity3 = OCKCarePlanActivity.interventionWithIdentifier("Intervention Activity 3", groupIdentifier: secondGroupId, title: "3. Activity #3 is the last one", text: "Some Text", tintColor: UIColor.purpleColor(), instructions: "Some Instructions", imageURL: imageFileURL, schedule: schedule, userInfo: ["Key":"Val"])
+            let carePlanActivity3 = OCKCarePlanActivity.intervention(withIdentifier: "Intervention Activity 3", groupIdentifier: secondGroupId, title: "3. Activity #3 is the last one", text: "Some Text", tintColor: UIColor.purple, instructions: "Some Instructions", imageURL: imageFileURL, schedule: schedule, userInfo: ["Key":"Val"])
             
-            let dataPath = documentsDirectory[0].stringByAppendingString("/CarePlan2")
-            if !NSFileManager.defaultManager().fileExistsAtPath(dataPath) {
+            let dataPath = documentsDirectory[0] + "/CarePlan2"
+            if !FileManager.default.fileExists(atPath: dataPath) {
                 do {
-                    try NSFileManager.defaultManager().createDirectoryAtPath(dataPath, withIntermediateDirectories: false, attributes: nil)
+                    try FileManager.default.createDirectory(atPath: dataPath, withIntermediateDirectories: false, attributes: nil)
                 } catch(_) {
                     assertionFailure("Unable to Create Directory for CarePlan2")
                 }
             }
             
-            let carePlanStore = OCKCarePlanStore.init(persistenceDirectoryURL: NSURL.init(string: dataPath)!)
+            let carePlanStore = OCKCarePlanStore.init(persistenceDirectoryURL: URL.init(string: dataPath)!)
             carePlanStore.delegate = self
-            carePlanStore.addActivity(carePlanActivity1, completion: { (boolVal, error) in
-                assert(boolVal, (error?.description)!)
+            carePlanStore.add(carePlanActivity1, completion: { (boolVal, error) in
+                assert(boolVal, (error?.localizedDescription)!)
             })
-            carePlanStore.addActivity(carePlanActivity2, completion: { (boolVal, error) in
-                assert(boolVal, (error?.description)!)
+            carePlanStore.add(carePlanActivity2, completion: { (boolVal, error) in
+                assert(boolVal, (error?.localizedDescription)!)
             })
-            carePlanStore.addActivity(carePlanActivity3, completion: { (boolVal, error) in
-                assert(boolVal, (error?.description)!)
+            carePlanStore.add(carePlanActivity3, completion: { (boolVal, error) in
+                assert(boolVal, (error?.localizedDescription)!)
                 
             })
             
             let careCardController = OCKCareCardViewController.init(carePlanStore: carePlanStore)
             careCardController.maskImage = UIImage.init(named: "Stars")
             careCardController.smallMaskImage = UIImage.init(named: "Triangles.jpg")
-            careCardController.maskImageTintColor = UIColor.cyanColor()
+            careCardController.maskImageTintColor = UIColor.cyan
             careCardController.showEdgeIndicators = true
             self.navigationController?.pushViewController(careCardController, animated: true)
             
-        } else if indexPath.row == 2 {
+        } else if (indexPath as NSIndexPath).row == 2 {
             
             // No Activities
             
-            let dataPath = documentsDirectory[0].stringByAppendingString("/EmptyCarePlan")
-            if !NSFileManager.defaultManager().fileExistsAtPath(dataPath) {
+            let dataPath = documentsDirectory[0] + "/EmptyCarePlan"
+            if !FileManager.default.fileExists(atPath: dataPath) {
                 do {
-                    try NSFileManager.defaultManager().createDirectoryAtPath(dataPath, withIntermediateDirectories: false, attributes: nil)
+                    try FileManager.default.createDirectory(atPath: dataPath, withIntermediateDirectories: false, attributes: nil)
                 } catch(_) {
                     assertionFailure("Unable to Create Directory for EmptyCarePlan")
                 }
             }
             
-            let carePlanStore = OCKCarePlanStore.init(persistenceDirectoryURL: NSURL.init(string: dataPath)!)
+            let carePlanStore = OCKCarePlanStore.init(persistenceDirectoryURL: URL.init(string: dataPath)!)
             let careCardController = OCKCareCardViewController.init(carePlanStore: carePlanStore)
-            careCardController.maskImageTintColor = UIColor.orangeColor()
+            careCardController.maskImageTintColor = UIColor.orange
             self.navigationController?.pushViewController(careCardController, animated: true)
       
-        } else if indexPath.row == 3 {
+        } else if (indexPath as NSIndexPath).row == 3 {
             
             // Auto-Complete, No Edges
             
-            let startDateComponents = NSDateComponents.init(year: 2012, month: 12, day: 12)
-            let endDateComponents = NSDateComponents.init(year: 3000, month: 03, day: 30)
-            let schedule = OCKCareSchedule.dailyScheduleWithStartDate(startDateComponents, occurrencesPerDay: 5, daysToSkip: 0, endDate: endDateComponents)
+            let startDateComponents = DateComponents.init(year: 2012, month: 12, day: 12)
+            let endDateComponents = DateComponents.init(year: 3000, month: 03, day: 30)
+            let schedule = OCKCareSchedule.dailySchedule(withStartDate: startDateComponents, occurrencesPerDay: 5, daysToSkip: 0, endDate: endDateComponents)
             
-            let documentsURL = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first!
-            let imageFileURL = documentsURL.URLByAppendingPathComponent("Triangles.jpg")
+            let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+            let imageFileURL = documentsURL.appendingPathComponent("Triangles.jpg")
             
-            let dataPath = documentsDirectory[0].stringByAppendingString("/CarePlanAuto")
-            if !NSFileManager.defaultManager().fileExistsAtPath(dataPath) {
+            let dataPath = documentsDirectory[0] + "/CarePlanAuto"
+            if !FileManager.default.fileExists(atPath: dataPath) {
                 do {
-                    try NSFileManager.defaultManager().createDirectoryAtPath(dataPath, withIntermediateDirectories: false, attributes: nil)
+                    try FileManager.default.createDirectory(atPath: dataPath, withIntermediateDirectories: false, attributes: nil)
                 } catch(_) {
                     assertionFailure("Unable to Create Directory for CarePlanAuto")
                 }
             }
             
-            let carePlanStore = OCKCarePlanStore.init(persistenceDirectoryURL: NSURL.init(string: dataPath)!)
+            let carePlanStore = OCKCarePlanStore.init(persistenceDirectoryURL: URL.init(string: dataPath)!)
             
             for index in 1...30 {
-                let carePlanActivity = OCKCarePlanActivity.init(identifier: "Intervention Activity" + String(index), groupIdentifier: "Group I2", type: OCKCarePlanActivityType.Intervention, title: "Activity Title"+String(index), text: "Text Text Text" + String(index), tintColor: UIColor.init(red: 0.2, green: 0.4, blue: 0.9, alpha: 0.4), instructions: "This is a set of instructions for activity #" + String(index), imageURL: imageFileURL, schedule: schedule, resultResettable: true, userInfo: nil)
-                carePlanStore.addActivity(carePlanActivity, completion: { (boolVal, error) in
-                    assert(boolVal, (error?.description)!)
+                let carePlanActivity = OCKCarePlanActivity.init(identifier: "Intervention Activity" + String(index), groupIdentifier: "Group I2", type: OCKCarePlanActivityType.intervention, title: "Activity Title"+String(index), text: "Text Text Text" + String(index), tintColor: UIColor.init(red: 0.2, green: 0.4, blue: 0.9, alpha: 0.4), instructions: "This is a set of instructions for activity #" + String(index), imageURL: imageFileURL, schedule: schedule, resultResettable: true, userInfo: nil)
+                carePlanStore.add(carePlanActivity, completion: { (boolVal, error) in
+                    assert(boolVal, (error?.localizedDescription)!)
                 })
             }
 
-            carePlanStore.eventsOnDate(NSDateComponents.init(date: NSDate(), calendar: NSCalendar.currentCalendar()), type: OCKCarePlanActivityType.Intervention, completion: { (allEventsArray, error) in
+            let dateComponents = NSCalendar.current.dateComponents([.year, .month, .day, .era], from: Date())
+            carePlanStore.events(onDate: dateComponents, type: OCKCarePlanActivityType.intervention, completion: { (allEventsArray, error) in
                 for activityEvents in allEventsArray {
                     for event in activityEvents {
-                            carePlanStore.updateEvent(event, withResult: nil, state: OCKCarePlanEventState.Completed, completion: { (boolVal, event, error) in
+                            carePlanStore.update(event, with: nil, state: OCKCarePlanEventState.completed, completion: { (boolVal, event, error) in
                         })
                     }
                 }
@@ -232,33 +234,33 @@ class CareCardTableViewController: UITableViewController, OCKCarePlanStoreDelega
             careCardController.maskImageTintColor = UIColor.init(red: 0.2, green: 0.4, blue: 0.9, alpha: 0.4)
             self.navigationController?.pushViewController(careCardController, animated: true)
             
-        } else if indexPath.row == 4 {
+        } else if (indexPath as NSIndexPath).row == 4 {
             
             // Activities don't complete
 
-            let dateComponents = NSDateComponents.init(year: 2015, month: 2, day: 20)
-            let schedule = OCKCareSchedule.dailyScheduleWithStartDate(dateComponents, occurrencesPerDay: 14)
+            let dateComponents = DateComponents.init(year: 2015, month: 2, day: 20)
+            let schedule = OCKCareSchedule.dailySchedule(withStartDate: dateComponents, occurrencesPerDay: 14)
             let fourthGroupId = "Group I4"
-            let carePlanActivity1 = OCKCarePlanActivity.init(identifier: "ActivityDoesntComplete1", groupIdentifier: fourthGroupId, type: OCKCarePlanActivityType.Intervention, title: "Does not Complete", text: "Tint color changes on tap", tintColor: UIColor.blueColor(), instructions: "No instructions required", imageURL: nil, schedule: schedule, resultResettable: true, userInfo:nil)
-            let carePlanActivity2 = OCKCarePlanActivity.init(identifier: "ActivityDoesntComplete2", groupIdentifier: fourthGroupId, type: OCKCarePlanActivityType.Intervention, title: "Does not Complete", text: "Tint color changes on tap", tintColor: UIColor.purpleColor(), instructions: "", imageURL: nil, schedule: schedule, resultResettable: true, userInfo:nil)
+            let carePlanActivity1 = OCKCarePlanActivity.init(identifier: "ActivityDoesntComplete1", groupIdentifier: fourthGroupId, type: OCKCarePlanActivityType.intervention, title: "Does not Complete", text: "Tint color changes on tap", tintColor: UIColor.blue, instructions: "No instructions required", imageURL: nil, schedule: schedule, resultResettable: true, userInfo:nil)
+            let carePlanActivity2 = OCKCarePlanActivity.init(identifier: "ActivityDoesntComplete2", groupIdentifier: fourthGroupId, type: OCKCarePlanActivityType.intervention, title: "Does not Complete", text: "Tint color changes on tap", tintColor: UIColor.purple, instructions: "", imageURL: nil, schedule: schedule, resultResettable: true, userInfo:nil)
             
-            let dataPath = documentsDirectory[0].stringByAppendingString("/CarePlanIncomplete")
+            let dataPath = documentsDirectory[0] + "/CarePlanIncomplete"
             
-            if !NSFileManager.defaultManager().fileExistsAtPath(dataPath) {
+            if !FileManager.default.fileExists(atPath: dataPath) {
                 do {
-                    try NSFileManager.defaultManager().createDirectoryAtPath(dataPath, withIntermediateDirectories: false, attributes: nil)
+                    try FileManager.default.createDirectory(atPath: dataPath, withIntermediateDirectories: false, attributes: nil)
                 } catch(_) {
                     assertionFailure("Unable to Create Directory for CarePlanIncomplete")
                 }
             }
             
-            let carePlanStore = OCKCarePlanStore.init(persistenceDirectoryURL: NSURL.init(string: dataPath)!)
+            let carePlanStore = OCKCarePlanStore.init(persistenceDirectoryURL: URL.init(string: dataPath)!)
             carePlanStore.delegate = self
-            carePlanStore.addActivity(carePlanActivity1, completion: { (boolVal, error) in
-                assert(boolVal, (error?.description)!)
+            carePlanStore.add(carePlanActivity1, completion: { (boolVal, error) in
+                assert(boolVal, (error?.localizedDescription)!)
             })
-            carePlanStore.addActivity(carePlanActivity2, completion: { (boolVal, error) in
-                assert(boolVal, (error?.description)!)
+            carePlanStore.add(carePlanActivity2, completion: { (boolVal, error) in
+                assert(boolVal, (error?.localizedDescription)!)
             })
 
             let careCardController = OCKCareCardViewController.init(carePlanStore: carePlanStore)
@@ -267,103 +269,103 @@ class CareCardTableViewController: UITableViewController, OCKCarePlanStoreDelega
             careCardController.showEdgeIndicators = true
             self.navigationController?.pushViewController(careCardController, animated: true)
             
-        }  else if indexPath.row == 5 {
+        }  else if (indexPath as NSIndexPath).row == 5 {
             
             // Custom Details for Activities
 
-            let dataPath = documentsDirectory[0].stringByAppendingString("/CarePlan2")
-            if !NSFileManager.defaultManager().fileExistsAtPath(dataPath) {
+            let dataPath = documentsDirectory[0] + "/CarePlan2"
+            if !FileManager.default.fileExists(atPath: dataPath) {
                 return
             }
-            let carePlanStore = OCKCarePlanStore.init(persistenceDirectoryURL: NSURL.init(string: dataPath)!)
+            let carePlanStore = OCKCarePlanStore.init(persistenceDirectoryURL: URL.init(string: dataPath)!)
             let careCardController = OCKCareCardViewController.init(carePlanStore: carePlanStore)
             careCardController.delegate = self
             careCardController.showEdgeIndicators = true
             self.navigationController?.pushViewController(careCardController, animated: true)
             
-        } else if indexPath.row == 6 {
+        } else if (indexPath as NSIndexPath).row == 6 {
             
             // Save an Image
             
-            let documentsURL = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first!
+            let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
             if let image = UIImage.init(named: "Triangles.jpg") {
-                let imageFileURL = documentsURL.URLByAppendingPathComponent("Triangles.jpg")
+                let imageFileURL = documentsURL.appendingPathComponent("Triangles.jpg")
                 if let jpgImageData = UIImageJPEGRepresentation(image,0.5) {
-                    jpgImageData.writeToURL(imageFileURL, atomically: false)
+                    try? jpgImageData.write(to: imageFileURL, options: [])
                 }
             }
-            tableView.cellForRowAtIndexPath(indexPath)?.textLabel?.textColor = UIColor.greenColor()
-            tableView.cellForRowAtIndexPath(indexPath)?.selected = false
+            tableView.cellForRow(at: indexPath)?.textLabel?.textColor = UIColor.green
+            tableView.cellForRow(at: indexPath)?.isSelected = false
             
-        } else if indexPath.row == 7 {
+        } else if (indexPath as NSIndexPath).row == 7 {
             
             // Delete all Activites
             
-            tableView.cellForRowAtIndexPath(indexPath)?.selected = false
+            tableView.cellForRow(at: indexPath)?.isSelected = false
             
-            let paths = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true)
-            let store = OCKCarePlanStore.init(persistenceDirectoryURL: NSURL.init(string: paths[0])!)
-            store.activitiesWithType(OCKCarePlanActivityType.Intervention, completion: { (boolVal, activities, error) in
+            let paths = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)
+            let store = OCKCarePlanStore.init(persistenceDirectoryURL: URL.init(string: paths[0])!)
+            store.activities(with: OCKCarePlanActivityType.intervention, completion: { (boolVal, activities, error) in
                 for activity:OCKCarePlanActivity in activities {
-                    store.removeActivity(activity, completion: { (boolVal, error) in
+                    store.remove(activity, completion: { (boolVal, error) in
                         if boolVal == true {
-                            tableView.cellForRowAtIndexPath(indexPath)?.textLabel?.textColor = UIColor.greenColor()
+                            tableView.cellForRow(at: indexPath)?.textLabel?.textColor = UIColor.green
                         } else {
-                            tableView.cellForRowAtIndexPath(indexPath)?.textLabel?.textColor = UIColor.redColor()
+                            tableView.cellForRow(at: indexPath)?.textLabel?.textColor = UIColor.red
                         }
-                        assert(boolVal, (error?.description)!)
+                        assert(boolVal, (error?.localizedDescription)!)
                     })
                 }
             })
         
             
-            if NSFileManager.defaultManager().fileExistsAtPath(paths[0].stringByAppendingString("/CarePlan2")) {
-                let dataPath = NSURL.init(string:paths[0].stringByAppendingString("/CarePlan2"))
+            if FileManager.default.fileExists(atPath: paths[0] + "/CarePlan2") {
+                let dataPath = URL.init(string:paths[0] + "/CarePlan2")
                 let store2 = OCKCarePlanStore.init(persistenceDirectoryURL: dataPath!)
-                store2.activitiesWithGroupIdentifier("Group I2", completion: { (boolVal, activities, error) in
+                store2.activities(withGroupIdentifier: "Group I2", completion: { (boolVal, activities, error) in
                     for activity:OCKCarePlanActivity in activities {
-                        store2.removeActivity(activity, completion: { (bool, error) in
+                        store2.remove(activity, completion: { (bool, error) in
                             if boolVal == true {
-                                tableView.cellForRowAtIndexPath(indexPath)?.textLabel?.textColor = UIColor.greenColor()
+                                tableView.cellForRow(at: indexPath)?.textLabel?.textColor = UIColor.green
                             } else {
-                                tableView.cellForRowAtIndexPath(indexPath)?.textLabel?.textColor = UIColor.redColor()
+                                tableView.cellForRow(at: indexPath)?.textLabel?.textColor = UIColor.red
                             }
-                            assert(boolVal, (error?.description)!)
+                            assert(boolVal, (error?.localizedDescription)!)
                         })
                     }
                 })
             }
             
-            if NSFileManager.defaultManager().fileExistsAtPath(paths[0].stringByAppendingString("/CarePlanAuto")) {
-                let dataPath = NSURL.init(string:paths[0].stringByAppendingString("/CarePlanAuto"))
+            if FileManager.default.fileExists(atPath: paths[0] + "/CarePlanAuto") {
+                let dataPath = URL.init(string:paths[0] + "/CarePlanAuto")
                 let store3 = OCKCarePlanStore.init(persistenceDirectoryURL: dataPath!)
-                store3.activitiesWithCompletion({ (boolVal, activities, error) in
+                store3.activities(completion: { (boolVal, activities, error) in
                     for activity in activities
                     {
-                        store3.removeActivity(activity, completion: { (boolVal, error) in
+                        store3.remove(activity, completion: { (boolVal, error) in
                             if boolVal == true {
-                                tableView.cellForRowAtIndexPath(indexPath)?.textLabel?.textColor = UIColor.greenColor()
+                                tableView.cellForRow(at: indexPath)?.textLabel?.textColor = UIColor.green
                             } else {
-                                tableView.cellForRowAtIndexPath(indexPath)?.textLabel?.textColor = UIColor.redColor()
+                                tableView.cellForRow(at: indexPath)?.textLabel?.textColor = UIColor.red
                             }
-                            assert(boolVal, (error?.description)!)
+                            assert(boolVal, (error?.localizedDescription)!)
                         })
                     }
                 })
             }
             
-            if NSFileManager.defaultManager().fileExistsAtPath(paths[0].stringByAppendingString("/CarePlanIncomplete")) {
-                let dataPath = NSURL.init(string:paths[0].stringByAppendingString("/CarePlanIncomplete"))
+            if FileManager.default.fileExists(atPath: paths[0] + "/CarePlanIncomplete") {
+                let dataPath = URL.init(string:paths[0] + "/CarePlanIncomplete")
                 let store4 = OCKCarePlanStore.init(persistenceDirectoryURL: dataPath!)
-                store4.activitiesWithCompletion({ (boolVal, activities, error) in
+                store4.activities(completion: { (boolVal, activities, error) in
                     for activity in activities {
-                        store4.removeActivity(activity, completion: { (boolVal, error) in
+                        store4.remove(activity, completion: { (boolVal, error) in
                             if boolVal == true {
-                                tableView.cellForRowAtIndexPath(indexPath)?.textLabel?.textColor = UIColor.greenColor()
+                                tableView.cellForRow(at: indexPath)?.textLabel?.textColor = UIColor.green
                             } else {
-                                tableView.cellForRowAtIndexPath(indexPath)?.textLabel?.textColor = UIColor.redColor()
+                                tableView.cellForRow(at: indexPath)?.textLabel?.textColor = UIColor.red
                             }
-                            assert(boolVal, (error?.description)!)
+                            assert(boolVal, (error?.localizedDescription)!)
                         })
                     }
                 })
@@ -371,60 +373,61 @@ class CareCardTableViewController: UITableViewController, OCKCarePlanStoreDelega
         }
     }
     
-    func careCardViewController(viewController: OCKCareCardViewController, shouldHandleEventCompletionForActivity interventionActivity: OCKCarePlanActivity) -> Bool {
+    func careCardViewController(_ viewController: OCKCareCardViewController, shouldHandleEventCompletionFor interventionActivity: OCKCarePlanActivity) -> Bool {
         if interventionActivity.groupIdentifier == "Group I4" {
             return false
         }
         return true
     }
     
-    func careCardViewController(viewController: OCKCareCardViewController, didSelectButtonWithInterventionEvent interventionEvent: OCKCarePlanEvent) {
+    func careCardViewController(_ viewController: OCKCareCardViewController, didSelectButtonWithInterventionEvent interventionEvent: OCKCarePlanEvent) {
         if interventionEvent.activity.groupIdentifier == "Group I4" {
             viewController.maskImageTintColor = interventionEvent.activity.tintColor
         }
     }
     
-    func careCardViewController(viewController: OCKCareCardViewController, didSelectRowWithInterventionActivity interventionActivity: OCKCarePlanActivity) {
+    func careCardViewController(_ viewController: OCKCareCardViewController, didSelectRowWithInterventionActivity interventionActivity: OCKCarePlanActivity) {
         if interventionActivity.groupIdentifier == "Group I2" {
             let detailsViewController = UIViewController.init()
-            detailsViewController.view.backgroundColor = UIColor.grayColor()
-            let textView = UITextView.init(frame: CGRectMake(30, 100, 300, 400))
-            textView.backgroundColor = UIColor.whiteColor()
-            textView.editable = false
+            detailsViewController.view.backgroundColor = UIColor.gray
+            let textView = UITextView.init(frame: CGRect(x: 30, y: 100, width: 300, height: 400))
+            textView.backgroundColor = UIColor.white
+            textView.isEditable = false
             var text = interventionActivity.title + "\n"
             
-            viewController.store.enumerateEventsOfActivity(interventionActivity, startDate: NSDateComponents.init(date: NSDate(), calendar: NSCalendar.currentCalendar()), endDate: NSDateComponents.init(date: NSDate(), calendar: NSCalendar.currentCalendar()), handler:
+            let dateComponents = NSCalendar.current.dateComponents([.year, .month, .day, .era], from: Date())
+            viewController.store.enumerateEvents(of: interventionActivity, startDate: dateComponents, endDate: dateComponents, handler:
                 { (event, stop) in
-                    text = text.stringByAppendingString("Occurence #" + String(event!.occurrenceIndexOfDay))
-                    text = text.stringByAppendingString(" : State " + String(event!.state.rawValue) + "\n")
+                    text = text + ("Occurence #" + String(event!.occurrenceIndexOfDay))
+                    text = text + (" : State " + String(event!.state.rawValue) + "\n")
                 
                 }, completion: { (completed, error) in
                     if completed == true {
-                        dispatch_async(dispatch_get_main_queue()){
+                        DispatchQueue.main.async{
                             textView.text = text
                             detailsViewController.view.addSubview(textView)
                             viewController.navigationController?.pushViewController(detailsViewController, animated: true)
                         }
                     } else {
-                        assert(completed, (error?.description)!)
+                        assert(completed, (error?.localizedDescription)!)
                     }
             })
         }
     }
     
-    func carePlanStoreActivityListDidChange(store: OCKCarePlanStore) {
+    func carePlanStoreActivityListDidChange(_ store: OCKCarePlanStore) {
        print("carePlanStoreActivityListDidChange")
     }
     
-    func carePlanStore(store: OCKCarePlanStore, didReceiveUpdateOfEvent event: OCKCarePlanEvent) {
+    func carePlanStore(_ store: OCKCarePlanStore, didReceiveUpdateOf event: OCKCarePlanEvent) {
         
         print("Care Event Details\n")
         print("Occurence: " + String(event.occurrenceIndexOfDay))
         print("Days Since Start: " + String(event.numberOfDaysSinceStart))
-        print("Date: " + String(event.date))
+        print("Date: " + String(describing: event.date))
         print("Activity: " + String(event.activity.title))
         print("State: " + String(event.state.rawValue))
-        print("Result: " + String(event.result))
+        print("Result: " + String(describing: event.result))
 
     }
 }

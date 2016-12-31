@@ -1,5 +1,6 @@
 /*
  Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2016, Troy Tsubota. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -447,6 +448,10 @@
             break;
         }
     }
+    
+    if ([event.date isInSameWeekAsDate: self.selectedDate]) {
+        [self updateWeekView];
+    }
 }
 
 - (void)carePlanStoreActivityListDidChange:(OCKCarePlanStore *)store {
@@ -526,7 +531,6 @@
     cell.interventionEvents = _events[indexPath.row];
     cell.delegate = self;
     cell.showEdgeIndicator = self.showEdgeIndicators;
-    
     return cell;
 }
 
@@ -548,8 +552,7 @@
 }
 
 - (void)previewingContext:(id <UIViewControllerPreviewing>)previewingContext commitViewController:(UIViewController *)viewControllerToCommit {
-    NSIndexPath *indexPath = [_tableView indexPathForRowAtPoint:previewingContext.sourceRect.origin];
-    [self.navigationController pushViewController:[self detailViewControllerForActivity:[self activityForIndexPath:indexPath]] animated:YES];
+    [self.navigationController pushViewController:viewControllerToCommit animated:YES];
 }
 
 @end

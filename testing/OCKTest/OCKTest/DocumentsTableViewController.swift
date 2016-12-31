@@ -34,18 +34,18 @@ import CareKit
 
 class DocumentsTableViewController: UITableViewController {
     
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 12
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
-        if let cell = tableView.dequeueReusableCellWithIdentifier("cell") {
-            switch indexPath.row {
+        if let cell = tableView.dequeueReusableCell(withIdentifier: "cell") {
+            switch (indexPath as NSIndexPath).row {
             case 0:
                 cell.textLabel?.text = "HTML - Bar Charts"
             case 1:
@@ -81,17 +81,17 @@ class DocumentsTableViewController: UITableViewController {
     
     func getDocumentCharts() -> [OCKDocumentElement] {
         
-        let bar1 = OCKBarSeries.init(title: "Title 1", values: [6,5], valueLabels: ["6","5"], tintColor: UIColor.brownColor())
-        let bar2 = OCKBarSeries.init(title: "Title 2", values: [5,10], valueLabels: ["5","10"], tintColor: UIColor.blackColor())
-        let bar3 = OCKBarSeries.init(title: "Title 3", values: [4,10], valueLabels: ["4","10"], tintColor: UIColor.blueColor())
-        let bar4 = OCKBarSeries.init(title: "Title 4", values: [15,4], valueLabels: ["15","4"], tintColor: UIColor.grayColor())
-        let bar5 = OCKBarSeries.init(title: "Title 7", values: [-20,-8], valueLabels: ["-20","-8"], tintColor: UIColor.cyanColor())
+        let bar1 = OCKBarSeries.init(title: "Title 1", values: [6,5], valueLabels: ["6","5"], tintColor: UIColor.brown)
+        let bar2 = OCKBarSeries.init(title: "Title 2", values: [5,10], valueLabels: ["5","10"], tintColor: UIColor.black)
+        let bar3 = OCKBarSeries.init(title: "Title 3", values: [4,10], valueLabels: ["4","10"], tintColor: UIColor.blue)
+        let bar4 = OCKBarSeries.init(title: "Title 4", values: [15,4], valueLabels: ["15","4"], tintColor: UIColor.gray)
+        let bar5 = OCKBarSeries.init(title: "Title 7", values: [-20,-8], valueLabels: ["-20","-8"], tintColor: UIColor.cyan)
         
-        let chart1 = OCKBarChart.init(title: "Chart #1", text: "Chart #1 Description", tintColor: UIColor.grayColor(), axisTitles: ["Axis #1","Axis #2"], axisSubtitles: ["Subtitle #1","Subtitle #2"], dataSeries: [bar1, bar2, bar3, bar4, bar5])
+        let chart1 = OCKBarChart.init(title: "Chart #1", text: "Chart #1 Description", tintColor: UIColor.gray, axisTitles: ["Axis #1","Axis #2"], axisSubtitles: ["Subtitle #1","Subtitle #2"], dataSeries: [bar1, bar2, bar3, bar4, bar5])
         
-        let series1 = OCKBarSeries.init(title: "Series #1", values: [20,24,60,40,50,60], valueLabels: ["20","24","60","40","50","60"], tintColor: UIColor.darkGrayColor())
-        let series2 = OCKBarSeries.init(title: "Series #2", values: [25,15,35,16,60,20], valueLabels: ["25","15","35","16","60","20"], tintColor: UIColor.orangeColor())
-        let chart2 = OCKBarChart.init(title: "Chart #2", text: "Chart #2 Description", tintColor: UIColor.grayColor(), axisTitles: ["ABC","DEF","GHI","JKL","MNO"], axisSubtitles: ["123","456","789","012"],dataSeries: [series1, series2])
+        let series1 = OCKBarSeries.init(title: "Series #1", values: [20,24,60,40,50,60], valueLabels: ["20","24","60","40","50","60"], tintColor: UIColor.darkGray)
+        let series2 = OCKBarSeries.init(title: "Series #2", values: [25,15,35,16,60,20], valueLabels: ["25","15","35","16","60","20"], tintColor: UIColor.orange)
+        let chart2 = OCKBarChart.init(title: "Chart #2", text: "Chart #2 Description", tintColor: UIColor.gray, axisTitles: ["ABC","DEF","GHI","JKL","MNO"], axisSubtitles: ["123","456","789","012"],dataSeries: [series1, series2])
         return [OCKDocumentElementChart.init(chart: chart1),OCKDocumentElementChart.init(chart: chart2)]
         
     }
@@ -142,22 +142,22 @@ class DocumentsTableViewController: UITableViewController {
         
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         let document = OCKDocument.init(title: "Here is a Title for the Document. \n This is a new line", elements: nil)
         document.pageHeader = "This Page Header should appear on the top of every single page"
         
-        if indexPath.row % 6 == 0 { // Rows 0 and 6
+        if (indexPath as NSIndexPath).row % 6 == 0 { // Rows 0 and 6
             document.elements = getDocumentCharts()
-        } else if indexPath.row % 6 == 1 { // Rows 1 and 7
+        } else if (indexPath as NSIndexPath).row % 6 == 1 { // Rows 1 and 7
             document.elements = getDocumentTables()
-        } else if indexPath.row % 6 == 2 { // Rows 2 and 8
+        } else if (indexPath as NSIndexPath).row % 6 == 2 { // Rows 2 and 8
             document.elements = getDocumentSubtitles()
-        } else if indexPath.row % 6 == 3 { // Rows 3 and 9
+        } else if (indexPath as NSIndexPath).row % 6 == 3 { // Rows 3 and 9
             document.elements = getDocumentImages()
-        } else if indexPath.row % 6 == 4 { // Rows 4 and 10
+        } else if (indexPath as NSIndexPath).row % 6 == 4 { // Rows 4 and 10
             document.elements = getDocumentParagraphs()
-        } else if indexPath.row % 6 == 5 { // Rows 5 and 11
+        } else if (indexPath as NSIndexPath).row % 6 == 5 { // Rows 5 and 11
             let chartsAndTables = getDocumentCharts() + getDocumentTables()
             let paragraphsAndImages = getDocumentParagraphs() + getDocumentImages()
             let subtitles = getDocumentSubtitles()
@@ -165,26 +165,26 @@ class DocumentsTableViewController: UITableViewController {
         }
         
         let webViewController = UIViewController.init()
-        webViewController.view.backgroundColor = UIColor.whiteColor()
+        webViewController.view.backgroundColor = UIColor.white
         let webView = UIWebView.init()
         webView.translatesAutoresizingMaskIntoConstraints = false
         webViewController.view.addSubview(webView)
-        webView.topAnchor.constraintEqualToAnchor(webViewController.view.topAnchor, constant: 30).active = true
-        webView.bottomAnchor.constraintEqualToAnchor(webViewController.view.bottomAnchor).active = true
-        webView.leftAnchor.constraintEqualToAnchor(webViewController.view.leftAnchor).active = true
-        webView.rightAnchor.constraintEqualToAnchor(webViewController.view.rightAnchor).active = true
+        webView.topAnchor.constraint(equalTo: webViewController.view.topAnchor, constant: 30).isActive = true
+        webView.bottomAnchor.constraint(equalTo: webViewController.view.bottomAnchor).isActive = true
+        webView.leftAnchor.constraint(equalTo: webViewController.view.leftAnchor).isActive = true
+        webView.rightAnchor.constraint(equalTo: webViewController.view.rightAnchor).isActive = true
         
-        if indexPath.row >= 6 {
+        if (indexPath as NSIndexPath).row >= 6 {
             // PDFs
-            document.createPDFDataWithCompletion { (data, error) in
-                dispatch_async(dispatch_get_main_queue(),{
-                    webView.loadData(data, MIMEType: "application/pdf", textEncodingName: "", baseURL: NSURL())
+            document.createPDFData { (data, error) in
+                DispatchQueue.main.async(execute: {
+                    webView.load(data, mimeType: "application/pdf", textEncodingName: "", baseURL: URL(string: "")!)
                     self.navigationController?.pushViewController(webViewController, animated: true)
                 })
             }
         } else {
             // HTMLs
-            webView.loadHTMLString(document.HTMLContent, baseURL: nil)
+            webView.loadHTMLString(document.htmlContent, baseURL: nil)
             self.navigationController?.pushViewController(webViewController, animated: true)
         }
 

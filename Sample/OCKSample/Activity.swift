@@ -45,12 +45,12 @@ protocol Activity {
  the app.
  */
 enum ActivityType: String {
-    case OutdoorWalk
-    case HamstringStretch
-    case TakeMedication
+    case outdoorWalk
+    case hamstringStretch
+    case takeMedication
     
-    case BackPain
-    case Mood
-    case BloodGlucose
-    case Weight
+    case backPain
+    case mood
+    case bloodGlucose
+    case weight
 }

@@ -1,5 +1,6 @@
 /*
  Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2016, Troy Tsubota. All rights reserved.
  Copyright (c) 2016, WWT Asynchrony Labs. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
@@ -297,6 +298,7 @@ static const CGFloat HeaderViewHeight = 225.0;
     }
 }
 
+
 #pragma mark - MFMailComposeViewControllerDelegate
 
 - (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error {
@@ -308,6 +310,7 @@ static const CGFloat HeaderViewHeight = 225.0;
         [self presentViewController:alertController animated:YES completion:nil];
     }
 }
+
 
 #pragma mark - Preview Action Items
 

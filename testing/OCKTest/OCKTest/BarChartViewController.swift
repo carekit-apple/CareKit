@@ -39,29 +39,29 @@ class BarChartViewController: UIViewController, OCKGroupedBarChartViewDataSource
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let chartWidth = UIScreen.mainScreen().bounds.width - 20
+        let chartWidth = UIScreen.main.bounds.width - 20
         
         scrollView.contentSize = CGSize(width: self.view.frame.width, height: 2000)
-        let multiColorChartView = OCKGroupedBarChartView.init(frame: CGRectMake(5, 0, chartWidth, 600))
+        let multiColorChartView = OCKGroupedBarChartView.init(frame: CGRect(x: 5, y: 0, width: chartWidth, height: 600))
         multiColorChartView.accessibilityLabel = "multiColorChartView"
-        multiColorChartView.animateWithDuration(4)
+        multiColorChartView.animate(withDuration: 4)
         multiColorChartView.backgroundColor = UIColor.init(hue: 0.85, saturation: 0.1, brightness: 0.8, alpha: 0.3)
         multiColorChartView.dataSource = self
         scrollView.addSubview(multiColorChartView)
         
-        let emptyChartView = OCKGroupedBarChartView.init(frame: CGRectMake(5, 610, chartWidth, 20))
+        let emptyChartView = OCKGroupedBarChartView.init(frame: CGRect(x: 5, y: 610, width: chartWidth, height: 20))
         emptyChartView.accessibilityLabel = "emptyChartView"
         emptyChartView.backgroundColor = UIColor.init(hue: 0.1, saturation: 0.8, brightness: 0.5, alpha: 0.8)
         scrollView.addSubview(emptyChartView)
         
-        let twoSeriesChartView = OCKGroupedBarChartView.init(frame: CGRectMake(5, 640, chartWidth, 500))
+        let twoSeriesChartView = OCKGroupedBarChartView.init(frame: CGRect(x: 5, y: 640, width: chartWidth, height: 500))
         twoSeriesChartView.accessibilityLabel = "twoSeriesChartView"
         twoSeriesChartView.backgroundColor = UIColor.init(hue: 0.05, saturation: 0.1, brightness: 0.9, alpha: 0.3)
         twoSeriesChartView.dataSource = self
-        twoSeriesChartView.animateWithDuration(1)
+        twoSeriesChartView.animate(withDuration: 1)
         scrollView.addSubview(twoSeriesChartView)
 
-        let negativeValuesChartView = OCKGroupedBarChartView.init(frame: CGRectMake(5, 1200, chartWidth, 600))
+        let negativeValuesChartView = OCKGroupedBarChartView.init(frame: CGRect(x: 5, y: 1200, width: chartWidth, height: 600))
         negativeValuesChartView.backgroundColor = UIColor.init(hue: 0.66, saturation: 0.2, brightness: 0.9, alpha: 0.2)
         negativeValuesChartView.accessibilityLabel = "negativeValuesChartView"
         negativeValuesChartView.dataSource = self
@@ -69,57 +69,57 @@ class BarChartViewController: UIViewController, OCKGroupedBarChartViewDataSource
         
     }
 
-    func numberOfDataSeriesInChartView(chartView: OCKGroupedBarChartView) -> Int {
+    func numberOfDataSeries(in chartView: OCKGroupedBarChartView) -> Int {
         let chartName = chartView.accessibilityLabel
         if chartName == "multiColorChartView" { return 30 } else if chartName == "negativeValuesChartView" { return 4 } else { return 2 }
     }
     
-    func numberOfCategoriesPerDataSeriesInChartView(chartView: OCKGroupedBarChartView) -> Int {
+    func numberOfCategoriesPerDataSeries(in chartView: OCKGroupedBarChartView) -> Int {
         let chartName = chartView.accessibilityLabel
         if chartName == "multiColorChartView" { return 1 } else if chartName == "negativeValuesChartView" { return 5 } else { return 8 }
     }
     
-    func maximumScaleRangeValueOfChartView(chartView: OCKGroupedBarChartView) -> NSNumber? {
-        if chartView.accessibilityLabel == "multiColorChartView" { return NSNumber(int: 1500) }
+    func maximumScaleRangeValue(of chartView: OCKGroupedBarChartView) -> NSNumber? {
+        if chartView.accessibilityLabel == "multiColorChartView" { return NSNumber(value: 1500) }
         return nil
     }
     
-    func minimumScaleRangeValueOfChartView(chartView: OCKGroupedBarChartView) -> NSNumber? {
-        if chartView.accessibilityLabel == "negativeValuesChartView" { return NSNumber(int: -40) }
+    func minimumScaleRangeValue(of chartView: OCKGroupedBarChartView) -> NSNumber? {
+        if chartView.accessibilityLabel == "negativeValuesChartView" { return NSNumber(value: -40) }
         return nil
     }
 
-    func chartView(chartView: OCKGroupedBarChartView, valueForCategoryAtIndex categoryIndex: UInt, inDataSeriesAtIndex dataSeriesIndex: UInt) -> NSNumber {
+    func chartView(_ chartView: OCKGroupedBarChartView, valueForCategoryAt categoryIndex: UInt, inDataSeriesAt dataSeriesIndex: UInt) -> NSNumber {
         let chartName = chartView.accessibilityLabel
         if chartName == "multiColorChartView" {
-            return (categoryIndex + 1) * (dataSeriesIndex*dataSeriesIndex + 1)
+            return NSNumber(value: (categoryIndex + 1) * (dataSeriesIndex*dataSeriesIndex + 1))
         } else if chartName == "negativeValuesChartView" {
             var value:Int = (Int)((categoryIndex + 1) * (dataSeriesIndex + 1))
             value = value * -1
-            return value
+            return NSNumber(value: value)
         } else {
-            return NSNumber(float: Float(categoryIndex) * 0.04)
+            return NSNumber(value: Float(categoryIndex) * 0.04)
         }
     }
     
-    func chartView(chartView: OCKGroupedBarChartView, titleForCategoryAtIndex categoryIndex: UInt) -> String? {
+    func chartView(_ chartView: OCKGroupedBarChartView, titleForCategoryAt categoryIndex: UInt) -> String? {
           return "Title" + String(categoryIndex)
     }
 
-    func chartView(chartView: OCKGroupedBarChartView, subtitleForCategoryAtIndex categoryIndex: UInt) -> String? {
+    func chartView(_ chartView: OCKGroupedBarChartView, subtitleForCategoryAt categoryIndex: UInt) -> String? {
         return String(categoryIndex) + " SubTitle"
     }
     
-    func chartView(chartView: OCKGroupedBarChartView, colorForDataSeriesAtIndex dataSeriesIndex: UInt) -> UIColor {
+    func chartView(_ chartView: OCKGroupedBarChartView, colorForDataSeriesAt dataSeriesIndex: UInt) -> UIColor {
         let hue = ((CGFloat)(dataSeriesIndex + 1)) * 3 / 100.0
         return UIColor.init(hue: hue, saturation: 0.7, brightness: 0.8, alpha: 1)
     }
     
-    func chartView(chartView: OCKGroupedBarChartView, nameForDataSeriesAtIndex dataSeriesIndex: UInt) -> String {
+    func chartView(_ chartView: OCKGroupedBarChartView, nameForDataSeriesAt dataSeriesIndex: UInt) -> String {
         return String(dataSeriesIndex) + " Series"
     }
     
-    func chartView(chartView: OCKGroupedBarChartView, valueStringForCategoryAtIndex categoryIndex: UInt, inDataSeriesAtIndex dataSeriesIndex: UInt) -> String? {
-        return "Val: " + String(chartView.dataSource!.chartView(chartView, valueForCategoryAtIndex: categoryIndex, inDataSeriesAtIndex: dataSeriesIndex))
+    func chartView(_ chartView: OCKGroupedBarChartView, valueStringForCategoryAt categoryIndex: UInt, inDataSeriesAt dataSeriesIndex: UInt) -> String? {
+        return "Val: " + String(describing: chartView.dataSource!.chartView(chartView, valueForCategoryAt: categoryIndex, inDataSeriesAt: dataSeriesIndex))
     }
 }

@@ -24,9 +24,7 @@
 		2D365AFB1CDC15A300B147FC /* CareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DD2F1201CD98F8300622794 /* CareKit.framework */; };
 		2D365AFE1CDC15A300B147FC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2DF2B6591CDC075A003632BE /* Main.storyboard */; };
 		2D365AFF1CDC15A300B147FC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2DF2B6611CDC07D6003632BE /* Assets.xcassets */; };
-		2D365B001CDC15A300B147FC /* Info-iPad.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2D365AEB1CDC150200B147FC /* Info-iPad.plist */; };
 		2D365B011CDC15A300B147FC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2DF2B6571CDC075A003632BE /* LaunchScreen.storyboard */; };
-		2D365B021CDC15A300B147FC /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2DF2B6691CDC07F5003632BE /* Info.plist */; };
 		2D365B031CDC15A300B147FC /* OCKTest.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 2DF2B6661CDC07E3003632BE /* OCKTest.entitlements */; };
 		2D365B051CDC15A300B147FC /* CareKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2DD2F1201CD98F8300622794 /* CareKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		2DD2F1231CD98F8A00622794 /* CareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DD2F1201CD98F8300622794 /* CareKit.framework */; };
@@ -44,7 +42,6 @@
 		2DF2B65D1CDC075A003632BE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2DF2B6591CDC075A003632BE /* Main.storyboard */; };
 		2DF2B6621CDC07D6003632BE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2DF2B6611CDC07D6003632BE /* Assets.xcassets */; };
 		2DF2B6671CDC07E3003632BE /* OCKTest.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 2DF2B6661CDC07E3003632BE /* OCKTest.entitlements */; };
-		2DF2B66A1CDC07F5003632BE /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2DF2B6691CDC07F5003632BE /* Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -267,7 +264,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0730;
-				LastUpgradeCheck = 0730;
+				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = carekit.org;
 				TargetAttributes = {
 					2D365AED1CDC15A300B147FC = {
@@ -279,6 +276,7 @@
 					};
 					2DBE4CEE1CD988E600B31591 = {
 						CreatedOnToolsVersion = 7.3;
+						LastSwiftMigration = 0800;
 						SystemCapabilities = {
 							com.apple.HealthKit = {
 								enabled = 1;
@@ -336,9 +334,7 @@
 			files = (
 				2D365AFE1CDC15A300B147FC /* Main.storyboard in Resources */,
 				2D365AFF1CDC15A300B147FC /* Assets.xcassets in Resources */,
-				2D365B001CDC15A300B147FC /* Info-iPad.plist in Resources */,
 				2D365B011CDC15A300B147FC /* LaunchScreen.storyboard in Resources */,
-				2D365B021CDC15A300B147FC /* Info.plist in Resources */,
 				2D365B031CDC15A300B147FC /* OCKTest.entitlements in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -349,9 +345,7 @@
 			files = (
 				2DF2B65D1CDC075A003632BE /* Main.storyboard in Resources */,
 				2DF2B6621CDC07D6003632BE /* Assets.xcassets in Resources */,
-				2D365AEC1CDC150200B147FC /* Info-iPad.plist in Resources */,
 				2DF2B65B1CDC075A003632BE /* LaunchScreen.storyboard in Resources */,
-				2DF2B66A1CDC07F5003632BE /* Info.plist in Resources */,
 				2DF2B6671CDC07E3003632BE /* OCKTest.entitlements in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -468,8 +462,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -514,8 +510,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -534,6 +532,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -548,6 +547,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = org.carekit.OCKTest;
 				PRODUCT_NAME = OCKTest;
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -561,6 +561,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = org.carekit.OCKTest;
 				PRODUCT_NAME = OCKTest;
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

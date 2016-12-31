@@ -35,13 +35,13 @@ class StoryboardInsightsViewController: OCKInsightsViewController {
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         
-        let messageItem1 = OCKMessageItem(title: "Alert", text: "This is a storyboard alert", tintColor: nil, messageType: .Alert)
-        let messageItem2 = OCKMessageItem(title: "Tip", text: "This is a storyboard tip", tintColor: nil, messageType: .Tip)
-        let series1 = OCKBarSeries(title: "Storyboard Series #1", values: [20,04,60,40,50,60], valueLabels: ["20","04","60","40","50","60"], tintColor: UIColor.blackColor())
-        let series2 = OCKBarSeries(title: "Storyboard Series #2", values: [5,15,35,16,100,20], valueLabels: ["5","15","35","16","100","20"], tintColor: UIColor.orangeColor())
-        let chart1 = OCKBarChart(title: "Storyboard Chart #1", text: "Chart #1 Description", tintColor: UIColor.grayColor(), axisTitles: ["ABC","DEF","GHI","JKL","MNO"], axisSubtitles: ["123","456","789","012"], dataSeries: [series1, series2])
-        let messageItem3 = OCKMessageItem(title: "Another Storyboard Alert", text: nil, tintColor: UIColor.orangeColor(), messageType: .Alert)
-        let messageItem4 = OCKMessageItem(title: "Another Storyboard Tip", text: nil, tintColor:  UIColor.greenColor(), messageType: .Tip)
+        let messageItem1 = OCKMessageItem(title: "Alert", text: "This is a storyboard alert", tintColor: nil, messageType: .alert)
+        let messageItem2 = OCKMessageItem(title: "Tip", text: "This is a storyboard tip", tintColor: nil, messageType: .tip)
+        let series1 = OCKBarSeries(title: "Storyboard Series #1", values: [20,04,60,40,50,60], valueLabels: ["20","04","60","40","50","60"], tintColor: .black)
+        let series2 = OCKBarSeries(title: "Storyboard Series #2", values: [5,15,35,16,100,20], valueLabels: ["5","15","35","16","100","20"], tintColor: .orange)
+        let chart1 = OCKBarChart(title: "Storyboard Chart #1", text: "Chart #1 Description", tintColor: .gray, axisTitles: ["ABC","DEF","GHI","JKL","MNO"], axisSubtitles: ["123","456","789","012"], dataSeries: [series1, series2])
+        let messageItem3 = OCKMessageItem(title: "Another Storyboard Alert", text: nil, tintColor: .orange, messageType: .alert)
+        let messageItem4 = OCKMessageItem(title: "Another Storyboard Tip", text: nil, tintColor:  .green, messageType: .tip)
         
         items = [messageItem1, messageItem2,chart1, messageItem3, messageItem4]
     }

@@ -35,11 +35,11 @@ class StoryboardConnectViewController: OCKConnectViewController {
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         
-        let contact1 = OCKContact(contactType: .CareTeam, name: "Anne Johnson", relation: "Primary Physician @ Nearby Hospital in my State", contactInfoItems: [.email("annejohnson1@mac.com")], tintColor: .purpleColor(), monogram: "AJ", image: nil)
-        let contact2 = OCKContact(contactType: .CareTeam, name: "Bill James, Lorem Ipsum dolor", relation: "Doctor", contactInfoItems: [.phone("1-888-555-5512"), .email("this_is_a_very_long_username@example.com")], tintColor: nil, monogram: "Bill James, Lorem Ipsum dolor", image: nil)
-        let contact3 = OCKContact(contactType: .Personal, name: "Maria Ruiz", relation: "Friend", contactInfoItems: [], tintColor: .greenColor(), monogram: "MR", image: nil)
-        let contact4 = OCKContact(contactType: .Personal, name: "Ravi Patel", relation: "Emergency Contact", contactInfoItems: [.phone("8885555512"), .email("888-555-5512")], tintColor: .orangeColor(), monogram: "RP",image: UIImage(named: "Stars"))
-        let contact5 = OCKContact(contactType: .Personal, name: "Edge Indicators", relation: "are set in the storyboard.", contactInfoItems: [], tintColor: nil, monogram: "", image: nil)
+        let contact1 = OCKContact(contactType: .careTeam, name: "Anne Johnson", relation: "Primary Physician @ Nearby Hospital in my State", contactInfoItems: [.email("annejohnson1@mac.com")], tintColor: .purple, monogram: "AJ", image: nil)
+        let contact2 = OCKContact(contactType: .careTeam, name: "Bill James, Lorem Ipsum dolor", relation: "Doctor", contactInfoItems: [.phone("1-888-555-5512"), .email("this_is_a_very_long_username@example.com")], tintColor: nil, monogram: "Bill James, Lorem Ipsum dolor", image: nil)
+        let contact3 = OCKContact(contactType: .personal, name: "Maria Ruiz", relation: "Friend", contactInfoItems: [], tintColor: .green, monogram: "MR", image: nil)
+        let contact4 = OCKContact(contactType: .personal, name: "Ravi Patel", relation: "Emergency Contact", contactInfoItems: [.phone("8885555512"), .email("888-555-5512")], tintColor: .orange, monogram: "RP",image: UIImage(named: "Stars"))
+        let contact5 = OCKContact(contactType: .personal, name: "Edge Indicators", relation: "are set in the storyboard.", contactInfoItems: [], tintColor: nil, monogram: "", image: nil)
         contacts = [contact1, contact2, contact3, contact4, contact5]
     }
     

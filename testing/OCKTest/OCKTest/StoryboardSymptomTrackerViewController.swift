@@ -35,29 +35,26 @@ class StoryboardSymptomTrackerViewController: OCKSymptomTrackerViewController, O
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         
-        let startDateComponents = NSDateComponents()
-        startDateComponents.day = 20
-        startDateComponents.month = 2
-        startDateComponents.year = 2015
+        let startDateComponents = DateComponents(year: 2015, month: 2, day: 20)
         
-        let dailySchedule = OCKCareSchedule.dailyScheduleWithStartDate(startDateComponents, occurrencesPerDay: 1)
+        let dailySchedule = OCKCareSchedule.dailySchedule(withStartDate: startDateComponents, occurrencesPerDay: 1)
         
-        OCKCarePlanStore.defaultStore().addActivity(OCKCarePlanActivity(identifier: "Storyboard Assessment", groupIdentifier: nil, type: .Assessment, title: "Storyboard Assessment", text: "This view controller is instantiated in the storyboard.", tintColor: nil, instructions: nil, imageURL: nil, schedule: dailySchedule, resultResettable: true, userInfo: nil)) { (_, error) in
+        OCKCarePlanStore.default.add(OCKCarePlanActivity(identifier: "Storyboard Assessment", groupIdentifier: nil, type: .assessment, title: "Storyboard Assessment", text: "This view controller is instantiated in the storyboard.", tintColor: nil, instructions: nil, imageURL: nil, schedule: dailySchedule, resultResettable: true, userInfo: nil)) { (_, error) in
             if let error = error {
-                print("Adding activity failed with error code \(error.code): \(error.localizedDescription)")
+                print("Adding activity failed: \(error.localizedDescription)")
             }
         }
         
         delegate = self
     }
     
-    func symptomTrackerViewController(viewController: OCKSymptomTrackerViewController, didSelectRowWithAssessmentEvent assessmentEvent: OCKCarePlanEvent) {
+    func symptomTrackerViewController(_ viewController: OCKSymptomTrackerViewController, didSelectRowWithAssessmentEvent assessmentEvent: OCKCarePlanEvent) {
         
-        let alertController = UIAlertController(title: "Storyboard assessment tapped!", message: "This view controller is its own delegate.", preferredStyle: .Alert)
+        let alertController = UIAlertController(title: "Storyboard assessment tapped!", message: "This view controller is its own delegate.", preferredStyle: .alert)
         
-        alertController.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+        alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         
-        presentViewController(alertController, animated: true, completion: nil)
+        present(alertController, animated: true, completion: nil)
         
     }
 

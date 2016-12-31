@@ -38,22 +38,19 @@ class StoryboardCareCardViewController: OCKCareCardViewController {
         var carePlanActivities = [OCKCarePlanActivity]()
         let firstGroupId = "Group I1"
         
-        let startDateComponents = NSDateComponents()
-        startDateComponents.day = 20
-        startDateComponents.month = 2
-        startDateComponents.year = 2015
+        let startDateComponents = DateComponents(year: 2015, month: 2, day: 20)
         
-        let dailySchedule = OCKCareSchedule.dailyScheduleWithStartDate(startDateComponents, occurrencesPerDay: 2)
-        let weeklySchedule = OCKCareSchedule.weeklyScheduleWithStartDate(startDateComponents, occurrencesOnEachDay:[4, 0, 4, 0, 4, 0, 4])
+        let dailySchedule = OCKCareSchedule.dailySchedule(withStartDate: startDateComponents, occurrencesPerDay: 2)
+        let weeklySchedule = OCKCareSchedule.weeklySchedule(withStartDate: startDateComponents, occurrencesOnEachDay:[4, 0, 4, 0, 4, 0, 4])
         
-        carePlanActivities.append(OCKCarePlanActivity(identifier: "Storyboard Activity #1", groupIdentifier: firstGroupId, type: .Intervention, title: "Storyboard Activity Title 1", text: "This view controller is instantiated in the storyboard.", tintColor: nil, instructions: "Perform the described task and report the results. Talk to your doctor if you need help", imageURL: nil, schedule: dailySchedule, resultResettable: true, userInfo: ["Key1":"Value1","Key2":"Value2"]))
+        carePlanActivities.append(OCKCarePlanActivity(identifier: "Storyboard Activity #1", groupIdentifier: firstGroupId, type: .intervention, title: "Storyboard Activity Title 1", text: "This view controller is instantiated in the storyboard.", tintColor: nil, instructions: "Perform the described task and report the results. Talk to your doctor if you need help", imageURL: nil, schedule: dailySchedule, resultResettable: true, userInfo: ["Key1":"Value1" as NSCoding,"Key2":"Value2" as NSCoding]))
         
-        carePlanActivities.append(OCKCarePlanActivity(identifier: "Storyboard Activity #2", groupIdentifier: firstGroupId, type: .Intervention, title: "Alternate-Day Intervention Activity Title 2", text: "This activity is added in the default care plan store.", tintColor: UIColor.brownColor(), instructions: nil, imageURL: nil, schedule: weeklySchedule, resultResettable: true, userInfo: ["Key1":"Value1", "Key2":"Value2"]))
+        carePlanActivities.append(OCKCarePlanActivity(identifier: "Storyboard Activity #2", groupIdentifier: firstGroupId, type: .intervention, title: "Alternate-Day Intervention Activity Title 2", text: "This activity is added in the default care plan store.", tintColor: .brown, instructions: nil, imageURL: nil, schedule: weeklySchedule, resultResettable: true, userInfo: ["Key1":"Value1" as NSCoding, "Key2":"Value2" as NSCoding]))
         
         for activity in carePlanActivities {
-            OCKCarePlanStore.defaultStore().addActivity(activity) { (_, error) in
+            OCKCarePlanStore.default.add(activity) { (_, error) in
                 if let error = error {
-                    print("Adding activity failed with error code \(error.code): \(error.localizedDescription)")
+                    print("Adding activity failed: \(error.localizedDescription)")
                 }
             }
         }

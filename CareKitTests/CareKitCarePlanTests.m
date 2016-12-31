@@ -620,7 +620,7 @@
 - (void)testSingleton {
     [self cleanTestPath];
     
-    [OCKCarePlanStore defaultStore].delegate = self;
+    OCKCarePlanStore.defaultStore.delegate = self;
     
     NSDateComponents *startDate = [[NSDateComponents alloc] initWithYear:2016 month:01 day:01];
     
@@ -650,7 +650,7 @@
     __block BOOL result;
     
     XCTestExpectation *expectation = [self expectationWithDescription:@"add1"];
-    [[OCKCarePlanStore defaultStore] addActivity:item1 completion:^(BOOL success, NSError * _Nonnull error) {
+    [OCKCarePlanStore.defaultStore addActivity:item1 completion:^(BOOL success, NSError * _Nonnull error) {
         result = success;
         error = error;
         [expectation fulfill];
@@ -663,7 +663,7 @@
     XCTAssertTrue([self isListChangeDelegateCalled]);
     
     expectation = [self expectationWithDescription:@"add2"];
-    [[OCKCarePlanStore defaultStore] addActivity:item2 completion:^(BOOL success, NSError * _Nonnull error) {
+    [OCKCarePlanStore.defaultStore addActivity:item2 completion:^(BOOL success, NSError * _Nonnull error) {
         XCTAssertFalse([NSThread isMainThread]);
         result = success;
         error = error;
@@ -678,13 +678,13 @@
     
     // Test making call synced.
     dispatch_semaphore_t sem = dispatch_semaphore_create(0);
-    [[OCKCarePlanStore defaultStore] activitiesWithCompletion:^(BOOL success, NSArray<OCKCarePlanActivity *> * _Nonnull activities, NSError * _Nullable error) {
+    [OCKCarePlanStore.defaultStore activitiesWithCompletion:^(BOOL success, NSArray<OCKCarePlanActivity *> * _Nonnull activities, NSError * _Nullable error) {
         dispatch_semaphore_signal(sem);
     }];
     dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER);
     
     expectation = [self expectationWithDescription:@"activitiesWithType"];
-    [[OCKCarePlanStore defaultStore] activitiesWithType:OCKCarePlanActivityTypeIntervention
+    [OCKCarePlanStore.defaultStore activitiesWithType:OCKCarePlanActivityTypeIntervention
                    completion:^(BOOL success, NSArray<OCKCarePlanActivity *> * _Nonnull activities, NSError * _Nonnull error) {
                        XCTAssertFalse([NSThread isMainThread]);
                        XCTAssertTrue(success);
@@ -696,7 +696,7 @@
         XCTAssertNil(error);
     }];
     expectation = [self expectationWithDescription:@"activitiesWithType"];
-    [[OCKCarePlanStore defaultStore] activitiesWithType:OCKCarePlanActivityTypeAssessment
+    [OCKCarePlanStore.defaultStore activitiesWithType:OCKCarePlanActivityTypeAssessment
                    completion:^(BOOL success, NSArray<OCKCarePlanActivity *> * _Nonnull activities, NSError * _Nonnull error) {
                        XCTAssertTrue(success);
                        XCTAssertNil(error);
@@ -708,7 +708,7 @@
     }];
     
     expectation = [self expectationWithDescription:@"activityForIdentifier"];
-    [[OCKCarePlanStore defaultStore] activityForIdentifier:item1.identifier
+    [OCKCarePlanStore.defaultStore activityForIdentifier:item1.identifier
                       completion:^(BOOL success, OCKCarePlanActivity * _Nonnull activity, NSError * _Nonnull error) {
                           XCTAssertFalse([NSThread isMainThread]);
                           XCTAssertTrue(success);

@@ -12,60 +12,55 @@ CareKit defines two types of contacts: Care team contacts and personal contacts.
 
 The following code demonstrates how to create a new care team contact:
 
-    let newContact = OCKContact(contactType: .CareTeam,
-        name: "Bill James",
-        relation: "Nurse",
-        tintColor: Colors.Green.color,
-        phoneNumber: CNPhoneNumber(stringValue: "888-555-5512"),
-        messageNumber: CNPhoneNumber(stringValue: "888-555-5512"),
-        emailAddress: "billjames@example.com",
-        monogram: "BJ",
-        image: nil)
+```swift
+let newContact = OCKContact(contactType: .CareTeam,
+    name: "Bill James",
+    relation: "Nurse",
+    tintColor: Colors.Green.color,
+    phoneNumber: CNPhoneNumber(stringValue: "888-555-5512"),
+    messageNumber: CNPhoneNumber(stringValue: "888-555-5512"),
+    emailAddress: "billjames@example.com",
+    monogram: "BJ",
+    image: nil)
+```
 
 ## Presenting the Contact View Controller
-
-### In Storyboard
-
-Setting up the contact view controller is similar to [setting up the care card](../CreatingTheCareCard/CreatingTheCareCard.html#CreateAndPresentTheCareCard). Instead of using `OCKCareCardViewController`, however, use `OCKConnectViewController` instead.
-
-To add the contacts and set the delegate, subclass `OCKConnectViewController` and configure it in `initWithCoder:`.
-
-### In Code
-
 The contact view controller displays both care team and personal contacts. When creating the view controller, you must pass an array of `OCKContact` objects:
 
-    let viewController = OCKConnectViewController(contacts: sampleData.contacts)
-    viewController.delegate = self
+```swift
+let viewController = OCKConnectViewController(contacts: sampleData.contacts)
+viewController.delegate = self
 
-    // Setup the controller's title and tab bar item
-    viewController.title = NSLocalizedString("Connect", comment: "")
-    viewController.tabBarItem = UITabBarItem(title: viewController.title, image: UIImage(named:"connect"), selectedImage: UIImage(named: "connect-filled"))
-
-<br/>
+// Setup the controller's title and tab bar item
+viewController.title = NSLocalizedString("Connect", comment: "")
+viewController.tabBarItem = UITabBarItem(title: viewController.title, image: UIImage(named:"connect"), selectedImage: UIImage(named: "connect-filled"))
+```
 
 Upon creation and display of the contact view controller, the following view appears:
 
 <center><img src="ConnectingWithCareTeamsAndPersonalContactsImages/ContactsView.png" style="border: solid #e0e0e0 1px;" width="310px" alt="Contacts View"/>
-<figcaption>Figure 1: The Contact View</figcaption></center>
-<br/>
+<figcaption>Figure 1: The Contact View</figcaption></center>.
 
 Users can tap on a contact to view the detailed contact information. From this view, the user tap on the appropriate icon to call, text, or email the contact, as well as send reports. Attachments such as photos or documents can be attached to the email as well.
 
 <center><img src="ConnectingWithCareTeamsAndPersonalContactsImages/ContactDetails.png" style="border: solid #e0e0e0 1px;" width="310px" alt="Contacts View"/>
-<figcaption>Figure 2: The Details for a Contact</figcaption></center>
-<br/>
+<figcaption>Figure 2: The Details for a Contact</figcaption></center>.
 
 
 ## Implementing the Connect View Controller Delegate
 
 When using the Connect View Controller, you must implement one required delegate.
 
-    func connectViewController(connectViewController: OCKConnectViewController, didSelectShareButtonForContact contact: OCKContact)
+```swift
+func connectViewController(connectViewController: OCKConnectViewController, didSelectShareButtonForContact contact: OCKContact)
+```
 
 This delegate method is called when the user touches the Share button for a given contact. The delegate method is called with a reference to the `OCKConnectViewController` and a reference to the `OCKContact` object representing the currently viewed contact.
 
 One common operation is to generate a report or other data, then send it to one of the many sharing services available in the `UIActivityViewController`:
 
-    let document = someObject.generateSomeDocument()
-    let activityViewController = UIActivityViewController(activityItems: [document], applicationActivities: nil)     
-    presentViewController(activityViewController, animated: true, completion: nil)
+```swift
+let document = someObject.generateSomeDocument()
+let activityViewController = UIActivityViewController(activityItems: [document], applicationActivities: nil)     
+presentViewController(activityViewController, animated: true, completion: nil)
+```

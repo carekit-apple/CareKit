@@ -3,7 +3,7 @@
 
 # CareKit Framework Programming Guide
 
-CareKit is an open source framework for creating apps that place users at the center of their medical care. CareKit apps help users track treatment tasks on a daily basis, assess their progress, and communicate with caregivers, family, and friends.
+CareKit is an open source framework for creating apps that place users at the center of their medical care. CareKit apps help users track treatment tasks on a daily basis, assess their progress, and communicate with caregivers, family, and friends. 
 
 CareKit supports a wide range of care plans—from managing chronic illnesses, such as diabetes, to recovery from injury or surgery, to achieving health and wellness goals.
 
@@ -11,7 +11,7 @@ CareKit supports a wide range of care plans—from managing chronic illnesses, s
 
 The CareKit framework is organized into six modules, with several additional data types. The most important interactions between the modules and data types are shown in *Figure 1*.
 
-<center><img src="OverviewImages/MainCareKitModules.png" width="50%" alt="CareKit Framework Overview"/>
+<center><img src="OverviewImages/MainCareKitModules.png" width="50%" alt="CareKit Framework Overview"/> 
 <figcaption>Figure 1: Relationship of items in the CareKit framework.</figcaption></center>
 
 ### Modules
@@ -20,11 +20,11 @@ The CareKit framework is organized into six modules, with several additional dat
 
 **Symptom and Measurement Tracker.** The scene managed by an `OCKSymptomTrackerViewController` object. The Symptom and Measurement Tracker presents and manages tasks that evaluate the effectiveness of the user's care plan. These include the subjective assessment of symptoms (such as pain scales) and objective measurements (such as blood pressure).
 
-**Insights.** The scene managed by an `OCKInsightsViewController` object. The Insights scene displays charts that provide insight to the user by showing the relationship between treatment and progress. An insight can also include tips and alerts that help the user stay on track with their health goals.
+**Insights.** The scene managed by an `OCKInsightsViewController` object. The Insights scene displays charts that provide insight to the user by showing the relationship between treatment and progress. An insight can also include tips and alerts that help the user stay on track with their health goals. 
 
 **Connect.** The scene managed by an `OCKConnectViewController` object. The Connect scene helps the user communicate their health status and Insights data with care team members, family, and friends.
 
-**Care Plan Store.** The persistent database accessed through an `OCKCarePlanStore` object. This database stores the data displayed by the Care Card and Symptom and Measurement Tracker. CareKit automatically loads the store’s data as soon as the store is created, and it automatically saves any changes you make to the store.
+**Care Plan Store.** The persistent database accessed through an `OCKCarePlanStore` object. This database stores the data displayed by the Care Card and Symptom and Measurement Tracker. CareKit automatically loads the store’s data as soon as the store is created, and it automatically saves any changes you make to the store. 
 
 **Documents.** An `OCKDocument` object. This class creates custom reports that incorporate graphs and other information from the Insights module. Use `OCKDocument` to create PDF or HTML files that users can share with their contacts. A document can include a title, subtitles, text, images, and charts.
 
@@ -34,9 +34,9 @@ The CareKit framework is organized into six modules, with several additional dat
 
 **Assessment Activity.** An `OCKCarePlanActivity` object with a `OCKCarePlanActivityTypeAssessment` type. These activities represent the plan for monitoring and evaluating the treatment's effectiveness. They are stored in the Care Plan Store and are displayed in the Symptom and Measurement Tracker.
 
-**Intervention Event.** An `OCKCarePlanEvent` object associated with an intervention activity. These events represent the individual tasks that the user is expected to perform as part of their care plan. CareKit generates intervention events from active intervention activities. For example, if the activity indicates taking three doses of medication per day, CareKit generates three events for each day.
+**Intervention Event.** An `OCKCarePlanEvent` object associated with an intervention activity. These events represent the individual tasks that the user is expected to perform as part of their care plan. CareKit generates intervention events from active intervention activities. For example, if the activity indicates taking three doses of medication per day, CareKit generates three events for each day. 
 
-**Assessment Event.** An `OCKCarePlanEvent` object associated with an assessment activity. These events represent the individual tasks that the user is expected to perform to monitor and evaluate the progress of their treatment. CareKit generates assessment events from active assessment activities. For example, if the activity indicates one pain survey per day, CareKit generates one event for each day.
+**Assessment Event.** An `OCKCarePlanEvent` object associated with an assessment activity. These events represent the individual tasks that the user is expected to perform to monitor and evaluate the progress of their treatment. CareKit generates assessment events from active assessment activities. For example, if the activity indicates one pain survey per day, CareKit generates one event for each day. 
 
 **Contact.** An `OCKContact` object. These contacts represent the user’s caregivers and supporters. CareKit displays contacts in the Connect module.
 
@@ -46,45 +46,43 @@ The CareKit framework is organized into six modules, with several additional dat
 
 <center><img src="OverviewImages/CareCard.png" width="310" style="border: solid #e0e0e0 1px;" alt="Care Card Screenshot"/>
 <figcaption>Figure 2: The Care Card scene.</figcaption></center>
-<br/>
 
 The Care Card shows the user’s care plan for a particular day. The Care Card tracks the user's progress as they mark off intervention events.
 
 The large heart shows the percentage of the day's events that the user has completed. The user's goal is to fill the entire heart by the end of the day.
-
+ 
 Individual intervention activities are listed below the heart. The circles indicate the number of times that the user has to complete the task for the given day (that is, the number of events for the day). For example, if a user needs to take medication three times per day, there are three circles. When the user completes a particular task, such as taking one dose of medicine, they simply tap a circle. When tapped, the circle fills, indicating the completion of that task, and CareKit updates the corresponding event in the Care Plan Store.
 
 The list of intervention activities can change from day to day. An exercise regime may be performed every other day, while medication is typically taken every day. You can also schedule activities with more than one event per day, for example, taking a dose of medicine three times per day. You have complete control over the treatment’s schedule.
 
 The user can select an activity to display the activity's detail scene. This scene can contain text, images, video, and sound. For example, if the activity involves changing a bandage, the details scene might contain a video that shows how to remove bandage, clean the wound, and apply a new bandage.  
 
-Ideally, users should fill out the Care Card as they perform the events; however, they can also go back and edit previous days. Users can navigate to different days by tapping and swiping the hearts along the top of the screen. They cannot view or edit days in the future.
+Ideally, users should fill out the Care Card as they perform the events; however, they can also go back and edit previous days. Users can navigate to different days by tapping and swiping the hearts along the top of the screen. They cannot view or edit days in the future. 
 
-For more information, see [Creating the Care Card](../CreatingTheCareCard/CreatingTheCareCard.html).
+For more information, see [Creating the Care Card](../CreatingTheCareCard/CreatingTheCareCard-template.md).
 
 ### Symptom and Measurement Tracker
 
 <center><img src="OverviewImages/Evaluations.png" width="310" style="border: solid #e0e0e0 1px;" alt="Assessments Screenshot"/>
 <figcaption>Figure 3: The Symptom and Measurement Tracker scene.</figcaption></center>
-<br/>
 
 The Symptom and Measurement Tracker module measures the care plan’s effectiveness using both subjective and objective assessments.
 
-Subjective assessments ask the user to evaluate aspects affected by the care plan. Common subjective assessments include pain surveys, mood surveys, and quality of life surveys.
+Subjective assessments ask the user to evaluate aspects affected by the care plan. Common subjective assessments include pain surveys, mood surveys, and quality of life surveys. 
 
 Objective assessments rely on data generated by hardware devices. Often this data can be passively collected, such as heart rate samples from Apple Watch or daily step counts from the iPhone motion sensor. Other times, however, assessment activities ask the user to actively collect data using a hardware device, such as a  wireless sphygmomanometer or a wireless scale.
 
 The list of assessment activities can change from day to day. Some surveys may be scheduled on a daily basis while others are scheduled weekly. You can also schedule assessment activities with more than one event per day, for example, asking the user to measure their blood pressure three times per day. You have complete control over the assessment's schedule.
 
-Users start the assessment event by selecting the desired item from the list. CareKit then displays the selected assessment activity's scene. This scene comes from a custom view controller that you provide. As soon as the user has completed the task, CareKit updates the users progress.
+Users start the assessment event by selecting the desired item from the list. CareKit then displays the selected assessment activity's scene. This scene comes from a custom view controller that you provide. As soon as the user has completed the task, CareKit updates the users progress. 
 
-**Note:** You may be able to simplify the design of your app by using a survey or active task from ResearchKit, instead of building a scene from scratch.
+**Note:** You may be able to simplify the design of your app by using a survey or active task from ResearchKit, instead of building a scene from scratch. 
 
 The large circle shows the percentage of the day’s events completed by the user. The user's goal is to fill the entire circle by the end of the day.
-
+ 
 Ideally, users should complete all the assignment events during their assigned day; however, you can optionally let users edit previous days. Users can navigates to different days by tapping and swiping the circles along the top of the screen. They cannot view or edit days in the future.
 
-For more information, see [Creating the Symptom & Measurement Tracker](../CreatingTheSymptomAndMeasurementTracker/CreatingTheSymptomAndMeasurementTracker.html).
+For more information, see [Creating the Symptom & Measurement Tracker](../CreatingTheSymptomAndMeasurementTracker/CreatingTheSymptomAndMeasurementTracker-template.md). 
 
 ### Care Plan Store
 
@@ -94,20 +92,20 @@ Use the Care Plan Store to create or modify the care plan, or to access data abo
 
 Additionally, you can dynamically change the care plan at runtime. CareKit automatically updates both the Care Card and the Symptom and Measurement Tracker in response to any changes to the care plan. You can also monitor the Care Plan Store, letting your app perform any additional updates as needed.
 
-For more information, see [Accessing Care Plan Data](../AccessingCarePlanData/AccessingCarePlanData.html).
+For more information, see [Accessing Care Plan Data](../AccessingCarePlanData/AccessingCarePlanData-template.md)
 
 ### Insights
 
 <center><img src="OverviewImages/Dashboard.png" width="310" style="border: solid #e0e0e0 1px;" alt="Dashboard Screenshot"/>
 <figcaption>Figure 4: The Insights scene.</figcaption></center>
 
-The Insights scene presents charts that shed light on the user's progress towards their treatment goals. Although you can provide your own charts, CareKit includes support for bar charts.
+The Insights scene presents charts that shed light on the user's progress towards their treatment goals. Although you can provide your own charts, CareKit includes support for bar charts. 
 
 Bar charts can be used to show side-by-side comparisons of any data. A typical use involves showing the correlation between the user's adherence to their intervention activities and the results of their assessment activities. For example, you could create a bar chart that compared the number of times the user took their pain medication with the results from their daily pain survey. Hopefully, as compliance goes up, the subjective measure of pain goes down.
 
 The top right of the Insights scene provides a Share button that lets users share a PDF of the currently displayed charts.
 
-For more information, see [Presenting Care Plan Data](../PresentingInsights/PresentingInsights.html).
+For more information, see [Presenting Care Plan Data](../PresentingInsights/PresentingInsights-template.md)
 
 ### Connect
 
@@ -121,9 +119,8 @@ The user can select a contact to view the detail scene for that contact. The det
 As with activities, you can either programmatically create the contacts, or load them from a saved file; however, contacts are not saved in the Care Plan Store. Instead, they are managed directly by the connect view controller. Replacing the connection view controller's `contacts` property updates the Connect scene.
 
 <center><img src="OverviewImages/ContactsDetail.png" width="310" style="border: solid #e0e0e0 1px;" alt="Contacts Screenshot"/><figcaption>Figure 6: The contacts detail scene.</figcaption></center>
-<br/>
 
-For more information, see [Connecting with Care Teams and Personal Contacts](../ConnectingWithCareTeamsAndPersonalContacts/ConnectingWithCareTeamsAndPersonalContacts.html).
+For more information, see [Connecting with Care Teams and Emergency Contacts](../ConnectingWithCareTeamsAndPersonalContacts/ConnectingWithCareTeamsAndPersonalContacts-template.md)
 
 ## Leveraging Existing iOS Technologies
 
@@ -131,7 +128,7 @@ CareKit is designed to leverage existing iOS technologies and design patterns. W
 
 ### Incorporating ResearchKit
 
-ResearchKit and CareKit are closely related frameworks. If not quite siblings, they are at least cousins. Both frameworks focus on simplifying the app creation process. In general, CareKit does not try to duplicate features that can already be found in ResearchKit. Instead, you can incorporate those ResearchKit features directly in your CareKit app.
+ResearchKit and CareKit are closely related frameworks. If not quite siblings, they are at least cousins. Both frameworks focus on simplifying the app creation process. In general, CareKit does not try to duplicate features that can already be found in ResearchKit. Instead, you can incorporate those ResearchKit features directly in your CareKit app. 
 
 For example, you can use ResearchKit surveys and active tasks to create the user interface for CareKit's assessment tasks. You can also use ResearchKit charts within a CareKit dashboard.
 
@@ -139,13 +136,13 @@ For more information, see [ResearchKit Framework Programming Guide](http://resea
 
 ### Understanding Basic iOS App Design
 
-iOS apps are designed as a series of scenes, with segues between scenes and containers to manage multiple scenes. Each scene is in turn managed by its own view controller. Learning how to create and combine scenes is vital for building all but the most basic iOS apps.
+iOS apps are designed as a series of scenes, with segues between scenes and containers to manage multiple scenes. Each scene is in turn managed by its own view controller. Learning how to create and combine scenes is vital for building all but the most basic iOS apps. 
 
 If you have never created an iOS app before, consider working through the [Start Developing iOS Apps (Swift)](https://developer.apple.com/library/ios/referencelibrary/GettingStarted/DevelopiOSAppsSwift/index.html#//apple_ref/doc/uid/TP40015214) tutorial.
 
 For more information on views and view controllers, see [View Controller Programming Guide for iOS](https://developer.apple.com/library/ios/featuredarticles/ViewControllerPGforiPhoneOS/index.html#//apple_ref/doc/uid/TP40007457).
 
-For information on designing the look and feel of an iOS app, see [iOS Human Interface Guidelines](https://developer.apple.com/library/ios/documentation/UserExperience/Conceptual/MobileHIG/index.html#//apple_ref/doc/uid/TP40006556).
+For information on designing the look and feel of an iOS app, see [iOS Human Interface Guidelines](https://developer.apple.com/library/ios/documentation/UserExperience/Conceptual/MobileHIG/index.html#//apple_ref/doc/uid/TP40006556)
 
 ### Going Further
 
@@ -189,7 +186,7 @@ iPhone automatically forwards notifications to a paired watch. Therefore, users 
 
 Apple Watch also records a large amount of useful information, including activity summaries, step counts, and heart rate samples. This data is synced to the paired iPhone, where you can access it through HealthKit.
 
-For more information, see [App Programming Guide for watchOS](https://developer.apple.com/library/watchos/documentation/General/Conceptual/WatchKitProgrammingGuide/index.html#//apple_ref/doc/uid/TP40014969).
+For more information, see [App Programming Guide for watchOS](https://developer.apple.com/library/watchos/documentation/General/Conceptual/WatchKitProgrammingGuide/index.html#//apple_ref/doc/uid/TP40014969). 
 
 ## Privacy and CareKit
 The nature of the data that CareKit collects and stores is of the most personal nature. It is incumbent upon you to provide a clearly stated privacy policy to users of your app. There is an opportunity to do this within the iTunes Connect Privacy Policy URL. For more information, [visit this link.](https://developer.apple.com/library/ios/documentation/LanguagesUtilities/Conceptual/iTunesConnect_Guide/Appendices/Properties.html)

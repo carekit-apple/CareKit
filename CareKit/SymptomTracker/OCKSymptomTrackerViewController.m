@@ -80,7 +80,7 @@
         if (store != nil) {
             _store = store;
         } else {
-            _store = [OCKCarePlanStore defaultStore];
+            _store = OCKCarePlanStore.defaultStore;
         }
         [self symptomTrackerSetup];
     }

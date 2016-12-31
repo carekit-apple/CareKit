@@ -82,7 +82,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     return nil;
 }
 
-+ (instancetype)defaultStore {
++ (OCKCarePlanStore *)defaultStore {
     static OCKCarePlanStore *sharedStore = nil;
     static dispatch_once_t storeToken;
     dispatch_once(&storeToken, ^{

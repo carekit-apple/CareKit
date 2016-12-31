@@ -88,13 +88,6 @@ OCK_CLASS_AVAILABLE
 - (instancetype)init NS_UNAVAILABLE;
 
 /**
- The singleton care plan store for the app.
- 
- @return    The app's default care plan store.
- */
-+ (instancetype)defaultStore;
-
-/**
  The initializer requires a local directory URL.
  The directory in the URL must exist, otherwise this initializer raises an exception.
  
@@ -103,6 +96,11 @@ OCK_CLASS_AVAILABLE
  @return    An instance of the store.
  */
 - (instancetype)initWithPersistenceDirectoryURL:(NSURL *)URL NS_DESIGNATED_INITIALIZER;
+
+/**
+ The singleton care plan store for the app.
+ */
+@property (class, nonatomic, readonly) OCKCarePlanStore *defaultStore;
 
 /**
  You can use the delegate to subscribe to notifications of changes to the store.

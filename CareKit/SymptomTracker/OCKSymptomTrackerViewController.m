@@ -225,6 +225,7 @@
 #pragma mark - Helpers
 
 - (void)fetchEvents {
+    __weak typeof(self) weakSelf = self;
     [_store eventsOnDate:_selectedDate
                     type:OCKCarePlanActivityTypeAssessment
               completion:^(NSArray<NSArray<OCKCarePlanEvent *> *> * _Nonnull eventsGroupedByActivity, NSError * _Nonnull error) {
@@ -235,18 +236,29 @@
                           [_delegate symptomTrackerViewController:self willDisplayEvents:[eventsGroupedByActivity copy] dateComponents:_selectedDate];
                       }
                       
-                      _events = [NSMutableArray new];
+                      NSMutableArray<OCKCarePlanEvent *> *allEvents = [NSMutableArray new];
+                      //_events = [NSMutableArray new];
                       
                       for (NSArray<OCKCarePlanEvent *> *events in eventsGroupedByActivity) {
                           for (OCKCarePlanEvent *event in events) {
-                              [_events addObject:event];
+                              //[_events addObject:event];
+                              
+                              // Remove the temp events we created previously
+                              if ([event.activity.title isEqualToString:@"Morning"] ||
+                                  [event.activity.title isEqualToString:@"Noon"] ||
+                                  [event.activity.title isEqualToString:@"Afternoon"] ||
+                                  [event.activity.title isEqualToString:@"Evening"]) {
+                                  [_store removeActivity:event.activity completion:^(BOOL success, NSError * _Nullable error) {}];
+                              }
+                              [allEvents addObject:event];
                           }
                       }
                       
                       NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
                       [dateFormat setDateFormat:@"hh:mm a"];
                       
-                      [_events sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+                      //[_events sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+                      [allEvents sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
                           OCKCarePlanEvent *event1 = (OCKCarePlanEvent*)obj1;
                           OCKCarePlanEvent *event2 = (OCKCarePlanEvent*)obj2;
                           
@@ -259,6 +271,129 @@
                               return NSOrderedDescending;
                           }
                       }];
+                      
+                      
+                      // TODO: Check if works
+                      // TODO: Need to create a map of info and then when all the user info has
+                      // been inserted, then create the care plan activity
+                      NSMutableDictionary *tempUserInfo = [NSMutableDictionary new];
+                      
+                      // Start the current date and index to invalid values
+                      NSDate *currDate = nil;
+                      OCKCarePlanEvent *currEvent = nil;
+                      int timeIndex = -1;
+                      
+                      // Get tint color
+                      int hexColor = 0x7ec2b7;
+                      UIColor *eventColor = [[UIColor alloc] initWithRed:(hexColor >> 16) & 0xff green:(hexColor >> 8) & 0xff blue:hexColor & 0xff alpha:1.0];
+                      
+                      for (OCKCarePlanEvent *event in allEvents) {
+                          NSDate *tempDate = [dateFormat dateFromString:event.activity.text];
+                          currEvent = event;
+                          
+                          if ([tempDate isEqual:currDate]) {
+                              // Modify user info to include other events at the same time of day
+                              NSMutableArray *tempDictArray = [[NSMutableArray alloc] initWithArray:[tempUserInfo valueForKey:@"events"]];
+                              [tempDictArray addObject:event];
+                              [tempUserInfo setValue:tempDictArray forKey:@"events"];
+                          } else {
+                              // Set new date and insert new event
+                              currDate = tempDate;
+                              
+                              // Add activity to store
+                              if (timeIndex >= 0) {
+                                  [weakSelf addActivityToStore:timeIndex dict:tempUserInfo color:eventColor schedule:event.activity.schedule];
+                              }
+                              
+                              // Set new date and insert new event
+                              timeIndex++;
+                              
+                              // Start user info dictionary
+                              NSMutableArray *tempDictArray = [NSMutableArray new];
+                              [tempDictArray addObject:event];
+                              [tempUserInfo setObject:tempDictArray forKey:@"events"];
+                          }
+                      }
+                      
+                      if (timeIndex >= 0) {
+                          [weakSelf addActivityToStore:timeIndex dict:tempUserInfo color:eventColor schedule:currEvent.activity.schedule];
+                      }
+                      
+                      [weakSelf fetchCreatedEvents];
+                  });
+              }];
+}
+
+- (void)addActivityToStore:(int) timeIndex dict:(NSMutableDictionary*) userInfo color:(UIColor*) eventColor schedule:(OCKCareSchedule*)schedule {
+    NSString *eventId = @"";
+    
+    // Get event id
+    switch (timeIndex) {
+        case 0:
+            eventId = @"Morning";
+            break;
+        case 1:
+            eventId = @"Noon";
+            break;
+        case 2:
+            eventId = @"Afternoon";
+            break;
+        case 3:
+            eventId = @"Evening";
+            break;
+        default:
+            break;
+    }
+    
+    // Set up the activity
+    OCKCarePlanActivity *tempActivity = [OCKCarePlanActivity assessmentWithIdentifier:eventId groupIdentifier:@"Measurement" title:eventId text:eventId tintColor:eventColor resultResettable:NO schedule:schedule userInfo: userInfo];
+    
+    [_store addActivity:tempActivity completion:^(BOOL success, NSError * _Nullable error) {}];
+}
+
+- (void)fetchCreatedEvents {
+    [_store eventsOnDate:_selectedDate
+                    type:OCKCarePlanActivityTypeAssessment
+              completion:^(NSArray<NSArray<OCKCarePlanEvent *> *> * _Nonnull eventsGroupedByActivity, NSError * _Nonnull error) {
+                  NSAssert(!error, error.localizedDescription);
+                  dispatch_async(dispatch_get_main_queue(), ^{
+                      if (_delegate &&
+                          [_delegate respondsToSelector:@selector(symptomTrackerViewController:willDisplayEvents:dateComponents:)]) {
+                          [_delegate symptomTrackerViewController:self willDisplayEvents:[eventsGroupedByActivity copy] dateComponents:_selectedDate];
+                      }
+                      
+                      NSMutableArray<OCKCarePlanEvent *> *allEvents = [NSMutableArray new];
+                      
+                      for (NSArray<OCKCarePlanEvent *> *events in eventsGroupedByActivity) {
+                          for (OCKCarePlanEvent *event in events) {
+                              // Add only the temp events we created previously
+                              if ([event.activity.title isEqualToString:@"Morning"] ||
+                                  [event.activity.title isEqualToString:@"Noon"] ||
+                                  [event.activity.title isEqualToString:@"Afternoon"] ||
+                                  [event.activity.title isEqualToString:@"Evening"]) {
+                                  [allEvents addObject:event];
+                              }
+                          }
+                      }
+                      
+                      NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+                      [dateFormat setDateFormat:@"hh:mm a"];
+                      
+                      [allEvents sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+                          OCKCarePlanEvent *event1 = (OCKCarePlanEvent*)obj1;
+                          OCKCarePlanEvent *event2 = (OCKCarePlanEvent*)obj2;
+                          
+                          NSDate *date1 = [dateFormat dateFromString:event1.activity.text];
+                          NSDate *date2 = [dateFormat dateFromString:event2.activity.text];
+                          
+                          if ([date1 compare:date2] == NSOrderedAscending) {
+                              return NSOrderedAscending;
+                          } else {
+                              return NSOrderedDescending;
+                          }
+                      }];
+                      
+                      _events = allEvents;
                       
                       [self updateHeaderView];
                       [self updateWeekView];

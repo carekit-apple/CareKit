@@ -285,7 +285,7 @@
                       
                       // Get tint color
                       int hexColor = 0x7ec2b7;
-                      UIColor *eventColor = [[UIColor alloc] initWithRed:(hexColor >> 16) & 0xff green:(hexColor >> 8) & 0xff blue:hexColor & 0xff alpha:1.0];
+                      UIColor *eventColor = [[UIColor alloc] initWithRed:((hexColor >> 16) & 0xff)/255.0 green:((hexColor >> 8) & 0xff)/255.0 blue:(hexColor & 0xff)/255.0 alpha:1.0];
                       
                       for (OCKCarePlanEvent *event in allEvents) {
                           NSDate *tempDate = [dateFormat dateFromString:event.activity.text];
@@ -348,7 +348,15 @@
     // Set up the activity
     OCKCarePlanActivity *tempActivity = [OCKCarePlanActivity assessmentWithIdentifier:eventId groupIdentifier:@"Measurement" title:eventId text:eventId tintColor:eventColor resultResettable:NO schedule:schedule userInfo: userInfo];
     
-    [_store addActivity:tempActivity completion:^(BOOL success, NSError * _Nullable error) {}];
+    dispatch_group_t group = dispatch_group_create();
+    dispatch_group_enter(group);
+    [_store addActivity:tempActivity completion:^(BOOL success, NSError * _Nullable error) {
+        if (!success) {
+            [NSException raise:@"CarePlanStore Error" format:@"Failed to save activity"];
+        }
+        dispatch_group_leave(group);
+    }];
+    dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
 }
 
 - (void)fetchCreatedEvents {

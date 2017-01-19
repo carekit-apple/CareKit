@@ -58,6 +58,7 @@
     OCKWeekViewController *_weekViewController;
     NSCalendar *_calendar;
     NSMutableArray *_constraints;
+    BOOL fetchingEvents;
 }
 
 - (instancetype)init {
@@ -77,6 +78,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    fetchingEvents = false;
     
     _store.symptomTrackerUIDelegate = self;
     
@@ -225,6 +228,76 @@
 #pragma mark - Helpers
 
 - (void)fetchEvents {
+    // Prepare to fetch events
+    __weak typeof(self) weakSelf = self;
+    fetchingEvents = YES;
+    [_store eventsOnDate:_selectedDate
+                    type:OCKCarePlanActivityTypeAssessment
+              completion:^(NSArray<NSArray<OCKCarePlanEvent *> *> * _Nonnull eventsGroupedByActivity, NSError * _Nonnull error) {
+                  NSAssert(!error, error.localizedDescription);
+                  dispatch_async(dispatch_get_main_queue(), ^{
+                      if (_delegate &&
+                          [_delegate respondsToSelector:@selector(symptomTrackerViewController:willDisplayEvents:dateComponents:)]) {
+                          [_delegate symptomTrackerViewController:self willDisplayEvents:[eventsGroupedByActivity copy] dateComponents:_selectedDate];
+                      }
+                      
+                      for (NSArray<OCKCarePlanEvent *> *events in eventsGroupedByActivity) {
+                          for (OCKCarePlanEvent *event in events) {
+                              // Remove the temp events we created previously
+                              if ([event.activity.title isEqualToString:@"Morning"] ||
+                                  [event.activity.title isEqualToString:@"Noon"] ||
+                                  [event.activity.title isEqualToString:@"Afternoon"] ||
+                                  [event.activity.title isEqualToString:@"Evening"]) {
+                                  [_store removeActivity:event.activity completion:^(BOOL success, NSError * _Nullable error) {
+                                  }];
+                              }
+                          }
+                      }
+                      [weakSelf fetchAndCreateEvents];
+                  });
+              }];
+}
+
+- (void)addActivityToStore:(int) timeIndex dict:(NSMutableDictionary*) userInfo color:(UIColor*) eventColor schedule:(OCKCareSchedule*)schedule text:(NSString*)eventText {
+    NSString *eventTitle = @"";
+    
+    // Get event id
+    switch (timeIndex) {
+        case 0:
+            eventTitle = @"Morning";
+            break;
+        case 1:
+            eventTitle = @"Noon";
+            break;
+        case 2:
+            eventTitle = @"Afternoon";
+            break;
+        case 3:
+            eventTitle = @"Evening";
+            break;
+        default:
+            return;
+    }
+    
+    NSString *eventId = [[NSString alloc] initWithFormat:@"%i %@", _selectedDate.day, eventTitle];
+    
+    // Set up the activity
+    OCKCarePlanActivity *tempActivity = [OCKCarePlanActivity assessmentWithIdentifier:eventId groupIdentifier:@"Measurement" title:eventTitle text:eventText tintColor:eventColor resultResettable:NO schedule:schedule userInfo: userInfo];
+    
+    dispatch_group_t group = dispatch_group_create();
+    dispatch_group_enter(group);
+    [_store addActivity:tempActivity completion:^(BOOL success, NSError * _Nullable error) {
+        if (!success) {
+            NSLog(@"Failed to add activity with id: %@", eventId);
+        } else {
+            NSLog(@"Added activity with id: %@", eventId);
+        }
+        dispatch_group_leave(group);
+    }];
+    dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
+}
+
+- (void)fetchAndCreateEvents {
     __weak typeof(self) weakSelf = self;
     [_store eventsOnDate:_selectedDate
                     type:OCKCarePlanActivityTypeAssessment
@@ -241,15 +314,6 @@
                       
                       for (NSArray<OCKCarePlanEvent *> *events in eventsGroupedByActivity) {
                           for (OCKCarePlanEvent *event in events) {
-                              //[_events addObject:event];
-                              
-                              // Remove the temp events we created previously
-                              if ([event.activity.title isEqualToString:@"Morning"] ||
-                                  [event.activity.title isEqualToString:@"Noon"] ||
-                                  [event.activity.title isEqualToString:@"Afternoon"] ||
-                                  [event.activity.title isEqualToString:@"Evening"]) {
-                                  [_store removeActivity:event.activity completion:^(BOOL success, NSError * _Nullable error) {}];
-                              }
                               [allEvents addObject:event];
                           }
                       }
@@ -280,6 +344,7 @@
                       
                       // Start the current date and index to invalid values
                       NSDate *currDate = nil;
+                      NSString *currText = @"";
                       OCKCarePlanEvent *currEvent = nil;
                       int timeIndex = -1;
                       
@@ -294,69 +359,36 @@
                           if ([tempDate isEqual:currDate]) {
                               // Modify user info to include other events at the same time of day
                               NSMutableArray *tempDictArray = [[NSMutableArray alloc] initWithArray:[tempUserInfo valueForKey:@"events"]];
-                              [tempDictArray addObject:event];
+                              [tempDictArray addObject:event.activity.identifier];
                               [tempUserInfo setValue:tempDictArray forKey:@"events"];
+                              currText = [NSString stringWithFormat:@"%@, %@", currText, event.activity.title];
                           } else {
                               // Set new date and insert new event
                               currDate = tempDate;
                               
                               // Add activity to store
                               if (timeIndex >= 0) {
-                                  [weakSelf addActivityToStore:timeIndex dict:tempUserInfo color:eventColor schedule:event.activity.schedule];
+                                  [weakSelf addActivityToStore:timeIndex dict:tempUserInfo color:eventColor schedule:event.activity.schedule text:currText];
                               }
                               
-                              // Set new date and insert new event
                               timeIndex++;
                               
                               // Start user info dictionary
                               NSMutableArray *tempDictArray = [NSMutableArray new];
-                              [tempDictArray addObject:event];
+                              [tempDictArray addObject:event.activity.identifier];
                               [tempUserInfo setObject:tempDictArray forKey:@"events"];
+                              [tempUserInfo setObject:event.activity.text forKey:@"time"];
+                              currText = event.activity.title;
                           }
                       }
                       
                       if (timeIndex >= 0) {
-                          [weakSelf addActivityToStore:timeIndex dict:tempUserInfo color:eventColor schedule:currEvent.activity.schedule];
+                          [weakSelf addActivityToStore:timeIndex dict:tempUserInfo color:eventColor schedule:currEvent.activity.schedule text:currText];
                       }
                       
                       [weakSelf fetchCreatedEvents];
                   });
               }];
-}
-
-- (void)addActivityToStore:(int) timeIndex dict:(NSMutableDictionary*) userInfo color:(UIColor*) eventColor schedule:(OCKCareSchedule*)schedule {
-    NSString *eventId = @"";
-    
-    // Get event id
-    switch (timeIndex) {
-        case 0:
-            eventId = @"Morning";
-            break;
-        case 1:
-            eventId = @"Noon";
-            break;
-        case 2:
-            eventId = @"Afternoon";
-            break;
-        case 3:
-            eventId = @"Evening";
-            break;
-        default:
-            break;
-    }
-    
-    // Set up the activity
-    OCKCarePlanActivity *tempActivity = [OCKCarePlanActivity assessmentWithIdentifier:eventId groupIdentifier:@"Measurement" title:eventId text:eventId tintColor:eventColor resultResettable:NO schedule:schedule userInfo: userInfo];
-    
-    dispatch_group_t group = dispatch_group_create();
-    dispatch_group_enter(group);
-    [_store addActivity:tempActivity completion:^(BOOL success, NSError * _Nullable error) {
-        if (!success) {
-            [NSException raise:@"CarePlanStore Error" format:@"Failed to save activity"];
-        }
-        dispatch_group_leave(group);
-    }];
-    dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
 }
 
 - (void)fetchCreatedEvents {
@@ -391,8 +423,8 @@
                           OCKCarePlanEvent *event1 = (OCKCarePlanEvent*)obj1;
                           OCKCarePlanEvent *event2 = (OCKCarePlanEvent*)obj2;
                           
-                          NSDate *date1 = [dateFormat dateFromString:event1.activity.text];
-                          NSDate *date2 = [dateFormat dateFromString:event2.activity.text];
+                          NSDate *date1 = [dateFormat dateFromString:[event1.activity.userInfo valueForKey:@"time"]];
+                          NSDate *date2 = [dateFormat dateFromString:[event2.activity.userInfo valueForKey:@"time"]];
                           
                           if ([date1 compare:date2] == NSOrderedAscending) {
                               return NSOrderedAscending;
@@ -406,6 +438,8 @@
                       [self updateHeaderView];
                       [self updateWeekView];
                       [_tableView reloadData];
+                      
+                      fetchingEvents = NO;
                   });
               }];
 }
@@ -516,7 +550,9 @@
 }
 
 - (void)carePlanStoreActivityListDidChange:(OCKCarePlanStore *)store {
-    [self fetchEvents];
+    if (!fetchingEvents) {
+        [self fetchEvents];
+    }
 }
 
 

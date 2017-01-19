@@ -128,6 +128,7 @@ OCK_CLASS_AVAILABLE
 
 //ADDED
 @property (nonatomic) UITableView *tableView;
+@property (nonatomic) NSDateComponents *selectedDate;
 
 /**
  A boolean to show the edge indicators.

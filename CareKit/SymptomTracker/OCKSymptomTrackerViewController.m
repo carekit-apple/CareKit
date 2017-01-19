@@ -44,8 +44,6 @@
 
 @interface OCKSymptomTrackerViewController() <OCKWeekViewDelegate, OCKCarePlanStoreDelegate, UITableViewDelegate, UITableViewDataSource, UIPageViewControllerDelegate, UIPageViewControllerDataSource>
 
-@property (nonatomic) NSDateComponents *selectedDate;
-
 @end
 
 
@@ -310,7 +308,6 @@
                       }
                       
                       NSMutableArray<OCKCarePlanEvent *> *allEvents = [NSMutableArray new];
-                      //_events = [NSMutableArray new];
                       
                       for (NSArray<OCKCarePlanEvent *> *events in eventsGroupedByActivity) {
                           for (OCKCarePlanEvent *event in events) {
@@ -321,7 +318,6 @@
                       NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
                       [dateFormat setDateFormat:@"hh:mm a"];
                       
-                      //[_events sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
                       [allEvents sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
                           OCKCarePlanEvent *event1 = (OCKCarePlanEvent*)obj1;
                           OCKCarePlanEvent *event2 = (OCKCarePlanEvent*)obj2;
@@ -337,9 +333,6 @@
                       }];
                       
                       
-                      // TODO: Check if works
-                      // TODO: Need to create a map of info and then when all the user info has
-                      // been inserted, then create the care plan activity
                       NSMutableDictionary *tempUserInfo = [NSMutableDictionary new];
                       
                       // Start the current date and index to invalid values

@@ -96,7 +96,15 @@ static const CGFloat HorizontalMargin = 10.0;
     _titleLabel.text = self.assessmentEvent.activity.title;
     _textLabel.text = self.assessmentEvent.activity.text;
     
-    _valueLabel.text = (self.assessmentEvent.result.valueString.length > 0) ? self.assessmentEvent.result.valueString : @"";
+    NSString* valueString = @"";
+    
+    if (self.assessmentEvent.result != nil && self.assessmentEvent.result.valueString.length > 0) {
+        valueString = self.assessmentEvent.result.valueString;
+    } else if ([self.assessmentEvent.activity.userInfo valueForKey:@"initialResult"] != nil) {
+        valueString = [self.assessmentEvent.activity.userInfo valueForKey:@"initialResult"];
+    }
+    
+    _valueLabel.text = valueString;
     _valueLabel.textColor = self.tintColor;
     
     if (self.assessmentEvent.result.unitString.length > 0) {

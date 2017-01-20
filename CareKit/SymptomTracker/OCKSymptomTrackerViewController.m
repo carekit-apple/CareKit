@@ -338,6 +338,8 @@
                       // Start the current date and index to invalid values
                       NSDate *currDate = nil;
                       NSString *currText = @"";
+                      int completionCount = 0;
+                      int totalCount = 0;
                       OCKCarePlanEvent *currEvent = nil;
                       int timeIndex = -1;
                       
@@ -354,14 +356,25 @@
                               NSMutableArray *tempDictArray = [[NSMutableArray alloc] initWithArray:[tempUserInfo valueForKey:@"events"]];
                               [tempDictArray addObject:event.activity.identifier];
                               [tempUserInfo setValue:tempDictArray forKey:@"events"];
-                              currText = [NSString stringWithFormat:@"%@, %@", currText, event.activity.title];
+                              currText = [weakSelf modifyEventTitle:currText newItem:event.activity.title];
+                              
+                              completionCount += event.state == OCKCarePlanEventStateCompleted ? 1 : 0;
+                              totalCount += 1;
                           } else {
                               // Set new date and insert new event
                               currDate = tempDate;
                               
                               // Add activity to store
                               if (timeIndex >= 0) {
+                                  if (totalCount == 0) {
+                                      totalCount = 1;
+                                  }
+                                  
+                                  [tempUserInfo setValue:[NSString stringWithFormat:@"%i/%i", completionCount, totalCount] forKey:@"initialResult"];
                                   [weakSelf addActivityToStore:timeIndex dict:tempUserInfo color:eventColor schedule:event.activity.schedule text:currText];
+                                  
+                                  completionCount = 0;
+                                  totalCount = 0;
                               }
                               
                               timeIndex++;
@@ -371,17 +384,34 @@
                               [tempDictArray addObject:event.activity.identifier];
                               [tempUserInfo setObject:tempDictArray forKey:@"events"];
                               [tempUserInfo setObject:event.activity.text forKey:@"time"];
-                              currText = event.activity.title;
+                              currText = [weakSelf modifyEventTitle:@"" newItem:event.activity.title];
+                              completionCount += event.state == OCKCarePlanEventStateCompleted ? 1 : 0;
+                              totalCount += 1;
                           }
                       }
                       
                       if (timeIndex >= 0) {
+                          [tempUserInfo setValue:[NSString stringWithFormat:@"%i/%i", completionCount, totalCount] forKey:@"initialResult"];
                           [weakSelf addActivityToStore:timeIndex dict:tempUserInfo color:eventColor schedule:currEvent.activity.schedule text:currText];
                       }
                       
                       [weakSelf fetchCreatedEvents];
                   });
               }];
+}
+
+- (NSString*)modifyEventTitle:(NSString*)currTitle newItem:(NSString*)item {
+    if ([item isEqualToString:@"Blood Pressure"]) {
+        item = @"BP";
+    } else if ([item isEqualToString:@"Heart Rate"]) {
+        item = @"HR";
+    }
+    
+    if (currTitle.length > 0) {
+        return [NSString stringWithFormat:@"%@, %@", currTitle, item];
+    } else {
+        return item;
+    }
 }
 
 - (void)fetchCreatedEvents {
@@ -442,20 +472,23 @@
                                                       dateStyle:NSDateFormatterLongStyle
                                                       timeStyle:NSDateFormatterNoStyle];
     
-    NSInteger totalEvents = _events.count;
-    NSInteger completedEvents = 0;
-    for (OCKCarePlanEvent *event in _events) {
-        if (event.state == OCKCarePlanEventStateCompleted) {
-            completedEvents++;
-        }
-    }
+    __block float progress = 0;
     
-    float progress = (totalEvents > 0) ? (float)completedEvents/totalEvents : 1;
-    _headerView.value = progress;
-    
-    NSInteger selectedIndex = _weekViewController.symptomTrackerWeekView.selectedIndex;
-    [_weekValues replaceObjectAtIndex:selectedIndex withObject:@(progress)];
-    _weekViewController.symptomTrackerWeekView.values = _weekValues;
+    [_store dailyCompletionStatusWithType:OCKCarePlanActivityTypeAssessment
+                                startDate:self.selectedDate
+                                  endDate:self.selectedDate
+                                  handler:^(NSDateComponents * _Nonnull date, NSUInteger completedEvents, NSUInteger totalEvents) {
+                                      progress = (float)completedEvents/(totalEvents);
+                                  } completion:^(BOOL completed, NSError * _Nullable error) {
+                                      NSAssert(!error, error.localizedDescription);
+                                      dispatch_async(dispatch_get_main_queue(), ^{
+                                          _headerView.value = progress;
+                                          
+                                          NSInteger selectedIndex = _weekViewController.symptomTrackerWeekView.selectedIndex;
+                                          [_weekValues replaceObjectAtIndex:selectedIndex withObject:@(progress)];
+                                          _weekViewController.symptomTrackerWeekView.values = _weekValues;
+                                      });
+                                  }];
 }
 
 - (void)updateWeekView {

@@ -870,6 +870,13 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
                                             NSUInteger completed = 0;
                                             NSMutableArray *predicates = [NSMutableArray new];
                                             for (OCKCarePlanActivity *activity in activities) {
+                                                if ([activity.title isEqualToString:@"Morning"] ||
+                                                    [activity.title isEqualToString:@"Noon"] ||
+                                                    [activity.title isEqualToString:@"Afternoon"] ||
+                                                    [activity.title isEqualToString:@"Evening"]) {
+                                                    continue;
+                                                }
+
                                                 NSUInteger count = [activity.schedule numberOfEventsOnDate:day];
                                                 
                                                 if (count > 0) {

@@ -383,7 +383,7 @@
                               NSMutableArray *tempDictArray = [NSMutableArray new];
                               [tempDictArray addObject:event.activity.identifier];
                               [tempUserInfo setObject:tempDictArray forKey:@"events"];
-                              [tempUserInfo setObject:event.activity.text forKey:@"time"];
+                              [tempUserInfo setObject:currDate forKey:@"task-time"];
                               currText = [weakSelf modifyEventTitle:@"" newItem:event.activity.title];
                               completionCount += event.state == OCKCarePlanEventStateCompleted ? 1 : 0;
                               totalCount += 1;
@@ -446,8 +446,8 @@
                           OCKCarePlanEvent *event1 = (OCKCarePlanEvent*)obj1;
                           OCKCarePlanEvent *event2 = (OCKCarePlanEvent*)obj2;
                           
-                          NSDate *date1 = [dateFormat dateFromString:[event1.activity.userInfo valueForKey:@"time"]];
-                          NSDate *date2 = [dateFormat dateFromString:[event2.activity.userInfo valueForKey:@"time"]];
+                          NSDate *date1 = [event1.activity.userInfo valueForKey:@"task-time"];
+                          NSDate *date2 = [event2.activity.userInfo valueForKey:@"task-time"];
                           
                           if ([date1 compare:date2] == NSOrderedAscending) {
                               return NSOrderedAscending;

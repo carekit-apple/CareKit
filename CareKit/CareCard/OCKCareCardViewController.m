@@ -586,6 +586,9 @@
     if (![event.activity.groupIdentifier  isEqual: @"medication"] && event.state == OCKCarePlanEventStateCompleted) {
         cell.userInteractionEnabled = false;
         cell.accessoryType = UITableViewCellAccessoryNone;
+    } else {
+        cell.userInteractionEnabled = true;
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
     
     return cell;

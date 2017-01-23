@@ -178,7 +178,7 @@ OCK_CLASS_AVAILABLE
  
  If the value is not specified, CareKit's default string ("Care Completion") is used.
  */
-@property (nonatomic, nonnull) NSString *headerTitle;
+@property (nonatomic, null_resettable) NSString *headerTitle;
 
 /**
  A boolean to show the edge indicators.

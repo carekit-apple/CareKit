@@ -117,6 +117,10 @@
     if (!_headerView) {
         _headerView = [[OCKSymptomTrackerTableViewHeader alloc] initWithFrame:CGRectZero];
     }
+    if ([_headerTitle length] == 0) {
+        _headerTitle = OCKLocalizedString(@"SYMPTOM_TRACKER_HEADER_TITLE", nil);
+    }
+    _headerView.title = _headerTitle;
     _headerView.tintColor = self.progressRingTintColor;
     
     if (!_pageViewController) {
@@ -214,6 +218,15 @@
     _weekViewController.symptomTrackerWeekView.tintColor = _progressRingTintColor;
     _headerView.tintColor = _progressRingTintColor;
     self.navigationItem.rightBarButtonItem.tintColor = _progressRingTintColor;
+}
+
+- (void)setHeaderTitle:(NSString *)headerTitle {
+    _headerTitle = headerTitle;
+    if ([_headerTitle length] == 0) {
+        _headerView.title = OCKLocalizedString(@"SYMPTOM_TRACKER_HEADER_TITLE", nil);
+    } else {
+        _headerView.title = _headerTitle;
+    }
 }
 
 - (void)setShowEdgeIndicators:(BOOL)showEdgeIndicators {

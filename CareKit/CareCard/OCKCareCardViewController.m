@@ -130,6 +130,10 @@
     if (!_headerView) {
         _headerView = [[OCKCareCardTableViewHeader alloc] initWithFrame:CGRectZero];
     }
+    if ([_headerTitle length] == 0) {
+        _headerTitle = OCKLocalizedString(@"CARE_CARD_HEADER_TITLE", nil);
+    }
+    _headerView.title = _headerTitle;
     _headerView.heartView.maskImage = self.maskImage;
     _headerView.tintColor = self.maskImageTintColor;
     
@@ -245,6 +249,15 @@
     _weekViewController.careCardWeekView.tintColor = _maskImageTintColor;
     _headerView.tintColor = _maskImageTintColor;
     self.navigationItem.rightBarButtonItem.tintColor = _maskImageTintColor;
+}
+
+- (void)setHeaderTitle:(NSString *)headerTitle {
+    _headerTitle = headerTitle;
+    if ([_headerTitle length] == 0) {
+        _headerView.title = OCKLocalizedString(@"CARE_CARD_HEADER_TITLE", nil);
+    } else {
+        _headerView.title = _headerTitle;
+    }
 }
 
 - (void)setShowEdgeIndicators:(BOOL)showEdgeIndicators {

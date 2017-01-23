@@ -120,6 +120,13 @@ OCK_CLASS_AVAILABLE
 @property (nonatomic, null_resettable) UIColor *progressRingTintColor;
 
 /**
+ The string that will be used as the Symptom Tracker header title.
+ 
+ If the value is not specified, CareKit's default string ("Activity Completion") is used.
+ */
+@property (nonatomic, nonnull) NSString *headerTitle;
+
+/**
  A boolean to show the edge indicators.
  
  The default value is NO.

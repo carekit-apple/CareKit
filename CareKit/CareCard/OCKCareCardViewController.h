@@ -174,6 +174,13 @@ OCK_CLASS_AVAILABLE
 @property (nonatomic, null_resettable) UIColor *maskImageTintColor;
 
 /**
+ The string that will be used as the Care Card header title.
+ 
+ If the value is not specified, CareKit's default string ("Care Completion") is used.
+ */
+@property (nonatomic, null_resettable) NSString *headerTitle;
+
+/**
  A boolean to show the edge indicators.
  
  The default value is NO.

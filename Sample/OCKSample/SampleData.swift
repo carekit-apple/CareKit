@@ -86,7 +86,7 @@ class SampleData: NSObject {
             
             carePlanStore.add(carePlanActivity) { success, error in
                 if !success {
-                    print(error?.localizedDescription)
+                    print(error?.localizedDescription as Any)
                 }
             }
         }

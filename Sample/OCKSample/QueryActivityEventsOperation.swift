@@ -100,7 +100,7 @@ class QueryActivityEventsOperation: Operation {
             self.store.activity(forIdentifier: self.activityIdentifier) { success, foundActivity, error in
                 activity = foundActivity
                 if !success {
-                    print(error?.localizedDescription)
+                    print(error?.localizedDescription as Any)
                 }
                 
                 // Use the semaphore to signal that the query is complete.

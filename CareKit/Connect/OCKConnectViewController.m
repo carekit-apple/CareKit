@@ -194,6 +194,9 @@
 }
 
 - (void)prepareHeaderView {
+    if (![self isViewLoaded]) {
+        return;
+    }
     if (self.contacts.count == 0) {
         if (!_noContactsLabel) {
             _noContactsLabel = [OCKLabel new];

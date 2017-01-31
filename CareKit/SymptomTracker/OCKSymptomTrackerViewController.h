@@ -116,7 +116,7 @@ OCK_CLASS_AVAILABLE
 /**
  A reference to the `UITableView` contained in the view controller
  */
-@property (nonatomic, nonnull) UITableView *tableView;
+@property (nonatomic, readonly, nonnull) UITableView *tableView;
 
 /**
  The tint color that will be used to fill the ring view.

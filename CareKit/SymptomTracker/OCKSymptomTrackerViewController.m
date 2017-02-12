@@ -348,6 +348,13 @@
                       UIColor *eventColor = [[UIColor alloc] initWithRed:((hexColor >> 16) & 0xff)/255.0 green:((hexColor >> 8) & 0xff)/255.0 blue:(hexColor & 0xff)/255.0 alpha:1.0];
                       
                       for (OCKCarePlanEvent *event in allEvents) {
+                          if ([event.activity.title isEqualToString:@"Morning"] ||
+                              [event.activity.title isEqualToString:@"Noon"] ||
+                              [event.activity.title isEqualToString:@"Afternoon"] ||
+                              [event.activity.title isEqualToString:@"Evening"]) {
+                              continue;
+                          }
+
                           NSDate *tempDate = [dateFormat dateFromString:event.activity.text];
                           currEvent = event;
                           

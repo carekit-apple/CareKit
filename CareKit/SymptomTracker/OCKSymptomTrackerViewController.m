@@ -1,5 +1,6 @@
 /*
  Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2016, Erik Hornberger. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -50,7 +51,6 @@
 
 
 @implementation OCKSymptomTrackerViewController {
-    UITableView *_tableView;
     NSMutableArray<OCKCarePlanEvent *> *_events;
     NSMutableArray *_weekValues;
     OCKSymptomTrackerTableViewHeader *_headerView;

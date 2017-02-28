@@ -816,11 +816,11 @@
 				TargetAttributes = {
 					8605A5B91C4F04EC00DD65FF = {
 						CreatedOnToolsVersion = 7.2;
-						LastSwiftMigration = 0800;
+						LastSwiftMigration = 0810;
 					};
 					8605A5C31C4F04EC00DD65FF = {
 						CreatedOnToolsVersion = 7.2;
-						LastSwiftMigration = 0800;
+						LastSwiftMigration = 0810;
 					};
 					86189D081CC06A75006C74F0 = {
 						CreatedOnToolsVersion = 7.3;

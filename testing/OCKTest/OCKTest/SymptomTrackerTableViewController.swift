@@ -376,7 +376,7 @@ class SymptomTrackerTableViewController: UITableViewController, OCKSymptomTracke
             } else if String(describing: assessmentEvent.activity.userInfo!["Type"]!) == "Blood Pressure" {
                 if (healthKitStore?.authorizationStatus(for: HKCorrelationType.correlationType(forIdentifier: HKCorrelationTypeIdentifier.bloodPressure)!)) == HKAuthorizationStatus.sharingAuthorized {
                     self.readHKSample(HKCorrelationType.correlationType(forIdentifier: HKCorrelationTypeIdentifier.bloodPressure)!, completion: { (sample, error) in
-                        let correlationResult = OCKCarePlanEventResult.init(correlation: sample as! HKCorrelation, quantityStringFormatter: nil, display: HKUnit.millimeterOfMercury(), unitStringKeys: [HKUnit.millimeterOfMercury():"mm"], userInfo: nil)
+                        let correlationResult = OCKCarePlanEventResult.init(correlation: sample as! HKCorrelation, quantityStringFormatter: nil, display: HKUnit.millimeterOfMercury(), unitStringKeys: [HKUnit.millimeterOfMercury():"mmHg"], userInfo: nil)
                         viewController.store.update(assessmentEvent, with: correlationResult, state: OCKCarePlanEventState.completed, completion: { (boolVal, event, error) in
                             assert(boolVal, (error?.localizedDescription)!)
                         })

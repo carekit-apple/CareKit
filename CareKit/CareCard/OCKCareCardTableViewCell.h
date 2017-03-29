@@ -55,7 +55,7 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 
-@interface CareCardAccessibilityElement : UIAccessibilityElement
+@interface OCKCareCardAccessibilityElement : UIAccessibilityElement
 
 @end
 

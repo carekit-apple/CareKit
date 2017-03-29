@@ -309,7 +309,7 @@ static const CGFloat ButtonViewSize = 40.0;
             }
         }
         
-        CareCardAccessibilityElement *cellElement = [[CareCardAccessibilityElement alloc] initWithAccessibilityContainer:self];
+        OCKCareCardAccessibilityElement *cellElement = [[OCKCareCardAccessibilityElement alloc] initWithAccessibilityContainer:self];
         cellElement.accessibilityLabel = OCKAccessibilityStringForVariables(_titleLabel, _textLabel);
         cellElement.accessibilityHint = OCKLocalizedString(@"AX_CARE_CARD_HINT", nil);
         cellElement.accessibilityValue = [NSString stringWithFormat:OCKLocalizedString(@"AX_CARE_CARD_VALUE", nil), numTasksCompleted, self.interventionEvents.count];
@@ -322,7 +322,7 @@ static const CGFloat ButtonViewSize = 40.0;
 @end
 
 
-@implementation CareCardAccessibilityElement
+@implementation OCKCareCardAccessibilityElement
 
 - (CGRect)accessibilityFrame {
     return [[self accessibilityContainer] accessibilityFrame];

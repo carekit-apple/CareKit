@@ -144,12 +144,16 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
             return template
             
         case .extraLarge:
-            let template = CLKComplicationTemplateExtraLargeStackImage()
-            template.line1ImageProvider = CLKImageProvider(onePieceImage: UIImage(named: "Complication/X-Large")!)
-            template.line2TextProvider = CLKSimpleTextProvider(text: textToDisplay)
-            template.tintColor = InterfaceController.watchTintColor
-            template.highlightLine2 = false
-            return template
+            if #available(watchOSApplicationExtension 3.0, *) {
+                let template = CLKComplicationTemplateExtraLargeStackImage()
+                template.line1ImageProvider = CLKImageProvider(onePieceImage: UIImage(named: "Complication/X-Large")!)
+                template.line2TextProvider = CLKSimpleTextProvider(text: textToDisplay)
+                template.tintColor = InterfaceController.watchTintColor
+                template.highlightLine2 = false
+                return template
+            } else {
+                return nil
+            }
             
         default:
             return nil

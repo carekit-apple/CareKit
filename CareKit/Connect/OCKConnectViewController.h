@@ -80,6 +80,8 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (BOOL)connectViewController:(OCKConnectViewController *)connectViewController handleContactInfoSelected:(OCKContactInfo *)contactInfo;
 
+- (BOOL)connectViewController:(OCKConnectViewController *)connectViewController handleContactSelected:(OCKContact *)contact;
+
 @end
 
 

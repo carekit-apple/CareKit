@@ -60,6 +60,7 @@
 #import <CareKit/OCKContactInfo.h>
 #import <CareKit/OCKContact.h>
 #import <CareKit/OCKConnectViewController.h>
+#import <CareKit/OCKConnectDetailViewController.h>
 
 // PDF
 #import <CareKit/OCKDocument.h>

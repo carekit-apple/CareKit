@@ -32,6 +32,7 @@
 
 
 #import "OCKConnectViewController.h"
+#import "OCKConnectTableViewCell.h"
 #import "OCKContact.h"
 #import "OCKConnectDetailViewController.h"
 #import "OCKHelpers.h"
@@ -241,7 +242,15 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     OCKContact *contact = [self contactForIndexPath:indexPath];
     
-    [self.navigationController pushViewController:[self detailViewControllerForContact:contact] animated:YES];
+    BOOL handled = NO;
+    if (self.delegate && [self.delegate respondsToSelector:@selector(connectViewController:handleContactSelected:)]) {
+        handled = [self.delegate connectViewController:self handleContactSelected:contact];
+    }
+    
+    if (!handled) {
+        [self.navigationController pushViewController:[self detailViewControllerForContact:contact] animated:YES];
+    }
+    
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }

@@ -35,7 +35,11 @@
 #import "OCKConnectTableViewHeader.h"
 #import "OCKDefines_Private.h"
 #import "OCKHelpers.h"
+#import "OCKContactSharingTableViewCell.h"
+#import "OCKContactInfoTableViewCell.h"
 
+@interface OCKConnectDetailViewController () <MFMessageComposeViewControllerDelegate, MFMailComposeViewControllerDelegate, OCKContactInfoTableViewCellDelegate, OCKContactSharingTableViewCellDelegate>
+@end
 
 static const CGFloat HeaderViewHeight = 225.0;
 

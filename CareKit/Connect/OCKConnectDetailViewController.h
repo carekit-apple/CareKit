@@ -1,6 +1,7 @@
 /*
  Copyright (c) 2016, Apple Inc. All rights reserved.
  Copyright (c) 2016, WWT Asynchrony Labs. All rights reserved.
+ Copyright (c) 2017, Erik Hornberger. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -37,16 +38,45 @@ NS_ASSUME_NONNULL_BEGIN
 @class OCKConnectViewController;
 @protocol OCKConnectViewControllerDelegate, OCKContactInfoTableViewCellDelegate, OCKContactSharingTableViewCellDelegate;
 
+/** 
+ The `OCKConnectDetailViewController` class is a view controller that
+ displays the contact information for a single `OCKContact`. It is typically
+ embedded in a navigation controller as the detail view of a master detail pair.
+ */
+OCK_CLASS_AVAILABLE
 @interface OCKConnectDetailViewController : UITableViewController
 
+/** 
+ Returns an initialized connect detail view controller using the specified contact.
+ 
+ @param contact     An `OCKContact` object.
+ 
+ @return An initialized view controller
+ */
 - (instancetype)initWithContact:(OCKContact *)contact;
 
+/** 
+ The contact whose information will be displayed in the table view.
+ */
 @property (nonatomic) OCKContact *contact;
 
+/** 
+ The delegate is used for the sharing section
+ 
+ See the `OCKConnectViewControllerDelegate` protocol
+ */
 @property (nonatomic, weak, nullable) id<OCKConnectViewControllerDelegate> delegate;
 
+/** 
+ A reference to the master view controller
+ */
 @property (nonatomic, weak) OCKConnectViewController *masterViewController;
 
+/** 
+ A boolean to show the edge indicators.
+ 
+ The default value is NO.
+ */
 @property (nonatomic) BOOL showEdgeIndicator;
 
 @end

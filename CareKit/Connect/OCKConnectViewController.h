@@ -1,7 +1,7 @@
 /*
  Copyright (c) 2016, Apple Inc. All rights reserved.
  Copyright (c) 2016, WWT Asynchrony Labs. All rights reserved.
- Copyright (c) 2016, Erik Hornberger. All rights reserved.
+ Copyright (c) 2017, Erik Hornberger. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -80,6 +80,16 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (BOOL)connectViewController:(OCKConnectViewController *)connectViewController handleContactInfoSelected:(OCKContactInfo *)contactInfo;
 
+/** 
+ Asks the delegate to handle the selection of the contact. This can be used to provide custom handling or presenting custom
+ views controllers. If the method is not implemented or if it returns NO, then the default `OCKConnecteDetailViewController` 
+ will be displayed as usual.
+ 
+ @param connectViewController       The view controller providing the callback.
+ @param contact                     The `OCKContact` corresponding to the table cell that was selected
+ 
+ @return YES if the contact selection was handled, or NO if default handling should be performed.
+ */
 - (BOOL)connectViewController:(OCKConnectViewController *)connectViewController handleContactSelected:(OCKContact *)contact;
 
 @end

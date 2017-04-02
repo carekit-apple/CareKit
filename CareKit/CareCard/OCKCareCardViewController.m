@@ -63,6 +63,7 @@
     OCKWeekViewController *_weekViewController;
     NSCalendar *_calendar;
     NSMutableArray *_constraints;
+    UILabel *_noDataLabel;
 }
 
 - (instancetype)init {
@@ -107,6 +108,12 @@
     _tableView.rowHeight = UITableViewAutomaticDimension;
     _tableView.estimatedSectionHeaderHeight = 100.0;
     _tableView.sectionHeaderHeight = UITableViewAutomaticDimension;
+    
+    _noDataLabel = [[UILabel alloc] init];
+    _noDataLabel.text = self.noEventsText;
+    _noDataLabel.numberOfLines = 0;
+    _noDataLabel.textAlignment = NSTextAlignmentCenter;
+    _tableView.backgroundView = _noDataLabel;
     
     if ([self respondsToSelector:@selector(registerForPreviewingWithDelegate:sourceView:)]) {
         [self registerForPreviewingWithDelegate:self sourceView:_tableView];
@@ -265,6 +272,10 @@
     [_tableView reloadData];
 }
 
+- (void)setNoEventsText:(NSString *)noEventsText {
+    _noDataLabel.text = noEventsText;
+}
+
 
 #pragma mark - Helpers
 
@@ -284,6 +295,7 @@
                               [self.delegate careCardViewController:self willDisplayEvents:[_events copy] dateComponents:_selectedDate];
                           }
                           
+                          _noDataLabel.hidden = (_events.count > 0);
                           [self updateHeaderView];
                           [self updateWeekView];
                           [_tableView reloadData];

@@ -63,7 +63,7 @@
     NSMutableArray<NSMutableArray <NSMutableArray <OCKCarePlanEvent *> *> *> *_tableViewData;
     NSString *_otherString;
     NSString *_optionalString;
-
+    UILabel *_noDataLabel;
 }
 
 - (instancetype)init {
@@ -112,6 +112,12 @@
     _tableView.tableFooterView = [UIView new];
     _tableView.estimatedSectionHeaderHeight = 0;
     _tableView.estimatedSectionFooterHeight = 0;
+    
+    _noDataLabel = [[UILabel alloc] init];
+    _noDataLabel.text = self.noEventsText;
+    _noDataLabel.numberOfLines = 0;
+    _noDataLabel.textAlignment = NSTextAlignmentCenter;
+    _tableView.backgroundView = _noDataLabel;
     
     self.navigationController.navigationBar.translucent = NO;
     [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:245.0/255.0 green:244.0/255.0 blue:246.0/255.0 alpha:1.0]];
@@ -313,6 +319,11 @@
 }
 
 
+- (void)setNoEventsText:(NSString *)noEventsText {
+    _noDataLabel.text = noEventsText;
+}
+
+
 #pragma mark - Helpers
 
 - (void)fetchEvents {
@@ -331,6 +342,7 @@
                               [self.delegate symptomTrackerViewController:self willDisplayEvents:[_events copy] dateComponents:_selectedDate];
                           }
                           
+                          _noDataLabel.hidden = (_events > 0);
                           [self createGroupedEventDictionaryForEvents:_events];
                           
                           [self updateHeaderView];
@@ -338,6 +350,7 @@
                           [_tableView reloadData];
                       });
                   }];
+                      
 }
 
 - (void)updateHeaderView {

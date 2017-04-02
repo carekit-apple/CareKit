@@ -58,6 +58,7 @@
     OCKWeekViewController *_weekViewController;
     NSCalendar *_calendar;
     NSMutableArray *_constraints;
+    UILabel *_noDataLabel;
 }
 
 - (instancetype)init {
@@ -99,6 +100,12 @@
     _tableView.rowHeight = UITableViewAutomaticDimension;
     _tableView.estimatedSectionHeaderHeight = 100;
     _tableView.sectionHeaderHeight = UITableViewAutomaticDimension;
+    
+    _noDataLabel = [[UILabel alloc] init];
+    _noDataLabel.text = self.noEventsText;
+    _noDataLabel.numberOfLines = 0;
+    _noDataLabel.textAlignment = NSTextAlignmentCenter;
+    _tableView.backgroundView = _noDataLabel;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -234,6 +241,10 @@
     [_tableView reloadData];
 }
 
+- (void)setNoEventsText:(NSString *)noEventsText {
+    _noDataLabel.text = noEventsText;
+}
+
 
 #pragma mark - Helpers
 
@@ -256,6 +267,7 @@
                           }
                       }
                       
+                      _noDataLabel.hidden = (_events > 0);
                       [self updateHeaderView];
                       [self updateWeekView];
                       [_tableView reloadData];

@@ -77,7 +77,7 @@ Discovering How CareKit Works
 
 One of the best ways to see how CareKit works is to look at the [OCKSample](../../tree/master/Sample/OCKSample) app. 
 You can find it in the CareKit sample directory. You will need to add the CareKit framework to the 
-sample, as described in the previous section.
+sample, as described in the previous section. This sample also requires the ResearchKit framework, which can be obtained along with instructions for adding to the sample [here](https://github.com/ResearchKit/ResearchKit).
 
 Build and run OCKSample. Then take a look at the code and experiment by making a few changes. 
 

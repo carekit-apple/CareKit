@@ -61,7 +61,7 @@
 "AX_WEEK_BUTTON_PROGRESS" = "已完成 %@";
 "AX_CARE_CARD_COMPLETED" = "已完成";
 "AX_CARE_CARD_INCOMPLETE" = "未完成";
-"AX_CARE_CARD_EVENT_LABEL" = "%4$@%1$@ %2$i/%3$lu";
+"AX_CARE_CARD_EVENT_LABEL" = "%@ %i 项，共 %lu 项，%@";
 "AX_CARE_CARD_HINT" = "轻点两下查看说明";
 "AX_CARE_CARD_VALUE" = "已完成 %lu/%lu";
 "AX_SYMPTOM_TRACKER_NOT_STARTED" = "未开始";

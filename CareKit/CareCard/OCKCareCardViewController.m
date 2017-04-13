@@ -38,7 +38,6 @@
 #import "NSDateComponents+CarePlanInternal.h"
 #import "OCKCareCardTableViewHeader.h"
 #import "OCKCareCardTableViewCell.h"
-#import "OCKWeekViewController.h"
 #import "OCKHeartView.h"
 #import "OCKWeekLabelsView.h"
 #import "OCKCarePlanStore_Internal.h"

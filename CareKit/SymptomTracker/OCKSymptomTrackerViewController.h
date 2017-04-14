@@ -80,7 +80,12 @@ NS_ASSUME_NONNULL_BEGIN
 OCK_CLASS_AVAILABLE
 @interface OCKSymptomTrackerViewController : UIViewController
 
-- (instancetype)init NS_UNAVAILABLE;
+/**
+ Returns an initialized symptom tracker view controller using the default care plan store.
+ 
+ @return An initialized symptom tracker view controller.
+ */
+- (instancetype)init;
 
 /**
  Returns an initialized symptom tracker view controller using the specified store.
@@ -89,7 +94,7 @@ OCK_CLASS_AVAILABLE
  
  @return An initialized symptom tracker view controller.
  */
-- (instancetype)initWithCarePlanStore:(OCKCarePlanStore *)store;
+- (instancetype)initWithCarePlanStore:(nullable OCKCarePlanStore *)store;
 
 /**
  The care plan store that provides the content for the symptom tracker.
@@ -123,7 +128,7 @@ OCK_CLASS_AVAILABLE
  
  If the value is not specified, the app's tint color is used.
  */
-@property (nonatomic, null_resettable) UIColor *progressRingTintColor;
+@property (nonatomic, null_resettable) IBInspectable UIColor *progressRingTintColor;
 
 /**
  The string that will be used as the Symptom Tracker header title.
@@ -137,7 +142,7 @@ OCK_CLASS_AVAILABLE
  
  The default value is NO.
  */
-@property (nonatomic) BOOL showEdgeIndicators;
+@property (nonatomic) IBInspectable BOOL showEdgeIndicators;
 
 @end
 

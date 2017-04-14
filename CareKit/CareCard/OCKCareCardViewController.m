@@ -66,19 +66,28 @@
 }
 
 - (instancetype)init {
-    OCKThrowMethodUnavailableException();
-    return nil;
+    self = [self initWithCarePlanStore:nil];
+    return self;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder {
+    self = [super initWithCoder:aDecoder];
+    if (self) {
+        _store = OCKCarePlanStore.defaultStore;
+        [self careCardSetup];
+    }
+    return self;
 }
 
 - (instancetype)initWithCarePlanStore:(OCKCarePlanStore *)store {
     self = [super init];
     if (self) {
-        _store = store;
-        self.maskImage = nil;
-        self.smallMaskImage = nil;
-        self.maskImageTintColor = nil;
-        _showEdgeIndicators = NO;
-        _calendar = [NSCalendar calendarWithIdentifier:NSCalendarIdentifierGregorian];
+        if (store != nil) {
+            _store = store;
+        } else {
+            _store = [OCKCarePlanStore defaultStore];
+        }
+        [self careCardSetup];
     }
     return self;
 }
@@ -227,7 +236,7 @@
 - (void)setMaskImage:(UIImage *)maskImage {
     _maskImage = maskImage;
     if (!_maskImage) {
-        _maskImage = [UIImage imageNamed:@"heart" inBundle:[NSBundle bundleForClass:[self class]] compatibleWithTraitCollection:nil];
+        _maskImage = [UIImage imageNamed:@"heart" inBundle:[NSBundle bundleForClass:[OCKCareCardViewController self]] compatibleWithTraitCollection:nil];
     }
     _headerView.heartView.maskImage = _maskImage;
 }
@@ -235,7 +244,7 @@
 - (void)setSmallMaskImage:(UIImage *)smallMaskImage {
     _smallMaskImage = smallMaskImage;
     if (!_smallMaskImage) {
-        _smallMaskImage = [UIImage imageNamed:@"heart-small" inBundle:[NSBundle bundleForClass:[self class]] compatibleWithTraitCollection:nil];
+        _smallMaskImage = [UIImage imageNamed:@"heart-small" inBundle:[NSBundle bundleForClass:[OCKCareCardViewController self]] compatibleWithTraitCollection:nil];
     }
     _weekViewController.careCardWeekView.smallMaskImage = _smallMaskImage;
 }
@@ -267,6 +276,14 @@
 
 
 #pragma mark - Helpers
+
+- (void)careCardSetup {
+    self.maskImage = nil;
+    self.smallMaskImage = nil;
+    self.maskImageTintColor = nil;
+    _showEdgeIndicators = NO;
+    _calendar = [NSCalendar calendarWithIdentifier:NSCalendarIdentifierGregorian];
+}
 
 - (void)fetchEvents {
     [self.store eventsOnDate:self.selectedDate

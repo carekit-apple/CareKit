@@ -72,21 +72,21 @@ OCK_CLASS_AVAILABLE
  
  Single-lined.
  */
-@property (nonatomic, copy, nullable) NSString *headerTitle;
+@property (nonatomic, copy, nullable) IBInspectable NSString *headerTitle;
 
 /**
  A string representing the subtitle in the header view.
  
  Maximum of 2 lines.
  */
-@property (nonatomic, copy, nullable) NSString *headerSubtitle;
+@property (nonatomic, copy, nullable) IBInspectable NSString *headerSubtitle;
 
 /**
  A boolean to show the edge indicators.
  
  The default value is NO.
  */
-@property (nonatomic) BOOL showEdgeIndicators;
+@property (nonatomic) IBInspectable BOOL showEdgeIndicators;
 
 @end
 

@@ -98,6 +98,11 @@ OCK_CLASS_AVAILABLE
 - (instancetype)initWithPersistenceDirectoryURL:(NSURL *)URL NS_DESIGNATED_INITIALIZER;
 
 /**
+ The singleton care plan store for the app.
+ */
+@property (class, nonatomic, readonly) OCKCarePlanStore *defaultStore;
+
+/**
  You can use the delegate to subscribe to notifications of changes to the store.
  */
 @property (nonatomic, weak) id<OCKCarePlanStoreDelegate> delegate;

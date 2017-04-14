@@ -121,7 +121,7 @@ OCK_CLASS_AVAILABLE
  
  The default value is NO.
  */
-@property (nonatomic) BOOL showEdgeIndicators;
+@property (nonatomic) IBInspectable BOOL showEdgeIndicators;
 
 @end
 

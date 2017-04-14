@@ -1,6 +1,7 @@
 /*
  Copyright (c) 2016, Apple Inc. All rights reserved.
  Copyright (c) 2016, Erik Hornberger. All rights reserved.
+ Copyright (c) 2016, Troy Tsubota. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -51,6 +52,7 @@
 
 
 @implementation OCKSymptomTrackerViewController {
+    UITableView *_tableView;
     NSMutableArray<OCKCarePlanEvent *> *_events;
     NSMutableArray *_weekValues;
     OCKSymptomTrackerTableViewHeader *_headerView;
@@ -61,16 +63,28 @@
 }
 
 - (instancetype)init {
-    OCKThrowMethodUnavailableException();
-    return nil;
+    self = [self initWithCarePlanStore:nil];
+    return self;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder {
+    self = [super initWithCoder:aDecoder];
+    if (self) {
+        _store = [OCKCarePlanStore defaultStore];
+        [self symptomTrackerSetup];
+    }
+    return self;
 }
 
 - (instancetype)initWithCarePlanStore:(OCKCarePlanStore *)store {
     self = [super init];
     if (self) {
-        _store = store;
-        _showEdgeIndicators = NO;
-        _calendar = [NSCalendar calendarWithIdentifier:NSCalendarIdentifierGregorian];
+        if (store != nil) {
+            _store = store;
+        } else {
+            _store = OCKCarePlanStore.defaultStore;
+        }
+        [self symptomTrackerSetup];
     }
     return self;
 }
@@ -236,6 +250,11 @@
 
 
 #pragma mark - Helpers
+
+- (void)symptomTrackerSetup {
+    _showEdgeIndicators = NO;
+    _calendar = [NSCalendar calendarWithIdentifier:NSCalendarIdentifierGregorian];
+}
 
 - (void)fetchEvents {
     [_store eventsOnDate:_selectedDate

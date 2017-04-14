@@ -3,19 +3,28 @@
 
 # Creating the Care Card
 
-The care card manages the tasks that the user must perform as part of their treatment plan. To create a care card, you must instantiate the app's care plan store and add the desired intervention activities to the store. Then, you simply instantiate and present the care card view controller.
+The care card manages the tasks that the user must perform as part of their treatment plan. To create a care card, you must add the desired intervention activities to a care plan store. Then, you simply instantiate and present the care card view controller.
 
 <center><img src="CreatingTheCareCardImages/CareCard.png" style="border: solid #e0e0e0 1px;" width="310" alt="Care Card Screenshot"/>
-<figcaption>Figure 1: The care card.</figcaption></center>.
+<figcaption>Figure 1: The care card.</figcaption></center>
+<br/>
 
 CareKit automatically displays the intervention activity events for each day and automatically tracks the user's progress as they perform these tasks. The user can also tap on the activity to get more details or instructions.
 
-<center><img src="CreatingTheCareCardImages/CareCardDetails.png" style="border: solid #e0e0e0 1px;" width="310" alt="Care Card Details Screenshot"/><figcaption>Figure 2: Activity details.</figcaption></center>.
+<center><img src="CreatingTheCareCardImages/CareCardDetails.png" style="border: solid #e0e0e0 1px;" width="310" alt="Care Card Details Screenshot"/><figcaption>Figure 2: Activity details.</figcaption></center>
 
 
 ## Instantiate the Care Plan Store
 
-Your app's care plan store is represented using the `OCKCarePlanStore` class. To instantiate a store object, you pass the constructor a URL for your store's data. This URL must point to a directory, and it indicates the location where the system loads and saves your store's files.
+Your app's care plan store is represented using the `OCKCarePlanStore` class.
+
+### The Default Store
+
+To use the default store object, you call the singleton `OCKCarePlanStore.defaultStore()`.
+
+### Making a Custom Store
+
+To instantiate a custom store object, you pass the constructor a URL for your store's data. This URL must point to a directory, and it indicates the location where the system loads and saves your store's files.
 
 
 1. Generate a URL to a directory inside your app's documents directory.
@@ -38,18 +47,27 @@ Your app's care plan store is represented using the `OCKCarePlanStore` class. To
 	}
 	```
 
-3. Instantiate the care plan store, and assign it to an instance variable for later use. You can also assign the store's delegate. This lets you respond to any changes to the store.
+3. Instantiate the care plan store, and assign it to an instance variable for later use.
 
 	```swift
-	store = OCKCarePlanStore(persistenceDirectoryURL: storeURL)
-	store.delegate = self
+	customStore = OCKCarePlanStore(persistenceDirectoryURL: storeURL)
 	```
 
-You need only a single care plan store per app. The stores are long-lived objects. Create the store once, and keep a reference to it for later use.
+	You need only a single care plan store per app. The stores are long-lived objects. Create the store once, and keep a reference to it for later use.
 
-When you instantiate a care plan store, it automatically loads any existing activities and automatically saves any changes you make to its activities. It also saves the user's progress on its events.
+	The rest of the documentation will be using the default store, `OCKCarePlanStore.defaultStore()`. Simply replace that to use your custom store instead.
 
-For more information on working with the care plan store, see [Accessing Care Plan Data](../AccessingCarePlanData/AccessingCarePlanData.html)
+<hr/>
+
+You can assign the store's delegate. This lets you respond to any changes to the store:
+
+```swift
+OCKCarePlanStore.defaultStore().delegate = self
+```
+
+When you use the default care plan store or instantiate an existing custom one, it automatically loads any existing activities and automatically saves any changes you make to its activities. It also saves the user's progress on its events.
+
+For more information on working with the care plan store, see [Accessing Care Plan Data](../AccessingCarePlanData/AccessingCarePlanData.html).
 
 For more information on working with URLs and the iOS file system, see [File System Programming Guide](https://developer.apple.com/library/ios/documentation/FileManagement/Conceptual/FileSystemProgrammingGuide/Introduction/Introduction.html).
 
@@ -58,7 +76,7 @@ For more information on working with URLs and the iOS file system, see [File Sys
 1. Before adding an activity to the care plan store, you should check to see if that activity already exists.
 
 	```swift
-	store.activityForIdentifier(MyMedicationIdentifier) { (success, activityOrNil, errorOrNil) -> Void in
+	OCKCarePlanStore.defaultStore().activityForIdentifier(MyMedicationIdentifier) { (success, activityOrNil, errorOrNil) -> Void in
 	    guard success else {
 	        // perform real error handling here.
 	        fatalError("*** An error occurred \(errorOrNil?.localizedDescription) ***")
@@ -110,7 +128,7 @@ For more information on working with URLs and the iOS file system, see [File Sys
 4. Add the activity to the store
 
 	```swift
-	store.addActivity(medication, completion: { (bool, error) in
+	OCKCarePlanStore.defaultStore().addActivity(medication, completion: { (bool, error) in
       // your completion block  
 	})
 	```
@@ -118,18 +136,53 @@ The activity will appear in the Care Card.
 
 ## Create and Present the Care Card View Controller
 
-To initialize your care card view controller, pass your care plan store to the constructor.
+### Using a Storyboard
+
+<sub>**Note**: Custom stores do not work with storyboards.</sub>
+
+To add your care card view controller to your storyboard, start by dragging in a normal view controller.
+
+<center><img src="CreatingTheCareCardImages/ViewController.png" style="border: solid #e0e0e0 1px;" width="310" alt="Care Card Screenshot"/>
+<figcaption>Figure 3: The default view controller.</figcaption></center>
+<br/>
+
+Then, open the Identity inspector for the view controller and set its custom class to `OCKCareCardViewController`.
+
+<center><img src="CreatingTheCareCardImages/CareCardCustomClass.png" style="border: solid #e0e0e0 1px;" width="310" alt="Care Card Screenshot"/>
+<figcaption>Figure 4: Setting the custom class to OCKCareCardViewController.</figcaption></center>
+<br/>
+
+Make sure the view controller is embedded inside a navigation or tab bar controller in order for it to work properly.
+
+#### Customization
+
+You can modify some properties of the care card through the storyboard's attributes inspector.
+
+<center><img src="CreatingTheCareCardImages/CareCardInspectables.png" style="border: solid #e0e0e0 1px;" width="310" alt="Care Card Screenshot"/>
+<figcaption>Figure 5: IBInspectable properties of the care card.</figcaption></center>
+<br/>
+
+To subclass the care card, create a class that is a subclass of `OCKCareCardViewController`. Then, in your storyboard, change the custom class to your subclass.
+
+### In Code
+
+To initialize your care card view controller, use the empty initializer if using the default store or pass in your custom store if you're using one.
 
 ```swift
-let careCardViewController = OCKCareCardViewController(carePlanStore: store)
+// With the default store
+let careCardViewController = OCKCareCardViewController()
+
+// With a custom store
+let careCardViewController = OCKCareCardViewController(carePlanStore: customStore)
 ```
 
 You can now present the care card by pushing it onto a navigation controller.
 
 ```swift
-// presenting the view controller modally
+// pushing the care card onto the stack
 self.navigationController?.pushViewController(careCardViewController, animated: true)
 ```
+<hr/>
 
 For more information on working with view controllers, see [View Controller Programming Guide for iOS](https://developer.apple.com/library/ios/featuredarticles/ViewControllerPGforiPhoneOS/).
 

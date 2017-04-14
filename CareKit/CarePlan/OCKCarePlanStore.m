@@ -1,5 +1,6 @@
 /*
  Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2016, Troy Tsubota. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -80,6 +81,21 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
 - (instancetype)init {
     OCKThrowMethodUnavailableException();
     return nil;
+}
+
++ (OCKCarePlanStore *)defaultStore {
+    static OCKCarePlanStore *sharedStore = nil;
+    static dispatch_once_t storeToken;
+    dispatch_once(&storeToken, ^{
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        NSURL *documentDirectory = [fileManager URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask].firstObject;
+        NSURL *storeURL = [documentDirectory URLByAppendingPathComponent:@"CarePlanStore"];
+        if (![fileManager fileExistsAtPath:storeURL.path]) {
+            [fileManager createDirectoryAtURL:storeURL withIntermediateDirectories:YES attributes:nil error:nil];
+        }
+        sharedStore = [[self alloc] initWithPersistenceDirectoryURL:storeURL];
+    });
+    return sharedStore;
 }
 
 - (instancetype)initWithPersistenceDirectoryURL:(NSURL *)url {

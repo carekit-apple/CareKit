@@ -82,7 +82,6 @@ static const CGFloat HeartViewSize = 110.0;
     if (!_titleLabel) {
         _titleLabel = [OCKLabel new];
         _titleLabel.textStyle = UIFontTextStyleHeadline;
-        _titleLabel.text = OCKLocalizedString(@"CARE_CARD_HEADER_TITLE", nil);
         _titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
         _titleLabel.numberOfLines = 0;
         [self addSubview:_titleLabel];
@@ -120,6 +119,7 @@ static const CGFloat HeartViewSize = 110.0;
 }
 
 - (void)updateView {
+    _titleLabel.text = self.title;
     _dateLabel.text = self.date;
     self.heartView.value = self.value;
     self.heartView.tintColor = self.tintColor;

@@ -80,7 +80,6 @@ static const CGFloat RingViewSize = 110.0;
     if (!_titleLabel) {
         _titleLabel = [OCKLabel new];
         _titleLabel.textStyle = UIFontTextStyleHeadline;
-        _titleLabel.text = OCKLocalizedString(@"SYMPTOM_TRACKER_HEADER_TITLE", nil);
         _titleLabel.numberOfLines = 2;
         [self addSubview:_titleLabel];
     }
@@ -112,6 +111,7 @@ static const CGFloat RingViewSize = 110.0;
 - (void)updateView {
     self.ringView.tintColor = self.tintColor;
     self.ringView.value = self.value;
+    _titleLabel.text = self.title;
     _dateLabel.text = self.date;
 }
 

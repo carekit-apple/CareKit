@@ -69,17 +69,15 @@ class QueryActivityEventsOperation: Operation {
 
         // Query for events for the activity between the requested dates.
         self.dailyEvents = DailyEvents()
-        
-        DispatchQueue.main.async { // <rdar://problem/25528295> [CK] OCKCarePlanStore query methods crash if not called on the main thread
-            self.store.enumerateEvents(of: activity, startDate: self.startDate as DateComponents, endDate: self.endDate as DateComponents, handler: { event, _ in
-                if let event = event {
-                    self.dailyEvents?[event.date].append(event)
-                }
-            }, completion: { _, _ in
-                // Use the semaphore to signal that the query is complete.
-                semaphore.signal()
-            })
-        }
+
+        store.enumerateEvents(of: activity, startDate: startDate as DateComponents, endDate: endDate as DateComponents, handler: { event, _ in
+            if let event = event {
+                self.dailyEvents?[event.date].append(event)
+            }
+        }, completion: { _, _ in
+            // Use the semaphore to signal that the query is complete.
+            semaphore.signal()
+        })
         
         // Wait for the semaphore to be signalled.
         _ = semaphore.wait(timeout: DispatchTime.distantFuture)
@@ -96,16 +94,14 @@ class QueryActivityEventsOperation: Operation {
         
         var activity: OCKCarePlanActivity?
         
-        DispatchQueue.main.async { // <rdar://problem/25528295> [CK] OCKCarePlanStore query methods crash if not called on the main thread
-            self.store.activity(forIdentifier: self.activityIdentifier) { success, foundActivity, error in
-                activity = foundActivity
-                if !success {
-                    print(error?.localizedDescription)
-                }
-                
-                // Use the semaphore to signal that the query is complete.
-                semaphore.signal()
+        store.activity(forIdentifier: activityIdentifier) { success, foundActivity, error in
+            activity = foundActivity
+            if !success {
+                print(error?.localizedDescription as Any)
             }
+            
+            // Use the semaphore to signal that the query is complete.
+            semaphore.signal()
         }
         
         // Wait for the semaphore to be signalled.

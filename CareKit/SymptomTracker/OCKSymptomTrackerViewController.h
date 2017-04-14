@@ -1,5 +1,6 @@
 /*
  Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2016, Erik Hornberger. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -118,11 +119,23 @@ OCK_CLASS_AVAILABLE
 @property (nonatomic, readonly, nullable) OCKCarePlanEvent *lastSelectedAssessmentEvent;
 
 /**
+ A reference to the `UITableView` contained in the view controller
+ */
+@property (nonatomic, readonly, nonnull) UITableView *tableView;
+
+/**
  The tint color that will be used to fill the ring view.
  
  If the value is not specified, the app's tint color is used.
  */
 @property (nonatomic, null_resettable) IBInspectable UIColor *progressRingTintColor;
+
+/**
+ The string that will be used as the Symptom Tracker header title.
+ 
+ If the value is not specified, CareKit's default string ("Activity Completion") is used.
+ */
+@property (nonatomic, null_resettable) NSString *headerTitle;
 
 /**
  A boolean to show the edge indicators.

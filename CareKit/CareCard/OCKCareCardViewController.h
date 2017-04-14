@@ -1,5 +1,6 @@
 /*
  Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2016, Erik Hornberger. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -149,6 +150,11 @@ OCK_CLASS_AVAILABLE
  */
 @property (nonatomic, readonly, nullable) OCKCarePlanEvent *lastSelectedInterventionEvent;
 
+/** 
+ A reference to the `UITableView` contained in the view controller
+ */
+@property (nonatomic, readonly, nonnull) UITableView *tableView;
+
 /**
  The image that will be used to mask the fill shape in the header view.
  
@@ -177,6 +183,13 @@ OCK_CLASS_AVAILABLE
  If tint color is not specified, a default red color will be used.
  */
 @property (nonatomic, null_resettable) IBInspectable UIColor *maskImageTintColor;
+
+/**
+ The string that will be used as the Care Card header title.
+ 
+ If the value is not specified, CareKit's default string ("Care Completion") is used.
+ */
+@property (nonatomic, null_resettable) NSString *headerTitle;
 
 /**
  A boolean to show the edge indicators.

@@ -1,6 +1,7 @@
 /*
  Copyright (c) 2016, Apple Inc. All rights reserved.
  Copyright (c) 2016, Troy Tsubota. All rights reserved.
+ Copyright (c) 2016, Erik Hornberger. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -44,7 +45,6 @@
 
 
 @implementation OCKConnectViewController {
-    UITableView *_tableView;
     NSMutableArray *_constraints;
     NSMutableArray<NSArray<OCKContact *>*> *_sectionedContacts;
     NSMutableArray<NSString *> *_sectionTitles;
@@ -202,6 +202,9 @@
 }
 
 - (void)prepareHeaderView {
+    if (![self isViewLoaded]) {
+        return;
+    }
     if (self.contacts.count == 0) {
         if (!_noContactsLabel) {
             _noContactsLabel = [OCKLabel new];

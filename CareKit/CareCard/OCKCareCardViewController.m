@@ -440,6 +440,7 @@
                 OCKCareCardTableViewCell *cell = [_tableView cellForRowAtIndexPath:indexPath];
                 cell.interventionEvents = events;
                 cell.showEdgeIndicator = cell.showEdgeIndicator;
+                cell.buttonImage = self.buttonImage;
             }
             break;
         }
@@ -527,6 +528,7 @@
     cell.interventionEvents = _events[indexPath.row];
     cell.delegate = self;
     cell.showEdgeIndicator = self.showEdgeIndicators;
+    cell.buttonImage = self.buttonImage;
     return cell;
 }
 

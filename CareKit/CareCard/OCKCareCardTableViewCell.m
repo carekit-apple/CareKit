@@ -286,6 +286,13 @@ static const CGFloat ButtonViewSize = 40.0;
     
 }
 
+-(void)setButtonImage:(UIImage *)buttonImage {
+    _buttonImage = buttonImage;
+    for (int k=0; k<_frequencyButtons.count; k++) {
+        _frequencyButtons[k].buttonImage = self.buttonImage;
+    }
+}
+
 
 #pragma mark - Accessibility
 

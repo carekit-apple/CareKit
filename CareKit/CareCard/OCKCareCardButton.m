@@ -57,7 +57,8 @@ static const CGFloat ButtonSize = 30.0;
     }
     
     if (!_imageView) {
-        _imageView = [[UIImageView alloc] initWithFrame:rect];
+        CGRect imageRect = CGRectMake(0, 0, ButtonSize, ButtonSize);
+        _imageView = [[UIImageView alloc] initWithFrame:imageRect];
         _imageView.contentMode = UIViewContentModeScaleAspectFit;
         [self updateImageForSelection:self.isSelected];
         [self addSubview:_imageView];

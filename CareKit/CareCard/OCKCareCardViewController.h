@@ -193,6 +193,14 @@ OCK_CLASS_AVAILABLE
  */
 @property (nonatomic) BOOL showEdgeIndicators;
 
+/** 
+ An image to be displayed on top of the circular `OCKCareCardButton`s in each
+ intervention items's table view cell.
+ 
+ If no image is provided, no image will be displayed and the button will simply
+ fill with a solid color when selected.
+ */
+@property (nonatomic, nullable) UIImage *buttonImage;
 @end
 
 NS_ASSUME_NONNULL_END

@@ -1,5 +1,6 @@
 /*
  Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Erik Hornberger. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -49,6 +50,8 @@ NS_ASSUME_NONNULL_BEGIN
 @interface OCKCareCardTableViewCell : OCKTableViewCell
 
 @property (nonatomic, copy) NSArray<OCKCarePlanEvent *> *interventionEvents;
+
+@property (nonatomic, nullable) UIImage *buttonImage;
 
 @property (nonatomic, weak) id<OCKCareCardCellDelegate> delegate;
 

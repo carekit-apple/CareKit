@@ -1,5 +1,6 @@
 /*
  Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2018, Erik Hornberger. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -37,6 +38,7 @@ static const CGFloat ButtonSize = 30.0;
 
 @implementation OCKCareCardButton {
     CAShapeLayer *_circleLayer;
+    UIImageView *_imageView;
 }
 
 - (void)drawRect:(CGRect)rect {
@@ -53,20 +55,34 @@ static const CGFloat ButtonSize = 30.0;
         [[UIColor clearColor] setFill];
         UIRectFill(_circleLayer.frame);
     }
+    
+    if (!_imageView) {
+        CGRect imageRect = CGRectMake(0, 0, ButtonSize, ButtonSize);
+        _imageView = [[UIImageView alloc] initWithFrame:imageRect];
+        _imageView.contentMode = UIViewContentModeScaleAspectFit;
+        [self updateImageForSelection:self.isSelected];
+        [self addSubview:_imageView];
+    }
 }
 
 - (void)setHighlighted:(BOOL)highlighted {
     [self updateFillColorForSelection:highlighted];
+    [self updateImageForSelection:highlighted];
     [super setHighlighted:highlighted];
 }
 
 - (void)setSelected:(BOOL)selected {
     [self updateFillColorForSelection:selected];
+    [self updateImageForSelection:selected];
     [super setSelected:selected];
 }
 
 - (void)updateFillColorForSelection:(BOOL)selection {
     _circleLayer.fillColor = (selection) ? self.tintColor.CGColor : [UIColor whiteColor].CGColor;
+}
+
+- (void)updateImageForSelection:(BOOL)selection {
+    [_imageView setImage: selection ? self.buttonImage : NULL];
 }
 
 @end

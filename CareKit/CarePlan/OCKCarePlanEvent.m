@@ -1,5 +1,6 @@
+
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -99,6 +100,56 @@
             @(self.occurrenceIndexOfDay)];
 }
 
+- (NSArray<NSArray<OCKCarePlanThreshold *> *> *)evaluateNumericThresholds {
+    
+    NSArray<NSNumber *> *values = self.result.values;
+    NSArray<NSArray<OCKCarePlanThreshold *> *> *thresholds = self.activity.thresholds;
+    
+    NSMutableArray<NSArray<OCKCarePlanThreshold *> *> *triggeredThresholds = [NSMutableArray new];
+    
+    if (values && thresholds) {
+        if (values.count != thresholds.count) {
+            @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Results object must have the same number of values as the event's thresholds." userInfo:nil];
+        }
+        
+        for (int valueIndex = 0; valueIndex < values.count; valueIndex++) {
+            NSIndexSet *triggeredIndices = [thresholds[valueIndex] indexesOfObjectsPassingTest:^BOOL(OCKCarePlanThreshold * _Nonnull threshold, NSUInteger idx, BOOL * _Nonnull stop) {
+                return [threshold evaluateThresholdForValue:values[valueIndex]];
+            }];
+            
+            NSArray<OCKCarePlanThreshold *> *newThresholds = [thresholds[valueIndex] objectsAtIndexes:triggeredIndices];
+            
+            [triggeredThresholds addObject:newThresholds];
+        }
+    }
+    
+    return [triggeredThresholds copy];
+}
+
++ (BOOL)supportsSecureCoding {
+    return YES;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super init];
+    if (self) {
+        OCK_DECODE_INTEGER(coder, occurrenceIndexOfDay);
+        OCK_DECODE_INTEGER(coder, numberOfDaysSinceStart);
+        OCK_DECODE_ENUM(coder, state);
+        OCK_DECODE_OBJ_CLASS(coder, activity, OCKCarePlanActivity);
+        OCK_DECODE_OBJ_CLASS(coder, result, OCKCarePlanEventResult);
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    OCK_ENCODE_INTEGER(coder, occurrenceIndexOfDay);
+    OCK_ENCODE_INTEGER(coder, numberOfDaysSinceStart);
+    OCK_ENCODE_ENUM(coder, state);
+    OCK_ENCODE_OBJ(coder, activity);
+    OCK_ENCODE_OBJ(coder, result);
+}
+
 @end
 
 
@@ -125,6 +176,10 @@ insertIntoManagedObjectContext:(NSManagedObjectContext *)context
 
 - (void)updateWithState:(OCKCarePlanEventState)state result:(OCKCDCarePlanEventResult *)result {
     self.state = @(state);
+    
+    if (result.values && self.activity.thresholds && (self.activity.thresholds.count != result.values.count)) {
+        @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Results object must have the same number of values as the event's thresholds." userInfo:nil];
+    }
     
     if (result && self.result) {
         [self.result updateWithResult:result];

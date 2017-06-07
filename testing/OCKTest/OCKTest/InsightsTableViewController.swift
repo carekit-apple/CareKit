@@ -39,7 +39,7 @@ class InsightsTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 7
+        return 8
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -60,6 +60,8 @@ class InsightsTableViewController: UITableViewController {
                 cell.textLabel?.text = "Custom Charts"
             case 6:
                 cell.textLabel?.text = "Custom Scales"
+            case 7:
+                cell.textLabel?.text = "Many Ring Items"
             default:
                 cell.textLabel?.text = nil
             }
@@ -104,7 +106,7 @@ class InsightsTableViewController: UITableViewController {
             let chart5Series2 = OCKBarSeries.init(title: "Zero", values: [0], valueLabels: ["0"], tintColor: UIColor.green)
             let chart5 = OCKBarChart.init(title: "Chart #5", text: "Chart #5 Description\n spans over two lines", tintColor: UIColor.green, axisTitles: ["A","B"], axisSubtitles: ["abcdefgh","pqrstuvwxyz"], dataSeries: [chart5Series1, chart5Series2])
             
-            let insightsDashboardViewController = OCKInsightsViewController.init(insightItems: [chart1, chart2, chart3, chart4, chart5], headerTitle:  "Insights Dashboard\nThis line should be hidden", headerSubtitle: "Many Bar Charts Here\nSubtitle can have two lines\nBut not three")
+            let insightsDashboardViewController = OCKInsightsViewController.init(insightItems: [chart1, chart2, chart3, chart4, chart5])
             self.navigationController?.pushViewController(insightsDashboardViewController, animated: true)
         
         } else if (indexPath as NSIndexPath).row == 1 {
@@ -136,7 +138,6 @@ class InsightsTableViewController: UITableViewController {
             let barSeries4 = OCKBarSeries.init(title: "Canada Average", values: [80000,90000,100000,120000,130000,135000,143000,145000,120000,120000,130000,150000,80000,90000,100000,120000,130000,135000,145000,120000,120000,130000,150000], valueLabels: ["80K","90K","100K","120K","130K","135K","143K","145K","120K","120K","130K","150K","80K","90K","100K","120K","130K","135K","145K","120K","120K","130K","150K"], tintColor: UIColor.yellow)
             let chart1 = OCKBarChart.init(title: "Walking", text: "Step Count", tintColor: UIColor.gray, axisTitles: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec","Jan'17","Feb'17","Mar'17","Apr'17","May'17","Jun'17","Jul'17","Aug'17","Sep'17","Oct'17","Nov'17","Dec'17"], axisSubtitles: nil,  dataSeries: [barSeries1, barSeries2,barSeries3,barSeries4])
             let insightsDashboardViewController = OCKInsightsViewController.init(insightItems: [chart1])
-            insightsDashboardViewController.headerSubtitle = "This is a subtitle without a title"
             self.navigationController?.pushViewController(insightsDashboardViewController, animated: true)
        
         } else if (indexPath as NSIndexPath).row == 3 {
@@ -165,9 +166,10 @@ class InsightsTableViewController: UITableViewController {
             let chart1 = OCKBarChart.init(title: "Chart #1", text: "Chart #1 Description", tintColor: UIColor.gray, axisTitles: ["ABC","DEF","GHI","JKL","MNO"], axisSubtitles: ["123","456","789","012"], dataSeries: [series1, series2])
             let messageItem3 = OCKMessageItem.init(title: "Another Alert", text: nil, tintColor: UIColor.orange, messageType: OCKMessageItemType.alert)
             let messageItem4 = OCKMessageItem.init(title: "Another Tip", text: nil, tintColor:  UIColor.green, messageType: OCKMessageItemType.tip)
-            let insightsDashboardViewController = OCKInsightsViewController.init(insightItems: [messageItem1, messageItem2,chart1, messageItem3, messageItem4])
-            insightsDashboardViewController.headerTitle = "Dashboard with Messages and Bar Charts"
-            insightsDashboardViewController.showEdgeIndicators = true
+            
+            let ringItem1 = OCKRingItem.init(title: "Medication Adherence", text: "Ibuprofen", tintColor: UIColor.green, value: 0.5, glyphType: .heart, glyphFilename: nil)
+            
+            let insightsDashboardViewController = OCKInsightsViewController.init(insightItems: [messageItem1, messageItem2,chart1, messageItem3, messageItem4, ringItem1])
             self.navigationController?.pushViewController(insightsDashboardViewController, animated: true)
      
         } else if (indexPath as NSIndexPath).row == 5 {
@@ -187,8 +189,6 @@ class InsightsTableViewController: UITableViewController {
             chart3.title = "3. Custom Chart"
             
             let insightsDashboardViewController = OCKInsightsViewController.init(insightItems: [chart1, chart2, chart3])
-            insightsDashboardViewController.headerTitle = "Dashboard with Custom Chart"
-            insightsDashboardViewController.showEdgeIndicators = true
             self.navigationController?.pushViewController(insightsDashboardViewController, animated: true)
        
         } else if (indexPath as NSIndexPath).row == 6 {
@@ -217,11 +217,23 @@ class InsightsTableViewController: UITableViewController {
             let chart6 = OCKBarChart.init(title: "Min & Max Int values", text: "Min = Int64.min, Max = Int64.max", tintColor: UIColor.green, axisTitles: nil, axisSubtitles: ["Min","Max"], dataSeries: [chart6Series1], minimumScaleRangeValue: NSNumber(value:Int64.min), maximumScaleRangeValue: NSNumber(value:Int64.max))
             
             let insightsDashboardViewController = OCKInsightsViewController.init(insightItems: [chart1, chart2, chart3, chart4, chart5, chart6])
-            insightsDashboardViewController.headerTitle = "Minimum/Maximum Scales"
-            insightsDashboardViewController.headerSubtitle = "With Edge Indicators"
-            insightsDashboardViewController.showEdgeIndicators = true
             self.navigationController?.pushViewController(insightsDashboardViewController, animated: true)
        
+        } else if(indexPath as NSIndexPath).row == 7 {
+            
+            let ringItem1 = OCKRingItem.init(title: "Medication Adherence", text: "Ibuprofen", tintColor: UIColor.red, value: 0.9, glyphType: .stethoscope, glyphFilename: nil)
+            
+            let ringItem2 = OCKRingItem.init(title: "Long Title for a Ring Item with no text", text: nil, tintColor: UIColor.purple, value: 0.5, glyphType: .stethoscope, glyphFilename: nil)
+            
+            let ringItem3 = OCKRingItem.init(title: "Title", text: "Long text for a Ring Item and small Title", tintColor: UIColor.green, value: 0.2, glyphType: .stethoscope, glyphFilename: nil)
+            
+            let ringItem4 = OCKRingItem.init(title: "Medication\nAdherence", text: "Multiline Title\nand text", tintColor: UIColor.cyan, value: 0.1, glyphType: .custom, glyphFilename: "club")
+            
+            let ringItem5 = OCKRingItem.init(title: "Medication Adherence", text: "Ibuprofen", tintColor: UIColor.yellow, value: 0.4, glyphType: .stethoscope, glyphFilename: nil)
+            
+            let insightsDashboardViewController = OCKInsightsViewController.init(insightItems: [ringItem1, ringItem2, ringItem3, ringItem4, ringItem5])
+            self.navigationController?.pushViewController(insightsDashboardViewController, animated: true)
+            
         }
         
     }

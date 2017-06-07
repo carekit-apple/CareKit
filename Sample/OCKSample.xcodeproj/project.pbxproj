@@ -10,7 +10,6 @@
 		1801613F1D4E778F0036E247 /* WatchConnectivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1801613E1D4E778F0036E247 /* WatchConnectivityManager.swift */; };
 		18214FC81D3D9C8000AE765B /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 18214FC61D3D9C8000AE765B /* Interface.storyboard */; };
 		18214FD11D3D9C8000AE765B /* OCKSampleWatch Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 18214FD01D3D9C8000AE765B /* OCKSampleWatch Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		18214FD61D3D9C8000AE765B /* InterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18214FD51D3D9C8000AE765B /* InterfaceController.swift */; };
 		18214FD81D3D9C8000AE765B /* ExtensionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18214FD71D3D9C8000AE765B /* ExtensionDelegate.swift */; };
 		18214FDA1D3D9C8000AE765B /* ComplicationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18214FD91D3D9C8000AE765B /* ComplicationController.swift */; };
 		18214FE01D3D9C8000AE765B /* OCKSampleWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 18214FC41D3D9C8000AE765B /* OCKSampleWatch.app */; };
@@ -21,8 +20,8 @@
 		18FB87491D3ED97A00D2A06D /* WCKEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18FB87481D3ED97A00D2A06D /* WCKEvent.swift */; };
 		18FB874F1D3F106200D2A06D /* ActivityRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18FB874E1D3F106200D2A06D /* ActivityRow.swift */; };
 		24026C671D6D244A007582F3 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24026C661D6D244A007582F3 /* HealthKit.framework */; };
-		2436E4341CD18BFD00ABE381 /* ResearchKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2436E4311CD18BED00ABE381 /* ResearchKit.framework */; };
-		2436E4351CD18BFD00ABE381 /* ResearchKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2436E4311CD18BED00ABE381 /* ResearchKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		247E67881E53DCD30045D28B /* ResearchKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 247E67871E53DCD30045D28B /* ResearchKit.framework */; };
+		247E67891E53DCD30045D28B /* ResearchKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 247E67871E53DCD30045D28B /* ResearchKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		24A69BBC1D779DE600BEAD84 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B5C100991CB12E0C00FAD7E8 /* Assets.xcassets */; };
 		B55565771CC82FCA00513644 /* CareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B55565711CC82F8D00513644 /* CareKit.framework */; };
 		B55565781CC82FCA00513644 /* CareKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B55565711CC82F8D00513644 /* CareKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -43,12 +42,14 @@
 		B5C100981CB12E0C00FAD7E8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B5C100961CB12E0C00FAD7E8 /* Main.storyboard */; };
 		B5C1009A1CB12E0C00FAD7E8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B5C100991CB12E0C00FAD7E8 /* Assets.xcassets */; };
 		B5C1009D1CB12E0C00FAD7E8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B5C1009B1CB12E0C00FAD7E8 /* LaunchScreen.storyboard */; };
-		B5C100D51CB1475900FAD7E8 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C100D41CB1475900FAD7E8 /* RootViewController.swift */; };
 		B5C100DC1CB1547600FAD7E8 /* SampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C100DB1CB1547600FAD7E8 /* SampleData.swift */; };
 		B5C100DE1CB1556F00FAD7E8 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C100DD1CB1556F00FAD7E8 /* Colors.swift */; };
 		B5C100E01CB158D900FAD7E8 /* CarePlanStoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C100DF1CB158D900FAD7E8 /* CarePlanStoreManager.swift */; };
 		B5C100E41CB27B5F00FAD7E8 /* Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C100E31CB27B5F00FAD7E8 /* Activity.swift */; };
 		B5C100EB1CB2C9FE00FAD7E8 /* QueryActivityEventsOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C100EA1CB2C9FE00FAD7E8 /* QueryActivityEventsOperation.swift */; };
+		BA965B281DC6D3200066EAC6 /* Glyph.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA965B271DC6D3200066EAC6 /* Glyph.swift */; };
+		BADD6DC81DC5428C008E7893 /* InterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18214FD51D3D9C8000AE765B /* InterfaceController.swift */; };
+		BADD6DCA1DC542CF008E7893 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C100D41CB1475900FAD7E8 /* RootViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -79,13 +80,6 @@
 			proxyType = 2;
 			remoteGlobalIDString = 86CC8E9A1AC09332001CCD89;
 			remoteInfo = ResearchKitTests;
-		};
-		2436E4361CD18BFD00ABE381 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 2436E42A1CD18BEC00ABE381 /* ResearchKit.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = B183A4731A8535D100C76870;
-			remoteInfo = ResearchKit;
 		};
 		B55565701CC82F8D00513644 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -139,8 +133,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				2436E4351CD18BFD00ABE381 /* ResearchKit.framework in Embed Frameworks */,
 				B55565781CC82FCA00513644 /* CareKit.framework in Embed Frameworks */,
+				247E67891E53DCD30045D28B /* ResearchKit.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -165,6 +159,7 @@
 		18FB874E1D3F106200D2A06D /* ActivityRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityRow.swift; sourceTree = "<group>"; };
 		24026C661D6D244A007582F3 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
 		2436E42A1CD18BEC00ABE381 /* ResearchKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ResearchKit.xcodeproj; path = ../dependency/ResearchKit.xcodeproj; sourceTree = "<group>"; };
+		247E67871E53DCD30045D28B /* ResearchKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = ResearchKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B555759B1CB3DB8C0028DC37 /* NSCalendar+Dates.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSCalendar+Dates.swift"; sourceTree = "<group>"; };
 		B555759D1CB3DBBE0028DC37 /* OCKInsightItem+EmptyMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OCKInsightItem+EmptyMessage.swift"; sourceTree = "<group>"; };
 		B56848B51CB5085E00D190EE /* InsightsBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InsightsBuilder.swift; sourceTree = "<group>"; };
@@ -192,6 +187,7 @@
 		B5C100DF1CB158D900FAD7E8 /* CarePlanStoreManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CarePlanStoreManager.swift; sourceTree = "<group>"; };
 		B5C100E31CB27B5F00FAD7E8 /* Activity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Activity.swift; sourceTree = "<group>"; };
 		B5C100EA1CB2C9FE00FAD7E8 /* QueryActivityEventsOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryActivityEventsOperation.swift; sourceTree = "<group>"; };
+		BA965B271DC6D3200066EAC6 /* Glyph.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Glyph.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -207,7 +203,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				24026C671D6D244A007582F3 /* HealthKit.framework in Frameworks */,
-				2436E4341CD18BFD00ABE381 /* ResearchKit.framework in Frameworks */,
+				247E67881E53DCD30045D28B /* ResearchKit.framework in Frameworks */,
 				B55565771CC82FCA00513644 /* CareKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -330,6 +326,7 @@
 		B5C100841CB12E0C00FAD7E8 = {
 			isa = PBXGroup;
 			children = (
+				247E67871E53DCD30045D28B /* ResearchKit.framework */,
 				B5C1008F1CB12E0C00FAD7E8 /* OCKSample */,
 				24E285101D74AE0A00F840E1 /* Watch */,
 				B555657F1CC82FEF00513644 /* Linked frameworks */,
@@ -355,6 +352,7 @@
 				B5C100D41CB1475900FAD7E8 /* RootViewController.swift */,
 				B5C100DF1CB158D900FAD7E8 /* CarePlanStoreManager.swift */,
 				B5C100DB1CB1547600FAD7E8 /* SampleData.swift */,
+				BA965B201DC6D1210066EAC6 /* Glyph */,
 				B58A3FAD1CC81E5D009CF1B9 /* Activities */,
 				B58A3FB71CC81F19009CF1B9 /* Assessments */,
 				B5C100E71CB2C99600FAD7E8 /* Insights */,
@@ -377,6 +375,14 @@
 				B5C01D511CB3BC2D000728D9 /* BuildInsightsOperation.swift */,
 			);
 			name = Insights;
+			sourceTree = "<group>";
+		};
+		BA965B201DC6D1210066EAC6 /* Glyph */ = {
+			isa = PBXGroup;
+			children = (
+				BA965B271DC6D3200066EAC6 /* Glyph.swift */,
+			);
+			name = Glyph;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -430,7 +436,6 @@
 			);
 			dependencies = (
 				B555657A1CC82FCA00513644 /* PBXTargetDependency */,
-				2436E4371CD18BFD00ABE381 /* PBXTargetDependency */,
 				18214FDF1D3D9C8000AE765B /* PBXTargetDependency */,
 			);
 			name = OCKSample;
@@ -566,8 +571,8 @@
 			files = (
 				18214FD81D3D9C8000AE765B /* ExtensionDelegate.swift in Sources */,
 				18FB874F1D3F106200D2A06D /* ActivityRow.swift in Sources */,
-				18214FD61D3D9C8000AE765B /* InterfaceController.swift in Sources */,
 				18FB87471D3ED97200D2A06D /* WCKActivity.swift in Sources */,
+				BADD6DC81DC5428C008E7893 /* InterfaceController.swift in Sources */,
 				18214FDA1D3D9C8000AE765B /* ComplicationController.swift in Sources */,
 				18B2F9021D4973B7005FFBC6 /* EventRow.swift in Sources */,
 				18FB87491D3ED97A00D2A06D /* WCKEvent.swift in Sources */,
@@ -595,8 +600,9 @@
 				B5C100DE1CB1556F00FAD7E8 /* Colors.swift in Sources */,
 				B56848B61CB5085E00D190EE /* InsightsBuilder.swift in Sources */,
 				B5C100DC1CB1547600FAD7E8 /* SampleData.swift in Sources */,
+				BADD6DCA1DC542CF008E7893 /* RootViewController.swift in Sources */,
+				BA965B281DC6D3200066EAC6 /* Glyph.swift in Sources */,
 				B58A3FBD1CC81FF9009CF1B9 /* Mood.swift in Sources */,
-				B5C100D51CB1475900FAD7E8 /* RootViewController.swift in Sources */,
 				1801613F1D4E778F0036E247 /* WatchConnectivityManager.swift in Sources */,
 				B5C01D521CB3BC2D000728D9 /* BuildInsightsOperation.swift in Sources */,
 			);
@@ -614,11 +620,6 @@
 			isa = PBXTargetDependency;
 			target = 18214FC31D3D9C8000AE765B /* OCKSampleWatch */;
 			targetProxy = 18214FDE1D3D9C8000AE765B /* PBXContainerItemProxy */;
-		};
-		2436E4371CD18BFD00ABE381 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = ResearchKit;
-			targetProxy = 2436E4361CD18BFD00ABE381 /* PBXContainerItemProxy */;
 		};
 		B555657A1CC82FCA00513644 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -670,6 +671,7 @@
 				ASSETCATALOG_NOTICES = NO;
 				ASSETCATALOG_WARNINGS = NO;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = "OCKSampleWatch Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.example.apple-samplecode.CareKit.watchkitapp.watchkitextension";
@@ -678,7 +680,7 @@
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 2.2;
+				WATCHOS_DEPLOYMENT_TARGET = 3.0;
 			};
 			name = Debug;
 		};
@@ -689,6 +691,7 @@
 				ASSETCATALOG_NOTICES = NO;
 				ASSETCATALOG_WARNINGS = NO;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = "OCKSampleWatch Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.example.apple-samplecode.CareKit.watchkitapp.watchkitextension";
@@ -698,7 +701,7 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 2.2;
+				WATCHOS_DEPLOYMENT_TARGET = 3.0;
 			};
 			name = Release;
 		};
@@ -709,6 +712,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = "";
 				IBSC_MODULE = OCKSampleWatch_Extension;
 				INFOPLIST_FILE = OCKSampleWatch/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.example.apple-samplecode.CareKit.watchkitapp";
@@ -718,7 +722,7 @@
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 2.2;
+				WATCHOS_DEPLOYMENT_TARGET = 3.0;
 			};
 			name = Debug;
 		};
@@ -729,6 +733,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = "";
 				IBSC_MODULE = OCKSampleWatch_Extension;
 				INFOPLIST_FILE = OCKSampleWatch/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.example.apple-samplecode.CareKit.watchkitapp";
@@ -738,7 +743,7 @@
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 2.2;
+				WATCHOS_DEPLOYMENT_TARGET = 3.0;
 			};
 			name = Release;
 		};
@@ -833,10 +838,10 @@
 		B5C100A21CB12E0C00FAD7E8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = OCKSample/OCKSample.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = OCKSample/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.example.apple-samplecode.CareKit";
@@ -849,10 +854,10 @@
 		B5C100A31CB12E0C00FAD7E8 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = OCKSample/OCKSample.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = OCKSample/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.example.apple-samplecode.CareKit";

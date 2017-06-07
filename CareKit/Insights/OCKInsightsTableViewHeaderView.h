@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -32,10 +32,19 @@
 #import <CareKit/CareKit.h>
 
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface OCKInsightsTableViewHeaderView : UIView
 
-@property (nonatomic, copy) NSString *title;
+- (instancetype)initWithWidgets:(NSArray<OCKPatientWidget *> *)widgets
+                          store:(nullable OCKCarePlanStore *)store;
 
-@property (nonatomic, copy) NSString *subtitle;
+@property (nonatomic, copy, readonly) NSArray<OCKPatientWidget *> *widgets;
+
+@property (nonatomic, copy, readonly) OCKCarePlanStore *store;
+
+- (void)updateWidgets;
 
 @end
+
+NS_ASSUME_NONNULL_END

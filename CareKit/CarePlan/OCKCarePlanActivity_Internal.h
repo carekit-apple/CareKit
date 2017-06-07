@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -68,6 +68,8 @@ insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
 @property (nullable, nonatomic, retain) NSNumber *type;
 @property (nullable, nonatomic, retain) NSNumber *resultResettable;
 @property (nullable, nonatomic, retain) NSDictionary *userInfo;
+@property (nullable, nonatomic, retain) NSArray<NSArray<OCKCarePlanThreshold *> *> *thresholds;
+@property (nullable, nonatomic, retain) NSNumber *optional;
 
 @end
 

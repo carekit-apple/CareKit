@@ -1,5 +1,40 @@
 # CareKit Release Notes
 
+## CareKit 1.2 Release Notes
+
+*CareKit 1.2* supports *iOS* and requires *Xcode 8.0* or later. The minimum supported *Base SDK* is *9.0*.
+*CareKit 1.2* includes the following new features and enhancements *by [Apple Inc.](https://github.com/carekit-apple)*
+
+- **Care Contents Card**
+
+ The *Sample App* (OCKSample project in CareKit's workspace) now includes a Care Contents view controller, which allows for activities and interventions to be seen in the same place. You may still choose to use the *Care Card *and *Symptom Tracker* view controllers independently to separate out care “to-do’s” and measurement tracking if desired. 
+ 
+- **Optional Activities**
+ 
+ Intervention and assessment activity types can now be tagged as “optional”. Completion of optional activities do not contribute to a user’s daily completion goals, and are well suited for “take as needed” care activities – such as pain medications or optional physical activities. 
+
+- **Read Only Activity Type**
+ 
+ You can now create a new class of activity called “read only” by utilizing the ReadOnly initializer. Read only activities can be used to display information which do not require any action from the user. Examples can include day-of-surgery dietary instructions, or tricks and tips that might be interesting to share throughout a user’s care journey. 
+
+- **Updated Header View and 28 Glyph Icons**
+
+ The header view across *Care Card, Symptom Tracker and the New Care Contents* has been updated to display a daily ring view with customizable glyphs inside to represent completion of care activities. The Apple team has designed 28 icons that can be used within the ring view, and are compatible as Apple Watch complications. Once a user reaches 100%, the ring will fill in and a star badge will appear to easily identify days of full compliance. 
+
+- **Updated Insights Tab with Thresholds**
+
+ The *Insights* view controller has been updated to include the ability to display thresholds. You can now set thresholds in your assessment or intervention activities, and display alert UI and tint colors on the *Insights* view controller if thresholds are broken. 
+
+- **Inbox Feature in Connect**
+
+ We’ve updated the *Inbox* view controller to include UI for messaging between consumers and care teams, friends, and family members. Developers can choose to include this functionality in use cases where asynchronous messaging might play a crucial role in a consumer’s care journey.
+ 
+- **Cloud Bridge API**
+
+ We’re making data sharing between CareKit apps even easier with the new addition of our Cloud Bridge API. The bridge API is an Abstract cloud API that conforms to the CareKit schema and enables data syncing without any additional configuration. It’s designed to allow CareKit based apps to seamlessly integrate with backend cloud solutions, and is based upon the current CareKit data model and architecture
+The bridge API provides all of the necessary hooks through delegate functions for cloud bridge’s to seamlessly hook into the CareKit framework, allowing developers or current cloud providers to conform to the CareKit schema with reduced effort and create backend solutions that fit directly into the current framework architecture.
+
+   
 ## CareKit 1.1 Release Notes
 
 *CareKit 1.1* supports *iOS* and requires *Xcode 8.0* or later. The minimum supported *Base SDK* is *9.0*.

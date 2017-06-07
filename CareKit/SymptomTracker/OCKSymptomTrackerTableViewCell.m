@@ -61,10 +61,14 @@ static const CGFloat HorizontalMargin = 10.0;
     [self prepareView];
 }
 
+- (BOOL)shouldShowDisclosureIndicator {
+    return !(self.assessmentEvent.state == OCKCarePlanEventStateCompleted && !self.assessmentEvent.activity.resultResettable);
+}
+
 - (void)prepareView {
     [super prepareView];
     
-    self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    self.accessoryType = [self shouldShowDisclosureIndicator] ? UITableViewCellAccessoryDisclosureIndicator : UITableViewCellAccessoryNone;
     
     if (!_titleLabel) {
         _titleLabel = [OCKLabel new];
@@ -122,7 +126,7 @@ static const CGFloat HorizontalMargin = 10.0;
     _valueLabel.translatesAutoresizingMaskIntoConstraints = NO;
     
     CGFloat LeadingMargin = self.separatorInset.left;
-    CGFloat TrailingMargin = (self.separatorInset.right > 0) ? self.separatorInset.right + 25 : 40;
+    CGFloat TrailingMargin = (self.separatorInset.right > 0) ? self.separatorInset.right + 25 : 30;
     
     CGFloat unitLabelOffset = 0;
     
@@ -163,6 +167,20 @@ static const CGFloat HorizontalMargin = 10.0;
     }
     
     [_constraints addObjectsFromArray:@[
+                                        [NSLayoutConstraint constraintWithItem:_valueLabel
+                                                                     attribute:NSLayoutAttributeLeading
+                                                                     relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                                        toItem:_titleLabel
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                    multiplier:1.0
+                                                                      constant:HorizontalMargin],
+                                        [NSLayoutConstraint constraintWithItem:_valueLabel
+                                                                     attribute:NSLayoutAttributeLeading
+                                                                     relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                                        toItem:_textLabel
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                    multiplier:1.0
+                                                                      constant:HorizontalMargin],
                                         [NSLayoutConstraint constraintWithItem:_titleLabel
                                                                      attribute:NSLayoutAttributeLeading
                                                                      relatedBy:NSLayoutRelationEqual
@@ -191,13 +209,6 @@ static const CGFloat HorizontalMargin = 10.0;
                                                                      attribute:NSLayoutAttributeBottom
                                                                     multiplier:1.0
                                                                       constant:0.0],
-                                        [NSLayoutConstraint constraintWithItem:_valueLabel
-                                                                     attribute:NSLayoutAttributeLeading
-                                                                     relatedBy:NSLayoutRelationGreaterThanOrEqual
-                                                                        toItem:_textLabel
-                                                                     attribute:NSLayoutAttributeTrailing
-                                                                    multiplier:1.0
-                                                                      constant:2*HorizontalMargin],
                                         [NSLayoutConstraint constraintWithItem:_textLabel
                                                                      attribute:NSLayoutAttributeBottom
                                                                      relatedBy:NSLayoutRelationEqual
@@ -205,13 +216,6 @@ static const CGFloat HorizontalMargin = 10.0;
                                                                      attribute:NSLayoutAttributeBottom
                                                                     multiplier:1.0
                                                                       constant:-BottomMargin],
-                                        [NSLayoutConstraint constraintWithItem:_valueLabel
-                                                                     attribute:NSLayoutAttributeLeading
-                                                                     relatedBy:NSLayoutRelationGreaterThanOrEqual
-                                                                        toItem:_titleLabel
-                                                                     attribute:NSLayoutAttributeTrailing
-                                                                    multiplier:1.0
-                                                                      constant:HorizontalMargin],
                                         [NSLayoutConstraint constraintWithItem:_valueLabel
                                                                      attribute:NSLayoutAttributeTrailing
                                                                      relatedBy:NSLayoutRelationEqual

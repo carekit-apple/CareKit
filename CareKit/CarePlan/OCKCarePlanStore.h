@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -38,6 +38,7 @@ NS_ASSUME_NONNULL_BEGIN
 @class OCKCarePlanStore;
 @class OCKCarePlanActivity;
 @class OCKCarePlanEvent;
+@class OCKPatient;
 
 /**
  Implement this delegate to subscribe to the notification of changes in this store.
@@ -88,24 +89,62 @@ OCK_CLASS_AVAILABLE
 - (instancetype)init NS_UNAVAILABLE;
 
 /**
- The initializer requires a local directory URL.
+ The initializer requires an identifier and a local directory URL.
  The directory in the URL must exist, otherwise this initializer raises an exception.
  
- @param     URL     The directory for the store to save its database file.
+ @param     URL                 The directory for the store to save its database file.
+ @param     identifier          A unqiue identifier for the store.
+ @param     patient             The patient associated with the store.
  
  @return    An instance of the store.
  */
-- (instancetype)initWithPersistenceDirectoryURL:(NSURL *)URL NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithPersistenceDirectoryURL:(NSURL *)URL
+                                     identifier:(NSString *)identifier
+                                        patient:(nullable OCKPatient *)patient;
+
+/**
+ The initializer requires a local directory URL.
+ The directory in the URL must exist, otherwise this initializer raises an exception.
+ 
+ @param     URL        The directory for the store to save its database file.
+ 
+ @return    An instance of the store.
+ */
+- (instancetype)initWithPersistenceDirectoryURL:(NSURL *)URL;
+
+
+/**
+ A unique identifier for the store at the directory url.
+ */
+@property (nonatomic, copy, readonly) NSString *identifier;
+
+/**
+ The persistence directory url for the store to save its database file.
+ */
+@property (nonatomic, copy, readonly) NSURL *directoryURL;
+
+/**
+ The patient object associated with this care plan store.
+ */
+@property (nonatomic, copy, readonly, nullable) OCKPatient *patient;
 
 /**
  You can use the delegate to subscribe to notifications of changes to the store.
  */
-@property (nonatomic, weak) id<OCKCarePlanStoreDelegate> delegate;
+@property (nonatomic, weak, nullable) id<OCKCarePlanStoreDelegate> delegate;
 
 /**
 You can use the watch delegate to subscribe a watch app to notifications of changes to the store.
  */
-@property (nonatomic, weak) id<OCKCarePlanStoreDelegate> watchDelegate;
+@property (nonatomic, weak, nullable) id<OCKCarePlanStoreDelegate> watchDelegate;
+
+/**
+ The cloud bridge delegate is used to support the Medable, IBM Watson, or CloudMine cloud bridge.
+ 
+ Developers should not use this delegate. Use `delegate` property instead.
+ */
+@property (nonatomic, weak, nullable) id<OCKCarePlanStoreDelegate> cloudBridgeDelegate;
+
 
 /**
  Add an activity to this store.
@@ -246,6 +285,17 @@ Get all the `OCKCarePlanEvent` objects for a given date.
                           endDate:(NSDateComponents *)endDate
                           handler:(void (^)(OCKCarePlanEvent * _Nullable event, BOOL *stop))handler
                        completion:(void (^)(BOOL completed, NSError * _Nullable error))completion;
+
+/**
+ Check the adherance threshold for an activity on a given day.
+ 
+ @param     activity        The activity to check.
+ @param     date            The date to check.
+ @param     completion      A completion block that returns the result of the operation and a possible triggered threshold object.
+ */
+- (void)evaluateAdheranceThresholdForActivity:(OCKCarePlanActivity *)activity
+                                         date:(NSDateComponents *)date
+                                   completion:(void (^)(BOOL success, OCKCarePlanThreshold * _Nullable threshold, NSError * _Nullable error))completion;
 
 @end
 

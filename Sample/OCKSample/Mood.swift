@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -44,6 +44,7 @@ struct Mood: Assessment {
         // Create a weekly schedule.
         let startDate = DateComponents(year: 2016, month: 01, day: 01)
         let schedule = OCKCareSchedule.weeklySchedule(withStartDate: startDate as DateComponents, occurrencesOnEachDay: [1, 1, 1, 1, 1, 1, 1])
+        let thresholds = [OCKCarePlanThreshold.numericThreshold(withValue: NSNumber.init(value: 7), type: .numericGreaterThan, upperValue: nil, title: "Good mood."), OCKCarePlanThreshold.numericThreshold(withValue: NSNumber.init(value: 3), type: .numericLessThanOrEqual, upperValue: nil, title: "Bad mood.")] as Array<OCKCarePlanThreshold>
         
         // Get the localized strings to use for the assessment.
         let title = NSLocalizedString("Mood", comment: "")
@@ -56,7 +57,9 @@ struct Mood: Assessment {
             tintColor: Colors.green.color,
             resultResettable: false,
             schedule: schedule,
-            userInfo: nil
+            userInfo: nil,
+            thresholds: [thresholds],
+            optional: false
         )
         
         return activity

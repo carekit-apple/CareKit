@@ -42,7 +42,6 @@ static const CGFloat TopMargin = 50.0;
 @implementation OCKCareCardDetailHeaderView {
     OCKLabel *_titleLabel;
     OCKLabel *_textLabel;
-    UIView *_bottomEdge;
     NSMutableArray *_constraints;
 }
 
@@ -55,7 +54,18 @@ static const CGFloat TopMargin = 50.0;
 }
 
 - (void)prepareView {
-    self.backgroundColor = [UIColor whiteColor];
+    if (!UIAccessibilityIsReduceTransparencyEnabled()) {
+        self.backgroundColor = [UIColor groupTableViewBackgroundColor];
+        
+        UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleProminent];
+        UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+        blurEffectView.frame = self.bounds;
+        blurEffectView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        [self addSubview:blurEffectView];
+    }
+    else {
+        self.backgroundColor = [UIColor whiteColor];
+    }
     
     if (!_titleLabel) {
         _titleLabel = [OCKLabel new];
@@ -76,11 +86,6 @@ static const CGFloat TopMargin = 50.0;
         [self addSubview:_textLabel];
     }
     
-    if (!_bottomEdge) {
-        _bottomEdge = [UIView new];
-        [self addSubview:_bottomEdge];
-    }
-    
     [self updateView];
     [self setUpConstraints];
 }
@@ -89,7 +94,6 @@ static const CGFloat TopMargin = 50.0;
     self.tintColor = _intervention.tintColor;
     _titleLabel.text = _intervention.title;
     _textLabel.text = _intervention.text;
-    _bottomEdge.backgroundColor = self.tintColor;
 }
 
 - (void)setUpConstraints {
@@ -99,7 +103,6 @@ static const CGFloat TopMargin = 50.0;
     
     _titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     _textLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    _bottomEdge.translatesAutoresizingMaskIntoConstraints = NO;
     
     [_constraints addObjectsFromArray:@[
                                         [NSLayoutConstraint constraintWithItem:_titleLabel
@@ -150,28 +153,7 @@ static const CGFloat TopMargin = 50.0;
                                                                         toItem:_textLabel
                                                                      attribute:NSLayoutAttributeBottom
                                                                     multiplier:1.0
-                                                                      constant:BottomMargin],
-                                        [NSLayoutConstraint constraintWithItem:_bottomEdge
-                                                                     attribute:NSLayoutAttributeBottom
-                                                                     relatedBy:NSLayoutRelationEqual
-                                                                        toItem:self
-                                                                     attribute:NSLayoutAttributeBottom
-                                                                    multiplier:1.0
-                                                                      constant:0.0],
-                                        [NSLayoutConstraint constraintWithItem:_bottomEdge
-                                                                     attribute:NSLayoutAttributeHeight
-                                                                     relatedBy:NSLayoutRelationEqual
-                                                                        toItem:nil
-                                                                     attribute:NSLayoutAttributeNotAnAttribute
-                                                                    multiplier:1.0
-                                                                      constant:3.0],
-                                        [NSLayoutConstraint constraintWithItem:_bottomEdge
-                                                                     attribute:NSLayoutAttributeWidth
-                                                                     relatedBy:NSLayoutRelationEqual
-                                                                        toItem:self
-                                                                     attribute:NSLayoutAttributeWidth
-                                                                    multiplier:1.0
-                                                                      constant:0.0]
+                                                                      constant:BottomMargin]
                                         ]];
     
     [NSLayoutConstraint activateConstraints:_constraints];
@@ -188,15 +170,20 @@ static const CGFloat TopMargin = 50.0;
     _titleLabel.preferredMaxLayoutWidth = _titleLabel.bounds.size.width;
     _textLabel.preferredMaxLayoutWidth = _textLabel.bounds.size.width;
 }
-    
-- (void)setShowEdgeIndicator:(BOOL)showEdgeIndicator {
-    _showEdgeIndicator = showEdgeIndicator;
-    _bottomEdge.hidden = !_showEdgeIndicator;
-}
 
 - (void)tintColorDidChange {
     [super tintColorDidChange];
     [self updateView];
+}
+
+- (void)willMoveToWindow:(UIWindow *)newWindow {
+    [super willMoveToWindow:newWindow];
+    
+    self.layer.shadowOffset = CGSizeMake(0, 1 / [UIScreen mainScreen].scale);
+    self.layer.shadowRadius = 0;
+    
+    self.layer.shadowColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:1].CGColor;
+    self.layer.shadowOpacity = 0.25;
 }
 
 

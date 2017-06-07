@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -51,10 +51,19 @@
                           imageURL:(NSURL *)imageURL
                           schedule:(OCKCareSchedule *)schedule
                   resultResettable:(BOOL)resultResettable
-                          userInfo:(NSDictionary *)userInfo {
-    
+                          userInfo:(NSDictionary<NSString *,id<NSCoding>> *)userInfo
+                        thresholds:(NSArray<NSArray<OCKCarePlanThreshold *> *> *)thresholds
+                          optional:(BOOL)optional {
     OCKThrowInvalidArgumentExceptionIfNil(identifier);
     OCKThrowInvalidArgumentExceptionIfNil(schedule);
+    
+    if ((thresholds) && (thresholds.count > 2)) {
+        @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Thresholds array cannot have more than 2 elements." userInfo:nil];
+    }
+    
+    if ((type == OCKCarePlanActivityTypeReadOnly) && (!optional)) {
+        @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Activity type ReadOnly has to be optional." userInfo:nil];
+    }
     
     self = [super init];
     if (self) {
@@ -69,8 +78,36 @@
         _schedule = schedule;
         _resultResettable = resultResettable;
         _userInfo = [userInfo copy];
+        _thresholds = thresholds;
+        _optional = optional;
     }
     return self;
+}
+
+- (instancetype)initWithIdentifier:(NSString *)identifier
+                   groupIdentifier:(NSString *)groupIdentifier
+                              type:(OCKCarePlanActivityType)type
+                             title:(NSString *)title
+                              text:(NSString *)text
+                         tintColor:(UIColor *)tintColor
+                      instructions:(NSString *)instructions
+                          imageURL:(NSURL *)imageURL
+                          schedule:(OCKCareSchedule *)schedule
+                  resultResettable:(BOOL)resultResettable
+                          userInfo:(NSDictionary *)userInfo {
+    return [self initWithIdentifier:identifier
+                    groupIdentifier:groupIdentifier
+                               type:type
+                              title:title
+                               text:text
+                          tintColor:tintColor
+                       instructions:instructions
+                           imageURL:imageURL
+                           schedule:schedule
+                   resultResettable:resultResettable
+                           userInfo:userInfo
+                         thresholds:nil
+                           optional:NO];
 }
 
 + (instancetype)assessmentWithIdentifier:(NSString *)identifier
@@ -80,7 +117,33 @@
                                tintColor:(UIColor *)tintColor
                         resultResettable:(BOOL)resultResettable
                                 schedule:(OCKCareSchedule *)schedule
-                                userInfo:(NSDictionary *)userInfo {
+                                userInfo:(NSDictionary *)userInfo
+                              thresholds:(NSArray<NSArray<OCKCarePlanThreshold *> *> *)thresholds
+                                optional:(BOOL)optional {
+    return [[self alloc] initWithIdentifier:identifier
+                            groupIdentifier:groupIdentifier
+                                       type:OCKCarePlanActivityTypeAssessment
+                                      title:title
+                                       text:text
+                                  tintColor:tintColor
+                               instructions:nil
+                                   imageURL:nil
+                                   schedule:schedule
+                           resultResettable:resultResettable
+                                   userInfo:userInfo
+                                 thresholds:thresholds
+                                   optional:optional];
+}
+
++ (instancetype)assessmentWithIdentifier:(NSString *)identifier
+                         groupIdentifier:(NSString *)groupIdentifier
+                                   title:(NSString *)title
+                                    text:(NSString *)text
+                               tintColor:(UIColor *)tintColor
+                        resultResettable:(BOOL)resultResettable
+                                schedule:(OCKCareSchedule *)schedule
+                                userInfo:(NSDictionary *)userInfo
+                                optional:(BOOL)optional {
     
     return [[self alloc] initWithIdentifier:identifier
                             groupIdentifier:groupIdentifier
@@ -92,7 +155,9 @@
                                    imageURL:nil
                                    schedule:schedule
                            resultResettable:resultResettable
-                                   userInfo:userInfo];
+                                   userInfo:userInfo
+                                 thresholds:nil
+                                   optional:optional];
 }
 
 + (instancetype)interventionWithIdentifier:(NSString *)identifier
@@ -103,7 +168,8 @@
                               instructions:(NSString *)instructions
                                   imageURL:(NSURL *)imageURL
                                   schedule:(OCKCareSchedule *)schedule
-                                  userInfo:(NSDictionary *)userInfo {
+                                  userInfo:(NSDictionary *)userInfo
+                                  optional:(BOOL)optional {
     
     return [[self alloc] initWithIdentifier:identifier
                             groupIdentifier:groupIdentifier
@@ -115,7 +181,33 @@
                                    imageURL:imageURL
                                    schedule:schedule
                            resultResettable:YES
-                                   userInfo:userInfo];
+                                   userInfo:userInfo
+                                 thresholds:nil
+                                   optional:optional];
+}
+
++ (instancetype)readOnlyWithIdentifier:(NSString *)identifier
+                                   groupIdentifier:(nullable NSString *)groupIdentifier
+                                             title:(NSString *)title
+                                              text:(nullable NSString *)text
+                                      instructions:(nullable NSString *)instructions
+                                          imageURL:(nullable NSURL *)imageURL
+                                          schedule:(OCKCareSchedule *)schedule
+                                          userInfo:(nullable NSDictionary *)userInfo {
+    
+    return [[self alloc] initWithIdentifier:identifier
+                            groupIdentifier:groupIdentifier
+                                       type:OCKCarePlanActivityTypeReadOnly
+                                      title:title
+                                       text:text
+                                  tintColor:nil
+                               instructions:instructions
+                                   imageURL:imageURL
+                                   schedule:schedule
+                           resultResettable:NO
+                                   userInfo:userInfo
+                                 thresholds:nil
+                                   optional:YES];
 }
 
 - (instancetype)initWithCoreDataObject:(OCKCDCarePlanActivity *)cdObject {
@@ -131,7 +223,9 @@
                            imageURL:OCKURLFromBookmarkData(cdObject.imageURL)
                            schedule:cdObject.schedule
                    resultResettable:cdObject.resultResettable.boolValue
-                           userInfo:cdObject.userInfo];
+                           userInfo:cdObject.userInfo
+                         thresholds:cdObject.thresholds
+                           optional:cdObject.optional.boolValue];
     
     return self;
 }
@@ -154,6 +248,8 @@
         OCK_DECODE_URL_BOOKMARK(coder, imageURL);
         OCK_DECODE_BOOL(coder, resultResettable);
         OCK_DECODE_OBJ_CLASS(coder, userInfo, NSDictionary);
+        OCK_DECODE_OBJ_CLASS(coder, thresholds, NSArray<NSArray<OCKCarePlanThreshold *> *>);
+        OCK_DECODE_BOOL(coder, optional);
     }
     return self;
 }
@@ -170,6 +266,8 @@
     OCK_ENCODE_URL_BOOKMARK(coder, imageURL);
     OCK_ENCODE_BOOL(coder, resultResettable);
     OCK_ENCODE_OBJ(coder, userInfo);
+    OCK_ENCODE_OBJ(coder, thresholds);
+    OCK_ENCODE_BOOL(coder, optional);
 }
 
 - (BOOL)isEqual:(id)object {
@@ -187,8 +285,9 @@
             OCKEqualObjects(self.groupIdentifier, castObject.groupIdentifier) &&
             OCKEqualObjects(self.imageURL, castObject.imageURL) &&
             (self.resultResettable == castObject.resultResettable) &&
-            OCKEqualObjects(self.userInfo, castObject.userInfo)
-            );
+            OCKEqualObjects(self.userInfo, castObject.userInfo) &&
+            OCKEqualObjects(self.thresholds, castObject.thresholds) &&
+            (self.optional == castObject.optional));
 }
 
 - (instancetype)copyWithZone:(NSZone *)zone {
@@ -204,7 +303,13 @@
     item->_imageURL = _imageURL;
     item->_resultResettable = _resultResettable;
     item->_userInfo = _userInfo;
+    item->_thresholds = [_thresholds copy];
+    item->_optional = _optional;
     return item;
+}
+
+- (NSUInteger)hash {
+    return [self.identifier hash];
 }
 
 @end
@@ -230,6 +335,8 @@ insertIntoManagedObjectContext:(NSManagedObjectContext *)context
         self.type = @(item.type);
         self.userInfo = item.userInfo;
         self.resultResettable  = @(item.resultResettable);
+        self.thresholds = item.thresholds;
+        self.optional = @(item.optional);
     }
     return self;
 }
@@ -249,5 +356,7 @@ insertIntoManagedObjectContext:(NSManagedObjectContext *)context
 @dynamic type;
 @dynamic resultResettable;
 @dynamic userInfo;
+@dynamic thresholds;
+@dynamic optional;
 
 @end

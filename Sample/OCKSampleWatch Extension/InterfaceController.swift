@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -99,6 +99,7 @@ class InterfaceController: WKInterfaceController {
         tableView.removeRows(at: IndexSet.init(integersIn: 0..<tableView.numberOfRows))
         tableView.setHidden(true)
         updateComplications(withCompletionPercentage: nil)
+        updateComplications(withComplicationGlyphType: "Image Unavailable")
     }
     
     
@@ -151,8 +152,7 @@ class InterfaceController: WKInterfaceController {
         }
         }
     }
-    
-    func updateAllEventButtons() {
+        func updateAllEventButtons() {
         for (identifier, activity) in activities {
             for rowIndex in 0...getRowIndex(ofEventIndex: activity.eventsForToday.count - 1) {
                 if let row = tableView.rowController(at: activityRowIndices[identifier]! + 1 + rowIndex) as? EventRow {
@@ -188,6 +188,17 @@ class InterfaceController: WKInterfaceController {
         }
         defaults.set(eventsTotal - eventsComplete, forKey: "eventsRemaining")
         
+        let server = CLKComplicationServer.sharedInstance()
+        for complication in server.activeComplications! {
+            server.reloadTimeline(for: complication)
+        }
+    }
+    
+    func updateComplications(withComplicationGlyphType glyphType: String) {
+        let defaults = UserDefaults.standard
+        if (glyphType != "Image Unavailable") {
+            defaults.set(glyphType, forKey: "glyphType")
+        }
         let server = CLKComplicationServer.sharedInstance()
         for complication in server.activeComplications! {
             server.reloadTimeline(for: complication)
@@ -342,9 +353,41 @@ extension InterfaceController: WCSessionDelegate {
             return
         }
         
+        guard let glyphType = applicationContext["glyphType"] as? String else {
+            return
+        }
+        
         let defaults = UserDefaults.standard
         defaults.set(completionPercentage, forKey: "currentCompletionPercentage")
         defaults.set(eventsRemaining, forKey: "eventsRemaining")
+        defaults.set(glyphType, forKey: "glyphType")
+        
+        let server = CLKComplicationServer.sharedInstance()
+        for complication in server.activeComplications! {
+            server.reloadTimeline(for: complication)
+        }
+    }
+    
+    func session(_ session: WCSession, didReceiveUserInfo userInfo: [String : Any] = [:]) {
+        guard let glyphType = userInfo["glyphType"] as? String else{
+            return
+        }
+        
+        guard let glyphTintColor = userInfo["glyphTintColor"] as? [CGFloat] else {
+            return
+        }
+        
+        guard let glyphImageName = userInfo["glyphImageName"] as? String else {
+            return
+        }
+        
+        let defaults = UserDefaults.standard
+        defaults.set(glyphType, forKey: "glyphType")
+        defaults.set(glyphTintColor, forKey: "glyphTintColor")
+        
+        if (glyphType == "Custom") {
+            defaults.set(glyphImageName, forKey: "glyphImageName")
+        }
         
         let server = CLKComplicationServer.sharedInstance()
         for complication in server.activeComplications! {

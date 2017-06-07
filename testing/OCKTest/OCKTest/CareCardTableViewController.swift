@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -39,7 +39,7 @@ class CareCardTableViewController: UITableViewController, OCKCarePlanStoreDelega
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 8
+        return 10
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -62,6 +62,10 @@ class CareCardTableViewController: UITableViewController, OCKCarePlanStoreDelega
                 cell.textLabel?.text = "Save an Image"
             case 7:
                 cell.textLabel?.text = "Delete all Activites"
+            case 8:
+                cell.textLabel?.text = "Trying different glyphType"
+            case 9:
+                cell.textLabel?.text = "Trying different Tint Color"
             default:
                 cell.textLabel?.text = nil
             }
@@ -105,9 +109,9 @@ class CareCardTableViewController: UITableViewController, OCKCarePlanStoreDelega
             let activity6 = OCKCarePlanActivity.init(identifier: "Intervention Activity #6", groupIdentifier: firstGroupId, type: OCKCarePlanActivityType.intervention, title: "Activity Ended Yesterday", text: LoremIpsum, tintColor: UIColor.gray, instructions: LoremIpsum, imageURL: nil, schedule: dailySchedule, resultResettable: true, userInfo: nil)
             carePlanActivities.append(activity6)
             
-            carePlanActivities.append(OCKCarePlanActivity.intervention(withIdentifier: "Intervention Activity #7", groupIdentifier: nil, title: "No Group, No Text Activity", text: nil, tintColor: nil, instructions: nil, imageURL: nil, schedule: dailySchedule, userInfo: nil))
+            carePlanActivities.append(OCKCarePlanActivity.intervention(withIdentifier: "Intervention Activity #7", groupIdentifier: nil, title: "No Group, No Text Activity", text: nil, tintColor: nil, instructions: nil, imageURL: nil, schedule: dailySchedule, userInfo: nil, optional: false))
             
-            carePlanActivities.append(OCKCarePlanActivity.intervention(withIdentifier: "Intervention Activity #8", groupIdentifier: nil, title: "", text: "Missing Title", tintColor: UIColor.purple, instructions: "Some Instructions", imageURL: nil, schedule: dailySchedule, userInfo: ["":""]))
+            carePlanActivities.append(OCKCarePlanActivity.intervention(withIdentifier: "Intervention Activity #8", groupIdentifier: nil, title: "", text: "Missing Title", tintColor: UIColor.purple, instructions: "Some Instructions", imageURL: nil, schedule: dailySchedule, userInfo: ["":""], optional: false))
             
             let carePlanStore = OCKCarePlanStore.init(persistenceDirectoryURL: URL.init(string: documentsDirectory[0])!)
             
@@ -123,7 +127,6 @@ class CareCardTableViewController: UITableViewController, OCKCarePlanStoreDelega
             })
 
             let careCardController = OCKCareCardViewController.init(carePlanStore: carePlanStore)
-            careCardController.showEdgeIndicators = true
             self.navigationController?.pushViewController(careCardController, animated: true)
             
         } else if (indexPath as NSIndexPath).row == 1 {
@@ -141,7 +144,7 @@ class CareCardTableViewController: UITableViewController, OCKCarePlanStoreDelega
             
             let carePlanActivity2 = OCKCarePlanActivity.init(identifier: "Intervention Activity 2", groupIdentifier: secondGroupId, type: OCKCarePlanActivityType.intervention, title: "2. Another Intervention Activity", text: "Complete this activity ASAP. No Instructions!", tintColor: nil, instructions: nil, imageURL: imageFileURL, schedule: schedule, resultResettable: true, userInfo: nil)
             
-            let carePlanActivity3 = OCKCarePlanActivity.intervention(withIdentifier: "Intervention Activity 3", groupIdentifier: secondGroupId, title: "3. Activity #3 is the last one", text: "Some Text", tintColor: UIColor.purple, instructions: "Some Instructions", imageURL: imageFileURL, schedule: schedule, userInfo: ["Key":"Val"])
+            let carePlanActivity3 = OCKCarePlanActivity.intervention(withIdentifier: "Intervention Activity 3", groupIdentifier: secondGroupId, title: "3. Activity #3 is the last one", text: "Some Text", tintColor: UIColor.purple, instructions: "Some Instructions", imageURL: imageFileURL, schedule: schedule, userInfo: ["Key":"Val"], optional:false)
             
             let dataPath = documentsDirectory[0] + "/CarePlan2"
             if !FileManager.default.fileExists(atPath: dataPath) {
@@ -166,10 +169,8 @@ class CareCardTableViewController: UITableViewController, OCKCarePlanStoreDelega
             })
             
             let careCardController = OCKCareCardViewController.init(carePlanStore: carePlanStore)
-            careCardController.maskImage = UIImage.init(named: "Stars")
-            careCardController.smallMaskImage = UIImage.init(named: "Triangles.jpg")
-            careCardController.maskImageTintColor = UIColor.cyan
-            careCardController.showEdgeIndicators = true
+            careCardController.glyphType = .accessibility
+            careCardController.glyphTintColor = UIColor.cyan
             self.navigationController?.pushViewController(careCardController, animated: true)
             
         } else if (indexPath as NSIndexPath).row == 2 {
@@ -187,7 +188,7 @@ class CareCardTableViewController: UITableViewController, OCKCarePlanStoreDelega
             
             let carePlanStore = OCKCarePlanStore.init(persistenceDirectoryURL: URL.init(string: dataPath)!)
             let careCardController = OCKCareCardViewController.init(carePlanStore: carePlanStore)
-            careCardController.maskImageTintColor = UIColor.orange
+            careCardController.glyphTintColor = UIColor.orange
             self.navigationController?.pushViewController(careCardController, animated: true)
       
         } else if (indexPath as NSIndexPath).row == 3 {
@@ -231,7 +232,7 @@ class CareCardTableViewController: UITableViewController, OCKCarePlanStoreDelega
 
             
             let careCardController = OCKCareCardViewController.init(carePlanStore: carePlanStore)
-            careCardController.maskImageTintColor = UIColor.init(red: 0.2, green: 0.4, blue: 0.9, alpha: 0.4)
+            careCardController.glyphTintColor = UIColor.init(red: 0.2, green: 0.4, blue: 0.9, alpha: 0.4)
             self.navigationController?.pushViewController(careCardController, animated: true)
             
         } else if (indexPath as NSIndexPath).row == 4 {
@@ -265,8 +266,6 @@ class CareCardTableViewController: UITableViewController, OCKCarePlanStoreDelega
 
             let careCardController = OCKCareCardViewController.init(carePlanStore: carePlanStore)
             careCardController.delegate = self
-            careCardController.smallMaskImage = UIImage.init(named: "Stars")
-            careCardController.showEdgeIndicators = true
             self.navigationController?.pushViewController(careCardController, animated: true)
             
         }  else if (indexPath as NSIndexPath).row == 5 {
@@ -280,7 +279,6 @@ class CareCardTableViewController: UITableViewController, OCKCarePlanStoreDelega
             let carePlanStore = OCKCarePlanStore.init(persistenceDirectoryURL: URL.init(string: dataPath)!)
             let careCardController = OCKCareCardViewController.init(carePlanStore: carePlanStore)
             careCardController.delegate = self
-            careCardController.showEdgeIndicators = true
             self.navigationController?.pushViewController(careCardController, animated: true)
             
         } else if (indexPath as NSIndexPath).row == 6 {
@@ -298,78 +296,54 @@ class CareCardTableViewController: UITableViewController, OCKCarePlanStoreDelega
             tableView.cellForRow(at: indexPath)?.isSelected = false
             
         } else if (indexPath as NSIndexPath).row == 7 {
+            // No Activities
             
-            // Delete all Activites
-            
-            tableView.cellForRow(at: indexPath)?.isSelected = false
-            
-            let paths = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)
-            let store = OCKCarePlanStore.init(persistenceDirectoryURL: URL.init(string: paths[0])!)
-            store.activities(with: OCKCarePlanActivityType.intervention, completion: { (boolVal, activities, error) in
-                for activity:OCKCarePlanActivity in activities {
-                    store.remove(activity, completion: { (boolVal, error) in
-                        if boolVal == true {
-                            tableView.cellForRow(at: indexPath)?.textLabel?.textColor = UIColor.green
-                        } else {
-                            tableView.cellForRow(at: indexPath)?.textLabel?.textColor = UIColor.red
-                        }
-                        assert(boolVal, (error?.localizedDescription)!)
-                    })
+            let dataPath = documentsDirectory[0] + "/EmptyCarePlan"
+            if !FileManager.default.fileExists(atPath: dataPath) {
+                do {
+                    try FileManager.default.createDirectory(atPath: dataPath, withIntermediateDirectories: false, attributes: nil)
+                } catch(_) {
+                    assertionFailure("Unable to Create Directory for EmptyCarePlan")
                 }
-            })
-        
-            
-            if FileManager.default.fileExists(atPath: paths[0] + "/CarePlan2") {
-                let dataPath = URL.init(string:paths[0] + "/CarePlan2")
-                let store2 = OCKCarePlanStore.init(persistenceDirectoryURL: dataPath!)
-                store2.activities(withGroupIdentifier: "Group I2", completion: { (boolVal, activities, error) in
-                    for activity:OCKCarePlanActivity in activities {
-                        store2.remove(activity, completion: { (bool, error) in
-                            if boolVal == true {
-                                tableView.cellForRow(at: indexPath)?.textLabel?.textColor = UIColor.green
-                            } else {
-                                tableView.cellForRow(at: indexPath)?.textLabel?.textColor = UIColor.red
-                            }
-                            assert(boolVal, (error?.localizedDescription)!)
-                        })
-                    }
-                })
             }
             
-            if FileManager.default.fileExists(atPath: paths[0] + "/CarePlanAuto") {
-                let dataPath = URL.init(string:paths[0] + "/CarePlanAuto")
-                let store3 = OCKCarePlanStore.init(persistenceDirectoryURL: dataPath!)
-                store3.activities(completion: { (boolVal, activities, error) in
-                    for activity in activities
-                    {
-                        store3.remove(activity, completion: { (boolVal, error) in
-                            if boolVal == true {
-                                tableView.cellForRow(at: indexPath)?.textLabel?.textColor = UIColor.green
-                            } else {
-                                tableView.cellForRow(at: indexPath)?.textLabel?.textColor = UIColor.red
-                            }
-                            assert(boolVal, (error?.localizedDescription)!)
-                        })
-                    }
-                })
+            let carePlanStore = OCKCarePlanStore.init(persistenceDirectoryURL: URL.init(string: dataPath)!)
+            let careCardController = OCKCareCardViewController.init(carePlanStore: carePlanStore)
+            careCardController.glyphTintColor = UIColor.orange
+            self.navigationController?.pushViewController(careCardController, animated: true)
+        } else if (indexPath as NSIndexPath).row == 8 {
+            // No Activities
+            
+            let dataPath = documentsDirectory[0] + "/EmptyCarePlan"
+            if !FileManager.default.fileExists(atPath: dataPath) {
+                do {
+                    try FileManager.default.createDirectory(atPath: dataPath, withIntermediateDirectories: false, attributes: nil)
+                } catch(_) {
+                    assertionFailure("Unable to Create Directory for EmptyCarePlan")
+                }
             }
             
-            if FileManager.default.fileExists(atPath: paths[0] + "/CarePlanIncomplete") {
-                let dataPath = URL.init(string:paths[0] + "/CarePlanIncomplete")
-                let store4 = OCKCarePlanStore.init(persistenceDirectoryURL: dataPath!)
-                store4.activities(completion: { (boolVal, activities, error) in
-                    for activity in activities {
-                        store4.remove(activity, completion: { (boolVal, error) in
-                            if boolVal == true {
-                                tableView.cellForRow(at: indexPath)?.textLabel?.textColor = UIColor.green
-                            } else {
-                                tableView.cellForRow(at: indexPath)?.textLabel?.textColor = UIColor.red
-                            }
-                            assert(boolVal, (error?.localizedDescription)!)
-                        })
-                    }
-                })
+            let carePlanStore = OCKCarePlanStore.init(persistenceDirectoryURL: URL.init(string: dataPath)!)
+            let careCardController = OCKCareCardViewController.init(carePlanStore: carePlanStore)
+            careCardController.glyphType = .accessibility
+            careCardController.glyphTintColor = UIColor.orange
+            self.navigationController?.pushViewController(careCardController, animated: true)
+        } else if (indexPath as NSIndexPath).row == 9 {
+            // No Activities
+            
+            let dataPath = documentsDirectory[0] + "/EmptyCarePlan"
+            if !FileManager.default.fileExists(atPath: dataPath) {
+                do {
+                    try FileManager.default.createDirectory(atPath: dataPath, withIntermediateDirectories: false, attributes: nil)
+                } catch(_) {
+                    assertionFailure("Unable to Create Directory for EmptyCarePlan")
+                }
             }
+            
+            let carePlanStore = OCKCarePlanStore.init(persistenceDirectoryURL: URL.init(string: dataPath)!)
+            let careCardController = OCKCareCardViewController.init(carePlanStore: carePlanStore)
+            careCardController.glyphTintColor = UIColor.magenta
+            self.navigationController?.pushViewController(careCardController, animated: true)
         }
     }
     
@@ -382,7 +356,7 @@ class CareCardTableViewController: UITableViewController, OCKCarePlanStoreDelega
     
     func careCardViewController(_ viewController: OCKCareCardViewController, didSelectButtonWithInterventionEvent interventionEvent: OCKCarePlanEvent) {
         if interventionEvent.activity.groupIdentifier == "Group I4" {
-            viewController.maskImageTintColor = interventionEvent.activity.tintColor
+            viewController.glyphTintColor = interventionEvent.activity.tintColor
         }
     }
     

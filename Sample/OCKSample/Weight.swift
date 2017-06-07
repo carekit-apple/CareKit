@@ -64,7 +64,8 @@ struct Weight: Assessment, HealthSampleBuilder {
             tintColor: Colors.yellow.color,
             resultResettable: false,
             schedule: schedule,
-            userInfo: nil
+            userInfo: nil,
+            optional: false
         )
         
         return activity

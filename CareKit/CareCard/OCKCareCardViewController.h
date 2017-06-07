@@ -1,6 +1,6 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
- Copyright (c) 2016, Erik Hornberger. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Erik Hornberger. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -151,33 +151,17 @@ OCK_CLASS_AVAILABLE
 @property (nonatomic, readonly, nonnull) UITableView *tableView;
 
 /**
- The image that will be used to mask the fill shape in the header view.
- 
- In order to provide a custom maskImage, you must have a regular size and small size.
- For example, in the assets catalog, there are "heart" and a "heart-small" assets.
- Both assets must be provided in order to properly render the interface.
- 
- If no image is specified, the "heart" image will be loaded from the assets catalog.
- */
-@property (nonatomic, null_resettable) UIImage *maskImage;
-
-/**
  The image that will be used to mask the fill shape in the week view.
  
  In order to provide a custom maskImage, you must have a regular size and small size.
  For example, in the assets catalog, there are "heart" and a "heart-small" assets.
  Both assets must be provided in order to properly render the interface.
- 
- If no image is specified, the "heart-small" image will be loaded from the assets catalog.
- */
-@property (nonatomic, null_resettable) UIImage *smallMaskImage;
 
-/**
  The tint color that will be used to fill the shape.
  
  If tint color is not specified, a default red color will be used.
  */
-@property (nonatomic, null_resettable) UIColor *maskImageTintColor;
+@property (nonatomic, null_resettable) UIColor *glyphTintColor;
 
 /**
  The string that will be used as the Care Card header title.
@@ -187,11 +171,15 @@ OCK_CLASS_AVAILABLE
 @property (nonatomic, null_resettable) NSString *headerTitle;
 
 /**
- A boolean to show the edge indicators.
- 
- The default value is NO.
+ The glyph type for the header view (see OCKGlyphType).
  */
-@property (nonatomic) BOOL showEdgeIndicators;
+@property (nonatomic) OCKGlyphType glyphType;
+
+/**
+ Image name string if using a custom image. Cannot access image name once image has been created
+ and we need a way to access that to send the custom image name string to the watch
+ */
+@property (nonatomic, copy) NSString *customGlyphImageName;
 
 @end
 

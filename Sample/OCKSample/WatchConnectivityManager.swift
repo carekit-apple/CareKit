@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -36,9 +36,12 @@ class WatchConnectivityManager : NSObject {
     // MARK: Properties
     var store : OCKCarePlanStore
     var session : WCSession
-    
+    var glyphType: String = "Image Unavailable"
+    var customGlyphImage: UIImage = UIImage()
+    var glyphTintColor: [CGFloat] = [239.0, 68.0, 91.0, 0.0]
+    var glyphImageName: String = "Heart"
+
     var eventUpdatesFromWatch = [String]()
-    
     
     // MARK: Initialization
     
@@ -61,7 +64,6 @@ class WatchConnectivityManager : NSObject {
 extension WatchConnectivityManager : OCKCarePlanStoreDelegate {
     
     func carePlanStore(_ store: OCKCarePlanStore, didReceiveUpdateOf event: OCKCarePlanEvent) {
-        
         if event.activity.type != .intervention {
             return
         }
@@ -74,8 +76,14 @@ extension WatchConnectivityManager : OCKCarePlanStoreDelegate {
         let eventUpdateString = hashEventUpdate(event.activity.identifier, eventIndex: event.occurrenceIndexOfDay, state: event.state)
         if let hashIndex = eventUpdatesFromWatch.index(of: eventUpdateString) {
             eventUpdatesFromWatch.remove(at: hashIndex)
+            
             return
         }
+        
+        self.session.transferCurrentComplicationUserInfo(["glyphType" : self.glyphType,
+                                                          "glyphTintColor" : self.glyphTintColor,
+                                                          "glyphImageName" : self.glyphImageName])
+        try? self.session.updateApplicationContext(["glyphType" : self.glyphType])
         
         if eventIsToday {
             self.store.events(onDate: today, type: .intervention, completion: { (allEventsArray, errorOrNil) in
@@ -90,11 +98,14 @@ extension WatchConnectivityManager : OCKCarePlanStoreDelegate {
                     encoder.encode("updateEvent", forKey: "type")
                     encoder.encode(self.parseEventToDictionary(event), forKey: "event")
                     encoder.encode(Int64(completionPercentage), forKey: "currentCompletionPercentage")
-                    
+                 
                     encoder.finishEncoding()
                     self.session.sendMessageData(data as Data, replyHandler: nil, errorHandler: nil)
                 } else {
-                    try? self.session.updateApplicationContext(["currentCompletionPercentage" : completionPercentage, "eventsRemaining" : totalEvents - eventsCompleted])
+                    self.session.transferCurrentComplicationUserInfo(["glyphType" : self.glyphType,
+                                                                      "glyphTintColor" : self.glyphTintColor,
+                                                                      "glyphImageName" : self.glyphImageName])
+                    try? self.session.updateApplicationContext(["glyphType" : self.glyphType,"currentCompletionPercentage" : completionPercentage, "eventsRemaining" : totalEvents - eventsCompleted])
                 }
             })
         }
@@ -114,8 +125,48 @@ extension WatchConnectivityManager : OCKCarePlanStoreDelegate {
                 let totalEvents = allEventsArray.map({$0.count}).reduce(0, +)
                 let completionPercentage = round(Float(eventsCompleted) * 100.0 / Float(totalEvents))
         
-                try? self.session.updateApplicationContext(["currentCompletionPercentage" : completionPercentage, "eventsRemaining" : totalEvents - eventsCompleted])
+                try? self.session.updateApplicationContext(["glyphType" : self.glyphType, "currentCompletionPercentage" : completionPercentage, "eventsRemaining" : totalEvents - eventsCompleted])
+                self.session.transferCurrentComplicationUserInfo(["glyphType" : self.glyphType,
+                                                                  "glyphTintColor" : self.glyphTintColor,
+                                                                  "glyphImageName" : self.glyphImageName])
+                
             })
+        }
+    }
+    
+    // transfer glyph type and tint color
+    func sendGlyphType(glyphType: String, glyphTintColor: [CGFloat]) {
+        
+        if self.session.isReachable {
+            let data = NSMutableData()
+            let encoder = NSKeyedArchiver(forWritingWith: data)
+            
+            encoder.encode(glyphType, forKey: "glyphType")
+            encoder.finishEncoding()
+            
+            self.session.sendMessageData(data as Data, replyHandler: nil, errorHandler: nil)
+        } else {
+            self.session.transferCurrentComplicationUserInfo(["glyphType" : glyphType, "glyphTintColor" : glyphTintColor])
+            try? self.session.updateApplicationContext(["glyphType" : glyphType])
+        }
+    }
+    
+    // transfer glyph type, tint color and image it is a custom glyph image type
+    func sendGlyphType(glyphType: String, glyphTintColor: [CGFloat], glyphImageName: String) {
+        
+        if self.session.isReachable {
+            let data = NSMutableData()
+            let encoder = NSKeyedArchiver(forWritingWith: data)
+            
+            encoder.encode(glyphType, forKey: "glyphType")
+            encoder.finishEncoding()
+            
+            self.session.sendMessageData(data as Data, replyHandler: nil, errorHandler: nil)
+        } else {
+            self.session.transferCurrentComplicationUserInfo(["glyphType" : glyphType,
+                                                              "glyphTintColor" : glyphTintColor,
+                                                              "glyphImageName" : glyphImageName])
+            try? self.session.updateApplicationContext(["glyphType" : glyphType])
         }
     }
 }
@@ -203,8 +254,7 @@ extension WatchConnectivityManager : WCSessionDelegate {
             replyHandler(Data())
         }
     }
-    
-    
+   
     // MARK: Data parsing
     
     func parseEntireStore(_ initialCompletion: @escaping (Data) -> Void) {

@@ -117,5 +117,4 @@ static const CGFloat TrailingMargin = 20.0;
     [NSLayoutConstraint activateConstraints:_constraints];
 }
 
-
 @end

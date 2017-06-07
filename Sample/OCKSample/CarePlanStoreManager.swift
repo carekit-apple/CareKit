@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -88,7 +88,6 @@ class CarePlanStoreManager: NSObject {
 }
 
 
-
 extension CarePlanStoreManager: OCKCarePlanStoreDelegate {
     func carePlanStoreActivityListDidChange(_ store: OCKCarePlanStore) {
         updateInsights()
@@ -96,9 +95,18 @@ extension CarePlanStoreManager: OCKCarePlanStoreDelegate {
     
     func carePlanStore(_ store: OCKCarePlanStore, didReceiveUpdateOf event: OCKCarePlanEvent) {
         updateInsights()
+        
+        let triggeredThresholds = event.evaluateNumericThresholds()
+        if triggeredThresholds.count != 0 {
+            for thresholdArray in triggeredThresholds {
+                for threshold in thresholdArray {
+                    NSLog("Threshold triggered on event \(event.occurrenceIndexOfDay) of \(event.date) for activity \(event.activity.identifier) with title:\n\(threshold.title!)")
+                }
+            }
+        }
+        
     }
 }
-
 
 
 protocol CarePlanStoreManagerDelegate: class {

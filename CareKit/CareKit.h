@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -39,10 +39,21 @@
 #import <CareKit/OCKCarePlanEvent.h>
 #import <CareKit/OCKCarePlanEventResult.h>
 #import <CareKit/OCKCarePlanStore.h>
+#import <CareKit/OCKCarePlanThreshold.h>
+
+// Glyph
+#import <CareKit/OCKGlyph.h>
+
+// Patient
+#import <CareKit/OCKPatient.h>
+#import <CareKit/OCKPatientWidget.h>
 
 // Care Card
 #import <CareKit/OCKCareCardViewController.h>
 #import <CareKit/OCKCareCardDetailViewController.h>
+
+// Care Content
+#import <CareKit/OCKCareContentsViewController.h>
 
 // Symptom Tracker
 #import <CareKit/OCKSymptomTrackerViewController.h>
@@ -53,13 +64,18 @@
 #import <CareKit/OCKChart.h>
 #import <CareKit/OCKBarSeries.h>
 #import <CareKit/OCKBarChart.h>
+#import <CareKit/OCKRingItem.h>
 #import <CareKit/OCKInsightsViewController.h>
 #import <CareKit/OCKGroupedBarChartView.h>
 
 // Connect
 #import <CareKit/OCKContactInfo.h>
 #import <CareKit/OCKContact.h>
+#import <CareKit/OCKConnectMessageItem.h>
 #import <CareKit/OCKConnectViewController.h>
 
 // PDF
 #import <CareKit/OCKDocument.h>
+
+// Colors
+#import <CareKit/OCKColor.h>

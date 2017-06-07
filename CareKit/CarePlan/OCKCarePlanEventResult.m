@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -36,6 +36,7 @@
 @implementation OCKCarePlanEventResult {
     NSString *_valueString;
     NSString *_unitString;
+    NSArray<NSNumber *> *_values;
     
     HKSampleType *_sampleType;
     NSUUID *_sampleUUID;
@@ -53,17 +54,32 @@
 }
 
 - (instancetype)initWithValueString:(NSString *)valueString
-                         unitString:(nullable NSString *)unitString
-                           userInfo:(nullable NSDictionary *)userInfo {
+                         unitString:(NSString *)unitString
+                           userInfo:(nullable NSDictionary<NSString *,id<NSCoding>> *)userInfo
+                             values:(nullable NSArray<NSNumber *> *)values {
     OCKThrowInvalidArgumentExceptionIfNil(valueString);
+    if ((values) && (values.count > 2)) {
+        @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Values cannot have more than 2 elements." userInfo:nil];
+    }
+    
     self = [super init];
     if (self) {
         _valueString = valueString;
         _unitString = unitString;
         _userInfo = userInfo;
         _creationDate = [NSDate date];
+        _values = values;
     }
     return self;
+}
+
+- (instancetype)initWithValueString:(NSString *)valueString
+                         unitString:(nullable NSString *)unitString
+                           userInfo:(nullable NSDictionary *)userInfo {
+    return [self initWithValueString:valueString
+                          unitString:unitString
+                            userInfo:userInfo
+                              values:nil];
 }
 
 - (instancetype)initWithSample:(HKSample *)sample
@@ -237,7 +253,7 @@
             HKUnit *unit = [self preferredUnit];
             double doubleValue = [sample.quantity doubleValueForUnit:unit];
             string = [self stringForDoubleValue:doubleValue];
-        }else if ([_sample isKindOfClass:[HKCorrelation class]]) {
+        } else if ([_sample isKindOfClass:[HKCorrelation class]]) {
             HKCorrelation *correlation = (HKCorrelation *)_sample;
             HKQuantityType *systolicType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierBloodPressureSystolic];
             HKQuantityType *diastolicType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierBloodPressureDiastolic];
@@ -269,6 +285,27 @@
     return nil;
 }
 
+- (NSArray<NSNumber *> *)values {
+    if (_values) {
+        return _values;
+    } else if (_sample) {
+        if ([_sample isKindOfClass:[HKQuantitySample class]]) {
+            HKQuantitySample *sample = (HKQuantitySample *)_sample;
+            return @[@([sample.quantity doubleValueForUnit:[self preferredUnit]])];
+        } else if ([_sample isKindOfClass:[HKCorrelation class]]) {
+            HKCorrelation *correlation = (HKCorrelation *)_sample;
+            HKQuantityType *systolicType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierBloodPressureSystolic];
+            HKQuantityType *diastolicType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierBloodPressureDiastolic];
+            
+            HKQuantitySample *systolicSample = [correlation objectsForType:systolicType].anyObject;
+            HKQuantitySample *diastolicSample = [correlation objectsForType:diastolicType].anyObject;
+            return @[@([diastolicSample.quantity doubleValueForUnit:[self preferredUnit]]),
+                     @([systolicSample.quantity doubleValueForUnit:[self preferredUnit]])];
+        }
+    }
+    return nil;
+}
+
 - (instancetype)initWithCoreDataObject:(OCKCDCarePlanEventResult *)cdObject {
     NSParameterAssert(cdObject);
     
@@ -285,7 +322,9 @@
         _userInfo = cdObject.userInfo;
     } else {
         self = [self initWithValueString:cdObject.valueString
-                              unitString:cdObject.unitString userInfo:cdObject.userInfo];
+                              unitString:cdObject.unitString
+                                userInfo:cdObject.userInfo
+                                  values:cdObject.values];
     }
     
     if (self) {
@@ -340,8 +379,61 @@
             OCKEqualObjects(self.unitStringKeys, castObject.unitStringKeys) &&
             OCKEqualObjects(self.quantityStringFormatter, castObject.quantityStringFormatter) &&
             OCKEqualObjects(self.categoryValueStringKeys, castObject.categoryValueStringKeys) &&
-            OCKEqualObjects(self.userInfo, castObject.userInfo)
+            OCKEqualObjects(self.userInfo, castObject.userInfo) &&
+            OCKEqualObjects(self.values, castObject.values)
             );
+}
+
+- (instancetype)copyWithZone:(NSZone *)zone {
+    OCKCarePlanEventResult *item = [[[self class] allocWithZone:zone] init];
+    item->_creationDate =  _creationDate;
+    item->_valueString = [_valueString copy];
+    item->_unitString = [_unitString copy];
+    item->_sampleType = _sampleType;
+    item->_sampleUUID = _sampleUUID;
+    item->_displayUnit = _displayUnit;
+    item->_unitStringKeys = _unitStringKeys;
+    item->_quantityStringFormatter = _quantityStringFormatter;
+    item->_categoryValueStringKeys = _categoryValueStringKeys;
+    item->_userInfo = _userInfo;
+    item->_values = [_values copy];
+    return item;
+}
+
++ (BOOL)supportsSecureCoding {
+    return YES;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super init];
+    if (self) {
+        OCK_DECODE_OBJ_CLASS(coder, creationDate, NSDate);
+        OCK_DECODE_OBJ_CLASS(coder, valueString, NSString);
+        OCK_DECODE_OBJ_CLASS(coder, unitString, NSString);
+        OCK_DECODE_OBJ_CLASS(coder, sampleType, HKSampleType);
+        OCK_DECODE_OBJ_CLASS(coder, sampleUUID, NSUUID);
+        OCK_DECODE_OBJ_CLASS(coder, displayUnit, HKUnit);
+        OCK_DECODE_OBJ_CLASS(coder, unitStringKeys, NSDictionary);
+        OCK_DECODE_OBJ_CLASS(coder, quantityStringFormatter, NSNumberFormatter);
+        OCK_DECODE_OBJ_CLASS(coder, categoryValueStringKeys, NSDictionary);
+        OCK_DECODE_OBJ_CLASS(coder, userInfo, NSDictionary);
+        OCK_DECODE_OBJ_CLASS(coder, values, NSArray<NSNumber *>);
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+    OCK_ENCODE_OBJ(coder, creationDate);
+    OCK_ENCODE_OBJ(coder, valueString);
+    OCK_ENCODE_OBJ(coder, unitString);
+    OCK_ENCODE_OBJ(coder, sampleType);
+    OCK_ENCODE_OBJ(coder, sampleUUID);
+    OCK_ENCODE_OBJ(coder, displayUnit);
+    OCK_ENCODE_OBJ(coder, unitStringKeys);
+    OCK_ENCODE_OBJ(coder, quantityStringFormatter);
+    OCK_ENCODE_OBJ(coder, categoryValueStringKeys);
+    OCK_ENCODE_OBJ(coder, userInfo);
+    OCK_ENCODE_OBJ(coder, values);
 }
 
 @end
@@ -361,6 +453,7 @@ insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
         self.valueString = result.valueString;
         self.unitString = result.unitString;
         self.userInfo = result.userInfo;
+        self.values = result.values;
         
         self.sampleType = result.sampleType;
         self.displayUnit = result.displayUnit;
@@ -379,6 +472,7 @@ insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
     self.valueString = result.valueString;
     self.unitString = result.unitString;
     self.userInfo = result.userInfo;
+    self.values = result.values;
     
     self.sampleType = result.sampleType;
     self.displayUnit = result.displayUnit;
@@ -397,6 +491,7 @@ insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
 @dynamic valueString;
 @dynamic unitString;
 @dynamic userInfo;
+@dynamic values;
 @dynamic event;
 
 @dynamic quantityStringFormatter;

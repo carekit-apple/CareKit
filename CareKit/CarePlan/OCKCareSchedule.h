@@ -30,6 +30,7 @@
 
 
 #import "OCKDefines.h"
+#import "OCKCarePlanThreshold.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -77,6 +78,57 @@ OCK_CLASS_AVAILABLE
                          occurrencesPerDay:(NSUInteger)occurrencesPerDay;
 
 /**
+ Defines a schedule that has the same number of occurrences each day.
+ 
+ You can set the end date later by using the CarePlanStore API.
+ 
+ @param startDate           Start date for a schedule, using the Gregorian calendar.
+ @param occurrencesPerDay   Number of occurrences in each day.
+ @param threshold           The threshold to apply to each day's occurences count.
+ 
+ @return    An OCKCareSchedule instance.
+ */
++ (instancetype)dailyScheduleWithStartDate:(NSDateComponents *)startDate
+                         occurrencesPerDay:(NSUInteger)occurrencesPerDay
+                            dailyThreshold:(OCKCarePlanThreshold *)threshold;
+
+/**
+ Defines a schedule that has the same number of occurrences every day.
+ 
+ @param startDate           Start date for a schedule, using the Gregorian calendar.
+ @param occurrencesPerDay   Number of occurrences in each day.
+ @param daysToSkip          Number of days between two active days during this period for which the schedule has no occurrence.
+ (That is, number of skipped days.)
+ First day of a schedule is recognized as an active day.
+ @param endDate             End date for a schedule, , using the Gregorian calendar.
+ 
+ @return    An OCKCareSchedule instance.
+ */
++ (instancetype)dailyScheduleWithStartDate:(NSDateComponents *)startDate
+                         occurrencesPerDay:(NSUInteger)occurrencesPerDay
+                                daysToSkip:(NSUInteger)daysToSkip
+                                   endDate:(nullable NSDateComponents *)endDate;
+
+/**
+ Defines a schedule that has the same number of occurrences every day.
+ 
+ @param startDate           Start date for a schedule, using the Gregorian calendar.
+ @param occurrencesPerDay   Number of occurrences in each day.
+ @param daysToSkip          Number of days between two active days during this period for which the schedule has no occurrence.
+ (That is, number of skipped days.)
+ First day of a schedule is recognized as an active day.
+ @param endDate             End date for a schedule, , using the Gregorian calendar.
+ @param threshold           The threshold to apply to each day's occurences count.
+ 
+ @return    An OCKCareSchedule instance.
+ */
++ (instancetype)dailyScheduleWithStartDate:(NSDateComponents *)startDate
+                         occurrencesPerDay:(NSUInteger)occurrencesPerDay
+                                daysToSkip:(NSUInteger)daysToSkip
+                                   endDate:(nullable NSDateComponents *)endDate
+                            dailyThreshold:(nullable OCKCarePlanThreshold *)threshold;
+
+/**
  Defines a schedule that repeats every week.
  
  Each weekday can have a different number of occurrences.
@@ -91,21 +143,20 @@ OCK_CLASS_AVAILABLE
                        occurrencesOnEachDay:(NSArray<NSNumber *> *)occurrencesFromSundayToSaturday;
 
 /**
- Defines a schedule that has the same number of occurrences every day.
+ Defines a schedule that repeats every week.
  
- @param startDate           Start date for a schedule, using the Gregorian calendar.
- @param occurrencesPerDay   Number of occurrences in each day.
- @param daysToSkip          Number of days between two active days during this period for which the schedule has no occurrence. 
-                            (That is, number of skipped days.)
-                            First day of a schedule is recognized as an active day.
- @param endDate             End date for a schedule, , using the Gregorian calendar.
+ Each weekday can have a different number of occurrences.
+ You can set the end date later by using the CarePlanStore API.
+ 
+ @param startDate                       Start date for a schedule, using the Gregorian calendar.
+ @param occurrencesFromSundayToSaturday Number of occurrences for Sunday through Saturday.
+ @param thresholdsFromSundayToSaturday  The thresholds to apply to each days' occurrences count, from Sunday through Saturday.
  
  @return    An OCKCareSchedule instance.
  */
-+ (instancetype)dailyScheduleWithStartDate:(NSDateComponents *)startDate
-                         occurrencesPerDay:(NSUInteger)occurrencesPerDay
-                                daysToSkip:(NSUInteger)daysToSkip
-                                   endDate:(nullable NSDateComponents *)endDate;
++ (instancetype)weeklyScheduleWithStartDate:(NSDateComponents *)startDate
+                       occurrencesOnEachDay:(NSArray<NSNumber *> *)occurrencesFromSundayToSaturday
+                        thresholdsOnEachDay:(NSArray<OCKCarePlanThreshold *> *)thresholdsFromSundayToSaturday;
 
 /**
  Defines a schedule that repeats every week.
@@ -124,6 +175,25 @@ OCK_CLASS_AVAILABLE
                        occurrencesOnEachDay:(NSArray<NSNumber *> *)occurrencesFromSundayToSaturday
                                 weeksToSkip:(NSUInteger)weeksToSkip
                                     endDate:(nullable NSDateComponents *)endDate;
+/**
+ Defines a schedule that repeats every week.
+ 
+ Each weekday can have a different number of occurrences.
+ 
+ @param startDate                       Start date for a schedule, using the Gregorian calendar.
+ @param occurrencesFromSundayToSaturday Number of occurrences in each day.
+ @param weeksToSkip                     Number of weeks between two active weeks during this period for which the schedule has no occurrence.
+ (That is, number of skipped weeks.)
+ @param endDate                         End date for a schedule, , using the Gregorian calendar.
+ @param thresholdsFromSundayToSaturday  The thresholds to apply to each days' occurrences count, from Sunday through Saturday.
+
+ @return    An OCKCareSchedule instance.
+ */
++ (instancetype)weeklyScheduleWithStartDate:(NSDateComponents *)startDate
+                       occurrencesOnEachDay:(NSArray<NSNumber *> *)occurrencesFromSundayToSaturday
+                                weeksToSkip:(NSUInteger)weeksToSkip
+                                    endDate:(nullable NSDateComponents *)endDate
+                        thresholdsOnEachDay:(nullable NSArray<OCKCarePlanThreshold *> *)thresholdsFromSundayToSaturday;
 
 /**
  Type of schedule.
@@ -157,6 +227,13 @@ OCK_CLASS_AVAILABLE
 @property (nonatomic, copy, readonly) NSArray<NSNumber *> *occurrences;
 
 /**
+ Adherance thresholds for each day within the time range.
+ 
+ Must be thresholds of type OCKCarePlanThresholdTypeAdherance
+ */
+@property (nonatomic, copy, readonly, nullable) NSArray<OCKCarePlanThreshold *> *thresholds;
+
+/**
  Number of inactive time units between two active time units.
  During this period, schedule has no occurrence.
  
@@ -175,6 +252,16 @@ OCK_CLASS_AVAILABLE
  @return    The number of events on the specified date.
  */
 - (NSUInteger)numberOfEventsOnDate:(NSDateComponents *)date;
+
+/**
+ The adherance threshold for a given date.
+ 
+ @param date        Gregorian calendar representation of a date.
+                    Only Era/Year/Month/Day attributes are observed.
+ 
+ @return    The threshold object for the specified date, or nil if no threshold set.
+ */
+- (OCKCarePlanThreshold *)thresholdOnDate:(NSDateComponents *)date;
 
 @end
 

@@ -1,6 +1,6 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
- Copyright (c) 2016, Erik Hornberger. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Erik Hornberger. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -123,7 +123,7 @@ OCK_CLASS_AVAILABLE
  
  If the value is not specified, the app's tint color is used.
  */
-@property (nonatomic, null_resettable) UIColor *progressRingTintColor;
+@property (nonatomic, null_resettable) UIColor *glyphTintColor;
 
 /**
  The string that will be used as the Symptom Tracker header title.
@@ -133,11 +133,15 @@ OCK_CLASS_AVAILABLE
 @property (nonatomic, null_resettable) NSString *headerTitle;
 
 /**
- A boolean to show the edge indicators.
- 
- The default value is NO.
+ The glyph type for the header view (see OCKGlyphType).
  */
-@property (nonatomic) BOOL showEdgeIndicators;
+@property (nonatomic) OCKGlyphType glyphType;
+
+/**
+ Image name string if using a custom image. Cannot access image name once image has been created
+ and we need a way to access that to send the custom image name string to the watch
+ */
+@property (nonatomic) NSString *customGlyphImageName;
 
 @end
 

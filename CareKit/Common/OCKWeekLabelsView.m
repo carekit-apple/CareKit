@@ -65,8 +65,8 @@ static const NSInteger InvalidIndex = -1;
         _weekLabels = [NSMutableArray new];
         for (int i = 0; i < 7; i++) {
             UILabel *dayLabel = [UILabel new];
-            dayLabel.font = [UIFont systemFontOfSize:12.0 weight:UIFontWeightThin];
-            dayLabel.layer.cornerRadius = 3;
+            dayLabel.font = [UIFont systemFontOfSize:12.0 weight:UIFontWeightLight];
+            dayLabel.layer.cornerRadius = 5.0;
             dayLabel.clipsToBounds = YES;
             dayLabel.text = _weekStrings[i];
             dayLabel.textAlignment = NSTextAlignmentCenter;
@@ -139,11 +139,14 @@ static const NSInteger InvalidIndex = -1;
     _selectedIndex = selectedIndex;
     
     for (UILabel *label in self.weekLabels) {
-        label.backgroundColor = [UIColor clearColor];
+        label.layer.backgroundColor = [UIColor clearColor].CGColor;
         label.textColor = [UIColor blackColor];
     }
-    self.weekLabels[selectedIndex].backgroundColor = self.tintColor;
-    self.weekLabels[selectedIndex].textColor = [UIColor whiteColor];
+    
+    [UIView animateWithDuration:0.30 animations:^{
+        self.weekLabels[selectedIndex].layer.backgroundColor = self.isToday ? [self.tintColor colorWithAlphaComponent:0.70].CGColor : [UIColor lightGrayColor].CGColor;
+        self.weekLabels[selectedIndex].textColor = [UIColor whiteColor];
+    }];
 }
 
 - (void)tintColorDidChange {

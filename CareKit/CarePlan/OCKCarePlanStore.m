@@ -946,7 +946,8 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
             }
         }
         
-        if ([adheranceThreshold evaluateThresholdForValue:@(eventsCompleted)]) {
+        float value = eventsCompleted / (float)events.count;
+        if ([adheranceThreshold evaluateThresholdForValue:@(value)]) {
             completion(YES, adheranceThreshold, error);
         } else {
             completion(YES, nil, error);

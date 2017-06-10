@@ -43,6 +43,7 @@
 
 - (instancetype)initWithIdentifier:(NSString *)identifier
                    groupIdentifier:(NSString *)groupIdentifier
+             visualGroupIdentifier:(NSString *)visualGroupIdentifier
                               type:(OCKCarePlanActivityType)type
                              title:(NSString *)title
                               text:(NSString *)text
@@ -69,6 +70,7 @@
     if (self) {
         _identifier = [identifier copy];
         _groupIdentifier = [groupIdentifier copy];
+        _visualGroupIdentifier = [visualGroupIdentifier copy];
         _type = type;
         _title = [title copy];
         _text = [text copy];
@@ -86,6 +88,7 @@
 
 - (instancetype)initWithIdentifier:(NSString *)identifier
                    groupIdentifier:(NSString *)groupIdentifier
+             visualGroupIdentifier:(NSString *)visualGroupIdentifier
                               type:(OCKCarePlanActivityType)type
                              title:(NSString *)title
                               text:(NSString *)text
@@ -95,8 +98,10 @@
                           schedule:(OCKCareSchedule *)schedule
                   resultResettable:(BOOL)resultResettable
                           userInfo:(NSDictionary *)userInfo {
+
     return [self initWithIdentifier:identifier
                     groupIdentifier:groupIdentifier
+              visualGroupIdentifier:visualGroupIdentifier
                                type:type
                               title:title
                                text:text
@@ -112,6 +117,7 @@
 
 + (instancetype)assessmentWithIdentifier:(NSString *)identifier
                          groupIdentifier:(NSString *)groupIdentifier
+                   visualGroupIdentifier:(NSString *)visualGroupIdentifier
                                    title:(NSString *)title
                                     text:(NSString *)text
                                tintColor:(UIColor *)tintColor
@@ -122,6 +128,7 @@
                                 optional:(BOOL)optional {
     return [[self alloc] initWithIdentifier:identifier
                             groupIdentifier:groupIdentifier
+                      visualGroupIdentifier:visualGroupIdentifier
                                        type:OCKCarePlanActivityTypeAssessment
                                       title:title
                                        text:text
@@ -137,6 +144,7 @@
 
 + (instancetype)assessmentWithIdentifier:(NSString *)identifier
                          groupIdentifier:(NSString *)groupIdentifier
+                   visualGroupIdentifier:(NSString *)visualGroupIdentifier
                                    title:(NSString *)title
                                     text:(NSString *)text
                                tintColor:(UIColor *)tintColor
@@ -147,6 +155,7 @@
     
     return [[self alloc] initWithIdentifier:identifier
                             groupIdentifier:groupIdentifier
+                      visualGroupIdentifier:visualGroupIdentifier
                                        type:OCKCarePlanActivityTypeAssessment
                                       title:title
                                        text:text
@@ -162,6 +171,7 @@
 
 + (instancetype)interventionWithIdentifier:(NSString *)identifier
                            groupIdentifier:(NSString *)groupIdentifier
+                     visualGroupIdentifier:(NSString *)visualGroupIdentifier
                                      title:(NSString *)title
                                       text:(NSString *)text
                                  tintColor:(UIColor *)tintColor
@@ -173,6 +183,7 @@
     
     return [[self alloc] initWithIdentifier:identifier
                             groupIdentifier:groupIdentifier
+                      visualGroupIdentifier:visualGroupIdentifier
                                        type:OCKCarePlanActivityTypeIntervention
                                       title:title
                                        text:text
@@ -187,16 +198,18 @@
 }
 
 + (instancetype)readOnlyWithIdentifier:(NSString *)identifier
-                                   groupIdentifier:(nullable NSString *)groupIdentifier
-                                             title:(NSString *)title
-                                              text:(nullable NSString *)text
-                                      instructions:(nullable NSString *)instructions
-                                          imageURL:(nullable NSURL *)imageURL
-                                          schedule:(OCKCareSchedule *)schedule
-                                          userInfo:(nullable NSDictionary *)userInfo {
+                       groupIdentifier:(NSString *)groupIdentifier
+                 visualGroupIdentifier:(NSString *)visualGroupIdentifier
+                                 title:(NSString *)title
+                                  text:(NSString *)text
+                          instructions:(NSString *)instructions
+                              imageURL:(NSURL *)imageURL
+                              schedule:(OCKCareSchedule *)schedule
+                              userInfo:(NSDictionary *)userInfo {
     
     return [[self alloc] initWithIdentifier:identifier
                             groupIdentifier:groupIdentifier
+                      visualGroupIdentifier:visualGroupIdentifier
                                        type:OCKCarePlanActivityTypeReadOnly
                                       title:title
                                        text:text
@@ -215,6 +228,7 @@
     NSParameterAssert(cdObject);
     self = [self initWithIdentifier:cdObject.identifier
                     groupIdentifier:cdObject.groupIdentifier
+              visualGroupIdentifier:cdObject.visualGroupIdentifier
                                type:cdObject.type.integerValue
                               title:cdObject.title
                                text:cdObject.text
@@ -239,6 +253,7 @@
     if (self) {
         OCK_DECODE_OBJ_CLASS(coder, identifier, NSString);
         OCK_DECODE_OBJ_CLASS(coder, groupIdentifier, NSString);
+        OCK_DECODE_OBJ_CLASS(coder, visualGroupIdentifier, NSString);
         OCK_DECODE_OBJ_CLASS(coder, title, NSString);
         OCK_DECODE_OBJ_CLASS(coder, text, NSString);
         OCK_DECODE_OBJ_CLASS(coder, instructions, NSString);
@@ -257,6 +272,7 @@
 - (void)encodeWithCoder:(NSCoder *)coder {
     OCK_ENCODE_OBJ(coder, identifier);
     OCK_ENCODE_OBJ(coder, groupIdentifier);
+    OCK_ENCODE_OBJ(coder, visualGroupIdentifier);
     OCK_ENCODE_OBJ(coder, title);
     OCK_ENCODE_OBJ(coder, text);
     OCK_ENCODE_OBJ(coder, instructions);
@@ -283,6 +299,7 @@
             (self.type == castObject.type) &&
             OCKEqualObjects(self.identifier, castObject.identifier) &&
             OCKEqualObjects(self.groupIdentifier, castObject.groupIdentifier) &&
+            OCKEqualObjects(self.visualGroupIdentifier, castObject.visualGroupIdentifier) &&
             OCKEqualObjects(self.imageURL, castObject.imageURL) &&
             (self.resultResettable == castObject.resultResettable) &&
             OCKEqualObjects(self.userInfo, castObject.userInfo) &&
@@ -295,6 +312,7 @@
     item->_title = [_title copy];
     item->_identifier = [_identifier copy];
     item->_groupIdentifier = [_groupIdentifier copy];
+    item->_visualGroupIdentifier = [_visualGroupIdentifier copy];
     item->_text = [_text copy];
     item->_instructions = [_instructions copy];
     item->_tintColor = _tintColor;
@@ -326,6 +344,7 @@ insertIntoManagedObjectContext:(NSManagedObjectContext *)context
     if (self) {
         self.identifier = item.identifier;
         self.groupIdentifier = item.groupIdentifier;
+        self.visualGroupIdentifier = item.visualGroupIdentifier;
         self.title = item.title;
         self.text = item.text;
         self.instructions = item.instructions;
@@ -348,6 +367,7 @@ insertIntoManagedObjectContext:(NSManagedObjectContext *)context
 @dynamic color;
 @dynamic identifier;
 @dynamic groupIdentifier;
+@dynamic visualGroupIdentifier;
 @dynamic schedule;
 @dynamic text;
 @dynamic title;

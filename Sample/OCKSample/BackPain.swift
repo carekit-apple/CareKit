@@ -53,6 +53,7 @@ struct BackPain: Assessment {
         let activity = OCKCarePlanActivity.assessment(
             withIdentifier: activityType.rawValue,
             groupIdentifier: nil,
+            visualGroupIdentifier: "Assessments",
             title: title,
             text: summary,
             tintColor: Colors.blue.color,

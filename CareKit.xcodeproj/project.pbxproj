@@ -334,6 +334,7 @@
 		86EA9A4C1C9C644E00B93BB1 /* OCKHTMLPDFWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKHTMLPDFWriter.h; sourceTree = "<group>"; };
 		86EA9A4D1C9C644E00B93BB1 /* OCKHTMLPDFWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKHTMLPDFWriter.m; sourceTree = "<group>"; };
 		86EA9A521C9C64C500B93BB1 /* CareKitPDFTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CareKitPDFTests.m; sourceTree = "<group>"; };
+		96AED2731EEC933400C98B5B /* OCKCarePlanStore v 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "OCKCarePlanStore v 3.xcdatamodel"; sourceTree = "<group>"; };
 		AEB37F661DF224DA002370A6 /* OCKColor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKColor.m; sourceTree = "<group>"; };
 		AEB37F681DF224ED002370A6 /* OCKColor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OCKColor.h; sourceTree = "<group>"; };
 		BA0CCA4B1DA320430003EB6C /* OCKHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKHeaderView.h; sourceTree = "<group>"; };
@@ -1470,10 +1471,11 @@
 		8677EE041C9775EB00588CD6 /* OCKCarePlanStore.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				96AED2731EEC933400C98B5B /* OCKCarePlanStore v 3.xcdatamodel */,
 				185BC3A31D81DF0F001AB0A9 /* OCKCarePlanStore v2.xcdatamodel */,
 				8677EE051C9775EB00588CD6 /* OCKCarePlanStore.xcdatamodel */,
 			);
-			currentVersion = 185BC3A31D81DF0F001AB0A9 /* OCKCarePlanStore v2.xcdatamodel */;
+			currentVersion = 96AED2731EEC933400C98B5B /* OCKCarePlanStore v 3.xcdatamodel */;
 			path = OCKCarePlanStore.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

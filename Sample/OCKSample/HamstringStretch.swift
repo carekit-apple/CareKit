@@ -52,7 +52,8 @@ struct HamstringStretch: Activity {
         // Create the intervention activity.
         let activity = OCKCarePlanActivity.intervention(
             withIdentifier: activityType.rawValue,
-            groupIdentifier: "Physical Activity",
+            groupIdentifier: nil,
+            visualGroupIdentifier: "Physical Activity",
             title: title,
             text: summary,
             tintColor: Colors.blue.color,

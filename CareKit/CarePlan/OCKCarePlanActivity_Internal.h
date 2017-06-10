@@ -60,6 +60,7 @@ insertIntoManagedObjectContext:(nullable NSManagedObjectContext *)context
 @property (nullable, nonatomic, retain) id color;
 @property (nullable, nonatomic, retain) NSString *identifier;
 @property (nullable, nonatomic, retain) NSString *groupIdentifier;
+@property (nullable, nonatomic, retain) NSString *visualGroupIdentifier;
 @property (nullable, nonatomic, retain) OCKCareSchedule *schedule;
 @property (nullable, nonatomic, retain) NSString *title;
 @property (nullable, nonatomic, retain) NSString *text;

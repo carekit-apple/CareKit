@@ -70,23 +70,26 @@ OCK_CLASS_AVAILABLE
  Convienience initializer for intervention activity type.
  This initializer covers necessary attributes for building an intervention.
  
- @param identifier      Unique identifier string.
- @param groupIdentifier Group identifier string.
-                        You can use the identifier to group similar activities.
- @param title           The title for the intervention activity.
- @param text            A descriptive text for the intervention activity.
- @param tintColor       The tint color for the intervention activity.
- @param instructions    Additional instructions for the intervention activity.
- @param imageURL        Image for the intervention activity.
- @param schedule        The schedule for the intervention activity.
- @param userInfo        Save any additional objects that comply with the NSCoding protocol.
- @param optional        Whether or not the activity is optional.
+ @param identifier              Unique identifier string.
+ @param groupIdentifier         Group identifier string.
+                                You can use the identifier to group similar activities.
+ @param visualGroupIdentifier   Visual group identifier string.
+                                You can use the visualGroupIdentifier to group similar activities in the Care Contents card.
+ @param title                   The title for the intervention activity.
+ @param text                    A descriptive text for the intervention activity.
+ @param tintColor               The tint color for the intervention activity.
+ @param instructions            Additional instructions for the intervention activity.
+ @param imageURL                Image for the intervention activity.
+ @param schedule                The schedule for the intervention activity.
+ @param userInfo                Save any additional objects that comply with the NSCoding protocol.
+ @param optional                Whether or not the activity is optional.
 
  
  @return Initialized OCKCarePlanActivity instance.
  */
 + (instancetype)interventionWithIdentifier:(NSString *)identifier
                            groupIdentifier:(nullable NSString *)groupIdentifier
+                     visualGroupIdentifier:(nullable NSString *)visualGroupIdentifier
                                      title:(NSString *)title
                                       text:(nullable NSString *)text
                                  tintColor:(nullable UIColor *)tintColor
@@ -100,22 +103,25 @@ OCK_CLASS_AVAILABLE
  Convienience initializer for the assessment activity type.
  This initializer covers necessary attributes for building an assessment.
  
- @param identifier          Unique identifier string.
- @param groupIdentifier     Group identifier string. 
-                            You can use the identifier to group similar activities.
- @param title               The title for the assessment activity.
- @param text                A descriptive text for the assessment activity.
- @param tintColor           The tint color for the assessment activity.
- @param resultResettable    Whether or not to allow the user to retake the assessment.
- @param schedule            The schedule for the assessment activity.
- @param userInfo            Save any additional objects that comply with the NSCoding protocol.
- @param thresholds          An array of array of thresholds to apply to numeric result values.
- @param optional            Whether or not the activity is optional.
+ @param identifier                  Unique identifier string.
+ @param groupIdentifier             Group identifier string.
+                                    You can use the identifier to group similar activities.
+ @param visualGroupIdentifier       Visual group identifier string.
+                                    You can use the visualGroupIdentifier to group similar activities in the Care Contents card.
+ @param title                       The title for the assessment activity.
+ @param text                        A descriptive text for the assessment activity.
+ @param tintColor                   The tint color for the assessment activity.
+ @param resultResettable            Whether or not to allow the user to retake the assessment.
+ @param schedule                    The schedule for the assessment activity.
+ @param userInfo                    Save any additional objects that comply with the NSCoding protocol.
+ @param thresholds                  An array of array of thresholds to apply to numeric result values.
+ @param optional                    Whether or not the activity is optional.
  
  @return Initialized OCKCarePlanActivity instance.
  */
 + (instancetype)assessmentWithIdentifier:(NSString *)identifier
                          groupIdentifier:(nullable NSString *)groupIdentifier
+                   visualGroupIdentifier:(nullable NSString *)visualGroupIdentifier
                                    title:(NSString *)title
                                     text:(nullable NSString *)text
                                tintColor:(nullable UIColor *)tintColor
@@ -128,6 +134,7 @@ OCK_CLASS_AVAILABLE
 
 + (instancetype)assessmentWithIdentifier:(NSString *)identifier
                          groupIdentifier:(nullable NSString *)groupIdentifier
+                   visualGroupIdentifier:(nullable NSString *)visualGroupIdentifier
                                    title:(NSString *)title
                                     text:(nullable NSString *)text
                                tintColor:(nullable UIColor *)tintColor
@@ -140,15 +147,17 @@ OCK_CLASS_AVAILABLE
  Convienience initializer for read only activity type.
  This initializer covers necessary attributes for building read only activity.
  
- @param identifier      Unique identifier string.
- @param groupIdentifier Group identifier string.
- You can use the identifier to group similar activities, but they will all be grouped under Read Only section in the table view.
- @param title           The title for the read only activity.
- @param text            A descriptive text for the read only activity.
- @param instructions    Additional instructions for the read only activity.
- @param imageURL        Image for the read only activity.
- @param schedule        The schedule for the read only activity.
- @param userInfo        Save any additional objects that comply with the NSCoding protocol.
+ @param identifier              Unique identifier string.
+ @param groupIdentifier         Group identifier string.
+                                You can use the identifier to group similar activities, but they will all be grouped under Read Only section in the table view.
+ @param visualGroupIdentifier   Visual group identifier string.
+                                You can use the visualGroupIdentifier to group similar activities in the Care Contents card.
+ @param title                   The title for the read only activity.
+ @param text                    A descriptive text for the read only activity.
+ @param instructions            Additional instructions for the read only activity.
+ @param imageURL                Image for the read only activity.
+ @param schedule                The schedule for the read only activity.
+ @param userInfo                Save any additional objects that comply with the NSCoding protocol.
  
  
  @return Initialized OCKCarePlanActivity instance.
@@ -156,6 +165,7 @@ OCK_CLASS_AVAILABLE
 
 + (instancetype)readOnlyWithIdentifier:(NSString *)identifier
                                    groupIdentifier:(nullable NSString *)groupIdentifier
+                             visualGroupIdentifier:(nullable NSString *)visualGroupIdentifier
                                              title:(NSString *)title
                                               text:(nullable NSString *)text
                                       instructions:(nullable NSString *)instructions
@@ -166,25 +176,27 @@ OCK_CLASS_AVAILABLE
 /**
  Default initialzer for OCKCarePlanActivity.
  
- @param identifier          Unique identifier string.
- @param groupIdentifier     Group identifier string.
-                            You can use the identifier to group similar activities.
- @param type                Type defines the category of an activity.
- @param title               The title for the activity.
- @param text                A descriptive text for the activity.
- @param tintColor           The tint color for the activity.
- @param instructions        Long description string to be display in details view.
- @param imageURL            Optional image displayed in details view.
- @param schedule            The schedule for the activity.
- @param resultResettable    Whether or not to allow the user to retake the assessment.
- @param userInfo            Save any addtional NSCoding complianced objects.
- @param thresholds          An array of array of thresholds to apply to numeric result values.
- @param optional            Whether or not the activity is optional.
+ @param identifier              Unique identifier string.
+ @param groupIdentifier         Group identifier string.
+                                You can use the identifier to group similar activities.
+ @param visualGroupIdentifier   You can use the visualGroupIdentifier to group similar activities in the Care Contents card.
+ @param type                    Type defines the category of an activity.
+ @param title                   The title for the activity.
+ @param text                    A descriptive text for the activity.
+ @param tintColor               The tint color for the activity.
+ @param instructions            Long description string to be display in details view.
+ @param imageURL                Optional image displayed in details view.
+ @param schedule                The schedule for the activity.
+ @param resultResettable        Whether or not to allow the user to retake the assessment.
+ @param userInfo                Save any addtional NSCoding complianced objects.
+ @param thresholds              An array of array of thresholds to apply to numeric result values.
+ @param optional                Whether or not the activity is optional.
  
  @return Initialized OCKCarePlanActivity instance.
  */
 - (instancetype)initWithIdentifier:(NSString *)identifier
                    groupIdentifier:(nullable NSString *)groupIdentifier
+             visualGroupIdentifier:(nullable NSString *)visualGroupIdentifier
                               type:(OCKCarePlanActivityType)type
                              title:(NSString *)title
                               text:(nullable NSString *)text
@@ -201,6 +213,7 @@ OCK_CLASS_AVAILABLE
 
 - (instancetype)initWithIdentifier:(NSString *)identifier
                    groupIdentifier:(nullable NSString *)groupIdentifier
+             visualGroupIdentifier:(nullable NSString *)visualGroupIdentifier
                               type:(OCKCarePlanActivityType)type
                              title:(NSString *)title
                               text:(nullable NSString *)text
@@ -224,6 +237,12 @@ OCK_CLASS_AVAILABLE
  You can use this identifier as a key to retrieve multiple activity instances from the store.
  */
 @property (nonatomic, readonly, nullable) NSString *groupIdentifier;
+
+/**
+ Visual group identifier string.
+ You can use the visual identifier to group similar activities in the Care Contents card. However, activities that are optional or read-only will ignore this string and be grouped in the Optional or Read-Only sections.
+ */
+@property (nonatomic, readonly, nullable) NSString *visualGroupIdentifier;
 
 
 /**

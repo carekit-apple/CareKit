@@ -52,6 +52,7 @@ struct TakeMedication: Activity {
         let activity = OCKCarePlanActivity.intervention(
             withIdentifier: activityType.rawValue,
             groupIdentifier: "Medications",
+            visualGroupIdentifier: nil,
             title: title,
             text: summary,
             tintColor: Colors.green.color,

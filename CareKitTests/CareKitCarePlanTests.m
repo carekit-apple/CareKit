@@ -95,6 +95,7 @@
     
     OCKCarePlanActivity *item1 = [OCKCarePlanActivity interventionWithIdentifier:@"id1"
                                                                  groupIdentifier:@"gid1"
+                                                           visualGroupIdentifier: nil
                                                                            title:@"title1"
                                                                             text:@"text1"
                                                                        tintColor:[UIColor redColor]
@@ -109,6 +110,7 @@
     
     OCKCarePlanActivity *item2 = [OCKCarePlanActivity interventionWithIdentifier:@"id2"
                                                                  groupIdentifier:@"gid2"
+                                                           visualGroupIdentifier: nil
                                                                            title:@"title2"
                                                                             text:@"text2"
                                                                        tintColor:[UIColor redColor]
@@ -120,6 +122,7 @@
     
     OCKCarePlanActivity *item3 = [OCKCarePlanActivity assessmentWithIdentifier:@"id3"
                                                                groupIdentifier:@"gid3"
+                                                         visualGroupIdentifier: nil
                                                                          title:@"title3"
                                                                           text:@"text3"
                                                                      tintColor:[UIColor greenColor]
@@ -130,6 +133,7 @@
     
     OCKCarePlanActivity *item4 = [OCKCarePlanActivity interventionWithIdentifier:@"id4"
                                                                  groupIdentifier:@"gid4"
+                                                           visualGroupIdentifier: nil
                                                                            title:@"title4"
                                                                             text:@"text4"
                                                                        tintColor:[UIColor redColor]
@@ -631,7 +635,7 @@
     
     NSArray<NSArray<OCKCarePlanThreshold *> *> *thresholds = [NSArray arrayWithObject:[NSArray arrayWithObject:[OCKCarePlanThreshold numericThresholdWithValue:@(80) type:OCKCarePlanThresholdTypeNumericGreaterThan upperValue:nil title:@"Heart Rate Above 80"]]];
     
-    OCKCarePlanActivity *assessmentActivity = [OCKCarePlanActivity assessmentWithIdentifier:@"assessment1" groupIdentifier:nil title:@"First Assessment" text:nil tintColor:nil resultResettable:YES schedule:dailySchedule userInfo:nil thresholds:thresholds optional:false];
+    OCKCarePlanActivity *assessmentActivity = [OCKCarePlanActivity assessmentWithIdentifier:@"assessment1" groupIdentifier:nil visualGroupIdentifier: nil title:@"First Assessment" text:nil tintColor:nil resultResettable:YES schedule:dailySchedule userInfo:nil thresholds:thresholds optional:false];
     
     OCKCarePlanEventResult *result1 = [[OCKCarePlanEventResult alloc] initWithValueString:@"75" unitString:@"beats/minute" userInfo:nil values:@[@(75)]];
     OCKCarePlanEventResult *result2 = [[OCKCarePlanEventResult alloc] initWithValueString:@"85" unitString:@"beats/minute" userInfo:nil values:@[@(85)]];
@@ -837,6 +841,7 @@
     
     OCKCarePlanActivity *activity = [OCKCarePlanActivity assessmentWithIdentifier:@"Activity1"
                                                                   groupIdentifier:nil
+                                                            visualGroupIdentifier: nil
                                                                             title:@"The First Activity"
                                                                              text:@"To be performed twice every other day."
                                                                         tintColor:nil
@@ -955,6 +960,7 @@
     
     OCKCarePlanActivity *activity2 = [OCKCarePlanActivity assessmentWithIdentifier:@"mood"
                                                                    groupIdentifier:nil
+                                                             visualGroupIdentifier: nil
                                                                              title:@"Mood Score"
                                                                               text:@"How would you rate your mood right now?"
                                                                          tintColor:nil
@@ -1072,6 +1078,7 @@
     
     OCKCarePlanActivity *activity3 = [OCKCarePlanActivity assessmentWithIdentifier:@"bloodPressure"
                                                                    groupIdentifier:nil
+                                                             visualGroupIdentifier: nil
                                                                              title:@"Blood Pressure"
                                                                               text:@"Systolic-Diastolic blood pressure."
                                                                          tintColor:nil

@@ -89,9 +89,9 @@ class SymptomTrackerTableViewController: UITableViewController, OCKSymptomTracke
             startDateComponents.year = 2000
             let schedule = OCKCareSchedule.dailySchedule(withStartDate: startDateComponents, occurrencesPerDay: 1)
             let firstGroupId = "Group A1"
-            let carePlanActivity1 = OCKCarePlanActivity.init(identifier: "Assessment Activity #1", groupIdentifier: firstGroupId, type: OCKCarePlanActivityType.assessment, title: "Assessment Activity Title 1", text: "Read the instructions about this task", tintColor: UIColor.red, instructions: "Perform the described task and report the results. Talk to your doctor if you need help", imageURL: nil, schedule: schedule, resultResettable: true, userInfo: nil)
+            let carePlanActivity1 = OCKCarePlanActivity.init(identifier: "Assessment Activity #1", groupIdentifier: firstGroupId, visualGroupIdentifier: nil, type: OCKCarePlanActivityType.assessment, title: "Assessment Activity Title 1", text: "Read the instructions about this task", tintColor: UIColor.red, instructions: "Perform the described task and report the results. Talk to your doctor if you need help", imageURL: nil, schedule: schedule, resultResettable: true, userInfo: nil)
 
-            let carePlanActivity2 = OCKCarePlanActivity.init(identifier: "Assessment Activity #2", groupIdentifier: firstGroupId, type: OCKCarePlanActivityType.assessment, title: "Assessment Activity Title 2", text: "Complete this activity ASAP", tintColor: UIColor.orange, instructions: nil, imageURL: nil, schedule: schedule, resultResettable: true, userInfo: nil)
+            let carePlanActivity2 = OCKCarePlanActivity.init(identifier: "Assessment Activity #2", groupIdentifier: firstGroupId, visualGroupIdentifier: nil, type: OCKCarePlanActivityType.assessment, title: "Assessment Activity Title 2", text: "Complete this activity ASAP", tintColor: UIColor.orange, instructions: nil, imageURL: nil, schedule: schedule, resultResettable: true, userInfo: nil)
 
             let carePlanStore = OCKCarePlanStore.init(persistenceDirectoryURL: URL.init(string: documentsDirectory[0])!)
             carePlanStore .add(carePlanActivity1, completion: { (boolVal, error) in
@@ -136,9 +136,9 @@ class SymptomTrackerTableViewController: UITableViewController, OCKSymptomTracke
             let schedule1 = OCKCareSchedule.weeklySchedule(withStartDate: startDateComponents, occurrencesOnEachDay: [1, 2, 3, 4, 5, 6, 7], weeksToSkip: 0, endDate: endDateComponents)
             let schedule2 = OCKCareSchedule.dailySchedule(withStartDate: startDateComponents, occurrencesPerDay: 1, daysToSkip: 0, endDate: nil)
             let secondGroupId = "Group A2"
-            let carePlanActivity1 = OCKCarePlanActivity.init(identifier: "Assessment Activity #1", groupIdentifier: secondGroupId, type: OCKCarePlanActivityType.assessment, title: "Activity that ended yesterday ", text: "Read the instructions about this task", tintColor: nil, instructions: "Perform the described task and report the results. Talk to your doctor if you need help", imageURL: nil, schedule: schedule1, resultResettable: false, userInfo: nil)
+            let carePlanActivity1 = OCKCarePlanActivity.init(identifier: "Assessment Activity #1", groupIdentifier: secondGroupId, visualGroupIdentifier: nil, type: OCKCarePlanActivityType.assessment, title: "Activity that ended yesterday ", text: "Read the instructions about this task", tintColor: nil, instructions: "Perform the described task and report the results. Talk to your doctor if you need help", imageURL: nil, schedule: schedule1, resultResettable: false, userInfo: nil)
             
-            let carePlanActivity2 = OCKCarePlanActivity.assessment(withIdentifier: "Assessment Activity #2", groupIdentifier: secondGroupId, title: "A Daily Activity is one that repeats every day", text: "This is an assessment. Be careful. You are being evaluated every single day.", tintColor: UIColor.purple, resultResettable: false, schedule: schedule2, userInfo: nil, thresholds:nil, optional:false)
+            let carePlanActivity2 = OCKCarePlanActivity.assessment(withIdentifier: "Assessment Activity #2", groupIdentifier: secondGroupId, visualGroupIdentifier: nil, title: "A Daily Activity is one that repeats every day", text: "This is an assessment. Be careful. You are being evaluated every single day.", tintColor: UIColor.purple, resultResettable: false, schedule: schedule2, userInfo: nil, thresholds:nil, optional:false)
             
             let dataPath = documentsDirectory[0] + "/CarePlan2"
             if !FileManager.default.fileExists(atPath: dataPath) {
@@ -186,24 +186,24 @@ class SymptomTrackerTableViewController: UITableViewController, OCKSymptomTracke
             
             let carePlanStore = OCKCarePlanStore.init(persistenceDirectoryURL: URL.init(string: dataPath)!)
             let thirdGroupId = "Group A3"
-            let carePlanActivity1 = OCKCarePlanActivity.assessment(withIdentifier: "Step Count", groupIdentifier: thirdGroupId, title: "Step Count", text: "Get steps from Health app", tintColor: UIColor.init(red: 0.3, green: 0.2, blue: 0.9, alpha: 0.4), resultResettable: true, schedule: schedule, userInfo: ["Type":"Steps"], thresholds:nil, optional:false)
+            let carePlanActivity1 = OCKCarePlanActivity.assessment(withIdentifier: "Step Count", groupIdentifier: thirdGroupId, visualGroupIdentifier: nil, title: "Step Count", text: "Get steps from Health app", tintColor: UIColor.init(red: 0.3, green: 0.2, blue: 0.9, alpha: 0.4), resultResettable: true, schedule: schedule, userInfo: ["Type":"Steps"], thresholds:nil, optional:false)
             carePlanStore.add(carePlanActivity1, completion: { (boolVal, error) in
                 assert(boolVal, (error?.localizedDescription)!)
             })
-            let carePlanActivity2 = OCKCarePlanActivity.assessment(withIdentifier: "Body Fat", groupIdentifier: thirdGroupId, title: "Body Fat", text: "Get Body Fat from Health app", tintColor: UIColor.init(red: 0.3, green: 0.2, blue: 0.9, alpha: 0.4), resultResettable: true, schedule: schedule, userInfo:  ["Type":"BodyFat"], thresholds:nil, optional:false)
+            let carePlanActivity2 = OCKCarePlanActivity.assessment(withIdentifier: "Body Fat", groupIdentifier: thirdGroupId, visualGroupIdentifier: nil, title: "Body Fat", text: "Get Body Fat from Health app", tintColor: UIColor.init(red: 0.3, green: 0.2, blue: 0.9, alpha: 0.4), resultResettable: true, schedule: schedule, userInfo:  ["Type":"BodyFat"], thresholds:nil, optional:false)
             carePlanStore.add(carePlanActivity2, completion: { (boolVal, error) in
                 assert(boolVal, (error?.localizedDescription)!)
             })
-            let carePlanActivity3 = OCKCarePlanActivity.assessment(withIdentifier: "Sleep Analysis", groupIdentifier: thirdGroupId, title: "Sleep Analysis", text: "Get Sleep Data from Health app", tintColor: UIColor.init(red: 0.3, green: 0.2, blue: 0.9, alpha: 0.4), resultResettable: true, schedule: schedule, userInfo: ["Type":"Sleep"], thresholds:nil, optional:false)
+            let carePlanActivity3 = OCKCarePlanActivity.assessment(withIdentifier: "Sleep Analysis", groupIdentifier: thirdGroupId, visualGroupIdentifier: nil, title: "Sleep Analysis", text: "Get Sleep Data from Health app", tintColor: UIColor.init(red: 0.3, green: 0.2, blue: 0.9, alpha: 0.4), resultResettable: true, schedule: schedule, userInfo: ["Type":"Sleep"], thresholds:nil, optional:false)
             carePlanStore.add(carePlanActivity3, completion: { (boolVal, error) in
                 assert(boolVal, (error?.localizedDescription)!)
             })
-            let carePlanActivity4 = OCKCarePlanActivity.assessment(withIdentifier: "Ovulation", groupIdentifier: thirdGroupId, title: "Ovulation", text: "Get Ovulation Data from Health app", tintColor: UIColor.init(red: 0.3, green: 0.2, blue: 0.9, alpha: 0.4), resultResettable: true, schedule: schedule, userInfo: ["Type":"Ovulation"], thresholds:nil, optional:false)
+            let carePlanActivity4 = OCKCarePlanActivity.assessment(withIdentifier: "Ovulation", groupIdentifier: thirdGroupId, visualGroupIdentifier: nil, title: "Ovulation", text: "Get Ovulation Data from Health app", tintColor: UIColor.init(red: 0.3, green: 0.2, blue: 0.9, alpha: 0.4), resultResettable: true, schedule: schedule, userInfo: ["Type":"Ovulation"], thresholds:nil, optional:false)
             carePlanStore.add(carePlanActivity4, completion: { (boolVal, error) in
                 assert(boolVal, (error?.localizedDescription)!)
             })
             
-            let carePlanActivity5 = OCKCarePlanActivity.assessment(withIdentifier: "Blood Pressure", groupIdentifier: thirdGroupId, title: "Blood Pressure", text: "Get Blood Pressure from Health app", tintColor: UIColor.init(red: 0.3, green: 0.2, blue: 0.9, alpha: 0.4), resultResettable: true, schedule: schedule, userInfo: ["Type":"Blood Pressure"], thresholds:nil, optional:false)
+            let carePlanActivity5 = OCKCarePlanActivity.assessment(withIdentifier: "Blood Pressure", groupIdentifier: thirdGroupId, visualGroupIdentifier: nil, title: "Blood Pressure", text: "Get Blood Pressure from Health app", tintColor: UIColor.init(red: 0.3, green: 0.2, blue: 0.9, alpha: 0.4), resultResettable: true, schedule: schedule, userInfo: ["Type":"Blood Pressure"], thresholds:nil, optional:false)
             carePlanStore.add(carePlanActivity5, completion: { (boolVal, error) in
                 assert(boolVal, (error?.localizedDescription)!)
             })

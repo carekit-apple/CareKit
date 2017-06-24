@@ -37,7 +37,7 @@
 
 @implementation OCKInsightsTableViewHeaderView {
     UIStackView *_stackView;
-    NSMutableArray *_constraints;
+    NSMutableArray <NSLayoutConstraint *> *_constraints;
     NSMutableArray <OCKPatientWidgetView *> *_widgetViews;
     NSNumberFormatter *_numberFormatter;
 }
@@ -132,6 +132,7 @@
                                                                     multiplier:1.0
                                                                       constant:90.0]
                                         ]];
+    _constraints.lastObject.priority = 999;
     
     [NSLayoutConstraint activateConstraints:_constraints];
 }

@@ -199,9 +199,11 @@
 }
 
 - (NSCalendar *)UTC_calendar {
-    if (!_calendar) {
-        _calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
-        _calendar.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+    @synchronized (self) {
+        if (!_calendar) {
+            _calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+            _calendar.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+        }
     }
     return _calendar;
 }

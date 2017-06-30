@@ -129,6 +129,10 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     return [_persistenceDirectoryURL.path stringByAppendingPathComponent:CoreDataFileName];
 }
 
+- (NSURL *)directoryURL {
+    return _persistenceDirectoryURL;
+}
+
 
 #pragma mark - generic coredata operations
 

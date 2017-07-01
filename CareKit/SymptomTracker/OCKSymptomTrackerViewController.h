@@ -151,14 +151,6 @@ OCK_CLASS_AVAILABLE
  */
 @property (nonatomic, nullable) NSString *noEventsText;
 
-/**
- A message that will be displayed in the table view's background view if there are
- no intervention activities to display.
- 
- If the value is not specified, nothing will be shown when the table is empty.
- */
-@property (nonatomic, nullable) NSString *noEventsText;
-
 @end
 
 NS_ASSUME_NONNULL_END

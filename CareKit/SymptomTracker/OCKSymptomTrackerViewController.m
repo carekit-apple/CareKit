@@ -323,10 +323,6 @@
     _noDataLabel.text = noEventsText;
 }
 
-- (void)setNoEventsText:(NSString *)noEventsText {
-    _noDataLabel.text = noEventsText;
-}
-
 
 #pragma mark - Helpers
 

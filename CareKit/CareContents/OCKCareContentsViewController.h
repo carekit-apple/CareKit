@@ -114,6 +114,10 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)careContentsViewController:(OCKCareContentsViewController *)viewController willDisplayEvents:(NSArray<NSArray<OCKCarePlanEvent*>*>*)events dateComponents:(NSDateComponents *)dateComponents;
 
+- (BOOL)shouldEnablePullToRefreshInCareContentsViewController:(OCKCareContentsViewController *)viewController;
+
+- (void)careContentsViewController:(OCKCareContentsViewController *)viewController didActivatePullToRefreshControl:(UIRefreshControl *)refreshControl;
+
 @end
 
 

@@ -482,11 +482,27 @@
     NSArray<OCKCarePlanEvent *> *assessments = _allEvents[@(OCKCarePlanActivityTypeAssessment)];
     NSArray<OCKCarePlanEvent *> *readOnly = _allEvents[@(OCKCarePlanActivityTypeReadOnly)];
     
+    NSMutableArray *interventionGroupIdentifiers = [[NSMutableArray alloc] init];
+    NSMutableArray *assessmentGroupIdentifiers = [[NSMutableArray alloc] init];
+    
     NSArray<NSArray<OCKCarePlanEvent *> *> *events = [NSArray arrayWithArray:[interventions arrayByAddingObjectsFromArray:[assessments arrayByAddingObjectsFromArray:readOnly]]];
     NSMutableDictionary *groupedEvents = [NSMutableDictionary new];
     
     for (NSArray<OCKCarePlanEvent *> *activityEvents in events) {
         OCKCarePlanEvent *firstEvent = activityEvents.firstObject;
+        
+        if (firstEvent.activity.groupIdentifier && firstEvent.activity.type == OCKCarePlanActivityTypeIntervention) {
+            if (![interventionGroupIdentifiers containsObject:firstEvent.activity.groupIdentifier]) {
+                [interventionGroupIdentifiers addObject:firstEvent.activity.groupIdentifier];
+            }
+        }
+        
+        if (firstEvent.activity.groupIdentifier && firstEvent.activity.type == OCKCarePlanActivityTypeAssessment) {
+            if (![assessmentGroupIdentifiers containsObject:firstEvent.activity.groupIdentifier]) {
+                [assessmentGroupIdentifiers addObject:firstEvent.activity.groupIdentifier];
+            }
+        }
+        
         NSString *groupIdentifier = firstEvent.activity.groupIdentifier ? firstEvent.activity.groupIdentifier : _otherString;
         
         if (firstEvent.activity.optional) {
@@ -504,6 +520,21 @@
     }
     
     NSMutableArray *sortedKeys = [[groupedEvents.allKeys sortedArrayUsingSelector:@selector(compare:)] mutableCopy];
+    
+    for (NSString *groupIdentifier in interventionGroupIdentifiers) {
+        if ([sortedKeys containsObject:groupIdentifier]) {
+            [sortedKeys removeObject:groupIdentifier];
+            [sortedKeys addObject:groupIdentifier];
+        }
+    }
+    
+    for (NSString *groupIdentifier in assessmentGroupIdentifiers) {
+        if ([sortedKeys containsObject:groupIdentifier]) {
+            [sortedKeys removeObject:groupIdentifier];
+            [sortedKeys addObject:groupIdentifier];
+        }
+    }
+    
     if ([sortedKeys containsObject:_otherString]) {
         [sortedKeys removeObject:_otherString];
         [sortedKeys addObject:_otherString];

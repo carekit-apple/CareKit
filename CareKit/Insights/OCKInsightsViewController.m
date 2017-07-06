@@ -97,14 +97,21 @@
     }
     
     if (!_tableView) {
-        _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
+        _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
         _tableView.dataSource = self;
         _tableView.delegate = self;
         _tableView.estimatedRowHeight = 90.0;
         _tableView.rowHeight = UITableViewAutomaticDimension;
+        _tableView.estimatedSectionHeaderHeight = 0;
+        _tableView.estimatedSectionFooterHeight = 0;
         _tableView.showsVerticalScrollIndicator = NO;
+        
         [self.view addSubview:_tableView];
     }
+    
+    self.navigationController.navigationBar.translucent = NO;
+    [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:245.0/255.0 green:244.0/255.0 blue:246.0/255.0 alpha:1.0]];
+    
     [self setUpConstraints];
 }
 
@@ -177,7 +184,7 @@
                                                                         toItem: _headerView
                                                                      attribute: NSLayoutAttributeBottom
                                                                     multiplier: 1.0
-                                                                      constant: 1.0],
+                                                                      constant: 0.0],
                                         [NSLayoutConstraint constraintWithItem: _tableView
                                                                      attribute: NSLayoutAttributeLeading
                                                                      relatedBy: NSLayoutRelationEqual
@@ -263,10 +270,6 @@
 
 - (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath {
     return NO;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return 30.0;
 }
 
 

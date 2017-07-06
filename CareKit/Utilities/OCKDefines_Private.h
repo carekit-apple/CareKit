@@ -32,8 +32,8 @@
 #import <CareKit/OCKDefines.h>
 
 
-OCK_EXTERN NSBundle *OCKBundle() OCK_AVAILABLE_DECL;
-OCK_EXTERN NSBundle *OCKDefaultLocaleBundle();
+OCK_EXTERN NSBundle *OCKBundle(void) OCK_AVAILABLE_DECL;
+OCK_EXTERN NSBundle *OCKDefaultLocaleBundle(void);
 
 #define OCKDefaultLocalizedValue(key) \
 [OCKDefaultLocaleBundle() localizedStringForKey:key value:@"" table:@"CareKit"]

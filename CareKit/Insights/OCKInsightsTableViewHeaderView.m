@@ -133,7 +133,6 @@
                                                                       constant:90.0]
                                         ]];
     _constraints.lastObject.priority = 999;
-    
     [NSLayoutConstraint activateConstraints:_constraints];
 }
 

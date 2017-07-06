@@ -53,4 +53,6 @@ enum ActivityType: String {
     case mood
     case bloodGlucose
     case weight
+    
+    case caffeine
 }

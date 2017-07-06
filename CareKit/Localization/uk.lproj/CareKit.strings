@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -29,23 +29,26 @@
  */
 
 
-/* Care Card */
-"CARE_CARD_HEADER_TITLE" = "Виконання догляду";
-"TODAY_BUTTON_TITLE" = "Сьогодні";
+/* Common */
+"ACTIVITY_TYPE_OTHER_SECTION_HEADER" = "Інше";
+"ACTIVITY_TYPE_OPTIONAL_SECTION_HEADER" = "Необовʼязково";
+"ACTIVITY_TYPE_READ_ONLY_SECTION_HEADER" = "Тільки читати";
+"HEADER_TITLE_CARE_OVERVIEW" = "Дані вашого меддогляду заповнено на %@";
+"HEADER_TITLE_ACTIVITY_STATUS" = "Статус вашої активності заповнено на %@";
 
-/* Care Card Detail View */
+/* Care Card */
+"CARE_CARD_HEADER_TITLE" = "Огляд догляду";
+"TODAY_BUTTON_TITLE" = "Сьогодні";
 "CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "Інструкції";
 "CARE_CARD_ADDITIONAL_INFO_SECTION_TITLE" = "Додаткова інформація";
 
 /* Symptom Tracker */
-"SYMPTOM_TRACKER_HEADER_TITLE" = "Виконання дій";
+"SYMPTOM_TRACKER_HEADER_TITLE" = "Стан дії";
 
-/* Connect Master View */
+/* Connect */
 "CARE_TEAM_SECTION_TITLE" = "Команда доглядачів";
 "PERSONAL_SECTION_TITLE" = "Друзі і родина";
 "CONNECT_NO_CONTACTS_TITLE" = "Немає контактів";
-
-/* Connect Detail View */
 "CONTACT_INFO_SECTION_TITLE" = "Контактні дані";
 "CONTACT_SHARING_SECTION_TITLE" = "Оприлюднення";
 "CONTACT_INFO_PHONE_TITLE" = "телефон";
@@ -53,9 +56,20 @@
 "CONTACT_INFO_EMAIL_TITLE" = "е-пошта";
 "CONTACT_INFO_VIDEO_TITLE" = "відео";
 "SHARING_CELL_TITLE" = "Надіслати звіти";
-"ERROR_TITLE" = "Помилка";
 "MESSAGE_SEND_ERROR" = "Звістку не надіслано";
 "EMAIL_SEND_ERROR" = "Лист не надіслано";
+"CONNECT_MESSAGE_PLACEHOLDER" = "Введіть повідомлення...";
+"CONNECT_SEND_BUTTON_TITLE" = "Слати";
+"CONNECT_INBOX_TITLE" = "Вхідні";
+
+/* Patient */
+"PROFILE_VIEW_CONTROLLER_TITLE" = "Профіль";
+"PERSONAL_INFORMATION_SECTION_HEADER_TITLE" = "Особисті дані";
+"OTHER_INFORMATION_SECTION_HEADER_TITLE" = "Інша інформація";
+
+/* Insight */
+"INSIGHTS_SECTION_HEADER_TITLE_INSIGHTS" = "Моделювання";
+"INSIGHTS_SECTION_HEADER_TITLE_THRESHOLD_ALERTS" = "Порогові оповіщення";
 
 /* ACCESSIBILITY */
 "AX_WEEK_BUTTON_PROGRESS" = "%@ виконано";

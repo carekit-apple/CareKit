@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -33,6 +33,7 @@
 
 
 NS_ASSUME_NONNULL_BEGIN
+@class OCKInsightsViewController, OCKPatientWidget;
 
 /**
  The `OCKInsightsViewController` class is a view controller that displays an array of `OCKInsightItem` objects.
@@ -41,17 +42,19 @@ OCK_CLASS_AVAILABLE
 @interface OCKInsightsViewController : UIViewController
 
 /**
- Returns an initialzed insights view controller using the specified items.
+ Returns an initialzed insights view controller using the specified parameters.
  
- @param items           An array of `OCKInsightItem` objects.
- @param headerTitle     A string representing the title in the header view.
- @param headerSubtitle  A string representing the subtitle in the header view.
+ @param items               An array of `OCKInsightItem` objects.
+ @param widgets             An array of `OCKPatientWidget` objects.
+ @param thresholds          An array of threshold activity identifiers.
+ @param store               A care plan store.
  
  @return An initialized insights view controller.
  */
-- (instancetype)initWithInsightItems:(NSArray<OCKInsightItem *> *)items
-                         headerTitle:(nullable NSString *)headerTitle
-                      headerSubtitle:(nullable NSString *)headerSubtitle;
+- (instancetype)initWithInsightItems:(nullable NSArray<OCKInsightItem *> *)items
+                      patientWidgets:(nullable NSArray<OCKPatientWidget *> *)widgets
+                          thresholds:(nullable NSArray<NSString *> *)thresholds
+                               store:(nullable OCKCarePlanStore *)store;
 
 /**
  Returns an initialzed insights view controller using the specified items.
@@ -60,33 +63,32 @@ OCK_CLASS_AVAILABLE
  
  @return An initialized insights view controller.
  */
-- (instancetype)initWithInsightItems:(NSArray<OCKInsightItem *> *)items;
+- (instancetype)initWithInsightItems:(nullable NSArray<OCKInsightItem *> *)items;
 
 /**
  An array of insight items.
-*/
-@property (nonatomic, copy) NSArray<OCKInsightItem*> *items;
+ */
+@property (nonatomic, copy, nullable) NSArray<OCKInsightItem *> *items;
 
 /**
- A string representing the title in the header view.
+ An array of patient widgets.
  
- Single-lined.
+ Maximum of 3 widgets.
+ A care plan store is required for widgets with activity identifiers.
  */
-@property (nonatomic, copy, nullable) NSString *headerTitle;
+@property (nonatomic, copy, nullable, readonly) NSArray<OCKPatientWidget *> *widgets;
 
 /**
- A string representing the subtitle in the header view.
+ An array of activity identifiers for threshold evaluations.
  
- Maximum of 2 lines.
+ A care plan store is required for thresholds.
  */
-@property (nonatomic, copy, nullable) NSString *headerSubtitle;
+@property (nonatomic, copy, nullable, readonly) NSArray<NSString *> *thresholds;
 
 /**
- A boolean to show the edge indicators.
- 
- The default value is NO.
+ A care plan store is required for threshold and widgets.
  */
-@property (nonatomic) BOOL showEdgeIndicators;
+@property (nonatomic, copy, nullable, readonly) OCKCarePlanStore *store;
 
 @end
 

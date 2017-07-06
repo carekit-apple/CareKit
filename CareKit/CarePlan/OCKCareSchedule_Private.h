@@ -40,6 +40,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithStartDate:(NSDateComponents *)startDate
                           endDate:(NSDateComponents *)endDate
                       occurrences:(NSArray<NSNumber *> *)occurrences
+                       thresholds:(NSArray<OCKCarePlanThreshold *> *)thresholds
                   timeUnitsToSkip:(NSUInteger)timeUnitsToSkip;
 
 @end

@@ -36,8 +36,10 @@
 
 @interface OCKRingButton : UIButton
 
+// Initial value is 0
 @property (nonatomic) double value;
 
+// Ring view for every day of the week
 @property (nonatomic) OCKRingView *ringView;
 
 @end

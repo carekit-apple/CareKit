@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -29,23 +29,26 @@
  */
 
 
-/* Care Card */
-"CARE_CARD_HEADER_TITLE" = "Penyiapan Rawatan";
-"TODAY_BUTTON_TITLE" = "Hari ini";
+/* Common */
+"ACTIVITY_TYPE_OTHER_SECTION_HEADER" = "Lain";
+"ACTIVITY_TYPE_OPTIONAL_SECTION_HEADER" = "Pilihan";
+"ACTIVITY_TYPE_READ_ONLY_SECTION_HEADER" = "Baca Sahaja";
+"HEADER_TITLE_CARE_OVERVIEW" = "Gambaran keseluruhan care anda adalah %@ selesai";
+"HEADER_TITLE_ACTIVITY_STATUS" = "Status aktiviti anda adalah %@ selesai";
 
-/* Care Card Detail View */
+/* Care Card */
+"CARE_CARD_HEADER_TITLE" = "Gambaran Keseluruhan Care";
+"TODAY_BUTTON_TITLE" = "Hari ini";
 "CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "Arahan";
 "CARE_CARD_ADDITIONAL_INFO_SECTION_TITLE" = "Maklumat Tambahan";
 
 /* Symptom Tracker */
-"SYMPTOM_TRACKER_HEADER_TITLE" = "Penyiapan Aktiviti";
+"SYMPTOM_TRACKER_HEADER_TITLE" = "Status Aktiviti";
 
-/* Connect Master View */
+/* Connect */
 "CARE_TEAM_SECTION_TITLE" = "Kumpulan Perawat";
 "PERSONAL_SECTION_TITLE" = "Rakan & Keluarga";
 "CONNECT_NO_CONTACTS_TITLE" = "Tiada kenalan";
-
-/* Connect Detail View */
 "CONTACT_INFO_SECTION_TITLE" = "Info Hubungan";
 "CONTACT_SHARING_SECTION_TITLE" = "Perkongsian";
 "CONTACT_INFO_PHONE_TITLE" = "telefon";
@@ -53,9 +56,20 @@
 "CONTACT_INFO_EMAIL_TITLE" = "e-mel";
 "CONTACT_INFO_VIDEO_TITLE" = "video";
 "SHARING_CELL_TITLE" = "Hantar laporan";
-"ERROR_TITLE" = "Ralat";
 "MESSAGE_SEND_ERROR" = "Penghantaran mesej gagal";
 "EMAIL_SEND_ERROR" = "Penghantaran e-mel gagal";
+"CONNECT_MESSAGE_PLACEHOLDER" = "Taipkan mesej...";
+"CONNECT_SEND_BUTTON_TITLE" = "Hantar";
+"CONNECT_INBOX_TITLE" = "Peti Masuk";
+
+/* Patient */
+"PROFILE_VIEW_CONTROLLER_TITLE" = "Profil";
+"PERSONAL_INFORMATION_SECTION_HEADER_TITLE" = "Maklumat Peribadi";
+"OTHER_INFORMATION_SECTION_HEADER_TITLE" = "Maklumat Lain";
+
+/* Insight */
+"INSIGHTS_SECTION_HEADER_TITLE_INSIGHTS" = "Pandangan";
+"INSIGHTS_SECTION_HEADER_TITLE_THRESHOLD_ALERTS" = "Isyarat Ambang";
 
 /* ACCESSIBILITY */
 "AX_WEEK_BUTTON_PROGRESS" = "%@ selesai";

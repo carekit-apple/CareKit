@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -29,33 +29,47 @@
  */
 
 
-/* Care Card */
-"CARE_CARD_HEADER_TITLE" = "Kezelés végrehajtása";
-"TODAY_BUTTON_TITLE" = "Ma";
+/* Common */
+"ACTIVITY_TYPE_OTHER_SECTION_HEADER" = "Egyéb";
+"ACTIVITY_TYPE_OPTIONAL_SECTION_HEADER" = "Opcionális";
+"ACTIVITY_TYPE_READ_ONLY_SECTION_HEADER" = "Csak olvasható";
+"HEADER_TITLE_CARE_OVERVIEW" = "A kezelés áttekintésének befejezettsége %@";
+"HEADER_TITLE_ACTIVITY_STATUS" = "A tevékenység állapotának befejezettsége %@";
 
-/* Care Card Detail View */
+/* Care Card */
+"CARE_CARD_HEADER_TITLE" = "Kezelés áttekintése";
+"TODAY_BUTTON_TITLE" = "Ma";
 "CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "Utasítások";
 "CARE_CARD_ADDITIONAL_INFO_SECTION_TITLE" = "További információk";
 
 /* Symptom Tracker */
-"SYMPTOM_TRACKER_HEADER_TITLE" = "Tevékenységek végrehajtása";
+"SYMPTOM_TRACKER_HEADER_TITLE" = "Tevékenység állapota";
 
-/* Connect Master View */
+/* Connect */
 "CARE_TEAM_SECTION_TITLE" = "Kezelőcsoport";
 "PERSONAL_SECTION_TITLE" = "Barátok és család";
 "CONNECT_NO_CONTACTS_TITLE" = "Nincs kontakt";
-
-/* Connect Detail View */
 "CONTACT_INFO_SECTION_TITLE" = "Kapcsolattartási adatok";
 "CONTACT_SHARING_SECTION_TITLE" = "Megosztás";
 "CONTACT_INFO_PHONE_TITLE" = "telefon";
-"CONTACT_INFO_MESSAGE_TITLE" = "szöveg";
+"CONTACT_INFO_MESSAGE_TITLE" = "üzenet";
 "CONTACT_INFO_EMAIL_TITLE" = "e-mail";
 "CONTACT_INFO_VIDEO_TITLE" = "videó";
 "SHARING_CELL_TITLE" = "Jelentések küldése";
-"ERROR_TITLE" = "Hiba";
 "MESSAGE_SEND_ERROR" = "Az üzenet küldése sikertelen volt";
 "EMAIL_SEND_ERROR" = "Az e-mail küldése sikertelen volt";
+"CONNECT_MESSAGE_PLACEHOLDER" = "Üzenet írása…";
+"CONNECT_SEND_BUTTON_TITLE" = "Küldés";
+"CONNECT_INBOX_TITLE" = "Bejövő";
+
+/* Patient */
+"PROFILE_VIEW_CONTROLLER_TITLE" = "Profil";
+"PERSONAL_INFORMATION_SECTION_HEADER_TITLE" = "Személyes információk";
+"OTHER_INFORMATION_SECTION_HEADER_TITLE" = "Egyéb információk";
+
+/* Insight */
+"INSIGHTS_SECTION_HEADER_TITLE_INSIGHTS" = "Betekintések";
+"INSIGHTS_SECTION_HEADER_TITLE_THRESHOLD_ALERTS" = "Küszöbérték-figyelmeztetések";
 
 /* ACCESSIBILITY */
 "AX_WEEK_BUTTON_PROGRESS" = "%@ befejezve";

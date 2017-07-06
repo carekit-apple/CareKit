@@ -29,25 +29,15 @@
  */
 
 import UIKit
+import CareKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     
-    #if swift(>=3.0)
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey : Any]? = nil) -> Bool {
-        window?.tintColor = Colors.red.color
+        window?.tintColor = OCKColor.red
         return true
     }
-    
-    #else
-    
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: Any]?) -> Bool {
-        window?.tintColor = Colors.red.color
-
-        return true
-    }
-    
-    #endif
 }

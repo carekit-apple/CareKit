@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -40,7 +40,7 @@ NS_ASSUME_NONNULL_BEGIN
  Create an instance of this class and attach it to an event using the OCKCarePlanStore API.
  */
 OCK_CLASS_AVAILABLE
-@interface OCKCarePlanEventResult : NSObject
+@interface OCKCarePlanEventResult : NSObject <NSSecureCoding, NSCopying>
 
 - (instancetype)init NS_UNAVAILABLE;
 
@@ -51,9 +51,17 @@ OCK_CLASS_AVAILABLE
  @param valueString     Value string to be displayed to the user.
  @param unitString      Unit string to be displayed to the user.
  @param userInfo        Dictionary to save any additional objects that comply with the NSCoding protocol.
+ @param values          The array of numeric values associated with the result. 
+                            These values can be used to evaluate thresholds.
  
  @return Initialized instance.
  */
+
+- (instancetype)initWithValueString:(NSString *)valueString
+                         unitString:(NSString *)unitString
+                           userInfo:(nullable NSDictionary<NSString *,id<NSCoding>> *)userInfo
+                             values:(nullable NSArray<NSNumber *> *)values;
+
 - (instancetype)initWithValueString:(NSString *)valueString
                          unitString:(nullable NSString *)unitString
                            userInfo:(nullable NSDictionary<NSString *, id<NSCoding>> *)userInfo;
@@ -72,6 +80,11 @@ OCK_CLASS_AVAILABLE
  A representative unit string for the value string.
  */
 @property (nonatomic, copy, readonly, nullable) NSString *unitString;
+
+/**
+ An array of values associated with the result to use for threshold checking (max length 2).
+ */
+@property (nonatomic, copy, readonly, nullable) NSArray<NSNumber *> *values;
 
 /**
  Use this dictionary to store objects that comply with the NSCoding protocol.

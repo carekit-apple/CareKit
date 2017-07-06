@@ -107,7 +107,6 @@ class ConnectTableViewController: UITableViewController, OCKConnectViewControlle
             
             let connectViewController = OCKConnectViewController(contacts: [contact1, contact2, contact3, contact4, contact5, contact6, contact7, contact8, contact9])
             connectViewController.delegate = self
-            connectViewController.showEdgeIndicators = true
             self.navigationController?.pushViewController(connectViewController, animated: true)
             
         } else if (indexPath as NSIndexPath).row == 2 {

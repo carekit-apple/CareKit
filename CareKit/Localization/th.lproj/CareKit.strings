@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -29,33 +29,47 @@
  */
 
 
-/* Care Card */
-"CARE_CARD_HEADER_TITLE" = "การดูแลเสร็จสิ้น";
-"TODAY_BUTTON_TITLE" = "วันนี้";
+/* Common */
+"ACTIVITY_TYPE_OTHER_SECTION_HEADER" = "อื่นๆ";
+"ACTIVITY_TYPE_OPTIONAL_SECTION_HEADER" = "ไม่บังคับ";
+"ACTIVITY_TYPE_READ_ONLY_SECTION_HEADER" = "อ่านอย่างเดียว";
+"HEADER_TITLE_CARE_OVERVIEW" = "ภาพรวมการดูแลของคุณเสร็จสิ้นแล้ว %@";
+"HEADER_TITLE_ACTIVITY_STATUS" = "สถานะกิจกรรมของคุณเสร็จสิ้นแล้ว %@";
 
-/* Care Card Detail View */
+/* Care Card */
+"CARE_CARD_HEADER_TITLE" = "ภาพรวมการดูแล";
+"TODAY_BUTTON_TITLE" = "วันนี้";
 "CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "ขั้นตอน";
 "CARE_CARD_ADDITIONAL_INFO_SECTION_TITLE" = "ข้อมูลเพิ่มเติม";
 
 /* Symptom Tracker */
-"SYMPTOM_TRACKER_HEADER_TITLE" = "กิจกรรมเสร็จสิ้น";
+"SYMPTOM_TRACKER_HEADER_TITLE" = "สถานะกิจกรรม";
 
-/* Connect Master View */
+/* Connect */
 "CARE_TEAM_SECTION_TITLE" = "ทีมดูแล";
 "PERSONAL_SECTION_TITLE" = "เพื่อนและครอบครัว";
 "CONNECT_NO_CONTACTS_TITLE" = "ไม่มีรายชื่อ";
-
-/* Connect Detail View */
 "CONTACT_INFO_SECTION_TITLE" = "ข้อมูลรายชื่อ";
 "CONTACT_SHARING_SECTION_TITLE" = "การแชร์";
 "CONTACT_INFO_PHONE_TITLE" = "โทรศัพท์";
 "CONTACT_INFO_MESSAGE_TITLE" = "ข้อความ";
 "CONTACT_INFO_EMAIL_TITLE" = "อีเมล";
-"CONTACT_INFO_VIDEO_TITLE" = "วีดีโอ";
+"CONTACT_INFO_VIDEO_TITLE" = "วิดีโอ";
 "SHARING_CELL_TITLE" = "ส่งรายงาน";
-"ERROR_TITLE" = "ข้อผิดพลาด";
 "MESSAGE_SEND_ERROR" = "ส่งข้อความไม่สำเร็จ";
 "EMAIL_SEND_ERROR" = "ส่งอีเมลไม่สำเร็จ";
+"CONNECT_MESSAGE_PLACEHOLDER" = "ป้อนข้อความ…";
+"CONNECT_SEND_BUTTON_TITLE" = "ส่ง";
+"CONNECT_INBOX_TITLE" = "กล่องเข้า";
+
+/* Patient */
+"PROFILE_VIEW_CONTROLLER_TITLE" = "โปรไฟล์";
+"PERSONAL_INFORMATION_SECTION_HEADER_TITLE" = "ข้อมูลส่วนตัว";
+"OTHER_INFORMATION_SECTION_HEADER_TITLE" = "ข้อมูลอื่น";
+
+/* Insight */
+"INSIGHTS_SECTION_HEADER_TITLE_INSIGHTS" = "ข้อมูลเชิงลึก";
+"INSIGHTS_SECTION_HEADER_TITLE_THRESHOLD_ALERTS" = "การเตือนเกณฑ์ขั้นต่ำ";
 
 /* ACCESSIBILITY */
 "AX_WEEK_BUTTON_PROGRESS" = "%@ เสร็จสมบูรณ์แล้ว";

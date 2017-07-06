@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -32,7 +32,9 @@
 #import <CareKit/CareKit.h>
 
 
-@class OCKCareCardWeekView, OCKSymptomTrackerWeekView;
+NS_ASSUME_NONNULL_BEGIN
+
+@class OCKWeekView;
 
 @protocol OCKWeekViewDelegate <NSObject>
 
@@ -40,21 +42,15 @@
 
 - (void)weekViewSelectionDidChange:(UIView *)weekView;
 
-- (BOOL)weekViewCanSelectDayAtIndex:(NSUInteger)index;
-
 @end
 
 
 @interface OCKWeekViewController : UIViewController
 
-- (instancetype)initWithShowCareCardWeekView:(BOOL)showCareCardWeekView;
-
-@property (nonatomic) BOOL showCareCardWeekView;
-
-@property (nonatomic, readonly) OCKCareCardWeekView *careCardWeekView;
-
-@property (nonatomic, readonly) OCKSymptomTrackerWeekView *symptomTrackerWeekView;
+@property (nonatomic, readonly) OCKWeekView *weekView;
 
 @property (nonatomic) NSInteger weekIndex;
 
 @end
+
+NS_ASSUME_NONNULL_END

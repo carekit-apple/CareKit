@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -29,23 +29,26 @@
  */
 
 
-/* Care Card */
-"CARE_CARD_HEADER_TITLE" = "H.thành Chăm sóc";
-"TODAY_BUTTON_TITLE" = "Hôm nay";
+/* Common */
+"ACTIVITY_TYPE_OTHER_SECTION_HEADER" = "Khác";
+"ACTIVITY_TYPE_OPTIONAL_SECTION_HEADER" = "Tùy chọn";
+"ACTIVITY_TYPE_READ_ONLY_SECTION_HEADER" = "Chỉ đọc";
+"HEADER_TITLE_CARE_OVERVIEW" = "Tổng quan chăm sóc của bạn là hoàn thành %@";
+"HEADER_TITLE_ACTIVITY_STATUS" = "Trạng thái hoạt động của bạn là hoàn thành %@";
 
-/* Care Card Detail View */
+/* Care Card */
+"CARE_CARD_HEADER_TITLE" = "Tổng quan về chăm sóc";
+"TODAY_BUTTON_TITLE" = "Hôm nay";
 "CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "Hướng dẫn";
 "CARE_CARD_ADDITIONAL_INFO_SECTION_TITLE" = "Thông tin Bổ sung";
 
 /* Symptom Tracker */
-"SYMPTOM_TRACKER_HEADER_TITLE" = "H.thành Hoạt động";
+"SYMPTOM_TRACKER_HEADER_TITLE" = "Trạng thái hoạt động";
 
-/* Connect Master View */
+/* Connect */
 "CARE_TEAM_SECTION_TITLE" = "Nhóm Chăm sóc";
 "PERSONAL_SECTION_TITLE" = "Bạn bè & Gia đình";
 "CONNECT_NO_CONTACTS_TITLE" = "Không có Liên hệ";
-
-/* Connect Detail View */
 "CONTACT_INFO_SECTION_TITLE" = "Thông tin Liên hệ";
 "CONTACT_SHARING_SECTION_TITLE" = "Chia sẻ";
 "CONTACT_INFO_PHONE_TITLE" = "điện thoại";
@@ -53,9 +56,20 @@
 "CONTACT_INFO_EMAIL_TITLE" = "email";
 "CONTACT_INFO_VIDEO_TITLE" = "video";
 "SHARING_CELL_TITLE" = "Gửi báo cáo";
-"ERROR_TITLE" = "Lỗi";
 "MESSAGE_SEND_ERROR" = "Không gửi được tin nhắn";
 "EMAIL_SEND_ERROR" = "Không gửi được email";
+"CONNECT_MESSAGE_PLACEHOLDER" = "Nhập một thông báo…";
+"CONNECT_SEND_BUTTON_TITLE" = "Gửi";
+"CONNECT_INBOX_TITLE" = "Hộp thư đến";
+
+/* Patient */
+"PROFILE_VIEW_CONTROLLER_TITLE" = "Hồ sơ";
+"PERSONAL_INFORMATION_SECTION_HEADER_TITLE" = "Thông tin cá nhân";
+"OTHER_INFORMATION_SECTION_HEADER_TITLE" = "Thông tin khác";
+
+/* Insight */
+"INSIGHTS_SECTION_HEADER_TITLE_INSIGHTS" = "Thống kê";
+"INSIGHTS_SECTION_HEADER_TITLE_THRESHOLD_ALERTS" = "Cảnh báo ngưỡng";
 
 /* ACCESSIBILITY */
 "AX_WEEK_BUTTON_PROGRESS" = "Đã hoàn tất %@";

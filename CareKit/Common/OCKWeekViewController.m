@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -31,8 +31,7 @@
 
 #import "OCKWeekViewController.h"
 #import "OCKWeekLabelsView.h"
-#import "OCKCareCardWeekView.h"
-#import "OCKSymptomTrackerWeekView.h"
+#import "OCKWeekView.h"
 
 
 @implementation OCKWeekViewController
@@ -40,43 +39,18 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
-        _showCareCardWeekView = YES;
         _weekIndex = 0;
         [self prepareView];
     }
     return self;
 }
 
-- (instancetype)initWithShowCareCardWeekView:(BOOL)showCareCardWeekView {
-    self = [super init];
-    if (self) {
-        _showCareCardWeekView = showCareCardWeekView;
-        [self prepareView];
-    }
-    return self;
-}
-
 - (void)prepareView {
-    if (self.showCareCardWeekView) {
-        if (!_careCardWeekView) {
-            _careCardWeekView = [[OCKCareCardWeekView alloc] initWithFrame:self.view.bounds];
-            _careCardWeekView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-            [self.view addSubview:_careCardWeekView];
-            [_symptomTrackerWeekView removeFromSuperview];
-        }
-    } else {
-        if (!_symptomTrackerWeekView) {
-            _symptomTrackerWeekView = [[OCKSymptomTrackerWeekView alloc] initWithFrame:self.view.bounds];
-            _symptomTrackerWeekView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-            [self.view addSubview:_symptomTrackerWeekView];
-            [_careCardWeekView removeFromSuperview];
-        }
-    }
-}
+    [_weekView removeFromSuperview];
+    _weekView = [[OCKWeekView alloc] initWithFrame:self.view.bounds];
+    _weekView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    [self.view addSubview:_weekView];
 
-- (void)setShowCareCardWeekView:(BOOL)showCareCardWeekView {
-    _showCareCardWeekView = showCareCardWeekView;
-    [self prepareView];
 }
 
 @end

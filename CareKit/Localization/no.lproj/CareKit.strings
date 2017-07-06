@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -29,23 +29,26 @@
  */
 
 
-/* Care Card */
-"CARE_CARD_HEADER_TITLE" = "Fullføring av behandling";
-"TODAY_BUTTON_TITLE" = "I dag";
+/* Common */
+"ACTIVITY_TYPE_OTHER_SECTION_HEADER" = "Annet";
+"ACTIVITY_TYPE_OPTIONAL_SECTION_HEADER" = "Valgfritt";
+"ACTIVITY_TYPE_READ_ONLY_SECTION_HEADER" = "Kun lese";
+"HEADER_TITLE_CARE_OVERVIEW" = "Din behandlingsoversikt: %@ fullført";
+"HEADER_TITLE_ACTIVITY_STATUS" = "Din aktivitetsstatus: %@ fullført";
 
-/* Care Card Detail View */
+/* Care Card */
+"CARE_CARD_HEADER_TITLE" = "Behandlingsoversikt";
+"TODAY_BUTTON_TITLE" = "I dag";
 "CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "Instruksjoner";
 "CARE_CARD_ADDITIONAL_INFO_SECTION_TITLE" = "Tilleggsinformasjon";
 
 /* Symptom Tracker */
-"SYMPTOM_TRACKER_HEADER_TITLE" = "Fullføring av aktivitet";
+"SYMPTOM_TRACKER_HEADER_TITLE" = "Aktivitetsstatus";
 
-/* Connect Master View */
+/* Connect */
 "CARE_TEAM_SECTION_TITLE" = "Behandlingsteam";
 "PERSONAL_SECTION_TITLE" = "Venner og familie";
 "CONNECT_NO_CONTACTS_TITLE" = "Ingen kontakter";
-
-/* Connect Detail View */
 "CONTACT_INFO_SECTION_TITLE" = "Kontaktinfo";
 "CONTACT_SHARING_SECTION_TITLE" = "Deling";
 "CONTACT_INFO_PHONE_TITLE" = "telefon";
@@ -53,9 +56,20 @@
 "CONTACT_INFO_EMAIL_TITLE" = "e-post";
 "CONTACT_INFO_VIDEO_TITLE" = "video";
 "SHARING_CELL_TITLE" = "Send rapporter";
-"ERROR_TITLE" = "Feil";
 "MESSAGE_SEND_ERROR" = "Sending av tekstmelding mislyktes";
 "EMAIL_SEND_ERROR" = "Sending av e-post mislyktes";
+"CONNECT_MESSAGE_PLACEHOLDER" = "Skriv inn en melding…";
+"CONNECT_SEND_BUTTON_TITLE" = "Send";
+"CONNECT_INBOX_TITLE" = "Innboks";
+
+/* Patient */
+"PROFILE_VIEW_CONTROLLER_TITLE" = "Profil";
+"PERSONAL_INFORMATION_SECTION_HEADER_TITLE" = "Personlig informasjon";
+"OTHER_INFORMATION_SECTION_HEADER_TITLE" = "Annen informasjon";
+
+/* Insight */
+"INSIGHTS_SECTION_HEADER_TITLE_INSIGHTS" = "Innsikt";
+"INSIGHTS_SECTION_HEADER_TITLE_THRESHOLD_ALERTS" = "Terskelvarsler";
 
 /* ACCESSIBILITY */
 "AX_WEEK_BUTTON_PROGRESS" = "%@ fullført";

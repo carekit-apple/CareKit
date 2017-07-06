@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -29,33 +29,47 @@
  */
 
 
-/* Care Card */
-"CARE_CARD_HEADER_TITLE" = "מידת השלמת הטיפול";
-"TODAY_BUTTON_TITLE" = "היום";
+/* Common */
+"ACTIVITY_TYPE_OTHER_SECTION_HEADER" = "אחר";
+"ACTIVITY_TYPE_OPTIONAL_SECTION_HEADER" = "לא חובה";
+"ACTIVITY_TYPE_READ_ONLY_SECTION_HEADER" = "לקריאה בלבד";
+"HEADER_TITLE_CARE_OVERVIEW" = "הסקירה הכללית של ״טיפולים״ הושלמה ב-%@";
+"HEADER_TITLE_ACTIVITY_STATUS" = "מצב הפעילות שלך הושלם ב-%@";
 
-/* Care Card Detail View */
+/* Care Card */
+"CARE_CARD_HEADER_TITLE" = "סקירה כללית של ״טיפולים״";
+"TODAY_BUTTON_TITLE" = "היום";
 "CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "הנחיות";
 "CARE_CARD_ADDITIONAL_INFO_SECTION_TITLE" = "מידע נוסף";
 
 /* Symptom Tracker */
-"SYMPTOM_TRACKER_HEADER_TITLE" = "מידת השלמת הפעולות";
+"SYMPTOM_TRACKER_HEADER_TITLE" = "מצב הפעילות";
 
-/* Connect Master View */
+/* Connect */
 "CARE_TEAM_SECTION_TITLE" = "הצוות המטפל";
 "PERSONAL_SECTION_TITLE" = "חברים ומשפחה";
 "CONNECT_NO_CONTACTS_TITLE" = "אין אנשי קשר";
-
-/* Connect Detail View */
 "CONTACT_INFO_SECTION_TITLE" = "פרטי איש קשר";
 "CONTACT_SHARING_SECTION_TITLE" = "שיתוף";
 "CONTACT_INFO_PHONE_TITLE" = "טלפון";
 "CONTACT_INFO_MESSAGE_TITLE" = "הודעת טקסט";
 "CONTACT_INFO_EMAIL_TITLE" = "דוא״ל";
-"CONTACT_INFO_VIDEO_TITLE" = "וִידֵאוֹ";
+"CONTACT_INFO_VIDEO_TITLE" = "וידאו";
 "SHARING_CELL_TITLE" = "שלח דו״חות";
-"ERROR_TITLE" = "שגיאה";
 "MESSAGE_SEND_ERROR" = "שליחת ההודעה נכשלה";
 "EMAIL_SEND_ERROR" = "שליחת הדוא״ל נכשלה";
+"CONNECT_MESSAGE_PLACEHOLDER" = "הקלד/י הודעה…";
+"CONNECT_SEND_BUTTON_TITLE" = "שלח";
+"CONNECT_INBOX_TITLE" = "דואר נכנס";
+
+/* Patient */
+"PROFILE_VIEW_CONTROLLER_TITLE" = "פרופיל";
+"PERSONAL_INFORMATION_SECTION_HEADER_TITLE" = "פרטים אישיים";
+"OTHER_INFORMATION_SECTION_HEADER_TITLE" = "מידע נוסף";
+
+/* Insight */
+"INSIGHTS_SECTION_HEADER_TITLE_INSIGHTS" = "תובנות";
+"INSIGHTS_SECTION_HEADER_TITLE_THRESHOLD_ALERTS" = "התראות סף";
 
 /* ACCESSIBILITY */
 "AX_WEEK_BUTTON_PROGRESS" = "‏%@ הושלמו";

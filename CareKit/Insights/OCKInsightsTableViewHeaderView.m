@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -31,54 +31,61 @@
 
 #import "OCKInsightsTableViewHeaderView.h"
 #import "OCKHelpers.h"
-#import "OCKLabel.h"
+#import "OCKPatientWidgetView.h"
+#import "OCKPatientWidget_Internal.h"
 
-
-static const CGFloat TopMargin = 20.0;
-static const CGFloat LeadingMargin = 15.0;
-static const CGFloat TrailingMargin = 15.0;
-static const CGFloat BottomMargin = 20.0;
 
 @implementation OCKInsightsTableViewHeaderView {
-    OCKLabel *_titleLabel;
-    OCKLabel *_subtitleLabel;
-    NSMutableArray *_constraints;
+    UIStackView *_stackView;
+    NSMutableArray <NSLayoutConstraint *> *_constraints;
+    NSMutableArray <OCKPatientWidgetView *> *_widgetViews;
+    NSNumberFormatter *_numberFormatter;
 }
 
-- (instancetype)initWithFrame:(CGRect)frame {
-    self = [super initWithFrame:frame];
+- (instancetype)initWithWidgets:(NSArray<OCKPatientWidget *> *)widgets
+                          store:(OCKCarePlanStore *)store {
+    self = [super init];
     if (self) {
+        _widgets = OCKArrayCopyObjects(widgets);
+        _store = store;
+        
         [self prepareView];
     }
     return self;
 }
 
 - (void)prepareView {
-    if (!_titleLabel) {
-        _titleLabel = [OCKLabel new];
-        _titleLabel.backgroundColor = OCKSystemGrayColor();
-        _titleLabel.textColor = [UIColor darkGrayColor];
-        _titleLabel.textStyle = UIFontTextStyleHeadline;
-        [self addSubview:_titleLabel];
+    if (!UIAccessibilityIsReduceTransparencyEnabled()) {
+        self.backgroundColor = [UIColor groupTableViewBackgroundColor];
+        
+        UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleProminent];
+        UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+        blurEffectView.frame = self.bounds;
+        blurEffectView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        [self addSubview:blurEffectView];
+    }
+    else {
+        self.backgroundColor = [UIColor whiteColor];
     }
     
-    if (!_subtitleLabel) {
-        _subtitleLabel = [OCKLabel new];
-        _subtitleLabel.backgroundColor = OCKSystemGrayColor();
-        _subtitleLabel.textStyle = UIFontTextStyleSubheadline;
-        _subtitleLabel.numberOfLines = 2;
-        _subtitleLabel.lineBreakMode = NSLineBreakByWordWrapping;
-        _subtitleLabel.textColor = [UIColor darkGrayColor];
-        [self addSubview:_subtitleLabel];
+    _widgetViews = [NSMutableArray new];
+    
+    for (OCKPatientWidget *widget in self.widgets) {
+        OCKPatientWidgetView *widgetView = [OCKPatientWidgetView viewForWidget:widget];
+        [_widgetViews addObject:widgetView];
     }
     
-    [self updateView];
+    
+    _stackView = [[UIStackView alloc] initWithArrangedSubviews:_widgetViews];
+    _stackView.alignment = UIStackViewAlignmentCenter;
+    _stackView.distribution = UIStackViewDistributionFillEqually;
+    _stackView.spacing = 10.0;
+    
+    [self addSubview:_stackView];
+    
     [self setUpConstraints];
-}
-
-- (void)updateView {
-    _titleLabel.text = self.title;
-    _subtitleLabel.text = self.subtitle;
+    [self updateWidgets];
+    
 }
 
 - (void)setUpConstraints {
@@ -86,103 +93,163 @@ static const CGFloat BottomMargin = 20.0;
     
     _constraints = [NSMutableArray new];
     
-    _titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    _subtitleLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    _stackView.translatesAutoresizingMaskIntoConstraints = NO;
     
     [_constraints addObjectsFromArray:@[
-                                        [NSLayoutConstraint constraintWithItem:_titleLabel
+                                        [NSLayoutConstraint constraintWithItem:_stackView
                                                                      attribute:NSLayoutAttributeTop
                                                                      relatedBy:NSLayoutRelationEqual
                                                                         toItem:self
-                                                                     attribute:NSLayoutAttributeTop
-                                                                    multiplier:1.0
-                                                                      constant:TopMargin],
-                                        [NSLayoutConstraint constraintWithItem:_titleLabel
-                                                                     attribute:NSLayoutAttributeLeading
-                                                                     relatedBy:NSLayoutRelationEqual
-                                                                        toItem:self
-                                                                     attribute:NSLayoutAttributeLeading
-                                                                    multiplier:1.0
-                                                                      constant:LeadingMargin],
-                                        [NSLayoutConstraint constraintWithItem:_titleLabel
-                                                                     attribute:NSLayoutAttributeBottom
-                                                                     relatedBy:NSLayoutRelationEqual
-                                                                        toItem:_subtitleLabel
                                                                      attribute:NSLayoutAttributeTop
                                                                     multiplier:1.0
                                                                       constant:0.0],
-                                        [NSLayoutConstraint constraintWithItem:_subtitleLabel
+                                        [NSLayoutConstraint constraintWithItem:_stackView
                                                                      attribute:NSLayoutAttributeLeading
                                                                      relatedBy:NSLayoutRelationEqual
                                                                         toItem:self
                                                                      attribute:NSLayoutAttributeLeading
                                                                     multiplier:1.0
-                                                                      constant:LeadingMargin],
-                                        [NSLayoutConstraint constraintWithItem:self
+                                                                      constant:20.0],
+                                        [NSLayoutConstraint constraintWithItem:_stackView
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                    multiplier:1.0
+                                                                      constant:-20.0],
+                                        [NSLayoutConstraint constraintWithItem:_stackView
                                                                      attribute:NSLayoutAttributeBottom
                                                                      relatedBy:NSLayoutRelationEqual
-                                                                        toItem:_subtitleLabel
+                                                                        toItem:self
                                                                      attribute:NSLayoutAttributeBottom
                                                                     multiplier:1.0
-                                                                      constant:BottomMargin]
+                                                                      constant:0.0],
+                                        [NSLayoutConstraint constraintWithItem:_stackView
+                                                                     attribute:NSLayoutAttributeHeight
+                                                                     relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                                        toItem:nil
+                                                                     attribute:NSLayoutAttributeNotAnAttribute
+                                                                    multiplier:1.0
+                                                                      constant:90.0]
                                         ]];
-    
-    
-    NSLayoutConstraint *titleTrailingConstraint = [NSLayoutConstraint constraintWithItem:_titleLabel
-                                                                               attribute:NSLayoutAttributeTrailing
-                                                                               relatedBy:NSLayoutRelationEqual
-                                                                                  toItem:self
-                                                                               attribute:NSLayoutAttributeTrailing
-                                                                              multiplier:1.0
-                                                                                constant:-TrailingMargin];
-    titleTrailingConstraint.priority = 999;
-    
-    NSLayoutConstraint *subtitleTrailingConstraint = [NSLayoutConstraint constraintWithItem:_subtitleLabel
-                                                                                  attribute:NSLayoutAttributeTrailing
-                                                                                  relatedBy:NSLayoutRelationEqual
-                                                                                     toItem:self
-                                                                                  attribute:NSLayoutAttributeTrailing
-                                                                                 multiplier:1.0
-                                                                                   constant:-TrailingMargin];
-    subtitleTrailingConstraint.priority = 999;
-    
-    [_constraints addObject:titleTrailingConstraint];
-    [_constraints addObject:subtitleTrailingConstraint];
-    
+    _constraints.lastObject.priority = 999;
     [NSLayoutConstraint activateConstraints:_constraints];
-}
-
-- (void)setTitle:(NSString *)title {
-    _title = [title copy];
-    [self updateView];
-}
-
-- (void)setSubtitle:(NSString *)subtitle {
-    _subtitle = [subtitle copy];
-    [self updateView];
-}
-
-- (void)setBackgroundColor:(UIColor *)backgroundColor {
-    [super setBackgroundColor:backgroundColor];
-    _titleLabel.backgroundColor = backgroundColor;
-    _subtitleLabel.backgroundColor = backgroundColor;
 }
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    _titleLabel.preferredMaxLayoutWidth = _titleLabel.bounds.size.width;
-    _subtitleLabel.preferredMaxLayoutWidth = _subtitleLabel.bounds.size.width;
+    [self setUpConstraints];
 }
 
-
-#pragma mark - Accessibility
-
-- (BOOL)isAccessibilityElement {
-    return YES;
+- (void)willMoveToWindow:(UIWindow *)newWindow {
+    [super willMoveToWindow:newWindow];
+    
+    self.layer.shadowOffset = CGSizeMake(0, 1 / [UIScreen mainScreen].scale);
+    self.layer.shadowRadius = 0;
+    
+    self.layer.shadowColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:1].CGColor;
+    self.layer.shadowOpacity = 0.25;
 }
 
-- (NSString *)accessibilityLabel {
-    return OCKAccessibilityStringForVariables(_titleLabel, _subtitleLabel);
+- (void)updateWidget:(OCKPatientWidget *)widget forWidgetView:(OCKPatientWidgetView *)widgetView {
+    OCKPatientWidgetType type = widget.type;
+    
+    // Get content for widgets if it includes an activity identifier.
+    NSString *activityIdentifier = widget.primaryIdentifier;
+    if (activityIdentifier) {
+        // Go get the activity for the activity identifier, if one exists.
+        [self.store activityForIdentifier:activityIdentifier completion:^(BOOL success, OCKCarePlanActivity * _Nullable activity, NSError * _Nullable error) {
+            if (success && activity) {
+                NSDateComponents *components = [[NSDateComponents alloc] initWithDate:[NSDate date] calendar:[NSCalendar calendarWithIdentifier:NSCalendarIdentifierGregorian]];
+                
+                if (activity.type == OCKCarePlanActivityTypeIntervention) {
+                    // Create widget with activity title and percentage string.
+                    __block int totalEvents = 0;
+                    __block int completedEvents = 0;
+                    
+                    [self.store enumerateEventsOfActivity:activity startDate:components endDate:components handler:^(OCKCarePlanEvent * _Nullable event, BOOL * _Nonnull stop) {
+                        // Caluclate adherence
+                        totalEvents++;
+                        if (event.state == OCKCarePlanEventStateCompleted) {
+                            completedEvents++;
+                        }
+                        
+                    } completion:^(BOOL completed, NSError * _Nullable error) {
+                        if (completed) {
+                            double adherence = completedEvents/totalEvents;
+                            if (!_numberFormatter) {
+                                _numberFormatter = [NSNumberFormatter new];
+                                _numberFormatter.numberStyle = NSNumberFormatterPercentStyle;
+                                _numberFormatter.maximumFractionDigits = 0;
+                            }
+                            NSString *adherenceString = [NSString stringWithFormat:@"%@", [_numberFormatter stringFromNumber:@(adherence * 100)]];
+                            
+                            // Determine if we should apply tint color based on threshold exceeded or not.
+                            [self.store evaluateAdheranceThresholdForActivity:activity date:components completion:^(BOOL success, OCKCarePlanThreshold * _Nullable threshold, NSError * _Nullable error) {
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    widgetView.shouldApplyTintColor = threshold ? YES : NO;
+                                    
+                                    if (type == OCKPatientWidgetTypeDefault) {
+                                        widgetView.widget = [OCKPatientWidget defaultWidgetWithTitle:activity.title text:adherenceString tintColor:widget.tintColor];
+                                    } else if (type == OCKPatientWidgetTypeBadge) {
+                                        widgetView.widget = [OCKPatientWidget badgeWidgetWithTitle:activity.title value:@(adherence) tintColor:widget.tintColor];
+                                    }
+                                    
+                                });
+                            }];
+                        } else {
+                            OCK_Log_Error(@"%@", error.localizedDescription);
+                        }
+                    }];
+                }
+                
+                else if (activity.type == OCKCarePlanActivityTypeAssessment) {
+                    [self.store eventsForActivity:activity date:components completion:^(NSArray<OCKCarePlanEvent *> * _Nonnull events, NSError * _Nullable error) {
+                        OCKCarePlanEvent *latestEvent = events.lastObject;
+                        
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            NSArray<NSArray <OCKCarePlanThreshold *>*> *thresholds = [latestEvent evaluateNumericThresholds];
+                            widgetView.shouldApplyTintColor = thresholds.firstObject.count > 0 ? YES : NO;
+                            if (type == OCKPatientWidgetTypeDefault) {
+                                NSMutableString *text = [NSMutableString new];
+                                if (latestEvent.result.valueString) {
+                                    [text appendString:latestEvent.result.valueString];
+                                    if (latestEvent.result.unitString) {
+                                        [text appendString:@" "];
+                                        [text appendString:latestEvent.result.unitString];
+                                    }
+                                } else {
+                                    [text appendString:@"--"];
+                                }
+                                
+                                widgetView.widget = [OCKPatientWidget defaultWidgetWithTitle:activity.title text:text tintColor:widget.tintColor];
+                            } else if (type == OCKPatientWidgetTypeBadge) {
+                                NSNumber *value = @0;
+                                if (latestEvent.result.values.count > 0) {
+                                    value = latestEvent.result.values.firstObject;
+                                }
+                                widgetView.widget = [OCKPatientWidget badgeWidgetWithTitle:activity.title value:value tintColor:widget.tintColor];
+                            }
+                        });
+                    }];
+                }
+                
+            }
+            else {
+                OCK_Log_Error(@"No activities found with identifier: %@", activityIdentifier);
+            }
+        }];
+    }
+    else {
+        widgetView.widget = widget;
+        widgetView.shouldApplyTintColor = YES;
+    }
+}
+
+- (void)updateWidgets {
+    for (int i = 0; i < self.widgets.count; i++) {
+        [self updateWidget:self.widgets[i] forWidgetView:_widgetViews[i]];
+    }
 }
 
 @end

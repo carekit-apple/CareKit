@@ -34,8 +34,8 @@
 #import "OCKLabel.h"
 
 
-static const CGFloat TopMargin = 30.0;
-static const CGFloat BottomMargin = 30.0;
+static const CGFloat TopMargin = 25.0;
+static const CGFloat BottomMargin = 25.0;
 static const CGFloat HorizontalMargin = 10.0;
 static const CGFloat ImageViewSize = 40.0;
 
@@ -62,7 +62,6 @@ static const CGFloat ImageViewSize = 40.0;
         _imageView = [UIImageView new];
         _imageView.layer.cornerRadius = 20.0;
         _imageView.clipsToBounds = YES;
-        _imageView.layer.borderWidth = 1.0;
         _imageView.contentMode = UIViewContentModeScaleAspectFill;
         [self addSubview:_imageView];
     }
@@ -94,8 +93,6 @@ static const CGFloat ImageViewSize = 40.0;
 }
 
 - (void)updateView {
-    _imageView.layer.borderColor = self.tintColor.CGColor;
-    
     if (self.contact.image) {
         _imageView.image = self.contact.image;
         _monogramLabel.text = nil;
@@ -108,10 +105,6 @@ static const CGFloat ImageViewSize = 40.0;
     
     _nameLabel.text = self.contact.name;
     _relationLabel.text = self.contact.relation;
-}
-
-- (void)updateImageViewBackgroundColor {
-    _imageView.backgroundColor = self.contact.image ? [UIColor clearColor] : OCKSystemGrayColor();
 }
 
 - (void)setUpConstraints {
@@ -236,6 +229,10 @@ static const CGFloat ImageViewSize = 40.0;
                                         ]];
     
     [NSLayoutConstraint activateConstraints:_constraints];
+}
+
+- (void)updateImageViewBackgroundColor {
+    _imageView.backgroundColor = self.contact.image ? [UIColor clearColor] : OCKSystemGrayColor();
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -29,33 +29,47 @@
  */
 
 
-/* Care Card */
-"CARE_CARD_HEADER_TITLE" = "देखभाल जाँचसूची";
-"TODAY_BUTTON_TITLE" = "आज";
+/* Common */
+"ACTIVITY_TYPE_OTHER_SECTION_HEADER" = "अन्य";
+"ACTIVITY_TYPE_OPTIONAL_SECTION_HEADER" = "वैकल्पिक";
+"ACTIVITY_TYPE_READ_ONLY_SECTION_HEADER" = "केवल पढ़ने योग्य";
+"HEADER_TITLE_CARE_OVERVIEW" = "आपका देखभाल अवलोकन %@ पूर्ण है";
+"HEADER_TITLE_ACTIVITY_STATUS" = "आपकी गतिविधि स्थिति %@ पूर्ण है";
 
-/* Care Card Detail View */
+/* Care Card */
+"CARE_CARD_HEADER_TITLE" = "केयर अवलोकन";
+"TODAY_BUTTON_TITLE" = "आज";
 "CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "निर्देश";
 "CARE_CARD_ADDITIONAL_INFO_SECTION_TITLE" = "अतिरिक्त जानकारी";
 
 /* Symptom Tracker */
-"SYMPTOM_TRACKER_HEADER_TITLE" = "गतिविधि जाँचसूची";
+"SYMPTOM_TRACKER_HEADER_TITLE" = "गतिविधि स्थिति";
 
-/* Connect Master View */
+/* Connect */
 "CARE_TEAM_SECTION_TITLE" = "देखभाल टीम";
-"PERSONAL_SECTION_TITLE" = "मित्र और परिवार";
+"PERSONAL_SECTION_TITLE" = "दोस्त और परिवार";
 "CONNECT_NO_CONTACTS_TITLE" = "कोई संपर्क नहीं";
-
-/* Connect Detail View */
 "CONTACT_INFO_SECTION_TITLE" = "संपर्क जानकारी";
 "CONTACT_SHARING_SECTION_TITLE" = "साझाकरण";
 "CONTACT_INFO_PHONE_TITLE" = "फ़ोन";
-"CONTACT_INFO_MESSAGE_TITLE" = "टेक्स्ट";
+"CONTACT_INFO_MESSAGE_TITLE" = "SMS";
 "CONTACT_INFO_EMAIL_TITLE" = "ईमेल";
 "CONTACT_INFO_VIDEO_TITLE" = "वीडियो";
 "SHARING_CELL_TITLE" = "रिपोर्ट भेजें";
-"ERROR_TITLE" = "त्रुटि";
 "MESSAGE_SEND_ERROR" = "संदेश भेजना विफल";
 "EMAIL_SEND_ERROR" = "ईमेल भेजना विफल";
+"CONNECT_MESSAGE_PLACEHOLDER" = "कोई संदेश टाइप करें...";
+"CONNECT_SEND_BUTTON_TITLE" = "भेजें";
+"CONNECT_INBOX_TITLE" = "इनबॉक्स";
+
+/* Patient */
+"PROFILE_VIEW_CONTROLLER_TITLE" = "प्रोफ़ाइल";
+"PERSONAL_INFORMATION_SECTION_HEADER_TITLE" = "व्यक्तिगत जानकारी";
+"OTHER_INFORMATION_SECTION_HEADER_TITLE" = "अन्य जानकारी";
+
+/* Insight */
+"INSIGHTS_SECTION_HEADER_TITLE_INSIGHTS" = "इनसाइट";
+"INSIGHTS_SECTION_HEADER_TITLE_THRESHOLD_ALERTS" = "सीमा अलर्ट";
 
 /* ACCESSIBILITY */
 "AX_WEEK_BUTTON_PROGRESS" = "%@ पूर्ण";

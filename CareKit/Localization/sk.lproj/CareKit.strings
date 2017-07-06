@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -29,23 +29,26 @@
  */
 
 
-/* Care Card */
-"CARE_CARD_HEADER_TITLE" = "Stav starostlivosti";
-"TODAY_BUTTON_TITLE" = "Dnes";
+/* Common */
+"ACTIVITY_TYPE_OTHER_SECTION_HEADER" = "Iné";
+"ACTIVITY_TYPE_OPTIONAL_SECTION_HEADER" = "Voliteľné";
+"ACTIVITY_TYPE_READ_ONLY_SECTION_HEADER" = "Len na čítanie";
+"HEADER_TITLE_CARE_OVERVIEW" = "Váš prehľad starostlivosti je dokončený na %@";
+"HEADER_TITLE_ACTIVITY_STATUS" = "Stav vašej aktivity je dokončený na %@";
 
-/* Care Card Detail View */
+/* Care Card */
+"CARE_CARD_HEADER_TITLE" = "Prehľad starostlivosti";
+"TODAY_BUTTON_TITLE" = "Dnes";
 "CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "Inštrukcie";
 "CARE_CARD_ADDITIONAL_INFO_SECTION_TITLE" = "Ďalšie informácie";
 
 /* Symptom Tracker */
 "SYMPTOM_TRACKER_HEADER_TITLE" = "Stav aktivity";
 
-/* Connect Master View */
+/* Connect */
 "CARE_TEAM_SECTION_TITLE" = "Zdravotnícky tím";
 "PERSONAL_SECTION_TITLE" = "Priatelia a rodina";
 "CONNECT_NO_CONTACTS_TITLE" = "Žiadne kontakty";
-
-/* Connect Detail View */
 "CONTACT_INFO_SECTION_TITLE" = "Kontaktné údaje";
 "CONTACT_SHARING_SECTION_TITLE" = "Zdieľanie";
 "CONTACT_INFO_PHONE_TITLE" = "telefón";
@@ -53,9 +56,20 @@
 "CONTACT_INFO_EMAIL_TITLE" = "email";
 "CONTACT_INFO_VIDEO_TITLE" = "video";
 "SHARING_CELL_TITLE" = "Odoslať hlásenia";
-"ERROR_TITLE" = "Chyba";
 "MESSAGE_SEND_ERROR" = "Odoslanie správy zlyhalo";
 "EMAIL_SEND_ERROR" = "Odoslanie emailu zlyhalo";
+"CONNECT_MESSAGE_PLACEHOLDER" = "Zadajte správu…";
+"CONNECT_SEND_BUTTON_TITLE" = "Odoslať";
+"CONNECT_INBOX_TITLE" = "Prijaté";
+
+/* Patient */
+"PROFILE_VIEW_CONTROLLER_TITLE" = "Profil";
+"PERSONAL_INFORMATION_SECTION_HEADER_TITLE" = "Osobné údaje";
+"OTHER_INFORMATION_SECTION_HEADER_TITLE" = "Ďalšie informácie";
+
+/* Insight */
+"INSIGHTS_SECTION_HEADER_TITLE_INSIGHTS" = "Poznámky";
+"INSIGHTS_SECTION_HEADER_TITLE_THRESHOLD_ALERTS" = "Prahové upozornenia";
 
 /* ACCESSIBILITY */
 "AX_WEEK_BUTTON_PROGRESS" = "Dokončené na %@";

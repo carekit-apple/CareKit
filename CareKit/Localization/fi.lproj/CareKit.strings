@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -29,23 +29,26 @@
  */
 
 
-/* Care Card */
-"CARE_CARD_HEADER_TITLE" = "Hoitoa suoritettu";
-"TODAY_BUTTON_TITLE" = "Tänään";
+/* Common */
+"ACTIVITY_TYPE_OTHER_SECTION_HEADER" = "Muu";
+"ACTIVITY_TYPE_OPTIONAL_SECTION_HEADER" = "Valinnainen";
+"ACTIVITY_TYPE_READ_ONLY_SECTION_HEADER" = "Vain luku";
+"HEADER_TITLE_CARE_OVERVIEW" = "Hoidon yleiskatsauksesi on %@ valmis";
+"HEADER_TITLE_ACTIVITY_STATUS" = "Aktiivisuustilasi on %@ valmis";
 
-/* Care Card Detail View */
+/* Care Card */
+"CARE_CARD_HEADER_TITLE" = "Hoidon yleiskuva";
+"TODAY_BUTTON_TITLE" = "Tänään";
 "CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "Ohjeet";
 "CARE_CARD_ADDITIONAL_INFO_SECTION_TITLE" = "Lisätietoja";
 
 /* Symptom Tracker */
-"SYMPTOM_TRACKER_HEADER_TITLE" = "suoritettu";
+"SYMPTOM_TRACKER_HEADER_TITLE" = "Aktiviteetin tila";
 
-/* Connect Master View */
+/* Connect */
 "CARE_TEAM_SECTION_TITLE" = "Hoitotiimi";
 "PERSONAL_SECTION_TITLE" = "Ystävät ja perhe";
 "CONNECT_NO_CONTACTS_TITLE" = "Ei yhteystietoja";
-
-/* Connect Detail View */
 "CONTACT_INFO_SECTION_TITLE" = "Yhteystiedot";
 "CONTACT_SHARING_SECTION_TITLE" = "Jakaminen";
 "CONTACT_INFO_PHONE_TITLE" = "puhelin";
@@ -53,9 +56,20 @@
 "CONTACT_INFO_EMAIL_TITLE" = "sähköposti";
 "CONTACT_INFO_VIDEO_TITLE" = "video";
 "SHARING_CELL_TITLE" = "Lähetä raportit";
-"ERROR_TITLE" = "Virhe";
 "MESSAGE_SEND_ERROR" = "Viestin lähettäminen epäonnistui";
 "EMAIL_SEND_ERROR" = "Sähköpostin lähettäminen epäonnistui";
+"CONNECT_MESSAGE_PLACEHOLDER" = "Kirjoita viesti…";
+"CONNECT_SEND_BUTTON_TITLE" = "Lähetä";
+"CONNECT_INBOX_TITLE" = "Saapuneet";
+
+/* Patient */
+"PROFILE_VIEW_CONTROLLER_TITLE" = "Profiili";
+"PERSONAL_INFORMATION_SECTION_HEADER_TITLE" = "Henkilökohtaiset tiedot";
+"OTHER_INFORMATION_SECTION_HEADER_TITLE" = "Muut tiedot";
+
+/* Insight */
+"INSIGHTS_SECTION_HEADER_TITLE_INSIGHTS" = "Tilastot";
+"INSIGHTS_SECTION_HEADER_TITLE_THRESHOLD_ALERTS" = "Kynnysvaroitukset";
 
 /* ACCESSIBILITY */
 "AX_WEEK_BUTTON_PROGRESS" = "%@ suoritettu";

@@ -1,5 +1,7 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Troy Tsubota. All rights reserved.
+ Copyright (c) 2017, Erik Hornberger. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -35,12 +37,13 @@
 #import "OCKHelpers.h"
 #import "OCKDefines_Private.h"
 #import "OCKLabel.h"
+#import "OCKConnectMessagesViewController.h"
+#import "OCKConnectHeaderView.h"
 
 
 @interface OCKConnectViewController() <UITableViewDelegate, UITableViewDataSource, UIViewControllerPreviewingDelegate, MFMessageComposeViewControllerDelegate, MFMailComposeViewControllerDelegate>
 
 @end
-
 
 @implementation OCKConnectViewController {
     UITableView *_tableView;
@@ -48,6 +51,7 @@
     NSMutableArray<NSArray<OCKContact *>*> *_sectionedContacts;
     NSMutableArray<NSString *> *_sectionTitles;
     OCKLabel *_noContactsLabel;
+    OCKConnectHeaderView *_headerView;
 }
 
 + (instancetype)new {
@@ -60,17 +64,25 @@
     return nil;
 }
 
-- (instancetype)initWithContacts:(NSArray<OCKContact *> *)contacts {
+- (instancetype)initWithContacts:(NSArray<OCKContact *> *)contacts
+                         patient:(OCKPatient *)patient {
     self = [super init];
     if (self) {
         _contacts = OCKArrayCopyObjects(contacts);
-        _showEdgeIndicators = NO;
+        _patient = patient;
     }
     return self;
 }
 
+- (instancetype)initWithContacts:(NSArray<OCKContact *> *)contacts {
+    return [self initWithContacts:contacts
+                          patient:nil];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.view.backgroundColor = [UIColor groupTableViewBackgroundColor];
     
     _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
     _tableView.dataSource = self;
@@ -81,12 +93,27 @@
     
     _tableView.estimatedRowHeight = 44.0;
     _tableView.rowHeight = UITableViewAutomaticDimension;
+    _tableView.showsVerticalScrollIndicator = NO;
+    _tableView.estimatedSectionHeaderHeight = 0;
+    _tableView.estimatedSectionFooterHeight = 0;
+    
+    self.navigationController.navigationBar.translucent = NO;
+    [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:245.0/255.0 green:244.0/255.0 blue:246.0/255.0 alpha:1.0]];
     
     [self createSectionedContacts];
     
     if ([self respondsToSelector:@selector(registerForPreviewingWithDelegate:sourceView:)]) {
         [self registerForPreviewingWithDelegate:self sourceView:_tableView];
     }
+    
+    _headerView = [OCKConnectHeaderView new];
+    _headerView.patient = _patient;
+    [self.view addSubview:_headerView];
+    
+    UITapGestureRecognizer *singleFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(profileHeaderTapped:)];
+    [_headerView addGestureRecognizer:singleFingerTap];
+    
+    [self updateHeaderView];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -101,18 +128,34 @@
     [_tableView reloadData];
 }
 
+- (void)setDataSource:(id<OCKConnectViewControllerDataSource>)dataSource {
+    _dataSource = dataSource;
+    [_tableView reloadData];
+    [self createSectionedContacts];
+    
+    [self updateHeaderView];
+}
+
 - (void)setUpConstraints {
     [NSLayoutConstraint deactivateConstraints:_constraints];
     
     _constraints = [NSMutableArray new];
     
+    _headerView.translatesAutoresizingMaskIntoConstraints = NO;
     _tableView.translatesAutoresizingMaskIntoConstraints = NO;
     
     [_constraints addObjectsFromArray:@[
-                                        [NSLayoutConstraint constraintWithItem:_tableView
+                                        [NSLayoutConstraint constraintWithItem:_headerView
                                                                      attribute:NSLayoutAttributeTop
                                                                      relatedBy:NSLayoutRelationEqual
-                                                                        toItem:self.view
+                                                                        toItem:self.topLayoutGuide
+                                                                     attribute:NSLayoutAttributeBottom
+                                                                    multiplier:1.0
+                                                                      constant:0.0],
+                                        [NSLayoutConstraint constraintWithItem:_headerView
+                                                                     attribute:NSLayoutAttributeBottom
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:_tableView
                                                                      attribute:NSLayoutAttributeTop
                                                                     multiplier:1.0
                                                                       constant:0.0],
@@ -131,6 +174,20 @@
                                                                     multiplier:1.0
                                                                       constant:0.0],
                                         [NSLayoutConstraint constraintWithItem:_tableView
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self.view
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                    multiplier:1.0
+                                                                      constant:0.0],
+                                        [NSLayoutConstraint constraintWithItem:_headerView
+                                                                     attribute:NSLayoutAttributeLeading
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self.view
+                                                                     attribute:NSLayoutAttributeLeading
+                                                                    multiplier:1.0
+                                                                      constant:0.0],
+                                        [NSLayoutConstraint constraintWithItem:_headerView
                                                                      attribute:NSLayoutAttributeTrailing
                                                                      relatedBy:NSLayoutRelationEqual
                                                                         toItem:self.view
@@ -166,6 +223,12 @@
 - (void)createSectionedContacts {
     _sectionedContacts = [NSMutableArray new];
     _sectionTitles = [NSMutableArray new];
+    
+    if ([self shouldInboxBeVisible]) {
+        NSArray *connections = [self.dataSource connectViewControllerCareTeamConnections:self];
+        [_sectionedContacts addObject:connections];
+        [_sectionTitles addObject:OCKLocalizedString(@"CONNECT_INBOX_TITLE", nil)];
+    }
     
     NSMutableArray *careTeamContacts = [NSMutableArray new];
     NSMutableArray *personalContacts = [NSMutableArray new];
@@ -206,18 +269,38 @@
     }
 }
 
+- (void)updateHeaderView {
+    if (self.delegate &&
+        [self.delegate respondsToSelector:@selector(connectViewController:didSelectProfileForPatient:)]) {
+        // Show disclosure indicator on profile tab.
+        _headerView.hideChevron = NO;
+    } else {
+        // Hide disclosure indicator on profile tab.
+        _headerView.hideChevron = YES;
+    }
+}
+
 - (void)viewWillLayoutSubviews {
     [super viewWillLayoutSubviews];
     [self setUpConstraints];
 }
 
-- (void)setShowEdgeIndicators:(BOOL)showEdgeIndicators {
-    _showEdgeIndicators = showEdgeIndicators;
-    
-    [_tableView reloadData];
+- (void)profileHeaderTapped:(id)sender {
+    if (self.delegate &&
+        [self.delegate respondsToSelector:@selector(connectViewController:didSelectProfileForPatient:)]) {
+        [self.delegate connectViewController:self didSelectProfileForPatient:self.patient];
+    }
 }
 
+
 #pragma mark - Helpers
+
+- (BOOL)shouldInboxBeVisible {
+    return self.dataSource &&
+    [self.dataSource respondsToSelector:@selector(connectViewControllerNumberOfConnectMessageItems:careTeamContact:)] &&
+    [self.dataSource respondsToSelector:@selector(connectViewController:connectMessageItemAtIndex:careTeamContact:)] &&
+    [self.dataSource respondsToSelector:@selector(connectViewControllerCareTeamConnections:)];
+}
 
 - (OCKContact *)contactForIndexPath:(NSIndexPath *)indexPath {
     return _sectionedContacts[indexPath.section][indexPath.row];
@@ -227,7 +310,6 @@
     OCKConnectDetailViewController *detailViewController = [[OCKConnectDetailViewController alloc] initWithContact:contact];
     detailViewController.delegate = self.delegate;
     detailViewController.masterViewController = self;
-    detailViewController.showEdgeIndicator = _showEdgeIndicators;
     return detailViewController;
 }
 
@@ -235,9 +317,18 @@
 #pragma mark - UITableViewDelegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    OCKContact *contact = [self contactForIndexPath:indexPath];
     
-    [self.navigationController pushViewController:[self detailViewControllerForContact:contact] animated:YES];
+    if ([self shouldInboxBeVisible] && indexPath.section == 0) {
+        OCKConnectMessagesViewController *viewController = [OCKConnectMessagesViewController new];
+        viewController.dataSource = self.dataSource;
+        viewController.delegate = self.delegate;
+        viewController.masterViewController = self;
+        viewController.contact = [self.dataSource connectViewControllerCareTeamConnections:self][indexPath.row];
+        [self.navigationController pushViewController:viewController animated:YES];
+    } else {
+        OCKContact *contact = [self contactForIndexPath:indexPath];
+        [self.navigationController pushViewController:[self detailViewControllerForContact:contact] animated:YES];
+    }
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
@@ -254,20 +345,39 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    if ([self shouldInboxBeVisible] && section == 0) {
+        return [self.dataSource connectViewControllerCareTeamConnections:self].count;
+    }
     return _sectionedContacts[section].count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *CellIdentifier = @"ConnectCell";
-    OCKConnectTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (!cell) {
-        cell = [[OCKConnectTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
-                                              reuseIdentifier:CellIdentifier];
-    }
-    cell.contact = _sectionedContacts[indexPath.section][indexPath.row];
-    cell.showEdgeIndicator = self.showEdgeIndicators;
     
-    return cell;
+    if ([self shouldInboxBeVisible] && indexPath.section == 0) {
+        static NSString *ConnectMessageCellIdentifier = @"ConnectMessageCell";
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ConnectMessageCellIdentifier];
+        if (!cell) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                          reuseIdentifier:ConnectMessageCellIdentifier];
+        }
+        cell.imageView.image = [[UIImage imageNamed:@"message" inBundle:OCKBundle() compatibleWithTraitCollection:nil] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        cell.imageView.tintColor = [UIColor lightGrayColor];
+        cell.tintColor = self.view.tintColor;
+        cell.textLabel.text = _sectionedContacts[indexPath.section][indexPath.row].name;
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        return cell;
+        
+    } else {
+        static NSString *CellIdentifier = @"ConnectCell";
+        OCKConnectTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        if (!cell) {
+            cell = [[OCKConnectTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                                  reuseIdentifier:CellIdentifier];
+        }
+        cell.contact = _sectionedContacts[indexPath.section][indexPath.row];
+        return cell;
+    }
+    return nil;
 }
 
 #pragma mark - MFMessageComposeViewControllerDelegate
@@ -282,6 +392,7 @@
     }
 }
 
+
 #pragma mark - MFMailComposeViewControllerDelegate
 
 - (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error {
@@ -294,15 +405,21 @@
     }
 }
 
+
 #pragma mark - UIViewControllerPreviewingDelegate
 
 - (UIViewController *)previewingContext:(id <UIViewControllerPreviewing>)previewingContext viewControllerForLocation:(CGPoint)location {
     NSIndexPath *indexPath = [_tableView indexPathForRowAtPoint:location];
-    OCKContact *contact = [self contactForIndexPath:indexPath];
     
-    if (indexPath) {
-        CGRect cellFrame = [_tableView cellForRowAtIndexPath:indexPath].frame;
-        previewingContext.sourceRect = cellFrame;
+    if ([self shouldInboxBeVisible] && indexPath.section == 0) {
+        OCKConnectMessagesViewController *viewController = [OCKConnectMessagesViewController new];
+        viewController.dataSource = self.dataSource;
+        viewController.delegate = self.delegate;
+        viewController.masterViewController = self;
+        viewController.contact = [self.dataSource connectViewControllerCareTeamConnections:self][indexPath.row];
+        return viewController;
+    } else {
+        OCKContact *contact = [self contactForIndexPath:indexPath];
         return [self detailViewControllerForContact:contact];
     }
     
@@ -310,10 +427,7 @@
 }
 
 - (void)previewingContext:(id <UIViewControllerPreviewing>)previewingContext commitViewController:(UIViewController *)viewControllerToCommit {
-    NSIndexPath *indexPath = [_tableView indexPathForRowAtPoint:previewingContext.sourceRect.origin];
-    OCKContact *contact = [self contactForIndexPath:indexPath];
-    
-    [self.navigationController pushViewController:[self detailViewControllerForContact:contact] animated:YES];
+    [self.navigationController pushViewController:viewControllerToCommit animated:YES];
 }
 
 @end

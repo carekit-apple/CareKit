@@ -5,7 +5,9 @@ This is the API documentation for the CareKit framework. For an overview of the 
 
 CareKit Scenes
 --------------------
-There are four scenes available to apps that use CareKit:
+There are five scenes available to apps that use CareKit:
+
+**Care Contents.** The Care Contents is a comprehensive scene that can display any and all activity types that the user is expected to complete on a daily basis.
 
 **Care Card.** The Care Card scene presents and manages the tasks that the user is expected to perform as part of their treatment. For example, taking a medication, changing a wound dressing, or meditating.
 

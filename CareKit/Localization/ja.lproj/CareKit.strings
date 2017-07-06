@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -29,23 +29,26 @@
  */
 
 
-/* Care Card */
-"CARE_CARD_HEADER_TITLE" = "ケアの完了";
-"TODAY_BUTTON_TITLE" = "今日";
+/* Common */
+"ACTIVITY_TYPE_OTHER_SECTION_HEADER" = "その他";
+"ACTIVITY_TYPE_OPTIONAL_SECTION_HEADER" = "オプション";
+"ACTIVITY_TYPE_READ_ONLY_SECTION_HEADER" = "読み出し専用";
+"HEADER_TITLE_CARE_OVERVIEW" = "ケアの概要が%@完了しました";
+"HEADER_TITLE_ACTIVITY_STATUS" = "アクティビティの状況が%@完了しました";
 
-/* Care Card Detail View */
+/* Care Card */
+"CARE_CARD_HEADER_TITLE" = "ケアの概要";
+"TODAY_BUTTON_TITLE" = "今日";
 "CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "指示";
 "CARE_CARD_ADDITIONAL_INFO_SECTION_TITLE" = "追加情報";
 
 /* Symptom Tracker */
-"SYMPTOM_TRACKER_HEADER_TITLE" = "アクティビティの完了";
+"SYMPTOM_TRACKER_HEADER_TITLE" = "アクティビティの状況";
 
-/* Connect Master View */
+/* Connect */
 "CARE_TEAM_SECTION_TITLE" = "ケアチーム";
 "PERSONAL_SECTION_TITLE" = "友達と家族";
 "CONNECT_NO_CONTACTS_TITLE" = "連絡先なし";
-
-/* Connect Detail View */
 "CONTACT_INFO_SECTION_TITLE" = "連絡先情報";
 "CONTACT_SHARING_SECTION_TITLE" = "共有";
 "CONTACT_INFO_PHONE_TITLE" = "電話";
@@ -53,9 +56,20 @@
 "CONTACT_INFO_EMAIL_TITLE" = "メール";
 "CONTACT_INFO_VIDEO_TITLE" = "ビデオ";
 "SHARING_CELL_TITLE" = "レポートを送信";
-"ERROR_TITLE" = "エラー";
 "MESSAGE_SEND_ERROR" = "メッセージを送信できませんでした";
 "EMAIL_SEND_ERROR" = "メールを送信できませんでした";
+"CONNECT_MESSAGE_PLACEHOLDER" = "メッセージを入力…";
+"CONNECT_SEND_BUTTON_TITLE" = "送信";
+"CONNECT_INBOX_TITLE" = "受信";
+
+/* Patient */
+"PROFILE_VIEW_CONTROLLER_TITLE" = "プロフィール";
+"PERSONAL_INFORMATION_SECTION_HEADER_TITLE" = "個人情報";
+"OTHER_INFORMATION_SECTION_HEADER_TITLE" = "その他の情報";
+
+/* Insight */
+"INSIGHTS_SECTION_HEADER_TITLE_INSIGHTS" = "Insights";
+"INSIGHTS_SECTION_HEADER_TITLE_THRESHOLD_ALERTS" = "しきい値通知";
 
 /* ACCESSIBILITY */
 "AX_WEEK_BUTTON_PROGRESS" = "%@完了";

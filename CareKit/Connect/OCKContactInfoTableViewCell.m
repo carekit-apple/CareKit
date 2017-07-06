@@ -97,7 +97,7 @@ static const CGFloat IconButtonSize = 35.0;
     _connectTypeLabel.translatesAutoresizingMaskIntoConstraints = NO;
     
     CGFloat LeadingMargin = self.separatorInset.left;
-    CGFloat TrailingMargin = (self.separatorInset.right > 0) ? self.separatorInset.right : 20;
+    CGFloat TrailingMargin = (self.separatorInset.right > 0) ? self.separatorInset.right : 15;
     
     [_constraints addObjectsFromArray:@[
                                         [NSLayoutConstraint constraintWithItem:_connectTypeLabel

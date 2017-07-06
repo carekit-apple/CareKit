@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -38,9 +38,9 @@
 
 static const CGFloat BarPointSize = 12.0;
 static const CGFloat BarEndFontSize = 11.0;
-static const CGFloat MarginBetweenBars = 2.0;
+static const CGFloat MarginBetweenBars = 4.0;
 static const CGFloat MarginBetweenGroups = 16.0;
-static const CGFloat MarginBetweenBarAndLabel = 6.0;
+static const CGFloat MarginBetweenBarAndLabel = 10.0;
 
 @interface OCKGroupedBarChartBar : NSObject
 
@@ -153,6 +153,7 @@ static const CGFloat MarginBetweenBarAndLabel = 6.0;
         _barLayer.path = path.CGPath;
         _barLayer.strokeColor = _bar.color.CGColor;
         _barLayer.lineWidth = barHeight;
+        _barLayer.lineCap = @"round";
     }
 }
 
@@ -196,7 +197,7 @@ static const CGFloat MarginBetweenBarAndLabel = 6.0;
                                                            toItem:self
                                                         attribute:NSLayoutAttributeWidth
                                                        multiplier:percentage
-                                                         constant:-(_bar.valueLabelMaxWidth+6.0)*percentage]];
+                                                         constant:-(_bar.valueLabelMaxWidth+10.0)*percentage]];
     
     [constraints addObject:[NSLayoutConstraint constraintWithItem:_barView
                                                         attribute:NSLayoutAttributeHeight

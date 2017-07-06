@@ -1,5 +1,6 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Erik Hornberger. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -113,18 +114,34 @@ OCK_CLASS_AVAILABLE
 @property (nonatomic, readonly, nullable) OCKCarePlanEvent *lastSelectedAssessmentEvent;
 
 /**
+ A reference to the `UITableView` contained in the view controller
+ */
+@property (nonatomic, readonly, nonnull) UITableView *tableView;
+
+/**
  The tint color that will be used to fill the ring view.
  
  If the value is not specified, the app's tint color is used.
  */
-@property (nonatomic, null_resettable) UIColor *progressRingTintColor;
+@property (nonatomic, null_resettable) UIColor *glyphTintColor;
 
 /**
- A boolean to show the edge indicators.
+ The string that will be used as the Symptom Tracker header title.
  
- The default value is NO.
+ If the value is not specified, CareKit's default string ("Activity Completion") is used.
  */
-@property (nonatomic) BOOL showEdgeIndicators;
+@property (nonatomic, null_resettable) NSString *headerTitle;
+
+/**
+ The glyph type for the header view (see OCKGlyphType).
+ */
+@property (nonatomic) OCKGlyphType glyphType;
+
+/**
+ Image name string if using a custom image. Cannot access image name once image has been created
+ and we need a way to access that to send the custom image name string to the watch
+ */
+@property (nonatomic) NSString *customGlyphImageName;
 
 @end
 

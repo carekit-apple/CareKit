@@ -1,5 +1,7 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Troy Tsubota. All rights reserved.
+ Copyright (c) 2017, Erik Hornberger. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -28,23 +30,22 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 #import "OCKCareCardViewController.h"
+#import "OCKWeekView.h"
 #import "OCKCareCardDetailViewController.h"
 #import "OCKWeekViewController.h"
-#import "OCKCareCardWeekView.h"
 #import "NSDateComponents+CarePlanInternal.h"
-#import "OCKCareCardTableViewHeader.h"
+#import "OCKHeaderView.h"
 #import "OCKCareCardTableViewCell.h"
-#import "OCKWeekViewController.h"
-#import "OCKHeartView.h"
 #import "OCKWeekLabelsView.h"
 #import "OCKCarePlanStore_Internal.h"
 #import "OCKHelpers.h"
 #import "OCKDefines_Private.h"
+#import "OCKGlyph_Internal.h"
 
 
 #define RedColor() OCKColorFromRGB(0xEF445B);
+
 
 @interface OCKCareCardViewController() <OCKWeekViewDelegate, OCKCarePlanStoreDelegate, OCKCareCardCellDelegate, UITableViewDelegate, UITableViewDataSource, UIPageViewControllerDelegate, UIPageViewControllerDataSource, UIViewControllerPreviewingDelegate>
 
@@ -54,14 +55,17 @@
 
 
 @implementation OCKCareCardViewController {
-    UITableView *_tableView;
     NSMutableArray<NSMutableArray<OCKCarePlanEvent *> *> *_events;
     NSMutableArray *_weekValues;
-    OCKCareCardTableViewHeader *_headerView;
+    OCKHeaderView *_headerView;
     UIPageViewController *_pageViewController;
     OCKWeekViewController *_weekViewController;
     NSCalendar *_calendar;
     NSMutableArray *_constraints;
+    NSMutableArray *_sectionTitles;
+    NSMutableArray<NSMutableArray <NSMutableArray <OCKCarePlanEvent *> *> *> *_tableViewData;
+    NSString *_otherString;
+    NSString *_optionalString;
 }
 
 - (instancetype)init {
@@ -73,25 +77,27 @@
     self = [super init];
     if (self) {
         _store = store;
-        self.maskImage = nil;
-        self.smallMaskImage = nil;
-        self.maskImageTintColor = nil;
-        _showEdgeIndicators = NO;
         _calendar = [NSCalendar calendarWithIdentifier:NSCalendarIdentifierGregorian];
+        _glyphTintColor = nil;
     }
     return self;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    _otherString = OCKLocalizedString(@"ACTIVITY_TYPE_OTHER_SECTION_HEADER", nil);
+    _optionalString = OCKLocalizedString(@"ACTIVITY_TYPE_OPTIONAL_SECTION_HEADER", nil);
+    self.view.backgroundColor = [UIColor groupTableViewBackgroundColor];
     
     self.store.careCardUIDelegate = self;
+    
+    [self setGlyphTintColor: _glyphTintColor];
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:OCKLocalizedString(@"TODAY_BUTTON_TITLE", nil)
                                                                               style:UIBarButtonItemStylePlain
                                                                              target:self
                                                                              action:@selector(showToday:)];
-    self.navigationItem.rightBarButtonItem.tintColor = self.maskImageTintColor;
+    self.navigationItem.rightBarButtonItem.tintColor = self.glyphTintColor;
     
     _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
     _tableView.dataSource = self;
@@ -104,12 +110,12 @@
     
     _tableView.estimatedRowHeight = 90.0;
     _tableView.rowHeight = UITableViewAutomaticDimension;
-    _tableView.estimatedSectionHeaderHeight = 100.0;
-    _tableView.sectionHeaderHeight = UITableViewAutomaticDimension;
+    _tableView.tableFooterView = [UIView new];
+    _tableView.estimatedSectionHeaderHeight = 0;
+    _tableView.estimatedSectionFooterHeight = 0;
     
-    if ([self respondsToSelector:@selector(registerForPreviewingWithDelegate:sourceView:)]) {
-        [self registerForPreviewingWithDelegate:self sourceView:_tableView];
-    }
+    self.navigationController.navigationBar.translucent = NO;
+    [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:245.0/255.0 green:244.0/255.0 blue:246.0/255.0 alpha:1.0]];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -117,7 +123,7 @@
     
     NSAssert(self.navigationController, @"OCKCareCardViewController must be embedded in a navigation controller.");
     
-    _weekViewController.careCardWeekView.delegate = self;
+    _weekViewController.weekView.delegate = self;
 }
 
 - (void)showToday:(id)sender {
@@ -127,11 +133,21 @@
 
 - (void)prepareView {
     if (!_headerView) {
-        _headerView = [[OCKCareCardTableViewHeader alloc] initWithFrame:CGRectZero];
+        _headerView = [[OCKHeaderView alloc] initWithFrame:CGRectZero];
+        [self.view addSubview:_headerView];
     }
-    _headerView.heartView.maskImage = self.maskImage;
-    _headerView.tintColor = self.maskImageTintColor;
-    
+    if ([_headerTitle length] == 0) {
+        _headerTitle = OCKLocalizedString(@"CARE_CARD_HEADER_TITLE", nil);
+    }
+    _headerView.title = _headerTitle;
+    _headerView.tintColor = self.glyphTintColor;
+    if (self.glyphType == OCKGlyphTypeCustom) {
+        UIImage *glyphImage = [self createCustomImageName:self.customGlyphImageName];
+        _headerView.glyphImage = glyphImage;
+    }
+    _headerView.isCareCard = YES;
+    _headerView.glyphType = self.glyphType;
+
     if (!_pageViewController) {
         _pageViewController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll
                                                               navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal
@@ -139,17 +155,31 @@
         _pageViewController.dataSource = self;
         _pageViewController.delegate = self;
         
+        if (!UIAccessibilityIsReduceTransparencyEnabled()) {
+            _pageViewController.view.backgroundColor = [UIColor groupTableViewBackgroundColor];
+            
+            UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleProminent];
+            UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+            blurEffectView.frame = _pageViewController.view.bounds;
+            blurEffectView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+            [_pageViewController.view insertSubview:blurEffectView atIndex:_pageViewController.view.subviews.count-1];
+        }
+        else {
+            _pageViewController.view.backgroundColor = [UIColor whiteColor];
+        }
+
         OCKWeekViewController *weekController = [OCKWeekViewController new];
-        weekController.careCardWeekView.delegate = _weekViewController.careCardWeekView.delegate;
-        weekController.careCardWeekView.smallMaskImage = self.smallMaskImage;
-        weekController.careCardWeekView.tintColor = self.maskImageTintColor;
+        weekController.weekView.delegate = _weekViewController.weekView.delegate;
+        weekController.weekView.ringTintColor = self.glyphTintColor;
+        weekController.weekView.isCareCard = YES;
+        weekController.weekView.glyphType = self.glyphType;
         _weekViewController = weekController;
         
         [_pageViewController setViewControllers:@[weekController] direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:nil];
+        [self.view addSubview:_pageViewController.view];
     }
     
-    _tableView.tableHeaderView = _pageViewController.view;
-    _tableView.tableFooterView = [UIView new];
+    _tableView.showsVerticalScrollIndicator = NO;
     
     [self setUpConstraints];
 }
@@ -161,41 +191,36 @@
     
     _tableView.translatesAutoresizingMaskIntoConstraints = NO;
     _pageViewController.view.translatesAutoresizingMaskIntoConstraints = NO;
+    _headerView.translatesAutoresizingMaskIntoConstraints = NO;
+
     
     [_constraints addObjectsFromArray:@[
-                                        [NSLayoutConstraint constraintWithItem:_tableView
+                                        [NSLayoutConstraint constraintWithItem:_pageViewController.view
                                                                      attribute:NSLayoutAttributeTop
                                                                      relatedBy:NSLayoutRelationEqual
-                                                                        toItem:self.view
-                                                                     attribute:NSLayoutAttributeTop
-                                                                    multiplier:1.0
-                                                                      constant:0.0],
-                                        [NSLayoutConstraint constraintWithItem:_tableView
+                                                                        toItem:self.topLayoutGuide
                                                                      attribute:NSLayoutAttributeBottom
-                                                                     relatedBy:NSLayoutRelationEqual
-                                                                        toItem:self.view
-                                                                     attribute:NSLayoutAttributeBottom
-                                                                    multiplier:1.0
-                                                                      constant:0.0],
-                                        [NSLayoutConstraint constraintWithItem:_tableView
-                                                                     attribute:NSLayoutAttributeLeading
-                                                                     relatedBy:NSLayoutRelationEqual
-                                                                        toItem:self.view
-                                                                     attribute:NSLayoutAttributeLeading
-                                                                    multiplier:1.0
-                                                                      constant:0.0],
-                                        [NSLayoutConstraint constraintWithItem:_tableView
-                                                                     attribute:NSLayoutAttributeTrailing
-                                                                     relatedBy:NSLayoutRelationEqual
-                                                                        toItem:self.view
-                                                                     attribute:NSLayoutAttributeTrailing
                                                                     multiplier:1.0
                                                                       constant:0.0],
                                         [NSLayoutConstraint constraintWithItem:_pageViewController.view
-                                                                     attribute:NSLayoutAttributeWidth
+                                                                     attribute:NSLayoutAttributeBottom
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:_headerView
+                                                                     attribute:NSLayoutAttributeTop
+                                                                    multiplier:1.0
+                                                                      constant:10.0],
+                                        [NSLayoutConstraint constraintWithItem:_pageViewController.view
+                                                                     attribute:NSLayoutAttributeLeading
                                                                      relatedBy:NSLayoutRelationEqual
                                                                         toItem:self.view
-                                                                     attribute:NSLayoutAttributeWidth
+                                                                     attribute:NSLayoutAttributeLeading
+                                                                    multiplier:1.0
+                                                                      constant:0.0],
+                                        [NSLayoutConstraint constraintWithItem:_pageViewController.view
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self.view
+                                                                     attribute:NSLayoutAttributeTrailing
                                                                     multiplier:1.0
                                                                       constant:0.0],
                                         [NSLayoutConstraint constraintWithItem:_pageViewController.view
@@ -204,51 +229,87 @@
                                                                         toItem:nil
                                                                      attribute:NSLayoutAttributeNotAnAttribute
                                                                     multiplier:1.0
-                                                                      constant:60.0]
+                                                                      constant:65.0],
+                                        [NSLayoutConstraint constraintWithItem:_headerView
+                                                                     attribute:NSLayoutAttributeHeight
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:nil
+                                                                     attribute:NSLayoutAttributeNotAnAttribute
+                                                                    multiplier:1.0
+                                                                      constant:140.0],
+                                        [NSLayoutConstraint constraintWithItem:_headerView
+                                                                     attribute:NSLayoutAttributeBottom
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:_tableView
+                                                                     attribute:NSLayoutAttributeTop
+                                                                    multiplier:1.0
+                                                                      constant:0.0],
+                                        [NSLayoutConstraint constraintWithItem:_tableView
+                                                                     attribute:NSLayoutAttributeBottom
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self.view
+                                                                     attribute:NSLayoutAttributeBottom
+                                                                    multiplier:1.0
+                                                                      constant:0.0],
+                                        [NSLayoutConstraint constraintWithItem:_tableView
+                                                                     attribute:NSLayoutAttributeLeading
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self.view
+                                                                     attribute:NSLayoutAttributeLeading
+                                                                    multiplier:1.0
+                                                                      constant:0.0],
+                                        [NSLayoutConstraint constraintWithItem:_tableView
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self.view
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                    multiplier:1.0
+                                                                      constant:0.0],
+                                        [NSLayoutConstraint constraintWithItem:_headerView
+                                                                     attribute:NSLayoutAttributeLeading
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self.view
+                                                                     attribute:NSLayoutAttributeLeading
+                                                                    multiplier:1.0
+                                                                      constant:0.0],
+                                        [NSLayoutConstraint constraintWithItem:_headerView
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self.view
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                    multiplier:1.0
+                                                                      constant:0.0]
                                         ]];
     
     [NSLayoutConstraint activateConstraints:_constraints];
 }
 
 - (void)setSelectedDate:(NSDateComponents *)selectedDate {
-    NSDateComponents *today = [self today];
-    _selectedDate = [selectedDate isLaterThan:today] ? today : selectedDate;
+    _selectedDate = selectedDate;
     
-    _weekViewController.careCardWeekView.selectedIndex = self.selectedDate.weekday - 1;
+    _weekViewController.weekView.isToday = [[self today] isEqualToDate:selectedDate];
+    _weekViewController.weekView.selectedIndex = self.selectedDate.weekday - 1;
     
     [self fetchEvents];
 }
 
-- (void)setMaskImage:(UIImage *)maskImage {
-    _maskImage = maskImage;
-    if (!_maskImage) {
-        _maskImage = [UIImage imageNamed:@"heart" inBundle:[NSBundle bundleForClass:[self class]] compatibleWithTraitCollection:nil];
+- (void)setGlyphTintColor:(UIColor *)glyphTintColor {
+    _glyphTintColor = glyphTintColor;
+    if (!_glyphTintColor) {
+        _glyphTintColor = [OCKGlyph defaultColorForGlyph:self.glyphType];
     }
-    _headerView.heartView.maskImage = _maskImage;
+    _weekViewController.weekView.tintColor = _glyphTintColor;
+    _headerView.tintColor = _glyphTintColor;
+    self.navigationItem.rightBarButtonItem.tintColor = _glyphTintColor;
 }
 
-- (void)setSmallMaskImage:(UIImage *)smallMaskImage {
-    _smallMaskImage = smallMaskImage;
-    if (!_smallMaskImage) {
-        _smallMaskImage = [UIImage imageNamed:@"heart-small" inBundle:[NSBundle bundleForClass:[self class]] compatibleWithTraitCollection:nil];
+- (void)setHeaderTitle:(NSString *)headerTitle {
+    _headerTitle = headerTitle;
+    if ([_headerTitle length] == 0) {
+        _headerView.title = OCKLocalizedString(@"CARE_CARD_HEADER_TITLE", nil);
+    } else {
+        _headerView.title = _headerTitle;
     }
-    _weekViewController.careCardWeekView.smallMaskImage = _smallMaskImage;
-}
-
-- (void)setMaskImageTintColor:(UIColor *)maskImageTintColor {
-    _maskImageTintColor = maskImageTintColor;
-    if (!_maskImageTintColor) {
-        _maskImageTintColor = RedColor();
-    }
-    
-    _weekViewController.careCardWeekView.tintColor = _maskImageTintColor;
-    _headerView.tintColor = _maskImageTintColor;
-    self.navigationItem.rightBarButtonItem.tintColor = _maskImageTintColor;
-}
-
-- (void)setShowEdgeIndicators:(BOOL)showEdgeIndicators {
-    _showEdgeIndicators = showEdgeIndicators;
-    [_tableView reloadData];
 }
 
 
@@ -257,7 +318,7 @@
 - (void)fetchEvents {
     [self.store eventsOnDate:self.selectedDate
                         type:OCKCarePlanActivityTypeIntervention
-                  completion:^(NSArray<NSArray<OCKCarePlanEvent *> *> * _Nonnull eventsGroupedByActivity, NSError * _Nonnull error) {
+                  completion:^(NSArray<NSArray<OCKCarePlanEvent *> *> *eventsGroupedByActivity, NSError *error) {
                       NSAssert(!error, error.localizedDescription);
                       dispatch_async(dispatch_get_main_queue(), ^{
                           _events = [NSMutableArray new];
@@ -270,6 +331,8 @@
                               [self.delegate careCardViewController:self willDisplayEvents:[_events copy] dateComponents:_selectedDate];
                           }
                           
+                          [self createGroupedEventDictionaryForEvents:_events];
+                          
                           [self updateHeaderView];
                           [self updateWeekView];
                           [_tableView reloadData];
@@ -281,23 +344,27 @@
     _headerView.date = [NSDateFormatter localizedStringFromDate:[_calendar dateFromComponents:self.selectedDate]
                                                       dateStyle:NSDateFormatterLongStyle
                                                       timeStyle:NSDateFormatterNoStyle];
-    NSInteger totalEvents = 0;
-    NSInteger completedEvents = 0;
-    for (NSArray<OCKCarePlanEvent* > *events in _events) {
-        totalEvents += events.count;
-        for (OCKCarePlanEvent *event in events) {
-            if (event.state == OCKCarePlanEventStateCompleted) {
-                completedEvents++;
-            }
-        }
-    }
-    
-    float value = (totalEvents > 0) ? (float)completedEvents/totalEvents : 1;
-    _headerView.value = value;
-    
-    NSInteger selectedIndex = _weekViewController.careCardWeekView.selectedIndex;
-    [_weekValues replaceObjectAtIndex:selectedIndex withObject:@(value)];
-    _weekViewController.careCardWeekView.values = _weekValues;
+    NSMutableArray *values = [NSMutableArray new];
+
+    [self.store dailyCompletionStatusWithType:OCKCarePlanActivityTypeIntervention
+                                    startDate:self.selectedDate
+                                      endDate:self.selectedDate
+                                      handler:^(NSDateComponents *date, NSUInteger completedEvents, NSUInteger totalEvents) {
+                                          if (totalEvents == 0) {
+                                              [values addObject:@(1)];
+                                          } else {
+                                              [values addObject:@((float)completedEvents/totalEvents)];
+                                          }
+                                      } completion:^(BOOL completed, NSError *error) {
+                                          NSAssert(!error, error.localizedDescription);
+                                          dispatch_async(dispatch_get_main_queue(), ^{
+                                              NSInteger selectedIndex = _weekViewController.weekView.selectedIndex;
+                                              [_weekValues replaceObjectAtIndex:selectedIndex withObject:values.firstObject];
+                                              _weekViewController.weekView.values = _weekValues;
+                                              
+                                              _headerView.value = [values.firstObject doubleValue];
+                                          });
+                                      }];
 }
 
 - (void)updateWeekView {
@@ -315,18 +382,16 @@
     [self.store dailyCompletionStatusWithType:OCKCarePlanActivityTypeIntervention
                                     startDate:[NSDateComponents ock_componentsWithDate:startOfWeek calendar:_calendar]
                                       endDate:[NSDateComponents ock_componentsWithDate:endOfWeek calendar:_calendar]
-                                      handler:^(NSDateComponents * _Nonnull date, NSUInteger completedEvents, NSUInteger totalEvents) {
-                                          if ([date isLaterThan:[self today]]) {
-                                              [values addObject:@(0)];
-                                          } else if (totalEvents == 0) {
+                                      handler:^(NSDateComponents *date, NSUInteger completedEvents, NSUInteger totalEvents) {
+                                          if (totalEvents == 0) {
                                               [values addObject:@(1)];
                                           } else {
                                               [values addObject:@((float)completedEvents/totalEvents)];
                                           }
-                                      } completion:^(BOOL completed, NSError * _Nullable error) {
+                                      } completion:^(BOOL completed, NSError *error) {
                                           NSAssert(!error, error.localizedDescription);
                                           dispatch_async(dispatch_get_main_queue(), ^{
-                                              _weekViewController.careCardWeekView.values = values;
+                                              _weekViewController.weekView.values = values;
                                               _weekValues = [values mutableCopy];
                                           });
                                       }];
@@ -349,31 +414,93 @@
 
 - (UIViewController *)detailViewControllerForActivity:(OCKCarePlanActivity *)activity {
     OCKCareCardDetailViewController *detailViewController = [[OCKCareCardDetailViewController alloc] initWithIntervention:activity];
-    detailViewController.showEdgeIndicator = self.showEdgeIndicators;
     return detailViewController;
 }
 
 - (OCKCarePlanActivity *)activityForIndexPath:(NSIndexPath *)indexPath {
-    return _events[indexPath.row].firstObject.activity;
+    return _tableViewData[indexPath.section][indexPath.row].firstObject.activity;
 }
 
 - (BOOL)delegateCustomizesRowSelection {
     return self.delegate && [self.delegate respondsToSelector:@selector(careCardViewController:didSelectRowWithInterventionActivity:)];
 }
 
+- (UIImage *)createCustomImageName:(NSString*)customImageName {
+    UIImage *customImageToReturn;
+    if (customImageName != nil) {
+        NSBundle *bundle = [NSBundle mainBundle];
+        customImageToReturn = [UIImage imageNamed: customImageName inBundle:bundle compatibleWithTraitCollection:nil];
+    } else {
+        OCKGlyphType defaultGlyph = OCKGlyphTypeHeart;
+        customImageToReturn = [[OCKGlyph glyphImageForType:defaultGlyph] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    }
+    
+    return customImageToReturn;
+}
+
+- (void)createGroupedEventDictionaryForEvents:(NSArray<NSArray<OCKCarePlanEvent *> *> *)events {
+    NSMutableDictionary *groupedEvents = [NSMutableDictionary new];
+    
+    for (NSArray<OCKCarePlanEvent *> *activityEvents in events) {
+        OCKCarePlanEvent *firstEvent = activityEvents.firstObject;
+        NSString *groupIdentifier = firstEvent.activity.groupIdentifier ? firstEvent.activity.groupIdentifier : _otherString;
+        
+        if (firstEvent.activity.optional) {
+            groupIdentifier = _optionalString;
+        }
+        
+        if (groupedEvents[groupIdentifier]) {
+            NSMutableArray<NSArray *> *objects = [groupedEvents[groupIdentifier] mutableCopy];
+            [objects addObject:activityEvents];
+            groupedEvents[groupIdentifier] = objects;
+        } else {
+            NSMutableArray<NSArray *> *objects = [[NSMutableArray alloc] initWithArray:activityEvents];
+            groupedEvents[groupIdentifier] = @[objects];
+        }
+    }
+    
+    NSMutableArray *sortedKeys = [[groupedEvents.allKeys sortedArrayUsingSelector:@selector(compare:)] mutableCopy];
+    if ([sortedKeys containsObject:_otherString]) {
+        [sortedKeys removeObject:_otherString];
+        [sortedKeys addObject:_otherString];
+    }
+    
+    if ([sortedKeys containsObject:_optionalString]) {
+        [sortedKeys removeObject:_optionalString];
+        [sortedKeys addObject:_optionalString];
+    }
+    
+    _sectionTitles = [sortedKeys copy];
+    
+    NSMutableArray *array = [NSMutableArray new];
+    for (NSString *key in _sectionTitles) {
+        NSMutableArray *groupArray = [NSMutableArray new];
+        NSArray *groupedEventsArray = groupedEvents[key];
+        
+        NSMutableDictionary *activitiesDictionary = [NSMutableDictionary new];
+        for (NSArray<OCKCarePlanEvent *> *events in groupedEventsArray) {
+            NSString *activityTitle = events.firstObject.activity.title;
+            activitiesDictionary[activityTitle] = events;
+        }
+        
+        NSArray *sortedActivitiesKeys = [activitiesDictionary.allKeys sortedArrayUsingSelector:@selector(compare:)];
+        for (NSString *activityKey in sortedActivitiesKeys) {
+            [groupArray addObject:activitiesDictionary[activityKey]];
+        }
+        
+        [array addObject:groupArray];
+    }
+    
+    _tableViewData = [array mutableCopy];
+}
+
 
 #pragma mark - OCKWeekViewDelegate
 
 - (void)weekViewSelectionDidChange:(UIView *)weekView {
-    OCKCareCardWeekView *careCardWeekView = (OCKCareCardWeekView *)weekView;
-    NSDateComponents *selectedDate = [self dateFromSelectedIndex:careCardWeekView.selectedIndex];
+    OCKWeekView *currentWeekView = (OCKWeekView *)weekView;
+    NSDateComponents *selectedDate = [self dateFromSelectedIndex:currentWeekView.selectedIndex];
     self.selectedDate = selectedDate;
-}
-
-- (BOOL)weekViewCanSelectDayAtIndex:(NSUInteger)index {
-    NSDateComponents *today = [self today];
-    NSDateComponents *selectedDate = [self dateFromSelectedIndex:index];
-    return ![selectedDate isLaterThan:today];
 }
 
 
@@ -406,9 +533,20 @@
                              NSMutableArray *events = [cell.interventionEvents mutableCopy];
                              [events replaceObjectAtIndex:event.occurrenceIndexOfDay withObject:event];
                              cell.interventionEvents = events;
-                             cell.showEdgeIndicator = cell.showEdgeIndicator;
                          });
                      }];
+    }
+}
+
+- (void)careCardTableViewCell:(OCKCareCardTableViewCell *)cell didSelectInterventionActivity:(OCKCarePlanActivity *)activity {
+    NSIndexPath *indexPath = [_tableView indexPathForCell:cell];
+    OCKCarePlanActivity *selectedActivity = [self activityForIndexPath:indexPath];
+    _lastSelectedInterventionActivity = selectedActivity;
+    
+    if ([self delegateCustomizesRowSelection]) {
+        [self.delegate careCardViewController:self didSelectRowWithInterventionActivity:selectedActivity];
+    } else {
+        [self.navigationController pushViewController:[self detailViewControllerForActivity:selectedActivity] animated:YES];
     }
 }
 
@@ -416,19 +554,28 @@
 #pragma mark - OCKCarePlanStoreDelegate
 
 - (void)carePlanStore:(OCKCarePlanStore *)store didReceiveUpdateOfEvent:(OCKCarePlanEvent *)event {
-    for (NSMutableArray<OCKCarePlanEvent *> *events in _events) {
-        if ([events.firstObject.activity.identifier isEqualToString:event.activity.identifier]) {
-            if (events[event.occurrenceIndexOfDay].numberOfDaysSinceStart == event.numberOfDaysSinceStart) {
-                [events replaceObjectAtIndex:event.occurrenceIndexOfDay withObject:event];
-                [self updateHeaderView];
-                
-                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:[_events indexOfObject:events] inSection:0];
-                OCKCareCardTableViewCell *cell = [_tableView cellForRowAtIndexPath:indexPath];
-                cell.interventionEvents = events;
-                cell.showEdgeIndicator = cell.showEdgeIndicator;
+    for (int i = 0; i < _tableViewData.count; i++) {
+        NSMutableArray<NSMutableArray <OCKCarePlanEvent *> *> *groupedEvents = _tableViewData[i];
+        
+        for (int j = 0; j < groupedEvents.count; j++) {
+            NSMutableArray<OCKCarePlanEvent *> *events = groupedEvents[j];
+            
+            if ([events.firstObject.activity.identifier isEqualToString:event.activity.identifier]) {
+                if (events[event.occurrenceIndexOfDay].numberOfDaysSinceStart == event.numberOfDaysSinceStart) {
+                    [events replaceObjectAtIndex:event.occurrenceIndexOfDay withObject:event];
+                    _tableViewData[i][j] = events;
+                    
+                    [self updateHeaderView];
+                    
+                    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:j inSection:i];
+                    OCKCareCardTableViewCell *cell = [_tableView cellForRowAtIndexPath:indexPath];
+                    cell.interventionEvents = events;
+                }
+                break;
             }
-            break;
+
         }
+        
     }
     
     if ([event.date isInSameWeekAsDate: self.selectedDate]) {
@@ -446,7 +593,7 @@
 - (void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray<UIViewController *> *)previousViewControllers transitionCompleted:(BOOL)completed {
     if (completed) {
         OCKWeekViewController *controller = (OCKWeekViewController *)pageViewController.viewControllers.firstObject;
-        controller.careCardWeekView.delegate = _weekViewController.careCardWeekView.delegate;
+        controller.weekView.delegate = _weekViewController.weekView.delegate;
         
         NSDateComponents *components = [NSDateComponents new];
         components.day = (controller.weekIndex > _weekViewController.weekIndex) ? 7 : -7;
@@ -463,44 +610,45 @@
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController {
     OCKWeekViewController *controller = [OCKWeekViewController new];
     controller.weekIndex = ((OCKWeekViewController *)viewController).weekIndex - 1;
-    controller.careCardWeekView.smallMaskImage = self.smallMaskImage;
-    controller.careCardWeekView.tintColor = self.maskImageTintColor;
+    controller.weekView.tintColor = self.glyphTintColor;
+    controller.weekView.isCareCard = YES;
+    controller.weekView.glyphType = self.glyphType;
     return controller;
 }
 
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController {
     OCKWeekViewController *controller = [OCKWeekViewController new];
     controller.weekIndex = ((OCKWeekViewController *)viewController).weekIndex + 1;
-    controller.careCardWeekView.smallMaskImage = self.smallMaskImage;
-    controller.careCardWeekView.tintColor = self.maskImageTintColor;
-    return (![self.selectedDate isInSameWeekAsDate:[self today]]) ? controller : nil;
+    controller.weekView.tintColor = self.glyphTintColor;
+    controller.weekView.isCareCard = YES;
+    controller.weekView.glyphType = self.glyphType;
+    return controller;
 }
 
 
 #pragma mark - UITableViewDelegate
 
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    return _headerView;
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    NSString *sectionTitle = _sectionTitles[section];
+    if ([sectionTitle isEqualToString:_otherString] && (_sectionTitles.count == 1 || (_sectionTitles.count == 2 && [_sectionTitles containsObject:_optionalString]))) {
+        sectionTitle = @"";
+    }
+    return sectionTitle;
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	OCKCarePlanActivity *selectedActivity = [self activityForIndexPath:indexPath];
-    _lastSelectedInterventionActivity = selectedActivity;    
-	
-    if ([self delegateCustomizesRowSelection]) {
-        [self.delegate careCardViewController:self didSelectRowWithInterventionActivity:selectedActivity];
-    } else {
-        [self.navigationController pushViewController:[self detailViewControllerForActivity:selectedActivity] animated:YES];
-    }
-    
-    [tableView deselectRowAtIndexPath:indexPath animated:NO];
+- (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath {
+    return NO;
 }
 
 
 #pragma mark - UITableViewDataSource
 
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return _tableViewData.count;
+}
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return _events.count;
+    return _tableViewData[section].count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -510,11 +658,11 @@
         cell = [[OCKCareCardTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
                                                reuseIdentifier:CellIdentifier];
     }
-    cell.interventionEvents = _events[indexPath.row];
+    cell.interventionEvents = _tableViewData[indexPath.section][indexPath.row];
     cell.delegate = self;
-    cell.showEdgeIndicator = self.showEdgeIndicators;
     return cell;
 }
+
 
 #pragma mark - UIViewControllerPreviewingDelegate
 
@@ -534,8 +682,7 @@
 }
 
 - (void)previewingContext:(id <UIViewControllerPreviewing>)previewingContext commitViewController:(UIViewController *)viewControllerToCommit {
-    NSIndexPath *indexPath = [_tableView indexPathForRowAtPoint:previewingContext.sourceRect.origin];
-    [self.navigationController pushViewController:[self detailViewControllerForActivity:[self activityForIndexPath:indexPath]] animated:YES];
+    [self.navigationController pushViewController:viewControllerToCommit animated:YES];
 }
 
 @end

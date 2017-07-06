@@ -36,6 +36,8 @@
 
 @property (nonatomic, readonly) NSMutableArray<UILabel *> *weekLabels;
 
+@property (nonatomic) BOOL isToday;
+
 - (void)highlightDay:(NSInteger)selectedIndex;
 
 @end

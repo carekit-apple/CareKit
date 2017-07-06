@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -29,33 +29,47 @@
  */
 
 
-/* Care Card */
-"CARE_CARD_HEADER_TITLE" = "Zorg voltooid";
-"TODAY_BUTTON_TITLE" = "Vandaag";
+/* Common */
+"ACTIVITY_TYPE_OTHER_SECTION_HEADER" = "Overige";
+"ACTIVITY_TYPE_OPTIONAL_SECTION_HEADER" = "Optioneel";
+"ACTIVITY_TYPE_READ_ONLY_SECTION_HEADER" = "Alleen lezen";
+"HEADER_TITLE_CARE_OVERVIEW" = "Je zorgoverzicht is %@ voltooid";
+"HEADER_TITLE_ACTIVITY_STATUS" = "Je activiteitsstatus is %@ voltooid";
 
-/* Care Card Detail View */
+/* Care Card */
+"CARE_CARD_HEADER_TITLE" = "Zorgoverzicht";
+"TODAY_BUTTON_TITLE" = "Vandaag";
 "CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "Instructies";
 "CARE_CARD_ADDITIONAL_INFO_SECTION_TITLE" = "Aanvullende informatie";
 
 /* Symptom Tracker */
-"SYMPTOM_TRACKER_HEADER_TITLE" = "Activiteit voltooid";
+"SYMPTOM_TRACKER_HEADER_TITLE" = "Activiteitsstatus";
 
-/* Connect Master View */
+/* Connect */
 "CARE_TEAM_SECTION_TITLE" = "Zorgteam";
 "PERSONAL_SECTION_TITLE" = "Vrienden en familie";
 "CONNECT_NO_CONTACTS_TITLE" = "Geen contacten";
-
-/* Connect Detail View */
 "CONTACT_INFO_SECTION_TITLE" = "Contactinfo";
 "CONTACT_SHARING_SECTION_TITLE" = "Delen";
 "CONTACT_INFO_PHONE_TITLE" = "telefoon";
 "CONTACT_INFO_MESSAGE_TITLE" = "bericht";
 "CONTACT_INFO_EMAIL_TITLE" = "e-mail";
-"CONTACT_INFO_VIDEO_TITLE" = "video-oproep";
+"CONTACT_INFO_VIDEO_TITLE" = "video";
 "SHARING_CELL_TITLE" = "Verstuur rapporten";
-"ERROR_TITLE" = "Fout";
 "MESSAGE_SEND_ERROR" = "Versturen van bericht mislukt";
 "EMAIL_SEND_ERROR" = "Versturen van e-mail mislukt";
+"CONNECT_MESSAGE_PLACEHOLDER" = "Typ een bericht...";
+"CONNECT_SEND_BUTTON_TITLE" = "Stuur";
+"CONNECT_INBOX_TITLE" = "Inkomend";
+
+/* Patient */
+"PROFILE_VIEW_CONTROLLER_TITLE" = "Profiel";
+"PERSONAL_INFORMATION_SECTION_HEADER_TITLE" = "Persoonlijke gegevens";
+"OTHER_INFORMATION_SECTION_HEADER_TITLE" = "Overige gegevens";
+
+/* Insight */
+"INSIGHTS_SECTION_HEADER_TITLE_INSIGHTS" = "Inzichten";
+"INSIGHTS_SECTION_HEADER_TITLE_THRESHOLD_ALERTS" = "Drempelwaardewaarschuwingen";
 
 /* ACCESSIBILITY */
 "AX_WEEK_BUTTON_PROGRESS" = "%@ voltooid";

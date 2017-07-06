@@ -52,6 +52,38 @@
                                                    endDate:nil];
 }
 
++ (instancetype)dailyScheduleWithStartDate:(NSDateComponents *)startDate
+                         occurrencesPerDay:(NSUInteger)occurrencesPerDay
+                            dailyThreshold:(OCKCarePlanThreshold *)threshold {
+    return [[OCKCareDailySchedule alloc] initWithStartDate:startDate
+                                                daysToSkip:0
+                                         occurrencesPerDay:occurrencesPerDay
+                                                   endDate:nil
+                                            dailyThreshold:threshold];
+}
+
++ (instancetype)dailyScheduleWithStartDate:(NSDateComponents *)startDate
+                         occurrencesPerDay:(NSUInteger)occurrencesPerDay
+                                daysToSkip:(NSUInteger)daysToSkip
+                                   endDate:(nullable NSDateComponents *)endDate {
+    return [[OCKCareDailySchedule alloc] initWithStartDate:startDate
+                                                daysToSkip:daysToSkip
+                                         occurrencesPerDay:occurrencesPerDay
+                                                   endDate:endDate];
+}
+
++ (instancetype)dailyScheduleWithStartDate:(NSDateComponents *)startDate
+                         occurrencesPerDay:(NSUInteger)occurrencesPerDay
+                                daysToSkip:(NSUInteger)daysToSkip
+                                   endDate:(NSDateComponents *)endDate
+                            dailyThreshold:(OCKCarePlanThreshold *)threshold {
+    return [[OCKCareDailySchedule alloc] initWithStartDate:startDate
+                                                daysToSkip:daysToSkip
+                                         occurrencesPerDay:occurrencesPerDay
+                                                   endDate:endDate
+                                            dailyThreshold:threshold];
+}
+
 + (instancetype)weeklyScheduleWithStartDate:(NSDateComponents *)startDate
                        occurrencesOnEachDay:(NSArray<NSNumber *> *)occurrencesFromSundayToSaturday {
     return [[OCKCareWeeklySchedule alloc] initWithStartDate:startDate
@@ -60,14 +92,14 @@
                                                     endDate:nil];
 }
 
-+ (instancetype)dailyScheduleWithStartDate:(NSDateComponents *)startDate
-                         occurrencesPerDay:(NSUInteger)occurrencesPerDay
-                                daysToSkip:(NSUInteger)daysToSkip
-                                   endDate:(nullable NSDateComponents *)endDate {
-    return [[OCKCareDailySchedule alloc] initWithStartDate:startDate
-                                               daysToSkip:daysToSkip
-                                        occurrencesPerDay:occurrencesPerDay
-                                                   endDate:endDate];
++ (instancetype)weeklyScheduleWithStartDate:(NSDateComponents *)startDate
+                       occurrencesOnEachDay:(NSArray<NSNumber *> *)occurrencesFromSundayToSaturday
+                        thresholdsOnEachDay:(NSArray<OCKCarePlanThreshold *> *)thresholdsFromSundayToSaturday {
+    return [[OCKCareWeeklySchedule alloc] initWithStartDate:startDate
+                                                weeksToSkip:0
+                                       occurrencesOnEachDay:occurrencesFromSundayToSaturday
+                                                    endDate:nil
+                                        thresholdsOnEachDay:thresholdsFromSundayToSaturday];
 }
 
 + (instancetype)weeklyScheduleWithStartDate:(NSDateComponents *)startDate
@@ -80,9 +112,22 @@
                                                     endDate:endDate];
 }
 
++ (instancetype)weeklyScheduleWithStartDate:(NSDateComponents *)startDate
+                       occurrencesOnEachDay:(NSArray<NSNumber *> *)occurrencesFromSundayToSaturday
+                                weeksToSkip:(NSUInteger)weeksToSkip
+                                    endDate:(NSDateComponents *)endDate
+                        thresholdsOnEachDay:(NSArray<OCKCarePlanThreshold *> *)thresholdsFromSundayToSaturday {
+    return [[OCKCareWeeklySchedule alloc] initWithStartDate:startDate
+                                                weeksToSkip:weeksToSkip
+                                       occurrencesOnEachDay:occurrencesFromSundayToSaturday
+                                                    endDate:endDate
+                                        thresholdsOnEachDay:thresholdsFromSundayToSaturday];
+}
+
 - (instancetype)initWithStartDate:(NSDateComponents *)startDate
                           endDate:(NSDateComponents *)endDate
                       occurrences:(NSArray<NSNumber *> *)occurrences
+                       thresholds:(NSArray<OCKCarePlanThreshold *> *)thresholds
                   timeUnitsToSkip:(NSUInteger)timeUnitsToSkip {
     
     OCKThrowInvalidArgumentExceptionIfNil(startDate);
@@ -90,11 +135,18 @@
         NSAssert(![startDate isLaterThan:endDate], @"startDate should be earlier than endDate.");
     }
     
+    for (OCKCarePlanThreshold *threshold in thresholds) {
+        NSAssert(threshold.type == OCKCarePlanThresholdTypeAdherance, @"Thresholds for schedules must be of type adherance.");
+    }
+    
     self = [super init];
     if (self) {
         _startDate = [startDate validatedDateComponents];
         _endDate = [endDate validatedDateComponents];
         _occurrences = [occurrences copy];
+        if (thresholds != nil) {
+            _thresholds = [thresholds copy];
+        }
         _timeUnitsToSkip = timeUnitsToSkip;
     }
     return self;
@@ -107,11 +159,11 @@
 - (instancetype)initWithCoder:(NSCoder *)coder {
     self = [super init];
     if (self) {
-        
         OCK_DECODE_OBJ_CLASS(coder, startDate, NSDateComponents);
         OCK_DECODE_OBJ_CLASS(coder, endDate, NSDateComponents);
         OCK_DECODE_OBJ_ARRAY(coder, occurrences, NSNumber);
         OCK_DECODE_INTEGER(coder, timeUnitsToSkip);
+        OCK_DECODE_OBJ_ARRAY(coder, thresholds, OCKCarePlanThreshold);
     }
     return self;
 }
@@ -121,6 +173,7 @@
     OCK_ENCODE_OBJ(coder, endDate);
     OCK_ENCODE_OBJ(coder, occurrences);
     OCK_ENCODE_INTEGER(coder, timeUnitsToSkip);
+    OCK_ENCODE_OBJ(coder, thresholds);
 }
 
 - (BOOL)isEqual:(id)object {
@@ -131,11 +184,12 @@
             OCKEqualObjects(self.startDate, castObject.startDate) &&
             OCKEqualObjects(self.endDate, castObject.endDate) &&
             OCKEqualObjects(self.occurrences, castObject.occurrences) &&
+            OCKEqualObjects(self.thresholds, castObject.thresholds) &&
             (self.timeUnitsToSkip == castObject.timeUnitsToSkip));
 }
 
 - (instancetype)copyWithZone:(NSZone *)zone {
-    OCKCareSchedule *schedule = [[[self class] alloc] initWithStartDate:self.startDate endDate:self.endDate occurrences:self.occurrences timeUnitsToSkip:self.timeUnitsToSkip];
+    OCKCareSchedule *schedule = [[[self class] alloc] initWithStartDate:self.startDate endDate:self.endDate occurrences:self.occurrences thresholds:self.thresholds timeUnitsToSkip:self.timeUnitsToSkip];
     return schedule;
 }
 
@@ -145,14 +199,20 @@
 }
 
 - (NSCalendar *)UTC_calendar {
-    if (!_calendar) {
-        _calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
-        _calendar.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+    @synchronized (self) {
+        if (!_calendar) {
+            _calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+            _calendar.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+        }
     }
     return _calendar;
 }
 
 - (NSUInteger)numberOfEventsOnDate:(NSDateComponents *)day {
+    OCKThrowMethodUnavailableException();
+}
+
+- (OCKCarePlanThreshold *)thresholdOnDate:(NSDateComponents *)day {
     OCKThrowMethodUnavailableException();
 }
 
@@ -171,7 +231,7 @@
     return daysSinceStart;
 }
 
--(void)setEndDate:(NSDateComponents *)endDate {
+- (void)setEndDate:(NSDateComponents *)endDate {
     NSAssert(![_startDate isLaterThan:endDate], @"startDate should be earlier than endDate. %@ %@", _startDate, endDate);
     _endDate = [endDate validatedDateComponents];
 }
@@ -197,7 +257,20 @@
                        daysToSkip:(NSUInteger)daysToSkip
                 occurrencesPerDay:(NSUInteger)occurrencesPerDay
                           endDate:(nullable NSDateComponents *)endDate {
-    self = [self initWithStartDate:startDate endDate:endDate occurrences: @[@(occurrencesPerDay)] timeUnitsToSkip:daysToSkip];
+    return  [self initWithStartDate:startDate daysToSkip:daysToSkip occurrencesPerDay:occurrencesPerDay endDate:endDate dailyThreshold:nil];
+}
+
+- (instancetype)initWithStartDate:(NSDateComponents *)startDate daysToSkip:(NSUInteger)daysToSkip occurrencesPerDay:(NSUInteger)occurrencesPerDay endDate:(NSDateComponents *)endDate dailyThreshold:(OCKCarePlanThreshold * _Nullable)threshold {
+    
+    NSArray<OCKCarePlanThreshold *> *thresholdsArray;
+    
+    if (threshold) {
+        thresholdsArray = @[threshold];
+    } else {
+        thresholdsArray = nil;
+    }
+    
+    self = [self initWithStartDate:startDate endDate:endDate occurrences:@[@(occurrencesPerDay)] thresholds:thresholdsArray timeUnitsToSkip:daysToSkip];
     return self;
 }
 
@@ -210,6 +283,17 @@
         occurrences = ((daysSinceStart % (self.timeUnitsToSkip + 1)) == 0) ? occurrencesPerDay : 0;
     }
     return occurrences;
+}
+
+- (OCKCarePlanThreshold *)thresholdOnDate:(NSDateComponents *)day {
+    if (([self isDateInRange:day]) || (self.thresholds)) {
+        NSUInteger daysSinceStart = [self numberOfDaySinceStart:day];
+
+        if ((daysSinceStart % (self.timeUnitsToSkip + 1)) == 0) {
+            return self.thresholds.firstObject;
+        }
+    }
+    return nil;
 }
 
 @end
@@ -225,11 +309,15 @@
                       weeksToSkip:(NSUInteger)weeksToSkip
              occurrencesOnEachDay:(NSArray<NSNumber *> *)occurrencesFromSundayToSaturday
                           endDate:(nullable NSDateComponents *)endDate {
+    return [self initWithStartDate:startDate weeksToSkip:weeksToSkip occurrencesOnEachDay:occurrencesFromSundayToSaturday endDate:endDate thresholdsOnEachDay:nil];
+}
+
+- (instancetype)initWithStartDate:(NSDateComponents *)startDate weeksToSkip:(NSUInteger)weeksToSkip occurrencesOnEachDay:(NSArray<NSNumber *> *)occurrencesFromSundayToSaturday endDate:(NSDateComponents *)endDate thresholdsOnEachDay:(NSArray<OCKCarePlanThreshold *> *)thresholdsFromSundayToSaturday {
     
     OCKThrowInvalidArgumentExceptionIfNil(occurrencesFromSundayToSaturday);
     NSParameterAssert(occurrencesFromSundayToSaturday.count == 7);
     
-    self = [self initWithStartDate:startDate endDate:endDate occurrences:occurrencesFromSundayToSaturday timeUnitsToSkip:weeksToSkip];
+    self = [self initWithStartDate:startDate endDate:endDate occurrences:occurrencesFromSundayToSaturday thresholds:thresholdsFromSundayToSaturday timeUnitsToSkip:weeksToSkip];
     return self;
 }
 
@@ -251,6 +339,27 @@
         occurrences = ((weeksSinceStart % (self.timeUnitsToSkip + 1)) == 0) ? self.occurrences[weekday-1].unsignedIntegerValue : 0;
     }
     return occurrences;
+}
+
+- (OCKCarePlanThreshold *)thresholdOnDate:(NSDateComponents *)day {
+    if (([self isDateInRange:day]) && (self.thresholds)) {
+        NSCalendar *calendar = [self UTC_calendar];
+        
+        NSInteger startWeek = [calendar ordinalityOfUnit:NSCalendarUnitWeekOfYear
+                                                  inUnit:NSCalendarUnitEra
+                                                 forDate:[self.startDate UTC_dateWithGregorianCalendar]];
+        
+        NSInteger endWeek = [calendar ordinalityOfUnit:NSCalendarUnitWeekOfYear
+                                                inUnit:NSCalendarUnitEra
+                                               forDate:[day UTC_dateWithGregorianCalendar]];
+        
+        NSUInteger weeksSinceStart = endWeek - startWeek;
+        NSUInteger weekday = [calendar component:NSCalendarUnitWeekday fromDate:[day UTC_dateWithGregorianCalendar]];
+        if ((weeksSinceStart % (self.timeUnitsToSkip + 1)) == 0) {
+            return self.thresholds[weekday - 1];
+        }
+    }
+    return nil;
 }
 
 @end

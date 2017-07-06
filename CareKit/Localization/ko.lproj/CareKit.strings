@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -29,23 +29,26 @@
  */
 
 
-/* Care Card */
-"CARE_CARD_HEADER_TITLE" = "진찰 완료";
-"TODAY_BUTTON_TITLE" = "오늘";
+/* Common */
+"ACTIVITY_TYPE_OTHER_SECTION_HEADER" = "기타";
+"ACTIVITY_TYPE_OPTIONAL_SECTION_HEADER" = "선택사항";
+"ACTIVITY_TYPE_READ_ONLY_SECTION_HEADER" = "읽기 전용";
+"HEADER_TITLE_CARE_OVERVIEW" = "사용자의 의료 정보 개요가 %@ 완료되었습니다.";
+"HEADER_TITLE_ACTIVITY_STATUS" = "사용자의 실험 상태가 %@ 완료되었습니다.";
 
-/* Care Card Detail View */
+/* Care Card */
+"CARE_CARD_HEADER_TITLE" = "의료 정보 개요";
+"TODAY_BUTTON_TITLE" = "오늘";
 "CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "지침";
 "CARE_CARD_ADDITIONAL_INFO_SECTION_TITLE" = "추가 정보";
 
 /* Symptom Tracker */
-"SYMPTOM_TRACKER_HEADER_TITLE" = "실험 완료";
+"SYMPTOM_TRACKER_HEADER_TITLE" = "실험 상태";
 
-/* Connect Master View */
+/* Connect */
 "CARE_TEAM_SECTION_TITLE" = "의료진";
 "PERSONAL_SECTION_TITLE" = "친구 및 가족";
 "CONNECT_NO_CONTACTS_TITLE" = "연락처 없음";
-
-/* Connect Detail View */
 "CONTACT_INFO_SECTION_TITLE" = "연락처 정보";
 "CONTACT_SHARING_SECTION_TITLE" = "공유";
 "CONTACT_INFO_PHONE_TITLE" = "전화";
@@ -53,9 +56,20 @@
 "CONTACT_INFO_EMAIL_TITLE" = "이메일";
 "CONTACT_INFO_VIDEO_TITLE" = "비디오";
 "SHARING_CELL_TITLE" = "리포트 보내기";
-"ERROR_TITLE" = "오류";
 "MESSAGE_SEND_ERROR" = "메시지 전송 실패";
 "EMAIL_SEND_ERROR" = "이메일 전송 실패";
+"CONNECT_MESSAGE_PLACEHOLDER" = "메시지 입력...";
+"CONNECT_SEND_BUTTON_TITLE" = "보내기";
+"CONNECT_INBOX_TITLE" = "받은 편지함";
+
+/* Patient */
+"PROFILE_VIEW_CONTROLLER_TITLE" = "프로필";
+"PERSONAL_INFORMATION_SECTION_HEADER_TITLE" = "개인 정보";
+"OTHER_INFORMATION_SECTION_HEADER_TITLE" = "기타 정보";
+
+/* Insight */
+"INSIGHTS_SECTION_HEADER_TITLE_INSIGHTS" = "통찰력";
+"INSIGHTS_SECTION_HEADER_TITLE_THRESHOLD_ALERTS" = "임계값 알림";
 
 /* ACCESSIBILITY */
 "AX_WEEK_BUTTON_PROGRESS" = "%@ 완료됨";

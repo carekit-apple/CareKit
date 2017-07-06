@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -29,23 +29,26 @@
  */
 
 
-/* Care Card */
-"CARE_CARD_HEADER_TITLE" = "Postęp opieki";
-"TODAY_BUTTON_TITLE" = "Dzisiaj";
+/* Common */
+"ACTIVITY_TYPE_OTHER_SECTION_HEADER" = "Inna";
+"ACTIVITY_TYPE_OPTIONAL_SECTION_HEADER" = "Opcjonalnie";
+"ACTIVITY_TYPE_READ_ONLY_SECTION_HEADER" = "Tylko odczyt";
+"HEADER_TITLE_CARE_OVERVIEW" = "Podsumowanie opieki: ukończone %@";
+"HEADER_TITLE_ACTIVITY_STATUS" = "Status aktywności: ukończone %@";
 
-/* Care Card Detail View */
+/* Care Card */
+"CARE_CARD_HEADER_TITLE" = "Podsumowanie opieki";
+"TODAY_BUTTON_TITLE" = "Dzisiaj";
 "CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "Instrukcje";
 "CARE_CARD_ADDITIONAL_INFO_SECTION_TITLE" = "Informacje dodatkowe";
 
 /* Symptom Tracker */
-"SYMPTOM_TRACKER_HEADER_TITLE" = "Postęp ćwiczenia";
+"SYMPTOM_TRACKER_HEADER_TITLE" = "Status aktywności";
 
-/* Connect Master View */
+/* Connect */
 "CARE_TEAM_SECTION_TITLE" = "Personel medyczny";
 "PERSONAL_SECTION_TITLE" = "Rodzina i znajomi";
 "CONNECT_NO_CONTACTS_TITLE" = "Brak kontaktów";
-
-/* Connect Detail View */
 "CONTACT_INFO_SECTION_TITLE" = "Dane kontaktowe";
 "CONTACT_SHARING_SECTION_TITLE" = "Udostępnianie";
 "CONTACT_INFO_PHONE_TITLE" = "telefon";
@@ -53,9 +56,20 @@
 "CONTACT_INFO_EMAIL_TITLE" = "email";
 "CONTACT_INFO_VIDEO_TITLE" = "wideo";
 "SHARING_CELL_TITLE" = "Wyślij raporty";
-"ERROR_TITLE" = "Błąd";
 "MESSAGE_SEND_ERROR" = "Błąd wysyłania wiadomości";
 "EMAIL_SEND_ERROR" = "Błąd wysyłania wiadomości email";
+"CONNECT_MESSAGE_PLACEHOLDER" = "Napisz wiadomość…";
+"CONNECT_SEND_BUTTON_TITLE" = "Wyślij";
+"CONNECT_INBOX_TITLE" = "Przychodzące";
+
+/* Patient */
+"PROFILE_VIEW_CONTROLLER_TITLE" = "Profil";
+"PERSONAL_INFORMATION_SECTION_HEADER_TITLE" = "Dane osobowe";
+"OTHER_INFORMATION_SECTION_HEADER_TITLE" = "Pozostałe dane";
+
+/* Insight */
+"INSIGHTS_SECTION_HEADER_TITLE_INSIGHTS" = "Statystyki";
+"INSIGHTS_SECTION_HEADER_TITLE_THRESHOLD_ALERTS" = "Alerty progowe";
 
 /* ACCESSIBILITY */
 "AX_WEEK_BUTTON_PROGRESS" = "%@ ukończone";

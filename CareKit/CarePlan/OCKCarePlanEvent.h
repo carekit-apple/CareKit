@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -61,7 +61,7 @@ typedef NS_ENUM(NSInteger, OCKCarePlanEventState) {
  Use OCKCarePlanStore API to update an event's state and change its result.
  */
 OCK_CLASS_AVAILABLE
-@interface OCKCarePlanEvent : NSObject 
+@interface OCKCarePlanEvent : NSObject <NSSecureCoding, NSCopying>
 
 - (instancetype)init NS_UNAVAILABLE;
 
@@ -99,6 +99,11 @@ OCK_CLASS_AVAILABLE
  A result object can be attached to event by using the OCKCarePlanStore API.
  */
 @property (nonatomic, readonly, nullable) OCKCarePlanEventResult *result;
+
+/**
+ Check numeric thresholds on a given event.
+ */
+- (NSArray<NSArray<OCKCarePlanThreshold *> *> *)evaluateNumericThresholds;
 
 @end
 

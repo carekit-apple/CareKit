@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -29,23 +29,26 @@
  */
 
 
-/* Care Card */
-"CARE_CARD_HEADER_TITLE" = "Ispunjavanje terapije";
-"TODAY_BUTTON_TITLE" = "Danas";
+/* Common */
+"ACTIVITY_TYPE_OTHER_SECTION_HEADER" = "Ostalo";
+"ACTIVITY_TYPE_OPTIONAL_SECTION_HEADER" = "Opcionalno";
+"ACTIVITY_TYPE_READ_ONLY_SECTION_HEADER" = "Samo čitanje";
+"HEADER_TITLE_CARE_OVERVIEW" = "Vaš pregled zdravstvene skrbi je %@ dovršen";
+"HEADER_TITLE_ACTIVITY_STATUS" = "Vaš status aktivnosti je %@ dovršen";
 
-/* Care Card Detail View */
+/* Care Card */
+"CARE_CARD_HEADER_TITLE" = "Pregled zdravstvene skrbi";
+"TODAY_BUTTON_TITLE" = "Danas";
 "CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "Upute";
 "CARE_CARD_ADDITIONAL_INFO_SECTION_TITLE" = "Dodatne informacije";
 
 /* Symptom Tracker */
-"SYMPTOM_TRACKER_HEADER_TITLE" = "Ispunjavanje aktivnost";
+"SYMPTOM_TRACKER_HEADER_TITLE" = "Status aktivnosti";
 
-/* Connect Master View */
+/* Connect */
 "CARE_TEAM_SECTION_TITLE" = "Medicinsko osoblje";
 "PERSONAL_SECTION_TITLE" = "Prijatelji i obitelj";
 "CONNECT_NO_CONTACTS_TITLE" = "Nema kontakata";
-
-/* Connect Detail View */
 "CONTACT_INFO_SECTION_TITLE" = "Kontaktne informacije";
 "CONTACT_SHARING_SECTION_TITLE" = "Dijeljenje";
 "CONTACT_INFO_PHONE_TITLE" = "telefon";
@@ -53,9 +56,20 @@
 "CONTACT_INFO_EMAIL_TITLE" = "e-mail";
 "CONTACT_INFO_VIDEO_TITLE" = "video";
 "SHARING_CELL_TITLE" = "Pošalji izvještaje";
-"ERROR_TITLE" = "Greška";
 "MESSAGE_SEND_ERROR" = "Slanje poruke nije uspjelo";
 "EMAIL_SEND_ERROR" = "Slanje e-maila nije uspjelo";
+"CONNECT_MESSAGE_PLACEHOLDER" = "Unesite poruku…";
+"CONNECT_SEND_BUTTON_TITLE" = "Šalji";
+"CONNECT_INBOX_TITLE" = "Dolazno";
+
+/* Patient */
+"PROFILE_VIEW_CONTROLLER_TITLE" = "Profil";
+"PERSONAL_INFORMATION_SECTION_HEADER_TITLE" = "Osobne informacije";
+"OTHER_INFORMATION_SECTION_HEADER_TITLE" = "Ostale informacije";
+
+/* Insight */
+"INSIGHTS_SECTION_HEADER_TITLE_INSIGHTS" = "Uvidi";
+"INSIGHTS_SECTION_HEADER_TITLE_THRESHOLD_ALERTS" = "Alarmi za pragove";
 
 /* ACCESSIBILITY */
 "AX_WEEK_BUTTON_PROGRESS" = "%@ dovršeno";

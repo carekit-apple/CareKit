@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -40,77 +40,95 @@ class RootViewController: UITabBarController {
     
     fileprivate let storeManager = CarePlanStoreManager.sharedCarePlanStoreManager
     
-    fileprivate var careCardViewController: OCKCareCardViewController!
-    
-    fileprivate var symptomTrackerViewController: OCKSymptomTrackerViewController!
+    fileprivate var careContentsViewController: OCKCareContentsViewController!
     
     fileprivate var insightsViewController: OCKInsightsViewController!
     
     fileprivate var connectViewController: OCKConnectViewController!
     
     fileprivate var watchManager: WatchConnectivityManager?
+
+    
     // MARK: Initialization
     
     required init?(coder aDecoder: NSCoder) {
         sampleData = SampleData(carePlanStore: storeManager.store)
         
         super.init(coder: aDecoder)
-        
-        careCardViewController = createCareCardViewController()
-        symptomTrackerViewController = createSymptomTrackerViewController()
+        careContentsViewController = createCareContentsViewController()
         insightsViewController = createInsightsViewController()
         connectViewController = createConnectViewController()
         
         self.viewControllers = [
-            UINavigationController(rootViewController: careCardViewController),
-            UINavigationController(rootViewController: symptomTrackerViewController),
+            UINavigationController(rootViewController: careContentsViewController),
             UINavigationController(rootViewController: insightsViewController),
             UINavigationController(rootViewController: connectViewController)
         ]
         
         storeManager.delegate = self
         watchManager = WatchConnectivityManager(withStore: storeManager.store)
+        let glyphType = Glyph.glyphType(rawValue: careContentsViewController.glyphType.rawValue)
+        
+        // Default the default glyph tint color
+        
+        var glyphTintColor = OCKGlyph.defaultColor(for: careContentsViewController.glyphType)
+        if (careContentsViewController.glyphTintColor != nil) {
+            glyphTintColor = careContentsViewController.glyphTintColor
+        }
+        
+        // Create color component array
+        let glyphTintColorComponents = glyphTintColor.cgColor.components
+        let glyphTintColorArray = [glyphTintColorComponents![0], glyphTintColorComponents![1], glyphTintColorComponents![2], glyphTintColorComponents![3]]
+        watchManager?.glyphType = Glyph.imageNameForGlyphType(glyphType: glyphType!)
+        watchManager?.glyphTintColor = glyphTintColorArray
+        
+        // Set the custom image name if the glyphType is custom
+        if (careContentsViewController.glyphType == .custom) {
+            let glyphImageName = careContentsViewController.customGlyphImageName
+            if (glyphImageName != "") {
+                watchManager?.glyphImageName = glyphImageName
+            }
+            
+            watchManager?.sendGlyphType(glyphType: Glyph.imageNameForGlyphType(glyphType: glyphType!),
+                                        glyphTintColor: glyphTintColorArray,
+                                        glyphImageName: glyphImageName)
+        } else {
+            watchManager?.sendGlyphType(glyphType: Glyph.imageNameForGlyphType(glyphType: glyphType!), glyphTintColor: glyphTintColorArray)
+        }
     }
-
+    
     // MARK: Convenience
     
     fileprivate func createInsightsViewController() -> OCKInsightsViewController {
         // Create an `OCKInsightsViewController` with sample data.
-        let headerTitle = NSLocalizedString("Weekly Charts", comment: "")
-        let viewController = OCKInsightsViewController(insightItems: storeManager.insights, headerTitle: headerTitle, headerSubtitle: "")
+        let activityType1: ActivityType = .backPain
+        let activityType2: ActivityType = .bloodGlucose
+        let activityType3: ActivityType = .weight
+        let widget1 = OCKPatientWidget.defaultWidget(withActivityIdentifier: activityType1.rawValue, tintColor: OCKColor.red)
+        let widget2 = OCKPatientWidget.defaultWidget(withActivityIdentifier: activityType2.rawValue, tintColor: OCKColor.red)
+        let widget3 = OCKPatientWidget.defaultWidget(withActivityIdentifier: activityType3.rawValue, tintColor: OCKColor.red)
+        
+        let viewController = OCKInsightsViewController(insightItems: storeManager.insights, patientWidgets: [widget1, widget2, widget3], thresholds: [activityType1.rawValue], store:storeManager.store)
         
         // Setup the controller's title and tab bar item
         viewController.title = NSLocalizedString("Insights", comment: "")
         viewController.tabBarItem = UITabBarItem(title: viewController.title, image: UIImage(named:"insights"), selectedImage: UIImage(named: "insights-filled"))
         
-        return viewController
-    }
+        return viewController    }
     
-    fileprivate func createCareCardViewController() -> OCKCareCardViewController {
-        let viewController = OCKCareCardViewController(carePlanStore: storeManager.store)
-        
-        // Setup the controller's title and tab bar item
-        viewController.title = NSLocalizedString("Care Card", comment: "")
+    fileprivate func createCareContentsViewController() -> OCKCareContentsViewController {
+        let viewController = OCKCareContentsViewController(carePlanStore: storeManager.store)
+        viewController.title = NSLocalizedString("Care Contents", comment: "")
         viewController.tabBarItem = UITabBarItem(title: viewController.title, image: UIImage(named:"carecard"), selectedImage: UIImage(named: "carecard-filled"))
-        
+        viewController.delegate = self;
         return viewController
+
     }
-    
-    fileprivate func createSymptomTrackerViewController() -> OCKSymptomTrackerViewController {
-        let viewController = OCKSymptomTrackerViewController(carePlanStore: storeManager.store)
-        viewController.delegate = self
-        
-        // Setup the controller's title and tab bar item
-        viewController.title = NSLocalizedString("Symptom Tracker", comment: "")
-        viewController.tabBarItem = UITabBarItem(title: viewController.title, image: UIImage(named:"symptoms"), selectedImage: UIImage(named: "symptoms-filled"))
-        
-        return viewController
-    }
-    
+
     fileprivate func createConnectViewController() -> OCKConnectViewController {
-        let viewController = OCKConnectViewController(contacts: sampleData.contacts)
+        let viewController = OCKConnectViewController.init(contacts: sampleData.contacts, patient: sampleData.patient)
         viewController.delegate = self
-        
+        viewController.dataSource = self
         // Setup the controller's title and tab bar item
         viewController.title = NSLocalizedString("Connect", comment: "")
         viewController.tabBarItem = UITabBarItem(title: viewController.title, image: UIImage(named:"connect"), selectedImage: UIImage(named: "connect-filled"))
@@ -120,32 +138,28 @@ class RootViewController: UITabBarController {
 }
 
 
-
-extension RootViewController: OCKSymptomTrackerViewControllerDelegate {
+extension RootViewController: OCKCareContentsViewControllerDelegate {
     
-    /// Called when the user taps an assessment on the `OCKSymptomTrackerViewController`.
-    func symptomTrackerViewController(_ viewController: OCKSymptomTrackerViewController, didSelectRowWithAssessmentEvent assessmentEvent: OCKCarePlanEvent) {
-        // Lookup the assessment the row represents.
-        guard let activityType = ActivityType(rawValue: assessmentEvent.activity.identifier) else { return }
-        guard let sampleAssessment = sampleData.activityWithType(activityType) as? Assessment else { return }
-        
-        /*
-            Check if we should show a task for the selected assessment event
-            based on its state.
-        */
-        guard assessmentEvent.state == .initial ||
-            assessmentEvent.state == .notCompleted ||
-            (assessmentEvent.state == .completed && assessmentEvent.activity.resultResettable) else { return }
-        
-        // Show an `ORKTaskViewController` for the assessment's task.
-        let taskViewController = ORKTaskViewController(task: sampleAssessment.task(), taskRun: nil)
-        taskViewController.delegate = self
-        
-        present(taskViewController, animated: true, completion: nil)
+    func careContentsViewController(_ viewController: OCKCareContentsViewController, didSelectRowWithAssessmentEvent assessmentEvent: OCKCarePlanEvent) {
+            // Lookup the assessment the row represents.
+            guard let activityType = ActivityType(rawValue: assessmentEvent.activity.identifier) else { return }
+            guard let sampleAssessment = sampleData.activityWithType(activityType) as? Assessment else { return }
+            
+            /*
+             Check if we should show a task for the selected assessment event
+             based on its state.
+             */
+            guard assessmentEvent.state == .initial ||
+                assessmentEvent.state == .notCompleted ||
+                (assessmentEvent.state == .completed && assessmentEvent.activity.resultResettable) else { return }
+            
+            // Show an `ORKTaskViewController` for the assessment's task.
+            let taskViewController = ORKTaskViewController(task: sampleAssessment.task(), taskRun: nil)
+            taskViewController.delegate = self
+            
+            present(taskViewController, animated: true, completion: nil)
     }
 }
-
-
 
 extension RootViewController: ORKTaskViewControllerDelegate {
     
@@ -159,7 +173,7 @@ extension RootViewController: ORKTaskViewControllerDelegate {
         guard reason == .completed else { return }
         
         // Determine the event that was completed and the `SampleAssessment` it represents.
-        guard let event = symptomTrackerViewController.lastSelectedAssessmentEvent,
+        guard let event = careContentsViewController.lastSelectedEvent,
             let activityType = ActivityType(rawValue: event.activity.identifier),
             let sampleAssessment = sampleData.activityWithType(activityType) as? Assessment else { return }
         
@@ -225,9 +239,26 @@ extension RootViewController: ORKTaskViewControllerDelegate {
     fileprivate func completeEvent(_ event: OCKCarePlanEvent, inStore store: OCKCarePlanStore, withResult result: OCKCarePlanEventResult) {
         store.update(event, with: result, state: .completed) { success, _, error in
             if !success {
-                print(error?.localizedDescription)
+                print(error!.localizedDescription)
             }
         }
+    }
+}
+
+// MARK: OCKConnectViewControllerDataSource
+
+extension RootViewController: OCKConnectViewControllerDataSource {
+    
+    func connectViewControllerNumber(ofConnectMessageItems viewController: OCKConnectViewController, careTeamContact contact: OCKContact) -> Int {
+        return sampleData.connectMessageItems.count
+    }
+    
+    func connectViewControllerCareTeamConnections(_ viewController: OCKConnectViewController) -> [OCKContact] {
+        return sampleData.contactsWithMessageItems
+    }
+    
+    func connectViewController(_ viewController: OCKConnectViewController, connectMessageItemAt index: Int, careTeamContact contact: OCKContact) -> OCKConnectMessageItem {
+        return sampleData.connectMessageItems[index]
     }
 }
 
@@ -238,9 +269,24 @@ extension RootViewController: OCKConnectViewControllerDelegate {
     /// Called when the user taps a contact in the `OCKConnectViewController`.
     func connectViewController(_ connectViewController: OCKConnectViewController, didSelectShareButtonFor contact: OCKContact, presentationSourceView sourceView: UIView?) {
         let document = sampleData.generateSampleDocument()
-        let activityViewController = UIActivityViewController(activityItems: [document], applicationActivities: nil)
+        document.createPDFData {(data, error) in
+            let activityViewController = UIActivityViewController(activityItems: [data], applicationActivities: nil)
+            DispatchQueue.main.async {
+                self.present(activityViewController, animated: true, completion: nil)
+            }
+        }
         
-        present(activityViewController, animated: true, completion: nil)
+        func connectViewController(_ viewController: OCKConnectViewController, didSendConnectMessage message: String, careTeamContact contact: OCKContact) {
+            let dateString = DateFormatter.localizedString(from: Date(), dateStyle: .short, timeStyle: .short)
+            let connectMessage = OCKConnectMessageItem(messageType: .sent, name: sampleData.patient.name, message: message, dateString: dateString)
+            sampleData.connectMessageItems.append(connectMessage)
+        }
+    }
+    
+    func connectViewController(_ viewController: OCKConnectViewController, didSendConnectMessage message: String, careTeamContact contact: OCKContact) {
+        let dateString = DateFormatter.localizedString(from: Date(), dateStyle: .short, timeStyle: .short)
+        let connectMessage = OCKConnectMessageItem(messageType: .sent, name: sampleData.patient.name, message: message, dateString: dateString)
+        sampleData.connectMessageItems.append(connectMessage)
     }
 }
 

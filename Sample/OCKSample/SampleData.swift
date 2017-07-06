@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -43,8 +43,14 @@ class SampleData: NSObject {
         BackPain(),
         Mood(),
         BloodGlucose(),
-        Weight()
+        Weight(),
+        Caffeine()
     ]
+    /**
+     An `OCKPatient` object to assign contacts to.
+     */
+    
+    var patient: OCKPatient
     
     /**
         An array of `OCKContact`s to display on the Connect view.
@@ -53,7 +59,7 @@ class SampleData: NSObject {
         OCKContact(contactType: .careTeam,
             name: "Dr. Maria Ruiz",
             relation: "Physician",
-			contactInfoItems:[.phone("888-555-5512"), .sms("888-555-5512"), .email("mruiz2@mac.com")],
+            contactInfoItems: [OCKContactInfo.phone("888-555-5512"), OCKContactInfo.sms("888-555-5512"), OCKContactInfo.email("mruiz2@mac.com")],
             tintColor: Colors.blue.color,
             monogram: "MR",
             image: nil),
@@ -61,23 +67,43 @@ class SampleData: NSObject {
         OCKContact(contactType: .careTeam,
             name: "Bill James",
             relation: "Nurse",
-			contactInfoItems:[.phone("888-555-5512"), .sms("888-555-5512"), .email("billjames2@mac.com")],
+            contactInfoItems: [OCKContactInfo.phone("888-555-5512"), OCKContactInfo.sms("888-555-5512"), OCKContactInfo.email("billjames2@mac.com")],
             tintColor: Colors.green.color,
-            monogram: nil,
+            monogram: "BJ",
             image: nil),
         
         OCKContact(contactType: .personal,
             name: "Tom Clark",
             relation: "Father",
-			contactInfoItems:[.phone("888-555-5512"), .sms("888-555-5512"), .facetimeVideo("8885555512", display: "888-555-5512")],
+            contactInfoItems: [OCKContactInfo.phone("888-555-5512"), OCKContactInfo.sms("888-555-5512")],
             tintColor: Colors.yellow.color,
-            monogram: nil,
+            monogram: "TC",
             image: nil)
     ]
+    
+    /**
+     Connect message items
+     */
+    
+    let dateString = DateFormatter.localizedString(from: Date(), dateStyle: .short, timeStyle: .short)
+    let replyDateString = DateFormatter.localizedString(from: Date().addingTimeInterval(1000), dateStyle: .short, timeStyle: .short)
+    var connectMessageItems = [OCKConnectMessageItem]()
+    var contactsWithMessageItems = [OCKContact]()
+    
     
     // MARK: Initialization
     
     required init(carePlanStore: OCKCarePlanStore) {
+        self.patient = OCKPatient(identifier: "patient", carePlanStore: carePlanStore, name: "John Doe", detailInfo: nil, careTeamContacts: contacts, tintColor: Colors.lightBlue.color, monogram: "JD", image: nil, categories: nil, userInfo: ["Age": "21", "Gender": "M", "Phone":"888-555-5512"])
+        
+        for contact in contacts {
+            if contact.type == .careTeam {
+                contactsWithMessageItems.append(contact)
+                self.connectMessageItems = [OCKConnectMessageItem(messageType: OCKConnectMessageType.sent, name: patient.name, message: NSLocalizedString("I am feeling good after taking the medication! Thank you.", comment: ""), dateString:dateString), OCKConnectMessageItem(messageType: .received, name: contact.name, message: NSLocalizedString("That is great! Keep up the good work.", comment: ""), dateString: dateString)]
+                break
+            }
+        }
+        
         super.init()
 
         // Populate the store with the sample activities.
@@ -86,7 +112,7 @@ class SampleData: NSObject {
             
             carePlanStore.add(carePlanActivity) { success, error in
                 if !success {
-                    print(error?.localizedDescription)
+                    print(error!.localizedDescription)
                 }
             }
         }

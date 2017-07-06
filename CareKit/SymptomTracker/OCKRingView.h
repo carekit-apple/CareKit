@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -30,12 +30,15 @@
 
 
 #import <UIKit/UIKit.h>
+#import "CareKit/CareKit.h"
 
+
+NS_ASSUME_NONNULL_BEGIN
 
 @interface OCKRingView : UIView
 
-// Default value is NO
-@property (nonatomic) BOOL hideLabel;
+- (instancetype)initWithFrame:(CGRect)frame
+                 useSmallRing:(BOOL)useSmallRing;
 
 // Default value is NO
 @property (nonatomic) BOOL disableAnimation;
@@ -43,4 +46,18 @@
 // Initial value is 0
 @property (nonatomic) double value;
 
+// Forwarded to ringView (see OCKGlyphType).
+@property (nonatomic) OCKGlyphType glyphType;
+
+//Boolean true for OCKCareCardViewController, false for OCKSymptomTrackerViewCOntroller
+@property (nonatomic) BOOL isCareCard;
+
+// Image required to show activity.
+@property (nonatomic, nullable) UIImage *glyphImage;
+
+// Boolean value to specify the size of the ring view.
+@property (nonatomic, readonly) BOOL useSmallRing;
+
 @end
+
+NS_ASSUME_NONNULL_END

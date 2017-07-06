@@ -58,13 +58,14 @@ struct Weight: Assessment, HealthSampleBuilder {
         
         let activity = OCKCarePlanActivity.assessment(
             withIdentifier: activityType.rawValue,
-            groupIdentifier: nil,
+            groupIdentifier: "Assessment",
             title: title,
             text: summary,
             tintColor: Colors.yellow.color,
             resultResettable: false,
             schedule: schedule,
-            userInfo: nil
+            userInfo: nil,
+            optional: false
         )
         
         return activity

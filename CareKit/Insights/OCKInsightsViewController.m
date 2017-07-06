@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -33,11 +33,11 @@
 #import "OCKInsightsTableViewHeaderView.h"
 #import "OCKInsightsChartTableViewCell.h"
 #import "OCKInsightsMessageTableViewCell.h"
+#import "OCKInsightsRingTableViewCell.h"
 #import "OCKChart.h"
 #import "OCKHelpers.h"
+#import "OCKDefines_Private.h"
 
-
-static const CGFloat HeaderViewHeight = 60.0;
 
 @interface OCKInsightsViewController() <UITableViewDelegate, UITableViewDataSource>
 
@@ -49,6 +49,8 @@ static const CGFloat HeaderViewHeight = 60.0;
     OCKInsightsTableViewHeaderView *_headerView;
     NSMutableArray *_constraints;
     BOOL _hasAnimated;
+    NSMutableArray *_triggeredThresholds;
+    NSMutableArray *_triggeredThresholdActivities;
 }
 
 - (instancetype)init {
@@ -57,46 +59,66 @@ static const CGFloat HeaderViewHeight = 60.0;
 }
 
 - (instancetype)initWithInsightItems:(NSArray<OCKInsightItem *> *)items
-                         headerTitle:(NSString *)headerTitle
-                      headerSubtitle:(NSString *)headerSubtitle {
+                      patientWidgets:(NSArray<OCKPatientWidget *> *)widgets
+                          thresholds:(NSArray<NSString *> *)thresholds
+                               store:(OCKCarePlanStore *)store {
+    NSAssert(widgets.count < 4, @"A maximum of 3 patient widgets is allowed.");
+    if (thresholds.count > 0) {
+        NSAssert(store, @"A care plan store is required for thresholds.");
+    }
+    
     self = [super init];
     if (self) {
         _items = OCKArrayCopyObjects(items);
-        _headerTitle = [headerTitle copy];
-        _headerSubtitle = [headerSubtitle copy];
+        _widgets = OCKArrayCopyObjects(widgets);
+        _thresholds = OCKArrayCopyObjects(thresholds);
+        _store = store;
         _hasAnimated = NO;
-        _showEdgeIndicators = NO;
     }
     return self;
 }
 
 - (instancetype)initWithInsightItems:(NSArray<OCKInsightItem *> *)items {
     return [[OCKInsightsViewController alloc] initWithInsightItems:items
-                                                       headerTitle:nil
-                                                    headerSubtitle:nil];
+                                                    patientWidgets:nil
+                                                        thresholds:nil
+                                                             store:nil];
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
-    _tableView.dataSource = self;
-    _tableView.delegate = self;
-    [self.view addSubview:_tableView];
-    
-    [self setUpConstraints];
+    self.view.backgroundColor = [UIColor groupTableViewBackgroundColor];
     
     if (!_headerView) {
-        _headerView = [[OCKInsightsTableViewHeaderView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, HeaderViewHeight)];
-        _headerView.backgroundColor = _tableView.backgroundColor;
+        _headerView = [[OCKInsightsTableViewHeaderView alloc] initWithWidgets:self.widgets
+                                                                        store:self.store];
+        [self.view addSubview:_headerView];
     }
-    [self updateHeaderView];
     
-    _tableView.estimatedRowHeight = 90.0;
-    _tableView.rowHeight = UITableViewAutomaticDimension;
+    if (!_tableView) {
+        _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
+        _tableView.dataSource = self;
+        _tableView.delegate = self;
+        _tableView.estimatedRowHeight = 90.0;
+        _tableView.rowHeight = UITableViewAutomaticDimension;
+        _tableView.estimatedSectionHeaderHeight = 0;
+        _tableView.estimatedSectionFooterHeight = 0;
+        _tableView.showsVerticalScrollIndicator = NO;
+        
+        [self.view addSubview:_tableView];
+    }
     
-    _tableView.sectionHeaderHeight = 0.0;
-    _tableView.sectionFooterHeight = 5.0;
+    self.navigationController.navigationBar.translucent = NO;
+    [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:245.0/255.0 green:244.0/255.0 blue:246.0/255.0 alpha:1.0]];
+    
+    [self setUpConstraints];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [_headerView updateWidgets];
+    [self evaluateThresholds];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -118,85 +140,129 @@ static const CGFloat HeaderViewHeight = 60.0;
     [_tableView reloadData];
 }
 
-- (void)setHeaderTitle:(NSString *)headerTitle {
-    _headerTitle = [headerTitle copy];
-    [self updateHeaderView];
-}
-
-- (void)setHeaderSubtitle:(NSString *)headerSubtitle {
-    _headerSubtitle = [headerSubtitle copy];
-    [self updateHeaderView];
-}
-
 - (void)setUpConstraints {
     [NSLayoutConstraint deactivateConstraints:_constraints];
     
     _constraints = [NSMutableArray new];
-    
     _tableView.translatesAutoresizingMaskIntoConstraints = NO;
+    _headerView.translatesAutoresizingMaskIntoConstraints = NO;
+    
+    CGFloat headerViewHeight = (self.widgets.count > 0) ? 100 : 0;
     
     [_constraints addObjectsFromArray:@[
-                                        [NSLayoutConstraint constraintWithItem:_tableView
-                                                                     attribute:NSLayoutAttributeTop
-                                                                     relatedBy:NSLayoutRelationEqual
-                                                                        toItem:self.view
-                                                                     attribute:NSLayoutAttributeTop
-                                                                    multiplier:1.0
-                                                                      constant:0.0],
-                                        [NSLayoutConstraint constraintWithItem:_tableView
-                                                                     attribute:NSLayoutAttributeBottom
-                                                                     relatedBy:NSLayoutRelationEqual
-                                                                        toItem:self.view
-                                                                     attribute:NSLayoutAttributeBottom
-                                                                    multiplier:1.0
-                                                                      constant:0.0],
-                                        [NSLayoutConstraint constraintWithItem:_tableView
-                                                                     attribute:NSLayoutAttributeLeading
-                                                                     relatedBy:NSLayoutRelationEqual
-                                                                        toItem:self.view
-                                                                     attribute:NSLayoutAttributeLeading
-                                                                    multiplier:1.0
-                                                                      constant:0.0],
-                                        [NSLayoutConstraint constraintWithItem:_tableView
-                                                                     attribute:NSLayoutAttributeTrailing
-                                                                     relatedBy:NSLayoutRelationEqual
-                                                                        toItem:self.view
-                                                                     attribute:NSLayoutAttributeTrailing
-                                                                    multiplier:1.0
-                                                                      constant:0.0]
+                                        [NSLayoutConstraint constraintWithItem: _headerView
+                                                                     attribute: NSLayoutAttributeTop
+                                                                     relatedBy: NSLayoutRelationEqual
+                                                                        toItem: self.topLayoutGuide
+                                                                     attribute: NSLayoutAttributeBottom
+                                                                    multiplier: 1.0
+                                                                      constant: 0.0],
+                                        [NSLayoutConstraint constraintWithItem: _headerView
+                                                                     attribute: NSLayoutAttributeLeading
+                                                                     relatedBy: NSLayoutRelationEqual
+                                                                        toItem: self.view
+                                                                     attribute: NSLayoutAttributeLeading
+                                                                    multiplier: 1.0
+                                                                      constant: 0.0],
+                                        [NSLayoutConstraint constraintWithItem: _headerView
+                                                                     attribute: NSLayoutAttributeTrailing
+                                                                     relatedBy: NSLayoutRelationEqual
+                                                                        toItem: self.view
+                                                                     attribute: NSLayoutAttributeTrailing
+                                                                    multiplier: 1.0
+                                                                      constant: 0.0],
+                                        [NSLayoutConstraint constraintWithItem: _headerView
+                                                                     attribute: NSLayoutAttributeHeight
+                                                                     relatedBy: NSLayoutRelationEqual
+                                                                        toItem: nil
+                                                                     attribute: NSLayoutAttributeNotAnAttribute
+                                                                    multiplier: 1.0
+                                                                      constant: headerViewHeight],
+                                        [NSLayoutConstraint constraintWithItem: _tableView
+                                                                     attribute: NSLayoutAttributeTop
+                                                                     relatedBy: NSLayoutRelationEqual
+                                                                        toItem: _headerView
+                                                                     attribute: NSLayoutAttributeBottom
+                                                                    multiplier: 1.0
+                                                                      constant: 0.0],
+                                        [NSLayoutConstraint constraintWithItem: _tableView
+                                                                     attribute: NSLayoutAttributeLeading
+                                                                     relatedBy: NSLayoutRelationEqual
+                                                                        toItem: self.view
+                                                                     attribute: NSLayoutAttributeLeading
+                                                                    multiplier: 1.0
+                                                                      constant: 0.0],
+                                        [NSLayoutConstraint constraintWithItem: _tableView
+                                                                     attribute: NSLayoutAttributeTrailing
+                                                                     relatedBy: NSLayoutRelationEqual
+                                                                        toItem: self.view
+                                                                     attribute: NSLayoutAttributeTrailing
+                                                                    multiplier: 1.0
+                                                                      constant: 0.0],
+                                        [NSLayoutConstraint constraintWithItem: _tableView
+                                                                     attribute: NSLayoutAttributeBottom
+                                                                     relatedBy: NSLayoutRelationEqual
+                                                                        toItem: self.bottomLayoutGuide
+                                                                     attribute: NSLayoutAttributeTop
+                                                                    multiplier: 1.0
+                                                                      constant: 0.0]
                                         ]];
     
     [NSLayoutConstraint activateConstraints:_constraints];
+    
+    
 }
 
-- (void)updateHeaderView {
-    _headerView.title = self.headerTitle;
-    _headerView.subtitle = self.headerSubtitle;
-    if (_headerView.title || _headerView.subtitle) {
-        _tableView.tableHeaderView = _headerView;
-    } else {
-        _tableView.tableHeaderView = nil;
+- (void)evaluateThresholds {
+    NSDateComponents *dateComponents = [[NSDateComponents alloc] initWithDate:[NSDate date]
+                                                                     calendar:[NSCalendar calendarWithIdentifier:NSCalendarIdentifierGregorian]];
+    
+    _triggeredThresholds = [NSMutableArray new];
+    _triggeredThresholdActivities = [NSMutableArray new];
+    
+    for (NSString *identifier in self.thresholds) {
+        [self.store activityForIdentifier:identifier completion:^(BOOL success, OCKCarePlanActivity * _Nullable activity, NSError * _Nullable error) {
+            if (success && activity) {
+                [self.store eventsForActivity:activity date:dateComponents completion:^(NSArray<OCKCarePlanEvent *> * _Nonnull events, NSError * _Nullable error) {
+                    if (activity.type == OCKCarePlanActivityTypeIntervention) {
+                        [self.store evaluateAdheranceThresholdForActivity:activity date:dateComponents completion:^(BOOL success, OCKCarePlanThreshold * _Nullable threshold, NSError * _Nullable error) {
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                if (success && threshold) {
+                                    [_triggeredThresholds addObject:threshold];
+                                    [_triggeredThresholdActivities addObject:activity];
+                                }
+                                
+                                if ([identifier isEqualToString:self.thresholds.lastObject]) {
+                                    [_tableView reloadData];
+                                }
+                            });
+                        }];
+                    } else {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            for (OCKCarePlanEvent *event in events) {
+                                NSArray<NSArray<OCKCarePlanThreshold *> *> *thresholds = [event evaluateNumericThresholds];
+                                for (NSArray<OCKCarePlanThreshold *> *thresholdArray in thresholds) {
+                                    for (OCKCarePlanThreshold *threshold in thresholdArray) {
+                                        if (threshold) {
+                                            [_triggeredThresholds addObject:threshold];
+                                            [_triggeredThresholdActivities addObject:activity];
+                                        }
+                                    }
+                                }
+                            }
+                            
+                            if ([identifier isEqualToString:self.thresholds.lastObject]) {
+                                [_tableView reloadData];
+                            }
+                        });
+                    }
+                }];
+            }
+        }];
     }
-    [_tableView reloadData];
-}
-
-- (void)viewDidLayoutSubviews {
-    [super viewDidLayoutSubviews];
-    
-    
-    CGFloat height = [_headerView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize].height;
-    CGRect headerViewFrame = _headerView.frame;
-    
-    if (height != headerViewFrame.size.height) {
-        headerViewFrame.size.height = height;
-        _headerView.frame = headerViewFrame;
-        _tableView.tableHeaderView = _headerView;
+    if (_triggeredThresholds.count <= 0) {
+        [_tableView reloadData];
     }
-}
-
-- (void)setShowEdgeIndicators:(BOOL)showEdgeIndicators {
-    _showEdgeIndicators = showEdgeIndicators;
-    [_tableView reloadData];
 }
 
 
@@ -210,37 +276,88 @@ static const CGFloat HeaderViewHeight = 60.0;
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return self.items.count;
+    NSInteger numberOfSections = 0;
+    
+    if (_triggeredThresholds.count > 0) {
+        numberOfSections++;
+    }
+    
+    if (self.items.count > 0) {
+        numberOfSections++;
+    }
+    
+    return numberOfSections;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 1;
+    NSInteger numberOfRows = 0;
+    
+    if (_triggeredThresholds.count > 0 && self.items.count > 0) {
+        numberOfRows = (section == 0) ? _triggeredThresholds.count : self.items.count;
+    } else if (_triggeredThresholds.count > 0) {
+        numberOfRows = _triggeredThresholds.count;
+    } else if (self.items.count > 0) {
+        numberOfRows = self.items.count;
+    }
+    
+    return numberOfRows;
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    return tableView.numberOfSections - 1 == section ? OCKLocalizedString(@"INSIGHTS_SECTION_HEADER_TITLE_INSIGHTS", nil) : OCKLocalizedString(@"INSIGHTS_SECTION_HEADER_TITLE_THRESHOLD_ALERTS", nil);
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    OCKInsightItem *item = self.items[indexPath.section];
-    
-    if ([item isKindOfClass:[OCKChart class]]) {
-        static NSString *ChartCellIdentifier = @"ChartCell";
-        OCKInsightsChartTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ChartCellIdentifier];
-        if (!cell) {
-            cell = [[OCKInsightsChartTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
-                                                        reuseIdentifier:ChartCellIdentifier];
+    if (indexPath.section == 0 && tableView.numberOfSections == 2) {
+        if (_triggeredThresholds.count > 0) {
+            static NSString *ThresholdCellIdentifier = @"ThresholdCellIdentifier";
+            OCKInsightsMessageTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ThresholdCellIdentifier];
+            if (!cell) {
+                cell = [[OCKInsightsMessageTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                                              reuseIdentifier:ThresholdCellIdentifier];
+            }
+            OCKCarePlanThreshold *threshold = _triggeredThresholds[indexPath.row];
+            OCKCarePlanActivity *activity = _triggeredThresholdActivities[indexPath.row];
+            OCKMessageItem *messageItem = [[OCKMessageItem alloc] initWithTitle:activity.title text:threshold.title tintColor:nil messageType:OCKMessageItemTypePlain];
+            cell.messageItem = messageItem;
+            return cell;
+            
         }
-        cell.chart = (OCKChart *)item;
-        cell.showEdgeIndicator = _showEdgeIndicators;
-        return cell;
-    } else if ([item isKindOfClass:[OCKMessageItem class]]) {
-        static NSString *MessageCellIdentifier = @"MessageCell";
-        OCKInsightsMessageTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:MessageCellIdentifier];
-        if (!cell) {
-            cell = [[OCKInsightsMessageTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
-                                                          reuseIdentifier:MessageCellIdentifier];
+    } else {
+        OCKInsightItem *item = self.items[indexPath.row];
+        
+        if ([item isKindOfClass:[OCKChart class]]) {
+            static NSString *ChartCellIdentifier = @"ChartCell";
+            OCKInsightsChartTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ChartCellIdentifier];
+            if (!cell) {
+                cell = [[OCKInsightsChartTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                                            reuseIdentifier:ChartCellIdentifier];
+            }
+            cell.chart = (OCKChart *)item;
+            return cell;
         }
-        cell.messageItem = (OCKMessageItem *)item;
-        cell.showEdgeIndicator = self.showEdgeIndicators;
-        return cell;
+        else if ([item isKindOfClass:[OCKMessageItem class]]) {
+            static NSString *MessageCellIdentifier = @"MessageCell";
+            OCKInsightsMessageTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:MessageCellIdentifier];
+            if (!cell) {
+                cell = [[OCKInsightsMessageTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                                              reuseIdentifier:MessageCellIdentifier];
+            }
+            cell.messageItem = (OCKMessageItem *)item;
+            return cell;
+        }
+        else if ([item isKindOfClass:[OCKRingItem class]]) {
+            static NSString *RingCellIdentifier = @"RingCell";
+            OCKInsightsRingTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:RingCellIdentifier];
+            if (!cell) {
+                cell = [[OCKInsightsRingTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                                           reuseIdentifier:RingCellIdentifier];
+            }
+            cell.ringItem = (OCKRingItem *)item;
+            return cell;
+        }
+        
     }
     
     return nil;

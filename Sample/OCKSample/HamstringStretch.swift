@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -52,14 +52,15 @@ struct HamstringStretch: Activity {
         // Create the intervention activity.
         let activity = OCKCarePlanActivity.intervention(
             withIdentifier: activityType.rawValue,
-            groupIdentifier: nil,
+            groupIdentifier: "Physical Activity",
             title: title,
             text: summary,
             tintColor: Colors.blue.color,
             instructions: instructions,
             imageURL: nil,
             schedule: schedule,
-            userInfo: nil
+            userInfo: nil,
+            optional: false
         )
         
         return activity

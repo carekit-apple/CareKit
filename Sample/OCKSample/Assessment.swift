@@ -52,10 +52,10 @@ extension Assessment {
         
         // Determine what type of result should be saved.
         if let scaleResult = stepResult as? ORKScaleQuestionResult, let answer = scaleResult.scaleAnswer {
-            return OCKCarePlanEventResult(valueString: answer.stringValue, unitString: "out of 10", userInfo: nil)
+            return OCKCarePlanEventResult(valueString: answer.stringValue, unitString: "of 10", userInfo: nil, values: [answer])
         }
         else if let numericResult = stepResult as? ORKNumericQuestionResult, let answer = numericResult.numericAnswer {
-            return OCKCarePlanEventResult(valueString: answer.stringValue, unitString: numericResult.unit, userInfo: nil)
+            return OCKCarePlanEventResult(valueString: answer.stringValue, unitString: numericResult.unit!, userInfo: nil, values: [answer])
         }
         
         fatalError("Unexpected task result type")

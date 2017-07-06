@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -51,14 +51,15 @@ struct TakeMedication: Activity {
         
         let activity = OCKCarePlanActivity.intervention(
             withIdentifier: activityType.rawValue,
-            groupIdentifier: nil,
+            groupIdentifier: "Medications",
             title: title,
             text: summary,
             tintColor: Colors.green.color,
             instructions: instructions,
             imageURL: nil,
             schedule: schedule,
-            userInfo: nil
+            userInfo: nil,
+            optional: true
         )
         
         return activity

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -31,6 +31,7 @@
 
 #import <UIKit/UIKit.h>
 #import <CareKit/OCKCareSchedule.h>
+#import <CareKit/OCKCarePlanThreshold.h>
 #import <CareKit/OCKDefines.h>
 
 
@@ -49,7 +50,9 @@ typedef NS_ENUM(NSInteger, OCKCarePlanActivityType) {
     /** Do something related to the treatment. */
     OCKCarePlanActivityTypeIntervention,
     /** Perform a task in the app. */
-    OCKCarePlanActivityTypeAssessment
+    OCKCarePlanActivityTypeAssessment,
+    /** ReadOnly content for intervention and assessment. */
+    OCKCarePlanActivityTypeReadOnly
 };
 
 
@@ -77,6 +80,8 @@ OCK_CLASS_AVAILABLE
  @param imageURL        Image for the intervention activity.
  @param schedule        The schedule for the intervention activity.
  @param userInfo        Save any additional objects that comply with the NSCoding protocol.
+ @param optional        Whether or not the activity is optional.
+
  
  @return Initialized OCKCarePlanActivity instance.
  */
@@ -88,7 +93,8 @@ OCK_CLASS_AVAILABLE
                               instructions:(nullable NSString *)instructions
                                   imageURL:(nullable NSURL *)imageURL
                                   schedule:(OCKCareSchedule *)schedule
-                                  userInfo:(nullable NSDictionary *)userInfo;
+                                  userInfo:(nullable NSDictionary *)userInfo
+                                  optional:(BOOL)optional;
 
 /**
  Convienience initializer for the assessment activity type.
@@ -103,6 +109,8 @@ OCK_CLASS_AVAILABLE
  @param resultResettable    Whether or not to allow the user to retake the assessment.
  @param schedule            The schedule for the assessment activity.
  @param userInfo            Save any additional objects that comply with the NSCoding protocol.
+ @param thresholds          An array of array of thresholds to apply to numeric result values.
+ @param optional            Whether or not the activity is optional.
  
  @return Initialized OCKCarePlanActivity instance.
  */
@@ -113,7 +121,47 @@ OCK_CLASS_AVAILABLE
                                tintColor:(nullable UIColor *)tintColor
                         resultResettable:(BOOL)resultResettable
                                 schedule:(OCKCareSchedule *)schedule
-                                userInfo:(nullable NSDictionary *)userInfo;
+                                userInfo:(nullable NSDictionary *)userInfo
+                              thresholds:(nullable NSArray<NSArray<OCKCarePlanThreshold *> *> *)thresholds
+                                optional:(BOOL)optional;
+
+
++ (instancetype)assessmentWithIdentifier:(NSString *)identifier
+                         groupIdentifier:(nullable NSString *)groupIdentifier
+                                   title:(NSString *)title
+                                    text:(nullable NSString *)text
+                               tintColor:(nullable UIColor *)tintColor
+                        resultResettable:(BOOL)resultResettable
+                                schedule:(OCKCareSchedule *)schedule
+                                userInfo:(nullable NSDictionary *)userInfo
+                                optional:(BOOL)optional;
+
+/**
+ Convienience initializer for read only activity type.
+ This initializer covers necessary attributes for building read only activity.
+ 
+ @param identifier      Unique identifier string.
+ @param groupIdentifier Group identifier string.
+ You can use the identifier to group similar activities, but they will all be grouped under Read Only section in the table view.
+ @param title           The title for the read only activity.
+ @param text            A descriptive text for the read only activity.
+ @param instructions    Additional instructions for the read only activity.
+ @param imageURL        Image for the read only activity.
+ @param schedule        The schedule for the read only activity.
+ @param userInfo        Save any additional objects that comply with the NSCoding protocol.
+ 
+ 
+ @return Initialized OCKCarePlanActivity instance.
+ */
+
++ (instancetype)readOnlyWithIdentifier:(NSString *)identifier
+                                   groupIdentifier:(nullable NSString *)groupIdentifier
+                                             title:(NSString *)title
+                                              text:(nullable NSString *)text
+                                      instructions:(nullable NSString *)instructions
+                                          imageURL:(nullable NSURL *)imageURL
+                                          schedule:(OCKCareSchedule *)schedule
+                                          userInfo:(nullable NSDictionary *)userInfo;
 
 /**
  Default initialzer for OCKCarePlanActivity.
@@ -130,6 +178,8 @@ OCK_CLASS_AVAILABLE
  @param schedule            The schedule for the activity.
  @param resultResettable    Whether or not to allow the user to retake the assessment.
  @param userInfo            Save any addtional NSCoding complianced objects.
+ @param thresholds          An array of array of thresholds to apply to numeric result values.
+ @param optional            Whether or not the activity is optional.
  
  @return Initialized OCKCarePlanActivity instance.
  */
@@ -143,7 +193,23 @@ OCK_CLASS_AVAILABLE
                           imageURL:(nullable NSURL *)imageURL
                           schedule:(OCKCareSchedule *)schedule
                   resultResettable:(BOOL)resultResettable
-                          userInfo:(nullable NSDictionary<NSString *, id<NSCoding>> *)userInfo NS_DESIGNATED_INITIALIZER;
+                          userInfo:(nullable NSDictionary<NSString *, id<NSCoding>> *)userInfo
+                        thresholds:(nullable NSArray<NSArray<OCKCarePlanThreshold *> *> *)thresholds
+                          optional:(BOOL)optional NS_DESIGNATED_INITIALIZER;
+
+
+
+- (instancetype)initWithIdentifier:(NSString *)identifier
+                   groupIdentifier:(nullable NSString *)groupIdentifier
+                              type:(OCKCarePlanActivityType)type
+                             title:(NSString *)title
+                              text:(nullable NSString *)text
+                         tintColor:(nullable UIColor *)tintColor
+                      instructions:(nullable NSString *)instructions
+                          imageURL:(nullable NSURL *)imageURL
+                          schedule:(OCKCareSchedule *)schedule
+                  resultResettable:(BOOL)resultResettable
+                          userInfo:(nullable NSDictionary<NSString *, id<NSCoding>> *)userInfo;
 
 /**
  Unique identifier string.
@@ -214,6 +280,23 @@ OCK_CLASS_AVAILABLE
  Save any additional objects that comply with the NSCoding protocol.
  */
 @property (nonatomic, copy, readonly, nullable) NSDictionary<NSString *, id<NSCoding>> *userInfo;
+
+/**
+ An optional array of array of thresholds pertianing to the values of associated results objects.
+ These thresholds are checked against any numeric result values when an event's evaluateNumericThresholds()
+    method is called.
+ Each array of thresholds corresponds to one of the values in the result's value array.
+ Because of this, thresholds can have either 1 or 2 sub-arrays.
+ */
+@property (nonatomic, copy, readonly, nullable) NSArray<NSArray<OCKCarePlanThreshold *> *> *thresholds;
+
+/**
+ Whether or not the activity is optional.
+ 
+ An optional activity does not count towards total completion.
+ Default value is NO.
+ */
+@property (nonatomic, readonly) BOOL optional;
 
 @end
 

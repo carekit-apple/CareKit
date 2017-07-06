@@ -1,6 +1,9 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
- Copyright (c) 2016, WWT Asynchrony Labs. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
+ Copyright (c) 2017, WWT Asynchrony Labs. All rights reserved.
+ Copyright (c) 2017, Erik Hornberger. All rights reserved. 
+ Copyright (c) 2017, Troy Tsubota. All rights reserved.
+
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -36,7 +39,44 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class OCKContact, OCKConnectViewController;
+@class OCKContact, OCKConnectViewController, OCKConnectMessageItem;
+
+/**
+ An object that adopts the `OCKConnectViewControllerDataSource` protocol can use it provide connect message to be displayed.
+ */
+@protocol OCKConnectViewControllerDataSource <NSObject>
+
+@required
+/**
+ Asks the data source for an array of contacts to be displayed under inbox.
+ 
+ @param viewController          The view controller providing the callback.
+ */
+- (NSArray<OCKContact *> *)connectViewControllerCareTeamConnections:(OCKConnectViewController *)viewController;
+
+/**
+ Asks the data source for a connect message item for a given index.
+ 
+ The message items (connect messages) are displayed in the inbox under connect.
+ The `connectViewControllerNumberOfConnectMessageItems:` and `connectViewControllerCareTeamConnections:` implementations are required with this method.
+ 
+ @param viewController          The view controller providing the callback.
+ @param index                   The index of the table view row.
+ @param contact                 The care team contact.
+ */
+- (OCKConnectMessageItem *)connectViewController:(OCKConnectViewController *)viewController connectMessageItemAtIndex:(NSInteger)index careTeamContact:(OCKContact *)contact;
+
+/**
+ Asks the data source for the number of connect message items.
+ 
+ The message items (connect messages) are displayed in the inbox under connect.
+ The `connectViewController:connectMessageItemAtIndex:` implementation is required with this method.
+ 
+ @param viewController          The view controller providing the callback.
+ @param contact                 The care team contact.
+ */
+- (NSInteger)connectViewControllerNumberOfConnectMessageItems:(OCKConnectViewController *)viewController careTeamContact:(OCKContact *)contact;
+@end
 
 /**
  An object that adopts the `OCKConnectViewControllerDelegate` protocol is responsible for providing the
@@ -68,7 +108,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (nullable NSString *)connectViewController:(OCKConnectViewController *)connectViewController titleForSharingCellForContact:(OCKContact *)contact;
 
 /**
- Asks the delegate to handle the selection of the contact info. This can be used to provide custom handling for 
+ Asks the delegate to handle the selection of the contact info. This can be used to provide custom handling for
  contacting the contact. If the method is not implemented or if it returns NO then the default handling will be
  used instead.
  
@@ -79,6 +119,23 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (BOOL)connectViewController:(OCKConnectViewController *)connectViewController handleContactInfoSelected:(OCKContactInfo *)contactInfo;
 
+/**
+ Tells the delegate when the user has sent a connect message.
+ 
+ @param viewController          The view controller providing the callback.
+ @param message                 The message that is being sent.
+ @param contact                 The care team contact the message is being sent to.
+ */
+- (void)connectViewController:(OCKConnectViewController *)viewController didSendConnectMessage:(NSString *)message careTeamContact:(OCKContact *)contact;
+
+/**
+ Tells the delegate when the user has tapped the profile header.
+ 
+ @param viewController          The view controller providing the callback.
+ @param patient                 The patient profile.
+ */
+- (void)connectViewController:(OCKConnectViewController *)viewController didSelectProfileForPatient:(OCKPatient *)patient;
+
 @end
 
 
@@ -88,6 +145,18 @@ NS_ASSUME_NONNULL_BEGIN
  */
 OCK_CLASS_AVAILABLE
 @interface OCKConnectViewController : UIViewController <MFMessageComposeViewControllerDelegate, MFMailComposeViewControllerDelegate>
+
+/**
+ Returns an initialized connect view controller using the specified contacts.
+ 
+ @param contacts        An array of `OCKContact` objects.
+ @param patient         A patient object.
+ 
+ @return An initialized connect view controller.
+ */
+- (instancetype)initWithContacts:(nullable NSArray<OCKContact *> *)contacts
+                         patient:(nullable OCKPatient *)patient;
+
 
 /**
  Returns an initialized connect view controller using the specified contacts.
@@ -104,11 +173,28 @@ OCK_CLASS_AVAILABLE
 @property (nonatomic, copy, nullable) NSArray<OCKContact *> *contacts;
 
 /**
+ A patient object.
+ */
+@property (nonatomic, copy, nullable) OCKPatient *patient;
+
+/**
+ The data source can be used to provide connect message items.
+ 
+ See the `OCKConnectViewControllerDataSource` protocol.
+ */
+@property (nonatomic, weak, nullable) id <OCKConnectViewControllerDataSource> dataSource;
+
+/**
  The delegate is used for the sharing section in the contact detail view.
  
  See the `OCKConnectViewControllerDelegate` protocol.
  */
 @property (nonatomic, weak, nullable) id<OCKConnectViewControllerDelegate> delegate;
+
+/**
+ A reference to the `UITableView` contained in the view controller
+ */
+@property (nonatomic, readonly, nonnull) UITableView *tableView;
 
 /**
  A boolean to show the edge indicators.

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -48,7 +48,9 @@ static NSManagedObjectContext *createManagedObjectContext(NSURL *modelURL, NSURL
     if (![persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType
                                                   configuration:nil
                                                             URL:storeURL
-                                                        options:@{NSFileProtectionKey: NSFileProtectionComplete}
+                                                        options:@{NSFileProtectionKey: NSFileProtectionComplete,
+                                                                  NSMigratePersistentStoresAutomaticallyOption : @(YES),
+                                                                  NSInferMappingModelAutomaticallyOption : @(YES)}
                                                           error:error]) {
         return nil;
     }
@@ -106,6 +108,21 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
         }
     }
     return self;
+}
+
+- (instancetype)initWithPersistenceDirectoryURL:(NSURL *)URL
+                                     identifier:(NSString *)identifier
+                                        patient:(OCKPatient *)patient {
+    self = [self initWithPersistenceDirectoryURL:URL];
+    if (self) {
+        _identifier = [identifier copy];
+        _patient = patient;
+    }
+    return self;
+}
+
+- (NSURL *)directoryURL {
+    return _persistenceDirectoryURL;
 }
 
 - (NSString *)coredataFilePath {
@@ -426,6 +443,9 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
             }
             if (_watchDelegate && [_watchDelegate respondsToSelector:@selector(carePlanStoreActivityListDidChange:)]) {
                 [_watchDelegate carePlanStoreActivityListDidChange:self];
+            }
+            if (_cloudBridgeDelegate && [_cloudBridgeDelegate respondsToSelector:@selector(carePlanStoreActivityListDidChange:)]) {
+                [_cloudBridgeDelegate carePlanStoreActivityListDidChange:self];
             }
         });
     }
@@ -763,6 +783,9 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
                     if(_watchDelegate && [_watchDelegate respondsToSelector:@selector(carePlanStore:didReceiveUpdateOfEvent:)]) {
                         [_watchDelegate carePlanStore:self didReceiveUpdateOfEvent:copiedEvent];
                     }
+                    if(_cloudBridgeDelegate && [_cloudBridgeDelegate respondsToSelector:@selector(carePlanStore:didReceiveUpdateOfEvent:)]) {
+                        [_cloudBridgeDelegate carePlanStore:self didReceiveUpdateOfEvent:copiedEvent];
+                    }
                 });
             }
         });
@@ -872,7 +895,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
                                             for (OCKCarePlanActivity *activity in activities) {
                                                 NSUInteger count = [activity.schedule numberOfEventsOnDate:day];
                                                 
-                                                if (count > 0) {
+                                                if (count > 0 && !activity.optional) {
                                                     NSUInteger daysSinceStart = [activity.schedule numberOfDaySinceStart:day];
                                                     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"activity.identifier = %@ AND numberOfDaysSinceStart = %d AND state = %d", activity.identifier, daysSinceStart, OCKCarePlanEventStateCompleted];
                                                     [predicates addObject:predicate];
@@ -902,6 +925,39 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
                             }];
 }
 
+- (void)evaluateAdheranceThresholdForActivity:(OCKCarePlanActivity *)activity date:(NSDateComponents *)date completion:(void (^)(BOOL success, OCKCarePlanThreshold * _Nullable, NSError * _Nullable))completion {
+    
+    OCKThrowInvalidArgumentExceptionIfNil(activity);
+    OCKThrowInvalidArgumentExceptionIfNil(date);
+    OCKThrowInvalidArgumentExceptionIfNil(completion);
+    
+    OCKCarePlanThreshold *adheranceThreshold = [activity.schedule thresholdOnDate:date];
+    
+    if (!adheranceThreshold) {
+        completion(YES, nil, nil);
+        return;
+    }
+    
+    [self eventsForActivity:activity date:date completion:^(NSArray<OCKCarePlanEvent *> * _Nonnull events, NSError * _Nullable error) {
+        if (error) {
+            completion(NO, nil, error);
+        }
+        
+        int eventsCompleted = 0;
+        for (OCKCarePlanEvent *event in events) {
+            if (event.state == OCKCarePlanEventStateCompleted) {
+                eventsCompleted++;
+            }
+        }
+        
+        float value = eventsCompleted / (float)events.count;
+        if ([adheranceThreshold evaluateThresholdForValue:@(value)]) {
+            completion(YES, adheranceThreshold, error);
+        } else {
+            completion(YES, nil, error);
+        }
+    }];
+}
 
 #pragma mark - coredata
 

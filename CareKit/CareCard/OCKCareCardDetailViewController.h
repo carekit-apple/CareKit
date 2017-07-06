@@ -34,13 +34,12 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface OCKCareCardDetailViewController : UITableViewController
+OCK_CLASS_AVAILABLE
+@interface OCKCareCardDetailViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
 
 - (instancetype)initWithIntervention:(OCKCarePlanActivity *)intervention;
 
 @property (nonatomic, readonly) OCKCarePlanActivity *intervention;
-
-@property (nonatomic) BOOL showEdgeIndicator;
 
 @end
 

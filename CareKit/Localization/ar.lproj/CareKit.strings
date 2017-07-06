@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -29,23 +29,26 @@
  */
 
 
-/* Care Card */
-"CARE_CARD_HEADER_TITLE" = "اكتمال العناية";
-"TODAY_BUTTON_TITLE" = "اليوم";
+/* Common */
+"ACTIVITY_TYPE_OTHER_SECTION_HEADER" = "غير ذلك";
+"ACTIVITY_TYPE_OPTIONAL_SECTION_HEADER" = "اختياري";
+"ACTIVITY_TYPE_READ_ONLY_SECTION_HEADER" = "قراءة فقط";
+"HEADER_TITLE_CARE_OVERVIEW" = "العرض العام للعناية %@ مكتمل";
+"HEADER_TITLE_ACTIVITY_STATUS" = "حالة النشاط الخاصة بك هي %@ مكتمل";
 
-/* Care Card Detail View */
+/* Care Card */
+"CARE_CARD_HEADER_TITLE" = "عرض عام لتطبيق العناية";
+"TODAY_BUTTON_TITLE" = "اليوم";
 "CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "الإرشادات";
 "CARE_CARD_ADDITIONAL_INFO_SECTION_TITLE" = "معلومات إضافية";
 
 /* Symptom Tracker */
-"SYMPTOM_TRACKER_HEADER_TITLE" = "اكتمال النشاط";
+"SYMPTOM_TRACKER_HEADER_TITLE" = "حالة النشاط";
 
-/* Connect Master View */
+/* Connect */
 "CARE_TEAM_SECTION_TITLE" = "فريق العناية";
 "PERSONAL_SECTION_TITLE" = "الأصدقاء والعائلة";
 "CONNECT_NO_CONTACTS_TITLE" = "لا توجد جهات اتصال";
-
-/* Connect Detail View */
 "CONTACT_INFO_SECTION_TITLE" = "معلومات جهة الاتصال";
 "CONTACT_SHARING_SECTION_TITLE" = "المشاركة";
 "CONTACT_INFO_PHONE_TITLE" = "الهاتف";
@@ -53,9 +56,20 @@
 "CONTACT_INFO_EMAIL_TITLE" = "البريد الإلكتروني";
 "CONTACT_INFO_VIDEO_TITLE" = "فيديو";
 "SHARING_CELL_TITLE" = "إرسال التقارير";
-"ERROR_TITLE" = "خطأ";
 "MESSAGE_SEND_ERROR" = "فشل إرسال الرسالة";
 "EMAIL_SEND_ERROR" = "فشل إرسال البريد الإلكتروني";
+"CONNECT_MESSAGE_PLACEHOLDER" = "اكتب رسالة...";
+"CONNECT_SEND_BUTTON_TITLE" = "إرسال";
+"CONNECT_INBOX_TITLE" = "صندوق الوارد";
+
+/* Patient */
+"PROFILE_VIEW_CONTROLLER_TITLE" = "ملف تعريف";
+"PERSONAL_INFORMATION_SECTION_HEADER_TITLE" = "المعلومات الشخصية";
+"OTHER_INFORMATION_SECTION_HEADER_TITLE" = "معلومات أخرى";
+
+/* Insight */
+"INSIGHTS_SECTION_HEADER_TITLE_INSIGHTS" = "الأفكار";
+"INSIGHTS_SECTION_HEADER_TITLE_THRESHOLD_ALERTS" = "تنبيهات الحد";
 
 /* ACCESSIBILITY */
 "AX_WEEK_BUTTON_PROGRESS" = "اكتمل %@";

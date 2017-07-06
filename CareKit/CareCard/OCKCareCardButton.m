@@ -44,7 +44,7 @@ static const CGFloat ButtonSize = 30.0;
         _circleLayer = [CAShapeLayer layer];
         _circleLayer.strokeColor = self.tintColor.CGColor;
         _circleLayer.fillColor = [UIColor clearColor].CGColor;
-        [self updateFillColorForSelection:(self.isSelected || self.isHighlighted)];
+        [self updateFillColorForSelection:self.isSelected];
         _circleLayer.lineWidth = 2.5;
         _circleLayer.path = [UIBezierPath bezierPathWithOvalInRect:CGRectMake(0, 0, ButtonSize, ButtonSize)].CGPath;
         _circleLayer.fillRule = kCAFillRuleNonZero;
@@ -55,18 +55,27 @@ static const CGFloat ButtonSize = 30.0;
     }
 }
 
-- (void)setHighlighted:(BOOL)highlighted {
-    [self updateFillColorForSelection:highlighted];
-    [super setHighlighted:highlighted];
-}
-
 - (void)setSelected:(BOOL)selected {
     [self updateFillColorForSelection:selected];
     [super setSelected:selected];
 }
 
 - (void)updateFillColorForSelection:(BOOL)selection {
-    _circleLayer.fillColor = (selection) ? self.tintColor.CGColor : [UIColor whiteColor].CGColor;
+    if (selection) {
+        [_circleLayer addAnimation:[self animFillColorWithDur:0.15 startCol:[UIColor whiteColor] endColor:self.tintColor] forKey:@"animKey"];
+    } else {
+        _circleLayer.fillColor = [UIColor whiteColor].CGColor;
+    }
+}
+
+- (CABasicAnimation *)animFillColorWithDur:(CGFloat)dur startCol:(UIColor *)start endColor:(UIColor *)end {
+    CABasicAnimation *animFill = [CABasicAnimation animationWithKeyPath:@"fillColor"];
+    [animFill setDuration:dur];
+    [animFill setFromValue:(id)start.CGColor];
+    [animFill setToValue:(id)end.CGColor];
+    [animFill setRemovedOnCompletion:NO];
+    [animFill setFillMode:kCAFillModeBoth];
+    return animFill;
 }
 
 @end

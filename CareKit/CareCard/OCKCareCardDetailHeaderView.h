@@ -36,6 +36,4 @@
 
 @property (nonatomic) OCKCarePlanActivity *intervention;
 
-@property (nonatomic) BOOL showEdgeIndicator;
-
 @end

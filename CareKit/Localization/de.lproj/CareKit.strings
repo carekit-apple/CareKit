@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -29,23 +29,26 @@
  */
 
 
-/* Care Card */
-"CARE_CARD_HEADER_TITLE" = "Versorgungsstatus";
-"TODAY_BUTTON_TITLE" = "Heute";
+/* Common */
+"ACTIVITY_TYPE_OTHER_SECTION_HEADER" = "Sonstiges";
+"ACTIVITY_TYPE_OPTIONAL_SECTION_HEADER" = "Optional";
+"ACTIVITY_TYPE_READ_ONLY_SECTION_HEADER" = "Nur Lesen";
+"HEADER_TITLE_CARE_OVERVIEW" = "Deine Versorgungsübersicht ist %@ abgeschlossen";
+"HEADER_TITLE_ACTIVITY_STATUS" = "Dein Aktivitätsstatus ist %@ abgeschlossen";
 
-/* Care Card Detail View */
+/* Care Card */
+"CARE_CARD_HEADER_TITLE" = "Versorgungsübersicht";
+"TODAY_BUTTON_TITLE" = "Heute";
 "CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "Anleitungen";
 "CARE_CARD_ADDITIONAL_INFO_SECTION_TITLE" = "Zusätzliche Infos";
 
 /* Symptom Tracker */
-"SYMPTOM_TRACKER_HEADER_TITLE" = "Aktivitätsstatus";
+"SYMPTOM_TRACKER_HEADER_TITLE" = "Status der Aktivität";
 
-/* Connect Master View */
+/* Connect */
 "CARE_TEAM_SECTION_TITLE" = "Versorgungsteam";
 "PERSONAL_SECTION_TITLE" = "Freunde & Familie";
 "CONNECT_NO_CONTACTS_TITLE" = "Keine Kontakte";
-
-/* Connect Detail View */
 "CONTACT_INFO_SECTION_TITLE" = "Kontaktinfo";
 "CONTACT_SHARING_SECTION_TITLE" = "Freigabe";
 "CONTACT_INFO_PHONE_TITLE" = "Telefon";
@@ -53,9 +56,20 @@
 "CONTACT_INFO_EMAIL_TITLE" = "E-Mail";
 "CONTACT_INFO_VIDEO_TITLE" = "Video";
 "SHARING_CELL_TITLE" = "Berichte senden";
-"ERROR_TITLE" = "Fehler";
 "MESSAGE_SEND_ERROR" = "Senden der Nachricht fehlgeschlagen";
 "EMAIL_SEND_ERROR" = "Senden der E-Mail fehlgeschlagen";
+"CONNECT_MESSAGE_PLACEHOLDER" = "Nachricht schreiben …";
+"CONNECT_SEND_BUTTON_TITLE" = "Senden";
+"CONNECT_INBOX_TITLE" = "Eingang";
+
+/* Patient */
+"PROFILE_VIEW_CONTROLLER_TITLE" = "Profil";
+"PERSONAL_INFORMATION_SECTION_HEADER_TITLE" = "Persönliche Daten";
+"OTHER_INFORMATION_SECTION_HEADER_TITLE" = "Weitere Daten";
+
+/* Insight */
+"INSIGHTS_SECTION_HEADER_TITLE_INSIGHTS" = "Einblicke";
+"INSIGHTS_SECTION_HEADER_TITLE_THRESHOLD_ALERTS" = "Hinweise für Schwellenwerte";
 
 /* ACCESSIBILITY */
 "AX_WEEK_BUTTON_PROGRESS" = "%@ abgeschlossen";

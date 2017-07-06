@@ -50,6 +50,13 @@ NS_ASSUME_NONNULL_BEGIN
                 occurrencesPerDay:(NSUInteger)occurrencesPerDay
                           endDate:(nullable NSDateComponents *)endDate;
 
+- (instancetype)initWithStartDate:(NSDateComponents *)startDate
+                       daysToSkip:(NSUInteger)daysToSkip
+                occurrencesPerDay:(NSUInteger)occurrencesPerDay
+                          endDate:(nullable NSDateComponents *)endDate
+                   dailyThreshold:(nullable OCKCarePlanThreshold *)threshold;
+
+
 @end
 
 
@@ -59,6 +66,12 @@ NS_ASSUME_NONNULL_BEGIN
                       weeksToSkip:(NSUInteger)weeksToSkip
              occurrencesOnEachDay:(NSArray<NSNumber *> *)occurrencesFromSundayToSaturday
                           endDate:(nullable NSDateComponents *)endDate;
+
+- (instancetype)initWithStartDate:(NSDateComponents *)startDate
+                      weeksToSkip:(NSUInteger)weeksToSkip
+             occurrencesOnEachDay:(NSArray<NSNumber *> *)occurrencesFromSundayToSaturday
+                          endDate:(nullable NSDateComponents *)endDate
+              thresholdsOnEachDay:(nullable NSArray<OCKCarePlanThreshold *> *)thresholdsFromSundayToSaturday;
 
 @end
 

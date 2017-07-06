@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -44,6 +44,7 @@ struct BackPain: Assessment {
         // Create a weekly schedule.
         let startDate = DateComponents(year: 2016, month: 01, day: 01)
         let schedule = OCKCareSchedule.weeklySchedule(withStartDate: startDate as DateComponents, occurrencesOnEachDay: [1, 1, 1, 1, 1, 1, 1])
+        let thresholds : [OCKCarePlanThreshold] = Array([OCKCarePlanThreshold.numericThreshold(withValue: NSNumber.init(value: 7), type: .numericGreaterThan, upperValue: nil, title: "High pain level. Proceed with extra caution during your daily activities."), OCKCarePlanThreshold.numericThreshold(withValue: NSNumber.init(value: 2), type: .numericLessThanOrEqual, upperValue: nil, title: "Very little pain.")])
         
         // Get the localized strings to use for the assessment.
         let title = NSLocalizedString("Pain", comment: "")
@@ -51,13 +52,15 @@ struct BackPain: Assessment {
         
         let activity = OCKCarePlanActivity.assessment(
             withIdentifier: activityType.rawValue,
-            groupIdentifier: nil,
+            groupIdentifier: "Assessment",
             title: title,
             text: summary,
             tintColor: Colors.blue.color,
             resultResettable: true,
             schedule: schedule,
-            userInfo: nil
+            userInfo: nil,
+            thresholds: [thresholds],
+            optional: false
         )
         
         return activity

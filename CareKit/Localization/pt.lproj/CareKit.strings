@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -29,23 +29,26 @@
  */
 
 
-/* Care Card */
-"CARE_CARD_HEADER_TITLE" = "Progresso do Tratamento";
-"TODAY_BUTTON_TITLE" = "Hoje";
+/* Common */
+"ACTIVITY_TYPE_OTHER_SECTION_HEADER" = "Outro";
+"ACTIVITY_TYPE_OPTIONAL_SECTION_HEADER" = "Opcional";
+"ACTIVITY_TYPE_READ_ONLY_SECTION_HEADER" = "Somente Leitura";
+"HEADER_TITLE_CARE_OVERVIEW" = "Sua visão geral de cuidados está %@ concluída";
+"HEADER_TITLE_ACTIVITY_STATUS" = "Seu status da atividade está %@ concluído";
 
-/* Care Card Detail View */
+/* Care Card */
+"CARE_CARD_HEADER_TITLE" = "Visão Geral do Care";
+"TODAY_BUTTON_TITLE" = "Hoje";
 "CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "Instruções";
 "CARE_CARD_ADDITIONAL_INFO_SECTION_TITLE" = "Informações Adicionais";
 
 /* Symptom Tracker */
-"SYMPTOM_TRACKER_HEADER_TITLE" = "Progresso da Atividade";
+"SYMPTOM_TRACKER_HEADER_TITLE" = "Status da Atividade";
 
-/* Connect Master View */
+/* Connect */
 "CARE_TEAM_SECTION_TITLE" = "Equipe do Tratamento";
 "PERSONAL_SECTION_TITLE" = "Amigos e Família";
 "CONNECT_NO_CONTACTS_TITLE" = "Nenhum contato";
-
-/* Connect Detail View */
 "CONTACT_INFO_SECTION_TITLE" = "Informações de Contato";
 "CONTACT_SHARING_SECTION_TITLE" = "Compartilhamento";
 "CONTACT_INFO_PHONE_TITLE" = "telefone";
@@ -53,9 +56,20 @@
 "CONTACT_INFO_EMAIL_TITLE" = "e-mail";
 "CONTACT_INFO_VIDEO_TITLE" = "vídeo";
 "SHARING_CELL_TITLE" = "Enviar relatórios";
-"ERROR_TITLE" = "Erro";
 "MESSAGE_SEND_ERROR" = "Falha ao enviar a mensagem";
 "EMAIL_SEND_ERROR" = "Falha ao enviar o e-mail";
+"CONNECT_MESSAGE_PLACEHOLDER" = "Digite uma mensagem...";
+"CONNECT_SEND_BUTTON_TITLE" = "Enviar";
+"CONNECT_INBOX_TITLE" = "Caixa de Entrada";
+
+/* Patient */
+"PROFILE_VIEW_CONTROLLER_TITLE" = "Perfil";
+"PERSONAL_INFORMATION_SECTION_HEADER_TITLE" = "Informações Pessoais";
+"OTHER_INFORMATION_SECTION_HEADER_TITLE" = "Outras Informações";
+
+/* Insight */
+"INSIGHTS_SECTION_HEADER_TITLE_INSIGHTS" = "Suas informações";
+"INSIGHTS_SECTION_HEADER_TITLE_THRESHOLD_ALERTS" = "Alertas de Limite";
 
 /* ACCESSIBILITY */
 "AX_WEEK_BUTTON_PROGRESS" = "%@ concluído";

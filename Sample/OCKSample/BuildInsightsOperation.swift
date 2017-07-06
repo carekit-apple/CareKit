@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -36,6 +36,16 @@ class BuildInsightsOperation: Operation {
     
     var medicationEvents: DailyEvents?
     
+    var hamstringStretchEvents: DailyEvents?
+    
+    var outdoorWalkEvents: DailyEvents?
+    
+    var bloodGlucoseEvents: DailyEvents?
+    
+    var weightEvents: DailyEvents?
+    
+    var moodEvents: DailyEvents?
+    
     var backPainEvents: DailyEvents?
     
     fileprivate(set) var insights = [OCKInsightItem.emptyInsightsMessage()]
@@ -49,7 +59,7 @@ class BuildInsightsOperation: Operation {
         // Create an array of insights.
         var newInsights = [OCKInsightItem]()
         
-        if let insight = createMedicationAdherenceInsight() {
+        if let insight = createCarePlanAdherenceInsight() {
             newInsights.append(insight)
         }
         
@@ -65,9 +75,15 @@ class BuildInsightsOperation: Operation {
     
     // MARK: Convenience
     
-    func createMedicationAdherenceInsight() -> OCKInsightItem? {
+    func createCarePlanAdherenceInsight() -> OCKInsightItem? {
         // Make sure there are events to parse.
-        guard let medicationEvents = medicationEvents else { return nil }
+        guard let hamstringStretchEvents = hamstringStretchEvents,
+            let outdoorWalkEvents = outdoorWalkEvents,
+            let bloodGlucoseEvents = bloodGlucoseEvents,
+            let weightEvents = weightEvents,
+            let moodEvents = moodEvents,
+            let painEvents = backPainEvents
+        else { return nil }
         
         // Determine the start date for the previous week.
         let calendar = Calendar.current
@@ -84,13 +100,16 @@ class BuildInsightsOperation: Operation {
             components.day = offset
             let dayDate = calendar.date(byAdding: components as DateComponents, to: startDate)!
             let dayComponents = calendar.dateComponents([.year, .month, .day, .era], from: dayDate)
-            let eventsForDay = medicationEvents[dayComponents]
             
-            totalEventCount += eventsForDay.count
-            
-            for event in eventsForDay {
-                if event.state == .completed {
-                    completedEventCount += 1
+            for events in [hamstringStretchEvents, outdoorWalkEvents, bloodGlucoseEvents, weightEvents, moodEvents, painEvents] {
+                let eventsForDay = events[dayComponents]
+                
+                totalEventCount += eventsForDay.count
+                
+                for event in eventsForDay {
+                    if event.state == .completed {
+                        completedEventCount += 1
+                    }
                 }
             }
         }
@@ -98,14 +117,14 @@ class BuildInsightsOperation: Operation {
         guard totalEventCount > 0 else { return nil }
         
         // Calculate the percentage of completed events.
-        let medicationAdherence = Float(completedEventCount) / Float(totalEventCount)
+        let carePlanAdherence = Float(completedEventCount) / Float(totalEventCount)
         
         // Create an `OCKMessageItem` describing medical adherence.
         let percentageFormatter = NumberFormatter()
         percentageFormatter.numberStyle = .percent
-        let formattedAdherence = percentageFormatter.string(from: NSNumber(value: medicationAdherence))!
+        let formattedAdherence = percentageFormatter.string(from: NSNumber(value: carePlanAdherence))!
 
-        let insight = OCKMessageItem(title: "Medication Adherence", text: "Your medication adherence was \(formattedAdherence) last week.", tintColor: Colors.pink.color, messageType: .tip)
+        let insight = OCKMessageItem(title: "Care Plan Adherence", text: "Your care plan adherence was \(formattedAdherence) last week.", tintColor: Colors.pink.color, messageType: .tip)
         
         return insight
     }
@@ -160,16 +179,16 @@ class BuildInsightsOperation: Operation {
             
             // Store the medication adherance value for the current day.
             let medicationEventsForDay = medicationEvents[dayComponents]
-            if let adherence = percentageEventsCompleted(medicationEventsForDay) , adherence > 0.0 {
+            if let medicationPercentage = percentageEventsCompleted(medicationEventsForDay) , medicationPercentage > 0.0 {
                 // Scale the adherance to the same 0-10 scale as pain values.
-                let scaledAdeherence = adherence * 10.0
+                let scaledMedication = medicationPercentage * 10.0
                 
-                medicationValues.append(scaledAdeherence)
-                medicationLabels.append(percentageFormatter.string(from: NSNumber(value: adherence))!)
+                medicationValues.append(scaledMedication)
+                medicationLabels.append(String(medicationEventsForDay.filter({$0.state == .completed}).count))
             }
             else {
                 medicationValues.append(0.0)
-                medicationLabels.append(NSLocalizedString("N/A", comment: ""))
+                medicationLabels.append(NSLocalizedString("0", comment: ""))
             }
             
             axisTitles.append(dayOfWeekFormatter.string(from: dayDate))
@@ -178,7 +197,7 @@ class BuildInsightsOperation: Operation {
 
         // Create a `OCKBarSeries` for each set of data.
         let painBarSeries = OCKBarSeries(title: "Pain", values: painValues as [NSNumber], valueLabels: painLabels, tintColor: Colors.blue.color)
-        let medicationBarSeries = OCKBarSeries(title: "Medication Adherence", values: medicationValues as [NSNumber], valueLabels: medicationLabels, tintColor: Colors.lightBlue.color)
+        let medicationBarSeries = OCKBarSeries(title: "Ibuprofen", values: medicationValues as [NSNumber], valueLabels: medicationLabels, tintColor: Colors.lightBlue.color)
 
         /*
             Add the series to a chart, specifing the scale to use for the chart

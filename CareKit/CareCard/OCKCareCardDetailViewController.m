@@ -43,13 +43,14 @@ static const CGFloat HeaderViewHeight = 100.0;
     NSMutableArray<NSString *> *_sectionTitles;
     NSString *_instructionsSectionTitle;
     NSString *_additionalInfoSectionTitle;
+    UITableView *_tableView;
+    NSMutableArray *_constraints;
 }
 
 - (instancetype)initWithIntervention:(OCKCarePlanActivity *)intervention {
-    self = [super initWithStyle:UITableViewStyleGrouped];
+    self = [super init];
     if (self) {
         _intervention = intervention;
-        self.showEdgeIndicator = NO;
     }
     return self;
 }
@@ -58,40 +59,93 @@ static const CGFloat HeaderViewHeight = 100.0;
     [super viewDidLoad];
     
     [self prepareView];
-    
-    self.tableView.estimatedRowHeight = 44.0;
-    self.tableView.rowHeight = UITableViewAutomaticDimension;
-    self.tableView.tableFooterView = [UIView new];
 }
 
 - (void)prepareView {
+    self.view.backgroundColor = [UIColor groupTableViewBackgroundColor];
+    
     if (!_headerView) {
         _headerView = [[OCKCareCardDetailHeaderView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, HeaderViewHeight)];
+        [self.view addSubview:_headerView];
     }
-    _headerView.showEdgeIndicator = _showEdgeIndicator;
     _headerView.intervention = _intervention;
     
-    self.tableView.tableHeaderView = _headerView;
+    if (!_tableView) {
+        _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
+        _tableView.delegate = self;
+        _tableView.dataSource = self;
+        [self.view addSubview:_tableView];
+    }
+    _tableView.estimatedRowHeight = 44.0;
+    _tableView.rowHeight = UITableViewAutomaticDimension;
+    _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
     [self createTableViewDataArray];
+    
+    [self setUpConstraints];
 }
 
-- (void)viewDidLayoutSubviews {
-    [super viewDidLayoutSubviews];
+- (void)setUpConstraints {
+    [NSLayoutConstraint deactivateConstraints:_constraints];
     
-    CGFloat height = [_headerView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize].height;
-    CGRect headerViewFrame = _headerView.frame;
+    _constraints = [NSMutableArray new];
     
-    if (height != headerViewFrame.size.height) {
-        headerViewFrame.size.height = height;
-        _headerView.frame = headerViewFrame;
-        self.tableView.tableHeaderView = _headerView;
-    }
-}
-
-- (void)setShowEdgeIndicator:(BOOL)showEdgeIndicator {
-    _showEdgeIndicator = showEdgeIndicator;
-    _headerView.showEdgeIndicator = _showEdgeIndicator;
+    _headerView.translatesAutoresizingMaskIntoConstraints = NO;
+    _tableView.translatesAutoresizingMaskIntoConstraints = NO;
+    
+    [_constraints addObjectsFromArray:@[
+                                        [NSLayoutConstraint constraintWithItem:_headerView
+                                                                     attribute:NSLayoutAttributeTop
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self.topLayoutGuide
+                                                                     attribute:NSLayoutAttributeBottom
+                                                                    multiplier:1.0
+                                                                      constant:0.0],
+                                        [NSLayoutConstraint constraintWithItem:_headerView
+                                                                     attribute:NSLayoutAttributeLeading
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self.view
+                                                                     attribute:NSLayoutAttributeLeading
+                                                                    multiplier:1.0
+                                                                      constant:0.0],
+                                        [NSLayoutConstraint constraintWithItem:_headerView
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self.view
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                    multiplier:1.0
+                                                                      constant:0.0],
+                                        [NSLayoutConstraint constraintWithItem:_headerView
+                                                                     attribute:NSLayoutAttributeBottom
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:_tableView
+                                                                     attribute:NSLayoutAttributeTop
+                                                                    multiplier:1.0
+                                                                      constant:-1.0],
+                                        [NSLayoutConstraint constraintWithItem:_tableView
+                                                                     attribute:NSLayoutAttributeLeading
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self.view
+                                                                     attribute:NSLayoutAttributeLeading
+                                                                    multiplier:1.0
+                                                                      constant:0.0],
+                                        [NSLayoutConstraint constraintWithItem:_tableView
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self.view
+                                                                     attribute:NSLayoutAttributeTrailing
+                                                                    multiplier:1.0
+                                                                      constant:0.0],
+                                        [NSLayoutConstraint constraintWithItem:_tableView
+                                                                     attribute:NSLayoutAttributeBottom
+                                                                     relatedBy:NSLayoutRelationEqual
+                                                                        toItem:self.view
+                                                                     attribute:NSLayoutAttributeBottom
+                                                                    multiplier:1.0
+                                                                      constant:0.0]
+                                        ]];
+    
+    [NSLayoutConstraint activateConstraints:_constraints];
 }
 
 
@@ -144,6 +198,7 @@ static const CGFloat HeaderViewHeight = 100.0;
                                                                reuseIdentifier:InstructionsCellIdentifier];
         }
         cell.intervention = _intervention;
+        cell.layer.masksToBounds = YES;
         return cell;
     } else if ([sectionTitle isEqualToString:_additionalInfoSectionTitle]) {
         static NSString *AdditionalInfoCellIdentifier = @"AdditionalInfoCell";
@@ -153,6 +208,7 @@ static const CGFloat HeaderViewHeight = 100.0;
                                                                  reuseIdentifier:AdditionalInfoCellIdentifier];
         }
         cell.intervention = _intervention;
+        cell.layer.masksToBounds = YES;
         return cell;
     }
     return nil;

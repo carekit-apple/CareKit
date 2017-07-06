@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -29,23 +29,26 @@
  */
 
 
-/* Care Card */
-"CARE_CARD_HEADER_TITLE" = "Оказание Медпомощи";
-"TODAY_BUTTON_TITLE" = "Сегодня";
+/* Common */
+"ACTIVITY_TYPE_OTHER_SECTION_HEADER" = "Прочее";
+"ACTIVITY_TYPE_OPTIONAL_SECTION_HEADER" = "Необязательно";
+"ACTIVITY_TYPE_READ_ONLY_SECTION_HEADER" = "Только для чтения";
+"HEADER_TITLE_CARE_OVERVIEW" = "Загрузка Общих сведений о Медпомощи завершена на %@";
+"HEADER_TITLE_ACTIVITY_STATUS" = "Загрузка Вашего статуса активности завершена на %@";
 
-/* Care Card Detail View */
+/* Care Card */
+"CARE_CARD_HEADER_TITLE" = "Общие сведения о Медпомощи";
+"TODAY_BUTTON_TITLE" = "Сегодня";
 "CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "Инструкции";
 "CARE_CARD_ADDITIONAL_INFO_SECTION_TITLE" = "Дополнительная информация";
 
 /* Symptom Tracker */
-"SYMPTOM_TRACKER_HEADER_TITLE" = "Выполнение задач";
+"SYMPTOM_TRACKER_HEADER_TITLE" = "Статус активности";
 
-/* Connect Master View */
+/* Connect */
 "CARE_TEAM_SECTION_TITLE" = "Команда Медпомощи";
 "PERSONAL_SECTION_TITLE" = "Друзья и члены семьи";
 "CONNECT_NO_CONTACTS_TITLE" = "Нет контактов";
-
-/* Connect Detail View */
 "CONTACT_INFO_SECTION_TITLE" = "Данные контакта";
 "CONTACT_SHARING_SECTION_TITLE" = "Поделиться";
 "CONTACT_INFO_PHONE_TITLE" = "телефон";
@@ -53,9 +56,20 @@
 "CONTACT_INFO_EMAIL_TITLE" = "е‑mail";
 "CONTACT_INFO_VIDEO_TITLE" = "видео";
 "SHARING_CELL_TITLE" = "Отправка отчетов";
-"ERROR_TITLE" = "Ошибка";
 "MESSAGE_SEND_ERROR" = "Отправка сообщения не удалась";
 "EMAIL_SEND_ERROR" = "Отправка е‑mail не удалась";
+"CONNECT_MESSAGE_PLACEHOLDER" = "Введите сообщение...";
+"CONNECT_SEND_BUTTON_TITLE" = "Отправить";
+"CONNECT_INBOX_TITLE" = "Входящие";
+
+/* Patient */
+"PROFILE_VIEW_CONTROLLER_TITLE" = "Профиль";
+"PERSONAL_INFORMATION_SECTION_HEADER_TITLE" = "Личная информация";
+"OTHER_INFORMATION_SECTION_HEADER_TITLE" = "Прочая информация";
+
+/* Insight */
+"INSIGHTS_SECTION_HEADER_TITLE_INSIGHTS" = "Исследования";
+"INSIGHTS_SECTION_HEADER_TITLE_THRESHOLD_ALERTS" = "Пороговые предупреждения";
 
 /* ACCESSIBILITY */
 "AX_WEEK_BUTTON_PROGRESS" = "Выполнено %@";

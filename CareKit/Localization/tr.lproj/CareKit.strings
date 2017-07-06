@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -29,23 +29,26 @@
  */
 
 
-/* Care Card */
-"CARE_CARD_HEADER_TITLE" = "Tıbbi Bakım Durumu";
-"TODAY_BUTTON_TITLE" = "Bugün";
+/* Common */
+"ACTIVITY_TYPE_OTHER_SECTION_HEADER" = "Diğer";
+"ACTIVITY_TYPE_OPTIONAL_SECTION_HEADER" = "İsteğe Bağlı";
+"ACTIVITY_TYPE_READ_ONLY_SECTION_HEADER" = "Salt Okunur";
+"HEADER_TITLE_CARE_OVERVIEW" = "Bakım hakkında genel bilgiler %@ tamamlandı";
+"HEADER_TITLE_ACTIVITY_STATUS" = "Aktivite durumunuz %@ tamamlandı";
 
-/* Care Card Detail View */
+/* Care Card */
+"CARE_CARD_HEADER_TITLE" = "Bakım Hakkında Genel Bilgi";
+"TODAY_BUTTON_TITLE" = "Bugün";
 "CARE_CARD_INSTRUCTIONS_SECTION_TITLE" = "Yönergeler";
 "CARE_CARD_ADDITIONAL_INFO_SECTION_TITLE" = "Ek Bilgi";
 
 /* Symptom Tracker */
 "SYMPTOM_TRACKER_HEADER_TITLE" = "Aktivite Durumu";
 
-/* Connect Master View */
+/* Connect */
 "CARE_TEAM_SECTION_TITLE" = "Tıbbi Bakım Ekibi";
 "PERSONAL_SECTION_TITLE" = "Arkadaşlar ve Aile";
 "CONNECT_NO_CONTACTS_TITLE" = "Kişi yok";
-
-/* Connect Detail View */
 "CONTACT_INFO_SECTION_TITLE" = "İletişim Bilgileri";
 "CONTACT_SHARING_SECTION_TITLE" = "Paylaşma";
 "CONTACT_INFO_PHONE_TITLE" = "telefon";
@@ -53,9 +56,20 @@
 "CONTACT_INFO_EMAIL_TITLE" = "e-posta";
 "CONTACT_INFO_VIDEO_TITLE" = "video";
 "SHARING_CELL_TITLE" = "Rapor gönder";
-"ERROR_TITLE" = "Hata";
 "MESSAGE_SEND_ERROR" = "Mesaj gönderilemedi";
 "EMAIL_SEND_ERROR" = "E-posta gönderilemedi";
+"CONNECT_MESSAGE_PLACEHOLDER" = "Bir mesaj yazın...";
+"CONNECT_SEND_BUTTON_TITLE" = "Gönder";
+"CONNECT_INBOX_TITLE" = "Gelen Kutusu";
+
+/* Patient */
+"PROFILE_VIEW_CONTROLLER_TITLE" = "Profil";
+"PERSONAL_INFORMATION_SECTION_HEADER_TITLE" = "Kişisel Bilgiler";
+"OTHER_INFORMATION_SECTION_HEADER_TITLE" = "Diğer Bilgiler";
+
+/* Insight */
+"INSIGHTS_SECTION_HEADER_TITLE_INSIGHTS" = "Bilgi";
+"INSIGHTS_SECTION_HEADER_TITLE_THRESHOLD_ALERTS" = "Eşik Uyarıları";
 
 /* ACCESSIBILITY */
 "AX_WEEK_BUTTON_PROGRESS" = "%@ tamamlandı";

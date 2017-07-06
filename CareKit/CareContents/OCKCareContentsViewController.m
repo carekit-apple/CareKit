@@ -57,6 +57,7 @@
 
 @implementation OCKCareContentsViewController {
     UITableView *_tableView;
+    UILabel *_noDataLabel;
     NSMutableArray<NSMutableArray<OCKCarePlanEvent *> *> *_events;
     NSMutableArray *_weekValues;
     OCKHeaderView *_headerView;
@@ -126,6 +127,12 @@
     _tableView.tableFooterView = [UIView new];
     _tableView.estimatedSectionHeaderHeight = 0;
     _tableView.estimatedSectionFooterHeight = 0;
+    
+    _noDataLabel = [[UILabel alloc] init];
+    _noDataLabel.text = self.noEventsText;
+    _noDataLabel.numberOfLines = 0;
+    _noDataLabel.textAlignment = NSTextAlignmentCenter;
+    _tableView.backgroundView = _noDataLabel;
     
     self.navigationController.navigationBar.translucent = NO;
     [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:245.0/255.0 green:244.0/255.0 blue:246.0/255.0 alpha:1.0]];
@@ -312,6 +319,9 @@
     self.navigationItem.rightBarButtonItem.tintColor = _glyphTintColor;
 }
 
+- (void)setNoEventsText:(NSString *)noEventsText {
+    _noDataLabel.text = noEventsText;
+}
 
 #pragma mark - Helpers
 
@@ -344,6 +354,7 @@
                               [self updateHeaderView];
                               [self updateWeekView];
                           }
+                          _noDataLabel.hidden = _events.count > 0;
                           [_tableView reloadData];
                       });
                   }];

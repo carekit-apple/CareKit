@@ -140,7 +140,9 @@
 
 - (void)showToday:(id)sender {
     self.selectedDate = [NSDateComponents ock_componentsWithDate:[NSDate date] calendar:_calendar];
-    [_tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:NSNotFound inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
+    if (_tableViewData.count > 0) {
+        [_tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:NSNotFound inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
+    }
 }
 
 - (void)prepareView {

@@ -71,6 +71,8 @@
     NSString *_otherString;
     NSString *_optionalString;
     NSString *_readOnlyString;
+    BOOL _isGrouped;
+    BOOL _isSorted;
 }
 
 - (instancetype)init {
@@ -84,6 +86,8 @@
         _store = store;
         _calendar = [NSCalendar calendarWithIdentifier:NSCalendarIdentifierGregorian];
         _glyphTintColor = nil;
+        _isGrouped = YES;
+        _isSorted = YES;
     }
     return self;
 }
@@ -493,6 +497,11 @@
             groupIdentifier = firstEvent.activity.type == OCKCarePlanActivityTypeReadOnly ? _readOnlyString : _optionalString;
         }
         
+        if (!_isGrouped) {
+            // Force only one grouping
+            groupIdentifier = _otherString;
+        }
+        
         if (groupedEvents[groupIdentifier]) {
             NSMutableArray<NSArray *> *objects = [groupedEvents[groupIdentifier] mutableCopy];
             [objects addObject:activityEvents];
@@ -503,41 +512,59 @@
         }
     }
     
-    NSMutableArray *sortedKeys = [[groupedEvents.allKeys sortedArrayUsingSelector:@selector(compare:)] mutableCopy];
-    if ([sortedKeys containsObject:_otherString]) {
-        [sortedKeys removeObject:_otherString];
-        [sortedKeys addObject:_otherString];
+    if (_isGrouped && _isSorted) {
+        
+        NSMutableArray *sortedKeys = [[groupedEvents.allKeys sortedArrayUsingSelector:@selector(compare:)] mutableCopy];
+        if ([sortedKeys containsObject:_otherString]) {
+            [sortedKeys removeObject:_otherString];
+            [sortedKeys addObject:_otherString];
+        }
+        
+        if ([sortedKeys containsObject:_optionalString]) {
+            [sortedKeys removeObject:_optionalString];
+            [sortedKeys addObject:_optionalString];
+        }
+        
+        if ([sortedKeys containsObject:_readOnlyString]) {
+            [sortedKeys removeObject:_readOnlyString];
+            [sortedKeys addObject:_readOnlyString];
+        }
+        
+        _sectionTitles = [sortedKeys copy];
+        
+    } else {
+        
+        _sectionTitles = [groupedEvents.allKeys copy];
+        
     }
-    
-    if ([sortedKeys containsObject:_optionalString]) {
-        [sortedKeys removeObject:_optionalString];
-        [sortedKeys addObject:_optionalString];
-    }
-    
-    if ([sortedKeys containsObject:_readOnlyString]) {
-        [sortedKeys removeObject:_readOnlyString];
-        [sortedKeys addObject:_readOnlyString];
-    }
-    
-    _sectionTitles = [sortedKeys copy];
     
     NSMutableArray *array = [NSMutableArray new];
     for (NSString *key in _sectionTitles) {
         NSMutableArray *groupArray = [NSMutableArray new];
         NSArray *groupedEventsArray = groupedEvents[key];
         
-        NSMutableDictionary *activitiesDictionary = [NSMutableDictionary new];
-        for (NSArray<OCKCarePlanEvent *> *events in groupedEventsArray) {
-            NSString *activityTitle = events.firstObject.activity.title;
-            activitiesDictionary[activityTitle] = events;
+        if (_isSorted) {
+            
+            NSMutableDictionary *activitiesDictionary = [NSMutableDictionary new];
+            for (NSArray<OCKCarePlanEvent *> *events in groupedEventsArray) {
+                NSString *activityTitle = events.firstObject.activity.title;
+                activitiesDictionary[activityTitle] = events;
+            }
+            
+            NSArray *sortedActivitiesKeys = [activitiesDictionary.allKeys sortedArrayUsingSelector:@selector(compare:)];
+            for (NSString *activityKey in sortedActivitiesKeys) {
+                [groupArray addObject:activitiesDictionary[activityKey]];
+            }
+            
+            [array addObject:groupArray];
+            
+        } else {
+            
+            [array addObject:[groupedEventsArray mutableCopy]];
+            
         }
-        
-        NSArray *sortedActivitiesKeys = [activitiesDictionary.allKeys sortedArrayUsingSelector:@selector(compare:)];
-        for (NSString *activityKey in sortedActivitiesKeys) {
-            [groupArray addObject:activitiesDictionary[activityKey]];
-        }
-        [array addObject:groupArray];
     }
+
     _tableViewData = [array mutableCopy];
 }
 

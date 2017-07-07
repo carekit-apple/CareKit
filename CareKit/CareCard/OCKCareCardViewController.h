@@ -181,6 +181,20 @@ OCK_CLASS_AVAILABLE
  */
 @property (nonatomic, copy) NSString *customGlyphImageName;
 
+/**
+ The property that allows activities to be grouped.
+ 
+ The default is true.
+ */
+@property (nonatomic) BOOL isGrouped;
+
+/**
+ The property that allows activities to be sorted.
+ 
+ The default is true.
+ */
+@property (nonatomic) BOOL isSorted;
+
 @end
 
 NS_ASSUME_NONNULL_END

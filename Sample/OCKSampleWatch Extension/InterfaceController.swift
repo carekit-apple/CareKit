@@ -55,15 +55,15 @@ class InterfaceController: WKInterfaceController {
     
     override func awake(withContext context: Any?) {
         super.awake(withContext: context)
-        session.delegate = self
-        session.activate()
+        session().delegate = self
+        session().activate()
     }
     
     override func willActivate() {
         self.setTitle("")
 
-        if session.activationState != .activated {
-            session.activate()
+        if session().activationState != .activated {
+            session().activate()
         } else {
             loadData()
         }
@@ -84,7 +84,7 @@ class InterfaceController: WKInterfaceController {
     }
     
     func didLosePhoneConnection() {
-        guard session.activationState != .activated else {
+        guard session().activationState != .activated else {
             return
         }
         
@@ -229,7 +229,7 @@ class InterfaceController: WKInterfaceController {
     
     func updateDataStoreEvent(withActivityIdentifier activityIdentifier : String, atIndex eventIndex : Int, toCompletedState completedState : Bool) {
         
-        if !session.isReachable {
+        if !session().isReachable {
             didLosePhoneConnection()
             return
         }
@@ -246,7 +246,7 @@ class InterfaceController: WKInterfaceController {
         updateComplications(withCompletionPercentage: nil)
         
         encoder.finishEncoding()
-        session.sendMessageData(data as Data, replyHandler: {data in
+        session().sendMessageData(data as Data, replyHandler: {data in
             let decoder = NSKeyedUnarchiver(forReadingWith: data)
             if decoder.decodeBool(forKey: "success") {
             } else {
@@ -262,8 +262,8 @@ class InterfaceController: WKInterfaceController {
     }
     
     func messagingErrorHandler(_ error : Error) {
-        NSLog("error: \(error)\nsession reachable = \(session.isReachable)")
-        if session.activationState != .activated {
+        NSLog("error: \(error)\nsession reachable = \(session().isReachable)")
+        if session().activationState != .activated {
             didLosePhoneConnection()
         } else {
             loadData()
@@ -278,12 +278,12 @@ class InterfaceController: WKInterfaceController {
     // MARK: Fetching Data
     
     func getAllData() {
-        if session.activationState == .activated {
+        if session().activationState == .activated {
             let data = NSMutableData()
             let encoder = NSKeyedArchiver(forWritingWith: data)
             encoder.encode("getAllData", forKey: "type")
             encoder.finishEncoding()
-            session.sendMessageData(data as Data, replyHandler: {(data) in
+            session().sendMessageData(data as Data, replyHandler: {(data) in
                 let decoder = NSKeyedUnarchiver(forReadingWith: data)
                 defer {
                     decoder.finishDecoding()

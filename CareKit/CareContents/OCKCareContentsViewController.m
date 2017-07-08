@@ -1,5 +1,6 @@
 /*
  Copyright (c) 2017, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Erik Hornberger. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -35,6 +36,7 @@
 #import "OCKWeekViewController.h"
 #import "NSDateComponents+CarePlanInternal.h"
 #import "OCKHeaderView.h"
+#import "OCKLabel.h"
 #import "OCKCareCardTableViewCell.h"
 #import "OCKSymptomTrackerTableViewCell.h"
 #import "OCKReadOnlyTableViewCell.h"
@@ -58,6 +60,7 @@
 @implementation OCKCareContentsViewController {
     UITableView *_tableView;
     UIRefreshControl *_refreshControl;
+    OCKLabel *_noDataLabel;
     NSMutableArray<NSMutableArray<OCKCarePlanEvent *> *> *_events;
     NSMutableArray *_weekValues;
     OCKHeaderView *_headerView;
@@ -137,6 +140,15 @@
     [_refreshControl addTarget:self action:@selector(didActivatePullToRefreshControl:) forControlEvents:UIControlEventValueChanged];
     _tableView.refreshControl = _refreshControl;
     [self updatePullToRefreshControl];
+    
+    _noDataLabel = [OCKLabel new];
+    _noDataLabel.textStyle = UIFontTextStyleTitle2;
+    _noDataLabel.textColor = [UIColor lightGrayColor];
+    _noDataLabel.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    _noDataLabel.text = self.noEventsText;
+    _noDataLabel.numberOfLines = 0;
+    _noDataLabel.textAlignment = NSTextAlignmentCenter;
+    _tableView.backgroundView = _noDataLabel;
     
     self.navigationController.navigationBar.translucent = NO;
     [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:245.0/255.0 green:244.0/255.0 blue:246.0/255.0 alpha:1.0]];
@@ -349,6 +361,10 @@
         [self updatePullToRefreshControl];
     }
 }
+- (void)setNoEventsText:(NSString *)noEventsText {
+    _noEventsText = noEventsText;
+    _noDataLabel.text = noEventsText;
+}
 
 #pragma mark - Helpers
 
@@ -381,6 +397,7 @@
                               [self updateHeaderView];
                               [self updateWeekView];
                           }
+                          _noDataLabel.hidden = _events.count > 0;
                           [_tableView reloadData];
                       });
                   }];

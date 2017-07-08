@@ -1,5 +1,6 @@
 /*
  Copyright (c) 2017, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Erik Hornberger. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -228,6 +229,14 @@ OCK_CLASS_AVAILABLE
  The section header title for all the ReadOnly activities. Default is `Read Only` if nil.
  */
 @property (nonatomic, nullable) NSString *readOnlySectionHeader;
+
+/**
+ A message that will be displayed in the table view's background view if there are
+ no intervention activities to display.
+ 
+ If the value is not specified, nothing will be shown when the table is empty.
+ */
+@property (nonatomic, nullable) NSString *noEventsText;
 
 /**
  The property that allows activities to be grouped.

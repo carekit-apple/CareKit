@@ -36,6 +36,7 @@
 #import "OCKWeekViewController.h"
 #import "NSDateComponents+CarePlanInternal.h"
 #import "OCKHeaderView.h"
+#import "OCKLabel.h"
 #import "OCKCareCardTableViewCell.h"
 #import "OCKWeekLabelsView.h"
 #import "OCKCarePlanStore_Internal.h"
@@ -69,6 +70,7 @@
     BOOL _isGrouped;
     BOOL _isSorted;
     UIRefreshControl *_refreshControl;
+    OCKLabel *_noDataLabel;
 }
 
 - (instancetype)init {
@@ -124,6 +126,15 @@
     [_refreshControl addTarget:self action:@selector(didActivatePullToRefreshControl:) forControlEvents:UIControlEventValueChanged];
     _tableView.refreshControl = _refreshControl;
     [self updatePullToRefreshControl];
+    
+    _noDataLabel = [OCKLabel new];
+    _noDataLabel.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    _noDataLabel.textStyle = UIFontTextStyleTitle2;
+    _noDataLabel.textColor = [UIColor lightGrayColor];
+    _noDataLabel.text = self.noEventsText;
+    _noDataLabel.textAlignment = NSTextAlignmentCenter;
+    _noDataLabel.numberOfLines = 0;
+    _tableView.backgroundView = _noDataLabel;
     
     self.navigationController.navigationBar.translucent = NO;
     [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:245.0/255.0 green:244.0/255.0 blue:246.0/255.0 alpha:1.0]];
@@ -347,6 +358,12 @@
     }
 }
 
+- (void)setNoEventsText:(NSString *)noEventsText {
+    _noEventsText = noEventsText;
+    _noDataLabel.text = noEventsText;
+}
+
+
 #pragma mark - Helpers
 
 - (void)fetchEvents {
@@ -365,6 +382,7 @@
                               [self.delegate careCardViewController:self willDisplayEvents:[_events copy] dateComponents:_selectedDate];
                           }
                           
+                          _noDataLabel.hidden = (_events.count > 0);
                           [self createGroupedEventDictionaryForEvents:_events];
                           
                           [self updateHeaderView];

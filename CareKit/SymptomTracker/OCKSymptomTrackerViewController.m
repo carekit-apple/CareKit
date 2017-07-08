@@ -35,6 +35,7 @@
 #import "NSDateComponents+CarePlanInternal.h"
 #import "OCKWeekView.h"
 #import "OCKHeaderView.h"
+#import "OCKLabel.h"
 #import "OCKSymptomTrackerTableViewCell.h"
 #import "OCKWeekLabelsView.h"
 #import "OCKCarePlanStore_Internal.h"
@@ -64,6 +65,7 @@
     NSMutableArray<NSMutableArray <NSMutableArray <OCKCarePlanEvent *> *> *> *_tableViewData;
     NSString *_otherString;
     NSString *_optionalString;
+    OCKLabel *_noDataLabel;
     BOOL _isGrouped;
     BOOL _isSorted;
 }
@@ -116,6 +118,15 @@
     _tableView.tableFooterView = [UIView new];
     _tableView.estimatedSectionHeaderHeight = 0;
     _tableView.estimatedSectionFooterHeight = 0;
+    
+    _noDataLabel = [OCKLabel new];
+    _noDataLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    _noDataLabel.textStyle = UIFontTextStyleTitle2;
+    _noDataLabel.textColor = [UIColor lightGrayColor];
+    _noDataLabel.textAlignment = NSTextAlignmentCenter;
+    _noDataLabel.numberOfLines = 0;
+    _noDataLabel.text = self.noEventsText;
+    _tableView.backgroundView = _noDataLabel;
     
     _refreshControl = [[UIRefreshControl alloc] init];
     _refreshControl.tintColor = [UIColor grayColor];
@@ -346,6 +357,12 @@
     }
 }
 
+- (void)setNoEventsText:(NSString *)noEventsText {
+    _noEventsText = noEventsText;
+    _noDataLabel.text = noEventsText;
+}
+
+
 #pragma mark - Helpers
 
 - (void)fetchEvents {
@@ -364,6 +381,7 @@
                               [self.delegate symptomTrackerViewController:self willDisplayEvents:[_events copy] dateComponents:_selectedDate];
                           }
                           
+                          _noDataLabel.hidden = (_events > 0);
                           [self createGroupedEventDictionaryForEvents:_events];
                           
                           [self updateHeaderView];
@@ -371,6 +389,7 @@
                           [_tableView reloadData];
                       });
                   }];
+                      
 }
 
 - (void)updateHeaderView {

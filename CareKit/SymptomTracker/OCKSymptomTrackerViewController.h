@@ -167,6 +167,14 @@ OCK_CLASS_AVAILABLE
 @property (nonatomic) NSString *customGlyphImageName;
 
 /**
+ A message that will be displayed in the table view's background view if there are
+ no intervention activities to display.
+ 
+ If the value is not specified, nothing will be shown when the table is empty.
+ */
+@property (nonatomic, nullable) NSString *noEventsText;
+
+/**
  The property that allows activities to be grouped.
  
  If true, the activities will be grouped by groupIdentifier into sections,

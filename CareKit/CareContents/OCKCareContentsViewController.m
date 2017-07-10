@@ -108,8 +108,8 @@
     self.store.careCardUIDelegate = self;
     [self setGlyphTintColor: _glyphTintColor];
     NSDictionary *_initialDictionary = @{ @(OCKCarePlanActivityTypeAssessment): [NSMutableArray new],
-                                         @(OCKCarePlanActivityTypeIntervention): [NSMutableArray new],
-                                         @(OCKCarePlanActivityTypeReadOnly): [NSMutableArray new] };
+                                          @(OCKCarePlanActivityTypeIntervention): [NSMutableArray new],
+                                          @(OCKCarePlanActivityTypeReadOnly): [NSMutableArray new] };
     _allEvents = [_initialDictionary mutableCopy];
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:OCKLocalizedString(@"TODAY_BUTTON_TITLE", nil)
@@ -117,7 +117,7 @@
                                                                              target:self
                                                                              action:@selector(showToday:)];
     self.navigationItem.rightBarButtonItem.tintColor = self.glyphTintColor;
-
+    
     _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
     _tableView.dataSource = self;
     _tableView.delegate = self;
@@ -133,7 +133,7 @@
     
     self.navigationController.navigationBar.translucent = NO;
     [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:245.0/255.0 green:244.0/255.0 blue:246.0/255.0 alpha:1.0]];
-
+    
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -351,7 +351,7 @@
                           [_tableView reloadData];
                       });
                   }];
-
+    
 }
 
 - (void)updateHeaderView {
@@ -486,11 +486,27 @@
     NSArray<OCKCarePlanEvent *> *assessments = _allEvents[@(OCKCarePlanActivityTypeAssessment)];
     NSArray<OCKCarePlanEvent *> *readOnly = _allEvents[@(OCKCarePlanActivityTypeReadOnly)];
     
+    NSMutableArray *interventionGroupIdentifiers = [[NSMutableArray alloc] init];
+    NSMutableArray *assessmentGroupIdentifiers = [[NSMutableArray alloc] init];
+    
     NSArray<NSArray<OCKCarePlanEvent *> *> *events = [NSArray arrayWithArray:[interventions arrayByAddingObjectsFromArray:[assessments arrayByAddingObjectsFromArray:readOnly]]];
     NSMutableDictionary *groupedEvents = [NSMutableDictionary new];
     
     for (NSArray<OCKCarePlanEvent *> *activityEvents in events) {
         OCKCarePlanEvent *firstEvent = activityEvents.firstObject;
+        
+        if (firstEvent.activity.groupIdentifier && firstEvent.activity.type == OCKCarePlanActivityTypeIntervention) {
+            if (![interventionGroupIdentifiers containsObject:firstEvent.activity.groupIdentifier]) {
+                [interventionGroupIdentifiers addObject:firstEvent.activity.groupIdentifier];
+            }
+        }
+        
+        if (firstEvent.activity.groupIdentifier && firstEvent.activity.type == OCKCarePlanActivityTypeAssessment) {
+            if (![assessmentGroupIdentifiers containsObject:firstEvent.activity.groupIdentifier]) {
+                [assessmentGroupIdentifiers addObject:firstEvent.activity.groupIdentifier];
+            }
+        }
+        
         NSString *groupIdentifier = firstEvent.activity.groupIdentifier ? firstEvent.activity.groupIdentifier : _otherString;
         
         if (firstEvent.activity.optional) {
@@ -515,6 +531,21 @@
     if (_isGrouped && _isSorted) {
         
         NSMutableArray *sortedKeys = [[groupedEvents.allKeys sortedArrayUsingSelector:@selector(compare:)] mutableCopy];
+        
+        for (NSString *groupIdentifier in interventionGroupIdentifiers) {
+            if ([sortedKeys containsObject:groupIdentifier]) {
+                [sortedKeys removeObject:groupIdentifier];
+                [sortedKeys addObject:groupIdentifier];
+            }
+        }
+        
+        for (NSString *groupIdentifier in assessmentGroupIdentifiers) {
+            if ([sortedKeys containsObject:groupIdentifier]) {
+                [sortedKeys removeObject:groupIdentifier];
+                [sortedKeys addObject:groupIdentifier];
+            }
+        }
+        
         if ([sortedKeys containsObject:_otherString]) {
             [sortedKeys removeObject:_otherString];
             [sortedKeys addObject:_otherString];
@@ -555,7 +586,6 @@
             for (NSString *activityKey in sortedActivitiesKeys) {
                 [groupArray addObject:activitiesDictionary[activityKey]];
             }
-            
             [array addObject:groupArray];
             
         } else {
@@ -564,7 +594,6 @@
             
         }
     }
-
     _tableViewData = [array mutableCopy];
 }
 
@@ -739,7 +768,7 @@
         }
         
         cell.readOnlyEvent = event;
-
+        
         return cell;
     }
     else {

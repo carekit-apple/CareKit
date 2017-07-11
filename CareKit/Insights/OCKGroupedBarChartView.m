@@ -183,7 +183,7 @@ static const CGFloat MarginBetweenBarAndLabel = 10.0;
     
     NSMutableArray *constraints = [NSMutableArray new];
     
-    NSString *visualFormat = [NSString stringWithFormat:@"H:|[barView]-%f-[valueLabel]|", MarginBetweenBarAndLabel];
+    NSString *visualFormat = [NSString stringWithFormat:@"H:|[barView]-%f-[valueLabel]", MarginBetweenBarAndLabel];
     [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:visualFormat
                                                           options:NSLayoutFormatDirectionLeadingToTrailing
                                                           metrics:nil

@@ -275,6 +275,18 @@ extension RootViewController: OCKConnectViewControllerDelegate {
                 self.present(activityViewController, animated: true, completion: nil)
             }
         }
+        
+        func connectViewController(_ viewController: OCKConnectViewController, didSendConnectMessage message: String, careTeamContact contact: OCKContact) {
+            let dateString = DateFormatter.localizedString(from: Date(), dateStyle: .short, timeStyle: .short)
+            let connectMessage = OCKConnectMessageItem(messageType: .sent, name: sampleData.patient.name, message: message, dateString: dateString)
+            sampleData.connectMessageItems.append(connectMessage)
+        }
+    }
+    
+    func connectViewController(_ viewController: OCKConnectViewController, didSendConnectMessage message: String, careTeamContact contact: OCKContact) {
+        let dateString = DateFormatter.localizedString(from: Date(), dateStyle: .short, timeStyle: .short)
+        let connectMessage = OCKConnectMessageItem(messageType: .sent, name: sampleData.patient.name, message: message, dateString: dateString)
+        sampleData.connectMessageItems.append(connectMessage)
     }
 }
 

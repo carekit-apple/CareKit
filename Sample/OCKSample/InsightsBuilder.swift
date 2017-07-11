@@ -63,11 +63,62 @@ class InsightsBuilder {
                                                                      activityIdentifier: ActivityType.takeMedication.rawValue,
                                                                      startDate: queryDateRange.start,
                                                                      endDate: queryDateRange.end)
-
+        
+        /*
+         Create an operation to query for events for the previous week's
+         `HamstringStretch` activity.
+         */
+        
+        let hamstringStretchEventsOperation = QueryActivityEventsOperation(store: carePlanStore,
+                                                                           activityIdentifier: ActivityType.hamstringStretch.rawValue,
+                                                                           startDate: queryDateRange.start,
+                                                                           endDate: queryDateRange.end)
+        
+        /*
+         Create an operation to query for events for the previous week's
+         `OutdoorWalk` activity.
+         */
+        
+        let outdoorWalkEventsOperation = QueryActivityEventsOperation(store: carePlanStore,
+                                                                      activityIdentifier: ActivityType.outdoorWalk.rawValue,
+                                                                      startDate: queryDateRange.start,
+                                                                      endDate: queryDateRange.end)
+        
+        /*
+         Create an operation to query for events for the previous week's
+         `BloodGlucose` activity.
+         */
+        
+        let bloodGlucoseEventsOperation = QueryActivityEventsOperation(store: carePlanStore,
+                                                                       activityIdentifier: ActivityType.bloodGlucose.rawValue,
+                                                                       startDate: queryDateRange.start,
+                                                                       endDate: queryDateRange.end)
+        
+        /*
+         Create an operation to query for events for the previous week's
+         `Weight` activity.
+         */
+        
+        let weightEventsOperation = QueryActivityEventsOperation(store: carePlanStore,
+                                                                 activityIdentifier: ActivityType.weight.rawValue,
+                                                                 startDate: queryDateRange.start,
+                                                                 endDate: queryDateRange.end)
+        
+        /*
+         Create an operation to query for events for the previous week's
+         `Mood` activity.
+         */
+        
+        let moodEventsOperation = QueryActivityEventsOperation(store: carePlanStore,
+                                                               activityIdentifier: ActivityType.mood.rawValue,
+                                                               startDate: queryDateRange.start,
+                                                               endDate: queryDateRange.end)
+        
         /*
             Create an operation to query for events for the previous week and
             current weeks' `BackPain` assessment.
          */
+        
         let backPainEventsOperation = QueryActivityEventsOperation(store: carePlanStore,
                                                                    activityIdentifier: ActivityType.backPain.rawValue,
                                                                    startDate: queryDateRange.start,
@@ -86,6 +137,11 @@ class InsightsBuilder {
         let aggregateDataOperation = BlockOperation {
             // Copy the queried data from the query operations to the `BuildInsightsOperation`.
             buildInsightsOperation.medicationEvents = medicationEventsOperation.dailyEvents
+            buildInsightsOperation.hamstringStretchEvents = hamstringStretchEventsOperation.dailyEvents
+            buildInsightsOperation.outdoorWalkEvents = outdoorWalkEventsOperation.dailyEvents
+            buildInsightsOperation.bloodGlucoseEvents = bloodGlucoseEventsOperation.dailyEvents
+            buildInsightsOperation.weightEvents = weightEventsOperation.dailyEvents
+            buildInsightsOperation.moodEvents = moodEventsOperation.dailyEvents
             buildInsightsOperation.backPainEvents = backPainEventsOperation.dailyEvents
         }
         
@@ -110,6 +166,11 @@ class InsightsBuilder {
         
         // The aggregate operation is dependent on the query operations.
         aggregateDataOperation.addDependency(medicationEventsOperation)
+        aggregateDataOperation.addDependency(hamstringStretchEventsOperation)
+        aggregateDataOperation.addDependency(outdoorWalkEventsOperation)
+        aggregateDataOperation.addDependency(bloodGlucoseEventsOperation)
+        aggregateDataOperation.addDependency(weightEventsOperation)
+        buildInsightsOperation.addDependency(moodEventsOperation)
         aggregateDataOperation.addDependency(backPainEventsOperation)
         
         // The `BuildInsightsOperation` is dependent on the aggregate operation.
@@ -118,6 +179,11 @@ class InsightsBuilder {
         // Add all the operations to the operation queue.
         updateOperationQueue.addOperations([
             medicationEventsOperation,
+            hamstringStretchEventsOperation,
+            outdoorWalkEventsOperation,
+            bloodGlucoseEventsOperation,
+            weightEventsOperation,
+            moodEventsOperation,
             backPainEventsOperation,
             aggregateDataOperation,
             buildInsightsOperation

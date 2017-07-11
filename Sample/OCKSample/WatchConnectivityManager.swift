@@ -47,7 +47,7 @@ class WatchConnectivityManager : NSObject {
     
     init(withStore store : OCKCarePlanStore) {
         self.store = store
-        self.session = WCSession.default()
+        self.session = WCSession.default
 
         super.init()
         
@@ -64,9 +64,6 @@ class WatchConnectivityManager : NSObject {
 extension WatchConnectivityManager : OCKCarePlanStoreDelegate {
     
     func carePlanStore(_ store: OCKCarePlanStore, didReceiveUpdateOf event: OCKCarePlanEvent) {
-        if event.activity.type != .intervention {
-            return
-        }
         
         let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
         
@@ -86,26 +83,36 @@ extension WatchConnectivityManager : OCKCarePlanStoreDelegate {
         try? self.session.updateApplicationContext(["glyphType" : self.glyphType])
         
         if eventIsToday {
-            self.store.events(onDate: today, type: .intervention, completion: { (allEventsArray, errorOrNil) in
-                let eventsCompleted = allEventsArray.map({$0.filter({$0.state == OCKCarePlanEventState.completed}).count}).reduce(0, +)
-                let totalEvents = allEventsArray.map({$0.count}).reduce(0, +)
-                let completionPercentage = round(Float(eventsCompleted) * 100.0 / Float(totalEvents))
+            
+            weak var weakSelf = self
+            self.store.events(onDate: today, type: .intervention, completion: { (allInterventionsArray, errorOrNil) in
+                let interventionsCompleted = allInterventionsArray.map({$0.filter({$0.state == OCKCarePlanEventState.completed && !$0.activity.optional}).count}).reduce(0, +)
+                let totalInterventions = allInterventionsArray.map({$0.filter({!$0.activity.optional}).count}).reduce(0, +)
                 
-                if self.session.isReachable {
-                    let data = NSMutableData()
-                    let encoder = NSKeyedArchiver(forWritingWith: data)
-                    
-                    encoder.encode("updateEvent", forKey: "type")
-                    encoder.encode(self.parseEventToDictionary(event), forKey: "event")
-                    encoder.encode(Int64(completionPercentage), forKey: "currentCompletionPercentage")
-                 
-                    encoder.finishEncoding()
-                    self.session.sendMessageData(data as Data, replyHandler: nil, errorHandler: nil)
-                } else {
-                    self.session.transferCurrentComplicationUserInfo(["glyphType" : self.glyphType,
-                                                                      "glyphTintColor" : self.glyphTintColor,
-                                                                      "glyphImageName" : self.glyphImageName])
-                    try? self.session.updateApplicationContext(["glyphType" : self.glyphType,"currentCompletionPercentage" : completionPercentage, "eventsRemaining" : totalEvents - eventsCompleted])
+                if let strongSelf = weakSelf {
+                    strongSelf.store.events(onDate: today, type: .assessment, completion: { (allAssessmentsArray, errorOrNil) in
+                        let assessmentsCompleted = allAssessmentsArray.map({$0.filter({$0.state == OCKCarePlanEventState.completed && !$0.activity.optional}).count}).reduce(0, +)
+                        let totalAssessments = allAssessmentsArray.map({$0.filter({!$0.activity.optional}).count}).reduce(0, +)
+                        let eventsCompleted = interventionsCompleted + assessmentsCompleted
+                        let totalEvents = totalInterventions + totalAssessments
+                        let completionPercentage = round(Float(eventsCompleted) * 100.0 / Float(totalEvents))
+                        if strongSelf.session.isReachable {
+                            let data = NSMutableData()
+                            let encoder = NSKeyedArchiver(forWritingWith: data)
+                            
+                            encoder.encode("updateEvent", forKey: "type")
+                            encoder.encode(strongSelf.parseEventToDictionary(event), forKey: "event")
+                            encoder.encode(Int64(completionPercentage), forKey: "currentCompletionPercentage")
+                            
+                            encoder.finishEncoding()
+                            strongSelf.session.sendMessageData(data as Data, replyHandler: nil, errorHandler: nil)
+                        } else {
+                            strongSelf.session.transferCurrentComplicationUserInfo(["glyphType" : strongSelf.glyphType,
+                                                                              "glyphTintColor" : strongSelf.glyphTintColor,
+                                                                              "glyphImageName" : strongSelf.glyphImageName])
+                            try? strongSelf.session.updateApplicationContext(["glyphType" : strongSelf.glyphType,"currentCompletionPercentage" : completionPercentage, "eventsRemaining" : totalEvents - eventsCompleted])
+                        }
+                    })
                 }
             })
         }
@@ -120,16 +127,25 @@ extension WatchConnectivityManager : OCKCarePlanStoreDelegate {
             let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
             let today = calendar.dateComponents([.day, .month, .year, .era], from: Date())
             
-            self.store.events(onDate: today, type: .intervention, completion: { (allEventsArray, errorOrNil) in
-                let eventsCompleted = allEventsArray.map({$0.filter({$0.state == OCKCarePlanEventState.completed}).count}).reduce(0, +)
-                let totalEvents = allEventsArray.map({$0.count}).reduce(0, +)
-                let completionPercentage = round(Float(eventsCompleted) * 100.0 / Float(totalEvents))
-        
-                try? self.session.updateApplicationContext(["glyphType" : self.glyphType, "currentCompletionPercentage" : completionPercentage, "eventsRemaining" : totalEvents - eventsCompleted])
-                self.session.transferCurrentComplicationUserInfo(["glyphType" : self.glyphType,
-                                                                  "glyphTintColor" : self.glyphTintColor,
-                                                                  "glyphImageName" : self.glyphImageName])
+            weak var weakSelf = self
+            self.store.events(onDate: today, type: .intervention, completion: { (allInterventionsArray, errorOrNil) in
+                let interventionsCompleted = allInterventionsArray.map({$0.filter({$0.state == OCKCarePlanEventState.completed && !$0.activity.optional}).count}).reduce(0, +)
+                let totalInterventions = allInterventionsArray.map({$0.filter({!$0.activity.optional}).count}).reduce(0, +)
                 
+                if let strongSelf = weakSelf {
+                    strongSelf.store.events(onDate: today, type: .assessment, completion: { (allAssessmentsArray, errorOrNil) in
+                        let assessmentsCompleted = allAssessmentsArray.map({$0.filter({$0.state == OCKCarePlanEventState.completed && !$0.activity.optional}).count}).reduce(0, +)
+                        let totalAssessments = allAssessmentsArray.map({$0.filter({!$0.activity.optional}).count}).reduce(0, +)
+                        let eventsCompleted = interventionsCompleted + assessmentsCompleted
+                        let totalEvents = totalInterventions + totalAssessments
+                        let completionPercentage = round(Float(eventsCompleted) * 100.0 / Float(totalEvents))
+                        
+                        try? self.session.updateApplicationContext(["glyphType" : self.glyphType, "currentCompletionPercentage" : completionPercentage, "eventsRemaining" : totalEvents - eventsCompleted])
+                        self.session.transferCurrentComplicationUserInfo(["glyphType" : self.glyphType,
+                                                                          "glyphTintColor" : self.glyphTintColor,
+                                                                          "glyphImageName" : self.glyphImageName])
+                    })
+                }
             })
         }
     }
@@ -188,7 +204,7 @@ extension WatchConnectivityManager : WCSessionDelegate {
     }
 
     func sessionDidDeactivate(_ session: WCSession) {
-        WCSession.default().activate()
+        WCSession.default.activate()
     }
    
     func session(_ session: WCSession, didReceiveMessageData messageData: Data, replyHandler: @escaping (Data) -> Void) {
@@ -266,29 +282,29 @@ extension WatchConnectivityManager : WCSessionDelegate {
         var masterEventsArray = [String : [[String : Any]]]()
         
         let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
-
         let today = calendar.dateComponents([.day, .month, .year, .era], from: Date())
         
+        weak var weakSelf = self
         
-        self.store.events(onDate: today, type: .intervention, completion: { (allEventsArray, errorOrNil) in
+        self.store.events(onDate: today, type: .intervention, completion: { (allInterventionsArray, errorOrNil) in
             // allEventsArray is grouped by activity.
             var order = [String]()
-            var activitiesParsed = 0
-            for eventActivityGroup in allEventsArray {
-                if eventActivityGroup.count == 0 {
+            var interventionsParsed = 0
+            for interventionActivityGroup in allInterventionsArray {
+                if interventionActivityGroup.count == 0 {
                     continue
                 }
                 
-                var activityEventArray = [[String : Any]]()
-                activitiesArray.append(self.parseActivityToDictionary(eventActivityGroup[0].activity, numberOfEventsForToday: UInt(eventActivityGroup.count)))
-                for event in eventActivityGroup {
-                    activityEventArray.append(self.parseEventToDictionary(event))
+                var interventionEventArray = [[String : Any]]()
+                activitiesArray.append(self.parseActivityToDictionary(interventionActivityGroup[0].activity, numberOfEventsForToday: UInt(interventionActivityGroup.count)))
+                for event in interventionActivityGroup {
+                    interventionEventArray.append(self.parseEventToDictionary(event))
                 }
-                masterEventsArray[eventActivityGroup[0].activity.identifier] = activityEventArray
-                order.append(eventActivityGroup[0].activity.identifier)
+                masterEventsArray[interventionActivityGroup[0].activity.identifier] = interventionEventArray
+                order.append(interventionActivityGroup[0].activity.identifier)
                 
-                activitiesParsed += 1
-                if activitiesParsed == 2 {
+                interventionsParsed += 1
+                if interventionsParsed == 2 {
                     let initialReplyData = NSMutableData()
                     let initialEncoder = NSKeyedArchiver(forWritingWith: initialReplyData)
                     initialEncoder.encode("allDataInitial", forKey: "type")
@@ -301,12 +317,43 @@ extension WatchConnectivityManager : WCSessionDelegate {
                 }
             }
             
-            encoder.encode(order, forKey: "activityOrder")
-            encoder.encode(activitiesArray, forKey: "activities")
-            encoder.encode(masterEventsArray, forKey: "events")
-            
-            encoder.finishEncoding()
-            self.session.sendMessageData(data as Data, replyHandler: nil, errorHandler: nil)
+            if let strongSelf = weakSelf {
+                strongSelf.store.events(onDate: today, type: .assessment, completion: { (allAssessmentsArray, errorOrNil) in
+                    var assessmentsParsed = 0
+                    for assessmentActivityGroup in allAssessmentsArray {
+                        if assessmentActivityGroup.count == 0 {
+                            continue
+                        }
+                        
+                        var assessmentEventArray = [[String : Any]]()
+                        activitiesArray.append(self.parseActivityToDictionary(assessmentActivityGroup[0].activity, numberOfEventsForToday: UInt(1)))
+                        
+                        assessmentEventArray.append(self.parseEventToDictionary(assessmentActivityGroup.first!))
+                        
+                        masterEventsArray[assessmentActivityGroup[0].activity.identifier] = assessmentEventArray
+                        order.append(assessmentActivityGroup[0].activity.identifier)
+                        
+                        assessmentsParsed += 1
+                        if assessmentsParsed == 2 {
+                            let initialReplyData = NSMutableData()
+                            let initialEncoder = NSKeyedArchiver(forWritingWith: initialReplyData)
+                            initialEncoder.encode("allDataInitial", forKey: "type")
+                            initialEncoder.encode(order, forKey: "activityOrder")
+                            initialEncoder.encode(activitiesArray, forKey: "activities")
+                            initialEncoder.encode(masterEventsArray, forKey: "events")
+                            
+                            initialEncoder.finishEncoding()
+                            initialCompletion(initialReplyData as Data)
+                        }
+                    }
+                    encoder.encode(order, forKey: "activityOrder")
+                    encoder.encode(activitiesArray, forKey: "activities")
+                    encoder.encode(masterEventsArray, forKey: "events")
+                    
+                    encoder.finishEncoding()
+                    self.session.sendMessageData(data as Data, replyHandler: nil, errorHandler: nil)
+                })
+            }
         })
         
     }
@@ -315,6 +362,14 @@ extension WatchConnectivityManager : WCSessionDelegate {
         var activityDictionary = [String: Any]()
         activityDictionary["identifier"] = activity.identifier
         activityDictionary["title"] = activity.title
+        activityDictionary["isOptional"] = activity.optional
+        
+        if activity.type == .intervention {
+            activityDictionary["isIntervention"] = true
+        }
+        else {
+            activityDictionary["isIntervention"] = false
+        }
         
         if activity.text != nil {
             activityDictionary["text"] = activity.text

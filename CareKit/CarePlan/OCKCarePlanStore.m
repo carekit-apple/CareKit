@@ -121,7 +121,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     return self;
 }
 
-- (NSURL*)directoryURL {
+- (NSURL *)directoryURL {
     return _persistenceDirectoryURL;
 }
 

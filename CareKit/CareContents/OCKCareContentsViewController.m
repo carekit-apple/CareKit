@@ -108,8 +108,8 @@
     self.store.careCardUIDelegate = self;
     [self setGlyphTintColor: _glyphTintColor];
     NSDictionary *_initialDictionary = @{ @(OCKCarePlanActivityTypeAssessment): [NSMutableArray new],
-                                          @(OCKCarePlanActivityTypeIntervention): [NSMutableArray new],
-                                          @(OCKCarePlanActivityTypeReadOnly): [NSMutableArray new] };
+                                         @(OCKCarePlanActivityTypeIntervention): [NSMutableArray new],
+                                         @(OCKCarePlanActivityTypeReadOnly): [NSMutableArray new] };
     _allEvents = [_initialDictionary mutableCopy];
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:OCKLocalizedString(@"TODAY_BUTTON_TITLE", nil)
@@ -117,7 +117,7 @@
                                                                              target:self
                                                                              action:@selector(showToday:)];
     self.navigationItem.rightBarButtonItem.tintColor = self.glyphTintColor;
-    
+
     _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
     _tableView.dataSource = self;
     _tableView.delegate = self;
@@ -133,7 +133,7 @@
     
     self.navigationController.navigationBar.translucent = NO;
     [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:245.0/255.0 green:244.0/255.0 blue:246.0/255.0 alpha:1.0]];
-    
+
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -351,7 +351,7 @@
                           [_tableView reloadData];
                       });
                   }];
-    
+
 }
 
 - (void)updateHeaderView {
@@ -768,7 +768,7 @@
         }
         
         cell.readOnlyEvent = event;
-        
+
         return cell;
     }
     else {

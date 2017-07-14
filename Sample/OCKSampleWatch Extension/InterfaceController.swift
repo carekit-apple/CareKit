@@ -73,7 +73,7 @@ class InterfaceController: WKInterfaceController {
         self.setTitle("")
         loaderGroup.setHidden(false)
         loaderImage.startAnimating()
-        loaderLabel.setText("Loading\nCare Card")
+        loaderLabel.setText("Loading\nCare Contents")
         activities.removeAll()
         activityOrder.removeAll()
         activityRowIndices.removeAll()

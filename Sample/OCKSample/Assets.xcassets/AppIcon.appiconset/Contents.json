@@ -103,11 +103,6 @@
       "scale" : "2x"
     },
     {
-      "idiom" : "ios-marketing",
-      "size" : "1024x1024",
-      "scale" : "1x"
-    },
-    {
       "size" : "24x24",
       "idiom" : "watch",
       "filename" : "Icon-Homescreen-24x24@2x.png",

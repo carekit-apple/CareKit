@@ -296,7 +296,8 @@
 }
 
 - (void)setSelectedDate:(NSDateComponents *)selectedDate {
-    _selectedDate = selectedDate;
+    NSDateComponents *today = [self today];
+    _selectedDate = [selectedDate isLaterThan:today] ? today : selectedDate;
     
     _weekViewController.weekView.isToday = [[self today] isEqualToDate:selectedDate];
     _weekViewController.weekView.selectedIndex = self.selectedDate.weekday - 1;
@@ -583,6 +584,11 @@
     self.selectedDate = selectedDate;
 }
 
+- (BOOL)weekViewCanSelectDayAtIndex:(NSUInteger)index {
+    NSDateComponents *today = [self today];
+    NSDateComponents *selectedDate = [self dateFromSelectedIndex:index];
+    return ![selectedDate isLaterThan:today];
+}
 
 #pragma mark - OCKCarePlanStoreDelegate
 
@@ -658,7 +664,7 @@
     controller.weekView.tintColor = self.glyphTintColor;
     controller.weekView.isCareCard = YES;
     controller.weekView.glyphType = self.glyphType;
-    return controller;
+    return (![self.selectedDate isInSameWeekAsDate:[self today]]) ? controller : nil;
 }
 
 

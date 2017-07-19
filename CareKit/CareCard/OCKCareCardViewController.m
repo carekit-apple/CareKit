@@ -132,7 +132,9 @@
 
 - (void)showToday:(id)sender {
     self.selectedDate = [NSDateComponents ock_componentsWithDate:[NSDate date] calendar:_calendar];
-    [_tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:NSNotFound inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
+    if (_tableViewData.count > 0) {
+        [_tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:NSNotFound inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
+    }
 }
 
 - (void)prepareView {
@@ -140,10 +142,9 @@
         _headerView = [[OCKHeaderView alloc] initWithFrame:CGRectZero];
         [self.view addSubview:_headerView];
     }
-    if ([_headerTitle length] == 0) {
-        _headerTitle = OCKLocalizedString(@"CARE_CARD_HEADER_TITLE", nil);
+    if ([_headerTitle length] > 0) {
+        _headerView.title = _headerTitle;
     }
-    _headerView.title = _headerTitle;
     _headerView.tintColor = self.glyphTintColor;
     if (self.glyphType == OCKGlyphTypeCustom) {
         UIImage *glyphImage = [self createCustomImageName:self.customGlyphImageName];
@@ -309,9 +310,7 @@
 
 - (void)setHeaderTitle:(NSString *)headerTitle {
     _headerTitle = headerTitle;
-    if ([_headerTitle length] == 0) {
-        _headerView.title = OCKLocalizedString(@"CARE_CARD_HEADER_TITLE", nil);
-    } else {
+    if ([_headerTitle length] > 0) {
         _headerView.title = _headerTitle;
     }
 }

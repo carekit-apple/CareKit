@@ -130,7 +130,9 @@
 
 - (void)showToday:(id)sender {
     self.selectedDate = [NSDateComponents ock_componentsWithDate:[NSDate date] calendar:_calendar];
-    [_tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:NSNotFound inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
+    if (_tableViewData.count > 0) {
+        [_tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:NSNotFound inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
+    }
 }
 
 - (void)prepareView {
@@ -144,10 +146,9 @@
         UIImage *glyphImage = [self createCustomImageName:self.customGlyphImageName];
         _headerView.glyphImage = glyphImage;
     }
-    if ([_headerTitle length] == 0) {
-        _headerTitle = OCKLocalizedString(@"SYMPTOM_TRACKER_HEADER_TITLE", nil);
+    if ([_headerTitle length] > 0) {
+        _headerView.title = _headerTitle;
     }
-    _headerView.title = _headerTitle;
     _headerView.isCareCard = NO;
     _headerView.glyphType = self.glyphType;
  
@@ -308,9 +309,7 @@
 
 - (void)setHeaderTitle:(NSString *)headerTitle {
     _headerTitle = headerTitle;
-    if ([_headerTitle length] == 0) {
-        _headerView.title = OCKLocalizedString(@"SYMPTOM_TRACKER_HEADER_TITLE", nil);
-    } else {
+    if ([_headerTitle length] > 0) {
         _headerView.title = _headerTitle;
     }
 }

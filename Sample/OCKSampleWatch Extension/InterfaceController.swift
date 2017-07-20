@@ -133,7 +133,7 @@ class InterfaceController: WKInterfaceController {
         let activityChildEvents = activity.eventsForToday
         let activityEventRows = getRowIndex(ofEventIndex: activityChildEvents.count - 1) + 1
         
-        tableView.insertRows(at: IndexSet.init(integersIn: Range(NSMakeRange(rowIndex, activityEventRows)) ?? 0..<0) , withRowType: "EventRow")
+        tableView.insertRows(at: IndexSet.init(integersIn: NSMakeRange(rowIndex, activityEventRows).toRange() ?? 0..<0) , withRowType: "EventRow")
         
         for childRowIndex in 0..<activityEventRows {
             if let row = tableView.rowController(at: rowIndex + childRowIndex) as? EventRow {

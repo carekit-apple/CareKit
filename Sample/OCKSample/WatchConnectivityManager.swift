@@ -47,7 +47,7 @@ class WatchConnectivityManager : NSObject {
     
     init(withStore store : OCKCarePlanStore) {
         self.store = store
-        self.session = WCSession.default
+        self.session = WCSession.default()
 
         super.init()
         
@@ -204,7 +204,7 @@ extension WatchConnectivityManager : WCSessionDelegate {
     }
 
     func sessionDidDeactivate(_ session: WCSession) {
-        WCSession.default.activate()
+        WCSession.default().activate()
     }
    
     func session(_ session: WCSession, didReceiveMessageData messageData: Data, replyHandler: @escaping (Data) -> Void) {

@@ -159,7 +159,9 @@ static const CGFloat MarginBetweenBarAndLabel = 10.0;
 
 - (void)prepareView {
 
-    self.backgroundColor = [UIColor whiteColor];
+	//AVEXIA
+    self.backgroundColor = [UIColor clearColor];
+	//AVEXIA
     
     _barView = [UIView new];
     _barLayer = [[CAShapeLayer alloc] init];
@@ -274,8 +276,10 @@ static const CGFloat MarginBetweenBarAndLabel = 10.0;
 }
 
 - (void)prepareView {
-    self.backgroundColor = [UIColor whiteColor];
-    
+//AVEXIA
+	self.backgroundColor = [UIColor clearColor];
+    //AVEXIA
+	
     _labelBox = [UIView new];
     _labelBox.translatesAutoresizingMaskIntoConstraints = NO;
     [self addSubview:_labelBox];
@@ -470,12 +474,17 @@ static const CGFloat MarginBetweenBarAndLabel = 10.0;
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        self.backgroundColor = [UIColor whiteColor];
+		//AVEXIA
+        self.backgroundColor = [UIColor clearColor];
+		//AVEXIA
         _colorBox = [UIView new];
         _colorBox.translatesAutoresizingMaskIntoConstraints = NO;
         [self addSubview:_colorBox];
         _label = [OCKLabel new];
         _label.translatesAutoresizingMaskIntoConstraints = NO;
+		//AVEXIA
+		_label.backgroundColor = [UIColor clearColor];
+		//AVEXIA
         _label.font = [UIFont systemFontOfSize:12.0];
         [self addSubview:_label];
         [self setUpConstraints];
@@ -562,8 +571,10 @@ static const CGFloat MarginBetweenBarAndLabel = 10.0;
             CGSize size = [cell systemLayoutSizeFittingSize:CGSizeMake(1, 1) withHorizontalFittingPriority:UILayoutPriorityFittingSizeLevel verticalFittingPriority:UILayoutPriorityFittingSizeLevel];
             cell.frame = CGRectMake(0, 0, size.width, size.height);
             [tc.contentView addSubview:cell];
-            
-            UIGraphicsBeginImageContextWithOptions(cell.frame.size, YES, 0.0);
+			
+			//AVEXIA - NO on OPAQUE
+            UIGraphicsBeginImageContextWithOptions(cell.frame.size, NO, 0.0);
+			//AVEXIA
             [cell.layer renderInContext:UIGraphicsGetCurrentContext()];
             UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
             UIGraphicsEndImageContext();
@@ -583,7 +594,10 @@ static const CGFloat MarginBetweenBarAndLabel = 10.0;
         self.lineBreakMode = NSLineBreakByWordWrapping;
         self.attributedText = string;
         self.textAlignment = NSTextAlignmentCenter;
-        self.backgroundColor = [UIColor whiteColor];
+		
+		//AVEXIA
+		self.backgroundColor = [UIColor clearColor];
+		//AVEXIA
     }
     return self;
 }

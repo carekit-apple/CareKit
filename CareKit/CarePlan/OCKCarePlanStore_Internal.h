@@ -32,9 +32,9 @@
 #import <CareKit/CareKit.h>
 
 
-@interface OCKCarePlanStore ()
-
-@property (nonatomic, weak, nullable) id<OCKCarePlanStoreDelegate> careCardUIDelegate;
-@property (nonatomic, weak, nullable) id<OCKCarePlanStoreDelegate> symptomTrackerUIDelegate;
-
-@end
+//@interface OCKCarePlanStore ()
+//
+//@property (nonatomic, weak, nullable) id<OCKCarePlanStoreDelegate> careCardUIDelegate;
+//@property (nonatomic, weak, nullable) id<OCKCarePlanStoreDelegate> symptomTrackerUIDelegate;
+//
+//@end

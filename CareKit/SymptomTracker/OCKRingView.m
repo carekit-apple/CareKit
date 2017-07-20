@@ -67,9 +67,14 @@ static const double VALUE_MAX = 1.0;
         _backgroundLayer = [self createShapeLayerWithValue:VALUE_MAX];
         _backgroundLayer.borderWidth = 10;
         _backgroundLayer.borderColor = self.tintColor.CGColor;
-        _backgroundLayer.strokeColor = [UIColor groupTableViewBackgroundColor].CGColor;
+		
+		//AVEXIA CHANGE
+		_backgroundLayer.strokeColor = [UIColor colorWithRed:0.733 green:0.731 blue:0.763 alpha:1.000].CGColor;
+//		_backgroundLayer.strokeColor = [UIColor groupTableViewBackgroundColor].CGColor;
+		//AVEXIA CHANGE
+		
         [self.layer addSublayer:_backgroundLayer];
-        
+		
         _activeGlyphLayer = [self createActiveGlyphLayer];
         _activeGlyphLayer.strokeEnd = 0.0;
         
@@ -147,7 +152,7 @@ static const double VALUE_MAX = 1.0;
         
     } else {
         if (value != VALUE_MAX) {
-            if(![self.superview isKindOfClass:[OCKHeaderView class]]){
+            if(!self.isCareCard){
                 _glyphImageView.image = nil;
                 _backgroundLayer.fillColor = [UIColor clearColor].CGColor;
             } else{
@@ -242,7 +247,7 @@ static const double VALUE_MAX = 1.0;
         _glyphImageView.layer.mask = nil;
         _backgroundLayer.strokeColor = self.tintColor.CGColor;
         
-        if(![self.superview isKindOfClass:[OCKHeaderView class]]) {
+        if(!self.isCareCard) {
             UIImage *smallImage = [self getCompletionImage];
             _glyphImageView.image = smallImage;
             _backgroundLayer.fillColor = self.tintColor.CGColor;
@@ -265,7 +270,7 @@ static const double VALUE_MAX = 1.0;
         
         _backgroundLayer.strokeColor = [UIColor groupTableViewBackgroundColor].CGColor;
         
-        if(![self.superview isKindOfClass:[OCKHeaderView class]]){
+        if(!self.isCareCard){
             _glyphImageView.image = nil;
             _backgroundLayer.fillColor = [UIColor clearColor].CGColor;
         }else{

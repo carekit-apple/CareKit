@@ -79,3 +79,14 @@
 
 // Colors
 #import <CareKit/OCKColor.h>
+
+//Avexia
+#import <CareKit/NSDateComponents+CarePlanInternal.h>
+//#import "OCKDefines_Private.h"
+#import <CareKit/OCKGlyph_Internal.h>
+#import <CareKit/OCKWeekViewController.h>
+#import <CareKit/OCKWeekView.h>
+#import <CareKit/OCKHelpers.h>
+#import <CareKit/OCKCareCardButton.h>
+#import <CareKit/OCKRingView.h>
+#import <CareKit/OCKLabel.h>

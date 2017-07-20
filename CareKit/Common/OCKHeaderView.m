@@ -280,7 +280,8 @@ static const CGFloat RingViewSize = 110.0;
 }
 
 - (NSString *)accessibilityLabel {
-    return OCKAccessibilityStringForVariables(self.ringView, _titleLabel, _dateLabel);
+	return @"Header";
+//    return OCKAccessibilityStringForVariables(self.ringView, _titleLabel, _dateLabel);
 }
 
 @end

@@ -32,50 +32,76 @@
 #import "OCKCareCardButton.h"
 #import <QuartzCore/QuartzCore.h>
 
-
-static const CGFloat ButtonSize = 30.0;
+//AVEXIA
+static const CGFloat ButtonSize = 24.0;
 
 @implementation OCKCareCardButton {
-    CAShapeLayer *_circleLayer;
+	CAShapeLayer *_circleLayer;
 }
 
-- (void)drawRect:(CGRect)rect {
-    if (!_circleLayer) {
-        _circleLayer = [CAShapeLayer layer];
-        _circleLayer.strokeColor = self.tintColor.CGColor;
-        _circleLayer.fillColor = [UIColor clearColor].CGColor;
-        [self updateFillColorForSelection:self.isSelected];
-        _circleLayer.lineWidth = 2.5;
-        _circleLayer.path = [UIBezierPath bezierPathWithOvalInRect:CGRectMake(0, 0, ButtonSize, ButtonSize)].CGPath;
-        _circleLayer.fillRule = kCAFillRuleNonZero;
-        [self.layer addSublayer:_circleLayer];
-        
-        [[UIColor clearColor] setFill];
-        UIRectFill(_circleLayer.frame);
-    }
+-(instancetype)initWithCoder:(NSCoder *)aDecoder {
+	id myself = [super initWithCoder:aDecoder];
+	
+	[self setupCircle];
+	return myself;
+}
+
+-(instancetype)initWithFrame:(CGRect)frame {
+	id myself = [super initWithFrame:frame];
+	
+	[self setupCircle];
+	return myself;
+}
+
+- (void)setupCircle{
+	self.backgroundColor = UIColor.clearColor;
+	if (!_circleLayer) {
+		_circleLayer = [CAShapeLayer layer];
+		_circleLayer.strokeColor = self.tintColor.CGColor;
+		_circleLayer.fillColor = [UIColor clearColor].CGColor;
+		[self updateFillColorForSelection:self.isSelected];
+		_circleLayer.lineWidth = 2.5;
+		_circleLayer.path = [UIBezierPath bezierPathWithOvalInRect:CGRectMake(0, 0, ButtonSize, ButtonSize)].CGPath;
+		_circleLayer.fillRule = kCAFillRuleNonZero;
+		[self.layer addSublayer:_circleLayer];
+	}
+}
+
+-(void)layoutSubviews {
+	[super layoutSubviews];
+	
+	_circleLayer.contentsGravity = kCAGravityCenter;
+	CGSize size = self.bounds.size;
+	_circleLayer.position = CGPointMake(size.width/2, size.height/2);
+	_circleLayer.bounds = self.bounds;
 }
 
 - (void)setSelected:(BOOL)selected {
-    [self updateFillColorForSelection:selected];
-    [super setSelected:selected];
+	[self updateFillColorForSelection:selected];
+	[super setSelected:selected];
 }
 
 - (void)updateFillColorForSelection:(BOOL)selection {
-    if (selection) {
-        [_circleLayer addAnimation:[self animFillColorWithDur:0.15 startCol:[UIColor whiteColor] endColor:self.tintColor] forKey:@"animKey"];
-    } else {
-        _circleLayer.fillColor = [UIColor whiteColor].CGColor;
-    }
+	if (selection) {
+		[_circleLayer addAnimation:[self animFillColorWithDur:0.15 startCol:[UIColor whiteColor] endColor:self.tintColor] forKey:@"animKey"];
+	} else {
+		_circleLayer.fillColor = [UIColor clearColor].CGColor;
+	}
 }
 
 - (CABasicAnimation *)animFillColorWithDur:(CGFloat)dur startCol:(UIColor *)start endColor:(UIColor *)end {
-    CABasicAnimation *animFill = [CABasicAnimation animationWithKeyPath:@"fillColor"];
-    [animFill setDuration:dur];
-    [animFill setFromValue:(id)start.CGColor];
-    [animFill setToValue:(id)end.CGColor];
-    [animFill setRemovedOnCompletion:NO];
-    [animFill setFillMode:kCAFillModeBoth];
-    return animFill;
+	CABasicAnimation *animFill = [CABasicAnimation animationWithKeyPath:@"fillColor"];
+	[animFill setDuration:dur];
+	[animFill setFromValue:(id)start.CGColor];
+	[animFill setToValue:(id)end.CGColor];
+	[animFill setRemovedOnCompletion:NO];
+	[animFill setFillMode:kCAFillModeBoth];
+	return animFill;
 }
+
+-(CGSize)intrinsicContentSize {
+	return CGSizeMake(ButtonSize, ButtonSize);
+}
+//AVEXIA
 
 @end

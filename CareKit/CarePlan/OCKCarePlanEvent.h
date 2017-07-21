@@ -63,7 +63,10 @@ typedef NS_ENUM(NSInteger, OCKCarePlanEventState) {
 OCK_CLASS_AVAILABLE
 @interface OCKCarePlanEvent : NSObject <NSSecureCoding, NSCopying>
 
-- (instancetype)init NS_UNAVAILABLE;
+//AVEXIA
+//We create a subclass of OCKCarePlanEvents for special alerts and items
+//- (instancetype)init NS_UNAVAILABLE;
+//AVEXIA
 
 /**
  The index of this event on a particular date. 

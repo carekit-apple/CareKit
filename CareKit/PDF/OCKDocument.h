@@ -218,4 +218,13 @@ OCK_CLASS_AVAILABLE
 
 @end
 
+
+/**
+ Defines a page break element to be included in a document.
+ */
+OCK_CLASS_AVAILABLE
+@interface OCKDocumentElementBreak : NSObject <OCKDocumentElement>
+
+@end
+
 NS_ASSUME_NONNULL_END

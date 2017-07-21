@@ -340,3 +340,19 @@ static NSString *imageTagFromView (UIView *view) {
 }
 
 @end
+
+
+@implementation OCKDocumentElementBreak
+
+- (NSString *)HTMLContent {
+    NSString *html = @"";
+    html = [html stringByAppendingString:@"<div style=\"page-break-before:always\">&nbsp;</div>"];
+    return html;
+}
+
+- (instancetype)copyWithZone:(NSZone *)zone {
+    OCKDocumentElementBreak *element = [[[self class] allocWithZone:zone] init];
+    return element;
+}
+
+@end

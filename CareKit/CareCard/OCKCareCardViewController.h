@@ -184,12 +184,18 @@ OCK_CLASS_AVAILABLE
 /**
  The property that allows activities to be grouped.
  
+ If true, the activities will be grouped by groupIdentifier into sections, 
+ otherwise the activities will all be in one section and groupIdentifier is ignored.
+ 
  The default is true.
  */
 @property (nonatomic) BOOL isGrouped;
 
 /**
  The property that allows activities to be sorted.
+ 
+ If true, the activities will be sorted alphabetically by title and by groupIdentifier if isGrouped is true,
+ otherwise the activities will be sorted in the order they are added in the care plan store.
  
  The default is true.
  */

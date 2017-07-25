@@ -285,7 +285,8 @@
 }
 
 - (void)setSelectedDate:(NSDateComponents *)selectedDate {
-    _selectedDate = selectedDate;
+    NSDateComponents *today = [self today];
+    _selectedDate = [selectedDate isLaterThan:today] ? today : selectedDate;
     
     _weekViewController.weekView.isToday = [[self today] isEqualToDate:selectedDate];
     _weekViewController.weekView.selectedIndex = self.selectedDate.weekday - 1;
@@ -396,7 +397,9 @@
                                     startDate:[NSDateComponents ock_componentsWithDate:startOfWeek calendar:_calendar]
                                       endDate:[NSDateComponents ock_componentsWithDate:endOfWeek calendar:_calendar]
                                       handler:^(NSDateComponents *date, NSUInteger completedEvents, NSUInteger totalEvents) {
-                                          if (totalEvents == 0) {
+                                          if ([date isLaterThan:[self today]]) {
+                                              [values addObject:@(0)];
+                                          } else if (totalEvents == 0) {
                                               [values addObject:@(1)];
                                           } else {
                                               [values addObject:@((float)completedEvents/totalEvents)];
@@ -490,6 +493,11 @@
     self.selectedDate = selectedDate;
 }
 
+- (BOOL)weekViewCanSelectDayAtIndex:(NSUInteger)index {
+    NSDateComponents *today = [self today];
+    NSDateComponents *selectedDate = [self dateFromSelectedIndex:index];
+    return ![selectedDate isLaterThan:today];
+}
 
 #pragma mark - OCKCarePlanStoreDelegate
 

@@ -36,7 +36,8 @@
 #import "OCKDefines_Private.h"
 
 
-static const CGFloat HeaderViewHeight = 100.0;
+//AVEXIA Health
+static const CGFloat HeaderViewHeight = 25.0;
 
 @implementation OCKCareCardDetailViewController {
     OCKCareCardDetailHeaderView *_headerView;

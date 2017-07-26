@@ -37,7 +37,7 @@
 static const CGFloat LeadingMargin = 20.0;
 static const CGFloat TrailingMargin = 20.0;
 static const CGFloat BottomMargin = 15.0;
-static const CGFloat TopMargin = 50.0;
+static const CGFloat TopMargin = 15.0; //AVEXIA
 
 @implementation OCKCareCardDetailHeaderView {
     OCKLabel *_titleLabel;

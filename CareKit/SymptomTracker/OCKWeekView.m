@@ -57,19 +57,21 @@ static const CGFloat TrailingMargin = 15.0;
 }
 
 - (void)prepareView {
-    
-    if (!UIAccessibilityIsReduceTransparencyEnabled()) {
-        self.backgroundColor = [UIColor groupTableViewBackgroundColor];
-        
-        UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleProminent];
-        UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-        blurEffectView.frame = self.bounds;
-        blurEffectView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-        [self addSubview:blurEffectView];
-    }
-    else {
-        self.backgroundColor = [UIColor whiteColor];
-    }
+	
+//AVEXIA CHANGE
+//    if (!UIAccessibilityIsReduceTransparencyEnabled()) {
+//        self.backgroundColor = [UIColor groupTableViewBackgroundColor];
+//        
+//        UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleProminent];
+//        UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+//        blurEffectView.frame = self.bounds;
+//        blurEffectView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+//        [self addSubview:blurEffectView];
+//    }
+//    else {
+//        self.backgroundColor = [UIColor whiteColor];
+//    }
+	//AVEXIA CHANGE
  
     if (!_weekView) {
         _weekView = [[OCKWeekLabelsView alloc] initWithFrame:CGRectZero];

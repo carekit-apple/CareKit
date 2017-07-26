@@ -297,6 +297,12 @@ Get all the `OCKCarePlanEvent` objects for a given date.
                                          date:(NSDateComponents *)date
                                    completion:(void (^)(BOOL success, OCKCarePlanThreshold * _Nullable threshold, NSError * _Nullable error))completion;
 
+/**
+ Delegates
+ */
+@property (nonatomic, weak, nullable) id<OCKCarePlanStoreDelegate> careCardUIDelegate;
+@property (nonatomic, weak, nullable) id<OCKCarePlanStoreDelegate> symptomTrackerUIDelegate;
+
 @end
 
 NS_ASSUME_NONNULL_END

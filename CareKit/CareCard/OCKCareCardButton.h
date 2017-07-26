@@ -31,7 +31,7 @@
 
 #import <UIKit/UIKit.h>
 
-
+IB_DESIGNABLE
 @interface OCKCareCardButton : UIButton
 
 @end

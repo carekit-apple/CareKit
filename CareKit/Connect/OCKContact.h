@@ -46,10 +46,15 @@ typedef NS_ENUM(NSInteger, OCKContactType) {
      */
     OCKContactTypeCareTeam = 0,
     
-    /**
-     A personal contact such as a friend or family member.
-     */
-    OCKContactTypePersonal
+	/**
+	 A personal contact such as a friend or family member.
+	 */
+	OCKContactTypePersonal,
+	
+	/**
+	 AVEXIA Specific: Social contact that's not so close as a friend or family member
+	 */
+	OCKContactTypeSocial
 };
 
 

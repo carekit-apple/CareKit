@@ -68,6 +68,10 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)symptomTrackerViewController:(OCKSymptomTrackerViewController *)viewController willDisplayEvents:(NSArray<NSArray<OCKCarePlanEvent*>*>*)events dateComponents:(NSDateComponents *)dateComponents;
 
+- (BOOL)shouldEnablePullToRefreshInSymptomTrackerViewController:(OCKSymptomTrackerViewController *)viewController;
+
+- (void)symptomTrackerViewController:(OCKSymptomTrackerViewController *)viewController didActivatePullToRefreshControl:(UIRefreshControl *)refreshControl;
+
 @end
 
 

@@ -57,6 +57,7 @@
 
 @implementation OCKCareContentsViewController {
     UITableView *_tableView;
+    UIRefreshControl *_refreshControl;
     NSMutableArray<NSMutableArray<OCKCarePlanEvent *> *> *_events;
     NSMutableArray *_weekValues;
     OCKHeaderView *_headerView;
@@ -131,6 +132,12 @@
     _tableView.estimatedSectionHeaderHeight = 0;
     _tableView.estimatedSectionFooterHeight = 0;
     
+    _refreshControl = [[UIRefreshControl alloc] init];
+    _refreshControl.tintColor = [UIColor grayColor];
+    [_refreshControl addTarget:self action:@selector(didActivatePullToRefreshControl:) forControlEvents:UIControlEventValueChanged];
+    _tableView.refreshControl = _refreshControl;
+    [self updatePullToRefreshControl];
+    
     self.navigationController.navigationBar.translucent = NO;
     [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:245.0/255.0 green:244.0/255.0 blue:246.0/255.0 alpha:1.0]];
 
@@ -147,6 +154,17 @@
     if (_tableViewData.count > 0) {
         [_tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:NSNotFound inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
     }
+}
+
+- (void)didActivatePullToRefreshControl:(UIRefreshControl *)sender
+{
+    if (nil == _delegate ||
+        ![_delegate respondsToSelector:@selector(careContentsViewController:didActivatePullToRefreshControl:)]) {
+        
+        return;
+    }
+    
+    [_delegate careContentsViewController:self didActivatePullToRefreshControl:sender];
 }
 
 - (void)prepareView {
@@ -319,6 +337,18 @@
     self.navigationItem.rightBarButtonItem.tintColor = _glyphTintColor;
 }
 
+- (void)setDelegate:(id<OCKCareContentsViewControllerDelegate>)delegate
+{
+    _delegate = delegate;
+    
+    if ([NSOperationQueue currentQueue] != [NSOperationQueue mainQueue]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self updatePullToRefreshControl];
+        });
+    } else {
+        [self updatePullToRefreshControl];
+    }
+}
 
 #pragma mark - Helpers
 
@@ -454,6 +484,19 @@
                                                                                       }];
                                           });
                                       }];
+}
+
+- (void)updatePullToRefreshControl
+{
+    if (nil != _delegate &&
+        [_delegate respondsToSelector:@selector(shouldEnablePullToRefreshInCareContentsViewController:)] &&
+        [_delegate shouldEnablePullToRefreshInCareContentsViewController:self]) {
+        
+        _tableView.refreshControl = _refreshControl;
+    } else {
+        [_tableView.refreshControl endRefreshing];
+        _tableView.refreshControl = nil;
+    }
 }
 
 - (UIImage *)createCustomImageName:(NSString*)customImageName {

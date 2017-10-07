@@ -476,6 +476,7 @@
 
 - (void)createGroupedEventDictionaryForEvents:(NSArray<NSArray<OCKCarePlanEvent *> *> *)events {
     NSMutableDictionary *groupedEvents = [NSMutableDictionary new];
+    NSMutableArray *groupArray = [NSMutableArray new];
     
     for (NSArray<OCKCarePlanEvent *> *activityEvents in events) {
         OCKCarePlanEvent *firstEvent = activityEvents.firstObject;
@@ -497,6 +498,7 @@
         } else {
             NSMutableArray<NSArray *> *objects = [[NSMutableArray alloc] initWithArray:activityEvents];
             groupedEvents[groupIdentifier] = @[objects];
+            [groupArray addObject:groupIdentifier];
         }
     }
     
@@ -517,7 +519,7 @@
         
     } else {
         
-        _sectionTitles = [groupedEvents.allKeys copy];
+        _sectionTitles = [groupArray mutableCopy];
         
     }
     

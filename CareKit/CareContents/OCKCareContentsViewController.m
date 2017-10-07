@@ -537,6 +537,7 @@
     
     NSArray<NSArray<OCKCarePlanEvent *> *> *events = [NSArray arrayWithArray:[interventions arrayByAddingObjectsFromArray:[assessments arrayByAddingObjectsFromArray:readOnly]]];
     NSMutableDictionary *groupedEvents = [NSMutableDictionary new];
+    NSMutableArray *groupArray = [NSMutableArray new];
     
     for (NSArray<OCKCarePlanEvent *> *activityEvents in events) {
         OCKCarePlanEvent *firstEvent = activityEvents.firstObject;
@@ -571,6 +572,7 @@
         } else {
             NSMutableArray<NSArray *> *objects = [activityEvents mutableCopy];
             groupedEvents[groupIdentifier] = @[objects];
+            [groupArray addObject:groupIdentifier];
         }
     }
     
@@ -611,7 +613,7 @@
         
     } else {
         
-        _sectionTitles = [groupedEvents.allKeys copy];
+        _sectionTitles = [groupArray mutableCopy];
         
     }
     

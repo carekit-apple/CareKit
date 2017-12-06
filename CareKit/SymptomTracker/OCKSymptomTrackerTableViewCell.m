@@ -72,6 +72,8 @@ static const CGFloat HorizontalMargin = 10.0;
     
     if (!_titleLabel) {
         _titleLabel = [OCKLabel new];
+        _titleLabel.numberOfLines = 0;
+        _titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
         _titleLabel.textStyle = UIFontTextStyleHeadline;
         [self addSubview:_titleLabel];
     }
@@ -79,6 +81,8 @@ static const CGFloat HorizontalMargin = 10.0;
     if (!_textLabel) {
         _textLabel = [OCKLabel new];
         _textLabel.textStyle = UIFontTextStyleSubheadline;
+        _textLabel.numberOfLines = 0;
+        _textLabel.lineBreakMode = NSLineBreakByWordWrapping;
         _textLabel.textColor = [UIColor lightGrayColor];
         [self addSubview:_textLabel];
     }

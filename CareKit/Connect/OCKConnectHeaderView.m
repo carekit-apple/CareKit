@@ -134,6 +134,7 @@ static const CGFloat ImageViewSize = 75.0;
         _imageView.backgroundColor = [UIColor clearColor];
         _monogramLabel.hidden = YES;
     } else {
+		_imageView.image = nil;
         _monogramLabel.text = self.patient.monogram;
         _imageView.backgroundColor = [UIColor grayColor];
         _monogramLabel.hidden = NO;

@@ -92,6 +92,9 @@
         _glyphTintColor = nil;
         _isGrouped = YES;
         _isSorted = YES;
+        _hasInterventions = NO;
+        _hasAssesments = NO;
+        _hasReadOnlyItems = NO;
     }
     return self;
 }
@@ -398,7 +401,24 @@
                               [self updateHeaderView];
                               [self updateWeekView];
                           }
-                          _noDataLabel.hidden = _events.count > 0;
+                          
+                          switch (type) {
+                              case OCKCarePlanActivityTypeIntervention:
+                                  _hasInterventions = _events.count > 0;
+                                  break;
+                                  
+                              case OCKCarePlanActivityTypeAssessment:
+                                  _hasAssesments = _events.count > 0;
+                                  break;
+                                  
+                              case OCKCarePlanActivityTypeReadOnly:
+                                  _hasReadOnlyItems = _events.count > 0;
+                                  break;
+                                  
+                              default:
+                                  break;
+                          }
+                          _noDataLabel.hidden = _hasAssesments || _hasInterventions || _hasReadOnlyItems;
                           [_tableView reloadData];
                       });
                   }];

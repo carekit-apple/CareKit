@@ -186,6 +186,29 @@ OCK_CLASS_AVAILABLE
  */
 @property (nonatomic, readonly, nullable) OCKCarePlanEvent *lastSelectedEvent;
 
+/**
+ Indicates if any `OCKCarePlanEvents` of the type `OCKCarePlanActivityTypeIntervention`
+ are currently being displayed.
+ 
+ This value is false to begin and gets updated each time the store is queried.
+ */
+@property (nonatomic, readonly) BOOL hasInterventions;
+
+/**
+ Indicates if any `OCKCarePlanEvents` of the type `OCKCarePlanActivityTypeAssessment`
+ are currently being displayed.
+ 
+ This value is false to begin and get updated each time the store is queried.
+ */
+@property (nonatomic, readonly) BOOL hasAssesments;
+
+/**
+ Indicates if any `OCKCarePlanEvents` of the type `OCKCarePlanActivityTypeReadOnly`
+ are currently being displayed.
+ 
+ This value is false to begin and gets updated each time the store is queried.
+ */
+@property (nonatomic, readonly) BOOL hasReadOnlyItems;
 
 /**
  The image that will be used to mask the fill shape in the week view.

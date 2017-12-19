@@ -120,6 +120,7 @@
     _tableView.estimatedSectionFooterHeight = 0;
     
     _noDataLabel = [OCKLabel new];
+    _noDataLabel.hidden = YES;
     _noDataLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     _noDataLabel.textStyle = UIFontTextStyleTitle2;
     _noDataLabel.textColor = [UIColor lightGrayColor];

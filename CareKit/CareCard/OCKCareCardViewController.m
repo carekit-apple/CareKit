@@ -128,6 +128,7 @@
     [self updatePullToRefreshControl];
     
     _noDataLabel = [OCKLabel new];
+    _noDataLabel.hidden = YES;
     _noDataLabel.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     _noDataLabel.textStyle = UIFontTextStyleTitle2;
     _noDataLabel.textColor = [UIColor lightGrayColor];

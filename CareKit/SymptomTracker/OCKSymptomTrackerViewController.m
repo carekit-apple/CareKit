@@ -381,7 +381,7 @@
                               [self.delegate symptomTrackerViewController:self willDisplayEvents:[_events copy] dateComponents:_selectedDate];
                           }
                           
-                          _noDataLabel.hidden = (_events > 0);
+                          _noDataLabel.hidden = (_events.count > 0);
                           [self createGroupedEventDictionaryForEvents:_events];
                           
                           [self updateHeaderView];

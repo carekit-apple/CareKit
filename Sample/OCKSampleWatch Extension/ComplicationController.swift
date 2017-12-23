@@ -219,8 +219,6 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         return defaults.integer(forKey: "currentCompletionPercentage")
     }
     
-    
-    
     func getEventsRemaining() -> Int {
         let defaults = UserDefaults.standard
         return defaults.integer(forKey: "eventsRemaining")

@@ -128,6 +128,11 @@
     [_tableView reloadData];
 }
 
+- (void)setPatient:(OCKPatient *)patient {
+	_patient = patient;
+	_headerView.patient = _patient;
+}
+
 - (void)setDataSource:(id<OCKConnectViewControllerDataSource>)dataSource {
     _dataSource = dataSource;
     [_tableView reloadData];

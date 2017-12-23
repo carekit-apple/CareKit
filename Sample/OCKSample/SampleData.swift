@@ -43,7 +43,8 @@ class SampleData: NSObject {
         BackPain(),
         Mood(),
         BloodGlucose(),
-        Weight()
+        Weight(),
+        Caffeine()
     ]
     /**
      An `OCKPatient` object to assign contacts to.
@@ -84,7 +85,8 @@ class SampleData: NSObject {
      Connect message items
      */
     
-    let dateString = DateFormatter.localizedString(from: Date(), dateStyle: .medium, timeStyle: .short)
+    let dateString = DateFormatter.localizedString(from: Date(), dateStyle: .short, timeStyle: .short)
+    let replyDateString = DateFormatter.localizedString(from: Date().addingTimeInterval(1000), dateStyle: .short, timeStyle: .short)
     var connectMessageItems = [OCKConnectMessageItem]()
     var contactsWithMessageItems = [OCKContact]()
     
@@ -97,7 +99,7 @@ class SampleData: NSObject {
         for contact in contacts {
             if contact.type == .careTeam {
                 contactsWithMessageItems.append(contact)
-                self.connectMessageItems = [OCKConnectMessageItem(messageType: OCKConnectMessageType.sent, name: contact.name, message: "I am feeling good after taking the medication! Thank you.", dateString:dateString)]
+                self.connectMessageItems = [OCKConnectMessageItem(messageType: OCKConnectMessageType.sent, name: patient.name, message: NSLocalizedString("I am feeling good after taking the medication! Thank you.", comment: ""), dateString:dateString), OCKConnectMessageItem(messageType: .received, name: contact.name, message: NSLocalizedString("That is great! Keep up the good work.", comment: ""), dateString: dateString)]
                 break
             }
         }

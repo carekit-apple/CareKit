@@ -94,6 +94,29 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)careCardViewController:(OCKCareCardViewController *)viewController willDisplayEvents:(NSArray<NSArray<OCKCarePlanEvent*>*>*)events dateComponents:(NSDateComponents *)dateComponents;
 
+/**
+ Asks the delegate if the care card view controller should enable pull-to-refresh behavior on the activities list. If not implemented,
+ pull-to-refresh will not be enabled.
+ 
+ If returned YES, the `careCardViewController:didActivatePullToRefreshControl:` method should be implemented to provide custom 
+ refreshing behavior when triggered by the user.
+ 
+ @param viewController              The view controller providing the callback.
+ */
+- (BOOL)shouldEnablePullToRefreshInCareCardViewController:(OCKCareCardViewController *)viewController;
+
+/**
+ Tells the delegate the user has triggered pull to refresh on the activities list.
+ 
+ Provides the opportunity to refresh data in the local store by, for example, fetching from a cloud data store.
+ This method should always be implmented in cases where `shouldEnablePullToRefreshInCareCardViewController:` might return YES.
+ 
+ @param viewController              The view controller providing the callback.
+ @param refreshControl              The refresh control which has been triggered, where `isRefreshing` should always be YES.
+                                    It is the developers responsibility to call `endRefreshing` as appropriate, on the main thread.
+ */
+- (void)careCardViewController:(OCKCareCardViewController *)viewController didActivatePullToRefreshControl:(UIRefreshControl *)refreshControl;
+
 @end
 
 
@@ -180,6 +203,26 @@ OCK_CLASS_AVAILABLE
  and we need a way to access that to send the custom image name string to the watch
  */
 @property (nonatomic, copy) NSString *customGlyphImageName;
+
+/**
+ The property that allows activities to be grouped.
+ 
+ If true, the activities will be grouped by groupIdentifier into sections, 
+ otherwise the activities will all be in one section and groupIdentifier is ignored.
+ 
+ The default is true.
+ */
+@property (nonatomic) BOOL isGrouped;
+
+/**
+ The property that allows activities to be sorted.
+ 
+ If true, the activities will be sorted alphabetically by title and by groupIdentifier if isGrouped is true,
+ otherwise the activities will be sorted in the order they are added in the care plan store.
+ 
+ The default is true.
+ */
+@property (nonatomic) BOOL isSorted;
 
 @end
 

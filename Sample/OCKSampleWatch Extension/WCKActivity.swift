@@ -31,9 +31,9 @@
 import WatchKit
 
 enum WCKActivityType {
-    // Something related to treatment.
+    // Care plan activities of type interventions.
     case intervention
-    // Some task in the app.
+    // Care plan activities of type assessments.
     case assessment
 }
 
@@ -43,17 +43,16 @@ class WCKActivity : NSObject {
     
     // Unique identifier string.
     let identifier : String
-    // Group identifier string.
-    //let groupIdentifier : String?
     // The type of activity.
     let type : WCKActivityType
-    // The title of the intervention activity.
+    // The title of the activity.
     var title : String
-    // A descriptive text for the intervention activity.
+    // A descriptive text for the activity.
     var text : String?
-    // The tint color for the intervention activity.
+    // The tint color for the activity.
     let tintColor : UIColor?
-    
+    // The bool: isOptional for the activity.
+    let isOptional: Bool?
     // An array of all the events associated with the activity for today.
     var eventsForToday : [WCKEvent?]
     
@@ -63,13 +62,21 @@ class WCKActivity : NSObject {
     init?(interventionWithIdentifier identifier: String,
                                      title: String,
                                      text: String?,
+                                     isIntervention: Bool?,
                                      tintColor: UIColor?,
+                                     isOptional: Bool?,
                                      numberOfEventsForToday: UInt) {
         self.identifier = identifier
-        self.type = WCKActivityType.intervention
+        if isIntervention! {
+            self.type = .intervention
+        }
+        else {
+            self.type = .assessment
+        }
         self.title = title
         self.text = text
         self.tintColor = tintColor
+        self.isOptional = isOptional
         self.eventsForToday = [WCKEvent?](repeating: nil, count: Int(numberOfEventsForToday))
     }
     

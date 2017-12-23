@@ -52,6 +52,7 @@
 
 @implementation OCKSymptomTrackerViewController {
     UITableView *_tableView;
+    UIRefreshControl *_refreshControl;
     NSMutableArray<NSMutableArray<OCKCarePlanEvent *> *> *_events;
     NSMutableArray *_weekValues;
     OCKHeaderView *_headerView;
@@ -63,7 +64,8 @@
     NSMutableArray<NSMutableArray <NSMutableArray <OCKCarePlanEvent *> *> *> *_tableViewData;
     NSString *_otherString;
     NSString *_optionalString;
-
+    BOOL _isGrouped;
+    BOOL _isSorted;
 }
 
 - (instancetype)init {
@@ -78,6 +80,8 @@
         _calendar = [NSCalendar calendarWithIdentifier:NSCalendarIdentifierGregorian];
         _glyphType = OCKGlyphTypeStethoscope;
         _glyphTintColor = nil;
+        _isGrouped = YES;
+        _isSorted = YES;
     }
     return self;
 }
@@ -113,6 +117,12 @@
     _tableView.estimatedSectionHeaderHeight = 0;
     _tableView.estimatedSectionFooterHeight = 0;
     
+    _refreshControl = [[UIRefreshControl alloc] init];
+    _refreshControl.tintColor = [UIColor grayColor];
+    [_refreshControl addTarget:self action:@selector(didActivatePullToRefreshControl:) forControlEvents:UIControlEventValueChanged];
+    _tableView.refreshControl = _refreshControl;
+    [self updatePullToRefreshControl];
+    
     self.navigationController.navigationBar.translucent = NO;
     [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:245.0/255.0 green:244.0/255.0 blue:246.0/255.0 alpha:1.0]];
 }
@@ -127,7 +137,20 @@
 
 - (void)showToday:(id)sender {
     self.selectedDate = [NSDateComponents ock_componentsWithDate:[NSDate date] calendar:_calendar];
-    [_tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:NSNotFound inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
+    if (_tableViewData.count > 0) {
+        [_tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:NSNotFound inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
+    }
+}
+
+- (void)didActivatePullToRefreshControl:(UIRefreshControl *)sender
+{
+    if (nil == _delegate ||
+        ![_delegate respondsToSelector:@selector(symptomTrackerViewController:didActivatePullToRefreshControl:)]) {
+        
+        return;
+    }
+    
+    [_delegate symptomTrackerViewController:self didActivatePullToRefreshControl:sender];
 }
 
 - (void)prepareView {
@@ -141,10 +164,9 @@
         UIImage *glyphImage = [self createCustomImageName:self.customGlyphImageName];
         _headerView.glyphImage = glyphImage;
     }
-    if ([_headerTitle length] == 0) {
-        _headerTitle = OCKLocalizedString(@"SYMPTOM_TRACKER_HEADER_TITLE", nil);
+    if ([_headerTitle length] > 0) {
+        _headerView.title = _headerTitle;
     }
-    _headerView.title = _headerTitle;
     _headerView.isCareCard = NO;
     _headerView.glyphType = self.glyphType;
  
@@ -284,7 +306,8 @@
 }
 
 - (void)setSelectedDate:(NSDateComponents *)selectedDate {
-    _selectedDate = selectedDate;
+    NSDateComponents *today = [self today];
+    _selectedDate = [selectedDate isLaterThan:today] ? today : selectedDate;
     
     _weekViewController.weekView.isToday = [[self today] isEqualToDate:selectedDate];
     _weekViewController.weekView.selectedIndex = self.selectedDate.weekday - 1;
@@ -305,13 +328,23 @@
 
 - (void)setHeaderTitle:(NSString *)headerTitle {
     _headerTitle = headerTitle;
-    if ([_headerTitle length] == 0) {
-        _headerView.title = OCKLocalizedString(@"SYMPTOM_TRACKER_HEADER_TITLE", nil);
-    } else {
+    if ([_headerTitle length] > 0) {
         _headerView.title = _headerTitle;
     }
 }
 
+- (void)setDelegate:(id<OCKSymptomTrackerViewControllerDelegate>)delegate
+{
+    _delegate = delegate;
+    
+    if ([NSOperationQueue currentQueue] != [NSOperationQueue mainQueue]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self updatePullToRefreshControl];
+        });
+    } else {
+        [self updatePullToRefreshControl];
+    }
+}
 
 #pragma mark - Helpers
 
@@ -368,6 +401,19 @@
                                       }];
 }
 
+- (void)updatePullToRefreshControl
+{
+    if (nil != _delegate &&
+        [_delegate respondsToSelector:@selector(shouldEnablePullToRefreshInSymptomTrackerViewController:)] &&
+        [_delegate shouldEnablePullToRefreshInSymptomTrackerViewController:self]) {
+        
+        _tableView.refreshControl = _refreshControl;
+    } else {
+        [_tableView.refreshControl endRefreshing];
+        _tableView.refreshControl = nil;
+    }
+}
+
 - (UIImage *)createCustomImageName:(NSString*)customImageName {
     UIImage *customImageToReturn;
     if (customImageName != nil) {
@@ -397,7 +443,9 @@
                                     startDate:[NSDateComponents ock_componentsWithDate:startOfWeek calendar:_calendar]
                                       endDate:[NSDateComponents ock_componentsWithDate:endOfWeek calendar:_calendar]
                                       handler:^(NSDateComponents *date, NSUInteger completedEvents, NSUInteger totalEvents) {
-                                          if (totalEvents == 0) {
+                                          if ([date isLaterThan:[self today]]) {
+                                              [values addObject:@(0)];
+                                          } else if (totalEvents == 0) {
                                               [values addObject:@(1)];
                                           } else {
                                               [values addObject:@((float)completedEvents/totalEvents)];
@@ -428,6 +476,7 @@
 
 - (void)createGroupedEventDictionaryForEvents:(NSArray<NSArray<OCKCarePlanEvent *> *> *)events {
     NSMutableDictionary *groupedEvents = [NSMutableDictionary new];
+    NSMutableArray *groupArray = [NSMutableArray new];
     
     for (NSArray<OCKCarePlanEvent *> *activityEvents in events) {
         OCKCarePlanEvent *firstEvent = activityEvents.firstObject;
@@ -437,6 +486,11 @@
             groupIdentifier = _optionalString;
         }
         
+        if (!_isGrouped) {
+            // Force only one grouping
+            groupIdentifier = _otherString;
+        }
+        
         if (groupedEvents[groupIdentifier]) {
             NSMutableArray<NSArray *> *objects = [groupedEvents[groupIdentifier] mutableCopy];
             [objects addObject:activityEvents];
@@ -444,39 +498,56 @@
         } else {
             NSMutableArray<NSArray *> *objects = [[NSMutableArray alloc] initWithArray:activityEvents];
             groupedEvents[groupIdentifier] = @[objects];
+            [groupArray addObject:groupIdentifier];
         }
     }
     
-    NSMutableArray *sortedKeys = [[groupedEvents.allKeys sortedArrayUsingSelector:@selector(compare:)] mutableCopy];
-    if ([sortedKeys containsObject:_otherString]) {
-        [sortedKeys removeObject:_otherString];
-        [sortedKeys addObject:_otherString];
+    if (_isGrouped && _isSorted) {
+        
+        NSMutableArray *sortedKeys = [[groupedEvents.allKeys sortedArrayUsingSelector:@selector(compare:)] mutableCopy];
+        if ([sortedKeys containsObject:_otherString]) {
+            [sortedKeys removeObject:_otherString];
+            [sortedKeys addObject:_otherString];
+        }
+        
+        if ([sortedKeys containsObject:_optionalString]) {
+            [sortedKeys removeObject:_optionalString];
+            [sortedKeys addObject:_optionalString];
+        }
+        
+        _sectionTitles = [sortedKeys copy];
+        
+    } else {
+        
+        _sectionTitles = [groupArray mutableCopy];
+        
     }
-    
-    if ([sortedKeys containsObject:_optionalString]) {
-        [sortedKeys removeObject:_optionalString];
-        [sortedKeys addObject:_optionalString];
-    }
-    
-    _sectionTitles = [sortedKeys copy];
     
     NSMutableArray *array = [NSMutableArray new];
     for (NSString *key in _sectionTitles) {
         NSMutableArray *groupArray = [NSMutableArray new];
         NSArray *groupedEventsArray = groupedEvents[key];
         
-        NSMutableDictionary *activitiesDictionary = [NSMutableDictionary new];
-        for (NSArray<OCKCarePlanEvent *> *events in groupedEventsArray) {
-            NSString *activityTitle = events.firstObject.activity.title;
-            activitiesDictionary[activityTitle] = events;
+        if (_isSorted) {
+            
+            NSMutableDictionary *activitiesDictionary = [NSMutableDictionary new];
+            for (NSArray<OCKCarePlanEvent *> *events in groupedEventsArray) {
+                NSString *activityTitle = events.firstObject.activity.title;
+                activitiesDictionary[activityTitle] = events;
+            }
+            
+            NSArray *sortedActivitiesKeys = [activitiesDictionary.allKeys sortedArrayUsingSelector:@selector(compare:)];
+            for (NSString *activityKey in sortedActivitiesKeys) {
+                [groupArray addObject:activitiesDictionary[activityKey]];
+            }
+            
+            [array addObject:groupArray];
+            
+        } else {
+            
+            [array addObject:[groupedEventsArray mutableCopy]];
+            
         }
-        
-        NSArray *sortedActivitiesKeys = [activitiesDictionary.allKeys sortedArrayUsingSelector:@selector(compare:)];
-        for (NSString *activityKey in sortedActivitiesKeys) {
-            [groupArray addObject:activitiesDictionary[activityKey]];
-        }
-        
-        [array addObject:groupArray];
     }
     
     _tableViewData = [array mutableCopy];
@@ -491,6 +562,11 @@
     self.selectedDate = selectedDate;
 }
 
+- (BOOL)weekViewCanSelectDayAtIndex:(NSUInteger)index {
+    NSDateComponents *today = [self today];
+    NSDateComponents *selectedDate = [self dateFromSelectedIndex:index];
+    return ![selectedDate isLaterThan:today];
+}
 
 #pragma mark - OCKCarePlanStoreDelegate
 

@@ -31,57 +31,53 @@ Remember: You need only a single care plan store per app. The stores are long-li
 
 1. Before adding an activity to the care plan store, you should check to see if that activity already exists.
 
-	```swift
-	store.activityForIdentifier(MyEmotionalSurveyIdentifier) { (success, activityOrNil, errorOrNil) -> Void in
-	    guard success else {
-	        // perform real error handling here.
-	        fatalError("*** An error occurred \(errorOrNil?.localizedDescription) ***")
-	    }
+    
+    	store.activityForIdentifier(MyEmotionalSurveyIdentifier) { (success, activityOrNil, errorOrNil) -> Void in
+    	    guard success else {
+    	        // perform real error handling here.
+    	        fatalError("*** An error occurred \(errorOrNil?.localizedDescription) ***")
+    	    }
+    
+    	    if let activity = activityOrNil {
+    
+    	        // the activity already exists.
+    
+    	    } else {
+    
+    	        // ADD THE ACTIVITY HERE... 
+    	    }
+    	}
 
-	    if let activity = activityOrNil {
-
-	        // the activity already exists.
-
-	    } else {
-
-	        // ADD THE ACTIVITY HERE...
-
-	    }
-	}
-	```
-	Each activity has a unique identifier. If an identifier is already used in the store, any attempt to add another activity with the same identifier has no effect on the store.
+Each activity has a unique identifier. If an identifier is already used in the store, any attempt to add another activity with the same identifier has no effect on the store.
 
 
 2. Create the activity's schedule.
 
-	```swift
-	// take the emotional survey once a day, every day starting March 15, 2016
-	let startDay = NSDateComponents(year: 2016, month: 3, day: 15)
-	let onceADay = OCKCareSchedule.dailyScheduleWithStartDate(startDay, occurrencesPerDay: 1)
-	```
+    	// take the emotional survey once a day, every day starting March 15, 2016
+    	let startDay = NSDateComponents(year: 2016, month: 3, day: 15)
+    	let onceADay = OCKCareSchedule.dailyScheduleWithStartDate(startDay, occurrencesPerDay: 1)
 
 3. Instantiate the assessment activity.
 
-	```swift
-	let emotionalSurvey = OCKCarePlanActivity(
-	    identifier: MyEmotionalSurveyIdentifier,
-	    groupIdentifier: nil,
-	    type: .Assessment,
-	    title: "Daily Emotional Survey",
-	    text: "How are you feeling today?",
-	    tintColor: nil,
-	    instructions: nil,
-	    imageURL: nil,
-	    schedule: onceADay,
-	    resultResettable: false,
-	    userInfo: nil)
-	```
-	Activity objects are immutable, which means that you cannot change their properties after they are created.
+	
+    	let emotionalSurvey = OCKCarePlanActivity(
+    	    identifier: MyEmotionalSurveyIdentifier,
+    	    groupIdentifier: nil,
+    	    type: .Assessment,
+    	    title: "Daily Emotional Survey",
+    	    text: "How are you feeling today?",
+    	    tintColor: nil,
+    	    instructions: nil,
+    	    imageURL: nil,
+    	    schedule: onceADay,
+    	    resultResettable: false,
+    	    userInfo: nil)
 
-	To appear on the Symptom and Measurement Tracker, the activity must use the `OCKCarePlanActivityType.Assessment` activity type. Assessment activities also require valid `schedule`, `title`, and  `text` parameters. The schedule sets the number of circles to be filled on each day. CareKit displays the title and text on the Symptom and Measurement Tracker.
+Activity objects are immutable, which means that you cannot change their properties after they are created.
 
-	Other parameters can further modify how the activity behaves, or how it appears. In particular, the `resultResettable` parameter determines whether the user can retry the event after they have completed it. In this example, the user can take the survey only once each day, and they cannot edit their results.
+To appear on the Symptom and Measurement Tracker, the activity must use the `OCKCarePlanActivityType.Assessment` activity type. Assessment activities also require valid `schedule`, `title`, and  `text` parameters. The schedule sets the number of circles to be filled on each day. CareKit displays the title and text on the Symptom and Measurement Tracker.
 
+Other parameters can further modify how the activity behaves, or how it appears. In particular, the `resultResettable` parameter determines whether the user can retry the event after they have completed it. In this example, the user can take the survey only once each day, and they cannot edit their results.
 
 <!--
 ## Creating the Symptom And Measurement Tracker Delegate
@@ -144,15 +140,14 @@ If the app cannot get the data passively (for example, there are no matching rec
 
 To initialize your Symptom and Measurement Tracker view controller, pass your Care Plan Store and your delegate to the constructor.
 
-```swift
-let symptomTrackerController = OCKSymptomTrackerViewController(carePlanStore: store, delegate: self)
-```
-Next, present the Symptom and Measurement Tracker just like you would present any other view controller. You can add it to a tab bar controller, push it onto a navigation controller, or present it modally.
+    
+    let symptomTrackerController = OCKSymptomTrackerViewController(carePlanStore: store, delegate: self)
 
-```swift
-// presenting the view controller modally
-presentViewController(symptomTrackerController, animated: true, completion: nil)
-```
+Next, present the Symptom and Measurement Tracker just like you would present any other view controller. You can add it to a tab bar controller, push it onto a navigation controller, or present it modally.
+ 
+    // presenting the view controller modally
+    presentViewController(symptomTrackerController, animated: true, completion: nil)
+  
 
 For more information on working with view controllers, see [View Controller Programming Guide for iOS](https://developer.apple.com/library/ios/featuredarticles/ViewControllerPGforiPhoneOS/).
 

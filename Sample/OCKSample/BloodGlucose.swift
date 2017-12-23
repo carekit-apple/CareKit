@@ -53,7 +53,7 @@ struct BloodGlucose: Assessment {
         let activity = OCKCarePlanActivity.assessment(
             withIdentifier: activityType.rawValue,
             groupIdentifier: nil,
-            visualGroupIdentifier: nil,
+            visualGroupIdentifier: "Assessment",
             title: title,
             text: summary,
             tintColor: Colors.purple.color,

@@ -178,20 +178,20 @@ typedef NS_ENUM(NSInteger, OCKErrorCode) {
 
 // Bundle for video assets
 NSBundle *OCKAssetsBundle(void);
-NSBundle *OCKBundle();
-NSBundle *OCKDefaultLocaleBundle();
+NSBundle *OCKBundle(void);
+NSBundle *OCKDefaultLocaleBundle(void);
 
 // Pass 0xcccccc and get color #cccccc
 UIColor *OCKRGB(uint32_t x);
 UIColor *OCKRGBA(uint32_t x, CGFloat alpha);
-UIColor *OCKSystemGrayColor();
+UIColor *OCKSystemGrayColor(void);
 
 NSString *OCKStringFromDateISO8601(NSDate *date);
 NSDate *OCKDateFromStringISO8601(NSString *string);
 
 NSString *OCKSignatureStringFromDate(NSDate *date);
 
-NSURL *OCKCreateRandomBaseURL();
+NSURL *OCKCreateRandomBaseURL(void);
 
 CGFloat OCKExpectedLabelHeight(UILabel *label);
 void OCKAdjustHeightForLabel(UILabel *label);
@@ -201,17 +201,17 @@ UIImage *OCKImageWithColor(UIColor *color);
 
 void OCKEnableAutoLayoutForViews(NSArray *views);
 
-NSDateComponentsFormatter *OCKTimeIntervalLabelFormatter();
-NSDateComponentsFormatter *OCKDurationStringFormatter();
+NSDateComponentsFormatter *OCKTimeIntervalLabelFormatter(void);
+NSDateComponentsFormatter *OCKDurationStringFormatter(void);
 NSNumberFormatter *OCKPercentFormatter(NSInteger maxFractionDigits, NSInteger minFractionDigits);
 
-NSDateFormatter *OCKTimeOfDayLabelFormatter();
-NSCalendar *OCKTimeOfDayReferenceCalendar();
+NSDateFormatter *OCKTimeOfDayLabelFormatter(void);
+NSCalendar *OCKTimeOfDayReferenceCalendar(void);
 
 NSDateComponents *OCKTimeOfDayComponentsFromDate(NSDate *date);
 NSDate *OCKTimeOfDayDateFromComponents(NSDateComponents *dateComponents);
 
-BOOL OCKCurrentLocalePresentsFamilyNameFirst();
+BOOL OCKCurrentLocalePresentsFamilyNameFirst(void);
 
 UIFont *OCKTimeFontForSize(CGFloat size);
 UIFontDescriptor *OCKFontDescriptorForLightStylisticAlternative(UIFontDescriptor *descriptor);

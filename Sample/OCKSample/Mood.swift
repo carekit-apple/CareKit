@@ -51,8 +51,8 @@ struct Mood: Assessment {
         
         let activity = OCKCarePlanActivity.assessment(
             withIdentifier: activityType.rawValue,
-            groupIdentifier: nil,
-            visualGroupIdentifier: "Assessment",
+            groupIdentifier: "Assessments",
+            visualGroupIdentifier: "0-10 Scale Assessment",
             title: title,
             text: nil,
             tintColor: Colors.green.color,

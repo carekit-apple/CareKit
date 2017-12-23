@@ -51,6 +51,7 @@ struct Caffeine: Activity {
         // Create the read only activity.
         let activity = OCKCarePlanActivity.readOnly(withIdentifier: activityType.rawValue,
                                                     groupIdentifier: nil,
+                                                    visualGroupIdentifier: nil,
                                                     title: title,
                                                     text: summary,
                                                     instructions: instructions,

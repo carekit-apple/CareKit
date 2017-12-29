@@ -932,7 +932,7 @@
     
     [store evaluateAdheranceThresholdForActivity:activity date:startDate completion:^(BOOL success, OCKCarePlanThreshold * _Nullable cdThreshold, NSError * _Nullable error) {
         XCTAssertNil(error);
-        XCTAssertNil(cdThreshold);
+        XCTAssertEqualObjects(threshold, cdThreshold);
     }];
     
     [store evaluateAdheranceThresholdForActivity:activity date:[startDate dateCompByAddingDays:1] completion:^(BOOL success, OCKCarePlanThreshold * _Nullable cdThreshold, NSError * _Nullable error) {

@@ -225,6 +225,92 @@ OCK_CLASS_AVAILABLE
                           userInfo:(nullable NSDictionary<NSString *, id<NSCoding>> *)userInfo;
 
 /**
+  Deprecated initializers. Use the corresponding initializer with visualGroupIdentifier instead. For backwards compatibility,
+  these deprecated initializers use the value of groupIdentifier for visualGroupIdentifier, ensuring visual grouping is performed
+  by groupIdentifier, as was the case prior to the introduction of the visualGroupIdentifier property.
+ */
+
++ (instancetype)interventionWithIdentifier:(NSString *)identifier
+                           groupIdentifier:(nullable NSString *)groupIdentifier
+                                     title:(NSString *)title
+                                      text:(nullable NSString *)text
+                                 tintColor:(nullable UIColor *)tintColor
+                              instructions:(nullable NSString *)instructions
+                                  imageURL:(nullable NSURL *)imageURL
+                                  schedule:(OCKCareSchedule *)schedule
+                                  userInfo:(nullable NSDictionary *)userInfo
+                                  optional:(BOOL)optional
+DEPRECATED_MSG_ATTRIBUTE("Use interventionWithIdentifier:groupIdentifier:visualGroupIdentifier:title:text:tintColor:imageURL:schedule:userInfo:optional: instead");
+
++ (instancetype)assessmentWithIdentifier:(NSString *)identifier
+                         groupIdentifier:(nullable NSString *)groupIdentifier
+                                   title:(NSString *)title
+                                    text:(nullable NSString *)text
+                               tintColor:(nullable UIColor *)tintColor
+                        resultResettable:(BOOL)resultResettable
+                                schedule:(OCKCareSchedule *)schedule
+                                userInfo:(nullable NSDictionary *)userInfo
+                              thresholds:(nullable NSArray<NSArray<OCKCarePlanThreshold *> *> *)thresholds
+                                optional:(BOOL)optional
+DEPRECATED_MSG_ATTRIBUTE("Use assessmentWithIdentifier:groupIdentifier:visualGroupIdentifier:title:text:tintColor:resultResettable:schedule:userInfo:thresholds:optional: instead");
+
+
++ (instancetype)assessmentWithIdentifier:(NSString *)identifier
+                         groupIdentifier:(nullable NSString *)groupIdentifier
+                                   title:(NSString *)title
+                                    text:(nullable NSString *)text
+                               tintColor:(nullable UIColor *)tintColor
+                        resultResettable:(BOOL)resultResettable
+                                schedule:(OCKCareSchedule *)schedule
+                                userInfo:(nullable NSDictionary *)userInfo
+                                optional:(BOOL)optional
+DEPRECATED_MSG_ATTRIBUTE("Use assessmentWithIdentifier:groupIdentifier:visualGroupIdentifier:title:text:tintColor:resultResettable:schedule:userInfo:optional: instead");
+
++ (instancetype)readOnlyWithIdentifier:(NSString *)identifier
+                       groupIdentifier:(nullable NSString *)groupIdentifier
+                                 title:(NSString *)title
+                                  text:(nullable NSString *)text
+                          instructions:(nullable NSString *)instructions
+                              imageURL:(nullable NSURL *)imageURL
+                              schedule:(OCKCareSchedule *)schedule
+                              userInfo:(nullable NSDictionary *)userInfo
+DEPRECATED_MSG_ATTRIBUTE("Use readOnlyWithIdentifier:groupIdentifier:visualGroupIdentifier:title:text:instructions:imageURL:schedule:userInfo:optional: instead");
+
+- (instancetype)initWithIdentifier:(NSString *)identifier
+                   groupIdentifier:(nullable NSString *)groupIdentifier
+                              type:(OCKCarePlanActivityType)type
+                             title:(NSString *)title
+                              text:(nullable NSString *)text
+                         tintColor:(nullable UIColor *)tintColor
+                      instructions:(nullable NSString *)instructions
+                          imageURL:(nullable NSURL *)imageURL
+                          schedule:(OCKCareSchedule *)schedule
+                  resultResettable:(BOOL)resultResettable
+                          userInfo:(nullable NSDictionary<NSString *, id<NSCoding>> *)userInfo
+                        thresholds:(nullable NSArray<NSArray<OCKCarePlanThreshold *> *> *)thresholds
+                          optional:(BOOL)optional
+DEPRECATED_MSG_ATTRIBUTE("Use initWithIdentifier:groupIdentifier:visualGroupIdentifier:type:title:text:tintColor:instructions:imageURL:schedule:resultResettable:userInfo:thresholds:optional: instead");
+
+
+
+- (instancetype)initWithIdentifier:(NSString *)identifier
+                   groupIdentifier:(nullable NSString *)groupIdentifier
+                              type:(OCKCarePlanActivityType)type
+                             title:(NSString *)title
+                              text:(nullable NSString *)text
+                         tintColor:(nullable UIColor *)tintColor
+                      instructions:(nullable NSString *)instructions
+                          imageURL:(nullable NSURL *)imageURL
+                          schedule:(OCKCareSchedule *)schedule
+                  resultResettable:(BOOL)resultResettable
+                          userInfo:(nullable NSDictionary<NSString *, id<NSCoding>> *)userInfo
+DEPRECATED_MSG_ATTRIBUTE("Use initWithIdentifier:groupIdentifier:visualGroupIdentifier:type:title:text:tintColor:instructions:imageURL:schedule:resultResettable:userInfo:optional: instead");
+
+/**
+ Properties.
+ */
+
+/**
  Unique identifier string.
  In store scope, each activity's identifer has to be unique.
  You can use this identifier as a key to retrieve the activity instance from the store.

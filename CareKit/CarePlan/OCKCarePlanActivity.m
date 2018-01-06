@@ -330,6 +330,158 @@
     return [self.identifier hash];
 }
 
+/**
+  Deprecated initializers.
+ */
+
++ (instancetype)interventionWithIdentifier:(NSString *)identifier
+                           groupIdentifier:(nullable NSString *)groupIdentifier
+                                     title:(NSString *)title
+                                      text:(nullable NSString *)text
+                                 tintColor:(nullable UIColor *)tintColor
+                              instructions:(nullable NSString *)instructions
+                                  imageURL:(nullable NSURL *)imageURL
+                                  schedule:(OCKCareSchedule *)schedule
+                                  userInfo:(nullable NSDictionary *)userInfo
+                                  optional:(BOOL)optional {
+    
+    return [self interventionWithIdentifier:identifier
+                            groupIdentifier:groupIdentifier
+                      visualGroupIdentifier:groupIdentifier
+                                      title:title
+                                       text:text
+                                  tintColor:tintColor
+                               instructions:instructions
+                                   imageURL:imageURL
+                                   schedule:schedule
+                                   userInfo:userInfo
+                                   optional:optional];
+    
+}
+
++ (instancetype)assessmentWithIdentifier:(NSString *)identifier
+                         groupIdentifier:(nullable NSString *)groupIdentifier
+                                   title:(NSString *)title
+                                    text:(nullable NSString *)text
+                               tintColor:(nullable UIColor *)tintColor
+                        resultResettable:(BOOL)resultResettable
+                                schedule:(OCKCareSchedule *)schedule
+                                userInfo:(nullable NSDictionary *)userInfo
+                              thresholds:(nullable NSArray<NSArray<OCKCarePlanThreshold *> *> *)thresholds
+                                optional:(BOOL)optional {
+    
+    return [self assessmentWithIdentifier:identifier
+                          groupIdentifier:groupIdentifier
+                    visualGroupIdentifier:groupIdentifier
+                                    title:title
+                                     text:text
+                                tintColor:tintColor
+                         resultResettable:resultResettable
+                                 schedule:schedule
+                                 userInfo:userInfo
+                               thresholds:thresholds
+                                 optional:optional];
+}
+
+
++ (instancetype)assessmentWithIdentifier:(NSString *)identifier
+                         groupIdentifier:(nullable NSString *)groupIdentifier
+                                   title:(NSString *)title
+                                    text:(nullable NSString *)text
+                               tintColor:(nullable UIColor *)tintColor
+                        resultResettable:(BOOL)resultResettable
+                                schedule:(OCKCareSchedule *)schedule
+                                userInfo:(nullable NSDictionary *)userInfo
+                                optional:(BOOL)optional {
+    
+    return [self assessmentWithIdentifier:identifier
+                          groupIdentifier:groupIdentifier
+                    visualGroupIdentifier:groupIdentifier
+                                    title:title
+                                     text:text
+                                tintColor:tintColor
+                         resultResettable:resultResettable
+                                 schedule:schedule
+                                 userInfo:userInfo
+                                 optional:optional];
+    
+}
+
++ (instancetype)readOnlyWithIdentifier:(NSString *)identifier
+                       groupIdentifier:(nullable NSString *)groupIdentifier
+                                 title:(NSString *)title
+                                  text:(nullable NSString *)text
+                          instructions:(nullable NSString *)instructions
+                              imageURL:(nullable NSURL *)imageURL
+                              schedule:(OCKCareSchedule *)schedule
+                              userInfo:(nullable NSDictionary *)userInfo {
+    return [self readOnlyWithIdentifier:identifier
+                        groupIdentifier:groupIdentifier
+                  visualGroupIdentifier:groupIdentifier
+                                  title:title
+                                   text:text
+                           instructions:instructions
+                               imageURL:imageURL
+                               schedule:schedule
+                               userInfo:userInfo];
+}
+
+- (instancetype)initWithIdentifier:(NSString *)identifier
+                   groupIdentifier:(nullable NSString *)groupIdentifier
+                              type:(OCKCarePlanActivityType)type
+                             title:(NSString *)title
+                              text:(nullable NSString *)text
+                         tintColor:(nullable UIColor *)tintColor
+                      instructions:(nullable NSString *)instructions
+                          imageURL:(nullable NSURL *)imageURL
+                          schedule:(OCKCareSchedule *)schedule
+                  resultResettable:(BOOL)resultResettable
+                          userInfo:(nullable NSDictionary<NSString *, id<NSCoding>> *)userInfo
+                        thresholds:(nullable NSArray<NSArray<OCKCarePlanThreshold *> *> *)thresholds
+                          optional:(BOOL)optional {
+    return [self initWithIdentifier:identifier
+                    groupIdentifier:groupIdentifier
+              visualGroupIdentifier:groupIdentifier
+                               type:type
+                              title:title
+                               text:text
+                          tintColor:tintColor
+                       instructions:instructions
+                           imageURL:imageURL
+                           schedule:schedule
+                   resultResettable:resultResettable
+                           userInfo:userInfo
+                         thresholds:thresholds
+                           optional:optional];
+}
+
+
+
+- (instancetype)initWithIdentifier:(NSString *)identifier
+                   groupIdentifier:(nullable NSString *)groupIdentifier
+                              type:(OCKCarePlanActivityType)type
+                             title:(NSString *)title
+                              text:(nullable NSString *)text
+                         tintColor:(nullable UIColor *)tintColor
+                      instructions:(nullable NSString *)instructions
+                          imageURL:(nullable NSURL *)imageURL
+                          schedule:(OCKCareSchedule *)schedule
+                  resultResettable:(BOOL)resultResettable
+                          userInfo:(nullable NSDictionary<NSString *, id<NSCoding>> *)userInfo {
+    return [self initWithIdentifier:identifier
+                    groupIdentifier:groupIdentifier
+              visualGroupIdentifier:groupIdentifier
+                               type:type
+                              title:title
+                               text:text
+                          tintColor:tintColor
+                       instructions:instructions
+                           imageURL:imageURL
+                           schedule:schedule
+                   resultResettable:resultResettable
+                           userInfo:userInfo];
+}
+
 @end
 
 

@@ -167,10 +167,8 @@ OCK_CLASS_AVAILABLE
 @property (nonatomic) NSString *customGlyphImageName;
 
 /**
- A message that will be displayed in the table view's background view if there are
- no intervention activities to display.
- 
- If the value is not specified, nothing will be shown when the table is empty.
+ Optional: A message that will be displayed in the table view's background view
+ if there are no interventions, assessments, or ReadOnly activities to display.
  */
 @property (nonatomic, nullable) NSString *noEventsText;
 

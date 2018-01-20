@@ -1,6 +1,6 @@
 /*
- Copyright (c) 2017, Apple Inc. All rights reserved.
- Copyright (c) 2017, Troy Tsubota. All rights reserved.
+ Copyright (c) 2016, Apple Inc. All rights reserved.
+ Copyright (c) 2016, Troy Tsubota. All rights reserved.
  Copyright (c) 2017, Erik Hornberger. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
@@ -32,6 +32,7 @@
 
 
 #import "OCKConnectViewController.h"
+#import "OCKConnectTableViewCell.h"
 #import "OCKContact.h"
 #import "OCKConnectDetailViewController.h"
 #import "OCKHelpers.h"
@@ -334,7 +335,7 @@
         OCKContact *contact = [self contactForIndexPath:indexPath];
         [self.navigationController pushViewController:[self detailViewControllerForContact:contact] animated:YES];
     }
-    
+
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 

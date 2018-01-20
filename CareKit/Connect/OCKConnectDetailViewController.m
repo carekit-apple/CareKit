@@ -2,6 +2,7 @@
  Copyright (c) 2016, Apple Inc. All rights reserved.
  Copyright (c) 2016, Troy Tsubota. All rights reserved.
  Copyright (c) 2016, WWT Asynchrony Labs. All rights reserved.
+ Copyright (c) 2017, Erik Hornberger. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -35,7 +36,11 @@
 #import "OCKConnectTableViewHeader.h"
 #import "OCKDefines_Private.h"
 #import "OCKHelpers.h"
+#import "OCKContactSharingTableViewCell.h"
+#import "OCKContactInfoTableViewCell.h"
 
+@interface OCKConnectDetailViewController () <MFMessageComposeViewControllerDelegate, MFMailComposeViewControllerDelegate, OCKContactInfoTableViewCellDelegate, OCKContactSharingTableViewCellDelegate>
+@end
 
 static const CGFloat HeaderViewHeight = 225.0;
 

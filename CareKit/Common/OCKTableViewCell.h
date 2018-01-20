@@ -31,7 +31,6 @@
 
 #import <CareKit/CareKit.h>
 
-
 @interface OCKTableViewCell : UITableViewCell
 
 - (void)prepareView;

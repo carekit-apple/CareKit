@@ -34,4 +34,6 @@
 
 @interface OCKCareCardButton : UIButton
 
+@property (nonatomic, nullable) NSString *deselectedText;
+@property (nonatomic, nullable) NSString *selectedText;
 @end

@@ -43,7 +43,6 @@ static const CGFloat HeaderViewHeight = 100.0;
     NSMutableArray<NSString *> *_sectionTitles;
     NSString *_instructionsSectionTitle;
     NSString *_additionalInfoSectionTitle;
-    UITableView *_tableView;
     NSMutableArray *_constraints;
 }
 

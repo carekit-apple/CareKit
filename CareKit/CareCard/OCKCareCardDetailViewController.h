@@ -41,6 +41,9 @@ OCK_CLASS_AVAILABLE
 
 @property (nonatomic, readonly) OCKCarePlanActivity *intervention;
 
+@property (nonatomic, nonnull) UITableView *tableView;
+
+
 @end
 
 NS_ASSUME_NONNULL_END

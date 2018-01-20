@@ -101,6 +101,7 @@ static const CGFloat ButtonViewSize = 40.0;
         frequencyButton.tintColor = self.tintColor;
         frequencyButton.selected = (event.state == OCKCarePlanEventStateCompleted);
         frequencyButton.translatesAutoresizingMaskIntoConstraints = NO;
+        frequencyButton.buttonImage = self.buttonImage;
         
         [frequencyButton addTarget:self
                             action:@selector(toggleFrequencyButton:)
@@ -326,6 +327,13 @@ static const CGFloat ButtonViewSize = 40.0;
     if (self.delegate &&
         [self.delegate respondsToSelector:@selector(careCardTableViewCell:didSelectInterventionActivity:)]) {
         [self.delegate careCardTableViewCell:self didSelectInterventionActivity:self.interventionEvents.firstObject.activity];
+    }
+}
+
+-(void)setButtonImage:(UIImage *)buttonImage {
+    _buttonImage = buttonImage;
+    for (int k=0; k<_frequencyButtons.count; k++) {
+        _frequencyButtons[k].buttonImage = self.buttonImage;
     }
 }
 

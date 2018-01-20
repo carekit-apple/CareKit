@@ -34,4 +34,6 @@
 
 @interface OCKCareCardButton : UIButton
 
+@property (nonatomic, nullable) UIImage *buttonImage;
+
 @end

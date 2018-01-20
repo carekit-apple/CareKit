@@ -737,6 +737,7 @@
     }
     cell.interventionEvents = _tableViewData[indexPath.section][indexPath.row];
     cell.delegate = self;
+    cell.buttonImage = self.buttonImage;
     return cell;
 }
 

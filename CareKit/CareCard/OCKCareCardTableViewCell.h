@@ -54,6 +54,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy) NSArray<OCKCarePlanEvent *> *interventionEvents;
 
+@property (nonatomic, nullable) UIImage *buttonImage;
+
 @property (nonatomic, weak) id<OCKCareCardCellDelegate> delegate;
 
 @end

@@ -871,10 +871,9 @@
             cell = [[OCKCareCardTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
                                                    reuseIdentifier:CellIdentifier];
         }
-        
-        cell.interventionEvents = events;
+
         cell.delegate = self;
-        
+        cell.interventionEvents = events;
         return cell;
     }
     
@@ -947,6 +946,19 @@
     }
 }
 
+- (nullable NSString*)careCardTableViewCell:(OCKCareCardTableViewCell *)cell selectedStateTextForInterventionActivity:(OCKCarePlanEvent *)interventionActivity atIndex:(NSInteger)index {
+    if ([self.delegate respondsToSelector:@selector(careCardTableViewCell:selectedStateTextForInterventionActivity:atIndex:)]){
+        return [self.delegate careContentsViewController:self selectedStateTextForInterventionActivity:interventionActivity atButtonIndex:index];
+    }
+    return NULL;
+}
+
+- (nullable NSString*)careCardTableViewCell:(OCKCareCardTableViewCell *)cell deselectedStateTextForInterventionActivity:(OCKCarePlanEvent *)interventionActivity atIndex:(NSInteger)index {
+    if ([self.delegate respondsToSelector:@selector(careCardTableViewCell:deselectedStateTextForInterventionActivity:atIndex:)]){
+        return [self.delegate careContentsViewController:self deselectedStateTextForInterventionActivity:interventionActivity atButtonIndex:index];
+    }
+    return NULL;
+}
 
 #pragma mark - UIViewControllerPreviewingDelegate
 

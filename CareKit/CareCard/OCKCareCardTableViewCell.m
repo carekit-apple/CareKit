@@ -96,6 +96,8 @@ static const CGFloat ButtonViewSize = 40.0;
     
     _frequencyButtons = [NSArray new];
     NSMutableArray *buttons = [NSMutableArray new];
+
+    NSUInteger index = 0;
     for (OCKCarePlanEvent *event in self.interventionEvents) {
         OCKCareCardButton *frequencyButton = [[OCKCareCardButton alloc] initWithFrame:CGRectZero];
         frequencyButton.tintColor = self.tintColor;
@@ -105,9 +107,21 @@ static const CGFloat ButtonViewSize = 40.0;
         [frequencyButton addTarget:self
                             action:@selector(toggleFrequencyButton:)
                   forControlEvents:UIControlEventTouchUpInside];
+        
+        if (self.delegate &&
+            [self.delegate respondsToSelector:@selector(careCardTableViewCell:selectedStateTextForInterventionActivity:atIndex:)]) {
+            frequencyButton.selectedText = [self.delegate careCardTableViewCell:self selectedStateTextForInterventionActivity:event atIndex:index];
+        }
+        
+        if (self.delegate &&
+            [self.delegate respondsToSelector:@selector(careCardTableViewCell:deselectedStateTextForInterventionActivity:atIndex:)]) {
+            frequencyButton.deselectedText = [self.delegate careCardTableViewCell:self deselectedStateTextForInterventionActivity:event atIndex:index];
+        }
+        
         [buttons addObject:frequencyButton];
         
         [self addSubview:frequencyButton];
+        index++;
     }
     _frequencyButtons = [buttons copy];
     

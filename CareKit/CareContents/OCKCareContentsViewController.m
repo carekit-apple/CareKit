@@ -861,7 +861,6 @@
         }
         
         cell.readOnlyEvent = event;
-
         return cell;
     }
     else {

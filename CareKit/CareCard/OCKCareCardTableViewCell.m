@@ -109,13 +109,13 @@ static const CGFloat ButtonViewSize = 40.0;
                   forControlEvents:UIControlEventTouchUpInside];
         
         if (self.delegate &&
-            [self.delegate respondsToSelector:@selector(careCardTableViewCell:selectedStateTextForInterventionActivity:atIndex:)]) {
-            frequencyButton.selectedText = [self.delegate careCardTableViewCell:self selectedStateTextForInterventionActivity:event atIndex:index];
+            [self.delegate respondsToSelector:@selector(careCardTableViewCell:selectedStateTextForCarePlanEvent:atIndex:)]) {
+            frequencyButton.selectedText = [self.delegate careCardTableViewCell:self selectedStateTextForCarePlanEvent:event atIndex:index];
         }
         
         if (self.delegate &&
-            [self.delegate respondsToSelector:@selector(careCardTableViewCell:deselectedStateTextForInterventionActivity:atIndex:)]) {
-            frequencyButton.deselectedText = [self.delegate careCardTableViewCell:self deselectedStateTextForInterventionActivity:event atIndex:index];
+            [self.delegate respondsToSelector:@selector(careCardTableViewCell:deselectedStateTextForCarePlanEvent:atIndex:)]) {
+            frequencyButton.deselectedText = [self.delegate careCardTableViewCell:self deselectedStateTextForCarePlanEvent:event atIndex:index];
         }
         
         [buttons addObject:frequencyButton];

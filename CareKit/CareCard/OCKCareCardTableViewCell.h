@@ -48,9 +48,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)careCardTableViewCell:(OCKCareCardTableViewCell *)cell didSelectInterventionActivity:(OCKCarePlanActivity *)activity;
 
-- (nullable NSString *)careCardTableViewCell:(OCKCareCardTableViewCell *)cell selectedStateTextForInterventionActivity: (OCKCarePlanEvent *)interventionActivity atIndex:(NSInteger) index;
+- (nullable NSString *)careCardTableViewCell:(OCKCareCardTableViewCell *)cell selectedStateTextForCarePlanEvent: (OCKCarePlanEvent *)carePlanEvent atIndex:(NSInteger) index;
 
-- (nullable NSString *)careCardTableViewCell:(OCKCareCardTableViewCell *)cell deselectedStateTextForInterventionActivity: (OCKCarePlanEvent *)interventionActivity atIndex:(NSInteger) index;
+- (nullable NSString *)careCardTableViewCell:(OCKCareCardTableViewCell *)cell deselectedStateTextForCarePlanEvent: (OCKCarePlanEvent *)carePlanEvent atIndex:(NSInteger) index;
 
 @end
 

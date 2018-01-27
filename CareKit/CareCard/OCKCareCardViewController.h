@@ -121,19 +121,19 @@ NS_ASSUME_NONNULL_BEGIN
  Asks the delegate for text to display below each `OCKCareCardButton` in the cell when in a selected state.
  
  @param viewController              The view controller providing the callback.
- @param interventionActivity        The `OCKCarePlanEvent` that the button represents
+ @param carePlanEvent               The `OCKCarePlanEvent` that the button represents
  @param index                       The index of the `OCKCareCardButton` within the cell
  */
-- (nullable NSString *)careCardViewController:(OCKCareCardViewController *)viewController selectedStateTextForInterventionActivity: (OCKCarePlanEvent *)interventionActivity atButtonIndex: (NSInteger)index;
+- (nullable NSString *)careCardViewController:(OCKCareCardViewController *)viewController selectedStateTextForCarePlanEvent: (OCKCarePlanEvent *)carePlanEvent atButtonIndex: (NSInteger)index;
 
 /**
  Asks the delegate for text to display below each `OCKCareCardButton` in the cell when in a deselected state.
  
  @param viewController              The view controller providing the callback.
- @param interventionActivity        The `OCKCarePlanEvent` that the button represents
+ @param carePlanEvent               The `OCKCarePlanEvent` that the button represents
  @param index                       The index of the `OCKCareCardButton` within the cell
  */
-- (nullable NSString *)careCardViewController:(OCKCareCardViewController *)viewController deselectedStateTextForInterventionActivity: (OCKCarePlanEvent *)interventionActivity atButtonIndex: (NSInteger)index;
+- (nullable NSString *)careCardViewController:(OCKCareCardViewController *)viewController deselectedStateTextForCarePlanEvent: (OCKCarePlanEvent *)carePlanEvent atButtonIndex: (NSInteger)index;
 
 @end
 

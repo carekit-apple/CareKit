@@ -948,16 +948,16 @@
     }
 }
 
-- (nullable NSString*)careCardTableViewCell:(OCKCareCardTableViewCell *)cell selectedStateTextForInterventionActivity:(OCKCarePlanEvent *)interventionActivity atIndex:(NSInteger)index {
-    if ([self.delegate respondsToSelector:@selector(careCardTableViewCell:selectedStateTextForInterventionActivity:atIndex:)]){
-        return [self.delegate careContentsViewController:self selectedStateTextForInterventionActivity:interventionActivity atButtonIndex:index];
+- (nullable NSString*)careCardTableViewCell:(OCKCareCardTableViewCell *)cell selectedStateTextForCarePlanEvent:(OCKCarePlanEvent *)carePlanEvent atIndex:(NSInteger)index {
+    if([self.delegate respondsToSelector:@selector(careContentsViewController:selectedStateTextForCarePlanEvent:atButtonIndex:)]) {
+        return [self.delegate careContentsViewController:self selectedStateTextForCarePlanEvent:carePlanEvent atButtonIndex:index];
     }
     return NULL;
 }
 
-- (nullable NSString*)careCardTableViewCell:(OCKCareCardTableViewCell *)cell deselectedStateTextForInterventionActivity:(OCKCarePlanEvent *)interventionActivity atIndex:(NSInteger)index {
-    if ([self.delegate respondsToSelector:@selector(careCardTableViewCell:deselectedStateTextForInterventionActivity:atIndex:)]){
-        return [self.delegate careContentsViewController:self deselectedStateTextForInterventionActivity:interventionActivity atButtonIndex:index];
+- (nullable NSString*)careCardTableViewCell:(OCKCareCardTableViewCell *)cell deselectedStateTextForCarePlanEvent:(OCKCarePlanEvent *)carePlanEvent atIndex:(NSInteger)index {
+    if([self.delegate respondsToSelector:@selector(careContentsViewController:deselectedStateTextForCarePlanEvent:atButtonIndex:)]) {
+        return [self.delegate careContentsViewController:self deselectedStateTextForCarePlanEvent:carePlanEvent atButtonIndex:index];
     }
     return NULL;
 }

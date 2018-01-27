@@ -62,7 +62,7 @@ static const CGFloat LabelOffset = 8.0;
         _label.font = [UIFont systemFontOfSize:9 weight:UIFontWeightHeavy];
         _label.textColor = self.tintColor;
         _label.textAlignment = NSTextAlignmentCenter;
-        [self updateTextForSelection:self.isSelected];
+        [self updateTextForSelection];
     }
         [self addSubview:_label];
     
@@ -81,7 +81,7 @@ static const CGFloat LabelOffset = 8.0;
     }
 }
 
-- (void)updateTextForSelection:(BOOL)selection {
+- (void)updateTextForSelection {
     _label.text = self.isSelected ? self.selectedText : self.deselectedText;
 }
 

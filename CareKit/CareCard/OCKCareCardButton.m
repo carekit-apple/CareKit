@@ -35,6 +35,7 @@
 
 
 static const CGFloat ButtonSize = 30.0;
+static const CGFloat LabelOffset = 8.0;
 
 @implementation OCKCareCardButton {
     CAShapeLayer *_circleLayer;
@@ -56,7 +57,7 @@ static const CGFloat ButtonSize = 30.0;
         UIRectFill(_circleLayer.frame);
     }
     if (!_label) {
-        CGRect labelRect = CGRectMake(0, ButtonSize/2 + 8, ButtonSize, ButtonSize);
+        CGRect labelRect = CGRectMake(0, ButtonSize/2 + LabelOffset, ButtonSize, ButtonSize);
         _label = [[UILabel alloc] initWithFrame:labelRect];
         _label.font = [UIFont systemFontOfSize:9 weight:300];
         _label.textColor = self.tintColor;

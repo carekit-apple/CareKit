@@ -160,6 +160,14 @@ extension RootViewController: OCKCareContentsViewControllerDelegate {
             
             present(taskViewController, animated: true, completion: nil)
     }
+    
+    func careContentsViewController(_ viewController: OCKCareContentsViewController, selectedStateTextFor carePlanEvent: OCKCarePlanEvent, atButtonIndex index: Int) -> String? {
+        return "OK!"
+    }
+    
+    func careContentsViewController(_ viewController: OCKCareContentsViewController, deselectedStateTextFor carePlanEvent: OCKCarePlanEvent, atButtonIndex index: Int) -> String? {
+        return ["AM", "PM"][index % 2]
+    }
 }
 
 extension RootViewController: ORKTaskViewControllerDelegate {

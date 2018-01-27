@@ -59,7 +59,7 @@ static const CGFloat LabelOffset = 8.0;
     if (!_label) {
         CGRect labelRect = CGRectMake(0, ButtonSize/2 + LabelOffset, ButtonSize, ButtonSize);
         _label = [[UILabel alloc] initWithFrame:labelRect];
-        _label.font = [UIFont systemFontOfSize:9 weight:300];
+        _label.font = [UIFont systemFontOfSize:9 weight:UIFontWeightHeavy];
         _label.textColor = self.tintColor;
         _label.textAlignment = NSTextAlignmentCenter;
         [self updateTextForSelection:self.isSelected];

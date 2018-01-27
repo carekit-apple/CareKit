@@ -261,7 +261,7 @@ static const CGFloat ButtonViewSize = 40.0;
                                                                                 toItem:_frequencyButtons[0]
                                                                              attribute:NSLayoutAttributeBottom
                                                                             multiplier:1.0
-                                                                              constant:0.0]
+                                                                              constant:VerticalMargin]
                                                 ]];
         } else {
             [_constraints addObjectsFromArray:@[

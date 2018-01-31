@@ -210,7 +210,7 @@ OCK_CLASS_AVAILABLE
  
  If the value is not specified, nothing will be shown when the table is empty.
  */
-@property (nonatomic, nullable) NSString *noEventsText;
+@property (nonatomic, nullable) NSString *noActivitiesText;
 
 /**
  The property that allows activities to be grouped.

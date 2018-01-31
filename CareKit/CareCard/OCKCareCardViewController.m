@@ -70,7 +70,7 @@
     BOOL _isGrouped;
     BOOL _isSorted;
     UIRefreshControl *_refreshControl;
-    OCKLabel *_noDataLabel;
+    OCKLabel *_noActivitiesLabel;
 }
 
 - (instancetype)init {
@@ -127,15 +127,15 @@
     _tableView.refreshControl = _refreshControl;
     [self updatePullToRefreshControl];
     
-    _noDataLabel = [OCKLabel new];
-    _noDataLabel.hidden = YES;
-    _noDataLabel.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-    _noDataLabel.textStyle = UIFontTextStyleTitle2;
-    _noDataLabel.textColor = [UIColor lightGrayColor];
-    _noDataLabel.text = self.noEventsText;
-    _noDataLabel.textAlignment = NSTextAlignmentCenter;
-    _noDataLabel.numberOfLines = 0;
-    _tableView.backgroundView = _noDataLabel;
+    _noActivitiesLabel = [OCKLabel new];
+    _noActivitiesLabel.hidden = YES;
+    _noActivitiesLabel.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    _noActivitiesLabel.textStyle = UIFontTextStyleTitle2;
+    _noActivitiesLabel.textColor = [UIColor lightGrayColor];
+    _noActivitiesLabel.text = self.noActivitiesText;
+    _noActivitiesLabel.textAlignment = NSTextAlignmentCenter;
+    _noActivitiesLabel.numberOfLines = 0;
+    _tableView.backgroundView = _noActivitiesLabel;
     
     self.navigationController.navigationBar.translucent = NO;
     [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:245.0/255.0 green:244.0/255.0 blue:246.0/255.0 alpha:1.0]];
@@ -359,11 +359,10 @@
     }
 }
 
-- (void)setNoEventsText:(NSString *)noEventsText {
-    _noEventsText = noEventsText;
-    _noDataLabel.text = noEventsText;
+- (void)setNoActivitiesText:(NSString *)noActivitiesText {
+    _noActivitiesText = noActivitiesText;
+    _noActivitiesLabel.text = noActivitiesText;
 }
-
 
 #pragma mark - Helpers
 
@@ -383,7 +382,7 @@
                               [self.delegate careCardViewController:self willDisplayEvents:[_events copy] dateComponents:_selectedDate];
                           }
                           
-                          _noDataLabel.hidden = (_events.count > 0);
+                          _noActivitiesLabel.hidden = (_events.count > 0);
                           [self createGroupedEventDictionaryForEvents:_events];
                           
                           [self updateHeaderView];

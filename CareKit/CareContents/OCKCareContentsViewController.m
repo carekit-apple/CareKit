@@ -60,7 +60,7 @@
 @implementation OCKCareContentsViewController {
     UITableView *_tableView;
     UIRefreshControl *_refreshControl;
-    OCKLabel *_noDataLabel;
+    OCKLabel *_noActivitiesLabel;
     NSMutableArray<NSMutableArray<OCKCarePlanEvent *> *> *_events;
     NSMutableArray *_weekValues;
     OCKHeaderView *_headerView;
@@ -71,6 +71,10 @@
     NSMutableArray *_sectionTitles;
     NSMutableArray<NSMutableArray <NSMutableArray <OCKCarePlanEvent *> *> *> *_tableViewData;
     NSMutableDictionary *_allEvents;
+    
+    BOOL _hasInterventions;
+    BOOL _hasAssessments;
+    BOOL _hasReadOnlyItems;
     
     NSString *_otherString;
     NSString *_optionalString;
@@ -92,9 +96,6 @@
         _glyphTintColor = nil;
         _isGrouped = YES;
         _isSorted = YES;
-        _hasInterventions = NO;
-        _hasAssesments = NO;
-        _hasReadOnlyItems = NO;
     }
     return self;
 }
@@ -144,15 +145,15 @@
     _tableView.refreshControl = _refreshControl;
     [self updatePullToRefreshControl];
     
-    _noDataLabel = [OCKLabel new];
-    _noDataLabel.hidden = YES;
-    _noDataLabel.textStyle = UIFontTextStyleTitle2;
-    _noDataLabel.textColor = [UIColor lightGrayColor];
-    _noDataLabel.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-    _noDataLabel.text = self.noEventsText;
-    _noDataLabel.numberOfLines = 0;
-    _noDataLabel.textAlignment = NSTextAlignmentCenter;
-    _tableView.backgroundView = _noDataLabel;
+    _noActivitiesLabel = [OCKLabel new];
+    _noActivitiesLabel.hidden = YES;
+    _noActivitiesLabel.textStyle = UIFontTextStyleTitle2;
+    _noActivitiesLabel.textColor = [UIColor lightGrayColor];
+    _noActivitiesLabel.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    _noActivitiesLabel.text = self.noActivitiesText;
+    _noActivitiesLabel.numberOfLines = 0;
+    _noActivitiesLabel.textAlignment = NSTextAlignmentCenter;
+    _tableView.backgroundView = _noActivitiesLabel;
     
     self.navigationController.navigationBar.translucent = NO;
     [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:245.0/255.0 green:244.0/255.0 blue:246.0/255.0 alpha:1.0]];
@@ -365,9 +366,10 @@
         [self updatePullToRefreshControl];
     }
 }
-- (void)setNoEventsText:(NSString *)noEventsText {
-    _noEventsText = noEventsText;
-    _noDataLabel.text = noEventsText;
+
+- (void)setNoActivitiesText:(NSString *)noActivitiesText {
+    _noActivitiesText = noActivitiesText;
+    _noActivitiesLabel.text = noActivitiesText;
 }
 
 #pragma mark - Helpers
@@ -408,7 +410,7 @@
                                   break;
                                   
                               case OCKCarePlanActivityTypeAssessment:
-                                  _hasAssesments = _events.count > 0;
+                                  _hasAssessments = _events.count > 0;
                                   break;
                                   
                               case OCKCarePlanActivityTypeReadOnly:
@@ -418,7 +420,7 @@
                               default:
                                   break;
                           }
-                          _noDataLabel.hidden = _hasAssesments || _hasInterventions || _hasReadOnlyItems;
+                          _noActivitiesLabel.hidden = _hasAssessments || _hasInterventions || _hasReadOnlyItems;
                           [_tableView reloadData];
                       });
                   }];

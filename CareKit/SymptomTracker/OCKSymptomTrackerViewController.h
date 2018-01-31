@@ -168,9 +168,9 @@ OCK_CLASS_AVAILABLE
 
 /**
  Optional: A message that will be displayed in the table view's background view
- if there are no interventions, assessments, or ReadOnly activities to display.
+ if there are no assessments to display.
  */
-@property (nonatomic, nullable) NSString *noEventsText;
+@property (nonatomic, nullable) NSString *noActivitiesText;
 
 /**
  The property that allows activities to be grouped.

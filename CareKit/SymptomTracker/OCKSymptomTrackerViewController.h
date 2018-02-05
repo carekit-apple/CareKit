@@ -167,6 +167,12 @@ OCK_CLASS_AVAILABLE
 @property (nonatomic) NSString *customGlyphImageName;
 
 /**
+ Optional: A message that will be displayed in the table view's background view
+ if there are no assessments to display.
+ */
+@property (nonatomic, nullable) NSString *noActivitiesText;
+
+/**
  The property that allows activities to be grouped.
  
  If true, the activities will be grouped by groupIdentifier into sections,

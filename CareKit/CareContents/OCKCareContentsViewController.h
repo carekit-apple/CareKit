@@ -1,5 +1,6 @@
 /*
  Copyright (c) 2017, Apple Inc. All rights reserved.
+ Copyright (c) 2017, Erik Hornberger. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -185,7 +186,6 @@ OCK_CLASS_AVAILABLE
  */
 @property (nonatomic, readonly, nullable) OCKCarePlanEvent *lastSelectedEvent;
 
-
 /**
  The image that will be used to mask the fill shape in the week view.
  
@@ -228,6 +228,12 @@ OCK_CLASS_AVAILABLE
  The section header title for all the ReadOnly activities. Default is `Read Only` if nil.
  */
 @property (nonatomic, nullable) NSString *readOnlySectionHeader;
+
+/**
+ Optional: A message that will be displayed in the table view's background view
+ if there are no interventions, assessments, or ReadOnly activities to display.
+ */
+@property (nonatomic, nullable) NSString *noActivitiesText;
 
 /**
  The property that allows activities to be grouped.

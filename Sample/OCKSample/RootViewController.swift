@@ -120,6 +120,7 @@ class RootViewController: UITabBarController {
         let viewController = OCKCareContentsViewController(carePlanStore: storeManager.store)
         viewController.title = NSLocalizedString("Care Contents", comment: "")
         viewController.tabBarItem = UITabBarItem(title: viewController.title, image: UIImage(named:"carecard"), selectedImage: UIImage(named: "carecard-filled"))
+        viewController.noActivitiesText = NSLocalizedString("There are no activities to show!", comment: "")
         viewController.delegate = self;
         return viewController
 

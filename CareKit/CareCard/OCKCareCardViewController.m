@@ -36,6 +36,7 @@
 #import "OCKWeekViewController.h"
 #import "NSDateComponents+CarePlanInternal.h"
 #import "OCKHeaderView.h"
+#import "OCKLabel.h"
 #import "OCKCareCardTableViewCell.h"
 #import "OCKWeekLabelsView.h"
 #import "OCKCarePlanStore_Internal.h"
@@ -69,6 +70,7 @@
     BOOL _isGrouped;
     BOOL _isSorted;
     UIRefreshControl *_refreshControl;
+    OCKLabel *_noActivitiesLabel;
 }
 
 - (instancetype)init {
@@ -124,6 +126,16 @@
     [_refreshControl addTarget:self action:@selector(didActivatePullToRefreshControl:) forControlEvents:UIControlEventValueChanged];
     _tableView.refreshControl = _refreshControl;
     [self updatePullToRefreshControl];
+    
+    _noActivitiesLabel = [OCKLabel new];
+    _noActivitiesLabel.hidden = YES;
+    _noActivitiesLabel.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    _noActivitiesLabel.textStyle = UIFontTextStyleTitle2;
+    _noActivitiesLabel.textColor = [UIColor lightGrayColor];
+    _noActivitiesLabel.text = self.noActivitiesText;
+    _noActivitiesLabel.textAlignment = NSTextAlignmentCenter;
+    _noActivitiesLabel.numberOfLines = 0;
+    _tableView.backgroundView = _noActivitiesLabel;
     
     self.navigationController.navigationBar.translucent = NO;
     [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:245.0/255.0 green:244.0/255.0 blue:246.0/255.0 alpha:1.0]];
@@ -347,6 +359,11 @@
     }
 }
 
+- (void)setNoActivitiesText:(NSString *)noActivitiesText {
+    _noActivitiesText = noActivitiesText;
+    _noActivitiesLabel.text = noActivitiesText;
+}
+
 #pragma mark - Helpers
 
 - (void)fetchEvents {
@@ -365,6 +382,7 @@
                               [self.delegate careCardViewController:self willDisplayEvents:[_events copy] dateComponents:_selectedDate];
                           }
                           
+                          _noActivitiesLabel.hidden = (_events.count > 0);
                           [self createGroupedEventDictionaryForEvents:_events];
                           
                           [self updateHeaderView];

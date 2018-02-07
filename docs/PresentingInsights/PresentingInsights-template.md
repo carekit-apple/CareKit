@@ -237,6 +237,7 @@ The code sample initializes an assessment activity, in this case one that tracks
     let stressAssessment =
     OCKCarePlanActivity.assessment(withIdentifier: “stress”,
                                                       groupIdentifier: “Assessments”,
+                                                      visualGroupIdentifier: "Assessments",
                                                       title: “Stress”,
                                                       text: “ResearchKit Survey”,
                                                       tintColor: .purple,

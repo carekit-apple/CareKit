@@ -61,6 +61,7 @@ You indicate that an activity is optional by setting its boolean property `optio
      let ibuprofenIntervention = 
               OCKCarePlanActivity.intervention(withIdentifier: "ibuprofen",
                                                                      groupIdentifier: "Pain Medication",
+                                                                     visualGroupIdentifier: "Pain Medications",
                                                                      title: "Ibuprofen",           
                                                                      text: "800 mg",
                                                                      tintColor: .green,
@@ -77,6 +78,7 @@ The care contents scene can display read-only activities. The code example shows
      let recommendation = 
                   OCKCarePlanActivity.readOnly(withIdentifier: "readOnlyActivity",
                                                                        groupIdentifier: "Recommendations",
+                                                                       visualGroupIdentifier: "Recommendations",
                                                                        title: "Avoid Alcohol",           
                                                                        text: "Until next appointment",   
                                                                        instructions: "Alcohol may increase chance of migraine"   
@@ -136,6 +138,7 @@ Intervention activities require valid `schedule`, `title`, `text`, and `detailed
     	let medication = OCKCarePlanActivity(
     	    identifier: MyMedicationIdentifier,
     	    groupIdentifier: nil,
+          visualGroupIdentifier: "Pain Medications",
     	    type: .Intervention,
     	    title: "Vicodin",
     	    text: "5mg/500mg",
@@ -226,6 +229,7 @@ Other parameters can further modify how the activity behaves, or how it appears.
     	let emotionalSurvey = OCKCarePlanActivity(
     	    identifier: MyEmotionalSurveyIdentifier,
     	    groupIdentifier: nil,
+          visualGroupIdentifier: "Surveys",
     	    type: .Assessment,
     	    title: "Daily Emotional Survey",
     	    text: "How are you feeling today?",

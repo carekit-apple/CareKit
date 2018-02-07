@@ -72,7 +72,7 @@ The care plan store manages two basic data types:
 
 Activities are uniquely identified by an `identifier` property. Identifiers are strings that you provide when you create the activity. You can use any string you wish, but every activity in the care plan store must have a unique string. Attempting to reuse an existing identifier will fail, returning an error with an `OCKErrorDomain` domain and a `OCKErrorInvalidObject` error code.
 
-Activities can also have a `groupIdentifier` property. The group identifier is an arbitrary string you set when you create the activity. Multiple activities can share the same group identifier. Use the group identifier to partition your activities into related groups, which lets you easily search the care plan store for the activities with a given group identifier. On the Care Contents scene, activities with the same group identifier may be grouped together.
+Activities can also have a `groupIdentifier` and a `visualGroupIdentifier` property. The group identifier is an arbitrary string you set when you create the activity. Multiple activities can share the same group identifier. Use the group identifier to partition your activities into related groups, which lets you easily search the care plan store for the activities with a given group identifier. The visual group identifier is similar to the group identifier, but only for presentation. On the Care Contents scene, activities with the same visual group identifier may be grouped together. If you wish to group activities on the Care Contents scene by the group identifier, set the same value for group identifier and visual group identifier.
 
 ## Responding to Changes in the Care Plan Store<a name="changes"></a>
 

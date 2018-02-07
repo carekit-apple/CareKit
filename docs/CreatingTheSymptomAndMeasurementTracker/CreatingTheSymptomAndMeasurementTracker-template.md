@@ -63,6 +63,7 @@ Each activity has a unique identifier. If an identifier is already used in the s
     	let emotionalSurvey = OCKCarePlanActivity(
     	    identifier: MyEmotionalSurveyIdentifier,
     	    groupIdentifier: nil,
+           visualGroupIdentifier: "Surveys",
     	    type: .Assessment,
     	    title: "Daily Emotional Survey",
     	    text: "How are you feeling today?",

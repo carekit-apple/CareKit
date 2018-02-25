@@ -149,7 +149,7 @@ OCK_CLASS_AVAILABLE
 @property (nonatomic, null_resettable) UIColor *glyphTintColor;
 
 /**
- The string that will be used as the Symptom Tracker header title.
+ The string that will be used as the Symptom Tracker header title. If you need to show the completion percentage in the customized title, include "%@" in the specified string.
  
  If the value is not specified, CareKit's default string ("Activity Completion") is used.
  */

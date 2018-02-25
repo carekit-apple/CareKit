@@ -102,7 +102,11 @@ static const CGFloat RingViewSize = 110.0;
 
 - (void)updateView {
     if (self.title.length > 0) {
-        _titleLabel.text = self.title;
+        if ([self.title containsString:@"%@"]) {
+            _titleLabel.text = [NSString stringWithFormat:self.title, [self valuePercentageString]];
+        } else {
+            _titleLabel.text = self.title;
+        }
     } else if (self.isCareCard) {
         _titleLabel.text = [NSString stringWithFormat:OCKLocalizedString(@"HEADER_TITLE_CARE_OVERVIEW", nil), [self valuePercentageString]];
     } else {

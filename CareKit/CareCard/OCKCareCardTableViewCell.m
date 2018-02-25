@@ -153,7 +153,7 @@ static const CGFloat ButtonViewSize = 40.0;
     CGFloat TrailingMargin = (self.separatorInset.right > 0) ? self.separatorInset.right : 25;
     
     CGFloat buttonsUsableWidth = [UIScreen mainScreen].bounds.size.width - (LeadingMargin + TrailingMargin);
-    int maxButtonsPerRow = buttonsUsableWidth / (ButtonViewSize + HorizontalMargin);
+    int maxButtonsPerRow = (buttonsUsableWidth / ButtonViewSize) - 1;
     int buttonsPerRow = [self optimizeButtonsPerRow:maxButtonsPerRow];
     
     [_constraints addObjectsFromArray:@[

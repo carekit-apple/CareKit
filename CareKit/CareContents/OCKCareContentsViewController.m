@@ -1,6 +1,7 @@
 /*
  Copyright (c) 2017, Apple Inc. All rights reserved.
  Copyright (c) 2017, Erik Hornberger. All rights reserved.
+ Copyright (c) 2018, Macro Yau. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -189,7 +190,9 @@
         _headerView = [[OCKHeaderView alloc] initWithFrame:CGRectZero];
         [self.view addSubview:_headerView];
     }
-    
+    if ([_headerTitle length] > 0) {
+        _headerView.title = _headerTitle;
+    }
     _headerView.tintColor = self.glyphTintColor;
     if (self.glyphType == OCKGlyphTypeCustom) {
         UIImage *glyphImage = [self createCustomImageName:self.customGlyphImageName];
@@ -352,6 +355,13 @@
     _weekViewController.weekView.tintColor = _glyphTintColor;
     _headerView.tintColor = _glyphTintColor;
     self.navigationItem.rightBarButtonItem.tintColor = _glyphTintColor;
+}
+
+- (void)setHeaderTitle:(NSString *)headerTitle {
+    _headerTitle = headerTitle;
+    if ([_headerTitle length] > 0) {
+        _headerView.title = _headerTitle;
+    }
 }
 
 - (void)setDelegate:(id<OCKCareContentsViewControllerDelegate>)delegate

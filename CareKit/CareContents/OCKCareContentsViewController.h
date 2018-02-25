@@ -1,6 +1,7 @@
 /*
  Copyright (c) 2017, Apple Inc. All rights reserved.
  Copyright (c) 2017, Erik Hornberger. All rights reserved.
+ Copyright (c) 2018, Macro Yau. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -199,6 +200,12 @@ OCK_CLASS_AVAILABLE
  */
 @property (nonatomic, null_resettable) UIColor *glyphTintColor;
 
+/**
+ The string that will be used as the Care Contents header title.
+ 
+ If the value is not specified, CareKit's default string ("Your care overview is x% complete") is used.
+ */
+@property (nonatomic, null_resettable) NSString *headerTitle;
 
 /**
  The glyph type for the header view (see OCKGlyphType).

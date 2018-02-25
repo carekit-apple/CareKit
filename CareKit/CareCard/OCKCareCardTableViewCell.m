@@ -141,6 +141,9 @@ static const CGFloat ButtonViewSize = 40.0;
     CGFloat LeadingMargin = self.separatorInset.left;
     CGFloat TrailingMargin = (self.separatorInset.right > 0) ? self.separatorInset.right : 25;
     
+    CGFloat buttonsUsableWidth = [UIScreen mainScreen].bounds.size.width - (LeadingMargin + TrailingMargin);
+    int buttonsPerRow = buttonsUsableWidth / (ButtonViewSize + HorizontalMargin);
+    
     [_constraints addObjectsFromArray:@[
                                         [NSLayoutConstraint constraintWithItem:_titleLabel
                                                                      attribute:NSLayoutAttributeTop
@@ -232,7 +235,7 @@ static const CGFloat ButtonViewSize = 40.0;
                                                                             multiplier:1.0
                                                                               constant:VerticalMargin],
                                                 ]];
-        } else if (i == 7) {
+        } else if (i == buttonsPerRow) {
             [_constraints addObjectsFromArray:@[
                                                 [NSLayoutConstraint constraintWithItem:_frequencyButtons[i]
                                                                              attribute:NSLayoutAttributeLeading
@@ -286,7 +289,7 @@ static const CGFloat ButtonViewSize = 40.0;
                                             ]];
     }
     
-    int index = (_frequencyButtons.count <= 7) ? 0 : 7;
+    int index = (_frequencyButtons.count <= buttonsPerRow) ? 0 : buttonsPerRow;
     for (int i = index; i <_frequencyButtons.count; i++) {
         [_constraints addObjectsFromArray:@[
                                             [NSLayoutConstraint constraintWithItem:_frequencyButtons[i]

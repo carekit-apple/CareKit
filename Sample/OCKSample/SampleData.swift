@@ -40,6 +40,7 @@ class SampleData: NSObject {
         OutdoorWalk(),
         HamstringStretch(),
         TakeMedication(),
+        DrinkWater(),
         BackPain(),
         Mood(),
         BloodGlucose(),

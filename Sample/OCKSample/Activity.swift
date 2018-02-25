@@ -48,6 +48,7 @@ enum ActivityType: String {
     case outdoorWalk
     case hamstringStretch
     case takeMedication
+    case drinkWater
     
     case backPain
     case mood

@@ -23,6 +23,7 @@
 		247E67881E53DCD30045D28B /* ResearchKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 247E67871E53DCD30045D28B /* ResearchKit.framework */; };
 		247E67891E53DCD30045D28B /* ResearchKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 247E67871E53DCD30045D28B /* ResearchKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		24A69BBC1D779DE600BEAD84 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B5C100991CB12E0C00FAD7E8 /* Assets.xcassets */; };
+		6C703DE82042C2B6002D12EA /* DrinkWater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C703DE72042C2B6002D12EA /* DrinkWater.swift */; };
 		B55565771CC82FCA00513644 /* CareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B55565711CC82F8D00513644 /* CareKit.framework */; };
 		B55565781CC82FCA00513644 /* CareKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B55565711CC82F8D00513644 /* CareKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B555759C1CB3DB8C0028DC37 /* NSCalendar+Dates.swift in Sources */ = {isa = PBXBuildFile; fileRef = B555759B1CB3DB8C0028DC37 /* NSCalendar+Dates.swift */; };
@@ -161,6 +162,7 @@
 		24026C661D6D244A007582F3 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
 		2436E42A1CD18BEC00ABE381 /* ResearchKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ResearchKit.xcodeproj; path = ../dependency/ResearchKit.xcodeproj; sourceTree = "<group>"; };
 		247E67871E53DCD30045D28B /* ResearchKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = ResearchKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		6C703DE72042C2B6002D12EA /* DrinkWater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrinkWater.swift; sourceTree = "<group>"; };
 		B555759B1CB3DB8C0028DC37 /* NSCalendar+Dates.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSCalendar+Dates.swift"; sourceTree = "<group>"; };
 		B555759D1CB3DBBE0028DC37 /* OCKInsightItem+EmptyMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OCKInsightItem+EmptyMessage.swift"; sourceTree = "<group>"; };
 		B56848B51CB5085E00D190EE /* InsightsBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InsightsBuilder.swift; sourceTree = "<group>"; };
@@ -344,6 +346,7 @@
 			isa = PBXGroup;
 			children = (
 				B5C100E31CB27B5F00FAD7E8 /* Activity.swift */,
+				6C703DE72042C2B6002D12EA /* DrinkWater.swift */,
 				B58A3FB11CC81E89009CF1B9 /* OutdoorWalk.swift */,
 				B58A3FB31CC81EB8009CF1B9 /* HamstringStretch.swift */,
 				B58A3FB51CC81ED8009CF1B9 /* TakeMedication.swift */,
@@ -663,6 +666,7 @@
 				BA965B281DC6D3200066EAC6 /* Glyph.swift in Sources */,
 				B58A3FBD1CC81FF9009CF1B9 /* Mood.swift in Sources */,
 				1801613F1D4E778F0036E247 /* WatchConnectivityManager.swift in Sources */,
+				6C703DE82042C2B6002D12EA /* DrinkWater.swift in Sources */,
 				B5C01D521CB3BC2D000728D9 /* BuildInsightsOperation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

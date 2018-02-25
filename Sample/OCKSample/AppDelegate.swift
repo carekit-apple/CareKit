@@ -38,6 +38,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey : Any]? = nil) -> Bool {
         window?.tintColor = OCKColor.red
+        
+        let navigationBarAppearance = UINavigationBar.appearance()
+        navigationBarAppearance.barTintColor = UIColor(red: 245.0 / 255.0,
+                                                       green: 244.0 / 255.0,
+                                                       blue: 246.0 / 255.0,
+                                                       alpha: 1.0)
+        navigationBarAppearance.tintColor = OCKColor.red
+        navigationBarAppearance.isTranslucent = false
+        
         return true
     }
 }

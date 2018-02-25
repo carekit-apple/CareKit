@@ -124,7 +124,6 @@
                                                                               style:UIBarButtonItemStylePlain
                                                                              target:self
                                                                              action:@selector(showToday:)];
-    self.navigationItem.rightBarButtonItem.tintColor = self.glyphTintColor;
 
     _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
     _tableView.dataSource = self;
@@ -154,10 +153,6 @@
     _noActivitiesLabel.numberOfLines = 0;
     _noActivitiesLabel.textAlignment = NSTextAlignmentCenter;
     _tableView.backgroundView = _noActivitiesLabel;
-    
-    self.navigationController.navigationBar.translucent = NO;
-    [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:245.0/255.0 green:244.0/255.0 blue:246.0/255.0 alpha:1.0]];
-
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -351,7 +346,6 @@
     }
     _weekViewController.weekView.tintColor = _glyphTintColor;
     _headerView.tintColor = _glyphTintColor;
-    self.navigationItem.rightBarButtonItem.tintColor = _glyphTintColor;
 }
 
 - (void)setDelegate:(id<OCKCareContentsViewControllerDelegate>)delegate

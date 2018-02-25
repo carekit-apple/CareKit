@@ -82,13 +82,6 @@ static NSString *EmptyString = @"";
     _isKeyboardVisible = NO;
 }
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    
-    self.navigationController.navigationBar.translucent = NO;
-    [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:245.0/255.0 green:244.0/255.0 blue:246.0/255.0 alpha:1.0]];
-}
-
 - (void)prepareView {
     _placeholderString = OCKLocalizedString(@"CONNECT_MESSAGE_PLACEHOLDER", nil);
     self.title = OCKLocalizedString(@"CONNECT_INBOX_TITLE", nil);

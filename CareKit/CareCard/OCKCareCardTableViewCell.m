@@ -1,5 +1,6 @@
 /*
  Copyright (c) 2017, Apple Inc. All rights reserved.
+ Copyright (c) 2018, Macro Yau. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -127,6 +128,16 @@ static const CGFloat ButtonViewSize = 40.0;
     _textLabel.text = _intervention.text;
 }
 
+- (int)optimizeButtonsPerRow:(int)max {
+    int buttonsInPartialRow = ([_frequencyButtons count] < max) ? 0 : [_frequencyButtons count] % max;
+    
+    if (buttonsInPartialRow == 0 || buttonsInPartialRow == max - 1) {
+        return max;
+    } else {
+        return [self optimizeButtonsPerRow:(max - 1)];
+    }
+}
+
 - (void)setUpConstraints {
     [NSLayoutConstraint deactivateConstraints:_constraints];
     
@@ -142,7 +153,8 @@ static const CGFloat ButtonViewSize = 40.0;
     CGFloat TrailingMargin = (self.separatorInset.right > 0) ? self.separatorInset.right : 25;
     
     CGFloat buttonsUsableWidth = [UIScreen mainScreen].bounds.size.width - (LeadingMargin + TrailingMargin);
-    int buttonsPerRow = buttonsUsableWidth / (ButtonViewSize + HorizontalMargin);
+    int maxButtonsPerRow = buttonsUsableWidth / (ButtonViewSize + HorizontalMargin);
+    int buttonsPerRow = [self optimizeButtonsPerRow:maxButtonsPerRow];
     
     [_constraints addObjectsFromArray:@[
                                         [NSLayoutConstraint constraintWithItem:_titleLabel

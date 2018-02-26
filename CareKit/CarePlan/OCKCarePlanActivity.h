@@ -67,7 +67,7 @@ OCK_CLASS_AVAILABLE
 - (instancetype)init NS_UNAVAILABLE;
 
 /**
- Convienience initializer for intervention activity type.
+ Convenience initializer for intervention activity type.
  This initializer covers necessary attributes for building an intervention.
  
  @param identifier      Unique identifier string.
@@ -97,7 +97,7 @@ OCK_CLASS_AVAILABLE
                                   optional:(BOOL)optional;
 
 /**
- Convienience initializer for the assessment activity type.
+ Convenience initializer for the assessment activity type.
  This initializer covers necessary attributes for building an assessment.
  
  @param identifier          Unique identifier string.
@@ -137,7 +137,7 @@ OCK_CLASS_AVAILABLE
                                 optional:(BOOL)optional;
 
 /**
- Convienience initializer for read only activity type.
+ Convenience initializer for read only activity type.
  This initializer covers necessary attributes for building read only activity.
  
  @param identifier      Unique identifier string.
@@ -164,7 +164,7 @@ OCK_CLASS_AVAILABLE
                                           userInfo:(nullable NSDictionary *)userInfo;
 
 /**
- Default initialzer for OCKCarePlanActivity.
+ Default initializer for OCKCarePlanActivity.
  
  @param identifier          Unique identifier string.
  @param groupIdentifier     Group identifier string.

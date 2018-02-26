@@ -51,7 +51,7 @@ typedef NS_ENUM(NSInteger, OCKCarePlanEventState) {
 
 
 /**
- An instance of `OCKCarePlanEvent` defines an occurrence of an activty.
+ An instance of `OCKCarePlanEvent` defines an occurrence of an activity.
  An event is uniquely defined by two indices: numberOfDaysSinceStart and occurrenceIndexOfDay. 
  For example, the second event on day 1 is defined using numberOfDaysSinceStart = 0 and occurrenceIndexOfDay = 1.
  

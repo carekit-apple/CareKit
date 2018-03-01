@@ -66,7 +66,7 @@ typedef NS_ENUM(NSInteger, OCKCarePlanThresholdType) {
 - (instancetype)init NS_UNAVAILABLE;
 
 /**
- Convienience initializer for the adherance type threshold.
+ Convenience initializer for the adherance type threshold.
  This initializer covers necessary attributes for building an adherance threshold.
  
  @param value       The value of the threshold (triggers if less than this value of events are completed).
@@ -77,7 +77,7 @@ typedef NS_ENUM(NSInteger, OCKCarePlanThresholdType) {
 + (instancetype)adheranceThresholdWithValue:(NSNumber*)value
                                       title:(nullable NSString*)title;
 /**
- Convienience initializer for numeric type thresholds.
+ Convenience initializer for numeric type thresholds.
  This initializer covers necessary attributes for building a numeric threshold.
  
  @param value       The value of the threshold.

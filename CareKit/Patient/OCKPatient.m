@@ -164,11 +164,10 @@
     NSString *last = @"";
     
     if (candidateWords.count > 0) {
-        first = [NSString stringWithFormat:@"%c", [candidateWords[0] characterAtIndex:0]];
+        first = [self firstCharacterSequenceWithString:candidateWords.firstObject];
         if (candidateWords.count > 1) {
-            last = [NSString stringWithFormat:@"%c", [candidateWords[candidateWords.count-1] characterAtIndex:0]];
-        }
-        
+            last = [self firstCharacterSequenceWithString:candidateWords.lastObject];
+        }        
     } else {
         @throw [NSException exceptionWithName:NSInvalidArgumentException reason:[NSString stringWithFormat:@"name %@ has no candidates to generate a monogram", name] userInfo:nil];
     }
@@ -176,6 +175,15 @@
     candidateWords = nil;
     
     return [NSString stringWithFormat:@"%@%@",[first uppercaseString],[last uppercaseString]];
+}
+
+- (NSString*)firstCharacterSequenceWithString:(NSString*)string {
+    __block NSString* initial = @"";
+    [string enumerateSubstringsInRange:NSMakeRange(0, string.length) options:NSStringEnumerationByComposedCharacterSequences usingBlock:^(NSString * _Nullable substring, NSRange substringRange, NSRange enclosingRange, BOOL * _Nonnull stop) {
+        initial = substring;
+        *stop = YES;
+    }];
+    return initial;
 }
 
 @end

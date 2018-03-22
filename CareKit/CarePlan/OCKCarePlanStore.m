@@ -430,7 +430,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
 - (void)handleActivityListChange:(BOOL)result type:(OCKCarePlanActivityType)type {
     if (result){
         dispatch_async(dispatch_get_main_queue(), ^{
-            if (type == OCKCarePlanActivityTypeIntervention &&
+            if ((type == OCKCarePlanActivityTypeIntervention || type == OCKCarePlanActivityTypeReadOnly) &&
                 _careCardUIDelegate && [_careCardUIDelegate respondsToSelector:@selector(carePlanStoreActivityListDidChange:)]) {
                 [_careCardUIDelegate carePlanStoreActivityListDidChange:self];
             }

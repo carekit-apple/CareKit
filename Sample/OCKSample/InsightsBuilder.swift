@@ -136,13 +136,13 @@ class InsightsBuilder {
         */
         let aggregateDataOperation = BlockOperation { [weak buildInsightsOperation] in
             // Copy the queried data from the query operations to the `BuildInsightsOperation`.
-            buildInsightsOperation.medicationEvents = medicationEventsOperation.dailyEvents
-            buildInsightsOperation.hamstringStretchEvents = hamstringStretchEventsOperation.dailyEvents
-            buildInsightsOperation.outdoorWalkEvents = outdoorWalkEventsOperation.dailyEvents
-            buildInsightsOperation.bloodGlucoseEvents = bloodGlucoseEventsOperation.dailyEvents
-            buildInsightsOperation.weightEvents = weightEventsOperation.dailyEvents
-            buildInsightsOperation.moodEvents = moodEventsOperation.dailyEvents
-            buildInsightsOperation.backPainEvents = backPainEventsOperation.dailyEvents
+            buildInsightsOperation?.medicationEvents = medicationEventsOperation.dailyEvents
+            buildInsightsOperation?.hamstringStretchEvents = hamstringStretchEventsOperation.dailyEvents
+            buildInsightsOperation?.outdoorWalkEvents = outdoorWalkEventsOperation.dailyEvents
+            buildInsightsOperation?.bloodGlucoseEvents = bloodGlucoseEventsOperation.dailyEvents
+            buildInsightsOperation?.weightEvents = weightEventsOperation.dailyEvents
+            buildInsightsOperation?.moodEvents = moodEventsOperation.dailyEvents
+            buildInsightsOperation?.backPainEvents = backPainEventsOperation.dailyEvents
         }
         
         /*

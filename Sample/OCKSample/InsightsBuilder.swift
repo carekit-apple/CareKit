@@ -134,7 +134,7 @@ class InsightsBuilder {
             Create an operation to aggregate the data from query operations into
             the `BuildInsightsOperation`.
         */
-        let aggregateDataOperation = BlockOperation {
+        let aggregateDataOperation = BlockOperation { [weak buildInsightsOperation] in
             // Copy the queried data from the query operations to the `BuildInsightsOperation`.
             buildInsightsOperation.medicationEvents = medicationEventsOperation.dailyEvents
             buildInsightsOperation.hamstringStretchEvents = hamstringStretchEventsOperation.dailyEvents

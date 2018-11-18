@@ -140,20 +140,20 @@
                                                                         optional:false];
     
     
-    __block NSError *error;
+    __block NSError *outerError;
     __block BOOL result;
     
     XCTestExpectation *expectation = [self expectationWithDescription:@"add1"];
     [store addActivity:item1 completion:^(BOOL success, NSError * _Nonnull error) {
         result = success;
-        error = error;
+        outerError = error;
         [expectation fulfill];
     }];
     [self waitForExpectationsWithTimeout:1.0 handler:^(NSError * _Nullable error) {
-        error = error;
+        outerError = error;
     }];
     XCTAssertTrue(result);
-    XCTAssertNil(error);
+    XCTAssertNil(outerError);
     XCTAssertTrue([self isListChangeDelegateCalled]);
     
     // Test making call synced.
@@ -167,42 +167,42 @@
     [store addActivity:item2 completion:^(BOOL success, NSError * _Nonnull error) {
         XCTAssertFalse([NSThread isMainThread]);
         result = success;
-        error = error;
+        outerError = error;
         [expectation fulfill];
     }];
     [self waitForExpectationsWithTimeout:1.0 handler:^(NSError * _Nullable error) {
-        error = error;
+        outerError = error;
     }];
     XCTAssertTrue(result);
-    XCTAssertNil(error);
+    XCTAssertNil(outerError);
     XCTAssertTrue([self isListChangeDelegateCalled]);
     
     expectation = [self expectationWithDescription:@"add3"];
     [store addActivity:item3 completion:^(BOOL success, NSError * _Nonnull error) {
         XCTAssertFalse([NSThread isMainThread]);
         result = success;
-        error = error;
+        outerError = error;
         [expectation fulfill];
     }];
     [self waitForExpectationsWithTimeout:1.0 handler:^(NSError * _Nullable error) {
-        error = error;
+        outerError = error;
     }];
     XCTAssertTrue(result);
-    XCTAssertNil(error);
+    XCTAssertNil(outerError);
     XCTAssertTrue([self isListChangeDelegateCalled]);
     
     expectation = [self expectationWithDescription:@"add4"];
     [store addActivity:item4 completion:^(BOOL success, NSError * _Nonnull error) {
         XCTAssertFalse([NSThread isMainThread]);
         result = success;
-        error = error;
+        outerError = error;
         [expectation fulfill];
     }];
     [self waitForExpectationsWithTimeout:1.0 handler:^(NSError * _Nullable error) {
-        error = error;
+        outerError = error;
     }];
     XCTAssertTrue(result);
-    XCTAssertNil(error);
+    XCTAssertNil(outerError);
     XCTAssertTrue([self isListChangeDelegateCalled]);
     
     expectation = [self expectationWithDescription:@"activitiesWithType"];
@@ -489,7 +489,7 @@
         XCTAssertNil(error);
     }];
     
-    XCTAssertNil(error);
+    XCTAssertNil(outerError);
     XCTAssertEqual(eventGroups.count, 3);
     XCTAssertEqual(eventGroups[0].count, 3);
     XCTAssertEqual(eventGroups[1].count, 3);
@@ -575,16 +575,16 @@
     store.delegate = nil;
     [self measureBlock:^{
         
-        for (OCKCarePlanEvent* event in eventsOfActivity) {
-            XCTestExpectation *expectation = [self expectationWithDescription:@"updateEvent"];
-            [store updateEvent:event
+        for (OCKCarePlanEvent* activeEvent in eventsOfActivity) {
+            XCTestExpectation *updateExpectation = [self expectationWithDescription:@"updateEvent"];
+            [store updateEvent:activeEvent
                     withResult:nil
                          state:OCKCarePlanEventStateCompleted
                     completion:^(BOOL success, OCKCarePlanEvent * _Nonnull event, NSError * _Nonnull error) {
                         XCTAssertFalse([NSThread isMainThread]);
                           XCTAssertNil(error);
                           XCTAssertTrue(success, @"%@: %@", event, error);
-                          [expectation fulfill];
+                          [updateExpectation fulfill];
             }];
         }
         

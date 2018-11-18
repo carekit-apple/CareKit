@@ -101,20 +101,19 @@
     OCKDocument *doc = [[OCKDocument alloc] initWithTitle:@"This is a title" elements:@[subtitle, table, paragrah, barChart, paragrah, imageElement, paragrah]];
     doc.pageHeader = @"App Name: ABC, User Name: John Appleseed";
     
-    NSString *path = [[self cleanTestPath] stringByAppendingPathComponent:@"x.html"];
-    
-    [[doc HTMLContent] writeToFile:path atomically:YES encoding:NSUTF8StringEncoding error:nil];
+    NSString *htmlPath = [[self cleanTestPath] stringByAppendingPathComponent:@"x.html"];
+    [[doc HTMLContent] writeToFile:htmlPath atomically:YES encoding:NSUTF8StringEncoding error:nil];
     
     XCTAssertGreaterThan(doc.HTMLContent.length, 0);
     
-    NSLog(@"open %@", path);
+    NSLog(@"open %@", htmlPath);
     
     XCTestExpectation *expectation = [self expectationWithDescription:@"pdf"];
     
     [doc createPDFDataWithCompletion:^(NSData * _Nonnull data, NSError * _Nonnull error) {
-        NSString *path = [[self testPath] stringByAppendingPathComponent:@"x.pdf"];
-        [data writeToFile:path atomically:YES];
-        NSLog(@"open %@", path);
+        NSString *pdfPath = [[self testPath] stringByAppendingPathComponent:@"x.pdf"];
+        [data writeToFile:pdfPath atomically:YES];
+        NSLog(@"open %@", pdfPath);
         [expectation fulfill];
     }];
     

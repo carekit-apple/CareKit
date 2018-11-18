@@ -556,23 +556,23 @@
     
     NSMutableArray *array = [NSMutableArray new];
     for (NSString *key in _sectionTitles) {
-        NSMutableArray *groupArray = [NSMutableArray new];
+        NSMutableArray *updatedGroupArray = [NSMutableArray new];
         NSArray *groupedEventsArray = groupedEvents[key];
         
         if (_isSorted) {
             
             NSMutableDictionary *activitiesDictionary = [NSMutableDictionary new];
-            for (NSArray<OCKCarePlanEvent *> *events in groupedEventsArray) {
-                NSString *activityTitle = events.firstObject.activity.title;
-                activitiesDictionary[activityTitle] = events;
+            for (NSArray<OCKCarePlanEvent *> *eventGroup in groupedEventsArray) {
+                NSString *activityTitle = eventGroup.firstObject.activity.title;
+                activitiesDictionary[activityTitle] = eventGroup;
             }
             
             NSArray *sortedActivitiesKeys = [activitiesDictionary.allKeys sortedArrayUsingSelector:@selector(compare:)];
             for (NSString *activityKey in sortedActivitiesKeys) {
-                [groupArray addObject:activitiesDictionary[activityKey]];
+                [updatedGroupArray addObject:activitiesDictionary[activityKey]];
             }
             
-            [array addObject:groupArray];
+            [array addObject:updatedGroupArray];
             
         } else {
             
@@ -622,11 +622,11 @@
         [self.store updateEvent:event
                      withResult:nil
                           state:state
-                     completion:^(BOOL success, OCKCarePlanEvent * _Nonnull event, NSError * _Nonnull error) {
-                         NSAssert(success, error.localizedDescription);
+                     completion:^(BOOL updateSuccess, OCKCarePlanEvent * _Nonnull updateEvent, NSError * _Nonnull updateError) {
+                         NSAssert(updateSuccess, updateError.localizedDescription);
                          dispatch_async(dispatch_get_main_queue(), ^{
                              NSMutableArray *events = [cell.interventionEvents mutableCopy];
-                             [events replaceObjectAtIndex:event.occurrenceIndexOfDay withObject:event];
+                             [events replaceObjectAtIndex:event.occurrenceIndexOfDay withObject:updateEvent];
                              cell.interventionEvents = events;
                          });
                      }];

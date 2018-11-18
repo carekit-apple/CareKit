@@ -158,8 +158,8 @@
     NSString *activityIdentifier = widget.primaryIdentifier;
     if (activityIdentifier) {
         // Go get the activity for the activity identifier, if one exists.
-        [self.store activityForIdentifier:activityIdentifier completion:^(BOOL success, OCKCarePlanActivity * _Nullable activity, NSError * _Nullable error) {
-            if (success && activity) {
+        [self.store activityForIdentifier:activityIdentifier completion:^(BOOL activitySuccess, OCKCarePlanActivity * _Nullable activity, NSError * _Nullable activityError) {
+            if (activitySuccess && activity) {
                 NSDateComponents *components = [[NSDateComponents alloc] initWithDate:[NSDate date] calendar:[NSCalendar calendarWithIdentifier:NSCalendarIdentifierGregorian]];
                 
                 if (activity.type == OCKCarePlanActivityTypeIntervention) {
@@ -174,7 +174,7 @@
                             completedEvents++;
                         }
                         
-                    } completion:^(BOOL completed, NSError * _Nullable error) {
+                    } completion:^(BOOL completed, NSError * _Nullable eventsError) {
                         if (completed) {
                             double adherence = completedEvents/totalEvents;
                             if (!_numberFormatter) {
@@ -185,7 +185,7 @@
                             NSString *adherenceString = [NSString stringWithFormat:@"%@", [_numberFormatter stringFromNumber:@(adherence * 100)]];
                             
                             // Determine if we should apply tint color based on threshold exceeded or not.
-                            [self.store evaluateAdheranceThresholdForActivity:activity date:components completion:^(BOOL success, OCKCarePlanThreshold * _Nullable threshold, NSError * _Nullable error) {
+                            [self.store evaluateAdheranceThresholdForActivity:activity date:components completion:^(BOOL evalSuccess, OCKCarePlanThreshold * _Nullable threshold, NSError * _Nullable evalError) {
                                 dispatch_async(dispatch_get_main_queue(), ^{
                                     widgetView.shouldApplyTintColor = threshold ? YES : NO;
                                     
@@ -198,13 +198,12 @@
                                 });
                             }];
                         } else {
-                            OCK_Log_Error(@"%@", error.localizedDescription);
+                            OCK_Log_Error(@"%@", eventsError.localizedDescription);
                         }
                     }];
                 }
-                
                 else if (activity.type == OCKCarePlanActivityTypeAssessment) {
-                    [self.store eventsForActivity:activity date:components completion:^(NSArray<OCKCarePlanEvent *> * _Nonnull events, NSError * _Nullable error) {
+                    [self.store eventsForActivity:activity date:components completion:^(NSArray<OCKCarePlanEvent *> * _Nonnull events, NSError * _Nullable assessError) {
                         OCKCarePlanEvent *latestEvent = events.lastObject;
                         
                         dispatch_async(dispatch_get_main_queue(), ^{
@@ -233,7 +232,6 @@
                         });
                     }];
                 }
-                
             }
             else {
                 OCK_Log_Error(@"No activities found with identifier: %@", activityIdentifier);

@@ -353,11 +353,11 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
                                                                predicate:[HKQuery predicateForObjectsWithUUIDs:[NSSet setWithArray:sampleUUIDs]]
                                                                    limit:sampleUUIDs.count
                                                          sortDescriptors:nil
-                                                          resultsHandler:^(HKSampleQuery * _Nonnull query,
-                                                                           NSArray<__kindof HKSample *> * _Nullable results,
+                                                          resultsHandler:^(HKSampleQuery * _Nonnull samplesQuery,
+                                                                           NSArray<__kindof HKSample *> * _Nullable samplesResults,
                                                                            NSError * _Nullable error) {
                                                               
-                                                              for (HKSample *sample in results) {
+                                                              for (HKSample *sample in samplesResults) {
                                                                   OCKCarePlanEventResult *result = [sameTypeResults filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"sampleUUID = %@", sample.UUID]].firstObject;
                                                                   [result setSample:sample];
                                                               }
@@ -406,9 +406,9 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     [context performBlock:^{
         
         if (_cachedActivities == nil) {
-            NSError *errorOut = nil;
+            NSError *fetchError = nil;
             __strong typeof(weakSelf) strongSelf = weakSelf;
-            _cachedActivities = [strongSelf block_fetchItemsWithEntityName:OCKEntityNameActivity class:[OCKCarePlanActivity class] error:&errorOut];
+            _cachedActivities = [strongSelf block_fetchItemsWithEntityName:OCKEntityNameActivity class:[OCKCarePlanActivity class] error:&fetchError];
         }
         NSArray *activities = _cachedActivities;
         if (predicate) {
@@ -467,13 +467,13 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     __weak typeof(self) weakSelf = self;
     [context performBlock:^{
         __strong typeof(weakSelf) strongSelf = weakSelf;
-        NSError *errorOut = nil;
-        result = [strongSelf block_addItemWithEntityName:OCKEntityNameActivity coreDataClass:[OCKCDCarePlanActivity class] sourceItem:activity error:&errorOut];
+        NSError *addError = nil;
+        result = [strongSelf block_addItemWithEntityName:OCKEntityNameActivity coreDataClass:[OCKCDCarePlanActivity class] sourceItem:activity error:&addError];
         if (result) {
             _cachedActivities = nil;
         }
         dispatch_async(_queue, ^{
-            completion(result, errorOut);
+            completion(result, addError);
             [self handleActivityListChange:result type:activity.type];
         });
     }];
@@ -527,26 +527,26 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     [context performBlock:^{
         __strong typeof(weakSelf) strongSelf = weakSelf;
         
-        NSError *errorOut = nil;
+        NSError *activityModError = nil;
         result = [strongSelf block_alterItemWithEntityName:OCKEntityNameActivity
                                                 identifier:activity.identifier
-                                                   opBlock:^BOOL(NSManagedObject *cdObject, NSManagedObjectContext *context) {
+                                                   opBlock:^BOOL(NSManagedObject *cdObject, NSManagedObjectContext *cdContext) {
                                                        OCKCDCarePlanActivity *cdActivity = (OCKCDCarePlanActivity *)cdObject;
                                                        OCKCareSchedule *schedule = [cdActivity.schedule copy];
                                                        schedule.endDate = day;
                                                        cdActivity.schedule = schedule;
                                                        return YES;
-                                                   } error:&errorOut];
+                                                   } error:&activityModError];
         OCKCarePlanActivity *modifiedActivity;
         if (result) {
             _cachedActivities = nil;
             modifiedActivity = [strongSelf block_fetchItemWithEntityName:OCKEntityNameActivity
                                                               identifier:activity.identifier
                                                                    class:[OCKCarePlanActivity class]
-                                                                   error:&errorOut];
+                                                                   error:&activityModError];
         }
         dispatch_async(_queue, ^{
-            completion(result, modifiedActivity, errorOut);
+            completion(result, modifiedActivity, activityModError);
             [self handleActivityListChange:result type:activity.type];
         });
     }];
@@ -569,12 +569,12 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
                           __block NSError *errorOut = nil;
                           __block NSInteger processedCount = 0;
                           for (OCKCarePlanActivity *item in items) {
-                              [self eventsForActivity:item date:date completion:^(NSArray<OCKCarePlanEvent *> * _Nonnull events, NSError * _Nonnull error) {
-                                  if (error == nil && events.count > 0) {
+                              [self eventsForActivity:item date:date completion:^(NSArray<OCKCarePlanEvent *> * _Nonnull events, NSError * _Nonnull activityError) {
+                                  if (activityError == nil && events.count > 0) {
                                       [eventGroups addObject:events];
                                   }
                                   processedCount++;
-                                  errorOut = error;
+                                  errorOut = activityError;
                                   if (items.count == processedCount) {
                                       dispatch_async(_queue, ^{
                                           completion(eventGroups, errorOut);
@@ -602,11 +602,9 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     OCKCareSchedule *schedule = activity.schedule;
     NSUInteger numberOfEvents = [schedule numberOfEventsOnDate:date];
     
-   
-    NSError *error = nil;
-    NSManagedObjectContext *context = _managedObjectContext;
+       NSManagedObjectContext *context = _managedObjectContext;
     if (context == nil) {
-        completion(nil, error);
+        completion(nil, nil);
         return;
     }
     
@@ -618,11 +616,11 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
         [context performBlock:^{
             __strong typeof(weakSelf) strongSelf = weakSelf;
             
-            NSError *error = nil;
-            OCKCarePlanActivity *fetchActivity = [strongSelf block_fetchItemWithEntityName:OCKEntityNameActivity identifier:activity.identifier class:[OCKCarePlanActivity class] error:&error];
+            NSError *fetchError = nil;
+            OCKCarePlanActivity *fetchActivity = [strongSelf block_fetchItemWithEntityName:OCKEntityNameActivity identifier:activity.identifier class:[OCKCarePlanActivity class] error:&fetchError];
             
             if (!fetchActivity) {
-                error = [NSError errorWithDomain:OCKErrorDomain
+                fetchError = [NSError errorWithDomain:OCKErrorDomain
                                             code:OCKErrorInvalidObject
                                         userInfo:@{@"reason":[NSString stringWithFormat:@"Cannot find acitivity with identifier %@", activity.identifier]}];
             } else {
@@ -631,7 +629,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
                 NSArray<OCKCarePlanEvent *> *savedEvents = (NSArray<OCKCarePlanEvent *> *)[strongSelf block_fetchItemsWithEntityName:OCKEntityNameEvent
                                                                                                                            predicate:predicate
                                                                                                                                class:[OCKCarePlanEvent class]
-                                                                                                                               error:&error];
+                                                                                                                               error:&fetchError];
                 
                 [self block_fetchHKSampleForEvents:savedEvents];
                 
@@ -645,7 +643,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
             }
             
             dispatch_async(_queue, ^{
-                completion([eventGroup copy], error);
+                completion([eventGroup copy], fetchError);
             });
         }];
     } else {
@@ -753,16 +751,16 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
             }
         }
         
-        BOOL result = saved && errorOut == nil && found;
+        BOOL eventResult = saved && errorOut == nil && found;
         
         if (errorOut == nil && found == NO) {
             errorOut = [NSError errorWithDomain:OCKErrorDomain code:OCKErrorObjectNotFound userInfo:@{@"reason": @"Event not found."}];
         }
         
         dispatch_async(_queue, ^(){
-            completion(result, result ? copiedEvent : event, errorOut);
+            completion(eventResult, eventResult ? copiedEvent : event, errorOut);
             
-            if (result) {
+            if (eventResult) {
                 
                 OCKCarePlanActivityType type = event.activity.type;
                 
@@ -880,9 +878,9 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     
     __weak typeof(self) weakSelf = self;
     [self fetchActivitiesWithPredicate:[NSPredicate predicateWithFormat:@"type = %d", type]
-                            completion:^(BOOL success, NSArray<OCKCarePlanActivity *> *activities, NSError *error) {
-                                if (error) {
-                                    completion(YES, error);
+                            completion:^(BOOL success, NSArray<OCKCarePlanActivity *> *activities, NSError *fetchError) {
+                                if (fetchError) {
+                                    completion(YES, fetchError);
                                 } else {
                                     [context performBlock:^{
                                         __strong typeof(weakSelf) strongSelf = weakSelf;

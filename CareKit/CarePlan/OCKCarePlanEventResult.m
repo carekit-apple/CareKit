@@ -119,8 +119,8 @@
                                          userInfo:nil];
         }
         
-        HKQuantitySample *sample = correlation.objects.allObjects.firstObject;
-        if (displayUnit && ![sample.quantity isCompatibleWithUnit:displayUnit]) {
+        HKQuantitySample *firstSample = correlation.objects.allObjects.firstObject;
+        if (displayUnit && ![firstSample.quantity isCompatibleWithUnit:displayUnit]) {
             NSString *reason = [NSString stringWithFormat:@"Sample is not compatible with unit %@.", displayUnit];
             @throw [NSException exceptionWithName:NSInvalidArgumentException reason:reason userInfo:nil];
         }

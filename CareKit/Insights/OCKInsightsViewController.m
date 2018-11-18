@@ -221,13 +221,13 @@
     _triggeredThresholdActivities = [NSMutableArray new];
     
     for (NSString *identifier in self.thresholds) {
-        [self.store activityForIdentifier:identifier completion:^(BOOL success, OCKCarePlanActivity * _Nullable activity, NSError * _Nullable error) {
-            if (success && activity) {
-                [self.store eventsForActivity:activity date:dateComponents completion:^(NSArray<OCKCarePlanEvent *> * _Nonnull events, NSError * _Nullable error) {
+        [self.store activityForIdentifier:identifier completion:^(BOOL activitySuccess, OCKCarePlanActivity * _Nullable activity, NSError * _Nullable activityError) {
+            if (activitySuccess && activity) {
+                [self.store eventsForActivity:activity date:dateComponents completion:^(NSArray<OCKCarePlanEvent *> * _Nonnull events, NSError * _Nullable eventError) {
                     if (activity.type == OCKCarePlanActivityTypeIntervention) {
-                        [self.store evaluateAdheranceThresholdForActivity:activity date:dateComponents completion:^(BOOL success, OCKCarePlanThreshold * _Nullable threshold, NSError * _Nullable error) {
+                        [self.store evaluateAdheranceThresholdForActivity:activity date:dateComponents completion:^(BOOL evalSuccess, OCKCarePlanThreshold * _Nullable threshold, NSError * _Nullable evalError) {
                             dispatch_async(dispatch_get_main_queue(), ^{
-                                if (success && threshold) {
+                                if (evalSuccess && threshold) {
                                     [_triggeredThresholds addObject:threshold];
                                     [_triggeredThresholdActivities addObject:activity];
                                 }

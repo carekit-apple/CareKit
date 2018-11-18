@@ -544,23 +544,23 @@
     
     NSMutableArray *array = [NSMutableArray new];
     for (NSString *key in _sectionTitles) {
-        NSMutableArray *groupArray = [NSMutableArray new];
+        NSMutableArray *updatedGroupArray = [NSMutableArray new];
         NSArray *groupedEventsArray = groupedEvents[key];
         
         if (_isSorted) {
             
             NSMutableDictionary *activitiesDictionary = [NSMutableDictionary new];
-            for (NSArray<OCKCarePlanEvent *> *events in groupedEventsArray) {
-                NSString *activityTitle = events.firstObject.activity.title;
-                activitiesDictionary[activityTitle] = events;
+            for (NSArray<OCKCarePlanEvent *> *eventsGroup in groupedEventsArray) {
+                NSString *activityTitle = eventsGroup.firstObject.activity.title;
+                activitiesDictionary[activityTitle] = eventsGroup;
             }
             
             NSArray *sortedActivitiesKeys = [activitiesDictionary.allKeys sortedArrayUsingSelector:@selector(compare:)];
             for (NSString *activityKey in sortedActivitiesKeys) {
-                [groupArray addObject:activitiesDictionary[activityKey]];
+                [updatedGroupArray addObject:activitiesDictionary[activityKey]];
             }
             
-            [array addObject:groupArray];
+            [array addObject:updatedGroupArray];
             
         } else {
             

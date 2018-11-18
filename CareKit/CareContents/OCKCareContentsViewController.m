@@ -461,8 +461,8 @@
                                                                                               [values addObject:@((float)completedEvents/totalEvents)];
                                                                                           }
                                                                                           
-                                                                                      } completion:^(BOOL completed, NSError *error) {
-                                                                                          NSAssert(!error, error.localizedDescription);
+                                                                                      } completion:^(BOOL DailyCompleted, NSError *dailyError) {
+                                                                                          NSAssert(!dailyError, dailyError.localizedDescription);
                                                                                           dispatch_async(dispatch_get_main_queue(), ^{
                                                                                               NSInteger selectedIndex = _weekViewController.weekView.selectedIndex;
                                                                                               [_weekValues replaceObjectAtIndex:selectedIndex withObject:values.firstObject];
@@ -506,16 +506,16 @@
                                                                                       handler:^(NSDateComponents *date, NSUInteger completedEvents, NSUInteger totalEvents) {
                                                                                           [assessmentCompleted addObject:@((float)completedEvents)];
                                                                                           [assessmentTotal addObject:@((float)totalEvents)];
-                                                                                      } completion:^(BOOL completed, NSError *error) {
-                                                                                          NSAssert(!error, error.localizedDescription);
+                                                                                      } completion:^(BOOL dailyCompleted, NSError *dailyError) {
+                                                                                          NSAssert(!dailyError, dailyError.localizedDescription);
                                                                                           dispatch_async(dispatch_get_main_queue(), ^{
                                                                                               for (int i = 0; i<7; i++) {
                                                                                                   if (([interventionTotal[i] floatValue] + [assessmentTotal[i] floatValue]) == 0) {
                                                                                                       [values addObject:@(1)];
                                                                                                   } else {
-                                                                                                      float completed = [interventionCompleted[i] floatValue] + [assessmentCompleted[i] floatValue];
+                                                                                                      float completion = [interventionCompleted[i] floatValue] + [assessmentCompleted[i] floatValue];
                                                                                                       float total = [interventionTotal[i] floatValue] + [assessmentTotal[i] floatValue];
-                                                                                                      [values addObject:@(completed/total)];
+                                                                                                      [values addObject:@(completion/total)];
                                                                                                   }
                                                                                               }
                                                                                               _weekViewController.weekView.values = values;
@@ -659,22 +659,22 @@
     
     NSMutableArray *array = [NSMutableArray new];
     for (NSString *key in _sectionTitles) {
-        NSMutableArray *groupArray = [NSMutableArray new];
+        NSMutableArray *updatedGroupArray = [NSMutableArray new];
         NSArray *groupedEventsArray = groupedEvents[key];
         
         if (_isSorted) {
             
             NSMutableDictionary *activitiesDictionary = [NSMutableDictionary new];
-            for (NSArray<OCKCarePlanEvent *> *events in groupedEventsArray) {
-                NSString *activityTitle = events.firstObject.activity.title;
-                activitiesDictionary[activityTitle] = events;
+            for (NSArray<OCKCarePlanEvent *> *eventsGroup in groupedEventsArray) {
+                NSString *activityTitle = eventsGroup.firstObject.activity.title;
+                activitiesDictionary[activityTitle] = eventsGroup;
             }
             
             NSArray *sortedActivitiesKeys = [activitiesDictionary.allKeys sortedArrayUsingSelector:@selector(compare:)];
             for (NSString *activityKey in sortedActivitiesKeys) {
-                [groupArray addObject:activitiesDictionary[activityKey]];
+                [updatedGroupArray addObject:activitiesDictionary[activityKey]];
             }
-            [array addObject:groupArray];
+            [array addObject:updatedGroupArray];
             
         } else {
             
@@ -923,11 +923,11 @@
         [self.store updateEvent:event
                      withResult:nil
                           state:state
-                     completion:^(BOOL success, OCKCarePlanEvent * _Nonnull event, NSError * _Nonnull error) {
-                         NSAssert(success, error.localizedDescription);
+                     completion:^(BOOL updateSuccess, OCKCarePlanEvent * _Nonnull updateEvent, NSError * _Nonnull updateError) {
+                         NSAssert(updateSuccess, updateError.localizedDescription);
                          dispatch_async(dispatch_get_main_queue(), ^{
                              NSMutableArray *events = [cell.interventionEvents mutableCopy];
-                             [events replaceObjectAtIndex:event.occurrenceIndexOfDay withObject:event];
+                             [events replaceObjectAtIndex:event.occurrenceIndexOfDay withObject:updateEvent];
                              cell.interventionEvents = events;
                          });
                      }];

@@ -182,7 +182,7 @@ static const CGFloat TrailingMargin = 15.0;
         CGFloat value = [_values[i] floatValue];
         _ringButtons[i].value = value;
         
-        NSString *progressString = [OCKPercentFormatter(0, 0) stringFromNumber:[NSNumber numberWithFloat:value]];
+        NSString *progressString = [OCKPercentFormatter(0, 0) stringFromNumber:[NSNumber numberWithDouble:value]];
         _ringButtons[i].accessibilityValue = [NSString stringWithFormat:OCKLocalizedString(@"AX_WEEK_BUTTON_PROGRESS", nil), progressString];
     }
 }

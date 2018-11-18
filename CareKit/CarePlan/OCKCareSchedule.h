@@ -261,7 +261,7 @@ OCK_CLASS_AVAILABLE
  
  @return    The threshold object for the specified date, or nil if no threshold set.
  */
-- (OCKCarePlanThreshold *)thresholdOnDate:(NSDateComponents *)date;
+- (nullable OCKCarePlanThreshold *)thresholdOnDate:(NSDateComponents *)date;
 
 @end
 

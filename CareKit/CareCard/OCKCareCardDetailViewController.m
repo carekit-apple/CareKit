@@ -211,7 +211,15 @@ static const CGFloat HeaderViewHeight = 100.0;
         cell.layer.masksToBounds = YES;
         return cell;
     }
-    return nil;
+    
+    // fall-through case for safety
+    static NSString *EmptyCellIdentifier = @"EmptyCell";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:EmptyCellIdentifier];
+    if (!cell) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:EmptyCellIdentifier];
+    }
+    
+    return cell;
 }
 
 @end

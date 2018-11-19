@@ -270,7 +270,15 @@ static const CGFloat HeaderViewHeight = 225.0;
         cell.delegate = self;
         return cell;
     }
-    return nil;
+    
+    // fall-through case for safety
+    static NSString *EmptyCellIdentifier = @"EmptyCell";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:EmptyCellIdentifier];
+    if (!cell) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:EmptyCellIdentifier];
+    }
+    
+    return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {

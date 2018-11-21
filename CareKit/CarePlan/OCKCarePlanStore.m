@@ -102,8 +102,8 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
         _persistenceDirectoryURL = url;
         _queue = dispatch_queue_create("CarePlanStore", DISPATCH_QUEUE_SERIAL);
         NSError *error = nil;
-        [self setUpContextWithError:&error];
-        if (_managedObjectContext == nil) {
+        BOOL setupSuccess = [self setUpContextWithError:&error];
+        if (setupSuccess) {
             @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Failed to create a CoreData context." userInfo:@{@"error": error ? : @""}];
         }
     }
@@ -172,7 +172,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
                       insertIntoManagedObjectContext:context
                                                 item:sourceItem];
 
-    BOOL savedSuccessfully = [context save:&errorOut];
+    BOOL savedSuccessfully = cdObject && [context save:&errorOut];
 
     if (nil != error) {
         *error = errorOut;
@@ -399,7 +399,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     NSManagedObjectContext *context = _managedObjectContext;
     
     if (context == nil) {
-        completion(NO, nil, errorOut);
+        completion(NO, @[], errorOut);
         return;
     }
     __weak typeof(self) weakSelf = self;
@@ -556,20 +556,19 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
                type:(OCKCarePlanActivityType)type
          completion:(void (^)(NSArray<NSArray<OCKCarePlanEvent *> *> *eventsGroupedByActivity, NSError *error))completion {
     
-    
     OCKThrowInvalidArgumentExceptionIfNil(date);
     date = [date validatedDateComponents];
     
     __block NSMutableArray *eventGroups = [NSMutableArray array];
     
     [self activitiesWithType:type
-                  completion:^(BOOL success, NSArray<OCKCarePlanActivity *> * _Nonnull activities, NSError * _Nonnull error) {
+                  completion:^(BOOL success, NSArray<OCKCarePlanActivity *> * _Nonnull activities, NSError * _Nullable error) {
                       NSArray<OCKCarePlanActivity *> *items = activities;
                       if (items.count > 0) {
                           __block NSError *errorOut = nil;
                           __block NSInteger processedCount = 0;
                           for (OCKCarePlanActivity *item in items) {
-                              [self eventsForActivity:item date:date completion:^(NSArray<OCKCarePlanEvent *> * _Nonnull events, NSError * _Nonnull activityError) {
+                              [self eventsForActivity:item date:date completion:^(NSArray<OCKCarePlanEvent *> * _Nonnull events, NSError * _Nullable activityError) {
                                   if (activityError == nil && events.count > 0) {
                                       [eventGroups addObject:events];
                                   }
@@ -585,9 +584,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
                       } else {
                            completion(eventGroups, error);
                       }
-                      
                   }];
-    
 }
 
 - (void)eventsForActivity:(OCKCarePlanActivity *)activity
@@ -602,9 +599,9 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     OCKCareSchedule *schedule = activity.schedule;
     NSUInteger numberOfEvents = [schedule numberOfEventsOnDate:date];
     
-       NSManagedObjectContext *context = _managedObjectContext;
+    NSManagedObjectContext *context = _managedObjectContext;
     if (context == nil) {
-        completion(nil, nil);
+        completion(@[], nil);
         return;
     }
     
@@ -815,7 +812,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
     __weak typeof(self) weakSelf = self;
     
     void __block (^completion2)(NSArray<OCKCarePlanEvent *> *, NSError *) = nil;
-    completion2 = ^(NSArray<OCKCarePlanEvent *> * _Nonnull events, NSError * _Nonnull error) {
+    completion2 = ^(NSArray<OCKCarePlanEvent *> * _Nonnull events, NSError* _Nullable error) {
         if (error) {
             completion(YES, error);
         } else if (!stop) {
@@ -961,7 +958,7 @@ static NSString * const OCKAttributeNameDayIndex = @"numberOfDaysSinceStart";
 
 static NSString * const OCKCarePlanModelName =  @"OCKCarePlanStore";
 
-- (void)setUpContextWithError:(NSError **)error {
+- (BOOL)setUpContextWithError:(NSError **)error {
     if (_managedObjectContext == nil) {
         NSURL *modelURL = [OCKBundle() URLForResource:OCKCarePlanModelName
                                         withExtension:@"momd"];
@@ -969,6 +966,7 @@ static NSString * const OCKCarePlanModelName =  @"OCKCarePlanStore";
         _managedObjectContext = createManagedObjectContext(modelURL, storeURL, error);
         OCK_Log_Debug(@"%@", storeURL);
     }
+    return _managedObjectContext != nil;
 }
 
 @end

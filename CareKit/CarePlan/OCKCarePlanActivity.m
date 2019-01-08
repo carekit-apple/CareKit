@@ -210,6 +210,74 @@
                                    optional:YES];
 }
 
++ (instancetype)healthDataEntryWithIdentifier:(NSString *)identifier
+                              groupIdentifier:(nullable NSString *)groupIdentifier
+                                        title:(NSString *)title
+                                         text:(nullable NSString *)text
+                                 instructions:(nullable NSString *)instructions
+                                     imageURL:(nullable NSURL *)imageURL
+                                     schedule:(OCKCareSchedule *)schedule
+                                     userInfo:(nullable NSDictionary *)userInfo {
+    return [[self alloc] initWithIdentifier:identifier
+                            groupIdentifier:groupIdentifier
+                                       type:OCKCarePlanActivityTypeHealthEntry
+                                      title:title
+                                       text:text
+                                  tintColor:nil
+                               instructions:instructions
+                                   imageURL:imageURL
+                                   schedule:schedule
+                           resultResettable:NO
+                                   userInfo:userInfo
+                                 thresholds:nil
+                                   optional:YES];
+}
+
++ (instancetype)buttonWithIdentifier:(NSString *)identifier
+                     groupIdentifier:(nullable NSString *)groupIdentifier
+                               title:(NSString *)title
+                                text:(nullable NSString *)text
+                            schedule:(OCKCareSchedule *)schedule
+                            userInfo:(nullable NSDictionary *)userInfo {
+
+    return [[self alloc] initWithIdentifier:identifier
+                            groupIdentifier:groupIdentifier
+                                       type:OCKCarePlanActivityTypeHealthEntry
+                                      title:title
+                                       text:text
+                                  tintColor:nil
+                               instructions:nil
+                                   imageURL:nil
+                                   schedule:schedule
+                           resultResettable:NO
+                                   userInfo:userInfo
+                                 thresholds:nil
+                                   optional:YES];
+}
+
++ (instancetype)nonPrescribedTrackableWithIdentifier:(NSString *)identifier
+                                     groupIdentifier:(NSString *)groupIdentifier
+                                               title:(NSString *)title
+                                                text:(NSString *)text
+                                        instructions:(NSString *)instructions
+                                            schedule:(OCKCareSchedule *)schedule
+                                            userInfo:(NSDictionary *)userInfo {
+
+    return [[self alloc] initWithIdentifier:identifier
+                            groupIdentifier:groupIdentifier
+                                       type:OCKCarePlanActivityTypeHealthEntry
+                                      title:title
+                                       text:text
+                                  tintColor:nil
+                               instructions:instructions
+                                   imageURL:nil
+                                   schedule:schedule
+                           resultResettable:NO
+                                   userInfo:userInfo
+                                 thresholds:nil
+                                   optional:YES];
+}
+
 - (instancetype)initWithCoreDataObject:(OCKCDCarePlanActivity *)cdObject {
     
     NSParameterAssert(cdObject);

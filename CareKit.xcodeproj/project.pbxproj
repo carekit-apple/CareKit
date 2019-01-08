@@ -169,6 +169,8 @@
 		BAD328671DB024040021A773 /* OCKRingItem.m in Sources */ = {isa = PBXBuildFile; fileRef = BAD328651DB024040021A773 /* OCKRingItem.m */; };
 		BAD3286A1DB028AF0021A773 /* OCKInsightsRingTableViewCell.h in Headers */ = {isa = PBXBuildFile; fileRef = BAD328681DB028AF0021A773 /* OCKInsightsRingTableViewCell.h */; };
 		BAD3286B1DB028AF0021A773 /* OCKInsightsRingTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = BAD328691DB028AF0021A773 /* OCKInsightsRingTableViewCell.m */; };
+		FC9047CD21E5626D0012C685 /* CustomActivityTableViewCell.h in Headers */ = {isa = PBXBuildFile; fileRef = FC9047CB21E5626D0012C685 /* CustomActivityTableViewCell.h */; };
+		FC9047CE21E5626D0012C685 /* CustomActivityTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FC9047CC21E5626D0012C685 /* CustomActivityTableViewCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -378,6 +380,8 @@
 		BAD328651DB024040021A773 /* OCKRingItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKRingItem.m; sourceTree = "<group>"; };
 		BAD328681DB028AF0021A773 /* OCKInsightsRingTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCKInsightsRingTableViewCell.h; sourceTree = "<group>"; };
 		BAD328691DB028AF0021A773 /* OCKInsightsRingTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCKInsightsRingTableViewCell.m; sourceTree = "<group>"; };
+		FC9047CB21E5626D0012C685 /* CustomActivityTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CustomActivityTableViewCell.h; sourceTree = "<group>"; };
+		FC9047CC21E5626D0012C685 /* CustomActivityTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CustomActivityTableViewCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -501,6 +505,7 @@
 		244A923E1CA210F7007B42D6 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				FC9047CA21E5618F0012C685 /* Custom Components */,
 				BA6610041EB20DC300B7B1A7 /* Read Only Table View Cell */,
 				AEB37F651DF224C3002370A6 /* Color */,
 				BA6FE2301DA4715F005D5405 /* RingView */,
@@ -862,6 +867,15 @@
 			name = Glyph;
 			sourceTree = "<group>";
 		};
+		FC9047CA21E5618F0012C685 /* Custom Components */ = {
+			isa = PBXGroup;
+			children = (
+				FC9047CB21E5626D0012C685 /* CustomActivityTableViewCell.h */,
+				FC9047CC21E5626D0012C685 /* CustomActivityTableViewCell.m */,
+			);
+			name = "Custom Components";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -885,6 +899,7 @@
 				BA8F07021EBE9D8800A14E5F /* OCKReadOnlyTableViewCell.h in Headers */,
 				86E803901CB4812F00B5C021 /* OCKLabel.h in Headers */,
 				BA3793EA1EB66D7D0004A540 /* OCKImagePatientWidgetView.h in Headers */,
+				FC9047CD21E5626D0012C685 /* CustomActivityTableViewCell.h in Headers */,
 				BA94DBB61D9CA9AE002E0BFC /* OCKGlyph_Internal.h in Headers */,
 				241707DB1C9A3AB7005D7123 /* OCKInsightsViewController.h in Headers */,
 				241707C51C9A3AB7005D7123 /* OCKBarSeries.h in Headers */,
@@ -1142,6 +1157,7 @@
 				8677EE121C9775EB00588CD6 /* OCKCarePlanEvent.m in Sources */,
 				241707D41C9A3AB7005D7123 /* OCKInsightsChartTableViewCell.m in Sources */,
 				24EA9FB71C9A3D420036028E /* OCKCareCardDetailHeaderView.m in Sources */,
+				FC9047CE21E5626D0012C685 /* CustomActivityTableViewCell.m in Sources */,
 				248929831C90E70100EBBE1F /* OCKContactInfoTableViewCell.m in Sources */,
 				BA3793EB1EB66D7D0004A540 /* OCKImagePatientWidgetView.m in Sources */,
 				241707D61C9A3AB7005D7123 /* OCKInsightsMessageTableViewCell.m in Sources */,

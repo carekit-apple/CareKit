@@ -57,8 +57,8 @@ typedef NS_ENUM(NSInteger, OCKCarePlanActivityType) {
     OCKCarePlanActivityTypeHealthEntry,
     /** Non-prescribed Trackables */
     OCKCarePlanActivityTypeNonPrescribedTrackables,
-    /** Trackable buttons */
-    OCKCarePlanActivityTypeTrackButton
+    /** Button, Read-only activity */
+    OCKCarePlanActivityTypeButton
 };
 
 

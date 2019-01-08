@@ -242,7 +242,7 @@
 
     return [[self alloc] initWithIdentifier:identifier
                             groupIdentifier:groupIdentifier
-                                       type:OCKCarePlanActivityTypeHealthEntry
+                                       type:OCKCarePlanActivityTypeButton
                                       title:title
                                        text:text
                                   tintColor:nil
@@ -265,7 +265,7 @@
 
     return [[self alloc] initWithIdentifier:identifier
                             groupIdentifier:groupIdentifier
-                                       type:OCKCarePlanActivityTypeHealthEntry
+                                       type:OCKCarePlanActivityTypeNonPrescribedTrackables
                                       title:title
                                        text:text
                                   tintColor:nil

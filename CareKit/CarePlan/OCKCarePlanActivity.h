@@ -52,7 +52,13 @@ typedef NS_ENUM(NSInteger, OCKCarePlanActivityType) {
     /** Perform a task in the app. */
     OCKCarePlanActivityTypeAssessment,
     /** ReadOnly content for intervention and assessment. */
-    OCKCarePlanActivityTypeReadOnly
+    OCKCarePlanActivityTypeReadOnly,
+    /** HealthKit data content with the different type of measurements */
+    OCKCarePlanActivityTypeHealthEntry,
+    /** Non-prescribed Trackables */
+    OCKCarePlanActivityTypeNonPrescribedTrackables,
+    /** Button, Read-only activity */
+    OCKCarePlanActivityTypeButton
 };
 
 
@@ -162,6 +168,79 @@ OCK_CLASS_AVAILABLE
                                           imageURL:(nullable NSURL *)imageURL
                                           schedule:(OCKCareSchedule *)schedule
                                           userInfo:(nullable NSDictionary *)userInfo;
+
+/**
+ Convenience initializer for custom health data related activity type
+ This initializer covers necessary attributes for building custom health data activity.
+
+ @param identifier      Unique identifier string.
+ @param groupIdentifier Group identifier string.
+ You can use the identifier to group similar activities, but they will all be grouped under Device Health Data section in the table view.
+ @param title           The title of the health entry activity.
+ @param text            A descriptive text for the health entry activity.
+ @param instructions    Additional instructions for the health entry activity.
+ @param imageURL        Image for the health entry activity.
+ @param schedule        The schedule for the health entry activity.
+ @param userInfo        Save any additional objects that comply with the NSCoding protocol.
+
+
+ @return Initialized OCKCarePlanActivity instance.
+ */
+
++ (instancetype)healthDataEntryWithIdentifier:(NSString *)identifier
+                             groupIdentifier:(nullable NSString *)groupIdentifier
+                                       title:(NSString *)title
+                                        text:(nullable NSString *)text
+                                instructions:(nullable NSString *)instructions
+                                    imageURL:(nullable NSURL *)imageURL
+                                    schedule:(OCKCareSchedule *)schedule
+                                    userInfo:(nullable NSDictionary *)userInfo;
+
+/**
+ Convenience initializer for track button related activity type
+ This initializer covers necessary attributes for building button style activity.
+
+ @param identifier      Unique identifier string.
+ @param groupIdentifier Group identifier string.
+ You can use the identifier to group similar activities, but they will all be grouped under section with an empty string value in the table view.
+ @param title           The title of the button to display
+ @param text            A descriptive text for the button to display
+ @param schedule        The schedule for the track button activity to appear.
+ @param userInfo        Save any additional objects that comply with the NSCoding protocol.
+
+ @return Initialized OCKCarePlanActivity instance.
+ */
+
++ (instancetype)buttonWithIdentifier:(NSString *)identifier
+                          groupIdentifier:(nullable NSString *)groupIdentifier
+                                    title:(NSString *)title
+                                     text:(nullable NSString *)text
+                                 schedule:(OCKCareSchedule *)schedule
+                                 userInfo:(nullable NSDictionary *)userInfo;
+
+/**
+ Convenience initializer for non-prescribed, trackable activity type
+ This initializer covers necessary attributes for building non-prescribed activities.
+
+ @param identifier      Unique identifier string.
+ @param groupIdentifier Group identifier string.
+ You can use the identifier to group similar activities, but they will all be grouped under "Non-prescribed Trackables" section in the table view.
+ @param title           The title of the non-prescribed activity.
+ @param text            A descriptive text for the non-prescribed activity.
+ @param instructions    Additional instructions for the non-prescribed activity.
+ @param imageURL        Image for the non-prescribed activity.
+ @param schedule        The schedule for the non-prescribed activity.
+ @param userInfo        Save any additional objects that comply with the NSCoding protocol.
+
+ @return Initialized OCKCarePlanActivity instance.
+ */
++ (instancetype)nonPrescribedTrackableWithIdentifier:(NSString *)identifier
+                                     groupIdentifier:(NSString *)groupIdentifier
+                                               title:(NSString *)title
+                                                text:(NSString *)text
+                                        instructions:(NSString *)instructions
+                                            schedule:(OCKCareSchedule *)schedule
+                                            userInfo:(NSDictionary *)userInfo;
 
 /**
  Default initializer for OCKCarePlanActivity.

@@ -907,7 +907,7 @@
         cell.textLabel.text = event.activity.title;
         cell.detailTextLabel.text = event.activity.text;
 
-        return cell
+        return cell;
     }
     else if (type == OCKCarePlanActivityTypeButton) {
 

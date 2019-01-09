@@ -45,6 +45,7 @@
 #import "OCKHelpers.h"
 #import "OCKDefines_Private.h"
 #import "OCKGlyph_Internal.h"
+#import "CustomActivityTableViewCell.h"
 
 
 #define RedColor() OCKColorFromRGB(0xEF445B);
@@ -79,6 +80,9 @@
     NSString *_otherString;
     NSString *_optionalString;
     NSString *_readOnlyString;
+    NSString *_healthDataSectionString;
+    NSString *_buttonSectionString;
+    NSString *_nonPrescribedTrackablesSectionString;
     BOOL _isGrouped;
     BOOL _isSorted;
 }
@@ -105,6 +109,9 @@
     _otherString = OCKLocalizedString(@"ACTIVITY_TYPE_OTHER_SECTION_HEADER", nil);
     _optionalString = OCKLocalizedString(@"ACTIVITY_TYPE_OPTIONAL_SECTION_HEADER", nil);
     _readOnlyString = OCKLocalizedString(@"ACTIVITY_TYPE_READ_ONLY_SECTION_HEADER", nil);
+    _healthDataSectionString = OCKLocalizedString(@"ACTIVITY_TYPE_HEALTH_DATA_SECTION_HEADER", nil);
+    _buttonSectionString = OCKLocalizedString(@"ACTIVITY_TYPE_BUTTON_SECTION_HEADER", nil);
+    _nonPrescribedTrackablesSectionString = OCKLocalizedString(@"ACTIVITY_TYPE_NON_PRESCRIBED_TRACKABLE_SECTION_HEADER", nil);
     if (self.optionalSectionHeader && ![self.optionalSectionHeader  isEqual: @""]) {
         _optionalString = _optionalSectionHeader;
     }
@@ -117,7 +124,11 @@
     [self setGlyphTintColor: _glyphTintColor];
     NSDictionary *_initialDictionary = @{ @(OCKCarePlanActivityTypeAssessment): [NSMutableArray new],
                                          @(OCKCarePlanActivityTypeIntervention): [NSMutableArray new],
-                                         @(OCKCarePlanActivityTypeReadOnly): [NSMutableArray new] };
+                                         @(OCKCarePlanActivityTypeReadOnly): [NSMutableArray new],
+                                          @(OCKCarePlanActivityTypeHealthEntry): [NSMutableArray new],
+                                          @(OCKCarePlanActivityTypeNonPrescribedTrackables): [NSMutableArray new],
+                                          @(OCKCarePlanActivityTypeButton): [NSMutableArray new]
+                                          };
     _allEvents = [_initialDictionary mutableCopy];
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:OCKLocalizedString(@"TODAY_BUTTON_TITLE", nil)
@@ -126,7 +137,8 @@
                                                                              action:@selector(showToday:)];
     self.navigationItem.rightBarButtonItem.tintColor = self.glyphTintColor;
 
-    _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
+    _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
+    _tableView.separatorStyle = UITableViewCellAccessoryNone;
     _tableView.dataSource = self;
     _tableView.delegate = self;
     [self.view addSubview:_tableView];
@@ -379,6 +391,9 @@
         [self fetchEventsOfType:OCKCarePlanActivityTypeIntervention];
         [self fetchEventsOfType:OCKCarePlanActivityTypeAssessment];
         [self fetchEventsOfType:OCKCarePlanActivityTypeReadOnly];
+        [self fetchEventsOfType:OCKCarePlanActivityTypeHealthEntry];
+        [self fetchEventsOfType:OCKCarePlanActivityTypeNonPrescribedTrackables];
+        [self fetchEventsOfType:OCKCarePlanActivityTypeButton];
     });
 }
 
@@ -571,11 +586,14 @@
     NSArray<OCKCarePlanEvent *> *interventions = _allEvents[@(OCKCarePlanActivityTypeIntervention)];
     NSArray<OCKCarePlanEvent *> *assessments = _allEvents[@(OCKCarePlanActivityTypeAssessment)];
     NSArray<OCKCarePlanEvent *> *readOnly = _allEvents[@(OCKCarePlanActivityTypeReadOnly)];
+    NSArray<OCKCarePlanEvent *> *healthEntries = _allEvents[@(OCKCarePlanActivityTypeHealthEntry)];
+    NSArray<OCKCarePlanEvent *> *nonPrescribedTrackables = _allEvents[@(OCKCarePlanActivityTypeNonPrescribedTrackables)];
+    NSArray<OCKCarePlanEvent *> *buttons = _allEvents[@(OCKCarePlanActivityTypeButton)];
     
     NSMutableArray *interventionGroupIdentifiers = [[NSMutableArray alloc] init];
     NSMutableArray *assessmentGroupIdentifiers = [[NSMutableArray alloc] init];
     
-    NSArray<NSArray<OCKCarePlanEvent *> *> *events = [NSArray arrayWithArray:[interventions arrayByAddingObjectsFromArray:[assessments arrayByAddingObjectsFromArray:readOnly]]];
+    NSArray<NSArray<OCKCarePlanEvent *> *> *events = [NSArray arrayWithArray:[interventions arrayByAddingObjectsFromArray:[assessments arrayByAddingObjectsFromArray:[readOnly arrayByAddingObjectsFromArray:[healthEntries arrayByAddingObjectsFromArray:[nonPrescribedTrackables arrayByAddingObjectsFromArray:buttons]]]]]];
     NSMutableDictionary *groupedEvents = [NSMutableDictionary new];
     NSMutableArray *groupArray = [NSMutableArray new];
     
@@ -647,6 +665,21 @@
         if ([sortedKeys containsObject:_readOnlyString]) {
             [sortedKeys removeObject:_readOnlyString];
             [sortedKeys addObject:_readOnlyString];
+        }
+
+        if ([sortedKeys containsObject:_healthDataSectionString]) {
+            [sortedKeys removeObject:_healthDataSectionString];
+            [sortedKeys addObject:_healthDataSectionString];
+        }
+
+        if ([sortedKeys containsObject:_nonPrescribedTrackablesSectionString]) {
+            [sortedKeys removeObject:_nonPrescribedTrackablesSectionString];
+            [sortedKeys addObject:_nonPrescribedTrackablesSectionString];
+        }
+
+        if ([sortedKeys containsObject:_buttonSectionString]) {
+            [sortedKeys removeObject:_buttonSectionString];
+            [sortedKeys addObject:_buttonSectionString];
         }
         
         _sectionTitles = [sortedKeys copy];
@@ -839,16 +872,52 @@
     OCKCarePlanActivityType type = activity.type;
     
     if (type == OCKCarePlanActivityTypeAssessment) {
-        
+
         static NSString *CellIdentifier = @"SymptomTrackerCell";
-        OCKSymptomTrackerTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        CustomActivityTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
         if (!cell) {
-            cell = [[OCKSymptomTrackerTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+            cell = [[CustomActivityTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
                                                          reuseIdentifier:CellIdentifier];
         }
+        cell.event = event;
+        cell.cellBackgroundColor = [UIColor purpleColor];
         
-        cell.assessmentEvent = event;
-        
+        return cell;
+    }
+    else if (type == OCKCarePlanActivityTypeHealthEntry) {
+
+        static NSString *CellIdentifier = @"HealthEntryCell";
+        CustomActivityTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        if (!cell) {
+            cell = [[CustomActivityTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                                      reuseIdentifier:CellIdentifier];
+        }
+        cell.event = event;
+        cell.cellBackgroundColor = [UIColor purpleColor];
+
+        return cell;
+    }
+    else if (type == OCKCarePlanActivityTypeNonPrescribedTrackables) {
+
+        static NSString *CellIdentifier = @"NonPrescribedTrackablesCell";
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        if (!cell) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier];
+        }
+        cell.textLabel.text = event.activity.title;
+        cell.detailTextLabel.text = event.activity.text;
+
+        return cell
+    }
+    else if (type == OCKCarePlanActivityTypeButton) {
+
+        static NSString *CellIdentifier = @"ButtonCell";
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        if (!cell) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        }
+        cell.textLabel.text = event.activity.text;
+
         return cell;
     }
     else if (type == OCKCarePlanActivityTypeReadOnly) {
@@ -859,7 +928,6 @@
             cell = [[OCKReadOnlyTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
                                                    reuseIdentifier:CellIdentifier];
         }
-        
         cell.readOnlyEvent = event;
 
         return cell;

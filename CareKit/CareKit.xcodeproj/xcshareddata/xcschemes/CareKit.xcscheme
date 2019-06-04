@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Scheme
+   LastUpgradeVersion = "1100"
+   version = "1.3">
+   <BuildAction
+      parallelizeBuildables = "YES"
+      buildImplicitDependencies = "NO">
+      <BuildActionEntries>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "8605A5B91C4F04EC00DD65FF"
+               BuildableName = "CareKit.framework"
+               BlueprintName = "CareKit"
+               ReferencedContainer = "container:CareKit.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "5196C7F8226F8F8F00F1C2A2"
+               BuildableName = "CareKitTests.xctest"
+               BlueprintName = "CareKitTests"
+               ReferencedContainer = "container:CareKit.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "E784B8F72232EED600736CA5"
+               BuildableName = "CareKitCarePlanStore.framework"
+               BlueprintName = "CareKitCarePlanStore"
+               ReferencedContainer = "container:CareKitCarePlanStore/CareKitCarePlanStore.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "E784B9002232EED600736CA5"
+               BuildableName = "CareKitCarePlanStoreTests.xctest"
+               BlueprintName = "CareKitCarePlanStoreTests"
+               ReferencedContainer = "container:CareKitCarePlanStore/CareKitCarePlanStore.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+      </BuildActionEntries>
+   </BuildAction>
+   <TestAction
+      buildConfiguration = "Debug"
+      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
+      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      shouldUseLaunchSchemeArgsEnv = "YES"
+      codeCoverageEnabled = "YES"
+      onlyGenerateCoverageForSpecifiedTargets = "YES">
+      <AdditionalOptions>
+      </AdditionalOptions>
+      <CodeCoverageTargets>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "8605A5B91C4F04EC00DD65FF"
+            BuildableName = "CareKit.framework"
+            BlueprintName = "CareKit"
+            ReferencedContainer = "container:CareKit.xcodeproj">
+         </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "E784B8F72232EED600736CA5"
+            BuildableName = "CareKitCarePlanStore.framework"
+            BlueprintName = "CareKitCarePlanStore"
+            ReferencedContainer = "container:CareKitCarePlanStore/CareKitCarePlanStore.xcodeproj">
+         </BuildableReference>
+      </CodeCoverageTargets>
+      <Testables>
+         <TestableReference
+            skipped = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "5196C7F8226F8F8F00F1C2A2"
+               BuildableName = "CareKitTests.xctest"
+               BlueprintName = "CareKitTests"
+               ReferencedContainer = "container:CareKit.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "5196C7F8226F8F8F00F1C2A2"
+               BuildableName = "CareKitTests.xctest"
+               BlueprintName = "CareKitTests"
+               ReferencedContainer = "container:CareKit.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+      </Testables>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "8605A5B91C4F04EC00DD65FF"
+            BuildableName = "CareKit.framework"
+            BlueprintName = "CareKit"
+            ReferencedContainer = "container:CareKit.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
+   </TestAction>
+   <LaunchAction
+      buildConfiguration = "Debug"
+      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
+      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      launchStyle = "0"
+      useCustomWorkingDirectory = "NO"
+      ignoresPersistentStateOnLaunch = "NO"
+      debugDocumentVersioning = "YES"
+      debugServiceExtension = "internal"
+      allowLocationSimulation = "YES">
+      <AdditionalOptions>
+      </AdditionalOptions>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "8605A5B91C4F04EC00DD65FF"
+            BuildableName = "CareKit.framework"
+            BlueprintName = "CareKit"
+            ReferencedContainer = "container:CareKit.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
+   </LaunchAction>
+   <ProfileAction
+      buildConfiguration = "Release"
+      shouldUseLaunchSchemeArgsEnv = "YES"
+      savedToolIdentifier = ""
+      useCustomWorkingDirectory = "NO"
+      debugDocumentVersioning = "YES">
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "8605A5B91C4F04EC00DD65FF"
+            BuildableName = "CareKit.framework"
+            BlueprintName = "CareKit"
+            ReferencedContainer = "container:CareKit.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
+   </ProfileAction>
+   <AnalyzeAction
+      buildConfiguration = "Debug">
+   </AnalyzeAction>
+   <ArchiveAction
+      buildConfiguration = "Release"
+      revealArchiveInOrganizer = "YES">
+   </ArchiveAction>
+</Scheme>

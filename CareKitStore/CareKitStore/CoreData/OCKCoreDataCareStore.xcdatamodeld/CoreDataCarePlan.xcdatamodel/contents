@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14838.16" systemVersion="18F203" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="NO" userDefinedModelVersionIdentifier="">
+    <entity name="OCKCDCarePlan" representedClassName="OCKCDCarePlan" syncable="YES">
+        <attribute name="allowsMissingRelationships" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="asset" optional="YES" attributeType="String"/>
+        <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="deletedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="explanation" optional="YES" attributeType="String"/>
+        <attribute name="groupIdentifier" optional="YES" attributeType="String"/>
+        <attribute name="identifier" attributeType="String"/>
+        <attribute name="remoteID" optional="YES" attributeType="String"/>
+        <attribute name="source" optional="YES" attributeType="String"/>
+        <attribute name="tags" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
+        <attribute name="title" attributeType="String"/>
+        <attribute name="updatedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="userInfo" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
+        <relationship name="contacts" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDContact" inverseName="carePlan" inverseEntity="OCKCDContact"/>
+        <relationship name="next" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDCarePlan" inverseName="previous" inverseEntity="OCKCDCarePlan"/>
+        <relationship name="notes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OCKCDNote" inverseName="plan" inverseEntity="OCKCDNote"/>
+        <relationship name="patient" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDPatient" inverseName="carePlans" inverseEntity="OCKCDPatient"/>
+        <relationship name="previous" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDCarePlan" inverseName="next" inverseEntity="OCKCDCarePlan"/>
+        <relationship name="tasks" toMany="YES" deletionRule="Nullify" destinationEntity="OCKCDTask" inverseName="carePlan" inverseEntity="OCKCDTask"/>
+        <fetchedProperty name="fetchedProperty" optional="YES">
+            <fetchRequest name="fetchedPropertyFetchRequest" entity="OCKCDCarePlan"/>
+        </fetchedProperty>
+    </entity>
+    <entity name="OCKCDContact" representedClassName="OCKCDContact" syncable="YES">
+        <attribute name="allowsMissingRelationships" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="asset" optional="YES" attributeType="String"/>
+        <attribute name="category" optional="YES" attributeType="String"/>
+        <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="deletedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="emailAddressesDictionary" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
+        <attribute name="groupIdentifier" optional="YES" attributeType="String"/>
+        <attribute name="identifier" attributeType="String"/>
+        <attribute name="messagingNumbersDictionary" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
+        <attribute name="organization" optional="YES" attributeType="String"/>
+        <attribute name="otherContactInfoDictionary" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
+        <attribute name="phoneNumbersDictionary" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
+        <attribute name="remoteID" optional="YES" attributeType="String"/>
+        <attribute name="role" optional="YES" attributeType="String"/>
+        <attribute name="source" optional="YES" attributeType="String"/>
+        <attribute name="tags" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
+        <attribute name="title" optional="YES" attributeType="String"/>
+        <attribute name="updatedAt" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="userInfo" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
+        <relationship name="address" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDPostalAddress" inverseName="contact" inverseEntity="OCKCDPostalAddress"/>
+        <relationship name="carePlan" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDCarePlan" inverseName="contacts" inverseEntity="OCKCDCarePlan"/>
+        <relationship name="name" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDPersonName" inverseName="contact" inverseEntity="OCKCDPersonName"/>
+        <relationship name="next" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDContact" inverseName="previous" inverseEntity="OCKCDContact"/>
+        <relationship name="notes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OCKCDNote" inverseName="contact" inverseEntity="OCKCDNote"/>
+        <relationship name="previous" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDContact" inverseName="next" inverseEntity="OCKCDContact"/>
+    </entity>
+    <entity name="OCKCDNote" representedClassName="OCKCDNote" syncable="YES">
+        <attribute name="asset" optional="YES" attributeType="String"/>
+        <attribute name="author" optional="YES" attributeType="String"/>
+        <attribute name="content" optional="YES" attributeType="String"/>
+        <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="deletedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="groupIdentifier" optional="YES" attributeType="String"/>
+        <attribute name="remoteID" optional="YES" attributeType="String"/>
+        <attribute name="source" optional="YES" attributeType="String"/>
+        <attribute name="tags" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
+        <attribute name="title" optional="YES" attributeType="String"/>
+        <attribute name="updatedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="userInfo" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
+        <relationship name="contact" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDContact" inverseName="notes" inverseEntity="OCKCDContact"/>
+        <relationship name="notes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="OCKCDNote" inverseName="parentNote" inverseEntity="OCKCDNote"/>
+        <relationship name="outcome" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDOutcome" inverseName="notes" inverseEntity="OCKCDOutcome"/>
+        <relationship name="parentNote" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDNote" inverseName="notes" inverseEntity="OCKCDNote"/>
+        <relationship name="patient" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDPatient" inverseName="notes" inverseEntity="OCKCDPatient"/>
+        <relationship name="plan" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDCarePlan" inverseName="notes" inverseEntity="OCKCDCarePlan"/>
+        <relationship name="response" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDOutcomeValue" inverseName="notes" inverseEntity="OCKCDOutcomeValue"/>
+        <relationship name="scheduleElement" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDScheduleElement" inverseName="notes" inverseEntity="OCKCDScheduleElement"/>
+        <relationship name="task" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDTask" inverseName="notes" inverseEntity="OCKCDTask"/>
+    </entity>
+    <entity name="OCKCDOutcome" representedClassName="OCKCDOutcome" syncable="YES">
+        <attribute name="asset" optional="YES" attributeType="String"/>
+        <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="deletedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="groupIdentifier" optional="YES" attributeType="String"/>
+        <attribute name="remoteID" optional="YES" attributeType="String"/>
+        <attribute name="source" optional="YES" attributeType="String"/>
+        <attribute name="tags" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
+        <attribute name="taskOccurenceIndex" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="updatedAt" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="userInfo" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
+        <relationship name="notes" toMany="YES" deletionRule="Nullify" destinationEntity="OCKCDNote" inverseName="outcome" inverseEntity="OCKCDNote"/>
+        <relationship name="task" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDTask" inverseName="outcomes" inverseEntity="OCKCDTask"/>
+        <relationship name="values" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="OCKCDOutcomeValue" inverseName="outcome" inverseEntity="OCKCDOutcomeValue"/>
+    </entity>
+    <entity name="OCKCDOutcomeValue" representedClassName="OCKCDOutcomeValue" syncable="YES">
+        <attribute name="asset" optional="YES" attributeType="String"/>
+        <attribute name="binaryValue" optional="YES" attributeType="Binary"/>
+        <attribute name="booleanValue" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="dateValue" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="deletedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="doubleValue" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="groupIdentifier" optional="YES" attributeType="String"/>
+        <attribute name="integerValue" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="kind" optional="YES" attributeType="String"/>
+        <attribute name="remoteID" optional="YES" attributeType="String"/>
+        <attribute name="source" optional="YES" attributeType="String"/>
+        <attribute name="tags" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
+        <attribute name="textValue" optional="YES" attributeType="String"/>
+        <attribute name="typeString" attributeType="String"/>
+        <attribute name="units" optional="YES" attributeType="String"/>
+        <attribute name="updatedAt" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="userInfo" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
+        <relationship name="notes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OCKCDNote" inverseName="response" inverseEntity="OCKCDNote"/>
+        <relationship name="outcome" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDOutcome" inverseName="values" inverseEntity="OCKCDOutcome"/>
+        <relationship name="scheduleElement" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDScheduleElement" inverseName="targetValues" inverseEntity="OCKCDScheduleElement"/>
+    </entity>
+    <entity name="OCKCDPatient" representedClassName="OCKCDPatient" syncable="YES">
+        <attribute name="allowsMissingRelationships" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="asset" optional="YES" attributeType="String"/>
+        <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="deletedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="groupIdentifier" optional="YES" attributeType="String"/>
+        <attribute name="identifier" optional="YES" attributeType="String"/>
+        <attribute name="remoteID" optional="YES" attributeType="String"/>
+        <attribute name="source" optional="YES" attributeType="String"/>
+        <attribute name="tags" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
+        <attribute name="updatedAt" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="userInfo" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
+        <relationship name="carePlans" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="OCKCDCarePlan" inverseName="patient" inverseEntity="OCKCDCarePlan"/>
+        <relationship name="name" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDPersonName" inverseName="patient" inverseEntity="OCKCDPersonName"/>
+        <relationship name="next" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDPatient" inverseName="previous" inverseEntity="OCKCDPatient"/>
+        <relationship name="notes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OCKCDNote" inverseName="patient" inverseEntity="OCKCDNote"/>
+        <relationship name="previous" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDPatient" inverseName="next" inverseEntity="OCKCDPatient"/>
+    </entity>
+    <entity name="OCKCDPersonName" representedClassName="OCKCDPersonName" syncable="YES">
+        <attribute name="familyName" optional="YES" attributeType="String"/>
+        <attribute name="givenName" optional="YES" attributeType="String"/>
+        <attribute name="middleName" optional="YES" attributeType="String"/>
+        <attribute name="namePrefix" optional="YES" attributeType="String"/>
+        <attribute name="nameSuffix" optional="YES" attributeType="String"/>
+        <attribute name="nickname" optional="YES" attributeType="String"/>
+        <relationship name="contact" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDContact" inverseName="name" inverseEntity="OCKCDContact"/>
+        <relationship name="parent" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDPersonName" inverseName="phoneticRepresentation" inverseEntity="OCKCDPersonName"/>
+        <relationship name="patient" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDPatient" inverseName="name" inverseEntity="OCKCDPatient"/>
+        <relationship name="phoneticRepresentation" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDPersonName" inverseName="parent" inverseEntity="OCKCDPersonName"/>
+    </entity>
+    <entity name="OCKCDPostalAddress" representedClassName="OCKCDPostalAddress" syncable="YES">
+        <attribute name="city" optional="YES" attributeType="String"/>
+        <attribute name="country" optional="YES" attributeType="String"/>
+        <attribute name="isoCountryCode" optional="YES" attributeType="String"/>
+        <attribute name="postalCode" optional="YES" attributeType="String"/>
+        <attribute name="state" optional="YES" attributeType="String"/>
+        <attribute name="street" optional="YES" attributeType="String"/>
+        <attribute name="subAdministrativeArea" optional="YES" attributeType="String"/>
+        <attribute name="subLocality" attributeType="String" defaultValueString=""/>
+        <relationship name="contact" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDContact" inverseName="address" inverseEntity="OCKCDContact"/>
+    </entity>
+    <entity name="OCKCDScheduleElement" representedClassName="OCKCDScheduleElement" syncable="YES">
+        <attribute name="asset" optional="YES" attributeType="String"/>
+        <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="daysInterval" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="deletedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="duration" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="endDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="groupIdentifier" optional="YES" attributeType="String"/>
+        <attribute name="hoursInterval" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="isAllDay" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="minutesInterval" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="monthsInterval" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="remoteID" optional="YES" attributeType="String"/>
+        <attribute name="secondsInterval" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="source" optional="YES" attributeType="String"/>
+        <attribute name="startDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="tags" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
+        <attribute name="text" optional="YES" attributeType="String"/>
+        <attribute name="updatedAt" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="userInfo" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
+        <attribute name="weeksInterval" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="yearsInterval" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="notes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OCKCDNote" inverseName="scheduleElement" inverseEntity="OCKCDNote"/>
+        <relationship name="targetValues" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OCKCDOutcomeValue" inverseName="scheduleElement" inverseEntity="OCKCDOutcomeValue"/>
+        <relationship name="task" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDTask" inverseName="scheduleElements" inverseEntity="OCKCDTask"/>
+    </entity>
+    <entity name="OCKCDTask" representedClassName="OCKCDTask" syncable="YES">
+        <attribute name="allowsMissingRelationships" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="asset" optional="YES" attributeType="String"/>
+        <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="deletedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="groupIdentifier" optional="YES" attributeType="String"/>
+        <attribute name="identifier" attributeType="String"/>
+        <attribute name="impactsAdherence" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
+        <attribute name="instructions" optional="YES" attributeType="String"/>
+        <attribute name="remoteID" optional="YES" attributeType="String"/>
+        <attribute name="source" optional="YES" attributeType="String"/>
+        <attribute name="tags" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
+        <attribute name="title" optional="YES" attributeType="String"/>
+        <attribute name="updatedAt" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="userInfo" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
+        <relationship name="carePlan" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDCarePlan" inverseName="tasks" inverseEntity="OCKCDCarePlan"/>
+        <relationship name="next" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDTask" inverseName="previous" inverseEntity="OCKCDTask"/>
+        <relationship name="notes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OCKCDNote" inverseName="task" inverseEntity="OCKCDNote"/>
+        <relationship name="outcomes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="OCKCDOutcome" inverseName="task" inverseEntity="OCKCDOutcome"/>
+        <relationship name="previous" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDTask" inverseName="next" inverseEntity="OCKCDTask"/>
+        <relationship name="scheduleElements" toMany="YES" deletionRule="Nullify" destinationEntity="OCKCDScheduleElement" inverseName="task" inverseEntity="OCKCDScheduleElement"/>
+    </entity>
+    <elements>
+        <element name="OCKCDCarePlan" positionX="531.05078125" positionY="-281.359375" width="128" height="356"/>
+        <element name="OCKCDContact" positionX="342" positionY="-423" width="128" height="418"/>
+        <element name="OCKCDNote" positionX="135.453125" positionY="-296.7890625" width="128" height="358"/>
+        <element name="OCKCDOutcome" positionX="310.9296875" positionY="348.44921875" width="128" height="253"/>
+        <element name="OCKCDOutcomeValue" positionX="788.54296875" positionY="188.26953125" width="128" height="358"/>
+        <element name="OCKCDPatient" positionX="534.37890625" positionY="-579.4375" width="128" height="283"/>
+        <element name="OCKCDPersonName" positionX="342" positionY="-423" width="128" height="195"/>
+        <element name="OCKCDPostalAddress" positionX="342" positionY="-423" width="128" height="178"/>
+        <element name="OCKCDScheduleElement" positionX="833.48828125" positionY="-30.23046875" width="128" height="403"/>
+        <element name="OCKCDTask" positionX="525.8828125" positionY="29.5" width="128" height="343"/>
+    </elements>
+</model>

@@ -1,0 +1,910 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		51550F61227FAD0E000CF588 /* TestSynchronizedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51550F60227FAD0E000CF588 /* TestSynchronizedViewController.swift */; };
+		51886B0B22976F610033BBC4 /* OCKDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51886B0A22976F610033BBC4 /* OCKDetailViewController.swift */; };
+		518F9E0E22961C97009CAA48 /* OCKListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9DC222961C96009CAA48 /* OCKListViewController.swift */; };
+		518F9E0F22961C97009CAA48 /* OCKDailyTasksPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9DC322961C96009CAA48 /* OCKDailyTasksPageViewController.swift */; };
+		518F9E1422961C97009CAA48 /* UIViewController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9DCD22961C97009CAA48 /* UIViewController+Extensions.swift */; };
+		518F9E1522961C97009CAA48 /* Collection+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9DCE22961C97009CAA48 /* Collection+Extensions.swift */; };
+		518F9E1D22961C97009CAA48 /* OCKBindableSimpleContactView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9DD922961C97009CAA48 /* OCKBindableSimpleContactView.swift */; };
+		518F9E1E22961C97009CAA48 /* OCKBindableCalendarWeekView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9DDB22961C97009CAA48 /* OCKBindableCalendarWeekView.swift */; };
+		518F9E2022961C97009CAA48 /* OCKBindableSimpleTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9DDF22961C97009CAA48 /* OCKBindableSimpleTaskView.swift */; };
+		518F9E2122961C97009CAA48 /* OCKBindableChecklistTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9DE022961C97009CAA48 /* OCKBindableChecklistTaskView.swift */; };
+		518F9E2222961C97009CAA48 /* OCKBindableSimpleLogTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9DE122961C97009CAA48 /* OCKBindableSimpleLogTaskView.swift */; };
+		518F9E2322961C97009CAA48 /* OCKBindableGridTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9DE222961C97009CAA48 /* OCKBindableGridTaskView.swift */; };
+		518F9E2422961C97009CAA48 /* OCKBindableInstructionsTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9DE322961C97009CAA48 /* OCKBindableInstructionsTaskView.swift */; };
+		518F9E2522961C97009CAA48 /* OCKBindable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9DE522961C97009CAA48 /* OCKBindable.swift */; };
+		518F9E2622961C97009CAA48 /* OCKStoreNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9DE722961C97009CAA48 /* OCKStoreNotifications.swift */; };
+		518F9E2922961C97009CAA48 /* OCKSynchronizedStoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9DEA22961C97009CAA48 /* OCKSynchronizedStoreManager.swift */; };
+		518F9E3022961C97009CAA48 /* OCKCartesianChartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9DF322961C97009CAA48 /* OCKCartesianChartViewController.swift */; };
+		518F9E3122961C97009CAA48 /* OCKSimpleContactViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9DF522961C97009CAA48 /* OCKSimpleContactViewController.swift */; };
+		518F9E3222961C97009CAA48 /* OCKContactViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9DF622961C97009CAA48 /* OCKContactViewController.swift */; };
+		518F9E3322961C97009CAA48 /* OCKCalendarPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9DF822961C97009CAA48 /* OCKCalendarPageViewController.swift */; };
+		518F9E3422961C97009CAA48 /* OCKCalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9DF922961C97009CAA48 /* OCKCalendarViewController.swift */; };
+		518F9E3522961C97009CAA48 /* OCKWeekCalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9DFA22961C97009CAA48 /* OCKWeekCalendarViewController.swift */; };
+		518F9E3622961C97009CAA48 /* OCKEventAggregator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9DFC22961C97009CAA48 /* OCKEventAggregator.swift */; };
+		518F9E3822961C97009CAA48 /* OCKContactsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9DFE22961C97009CAA48 /* OCKContactsListViewController.swift */; };
+		518F9E3A22961C97009CAA48 /* OCKChecklistTaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9E0122961C97009CAA48 /* OCKChecklistTaskViewController.swift */; };
+		518F9E3B22961C97009CAA48 /* OCKTaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9E0222961C97009CAA48 /* OCKTaskViewController.swift */; };
+		518F9E3C22961C97009CAA48 /* OCKSynchronizedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9E0322961C97009CAA48 /* OCKSynchronizedViewController.swift */; };
+		518F9E3D22961C97009CAA48 /* OCKEventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9E0522961C97009CAA48 /* OCKEventViewController.swift */; };
+		518F9E3E22961C97009CAA48 /* OCKGridTaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9E0622961C97009CAA48 /* OCKGridTaskViewController.swift */; };
+		518F9E3F22961C97009CAA48 /* OCKSimpleLogTaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9E0722961C97009CAA48 /* OCKSimpleLogTaskViewController.swift */; };
+		518F9E4022961C97009CAA48 /* OCKInstructionsTaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9E0822961C97009CAA48 /* OCKInstructionsTaskViewController.swift */; };
+		518F9E4122961C97009CAA48 /* OCKSimpleTaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9E0922961C97009CAA48 /* OCKSimpleTaskViewController.swift */; };
+		5196C7FE226F8F8F00F1C2A2 /* CareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8605A5BA1C4F04EC00DD65FF /* CareKit.framework */; };
+		51B29C9D22A0BD4200A54FBC /* OCKScheduleFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51B29C9C22A0BD4200A54FBC /* OCKScheduleFormatter.swift */; };
+		B1611019229DB241002AC742 /* CareKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = E792B30E225D12CF00C99533 /* CareKit.swift */; };
+		B1A1075622A065C200F93520 /* OCKDailyPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1A1075522A065C200F93520 /* OCKDailyPageViewController.swift */; };
+		E756A8EB2298634E002F596E /* OCKSynchronizedStoreManager+Publishers.swift in Sources */ = {isa = PBXBuildFile; fileRef = E756A8EA2298634E002F596E /* OCKSynchronizedStoreManager+Publishers.swift */; };
+		E76D4E3F2273598F006335E7 /* TestSynchronizedStoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E76D4E3E2273598F006335E7 /* TestSynchronizedStoreManager.swift */; };
+		E76D4E462273599C006335E7 /* MockStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E76D4E422273599C006335E7 /* MockStore.swift */; };
+		E7D63B1F229D7E6D003A33B4 /* MockSynchronizedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D63B1E229D7E6D003A33B4 /* MockSynchronizedViewController.swift */; };
+		E7DA1D5022A30ADC002BB1EF /* OCKListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7DA1D4F22A30ADC002BB1EF /* OCKListView.swift */; };
+		E7DA1D5322A30AFD002BB1EF /* OCKHeaderBodyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7DA1D5222A30AFD002BB1EF /* OCKHeaderBodyView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		5196C7FF226F8F8F00F1C2A2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8605A5B11C4F04EC00DD65FF /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8605A5B91C4F04EC00DD65FF;
+			remoteInfo = CareKit;
+		};
+		51D0ED0522848A4B00D24A76 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 51D0ED0122848A4B00D24A76 /* CareKitUI.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 5174225B224185290054E97C;
+			remoteInfo = CareKitUI;
+		};
+		E7AF8A32228A28CA007C0385 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E7AF8A2D228A28CA007C0385 /* CareKitStore.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = E784B8F82232EED600736CA5;
+			remoteInfo = CareKitStore;
+		};
+		E7AF8A34228A28CA007C0385 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E7AF8A2D228A28CA007C0385 /* CareKitStore.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = E784B9012232EED600736CA5;
+			remoteInfo = CareKitStoreTests;
+		};
+		E7AF8A36228A28E0007C0385 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E7AF8A2D228A28CA007C0385 /* CareKitStore.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = E784B8F72232EED600736CA5;
+			remoteInfo = CareKitStore;
+		};
+		E7C91290228A1F16008ABEB4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 51D0ED0122848A4B00D24A76 /* CareKitUI.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 5174225A224185290054E97C;
+			remoteInfo = CareKitUI;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		51550F60227FAD0E000CF588 /* TestSynchronizedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestSynchronizedViewController.swift; sourceTree = "<group>"; };
+		51886B0A22976F610033BBC4 /* OCKDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKDetailViewController.swift; sourceTree = "<group>"; };
+		518F9DC222961C96009CAA48 /* OCKListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKListViewController.swift; sourceTree = "<group>"; };
+		518F9DC322961C96009CAA48 /* OCKDailyTasksPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKDailyTasksPageViewController.swift; sourceTree = "<group>"; };
+		518F9DCD22961C97009CAA48 /* UIViewController+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extensions.swift"; sourceTree = "<group>"; };
+		518F9DCE22961C97009CAA48 /* Collection+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Collection+Extensions.swift"; sourceTree = "<group>"; };
+		518F9DD922961C97009CAA48 /* OCKBindableSimpleContactView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKBindableSimpleContactView.swift; sourceTree = "<group>"; };
+		518F9DDB22961C97009CAA48 /* OCKBindableCalendarWeekView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKBindableCalendarWeekView.swift; sourceTree = "<group>"; };
+		518F9DDF22961C97009CAA48 /* OCKBindableSimpleTaskView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKBindableSimpleTaskView.swift; sourceTree = "<group>"; };
+		518F9DE022961C97009CAA48 /* OCKBindableChecklistTaskView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKBindableChecklistTaskView.swift; sourceTree = "<group>"; };
+		518F9DE122961C97009CAA48 /* OCKBindableSimpleLogTaskView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKBindableSimpleLogTaskView.swift; sourceTree = "<group>"; };
+		518F9DE222961C97009CAA48 /* OCKBindableGridTaskView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKBindableGridTaskView.swift; sourceTree = "<group>"; };
+		518F9DE322961C97009CAA48 /* OCKBindableInstructionsTaskView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKBindableInstructionsTaskView.swift; sourceTree = "<group>"; };
+		518F9DE522961C97009CAA48 /* OCKBindable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKBindable.swift; sourceTree = "<group>"; };
+		518F9DE722961C97009CAA48 /* OCKStoreNotifications.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKStoreNotifications.swift; sourceTree = "<group>"; };
+		518F9DEA22961C97009CAA48 /* OCKSynchronizedStoreManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKSynchronizedStoreManager.swift; sourceTree = "<group>"; };
+		518F9DF322961C97009CAA48 /* OCKCartesianChartViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKCartesianChartViewController.swift; sourceTree = "<group>"; };
+		518F9DF522961C97009CAA48 /* OCKSimpleContactViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKSimpleContactViewController.swift; sourceTree = "<group>"; };
+		518F9DF622961C97009CAA48 /* OCKContactViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKContactViewController.swift; sourceTree = "<group>"; };
+		518F9DF822961C97009CAA48 /* OCKCalendarPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKCalendarPageViewController.swift; sourceTree = "<group>"; };
+		518F9DF922961C97009CAA48 /* OCKCalendarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKCalendarViewController.swift; sourceTree = "<group>"; };
+		518F9DFA22961C97009CAA48 /* OCKWeekCalendarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKWeekCalendarViewController.swift; sourceTree = "<group>"; };
+		518F9DFC22961C97009CAA48 /* OCKEventAggregator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKEventAggregator.swift; sourceTree = "<group>"; };
+		518F9DFE22961C97009CAA48 /* OCKContactsListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKContactsListViewController.swift; sourceTree = "<group>"; };
+		518F9E0122961C97009CAA48 /* OCKChecklistTaskViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKChecklistTaskViewController.swift; sourceTree = "<group>"; };
+		518F9E0222961C97009CAA48 /* OCKTaskViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKTaskViewController.swift; sourceTree = "<group>"; };
+		518F9E0322961C97009CAA48 /* OCKSynchronizedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKSynchronizedViewController.swift; sourceTree = "<group>"; };
+		518F9E0522961C97009CAA48 /* OCKEventViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKEventViewController.swift; sourceTree = "<group>"; };
+		518F9E0622961C97009CAA48 /* OCKGridTaskViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKGridTaskViewController.swift; sourceTree = "<group>"; };
+		518F9E0722961C97009CAA48 /* OCKSimpleLogTaskViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKSimpleLogTaskViewController.swift; sourceTree = "<group>"; };
+		518F9E0822961C97009CAA48 /* OCKInstructionsTaskViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKInstructionsTaskViewController.swift; sourceTree = "<group>"; };
+		518F9E0922961C97009CAA48 /* OCKSimpleTaskViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKSimpleTaskViewController.swift; sourceTree = "<group>"; };
+		5196C7F9226F8F8F00F1C2A2 /* CareKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CareKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		5196C7FD226F8F8F00F1C2A2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		51B29C9C22A0BD4200A54FBC /* OCKScheduleFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKScheduleFormatter.swift; sourceTree = "<group>"; };
+		51D0ED0122848A4B00D24A76 /* CareKitUI.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CareKitUI.xcodeproj; path = ../CareKitUI/CareKitUI.xcodeproj; sourceTree = "<group>"; };
+		8605A5BA1C4F04EC00DD65FF /* CareKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CareKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		8605A5BF1C4F04EC00DD65FF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B1A1075522A065C200F93520 /* OCKDailyPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKDailyPageViewController.swift; sourceTree = "<group>"; };
+		E756A8EA2298634E002F596E /* OCKSynchronizedStoreManager+Publishers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OCKSynchronizedStoreManager+Publishers.swift"; sourceTree = "<group>"; };
+		E76D4E3E2273598F006335E7 /* TestSynchronizedStoreManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestSynchronizedStoreManager.swift; sourceTree = "<group>"; };
+		E76D4E422273599C006335E7 /* MockStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockStore.swift; sourceTree = "<group>"; };
+		E792B30E225D12CF00C99533 /* CareKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CareKit.swift; sourceTree = "<group>"; };
+		E7AF8A2D228A28CA007C0385 /* CareKitStore.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CareKitStore.xcodeproj; path = ../CareKitStore/CareKitStore.xcodeproj; sourceTree = "<group>"; };
+		E7D63B1E229D7E6D003A33B4 /* MockSynchronizedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSynchronizedViewController.swift; sourceTree = "<group>"; };
+		E7DA1D4F22A30ADC002BB1EF /* OCKListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKListView.swift; sourceTree = "<group>"; };
+		E7DA1D5222A30AFD002BB1EF /* OCKHeaderBodyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKHeaderBodyView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		5196C7F6226F8F8F00F1C2A2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5196C7FE226F8F8F00F1C2A2 /* CareKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8605A5B61C4F04EC00DD65FF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		51886B0C2297B11B0033BBC4 /* Details */ = {
+			isa = PBXGroup;
+			children = (
+				51886B0A22976F610033BBC4 /* OCKDetailViewController.swift */,
+			);
+			path = Details;
+			sourceTree = "<group>";
+		};
+		518F9DC122961C96009CAA48 /* Lists */ = {
+			isa = PBXGroup;
+			children = (
+				51A8459222A6E1EC008636CB /* View */,
+				51A8459322A6E21E008636CB /* Controller */,
+			);
+			path = Lists;
+			sourceTree = "<group>";
+		};
+		518F9DCC22961C97009CAA48 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				518F9DCD22961C97009CAA48 /* UIViewController+Extensions.swift */,
+				518F9DCE22961C97009CAA48 /* Collection+Extensions.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		518F9DD722961C97009CAA48 /* Bindable Views */ = {
+			isa = PBXGroup;
+			children = (
+				518F9DD822961C97009CAA48 /* Contact */,
+				518F9DDA22961C97009CAA48 /* Calendar */,
+				518F9DDE22961C97009CAA48 /* Task */,
+				518F9DE422961C97009CAA48 /* Protocols */,
+			);
+			path = "Bindable Views";
+			sourceTree = "<group>";
+		};
+		518F9DD822961C97009CAA48 /* Contact */ = {
+			isa = PBXGroup;
+			children = (
+				518F9DD922961C97009CAA48 /* OCKBindableSimpleContactView.swift */,
+			);
+			path = Contact;
+			sourceTree = "<group>";
+		};
+		518F9DDA22961C97009CAA48 /* Calendar */ = {
+			isa = PBXGroup;
+			children = (
+				518F9DDB22961C97009CAA48 /* OCKBindableCalendarWeekView.swift */,
+			);
+			path = Calendar;
+			sourceTree = "<group>";
+		};
+		518F9DDE22961C97009CAA48 /* Task */ = {
+			isa = PBXGroup;
+			children = (
+				518F9DDF22961C97009CAA48 /* OCKBindableSimpleTaskView.swift */,
+				518F9DE122961C97009CAA48 /* OCKBindableSimpleLogTaskView.swift */,
+				518F9DE322961C97009CAA48 /* OCKBindableInstructionsTaskView.swift */,
+				518F9DE022961C97009CAA48 /* OCKBindableChecklistTaskView.swift */,
+				518F9DE222961C97009CAA48 /* OCKBindableGridTaskView.swift */,
+				51B29C9C22A0BD4200A54FBC /* OCKScheduleFormatter.swift */,
+			);
+			path = Task;
+			sourceTree = "<group>";
+		};
+		518F9DE422961C97009CAA48 /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				518F9DE522961C97009CAA48 /* OCKBindable.swift */,
+			);
+			path = Protocols;
+			sourceTree = "<group>";
+		};
+		518F9DE622961C97009CAA48 /* Synchronization */ = {
+			isa = PBXGroup;
+			children = (
+				518F9DE722961C97009CAA48 /* OCKStoreNotifications.swift */,
+				518F9DEA22961C97009CAA48 /* OCKSynchronizedStoreManager.swift */,
+				E756A8EA2298634E002F596E /* OCKSynchronizedStoreManager+Publishers.swift */,
+			);
+			path = Synchronization;
+			sourceTree = "<group>";
+		};
+		518F9DF122961C97009CAA48 /* Synchronized View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				518F9E0322961C97009CAA48 /* OCKSynchronizedViewController.swift */,
+				518F9DE622961C97009CAA48 /* Synchronization */,
+				518F9DF222961C97009CAA48 /* Chart */,
+				518F9DF422961C97009CAA48 /* Contact */,
+				518F9DF722961C97009CAA48 /* Calendar */,
+				518F9E0022961C97009CAA48 /* Task */,
+			);
+			path = "Synchronized View Controllers";
+			sourceTree = "<group>";
+		};
+		518F9DF222961C97009CAA48 /* Chart */ = {
+			isa = PBXGroup;
+			children = (
+				518F9DF322961C97009CAA48 /* OCKCartesianChartViewController.swift */,
+			);
+			path = Chart;
+			sourceTree = "<group>";
+		};
+		518F9DF422961C97009CAA48 /* Contact */ = {
+			isa = PBXGroup;
+			children = (
+				518F9DF622961C97009CAA48 /* OCKContactViewController.swift */,
+				518F9DF522961C97009CAA48 /* OCKSimpleContactViewController.swift */,
+			);
+			path = Contact;
+			sourceTree = "<group>";
+		};
+		518F9DF722961C97009CAA48 /* Calendar */ = {
+			isa = PBXGroup;
+			children = (
+				518F9DF922961C97009CAA48 /* OCKCalendarViewController.swift */,
+				518F9DFA22961C97009CAA48 /* OCKWeekCalendarViewController.swift */,
+				518F9DF822961C97009CAA48 /* OCKCalendarPageViewController.swift */,
+			);
+			path = Calendar;
+			sourceTree = "<group>";
+		};
+		518F9DFB22961C97009CAA48 /* Aggregators */ = {
+			isa = PBXGroup;
+			children = (
+				518F9DFC22961C97009CAA48 /* OCKEventAggregator.swift */,
+			);
+			path = Aggregators;
+			sourceTree = "<group>";
+		};
+		518F9E0022961C97009CAA48 /* Task */ = {
+			isa = PBXGroup;
+			children = (
+				518F9DFB22961C97009CAA48 /* Aggregators */,
+				518F9E0222961C97009CAA48 /* OCKTaskViewController.swift */,
+				518F9E0522961C97009CAA48 /* OCKEventViewController.swift */,
+				518F9E0722961C97009CAA48 /* OCKSimpleLogTaskViewController.swift */,
+				518F9E0822961C97009CAA48 /* OCKInstructionsTaskViewController.swift */,
+				518F9E0922961C97009CAA48 /* OCKSimpleTaskViewController.swift */,
+				518F9E0122961C97009CAA48 /* OCKChecklistTaskViewController.swift */,
+				518F9E0622961C97009CAA48 /* OCKGridTaskViewController.swift */,
+			);
+			path = Task;
+			sourceTree = "<group>";
+		};
+		5196C7FA226F8F8F00F1C2A2 /* CareKitTests */ = {
+			isa = PBXGroup;
+			children = (
+				E76D4E402273599C006335E7 /* Mocks */,
+				E76D4E3E2273598F006335E7 /* TestSynchronizedStoreManager.swift */,
+				51550F60227FAD0E000CF588 /* TestSynchronizedViewController.swift */,
+				5196C7FD226F8F8F00F1C2A2 /* Info.plist */,
+			);
+			path = CareKitTests;
+			sourceTree = "<group>";
+		};
+		51A8459222A6E1EC008636CB /* View */ = {
+			isa = PBXGroup;
+			children = (
+				E7DA1D4F22A30ADC002BB1EF /* OCKListView.swift */,
+				E7DA1D5222A30AFD002BB1EF /* OCKHeaderBodyView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		51A8459322A6E21E008636CB /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				518F9DC222961C96009CAA48 /* OCKListViewController.swift */,
+				518F9DC322961C96009CAA48 /* OCKDailyTasksPageViewController.swift */,
+				B1A1075522A065C200F93520 /* OCKDailyPageViewController.swift */,
+				518F9DFE22961C97009CAA48 /* OCKContactsListViewController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		51D0ED0222848A4B00D24A76 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				51D0ED0622848A4B00D24A76 /* CareKitUI.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		8605A5B01C4F04EC00DD65FF = {
+			isa = PBXGroup;
+			children = (
+				E7AF8A2D228A28CA007C0385 /* CareKitStore.xcodeproj */,
+				51D0ED0122848A4B00D24A76 /* CareKitUI.xcodeproj */,
+				8605A5BC1C4F04EC00DD65FF /* CareKit */,
+				5196C7FA226F8F8F00F1C2A2 /* CareKitTests */,
+				8605A5BB1C4F04EC00DD65FF /* Products */,
+			);
+			indentWidth = 4;
+			sourceTree = "<group>";
+			tabWidth = 4;
+		};
+		8605A5BB1C4F04EC00DD65FF /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8605A5BA1C4F04EC00DD65FF /* CareKit.framework */,
+				5196C7F9226F8F8F00F1C2A2 /* CareKitTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		8605A5BC1C4F04EC00DD65FF /* CareKit */ = {
+			isa = PBXGroup;
+			children = (
+				518F9DCC22961C97009CAA48 /* Extensions */,
+				51886B0C2297B11B0033BBC4 /* Details */,
+				518F9DD722961C97009CAA48 /* Bindable Views */,
+				518F9DF122961C97009CAA48 /* Synchronized View Controllers */,
+				518F9DC122961C96009CAA48 /* Lists */,
+				E792B30E225D12CF00C99533 /* CareKit.swift */,
+				8605A5BF1C4F04EC00DD65FF /* Info.plist */,
+			);
+			path = CareKit;
+			sourceTree = "<group>";
+		};
+		E76D4E402273599C006335E7 /* Mocks */ = {
+			isa = PBXGroup;
+			children = (
+				E76D4E422273599C006335E7 /* MockStore.swift */,
+				E7D63B1E229D7E6D003A33B4 /* MockSynchronizedViewController.swift */,
+			);
+			path = Mocks;
+			sourceTree = "<group>";
+		};
+		E7AF8A2E228A28CA007C0385 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E7AF8A33228A28CA007C0385 /* CareKitStore.framework */,
+				E7AF8A35228A28CA007C0385 /* CareKitStoreTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		8605A5B71C4F04EC00DD65FF /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		5196C7F8226F8F8F00F1C2A2 /* CareKitTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5196C804226F8F8F00F1C2A2 /* Build configuration list for PBXNativeTarget "CareKitTests" */;
+			buildPhases = (
+				5196C7F5226F8F8F00F1C2A2 /* Sources */,
+				5196C7F6226F8F8F00F1C2A2 /* Frameworks */,
+				5196C7F7226F8F8F00F1C2A2 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				5196C800226F8F8F00F1C2A2 /* PBXTargetDependency */,
+			);
+			name = CareKitTests;
+			productName = CareKitTests;
+			productReference = 5196C7F9226F8F8F00F1C2A2 /* CareKitTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		8605A5B91C4F04EC00DD65FF /* CareKit */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8605A5CE1C4F04EC00DD65FF /* Build configuration list for PBXNativeTarget "CareKit" */;
+			buildPhases = (
+				8605A5B51C4F04EC00DD65FF /* Sources */,
+				8605A5B71C4F04EC00DD65FF /* Headers */,
+				8605A5B61C4F04EC00DD65FF /* Frameworks */,
+				8605A5B81C4F04EC00DD65FF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E7AF8A37228A28E0007C0385 /* PBXTargetDependency */,
+				E7C91291228A1F16008ABEB4 /* PBXTargetDependency */,
+			);
+			name = CareKit;
+			productName = CareKit;
+			productReference = 8605A5BA1C4F04EC00DD65FF /* CareKit.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		8605A5B11C4F04EC00DD65FF /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1020;
+				LastUpgradeCheck = 1100;
+				ORGANIZATIONNAME = carekit.org;
+				TargetAttributes = {
+					5196C7F8226F8F8F00F1C2A2 = {
+						CreatedOnToolsVersion = 10.2.1;
+						DevelopmentTeam = 7JYUG8QGJ3;
+						ProvisioningStyle = Automatic;
+					};
+					8605A5B91C4F04EC00DD65FF = {
+						CreatedOnToolsVersion = 7.2;
+						LastSwiftMigration = 1020;
+						ProvisioningStyle = Manual;
+					};
+				};
+			};
+			buildConfigurationList = 8605A5B41C4F04EC00DD65FF /* Build configuration list for PBXProject "CareKit" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				pt_PT,
+				es_MX,
+				en_AU,
+				en_GB,
+				fr_CA,
+				no,
+				Base,
+			);
+			mainGroup = 8605A5B01C4F04EC00DD65FF;
+			productRefGroup = 8605A5BB1C4F04EC00DD65FF /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = E7AF8A2E228A28CA007C0385 /* Products */;
+					ProjectRef = E7AF8A2D228A28CA007C0385 /* CareKitStore.xcodeproj */;
+				},
+				{
+					ProductGroup = 51D0ED0222848A4B00D24A76 /* Products */;
+					ProjectRef = 51D0ED0122848A4B00D24A76 /* CareKitUI.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				8605A5B91C4F04EC00DD65FF /* CareKit */,
+				5196C7F8226F8F8F00F1C2A2 /* CareKitTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		51D0ED0622848A4B00D24A76 /* CareKitUI.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = CareKitUI.framework;
+			remoteRef = 51D0ED0522848A4B00D24A76 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		E7AF8A33228A28CA007C0385 /* CareKitStore.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = CareKitStore.framework;
+			remoteRef = E7AF8A32228A28CA007C0385 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		E7AF8A35228A28CA007C0385 /* CareKitStoreTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = CareKitStoreTests.xctest;
+			remoteRef = E7AF8A34228A28CA007C0385 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXResourcesBuildPhase section */
+		5196C7F7226F8F8F00F1C2A2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8605A5B81C4F04EC00DD65FF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		5196C7F5226F8F8F00F1C2A2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E7D63B1F229D7E6D003A33B4 /* MockSynchronizedViewController.swift in Sources */,
+				E76D4E3F2273598F006335E7 /* TestSynchronizedStoreManager.swift in Sources */,
+				E76D4E462273599C006335E7 /* MockStore.swift in Sources */,
+				51550F61227FAD0E000CF588 /* TestSynchronizedViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8605A5B51C4F04EC00DD65FF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				518F9E3522961C97009CAA48 /* OCKWeekCalendarViewController.swift in Sources */,
+				518F9E3C22961C97009CAA48 /* OCKSynchronizedViewController.swift in Sources */,
+				518F9E2322961C97009CAA48 /* OCKBindableGridTaskView.swift in Sources */,
+				51886B0B22976F610033BBC4 /* OCKDetailViewController.swift in Sources */,
+				518F9E0E22961C97009CAA48 /* OCKListViewController.swift in Sources */,
+				518F9E1422961C97009CAA48 /* UIViewController+Extensions.swift in Sources */,
+				518F9E2022961C97009CAA48 /* OCKBindableSimpleTaskView.swift in Sources */,
+				518F9E3822961C97009CAA48 /* OCKContactsListViewController.swift in Sources */,
+				51B29C9D22A0BD4200A54FBC /* OCKScheduleFormatter.swift in Sources */,
+				518F9E3022961C97009CAA48 /* OCKCartesianChartViewController.swift in Sources */,
+				518F9E2222961C97009CAA48 /* OCKBindableSimpleLogTaskView.swift in Sources */,
+				518F9E0F22961C97009CAA48 /* OCKDailyTasksPageViewController.swift in Sources */,
+				518F9E3222961C97009CAA48 /* OCKContactViewController.swift in Sources */,
+				518F9E4022961C97009CAA48 /* OCKInstructionsTaskViewController.swift in Sources */,
+				518F9E3E22961C97009CAA48 /* OCKGridTaskViewController.swift in Sources */,
+				518F9E3F22961C97009CAA48 /* OCKSimpleLogTaskViewController.swift in Sources */,
+				518F9E1D22961C97009CAA48 /* OCKBindableSimpleContactView.swift in Sources */,
+				E756A8EB2298634E002F596E /* OCKSynchronizedStoreManager+Publishers.swift in Sources */,
+				518F9E3A22961C97009CAA48 /* OCKChecklistTaskViewController.swift in Sources */,
+				518F9E2622961C97009CAA48 /* OCKStoreNotifications.swift in Sources */,
+				518F9E3B22961C97009CAA48 /* OCKTaskViewController.swift in Sources */,
+				B1611019229DB241002AC742 /* CareKit.swift in Sources */,
+				518F9E2122961C97009CAA48 /* OCKBindableChecklistTaskView.swift in Sources */,
+				B1A1075622A065C200F93520 /* OCKDailyPageViewController.swift in Sources */,
+				518F9E3622961C97009CAA48 /* OCKEventAggregator.swift in Sources */,
+				518F9E1522961C97009CAA48 /* Collection+Extensions.swift in Sources */,
+				E7DA1D5322A30AFD002BB1EF /* OCKHeaderBodyView.swift in Sources */,
+				518F9E3122961C97009CAA48 /* OCKSimpleContactViewController.swift in Sources */,
+				E7DA1D5022A30ADC002BB1EF /* OCKListView.swift in Sources */,
+				518F9E3422961C97009CAA48 /* OCKCalendarViewController.swift in Sources */,
+				518F9E3322961C97009CAA48 /* OCKCalendarPageViewController.swift in Sources */,
+				518F9E2422961C97009CAA48 /* OCKBindableInstructionsTaskView.swift in Sources */,
+				518F9E4122961C97009CAA48 /* OCKSimpleTaskViewController.swift in Sources */,
+				518F9E2922961C97009CAA48 /* OCKSynchronizedStoreManager.swift in Sources */,
+				518F9E2522961C97009CAA48 /* OCKBindable.swift in Sources */,
+				518F9E1E22961C97009CAA48 /* OCKBindableCalendarWeekView.swift in Sources */,
+				518F9E3D22961C97009CAA48 /* OCKEventViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		5196C800226F8F8F00F1C2A2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8605A5B91C4F04EC00DD65FF /* CareKit */;
+			targetProxy = 5196C7FF226F8F8F00F1C2A2 /* PBXContainerItemProxy */;
+		};
+		E7AF8A37228A28E0007C0385 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = CareKitStore;
+			targetProxy = E7AF8A36228A28E0007C0385 /* PBXContainerItemProxy */;
+		};
+		E7C91291228A1F16008ABEB4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = CareKitUI;
+			targetProxy = E7C91290228A1F16008ABEB4 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		5196C801226F8F8F00F1C2A2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 7JYUG8QGJ3;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = CareKitTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = Apple.CareKitTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		5196C802226F8F8F00F1C2A2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 7JYUG8QGJ3;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = CareKitTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = Apple.CareKitTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		8605A5CC1C4F04EC00DD65FF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ADDRESS_SANITIZER_CONTAINER_OVERFLOW = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_SECURITY_FLOATLOOPCOUNTER = YES;
+				CLANG_ANALYZER_SECURITY_INSECUREAPI_RAND = YES;
+				CLANG_ANALYZER_SECURITY_INSECUREAPI_STRCPY = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_UNDEFINED_BEHAVIOR_SANITIZER_INTEGER = YES;
+				CLANG_UNDEFINED_BEHAVIOR_SANITIZER_NULLABILITY = YES;
+				CLANG_WARN_ASSIGN_ENUM = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_SEMICOLON_BEFORE_METHOD_BODY = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNKNOWN_PRAGMAS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_LABEL = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				RUN_CLANG_STATIC_ANALYZER = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = singlefile;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+				WATCHOS_DEPLOYMENT_TARGET = 2.1;
+			};
+			name = Debug;
+		};
+		8605A5CD1C4F04EC00DD65FF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ADDRESS_SANITIZER_CONTAINER_OVERFLOW = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_SECURITY_FLOATLOOPCOUNTER = YES;
+				CLANG_ANALYZER_SECURITY_INSECUREAPI_RAND = YES;
+				CLANG_ANALYZER_SECURITY_INSECUREAPI_STRCPY = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_UNDEFINED_BEHAVIOR_SANITIZER_INTEGER = YES;
+				CLANG_UNDEFINED_BEHAVIOR_SANITIZER_NULLABILITY = YES;
+				CLANG_WARN_ASSIGN_ENUM = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_SEMICOLON_BEFORE_METHOD_BODY = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNKNOWN_PRAGMAS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_LABEL = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				ONLY_ACTIVE_ARCH = NO;
+				RUN_CLANG_STATIC_ANALYZER = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		8605A5CF1C4F04EC00DD65FF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Manual;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = "";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				INFOPLIST_FILE = CareKit/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MARKETING_VERSION = 2.0;
+				PRODUCT_BUNDLE_IDENTIFIER = org.carekit.CareKit;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTS_UIKITFORMAC = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		8605A5D01C4F04EC00DD65FF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Manual;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = "";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				INFOPLIST_FILE = CareKit/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MARKETING_VERSION = 2.0;
+				PRODUCT_BUNDLE_IDENTIFIER = org.carekit.CareKit;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTS_UIKITFORMAC = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		5196C804226F8F8F00F1C2A2 /* Build configuration list for PBXNativeTarget "CareKitTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5196C801226F8F8F00F1C2A2 /* Debug */,
+				5196C802226F8F8F00F1C2A2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8605A5B41C4F04EC00DD65FF /* Build configuration list for PBXProject "CareKit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8605A5CC1C4F04EC00DD65FF /* Debug */,
+				8605A5CD1C4F04EC00DD65FF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8605A5CE1C4F04EC00DD65FF /* Build configuration list for PBXNativeTarget "CareKit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8605A5CF1C4F04EC00DD65FF /* Debug */,
+				8605A5D01C4F04EC00DD65FF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 8605A5B11C4F04EC00DD65FF /* Project object */;
+}

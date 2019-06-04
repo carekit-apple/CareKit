@@ -19,25 +19,25 @@ Getting Started <a name="gettingstarted"></a>
 Requirements
 ------------
 
-The primary CareKit framework codebase supports iOS and requires Xcode 7.0
+The primary CareKit framework codebase supports iOS and requires Xcode 11.0
 or newer.
-The CareKit framework has a Base SDK version of 9.0, meaning that apps
-using the CareKit framework can run on devices with iOS 9.0 or newer.
+The CareKit framework has a Base SDK version of 13.0, meaning that apps
+using the CareKit framework can run on devices with iOS 13.0 or newer.
 
 
 Installation
 ------------
 
-The latest stable version of CareKit framework can be cloned with:
+The latest stable version of the CareKit™ framework is version 1.2 and can be cloned with:
 
 ```
 git clone -b stable --recurse-submodules https://github.com/carekit-apple/carekit.git
 ```
 
-Or, for the latest changes, use the `master` branch:
+Or, for the latest changes including early access to CareKit 2.0, use the `master` branch:
 
 ```
-git clone --recurse-submodules https://github.com/carekit-apple/carekit.git
+git clone https://github.com/carekit-apple/carekit.git
 ```
 
 Building
@@ -75,7 +75,7 @@ Embedded Binaries" align="middle"/>
 Discovering How CareKit Works
 ------------------------------
 
-One of the best ways to see how CareKit works is to look at the [OCKSample](../../tree/master/Sample/OCKSample) app. 
+One of the best ways to see how CareKit works is to look at the [OCKSample](../../tree/master/OCKSample/OCKSample) app. 
 You can find it in the CareKit sample directory. You will need to add the CareKit framework to the 
 sample, as described in the previous section.
 
@@ -88,7 +88,7 @@ The source in the CareKit repository is made available under the
 following license unless another license is explicitly identified:
 
 ```
-Copyright (c) 2016 - 2017, Apple Inc. All rights reserved.
+Copyright (c) 2016 - 2019, Apple Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:

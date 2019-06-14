@@ -1,32 +1,9 @@
-/*
- Copyright (c) 2019, Apple Inc. All rights reserved.
- 
- Redistribution and use in source and binary forms, with or without modification,
- are permitted provided that the following conditions are met:
- 
- 1.  Redistributions of source code must retain the above copyright notice, this
- list of conditions and the following disclaimer.
- 
- 2.  Redistributions in binary form must reproduce the above copyright notice,
- this list of conditions and the following disclaimer in the documentation and/or
- other materials provided with the distribution.
- 
- 3. Neither the name of the copyright holder(s) nor the names of any contributors
- may be used to endorse or promote products derived from this software without
- specific prior written permission. No license is granted to the trademarks of
- the copyright holders even if such marks are included in this software.
- 
- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
- FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+//
+//  OCKMultiLogTaskViewController.swift
+//
+//  Created by Pablo Gallastegui on 6/12/19.
+//  Copyright © 2019 Red Pixel Studios. All rights reserved.
+//
 
 import UIKit
 import CareKitUI
@@ -36,10 +13,12 @@ import CareKitStore
 ///
 /// - Note: `OCKEventViewController`s are created by specifying a task and an event query. If the event query
 /// returns more than one event, only the first event will be displayed.
-open class OCKSimpleLogTaskViewController<Store: OCKStoreProtocol>: OCKEventViewController<Store>, OCKSimpleLogTaskViewDelegate {
+open class OCKMultiLogTaskViewController<Store: OCKStoreProtocol>: OCKEventViewController<Store>, OCKMultiLogTaskViewDelegate {
+
+    private var logOptions = [String]()
     
-    public var taskView: OCKSimpleLogTaskView {
-        guard let view = view as? OCKSimpleLogTaskView else { fatalError("Unexpected type") }
+    public var taskView: OCKMultiLogTaskView {
+        guard let view = view as? OCKMultiLogTaskView else { fatalError("Unexpected type") }
         return view
     }
     
@@ -50,9 +29,12 @@ open class OCKSimpleLogTaskViewController<Store: OCKStoreProtocol>: OCKEventView
     ///   - storeManager: A store manager that will be used to provide synchronization.
     ///   - taskIdentifier: The identifier event's task.
     ///   - eventQuery: An event query that specifies which events will be queried and displayed.
-    public init(storeManager: OCKSynchronizedStoreManager<Store>, taskIdentifier: String, eventQuery: OCKEventQuery) {
+    public init(storeManager: OCKSynchronizedStoreManager<Store>, taskIdentifier: String, eventQuery: OCKEventQuery, logOptions:[String] = []) {
         super.init(storeManager: storeManager, taskIdentifier: taskIdentifier, eventQuery: eventQuery,
-                   loadDefaultView: { OCKBindableSimpleLogTaskView<Store.Task, Store.Outcome>() })
+                   loadDefaultView: { OCKBindableMultiLogTaskView<Store.Task, Store.Outcome>() })
+        
+        self.logOptions = logOptions
+        self.taskView.addOptions(logOptions)
     }
     
     /// Initialize using a task.
@@ -61,8 +43,8 @@ open class OCKSimpleLogTaskViewController<Store: OCKStoreProtocol>: OCKEventView
     ///   - storeManager: A store manager that will be used to provide synchronization.
     ///   - task: The task to which the event to be displayed belongs.
     ///   - eventQuery: An event query that specifies which events will be queried and displayed.
-    public convenience init(storeManager: OCKSynchronizedStoreManager<Store>, task: Store.Task, eventQuery: OCKEventQuery) {
-        self.init(storeManager: storeManager, taskIdentifier: task.identifier, eventQuery: eventQuery)
+    public convenience init(storeManager: OCKSynchronizedStoreManager<Store>, task: Store.Task, eventQuery: OCKEventQuery, logOptions:[String] = []) {
+        self.init(storeManager: storeManager, taskIdentifier: task.identifier, eventQuery: eventQuery, logOptions: logOptions)
     }
     
     required public init?(coder aDecoder: NSCoder) {
@@ -72,7 +54,7 @@ open class OCKSimpleLogTaskViewController<Store: OCKStoreProtocol>: OCKEventView
     override open func viewDidLoad() {
         super.viewDidLoad()
         taskView.delegate = self
-        taskView.logButton.addTarget(self, action: #selector(outcomeButtonPressed(_:)), for: .touchUpInside)
+        taskView.multiLogDelegate = self
     }
     
     // MARK: OCKSimpleLogTaskViewDelegate
@@ -108,5 +90,37 @@ open class OCKSimpleLogTaskViewController<Store: OCKStoreProtocol>: OCKEventView
 
         [delete, cancel].forEach { actionSheet.addAction($0) }
         present(actionSheet, animated: true, completion: nil)
+    }
+    
+    /// This method will be called each time the taps on a log button. Override this method in a subclass to change the behavior.
+    ///
+    /// - Parameters:
+    ///   - multiLogTaskView: The view containing the log item.
+    ///   - logButton: The item in the log that was selected.
+    ///   - index: The index of the item in the log.
+    open func multiLogTaskView(_ multiLogTaskView: OCKMultiLogTaskView, didSelectLog logButton: OCKButton, at index: Int) {
+        let newOutcomeValue = OCKOutcomeValue(logOptions[index])
+        
+        if let outcome = event?.outcome {
+            
+            // save a new outcome value if there is already an outcome
+            var convertedOutcome = outcome.convert()
+            var newValues = convertedOutcome.values
+            newValues.append(newOutcomeValue)
+            
+            convertedOutcome.values = newValues
+            let updatedOutcome = Store.Outcome(value: convertedOutcome)
+            
+            storeManager.store.updateOutcomes([updatedOutcome], queue: .main) { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success: break
+                case .failure(let error):
+                    self.delegate?.eventViewController(self, didFailWithError: error)
+                }
+            }
+        } else {
+            self.saveNewOutcome(withValues: [newOutcomeValue])
+        }
     }
 }

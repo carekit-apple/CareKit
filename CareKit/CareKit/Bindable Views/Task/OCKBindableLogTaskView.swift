@@ -9,15 +9,12 @@ import UIKit
 import CareKitUI
 import CareKitStore
 
-internal protocol OCKBindableLogTaskView: OCKBindable, OCKLogTaskView {
-    associatedtype Task: Equatable & OCKTaskConvertible
-    associatedtype Outcome: Equatable & OCKOutcomeConvertible
-    
-    func updateView(with model: OCKEvent<Task, Outcome>?, animated: Bool)
-    func clear(animated: Bool)
+internal protocol OCKBindableLogTaskView: OCKBindable where Self: OCKLogTaskView {
+    associatedtype Task
+    associatedtype Outcome
 }
 
-extension OCKBindableLogTaskView {
+extension OCKBindableLogTaskView where Self: OCKLogTaskView, Task: Equatable & OCKTaskConvertible, Outcome: Equatable & OCKOutcomeConvertible {
     
     private func getScheduleFormatter() -> OCKScheduleFormatter<Task, Outcome> {
         OCKScheduleFormatter<Task, Outcome>()
@@ -29,7 +26,7 @@ extension OCKBindableLogTaskView {
         return formatter
     }
     
-    public func updateView(with model: OCKEvent<Task, Outcome>?, animated: Bool) {
+    internal func updateView(with model: OCKEvent<Task, Outcome>?, animated: Bool) {
         guard let model = model else {
             clear(animated: animated)
             return
@@ -73,7 +70,7 @@ extension OCKBindableLogTaskView {
         }
     }
     
-    private func clear(animated: Bool) {
+    internal func clear(animated: Bool) {
         [headerView.titleLabel, headerView.detailLabel, instructionsLabel].forEach { $0.text = nil }
         clearItems(animated: animated)
     }

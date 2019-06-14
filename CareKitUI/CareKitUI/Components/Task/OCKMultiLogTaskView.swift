@@ -20,28 +20,28 @@ public protocol OCKMultiLogTaskViewDelegate: OCKLogTaskViewDelegate {
     func multiLogTaskView(_ multiLogTaskView: OCKMultiLogTaskView, didSelectLog logButton: OCKButton, at index: Int)
 }
 
-/// A card that displays a header, multi-line label, a log button, and a dynamic vertical stack of logged items.
-/// In CareKit, this view is intended to display a particular event for a task. When the log button is presses,
+/// A card that displays a header, multi-line label, multiple log buttons, and a dynamic vertical stack of logged items.
+/// In CareKit, this view is intended to display a particular event for a task. When one of the log buttons is pressed,
 /// a new outcome is created for the event.
 ///
 /// To insert custom views vertically the view, see `contentStack`. To modify the logged items, see
 /// `updateItem`, `appendItem`, `insertItem`, `removeItem` and `clearItems`.
 ///
-///     +-------------------------------------------------------+
-///     |                                                       |
-///     | [title]                                [detail        |
-///     | [detail]                               disclosure]    |
-///     |                                                       |
-///     |                                                       |
-///     |  --------------------------------------------------   |
-///     |                                                       |
-///     |   [instructions]                                      |
-///     |                                                       |
-///     |  +-------------------------------------------------+  |
-///     |  | [img]  [detail]  [title]                        |  |
-///     |  +-------------------------------------------------+  |
-///     |                                                       |
-///     +-------------------------------------------------------+
+///     +---------------------------------------------------------------+
+///     |                                                               |
+///     | [title]                                        [detail        |
+///     | [detail]                                       disclosure]    |
+///     |                                                               |
+///     |                                                               |
+///     |  ----------------------------------------------------------   |
+///     |                                                               |
+///     |   [instructions]                                              |
+///     |                                                               |
+///     |  +--------------------------+  +---------------------------+  |
+///     |  | [img]  [detail]  [title] |  | [img]  [detail]  [title]  |  |
+///     |  +--------------------------+  +---------------------------+  |
+///     |                                                               |
+///     +---------------------------------------------------------------+
 ///
 open class OCKMultiLogTaskView: OCKLogTaskView {
     
@@ -50,6 +50,7 @@ open class OCKMultiLogTaskView: OCKLogTaskView {
     /// Delegate that gets notified of interactions with the `OCKSimpleLogTaskView`.
     public weak var multiLogDelegate: OCKMultiLogTaskViewDelegate?
     
+    /// The horizontal stack view that holds the log buttons.
     private let logButtonsStackView: OCKStackView = {
         var stackView = OCKStackView(style: .plain)
         stackView.showsOuterSeparators = false
@@ -58,11 +59,13 @@ open class OCKMultiLogTaskView: OCKLogTaskView {
     
     /// The button that can be hooked up to modify the list of logged items.
     private var logButtons = [OCKButton]()
-    
-    // MARK: Life cycle
-    
+        
     // MARK: Methods
     
+    /// Sets the list of Log options to be displayed.
+    ///
+    /// - Parameters:
+    ///   - options: A list of options to be displayed.
     public func addOptions(_ options: [String]) {
         for option in options {
             let button = OCKLabeledButton()

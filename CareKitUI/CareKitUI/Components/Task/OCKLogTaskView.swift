@@ -20,8 +20,8 @@ public protocol OCKLogTaskViewDelegate: class {
     func logTaskView(_ logTaskView: OCKLogTaskView, didSelectItem item: OCKButton, at index: Int)
 }
 
-/// A card that displays a header, multi-line label, a log button, and a dynamic vertical stack of logged items.
-/// In CareKit, this view is intended to display a particular event for a task. When the log button is presses,
+/// A superclass to the log-type views for cards that displays a header, multi-line label, one or more log buttons, and a dynamic vertical stack of logged items.
+/// In CareKit, this view is intended to display a particular event for a task. When one of the log buttons is pressed,
 /// a new outcome is created for the event.
 ///
 /// To insert custom views vertically the view, see `contentStack`. To modify the logged items, see

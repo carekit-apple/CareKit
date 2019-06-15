@@ -308,7 +308,7 @@ open class OCKEventViewController<Store: OCKStoreProtocol>: OCKSynchronizedViewC
         }
     }
     
-    private func saveNewOutcome(withValues values: [OCKOutcomeValue]) {
+    internal func saveNewOutcome(withValues values: [OCKOutcomeValue]) {
         guard let event = event else { return }
         guard let taskID = event.task.versionID else { fatalError("Task has not been persisted yet!") }
         

@@ -53,8 +53,8 @@ UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelega
     
     private let storeManager: OCKSynchronizedStoreManager<Store>
     
-    private var week = Calendar.current.component(.weekOfYear, from: Date())
-    private var year = Calendar.current.component(.year, from: Date())
+    /// The date range currently being displayed.
+    public private (set) var currentDateRange: DateInterval
     
     private var previouslySelectedDate: Date?
     
@@ -63,16 +63,13 @@ UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelega
         return Calendar.current.date(byAdding: .day, value: weekView.selectedIndex, to: weekView.dateRange.start)!
     }
     
-    public var currentDateRange: DateInterval {
-        return dateIntervalFor(week: week, year: year)
-    }
-    
     internal var currentViewController: OCKWeekCalendarViewController<Store>? {
         return viewControllers?.first as? OCKWeekCalendarViewController<Store>
     }
 
     public init(storeManager: OCKSynchronizedStoreManager<Store>) {
         self.storeManager = storeManager
+        self.currentDateRange = Calendar.current.dateInterval(of: .weekOfYear, for: Date())!
         super.init(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
     }
     
@@ -86,15 +83,15 @@ UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelega
         delegate = self
         
         let now = Date()
-        let viewController = makeViewController(week: week, year: year)
+        let viewController = makeViewController(for: now)
         let completionRingButton = viewController.calendarWeekView.completionRingFor(date: now)
         completionRingButton?.sendActions(for: .touchUpInside)
         setViewControllers([viewController], direction: .forward, animated: false, completion: nil)
         calendarDelegate?.calendarPageViewController(self, didSelectDate: now, previousDate: nil)
     }
     
-    private func makeViewController(week: Int, year: Int) -> OCKWeekCalendarViewController<Store> {
-        let interval = dateIntervalFor(week: week, year: year)
+    private func makeViewController(for date: Date) -> OCKWeekCalendarViewController<Store> {
+        let interval = Calendar.current.dateInterval(of: .weekOfYear, for: date)!
         let query = OCKAdherenceQuery(dateInterval: interval)
         let viewController = OCKWeekCalendarViewController(storeManager: storeManager, adherenceQuery: query)
         viewController.calendarWeekView.displayWeek(of: interval.start)
@@ -111,43 +108,27 @@ UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelega
         }
         
         let isLeft = currentVC.calendarWeekView.dateRange.start > date
-        week = Calendar.current.component(.weekOfYear, from: date)
-        year = Calendar.current.component(.year, from: date)
-        let nextVC = makeViewController(week: week, year: year)
+        let nextVC = makeViewController(for: date)
         
         nextVC.calendarWeekView.selectDate(date)
         self.setViewControllers([nextVC], direction: isLeft ? .reverse : .forward,
                                 animated: animated, completion: nil)
     }
     
-    private func weekAndYearShiftedBy(weeks: Int) -> (week: Int, year: Int) {
-        let shiftedStartDate = Calendar.current.date(byAdding: .weekOfYear, value: weeks, to: currentDateRange.start)!
-        let week = Calendar.current.component(.weekOfYear, from: shiftedStartDate)
-        let year = Calendar.current.component(.year, from: shiftedStartDate)
-        return (week, year)
-    }
-    
-    private func dateIntervalFor(week: Int, year: Int) -> DateInterval {
-        let components = DateComponents(year: year, weekday: 1, weekOfYear: week)
-        let start = Calendar.current.date(from: components)!
-        let end = Calendar.current.date(byAdding: DateComponents(second: -1, weekOfYear: 1), to: start)!
-        return DateInterval(start: start, end: end)
-    }
-    
     // MARK: UIPageViewController DataSource & Delegate
     
     public func pageViewController(_ pageViewController: UIPageViewController,
                                    viewControllerBefore viewController: UIViewController) -> UIViewController? {
-        let (week, year) = weekAndYearShiftedBy(weeks: -1)
-        let previousPage = makeViewController(week: week, year: year)
+        let previousWeek = Calendar.current.date(byAdding: .weekOfYear, value: -1, to: currentDateRange.start)!
+        let previousPage = makeViewController(for: previousWeek)
         return previousPage
     }
     
     public func pageViewController(_ pageViewController: UIPageViewController,
                                    viewControllerAfter viewController: UIViewController) -> UIViewController? {
-        let (week, year) = weekAndYearShiftedBy(weeks: 1)
-        let previousPage = makeViewController(week: week, year: year)
-        return previousPage
+        let nextWeek = Calendar.current.date(byAdding: .weekOfYear, value: -1, to: currentDateRange.start)!
+        let nextPage = makeViewController(for: nextWeek)
+        return nextPage
     }
     
     public func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool,
@@ -156,14 +137,12 @@ UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelega
             let previousViewController = previousViewControllers.first as? OCKWeekCalendarViewController<Store>,
             let currentViewController = currentViewController
         else { return }
-        
-        let startComponents = Calendar.current.dateComponents([.weekOfYear, .year], from: currentViewController.calendarWeekView.dateRange.start)
-        week = startComponents.weekOfYear!
-        year = startComponents.year!
+
+        currentDateRange = currentViewController.calendarWeekView.dateRange
         
         let targetRing = currentViewController.calendarWeekView.completionRingButtons[previousViewController.calendarWeekView.selectedIndex]
         targetRing.sendActions(for: .touchUpInside)
-        calendarDelegate?.calendarPageViewController(self, didChangeDateInterval: dateIntervalFor(week: week, year: year))
+        calendarDelegate?.calendarPageViewController(self, didChangeDateInterval: currentDateRange)
     }
     
     public func pageViewController(_ pageViewController: UIPageViewController, willTransitionTo pendingViewControllers: [UIViewController]) {

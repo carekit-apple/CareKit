@@ -32,7 +32,6 @@ public struct OCKAnimationConfiguration: OCKAnimationConfigurator {}
 public struct OCKColorConfiguration: OCKColorConfigurator {}
 public struct OCKDimensionConfiguration: OCKDimensionConfigurator {}
 public struct OCKAppearanceConfiguration: OCKAppearanceConfigurator {}
-public struct OCKAssetsConfiguration: OCKAssetsConfigurator {}
 public struct OCKStringsConfiguration: OCKStringsConfigurator {}
 public struct OCKFontConfiguration: OCKFontConfigurator {}
 
@@ -43,7 +42,6 @@ public struct OCKStyle {
     public static var appearance: OCKAppearanceConfigurator = OCKAppearanceConfiguration()
     public static var dimension: OCKDimensionConfigurator = OCKDimensionConfiguration()
     public static var animation: OCKAnimationConfigurator = OCKAnimationConfiguration()
-    public static var assets: OCKAssetsConfigurator = OCKAssetsConfiguration()
     public static var strings: OCKStringsConfigurator = OCKStringsConfiguration()
     public static var font: OCKFontConfigurator = OCKFontConfiguration()
 }

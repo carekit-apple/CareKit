@@ -53,9 +53,7 @@ internal class OCKCollapserButton: OCKButton {
         let imageButton = OCKButton()
         imageButton.isUserInteractionEnabled = false
         imageButton.imageView?.contentMode = .scaleAspectFit
-        let image = UIImage(named: OCKStyle.assets.arrow, in: Const.bundle, compatibleWith: nil)?.withRenderingMode(.alwaysTemplate)
-        imageButton.setImage(image, for: .normal)
-        imageButton.imageView?.transform = CGAffineTransform.identity.rotated(by: CGFloat.pi)
+        imageButton.setImage(UIImage(systemName: "chevron.right"), for: .normal)
         imageButton.imageView?.tintColor = .gray
         return imageButton
     }()

@@ -38,12 +38,12 @@ internal class OCKContactButton: OCKButton {
         case call = "Call"
         case message = "Message"
         case email = "E-mail"
-        
-        func imageName() -> String {
+
+        var image: UIImage {
             switch self {
-            case .call: return OCKStyle.assets.phone
-            case .message: return OCKStyle.assets.messages
-            default: return OCKStyle.assets.email
+            case .call: return UIImage(systemName: "phone")!
+            case .message: return UIImage(systemName: "text.bubble")!
+            default: return UIImage(systemName: "envelope")!
             }
         }
     }
@@ -96,10 +96,7 @@ internal class OCKContactButton: OCKButton {
     private func styleSubviews() {
         preservesSuperviewLayoutMargins = true
         tintColorDidChange()
-        
-        let bundle = Bundle(for: OCKContactButton.self)
-        let image = UIImage(named: type.imageName(), in: bundle, compatibleWith: nil)?.withRenderingMode(.alwaysTemplate)
-        setImage(image, for: .normal)
+        setImage(type.image, for: .normal)
         _titleButton.setTitle(type.rawValue, for: .normal)
         
         layer.cornerRadius = OCKStyle.appearance.cornerRadius2

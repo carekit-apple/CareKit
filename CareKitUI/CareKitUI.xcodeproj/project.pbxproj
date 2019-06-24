@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		512EE90022975F850052F37C /* OCKDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 512EE8FF22975F850052F37C /* OCKDetailView.swift */; };
-		5136866B2241A27D006ECFD5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5136866A2241A27D006ECFD5 /* Assets.xcassets */; };
 		5137E5D122A5FBFE00AADE64 /* OCKGridCollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5137E5D022A5FBFE00AADE64 /* OCKGridCollectionViewFlowLayout.swift */; };
 		516C6E792299DE280098FAED /* OCKCollapserButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 516C6E782299DE280098FAED /* OCKCollapserButton.swift */; };
 		516C6E7B2299E38D0098FAED /* OCKCollapsedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 516C6E7A2299E38D0098FAED /* OCKCollapsedView.swift */; };
@@ -47,7 +46,6 @@
 		518F9DAA22961BF6009CAA48 /* OCKCollapsible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9D6D22961BF5009CAA48 /* OCKCollapsible.swift */; };
 		518F9DAB22961BF6009CAA48 /* UIFont+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9D6F22961BF5009CAA48 /* UIFont+Extensions.swift */; };
 		518F9DAC22961BF6009CAA48 /* OCKStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9D7122961BF5009CAA48 /* OCKStyle.swift */; };
-		518F9DAD22961BF6009CAA48 /* OCKAssetsConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9D7322961BF5009CAA48 /* OCKAssetsConfigurator.swift */; };
 		518F9DAE22961BF6009CAA48 /* OCKColorConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9D7422961BF5009CAA48 /* OCKColorConfigurator.swift */; };
 		518F9DAF22961BF6009CAA48 /* OCKFontConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9D7522961BF5009CAA48 /* OCKFontConfigurator.swift */; };
 		518F9DB022961BF6009CAA48 /* OCKAnimationConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9D7622961BF5009CAA48 /* OCKAnimationConfigurator.swift */; };
@@ -68,7 +66,6 @@
 
 /* Begin PBXFileReference section */
 		512EE8FF22975F850052F37C /* OCKDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKDetailView.swift; sourceTree = "<group>"; };
-		5136866A2241A27D006ECFD5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5137E5D022A5FBFE00AADE64 /* OCKGridCollectionViewFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKGridCollectionViewFlowLayout.swift; sourceTree = "<group>"; };
 		516C6E782299DE280098FAED /* OCKCollapserButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKCollapserButton.swift; sourceTree = "<group>"; };
 		516C6E7A2299E38D0098FAED /* OCKCollapsedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKCollapsedView.swift; sourceTree = "<group>"; };
@@ -109,7 +106,6 @@
 		518F9D6D22961BF5009CAA48 /* OCKCollapsible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKCollapsible.swift; sourceTree = "<group>"; };
 		518F9D6F22961BF5009CAA48 /* UIFont+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIFont+Extensions.swift"; sourceTree = "<group>"; };
 		518F9D7122961BF5009CAA48 /* OCKStyle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKStyle.swift; sourceTree = "<group>"; };
-		518F9D7322961BF5009CAA48 /* OCKAssetsConfigurator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKAssetsConfigurator.swift; sourceTree = "<group>"; };
 		518F9D7422961BF5009CAA48 /* OCKColorConfigurator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKColorConfigurator.swift; sourceTree = "<group>"; };
 		518F9D7522961BF5009CAA48 /* OCKFontConfigurator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKFontConfigurator.swift; sourceTree = "<group>"; };
 		518F9D7622961BF5009CAA48 /* OCKAnimationConfigurator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKAnimationConfigurator.swift; sourceTree = "<group>"; };
@@ -161,7 +157,6 @@
 				51F12D3C229CA88800CA265B /* Common */,
 				518F9D4322961BF5009CAA48 /* Components */,
 				51F12D4A229CAB7C00CA265B /* Detail View */,
-				5136866A2241A27D006ECFD5 /* Assets.xcassets */,
 				5174225F224185290054E97C /* Info.plist */,
 			);
 			path = CareKitUI;
@@ -258,7 +253,6 @@
 		518F9D7222961BF5009CAA48 /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
-				518F9D7322961BF5009CAA48 /* OCKAssetsConfigurator.swift */,
 				518F9D7422961BF5009CAA48 /* OCKColorConfigurator.swift */,
 				518F9D7522961BF5009CAA48 /* OCKFontConfigurator.swift */,
 				518F9D7622961BF5009CAA48 /* OCKAnimationConfigurator.swift */,
@@ -473,7 +467,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5136866B2241A27D006ECFD5 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -522,7 +515,6 @@
 				518F9D9922961BF5009CAA48 /* OCKScatterPlotView.swift in Sources */,
 				518F9DA722961BF6009CAA48 /* OCKCompletionRingView.swift in Sources */,
 				518F9D9122961BF5009CAA48 /* OCKLabeledButton.swift in Sources */,
-				518F9DAD22961BF6009CAA48 /* OCKAssetsConfigurator.swift in Sources */,
 				518F9DB222961BF6009CAA48 /* OCKDimensionConfigurator.swift in Sources */,
 				518F9D9022961BF5009CAA48 /* OCKInstructionsTaskView.swift in Sources */,
 				518F9DA622961BF6009CAA48 /* OCKGraphable.swift in Sources */,
@@ -716,7 +708,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = "$(SRCROOT)/CareKitUI/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -743,7 +735,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = "$(SRCROOT)/CareKitUI/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

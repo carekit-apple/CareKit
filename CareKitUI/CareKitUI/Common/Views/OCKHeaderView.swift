@@ -186,7 +186,7 @@ open class OCKHeaderView: UIView {
     }
     
     private static func makeDetailDisclosureImage() -> UIImageView {
-        let image = UIImage(systemName: "chevron.right")!
+        let image = UIImage(systemName: "chevron.right")
         let imageView = UIImageView(image: image)
         imageView.tintColor = .lightGray
         imageView.contentMode = .scaleAspectFit

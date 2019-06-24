@@ -39,11 +39,11 @@ internal class OCKContactButton: OCKButton {
         case message = "Message"
         case email = "E-mail"
 
-        var image: UIImage {
+        var image: UIImage? {
             switch self {
-            case .call: return UIImage(systemName: "phone")!
-            case .message: return UIImage(systemName: "text.bubble")!
-            default: return UIImage(systemName: "envelope")!
+            case .call: return UIImage(systemName: "phone")
+            case .message: return UIImage(systemName: "text.bubble")
+            default: return UIImage(systemName: "envelope")
             }
         }
     }

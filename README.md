@@ -1,5 +1,9 @@
+<img src="https://user-images.githubusercontent.com/29666989/60046677-c2cf7e00-967c-11e9-8f90-4c5b783e3576.png" width="500"/>
+
 CareKit Framework
 ===========
+
+[![License](https://img.shields.io/badge/license-BSD-green.svg?style=flat)](https://github.com/carekit-apple/CareKit/CareKit#license) ![Swift](https://img.shields.io/badge/swift-5.0-brightgreen.svg) ![Xcode 11.0+](https://img.shields.io/badge/Xcode-11.0%2B-blue.svg) ![iOS 13.0+](https://img.shields.io/badge/iOS-13.0%2B-blue.svg)
 
 CareKit™ is an open source software framework for creating apps that help people 
 better understand and manage their health.

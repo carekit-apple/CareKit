@@ -1,7 +1,3 @@
-<p align="center">
-<img src="https://user-images.githubusercontent.com/29666989/60047545-cf54d600-967e-11e9-8ced-5b0b271daa62.png" style="max-height: 375px;">
-</p>
-
 CareKit Framework
 ===========
 

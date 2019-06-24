@@ -54,11 +54,10 @@ internal class OCKBindableSimpleContactView<Contact: Equatable & OCKContactConve
         if let asset = contact?.asset {
             // We can't be sure if the image they provide is in the assets folder, in the bundle, or in a directory.
             // We can check all 3 possibilities and then choose whichever is non-nil.
-            let bundle = Bundle(for: OCKSimpleContactView.self)
-            let careKitAssetsImage = UIImage(named: asset, in: bundle, compatibleWith: nil)?.withRenderingMode(.alwaysTemplate)
+            let symbol = UIImage(systemName: asset)
             let appAssetsImage = UIImage(named: asset)
             let otherUrlImage = UIImage(contentsOfFile: asset)
-            let image = otherUrlImage ?? appAssetsImage ?? careKitAssetsImage ?? OCKSimpleContactView.defaultImage
+            let image = otherUrlImage ?? appAssetsImage ?? symbol ?? OCKSimpleContactView.defaultImage
             headerView.iconImageView?.image = image
         } else {
             headerView.iconImageView?.image = OCKSimpleContactView.defaultImage

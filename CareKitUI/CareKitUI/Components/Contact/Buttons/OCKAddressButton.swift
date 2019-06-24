@@ -42,7 +42,7 @@ internal class OCKAddressButton: OCKButton {
         let button = OCKButton()
         button.isUserInteractionEnabled = false
         let bundle = Bundle(for: OCKAddressButton.self)
-        let image = UIImage(named: OCKStyle.assets.location, in: bundle, compatibleWith: nil)?.withRenderingMode(.alwaysTemplate)
+        let image = UIImage(systemName: "location")
         button.setImage(image, for: .normal)
         button.imageView?.contentMode = .scaleAspectFit
         return button

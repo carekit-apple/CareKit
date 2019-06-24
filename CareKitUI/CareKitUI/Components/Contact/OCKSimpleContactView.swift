@@ -118,10 +118,8 @@ open class OCKSimpleContactView: UIView, OCKCardable {
     public let addressButton: OCKButton = OCKAddressButton()
     
     /// The default image that can be used as a placeholder for the `iconImageView` in the `headerView`.
-    public static let defaultImage = UIImage(named: OCKStyle.assets.profile,
-                                             in: Constants.bundle,
-                                             compatibleWith: nil)?.withRenderingMode(.alwaysTemplate)
-    
+    public static let defaultImage = UIImage(systemName: "person.crop.circle")!
+
     public init() {
         super.init(frame: .zero)
         setup()

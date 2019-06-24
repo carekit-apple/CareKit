@@ -41,7 +41,7 @@ internal class OCKCircleButton: OCKButton {
     private let _imageButton: OCKButton = {
         let button = OCKButton()
         let bundle = Bundle(for: OCKChecklistItemButton.self)
-        let selectedImage = UIImage(named: OCKStyle.assets.check, in: bundle, compatibleWith: nil)?.withRenderingMode(.alwaysTemplate)
+        let selectedImage = UIImage(systemName: "checkmark")
 
         button.setImage(selectedImage, for: .selected)
         button.setImage(nil, for: .normal)

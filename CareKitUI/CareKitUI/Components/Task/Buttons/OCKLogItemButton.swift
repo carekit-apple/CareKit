@@ -43,8 +43,8 @@ internal class OCKLogItemButton: OCKButton {
     
     private let _imageButton: OCKButton = {
         let button = OCKButton()
-        let image = UIImage(named: OCKStyle.assets.clock, in: Constants.bundle, compatibleWith: nil)?
-            .withRenderingMode(.alwaysTemplate)
+
+        let image = UIImage(systemName: "clock")
         button.setImage(image, for: .normal)
         button.imageView?.contentMode = .scaleAspectFit
         button.isUserInteractionEnabled = false

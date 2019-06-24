@@ -41,8 +41,7 @@ internal class OCKCollapsedView: UIView {
     public let detailImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
-        imageView.image = UIImage(named: OCKStyle.assets.check, in: Const.bundle, compatibleWith: nil)?
-            .withRenderingMode(.alwaysTemplate)
+        imageView.image = UIImage(systemName: "checkmark")
         imageView.tintColor = .gray
         return imageView
     }()

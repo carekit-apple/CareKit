@@ -1,4 +1,4 @@
-![CareKit](https://user-images.githubusercontent.com/29666989/60061378-cc230f80-96a9-11e9-9541-7172f9303813.png)
+![CareKit](https://user-images.githubusercontent.com/29666989/60061659-cf6acb00-96aa-11e9-90a0-459b08fc020d.png)
 
 CareKit Framework
 ===========

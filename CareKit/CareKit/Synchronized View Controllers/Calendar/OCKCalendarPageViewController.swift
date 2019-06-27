@@ -123,10 +123,10 @@ UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelega
         let previousPage = makeViewController(for: previousWeek)
         return previousPage
     }
-    
-    public func pageViewController(_ pageViewController: UIPageViewController,
-                                   viewControllerAfter viewController: UIViewController) -> UIViewController? {
-        let nextWeek = Calendar.current.date(byAdding: .weekOfYear, value: -1, to: currentDateRange.start)!
+
+    func pageViewController(_ pageViewController: UIPageViewController,
+                            viewControllerAfter viewController: UIViewController) -> UIViewController? {
+        let nextWeek = Calendar.current.date(byAdding: .weekOfYear, value: 1, to: currentDateRange.start)!
         let nextPage = makeViewController(for: nextWeek)
         return nextPage
     }

@@ -86,12 +86,7 @@ open class OCKStore: OCKStoreProtocol {
         }
     }
     
-    static internal var managedObjectModel: NSManagedObjectModel = {
-        let bundle = Bundle(for: OCKStore.self)
-        let modelUrl = bundle.url(forResource: "OCKCoreDataCareStore", withExtension: "momd")!
-        let model = NSManagedObjectModel(contentsOf: modelUrl)!
-        return model
-    }()
+    internal static var managedObjectModel = makeManagedObjectModel()
     
     internal lazy var persistentContainer: NSPersistentContainer = {
         let model = OCKStore.managedObjectModel

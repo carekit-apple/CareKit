@@ -108,20 +108,20 @@ class RootViewController: UITableViewController {
         case .task:
             let style = OCKTaskViewController<OCKStore>.Style.allCases[indexPath.row]
             let taskCard = OCKTaskViewController.makeViewController(style: style, storeManager: storeManager,
-                                                             taskIdentifier: Constants.trackedTaskID, eventQuery: .today)
+                                                                    taskIdentifier: Constants.trackedTaskID, eventQuery: .today)
             viewController = ContainerViewController(childViewController: taskCard)
             
         case .event:
             let style = OCKEventViewController<OCKStore>.Style.allCases[indexPath.row]
             let taskIdentifier = style == .simpleLog ? Constants.untrackedTaskID : Constants.trackedTaskID
             let eventCard = OCKEventViewController.makeViewController(style: style, storeManager: storeManager,
-                                                              taskIdentifier: taskIdentifier, eventQuery: .today)
+                                                                      taskIdentifier: taskIdentifier, eventQuery: .today)
             viewController = ContainerViewController(childViewController: eventCard)
             
         case .contact:
             let style = OCKContactViewController<OCKStore>.Style.allCases[indexPath.row]
             let contactCard = OCKContactViewController.makeViewController(style: style, storeManager: storeManager,
-                                                                      contactIdentifier: Constants.contactID)
+                                                                          contactIdentifier: Constants.contactID)
             viewController = ContainerViewController(childViewController: contactCard)
             
         case .chart:

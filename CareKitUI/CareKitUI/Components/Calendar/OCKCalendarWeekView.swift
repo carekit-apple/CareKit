@@ -31,8 +31,7 @@
 import UIKit
 
 /// Events pertaining to an OCKCalendarWeekViewDelegate
-public protocol OCKCalendarWeekViewDelegate: class {
-    
+public protocol OCKCalendarWeekViewDelegate: AnyObject {
     /// Called when a button corresponding to a specific date was selected.
     ///
     /// - Parameters:
@@ -52,24 +51,23 @@ public protocol OCKCalendarWeekViewDelegate: class {
 ///     +--------------------------------------+
 ///
 open class OCKCalendarWeekView: UIView {
-    
     /// The date range of the week currently being displayed.
     public private (set) var dateRange: DateInterval
-    
+
     /// The index of the selected button in the view.
     public private (set) var selectedIndex: Int
-    
+
     /// Holds the completion ring buttons in the view.
     private let stackView = UIStackView()
-    
+
     /// Listens for events pertaining to the calendar view.
     public weak var delegate: OCKCalendarWeekViewDelegate?
-    
+
     /// The completion ring buttons in the view. There will always be seven buttons corresponding
     /// to seven days in the displayed week.
     public private (set) lazy var completionRingButtons: [OCKCompletionRingButton] = {
         var rings = [OCKCompletionRingButton]()
-        for i in 0..<7 {
+        for _ in 0..<7 {
             let ringButton = OCKCompletionRingButton()
             ringButton.handlesSelectionStateAutomatically = false
             ringButton.setState(.dimmed, animated: false)
@@ -78,26 +76,26 @@ open class OCKCalendarWeekView: UIView {
         }
         return rings
     }()
-    
+
     /// A view that displays seven interactable completion rings, each corresponding to a day in the week.
     /// The week is computed based on the provided date parameter.
     ///
     /// - Parameters:
     ///   - date: Will display the week of the provided dtae.
     public init(weekOf date: Date) {
-        self.dateRange = Calendar.current.dateInterval(of: .weekOfYear, for: date)!
+        self.dateRange = weekDateRange(for: date)
         self.selectedIndex = 0
         super.init(frame: .zero)
         setup()
     }
-    
-    required public init?(coder aDecoder: NSCoder) {
-        self.dateRange = Calendar.current.dateInterval(of: .weekOfYear, for: Date())!
+
+    public required init?(coder aDecoder: NSCoder) {
+        self.dateRange = weekDateRange(for: Date())
         self.selectedIndex = 0
         super.init(coder: aDecoder)
         setup()
     }
-    
+
     /// Set the completion state for each of the completion rings. A total of seven states must be passed in.
     ///
     /// - Parameters:
@@ -109,16 +107,16 @@ open class OCKCalendarWeekView: UIView {
             completionRingButtons[index].setState(value, animated: animated)
         }
     }
-    
+
     private func setup() {
         addSubview(stackView)
         stackView.axis = .horizontal
         stackView.distribution = .fillEqually
         preservesSuperviewLayoutMargins = true
-        
+
         let spacing = directionalLayoutMargins.trailing * 1.5
         stackView.spacing = spacing
-        
+
         stackView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             stackView.topAnchor.constraint(equalTo: topAnchor),
@@ -126,12 +124,12 @@ open class OCKCalendarWeekView: UIView {
             stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -spacing),
             stackView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
-        
+
         completionRingButtons.forEach { stackView.addArrangedSubview($0) }
         completionRingButtons.first?.sendActions(for: .touchUpInside)
         updateRingLabels()
     }
-    
+
     @objc
     private func handleSelection(sender: OCKCompletionRingButton) {
         for ring in completionRingButtons where ring != sender {
@@ -142,7 +140,7 @@ open class OCKCalendarWeekView: UIView {
         selectedIndex = ringIndex
         delegate?.calendarWeekView(self, didSelectDate: dateAt(index: ringIndex), at: ringIndex)
     }
-    
+
     /// Select the completion ring that corresponds to the given date.
     ///
     /// - Parameter date: The date of the ring to select.
@@ -156,39 +154,45 @@ open class OCKCalendarWeekView: UIView {
             selectDate(date)
         }
     }
-    
+
     private func dateAt(index: Int) -> Date {
         return Calendar.current.date(byAdding: .day, value: index, to: dateRange.start)!
     }
-    
+
     /// Get the completion ring that corresponds to a particular date.
     ///
     /// - Parameter date: The date that corresponds to the desired completion ring.
     /// - Returns: The completion ring that matches the given date.
     public func completionRingFor(date: Date) -> OCKCompletionRingButton? {
-        for i in 0..<7 {
-            if Calendar.current.isDate(dateAt(index: i), inSameDayAs: date) {
-                return completionRingButtons[i]
+        for index in 0..<7 {
+            if Calendar.current.isDate(dateAt(index: index), inSameDayAs: date) {
+                return completionRingButtons[index]
             }
         }
         return nil
     }
-    
+
     /// Display a given week. Each ring will correspond to one day in the week.
     ///
     /// - Parameter date: The date to display.
     public func displayWeek(of date: Date) {
-        dateRange = Calendar.current.dateInterval(of: .weekOfYear, for: date)!
+        dateRange = weekDateRange(for: date)
         updateRingLabels()
     }
-    
+
     private func updateRingLabels() {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "dd"
-        for i in 0..<7 {
-            let date = Calendar.current.date(byAdding: .day, value: i, to: dateRange.start)!
-            completionRingButtons[i].setTitle(dateFormatter.string(from: date), for: .normal)
-            completionRingButtons[i].setTitle(dateFormatter.string(from: date), for: .selected)
+        for index in 0..<7 {
+            let date = Calendar.current.date(byAdding: .day, value: index, to: dateRange.start)!
+            completionRingButtons[index].setTitle(dateFormatter.string(from: date), for: .normal)
+            completionRingButtons[index].setTitle(dateFormatter.string(from: date), for: .selected)
         }
     }
+}
+
+private func weekDateRange(for date: Date) -> DateInterval {
+    var range = Calendar.current.dateInterval(of: .weekOfYear, for: date)!
+    range.duration -= 1
+    return range
 }

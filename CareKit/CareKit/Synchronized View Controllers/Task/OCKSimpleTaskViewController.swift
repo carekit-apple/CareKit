@@ -61,8 +61,8 @@ open class OCKSimpleTaskViewController<Store: OCKStoreProtocol>: OCKEventViewCon
     ///   - storeManager: A store manager that will be used to provide synchronization.
     ///   - task: The task to which the event to be displayed belongs.
     ///   - eventQuery: An event query that specifies which events will be queried and displayed.
-    public convenience init(store: OCKSynchronizedStoreManager<Store>, task: Store.Task, eventQuery: OCKEventQuery) {
-        self.init(storeManager: store, taskIdentifier: task.identifier, eventQuery: eventQuery)
+    public convenience init(storeManager: OCKSynchronizedStoreManager<Store>, task: Store.Task, eventQuery: OCKEventQuery) {
+        self.init(storeManager: storeManager, taskIdentifier: task.identifier, eventQuery: eventQuery)
     }
 
     required public init?(coder aDecoder: NSCoder) {

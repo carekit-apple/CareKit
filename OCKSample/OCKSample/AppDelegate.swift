@@ -90,8 +90,13 @@ private extension OCKSynchronizedStoreManager where Store == OCKStore {
         nausea.impactsAdherence = false
         nausea.instructions = "Tap the button below anytime you experience nausea."
         
-        store.addTasks([nausea, doxylamine])
-        
+        let kegelSchedule = OCKSchedule(composing: [OCKScheduleElement(start: beforeBreakfast, end: nil, interval: DateComponents(day: 2))])
+        var kegels = OCKTask(identifier: "kegels", title: "Kegel Exercises", carePlanID: nil, schedule: kegelSchedule)
+        kegels.impactsAdherence = true
+        kegels.instructions = "Perform kegel exercies"
+
+        store.addTasks([nausea, doxylamine, kegels])
+
         var contact1 = OCKContact(identifier: "jane", givenName: "Jane",
                                   familyName: "Daniels", carePlanID: nil)
         contact1.asset = "JaneDaniels"

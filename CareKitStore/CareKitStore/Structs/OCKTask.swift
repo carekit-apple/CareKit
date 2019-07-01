@@ -95,11 +95,19 @@ internal extension Array where Element == OCKTask {
     func filtered(against query: OCKTaskQuery?) -> [Element] {
         guard let query = query else { return self }
         return filter { task -> Bool in
-            if let scheduleEnd = task.schedule.end {
-                return scheduleEnd >= query.start && task.schedule.start <= query.end
-            } else {
-                return task.schedule.start <= query.end
+            // check that task schedule fits time requirements
+            if let scheduleEnd = task.schedule.end,
+                !(scheduleEnd >= query.start && task.schedule.start <= query.end) {
+                return false
+            } else if task.schedule.start > query.end {
+                return false
             }
+            // check that task is filtered out if it has events
+            // within the range of the query start and end date.
+            if query.excludesTasksWithNoEvents && task.schedule.events(from: query.start, to: query.end).isEmpty {
+                return false
+            }
+            return true
         }
     }
 }

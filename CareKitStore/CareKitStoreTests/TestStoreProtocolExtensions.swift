@@ -46,9 +46,9 @@ class TestCarePlanStoreExtensions: XCTestCase {
         super.tearDown()
         store = nil
     }
-    
-    // MARK: fetchEvents
-    
+
+    // MARK: - fetchEvents
+
     func testFetchEventsAcrossVersionsWithNoOverlap() throws {
         let beginningOfDay = Calendar.current.startOfDay(for: Date())
         let queryStart = Calendar.current.date(byAdding: .day, value: -3, to: beginningOfDay)!
@@ -125,9 +125,77 @@ class TestCarePlanStoreExtensions: XCTestCase {
         let event = try store.fetchEventAndWait(taskVersionID: taskID, occurenceIndex: 5)
         XCTAssert(event.outcome == outcome)
     }
-    
-    // MARK: fetchCompletion
-    
+
+    // tests on an event that only repeats every other day
+    // uses excludesTasksWithNoEvents == true on task queries.
+    func testFetchEventsEveryOtherDay() throws {
+        let fiveMinOffset: TimeInterval = 5 * 60
+        let startDate = Calendar.current.startOfDay(for: Date()).addingTimeInterval(-24 * 60 * 60 + fiveMinOffset) // yesterday, around 12:05
+        let allDayEveryOtherDay = OCKSchedule(composing: [
+            OCKScheduleElement(start: startDate,
+                               end: nil,
+                               interval: DateComponents(day: 2),
+                               text: "some name",
+                               targetValues: [],
+                               duration: 1,
+                               isAllDay: true)
+        ])
+
+        let oneSecondEveryOtherDay = OCKSchedule(composing: [
+            OCKScheduleElement(start: startDate,
+                               end: nil,
+                               interval: DateComponents(day: 2),
+                               text: "some name",
+                               targetValues: [],
+                               duration: 1,
+                               isAllDay: false)
+        ])
+        let allDayRepeatingTask1 = OCKTask(identifier: "task1", title: "task1", carePlanID: nil, schedule: allDayEveryOtherDay)
+        let shortRepeatingTask2 = OCKTask(identifier: "task2", title: "task2", carePlanID: nil, schedule: oneSecondEveryOtherDay)
+
+        try store.addTaskAndWait(allDayRepeatingTask1)
+        try store.addTaskAndWait(shortRepeatingTask2)
+
+        // get yesterday's tasks
+        // assert that we only selected the all day event
+        let yesterdayQuery = OCKTaskQuery(for: Date().addingTimeInterval(-24 * 60 * 60), excludesTasksWithNoEvents: true)
+        var fetched = try store.fetchTasksAndWait(nil, query: yesterdayQuery).map { $0.identifier }
+        XCTAssert(fetched.contains(allDayRepeatingTask1.identifier), "failed to fetch all day occurring event")
+        XCTAssert(fetched.contains(shortRepeatingTask2.identifier), "failed to fetch yesterday's day occurring event")
+
+        // get today's tasks
+        let todayQuery = OCKTaskQuery(for: Date(), excludesTasksWithNoEvents: true)
+        fetched = try store.fetchTasksAndWait(nil, query: todayQuery).map { $0.identifier }
+        XCTAssert(fetched.isEmpty, "failed to fetch all day occurring event")
+
+        // get tomorrow's tasks
+        let tomorrowQuery = OCKTaskQuery(for: Date().addingTimeInterval(24 * 60 * 60), excludesTasksWithNoEvents: true)
+        fetched = try store.fetchTasksAndWait(nil, query: tomorrowQuery).map { $0.identifier }
+        XCTAssert(fetched.contains(allDayRepeatingTask1.identifier), "failed to fetch all day occurring event")
+        XCTAssert(fetched.contains(shortRepeatingTask2.identifier), "failed to fetch yesterday's day occurring event")
+    }
+
+    func testFetchEventAfterEnd() throws {
+        let endDate = Date().addingTimeInterval(1_000)
+        let afterEndDate = Date().addingTimeInterval(1_030)
+        let schedule = OCKSchedule(composing: [
+            OCKScheduleElement(start: Date(),
+                               end: endDate,
+                               interval: DateComponents(second: 1))
+        ])
+        let task = OCKTask(identifier: "exercise", title: "Push Ups", carePlanID: nil, schedule: schedule)
+        let outTask = try store.addTaskAndWait(task)
+        // confirm we got a task out
+        XCTAssert(outTask.identifier == task.identifier)
+        let query = OCKTaskQuery(start: afterEndDate,
+                                 end: Date.distantFuture,
+                                 excludesTasksWithNoEvents: true)
+        let tasks = try store.fetchTasksAndWait(nil, query: query)
+        XCTAssert(tasks.isEmpty)
+    }
+
+    // MARK: - fetchCompletion
+
     func testFetchAdherenceAggregatesEventsAcrossTasks() throws {
         let start = Calendar.current.startOfDay(for: Date())
         let twoDaysEarly = Calendar.current.date(byAdding: .day, value: -2, to: start)!

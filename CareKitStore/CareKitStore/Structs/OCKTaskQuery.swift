@@ -43,9 +43,39 @@ public struct OCKTaskQuery: OCKDateIntervalQueryable {
     
     public var start: Date
     public var end: Date
-    
+    public var excludesTasksWithNoEvents: Bool
+
+    /// - Parameters:
+    ///   - start: A date defining the lower bound on queried tasks' start date.
+    ///   - end: A date defining the upper bound on the queried tasks' end date.
+    /// - Note: This initializer sets excludesTasksWithNoEvents to `false` by default. Set this flag to `true` to
+    ///         require that the tasks resulting from a query have events occurring during the query's date range.
+    ///         When set to false, tasks resulting from a query do not have a task resulting in the date ranging from
+    ///         `start` to `end`.
     public init(start: Date, end: Date) {
         self.start = start
         self.end = end
+        self.excludesTasksWithNoEvents = false
+    }
+
+    /// - Parameters:
+    ///   - start: A date defining the lower bound on queried tasks' start date.
+    ///   - end: A date defining the upper bound on the queried tasks' end date.
+    ///   - excludesTasksWithNoEvents: A flag specifying whether tasks resulting from the task query must have
+    ///                                events taking place on the day of `date`.
+    public init(start: Date, end: Date, excludesTasksWithNoEvents: Bool) {
+        self.start = start
+        self.end = end
+        self.excludesTasksWithNoEvents = excludesTasksWithNoEvents
+    }
+
+    /// - Parameters:
+    ///   - date: Specifies the date of the day on which the task must be active. This does not mean that queried tasks
+    ///           necessarily have events taking place on the day of `date`.
+    ///   - excludesTasksWithNoEvents: A flag specifying whether tasks resulting from the task query must have
+    ///                                events taking place on the day of `date`.
+    public init(for date: Date, excludesTasksWithNoEvents: Bool) {
+        self.init(for: date)
+        self.excludesTasksWithNoEvents = excludesTasksWithNoEvents
     }
 }

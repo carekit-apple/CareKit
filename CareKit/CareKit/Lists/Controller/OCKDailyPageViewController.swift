@@ -128,6 +128,7 @@ UIPageViewControllerDelegate {
         let now = Date()
         calendarPageViewController.calendarDelegate = self
         calendarPageViewController.selectDate(now, animated: false)
+        view.backgroundColor = OCKStyle.color.gray1 // avoid black background flashing
         pageViewController.setViewControllers([makePage(date: now)], direction: .forward, animated: false, completion: nil)
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Today", style: .plain, target: self, action: #selector(pressedToday(sender:)))
     }

@@ -37,8 +37,7 @@ extension OCKSynchronizedStoreManager {
     // MARK: Patients
     func publisher(forPatient patient: Store.Patient,
                    categories: [OCKStoreNotificationCategory]) -> AnyPublisher<Store.Patient, Never> {
-        
-        let presentValuePublisher = Publishers.Future<Store.Patient, Never>({ completion in
+        let presentValuePublisher = Future<Store.Patient, Never>({ completion in
             self.store.fetchPatient(withIdentifier: patient.identifier) { result in
                 completion(.success((try? result.get()) ?? patient))
             }
@@ -54,8 +53,7 @@ extension OCKSynchronizedStoreManager {
     // MARK: CarePlans
     func publisher(forCarePlan plan: Store.Plan,
                    categories: [OCKStoreNotificationCategory]) -> AnyPublisher<Store.Plan, Never> {
-        
-        let presentValuePublisher = Publishers.Future<Store.Plan, Never> { completion in
+        let presentValuePublisher = Future<Store.Plan, Never> { completion in
             self.store.fetchCarePlan(withIdentifier: plan.identifier) { result in
                 completion(.success((try? result.get()) ?? plan))
             }
@@ -79,8 +77,7 @@ extension OCKSynchronizedStoreManager {
     func publisher(forContact contact: Store.Contact,
                    categories: [OCKStoreNotificationCategory],
                    fetchImmediately: Bool = true) -> AnyPublisher<Store.Contact, Never> {
-        
-        let presentValuePublisher = Publishers.Future<Store.Contact, Never>({ completion in
+        let presentValuePublisher = Future<Store.Contact, Never>({ completion in
             self.store.fetchContact(withIdentifier: contact.identifier) { result in
                 completion(.success((try? result.get()) ?? contact))
             }
@@ -98,8 +95,7 @@ extension OCKSynchronizedStoreManager {
     
     func publisher(forTask task: Store.Task, categories: [OCKStoreNotificationCategory],
                    fetchImmediately: Bool = true) -> AnyPublisher<Store.Task, Never> {
-        
-        let presentValuePublisher = Publishers.Future<Store.Task, Never>({ completion in
+        let presentValuePublisher = Future<Store.Task, Never>({ completion in
             self.store.fetchTask(withIdentifier: task.identifier) { result in
                 completion(.success((try? result.get()) ?? task))
             }
@@ -138,7 +134,7 @@ extension OCKSynchronizedStoreManager {
         guard let taskID = event.task.versionID else {
             fatalError("Cannot create a publisher for an event with a task that has not been persisted.")
         }
-        let presentValuePublisher = Publishers.Future<Store.Event, Never>({ completion in
+        let presentValuePublisher = Future<Store.Event, Never>({ completion in
             self.store.fetchEvent(withTaskVersionID: taskID, occurenceIndex: event.scheduleEvent.occurence, queue: .main) { result in
                 completion(.success((try? result.get()) ?? event))
             }

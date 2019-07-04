@@ -385,6 +385,6 @@ open class OCKButton: UIButton {
     @objc
     private func selected() {
         guard handlesSelectionStateAutomatically else { return }
-        isSelected = !isSelected
+        isSelected.toggle()
     }
 }

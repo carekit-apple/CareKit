@@ -1,10 +1,11 @@
+![CareKit](https://user-images.githubusercontent.com/29666989/60061659-cf6acb00-96aa-11e9-90a0-459b08fc020d.png)
+
 CareKit Framework
 ===========
 
-![VCS](https://img.shields.io/badge/dvcs-Git%20%2B%20Submodules-tomato.svg) ![Platform](https://img.shields.io/cocoapods/p/CareKit.svg) ![CocoaPods](https://img.shields.io/cocoapods/v/CareKit.svg) ![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-yellow.svg?style=flat) [![License](https://img.shields.io/badge/license-BSD-green.svg?style=flat)](#license)
+[![License](https://img.shields.io/badge/license-BSD-green.svg?style=flat)](https://github.com/carekit-apple/CareKit#license) ![Swift](https://img.shields.io/badge/swift-5.0-brightgreen.svg) ![Xcode 11.0+](https://img.shields.io/badge/Xcode-11.0%2B-blue.svg) ![iOS 13.0+](https://img.shields.io/badge/iOS-13.0%2B-blue.svg) [![SPM](https://img.shields.io/badge/Swift%20Package%20Manager-compatible-brightgreen.svg)](https://github.com/apple/swift-package-manager)
 
-The *CareKit™ framework* is an open source software framework for creating apps that help people 
-better understand and manage their health.
+CareKit™ is an open source software framework for creating apps that help people better understand and manage their health.
 
 * [Getting Started](#gettingstarted)
 * Documentation:
@@ -22,25 +23,25 @@ Getting Started <a name="gettingstarted"></a>
 Requirements
 ------------
 
-The primary CareKit framework codebase supports iOS and requires Xcode 7.0
+The primary CareKit framework codebase supports iOS and requires Xcode 11.0
 or newer.
-The CareKit framework has a Base SDK version of 9.0, meaning that apps
-using the CareKit framework can run on devices with iOS 9.0 or newer.
+The CareKit framework has a Base SDK version of 13.0, meaning that apps
+using the CareKit framework can run on devices with iOS 13.0 or newer.
 
 
 Installation
 ------------
 
-The latest stable version of CareKit framework can be cloned with:
+The latest stable version of the CareKit™ framework is version 1.2 and can be cloned with:
 
 ```
 git clone -b stable --recurse-submodules https://github.com/carekit-apple/carekit.git
 ```
 
-Or, for the latest changes, use the `master` branch:
+Or, for the latest changes including early access to CareKit 2.0, use the `master` branch:
 
 ```
-git clone --recurse-submodules https://github.com/carekit-apple/carekit.git
+git clone https://github.com/carekit-apple/carekit.git
 ```
 
 Building

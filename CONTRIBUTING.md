@@ -30,15 +30,9 @@ Choosing an issue to work on<a name="create"></a>
 ----------------------------
 
 To find an issue to work on, either pick something that you need for
-your app, or select one of the issues from our [issue list](../../issues). Or,
-consider one of the areas where we'd like to extend CareKit:
-
-* Faster 'get started' to a useful app
-* Data pipe between CarePlanStore and Insights
-* More chart types
+your app, or select one of the issues from our [issue list](../../issues).
 
 If in doubt, bring your idea up on [Issues](../../issues).
-
 
 Creating a personal fork<a name="fork"></a>
 ------------------------
@@ -52,14 +46,12 @@ Develop your changes in your fork<a name="develop"></a>
 
 Develop your changes using your normal development process. If you
 already have code from an existing project, you may need to adjust its
-style to more closely match the [coding style](.https://github.com/ResearchKit/ResearchKit/blob/master/docs-standalone/coding-style-guide.md).
+style to more closely match the coding style.
 
-New components may need to expose new Public or Private
-headers. Public headers are for APIs that are likely to be a stable
-part of the interface of the CareKit framework. Private headers are for APIs that
-may need to be accessed from app-side unit tests, or that are more
-subject to change than the public interface. All other headers should
-be internal, "Project" headers.
+New components may need to expose new public or internal methods or properties.
+Use public access level for APIs that are likely to be a stable
+part of the interface of the CareKit framework. Private and internal access levels
+are for APIs that are only leveraged internally to the framework.
 
 Please review and ensure that any contributions you make comply with
 the [CareKit Contribution Terms and License Policy](#contribution).

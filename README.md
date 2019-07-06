@@ -78,7 +78,7 @@ Embedded Binaries" align="middle"/>
 Discovering How CareKit Works
 ------------------------------
 
-One of the best ways to see how CareKit works is to look at the [OCKSample](../../tree/master/Sample/OCKSample) app. 
+One of the best ways to see how CareKit works is to look at the [OCKSample](../../tree/master/OCKSample/OCKSample) app. 
 The simplest way to do this is to open `CKWorkspace.xcworkspace`, choose the `OCKSample` scheme, build and run the app. After that take a look at the app's code and experiment by making a few changes.
 
 License <a name="license"></a>

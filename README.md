@@ -13,7 +13,6 @@ CareKit™ is an open source software framework for creating apps that help peop
     * [Framework Reference](http://carekit.org/docs/index.html)
 * [Best Practices](../../wiki/best-practices)
 * [Website](http://carekit.org) and [Blog](http://carekit.org/blog.html)
-* [Developer Forum](https://forums.developer.apple.com/community/researchkit)
 * [Contributing to CareKit](CONTRIBUTING.md)
 * [License](#license)
 

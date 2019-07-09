@@ -122,6 +122,7 @@ open class OCKGridTaskView: UIView, OCKCardable, OCKCollapsible, OCKCollapsibleV
     public let instructionsLabel: OCKLabel = {
         let label = OCKLabel(textStyle: .caption1, weight: .regular)
         label.textColor = .lightGray
+        label.numberOfLines = 0
         return label
     }()
 

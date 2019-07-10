@@ -103,7 +103,7 @@ open class OCKCompletionRingButton: OCKButton {
         
         ring.isUserInteractionEnabled = false
         ring.lineWidth = OCKStyle.dimension.completionRingLineWidth
-        ring.checkView.lineWidth = OCKStyle.dimension.checkViewLineWidth
+        ring.checkmarkImageView.pointSize = .medium
         ring.strokeColor = tintColor
         
         _titleButton.translatesAutoresizingMaskIntoConstraints = false

@@ -33,16 +33,16 @@ import UIKit
 internal class OCKCircleButton: OCKButton {
     
     // MARK: Properties
-    
+
+    private let checkmarkPointSize: OCKCheckmarkImageView.PointSize
+
     override internal var imageButton: OCKButton? {
         return _imageButton
     }
-   
-    private let _imageButton: OCKButton = {
-        let button = OCKButton()
-        let bundle = Bundle(for: OCKChecklistItemButton.self)
-        let selectedImage = UIImage(systemName: "checkmark")
 
+    private lazy var _imageButton: OCKButton = {
+        let button = OCKButton()
+        let selectedImage = OCKCheckmarkImageView(pointSize: checkmarkPointSize).image
         button.setImage(selectedImage, for: .selected)
         button.setImage(nil, for: .normal)
         button.imageView?.contentMode = .scaleAspectFit
@@ -51,13 +51,15 @@ internal class OCKCircleButton: OCKButton {
     }()
     
     // MARK: Life cycle
-    
-    internal override init() {
+
+    init(checkmarkPointSize: OCKCheckmarkImageView.PointSize) {
+        self.checkmarkPointSize = checkmarkPointSize
         super.init()
         setup()
     }
     
     required internal init?(coder aDecoder: NSCoder) {
+        self.checkmarkPointSize = .medium
         super.init(coder: aDecoder)
         setup()
     }
@@ -91,9 +93,8 @@ internal class OCKCircleButton: OCKButton {
     private func constrainSubviews() {
         [_imageButton].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
         NSLayoutConstraint.activate([
-            _imageButton.heightAnchor.constraint(equalTo: heightAnchor),
             _imageButton.centerXAnchor.constraint(equalTo: centerXAnchor),
-            _imageButton.centerYAnchor.constraint(equalTo: centerYAnchor)
+            _imageButton.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 0.5)
         ])
     }
     

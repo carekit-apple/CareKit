@@ -41,7 +41,7 @@
 		518F9DA522961BF6009CAA48 /* OCKCartesianGraphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9D6622961BF5009CAA48 /* OCKCartesianGraphView.swift */; };
 		518F9DA622961BF6009CAA48 /* OCKGraphable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9D6722961BF5009CAA48 /* OCKGraphable.swift */; };
 		518F9DA722961BF6009CAA48 /* OCKCompletionRingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9D6922961BF5009CAA48 /* OCKCompletionRingView.swift */; };
-		518F9DA822961BF6009CAA48 /* OCKCheckmarkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9D6A22961BF5009CAA48 /* OCKCheckmarkView.swift */; };
+		518F9DA822961BF6009CAA48 /* OCKCheckmarkImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9D6A22961BF5009CAA48 /* OCKCheckmarkImageView.swift */; };
 		518F9DA922961BF6009CAA48 /* OCKRingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9D6B22961BF5009CAA48 /* OCKRingView.swift */; };
 		518F9DAA22961BF6009CAA48 /* OCKCollapsible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9D6D22961BF5009CAA48 /* OCKCollapsible.swift */; };
 		518F9DAB22961BF6009CAA48 /* UIFont+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9D6F22961BF5009CAA48 /* UIFont+Extensions.swift */; };
@@ -101,7 +101,7 @@
 		518F9D6622961BF5009CAA48 /* OCKCartesianGraphView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKCartesianGraphView.swift; sourceTree = "<group>"; };
 		518F9D6722961BF5009CAA48 /* OCKGraphable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKGraphable.swift; sourceTree = "<group>"; };
 		518F9D6922961BF5009CAA48 /* OCKCompletionRingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKCompletionRingView.swift; sourceTree = "<group>"; };
-		518F9D6A22961BF5009CAA48 /* OCKCheckmarkView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKCheckmarkView.swift; sourceTree = "<group>"; };
+		518F9D6A22961BF5009CAA48 /* OCKCheckmarkImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKCheckmarkImageView.swift; sourceTree = "<group>"; };
 		518F9D6B22961BF5009CAA48 /* OCKRingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKRingView.swift; sourceTree = "<group>"; };
 		518F9D6D22961BF5009CAA48 /* OCKCollapsible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKCollapsible.swift; sourceTree = "<group>"; };
 		518F9D6F22961BF5009CAA48 /* UIFont+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIFont+Extensions.swift"; sourceTree = "<group>"; };
@@ -375,7 +375,7 @@
 			isa = PBXGroup;
 			children = (
 				518F9D6922961BF5009CAA48 /* OCKCompletionRingView.swift */,
-				518F9D6A22961BF5009CAA48 /* OCKCheckmarkView.swift */,
+				518F9D6A22961BF5009CAA48 /* OCKCheckmarkImageView.swift */,
 				518F9D6B22961BF5009CAA48 /* OCKRingView.swift */,
 			);
 			path = Views;
@@ -531,7 +531,7 @@
 				518F9DBD22961BF6009CAA48 /* OCKButton.swift in Sources */,
 				518F9DB322961BF6009CAA48 /* OCKStringsConfigurator.swift in Sources */,
 				518F9DAB22961BF6009CAA48 /* UIFont+Extensions.swift in Sources */,
-				518F9DA822961BF6009CAA48 /* OCKCheckmarkView.swift in Sources */,
+				518F9DA822961BF6009CAA48 /* OCKCheckmarkImageView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -34,10 +34,13 @@ import UIKit
 public protocol OCKDimensionConfigurator {
     var separatorHeight: CGFloat { get }
     var completionRingLineWidth: CGFloat { get }
-    var checkViewLineWidth: CGFloat { get }
     var imageHeight1: CGFloat { get }
     var stackSpacing1: CGFloat { get }
-    
+
+    var pointSize3: CGFloat { get }
+    var pointSize2: CGFloat { get }
+    var pointSize1: CGFloat { get }
+
     var buttonHeight3: CGFloat { get }
     var buttonHeight2: CGFloat { get }
     var buttonHeight1: CGFloat { get }
@@ -56,10 +59,13 @@ public protocol OCKDimensionConfigurator {
 public extension OCKDimensionConfigurator {
     var separatorHeight: CGFloat { return 1 }
     var completionRingLineWidth: CGFloat { return 4 }
-    var checkViewLineWidth: CGFloat { return 3 }
     var imageHeight1: CGFloat { return 150 }
     var stackSpacing1: CGFloat { return 8 }
-    
+
+    var pointSize3: CGFloat { 11 }
+    var pointSize2: CGFloat { 14 }
+    var pointSize1: CGFloat { 17 }
+
     var buttonHeight3: CGFloat { return 20 }
     var buttonHeight2: CGFloat { return 40 }
     var buttonHeight1: CGFloat { return 60 }

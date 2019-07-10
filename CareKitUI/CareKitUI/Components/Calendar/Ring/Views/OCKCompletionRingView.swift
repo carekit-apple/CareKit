@@ -42,12 +42,10 @@ open class OCKCompletionRingView: UIView {
 
     /// The groove in which the fillable ring resides.
     internal let grooveView = OCKRingView()
-    
-    /// The check view inside of the ring view.
-    internal let checkView = OCKCheckmarkView()
-    
-    private var checkHeightConstraint: NSLayoutConstraint?
-    
+
+    /// The checkmark image view inside of the ring view.
+    internal let checkmarkImageView = OCKCheckmarkImageView(pointSize: .medium)
+
     /// The progress value of the ring view.
     public var progress: CGFloat {
         return ringView.progress
@@ -58,7 +56,7 @@ open class OCKCompletionRingView: UIView {
         get { return ringView.duration }
         set {
             ringView.duration = newValue
-            checkView.duration = newValue
+            checkmarkImageView.duration = newValue
         }
     }
     
@@ -68,15 +66,15 @@ open class OCKCompletionRingView: UIView {
         set {
             grooveView.lineWidth = newValue
             ringView.lineWidth = newValue
-            checkView.lineWidth = newValue
+            checkmarkImageView.image = checkmarkImageView.image?.applyingSymbolConfiguration(.init(pointSize: newValue, weight: .bold))
         }
     }
-    
-    /// The stroke clor of the ring and check views.
+
+    /// The stroke color of the ring and check views.
     public var strokeColor: UIColor = .blue {
         didSet {
             ringView.strokeColor = strokeColor
-            checkView.strokeColor = strokeColor
+            checkmarkImageView.tintColor = strokeColor
         }
     }
     
@@ -88,7 +86,7 @@ open class OCKCompletionRingView: UIView {
     ///   - animated: Flag for the ring and check view animations.
     public func setProgress(_ value: CGFloat, animated: Bool = true) {
         ringView.setProgress(value, animated: animated)
-        checkView.setState(value >= 1.0 ? .checked : .unchecked, animated: animated)
+        checkmarkImageView.setState(value >= 1.0 ? .checked : .unchecked, animated: animated)
     }
     
     /// Create an instance of a completion ring view.
@@ -101,29 +99,24 @@ open class OCKCompletionRingView: UIView {
         super.init(coder: aDecoder)
         setup()
     }
-    
-    open override func layoutSubviews() {
-        super.layoutSubviews()
-        checkHeightConstraint?.constant = min(ringView.frame.height, ringView.frame.width) * 0.35
-    }
-    
+
     private func setup() {
         grooveView.strokeColor = .lightGray
         grooveView.alpha = 0.25
         grooveView.setProgress(1.0, animated: false)
-        
-        checkView.strokeColor = strokeColor
-        checkView.setState(.unchecked, animated: false)
-        
+
+        checkmarkImageView.tintColor = strokeColor
+        checkmarkImageView.setState(.unchecked, animated: false)
+
         ringView.strokeColor = strokeColor
         
         addSubview(grooveView)
         addSubview(ringView)
-        addSubview(checkView)
-        
+        addSubview(checkmarkImageView)
+
         grooveView.translatesAutoresizingMaskIntoConstraints = false
         ringView.translatesAutoresizingMaskIntoConstraints = false
-        checkView.translatesAutoresizingMaskIntoConstraints = false
+        checkmarkImageView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             grooveView.leadingAnchor.constraint(equalTo: leadingAnchor),
             grooveView.trailingAnchor.constraint(equalTo: trailingAnchor),
@@ -134,13 +127,9 @@ open class OCKCompletionRingView: UIView {
             ringView.trailingAnchor.constraint(equalTo: trailingAnchor),
             ringView.topAnchor.constraint(equalTo: topAnchor),
             ringView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            
-            checkView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            checkView.centerYAnchor.constraint(equalTo: centerYAnchor),
-            checkView.widthAnchor.constraint(equalTo: checkView.heightAnchor)
+
+            checkmarkImageView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            checkmarkImageView.centerYAnchor.constraint(equalTo: centerYAnchor)
         ])
-        
-        checkHeightConstraint = checkView.heightAnchor.constraint(equalToConstant: 0)
-        checkHeightConstraint?.isActive = true
     }
 }

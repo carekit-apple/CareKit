@@ -63,7 +63,7 @@ internal class OCKChecklistItemButton: OCKButton {
     
     /// The icon embedded inside this button.
     private let circleButton: OCKButton = {
-        let button = OCKCircleButton()
+        let button = OCKCircleButton(checkmarkPointSize: .small)
         button.isUserInteractionEnabled = false
         return button
     }()

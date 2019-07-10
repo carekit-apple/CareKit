@@ -51,16 +51,15 @@ import UIKit
 ///     |   [instructions]                                      |
 ///     +-------------------------------------------------------+
 ///
-open class OCKTaskGridView: UIView, OCKCardable, OCKCollapsible, OCKCollapsibleView {
-    
+open class OCKGridTaskView: UIView, OCKCardable, OCKCollapsible, OCKCollapsibleView {
     // MARK: OCKCollapsibleView
-    
+
     internal var collapsedViews: Set<UIView> { [collapsedView, collapserButton] }
     internal var expandedViews: Set<UIView> { [headerView, instructionsLabel, collectionView, spacerView] }
     internal var completeViews: Set<UIView> { [headerView, instructionsLabel, collectionView, collapserButton, spacerView] }
     internal var cardView: UIView { return self }
     internal var collapsedState: OCKCollapsibleState = .expanded
-    
+
     internal let collapserButton: OCKButton = {
         let collapserButton = OCKCollapserButton()
         collapserButton.isHidden = true
@@ -74,85 +73,85 @@ open class OCKTaskGridView: UIView, OCKCardable, OCKCollapsible, OCKCollapsibleV
         stack.axis = .vertical
         return stack
     }()
-    
+
     // MARK: Properties
-    
+
     private let contentView: UIView = {
         let view = UIView()
         view.clipsToBounds = true
         return view
     }()
-    
+
     internal var shouldCollapse: Bool = true
-    
+
     private let spacerView = UIView()
-    
+
     internal let collapsedView: OCKCollapsedView = {
         let collapsedView = OCKCollapsedView()
         collapsedView.isHidden = true
         collapsedView.alpha = 0
         return collapsedView
     }()
-    
+
     /// A header view that shows a separator and a `detailDisclosureImage`.
     public let headerView = OCKHeaderView {
         $0.showsSeparator = true
         $0.showsDetailDisclosure = true
     }
-    
+
     /// The default cell identifier that is registered for the collection view.
     public let defaultCellIdentifier = "outcome-value"
-    
+
     /// The default cell type that is used for the `collectionView`.
     public typealias DefaultCellType = OCKGridTaskCell
-    
-    /// A collection view that sizes itself based on the size of it's content. Cells used should have a constant width constraint. The
-    /// default cell that is used is an `OCKTaskGridView.DefaultCellType` (`OCKGridTaskCell`). Set a data source to control the content
+
+    /// A collection view that sizes itself based on the size of its content. Cells used should have a constant width constraint. The
+    /// default cell that is used is an `OCKGridTaskView.DefaultCellType` (`OCKGridTaskCell`). Set a data source to control the content
     /// of the grid.
     public let collectionView: UICollectionView = {
         let layout = OCKGridCollectionViewFlowLayout()
         layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
-        
+
         let collectionView = OCKSelfSizingCollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
         collectionView.showsVerticalScrollIndicator = false
         return collectionView
     }()
-    
+
     /// Multi-line label below the `collectionView`.
     public let instructionsLabel: OCKLabel = {
         let label = OCKLabel(textStyle: .caption1, weight: .regular)
         label.textColor = .lightGray
         return label
     }()
-    
+
     // MARK: Life Cycle
-    
+
     public init() {
         super.init(frame: .zero)
         setup()
     }
-    
+
     public required init?(coder: NSCoder) {
         super.init(coder: coder)
         setup()
     }
-    
+
     // MARK: Methods
-    
+
     private func setup() {
         addSubviews()
         styleSubviews()
         constrainSubviews()
-        
+
         // setup targets for collapsing the view
         collapserButton.addTarget(self, action: #selector(toggleCollapse), for: .touchUpInside)
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(toggleCollapse))
         collapsedView.addGestureRecognizer(tapGesture)
-        
+
         collectionView.register(DefaultCellType.self, forCellWithReuseIdentifier: defaultCellIdentifier)
     }
-    
+
     private func addSubviews() {
         addSubview(contentView)
         contentView.addSubview(contentStackView)
@@ -195,9 +194,9 @@ open class OCKTaskGridView: UIView, OCKCardable, OCKCollapsible, OCKCollapsibleV
         let newState: OCKCollapsibleState = collapsedState == .collapsed ? .complete : .collapsed
         setCollapsedState(newState, animated: true)
     }
-    
+
     // MARK: OCKCollapsible
-    
+
     internal func setCollapsedState(_ state: OCKCollapsibleState, animated: Bool) {
         guard shouldCollapse else { return }
         setViewCollapsedState(state, animated: animated)

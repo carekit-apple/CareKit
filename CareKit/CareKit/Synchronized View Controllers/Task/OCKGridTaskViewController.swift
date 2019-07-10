@@ -40,8 +40,8 @@ open class OCKGridTaskViewController<Store: OCKStoreProtocol>: OCKTaskViewContro
     }
     
     /// The view that the task and its events are displayed in.
-    public var taskView: OCKTaskGridView {
-        guard let view = view as? OCKTaskGridView else { fatalError("Unexpected type") }
+    public var taskView: OCKGridTaskView {
+        guard let view = view as? OCKGridTaskView else { fatalError("Unexpected type") }
         return view
     }
     

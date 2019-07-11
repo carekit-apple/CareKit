@@ -34,26 +34,25 @@ import Foundation
 /// For example, a task that asks a patient to measure their temperature will have events whose outcome will contain a single value representing
 /// the patient's tempature.
 public struct OCKOutcome: Codable, Equatable, OCKLocalPersistableSettable, OCKObjectCompatible, OCKOutcomeConvertible, OCKOutcomeInitializable {
-    
     /// The version ID of the task to which this outcomes belongs.
     public var taskID: OCKLocalVersionID?
-    
+
     /// Specifies how many events occured before this outcome was created. For example, if a task is schedule to happen twice per day, then
     /// the 2nd outcome on the 2nd day will have a `taskOccurenceIndex` of 3.
     ///
     /// - Note: The task occurence references a specific version of a task, so if a new version the task is created, the task occurence index
     ///  will start again from 0.
     public var taskOccurenceIndex: Int
-    
+
     /// An array of values associated with this outcome. Most outcomes will have 0 or 1 values, but some may have more.
     /// - Examples:
     ///   - A task to call a physician might have 0 values, or 1 value containing the time stamp of when the call was placed.
     ///   - A task to walk 2,000 steps might have 1 value, with that value being the number of steps that were actually.
     ///   - A task to complete a survey might have multiple values corresponding to the answers to the questions in the survey.
     public var values: [OCKOutcomeValue]
-    
+
     // MARK: OCKObjectCompatible
-    
+
     public internal(set) var createdAt: Date?
     public internal(set) var updatedAt: Date?
     public internal(set) var deletedAt: Date?
@@ -65,7 +64,7 @@ public struct OCKOutcome: Codable, Equatable, OCKLocalPersistableSettable, OCKOb
     public var userInfo: [String: String]?
     public var asset: String?
     public var notes: [OCKNote]?
-    
+
     /// Initialize by specifying the version of the task that owns this outcome, how many events have occured before this outcome, and the values.
     ///
     /// - Parameters:
@@ -77,21 +76,21 @@ public struct OCKOutcome: Codable, Equatable, OCKLocalPersistableSettable, OCKOb
         self.taskOccurenceIndex = taskOccurenceIndex
         self.values = values
     }
-    
+
     // MARK: OCKInitializable
-    
+
     public init(value: OCKOutcome) {
         self = value
     }
-    
+
     // MARK: OCKOutcomeConvertible
-    
+
     public func convert() -> OCKOutcome {
         return self
     }
-    
+
     // MARK: OCKIdentifiable
-    
+
     public func isAssociated(with other: OCKOutcome) -> Bool {
         guard let localID = localDatabaseID else { return false }
         if localID == other.localDatabaseID { return true }

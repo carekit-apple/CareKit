@@ -28,21 +28,20 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import XCTest
 @testable import CareKitStore
+import XCTest
 
 class TestEvent: XCTestCase {
-    
     func testEventsAreAssociatedIfTheirTaskVersionsAndScheduleEventsMatch() {
         var task = OCKTask(identifier: "task", title: "Task", carePlanID: nil, schedule: .mealTimesEachDay(start: Date(), end: nil))
         task.versionID = OCKLocalVersionID("abc123")
         guard let scheduleEvent = task.schedule.event(forOccurenceIndex: 0) else { XCTFail("Bad schedule"); return }
-        
+
         let eventA = OCKEvent<OCKTask, OCKOutcome>(task: task, outcome: nil, scheduleEvent: scheduleEvent)
         let eventB = OCKEvent<OCKTask, OCKOutcome>(task: task, outcome: nil, scheduleEvent: scheduleEvent)
         XCTAssert(eventA.isAssociated(with: eventB))
     }
-    
+
     func testEventsAreNotAssociatedIfTheirScheduleEventsMismatch() {
         var task = OCKTask(identifier: "task", title: "Task", carePlanID: nil, schedule: .mealTimesEachDay(start: Date(), end: nil))
         task.versionID = OCKLocalVersionID("abc123")

@@ -30,18 +30,17 @@
 
 import Foundation
 
-import XCTest
 @testable import CareKitStore
+import XCTest
 
-class TestCarePlanStoreExtensions: XCTestCase {
-    
+class TestStoreProtocolExtensions: XCTestCase {
     var store: OCKStore!
-    
+
     override func setUp() {
         super.setUp()
         store = OCKStore(name: "TestDatabase", type: .inMemory)
     }
-    
+
     override func tearDown() {
         super.tearDown()
         store = nil
@@ -55,13 +54,13 @@ class TestCarePlanStoreExtensions: XCTestCase {
         let startDate = Calendar.current.date(byAdding: .day, value: -10, to: beginningOfDay)!
         let midDate = Calendar.current.date(byAdding: .day, value: 0, to: beginningOfDay)!
         let endDate = Calendar.current.date(byAdding: .day, value: 3, to: beginningOfDay)!
-        
+
         let schedule1 = OCKSchedule.dailyAtTime(hour: 12, minutes: 0, start: startDate, end: midDate, text: nil)
         let schedule2 = OCKSchedule.dailyAtTime(hour: 12, minutes: 0, start: midDate, end: endDate, text: nil)
-        
+
         let taskV1 = OCKTask(identifier: "task", title: "Version 1", carePlanID: nil, schedule: schedule1)
         let taskV2 = OCKTask(identifier: "task", title: "Version 2", carePlanID: nil, schedule: schedule2)
-        
+
         let query = OCKEventQuery(start: queryStart, end: endDate)
         try store.addTaskAndWait(taskV1)
         try store.updateTaskAndWait(taskV2)
@@ -70,7 +69,7 @@ class TestCarePlanStoreExtensions: XCTestCase {
         for i in 0..<3 { XCTAssert(events[i].task.title == taskV1.title) }
         for i in 3..<6 { XCTAssert(events[i].task.title == taskV2.title) }
     }
-    
+
     func testFetchEventsAcrossVersionsWithOverlappingInfiniteSchedules() throws {
         let beginningOfDay = Calendar.current.startOfDay(for: Date())
         let date1 = Calendar.current.date(byAdding: .day, value: -3, to: beginningOfDay)!
@@ -92,19 +91,19 @@ class TestCarePlanStoreExtensions: XCTestCase {
         for i in 0..<1 { XCTAssert(events[i].task.title == taskV1.title) }
         for i in 1..<4 { XCTAssert(events[i].task.title == taskV2.title) }
     }
-    
+
     func testFetchEventsReturnsEventsWithTheCorrectOccurenceIndex() throws {
         let beginningOfDay = Calendar.current.startOfDay(for: Date())
         let date1 = Calendar.current.date(byAdding: .day, value: -3, to: beginningOfDay)!
         let date2 = Calendar.current.date(byAdding: .day, value: -1, to: beginningOfDay)!
         let date3 = Calendar.current.date(byAdding: .day, value: 3, to: beginningOfDay)!
-    
+
         let schedule = OCKSchedule.dailyAtTime(hour: 12, minutes: 0, start: date1, end: nil, text: nil)
         var task = OCKTask(identifier: "task", title: "Medication", carePlanID: nil, schedule: schedule)
         task = try store.addTaskAndWait(task)
         let outcome = OCKOutcome(taskID: task.localDatabaseID, taskOccurenceIndex: 3, values: [])
         try store.addOutcomeAndWait(outcome)
-        
+
         let query = OCKEventQuery(start: date2, end: date3)
         let events = try store.fetchEventsAndWait(taskIdentifier: task.identifier, query: query)
         XCTAssert(events.count == 4)
@@ -114,7 +113,7 @@ class TestCarePlanStoreExtensions: XCTestCase {
         XCTAssert(events[3].scheduleEvent.occurence == 5)
         XCTAssert(events[1].outcome?.taskOccurenceIndex == 3)
     }
-    
+
     func testFetchSingleEvent() throws {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
         var task = OCKTask(identifier: "exercise", title: "Push Ups", carePlanID: nil, schedule: schedule)

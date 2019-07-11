@@ -28,26 +28,25 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import XCTest
 @testable import CareKit
+import XCTest
 
 class TestSynchronizedStoreManager: XCTestCase {
-    
     var manager: OCKSynchronizedStoreManager<MockStore>!
     var store: MockStore!
-    
+
     override func setUp() {
         super.setUp()
         store = MockStore()
         manager = OCKSynchronizedStoreManager(wrapping: store)
     }
-    
+
     // MARK: Notification Publisher
-    
+
     func testNotificationPublisherEmitsMultipleEvents() {
         let expect = expectation(description: "Three notifications are published")
         var numberOfNotificationsReceived = 0
-        let cancellable = manager.notificationPublisher.sink { notification in
+        let cancellable = manager.notificationPublisher.sink { _ in
             numberOfNotificationsReceived += 1
             if numberOfNotificationsReceived == 3 {
                 expect.fulfill()

@@ -28,19 +28,22 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import CareKit
 import UIKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        let rootViewController = RootViewController(style: .grouped)
+        let navigationController = UINavigationController(rootViewController: rootViewController)
 
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.tintColor = #colorLiteral(red: 0.9960784314, green: 0.3725490196, blue: 0.368627451, alpha: 1)
-        window?.rootViewController = UINavigationController(rootViewController: RootViewController(style: .grouped))
+        window?.rootViewController = navigationController
         window?.makeKeyAndVisible()
+
         return true
     }
 }

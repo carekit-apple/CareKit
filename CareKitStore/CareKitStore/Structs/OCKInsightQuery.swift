@@ -38,7 +38,7 @@ public struct OCKInsightQuery: OCKDateIntervalQueryable {
     
     /// The latest date at which outcomes should match.
     public var end: Date
-    
+
     /// Initialize a new `OCKInsightsQuery` by specifying the start and end dates.
     ///
     /// - Parameters:

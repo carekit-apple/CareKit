@@ -28,16 +28,15 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import UIKit
-import CareKitUI
 import CareKitStore
+import CareKitUI
+import UIKit
 
 internal class OCKBindableInstructionsTaskView<Task: Equatable & OCKTaskConvertible, Outcome: Equatable & OCKOutcomeConvertible>:
 OCKInstructionsTaskView, OCKBindable {
-    
     private let scheduleFormatter = OCKScheduleFormatter<Task, Outcome>()
-    
-    public func updateView(with model: OCKEvent<Task, Outcome>?, animated: Bool) {
+
+    func updateView(with model: OCKEvent<Task, Outcome>?, animated: Bool) {
         guard let model = model else {
             clear(animated: animated)
             return
@@ -48,7 +47,7 @@ OCKInstructionsTaskView, OCKBindable {
         instructionsLabel.text = event.task.instructions
         headerView.detailLabel.text = scheduleFormatter.scheduleLabel(for: model)
     }
-    
+
     private func clear(animated: Bool) {
         [headerView.titleLabel, headerView.detailLabel, instructionsLabel].forEach { $0.text = nil }
     }

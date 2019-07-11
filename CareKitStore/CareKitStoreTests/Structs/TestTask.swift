@@ -28,17 +28,16 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+@testable import CareKitStore
 import XCTest
-import CareKitStore
 
 class TestTask: XCTestCase {
-    
     func testUnpersistedTasksAreAssociatedIfTheirIdentifiersMatch() {
         let taskA = OCKTask(identifier: "abc123", title: "TaskA", carePlanID: nil, schedule: .mealTimesEachDay(start: Date(), end: nil))
         let taskB = OCKTask(identifier: "abc123", title: "TaskB", carePlanID: nil, schedule: .mealTimesEachDay(start: Date(), end: nil))
         XCTAssert(taskA.isAssociated(with: taskB))
     }
-    
+
     func testTasksAreNotAssociatedIfTheirIdentifiersDoNoMatch() {
         let taskA = OCKTask(identifier: "abc123", title: "TaskA", carePlanID: nil, schedule: .mealTimesEachDay(start: Date(), end: nil))
         let taskB = OCKTask(identifier: "def456", title: "TaskB", carePlanID: nil, schedule: .mealTimesEachDay(start: Date(), end: nil))

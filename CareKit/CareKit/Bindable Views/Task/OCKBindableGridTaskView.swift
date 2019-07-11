@@ -28,39 +28,38 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import UIKit
-import CareKitUI
 import CareKitStore
+import CareKitUI
+import UIKit
 
 internal class OCKBindableGridTaskView<Task: Equatable & OCKTaskConvertible, Outcome: Equatable & OCKOutcomeConvertible>:
 OCKTaskGridView, OCKBindable, UICollectionViewDataSource {
-    
     private var model: Model?
-    
+
     private let scheduleFormatter = OCKScheduleFormatter<Task, Outcome>()
-    
+
     private let timeFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.timeStyle = .short
         return formatter
     }()
-    
-    public override init() {
+
+    override init() {
         super.init()
         collectionView.dataSource = self
     }
-    
-    required public init?(coder: NSCoder) {
+
+    required init?(coder: NSCoder) {
         super.init(coder: coder)
         collectionView.dataSource = self
     }
-    
-    public func updateView(with model: [OCKEvent<Task, Outcome>]?, animated: Bool) {
+
+    func updateView(with model: [OCKEvent<Task, Outcome>]?, animated: Bool) {
         self.model = model
         updateViewWithTask(model?.first?.task)
         updateViewWithEvents(model)
     }
-    
+
     private func updateViewWithTask(_ task: Task?) {
         guard let task = task?.convert() else {
             headerView.titleLabel.text = nil
@@ -68,38 +67,38 @@ OCKTaskGridView, OCKBindable, UICollectionViewDataSource {
             headerView.detailLabel.text = nil
             return
         }
-        
+
         headerView.titleLabel.text = task.title
         instructionsLabel.text = task.instructions
     }
-    
+
     private func updateViewWithEvents(_ events: [OCKEvent<Task, Outcome>]?) {
         headerView.detailLabel.text = scheduleFormatter.scheduleLabel(for: events ?? [])
         collectionView.reloadData()
     }
-    
+
     // MARK: UICollectionViewDataSource
-    
-    public func numberOfSections(in collectionView: UICollectionView) -> Int {
+
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
-    
-    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return model?.count ?? 0
     }
-    
-    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: defaultCellIdentifier, for: indexPath) as? DefaultCellType else {
             fatalError("Unsupported cell type.")
         }
-        
+
         let event = model?[indexPath.row]
-        
+
         // set label for completed state
         let completeDate = event?.outcome?.convert().createdAt
         let completeString = completeDate != nil ? timeFormatter.string(from: completeDate!) : nil
         cell.completionButton.setTitle(completeString, for: .selected)
-    
+
         // set label for normal state to be the time of the event
         let incompleteString = event != nil ? scheduleFormatter.timeLabel(for: event!) : indexPath.row.description
         cell.completionButton.setTitle(incompleteString, for: .normal)

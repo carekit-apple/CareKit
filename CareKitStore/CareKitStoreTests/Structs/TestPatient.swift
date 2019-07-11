@@ -28,17 +28,16 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import XCTest
 import CareKitStore
+import XCTest
 
 class TestPatient: XCTestCase {
-    
     func testUnpersistedPatientsAreAssociatedIfTheirIdentifiersMatch() {
         let patientA = OCKPatient(identifier: "abc123", givenName: "Amy", familyName: "Frost")
         let patientB = OCKPatient(identifier: "abc123", givenName: "Christopher", familyName: "Foss")
         XCTAssert(patientA.isAssociated(with: patientB))
     }
-    
+
     func testPatientsAreNotAssociatedIfTheirIdentifiersDoNoMatch() {
         let patientA = OCKPatient(identifier: "abc123", givenName: "Amy", familyName: "Frost")
         let patientB = OCKPatient(identifier: "def456", givenName: "Amy", familyName: "Frost")

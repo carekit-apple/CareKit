@@ -28,23 +28,22 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import XCTest
-import Combine
 import CareKit
+import Combine
+import XCTest
 
 class TestSynchronizedViewController: XCTestCase {
-    
     func testInitializerWithPlainView() {
         let label = UILabel()
-        let viewController = MockSynchronizedViewController(loadCustomView: { label }, modelDidChange: { (view, text, animated) in
+        let viewController = MockSynchronizedViewController(loadCustomView: { label }, modelDidChange: { view, text, _ in
             guard let label = view as? UILabel else { XCTFail("Wrong type"); return }
             label.text = text
         })
-        
+
         let publisher = PassthroughSubject<String?, Never>()
         viewController.upstream = AnyPublisher(publisher)
         viewController.subscribe()
-        
+
         XCTAssertNil(label.text)
         publisher.send("CareKit")
         XCTAssert(label.text == "CareKit")
@@ -53,11 +52,11 @@ class TestSynchronizedViewController: XCTestCase {
     func testInitializerWithBindableView() {
         let label = MockBindableLabel()
         let viewController = MockSynchronizedViewController(loadDefaultView: { label })
-        
+
         let publisher = PassthroughSubject<String?, Never>()
         viewController.upstream = AnyPublisher(publisher)
         viewController.subscribe()
-        
+
         XCTAssertNil(label.text)
         publisher.send("CareKit")
         XCTAssert(label.text == "CareKit")

@@ -34,16 +34,15 @@ import Foundation
 /// to explain why a medication dose was changed, or a note left from a patient to a care provider explaining why they weren't able to complete a
 /// task on a certain occassion.
 public struct OCKNote: Codable, Equatable, OCKObjectCompatible {
-    
     /// The person who created the note.
     public var author: String?
-    
+
     /// A title for the note.
     public var title: String?
-    
+
     /// The note content.
     public var content: String?
-    
+
     // MARK: OCKObjectCompatible
     public internal (set) var createdAt: Date?
     public internal (set) var updatedAt: Date?
@@ -56,7 +55,7 @@ public struct OCKNote: Codable, Equatable, OCKObjectCompatible {
     public var source: String?
     public var asset: String?
     public var notes: [OCKNote]?
-    
+
     /// Initialize a new note with an optional author, title, and content.
     ///
     /// - Parameters:

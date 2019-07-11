@@ -28,13 +28,12 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import UIKit
 import CareKitStore
 import CareKitUI
+import UIKit
 
 /// Conform to this protocol to receive callbacks when important events occur in an `OCKDailPageViewController`.
-public protocol OCKDailyPageViewControllerDelegate: class {
-    
+public protocol OCKDailyPageViewControllerDelegate: AnyObject {
     /// This method will be called anytime an unhandled error is encountered.
     ///
     /// - Parameters:
@@ -46,7 +45,6 @@ public protocol OCKDailyPageViewControllerDelegate: class {
 }
 
 public extension OCKDailyPageViewControllerDelegate {
-    
     /// This method will be called anytime an unhandled error is encountered.
     ///
     /// - Parameters:
@@ -58,8 +56,7 @@ public extension OCKDailyPageViewControllerDelegate {
 }
 
 /// Any class that can provide content for an `OCKDailyPageViewController` should conform to this protocol.
-public protocol OCKDailyPageViewControllerDataSource: class {
-    
+public protocol OCKDailyPageViewControllerDataSource: AnyObject {
     /// - Parameters:
     ///   - dailyPageViewController: The daily page view controller for which content should be provided.
     ///   - listViewController: The list view controller that should be populated with content.
@@ -76,35 +73,34 @@ open class OCKDailyPageViewController<Store: OCKStoreProtocol>: UIViewController
     OCKDailyPageViewControllerDataSource, OCKDailyPageViewControllerDelegate,
     OCKCalendarPageViewControllerDelegate, UIPageViewControllerDataSource,
 UIPageViewControllerDelegate {
-
     // MARK: Properties
-    
+
     public weak var dataSource: OCKDailyPageViewControllerDataSource?
     public weak var delegate: OCKDailyPageViewControllerDelegate?
-    
+
     public var selectedDate: Date {
         return calendarPageViewController.selectedDate
     }
-    
+
     /// The store manager the view controller uses for synchronization
     public let storeManager: OCKSynchronizedStoreManager<Store>
-    
+
     /// Page view managing ListViewControllers.
     private let pageViewController = UIPageViewController(transitionStyle: .scroll,
-                                                         navigationOrientation: .horizontal,
-                                                         options: nil)
+                                                          navigationOrientation: .horizontal,
+                                                          options: nil)
     /// The calendar view controller in the header.
     private let calendarPageViewController: OCKCalendarPageViewController<Store>
-    
+
     // MARK: Life cycle
-    
+
     /// Create an instance of the view controller. Will hook up the calendar to the tasks collection,
     /// and query and display the tasks.
     ///
     /// - Parameter storeManager: The store from which to query the tasks.
-    public init(storeManager: OCKSynchronizedStoreManager<Store>) {
+    public init(storeManager: OCKSynchronizedStoreManager<Store>, adherenceAggregator: OCKAdherenceAggregator<Store.Event> = .countOutcomes) {
         self.storeManager = storeManager
-        self.calendarPageViewController = OCKCalendarPageViewController(storeManager: storeManager)
+        self.calendarPageViewController = OCKCalendarPageViewController(storeManager: storeManager, aggregator: adherenceAggregator)
         super.init(nibName: nil, bundle: nil)
         self.calendarPageViewController.dataSource = self
         self.pageViewController.dataSource = self
@@ -112,18 +108,19 @@ UIPageViewControllerDelegate {
         self.dataSource = self
         self.delegate = self
     }
-    
-    required public init?(coder aDecoder: NSCoder) {
+
+    @available(*, unavailable)
+    public required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    open override func loadView() {
+
+    override open func loadView() {
         [calendarPageViewController, pageViewController].forEach { addChild($0) }
         view = OCKHeaderBodyView(headerView: calendarPageViewController.view, bodyView: pageViewController.view)
         [calendarPageViewController, pageViewController].forEach { $0.didMove(toParent: self) }
     }
-    
-    open override func viewDidLoad() {
+
+    override open func viewDidLoad() {
         super.viewDidLoad()
         let now = Date()
         calendarPageViewController.calendarDelegate = self
@@ -132,24 +129,24 @@ UIPageViewControllerDelegate {
         pageViewController.setViewControllers([makePage(date: now)], direction: .forward, animated: false, completion: nil)
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Today", style: .plain, target: self, action: #selector(pressedToday(sender:)))
     }
-    
+
     private let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
         return formatter
     }()
-    
+
     private func makePage(date: Date) -> OCKDatedListViewController {
         let listViewController = OCKDatedListViewController(date: date)
         let dateLabel = OCKLabel(textStyle: .title2, weight: .bold)
         dateLabel.text = dateFormatter.string(from: date)
         listViewController.insertView(dateLabel, at: 0, animated: false)
-        
+
         setInsets(for: listViewController)
         dataSource?.dailyPageViewController(self, prepare: listViewController, for: date)
         return listViewController
     }
-    
+
     @objc
     private func pressedToday(sender: UIBarButtonItem) {
         let previousDate = selectedDate
@@ -158,9 +155,9 @@ UIPageViewControllerDelegate {
         calendarPageViewController.selectDate(currentDate, animated: true)
         calendarPageViewController(calendarPageViewController, didSelectDate: currentDate, previousDate: previousDate)
     }
-    
+
     // MARK: OCKCalendarPageViewControllerDelegate
-    
+
     internal func calendarPageViewController<Store>(_ calendarPageViewController: OCKCalendarPageViewController<Store>,
                                                     didSelectDate date: Date, previousDate: Date?) where Store: OCKStoreProtocol {
         guard let previousDate = previousDate else { return } // return if we have selected a date without a previous date
@@ -171,61 +168,58 @@ UIPageViewControllerDelegate {
         let listViewController = makePage(date: date)
         pageViewController.setViewControllers([listViewController], direction: moveLeft ? .reverse : .forward, animated: true, completion: nil)
     }
-    
+
     func calendarPageViewController<Store>(_ calendarPageViewController: OCKCalendarPageViewController<Store>,
                                            didChangeDateInterval interval: DateInterval) where Store: OCKStoreProtocol {
-        
     }
-    
+
     // MARK: OCKDailyPageViewControllerDataSource & Delegate
-    
+
     open func dailyPageViewController<S>(
         _ dailyPageViewController: OCKDailyPageViewController<S>,
         prepare listViewController: OCKListViewController,
         for date: Date) where S: OCKStoreProtocol {
-        
     }
-    
+
     open func dailyPageViewController<S>(
         _ dailyPageViewController: OCKDailyPageViewController<S>,
         didFailWithError error: Error) where S: OCKStoreProtocol {
-        
     }
-    
+
     // MARK: OCKCalendarViewControllerDelegate
-    
+
     func calendarPageViewController<Store>(
         _ calendarPageViewController: OCKCalendarPageViewController<Store>,
         didFailWithError error: Error) where Store: OCKStoreProtocol {
         delegate?.dailyPageViewController(self, didFailWithError: error)
     }
-    
+
     // MARK: - UIPageViewControllerDelegate
-    
+
     public func pageViewController(_ pageViewController: UIPageViewController,
                                    viewControllerBefore viewController: UIViewController) -> UIViewController? {
         guard let currentViewController = viewController as? OCKDatedListViewController else { fatalError("Unexpected type") }
         let targetDate = Calendar.current.date(byAdding: .day, value: -1, to: currentViewController.date)!
         return makePage(date: targetDate)
     }
-    
+
     public func pageViewController(_ pageViewController: UIPageViewController,
                                    viewControllerAfter viewController: UIViewController) -> UIViewController? {
         guard let currentViewController = viewController as? OCKDatedListViewController else { fatalError("Unexpected type") }
         let targetDate = Calendar.current.date(byAdding: .day, value: 1, to: currentViewController.date)!
         return makePage(date: targetDate)
     }
-    
+
     // MARK: - UIPageViewControllerDataSource
-    
+
     public func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool,
                                    previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
         guard completed else { return }
         guard let listViewController = pageViewController.viewControllers?.first as? OCKDatedListViewController else { fatalError("Unexpected type") }
         calendarPageViewController.selectDate(listViewController.date, animated: true)
     }
-    
-    open override func viewSafeAreaInsetsDidChange() {
+
+    override open func viewSafeAreaInsetsDidChange() {
         updateScrollViewInsets()
     }
 
@@ -235,7 +229,7 @@ UIPageViewControllerDelegate {
             setInsets(for: listVC)
         })
     }
-    
+
     private func setInsets(for listViewController: OCKListViewController) {
         guard let listView = listViewController.view as? OCKListView else { fatalError("Unexpected type") }
         guard let headerView = view as? OCKHeaderBodyView else { fatalError("Unexpected type") }
@@ -248,15 +242,15 @@ UIPageViewControllerDelegate {
 // This is private subclass of the list view controller that imbues it with a date that can be uesd by the page view controller to determine
 // which direction was just swiped.
 private class OCKDatedListViewController: OCKListViewController {
-    
     let date: Date
-    
+
     init(date: Date) {
         self.date = date
         super.init(nibName: nil, bundle: nil)
         listView.scrollView.automaticallyAdjustsScrollIndicatorInsets = false
     }
-    
+
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

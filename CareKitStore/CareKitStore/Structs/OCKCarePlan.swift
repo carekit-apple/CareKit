@@ -35,13 +35,12 @@ import Foundation
 /// weight, and log meals. As the care plan evolves with the patient's progress, the care provider may modify the exercises and include notes each
 /// time about why the changes were made.
 public struct OCKCarePlan: Codable, Equatable, OCKVersionSettable, OCKObjectCompatible, OCKCarePlanConvertible, OCKCarePlanInitializable {
-    
     /// A title describing this care plan.
     public var title: String
-    
+
     /// The version identifier in the local database of the patient to whom this care plan belongs.
     public var patientID: OCKLocalVersionID?
-    
+
     // MARK: OCKIdentifiable
     public let identifier: String
 
@@ -49,7 +48,7 @@ public struct OCKCarePlan: Codable, Equatable, OCKVersionSettable, OCKObjectComp
     public internal(set) var localDatabaseID: OCKLocalVersionID?
     public internal(set) var nextVersionID: OCKLocalVersionID?
     public internal(set) var previousVersionID: OCKLocalVersionID?
-    
+
     // MARK: OCKObjectCompatible
     public var createdAt: Date?
     public var updatedAt: Date?
@@ -61,7 +60,7 @@ public struct OCKCarePlan: Codable, Equatable, OCKVersionSettable, OCKObjectComp
     public var source: String?
     public var asset: String?
     public var notes: [OCKNote]?
-    
+
     /// Initialize a care plan with a title, identifier, and optional patient version.
     ///
     /// - Parameters:
@@ -73,7 +72,7 @@ public struct OCKCarePlan: Codable, Equatable, OCKVersionSettable, OCKObjectComp
         self.identifier = identifier
         self.patientID = patientID
     }
-    
+
     /// Initialize a new care plan from an `OCKCarePlan`
     ///
     /// - Parameter value: The care plan to copy.

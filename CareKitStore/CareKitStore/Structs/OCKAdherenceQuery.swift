@@ -35,10 +35,10 @@ public struct OCKAdherenceQuery: OCKDateIntervalQueryable {
     
     /// The earliest date from which to return adherence information.
     public var start: Date
-    
+
     /// The latest date from which to return adherence information.
     public var end: Date
-    
+
     /// Initialize a new query by specifying the start and end dates.
     ///
     /// - Parameters:

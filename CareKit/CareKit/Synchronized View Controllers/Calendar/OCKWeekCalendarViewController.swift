@@ -28,24 +28,19 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import UIKit
 import CareKitStore
 import CareKitUI
+import UIKit
 
 internal class OCKWeekCalendarViewController<Store: OCKStoreProtocol>: OCKCalendarViewController<Store> {
-    
-    public var calendarWeekView: OCKCalendarWeekView {
+    var calendarWeekView: OCKCalendarWeekView {
         guard let view = view as? OCKCalendarWeekView else { fatalError("Unexpected type") }
         return view
     }
-    
+
     public init(storeManager: OCKSynchronizedStoreManager<Store>?, adherenceQuery: OCKAdherenceQuery) {
         super.init(storeManager: storeManager,
                    adherenceQuery: adherenceQuery,
                    loadDefaultView: { OCKBindableCalendarWeekView(weekOf: Date()) })
-    }
-    
-    required public init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 }

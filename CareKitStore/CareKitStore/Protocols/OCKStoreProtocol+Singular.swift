@@ -31,100 +31,99 @@
 import Foundation
 
 public extension OCKStoreProtocol {
-    
     // MARK: Patients
-    
+
     func fetchPatient(withIdentifier identifier: String, queue: DispatchQueue = .main,
                       completion: @escaping OCKResultClosure<Patient?>) {
         fetchPatients(.patientIdentifiers([identifier]), query: nil, queue: queue, completion: makeNonOptionalResultClosure(completion))
     }
-    
+
     func addPatient(_ patient: Patient, queue: DispatchQueue = .main, completion: OCKResultClosure<Patient>? = nil) {
         addPatients([patient], queue: queue, completion: makePluralResultClosure(completion))
     }
-    
+
     func updatePatient(_ patient: Patient, queue: DispatchQueue = .main, completion: OCKResultClosure<Patient>? = nil) {
         updatePatients([patient], queue: queue, completion: makePluralResultClosure(completion))
     }
-    
+
     func deletePatient(_ patient: Patient, queue: DispatchQueue = .main, completion: OCKResultClosure<Patient>? = nil) {
         deletePatients([patient], queue: queue, completion: makePluralResultClosure(completion))
     }
-    
+
     // MARK: CarePlans
-    
+
     func fetchCarePlan(withIdentifier identifier: String, queue: DispatchQueue = .main, completion: @escaping OCKResultClosure<Plan?>) {
         fetchCarePlans(.carePlanIdentifiers([identifier]), query: nil, queue: queue, completion: makeNonOptionalResultClosure(completion))
     }
-    
+
     func addCarePlan(_ plan: Plan, queue: DispatchQueue = .main, completion: OCKResultClosure<Plan>? = nil) {
         addCarePlans([plan], queue: queue, completion: makePluralResultClosure(completion))
     }
-    
+
     func updateCarePlan(_ plan: Plan, queue: DispatchQueue = .main, completion: OCKResultClosure<Plan>? = nil) {
         updateCarePlans([plan], queue: queue, completion: makePluralResultClosure(completion))
     }
-    
+
     func deleteCarePlan(_ plan: Plan, queue: DispatchQueue = .main, completion: OCKResultClosure<Plan>? = nil) {
         deleteCarePlans([plan], queue: queue, completion: makePluralResultClosure(completion))
     }
-    
+
     // MARK: Contacts
-    
+
     func fetchContact(withIdentifier identifier: String, queue: DispatchQueue = .main,
                       completion: @escaping OCKResultClosure<Contact?>) {
         fetchContacts(.contactIdentifier([identifier]), query: nil, queue: queue, completion: makeNonOptionalResultClosure(completion))
     }
-    
+
     func addContact(_ contact: Contact, queue: DispatchQueue = .main, completion: OCKResultClosure<Contact>? = nil) {
         addContacts([contact], queue: queue, completion: makePluralResultClosure(completion))
     }
-    
+
     func updateContact(_ contact: Contact, queue: DispatchQueue = .main, completion: OCKResultClosure<Contact>? = nil) {
         updateContacts([contact], queue: queue, completion: makePluralResultClosure(completion))
     }
-    
+
     func deleteContact(_ contact: Contact, queue: DispatchQueue = .main, completion: OCKResultClosure<Contact>? = nil) {
         deleteContacts([contact], queue: queue, completion: makePluralResultClosure(completion))
     }
-    
+
     // MARK: Tasks
-    
+
     func fetchTask(withIdentifier identifier: String, queue: DispatchQueue = .main, completion: @escaping OCKResultClosure<Task?>) {
         fetchTasks(.taskIdentifiers([identifier]), query: nil, queue: queue, completion: makeNonOptionalResultClosure(completion))
     }
-    
+
     func fetchTask(withVersionID versionID: OCKLocalVersionID, queue: DispatchQueue = .main, completion: @escaping OCKResultClosure<Task?>) {
         fetchTasks(.taskVersions([versionID]), query: nil, queue: queue, completion: makeNonOptionalResultClosure(completion))
     }
-    
+
     func addTask(_ task: Task, queue: DispatchQueue = .main, completion: OCKResultClosure<Task>? = nil) {
         addTasks([task], queue: queue, completion: makePluralResultClosure(completion))
     }
-    
+
     func updateTask(_ task: Task, queue: DispatchQueue = .main, completion: OCKResultClosure<Task>? = nil) {
         updateTasks([task], queue: queue, completion: makePluralResultClosure(completion))
     }
-    
+
     func deleteTask(_ task: Task, queue: DispatchQueue = .main, completion: OCKResultClosure<Task>? = nil) {
         deleteTasks([task], queue: queue, completion: makePluralResultClosure(completion))
     }
-    
+
     // MARK: Outcomes
-    
+
     func fetchOutcome(_ anchor: OCKOutcomeAnchor?, query: OCKOutcomeQuery?,
                       queue: DispatchQueue = .main, completion: @escaping OCKResultClosure<Outcome?>) {
         fetchOutcomes(anchor, query: query, queue: queue, completion: { completion($0.map { $0.first }) })
     }
-    
+
     func addOutcome(_ outcome: Outcome, queue: DispatchQueue = .main, completion: OCKResultClosure<Outcome>? = nil) {
         addOutcomes([outcome], queue: queue, completion: makePluralResultClosure(completion))
     }
-    
+
     func updateOutcome(_ outcome: Outcome, queue: DispatchQueue = .main, completion: OCKResultClosure<Outcome>? = nil) {
         updateOutcomes([outcome], queue: queue, completion: makePluralResultClosure(completion))
     }
-    
+
     func deleteOutcome(_ outcome: Outcome, queue: DispatchQueue = .main, completion: OCKResultClosure<Outcome>? = nil) {
         deleteOutcomes([outcome], queue: queue, completion: makePluralResultClosure(completion))
     }

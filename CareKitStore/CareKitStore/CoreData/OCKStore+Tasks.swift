@@ -31,7 +31,6 @@
 import Foundation
 
 extension OCKStore {
-    
     public func fetchTasks(_ anchor: OCKTaskAnchor? = nil, query: OCKTaskQuery? = nil, queue: DispatchQueue = .main,
                            completion: @escaping (Result<[OCKTask], OCKStoreError>) -> Void) {
         context.perform {
@@ -53,7 +52,7 @@ extension OCKStore {
             }
         }
     }
-    
+
     public func addTasks(_ tasks: [OCKTask], queue: DispatchQueue = .main,
                          completion: ((Result<[OCKTask], OCKStoreError>) -> Void)? = nil) {
         context.perform {
@@ -74,14 +73,14 @@ extension OCKStore {
             }
         }
     }
-    
+
     public func updateTasks(_ tasks: [OCKTask], queue: DispatchQueue = .main,
                             completion: ((Result<[OCKTask], OCKStoreError>) -> Void)? = nil) {
         context.perform {
             do {
                 let identifiers = tasks.map { $0.identifier }
                 try OCKCDTask.validateUpdateIdentifiers(identifiers, in: self.context)
-                
+
                 let updatedTasks = self.configuration.updatesCreateNewVersions ?
                     try self.performVersionedUpdate(values: tasks, addNewVersion: self.addTask) :
                     try self.performUnversionedUpdate(values: tasks, update: self.copyTask)
@@ -100,7 +99,7 @@ extension OCKStore {
             }
         }
     }
-    
+
     public func deleteTasks(_ tasks: [OCKTask], queue: DispatchQueue = .main,
                             completion: ((Result<[OCKTask], OCKStoreError>) -> Void)? = nil) {
         context.perform {
@@ -123,9 +122,9 @@ extension OCKStore {
             }
         }
     }
-    
+
     // MARK: Private
-    
+
     /// - Remark: This does not commit the transaction. After calling this function one or more times, you must call `context.save()` in order to
     /// persist the changes to disk. This is an optimization to allow batching.
     /// - Remark: You should verify that the object does not already exist in the database and validate its values before calling this method.
@@ -134,7 +133,7 @@ extension OCKStore {
         copyTask(task, to: persistableTask)
         return persistableTask
     }
-    
+
     private func copyTask(_ task: OCKTask, to persistableTask: OCKCDTask) {
         persistableTask.copyVersionInfo(from: task)
         persistableTask.allowsMissingRelationships = allowsEntitiesWithMissingRelationships
@@ -144,7 +143,7 @@ extension OCKStore {
         persistableTask.scheduleElements = Set(makeScheduleElements(from: task.schedule))
         if let planId = task.carePlanID { persistableTask.carePlan = try? fetchObject(havingLocalID: planId) }
     }
-    
+
     private func makeScheduleElements(from schedule: OCKSchedule) -> [OCKCDScheduleElement] {
         return schedule.elements.map { element -> OCKCDScheduleElement in
             let schedule = OCKCDScheduleElement(context: context)
@@ -158,7 +157,7 @@ extension OCKStore {
             return schedule
         }
     }
-    
+
     /// - Remark: This method is intended to create a value type struct from a *persisted* NSManagedObject. Calling this method with an
     /// object that is not yet commited is a programmer error.
     private func makeTask(from object: OCKCDTask) -> OCKTask {
@@ -171,7 +170,7 @@ extension OCKStore {
         task.impactsAdherence = object.impactsAdherence
         return task
     }
-    
+
     private func buildPredicate(for anchor: OCKTaskAnchor?) throws -> NSPredicate {
         guard let anchor = anchor else { return OCKCDTask.headerPredicate() }
         switch anchor {

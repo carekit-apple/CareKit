@@ -28,8 +28,8 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Foundation
 import CareKitStore
+import Foundation
 
 extension Result {
     var value: Success? {
@@ -38,7 +38,7 @@ extension Result {
         case .failure: return nil
         }
     }
-    
+
     var error: Failure? {
         switch self {
         case .success: return nil
@@ -48,7 +48,6 @@ extension Result {
 }
 
 extension OCKSchedule {
-    
     static func mealTimesEachDay(start: Date, end: Date?, targetValues: [OCKOutcomeValue] = []) -> OCKSchedule {
         let startDate = Calendar.current.startOfDay(for: start)
         let breakfast = OCKSchedule.dailyAtTime(hour: 7, minutes: 30, start: startDate, end: end,

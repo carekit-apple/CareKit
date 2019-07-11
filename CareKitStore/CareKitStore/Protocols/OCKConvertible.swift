@@ -32,10 +32,9 @@ import Foundation
 
 /// Any value or object that can be used in place of CareKit native values must conform to this protocol.
 public protocol OCKConvertible {
-    
     /// The CareKit type that this type can be converted to.
     associatedtype ConversionResult
-    
+
     /// Converts this type to a new CareKit value.
     func convert() -> ConversionResult
 }

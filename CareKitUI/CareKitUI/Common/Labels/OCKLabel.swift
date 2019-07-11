@@ -34,19 +34,18 @@ import UIKit
 ///
 /// To animate changes to the text, set `animatesTextChanges` to true.
 ///
-/// To have the label automatically change it's text size whenever the accessibility content size changes,
+/// To have the label automatically change its text size whenever the accessibility content size changes,
 /// use the initialzer that takes a `textStyle` and `weight`.
 open class OCKLabel: UILabel {
-    
     // MARK: Properties
-    
+
     /// Flag determining whether to animate text changes.
     public var animatesTextChanges = false
-    
+
     private let textStyle: UIFont.TextStyle?
     private let weight: UIFont.Weight?
-    
-    open override var text: String? {
+
+    override open var text: String? {
         get {
             return super.text
         } set {
@@ -56,9 +55,9 @@ open class OCKLabel: UILabel {
             }, completion: nil)
         }
     }
-    
+
     // MARK: Life Cycle
-    
+
     /// Create an instance of and `OCKLabel`. By default, the label will not animate text changes and will not scale with
     /// accessibility content size changes.
     public init() {
@@ -67,7 +66,7 @@ open class OCKLabel: UILabel {
         super.init(frame: .zero)
         setup()
     }
-    
+
     /// Create an instance of and `OCKLabel`. By default, the label will not animate text changes and will scale with
     /// accessibility content size changes.
     ///
@@ -81,24 +80,24 @@ open class OCKLabel: UILabel {
         font = UIFont.preferredCustomFont(forTextStyle: textStyle, weight: weight)
         setup()
     }
-    
-    required public init?(coder aDecoder: NSCoder) {
+
+    public required init?(coder aDecoder: NSCoder) {
         textStyle = nil
         weight = nil
         super.init(coder: aDecoder)
         setup()
     }
-    
-    open override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+
+    override open func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         guard
             let textStyle = textStyle, let weight = weight,
             traitCollection.preferredContentSizeCategory != previousTraitCollection?.preferredContentSizeCategory
         else { return }
         font = UIFont.preferredCustomFont(forTextStyle: textStyle, weight: weight)
     }
-    
+
     // MARK: Methods
-    
+
     private func setup() {
         preservesSuperviewLayoutMargins = true
         adjustsFontForContentSizeCategory = false

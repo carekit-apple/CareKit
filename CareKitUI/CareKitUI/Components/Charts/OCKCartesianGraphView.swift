@@ -43,14 +43,13 @@ import UIKit
 ///     +-------------------------------------------------------+
 ///
 open class OCKCartesianGraphView: UIView, OCKMultiPlotable {
-    
     /// An enumerator specifying the types of plots this view can display.
     public enum PlotType: String, CaseIterable {
         case line
         case scatter
         case bar
     }
-    
+
     /// The data points displayed in the graph.
     public var dataSeries: [OCKDataSeries] {
         get { return plotView.dataSeries }
@@ -60,19 +59,19 @@ open class OCKCartesianGraphView: UIView, OCKMultiPlotable {
             legend.setDataSeries(newValue)
         }
     }
-    
+
     /// The labels for the horizontal axis.
     public var horizontalAxisMarkers: [String] = [] {
         didSet { axisView.axisMarkers = horizontalAxisMarkers }
     }
-    
+
     /// Get the bounds of the graph.
     ///
     /// - Returns: The bounds of the graph.
     public func graphBounds() -> CGRect {
         return plotView.graphBounds()
     }
-    
+
     /// The minimum x value in the graph.
     public var xMinimum: CGFloat? {
         get { return plotView.xMinimum }
@@ -81,7 +80,7 @@ open class OCKCartesianGraphView: UIView, OCKMultiPlotable {
             gridView.xMinimum = newValue
         }
     }
-    
+
     /// The maximum x value in the graph.
     public var xMaximum: CGFloat? {
         get { return plotView.xMaximum }
@@ -90,7 +89,7 @@ open class OCKCartesianGraphView: UIView, OCKMultiPlotable {
             gridView.xMaximum = newValue
         }
     }
-    
+
     /// The minimum y value in the graph.
     public var yMinimum: CGFloat? {
         get { return plotView.yMinimum }
@@ -99,7 +98,7 @@ open class OCKCartesianGraphView: UIView, OCKMultiPlotable {
             gridView.yMinimum = newValue
         }
     }
-    
+
     /// The maximum y value in the graph.
     public var yMaximum: CGFloat? {
         get { return plotView.yMaximum }
@@ -108,27 +107,27 @@ open class OCKCartesianGraphView: UIView, OCKMultiPlotable {
             gridView.yMaximum = newValue
         }
     }
-    
+
     /// The index of the selected label in the x-axis.
     public var selectedIndex: Int? {
         get { return axisView.selectedIndex }
         set { axisView.selectedIndex = newValue }
     }
-    
-    open override func tintColorDidChange() {
+
+    override open func tintColorDidChange() {
         super.tintColorDidChange()
         axisView.tintColor = tintColor
     }
-    
+
     private let gridView: OCKGridView
     private let plotView: UIView & OCKMultiPlotable
     private let axisView: OCKGraphAxisView
-    
+
     private let axisHeight: CGFloat = 44
     private let horizontalPlotPadding: CGFloat = 50
-    
+
     private let legend = OCKGraphLegendView()
-      
+
     /// Create a graph view with the specified style.
     ///
     /// - Parameter plotType: The style of the graph view.
@@ -145,34 +144,35 @@ open class OCKCartesianGraphView: UIView, OCKMultiPlotable {
         super.init(frame: .zero)
         setup()
     }
-    
-    required public init?(coder aDecoder: NSCoder) {
+
+    @available(*, unavailable)
+    public required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     private func updateScaling(for dataSeries: [OCKDataSeries]) {
         let maxValue = max(CGFloat(gridView.numberOfDivisions), dataSeries.flatMap { $0.dataPoints }.map { $0.y }.max() ?? 0)
         let chartMax = ceil(maxValue / CGFloat(gridView.numberOfDivisions)) * CGFloat(gridView.numberOfDivisions)
         plotView.yMaximum = chartMax
         gridView.yMaximum = chartMax
     }
-    
+
     private func setup() {
         addSubview(gridView)
         addSubview(plotView)
         addSubview(axisView)
         addSubview(legend)
-        
+
         gridView.xMinimum = plotView.xMinimum
         gridView.xMaximum = plotView.xMaximum
         gridView.yMinimum = plotView.yMinimum
         gridView.yMaximum = plotView.yMaximum
-        
+
         gridView.translatesAutoresizingMaskIntoConstraints = false
         plotView.translatesAutoresizingMaskIntoConstraints = false
         axisView.translatesAutoresizingMaskIntoConstraints = false
         legend.translatesAutoresizingMaskIntoConstraints = false
-        
+
         NSLayoutConstraint.activate([
             gridView.topAnchor.constraint(equalTo: plotView.topAnchor),
             gridView.leadingAnchor.constraint(equalTo: leadingAnchor),

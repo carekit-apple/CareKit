@@ -28,8 +28,8 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Foundation
 import CoreData
+import Foundation
 
 @objc(OCKCDObject)
 class OCKCDObject: NSManagedObject {
@@ -43,7 +43,7 @@ class OCKCDObject: NSManagedObject {
     @NSManaged var source: String?
     @NSManaged var asset: String?
     @NSManaged var notes: Set<OCKCDNote>?
-    
+
     var localDatabaseID: OCKLocalVersionID? {
         guard !objectID.isTemporaryID else { return nil }
         return OCKLocalVersionID(objectID.uriRepresentation().absoluteString)
@@ -51,14 +51,13 @@ class OCKCDObject: NSManagedObject {
 }
 
 internal extension OCKCDObject {
-    
     override func awakeFromInsert() {
         super.awakeFromInsert()
         createdAt = Date()
         updatedAt = Date()
         notes = Set()
     }
-    
+
     func copyValues(from other: OCKObjectCompatible) {
         guard let context = managedObjectContext else { fatalError("Managed object context should never be nil!") }
         createdAt = other.createdAt ?? Date()

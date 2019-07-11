@@ -28,22 +28,21 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import XCTest
 @testable import CareKitStore
+import XCTest
 
 class TestOutcomeValue: XCTestCase {
-    
     func testValueInitializer() {
         var value = OCKOutcomeValue(37, units: "˚C")
         XCTAssert(value.type == .integer)
         XCTAssert(value.integerValue == 37)
-        
+
         value.value = 98.3
         value.units = "˚F"
         XCTAssert(value.type == .double)
         XCTAssert(value.doubleValue == 98.3)
     }
-    
+
     func testValueEqualityUnique() {
         let beforeAfterValuePairs: [(OCKOutcomeValueUnderlyingType, OCKOutcomeValueUnderlyingType)] = [
             (37, 29),
@@ -53,7 +52,7 @@ class TestOutcomeValue: XCTestCase {
             ("old".data(using: .utf8)!, "new".data(using: .utf8)!),
             (Date(), Date().addingTimeInterval(10))
         ]
-        
+
         for (before, after) in beforeAfterValuePairs {
             let value1 = OCKOutcomeValue(before)
             let value2 = OCKOutcomeValue(after)
@@ -62,7 +61,7 @@ class TestOutcomeValue: XCTestCase {
             XCTAssert(value1 != value2)
         }
     }
-    
+
     func testValueEqualityForIdenticalEntries() {
         let date = Date()
         let beforeAfterValuePairs: [(OCKOutcomeValueUnderlyingType, OCKOutcomeValueUnderlyingType)] = [
@@ -73,7 +72,7 @@ class TestOutcomeValue: XCTestCase {
             ("test".data(using: .utf8)!, "test".data(using: .utf8)!),
             (date, date)
         ]
-        
+
         for (left, right) in beforeAfterValuePairs {
             let value1 = OCKOutcomeValue(left)
             let value2 = OCKOutcomeValue(right)
@@ -82,7 +81,7 @@ class TestOutcomeValue: XCTestCase {
             XCTAssert(value1 == value2)
         }
     }
-    
+
     func testCodingForSingleEntry() {
         let beforeAfterValuePairs: [(OCKOutcomeValueUnderlyingType, OCKOutcomeValueUnderlyingType)] = [
             (37, 29),
@@ -92,18 +91,18 @@ class TestOutcomeValue: XCTestCase {
             ("old".data(using: .utf8)!, "new".data(using: .utf8)!),
             (Date(), Date().addingTimeInterval(10))
         ]
-        
+
         for (before, after) in beforeAfterValuePairs {
             let value1 = OCKOutcomeValue(before)
             let value2 = OCKOutcomeValue(after)
             testPreservationOfCodingHelper(outcome: value1)
             testPreservationOfCodingHelper(outcome: value2)
-            
+
             testEqualityOfEncodings(outcome1: value1, outcome2: value1)
             testEqualityOfEncodings(outcome1: value2, outcome2: value2)
         }
     }
-    
+
     func testCodingForIdenticalEntries() {
         let date = Date()
         let beforeAfterValuePairs: [(OCKOutcomeValueUnderlyingType, OCKOutcomeValueUnderlyingType)] = [
@@ -114,31 +113,31 @@ class TestOutcomeValue: XCTestCase {
             ("test".data(using: .utf8)!, "test".data(using: .utf8)!),
             (date, date)
         ]
-        
+
         for (left, right) in beforeAfterValuePairs {
             let value1 = OCKOutcomeValue(left)
             let value2 = OCKOutcomeValue(right)
             testEqualityOfEncodings(outcome1: value1, outcome2: value2)
         }
     }
-    
+
     func testOutcomeValuesThatArentPersistedAreNotAssociatedEvenIfTheyAreEqual() {
         let valueA = OCKOutcomeValue(10.0)
         let valueB = OCKOutcomeValue(10.0)
         XCTAssert(valueA == valueB)
         XCTAssert(!valueA.isAssociated(with: valueB))
     }
-    
+
     func testOutcomeValuesThatHaveTheSameVersionAreAssociated() {
         var valueA = OCKOutcomeValue(33.0)
         valueA.localDatabaseID = OCKLocalVersionID("abc123")
-        
+
         var valueB = OCKOutcomeValue(55.0)
         valueB.localDatabaseID = OCKLocalVersionID("abc123")
-        
+
         XCTAssert(valueA.isAssociated(with: valueB))
     }
-    
+
     func testEvolvingValue() {
         var value = OCKOutcomeValue("abc")
         let oldType = value.type
@@ -146,17 +145,17 @@ class TestOutcomeValue: XCTestCase {
         XCTAssert(oldType != value.type)
         XCTAssert(oldType == .text)
         XCTAssert(value.type == .boolean)
-        
+
         value.value = Date()
         XCTAssert(value.type == .date)
-        
+
         value.value = 10.0
         XCTAssert(value.type == .double)
-        
+
         value.value = Int(10)
         XCTAssert(value.type == .integer)
     }
-    
+
     func testEqualityOfEncodings(outcome1: OCKOutcomeValue, outcome2: OCKOutcomeValue) {
         let encoder = JSONEncoder()
         do {
@@ -167,7 +166,7 @@ class TestOutcomeValue: XCTestCase {
             XCTFail("unable to encoder or decode OCKOutcomeValue")
         }
     }
-    
+
     func testPreservationOfCodingHelper(outcome: OCKOutcomeValue) {
         let encoder = JSONEncoder()
         let decoder = JSONDecoder()

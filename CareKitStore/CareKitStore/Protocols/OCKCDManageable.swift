@@ -30,19 +30,18 @@
 
 import CoreData
 
-protocol OCKCDManageable: class, NSFetchRequestResult {
+protocol OCKCDManageable: AnyObject, NSFetchRequestResult {
     static var entityName: String { get }
     static var defaultSortDescriptors: [NSSortDescriptor] { get }
 }
 
 extension OCKCDManageable {
-    
     static var sortedFetchRequest: NSFetchRequest<Self> {
         let request = NSFetchRequest<Self>(entityName: entityName)
         request.sortDescriptors = defaultSortDescriptors
         return request
     }
-    
+
     static func sortedFetchRequest(withPredicate predicate: NSPredicate) -> NSFetchRequest<Self> {
         let request = sortedFetchRequest
         request.predicate = predicate
@@ -52,7 +51,7 @@ extension OCKCDManageable {
 
 extension OCKCDManageable where Self: NSManagedObject {
     static var entityName: String { return entity().name! }
-    
+
     /// Fetches all objects from the store matching the provided predicate. This method queries all the way down
     /// to the database layer because while we may be able to find some objects matching the query in memory, we
     /// cannot guarantee that there aren't more yet to be loaded from the database
@@ -76,18 +75,18 @@ extension OCKCDManageable where Self: OCKVersionable & NSManagedObject {
         guard Set(identifiers).count == identifiers.count else {
             throw OCKStoreError.invalidValue(reason: "Identifiers contains duplicate values! [\(identifiers)]")
         }
-        
+
         let existingPredicate = NSPredicate(format: "%K IN %@", #keyPath(OCKCDVersionedObject.identifier), identifiers)
         let existingIdentifiers = fetchFromStore(in: context, where: existingPredicate, configureFetchRequest: { request in
             request.propertiesToFetch = [#keyPath(OCKCDVersionedObject.identifier)]
         }).map { $0.identifier }
-        
+
         guard existingIdentifiers.isEmpty else {
             let objectClass = String(describing: type(of: self))
             throw OCKStoreError.invalidValue(reason: "\(objectClass) with identifiers [\(Set(existingIdentifiers))] already exists!")
         }
     }
-    
+
     static func validateUpdateIdentifiers(_ identifiers: [String], in context: NSManagedObjectContext) throws {
         guard Set(identifiers).count == identifiers.count else {
             throw OCKStoreError.invalidValue(reason: "Identifiers contains duplicate values! [\(identifiers)]")

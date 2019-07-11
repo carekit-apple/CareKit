@@ -28,56 +28,55 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import UIKit
+import AuthenticationServices
 import CareKit
 
 class RootViewController: UITableViewController {
-    
     private enum Constants {
         static let cellID = "cell"
         static let untrackedTaskID = "nausea"
         static let trackedTaskID = "doxylamine"
         static let contactID = "lexi-torres"
     }
-    
-    private let storeManager: OCKSynchronizedStoreManager<OCKStore> = {
-        let store = OCKStore(name: "carekit-catalog", type: .inMemory)
-        return OCKSynchronizedStoreManager(wrapping: store)
-    }()
-    
+
+    private var storeManager: OCKSynchronizedStoreManager<OCKStore>?
+
     private enum Sections: String, CaseIterable {
         case task, event, contact, chart, lists
     }
-    
+
     private enum Lists: String, CaseIterable {
         case tasks, contacts
     }
-    
-    private var isFillingDummyData = true
+
+    private var dataIsReady = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        storeManager.store.fillWithDummyData { [weak self] in
-            self?.isFillingDummyData = false
-            self?.tableView.reloadData()
-        }
-        
+
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: Constants.cellID)
         tableView.tableFooterView = UIView()
         clearsSelectionOnViewWillAppear = true
-        
+
         navigationController?.navigationBar.prefersLargeTitles = true
         title = "CareKit Catalog"
+        
+        storeManager = OCKSynchronizedStoreManager(wrapping: OCKStore(name: "catalog", type: .inMemory))
+        storeManager?.store.fillWithDummyData { [weak self] in
+            guard let self = self else { return }
+            self.dataIsReady = true
+            self.tableView.reloadData()
+        }
     }
-    
+
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return isFillingDummyData ? 0 : Sections.allCases.count
+        return dataIsReady ? Sections.allCases.count : 0
     }
-    
+
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return Sections.allCases[section].rawValue
     }
-    
+
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch Sections.allCases[section] {
         case .task: return OCKTaskViewController<OCKStore>.Style.allCases.count
@@ -87,7 +86,7 @@ class RootViewController: UITableViewController {
         case .lists: return Lists.allCases.count
         }
     }
-    
+
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: Constants.cellID, for: indexPath)
         switch Sections.allCases[indexPath.section] {
@@ -99,10 +98,11 @@ class RootViewController: UITableViewController {
         }
         return cell
     }
-    
+
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let storeManager = storeManager else { return }
         var viewController: UIViewController
-        
+
         let section = Sections.allCases[indexPath.section]
         switch section {
         case .task:
@@ -110,32 +110,32 @@ class RootViewController: UITableViewController {
             let taskCard = OCKTaskViewController.makeViewController(style: style, storeManager: storeManager,
                                                                     taskIdentifier: Constants.trackedTaskID, eventQuery: .today)
             viewController = ContainerViewController(childViewController: taskCard)
-            
+
         case .event:
             let style = OCKEventViewController<OCKStore>.Style.allCases[indexPath.row]
             let taskIdentifier = style == .simpleLog ? Constants.untrackedTaskID : Constants.trackedTaskID
             let eventCard = OCKEventViewController.makeViewController(style: style, storeManager: storeManager,
                                                                       taskIdentifier: taskIdentifier, eventQuery: .today)
             viewController = ContainerViewController(childViewController: eventCard)
-            
+
         case .contact:
             let style = OCKContactViewController<OCKStore>.Style.allCases[indexPath.row]
             let contactCard = OCKContactViewController.makeViewController(style: style, storeManager: storeManager,
                                                                           contactIdentifier: Constants.contactID)
             viewController = ContainerViewController(childViewController: contactCard)
-            
+
         case .chart:
             let style = OCKCartesianGraphView.PlotType.allCases[indexPath.row]
-            let graphCard = makeGraphViewController(withStyle: style)
+            let graphCard = makeGraphViewController(withStyle: style, storeManager: storeManager)
             viewController = ContainerViewController(childViewController: graphCard)
-        
+
         case .lists:
             switch Lists.allCases[indexPath.row] {
             case .tasks: viewController = UINavigationController(rootViewController: OCKDailyTasksPageViewController(storeManager: storeManager))
             case .contacts: viewController = UINavigationController(rootViewController: OCKContactsListViewController(storeManager: storeManager))
             }
         }
-        
+
         if section == .lists {
             present(viewController, animated: true, completion: nil)
         } else {
@@ -143,8 +143,9 @@ class RootViewController: UITableViewController {
         }
         clearSelection()
     }
-        
-    private func makeGraphViewController(withStyle style: OCKCartesianGraphView.PlotType) -> OCKCartesianChartViewController<OCKStore> {
+
+    private func makeGraphViewController(withStyle style: OCKCartesianGraphView.PlotType,
+                                         storeManager: OCKSynchronizedStoreManager<OCKStore>) -> OCKCartesianChartViewController<OCKStore> {
         let markerSize: CGFloat = style == .bar ? 10 : 2
         let startOfDay = Calendar.current.startOfDay(for: Date())
         let configurations = [
@@ -161,7 +162,7 @@ class RootViewController: UITableViewController {
         graphCard.chartView.headerView.titleLabel.text = Constants.trackedTaskID.capitalized
         return graphCard
     }
-    
+
     private func clearSelection() {
         if let selectionPath = self.tableView.indexPathForSelectedRow {
             self.tableView.deselectRow(at: selectionPath, animated: true)

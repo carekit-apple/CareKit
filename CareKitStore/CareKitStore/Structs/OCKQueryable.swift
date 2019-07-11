@@ -50,44 +50,43 @@ public protocol OCKDateIntervalQueryable: OCKDateQueryable {
     
     /// The date that the query begins on.
     var start: Date { get }
-    
+
     /// The date that the query ends on.
     var end: Date { get }
-    
+
     /// Create a new query with a start and end date.
     init(start: Date, end: Date)
 }
 
 public extension OCKDateIntervalQueryable {
-    
     /// Initialize using a date internal.
     ///
     /// - Parameter dateInterval: A  date interval specifying the range in which objects should be returned.
     init(dateInterval: DateInterval) {
         self = Self(start: dateInterval.start, end: dateInterval.end)
     }
-    
+
     /// Initialize for a given date.
     init(for date: Date) {
         self = Self.dayOf(date: date)
     }
-    
+
     init(from query: OCKDateIntervalQueryable) {
         self = Self(start: query.start, end: query.end)
     }
-    
+
     /// - Returns: A query covering full extent of the current week.
     static var thisWeek: Self {
         return .weekOf(date: Date())
     }
-    
+
     /// Builds a query that spans the full week of the date given.
     /// - Parameter date: A date from a week in which the query should return objects.
     /// - Returns: A query covering the full extent of the week that the given date fall in.
     static func weekOf(date: Date) -> Self {
         return Self(dateInterval: Calendar.current.week(of: date))
     }
-    
+
     /// Builds a query that spans the full date of the date given.
     /// - Parameter date: A date on which the query should return objects.
     /// - Returns: A query covering the full extent of the day the given date falls on.

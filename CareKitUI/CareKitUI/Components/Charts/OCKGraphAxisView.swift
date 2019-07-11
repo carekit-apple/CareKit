@@ -31,20 +31,19 @@
 import UIKit
 
 internal class OCKGraphAxisView: UIView {
-    
     internal var axisMarkers = [String]() {
         didSet { redrawLabels() }
     }
-    
+
     internal var selectedIndex: Int? {
         didSet { redrawLabels() }
     }
-    
+
     private var tickViews = [OCKCircleLabelView]()
-    
+
     private func redrawLabels() {
         tickViews.forEach { $0.removeFromSuperview() }
-        tickViews = axisMarkers.enumerated().map { (index, text) in
+        tickViews = axisMarkers.enumerated().map { index, text in
             let view = OCKCircleLabelView(textStyle: .callout)
             view.frame = frameForMarker(atIndex: index)
             view.label.text = text
@@ -54,7 +53,7 @@ internal class OCKGraphAxisView: UIView {
         }
         tickViews.forEach(addSubview)
     }
-    
+
     private func frameForMarker(atIndex index: Int) -> CGRect {
         guard !axisMarkers.isEmpty else { return .zero }
         guard axisMarkers.count > 1 else { return bounds }
@@ -65,50 +64,50 @@ internal class OCKGraphAxisView: UIView {
         let rect = CGRect(origin: origin, size: size)
         return rect
     }
-    
-    internal override func layoutSubviews() {
+
+    override internal func layoutSubviews() {
         super.layoutSubviews()
-        tickViews.enumerated().forEach { (index, view) in
+        tickViews.enumerated().forEach { index, view in
             view.frame = frameForMarker(atIndex: index)
         }
     }
 }
 
 private class OCKCircleLabelView: UIView {
+    let label: OCKLabel
 
-    internal let label: OCKLabel
-    
-    internal var circleLayer: CAShapeLayer {
+    var circleLayer: CAShapeLayer {
         guard let layer = layer as? CAShapeLayer else { fatalError("Unsupported type.") }
         return layer
     }
-    
+
     override class var layerClass: AnyClass {
         return CAShapeLayer.self
     }
-    
+
     override func tintColorDidChange() {
         super.tintColorDidChange()
         circleLayer.fillColor = isSelected ? tintColor.cgColor : UIColor.clear.cgColor
     }
-    
+
     var isSelected: Bool = false {
         didSet {
             label.textColor = isSelected ? .white : .darkText
             circleLayer.fillColor = isSelected ? tintColor.cgColor : UIColor.clear.cgColor
         }
     }
-    
+
     init(textStyle: UIFont.TextStyle) {
         self.label = OCKLabel(textStyle: .caption2, weight: .medium)
         super.init(frame: .zero)
         setup()
     }
-    
+
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     private func setup() {
         addSubview(label)
         label.textColor = .white
@@ -120,14 +119,14 @@ private class OCKCircleLabelView: UIView {
             label.heightAnchor.constraint(lessThanOrEqualTo: heightAnchor)
         ])
     }
-    
+
     override func layoutSubviews() {
         super.layoutSubviews()
         let padding: CGFloat = 4.0
         let maxDimension = max(label.intrinsicContentSize.width, label.intrinsicContentSize.height) + padding
         let size = CGSize(width: maxDimension, height: maxDimension)
         let origin = CGPoint(x: label.center.x - maxDimension / 2, y: label.center.y - maxDimension / 2)
-        
+
         circleLayer.path = UIBezierPath(ovalIn: CGRect(origin: origin, size: size)).cgPath
         circleLayer.fillColor = isSelected ? tintColor.cgColor : UIColor.clear.cgColor
     }

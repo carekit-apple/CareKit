@@ -28,38 +28,37 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Foundation
 import CareKitStore
+import Foundation
 
 internal struct OCKScheduleFormatter<Task: OCKTaskConvertible & Equatable, Outcome: OCKOutcomeConvertible & Equatable> {
-    
     private let timeFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.timeStyle = .short
         return formatter
     }()
-    
+
     private let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "M/d"
         return formatter
     }()
-    
+
     func scheduleLabel(for events: [OCKEvent<Task, Outcome>]) -> String {
         return [completionLabel(for: events), dateLabel(for: events)]
             .compactMap { $0 }
             .joined(separator: " ")
     }
-    
+
     func scheduleLabel(for event: OCKEvent<Task, Outcome>) -> String {
         return [
             timeLabel(for: event),
             dateLabel(forStart: event.scheduleEvent.start, end: event.scheduleEvent.end)
-            ]
+        ]
             .compactMap { $0 }
             .joined(separator: " ")
     }
-    
+
     func timeLabel(for event: OCKEvent<Task, Outcome>) -> String {
         if event.scheduleEvent.element.isAllDay {   // The event is all day
             return "all day"
@@ -75,7 +74,7 @@ internal struct OCKScheduleFormatter<Task: OCKTaskConvertible & Equatable, Outco
         let label = timeFormatter.string(from: event.scheduleEvent.start).description
         return label
     }
-    
+
     private func dateLabel(for events: [OCKEvent<Task, Outcome>]) -> String? {
         guard !events.isEmpty else { return nil }
         if events.count > 1 {
@@ -84,7 +83,7 @@ internal struct OCKScheduleFormatter<Task: OCKTaskConvertible & Equatable, Outco
         }
         return dateLabel(forStart: events.first!.scheduleEvent.start, end: events.last!.scheduleEvent.end)
     }
-    
+
     private func dateLabel(forStart start: Date, end: Date) -> String? {
         let datesAreInSameDay = Calendar.current.isDate(start, inSameDayAs: end)
         if datesAreInSameDay {
@@ -93,7 +92,7 @@ internal struct OCKScheduleFormatter<Task: OCKTaskConvertible & Equatable, Outco
         }
         return "from \(label(for: start)) to \(label(for: end))"
     }
-    
+
     private func label(for date: Date) -> String {
         if Calendar.current.isDateInToday(date) {
             return "today"
@@ -101,7 +100,7 @@ internal struct OCKScheduleFormatter<Task: OCKTaskConvertible & Equatable, Outco
         let label = dateFormatter.string(from: date)
         return label
     }
-    
+
     private func completionLabel(for events: [OCKEvent<Task, Outcome>]) -> String? {
         guard !events.isEmpty else { return nil }
         let completed = events.filter { $0.outcome != nil }.count

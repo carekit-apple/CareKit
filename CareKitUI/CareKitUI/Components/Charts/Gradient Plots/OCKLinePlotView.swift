@@ -33,12 +33,11 @@ import UIKit
 /// Interactable line graph. The difference between this and `OCKLineGraphLayer` is that this has the
 /// ability to respond to touches
 internal class OCKLinePlotView: OCKGradientPlotView {
-
-    open override func resetLayers() {
+    override func resetLayers() {
         let graphRect = graphBounds()
         let offsets = computeLineOffsets()
         resolveNumberOfLayers()
-        dataSeries.enumerated().forEach { (index, series) in
+        dataSeries.enumerated().forEach { index, series in
             guard let layer = seriesLayers[index] as? OCKLineLayer else { fatalError("Unsupported type.") }
             layer.dataPoints = series.dataPoints
             layer.offset = offsets[index]
@@ -49,7 +48,7 @@ internal class OCKLinePlotView: OCKGradientPlotView {
             layer.frame = bounds
         }
     }
-    
+
     // Adjust the x coordinates of the data series so that two identical lines are slightly offset, so as to be distinguishable.
     private func computeLineOffsets() -> [CGSize] {
         guard !dataSeries.isEmpty else { return [] }
@@ -62,7 +61,7 @@ internal class OCKLinePlotView: OCKGradientPlotView {
         }
         return offsets
     }
-    
+
     private func resolveNumberOfLayers() {
         while seriesLayers.count < dataSeries.count {
             let newLayer = OCKLineLayer()

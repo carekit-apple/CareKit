@@ -34,13 +34,13 @@ public struct OCKLocalVersionID: Equatable, Comparable, Hashable, Codable, Custo
     public static func < (lhs: OCKLocalVersionID, rhs: OCKLocalVersionID) -> Bool {
         return lhs.stringValue < rhs.stringValue
     }
-    
+
     public var description: String {
         return stringValue
     }
-    
+
     public let stringValue: String
-    
+
     public init(_ id: String) {
         self.stringValue = id
     }

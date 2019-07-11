@@ -38,23 +38,22 @@ import Foundation
 ///         combination with the offset method, building up complex schedules can be performed quite
 ///         efficiently.
 public struct OCKSchedule: Codable, Equatable, OCKSchedulable {
-    
     /// The constituent components this schedule was built from.
     public let elements: [OCKScheduleElement]
-    
+
     /// Create a new schedule by combining an array of other `OCKSchedule` objects.
     public init(composing schedules: [OCKSchedulable]) {
         assert(!schedules.isEmpty, "You cannot create a schedule with 0 elements")
         self.elements = schedules.flatMap { $0.elements }
     }
-    
+
     /// Returns the Nth event of this schedule, or nil if the schedule ends before the Nth occurence.
     ///
     /// - Parameter occurence: The Nth occurence.
     public subscript(occurence: Int) -> OCKScheduleEvent? {
         get { return event(forOccurenceIndex: occurence) }
     }
-    
+
     /// The date of the first event of this schedule.
     ///
     /// - Note: This operation has an upperbound complexity of O(NlogN).
@@ -63,7 +62,7 @@ public struct OCKSchedule: Codable, Equatable, OCKSchedulable {
             else { fatalError("OCKSchedule should always have at least 1 element!") }
         return earliestStartDate
     }
-    
+
     /// The date of the last event of this schedule, or nil if the schedule is of infinite length.
     ///
     /// - Note: This operation has an upperbound complexity of O(NlogN)
@@ -74,7 +73,7 @@ public struct OCKSchedule: Codable, Equatable, OCKSchedulable {
         guard let lastEndDate = finiteEndDates.last else { fatalError("OCKSchedule should always have at least 1 element!") }
         return lastEndDate
     }
-    
+
     public func events(from start: Date, to end: Date) -> [OCKScheduleEvent] {
         var allEvents = elements
             .flatMap { $0.events(from: self.start, to: end) }
@@ -84,7 +83,7 @@ public struct OCKSchedule: Codable, Equatable, OCKSchedulable {
         }
         return allEvents.filter { $0.start >= start }
     }
-    
+
     /// Create a new schedule by shifting this schedule.
     ///
     /// - Parameter dateComponents: The amount of time to offset this schedule by.
@@ -92,10 +91,10 @@ public struct OCKSchedule: Codable, Equatable, OCKSchedulable {
     public func offset(by dateComponents: DateComponents) -> OCKSchedule {
         return OCKSchedule(composing: elements.compactMap { $0.offset(by: dateComponents) })
     }
-    
+
     /// Create a schedule that happens once per day, every day, at a fixed time.
     public static func dailyAtTime(hour: Int, minutes: Int, start: Date, end: Date?,
-                                   text: String?, duration: TimeInterval = 3600,
+                                   text: String?, duration: TimeInterval = 3_600,
                                    targetValues: [OCKOutcomeValue] = []) -> OCKSchedule {
         let interval = DateComponents(day: 1)
         let startTime = Calendar.current.date(bySettingHour: hour, minute: minutes, second: 0, of: start)!
@@ -103,8 +102,9 @@ public struct OCKSchedule: Codable, Equatable, OCKSchedulable {
                                          text: text, targetValues: targetValues, duration: duration)
         return OCKSchedule(composing: [element])
     }
-    
+
     /// Create a schedule that happens once per week, every week, at a fixed time.
+    
     public static func weeklyAtTime(weekday: Int, hours: Int, minutes: Int, start: Date, end: Date?, targetValues: [OCKOutcomeValue],
                                     text: String?, duration: TimeInterval = 0) -> OCKSchedule {
         let interval = DateComponents(weekOfYear: 1)
@@ -115,6 +115,7 @@ public struct OCKSchedule: Codable, Equatable, OCKSchedulable {
         return OCKSchedule(composing: [element])
     }
     
+
     /// Computes the date of the Nth occurence of a schedule element. If the Nth occurence is beyond the end date, then nil will be returned.
     public func event(forOccurenceIndex occurence: Int) -> OCKScheduleEvent? {
         // This could be optimized. It is not an efficient algorithm.

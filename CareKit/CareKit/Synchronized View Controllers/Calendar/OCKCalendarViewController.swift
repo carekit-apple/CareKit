@@ -28,89 +28,82 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import UIKit
 import CareKitStore
 import CareKitUI
+import UIKit
 
-internal protocol OCKCalendarViewControllerDelegate: class {
+internal protocol OCKCalendarViewControllerDelegate: AnyObject {
     func calendarViewController<S: OCKStoreProtocol>(
         _ calendarViewController: OCKCalendarViewController<S>,
         didFailWithError error: Error)
 }
 
 internal class OCKCalendarViewController<Store: OCKStoreProtocol>: OCKSynchronizedViewController<[OCKCompletionRingButton.CompletionState]> {
-    
     // MARK: Properties
-    
-    public enum Style: String, CaseIterable {
+
+    enum Style: String, CaseIterable {
         case week
     }
-    
+
     public weak var delegate: OCKCalendarViewControllerDelegate?
     public let adherenceQuery: OCKAdherenceQuery
     public let storeManager: OCKSynchronizedStoreManager<Store>?
     
     // Styled initializers
-    
+
     public static func makeCalendar(style: Style, storeManager: OCKSynchronizedStoreManager<Store>?,
                                     adherenceQuery: OCKAdherenceQuery) -> OCKCalendarViewController<Store> {
         switch style {
         case .week: return OCKWeekCalendarViewController<Store>(storeManager: storeManager, adherenceQuery: adherenceQuery)
         }
     }
-    
+
     // Custom view initializer
-    
+
     internal init(
         storeManager: OCKSynchronizedStoreManager<Store>?,
         adherenceQuery: OCKAdherenceQuery,
         loadCustomView: @escaping () -> UIView,
         modelDidChange: @escaping CustomModelDidChange) {
-        
         self.storeManager = storeManager
         self.adherenceQuery = adherenceQuery
         super.init(loadCustomView: loadCustomView, modelDidChange: modelDidChange)
     }
-    
+
     // Bindable view initializers
-    
+
     internal init<View: UIView & OCKBindable>(
         storeManager: OCKSynchronizedStoreManager<Store>?,
         adherenceQuery: OCKAdherenceQuery,
         loadDefaultView: @escaping () -> View,
         modelDidChange: ModelDidChange? = nil)
     where View.Model == [OCKCompletionRingButton.CompletionState] {
-            
         self.storeManager = storeManager
         self.adherenceQuery = adherenceQuery
         super.init(loadDefaultView: loadDefaultView, modelDidChange: modelDidChange)
     }
-    
-    required public init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
+
     // MARK: Life cycle
-    open override func viewDidLoad() {
+    override func viewDidLoad() {
         super.viewDidLoad()
         fetchAdherence()
     }
-    
+
     // MARK: Methods
-    
+
     override internal func subscribe() {
         super.subscribe()
-        
+
         subscription = storeManager?.notificationPublisher
             .compactMap { $0 as? OCKOutcomeNotification<Store> }
-            .sink(receiveValue: { [weak self] (task) in
+            .sink(receiveValue: { [weak self] _ in
                 self?.fetchAdherence()
             }
         )
     }
-    
-    private func fetchAdherence() {
-        storeManager?.store.fetchAdherence(query: adherenceQuery) { [weak self] (result) in
+
+    internal func fetchAdherence() {
+        storeManager?.store.fetchAdherence(query: adherenceQuery) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .failure(let error):
@@ -121,9 +114,9 @@ internal class OCKCalendarViewController<Store: OCKStoreProtocol>: OCKSynchroniz
             }
         }
     }
-    
+
     private func convertAdherenceToCompletionRingState(adherence: [OCKAdherence]) -> [OCKCompletionRingButton.CompletionState] {
-        return zip(adherenceQuery.dates(), adherence).map { (date, adherence) in
+        return zip(adherenceQuery.dates(), adherence).map { date, adherence in
             let isInFuture = date > Date() && !Calendar.current.isDateInToday(date)
             switch adherence {
             case .noTasks: return .dimmed

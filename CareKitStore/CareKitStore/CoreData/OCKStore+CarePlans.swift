@@ -28,8 +28,8 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Foundation
 import CoreData
+import Foundation
 
 extension OCKStore {
    
@@ -44,11 +44,10 @@ extension OCKStore {
             } catch {
                 self.context.rollback()
                 queue.async { completion(.failure(.fetchFailed(reason: "Building predicate failed: \(error.localizedDescription)"))) }
-                
             }
         }
     }
-    
+
     public func addCarePlans(_ plans: [OCKCarePlan], queue: DispatchQueue = .main,
                              completion: ((Result<[OCKCarePlan], OCKStoreError>) -> Void)? = nil) {
         context.perform {
@@ -69,7 +68,7 @@ extension OCKStore {
             }
         }
     }
-    
+
     public func updateCarePlans(_ plans: [OCKCarePlan], queue: DispatchQueue = .main,
                                 completion: ((Result<[OCKCarePlan], OCKStoreError>) -> Void)? = nil) {
         context.perform {
@@ -79,7 +78,7 @@ extension OCKStore {
                 let updatedPlans = self.configuration.updatesCreateNewVersions ?
                     try self.performVersionedUpdate(values: plans, addNewVersion: self.addCarePlan) :
                     try self.performUnversionedUpdate(values: plans, update: self.copyPlan)
-                
+
                 try self.context.save()
                 let plans = updatedPlans.map(self.makePlan)
                 queue.async {
@@ -94,15 +93,15 @@ extension OCKStore {
             }
         }
     }
-    
+
     public func deleteCarePlans(_ plans: [OCKCarePlan], queue: DispatchQueue = .main,
                                 completion: ((Result<[OCKCarePlan], OCKStoreError>) -> Void)? = nil) {
         context.perform {
             do {
-                let deletedPlans = try self.performUnversionedUpdate(values: plans) { (_, persistablePlan) in
+                let deletedPlans = try self.performUnversionedUpdate(values: plans) { _, persistablePlan in
                     persistablePlan.deletedAt = Date()
                 }.map(self.makePlan)
-    
+
                 try self.context.save()
                 queue.async {
                     self.delegate?.store(self, didDeleteCarePlans: deletedPlans)
@@ -116,9 +115,9 @@ extension OCKStore {
             }
         }
     }
-    
+
     // MARK: Private
-    
+
     /// - Remark: This does not commit the transaction. After calling this function one or more times, you must call `context.save()` in order to
     /// persist the changes to disk. This is an optimization to allow batching.
     /// - Remark: You should verify that the object does not already exist in the database and validate its values before calling this method.
@@ -127,7 +126,7 @@ extension OCKStore {
         copyPlan(plan, to: persistablePlan)
         return persistablePlan
     }
-    
+
     /// - Remark: This method is intended to create a value type struct from a *persisted* NSManagedObject. Calling this method with an
     /// object that is not yet commited is a programmer error.
     private func makePlan(from object: OCKCDCarePlan) -> OCKCarePlan {
@@ -136,26 +135,27 @@ extension OCKStore {
         plan.copyVersionedValues(from: object)
         return plan
     }
-    
+
     private func copyPlan(_ plan: OCKCarePlan, to object: OCKCDCarePlan) {
         object.copyVersionInfo(from: plan)
         object.allowsMissingRelationships = allowsEntitiesWithMissingRelationships
         object.title = plan.title
         if let patientId = plan.patientID { object.patient = try? fetchObject(havingLocalID: patientId) }
     }
-    
+
     private func buildPredicate(for anchor: OCKCarePlanAnchor?, query: OCKCarePlanQuery?) throws -> NSPredicate {
         return NSCompoundPredicate(andPredicateWithSubpredicates: [
             try buildSubPredicate(for: anchor),
-            buildSubPredicate(for: query)
+            buildSubPredicate(for: query),
+            NSPredicate(format: "%K == nil", #keyPath(OCKCDVersionedObject.deletedAt))
         ])
     }
-    
+
     private func buildSubPredicate(for anchor: OCKCarePlanAnchor?) throws -> NSPredicate {
-        guard let anchor = anchor else { return OCKCDCarePlan.headerPredicate() }
+        guard let anchor = anchor else { return NSPredicate(value: true) }
         switch anchor {
         case .carePlanIdentifiers(let planIdentifiers):
-            return OCKCDCarePlan.headerPredicate(for: planIdentifiers)
+            return NSPredicate(format: "%K IN %@", #keyPath(OCKCDVersionedObject.identifier), planIdentifiers)
         case .carePlanVersions(let planVersionIDs):
             return NSPredicate(format: "self IN %@", try planVersionIDs.map(objectID))
         case .patientVersions(let patientVersionIDs):
@@ -164,7 +164,7 @@ extension OCKStore {
             return NSPredicate(format: "%K IN %@", #keyPath(OCKCDCarePlan.patient.identifier), patientIdentifiers)
         }
     }
-    
+
     private func buildSubPredicate(for query: OCKCarePlanQuery? = nil) -> NSPredicate {
         guard let date = query?.date else { return NSPredicate(value: true) }
         return OCKCDCarePlan.datePredicate(on: date)

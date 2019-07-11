@@ -32,12 +32,11 @@ import UIKit
 
 /// A graph that displays one or more vertical bar plots.
 internal class OCKBarPlotView: OCKGradientPlotView {
-    
     override internal func resetLayers() {
         let graphRect = graphBounds()
         let offsets = computeBarOffsets()
         resolveNumberOfLayers()
-        dataSeries.enumerated().forEach { (index, series) in
+        dataSeries.enumerated().forEach { index, series in
             guard let layer = seriesLayers[index] as? OCKBarLayer else { fatalError("Unsupported type.") }
             layer.dataPoints = series.dataPoints
             layer.horizontalOffset = offsets[index]
@@ -48,21 +47,21 @@ internal class OCKBarPlotView: OCKGradientPlotView {
             layer.frame = bounds
         }
     }
-    
+
     // Adjust the x coordinates of the data series so that the bar charts line up next to one another.
     // This does take into account that bars might have different widths.
     private func computeBarOffsets() -> [CGFloat] {
         let barSizes = dataSeries.map { $0.size }
         let groupWidth = barSizes.reduce(0, +)
         let offset = -groupWidth / 2
-        let adjustments = barSizes.enumerated().map { (seriesIndex, size) -> CGFloat in
+        let adjustments = barSizes.enumerated().map { seriesIndex, size -> CGFloat in
             let combinedWidthOfPreviousBars = barSizes[0..<seriesIndex].reduce(0, +)
             let shift = offset + combinedWidthOfPreviousBars + size / 2
             return shift
         }
         return adjustments
     }
-    
+
     private func resolveNumberOfLayers() {
         while seriesLayers.count < dataSeries.count {
             let newLayer = OCKBarLayer()

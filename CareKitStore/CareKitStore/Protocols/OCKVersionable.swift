@@ -33,7 +33,6 @@ import Foundation
 /// Any value or object that conforms to `OCKIdentifiable` has the ability to tell if another object of the same
 /// type is a different version of itself, or an entirely unrelated object.
 public protocol OCKIdentifiable {
-    
     /// `isAssociated` returns true if the other object or value represents the same entity as this object or value.
     /// For example, a versioned object like `OCKTask` will return true if compared with a previous or future version
     ///  of itself, but false if compared to any other task.
@@ -45,7 +44,6 @@ public protocol OCKIdentifiable {
 
 /// Any value or object that can be persisted to a local database is required to conform to this protocol
 public protocol OCKLocalPersistable: OCKIdentifiable {
-    
     /// A unique identifier used by the local database. It will typically be a primary key or UUID provided
     /// by the underlying database. It is not expected that it be meaningful to humans.
     var localDatabaseID: OCKLocalVersionID? { get }
@@ -64,18 +62,17 @@ internal protocol OCKLocalPersistableSettable: OCKLocalPersistable {
 
 /// All value or objects that are versionable should conform to this protocol.
 public protocol OCKVersionable: OCKLocalPersistable {
-    
     /// A user-defined identifier that is the same across all versions of a versioned object or value.
     /// The identifier is generally expected to be meaningful to humans, but is not required to be.
     var identifier: String { get }
     
     /// A database generated identifier that uniquely identifier this version of the object or value.
     var versionID: OCKLocalVersionID? { get }
-    
+
     /// A database generated identifier that uniquely identifies the next version of this object or value.
     /// If there is no next version, then it will be nil.
     var nextVersionID: OCKLocalVersionID? { get }
-    
+
     /// A database generated identifier that uniquely identifies the previous version of this object or value.
     /// If there is no previous version, then it will be nil.
     var previousVersionID: OCKLocalVersionID? { get }
@@ -85,16 +82,16 @@ public extension OCKVersionable {
     func isAssociated(with other: Self) -> Bool {
         return identifier == other.identifier
     }
-    
+
     var versionID: OCKLocalVersionID? {
         return localDatabaseID
     }
-    
+
     /// True if a newer version exists.
     var hasNextVersion: Bool {
         return nextVersionID != nil
     }
-    
+
     /// True if a previous version exists.
     var hasPreviousVersion: Bool {
         return previousVersionID != nil
@@ -107,9 +104,11 @@ internal protocol OCKVersionSettable: OCKVersionable, OCKLocalPersistableSettabl
     var previousVersionID: OCKLocalVersionID? { get set }
 }
 
+
 extension OCKVersionSettable {
     public var versionID: OCKLocalVersionID? {
         get { return localDatabaseID }
         set { localDatabaseID = newValue }
     }
 }
+

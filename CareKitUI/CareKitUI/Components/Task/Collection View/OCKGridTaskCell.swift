@@ -33,9 +33,8 @@ import UIKit
 /// A cell used in the `collectionView` of the `OCKGridTaskView`. The cell shows a circular `completionButton` that has an image and a
 /// `titleLabel`. The default image is a checkmark.
 open class OCKGridTaskCell: UICollectionViewCell {
-    
     // MARK: Properties
-    
+
     /// Circular button that shows an image and `titleLabel`. The default image is a checkmark when selected.
     /// The text for the `.normal` state will automatically adapt to the `tintColor`.
     public let completionButton: OCKButton = {
@@ -43,47 +42,47 @@ open class OCKGridTaskCell: UICollectionViewCell {
         button.isUserInteractionEnabled = false
         return button
     }()
-    
+
     // MARK: Life cycle
-    
+
     override public init(frame: CGRect) {
         super.init(frame: frame)
         setup()
     }
-    
+
     public required init?(coder: NSCoder) {
         super.init(coder: coder)
         setup()
     }
-    
-    open override func prepareForReuse() {
+
+    override open func prepareForReuse() {
         super.prepareForReuse()
         completionButton.isSelected = false
         completionButton.setTitle(nil, for: .normal)
         completionButton.setTitle(nil, for: .selected)
     }
-    
+
     // MARK: Methods
-    
-    open override func tintColorDidChange() {
+
+    override open func tintColorDidChange() {
         completionButton.setTitleColor(tintColor, for: .normal)
     }
-    
+
     private func setup() {
         styleSubviews()
         addSubviews()
         constrainSubviews()
     }
-    
+
     private func styleSubviews() {
         preservesSuperviewLayoutMargins = true
         tintColorDidChange()
     }
-    
+
     private func addSubviews() {
         contentView.addSubview(completionButton)
     }
-    
+
     private func constrainSubviews() {
         [contentView, completionButton].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
         NSLayoutConstraint.activate([
@@ -92,7 +91,7 @@ open class OCKGridTaskCell: UICollectionViewCell {
             completionButton.topAnchor.constraint(equalTo: contentView.topAnchor),
             completionButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             contentView.bottomAnchor.constraint(equalTo: completionButton.bottomAnchor),
-            
+
             contentView.leadingAnchor.constraint(equalTo: leadingAnchor),
             contentView.trailingAnchor.constraint(greaterThanOrEqualTo: trailingAnchor),
             contentView.topAnchor.constraint(equalTo: topAnchor),

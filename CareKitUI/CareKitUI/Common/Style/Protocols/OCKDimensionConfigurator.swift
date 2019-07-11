@@ -37,17 +37,17 @@ public protocol OCKDimensionConfigurator {
     var checkViewLineWidth: CGFloat { get }
     var imageHeight1: CGFloat { get }
     var stackSpacing1: CGFloat { get }
-    
+
     var buttonHeight3: CGFloat { get }
     var buttonHeight2: CGFloat { get }
     var buttonHeight1: CGFloat { get }
-    
+
     var iconHeight5: CGFloat { get }
     var iconHeight4: CGFloat { get }
     var iconHeight3: CGFloat { get }
     var iconHeight2: CGFloat { get }
     var iconHeight1: CGFloat { get }
-    
+
     var linePlotDefaultMarkerSize: CGFloat { get }
     var barPlotDefaultMarkerSize: CGFloat { get }
     var scatterPlotDefaultMarkerSize: CGFloat { get }
@@ -59,17 +59,17 @@ public extension OCKDimensionConfigurator {
     var checkViewLineWidth: CGFloat { return 3 }
     var imageHeight1: CGFloat { return 150 }
     var stackSpacing1: CGFloat { return 8 }
-    
+
     var buttonHeight3: CGFloat { return 20 }
     var buttonHeight2: CGFloat { return 40 }
     var buttonHeight1: CGFloat { return 60 }
-    
+
     var iconHeight5: CGFloat { return 8 }
     var iconHeight4: CGFloat { return 14 }
     var iconHeight3: CGFloat { return 18 }
     var iconHeight2: CGFloat { return 25 }
     var iconHeight1: CGFloat { return 40 }
-    
+
     var linePlotDefaultMarkerSize: CGFloat { return 3 }
     var barPlotDefaultMarkerSize: CGFloat { return 12 }
     var scatterPlotDefaultMarkerSize: CGFloat { return 5 }

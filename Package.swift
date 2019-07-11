@@ -8,11 +8,11 @@ let package = Package(
         .library(
             name: "CareKit",
             targets: ["CareKit"]),
-        
+
         .library(
             name: "CareKitUI",
             targets: ["CareKitUI"]),
-        
+
         .library(
             name: "CareKitStore",
             targets: ["CareKitStore"])
@@ -22,20 +22,20 @@ let package = Package(
             name: "CareKit",
             dependencies: ["CareKitUI", "CareKitStore"],
             path: "CareKit/CareKit"),
-        
+
         .target(
             name: "CareKitUI",
             path: "CareKitUI/CareKitUI"),
-        
+
         .target(
             name: "CareKitStore",
             path: "CareKitStore/CareKitStore"),
-        
+
         .testTarget(
             name: "CareKitStoreTests",
             dependencies: ["CareKitStore"],
             path: "CareKitStore/CareKitStoreTests"),
-        
+
         .testTarget(
             name: "CareKitTests",
             dependencies: ["CareKit"],

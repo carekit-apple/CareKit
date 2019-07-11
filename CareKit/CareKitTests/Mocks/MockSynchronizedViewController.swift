@@ -28,10 +28,10 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+@testable import CareKit
+import Combine
 import Foundation
 import UIKit
-import Combine
-@testable import CareKit
 
 class MockBindableLabel: UILabel, OCKBindable {
     func updateView(with model: String?, animated: Bool) {
@@ -40,9 +40,8 @@ class MockBindableLabel: UILabel, OCKBindable {
 }
 
 class MockSynchronizedViewController: OCKSynchronizedViewController<String> {
-    
     var upstream: AnyPublisher<String?, Never>!
-    
+
     override func subscribe() {
         super.subscribe()
         subscription = upstream.sink { [weak self] text in

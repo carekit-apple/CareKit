@@ -35,7 +35,7 @@ class OCKCDNote: OCKCDObject {
     @NSManaged var author: String?
     @NSManaged var title: String?
     @NSManaged var content: String?
-    
+
     @NSManaged var patient: OCKCDPatient?
     @NSManaged var plan: OCKCDCarePlan?
     @NSManaged var task: OCKCDTask?

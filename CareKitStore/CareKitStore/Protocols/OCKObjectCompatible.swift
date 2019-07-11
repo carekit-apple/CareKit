@@ -31,47 +31,46 @@
 import Foundation
 
 internal protocol OCKObjectCompatible {
-    
     /// The date at which the object was first persisted to the database.
     /// It will be nil for unpersisted values and objects.
     var createdAt: Date? { get set }
-    
+
     /// The last date at which the object was updated.
     /// It will be nil for unpersisted values and objects.
     var updatedAt: Date? { get set }
-    
+
     /// The date at which the object was marked deleted.
     /// It will be nil for objects that have not been deleted.
     var deletedAt: Date? { get set }
-    
+
     /// A user-defined group identifer that can be used both for querying and sorting results.
     /// Examples may include: "medications", "exercises", "family", "males", "diabetics", etc.
     var groupIdentifier: String? { get set }
-    
+
     /// An array of user-defined tags that can be used to sort or classify objects or values.
     var tags: [String]? { get set }
-    
-    /// A unique identifier used by the local database. It's precise format will be determined
+
+    /// A unique identifier used by the local database. Its precise format will be determined
     /// by the underlying database, but it is generally not expected to be human readable.
     var internalID: OCKLocalVersionID? { get set }
-    
-    /// A unique identifier optionally used by a remote database. It's precise format will be
+
+    /// A unique identifier optionally used by a remote database. Its precise format will be
     /// determined by the remote database, but it is generally not expected to be human readable.
     var externalID: String? { get set }
-    
+
     /// A dictionary of information that can be provided by developers to support their own unique
     /// use cases.
     var userInfo: [String: String]? { get set }
-    
+
     /// Specifies where this object originated from. It could contain information about the device
-    /// used to record the data, it's software version, or the person who recorded the data.
+    /// used to record the data, its software version, or the person who recorded the data.
     var source: String? { get set }
-    
+
     /// Specifies the location of some asset associated with this object. It could be the URL for
     /// an image or video, the bundle name of a audio asset, or any other representation the
     /// developer chooses.
     var asset: String? { get set }
-    
+
     /// Any array of notes associated with this object.
     var notes: [OCKNote]? { get set }
 }

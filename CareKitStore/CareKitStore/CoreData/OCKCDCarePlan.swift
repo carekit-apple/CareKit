@@ -35,7 +35,7 @@ class OCKCDCarePlan: OCKCDVersionedObject {
     @NSManaged var patient: OCKCDPatient?
     @NSManaged var tasks: Set<OCKCDTask>
     @NSManaged var title: String
-    
+
     override func validateRelationships() throws {
         if !allowsMissingRelationships && patient == nil {
             throw OCKStoreError.invalidValue(reason: "An OCKCDCarePlan's patient relationship may not be empty")
@@ -44,7 +44,6 @@ class OCKCDCarePlan: OCKCDVersionedObject {
 }
 
 extension OCKCDCarePlan {
-    
     override func awakeFromInsert() {
         super.awakeFromInsert()
         tasks = Set()

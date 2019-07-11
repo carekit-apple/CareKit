@@ -28,18 +28,17 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import UIKit
-import Combine
 import CareKitStore
 import CareKitUI
+import Combine
+import UIKit
 
 /// Conform to this protocol to receive callbacks when important events happen inside an `OCKTaskViewController`.
-public protocol OCKTaskViewControllerDelegate: class {
-    
+public protocol OCKTaskViewControllerDelegate: AnyObject {
     /// Called when a task view controller is selected by the user.
     /// - Parameter taskViewController: The task view controller that was selected.
     func didSelect<Store: OCKStoreProtocol>(taskViewController: OCKTaskViewController<Store>)
-    
+
     /// Called when a task view controller finishes querying a task and its events.
     /// - Parameter taskViewController: The task view controller which performed the query.
     /// - Parameter task: The task that was queried.
@@ -47,7 +46,7 @@ public protocol OCKTaskViewControllerDelegate: class {
     func taskViewController<Store: OCKStoreProtocol>(_ taskViewController: OCKTaskViewController<Store>,
                                                      didFinishQuerying task: Store.Task?,
                                                      andEvents events: [Store.Event])
-    
+
     /// Called when an unhandled error is encountered in a task view controller.
     /// - Parameter taskViewController: The task view controller in which the error occurred.
     /// - Parameter error: The error that occurred.
@@ -57,11 +56,11 @@ public protocol OCKTaskViewControllerDelegate: class {
 
 public extension OCKTaskViewControllerDelegate {
     func didSelect<Store: OCKStoreProtocol>(taskViewController: OCKTaskViewController<Store>) {}
-    
+
     func taskViewController<Store: OCKStoreProtocol>(_ taskViewController: OCKTaskViewController<Store>,
                                                      didFinishQuerying task: Store.Task?,
                                                      andEvents events: [Store.Event]) {}
-    
+
     func taskViewController<Store: OCKStoreProtocol>(_ taskViewController: OCKTaskViewController<Store>,
                                                      didFailWithError error: Error) {}
 }
@@ -79,37 +78,36 @@ public extension OCKTaskViewControllerDelegate where Self: UIViewController {
 /// An abstract superclass to all synchronized view controllers that display a task and its events.
 /// It has a factory function that can be used to conveniently initialize a concreted subclass.
 open class OCKTaskViewController<Store: OCKStoreProtocol>: OCKSynchronizedViewController<[Store.Event]>, OCKTaskViewControllerDelegate {
-    
     // MARK: Properties
-    
+
     /// Specifies all the ways in which a task can be displayed.
     public enum Style: String, CaseIterable {
         /// A vertically arranged checklist of events.
         case checklist
-        
+
         /// A grid of events that adapts the number of rows and columns to fit its view.
         case grid
     }
-    
+
     /// The task currently being displayed. If the view controller is initialized with a task identifier, it will be nil until the task is fetched.
     /// If the initializer is called with a task, this value will never be nil.
     public private (set) var task: Store.Task?
-    
+
     /// An array of the events currently being displayed.
     public private (set) var events: [Store.Event] = []
-    
+
     /// The store manager used to provide synchronization.
     public let storeManager: OCKSynchronizedStoreManager<Store>
     private let taskIdentifier: String
     public let eventQuery: OCKEventQuery
-    
+
     /// If set, the delegate will receive callbacks when important events occur.
     public weak var delegate: OCKTaskViewControllerDelegate?
-    
+
     internal var detailPresentingView: UIView? { return nil }
 
     // MARK: Factory Functions
-    
+
     /// A factory function that constructs the proper subclass of `OCKTaskViewController` given a style parameter and returns
     /// it upcast to `OCKTaskViewController`.
     ///
@@ -143,36 +141,34 @@ open class OCKTaskViewController<Store: OCKStoreProtocol>: OCKSynchronizedViewCo
             return OCKGridTaskViewController<Store>(storeManager: storeManager, taskIdentifier: taskIdentifier, eventQuery: eventQuery)
         }
     }
-    
+
     // MARK: Initializers
-    
+
     internal init(
         storeManager: OCKSynchronizedStoreManager<Store>,
         task: Store.Task,
         eventQuery: OCKEventQuery,
         loadCustomView: @escaping () -> UIView,
         modelDidChange: @escaping CustomModelDidChange) {
-        
         self.task = task
         self.storeManager = storeManager
         self.taskIdentifier = task.identifier
         self.eventQuery = eventQuery
         super.init(loadCustomView: loadCustomView, modelDidChange: modelDidChange)
     }
-    
+
     internal init(
         storeManager: OCKSynchronizedStoreManager<Store>,
         taskIdentifier: String,
         eventQuery: OCKEventQuery,
         loadCustomView: @escaping () -> UIView,
         modelDidChange: @escaping CustomModelDidChange) {
-        
         self.storeManager = storeManager
         self.taskIdentifier = taskIdentifier
         self.eventQuery = eventQuery
         super.init(loadCustomView: loadCustomView, modelDidChange: modelDidChange)
     }
-        
+
     internal init<View: UIView & OCKBindable>(
         storeManager: OCKSynchronizedStoreManager<Store>,
         task: Store.Task,
@@ -186,7 +182,7 @@ open class OCKTaskViewController<Store: OCKStoreProtocol>: OCKSynchronizedViewCo
         self.eventQuery = eventQuery
         super.init(loadDefaultView: loadDefaultView, modelDidChange: modelDidChange)
     }
-    
+
     internal init<View: UIView & OCKBindable>(
         storeManager: OCKSynchronizedStoreManager<Store>,
         taskIdentifier: String,
@@ -194,19 +190,14 @@ open class OCKTaskViewController<Store: OCKStoreProtocol>: OCKSynchronizedViewCo
         loadDefaultView: @escaping () -> View,
         modelDidChange: ModelDidChange? = nil)
     where View.Model == [Store.Event] {
-            
         self.storeManager = storeManager
         self.taskIdentifier = taskIdentifier
         self.eventQuery = eventQuery
         super.init(loadDefaultView: loadDefaultView, modelDidChange: modelDidChange)
     }
-    
-    required public init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
+
     // MARK: Life cycle
-    
+
     override open func viewDidLoad() {
         super.viewDidLoad()
         delegate = self
@@ -215,15 +206,15 @@ open class OCKTaskViewController<Store: OCKStoreProtocol>: OCKSynchronizedViewCo
             detailPresentingView.isUserInteractionEnabled = true
             detailPresentingView.addGestureRecognizer(tapGesture)
         }
-        
+
         task == nil ? self.fetchTask() : self.fetchEvents()
     }
-    
+
     // MARK: Methods
-    
+
     override internal func subscribe() {
         super.subscribe()
-        let subscriptions = events.enumerated().map { (index, event) -> Cancellable? in
+        let subscriptions = events.enumerated().map { index, event -> Cancellable? in
             return storeManager.publisher(forEvent: event, categories: [.add, .update, .delete]).sink { [weak self] updatedEvent in
                 guard let self = self else { return }
                 let shouldAnimate = !self.events.isEmpty
@@ -231,12 +222,12 @@ open class OCKTaskViewController<Store: OCKStoreProtocol>: OCKSynchronizedViewCo
                 self.modelUpdated(viewModel: self.events, animated: shouldAnimate)
             }
         }
- 
+
         subscription = AnyCancellable {
             subscriptions.forEach { $0?.cancel() }
         }
     }
- 
+
     private func fetchTask() {
         guard task == nil else { return }
         storeManager.store.fetchTask(withIdentifier: taskIdentifier) { [weak self] result in
@@ -250,7 +241,7 @@ open class OCKTaskViewController<Store: OCKStoreProtocol>: OCKSynchronizedViewCo
             }
         }
     }
-    
+
     @objc
     private func presentDetailViewController() {
         delegate?.didSelect(taskViewController: self)
@@ -272,14 +263,14 @@ open class OCKTaskViewController<Store: OCKStoreProtocol>: OCKSynchronizedViewCo
             }
         }
     }
-    
+
     internal func saveNewOutcome(forEvent event: Store.Event) {
         guard let taskID = event.task.versionID else { fatalError("Task has not been persisted yet!") }
         guard event.outcome == nil else { return }   // only save one outcome
-        
+
         let outcome = OCKOutcome(taskID: taskID, taskOccurenceIndex: event.convert().scheduleEvent.occurence, values: [OCKOutcomeValue(0)])
         let customOutcome = Store.Outcome(value: outcome)
-        
+
         storeManager.store.addOutcome(customOutcome) { [weak self] result in
             guard let self = self else { return }
             switch result {
@@ -291,7 +282,7 @@ open class OCKTaskViewController<Store: OCKStoreProtocol>: OCKSynchronizedViewCo
             }
         }
     }
-    
+
     internal func deleteOutcome(forEvent event: Store.Event) {
         if let outcome = event.outcome {
             storeManager.store.deleteOutcome(outcome) { [weak self] result in

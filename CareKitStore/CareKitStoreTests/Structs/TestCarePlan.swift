@@ -28,18 +28,17 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+@testable import CareKitStore
 import Foundation
 import XCTest
-@testable import CareKitStore
 
 class TestCarePlan: XCTestCase {
-    
     func testUnpersistedCarePlansAreAssociatedIfTheirIdentifiersMatch() {
         let planA = OCKCarePlan(identifier: "abc123", title: "PlanA", patientID: nil)
         let planB = OCKCarePlan(identifier: "abc123", title: "PlanB", patientID: nil)
         XCTAssert(planA.isAssociated(with: planB))
     }
-    
+
     func testCarePlansAreNotAssociatedIfTheirIdentifiersDoNoMatch() {
         let planA = OCKCarePlan(identifier: "def456", title: "PlanA", patientID: nil)
         let planB = OCKCarePlan(identifier: "abc123", title: "PlanB", patientID: nil)

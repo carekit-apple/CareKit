@@ -28,31 +28,30 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import UIKit
-import CareKitUI
 import CareKitStore
+import CareKitUI
+import UIKit
 
 /// A view controller displaying views in an `OCKListView`.
 /// `OCKDailyPageViewController` uses `OCKListViewController`s to display scrollable stacks of
 /// embedded view controllers.
 open class OCKListViewController: UIViewController {
-    
     // MARK: Properties
-    
+
     /// The list view that displays the view controller's views.
     internal var listView: OCKListView {
         guard let view = self.view as? OCKListView else { fatalError("Unsupported view type.") }
         return view
     }
-    
+
     // MARK: Life cycle
-    
-    open override func loadView() {
+
+    override open func loadView() {
         view = OCKListView()
     }
-    
+
     // MARK: Methods
-    
+
     /// Sets up the containment of `viewController` in OCKListViewController and appends its view
     /// to the vertical stack of listed views.
     ///
@@ -63,7 +62,7 @@ open class OCKListViewController: UIViewController {
     open func appendViewController(_ viewController: UIViewController, animated: Bool) {
         viewController.setupContainment(in: self, stackView: listView.stackView, animated: animated)
     }
-    
+
     /// Appends `view` to the vertical stack of listed views.
     ///
     /// - Parameters:
@@ -72,7 +71,7 @@ open class OCKListViewController: UIViewController {
     open func appendView(_ view: UIView, animated: Bool) {
         listView.stackView.addArrangedSubview(view, animated: animated)
     }
-    
+
     /// Sets up the containment of `viewController` in OCKListViewController and inserts its view
     /// in the vertical stack of listed views at the specified index.
     ///
@@ -86,7 +85,7 @@ open class OCKListViewController: UIViewController {
     open func insertViewController(_ viewController: UIViewController, at index: Int, animated: Bool) {
         viewController.setupContainment(in: self, stackView: listView.stackView, at: index, animated: animated)
     }
-    
+
     /// Inserts a view in the vertical stack of listed views at the specified index.
     ///
     /// - Parameters:
@@ -98,7 +97,7 @@ open class OCKListViewController: UIViewController {
     open func insertView(_ view: UIView, at index: Int, animated: Bool) {
         listView.stackView.insertArrangedSubview(view, at: index, animated: animated)
     }
-    
+
     /// Removes the view located at `index`.
     ///
     /// - Parameter index: The index of the view to be removed. This must be a valid index in the number of views listed.
@@ -109,7 +108,7 @@ open class OCKListViewController: UIViewController {
             viewController.clearContainment()
         }
     }
-    
+
     /// Removes all displayed views without animation.
     open func clear() {
         listView.stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }

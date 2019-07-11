@@ -32,16 +32,15 @@ import UIKit
 
 /// This layer shows horizontal grid lines and is intended to be added as a background to various kinds of graphs.
 internal class OCKGridLayer: OCKCartesianCoordinatesLayer {
-    
     private enum Constants {
         static let margin: CGFloat = 16
     }
-    
+
     /// The number of vertical lines in the grid.
     internal var numberOfVerticalDivisions = 4 {
         didSet { setNeedsLayout() }
     }
-    
+
     /// The color of the grid lines.
     internal var gridLineColor: UIColor = .gray {
         didSet {
@@ -49,37 +48,37 @@ internal class OCKGridLayer: OCKCartesianCoordinatesLayer {
             gridLines.strokeColor = gridLineColor.cgColor
         }
     }
-    
+
     internal var gridLineWidth: CGFloat = 0.7 {
         didSet {
             gridLines.lineWidth = gridLineWidth
             bottomGridLine.lineWidth = gridLineWidth
         }
     }
-    
+
     internal var gridLineOpacity: CGFloat = 0.25 {
         didSet {
             gridLines.opacity = Float(gridLineOpacity)
             bottomGridLine.opacity = Float(gridLineOpacity)
         }
     }
-    
+
     internal let gridLines = CAShapeLayer()
     internal let bottomGridLine = CAShapeLayer()
     internal let topValueLayer = CATextLayer()
     internal let middleValueLayer = CATextLayer()
-    
+
     /// Create an instance of a grid layer.
     override internal init() {
         super.init()
         setup()
     }
-    
-    required internal init?(coder aDecoder: NSCoder) {
+
+    internal required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         setup()
     }
-    
+
     /// Create an instance of a grid layer by specifying the layer class.
     ///
     /// - Parameter layer: Layer class to use as this object's layer.
@@ -87,26 +86,26 @@ internal class OCKGridLayer: OCKCartesianCoordinatesLayer {
         super.init(layer: layer)
         setup()
     }
-    
+
     internal func setup() {
         addSublayer(gridLines)
         addSublayer(bottomGridLine)
         addSublayer(topValueLayer)
         addSublayer(middleValueLayer)
     }
-    
+
     override func layoutSublayers() {
         super.layoutSublayers()
         redraw()
     }
-    
+
     private func redraw() {
         drawBottomGridLine()
         drawMiddleGridLines()
         drawTopValue()
         drawMiddleValue()
     }
-    
+
     private func drawBottomGridLine() {
         bottomGridLine.path = pathForBottomLine().cgPath
         bottomGridLine.lineCap = .round
@@ -116,7 +115,7 @@ internal class OCKGridLayer: OCKCartesianCoordinatesLayer {
         bottomGridLine.fillColor = nil
         bottomGridLine.frame = bounds
     }
-    
+
     private func drawMiddleGridLines() {
         gridLines.path = pathForMiddleLines().cgPath
         gridLines.lineDashPattern = [2, 2]
@@ -126,7 +125,7 @@ internal class OCKGridLayer: OCKCartesianCoordinatesLayer {
         gridLines.fillColor = nil
         gridLines.frame = bounds
     }
-    
+
     private func drawTopValue() {
         topValueLayer.contentsScale = UIScreen.main.scale
         topValueLayer.string = "\(graphBounds().height)"
@@ -134,7 +133,7 @@ internal class OCKGridLayer: OCKCartesianCoordinatesLayer {
         topValueLayer.fontSize = 10
         topValueLayer.frame = CGRect(origin: CGPoint(x: Constants.margin, y: 0), size: CGSize(width: 100, height: 44))
     }
-    
+
     private func drawMiddleValue() {
         middleValueLayer.contentsScale = UIScreen.main.scale
         middleValueLayer.string = "\(graphBounds().height / 2)"
@@ -142,7 +141,7 @@ internal class OCKGridLayer: OCKCartesianCoordinatesLayer {
         middleValueLayer.fontSize = 10
         middleValueLayer.frame = CGRect(origin: CGPoint(x: Constants.margin, y: bounds.height / 2), size: CGSize(width: 100, height: 44))
     }
-    
+
     private func pathForBottomLine() -> UIBezierPath {
         let bottomLeft = CGPoint(x: 0, y: bounds.height - gridLineWidth / 2)
         let bottomRight = CGPoint(x: bounds.width, y: bounds.height - gridLineWidth / 2)
@@ -151,7 +150,7 @@ internal class OCKGridLayer: OCKCartesianCoordinatesLayer {
         path.addLine(to: bottomRight)
         return path
     }
-    
+
     private func pathForMiddleLines() -> UIBezierPath {
         let path = UIBezierPath()
         for heigth in middleLineHeights() {
@@ -160,12 +159,12 @@ internal class OCKGridLayer: OCKCartesianCoordinatesLayer {
         }
         return path
     }
-    
+
     private func middleLineHeights() -> [CGFloat] {
         let spacing = bounds.height / CGFloat(numberOfVerticalDivisions)
         var heights = [CGFloat](repeating: 0, count: numberOfVerticalDivisions)
-        for i in 0..<numberOfVerticalDivisions {
-            heights[i] = spacing * CGFloat(i)
+        for index in 0..<numberOfVerticalDivisions {
+            heights[index] = spacing * CGFloat(index)
         }
         return heights
     }

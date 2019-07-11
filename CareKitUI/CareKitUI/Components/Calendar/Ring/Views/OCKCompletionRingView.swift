@@ -32,27 +32,26 @@ import UIKit
 
 /// A fillable ring with an inner checkmark.
 open class OCKCompletionRingView: UIView {
-    
-    open override var intrinsicContentSize: CGSize {
+    override open var intrinsicContentSize: CGSize {
         return CGSize(width: OCKStyle.dimension.iconHeight1, height: OCKStyle.dimension.iconHeight1)
     }
-    
+
     /// The fillable ring view.
     internal let ringView = OCKRingView()
 
     /// The groove in which the fillable ring resides.
     internal let grooveView = OCKRingView()
-    
+
     /// The check view inside of the ring view.
     internal let checkView = OCKCheckmarkView()
-    
+
     private var checkHeightConstraint: NSLayoutConstraint?
-    
+
     /// The progress value of the ring view.
     public var progress: CGFloat {
         return ringView.progress
     }
-    
+
     /// The duration for the ring and check view animations.
     public var duration: TimeInterval {
         get { return ringView.duration }
@@ -61,7 +60,7 @@ open class OCKCompletionRingView: UIView {
             checkView.duration = newValue
         }
     }
-    
+
     /// The line width of the ring and check views.
     public var lineWidth: CGFloat {
         get { return  ringView.lineWidth }
@@ -71,7 +70,7 @@ open class OCKCompletionRingView: UIView {
             checkView.lineWidth = newValue
         }
     }
-    
+
     /// The stroke clor of the ring and check views.
     public var strokeColor: UIColor = .blue {
         didSet {
@@ -79,7 +78,7 @@ open class OCKCompletionRingView: UIView {
             checkView.strokeColor = strokeColor
         }
     }
-    
+
     /// Set the progress value for the ring view. The ring will fill accordingly, and if full
     /// the checkmark will display.
     ///
@@ -90,37 +89,37 @@ open class OCKCompletionRingView: UIView {
         ringView.setProgress(value, animated: animated)
         checkView.setState(value >= 1.0 ? .checked : .unchecked, animated: animated)
     }
-    
+
     /// Create an instance of a completion ring view.
     public init() {
         super.init(frame: .zero)
         setup()
     }
-    
-    required public init?(coder aDecoder: NSCoder) {
+
+    public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         setup()
     }
-    
-    open override func layoutSubviews() {
+
+    override open func layoutSubviews() {
         super.layoutSubviews()
         checkHeightConstraint?.constant = min(ringView.frame.height, ringView.frame.width) * 0.35
     }
-    
+
     private func setup() {
         grooveView.strokeColor = .lightGray
         grooveView.alpha = 0.25
         grooveView.setProgress(1.0, animated: false)
-        
+
         checkView.strokeColor = strokeColor
         checkView.setState(.unchecked, animated: false)
-        
+
         ringView.strokeColor = strokeColor
-        
+
         addSubview(grooveView)
         addSubview(ringView)
         addSubview(checkView)
-        
+
         grooveView.translatesAutoresizingMaskIntoConstraints = false
         ringView.translatesAutoresizingMaskIntoConstraints = false
         checkView.translatesAutoresizingMaskIntoConstraints = false
@@ -129,17 +128,17 @@ open class OCKCompletionRingView: UIView {
             grooveView.trailingAnchor.constraint(equalTo: trailingAnchor),
             grooveView.bottomAnchor.constraint(equalTo: bottomAnchor),
             grooveView.topAnchor.constraint(equalTo: topAnchor),
-            
+
             ringView.leadingAnchor.constraint(equalTo: leadingAnchor),
             ringView.trailingAnchor.constraint(equalTo: trailingAnchor),
             ringView.topAnchor.constraint(equalTo: topAnchor),
             ringView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            
+
             checkView.centerXAnchor.constraint(equalTo: centerXAnchor),
             checkView.centerYAnchor.constraint(equalTo: centerYAnchor),
             checkView.widthAnchor.constraint(equalTo: checkView.heightAnchor)
         ])
-        
+
         checkHeightConstraint = checkView.heightAnchor.constraint(equalToConstant: 0)
         checkHeightConstraint?.isActive = true
     }

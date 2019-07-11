@@ -31,7 +31,6 @@
 import Foundation
 
 public extension OCKStore {
-    
     func fetchOutcomes(_ anchor: OCKOutcomeAnchor? = nil, query: OCKOutcomeQuery? = nil, queue: DispatchQueue = .main,
                        completion: @escaping (Result<[OCKOutcome], OCKStoreError>) -> Void) {
         context.perform {
@@ -46,7 +45,7 @@ public extension OCKStore {
             }
         }
     }
-    
+
     func addOutcomes(_ outcomes: [OCKOutcome], queue: DispatchQueue = .main,
                      completion: ((Result<[OCKOutcome], OCKStoreError>) -> Void)? = nil) {
         context.perform {
@@ -92,7 +91,7 @@ public extension OCKStore {
             }
         }
     }
-    
+
     func deleteOutcomes(_ outcomes: [OCKOutcome], queue: DispatchQueue = .main,
                         completion: ((Result<[OCKOutcome], OCKStoreError>) -> Void)? = nil) {
         context.perform {
@@ -119,9 +118,9 @@ public extension OCKStore {
             }
         }
     }
-    
+
     // MARK: Private
-    
+
     /// - Remark: This does not commit the transaction. After calling this function one or more times, you must call `context.save()` in order to
     /// persist the changes to disk. This is an optimization to allow batching.
     /// - Remark: You should verify that the object does not already exist in the database and validate its values before calling this method.
@@ -130,7 +129,7 @@ public extension OCKStore {
         copyOutcome(outcome, to: persistableOutcome)
         return persistableOutcome
     }
-    
+
     private func copyOutcome(_ outcome: OCKOutcome, to persistableOutcome: OCKCDOutcome) {
         persistableOutcome.copyValues(from: outcome)
         persistableOutcome.allowsMissingRelationships = allowsEntitiesWithMissingRelationships
@@ -142,7 +141,7 @@ public extension OCKStore {
             persistableOutcome.task = task
         }
     }
-    
+
     /// - Remark: This does not commit the transaction. After calling this function one or more times, you must call `context.save()` in order to
     /// persist the changes to disk. This is an optimization to allow batching.
     internal func addValue(_ value: OCKOutcomeValue) -> OCKCDOutcomeValue {
@@ -153,7 +152,7 @@ public extension OCKStore {
         object.units = value.units
         return object
     }
-    
+
     /// - Remark: This method is intended to create a value type struct from a *persisted* NSManagedObject. Calling this method with an
     /// object that is not yet commited is a programmer error.
     private func makeOutcome(from object: OCKCDOutcome) -> OCKOutcome {
@@ -169,7 +168,7 @@ public extension OCKStore {
             buildSubquery(for: query)
         ])
     }
-    
+
     private func buildSubquery(for anchor: OCKOutcomeAnchor?) throws -> NSPredicate {
         guard let anchor = anchor else { return NSPredicate(value: true) }
         switch anchor {
@@ -181,7 +180,7 @@ public extension OCKStore {
             return NSPredicate(format: "%K == %@", #keyPath(OCKCDOutcome.task), try objectID(for: taskVersionedLocalID))
         }
     }
-    
+
     private func buildSubquery(for query: OCKOutcomeQuery?) -> NSPredicate {
         guard let query = query else { return NSPredicate(value: true) }
         let afterPredicate = NSPredicate(format: "%K >= %@", #keyPath(OCKCDOutcome.date), query.start as NSDate)

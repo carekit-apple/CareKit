@@ -37,12 +37,11 @@ import Foundation
 /// - Note: This protocol allows users who wish to use their own data store
 //// a point to plugin their own objects by conforming them to `OCKSchedulable`.
 public protocol OCKSchedulable {
-    
     /// Express the schedulable item in terms of `OCKScheduleElement`s. This is required
     /// to guarantee that we can properly save custom implementations of `OCKSchedulable`
     /// to the CareStore.
     var elements: [OCKScheduleElement] { get }
-    
+
     /// Computes all the events that will occur in the specified date range.
     /// If no events are in the given range, an empty array wil be returned.
     ///

@@ -31,9 +31,8 @@
 import Foundation
 
 public extension OCKStoreProtocol {
-    
     // MARK: Outcomes
-    
+
     func fetchOutcome(taskVersionID: OCKLocalVersionID, occurenceIndex: Int, queue: DispatchQueue = .main,
                       completion: @escaping OCKResultClosure<Outcome>) {
         fetchEvent(withTaskVersionID: taskVersionID, occurenceIndex: occurenceIndex, queue: queue, completion: { result in
@@ -45,9 +44,9 @@ public extension OCKStoreProtocol {
             }
         })
     }
-    
+
     // MARK: Events
-    
+
     func fetchEvents(taskIdentifier: String, query: OCKEventQuery, queue: DispatchQueue = .main,
                      completion: @escaping OCKResultClosure<[OCKEvent<Task, Outcome>]>) {
         fetchTask(withIdentifier: taskIdentifier, queue: queue) { result in
@@ -64,7 +63,6 @@ public extension OCKStoreProtocol {
     
     func fetchEvent(withTaskVersionID taskVersionID: OCKLocalVersionID, occurenceIndex: Int,
                     queue: DispatchQueue = .main, completion: @escaping OCKResultClosure<OCKEvent<Task, Outcome>>) {
-        
         fetchTask(withVersionID: taskVersionID, queue: queue, completion: { result in
             switch result {
             case .failure(let error): completion(.failure(.fetchFailed(reason: "Failed to fetch task. \(error.localizedDescription)")))
@@ -87,7 +85,7 @@ public extension OCKStoreProtocol {
             }
         })
     }
-    
+
     // This is a recursive async function that gets all events within a query for a given task, examining all past versions of the task
     private func fetchEvents(task: Task, query: OCKEventQuery, previousEvents: [OCKEvent<Task, Outcome>],
                              queue: DispatchQueue = .main, completion: @escaping (Result<[OCKEvent<Task, Outcome>], OCKStoreError>) -> Void) {
@@ -122,7 +120,7 @@ public extension OCKStoreProtocol {
             }
         })
     }
-    
+
     private func join(task: Task, with outcomes: [Outcome], and scheduleEvents: [OCKScheduleEvent]) -> [OCKEvent<Task, Outcome>] {
         guard !scheduleEvents.isEmpty else { return [] }
         let offset = scheduleEvents[0].occurence
@@ -132,15 +130,14 @@ public extension OCKStoreProtocol {
         }
         return events
     }
-    
+
     // MARK: Adherence
-    
+
     func fetchAdherence(forTasks identifiers: [String]? = nil, query: OCKAdherenceQuery,
                         queue: DispatchQueue = .main, completion: @escaping OCKResultClosure<[OCKAdherence]>) {
-        
         let anchor = identifiers == nil ? nil : OCKTaskAnchor.taskIdentifiers(identifiers!)
         let taskQuery = OCKTaskQuery(from: query)
-        
+
         fetchTasks(anchor, query: taskQuery, queue: queue) { result in
             switch result {
             case .failure(let error): completion(.failure(.fetchFailed(reason: "Failed to fetch adherence. \(error.localizedDescription)")))
@@ -194,7 +191,7 @@ public extension OCKStoreProtocol {
         }
         return days
     }
-    
+
     private func computeAverageCompletion(for events: [OCKEvent<Task, Outcome>], on date: Date) -> OCKAdherence {
         guard !events.isEmpty else {
             return .noEvents
@@ -214,7 +211,7 @@ public extension OCKStoreProtocol {
     }
     
     // MARK: Insights
-    
+
     func fetchInsights(forTask identifier: String, query: OCKInsightQuery, queue: DispatchQueue = .main,
                        dailyAggregator: @escaping (_ outcomes: [OCKEvent<Task, Outcome>]) -> Double,
                        completion: @escaping OCKResultClosure<[Double]>) {

@@ -28,18 +28,17 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import UIKit
-import CareKitUI
 import CareKitStore
+import CareKitUI
+import UIKit
 
 internal class OCKBindableChecklistTaskView<Task: Equatable & OCKTaskConvertible, Outcome: Equatable & OCKOutcomeConvertible>:
 OCKChecklistTaskView, OCKBindable {
-   
-    public typealias Data = [OCKEvent<Task, Outcome>]
-    
+    typealias Data = [OCKEvent<Task, Outcome>]
+
     private let scheduleFormatter = OCKScheduleFormatter<Task, Outcome>()
-   
-    public func updateView(with model: Data?, animated: Bool) {
+
+    func updateView(with model: Data?, animated: Bool) {
         setupWithTask(model?.first?.task.convert())
         setupWithEvents(model, animated: animated)
     }
@@ -49,45 +48,45 @@ OCKChecklistTaskView, OCKBindable {
         headerView.detailLabel.text = nil
         instructionsLabel.text = nil
     }
-    
+
     private func setupWithEmptyEvents(animated: Bool) {
         clearItems(animated: animated)
         headerView.detailLabel.text = nil
     }
-    
+
     private func setupWithTask(_ task: OCKTask?) {
         guard let task = task else {
             setupWithNilTask()
             return
         }
-        
+
         headerView.titleLabel.text = task.title
         instructionsLabel.text = task.instructions
     }
-    
+
     private func setupWithEvents(_ events: [OCKEvent<Task, Outcome>]?, animated: Bool) {
         guard let events = events, !events.isEmpty else {
             setupWithEmptyEvents(animated: animated)
             return
         }
-        
-        for (i, event) in events.enumerated() {
-            if i < items.count {
-                let item = updateItem(at: i, withTitle: event.scheduleEvent.element.text ?? scheduleFormatter.timeLabel(for: event))
+
+        for (index, event) in events.enumerated() {
+            if index < items.count {
+                let item = updateItem(at: index, withTitle: event.scheduleEvent.element.text ?? scheduleFormatter.timeLabel(for: event))
                 item?.isSelected = event.outcome != nil
             } else {
                 let item = appendItem(withTitle: event.scheduleEvent.element.text ?? scheduleFormatter.timeLabel(for: event), animated: animated)
                 item.isSelected = event.outcome != nil
             }
         }
-        
+
         // delete any extra button
         var counter = events.count
         while counter < items.count {
             removeItem(at: counter, animated: animated)
             counter += 1
         }
-        
+
         headerView.detailLabel.text = scheduleFormatter.scheduleLabel(for: events)
     }
 }

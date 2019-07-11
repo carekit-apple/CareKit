@@ -31,7 +31,6 @@
 import Foundation
 
 public extension OCKStore {
-    
     func fetchPatients(_ anchor: OCKPatientAnchor? = nil, query: OCKPatientQuery? = nil,
                        queue: DispatchQueue = .main, completion: @escaping (Result<[OCKPatient], OCKStoreError>) -> Void) {
         context.perform {
@@ -48,7 +47,7 @@ public extension OCKStore {
             }
         }
     }
-    
+
     func addPatients(_ patients: [OCKPatient], queue: DispatchQueue = .main, completion: ((Result<[OCKPatient], OCKStoreError>) -> Void)? = nil) {
         context.perform {
             do {
@@ -69,25 +68,24 @@ public extension OCKStore {
             }
         }
     }
-    
+
     func updatePatients(_ patients: [OCKPatient], queue: DispatchQueue = .main,
                         completion: ((Result<[OCKPatient], OCKStoreError>) -> Void)? = nil) {
         context.perform {
             do {
                 let identifiers = patients.map { $0.identifier }
                 try OCKCDPatient.validateUpdateIdentifiers(identifiers, in: self.context)
-                
+
                 let updatedPatients = self.configuration.updatesCreateNewVersions ?
                     try self.performVersionedUpdate(values: patients, addNewVersion: self.addPatient) :
                     try self.performUnversionedUpdate(values: patients, update: self.copyPatient)
-                
+
                 try self.context.save()
                 let patients = updatedPatients.map(self.makePatient)
                 queue.async {
                     self.delegate?.store(self, didUpdatePatients: patients)
                     completion?(.success(patients))
                 }
-                
             } catch {
                 self.context.rollback()
                 queue.async {
@@ -96,7 +94,7 @@ public extension OCKStore {
             }
         }
     }
-    
+
     func deletePatients(_ patients: [OCKPatient], queue: DispatchQueue = .main,
                         completion: ((Result<[OCKPatient], OCKStoreError>) -> Void)? = nil) {
         context.perform {
@@ -104,7 +102,7 @@ public extension OCKStore {
                 let deletedPatients = try self.performUnversionedUpdate(values: patients) { (_, persistablePatient) in
                     persistablePatient.deletedAt = Date()
                 }.map(self.makePatient)
-                
+
                 try self.context.save()
                 queue.async {
                     self.delegate?.store(self, didDeletePatients: deletedPatients)
@@ -118,9 +116,9 @@ public extension OCKStore {
             }
         }
     }
-    
+
     // MARK: Private
-    
+
     /// - Remark: This does not commit the transaction. After calling this function one or more times, you must call `context.save()` in order to
     /// persist the changes to disk. This is an optimization to allow batching.
     /// - Remark: You should verify that the object does not already exist in the database and validate its values before calling this method.
@@ -130,13 +128,13 @@ public extension OCKStore {
         copyPatient(from: patient, to: persistablePatient)
         return persistablePatient
     }
-    
+
     private func copyPatient(from patient: OCKPatient, to persistablePatient: OCKCDPatient) {
         persistablePatient.copyVersionInfo(from: patient)
         persistablePatient.allowsMissingRelationships = allowsEntitiesWithMissingRelationships
         persistablePatient.name.copyPersonNameComponents(patient.name)
     }
-    
+
     /// - Remark: This method is intended to create a value type struct from a *persisted* NSManagedObject. Calling this method with an
     /// object that is not yet commited is a programmer error.
     private func makePatient(from object: OCKCDPatient) -> OCKPatient {
@@ -145,13 +143,13 @@ public extension OCKStore {
         patient.copyVersionedValues(from: object)
         return patient
     }
-    
+
     private func buildPredicate(from anchor: OCKPatientAnchor?, query: OCKPatientQuery?) throws -> NSPredicate {
         let anchorPredicate = try buildSubPredicate(from: anchor)
         let queryPredicate = buildSubPredicate(from: query)
         return NSCompoundPredicate(andPredicateWithSubpredicates: [anchorPredicate, queryPredicate])
     }
-    
+
     private func buildSubPredicate(from anchor: OCKPatientAnchor?) throws -> NSPredicate {
         guard let anchor = anchor else { return OCKCDPatient.headerPredicate() }
         switch anchor {
@@ -161,11 +159,11 @@ public extension OCKStore {
             return NSPredicate(format: "self IN %@", try patientVersionIDs.map(objectID))
         }
     }
-    
+
     private func buildSubPredicate(from query: OCKPatientQuery?) -> NSPredicate {
         return NSPredicate(value: true)
     }
-    
+
     private func validateNumberOfPatients() throws {
         let fetchRequest = OCKCDPatient.fetchRequest()
         let numberOfPatients = try context.count(for: fetchRequest)

@@ -31,13 +31,12 @@
 import UIKit
 
 internal class OCKAddressButton: OCKButton {
-    
     // MARK: Properties
-    
+
     override var detailButton: OCKButton? { _detailButton }
     override var titleButton: OCKButton? { _titleButton }
     override var imageButton: OCKButton? { _imageButton }
-  
+
     private let _imageButton: OCKButton = {
         let button = OCKButton()
         button.isUserInteractionEnabled = false
@@ -47,7 +46,7 @@ internal class OCKAddressButton: OCKButton {
         button.imageView?.contentMode = .scaleAspectFit
         return button
     }()
-     
+
     private let _titleButton: OCKButton = {
         let button = OCKButton(titleTextStyle: .footnote, titleWeight: .semibold)
         button.fitsSizeToTitleLabel = true
@@ -57,7 +56,7 @@ internal class OCKAddressButton: OCKButton {
         button.setTitle(OCKStyle.strings.address, for: .normal)
         return button
     }()
-    
+
     private let _detailButton: OCKButton = {
         let button = OCKButton(titleTextStyle: .footnote, titleWeight: .regular)
         button.fitsSizeToTitleLabel = true
@@ -67,58 +66,53 @@ internal class OCKAddressButton: OCKButton {
         button.setTitleColor(.black, for: .normal)
         return button
     }()
-    
+
     // MARK: Life cycle
-    
-    internal override init() {
+
+    override internal init() {
         super.init()
         setup()
     }
-    
-    required internal init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        setup()
-    }
-    
+
     // MARK: Methods
-    
-    internal override func tintColorDidChange() {
+
+    override internal func tintColorDidChange() {
         imageView?.tintColor = tintColor
         _titleButton.setTitleColor(tintColor, for: .normal)
     }
-    
+
     private func setup() {
         styleSubviews()
         addSubviews()
         constrainSubviews()
     }
-    
+
     private func styleSubviews() {
         preservesSuperviewLayoutMargins = true
         tintColorDidChange()
-        
+
         layer.cornerRadius = OCKStyle.appearance.cornerRadius2
         clipsToBounds = true
         adjustsImageWhenHighlighted = false
 
         setBackgroundColor(OCKStyle.color.gray1, for: .normal)
     }
-    
+
     private func addSubviews() {
         [_titleButton, _detailButton, _imageButton].forEach { addSubview($0) }
     }
-    
+
     func constrainSubviews() {
         [_titleButton, _detailButton, _imageButton].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
         NSLayoutConstraint.activate([
             _titleButton.topAnchor.constraint(equalTo: topAnchor, constant: directionalLayoutMargins.top * 2),
             _titleButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: directionalLayoutMargins.leading * 2),
-            
+
             _imageButton.leadingAnchor.constraint(greaterThanOrEqualTo: _titleButton.trailingAnchor, constant: directionalLayoutMargins.leading * 2),
             _imageButton.topAnchor.constraint(equalTo: topAnchor, constant: directionalLayoutMargins.top * 2),
             _imageButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -directionalLayoutMargins.trailing * 2),
             _imageButton.heightAnchor.constraint(equalToConstant: OCKStyle.dimension.iconHeight3),
-            
+
             _detailButton.leadingAnchor.constraint(equalTo: _titleButton.leadingAnchor),
             _detailButton.trailingAnchor.constraint(equalTo: _imageButton.leadingAnchor, constant: -directionalLayoutMargins.trailing * 2),
             _detailButton.topAnchor.constraint(equalTo: _titleButton.bottomAnchor, constant: directionalLayoutMargins.top / 3),

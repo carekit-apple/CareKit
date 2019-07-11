@@ -34,24 +34,23 @@ import UIKit
 /// series, allowing for for several data series to be plotted on a single axis for easy comparison.
 /// - SeeAlso: `OCKGraphView`
 public struct OCKDataSeries {
-    
     /// An array of points given in plot space Cartesian coordinates
     /// The plot origin (0, 0) is in the bottom left hand corner.
     public var dataPoints: [CGPoint]
-    
+
     /// A title for this data series that will be displayed in the plot legend.
     public var title: String
-    
+
     /// The start color of the gradient this data series will be plotted in.
     public var gradientStartColor: UIColor?
-    
+
     /// The end color of the gradient this data series will be plotted in.
     public var gradientEndColor: UIColor?
-    
+
     /// A size specifying how large this data series should appear on the plot.
     /// Its precise interpretation may vary depending on plot type used.
     public var size: CGFloat
-    
+
     /// Creates a new data series that can be passed to chart to be plotted. The series will be plotted in a single
     /// solid color. Use this initialize if you wish to plot data at precise or irregular intervals.
     ///
@@ -67,7 +66,7 @@ public struct OCKDataSeries {
         self.gradientEndColor = color
         self.size = size
     }
-    
+
     /// Creates a new data series that can be passed to chart to be plotted. The series will be plotted with a gradient
     /// color scheme. Use this initialize if you wish to plot data at precise or irregular intervals.
     ///
@@ -84,7 +83,7 @@ public struct OCKDataSeries {
         self.gradientStartColor = gradientStartColor
         self.gradientEndColor = gradientEndColor
     }
-    
+
     /// Creates a new data series that can be passed to chart to be plotted. The series will be plotted in a single solid color.
     /// Values will be evenly spaced when displayed on a chart. Use this option when the x coordinate is not particularly
     /// meaningful, such as when creating bar charts.
@@ -101,7 +100,7 @@ public struct OCKDataSeries {
         self.gradientStartColor = color
         self.gradientEndColor = color
     }
-    
+
     /// Creates a new data series that can be passed to chart to be plotted. The series will be plotted with a gradient
     /// color scheme. Values will be evenly spaced when displayed on a chart. Use this option when the x coordinate is not
     /// particularly meaningful, such as when creating bar charts.

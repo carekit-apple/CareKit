@@ -32,13 +32,12 @@ import Foundation
 
 /// A query that limits which events will be returned when fetching.
 public struct OCKEventQuery: OCKDateIntervalQueryable {
-    
     /// The earliest date at which outcomes should match.
     public var start: Date
-    
+
     /// The latest date at which outcomes should match.
     public var end: Date
-    
+
     /// Initialize a new `OCKEventQuery` by specifying the start and end dates.
     ///
     /// - Parameters:

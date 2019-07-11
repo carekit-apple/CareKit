@@ -39,7 +39,7 @@ internal protocol OCKCollapsible {
     func setCollapsedState(_ state: OCKCollapsibleState, animated: Bool)
 }
 
-internal protocol OCKCollapsibleView: class {
+internal protocol OCKCollapsibleView: AnyObject {
     var collapsedState: OCKCollapsibleState { get set }
     var collapsedViews: Set<UIView> { get }
     var expandedViews: Set<UIView> { get }
@@ -50,12 +50,11 @@ internal protocol OCKCollapsibleView: class {
 }
 
 internal extension OCKCollapsibleView {
-    
     func setViewCollapsedState(_ state: OCKCollapsibleState, animated: Bool) {
         guard state != collapsedState else { return }
-        
+
         (collapserButton as? OCKCollapserButton)?.setDirectionFromState(state, animated: animated && collapsedState != .expanded)
-        
+
         // hide / show views in content stack
         let allViews = completeViews.union(collapsedViews).union(expandedViews)
         var toShow: [UIView]
@@ -71,26 +70,26 @@ internal extension OCKCollapsibleView {
             toShow = Array(completeViews)
             toHide = Array(allViews.subtracting(completeViews))
         }
-        
+
         toShow = toShow.filter { $0.isHidden }
         toHide = toHide.filter { !$0.isHidden }
-        
+
         let toggleViewsBlock: () -> Void = { [weak self] in
             toHide.forEach {
                 $0.isHidden = true
                 $0.alpha = 0
             }
-            
+
             toShow.forEach {
                 $0.isHidden = false
                 $0.alpha = 1
             }
-            
+
             self?.cardView.alpha = state == .expanded ? 1 : OCKStyle.appearance.opacity1
         }
-        
+
         animated ? UIView.animate(withDuration: OCKStyle.animation.stateChangeDuration, animations: toggleViewsBlock) : toggleViewsBlock()
-        
+
         collapsedState = state
     }
 }

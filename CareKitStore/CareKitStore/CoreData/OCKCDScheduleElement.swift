@@ -37,10 +37,10 @@ class OCKCDScheduleElement: OCKCDObject {
     @NSManaged var isAllDay: Bool
     @NSManaged var task: OCKCDTask?
     @NSManaged var targetValues: Set<OCKCDOutcomeValue>
-    
+
     @NSManaged var startDate: Date
     @NSManaged var endDate: Date?
-    
+
     @NSManaged var secondsInterval: Int
     @NSManaged var minutesInterval: Int
     @NSManaged var hoursInterval: Int
@@ -48,7 +48,7 @@ class OCKCDScheduleElement: OCKCDObject {
     @NSManaged var weeksInterval: Int
     @NSManaged var monthsInterval: Int
     @NSManaged var yearsInterval: Int
-    
+
     var interval: DateComponents {
         get {
             var interval = DateComponents()
@@ -61,7 +61,7 @@ class OCKCDScheduleElement: OCKCDObject {
             interval.second = secondsInterval
             return interval
         }
-        
+
         set {
             yearsInterval = newValue.year ?? 0
             monthsInterval = newValue.month ?? 0
@@ -75,21 +75,20 @@ class OCKCDScheduleElement: OCKCDObject {
 }
 
 extension OCKCDScheduleElement {
-    
     override func awakeFromInsert() {
         super.awakeFromInsert()
         targetValues = Set()
     }
-    
+
     override func validateForInsert() throws {
         try super.validateForInsert()
         try validateForConsistency()
     }
-    
+
     func validateForConsistency() throws {
         if !atLeastOneIntervalIsNonZero { throw OCKStoreError.invalidValue(reason: "OCKCDScheduleElement must have at least 1 non-zero interval") }
     }
-    
+
     private var atLeastOneIntervalIsNonZero: Bool {
         return secondsInterval + minutesInterval + hoursInterval + daysInterval + weeksInterval + monthsInterval + yearsInterval > 0
     }

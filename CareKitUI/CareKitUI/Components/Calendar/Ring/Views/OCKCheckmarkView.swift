@@ -32,29 +32,28 @@ import UIKit
 
 /// A checkmark drawing.
 internal class OCKCheckmarkView: UIView {
-    
     // MARK: Properties
-    
+
     internal enum State {
         case checked, unchecked
     }
-    
+
     /// Line width of the checkmark.
     internal var lineWidth: CGFloat = 10 {
         didSet { checkLayer.lineWidth = lineWidth }
     }
-    
+
     /// Stroke color of the checkmark.
     internal var strokeColor: UIColor = .blue {
         didSet { checkLayer.strokeColor = strokeColor.cgColor }
     }
-    
+
     /// Checked status of the checkmark.
     internal private (set) var state: State = .checked
-    
+
     /// Duration of the animation used to present the checkmark.
     internal var duration: TimeInterval = 1.0
-    
+
     private let checkLayer: CAShapeLayer = {
         let layer = CAShapeLayer()
         layer.fillColor = nil
@@ -62,38 +61,38 @@ internal class OCKCheckmarkView: UIView {
         layer.lineJoin = .round
         return layer
     }()
-    
+
     // MARK: Life Cycle
-    
+
     /// Create an instance of a checkmark view. The checkmark is checked by default.
     internal init() {
         super.init(frame: .zero)
         setup()
     }
-    
+
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         setup()
     }
-    
-    internal override func layoutSubviews() {
+
+    override internal func layoutSubviews() {
         super.layoutSubviews()
         checkLayer.frame = bounds
         configureCheck()
     }
-    
+
     // MARK: Methods
-    
+
     private func setup() {
         layer.addSublayer(checkLayer)
         styleCheckLayer()
     }
-    
+
     private func styleCheckLayer() {
         checkLayer.lineWidth = 0
         checkLayer.strokeColor = strokeColor.cgColor
     }
-        
+
     /// Set the checked status of the checkmark.
     ///
     /// - Parameters:
@@ -103,31 +102,31 @@ internal class OCKCheckmarkView: UIView {
         let oldState = self.state
         self.state = state
         checkLayer.path = state == .checked ? checkPath(in: bounds) : UIBezierPath().cgPath
-        
+
         guard animated else { return }
-    
+
         let shrink = CASpringAnimation(keyPath: #keyPath(CAShapeLayer.path))
         shrink.fromValue = checkLayer.presentation()?.path ?? (oldState == .checked ? checkPath(in: bounds) : checkPath(in: .zero))
         shrink.toValue = checkLayer.path
         shrink.duration = duration
         shrink.isRemovedOnCompletion = true
         shrink.fillMode = .forwards
-        
+
         let thin = CASpringAnimation(keyPath: #keyPath(CAShapeLayer.lineWidth))
         thin.fromValue = checkLayer.presentation()?.lineWidth ?? (oldState == .checked ? lineWidth : 0)
         thin.toValue = state == .checked ? lineWidth : 0
         thin.duration = duration
         thin.isRemovedOnCompletion = true
         thin.fillMode = .forwards
-        
+
         checkLayer.add(shrink, forKey: "shrink")
         checkLayer.add(thin, forKey: "thin")
     }
-  
+
     private func configureCheck() {
         checkLayer.path = state == .checked ? checkPath(in: bounds) : nil
     }
-    
+
     private func checkPath(in frame: CGRect) -> CGPath {
         let dimension = max(0, min(frame.width, frame.height) - lineWidth)
         let xOffset = frame.origin.x + max(0, bounds.width - dimension) / 2

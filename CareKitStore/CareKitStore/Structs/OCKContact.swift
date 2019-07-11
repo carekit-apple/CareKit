@@ -79,6 +79,7 @@ public struct OCKContact: Codable, Equatable, OCKVersionSettable, OCKObjectCompa
     public let identifier: String
 
     // MARK: OCKVersionable
+    public var effectiveAt: Date
     public internal(set) var localDatabaseID: OCKLocalVersionID?
     public internal(set) var nextVersionID: OCKLocalVersionID?
     public internal(set) var previousVersionID: OCKLocalVersionID?
@@ -105,6 +106,7 @@ public struct OCKContact: Codable, Equatable, OCKVersionSettable, OCKObjectCompa
         self.identifier = identifier
         self.name = name
         self.carePlanID = carePlanID
+        self.effectiveAt = Date()
     }
 
     /// Initialize a new `OCKContact` with a user-defined identifier, a name, and an optional care plan version ID.
@@ -119,6 +121,7 @@ public struct OCKContact: Codable, Equatable, OCKVersionSettable, OCKObjectCompa
         self.name.familyName = familyName
         self.identifier = identifier
         self.carePlanID = carePlanID
+        self.effectiveAt = Date()
     }
 
     /// Initialize from an `OCKContact`

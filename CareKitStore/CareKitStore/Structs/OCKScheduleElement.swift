@@ -43,11 +43,13 @@ public struct OCKScheduleElement: Codable, Equatable, OCKSchedulable, OCKLocalPe
     public var duration: TimeInterval
 
     /// If the event should be considered to fill the whole day that it occurs on.
-    public var isAllDay: Bool
-    
+    // Note: This must remain a constant because it changes how `start` is initialized.
+    public let isAllDay: Bool
+
     /// The date and time the first event occurs.
-    public var start: Date
-    
+    // Note: This must remain a constant because its value is modified by the `isAllDay` flag during initialization.
+    public let start: Date
+
     /// The latest possible time for an event to occur.
     /// - Note: Depending on the interval chosen, it is not guaranteed that an event
     ///         will fall on this date.
@@ -90,7 +92,7 @@ public struct OCKScheduleElement: Codable, Equatable, OCKSchedulable, OCKLocalPe
                 text: String? = nil, targetValues: [OCKOutcomeValue] = [],
                 duration: TimeInterval = 0, isAllDay: Bool = false) {
         guard let startDate = Calendar.current.date(from: start) else { fatalError("Date components must resolve to a valid date!") }
-        self.start = startDate
+        self.start = isAllDay ? Calendar.current.startOfDay(for: startDate): startDate
         self.end = end == nil ? nil : Calendar.current.date(from: end!)!
         self.interval = interval
         self.text = text
@@ -112,7 +114,7 @@ public struct OCKScheduleElement: Codable, Equatable, OCKSchedulable, OCKLocalPe
     public init(start: Date, end: Date?, interval: DateComponents, text: String? = nil,
                 targetValues: [OCKOutcomeValue] = [], duration: Double = 0, isAllDay: Bool = false) {
         assert(end == nil || start < end!, "Start date must be before the end date!")
-        self.start = start
+        self.start = isAllDay ? Calendar.current.startOfDay(for: start) : start
         self.end = end
         self.interval = interval
         self.text = text
@@ -125,12 +127,10 @@ public struct OCKScheduleElement: Codable, Equatable, OCKSchedulable, OCKLocalPe
     ///
     /// - Parameter occurence: The Nth occurence.
     public subscript(occurence: Int) -> OCKScheduleEvent? {
-        get {
             guard let date = date(ofOccurence: occurence) else { return nil }
             return makeScheduleEvent(on: date, for: occurence)
-        }
     }
-    
+
     public var elements: [OCKScheduleElement] {
         return [self]
     }
@@ -159,9 +159,9 @@ public struct OCKScheduleElement: Codable, Equatable, OCKSchedulable, OCKLocalPe
         }
 
         // Calculate the event at each index in between start and top indices
-        for i in 0..<numberOfEvents {
+        for index in 0..<numberOfEvents {
             if let endDate = end, currentDate > endDate { continue }
-            events[i] = makeScheduleEvent(on: currentDate, for: currentOccurence)
+            events[index] = makeScheduleEvent(on: currentDate, for: currentOccurence)
             currentDate = Calendar.current.date(byAdding: interval, to: currentDate)!
             currentOccurence += 1
         }
@@ -176,8 +176,11 @@ public struct OCKScheduleElement: Codable, Equatable, OCKSchedulable, OCKLocalPe
             dates.append(current)
             current = Calendar.current.date(byAdding: interval, to: current)!
         }
-        let events = dates.enumerated().map { (index, date) in return makeScheduleEvent(on: date, for: index) }
-        return events.filter { $0.start >= start }
+        let events = dates.enumerated().map { index, date in makeScheduleEvent(on: date, for: index) }
+        return events.filter { event in
+            if isAllDay { return true }
+            return event.start + duration >= start
+        }
     }
 
     /// Computes the date of the Nth occurence of a schedule element. If the Nth occurence is beyond the end date, then nil will be returned.

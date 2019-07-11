@@ -358,20 +358,19 @@ public protocol OCKStoreProtocol: AnyObject, Equatable {
     ///   - query: A query used to constrain the values that will be fetched.
     ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on a background thread. In the success case, it will contain an array with one value for each day.
-    func fetchAdherence(forTasks identifiers: [String]?, query: OCKAdherenceQuery,
+    func fetchAdherence(forTasks identifiers: [String]?, query: OCKAdherenceQuery<Event>,
                         queue: DispatchQueue, completion: @escaping OCKResultClosure<[OCKAdherence]>)
-    
+
     /// `fetchInsights` computes a metric for a given task between two dates using the provided closure.
     ///
     /// - Parameters:
     ///   - identifier: A user-defined unique identifier for the task.
     ///   - query: A query used to constrain the values that will be fetched.
-    ///   - computeValue: A closure used to compute the value for each event.
     ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on a background thread.
-    func fetchInsights(forTask identifier: String, query: OCKInsightQuery, queue: DispatchQueue,
-                       dailyAggregator: @escaping (_ outcomes: [OCKEvent<Task, Outcome>]) -> Double, completion: @escaping OCKResultClosure<[Double]>)
-    
+    func fetchInsights(forTask identifier: String, query: OCKInsightQuery<Event>,
+                       queue: DispatchQueue, completion: @escaping OCKResultClosure<[Double]>)
+
     // MARK: Singular Methods
 
     /// `fetchPatient` asynchronously fetches a single patient from the store using its user-defined identifier. If a patient with the specified
@@ -381,8 +380,8 @@ public protocol OCKStoreProtocol: AnyObject, Equatable {
     ///   - identifier: A unique user-defined identifier
     ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on a background thread.
-    func fetchPatient(withIdentifier identifier: String, queue: DispatchQueue, completion: @escaping OCKResultClosure<Patient?>)
-    
+    func fetchPatient(withIdentifier identifier: String, queue: DispatchQueue, completion: @escaping OCKResultClosure<Patient>)
+
     /// `addPatient` asynchronously adds a patient to the store.
     ///
     /// - Parameters:
@@ -414,8 +413,8 @@ public protocol OCKStoreProtocol: AnyObject, Equatable {
     ///   - identifier: A unique user-defined identifier
     ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on a background thread.
-    func fetchCarePlan(withIdentifier identifier: String, queue: DispatchQueue, completion: @escaping OCKResultClosure<Plan?>)
-    
+    func fetchCarePlan(withIdentifier identifier: String, queue: DispatchQueue, completion: @escaping OCKResultClosure<Plan>)
+
     /// `addCarePlan` asynchronously adds a care plans to the store.
     ///
     /// - Parameters:
@@ -447,8 +446,8 @@ public protocol OCKStoreProtocol: AnyObject, Equatable {
     ///   - identifier: A unique user-defined identifier.
     ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on a background thread.
-    func fetchContact(withIdentifier identifier: String, queue: DispatchQueue, completion: @escaping OCKResultClosure<Contact?>)
-    
+    func fetchContact(withIdentifier identifier: String, queue: DispatchQueue, completion: @escaping OCKResultClosure<Contact>)
+
     /// `addContact` asynchronously adds a contact to the store.
     ///
     /// - Parameters:
@@ -482,8 +481,8 @@ public protocol OCKStoreProtocol: AnyObject, Equatable {
     ///   - identifier: A unique user-defined identifier
     ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on a background thread.
-    func fetchTask(withIdentifier identifier: String, queue: DispatchQueue, completion: @escaping OCKResultClosure<Task?>)
-    
+    func fetchTask(withIdentifier identifier: String, queue: DispatchQueue, completion: @escaping OCKResultClosure<Task>)
+
     /// `fetchTask` asynchronously retrieves an array of tasks from the store using its versioned database identifier. If a task with the
     /// specified database identifier cannot be found, the completion handler will be called with an error.
     ///
@@ -491,8 +490,8 @@ public protocol OCKStoreProtocol: AnyObject, Equatable {
     ///   - identifier: A unique user-defined identifier
     ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on a background thread.
-    func fetchTask(withVersionID versionID: OCKLocalVersionID, queue: DispatchQueue, completion: @escaping OCKResultClosure<Task?>)
-    
+    func fetchTask(withVersionID versionID: OCKLocalVersionID, queue: DispatchQueue, completion: @escaping OCKResultClosure<Task>)
+
     /// `addTask` asynchronously adds a task to the store.
     ///
     /// - Parameters:
@@ -528,8 +527,8 @@ public protocol OCKStoreProtocol: AnyObject, Equatable {
     ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on a background thread.
     func fetchOutcome(_ anchor: OCKOutcomeAnchor?, query: OCKOutcomeQuery?, queue: DispatchQueue,
-                      completion: @escaping OCKResultClosure<Outcome?>)
-    
+                      completion: @escaping OCKResultClosure<Outcome>)
+
     /// `addOutcome` asynchronously adds an outcome to the store.
     ///
     /// - Parameters:

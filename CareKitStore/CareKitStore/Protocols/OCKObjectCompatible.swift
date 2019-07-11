@@ -117,6 +117,7 @@ extension OCKObjectCompatible {
 
 extension OCKObjectCompatible where Self: OCKVersionSettable {
     mutating func copyVersionedValues(from other: OCKCDVersionedObject) {
+        effectiveAt = other.effectiveAt
         versionID = other.versionID
         nextVersionID = other.next?.versionID
         previousVersionID = other.previous?.versionID

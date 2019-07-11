@@ -41,8 +41,8 @@ class TestSchedule: XCTestCase {
 
     func testDailySchedule() {
         let schedule = OCKSchedule.dailyAtTime(hour: 8, minutes: 0, start: Date(), end: nil, text: nil)
-        for i in 0..<5 {
-            XCTAssert(schedule[i]?.start == Calendar.current.date(byAdding: DateComponents(day: i), to: schedule.start))
+        for index in 0..<5 {
+            XCTAssert(schedule[index]?.start == Calendar.current.date(byAdding: DateComponents(day: index), to: schedule.start))
         }
     }
 
@@ -59,13 +59,13 @@ class TestSchedule: XCTestCase {
 
     func testWeeklySchedule() {
         let schedule = OCKSchedule.weeklyAtTime(weekday: 1, hours: 0, minutes: 0, start: Date(), end: nil, targetValues: [], text: nil)
-        for i in 0..<5 {
-            XCTAssert(schedule[i]?.start == Calendar.current.date(byAdding: DateComponents(weekOfYear: i), to: schedule.start))
+        for index in 0..<5 {
+            XCTAssert(schedule[index]?.start == Calendar.current.date(byAdding: DateComponents(weekOfYear: index), to: schedule.start))
         }
     }
 
     func testScheduleComposition() {
-        let components = DateComponents(year: 2019, month: 1, day: 19, hour: 15, minute: 30)
+        let components = DateComponents(year: 2_019, month: 1, day: 19, hour: 15, minute: 30)
         let startDate = Calendar.current.date(from: components)!
         let scheduleA = OCKSchedule.mealTimesEachDay(start: startDate, end: nil)
         let scheduleB = OCKSchedule.mealTimesEachDay(start: startDate, end: nil)
@@ -153,8 +153,8 @@ class TestSchedule: XCTestCase {
         compareScheduleEventExcludingOccurence(left: schedule[8]!, right: scheduleC[1]!)    // 13:00 Day 2
         compareScheduleEventExcludingOccurence(left: schedule[9]!, right: scheduleA[5]!)    // 17:30 Day 2
         XCTAssertNil(schedule[10])
-        for i in 0..<10 {
-            XCTAssert(schedule[i]?.occurence == i)
+        for index in 0..<10 {
+            XCTAssert(schedule[index]?.occurence == index)
         }
     }
 
@@ -168,5 +168,34 @@ class TestSchedule: XCTestCase {
         XCTAssert(events[0].occurence == 3)
         XCTAssert(events[1].occurence == 4)
         XCTAssert(events[2].occurence == 5)
+    }
+
+    // Measure how long it takes to generate 10 years worth of events for a highly complex schedule with hourly events.
+    // Results in the computatin of about 100,000 events.
+    func testEventGenerationPerformanceHeavySchedule() {
+        let now = Calendar.current.startOfDay(for: Date())
+        let hourElement = OCKScheduleElement(start: now, end: nil, interval: DateComponents(hour: 1))
+        let halfdayElement = OCKScheduleElement(start: now, end: nil, interval: DateComponents(hour: 12))
+        let dayElement = OCKScheduleElement(start: now, end: nil, interval: DateComponents(day: 1))
+        let weekElement = OCKScheduleElement(start: now, end: nil, interval: DateComponents(weekOfYear: 1))
+        let fortnightElement = OCKScheduleElement(start: now, end: nil, interval: DateComponents(day: 14))
+        let schedule = OCKSchedule(composing: [hourElement, halfdayElement, dayElement, weekElement, fortnightElement])
+        let farFuture = Calendar.current.date(byAdding: .year, value: 10, to: now)!
+
+        measure {
+            _ = schedule.events(from: now, to: farFuture)
+        }
+    }
+
+    // Measures how long it takes to generate 2 years of events for a typical schedule with daily events.
+    // Results in the computation of about 730 events.
+    func testEventGenerationPerformanceBasicSchedule() {
+        let now = Calendar.current.startOfDay(for: Date())
+        let schedule = OCKSchedule.dailyAtTime(hour: 8, minutes: 0, start: now, end: nil, text: nil)
+        let farFuture = Calendar.current.date(byAdding: .year, value: 2, to: now)!
+
+        measure {
+            _ = schedule.events(from: now, to: farFuture)
+        }
     }
 }

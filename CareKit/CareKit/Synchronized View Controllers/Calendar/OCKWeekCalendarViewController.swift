@@ -38,7 +38,7 @@ internal class OCKWeekCalendarViewController<Store: OCKStoreProtocol>: OCKCalend
         return view
     }
 
-    public init(storeManager: OCKSynchronizedStoreManager<Store>?, adherenceQuery: OCKAdherenceQuery) {
+    init(storeManager: OCKSynchronizedStoreManager<Store>?, adherenceQuery: OCKAdherenceQuery<Store.Event>) {
         super.init(storeManager: storeManager,
                    adherenceQuery: adherenceQuery,
                    loadDefaultView: { OCKBindableCalendarWeekView(weekOf: Date()) })

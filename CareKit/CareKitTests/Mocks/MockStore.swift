@@ -35,6 +35,7 @@ struct MockPatient: OCKPatientConvertible, OCKPatientInitializable, Equatable {
     static var count = 0
     var identifier: String
     var versionID: OCKLocalVersionID?
+    var effectiveAt = Date()
     var name: String?
 
     init() {
@@ -59,6 +60,7 @@ struct MockPlan: OCKCarePlanConvertible, OCKCarePlanInitializable, Equatable {
     var identifier: String
     var versionID: OCKLocalVersionID?
     var patientID: OCKLocalVersionID?
+    var effectiveAt = Date()
     var name: String?
 
     init() {
@@ -83,6 +85,7 @@ struct MockContact: OCKContactConvertible, OCKContactInitializable, Equatable {
     static var count = 0
     var identifier: String
     var versionID: OCKLocalVersionID?
+    var effectiveAt = Date()
     var planID: OCKLocalVersionID?
     var name: String?
 
@@ -108,6 +111,7 @@ struct MockTask: OCKTaskConvertible, OCKTaskInitializable, Equatable {
     static var count = 0
     var identifier: String
     var versionID: OCKLocalVersionID?
+    var effectiveAt = Date()
     var carePlanID: OCKLocalVersionID?
     var title: String?
 

@@ -953,7 +953,12 @@ extension OCKStore {
         identifier.attributeType = .stringAttributeType
         identifier.isOptional = false
 
-        return [identifier]
+        let effectiveAt = NSAttributeDescription()
+        effectiveAt.name = "effectiveAt"
+        effectiveAt.attributeType = .dateAttributeType
+        effectiveAt.isOptional = false
+
+        return [identifier, effectiveAt]
     }
 
     

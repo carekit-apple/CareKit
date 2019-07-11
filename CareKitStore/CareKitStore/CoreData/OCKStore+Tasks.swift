@@ -35,13 +35,18 @@ extension OCKStore {
                            completion: @escaping (Result<[OCKTask], OCKStoreError>) -> Void) {
         context.perform {
             do {
-                let predicate = try self.buildPredicate(for: anchor)
+                let predicate = try self.buildPredicate(for: anchor, and: query)
                 let tasks = OCKCDTask
-                    .fetchFromStore(in: self.context, where: predicate)
+                    .fetchFromStore(in: self.context, where: predicate) { fetchRequest in
+                        fetchRequest.fetchLimit = query?.limit ?? 0
+                        fetchRequest.fetchOffset = query?.offset ?? 0
+                        fetchRequest.sortDescriptors = self.buildSortDescriptors(for: query)
+                    }
                     .map(self.makeTask)
                     .filtered(against: query)
+
                 queue.async {
-                    completion(.success(tasks))
+                    completion(.success(Array(tasks)))
                 }
             } catch {
                 self.context.rollback()
@@ -106,7 +111,7 @@ extension OCKStore {
             do {
                 let identifiers = tasks.map { $0.identifier }
                 try OCKCDTask.validateUpdateIdentifiers(identifiers, in: self.context)
-                let deletedTasks = try self.performUnversionedUpdate(values: tasks) { (_, persistableTask) in
+                let deletedTasks = try self.performUnversionedUpdate(values: tasks) { _, persistableTask in
                     persistableTask.deletedAt = Date()
                 }.map(self.makeTask)
                 try self.context.save()
@@ -146,15 +151,16 @@ extension OCKStore {
 
     private func makeScheduleElements(from schedule: OCKSchedule) -> [OCKCDScheduleElement] {
         return schedule.elements.map { element -> OCKCDScheduleElement in
-            let schedule = OCKCDScheduleElement(context: context)
-            schedule.interval = element.interval
-            schedule.startDate = element.start
-            schedule.endDate = element.end
-            schedule.interval = element.interval
-            schedule.text = element.text
-            schedule.targetValues = Set(element.targetValues.map(addValue))
-            schedule.copyValues(from: element)
-            return schedule
+            let scheduleElement = OCKCDScheduleElement(context: context)
+            scheduleElement.interval = element.interval
+            scheduleElement.startDate = element.start
+            scheduleElement.endDate = element.end
+            scheduleElement.interval = element.interval
+            scheduleElement.text = element.text
+            scheduleElement.isAllDay = element.isAllDay
+            scheduleElement.targetValues = Set(element.targetValues.map(addValue))
+            scheduleElement.copyValues(from: element)
+            return scheduleElement
         }
     }
 
@@ -171,15 +177,44 @@ extension OCKStore {
         return task
     }
 
-    private func buildPredicate(for anchor: OCKTaskAnchor?) throws -> NSPredicate {
-        guard let anchor = anchor else { return OCKCDTask.headerPredicate() }
+    private func buildPredicate(for anchor: OCKTaskAnchor?, and query: OCKTaskQuery?) throws -> NSPredicate {
+        return NSCompoundPredicate(andPredicateWithSubpredicates: [
+            try buildSubPredicate(for: anchor),
+            buildSubPredicate(for: query),
+            NSPredicate(format: "%K == nil", #keyPath(OCKCDVersionedObject.deletedAt))
+        ])
+    }
+
+    private func buildSubPredicate(for anchor: OCKTaskAnchor?) throws -> NSPredicate {
+        guard let anchor = anchor else { return NSPredicate(value: true) }
         switch anchor {
         case .taskIdentifiers(let taskIdentifiers):
-            return OCKCDTask.headerPredicate(for: taskIdentifiers)
+            return NSPredicate(format: "%K IN %@", #keyPath(OCKCDVersionedObject.identifier), taskIdentifiers)
         case .taskVersions(let versionIDs):
             return NSPredicate(format: "self IN %@", try versionIDs.map(objectID))
         default:
-            fatalError("Not implemented yet")
+            fatalError("Not implemented yet.")
+        }
+    }
+
+    private func buildSubPredicate(for query: OCKTaskQuery?) -> NSPredicate {
+        var predicate = NSPredicate(value: true)
+        if let interval = query?.dateInterval {
+            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [
+                predicate, OCKCDVersionedObject.newestVersionPredicate(in: interval)
+            ])
+        }
+        return predicate
+    }
+
+    private func buildSortDescriptors(for query: OCKTaskQuery?) -> [NSSortDescriptor] {
+        guard let orders = query?.sortDescriptors else { return [] }
+        return orders.map { order -> NSSortDescriptor in
+            switch order {
+            case .effectiveAt(ascending: let ascending): return NSSortDescriptor(keyPath: \OCKCDTask.effectiveAt, ascending: ascending)
+            case .title(let ascending): return NSSortDescriptor(keyPath: \OCKCDTask.title, ascending: ascending)
+            case .groupIdentifier(let ascending): return NSSortDescriptor(keyPath: \OCKCDTask.groupIdentifier, ascending: ascending)
+            }
         }
     }
 }

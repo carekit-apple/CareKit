@@ -36,10 +36,14 @@ public extension OCKStore {
         context.perform {
             do {
                 let predicate = try self.buildPredicate(from: anchor, query: query)
-                let patientsObjects = OCKCDPatient.fetchFromStore(in: self.context, where: predicate)
-                let patientStructs = patientsObjects.map(self.makePatient)
-                queue.async { completion(.success(patientStructs)) }
-                
+                let patientsObjects = OCKCDPatient.fetchFromStore(in: self.context, where: predicate) { fetchRequest in
+                    fetchRequest.fetchLimit = query?.limit ?? 0
+                    fetchRequest.fetchOffset = query?.offset ?? 0
+                    fetchRequest.sortDescriptors = self.buildSortDescriptors(from: query)
+                }
+
+                let patients = patientsObjects.map(self.makePatient)
+                queue.async { completion(.success(patients)) }
             } catch {
                 self.context.rollback()
                 let message = "Failed to fetch patients with query: \(String(describing: query)). \(error.localizedDescription)"
@@ -99,7 +103,7 @@ public extension OCKStore {
                         completion: ((Result<[OCKPatient], OCKStoreError>) -> Void)? = nil) {
         context.perform {
             do {
-                let deletedPatients = try self.performUnversionedUpdate(values: patients) { (_, persistablePatient) in
+                let deletedPatients = try self.performUnversionedUpdate(values: patients) { _, persistablePatient in
                     persistablePatient.deletedAt = Date()
                 }.map(self.makePatient)
 
@@ -147,21 +151,47 @@ public extension OCKStore {
     private func buildPredicate(from anchor: OCKPatientAnchor?, query: OCKPatientQuery?) throws -> NSPredicate {
         let anchorPredicate = try buildSubPredicate(from: anchor)
         let queryPredicate = buildSubPredicate(from: query)
-        return NSCompoundPredicate(andPredicateWithSubpredicates: [anchorPredicate, queryPredicate])
+        let notDeletedPredicate = NSPredicate(format: "%K == nil", #keyPath(OCKCDVersionedObject.deletedAt))
+        return NSCompoundPredicate(andPredicateWithSubpredicates: [anchorPredicate, queryPredicate, notDeletedPredicate])
     }
 
     private func buildSubPredicate(from anchor: OCKPatientAnchor?) throws -> NSPredicate {
-        guard let anchor = anchor else { return OCKCDPatient.headerPredicate() }
+        guard let anchor = anchor else { return NSPredicate(value: true) }
         switch anchor {
         case .patientIdentifiers(let patientIdentifiers):
-            return OCKCDPatient.headerPredicate(for: patientIdentifiers)
+            return NSPredicate(format: "%K IN %@", #keyPath(OCKCDVersionedObject.identifier), patientIdentifiers)
         case .patientVersions(let patientVersionIDs):
             return NSPredicate(format: "self IN %@", try patientVersionIDs.map(objectID))
         }
     }
 
     private func buildSubPredicate(from query: OCKPatientQuery?) -> NSPredicate {
-        return NSPredicate(value: true)
+        var predicate = NSPredicate(value: true)
+
+        if let interval = query?.dateInterval {
+            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [
+                predicate, OCKCDVersionedObject.newestVersionPredicate(in: interval)
+            ])
+        }
+        if let groupIdentifiers = query?.groupIdentifiers {
+            predicate = predicate.including(groupIdentifiers: groupIdentifiers)
+        }
+        if let tags = query?.tags {
+            predicate = predicate.including(tags: tags)
+        }
+        return predicate
+    }
+
+    private func buildSortDescriptors(from query: OCKPatientQuery?) -> [NSSortDescriptor] {
+        guard let orders = query?.sortDescriptors else { return [] }
+        return orders.map { order -> NSSortDescriptor in
+            switch order {
+            case .effectiveAt(let ascending): return NSSortDescriptor(keyPath: \OCKCDPatient.effectiveAt, ascending: ascending)
+            case .givenName(let ascending): return NSSortDescriptor(keyPath: \OCKCDPatient.name.givenName, ascending: ascending)
+            case .familyName(let ascending): return NSSortDescriptor(keyPath: \OCKCDPatient.name.familyName, ascending: ascending)
+            case .groupIdentifier(let ascending): return NSSortDescriptor(keyPath: \OCKCDPatient.groupIdentifier, ascending: ascending)
+            }
+        }
     }
 
     private func validateNumberOfPatients() throws {

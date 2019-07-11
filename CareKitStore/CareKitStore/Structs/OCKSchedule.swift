@@ -51,14 +51,14 @@ public struct OCKSchedule: Codable, Equatable, OCKSchedulable {
     ///
     /// - Parameter occurence: The Nth occurence.
     public subscript(occurence: Int) -> OCKScheduleEvent? {
-        get { return event(forOccurenceIndex: occurence) }
+        return event(forOccurenceIndex: occurence)
     }
 
     /// The date of the first event of this schedule.
     ///
     /// - Note: This operation has an upperbound complexity of O(NlogN).
     public var start: Date {
-        guard let earliestStartDate = elements.map({ $0.start }).sorted().first
+        guard let earliestStartDate = elements.map({ $0.start }).sorted().min()
             else { fatalError("OCKSchedule should always have at least 1 element!") }
         return earliestStartDate
     }
@@ -78,10 +78,10 @@ public struct OCKSchedule: Codable, Equatable, OCKSchedulable {
         var allEvents = elements
             .flatMap { $0.events(from: self.start, to: end) }
             .sorted()
-        for i in 0..<allEvents.count {
-            allEvents[i] = allEvents[i].changing(occurenceIndex: i)
+        for index in 0..<allEvents.count {
+            allEvents[index] = allEvents[index].changing(occurenceIndex: index)
         }
-        return allEvents.filter { $0.start >= start }
+        return allEvents.filter { $0.start + $0.element.duration >= start }
     }
 
     /// Create a new schedule by shifting this schedule.

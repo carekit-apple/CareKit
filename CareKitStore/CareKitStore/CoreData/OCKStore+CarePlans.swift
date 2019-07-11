@@ -32,13 +32,17 @@ import CoreData
 import Foundation
 
 extension OCKStore {
-   
-    public func fetchCarePlans(_ anchor: OCKCarePlanAnchor? = nil, query: OCKCarePlanQuery? = nil, queue: DispatchQueue = .main,
-                               completion: @escaping (Result<[OCKCarePlan], OCKStoreError>) -> Void) {
+    public func fetchCarePlans(_ anchor: OCKCarePlanAnchor? = nil, query: OCKCarePlanQuery? = nil,
+                               queue: DispatchQueue = .main, completion: @escaping (Result<[OCKCarePlan], OCKStoreError>) -> Void) {
         context.perform {
             do {
                 let predicate = try self.buildPredicate(for: anchor, query: query)
-                let persistedPlans = OCKCDCarePlan.fetchFromStore(in: self.context, where: predicate)
+                let persistedPlans = OCKCDCarePlan.fetchFromStore(in: self.context, where: predicate) { fetchRequest in
+                    fetchRequest.fetchLimit = query?.limit ?? 0
+                    fetchRequest.fetchOffset = query?.offset ?? 0
+                    fetchRequest.sortDescriptors = self.buildSortDescriptors(from: query)
+                }
+
                 let plans = persistedPlans.map(self.makePlan)
                 queue.async { completion(.success(plans)) }
             } catch {
@@ -166,7 +170,31 @@ extension OCKStore {
     }
 
     private func buildSubPredicate(for query: OCKCarePlanQuery? = nil) -> NSPredicate {
-        guard let date = query?.date else { return NSPredicate(value: true) }
-        return OCKCDCarePlan.datePredicate(on: date)
+        var predicate = NSPredicate(value: true)
+
+        if let interval = query?.dateInterval {
+            let datePredicate = OCKCDVersionedObject.newestVersionPredicate(in: interval)
+            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, datePredicate])
+        }
+
+        if let groupIdentifiers = query?.groupIdentifiers {
+            predicate = predicate.including(groupIdentifiers: groupIdentifiers)
+        }
+
+        if let tags = query?.tags {
+            predicate = predicate.including(tags: tags)
+        }
+
+        return predicate
+    }
+
+    private func buildSortDescriptors(from query: OCKCarePlanQuery?) -> [NSSortDescriptor] {
+        guard let orders = query?.sortDescriptors else { return [] }
+        return orders.map { order -> NSSortDescriptor in
+            switch order {
+            case .effectiveAt(let ascending): return NSSortDescriptor(keyPath: \OCKCDCarePlan.effectiveAt, ascending: ascending)
+            case .title(let ascending): return NSSortDescriptor(keyPath: \OCKCDCarePlan.title, ascending: ascending)
+            }
+        }
     }
 }

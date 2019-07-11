@@ -30,24 +30,9 @@
 
 import Foundation
 
-/// All query objects that have meaning only a specific point in time conform to this protocol.
-/// For example, it's only meaningful to query the definition of a care plan or task at a specific point in time.
-public protocol OCKDateQueryable {
-    init(for date: Date)
-}
-
-public extension OCKDateQueryable {
-    
-    /// - Returns: A query covering the full extent of the current day.
-    static var today: Self {
-        return Self(for: Date())
-    }
-}
-
 /// All query objects that are meaningful for when defined between two dates conform to this protocol.
 /// For example, one may wish to query for all events that occur between two dates.
-public protocol OCKDateIntervalQueryable: OCKDateQueryable {
-    
+public protocol OCKDateIntervalQueryable {
     /// The date that the query begins on.
     var start: Date { get }
 
@@ -95,7 +80,15 @@ public extension OCKDateIntervalQueryable {
         let endOfDay = Calendar.current.date(byAdding: DateComponents(day: 1, second: -1), to: startOfDay)!
         return Self(start: startOfDay, end: endOfDay)
     }
-    
+
+    static var today: Self {
+        dayOf(date: Date())
+    }
+
+    internal var dateInterval: DateInterval {
+        DateInterval(start: start, end: end)
+    }
+
     func dates() -> [Date] {
         var dates = [Date]()
         var currentDate = start

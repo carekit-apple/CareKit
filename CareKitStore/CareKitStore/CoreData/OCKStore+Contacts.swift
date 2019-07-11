@@ -35,7 +35,12 @@ extension OCKStore {
                               completion: @escaping (Result<[OCKContact], OCKStoreError>) -> Void) {
         context.perform {
             let predicate = self.buildPredicate(for: anchor, and: query)
-            let persistedContacts = OCKCDContact.fetchFromStore(in: self.context, where: predicate)
+            let persistedContacts = OCKCDContact.fetchFromStore(in: self.context, where: predicate) { fetchRequest in
+                fetchRequest.fetchLimit = query?.limit ?? 0
+                fetchRequest.fetchOffset = query?.offset ?? 0
+                fetchRequest.sortDescriptors = self.buildSortDescriptors(for: query)
+            }
+
             let contacts = persistedContacts.map(self.makeContact)
             queue.async { completion(.success(contacts)) }
         }
@@ -188,25 +193,45 @@ extension OCKStore {
     private func buildPredicate(for anchor: OCKContactAnchor?, and query: OCKContactQuery?) -> NSPredicate {
         return NSCompoundPredicate(andPredicateWithSubpredicates: [
             buildSubPredicate(for: anchor),
-            buildSubPredicate(for: query)
+            buildSubPredicate(for: query),
+            NSPredicate(format: "%K == nil", #keyPath(OCKCDVersionedObject.deletedAt))
         ])
     }
 
     private func buildSubPredicate(for anchor: OCKContactAnchor?) -> NSPredicate {
-        guard let anchor = anchor else { return OCKCDContact.headerPredicate() }
+        guard let anchor = anchor else { return NSPredicate(value: true) }
         switch anchor {
         case .contactIdentifier(let identifiers):
-            return OCKCDContact.headerPredicate(for: identifiers)
+            return NSPredicate(format: "%K IN %@", #keyPath(OCKCDVersionedObject.identifier), identifiers)
         case .carePlanVersion(let carePlanVersionIDs):
             fatalError("\(carePlanVersionIDs)")
         }
     }
 
     private func buildSubPredicate(for query: OCKContactQuery?) -> NSPredicate {
-        guard let query = query else { return NSPredicate(value: true) }
-        return NSPredicate(format: "%K >= %@ AND %K != nil AND %K < %@",
-                           #keyPath(OCKCDContact.createdAt), query.date as NSDate,
-                           #keyPath(OCKCDContact.next),
-                           "next.createdAt", query.date as NSDate)
+        var predicate = NSPredicate(value: true)
+        if let interval = query?.dateInterval {
+            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [
+                predicate, OCKCDVersionedObject.newestVersionPredicate(in: interval)
+            ])
+        }
+        if let groupIdentifiers = query?.groupIdentifiers {
+            predicate = predicate.including(groupIdentifiers: groupIdentifiers)
+        }
+        if let tags = query?.tags {
+            predicate = predicate.including(tags: tags)
+        }
+        return predicate
+    }
+
+    private func buildSortDescriptors(for query: OCKContactQuery?) -> [NSSortDescriptor] {
+        guard let orders = query?.sortDescriptors else { return [] }
+        return orders.map { order -> NSSortDescriptor in
+            switch order {
+            case .effectiveAt(ascending: let ascending): return NSSortDescriptor(keyPath: \OCKCDContact.effectiveAt, ascending: ascending)
+            case .familyName(ascending: let ascending): return NSSortDescriptor(keyPath: \OCKCDContact.name.familyName, ascending: ascending)
+            case .givenName(ascending: let ascending): return NSSortDescriptor(keyPath: \OCKCDContact.name.givenName, ascending: ascending)
+            }
+        }
     }
 }

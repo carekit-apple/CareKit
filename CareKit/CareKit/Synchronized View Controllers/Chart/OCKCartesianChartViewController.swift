@@ -115,8 +115,8 @@ open class OCKCartesianChartViewController<Store: OCKStoreProtocol>: UIViewContr
         public var markerSize: CGFloat
 
         /// A closure that accepts as an argument a day's worth of events and returns a y-axis value for that day.
-        public var aggregator: ([Store.Event]) -> Double
-        
+        public var aggregator: OCKEventAggregator<Store.Event>
+
         /// Initialize a new `DataSeriesConfiguration`.
         ///
         /// - Parameters:
@@ -125,34 +125,15 @@ open class OCKCartesianChartViewController<Store: OCKStoreProtocol>: UIViewContr
         ///   - gradientStartColor: The first of two colors that will be used in the gradient when plotting the data.
         ///   - gradientEndColor: The second of two colors that will be used in the gradient when plotting the data.
         ///   - markerSize: The marker size determines the size of the line, bar, or scatter plot elements. The precise behavior varies by plot type.
-        ///   - customAggregator: A closure that accepts as an argument a day's worth of events and returns a y-axis value for that day.
+        ///   - eventAggregator: A an aggregator that accepts as an argument a day's worth of events and returns a y-axis value for that day.
         public init(taskIdentifier: String, legendTitle: String, gradientStartColor: UIColor, gradientEndColor: UIColor,
-                    markerSize: CGFloat, customAggregator: @escaping (_ events: [Store.Event]) -> Double) {
+                    markerSize: CGFloat, eventAggregator: OCKEventAggregator<Store.Event>) {
             self.taskIdentifier = taskIdentifier
             self.legendTitle = legendTitle
             self.gradientStartColor = gradientStartColor
             self.gradientEndColor = gradientEndColor
             self.markerSize = markerSize
-            self.aggregator = customAggregator
-        }
-        
-        /// Initialize a new `DataSeriesConfiguration`.
-        ///
-        /// - Parameters:
-        ///   - taskIdentifier: A user-provided unique identifier for a task.
-        ///   - legendTitle: The title that will be used to represent this data series in the legend.
-        ///   - gradientStartColor: The first of two colors that will be used in the gradient when plotting the data.
-        ///   - gradientEndColor: The second of two colors that will be used in the gradient when plotting the data.
-        ///   - markerSize: The marker size determines the size of the line, bar, or scatter plot elements. The precise behavior varies by plot type.
-        ///   - eventAggregator: A closure that accepts as an argument a day's worth of events and returns a y-axis value for that day.
-        public init(taskIdentifier: String, legendTitle: String, gradientStartColor: UIColor, gradientEndColor: UIColor,
-                    markerSize: CGFloat, eventAggregator: OCKEventAggregator<Store>) {
-            self.taskIdentifier = taskIdentifier
-            self.legendTitle = legendTitle
-            self.gradientStartColor = gradientStartColor
-            self.gradientEndColor = gradientEndColor
-            self.markerSize = markerSize
-            self.aggregator = eventAggregator.aggregator
+            self.aggregator = eventAggregator
         }
     }
 
@@ -190,10 +171,10 @@ open class OCKCartesianChartViewController<Store: OCKStoreProtocol>: UIViewContr
         var allDataSeries = [OCKDataSeries]()
         var errors = [Error]()
         let group = DispatchGroup()
-        let insightsQuery = OCKInsightQuery(from: eventQuery)
+        let insightsQuery = OCKInsightQuery<Store.Event>(from: eventQuery)
         for config in dataSeriesConfigurations {
             group.enter()
-            storeManager.store.fetchInsights(forTask: config.taskIdentifier, query: insightsQuery, dailyAggregator: config.aggregator) { result in
+            storeManager.store.fetchInsights(forTask: config.taskIdentifier, query: insightsQuery) { result in
                 switch result {
                 case .failure(let error): errors.append(error)
                 case .success(let values):

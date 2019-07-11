@@ -65,7 +65,10 @@ public protocol OCKVersionable: OCKLocalPersistable {
     /// A user-defined identifier that is the same across all versions of a versioned object or value.
     /// The identifier is generally expected to be meaningful to humans, but is not required to be.
     var identifier: String { get }
-    
+
+    /// The date at which this version is considered to begin taking effect
+    var effectiveAt: Date { get }
+
     /// A database generated identifier that uniquely identifier this version of the object or value.
     var versionID: OCKLocalVersionID? { get }
 
@@ -100,6 +103,7 @@ public extension OCKVersionable {
 
 internal protocol OCKVersionSettable: OCKVersionable, OCKLocalPersistableSettable {
     var localDatabaseID: OCKLocalVersionID? { get set }
+    var effectiveAt: Date { get set }
     var nextVersionID: OCKLocalVersionID? { get set }
     var previousVersionID: OCKLocalVersionID? { get set }
 }

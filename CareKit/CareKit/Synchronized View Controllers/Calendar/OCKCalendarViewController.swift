@@ -45,14 +45,13 @@ internal class OCKCalendarViewController<Store: OCKStoreProtocol>: OCKSynchroniz
         case week
     }
 
-    public weak var delegate: OCKCalendarViewControllerDelegate?
-    public let adherenceQuery: OCKAdherenceQuery
-    public let storeManager: OCKSynchronizedStoreManager<Store>?
-    
+    weak var delegate: OCKCalendarViewControllerDelegate?
+    let adherenceQuery: OCKAdherenceQuery<Store.Event>
+    let storeManager: OCKSynchronizedStoreManager<Store>?
+
     // Styled initializers
 
-    public static func makeCalendar(style: Style, storeManager: OCKSynchronizedStoreManager<Store>?,
-                                    adherenceQuery: OCKAdherenceQuery) -> OCKCalendarViewController<Store> {
+    static func makeCalendar(style: Style, storeManager: OCKSynchronizedStoreManager<Store>?, adherenceQuery: OCKAdherenceQuery<Store.Event>) -> OCKCalendarViewController<Store> {
         switch style {
         case .week: return OCKWeekCalendarViewController<Store>(storeManager: storeManager, adherenceQuery: adherenceQuery)
         }
@@ -62,7 +61,7 @@ internal class OCKCalendarViewController<Store: OCKStoreProtocol>: OCKSynchroniz
 
     internal init(
         storeManager: OCKSynchronizedStoreManager<Store>?,
-        adherenceQuery: OCKAdherenceQuery,
+        adherenceQuery: OCKAdherenceQuery<Store.Event>,
         loadCustomView: @escaping () -> UIView,
         modelDidChange: @escaping CustomModelDidChange) {
         self.storeManager = storeManager
@@ -74,7 +73,7 @@ internal class OCKCalendarViewController<Store: OCKStoreProtocol>: OCKSynchroniz
 
     internal init<View: UIView & OCKBindable>(
         storeManager: OCKSynchronizedStoreManager<Store>?,
-        adherenceQuery: OCKAdherenceQuery,
+        adherenceQuery: OCKAdherenceQuery<Store.Event>,
         loadDefaultView: @escaping () -> View,
         modelDidChange: ModelDidChange? = nil)
     where View.Model == [OCKCompletionRingButton.CompletionState] {

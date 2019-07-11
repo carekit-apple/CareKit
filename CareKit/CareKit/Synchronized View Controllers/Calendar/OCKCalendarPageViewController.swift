@@ -51,6 +51,7 @@ UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelega
     weak var calendarDelegate: OCKCalendarPageViewControllerDelegate?
 
     private let storeManager: OCKSynchronizedStoreManager<Store>
+    private let aggregator: OCKAdherenceAggregator<Store.Event>
 
     /// The date range currently being displayed.
     private var currentDateRange: DateInterval? {
@@ -68,8 +69,9 @@ UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelega
         return viewControllers?.first as? OCKWeekCalendarViewController<Store>
     }
 
-    init(storeManager: OCKSynchronizedStoreManager<Store>) {
+    init(storeManager: OCKSynchronizedStoreManager<Store>, aggregator: OCKAdherenceAggregator<Store.Event> = .countOutcomes) {
         self.storeManager = storeManager
+        self.aggregator = aggregator
         super.init(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
     }
 
@@ -93,12 +95,17 @@ UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelega
 
     private func makeViewController(for date: Date) -> OCKWeekCalendarViewController<Store> {
         let interval = Calendar.current.dateInterval(of: .weekOfYear, for: date)!
-        let query = OCKAdherenceQuery(dateInterval: interval)
+        var query = OCKAdherenceQuery<Store.Event>(dateInterval: interval)
+        query.aggregator = aggregator
         let viewController = OCKWeekCalendarViewController(storeManager: storeManager, adherenceQuery: query)
         viewController.calendarWeekView.displayWeek(of: interval.start)
         viewController.calendarWeekView.delegate = self
         viewController.unsubscribesWhenNotShown = false
         return viewController
+    }
+
+    func refreshAdherence() {
+        currentViewController?.fetchAdherence()
     }
 
     func selectDate(_ date: Date, animated: Bool) {

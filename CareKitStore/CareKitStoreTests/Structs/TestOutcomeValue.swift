@@ -56,8 +56,6 @@ class TestOutcomeValue: XCTestCase {
         for (before, after) in beforeAfterValuePairs {
             let value1 = OCKOutcomeValue(before)
             let value2 = OCKOutcomeValue(after)
-            XCTAssert(value1 == value1)
-            XCTAssert(value2 == value2)
             XCTAssert(value1 != value2)
         }
     }
@@ -76,8 +74,6 @@ class TestOutcomeValue: XCTestCase {
         for (left, right) in beforeAfterValuePairs {
             let value1 = OCKOutcomeValue(left)
             let value2 = OCKOutcomeValue(right)
-            XCTAssert(value1 == value1)
-            XCTAssert(value2 == value2)
             XCTAssert(value1 == value2)
         }
     }
@@ -175,7 +171,6 @@ class TestOutcomeValue: XCTestCase {
             let decoded = try decoder.decode(OCKOutcomeValue.self, from: encoded)
             XCTAssert(decoded == outcome, "OCKOutcomeValue not preserved in coding")
             testEqualityOfEncodings(outcome1: outcome, outcome2: decoded)
-            XCTAssert(encoded == encoded, "OCKOutcomeValue encoding inconsistent")
         } catch {
             XCTFail("unable to encode or decode OCKOutcomeValue")
         }

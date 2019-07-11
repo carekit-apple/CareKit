@@ -45,6 +45,7 @@ public struct OCKCarePlan: Codable, Equatable, OCKVersionSettable, OCKObjectComp
     public let identifier: String
 
     // MARK: OCKVersionable
+    public var effectiveAt: Date
     public internal(set) var localDatabaseID: OCKLocalVersionID?
     public internal(set) var nextVersionID: OCKLocalVersionID?
     public internal(set) var previousVersionID: OCKLocalVersionID?
@@ -71,6 +72,7 @@ public struct OCKCarePlan: Codable, Equatable, OCKVersionSettable, OCKObjectComp
         self.title = title
         self.identifier = identifier
         self.patientID = patientID
+        self.effectiveAt = Date()
     }
 
     /// Initialize a new care plan from an `OCKCarePlan`

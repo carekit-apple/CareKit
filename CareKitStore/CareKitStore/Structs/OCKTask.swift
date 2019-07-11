@@ -50,6 +50,7 @@ public struct OCKTask: Codable, Equatable, OCKVersionSettable, OCKObjectCompatib
     public let identifier: String
 
     // MARK: OCKVersionable
+    public var effectiveAt: Date
     public internal(set) var localDatabaseID: OCKLocalVersionID?
     public internal(set) var nextVersionID: OCKLocalVersionID?
     public internal(set) var previousVersionID: OCKLocalVersionID?
@@ -79,6 +80,7 @@ public struct OCKTask: Codable, Equatable, OCKVersionSettable, OCKObjectCompatib
         self.title = title
         self.carePlanID = carePlanID
         self.schedule = schedule
+        self.effectiveAt = schedule.start
     }
 
     public init(value: OCKTask) {
@@ -87,26 +89,5 @@ public struct OCKTask: Codable, Equatable, OCKVersionSettable, OCKObjectCompatib
 
     public func convert() -> OCKTask {
         return self
-    }
-}
-
-internal extension Array where Element == OCKTask {
-    func filtered(against query: OCKTaskQuery?) -> [Element] {
-        guard let query = query else { return self }
-        return filter { task -> Bool in
-            // check that task schedule fits time requirements
-            if let scheduleEnd = task.schedule.end,
-                !(scheduleEnd >= query.start && task.schedule.start <= query.end) {
-                return false
-            } else if task.schedule.start > query.end {
-                return false
-            }
-            // check that task is filtered out if it has events
-            // within the range of the query start and end date.
-            if query.excludesTasksWithNoEvents && task.schedule.events(from: query.start, to: query.end).isEmpty {
-                return false
-            }
-            return true
-        }
     }
 }

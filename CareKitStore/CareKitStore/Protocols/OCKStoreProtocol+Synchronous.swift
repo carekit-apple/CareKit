@@ -52,7 +52,7 @@ internal extension OCKStoreProtocol {
     }
 
     @discardableResult
-    func fetchPatientAndWait(identifier: String, query: OCKPatientQuery? = nil) throws -> Patient? {
+    func fetchPatientAndWait(identifier: String) throws -> Patient {
         return try performSynchronously { fetchPatient(withIdentifier: identifier, queue: .global(qos: .background), completion: $0) }
     }
 
@@ -254,16 +254,17 @@ internal extension OCKStoreProtocol {
 
     // MARK: Adherence
 
-    func fetchAdherenceAndWait(forTasks identifiers: [String]? = nil, query: OCKAdherenceQuery) throws -> [OCKAdherence] {
-        return try performSynchronously { fetchAdherence(forTasks: identifiers, query: query, queue: .global(qos: .background), completion: $0) }
+    func fetchAdherenceAndWait(forTasks identifiers: [String]? = nil, query: OCKAdherenceQuery<Event>) throws -> [OCKAdherence] {
+        return try performSynchronously {
+            fetchAdherence(forTasks: identifiers, query: query, queue: .global(qos: .background), completion: $0)
+        }
     }
 
     // MARK: Insights
 
-    func fetchInsightsAndWait(forTask identifier: String, query: OCKInsightQuery,
-                              computeValue: @escaping (_ outcomes: [OCKEvent<Task, Outcome>]) -> Double) throws -> [Double] {
+    func fetchInsightsAndWait(forTask identifier: String, query: OCKInsightQuery<Event>) throws -> [Double] {
         return try performSynchronously {
-            fetchInsights(forTask: identifier, query: query, queue: .global(qos: .background), dailyAggregator: computeValue, completion: $0)
+            fetchInsights(forTask: identifier, query: query, queue: .global(qos: .background), completion: $0)
         }
     }
 }

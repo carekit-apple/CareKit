@@ -49,32 +49,36 @@ public extension OCKStoreProtocol {
 
     func fetchEvents(taskIdentifier: String, query: OCKEventQuery, queue: DispatchQueue = .main,
                      completion: @escaping OCKResultClosure<[OCKEvent<Task, Outcome>]>) {
-        fetchTask(withIdentifier: taskIdentifier, queue: queue) { result in
+        var taskQuery = OCKTaskQuery(from: query)
+        taskQuery.limit = 1
+        taskQuery.sortDescriptors = [.effectiveAt(ascending: true)]
+
+        fetchTasks(.taskIdentifiers([taskIdentifier]), query: taskQuery, queue: queue, completion: chooseFirst(then: { result in
             switch result {
-            case .failure(let error): completion(.failure(error))
+            case .failure(let error):
+                completion(.failure(error))
             case .success(let task):
-                guard let task = task else { completion(.failure(.fetchFailed(reason: "No task with identifier: \(taskIdentifier)"))); return }
                 self.fetchEvents(task: task, query: query, previousEvents: [], queue: queue) { result in
                     completion(result)
                 }
             }
-        }
+        }, replacementError: .fetchFailed(reason: "Not taks with identifier: \(taskIdentifier) for query: \(taskQuery)")))
     }
-    
+
     func fetchEvent(withTaskVersionID taskVersionID: OCKLocalVersionID, occurenceIndex: Int,
                     queue: DispatchQueue = .main, completion: @escaping OCKResultClosure<OCKEvent<Task, Outcome>>) {
         fetchTask(withVersionID: taskVersionID, queue: queue, completion: { result in
             switch result {
             case .failure(let error): completion(.failure(.fetchFailed(reason: "Failed to fetch task. \(error.localizedDescription)")))
             case .success(let task):
-                guard let task = task, let scheduleEvent = task.convert().schedule.event(forOccurenceIndex: occurenceIndex) else {
+                guard let scheduleEvent = task.convert().schedule.event(forOccurenceIndex: occurenceIndex) else {
                     completion(.failure(.fetchFailed(reason: "Invalid occurence \(occurenceIndex) for task with version ID: \(taskVersionID)")))
                     return
                 }
                 let early = scheduleEvent.start.addingTimeInterval(-1)
                 let late = scheduleEvent.end.addingTimeInterval(1)
                 let query = OCKOutcomeQuery(start: early, end: late)
-                self.fetchOutcome(.taskVersion(taskVersionID), query: query, queue: queue, completion: { result in
+                self.fetchOutcome(.taskVersions([taskVersionID]), query: query, queue: queue, completion: { result in
                     switch result {
                     case .failure(let error): completion(.failure(.fetchFailed(reason: "Couldn't find outcome. \(error.localizedDescription)")))
                     case .success(let outcome):
@@ -91,11 +95,11 @@ public extension OCKStoreProtocol {
                              queue: DispatchQueue = .main, completion: @escaping (Result<[OCKEvent<Task, Outcome>], OCKStoreError>) -> Void) {
         let converted = task.convert()
         guard let versionID = converted.localDatabaseID else { completion(.failure(.fetchFailed(reason: "Task didn't have a versionID"))); return }
-        let start = max(converted.schedule.start, query.start)
+        let start = max(converted.effectiveAt, query.start)
         let end = converted.schedule.end == nil ? query.end : min(converted.schedule.end!, query.end)
         let outcomeQuery = OCKOutcomeQuery(start: start, end: end)
         let scheduleEvents = converted.schedule.events(from: start, to: end)
-        self.fetchOutcomes(.taskVersion(versionID), query: outcomeQuery, queue: queue, completion: { result in
+        self.fetchOutcomes(.taskVersions([versionID]), query: outcomeQuery, queue: queue, completion: { result in
             switch result {
             case .failure(let error): completion(.failure(error))
             case .success(let outcomes):
@@ -105,12 +109,8 @@ public extension OCKStoreProtocol {
                     switch result {
                     case .failure(let error): completion(.failure(error))
                     case .success(let task):
-                        guard let task = task else {
-                            completion(.failure(.fetchFailed(reason: "No task with identifer \(version)")))
-                            return
-                        }
-                        let nextEndDate = converted.schedule.start
-                        let nextStartDate = max(query.start, task.convert().schedule.start)
+                        let nextEndDate = converted.effectiveAt
+                        let nextStartDate = max(query.start, task.convert().effectiveAt)
                         let nextQuery = OCKEventQuery(start: nextStartDate, end: nextEndDate)
                         self.fetchEvents(task: task, query: nextQuery, previousEvents: events, queue: queue, completion: { result in
                             completion(result)
@@ -133,7 +133,7 @@ public extension OCKStoreProtocol {
 
     // MARK: Adherence
 
-    func fetchAdherence(forTasks identifiers: [String]? = nil, query: OCKAdherenceQuery,
+    func fetchAdherence(forTasks identifiers: [String]? = nil, query: OCKAdherenceQuery<Event>,
                         queue: DispatchQueue = .main, completion: @escaping OCKResultClosure<[OCKAdherence]>) {
         let anchor = identifiers == nil ? nil : OCKTaskAnchor.taskIdentifiers(identifiers!)
         let taskQuery = OCKTaskQuery(from: query)
@@ -164,22 +164,21 @@ public extension OCKStoreProtocol {
                 }
                 group.notify(queue: .global(qos: .userInitiated), execute: {
                     if let error = error {
-                        completion(.failure(.fetchFailed(reason: "Failed to fetch completion for tasks! \(error.localizedDescription)")))
+                        queue.async {
+                            completion(.failure(.fetchFailed(reason: "Failed to fetch completion for tasks! \(error.localizedDescription)")))
+                        }
                         return
                     }
                     let groupedEvents = self.groupEventsByDate(events: events, after: query.start, before: query.end)
-                    let completionPercentages = groupedEvents.enumerated().map { (index, events) -> OCKAdherence in
-                        let date = Calendar.current.date(byAdding: .day, value: index, to: query.start)!
-                        return self.computeAverageCompletion(for: events, on: date)
-                    }
+                    let completionPercentages = groupedEvents.map(query.aggregator.aggregate)
                     queue.async { completion(.success(completionPercentages)) }
                 })
             }
         }
     }
-    
-    private func groupEventsByDate(events: [OCKEvent<Task, Outcome>], after start: Date, before end: Date) -> [[OCKEvent<Task, Outcome>]] {
-        var days: [[OCKEvent<Task, Outcome>]] = []
+
+    private func groupEventsByDate(events: [Event], after start: Date, before end: Date) -> [[Event]] {
+        var days: [[Event]] = []
         let grabDayIndex = { (date: Date) in Calendar.current.dateComponents(Set([.day]), from: start, to: date).day! }
         let numberOfDays = grabDayIndex(end) + 1
         for _ in 0..<numberOfDays {
@@ -192,36 +191,17 @@ public extension OCKStoreProtocol {
         return days
     }
 
-    private func computeAverageCompletion(for events: [OCKEvent<Task, Outcome>], on date: Date) -> OCKAdherence {
-        guard !events.isEmpty else {
-            return .noEvents
-        }
-        let events = events.map { $0.convert() }
-        let percentsComplete = events.map(computeCompletion)
-        let average = percentsComplete.reduce(0, +) / Double(events.count)
-        return .progress(average)
-    }
-    
-    private func computeCompletion(for event: OCKEvent<OCKTask, OCKOutcome>) -> Double {
-        let expectedValues = event.scheduleEvent.element.targetValues
-        let valuesRequiredForComplete = !expectedValues.isEmpty ? expectedValues.count : 1
-        let valueCount = event.outcome?.values.count ?? 0
-        let fractionComplete = min(1.0, Double(valueCount) / Double(valuesRequiredForComplete))
-        return fractionComplete
-    }
-    
     // MARK: Insights
 
-    func fetchInsights(forTask identifier: String, query: OCKInsightQuery, queue: DispatchQueue = .main,
-                       dailyAggregator: @escaping (_ outcomes: [OCKEvent<Task, Outcome>]) -> Double,
-                       completion: @escaping OCKResultClosure<[Double]>) {
+    func fetchInsights(forTask identifier: String, query: OCKInsightQuery<Event>,
+                       queue: DispatchQueue = .main, completion: @escaping OCKResultClosure<[Double]>) {
         let eventQuery = OCKEventQuery(from: query)
         fetchEvents(taskIdentifier: identifier, query: eventQuery, queue: queue) { result in
             switch result {
             case .failure(let error): completion(.failure(.fetchFailed(reason: "Failed to fetch insights. \(error.localizedDescription)")))
             case .success(let events):
                 let eventsByDay = self.groupEventsByDate(events: events, after: query.start, before: query.end)
-                let valuesByDay = eventsByDay.map(dailyAggregator)
+                let valuesByDay = eventsByDay.map(query.aggregator.aggregate)
                 completion(.success(valuesByDay))
             }
         }

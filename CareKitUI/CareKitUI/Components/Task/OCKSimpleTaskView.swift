@@ -44,46 +44,45 @@ import UIKit
 ///     +-------------------------------------------------------+
 ///
 open class OCKSimpleTaskView: UIView, OCKCardable, OCKCollapsible {
-    
     // MARK: Properties
-    
+
     /// The button in the trailing end of the card. Has an image that is defaulted to a checkmark when selected.
     public let completionButton: OCKButton = OCKCircleButton(checkmarkPointSize: .large)
 
     /// A default version of an `OCKHeaderView`.
     public let headerView = OCKHeaderView()
-    
+
     internal var shouldCollapse: Bool = true
-    
+
     // MARK: Life cycle
-    
+
     public init() {
         super.init(frame: .zero)
         setup()
     }
-    
-    required public init?(coder: NSCoder) {
+
+    public required init?(coder: NSCoder) {
         super.init(coder: coder)
         setup()
     }
-    
+
     // MARK: Methods
-    
+
     private func setup() {
         addSubviews()
         styleSubviews()
         constrainSubviews()
     }
-    
+
     private func styleSubviews() {
         preservesSuperviewLayoutMargins = true
         enableCardStyling(true)
     }
-    
+
     private func addSubviews() {
         [headerView, completionButton].forEach { addSubview($0) }
     }
-    
+
     private func constrainSubviews() {
         [headerView, completionButton].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
         NSLayoutConstraint.activate([
@@ -103,7 +102,7 @@ open class OCKSimpleTaskView: UIView, OCKCardable, OCKCollapsible {
     }
 
     // MARK: OCKCollapsible
-    
+
     internal func setCollapsedState(_ state: OCKCollapsibleState, animated: Bool) {
         guard shouldCollapse else { return }
         UIView.animate(withDuration: OCKStyle.animation.stateChangeDuration) { [weak self] in

@@ -32,35 +32,35 @@ import UIKit
 import CareKit
 
 class TipView: UIView, OCKCardable {
-    
+
     let headerView = OCKHeaderView()
     let imageView = UIImageView()
-    
+
     private let blurView: UIVisualEffectView = {
         let blurEffect = UIBlurEffect(style: UIBlurEffect.Style.regular)
         return UIVisualEffectView(effect: blurEffect)
     }()
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setup()
     }
-    
+
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         setup()
     }
-    
+
     private func setup() {
         preservesSuperviewLayoutMargins = true
         enableCardStyling(true)
 
         headerView.detailLabel.textColor = .gray
-        
+
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = layer.cornerRadius
-        
+
         blurView.clipsToBounds = true
         blurView.layer.cornerRadius = layer.cornerRadius
         blurView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
@@ -68,11 +68,11 @@ class TipView: UIView, OCKCardable {
         addSubview(imageView)
         addSubview(blurView)
         addSubview(headerView)
-        
+
         imageView.translatesAutoresizingMaskIntoConstraints = false
         blurView.translatesAutoresizingMaskIntoConstraints = false
         headerView.translatesAutoresizingMaskIntoConstraints = false
-        
+
         NSLayoutConstraint.activate([
             headerView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: directionalLayoutMargins.leading * 2),
             headerView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -directionalLayoutMargins.trailing * 2),

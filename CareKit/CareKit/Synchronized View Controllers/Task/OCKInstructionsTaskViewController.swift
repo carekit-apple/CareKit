@@ -28,25 +28,24 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import UIKit
 import CareKitStore
+import UIKit
 
 /// An synchronized view controller that displays a single event and its outcomes along with instructions about how to complete the event.
 ///
 /// - Note: `OCKEventViewController`s are created by specifying a task and an event query. If the event query
 /// returns more than one event, only the first event will be displayed.
 open class OCKInstructionsTaskViewController<Store: OCKStoreProtocol>: OCKEventViewController<Store> {
-    
     override var detailPresentingView: UIView? {
         return taskView.headerView
     }
-    
+
     /// The view the event is displayed in.
     public var taskView: OCKInstructionsTaskView {
         guard let view = view as? OCKInstructionsTaskView else { fatalError("Unexpected type") }
         return view
     }
-    
+
     /// Initialize using an identifier.
     ///
     /// - Parameters:
@@ -58,7 +57,7 @@ open class OCKInstructionsTaskViewController<Store: OCKStoreProtocol>: OCKEventV
         super.init(storeManager: storeManager, taskIdentifier: taskIdentifier, eventQuery: eventQuery,
                    loadDefaultView: { OCKBindableInstructionsTaskView<Store.Task, Store.Outcome>() })
     }
-    
+
     /// Initialize using a task.
     ///
     /// - Parameters:
@@ -68,12 +67,8 @@ open class OCKInstructionsTaskViewController<Store: OCKStoreProtocol>: OCKEventV
     public convenience init(storeManager: OCKSynchronizedStoreManager<Store>, task: Store.Task, eventQuery: OCKEventQuery) {
         self.init(storeManager: storeManager, taskIdentifier: task.identifier, eventQuery: eventQuery)
     }
-    
-    required public init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    open override func viewDidLoad() {
+
+    override open func viewDidLoad() {
         super.viewDidLoad()
         taskView.completionButton.addTarget(self, action: #selector(eventButtonPressed(_:)), for: .touchUpInside)
     }

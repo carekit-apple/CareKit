@@ -33,26 +33,25 @@ import UIKit
 
 /// Separator view.
 open class OCKSeparatorView: UIView {
-    
     public init() {
         super.init(frame: .zero)
         setup()
     }
-    
-    required public init?(coder aDecoder: NSCoder) {
+
+    public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         setup()
     }
-    
+
     private func setup() {
         styleSubviews()
         constrainSubviews()
     }
-    
+
     private func styleSubviews() {
         backgroundColor = OCKStyle.color.separator
     }
-    
+
     private func constrainSubviews() {
         translatesAutoresizingMaskIntoConstraints = false
         heightAnchor.constraint(equalToConstant: OCKStyle.dimension.separatorHeight).isActive = true

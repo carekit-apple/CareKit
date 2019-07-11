@@ -30,9 +30,8 @@
 
 import UIKit
 
-/// A layout that aligns it's items to the left side
+/// A layout that aligns its items to the left side
 internal class OCKGridCollectionViewFlowLayout: UICollectionViewFlowLayout {
-    
     override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
         let attributes = super.layoutAttributesForElements(in: rect) ?? []
         var leftInset = sectionInset.left
@@ -42,7 +41,7 @@ internal class OCKGridCollectionViewFlowLayout: UICollectionViewFlowLayout {
             if attribute.frame.origin.y >= maxY {
                 leftInset = sectionInset.left
             }
-            
+
             attribute.frame.origin.x = leftInset   // Set the x value for the current item
             leftInset += attribute.frame.width + minimumInteritemSpacing // add offset to the current x value
             maxY = max(attribute.frame.maxY, maxY)

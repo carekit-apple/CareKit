@@ -31,7 +31,6 @@
 import UIKit
 
 internal extension UIFont {
-    
     static let fontSizesTable: [TextStyle: [UIContentSizeCategory: CGFloat]] = [
         .headline: OCKStyle.font.headlineFontSizes,
         .callout: OCKStyle.font.calloutFontSizes,
@@ -44,7 +43,7 @@ internal extension UIFont {
         .title2: OCKStyle.font.title2FontSizes,
         .title3: OCKStyle.font.title3FontSizes
     ]
-    
+
     static func preferredCustomFont(forTextStyle textStyle: TextStyle, weight: Weight) -> UIFont {
         let sizeCategory = UIApplication.shared.preferredContentSizeCategory
         let customPointSize = fontSizesTable[textStyle]?[sizeCategory]  // framework/developer defined point size
@@ -54,7 +53,7 @@ internal extension UIFont {
             UIFontDescriptor.AttributeName.size: size,
             UIFontDescriptor.AttributeName.family: UIFont.systemFont(ofSize: size).familyName
         ])
-        
+
         // add the font weight too the descriptor
         let weightedFontDescriptor = fontDescriptor.addingAttributes([
             UIFontDescriptor.AttributeName.traits: [

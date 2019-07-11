@@ -28,8 +28,8 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Foundation
 import Contacts
+import Foundation
 
 @objc(OCKCDContact)
 class OCKCDContact: OCKCDVersionedObject {
@@ -40,32 +40,32 @@ class OCKCDContact: OCKCDVersionedObject {
     @NSManaged var title: String?
     @NSManaged var role: String?
     @NSManaged var category: String?
-    
+
     @NSManaged private var emailAddressesDictionary: [String: String]?
     @NSManaged private var messagingNumbersDictionary: [String: String]?
     @NSManaged private var phoneNumbersDictionary: [String: String]?
     @NSManaged private var otherContactInfoDictionary: [String: String]?
-    
+
     var messagingNumbers: [OCKLabeledValue]? {
         get { messagingNumbersDictionary?.asLabeledValues() }
         set { messagingNumbersDictionary = newValue?.asDictionary() }
     }
-    
+
     var emailAddresses: [OCKLabeledValue]? {
         get { emailAddressesDictionary?.asLabeledValues() }
         set { emailAddressesDictionary = newValue?.asDictionary() }
     }
-    
+
     var phoneNumbers: [OCKLabeledValue]? {
         get { phoneNumbersDictionary?.asLabeledValues() }
         set { phoneNumbersDictionary = newValue?.asDictionary() }
     }
-    
+
     var otherContactInfo: [OCKLabeledValue]? {
         get { otherContactInfoDictionary?.asLabeledValues() }
         set { otherContactInfoDictionary = newValue?.asDictionary() }
     }
-    
+
     override func validateRelationships() throws {
         try super.validateRelationships()
         if !allowsMissingRelationships && carePlan == nil {

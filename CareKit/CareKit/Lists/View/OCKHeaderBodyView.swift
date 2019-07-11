@@ -28,63 +28,63 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import UIKit
 import CareKitUI
+import UIKit
 
 internal class OCKHeaderBodyView: UIView {
-    
     // MARK: Properties
-    
+
     internal enum Constants {
         static let headerContentHeight: CGFloat = 60
         static let topMargin: CGFloat = 20
         static let margin: CGFloat = 16
     }
-    
+
     internal var headerHeight: CGFloat {
         return Constants.headerContentHeight + 2 * Constants.margin
     }
-    
-    public var headerInset: CGFloat {
+
+    var headerInset: CGFloat {
         return headerHeight + Constants.topMargin
     }
-    
+
     private let headerView: UIView
     private let bodyView: UIView
-    
+
     private let headerBackgroundView: UIView = {
         let view = UIView()
         view.backgroundColor = OCKStyle.color.gray1
         return view
     }()
-    
+
     private let separatorView = OCKSeparatorView()
-    
+
     // MARK: Life cycle
-    
-    public init(headerView: UIView, bodyView: UIView) {
+
+    init(headerView: UIView, bodyView: UIView) {
         self.headerView = headerView
         self.bodyView = bodyView
         super.init(frame: .zero)
         setup()
     }
-    
-    public required init?(coder: NSCoder) {
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
         fatalError("Unsupported Initializer.")
     }
-    
+
     // MARK: Methods
-    
+
     private func setup() {
         preservesSuperviewLayoutMargins = true
         addSubviews()
         constrainSubviews()
     }
-    
+
     private func addSubviews() {
         [bodyView, headerBackgroundView, separatorView, headerView].forEach { addSubview($0) }
     }
-    
+
     private func constrainSubviews() {
         [headerBackgroundView, separatorView, bodyView, headerView].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
         NSLayoutConstraint.activate([
@@ -92,16 +92,16 @@ internal class OCKHeaderBodyView: UIView {
             headerView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
             headerView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor),
             headerView.heightAnchor.constraint(equalToConstant: Constants.headerContentHeight),
-            
+
             headerBackgroundView.leadingAnchor.constraint(equalTo: leadingAnchor),
             headerBackgroundView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
             headerBackgroundView.trailingAnchor.constraint(equalTo: trailingAnchor),
             headerBackgroundView.heightAnchor.constraint(equalToConstant: headerHeight),
-            
+
             separatorView.bottomAnchor.constraint(equalTo: headerBackgroundView.bottomAnchor),
             separatorView.leadingAnchor.constraint(equalTo: headerBackgroundView.leadingAnchor),
             separatorView.trailingAnchor.constraint(equalTo: headerBackgroundView.trailingAnchor),
-            
+
             bodyView.leadingAnchor.constraint(equalTo: leadingAnchor),
             bodyView.trailingAnchor.constraint(equalTo: trailingAnchor),
             bodyView.bottomAnchor.constraint(equalTo: bottomAnchor),

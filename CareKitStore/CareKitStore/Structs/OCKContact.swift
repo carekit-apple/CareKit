@@ -28,62 +28,62 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Foundation
 import Contacts
+import Foundation
 
 /// An `OCKContact` represents a contact that a user may want to get in touch with. A contact may be a care provider, a friend, or a family
 /// member. Contacts must have at least a name, and may optionally have numerous other addresses at which to be contacted.
 public struct OCKContact: Codable, Equatable, OCKVersionSettable, OCKObjectCompatible, OCKContactConvertible, OCKContactInitializable {
-    
     /// The contact's name.
     public var name: PersonNameComponents
-    
+
     /// The contact's postal address.
     public var address: OCKPostalAddress?
-    
+
     /// An array of the contact's email addresses.
     public var emailAddresses: [OCKLabeledValue]?
-    
+
     /// An array of numbers that the contact can be messaged at.
     /// The number strings may contains non-numeric characters.
     public var messagingNumbers: [OCKLabeledValue]?
-    
+
     /// An array of the contact's phone numbers.
     /// The number strings may contains non-numeric characters.
     public var phoneNumbers: [OCKLabeledValue]?
-    
+
     /// An array of other information that could be used reach this contact.
     public var otherContactInfo: [OCKLabeledValue]?
-    
+
     /// The organization this contact belongs to.
     public var organization: String?
-    
+
     /// A title for this contact.
     public var title: String?
-    
+
     /// A description of what this contact's role is.
     public var role: String?
-    
+
     /// Indicates if this contact is care provider or if they are a friend or family member.
     public var category: Category?
-    
+
     /// The version identifier in the local database for the care plan associated with this contact.
     public var carePlanID: OCKLocalVersionID?
-    
+
     /// An enumerator specifying which group a contact belongs to.
     public enum Category: String, Codable {
         case careProvider
         case friendsAndFamily
     }
-    
+
     // MARK: OCKIdentifiable
     public let identifier: String
-    
+
     // MARK: OCKVersionable
+    public var effectiveAt: Date
     public internal(set) var localDatabaseID: OCKLocalVersionID?
     public internal(set) var nextVersionID: OCKLocalVersionID?
     public internal(set) var previousVersionID: OCKLocalVersionID?
-    
+
     // MARK: OCKObjectCompatible
     public internal(set) var createdAt: Date?
     public internal(set) var updatedAt: Date?
@@ -95,7 +95,7 @@ public struct OCKContact: Codable, Equatable, OCKVersionSettable, OCKObjectCompa
     public var source: String?
     public var asset: String?
     public var notes: [OCKNote]?
-    
+
     /// Initialize a new `OCKContact` with a user-defined identifier, a name, and an optional care plan version ID.
     ///
     /// - Parameters:
@@ -106,8 +106,9 @@ public struct OCKContact: Codable, Equatable, OCKVersionSettable, OCKObjectCompa
         self.identifier = identifier
         self.name = name
         self.carePlanID = carePlanID
+        self.effectiveAt = Date()
     }
-    
+
     /// Initialize a new `OCKContact` with a user-defined identifier, a name, and an optional care plan version ID.
     ///
     /// - Parameters:
@@ -120,15 +121,16 @@ public struct OCKContact: Codable, Equatable, OCKVersionSettable, OCKObjectCompa
         self.name.familyName = familyName
         self.identifier = identifier
         self.carePlanID = carePlanID
+        self.effectiveAt = Date()
     }
-    
+
     /// Initialize from an `OCKContact`
     ///
     /// - Parameter value: The contact which to copy.
     public init(value: OCKContact) {
         self = value
     }
-    
+
     /// Convert to an `OCKContact`
     /// - Note: Because `OCKContact` is already an `OCKContact`, this method just returns `self`.
     public func convert() -> OCKContact {
@@ -143,16 +145,15 @@ public class OCKPostalAddress: CNMutablePostalAddress, Codable {}
 /// An optional label paired with a value used to represent contact information.
 /// The label will typically indicate what kind of information the value carries.
 public struct OCKLabeledValue: Codable, Equatable {
-    
     // Note: We cannot simply subclass `CNLabeledValue` the same we do with `CNMutablePostalAddress` because it is a generic class and not visible
     // to @objc. Instead, we use this struct and convert to and from `CNLabeledValue` when required. This is all to get `Codable`.
-    
+
     /// A description of what the label is, i.e. "Home Email", "Office Phone"
     public var label: String
-    
+
     /// The actual contact information, i.e. a phone number or email address.
     public var value: String
-    
+
     /// Initialize with an optional label and a value.
     ///
     /// - Parameters:

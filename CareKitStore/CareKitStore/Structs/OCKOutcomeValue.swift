@@ -53,21 +53,20 @@ public enum OCKOutcomeValueType: String, Codable {
 /// An `OCKOutcomeValue` is a representation of any response of measurement that a user gives in response to a task. The underlying type could be
 /// any of a number of types including integers, booleans, dates, text, and binary data, among others.
 public struct OCKOutcomeValue: Codable, Equatable, OCKObjectCompatible, OCKLocalPersistableSettable {
-
     // MARK: Codable
     enum CodingKeys: CodingKey, CaseIterable {
         case
         kind, units, localDatabaseID, value, type,
         createdAt, updatedAt, deletedAt, tags, group, externalId, userInfo, source   // OCKObjectCompatible
     }
-    
+
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        
+
         kind = try container.decode(String?.self, forKey: CodingKeys.kind)
         units = try container.decode(String?.self, forKey: CodingKeys.units)
         localDatabaseID = try container.decode(OCKLocalVersionID?.self, forKey: CodingKeys.localDatabaseID)
-     
+
         // use the type to tell which valyue type we must decode
         let type = try container.decode(OCKOutcomeValueType.self, forKey: CodingKeys.type)
         var tempValue: OCKOutcomeValueUnderlyingType?
@@ -85,7 +84,7 @@ public struct OCKOutcomeValue: Codable, Equatable, OCKObjectCompatible, OCKLocal
         case .date:
             tempValue = try? container.decode(Date?.self, forKey: CodingKeys.value)
         }
-        
+
         guard let existingValue = tempValue else {
             let msg = "Value does not match a OCKOutcomeValueCompatible decodable type."
             throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: [CodingKeys.value], debugDescription: msg))
@@ -101,15 +100,15 @@ public struct OCKOutcomeValue: Codable, Equatable, OCKObjectCompatible, OCKLocal
         source = try container.decode(String?.self, forKey: CodingKeys.source)
         userInfo = try container.decode([String: String]?.self, forKey: CodingKeys.userInfo)
     }
-    
+
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        
+
         try container.encode(type, forKey: .type)
         try container.encode(kind, forKey: .kind)
         try container.encode(units, forKey: .units)
         try container.encode(localDatabaseID, forKey: .localDatabaseID)
-        
+
         var encodedValue = false
         if let value = integerValue { try container.encode(value, forKey: .value); encodedValue = true } else
         if let value = doubleValue { try container.encode(value, forKey: .value); encodedValue = true } else
@@ -117,12 +116,12 @@ public struct OCKOutcomeValue: Codable, Equatable, OCKObjectCompatible, OCKLocal
         if let value = booleanValue { try container.encode(value, forKey: .value); encodedValue = true } else
         if let value = dataValue { try container.encode(value, forKey: .value); encodedValue = true } else
         if let value = dateValue { try container.encode(value, forKey: .value); encodedValue = true }
-        
+
         guard encodedValue else {
             let msg = "Value could not be converted to a concrete type."
             throw EncodingError.invalidValue(value, EncodingError.Context(codingPath: [CodingKeys.value], debugDescription: msg))
         }
-        
+
         try container.encode(updatedAt, forKey: .updatedAt)
         try container.encode(createdAt, forKey: .createdAt)
         try container.encode(deletedAt, forKey: .deletedAt)
@@ -132,34 +131,34 @@ public struct OCKOutcomeValue: Codable, Equatable, OCKObjectCompatible, OCKLocal
         try container.encode(source, forKey: .source)
         try container.encode(userInfo, forKey: .userInfo)
     }
-    
+
     /// An optional property that can be used to specify what kind of value this is (e.g. blood pressure, qualatative stress, weight)
     public var kind: String?
-    
+
     /// The units for this measurement.
     public var units: String?
-    
+
     /// The underlying value.
     public var value: OCKOutcomeValueUnderlyingType
-    
+
     /// The underlying value as an integer.
     public var integerValue: Int? { return value as? Int }
-    
+
     /// The underlying value as a floating point number.
     public var doubleValue: Double? { return value as? Double }
-    
+
     /// The underlying value as a boolean.
     public var booleanValue: Bool? { return value as? Bool }
-    
+
     /// The underlying value as text.
     public var stringValue: String? { return value as? String }
-    
+
     /// The underlying value as binary data.
     public var dataValue: Data? { return value as? Data }
-    
+
     /// The underlying value as a date.
     public var dateValue: Date? { return value as? Date }
-    
+
     // MARK: OCKObjectCompatible
     public internal(set) var localDatabaseID: OCKLocalVersionID?
     public internal(set) var createdAt: Date?
@@ -172,7 +171,7 @@ public struct OCKOutcomeValue: Codable, Equatable, OCKObjectCompatible, OCKLocal
     public var userInfo: [String: String]?
     public var asset: String?
     public var notes: [OCKNote]?
-    
+
     public var type: OCKOutcomeValueType {
         if value is Int { return .integer }
         if value is Double { return .double }
@@ -182,7 +181,7 @@ public struct OCKOutcomeValue: Codable, Equatable, OCKObjectCompatible, OCKLocal
         if value is Date { return .date }
         fatalError("Unknown type!")
     }
-    
+
     public init(_ value: OCKOutcomeValueUnderlyingType, units: String? = nil) {
         self.value = value
         self.units = units

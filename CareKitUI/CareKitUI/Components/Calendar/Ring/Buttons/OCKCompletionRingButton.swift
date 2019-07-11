@@ -32,33 +32,27 @@ import UIKit
 
 /// A selectable completion ring with an inner check view and a title label.
 open class OCKCompletionRingButton: OCKButton {
-    
     override var titleButton: OCKButton? { _titleButton }
-    
+
     /// Button that displays a title label.
     private let _titleButton = OCKButton()
-    
+
     /// A fillable ring view.
     private let ring = OCKCompletionRingView()
-    
+
     public enum CompletionState {
         case dimmed
         case empty
         case zero
         case progress(_ value: CGFloat)
     }
-    
+
     /// Create an instance of a completion ring button.
     override public init() {
         super.init()
         setup()
     }
-    
-    required public init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        setup()
-    }
-    
+
     /// Changes the display state of the button
     ///
     /// - Parameters:
@@ -84,41 +78,41 @@ open class OCKCompletionRingButton: OCKButton {
             setTitleColor(.darkText, for: .normal)
         }
     }
-    
+
     /// Called when the tint color of the view changes.
     override open func tintColorDidChange() {
         setTitleColor(tintColor, for: .selected)
         ring.strokeColor = tintColor
     }
-    
+
     private func setup() {
         addSubview(ring)
         addSubview(_titleButton)
 
         setTitleColor(.darkText, for: .normal)
         setTitleColor(tintColor, for: .selected)
-        
+
         _titleButton.titleLabel?.font = UIFont.systemFont(ofSize: 12, weight: .semibold)
         _titleButton.isUserInteractionEnabled = false
-        
+
         ring.isUserInteractionEnabled = false
         ring.lineWidth = OCKStyle.dimension.completionRingLineWidth
         ring.checkmarkImageView.pointSize = .medium
         ring.strokeColor = tintColor
-        
+
         _titleButton.translatesAutoresizingMaskIntoConstraints = false
         _titleButton.setContentHuggingPriority(.defaultHigh, for: .vertical)
-        
+
         ring.translatesAutoresizingMaskIntoConstraints = false
         ring.setContentHuggingPriority(.defaultLow, for: .vertical)
-        
+
         translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             _titleButton.topAnchor.constraint(equalTo: topAnchor),
             _titleButton.leadingAnchor.constraint(equalTo: leadingAnchor),
             _titleButton.trailingAnchor.constraint(equalTo: trailingAnchor),
             _titleButton.bottomAnchor.constraint(equalTo: ring.topAnchor),
-            
+
             ring.leadingAnchor.constraint(equalTo: leadingAnchor),
             ring.trailingAnchor.constraint(equalTo: trailingAnchor),
             ring.bottomAnchor.constraint(equalTo: bottomAnchor)

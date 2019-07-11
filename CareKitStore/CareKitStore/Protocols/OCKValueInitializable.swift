@@ -32,10 +32,9 @@ import Foundation
 
 /// Any value or object that can be used in place of CareKit native values must conform to this protocol.
 public protocol OCKInitializable {
-    
     /// The CareKit type that will be used to initialize this type.
     associatedtype Value
-    
+
     /// Initialize a new instance from the corresponding native CareKit value.
     init(value: Value)
 }

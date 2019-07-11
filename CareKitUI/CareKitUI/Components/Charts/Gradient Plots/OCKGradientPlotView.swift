@@ -32,46 +32,47 @@ import UIKit
 
 /// This is an abstract base class for plots that use a gradient mask.
 internal class OCKGradientPlotView: UIView, OCKGradientPlotable, OCKMultiPlotable {
-    
     internal let gradientLayer = CAGradientLayer()
     internal let pointsLayer = CAShapeLayer()
-    
+
     internal func makePath(points: [CGPoint]) -> CGPath {
         return UIBezierPath().cgPath
     }
-    
-    public var dataSeries: [OCKDataSeries] = [] {
+
+    var dataSeries: [OCKDataSeries] = [] {
         didSet { resetLayers() }
     }
-    
-    public var xMinimum: CGFloat? {
+
+    var xMinimum: CGFloat? {
         didSet { seriesLayers.forEach { $0.xMinimum = xMinimum } }
     }
-    
-    public var xMaximum: CGFloat? {
+
+    var xMaximum: CGFloat? {
         didSet { seriesLayers.forEach { $0.xMaximum = xMaximum } }
     }
-    
-    public var yMinimum: CGFloat? {
+
+    var yMinimum: CGFloat? {
         didSet { seriesLayers.forEach { $0.yMinimum = yMinimum } }
     }
-    
-    public var yMaximum: CGFloat? {
+
+    var yMaximum: CGFloat? {
         didSet { seriesLayers.forEach { $0.yMaximum = yMaximum } }
     }
-    
+
     internal var seriesLayers: [CALayer & OCKSinglePlotable] = []
-    
-    open override var intrinsicContentSize: CGSize {
+
+    override var intrinsicContentSize: CGSize {
         return CGSize(width: 200, height: 75)
     }
-    
-    override open func layoutSubviews() {
+
+    override func layoutSubviews() {
         super.layoutSubviews()
         seriesLayers.forEach { $0.frame = bounds }
     }
+
     
     internal func resetLayers() {
         fatalError("This method must be overridden in subclasses!")
     }
+    
 }

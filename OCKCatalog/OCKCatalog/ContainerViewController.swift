@@ -28,20 +28,19 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import UIKit
 import CareKit
+import UIKit
 
 class ContainerViewController: UIViewController {
-    
     init(childViewController: UIViewController, inset: Bool = true) {
         super.init(nibName: nil, bundle: nil)
-        
+
         addChild(childViewController)
         view.addSubview(childViewController.view)
         childViewController.didMove(toParent: self)
-        
+
         view.backgroundColor = OCKStyle.color.gray1
-        
+
         let margin: CGFloat = inset ? 16 : 0
         childViewController.view.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([

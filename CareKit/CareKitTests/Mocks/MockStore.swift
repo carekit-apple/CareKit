@@ -28,25 +28,26 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Foundation
 @testable import CareKitStore
+import Foundation
 
 struct MockPatient: OCKPatientConvertible, OCKPatientInitializable, Equatable {
     static var count = 0
     var identifier: String
     var versionID: OCKLocalVersionID?
+    var effectiveAt = Date()
     var name: String?
-    
+
     init() {
         identifier = "\(MockPatient.count)"
         versionID = nil
         MockPatient.count += 1
     }
-    
+
     init(value: OCKPatient) {
         self = MockPatient()
     }
-    
+
     func convert() -> OCKPatient {
         var patient = OCKPatient(identifier: identifier, givenName: "Bergermeister", familyName: "Meisterberger")
         patient.versionID = versionID
@@ -59,19 +60,20 @@ struct MockPlan: OCKCarePlanConvertible, OCKCarePlanInitializable, Equatable {
     var identifier: String
     var versionID: OCKLocalVersionID?
     var patientID: OCKLocalVersionID?
+    var effectiveAt = Date()
     var name: String?
-    
+
     init() {
         identifier = "\(MockPlan.count)"
         versionID = nil
         patientID = nil
         MockPlan.count += 1
     }
-    
+
     init(value: OCKCarePlan) {
         self = MockPlan()
     }
-    
+
     func convert() -> OCKCarePlan {
         var plan = OCKCarePlan(identifier: identifier, title: "MockCarePlan", patientID: patientID ?? OCKLocalVersionID("\(MockPatient.count)"))
         plan.versionID = versionID ?? OCKLocalVersionID("abc123")
@@ -83,20 +85,21 @@ struct MockContact: OCKContactConvertible, OCKContactInitializable, Equatable {
     static var count = 0
     var identifier: String
     var versionID: OCKLocalVersionID?
+    var effectiveAt = Date()
     var planID: OCKLocalVersionID?
     var name: String?
-    
+
     init() {
         identifier = "\(MockContact.count)"
         versionID = nil
         planID = nil
         MockContact.count += 1
     }
-    
+
     init(value: OCKContact) {
         self = MockContact()
     }
-    
+
     func convert() -> OCKContact {
         var contact = OCKContact(identifier: "MockContact", givenName: "Mock", familyName: "Mock", carePlanID: nil)
         contact.versionID = versionID
@@ -108,19 +111,20 @@ struct MockTask: OCKTaskConvertible, OCKTaskInitializable, Equatable {
     static var count = 0
     var identifier: String
     var versionID: OCKLocalVersionID?
+    var effectiveAt = Date()
     var carePlanID: OCKLocalVersionID?
     var title: String?
-    
+
     init() {
         identifier = "\(MockTask.count)"
         versionID = nil
         MockTask.count += 1
     }
-    
+
     init(value: OCKTask) {
         self = MockTask()
     }
-    
+
     func convert() -> OCKTask {
         let schedule = OCKSchedule.dailyAtTime(hour: 12, minutes: 0, start: Date(), end: nil, text: nil)
         var task = OCKTask(identifier: identifier, title: "Meals",
@@ -136,17 +140,17 @@ struct MockOutcome: OCKOutcomeConvertible, OCKOutcomeInitializable, Equatable {
     var localDatabaseID: OCKLocalVersionID?
     var taskID: OCKLocalVersionID?
     var value: String?
-    
+
     init() {
         identifier = "\(MockOutcome.count)"
         localDatabaseID = OCKLocalVersionID("versionID: \(MockOutcome.count)")
         MockOutcome.count += 1
     }
-    
+
     init(value: OCKOutcome) {
         self = MockOutcome()
     }
-    
+
     func convert() -> OCKOutcome {
         return OCKOutcome(taskID: taskID ?? OCKLocalVersionID("\(MockTask.count)"), taskOccurenceIndex: 0, values: [])
     }
@@ -154,40 +158,40 @@ struct MockOutcome: OCKOutcomeConvertible, OCKOutcomeInitializable, Equatable {
 
 struct MockConfiguration: Equatable {}
 
-class MockStore: OCKStoreProtocol {
+final class MockStore: OCKStoreProtocol {
     static func == (lhs: MockStore, rhs: MockStore) -> Bool {
         return true
     }
-    
+
     typealias Patient = MockPatient
     typealias Plan = MockPlan
     typealias Contact = MockContact
     typealias Task = MockTask
     typealias Outcome = MockOutcome
-    
+
     weak var delegate: OCKStoreDelegate?
-    
+
     var patients = [MockPatient]()
     var plans = [MockPlan]()
     var contacts = [MockContact]()
     var tasks = [MockTask]()
     var outcomes = [MockOutcome]()
     var adherence = [1.0, 2.0, 3.0]
-    
+
     var numberOfTimesPatientsWereFetched = 0
     var numberOfTimesCarePlansWereFetched = 0
     var numberOfTimesContactsWereFetched = 0
     var numberOfTimesTasksWereFetched = 0
     var numberOfTimesOutcomesWereFetched = 0
-    
+
     var numberOfTimesPatientsWereUpdated = 0
     var numberOfTimesCarePlansWereUpdated = 0
     var numberOfTimesContactsWereUpdated = 0
     var numberOfTimesTasksWereUpdated = 0
     var numberOfTimesOutcomesWereUpdated = 0
-    
+
     // MARK: Patients
-    
+
     func fetchPatients(_ anchor: OCKPatientAnchor?, query: OCKPatientQuery?, queue: DispatchQueue = .main,
                        completion: @escaping (Result<[MockPatient], OCKStoreError>) -> Void) {
         DispatchQueue.global(qos: .background).async {
@@ -195,7 +199,7 @@ class MockStore: OCKStoreProtocol {
             completion(.success(self.patients))
         }
     }
-    
+
     func addPatients(_ patients: [MockPatient], queue: DispatchQueue = .main, completion: ((Result<[MockPatient], OCKStoreError>) -> Void)? = nil) {
         DispatchQueue.global(qos: .background).async {
             let newPatients = patients.map { patient -> MockPatient in
@@ -208,7 +212,7 @@ class MockStore: OCKStoreProtocol {
             completion?(.success(newPatients))
         }
     }
-    
+
     func updatePatients(_ patients: [MockPatient], queue: DispatchQueue = .main, completion: ((Result<[MockPatient], OCKStoreError>) -> Void)?) {
         DispatchQueue.global(qos: .background).async {
             for patient in patients {
@@ -220,17 +224,16 @@ class MockStore: OCKStoreProtocol {
             completion?(.success(patients))
         }
     }
-    
+
     func deletePatients(_ patients: [MockPatient], queue: DispatchQueue = .main, completion: ((Result<[MockPatient], OCKStoreError>) -> Void)?) {
         DispatchQueue.global(qos: .background).async {
-            
         }
         self.patients = []
         completion?(.success(patients))
     }
-    
+
     // MARK: Care Plans
-    
+
     func fetchCarePlans(_ anchor: OCKCarePlanAnchor?, query: OCKCarePlanQuery?, queue: DispatchQueue = .main,
                         completion: @escaping (Result<[MockPlan], OCKStoreError>) -> Void) {
         DispatchQueue.global(qos: .background).async {
@@ -238,7 +241,7 @@ class MockStore: OCKStoreProtocol {
             completion(.success(self.plans))
         }
     }
-    
+
     func addCarePlans(_ plans: [MockPlan], queue: DispatchQueue = .main,
                       completion: ((Result<[MockPlan], OCKStoreError>) -> Void)? = nil) {
         DispatchQueue.global(qos: .background).async {
@@ -251,7 +254,7 @@ class MockStore: OCKStoreProtocol {
             completion?(.success(plans))
         }
     }
-    
+
     func updateCarePlans(_ plans: [MockPlan], queue: DispatchQueue = .main, completion: ((Result<[MockPlan], OCKStoreError>) -> Void)?) {
         DispatchQueue.global(qos: .background).async {
             for plan in plans {
@@ -263,16 +266,16 @@ class MockStore: OCKStoreProtocol {
             completion?(.success(plans))
         }
     }
-    
+
     func deleteCarePlans(_ plans: [MockPlan], queue: DispatchQueue = .main, completion: ((Result<[MockPlan], OCKStoreError>) -> Void)?) {
         DispatchQueue.global(qos: .background).async {
             self.plans = []
             completion?(.success(plans))
         }
     }
-    
+
     // MARK: Contacts
-    
+
     func fetchContacts(_ anchor: OCKContactAnchor?, query: OCKContactQuery?, queue: DispatchQueue = .main,
                        completion: @escaping (Result<[MockContact], OCKStoreError>) -> Void) {
         DispatchQueue.global(qos: .background).async {
@@ -280,14 +283,14 @@ class MockStore: OCKStoreProtocol {
             completion(.success(self.contacts))
         }
     }
-    
+
     func addContacts(_ contacts: [MockContact], queue: DispatchQueue = .main, completion: ((Result<[MockContact], OCKStoreError>) -> Void)?) {
         DispatchQueue.global(qos: .background).async {
             self.contacts.append(contentsOf: contacts)
             completion?(.success(contacts))
         }
     }
-    
+
     func updateContacts(_ contacts: [MockContact], queue: DispatchQueue = .main, completion: ((Result<[MockContact], OCKStoreError>) -> Void)?) {
         DispatchQueue.global(qos: .background).async {
             for contact in contacts {
@@ -299,16 +302,16 @@ class MockStore: OCKStoreProtocol {
             completion?(.success(contacts))
         }
     }
-    
+
     func deleteContacts(_ contacts: [MockContact], queue: DispatchQueue = .main, completion: ((Result<[MockContact], OCKStoreError>) -> Void)?) {
         DispatchQueue.global(qos: .background).async {
             self.contacts = []
             completion?(.success(contacts))
         }
     }
-    
+
     // MARK: Tasks
-    
+
     func fetchTasks(_ anchor: OCKTaskAnchor? = nil, query: OCKTaskQuery?, queue: DispatchQueue = .main,
                     completion: @escaping (Result<[MockTask], OCKStoreError>) -> Void) {
         DispatchQueue.global(qos: .background).async {
@@ -316,7 +319,7 @@ class MockStore: OCKStoreProtocol {
             completion(.success(self.tasks))
         }
     }
-    
+
     func addTasks(_ tasks: [MockTask], queue: DispatchQueue = .main, completion: ((Result<[MockTask], OCKStoreError>) -> Void)? = nil) {
         DispatchQueue.global(qos: .background).async {
             let tasks = tasks.map { task -> MockTask in
@@ -328,7 +331,7 @@ class MockStore: OCKStoreProtocol {
             completion?(.success(tasks))
         }
     }
-    
+
     func updateTasks(_ tasks: [MockTask], queue: DispatchQueue = .main, completion: ((Result<[MockTask], OCKStoreError>) -> Void)?) {
         DispatchQueue.global(qos: .background).async {
             for task in tasks {
@@ -340,16 +343,16 @@ class MockStore: OCKStoreProtocol {
             completion?(.success(tasks))
         }
     }
-    
+
     func deleteTasks(_ tasks: [MockTask], queue: DispatchQueue = .main, completion: ((Result<[MockTask], OCKStoreError>) -> Void)?) {
         DispatchQueue.global(qos: .background).async {
             self.tasks = []
             completion?(.success(tasks))
         }
     }
-    
+
     // MARK: Outcomes
-    
+
     func fetchOutcomes(_ anchor: OCKOutcomeAnchor?, query: OCKOutcomeQuery?, queue: DispatchQueue = .main,
                        completion: @escaping (Result<[MockOutcome], OCKStoreError>) -> Void) {
         DispatchQueue.global(qos: .background).async {
@@ -357,7 +360,7 @@ class MockStore: OCKStoreProtocol {
             completion(.success(self.outcomes))
         }
     }
-    
+
     func addOutcomes(_ outcomes: [MockOutcome], queue: DispatchQueue = .main,
                      completion: ((Result<[MockOutcome], OCKStoreError>) -> Void)? = nil) {
         DispatchQueue.global(qos: .background).async {
@@ -370,7 +373,7 @@ class MockStore: OCKStoreProtocol {
             completion?(.success(outcomes))
         }
     }
-    
+
     func updateOutcomes(_ outcomes: [MockOutcome], queue: DispatchQueue = .main, completion: ((Result<[MockOutcome], OCKStoreError>) -> Void)?) {
         DispatchQueue.global(qos: .background).async {
             for outcome in outcomes {
@@ -382,15 +385,15 @@ class MockStore: OCKStoreProtocol {
             completion?(.success(outcomes))
         }
     }
-    
+
     func deleteOutcomes(_ outcomes: [MockOutcome], queue: DispatchQueue = .main, completion: ((Result<[MockOutcome], OCKStoreError>) -> Void)?) {
         DispatchQueue.global(qos: .background).async {
             self.outcomes = []
             completion?(.success(outcomes))
         }
     }
-    
-    func fetchAdherence(forTasks identifiers: [String]? = nil, query: OCKAdherenceQuery, queue: DispatchQueue = .main,
+
+    func fetchAdherence(forTasks identifiers: [String]? = nil, query: OCKAdherenceQuery<Event>, queue: DispatchQueue = .main,
                         completion: @escaping OCKResultClosure<[Double]>) {
         DispatchQueue.global(qos: .background).async {
             completion(.success(self.adherence))

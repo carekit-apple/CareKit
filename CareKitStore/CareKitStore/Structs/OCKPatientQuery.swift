@@ -37,12 +37,34 @@ public enum OCKPatientAnchor {
 }
 
 /// A query that limits which patients will be returned when fetching.
-public struct OCKPatientQuery: OCKDateQueryable {
-    
-    /// The date on which contacts will match.
-    public var date: Date
-    
-    public init(for date: Date) {
-        self.date = date
+public struct OCKPatientQuery: OCKDateIntervalQueryable {
+    public enum SortDescriptor {
+        case groupIdentifier(ascending: Bool)
+        case givenName(ascending: Bool)
+        case familyName(ascending: Bool)
+        case effectiveAt(ascending: Bool)
+    }
+
+    public var start: Date
+    public var end: Date
+
+    /// The order in which the results will be sorted when returned from the query.
+    public var sortDescriptors: [SortDescriptor] = []
+
+    /// The maximum number of results that will be returned by the query. A nil value indicates no upper limit.
+    public var limit: Int?
+
+    /// An offset that can be used to paginate results.
+    public var offset: Int?
+
+    /// An array of group identifiers to match against.
+    public var groupIdentifiers: [String]?
+
+    /// An array of tags to match against. If an object's tags contains one or more of entries, it will match the query.
+    public var tags: [String]?
+
+    public init(start: Date, end: Date) {
+        self.start = start
+        self.end = end
     }
 }

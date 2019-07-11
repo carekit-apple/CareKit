@@ -28,25 +28,24 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import UIKit
-import CareKitUI
 import CareKitStore
+import CareKitUI
+import UIKit
 
 /// A synchronized view controller that displays a grid of events for a task.
 open class OCKGridTaskViewController<Store: OCKStoreProtocol>: OCKTaskViewController<Store>, UICollectionViewDelegate {
-    
     override var detailPresentingView: UIView? {
         return taskView.headerView
     }
-    
+
     /// The view that the task and its events are displayed in.
     public var taskView: OCKGridTaskView {
         guard let view = view as? OCKGridTaskView else { fatalError("Unexpected type") }
         return view
     }
-    
+
     // MARK: Initializers
-    
+
     /// Initialize with a task.
     ///
     /// - Parameters:
@@ -58,7 +57,7 @@ open class OCKGridTaskViewController<Store: OCKStoreProtocol>: OCKTaskViewContro
             OCKBindableGridTaskView<Store.Task, Store.Outcome>()
         })
     }
-    
+
     /// Initialize with a task identifier. The task will be fetched from the store automatically.
     ///
     /// - Parameters:
@@ -69,18 +68,14 @@ open class OCKGridTaskViewController<Store: OCKStoreProtocol>: OCKTaskViewContro
         super.init(storeManager: storeManager, taskIdentifier: taskIdentifier, eventQuery: eventQuery,
                    loadDefaultView: { OCKBindableGridTaskView<Store.Task, Store.Outcome>() })
     }
-    
-    required public init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
+
     override open func viewDidLoad() {
         super.viewDidLoad()
         taskView.collectionView.delegate = self
     }
-    
+
     // MARK: UICollectionViewDelegate
-    
+
     open func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard indexPath.row < events.count else { return }
         let event = events[indexPath.row]

@@ -28,8 +28,8 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Foundation
 import CoreData
+import Foundation
 
 @objc(OCKCDPersonName)
 class OCKCDPersonName: NSManagedObject {
@@ -40,7 +40,7 @@ class OCKCDPersonName: NSManagedObject {
     @NSManaged var nameSuffix: String?
     @NSManaged var nickname: String?
     @NSManaged var phoneticRepresentation: OCKCDPersonName?
-    
+
     func copyPersonNameComponents(_ components: PersonNameComponents) {
         namePrefix = components.namePrefix
         givenName = components.givenName
@@ -48,13 +48,13 @@ class OCKCDPersonName: NSManagedObject {
         familyName = components.familyName
         nameSuffix = components.nameSuffix
         nickname = components.nickname
-        
+
         if let phonetic = components.phoneticRepresentation, let context = managedObjectContext {
             phoneticRepresentation = OCKCDPersonName(context: context)
             phoneticRepresentation?.copyPersonNameComponents(phonetic)
         }
     }
-    
+
     func makeComponents() -> PersonNameComponents {
         var components = PersonNameComponents()
         components.namePrefix = namePrefix

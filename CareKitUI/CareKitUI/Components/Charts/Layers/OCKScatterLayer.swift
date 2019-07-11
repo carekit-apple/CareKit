@@ -31,58 +31,57 @@
 import UIKit
 
 internal class OCKScatterLayer: OCKCartesianCoordinatesLayer, OCKGradientPlotable {
-    
     internal let gradientLayer = CAGradientLayer()
     internal let pointsLayer = CAShapeLayer()
-    
+
     internal var markerSize: CGFloat = 3.0 {
         didSet { pointsLayer.path = makePath(points: points) }
     }
-    
+
     internal var startColor: UIColor = .blue {
         didSet { gradientLayer.colors = [startColor.cgColor, endColor.cgColor] }
     }
-    
+
     internal var endColor: UIColor = .red {
         didSet { gradientLayer.colors = [startColor.cgColor, endColor.cgColor] }
     }
-    
+
     internal var offset: CGSize = .zero {
         didSet { setNeedsLayout() }
     }
-    
-    internal override init() {
+
+    override internal init() {
         super.init()
         setupSublayers()
     }
-    
+
     override init(layer: Any) {
         super.init(layer: layer)
         setupSublayers()
     }
-    
-    required internal init?(coder aDecoder: NSCoder) {
+
+    internal required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         setupSublayers()
     }
-    
+
     private func setupSublayers() {
         pointsLayer.fillColor = UIColor.black.cgColor
         pointsLayer.strokeColor = nil
         addSublayer(pointsLayer)
-        
+
         gradientLayer.colors = [startColor.cgColor, endColor.cgColor]
         gradientLayer.startPoint = CGPoint(x: 0.5, y: 1)
         gradientLayer.endPoint = CGPoint(x: 0.5, y: 0)
         gradientLayer.mask = pointsLayer
         addSublayer(gradientLayer)
     }
-    
-    internal override func layoutSublayers() {
+
+    override internal func layoutSublayers() {
         super.layoutSublayers()
         drawPoints(points)
     }
-    
+
     override func animateInGraphCoordinates(from oldPoints: [CGPoint], to newPoints: [CGPoint]) {
         let grow = CABasicAnimation(keyPath: #keyPath(CAShapeLayer.path))
         grow.fromValue = pointsLayer.presentation()?.path ?? makePath(points: oldPoints)
@@ -90,7 +89,7 @@ internal class OCKScatterLayer: OCKCartesianCoordinatesLayer, OCKGradientPlotabl
         grow.duration = 1.0
         pointsLayer.add(grow, forKey: "grow")
     }
- 
+
     internal func makePath(points: [CGPoint]) -> CGPath {
         let path = UIBezierPath()
         points.forEach { point in

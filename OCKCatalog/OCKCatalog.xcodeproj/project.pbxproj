@@ -10,18 +10,45 @@
 		51EF57C9229B21AA0071E2F6 /* OCKStore+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51EF57C8229B21AA0071E2F6 /* OCKStore+Extensions.swift */; };
 		51F81A49227A6E660075AF70 /* ContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F81A43227A6E650075AF70 /* ContainerViewController.swift */; };
 		51F81A4C227A6E660075AF70 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F81A47227A6E660075AF70 /* RootViewController.swift */; };
-		E742330622C57E99003C1A33 /* CareKit in Frameworks */ = {isa = PBXBuildFile; productRef = E742330522C57E99003C1A33 /* CareKit */; };
+		E7BED10F22C2835E002816A9 /* CareKit in Frameworks */ = {isa = PBXBuildFile; productRef = E7BED10E22C2835E002816A9 /* CareKit */; };
 		E7D010FC222498F400C008DE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D010FB222498F400C008DE /* AppDelegate.swift */; };
 		E7D01103222498F400C008DE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E7D01102222498F400C008DE /* Assets.xcassets */; };
 		E7D01106222498F400C008DE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E7D01104222498F400C008DE /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		5143E1FB22C2832600E32526 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E7D010F0222498F400C008DE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E7D010F7222498F400C008DE;
+			remoteInfo = OCKCatalog;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		E70155DD2224A81C0063DA6E /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		1409475522B0261A005C1D16 /* CareKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = CareKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		5143E1F622C2832600E32526 /* OCKCatalogTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OCKCatalogTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		5143E1FA22C2832600E32526 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		517413AF22B83B5A0067BD8C /* OCKCatalog.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = OCKCatalog.entitlements; sourceTree = "<group>"; };
 		51D0ECFD2284894E00D24A76 /* CareKitUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = CareKitUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		51EF57C8229B21AA0071E2F6 /* OCKStore+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OCKStore+Extensions.swift"; sourceTree = "<group>"; };
 		51F81A43227A6E650075AF70 /* ContainerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContainerViewController.swift; sourceTree = "<group>"; };
 		51F81A47227A6E660075AF70 /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
-		E742330A22C58144003C1A33 /* carekit */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "carekit"; path = ..; sourceTree = "<group>"; };
+		E7BED10D22C28351002816A9 /* carekit */ = {isa = PBXFileReference; lastKnownFileType = folder; name = carekit; path = ..; sourceTree = "<group>"; };
 		E7C8B1F0228A1B34000B68FB /* CareKitStore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = CareKitStore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E7D010F8222498F400C008DE /* OCKCatalog.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OCKCatalog.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E7D010FB222498F400C008DE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -31,20 +58,36 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		5143E1F322C2832600E32526 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E7D010F5222498F400C008DE /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E742330622C57E99003C1A33 /* CareKit in Frameworks */,
+				E7BED10F22C2835E002816A9 /* CareKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5143E1F722C2832600E32526 /* OCKCatalogTests */ = {
+			isa = PBXGroup;
+			children = (
+				5143E1FA22C2832600E32526 /* Info.plist */,
+			);
+			path = OCKCatalogTests;
+			sourceTree = "<group>";
+		};
 		51D0ECFC2284894E00D24A76 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1409475522B0261A005C1D16 /* CareKit.framework */,
 				E7C8B1F0228A1B34000B68FB /* CareKitStore.framework */,
 				51D0ECFD2284894E00D24A76 /* CareKitUI.framework */,
 			);
@@ -54,8 +97,9 @@
 		E7D010EF222498F400C008DE = {
 			isa = PBXGroup;
 			children = (
-				E742330A22C58144003C1A33 /* carekit */,
+				E7BED10D22C28351002816A9 /* carekit */,
 				E7D010FA222498F400C008DE /* OCKCatalog */,
+				5143E1F722C2832600E32526 /* OCKCatalogTests */,
 				E7D010F9222498F400C008DE /* Products */,
 				51D0ECFC2284894E00D24A76 /* Frameworks */,
 			);
@@ -65,6 +109,7 @@
 			isa = PBXGroup;
 			children = (
 				E7D010F8222498F400C008DE /* OCKCatalog.app */,
+				5143E1F622C2832600E32526 /* OCKCatalogTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -72,6 +117,7 @@
 		E7D010FA222498F400C008DE /* OCKCatalog */ = {
 			isa = PBXGroup;
 			children = (
+				517413AF22B83B5A0067BD8C /* OCKCatalog.entitlements */,
 				51EF57C8229B21AA0071E2F6 /* OCKStore+Extensions.swift */,
 				51F81A43227A6E650075AF70 /* ContainerViewController.swift */,
 				51F81A47227A6E660075AF70 /* RootViewController.swift */,
@@ -86,6 +132,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		5143E1F522C2832600E32526 /* OCKCatalogTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5143E1FF22C2832600E32526 /* Build configuration list for PBXNativeTarget "OCKCatalogTests" */;
+			buildPhases = (
+				5143E1F222C2832600E32526 /* Sources */,
+				5143E1F322C2832600E32526 /* Frameworks */,
+				5143E1F422C2832600E32526 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				5143E1FC22C2832600E32526 /* PBXTargetDependency */,
+			);
+			name = OCKCatalogTests;
+			productName = OCKCatalogTests;
+			productReference = 5143E1F622C2832600E32526 /* OCKCatalogTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		E7D010F7222498F400C008DE /* OCKCatalog */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = E7D0110A222498F400C008DE /* Build configuration list for PBXNativeTarget "OCKCatalog" */;
@@ -93,6 +157,7 @@
 				E7D010F4222498F400C008DE /* Sources */,
 				E7D010F5222498F400C008DE /* Frameworks */,
 				E7D010F6222498F400C008DE /* Resources */,
+				E70155DD2224A81C0063DA6E /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -100,7 +165,7 @@
 			);
 			name = OCKCatalog;
 			packageProductDependencies = (
-				E742330522C57E99003C1A33 /* CareKit */,
+				E7BED10E22C2835E002816A9 /* CareKit */,
 			);
 			productName = OCK2SampleApp;
 			productReference = E7D010F8222498F400C008DE /* OCKCatalog.app */;
@@ -112,10 +177,14 @@
 		E7D010F0222498F400C008DE /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1010;
+				LastSwiftUpdateCheck = 1100;
 				LastUpgradeCheck = 1010;
 				ORGANIZATIONNAME = Apple;
 				TargetAttributes = {
+					5143E1F522C2832600E32526 = {
+						CreatedOnToolsVersion = 11.0;
+						TestTargetID = E7D010F7222498F400C008DE;
+					};
 					E7D010F7222498F400C008DE = {
 						CreatedOnToolsVersion = 10.1;
 						LastSwiftMigration = 1020;
@@ -136,11 +205,19 @@
 			projectRoot = "";
 			targets = (
 				E7D010F7222498F400C008DE /* OCKCatalog */,
+				5143E1F522C2832600E32526 /* OCKCatalogTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		5143E1F422C2832600E32526 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E7D010F6222498F400C008DE /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -153,6 +230,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		5143E1F222C2832600E32526 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E7D010F4222498F400C008DE /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -166,6 +250,14 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		5143E1FC22C2832600E32526 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E7D010F7222498F400C008DE /* OCKCatalog */;
+			targetProxy = 5143E1FB22C2832600E32526 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin PBXVariantGroup section */
 		E7D01104222498F400C008DE /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
@@ -178,6 +270,47 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		5143E1FD22C2832600E32526 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 7JYUG8QGJ3;
+				INFOPLIST_FILE = OCKCatalogTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = Apple.OCKCatalogTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/OCKCatalog.app/OCKCatalog";
+			};
+			name = Debug;
+		};
+		5143E1FE22C2832600E32526 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 7JYUG8QGJ3;
+				INFOPLIST_FILE = OCKCatalogTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = Apple.OCKCatalogTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/OCKCatalog.app/OCKCatalog";
+			};
+			name = Release;
+		};
 		E7D01108222498F400C008DE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -301,9 +434,11 @@
 		E7D0110B222498F400C008DE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = OCKCatalog/OCKCatalog.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = "$(SRCROOT)/OCKCatalog/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -320,9 +455,11 @@
 		E7D0110C222498F400C008DE /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = OCKCatalog/OCKCatalog.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = "$(SRCROOT)/OCKCatalog/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -339,6 +476,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		5143E1FF22C2832600E32526 /* Build configuration list for PBXNativeTarget "OCKCatalogTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5143E1FD22C2832600E32526 /* Debug */,
+				5143E1FE22C2832600E32526 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		E7D010F3222498F400C008DE /* Build configuration list for PBXProject "OCKCatalog" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -360,7 +506,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		E742330522C57E99003C1A33 /* CareKit */ = {
+		E7BED10E22C2835E002816A9 /* CareKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = CareKit;
 		};

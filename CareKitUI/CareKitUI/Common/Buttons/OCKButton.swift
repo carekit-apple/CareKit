@@ -42,7 +42,7 @@ private extension UIColor {
 /// A button with added accessibility features.
 ///
 /// By default, the button handles its selection state when pressed. The selection state will also propogate down
-/// to any of it's subviews that are of type `UIButton`. This behavior can be toggled with the `handlesSelectionStateAutomatically` flag.
+/// to any of its subviews that are of type `UIButton`. This behavior can be toggled with the `handlesSelectionStateAutomatically` flag.
 ///
 /// The depending on the specific button, there may be a `titleLabel` and a `detailLabel` The former is generally the main focus in the
 /// button and is un-tinted. The latter is an accessory label that may be tinted. To modify the `detailLabel`, see `setDetail`,
@@ -54,14 +54,13 @@ private extension UIColor {
 /// When provided, the labels will automatically adapt to any changes to the accessbility content size.
 ///
 open class OCKButton: UIButton {
-    
     // MARK: Properties
-    
+
     // The elements that can adapt their color to the tint color whenever it changes.
     internal enum Trait {
         case titleColor, backgroundColor
     }
-    
+
     /// A trait that matches the tint color for a particular state.
     internal struct TintedTrait: Equatable {
         /// The trait for which to set the tint color.
@@ -69,23 +68,23 @@ open class OCKButton: UIButton {
         /// The state for which the trait is tinted.
         internal let state: UIControl.State
     }
-    
+
     private enum Constants {
         static let darkeningShift: CGFloat = -5
     }
-    
-    open override var intrinsicContentSize: CGSize {
+
+    override open var intrinsicContentSize: CGSize {
         guard let titleLabel = titleLabel else { return super.intrinsicContentSize }
         return fitsSizeToTitleLabel ?
             CGSize(width: frame.width, height: titleLabel.frame.height) :
             super.intrinsicContentSize
     }
-    
+
     private let titleTextStyle: UIFont.TextStyle?
     private let detailTextStyle: UIFont.TextStyle?
     private let titleWeight: UIFont.Weight?
     private let detailWeight: UIFont.Weight?
-    
+
     /// The traits that adapt their color to the tint color whenever it changes.
     internal var tintedTraits: [TintedTrait] = [] {
         didSet {
@@ -96,16 +95,16 @@ open class OCKButton: UIButton {
     internal var fitsSizeToTitleLabel = false {
         didSet { invalidateIntrinsicContentSize() }
     }
-    
+
     /// Flag determining whether to state text changes.
     public var animatesStateChanges = false
-    
+
     /// Flag determines if the selection state is toggled when the button is pressed
     public var handlesSelectionStateAutomatically = true
 
     /// Flag that indicates whether or not the button is selected. If `handlesSelectionStateAutomatically` is true, changes to
     /// `isSelected` will be animated.
-    open override var isSelected: Bool {
+    override open var isSelected: Bool {
         get {
             return super.isSelected
         } set {
@@ -119,28 +118,28 @@ open class OCKButton: UIButton {
                 animations: { super.isSelected = newValue }, completion: nil)
         }
     }
-    
+
     /// The secondary label in the button if it exists. This may or may not be tinted.
     open var detailLabel: UILabel? {
         return detailButton?.titleLabel
     }
-    
+
     /// The primary label in the button if it exists. This is never tinted.
-    open override var titleLabel: UILabel? {
+    override open var titleLabel: UILabel? {
         return titleButton?.titleLabel ?? super.titleLabel
     }
-    
-    open override var imageView: UIImageView? {
+
+    override open var imageView: UIImageView? {
         return imageButton?.imageView ?? super.imageView
     }
-    
+
     // Buttons to override the standard UIButton label and image
     internal var titleButton: OCKButton? { nil }
     internal var detailButton: OCKButton? { nil }
     internal var imageButton: OCKButton? { nil }
-    
+
     // MARK: Life Cycle
-    
+
     /// By default doesn't adapt labels to accessibility content size changes, does handles selection state, and does not animate
     /// selection state changes.
     public init() {
@@ -151,7 +150,7 @@ open class OCKButton: UIButton {
         super.init(frame: .zero)
         setup()
     }
-    
+
     /// By default does adapt `titleLabel` to accessibility content size changes, does handles selection state, and does not animate
     /// selection state changes.
     ///
@@ -181,7 +180,7 @@ open class OCKButton: UIButton {
         super.init(frame: .zero)
         setup()
     }
-    
+
     /// By default does adapt `titleLabel` and `detailLabel` to accessibility content size changes, does handles selection state,
     /// and does not animate selection state changes.
     ///
@@ -199,25 +198,26 @@ open class OCKButton: UIButton {
         super.init(frame: .zero)
         setup()
     }
-    
-    required public init?(coder aDecoder: NSCoder) {
+
+    @available(*, unavailable)
+    public required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    open override func layoutSubviews() {
+
+    override open func layoutSubviews() {
         super.layoutSubviews()
-        
+
         if let titleLabel = titleLabel {
             titleLabel.preferredMaxLayoutWidth = titleLabel.frame.size.width
         }
     }
-    
+
     // MARK: Methods
-    
-    open override func tintColorDidChange() {
+
+    override open func tintColorDidChange() {
         colorTintedTraits(tintedTraits)
     }
-    
+
     // Tint the given `tintedTraits` to match `tintColor`.
     private func colorTintedTraits(_ tinteTraits: [TintedTrait]) {
         for tintedTrait in tintedTraits {
@@ -227,38 +227,38 @@ open class OCKButton: UIButton {
             }
         }
     }
-    
+
     private func removeTintedTrait(_ tintedTrait: TintedTrait) {
         tintedTraits.removeAll { tintedTrait == $0 }
     }
-    
+
     private func setup() {
         preservesSuperviewLayoutMargins = true
         addTarget(self, action: #selector(selected), for: .touchUpInside)
         updateLabels()
     }
-    
+
     private func updateLabelWithTextStyle(_ style: UIFont.TextStyle?, weight: UIFont.Weight, label: UILabel?) {
         guard let style = style else { return }
         label?.font = UIFont.preferredCustomFont(forTextStyle: style, weight: weight)
     }
-    
-    open override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+
+    override open func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         guard traitCollection.preferredContentSizeCategory != previousTraitCollection?.preferredContentSizeCategory else { return }
         updateLabels()
     }
-    
+
     private func updateLabels() {
         if let textStyle = titleTextStyle, let weight = titleWeight {
             updateLabelWithTextStyle(textStyle, weight: weight, label: titleLabel)
         }
-        
+
         if let textStyle = detailTextStyle, let weight = detailWeight {
             updateLabelWithTextStyle(textStyle, weight: weight, label: detailLabel)
         }
     }
-    
-    open override func setTitle(_ title: String?, for state: UIControl.State) {
+
+    override open func setTitle(_ title: String?, for state: UIControl.State) {
         if let titleButton = titleButton {
             titleButton.setTitle(title, for: state)
         } else {
@@ -267,8 +267,8 @@ open class OCKButton: UIButton {
             super.setTitle(title, for: State.selected.union(.highlighted))  // for when in selected state, then highlight
         }
     }
-    
-    open override func setImage(_ image: UIImage?, for state: UIControl.State) {
+
+    override open func setImage(_ image: UIImage?, for state: UIControl.State) {
         if let imageButton = imageButton {
             imageButton.setImage(image, for: state)
         } else {
@@ -277,8 +277,8 @@ open class OCKButton: UIButton {
             super.setImage(image, for: State.selected.union(.highlighted))
         }
     }
-    
-    open override func setAttributedTitle(_ title: NSAttributedString?, for state: UIControl.State) {
+
+    override open func setAttributedTitle(_ title: NSAttributedString?, for state: UIControl.State) {
         if let titleButton = titleButton {
             titleButton.setAttributedTitle(title, for: state)
         } else {
@@ -288,7 +288,7 @@ open class OCKButton: UIButton {
         }
     }
 
-    open override func setTitleColor(_ color: UIColor?, for state: UIControl.State) {
+    override open func setTitleColor(_ color: UIColor?, for state: UIControl.State) {
         // If a color is explicitely set, don't match the tintColor
         if color != tintColor {
             removeTintedTrait(TintedTrait(trait: .titleColor, state: state))
@@ -302,13 +302,13 @@ open class OCKButton: UIButton {
             super.setTitleColor(color, for: State.selected.union(.highlighted))
         }
     }
-    open override func setBackgroundImage(_ image: UIImage?, for state: UIControl.State) {
+    override open func setBackgroundImage(_ image: UIImage?, for state: UIControl.State) {
         super.setBackgroundImage(image, for: state)
         guard state == .selected else { return }
         super.setBackgroundImage(image, for: State.selected.union(.highlighted))
     }
-    
-    open override func setTitleShadowColor(_ color: UIColor?, for state: UIControl.State) {
+
+    override open func setTitleShadowColor(_ color: UIColor?, for state: UIControl.State) {
         if let titleButton = titleButton {
             titleButton.setTitleShadowColor(color, for: state)
         } else {
@@ -317,7 +317,7 @@ open class OCKButton: UIButton {
             super.setTitleShadowColor(color, for: State.selected.union(.highlighted))
         }
     }
-    
+
     /// Set the detail text for a particular state.
     ///
     /// - Parameters:
@@ -326,7 +326,7 @@ open class OCKButton: UIButton {
     open func setDetail(_ detail: String?, for state: UIControl.State) {
         detailButton?.setTitle(detail, for: state)
     }
-    
+
     /// Set the detail text color for a particular state.
     ///
     /// - Parameters:
@@ -335,7 +335,7 @@ open class OCKButton: UIButton {
     open func setDetailColor(_ color: UIColor?, for state: UIControl.State) {
         detailButton?.setTitleColor(color, for: state)
     }
-    
+
     /// Set the attributed detail text for a particular state.
     ///
     /// - Parameters:
@@ -344,7 +344,7 @@ open class OCKButton: UIButton {
     open func setAttributedDetail(_ detail: NSAttributedString?, for state: UIControl.State) {
         detailButton?.setAttributedTitle(detail, for: state)
     }
-    
+
     /// Set the detail text shadow color for a particular state.
     ///
     /// - Parameters:
@@ -353,7 +353,7 @@ open class OCKButton: UIButton {
     open func setDetailShadowColor(_ color: UIColor?, for state: UIControl.State) {
         detailButton?.setTitleShadowColor(color, for: state)
     }
-    
+
     /// Set the background color for a particular state. If state is normal, this function
     /// will automatically assign the button's background a darker  `color` when it is selected.
     ///
@@ -365,14 +365,14 @@ open class OCKButton: UIButton {
         if color != tintColor {
             removeTintedTrait(TintedTrait(trait: .backgroundColor, state: state))
         }
-        
+
         UIGraphicsBeginImageContext(CGSize(width: 1, height: 1))
         UIGraphicsGetCurrentContext()!.setFillColor(color.cgColor)
         UIGraphicsGetCurrentContext()!.fill(CGRect(x: 0, y: 0, width: 1, height: 1))
         let colorImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         setBackgroundImage(colorImage, for: state)
-        
+
         // automatically set darkened color for highlighted state
         if state == .normal, let darkerColor = color.adjusted(by: Constants.darkeningShift) {
             setBackgroundColor(darkerColor, for: .highlighted)
@@ -381,10 +381,10 @@ open class OCKButton: UIButton {
             setBackgroundColor(darkerColor, for: State.highlighted.union(.selected))
         }
     }
-    
+
     @objc
     private func selected() {
         guard handlesSelectionStateAutomatically else { return }
-        isSelected.toggle()
+        isSelected = !isSelected
     }
 }

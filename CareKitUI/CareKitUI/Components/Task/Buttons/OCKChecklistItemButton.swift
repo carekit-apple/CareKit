@@ -38,16 +38,15 @@ import UIKit
 ///     +--------------------------+
 ///
 internal class OCKChecklistItemButton: OCKButton {
-    
     // MARK: Properties
-    
+
     private enum Constants {
         static let marginFactor: CGFloat = 1.8
     }
-    
+
     override var titleButton: OCKButton? { _titleButton }
     override var imageButton: OCKButton? { circleButton }
-    
+
     /// The title button embedded inside this button.
     private let _titleButton: OCKButton = {
         let button = OCKButton(titleTextStyle: .subheadline, titleWeight: .regular)
@@ -60,50 +59,44 @@ internal class OCKChecklistItemButton: OCKButton {
         button.contentHorizontalAlignment = .left
         return button
     }()
-    
+
     /// The icon embedded inside this button.
     private let circleButton: OCKButton = {
         let button = OCKCircleButton(checkmarkPointSize: .small)
         button.isUserInteractionEnabled = false
         return button
     }()
-    
+
     // MARK: Life Cycle
-    
+
     /// Create an instance of an event icon button.
     override internal init() {
         super.init()
         setup()
     }
-    
-    required internal init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        setup()
-    }
-    
+
     // MARK: Methods
-    
+
     private func setup() {
         addSubviews()
         constrainSubviews()
     }
-    
+
     private func addSubviews() {
         addSubview(_titleButton)
         addSubview(circleButton)
     }
-    
+
     private func constrainSubviews() {
         [self, _titleButton, circleButton].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
-        
+
         NSLayoutConstraint.activate([
-            
             _titleButton.leadingAnchor.constraint(equalTo: leadingAnchor),
             _titleButton.topAnchor.constraint(greaterThanOrEqualTo: topAnchor, constant: directionalLayoutMargins.top * Constants.marginFactor),
             _titleButton.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor,
                                                  constant: -directionalLayoutMargins.bottom * Constants.marginFactor),
             _titleButton.centerYAnchor.constraint(equalTo: centerYAnchor),
-            
+
             circleButton.leadingAnchor.constraint(equalTo: _titleButton.trailingAnchor, constant: directionalLayoutMargins.leading * 2),
             circleButton.topAnchor.constraint(greaterThanOrEqualTo: topAnchor, constant: directionalLayoutMargins.top * Constants.marginFactor),
             circleButton.trailingAnchor.constraint(equalTo: trailingAnchor),

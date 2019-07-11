@@ -31,8 +31,7 @@
 import UIKit
 
 /// Protocol for interactions with the `OCKChecklistTaskView`.
-public protocol OCKChecklistTaskViewDelegate: class {
-    
+public protocol OCKChecklistTaskViewDelegate: AnyObject {
     /// Called when an item in the checklist was selected.
     ///
     /// - Parameters:
@@ -75,49 +74,48 @@ public protocol OCKChecklistTaskViewDelegate: class {
 ///     +-------------------------------------------------------+
 ///
 open class OCKChecklistTaskView: UIView, OCKCardable, OCKCollapsible, OCKCollapsibleView {
-  
     // MARK: OCKCollapsibleView
-    
+
     internal var collapsedViews: Set<UIView> { [collapsedView, collapserButton] }
     internal var expandedViews: Set<UIView> { [headerView, instructionsLabel, checklistItemsStackView, instructionsLabel, spacerView] }
     internal var completeViews: Set<UIView> { [headerView, instructionsLabel, checklistItemsStackView, collapserButton, spacerView] }
     internal var cardView: UIView { return self }
     internal var collapsedState: OCKCollapsibleState = .expanded
-    
+
     internal let collapserButton: OCKButton = {
         let collapserButton = OCKCollapserButton()
         collapserButton.isHidden = true
         collapserButton.alpha = 0
         return collapserButton
     }()
-    
+
     /// The vertical stack view that contains the main content in the view.
     public let contentStackView: OCKStackView = {
         let stack = OCKStackView()
         stack.axis = .vertical
         return stack
     }()
-    
+
     // MARK: Properties
-    
+
     private let contentView: UIView = {
         let view = UIView()
         view.clipsToBounds = true
         return view
     }()
-    
+
     private let spacerView = UIView()
-    
+
     internal var shouldCollapse: Bool = true
-    
+
     /// Listens for interactions with the `OCKChecklistTaskView`.
     public weak var delegate: OCKChecklistTaskViewDelegate?
-    
+
     /// The header that shows a `detailDisclosureImage`.
     public let headerView = OCKHeaderView {
         $0.showsDetailDisclosure = true
     }
-    
+
     /// Multi-line label beneath the checklist items.
     public let instructionsLabel: OCKLabel = {
         let label = OCKLabel(textStyle: .caption1, weight: .regular)
@@ -125,51 +123,51 @@ open class OCKChecklistTaskView: UIView, OCKCardable, OCKCollapsible, OCKCollaps
         label.numberOfLines = 0
         return label
     }()
-    
+
     private let checklistItemsStackView: OCKStackView = {
         let stackView = OCKStackView(style: .separated)
         stackView.axis = .vertical
         return stackView
     }()
-    
+
     internal let collapsedView: OCKCollapsedView = {
         let collapsedView = OCKCollapsedView()
         collapsedView.isHidden = true
         collapsedView.alpha = 0
         return collapsedView
     }()
-    
+
     /// The buttons in the checklist.
     public var items: [OCKButton] {
         guard let items = checklistItemsStackView.arrangedSubviews as? [OCKButton] else { fatalError("Unsupported type.") }
         return items
     }
-    
+
     // MARK: Life cycle
-    
+
     public init() {
         super.init(frame: .zero)
         setup()
     }
-    
-    required public init?(coder: NSCoder) {
+
+    public required init?(coder: NSCoder) {
         super.init(coder: coder)
         setup()
     }
-    
+
     // MARK: Methods
-    
+
     private func setup() {
         addSubviews()
         styleSubviews()
         constrainSubviews()
-        
+
         // setup targets for collapsing the view
         collapserButton.addTarget(self, action: #selector(toggleCollapse), for: .touchUpInside)
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(toggleCollapse))
         collapsedView.addGestureRecognizer(tapGesture)
     }
-    
+
     private func styleSubviews() {
         preservesSuperviewLayoutMargins = true
         enableCardStyling(true)
@@ -177,7 +175,7 @@ open class OCKChecklistTaskView: UIView, OCKCardable, OCKCollapsible, OCKCollaps
         contentStackView.setCustomSpacing(0, after: instructionsLabel)
         contentStackView.setCustomSpacing(0, after: spacerView)
     }
-    
+
     private func addSubviews() {
         addSubview(contentView)
         contentView.addSubview(contentStackView)
@@ -185,30 +183,30 @@ open class OCKChecklistTaskView: UIView, OCKCardable, OCKCollapsible, OCKCollaps
             contentStackView.addArrangedSubview($0)
         }
     }
-    
+
     private func constrainSubviews() {
         [contentView, contentStackView, spacerView].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
         NSLayoutConstraint.activate([
             spacerView.heightAnchor.constraint(equalToConstant: directionalLayoutMargins.top * 2),
-            
+
             contentView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: directionalLayoutMargins.leading * 2),
             contentView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -directionalLayoutMargins.leading * 2),
             contentView.topAnchor.constraint(equalTo: topAnchor, constant: directionalLayoutMargins.leading * 2),
             contentView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            
+
             contentStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             contentStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             contentStackView.topAnchor.constraint(equalTo: contentView.topAnchor),
             contentStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
         ])
     }
-    
+
     @objc
     private func toggleCollapse() {
         let newState: OCKCollapsibleState = collapsedState == .collapsed ? .complete : .collapsed
         setCollapsedState(newState, animated: true)
     }
-    
+
     private func makeItem(withTitle title: String) -> OCKButton {
         let button = OCKChecklistItemButton()
         button.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
@@ -216,7 +214,7 @@ open class OCKChecklistTaskView: UIView, OCKCardable, OCKCollapsible, OCKCollaps
         button.setTitle(title, for: .selected)
         return button
     }
-    
+
     /// Update an item with text.
     ///
     /// - Parameters:
@@ -231,7 +229,7 @@ open class OCKChecklistTaskView: UIView, OCKCardable, OCKCollapsible, OCKCollaps
         button.setTitle(title, for: .selected)
         return button
     }
-    
+
     /// Insert an item in the checklist.
     ///
     /// - Parameters:
@@ -245,7 +243,7 @@ open class OCKChecklistTaskView: UIView, OCKCardable, OCKCollapsible, OCKCollaps
         checklistItemsStackView.insertArrangedSubview(button, at: index, animated: animated)
         return button
     }
-    
+
     /// Append an item to the checklist.
     ///
     /// - Parameters:
@@ -258,7 +256,7 @@ open class OCKChecklistTaskView: UIView, OCKCardable, OCKCollapsible, OCKCollaps
         checklistItemsStackView.addArrangedSubview(button, animated: animated)
         return button
     }
-    
+
     /// Remove an item from the checkliist.
     ///
     /// - Parameters:
@@ -272,22 +270,22 @@ open class OCKChecklistTaskView: UIView, OCKCardable, OCKCollapsible, OCKCollaps
         checklistItemsStackView.removeArrangedSubview(button, animated: animated)
         return button
     }
-    
+
     /// Clear all items from the checklist.
     ///
     /// - Parameter animated: Animate the removal of the items from the checklist.
     public func clearItems(animated: Bool) {
         checklistItemsStackView.clear(animated: animated)
     }
-    
+
     @objc
     private func buttonTapped(_ sender: OCKButton) {
         guard let index = checklistItemsStackView.arrangedSubviews.firstIndex(of: sender) else { return }    // should never happen
         delegate?.checklistTaskView(self, didSelectItem: sender, at: index)
     }
-    
+
     // MARK: OCKCollapsible
-    
+
     internal func setCollapsedState(_ state: OCKCollapsibleState, animated: Bool) {
         guard shouldCollapse else { return }
         setViewCollapsedState(state, animated: animated)

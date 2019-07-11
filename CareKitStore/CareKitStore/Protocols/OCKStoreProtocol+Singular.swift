@@ -31,101 +31,133 @@
 import Foundation
 
 public extension OCKStoreProtocol {
-    
     // MARK: Patients
-    
+
     func fetchPatient(withIdentifier identifier: String, queue: DispatchQueue = .main,
-                      completion: @escaping OCKResultClosure<Patient?>) {
-        fetchPatients(.patientIdentifiers([identifier]), query: nil, queue: queue, completion: makeNonOptionalResultClosure(completion))
+                      completion: @escaping OCKResultClosure<Patient>) {
+        var query = OCKPatientQuery(for: Date())
+        query.limit = 1
+        query.sortDescriptors = [.effectiveAt(ascending: true)]
+        fetchPatients(.patientIdentifiers([identifier]), query: query, queue: queue, completion:
+            chooseFirst(then: completion, replacementError: .fetchFailed(reason: "No patient with identifier: \(identifier)")))
     }
-    
+
     func addPatient(_ patient: Patient, queue: DispatchQueue = .main, completion: OCKResultClosure<Patient>? = nil) {
-        addPatients([patient], queue: queue, completion: makePluralResultClosure(completion))
+        addPatients([patient], queue: queue, completion:
+            chooseFirst(then: completion, replacementError: .addFailed(reason: "Failed to add patient: \(patient)")))
     }
-    
+
     func updatePatient(_ patient: Patient, queue: DispatchQueue = .main, completion: OCKResultClosure<Patient>? = nil) {
-        updatePatients([patient], queue: queue, completion: makePluralResultClosure(completion))
+        updatePatients([patient], queue: queue, completion:
+            chooseFirst(then: completion, replacementError: .updateFailed(reason: "Failed to update patient: \(patient)")))
     }
-    
+
     func deletePatient(_ patient: Patient, queue: DispatchQueue = .main, completion: OCKResultClosure<Patient>? = nil) {
-        deletePatients([patient], queue: queue, completion: makePluralResultClosure(completion))
+        deletePatients([patient], queue: queue, completion:
+            chooseFirst(then: completion, replacementError: .deleteFailed(reason: "Failed to delete patient: \(patient)")))
     }
-    
+
     // MARK: CarePlans
-    
-    func fetchCarePlan(withIdentifier identifier: String, queue: DispatchQueue = .main, completion: @escaping OCKResultClosure<Plan?>) {
-        fetchCarePlans(.carePlanIdentifiers([identifier]), query: nil, queue: queue, completion: makeNonOptionalResultClosure(completion))
+
+    func fetchCarePlan(withIdentifier identifier: String, queue: DispatchQueue = .main, completion: @escaping OCKResultClosure<Plan>) {
+        var query = OCKCarePlanQuery(for: Date())
+        query.limit = 1
+        query.sortDescriptors = [.effectiveAt(ascending: true)]
+        fetchCarePlans(.carePlanIdentifiers([identifier]), query: query, queue: queue, completion:
+            chooseFirst(then: completion, replacementError: .fetchFailed(reason: "No care plan with identifier: \(identifier)")))
     }
-    
+
     func addCarePlan(_ plan: Plan, queue: DispatchQueue = .main, completion: OCKResultClosure<Plan>? = nil) {
-        addCarePlans([plan], queue: queue, completion: makePluralResultClosure(completion))
+        addCarePlans([plan], queue: queue, completion:
+            chooseFirst(then: completion, replacementError: .addFailed(reason: "Failed to add care plan: \(plan)")))
     }
-    
+
     func updateCarePlan(_ plan: Plan, queue: DispatchQueue = .main, completion: OCKResultClosure<Plan>? = nil) {
-        updateCarePlans([plan], queue: queue, completion: makePluralResultClosure(completion))
+        updateCarePlans([plan], queue: queue, completion:
+            chooseFirst(then: completion, replacementError: .updateFailed(reason: "Failed to update care plan: \(plan)")))
     }
-    
+
     func deleteCarePlan(_ plan: Plan, queue: DispatchQueue = .main, completion: OCKResultClosure<Plan>? = nil) {
-        deleteCarePlans([plan], queue: queue, completion: makePluralResultClosure(completion))
+        deleteCarePlans([plan], queue: queue, completion:
+            chooseFirst(then: completion, replacementError: .deleteFailed(reason: "Failed to delete care plan: \(plan)")))
     }
-    
+
     // MARK: Contacts
-    
+
     func fetchContact(withIdentifier identifier: String, queue: DispatchQueue = .main,
-                      completion: @escaping OCKResultClosure<Contact?>) {
-        fetchContacts(.contactIdentifier([identifier]), query: nil, queue: queue, completion: makeNonOptionalResultClosure(completion))
+                      completion: @escaping OCKResultClosure<Contact>) {
+        var query = OCKContactQuery(for: Date())
+        query.limit = 1
+        query.sortDescriptors = [.effectiveAt(ascending: true)]
+        fetchContacts(.contactIdentifier([identifier]), query: query, queue: queue, completion:
+            chooseFirst(then: completion, replacementError: .fetchFailed(reason: "No contact with identifier: \(identifier)")))
     }
-    
+
     func addContact(_ contact: Contact, queue: DispatchQueue = .main, completion: OCKResultClosure<Contact>? = nil) {
-        addContacts([contact], queue: queue, completion: makePluralResultClosure(completion))
+        addContacts([contact], queue: queue, completion:
+            chooseFirst(then: completion, replacementError: .addFailed(reason: "Failed to add contact: \(contact)")))
     }
-    
+
     func updateContact(_ contact: Contact, queue: DispatchQueue = .main, completion: OCKResultClosure<Contact>? = nil) {
-        updateContacts([contact], queue: queue, completion: makePluralResultClosure(completion))
+        updateContacts([contact], queue: queue, completion:
+            chooseFirst(then: completion, replacementError: .updateFailed(reason: "Failed to update contact: \(contact)")))
     }
-    
+
     func deleteContact(_ contact: Contact, queue: DispatchQueue = .main, completion: OCKResultClosure<Contact>? = nil) {
-        deleteContacts([contact], queue: queue, completion: makePluralResultClosure(completion))
+        deleteContacts([contact], queue: queue, completion:
+            chooseFirst(then: completion, replacementError: .deleteFailed(reason: "Failed to delete contact: \(contact)")))
     }
-    
+
     // MARK: Tasks
-    
-    func fetchTask(withIdentifier identifier: String, queue: DispatchQueue = .main, completion: @escaping OCKResultClosure<Task?>) {
-        fetchTasks(.taskIdentifiers([identifier]), query: nil, queue: queue, completion: makeNonOptionalResultClosure(completion))
+
+    func fetchTask(withIdentifier identifier: String, queue: DispatchQueue = .main, completion: @escaping OCKResultClosure<Task>) {
+        var query = OCKTaskQuery(for: Date())
+        query.sortDescriptors = [.effectiveAt(ascending: true)]
+        query.limit = 1
+        fetchTasks(.taskIdentifiers([identifier]), query: query, queue: queue, completion:
+            chooseFirst(then: completion, replacementError: .fetchFailed(reason: "No task with identifier: \(identifier)")))
     }
-    
-    func fetchTask(withVersionID versionID: OCKLocalVersionID, queue: DispatchQueue = .main, completion: @escaping OCKResultClosure<Task?>) {
-        fetchTasks(.taskVersions([versionID]), query: nil, queue: queue, completion: makeNonOptionalResultClosure(completion))
+
+    func fetchTask(withVersionID versionID: OCKLocalVersionID, queue: DispatchQueue = .main, completion: @escaping OCKResultClosure<Task>) {
+        fetchTasks(.taskVersions([versionID]), query: nil, queue: queue, completion:
+            chooseFirst(then: completion, replacementError: .fetchFailed(reason: "No task with versionID: \(versionID)")))
     }
-    
+
     func addTask(_ task: Task, queue: DispatchQueue = .main, completion: OCKResultClosure<Task>? = nil) {
-        addTasks([task], queue: queue, completion: makePluralResultClosure(completion))
+        addTasks([task], queue: queue, completion:
+            chooseFirst(then: completion, replacementError: .addFailed(reason: "Failed to add task \(task)")))
     }
-    
+
     func updateTask(_ task: Task, queue: DispatchQueue = .main, completion: OCKResultClosure<Task>? = nil) {
-        updateTasks([task], queue: queue, completion: makePluralResultClosure(completion))
+        updateTasks([task], queue: queue, completion:
+            chooseFirst(then: completion, replacementError: .updateFailed(reason: "Failed to update task: \(task)")))
     }
-    
+
     func deleteTask(_ task: Task, queue: DispatchQueue = .main, completion: OCKResultClosure<Task>? = nil) {
-        deleteTasks([task], queue: queue, completion: makePluralResultClosure(completion))
+        deleteTasks([task], queue: queue, completion:
+            chooseFirst(then: completion, replacementError: .deleteFailed(reason: "Failed to delete task: \(task)")))
     }
-    
+
     // MARK: Outcomes
-    
+
     func fetchOutcome(_ anchor: OCKOutcomeAnchor?, query: OCKOutcomeQuery?,
-                      queue: DispatchQueue = .main, completion: @escaping OCKResultClosure<Outcome?>) {
-        fetchOutcomes(anchor, query: query, queue: queue, completion: { completion($0.map { $0.first }) })
+                      queue: DispatchQueue = .main, completion: @escaping OCKResultClosure<Outcome>) {
+        fetchOutcomes(anchor, query: query, queue: queue, completion:
+            chooseFirst(then: completion, replacementError: .fetchFailed(reason: "No matching outcome found")))
     }
-    
+
     func addOutcome(_ outcome: Outcome, queue: DispatchQueue = .main, completion: OCKResultClosure<Outcome>? = nil) {
-        addOutcomes([outcome], queue: queue, completion: makePluralResultClosure(completion))
+        addOutcomes([outcome], queue: queue, completion:
+            chooseFirst(then: completion, replacementError: .addFailed(reason: "Failed to add outcome: \(outcome)")))
     }
-    
+
     func updateOutcome(_ outcome: Outcome, queue: DispatchQueue = .main, completion: OCKResultClosure<Outcome>? = nil) {
-        updateOutcomes([outcome], queue: queue, completion: makePluralResultClosure(completion))
+        updateOutcomes([outcome], queue: queue, completion:
+            chooseFirst(then: completion, replacementError: .updateFailed(reason: "Failed to update outcome: \(outcome)")))
     }
-    
+
     func deleteOutcome(_ outcome: Outcome, queue: DispatchQueue = .main, completion: OCKResultClosure<Outcome>? = nil) {
-        deleteOutcomes([outcome], queue: queue, completion: makePluralResultClosure(completion))
+        deleteOutcomes([outcome], queue: queue, completion:
+            chooseFirst(then: completion, replacementError: .deleteFailed(reason: "Failed to delete outcome: \(outcome)")))
     }
 }

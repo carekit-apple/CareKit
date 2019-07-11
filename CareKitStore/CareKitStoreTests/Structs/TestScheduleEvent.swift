@@ -28,17 +28,16 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import XCTest
 @testable import CareKitStore
+import XCTest
 
 class TestScheduleEvent: XCTestCase {
-    
     func testComparisonOperator() {
         let element = OCKScheduleElement(start: Date(), end: nil, interval: DateComponents(year: 1),
                                          text: nil, targetValues: [])
         XCTAssert(element[0]! < element[1]!)
     }
-    
+
     func testStartDateEndDateForEventWithNoDuration() {
         let startDate = Date()
         let endDate = Calendar.current.date(byAdding: .day, value: 7, to: startDate)!
@@ -48,7 +47,7 @@ class TestScheduleEvent: XCTestCase {
         let event = element[0]!
         XCTAssert(event.start == event.end)
     }
-    
+
     func testStartDateEndDateForEventWithDuration() {
         let startDate = Date()
         let endDate = Calendar.current.date(byAdding: .day, value: 7, to: startDate)!
@@ -58,7 +57,7 @@ class TestScheduleEvent: XCTestCase {
         let event = element[0]!
         XCTAssert(event.end == event.start.addingTimeInterval(100))
     }
-    
+
     func testStartDateEndDateForEventWithAllDayDuration() {
         let startDate = Date()
         let endDate = Calendar.current.date(byAdding: .day, value: 7, to: startDate)!

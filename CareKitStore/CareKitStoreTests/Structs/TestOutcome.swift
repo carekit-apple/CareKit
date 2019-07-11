@@ -28,40 +28,39 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import XCTest
 @testable import CareKitStore
+import XCTest
 
 class TestOutcome: XCTestCase {
-    
     func testMakeOutcome() {
         let index = 0
         let outcome = OCKOutcome(taskID: OCKLocalVersionID(UUID().uuidString), taskOccurenceIndex: index, values: [])
         XCTAssert(outcome.convert() == outcome)
     }
-    
+
     func testUnpersistedOutcomesAreNotAssociatedEvenIfTheyAreEqual() {
         let outcomeA = OCKOutcome(taskID: OCKLocalVersionID("abc123"), taskOccurenceIndex: 0, values: [])
         let outcomeB = OCKOutcome(taskID: OCKLocalVersionID("abc123"), taskOccurenceIndex: 0, values: [])
         XCTAssert(outcomeA == outcomeB)
         XCTAssert(!outcomeA.isAssociated(with: outcomeB))
     }
-    
+
     func testOutcomeWithTheSameTaskVersionAndIndexAreAssociated() {
         var outcomeA = OCKOutcome(taskID: OCKLocalVersionID("abc123"), taskOccurenceIndex: 4, values: [])
         outcomeA.localDatabaseID = OCKLocalVersionID("qwerty")
-        
+
         var outcomeB = OCKOutcome(taskID: OCKLocalVersionID("abc123"), taskOccurenceIndex: 4, values: [OCKOutcomeValue(10.0)])
         outcomeB.localDatabaseID = OCKLocalVersionID("dvorak")
         XCTAssert(outcomeA.isAssociated(with: outcomeB))
     }
-    
+
     func testOutcomesWithTheSameLocalDatabaseIDAreAssociated() {
         var outcomeA = OCKOutcome(taskID: nil, taskOccurenceIndex: 0, values: [])
         outcomeA.localDatabaseID = OCKLocalVersionID("abc123")
-        
+
         var outcomeB = OCKOutcome(taskID: nil, taskOccurenceIndex: 0, values: [])
         outcomeB.localDatabaseID = OCKLocalVersionID("abc123")
-        
+
         XCTAssert(outcomeA.isAssociated(with: outcomeB))
     }
 }

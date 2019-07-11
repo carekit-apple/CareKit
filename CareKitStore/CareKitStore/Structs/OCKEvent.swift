@@ -36,10 +36,9 @@ public struct OCKEvent<
     Task: Equatable & OCKTaskConvertible,
     Outcome: Equatable & OCKOutcomeConvertible
 >: Equatable, OCKLocalPersistable, OCKEventConvertible, OCKIdentifiable {
-   
     /// The task that this event is associated with
     public let task: Task
-    
+
     /// The outcome for this event. If the outcome is empty, that means that no actions were recorded.
     ///
     /// - Note: The outcome may be non-nil even if if the task was not completed, so simply checking the presence of an outcome is not sufficient
@@ -49,11 +48,11 @@ public struct OCKEvent<
     ///     2. The user completed the task, but then deleted all the values they recorded.
     ///     3. The user only partially completed the task.
     public var outcome: Outcome?
-    
+
     /// The schedule event for this task occurence. It contains information about the start, duration, occurence number, and schedule element that
     /// resulted in this event.
     public let scheduleEvent: OCKScheduleEvent
-    
+
     /// Initialize an `OCKEvent` with a task, optional outcome, and schedule event.
     ///
     /// - Parameters:
@@ -65,7 +64,7 @@ public struct OCKEvent<
         self.outcome = outcome
         self.scheduleEvent = scheduleEvent
     }
-    
+
     /// Converts to an `OCKEvent`.
     ///
     /// - Returns: an umodified copy of self.
@@ -73,7 +72,7 @@ public struct OCKEvent<
     public func convert() -> OCKEvent<OCKTask, OCKOutcome> {
         return OCKEvent<OCKTask, OCKOutcome>(task: task.convert(), outcome: outcome?.convert(), scheduleEvent: scheduleEvent)
     }
-    
+
     public func isAssociated(with other: OCKEvent<Task, Outcome>) -> Bool {
         return task.isAssociated(with: other.task) && scheduleEvent == other.scheduleEvent
     }

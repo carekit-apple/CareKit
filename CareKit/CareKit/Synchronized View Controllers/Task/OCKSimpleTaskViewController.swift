@@ -28,15 +28,14 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import UIKit
 import CareKitStore
+import UIKit
 
-/// An synchronized view controller that displays a single event and it's outcomes in a simple format with a label and button.
+/// An synchronized view controller that displays a single event and its outcomes in a simple format with a label and button.
 ///
 /// - Note: `OCKEventViewController`s are created by specifying a task and an event query. If the event query
 /// returns more than one event, only the first event will be displayed.
 open class OCKSimpleTaskViewController<Store: OCKStoreProtocol>: OCKEventViewController<Store> {
-
     /// The view the event is displayed in.
     public var taskView: OCKSimpleTaskView {
         guard let view = view as? OCKSimpleTaskView else { fatalError("Unexpected type") }
@@ -54,7 +53,7 @@ open class OCKSimpleTaskViewController<Store: OCKStoreProtocol>: OCKEventViewCon
         super.init(storeManager: storeManager, taskIdentifier: taskIdentifier, eventQuery: eventQuery,
                    loadDefaultView: { OCKBindableSimpleTaskView<Store.Task, Store.Outcome>() })
     }
-    
+
     /// Initialize using a task.
     ///
     /// - Parameters:
@@ -65,11 +64,7 @@ open class OCKSimpleTaskViewController<Store: OCKStoreProtocol>: OCKEventViewCon
         self.init(storeManager: storeManager, taskIdentifier: task.identifier, eventQuery: eventQuery)
     }
 
-    required public init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    open override func viewDidLoad() {
+    override open func viewDidLoad() {
         super.viewDidLoad()
         taskView.completionButton.addTarget(self, action: #selector(eventButtonPressed(_:)), for: .touchUpInside)
     }

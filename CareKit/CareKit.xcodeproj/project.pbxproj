@@ -7,10 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1409474C22B020C4005C1D16 /* CareKitStore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1409474A22B020C4005C1D16 /* CareKitStore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		1409474E22B020CA005C1D16 /* CareKitUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1409474D22B020CA005C1D16 /* CareKitUI.framework */; };
+		1409474F22B020CA005C1D16 /* CareKitUI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1409474D22B020CA005C1D16 /* CareKitUI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		1409475122B02153005C1D16 /* CareKitStore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1409475022B02153005C1D16 /* CareKitStore.framework */; };
 		51550F61227FAD0E000CF588 /* TestSynchronizedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51550F60227FAD0E000CF588 /* TestSynchronizedViewController.swift */; };
 		51886B0B22976F610033BBC4 /* OCKDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51886B0A22976F610033BBC4 /* OCKDetailViewController.swift */; };
 		518F9E0E22961C97009CAA48 /* OCKListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9DC222961C96009CAA48 /* OCKListViewController.swift */; };
 		518F9E0F22961C97009CAA48 /* OCKDailyTasksPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9DC322961C96009CAA48 /* OCKDailyTasksPageViewController.swift */; };
+		518F9E1222961C97009CAA48 /* locversion.plist in Resources */ = {isa = PBXBuildFile; fileRef = 518F9DC722961C97009CAA48 /* locversion.plist */; };
 		518F9E1422961C97009CAA48 /* UIViewController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9DCD22961C97009CAA48 /* UIViewController+Extensions.swift */; };
 		518F9E1522961C97009CAA48 /* Collection+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9DCE22961C97009CAA48 /* Collection+Extensions.swift */; };
 		518F9E1D22961C97009CAA48 /* OCKBindableSimpleContactView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9DD922961C97009CAA48 /* OCKBindableSimpleContactView.swift */; };
@@ -29,7 +34,6 @@
 		518F9E3322961C97009CAA48 /* OCKCalendarPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9DF822961C97009CAA48 /* OCKCalendarPageViewController.swift */; };
 		518F9E3422961C97009CAA48 /* OCKCalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9DF922961C97009CAA48 /* OCKCalendarViewController.swift */; };
 		518F9E3522961C97009CAA48 /* OCKWeekCalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9DFA22961C97009CAA48 /* OCKWeekCalendarViewController.swift */; };
-		518F9E3622961C97009CAA48 /* OCKEventAggregator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9DFC22961C97009CAA48 /* OCKEventAggregator.swift */; };
 		518F9E3822961C97009CAA48 /* OCKContactsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9DFE22961C97009CAA48 /* OCKContactsListViewController.swift */; };
 		518F9E3A22961C97009CAA48 /* OCKChecklistTaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9E0122961C97009CAA48 /* OCKChecklistTaskViewController.swift */; };
 		518F9E3B22961C97009CAA48 /* OCKTaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9E0222961C97009CAA48 /* OCKTaskViewController.swift */; };
@@ -59,48 +63,34 @@
 			remoteGlobalIDString = 8605A5B91C4F04EC00DD65FF;
 			remoteInfo = CareKit;
 		};
-		51D0ED0522848A4B00D24A76 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 51D0ED0122848A4B00D24A76 /* CareKitUI.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 5174225B224185290054E97C;
-			remoteInfo = CareKitUI;
-		};
-		E7AF8A32228A28CA007C0385 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E7AF8A2D228A28CA007C0385 /* CareKitStore.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = E784B8F82232EED600736CA5;
-			remoteInfo = CareKitStore;
-		};
-		E7AF8A34228A28CA007C0385 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E7AF8A2D228A28CA007C0385 /* CareKitStore.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = E784B9012232EED600736CA5;
-			remoteInfo = CareKitStoreTests;
-		};
-		E7AF8A36228A28E0007C0385 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E7AF8A2D228A28CA007C0385 /* CareKitStore.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = E784B8F72232EED600736CA5;
-			remoteInfo = CareKitStore;
-		};
-		E7C91290228A1F16008ABEB4 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 51D0ED0122848A4B00D24A76 /* CareKitUI.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 5174225A224185290054E97C;
-			remoteInfo = CareKitUI;
-		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		1409474722B020A2005C1D16 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				1409474F22B020CA005C1D16 /* CareKitUI.framework in Embed Frameworks */,
+				1409474C22B020C4005C1D16 /* CareKitStore.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		1409474A22B020C4005C1D16 /* CareKitStore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = CareKitStore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1409474D22B020CA005C1D16 /* CareKitUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = CareKitUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1409475022B02153005C1D16 /* CareKitStore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = CareKitStore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		51550F60227FAD0E000CF588 /* TestSynchronizedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestSynchronizedViewController.swift; sourceTree = "<group>"; };
 		51886B0A22976F610033BBC4 /* OCKDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKDetailViewController.swift; sourceTree = "<group>"; };
 		518F9DC222961C96009CAA48 /* OCKListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKListViewController.swift; sourceTree = "<group>"; };
 		518F9DC322961C96009CAA48 /* OCKDailyTasksPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKDailyTasksPageViewController.swift; sourceTree = "<group>"; };
+		518F9DC822961C97009CAA48 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = en; path = en.lproj/locversion.plist; sourceTree = "<group>"; };
+		518F9DCA22961C97009CAA48 /* es_MX */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es_MX; path = es_MX.lproj/CareKit.strings; sourceTree = "<group>"; };
+		518F9DCB22961C97009CAA48 /* no */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = no; path = no.lproj/CareKit.strings; sourceTree = "<group>"; };
 		518F9DCD22961C97009CAA48 /* UIViewController+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extensions.swift"; sourceTree = "<group>"; };
 		518F9DCE22961C97009CAA48 /* Collection+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Collection+Extensions.swift"; sourceTree = "<group>"; };
 		518F9DD922961C97009CAA48 /* OCKBindableSimpleContactView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKBindableSimpleContactView.swift; sourceTree = "<group>"; };
@@ -119,7 +109,6 @@
 		518F9DF822961C97009CAA48 /* OCKCalendarPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKCalendarPageViewController.swift; sourceTree = "<group>"; };
 		518F9DF922961C97009CAA48 /* OCKCalendarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKCalendarViewController.swift; sourceTree = "<group>"; };
 		518F9DFA22961C97009CAA48 /* OCKWeekCalendarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKWeekCalendarViewController.swift; sourceTree = "<group>"; };
-		518F9DFC22961C97009CAA48 /* OCKEventAggregator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKEventAggregator.swift; sourceTree = "<group>"; };
 		518F9DFE22961C97009CAA48 /* OCKContactsListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKContactsListViewController.swift; sourceTree = "<group>"; };
 		518F9E0122961C97009CAA48 /* OCKChecklistTaskViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKChecklistTaskViewController.swift; sourceTree = "<group>"; };
 		518F9E0222961C97009CAA48 /* OCKTaskViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKTaskViewController.swift; sourceTree = "<group>"; };
@@ -132,7 +121,6 @@
 		5196C7F9226F8F8F00F1C2A2 /* CareKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CareKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5196C7FD226F8F8F00F1C2A2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		51B29C9C22A0BD4200A54FBC /* OCKScheduleFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKScheduleFormatter.swift; sourceTree = "<group>"; };
-		51D0ED0122848A4B00D24A76 /* CareKitUI.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CareKitUI.xcodeproj; path = ../CareKitUI/CareKitUI.xcodeproj; sourceTree = "<group>"; };
 		8605A5BA1C4F04EC00DD65FF /* CareKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CareKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8605A5BF1C4F04EC00DD65FF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B1A1075522A065C200F93520 /* OCKDailyPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKDailyPageViewController.swift; sourceTree = "<group>"; };
@@ -140,7 +128,6 @@
 		E76D4E3E2273598F006335E7 /* TestSynchronizedStoreManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestSynchronizedStoreManager.swift; sourceTree = "<group>"; };
 		E76D4E422273599C006335E7 /* MockStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockStore.swift; sourceTree = "<group>"; };
 		E792B30E225D12CF00C99533 /* CareKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CareKit.swift; sourceTree = "<group>"; };
-		E7AF8A2D228A28CA007C0385 /* CareKitStore.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CareKitStore.xcodeproj; path = ../CareKitStore/CareKitStore.xcodeproj; sourceTree = "<group>"; };
 		E7D63B1E229D7E6D003A33B4 /* MockSynchronizedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSynchronizedViewController.swift; sourceTree = "<group>"; };
 		E7DA1D4F22A30ADC002BB1EF /* OCKListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKListView.swift; sourceTree = "<group>"; };
 		E7DA1D5222A30AFD002BB1EF /* OCKHeaderBodyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKHeaderBodyView.swift; sourceTree = "<group>"; };
@@ -159,12 +146,24 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1409475122B02153005C1D16 /* CareKitStore.framework in Frameworks */,
+				1409474E22B020CA005C1D16 /* CareKitUI.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1409474322B020A2005C1D16 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1409475022B02153005C1D16 /* CareKitStore.framework */,
+				1409474D22B020CA005C1D16 /* CareKitUI.framework */,
+				1409474A22B020C4005C1D16 /* CareKitStore.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		51886B0C2297B11B0033BBC4 /* Details */ = {
 			isa = PBXGroup;
 			children = (
@@ -180,6 +179,15 @@
 				51A8459322A6E21E008636CB /* Controller */,
 			);
 			path = Lists;
+			sourceTree = "<group>";
+		};
+		518F9DC622961C97009CAA48 /* Localization */ = {
+			isa = PBXGroup;
+			children = (
+				518F9DC722961C97009CAA48 /* locversion.plist */,
+				518F9DC922961C97009CAA48 /* CareKit.strings */,
+			);
+			path = Localization;
 			sourceTree = "<group>";
 		};
 		518F9DCC22961C97009CAA48 /* Extensions */ = {
@@ -289,18 +297,9 @@
 			path = Calendar;
 			sourceTree = "<group>";
 		};
-		518F9DFB22961C97009CAA48 /* Aggregators */ = {
-			isa = PBXGroup;
-			children = (
-				518F9DFC22961C97009CAA48 /* OCKEventAggregator.swift */,
-			);
-			path = Aggregators;
-			sourceTree = "<group>";
-		};
 		518F9E0022961C97009CAA48 /* Task */ = {
 			isa = PBXGroup;
 			children = (
-				518F9DFB22961C97009CAA48 /* Aggregators */,
 				518F9E0222961C97009CAA48 /* OCKTaskViewController.swift */,
 				518F9E0522961C97009CAA48 /* OCKEventViewController.swift */,
 				518F9E0722961C97009CAA48 /* OCKSimpleLogTaskViewController.swift */,
@@ -343,22 +342,13 @@
 			path = Controller;
 			sourceTree = "<group>";
 		};
-		51D0ED0222848A4B00D24A76 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				51D0ED0622848A4B00D24A76 /* CareKitUI.framework */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		8605A5B01C4F04EC00DD65FF = {
 			isa = PBXGroup;
 			children = (
-				E7AF8A2D228A28CA007C0385 /* CareKitStore.xcodeproj */,
-				51D0ED0122848A4B00D24A76 /* CareKitUI.xcodeproj */,
 				8605A5BC1C4F04EC00DD65FF /* CareKit */,
 				5196C7FA226F8F8F00F1C2A2 /* CareKitTests */,
 				8605A5BB1C4F04EC00DD65FF /* Products */,
+				1409474322B020A2005C1D16 /* Frameworks */,
 			);
 			indentWidth = 4;
 			sourceTree = "<group>";
@@ -381,6 +371,7 @@
 				518F9DD722961C97009CAA48 /* Bindable Views */,
 				518F9DF122961C97009CAA48 /* Synchronized View Controllers */,
 				518F9DC122961C96009CAA48 /* Lists */,
+				518F9DC622961C97009CAA48 /* Localization */,
 				E792B30E225D12CF00C99533 /* CareKit.swift */,
 				8605A5BF1C4F04EC00DD65FF /* Info.plist */,
 			);
@@ -394,15 +385,6 @@
 				E7D63B1E229D7E6D003A33B4 /* MockSynchronizedViewController.swift */,
 			);
 			path = Mocks;
-			sourceTree = "<group>";
-		};
-		E7AF8A2E228A28CA007C0385 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				E7AF8A33228A28CA007C0385 /* CareKitStore.framework */,
-				E7AF8A35228A28CA007C0385 /* CareKitStoreTests.xctest */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -444,12 +426,11 @@
 				8605A5B71C4F04EC00DD65FF /* Headers */,
 				8605A5B61C4F04EC00DD65FF /* Frameworks */,
 				8605A5B81C4F04EC00DD65FF /* Resources */,
+				1409474722B020A2005C1D16 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				E7AF8A37228A28E0007C0385 /* PBXTargetDependency */,
-				E7C91291228A1F16008ABEB4 /* PBXTargetDependency */,
 			);
 			name = CareKit;
 			productName = CareKit;
@@ -484,27 +465,50 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				fr,
+				de,
+				ja,
+				es,
+				it,
+				nl,
+				ko,
+				da,
+				fi,
+				sv,
+				ru,
+				pl,
+				tr,
+				ar,
+				th,
+				cs,
+				hu,
+				ca,
+				hr,
+				el,
+				he,
+				ro,
+				sk,
+				uk,
+				id,
+				ms,
+				vi,
+				pt,
 				pt_PT,
 				es_MX,
 				en_AU,
 				en_GB,
 				fr_CA,
+				hi,
 				no,
+				"zh-Hans",
+				"zh-HK",
+				"zh-Hant",
+				"es-419",
 				Base,
 			);
 			mainGroup = 8605A5B01C4F04EC00DD65FF;
 			productRefGroup = 8605A5BB1C4F04EC00DD65FF /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = E7AF8A2E228A28CA007C0385 /* Products */;
-					ProjectRef = E7AF8A2D228A28CA007C0385 /* CareKitStore.xcodeproj */;
-				},
-				{
-					ProductGroup = 51D0ED0222848A4B00D24A76 /* Products */;
-					ProjectRef = 51D0ED0122848A4B00D24A76 /* CareKitUI.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				8605A5B91C4F04EC00DD65FF /* CareKit */,
@@ -512,30 +516,6 @@
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXReferenceProxy section */
-		51D0ED0622848A4B00D24A76 /* CareKitUI.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = CareKitUI.framework;
-			remoteRef = 51D0ED0522848A4B00D24A76 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		E7AF8A33228A28CA007C0385 /* CareKitStore.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = CareKitStore.framework;
-			remoteRef = E7AF8A32228A28CA007C0385 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		E7AF8A35228A28CA007C0385 /* CareKitStoreTests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = CareKitStoreTests.xctest;
-			remoteRef = E7AF8A34228A28CA007C0385 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		5196C7F7226F8F8F00F1C2A2 /* Resources */ = {
@@ -549,6 +529,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				518F9E1222961C97009CAA48 /* locversion.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -594,7 +575,6 @@
 				B1611019229DB241002AC742 /* CareKit.swift in Sources */,
 				518F9E2122961C97009CAA48 /* OCKBindableChecklistTaskView.swift in Sources */,
 				B1A1075622A065C200F93520 /* OCKDailyPageViewController.swift in Sources */,
-				518F9E3622961C97009CAA48 /* OCKEventAggregator.swift in Sources */,
 				518F9E1522961C97009CAA48 /* Collection+Extensions.swift in Sources */,
 				E7DA1D5322A30AFD002BB1EF /* OCKHeaderBodyView.swift in Sources */,
 				518F9E3122961C97009CAA48 /* OCKSimpleContactViewController.swift in Sources */,
@@ -618,17 +598,27 @@
 			target = 8605A5B91C4F04EC00DD65FF /* CareKit */;
 			targetProxy = 5196C7FF226F8F8F00F1C2A2 /* PBXContainerItemProxy */;
 		};
-		E7AF8A37228A28E0007C0385 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = CareKitStore;
-			targetProxy = E7AF8A36228A28E0007C0385 /* PBXContainerItemProxy */;
-		};
-		E7C91291228A1F16008ABEB4 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = CareKitUI;
-			targetProxy = E7C91290228A1F16008ABEB4 /* PBXContainerItemProxy */;
-		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		518F9DC722961C97009CAA48 /* locversion.plist */ = {
+			isa = PBXVariantGroup;
+			children = (
+				518F9DC822961C97009CAA48 /* en */,
+			);
+			name = locversion.plist;
+			sourceTree = "<group>";
+		};
+		518F9DC922961C97009CAA48 /* CareKit.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				518F9DCA22961C97009CAA48 /* es_MX */,
+				518F9DCB22961C97009CAA48 /* no */,
+			);
+			name = CareKit.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		5196C801226F8F8F00F1C2A2 /* Debug */ = {
@@ -646,6 +636,7 @@
 				DEVELOPMENT_TEAM = 7JYUG8QGJ3;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = CareKitTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -671,6 +662,7 @@
 				DEVELOPMENT_TEAM = 7JYUG8QGJ3;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = CareKitTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = Apple.CareKitTests;
@@ -841,8 +833,8 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = CareKit/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.carekit.CareKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -864,8 +856,8 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = CareKit/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.carekit.CareKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

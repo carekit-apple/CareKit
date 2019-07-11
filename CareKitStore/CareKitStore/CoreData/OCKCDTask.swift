@@ -28,8 +28,8 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Foundation
 import CoreData
+import Foundation
 
 @objc(OCKCDTask)
 class OCKCDTask: OCKCDVersionedObject {
@@ -39,7 +39,7 @@ class OCKCDTask: OCKCDVersionedObject {
     @NSManaged var carePlan: OCKCDCarePlan?
     @NSManaged var scheduleElements: Set<OCKCDScheduleElement>
     @NSManaged var outcomes: Set<OCKCDOutcome>
-    
+
     override func validateRelationships() throws {
         if !allowsMissingRelationships && carePlan == nil {
             throw OCKStoreError.invalidValue(reason: "An OCKCDTask's carePlan relationship may not be nil")
@@ -48,7 +48,6 @@ class OCKCDTask: OCKCDVersionedObject {
 }
 
 extension OCKCDTask {
-    
     override func awakeFromInsert() {
         super.awakeFromInsert()
         scheduleElements = Set()

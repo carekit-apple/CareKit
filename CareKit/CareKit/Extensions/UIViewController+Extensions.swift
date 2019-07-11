@@ -28,26 +28,25 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import UIKit
 import CareKitUI
+import UIKit
 
 internal extension UIViewController {
-    
     func clearContainment() {
         willMove(toParent: nil)
         removeFromParent()
         view.removeFromSuperview()
     }
-    
+
     func setupContainment(in containerViewController: UIViewController, stackView: OCKStackView, animated: Bool = false) {
         containerViewController.addChild(self)
         stackView.addArrangedSubview(view, animated: animated)
         didMove(toParent: containerViewController)
     }
-    
-    func setupContainment(in containerViewController: UIViewController, stackView: OCKStackView, at i: Int, animated: Bool = false) {
+
+    func setupContainment(in containerViewController: UIViewController, stackView: OCKStackView, at index: Int, animated: Bool = false) {
         containerViewController.addChild(self)
-        stackView.insertArrangedSubview(view, at: i, animated: animated)
+        stackView.insertArrangedSubview(view, at: index, animated: animated)
         didMove(toParent: containerViewController)
     }
 }

@@ -34,7 +34,7 @@ internal extension Calendar {
     var thisWeek: DateInterval {
         return week(of: Date())
     }
-    
+
     func week(of date: Date) -> DateInterval {
         let morning = startOfDay(for: date)
         let year = component(.year, from: morning)

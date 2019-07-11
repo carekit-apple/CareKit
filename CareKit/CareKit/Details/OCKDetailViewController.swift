@@ -28,30 +28,29 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import UIKit
 import CareKitUI
+import UIKit
 
 internal class OCKDetailViewController: UIViewController {
-    
     private lazy var doneButton: UIBarButtonItem = {
         let item = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(dismissViewController))
         return item
     }()
-    
+
     internal var detailView: OCKDetailView {
         guard let view = view as? OCKDetailView else { fatalError("Unsupported view.") }
         return view
     }
-    
+
     override func loadView() {
         view = OCKDetailView()
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.rightBarButtonItem = doneButton
     }
-    
+
     @objc
     private func dismissViewController() {
         dismiss(animated: true, completion: nil)

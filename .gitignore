@@ -1,5 +1,6 @@
 # Xcode
 #
+# Xcode
 build/
 *.pbxuser
 !default.pbxuser
@@ -20,3 +21,6 @@ DerivedData
 .DS_Store
 *.pyc
 *.xcscmblueprint
+
+# SPM
+.build/

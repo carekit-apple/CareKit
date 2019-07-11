@@ -32,12 +32,11 @@ import UIKit
 
 /// A graph view that shows one or more scatter plots
 internal class OCKScatterPlotView: OCKGradientPlotView {
-
-    internal override func resetLayers() {
+    override internal func resetLayers() {
         let graphRect = graphBounds()
         let offsets = computeLineOffsets()
         resolveNumberOfLayers()
-        dataSeries.enumerated().forEach { (index, series) in
+        dataSeries.enumerated().forEach { index, series in
             guard let layer = seriesLayers[index] as? OCKScatterLayer else { fatalError("Unsupported type.") }
             layer.dataPoints = series.dataPoints
             layer.offset = offsets[index]
@@ -48,7 +47,7 @@ internal class OCKScatterPlotView: OCKGradientPlotView {
             layer.frame = bounds
         }
     }
-    
+
     // Adjust the x coordinates of the data series so that two identical lines are slightly offset, so as to be distinguishable.
     private func computeLineOffsets() -> [CGSize] {
         guard !dataSeries.isEmpty else { return [] }
@@ -61,7 +60,7 @@ internal class OCKScatterPlotView: OCKGradientPlotView {
         }
         return offsets
     }
-    
+
     private func resolveNumberOfLayers() {
         while seriesLayers.count < dataSeries.count {
             let newLayer = OCKScatterLayer()

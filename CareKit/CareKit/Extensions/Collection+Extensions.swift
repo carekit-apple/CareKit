@@ -28,11 +28,10 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import UIKit
 import CareKitUI
+import UIKit
 
 internal extension Collection where Element: UIViewController {
-    
     func clearContainment() {
         for viewController in self {
             viewController.willMove(toParent: nil)
@@ -40,7 +39,7 @@ internal extension Collection where Element: UIViewController {
             viewController.view.removeFromSuperview()
         }
     }
-    
+
     func setupContainment(in containerViewController: UIViewController, stackView: OCKStackView, animated: Bool = false) {
         for viewController in self {
             containerViewController.addChild(viewController)
@@ -48,11 +47,11 @@ internal extension Collection where Element: UIViewController {
             viewController.didMove(toParent: containerViewController)
         }
     }
-    
-    func setupContainment(in containerViewController: UIViewController, stackView: OCKStackView, at i: Int, animated: Bool = false) {
+
+    func setupContainment(in containerViewController: UIViewController, stackView: OCKStackView, at index: Int, animated: Bool = false) {
         for viewController in self {
             containerViewController.addChild(viewController)
-            stackView.insertArrangedSubview(viewController.view, at: i, animated: animated)
+            stackView.insertArrangedSubview(viewController.view, at: index, animated: animated)
             viewController.didMove(toParent: containerViewController)
         }
     }

@@ -40,10 +40,30 @@ public enum OCKTaskAnchor {
 
 /// A query that limits which tasks will be returned when fetching.
 public struct OCKTaskQuery: OCKDateIntervalQueryable {
-    
+    public enum SortDescriptor {
+        case effectiveAt(ascending: Bool)
+        case groupIdentifier(ascending: Bool)
+        case title(ascending: Bool)
+    }
+
     public var start: Date
     public var end: Date
     public var excludesTasksWithNoEvents: Bool
+
+    /// The order in which the results will be sorted when returned from the query.
+    public var sortDescriptors: [SortDescriptor] = []
+
+    /// The maximum number of results that will be returned by the query. A nil value indicates no upper limit.
+    public var limit: Int?
+
+    /// An offset that can be used to paginate results.
+    public var offset: Int?
+
+    /// An array of group identifiers to match against.
+    public var groupIdentifiers: [String]?
+
+    /// An array of tags to match against. If an object's tags contains one or more of entries, it will match the query.
+    public var tags: [String]?
 
     /// - Parameters:
     ///   - start: A date defining the lower bound on queried tasks' start date.
@@ -57,25 +77,45 @@ public struct OCKTaskQuery: OCKDateIntervalQueryable {
         self.end = end
         self.excludesTasksWithNoEvents = false
     }
+}
 
-    /// - Parameters:
-    ///   - start: A date defining the lower bound on queried tasks' start date.
-    ///   - end: A date defining the upper bound on the queried tasks' end date.
-    ///   - excludesTasksWithNoEvents: A flag specifying whether tasks resulting from the task query must have
-    ///                                events taking place on the day of `date`.
-    public init(start: Date, end: Date, excludesTasksWithNoEvents: Bool) {
-        self.start = start
-        self.end = end
-        self.excludesTasksWithNoEvents = excludesTasksWithNoEvents
-    }
+internal extension Array where Element: OCKTaskConvertible, Element: Equatable {
+    func filtered(against query: OCKTaskQuery?) -> [Element] {
+        guard let query = query else { return self }
+        return filter { task -> Bool in
+            // check that task schedule fits time requirements
+            let ockTask = task.convert()
+            let schedule = task.convert().schedule
 
-    /// - Parameters:
-    ///   - date: Specifies the date of the day on which the task must be active. This does not mean that queried tasks
-    ///           necessarily have events taking place on the day of `date`.
-    ///   - excludesTasksWithNoEvents: A flag specifying whether tasks resulting from the task query must have
-    ///                                events taking place on the day of `date`.
-    public init(for date: Date, excludesTasksWithNoEvents: Bool) {
-        self.init(for: date)
-        self.excludesTasksWithNoEvents = excludesTasksWithNoEvents
+            let events = schedule.events(from: query.start, to: query.end)
+            if query.excludesTasksWithNoEvents && events.isEmpty { return false }
+
+            // Schedule with finite duration
+            if let scheduleEnd = schedule.end {
+                let taskBeginsAfterQueryStarts = scheduleEnd >= query.start
+                let taskBeginsBeforeQueryEnds = ockTask.effectiveAt <= query.end
+                guard taskBeginsAfterQueryStarts && taskBeginsBeforeQueryEnds else {
+                    return false
+                }
+            }
+
+            // Schedule with infinite duration
+            else if events.isEmpty && ockTask.effectiveAt > query.end {
+                return false
+            }
+
+            if let tags = query.tags {
+                let taskTags = task.convert().tags ?? []
+                let matchesExist = taskTags.map { tags.contains($0) }.contains(true)
+                if !matchesExist { return false }
+            }
+
+            if let queryGroupIdentifiers = query.groupIdentifiers {
+                guard let taskGroupIdentifier = ockTask.groupIdentifier else { return false }
+                if !queryGroupIdentifiers.contains(taskGroupIdentifier) { return false }
+            }
+
+            return true
+        }
     }
 }

@@ -32,19 +32,14 @@ import Foundation
 
 public typealias OCKResultClosure<T> = (Result<T, OCKStoreError>) -> Void
 
-internal func makeNonOptionalResultClosure<T>(_ singularResultClosure: OCKResultClosure<T?>?) -> OCKResultClosure<[T]> {
+internal func chooseFirst<T>(then singularResultClosure: OCKResultClosure<T>?, replacementError: OCKStoreError) -> OCKResultClosure<[T]> {
     return { arrayResult in
-        let singleResult = arrayResult.map { $0.first }
-        singularResultClosure?(singleResult)
-    }
-}
-
-internal func makePluralResultClosure<T>(_ singularResultClosure: OCKResultClosure<T>?) -> OCKResultClosure<[T]> {
-    return { arrayResult in
-        let singleResult = arrayResult.map { objects -> T in
-            guard let first = objects.first else { fatalError("Expected to get a single result, but got an empty array") }
-            return first
+        switch arrayResult {
+        case .failure(let error):
+            singularResultClosure?(.failure(error))
+        case .success(let array):
+            if let first = array.first { singularResultClosure?(.success(first)); return }
+            singularResultClosure?(.failure(replacementError))
         }
-        singularResultClosure?(singleResult)
     }
 }

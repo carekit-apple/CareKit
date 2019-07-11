@@ -35,7 +35,6 @@ import UIKit
 public protocol OCKCardable where Self: UIView {}
 
 public extension OCKCardable {
-    
     /// Turn the card styling on/off. Note that shadow rastering is set on by default, and
     /// and consequently a shadow cannot be set over a clear background.
     /// - Parameter enabled: true to turn the card styling on.

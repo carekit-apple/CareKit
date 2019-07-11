@@ -31,22 +31,36 @@
 import Foundation
 
 /// `OCKAdherenceQuery` is used to constrain the results returned when fetching adherence from a store.
-public struct OCKAdherenceQuery: OCKDateIntervalQueryable {
-    
+public struct OCKAdherenceQuery<Event: OCKEventConvertible & Equatable>: OCKDateIntervalQueryable {
     /// The earliest date from which to return adherence information.
     public var start: Date
-    
+
     /// The latest date from which to return adherence information.
     public var end: Date
-    
+
+    /// An aggregator used to derive an adherence value from a series of events.
+    public var aggregator: OCKAdherenceAggregator<Event>
+
     /// Initialize a new query by specifying the start and end dates.
     ///
     /// - Parameters:
     ///   - start: The date from which the query should begin.
     ///   - end: The date on which the query should end.
-    ///   - treatDaysWithNoTasksAsComplete: Determines if days without tasks or events are treated as complete or incomplete.
     public init(start: Date, end: Date) {
         self.start = start
         self.end = end
+        self.aggregator = .countOutcomes
+    }
+
+    /// Initialize a new query by specifying the start and end dates.
+    ///
+    /// - Parameters:
+    ///   - start: The date from which the query should begin.
+    ///   - end: The date on which the query should end.
+    ///   - aggregator: An aggregator used to derive an adherence value from a series of events.
+    public init(start: Date, end: Date, aggregator: OCKAdherenceAggregator<Event>) {
+        self.start = start
+        self.end = end
+        self.aggregator = aggregator
     }
 }

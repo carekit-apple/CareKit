@@ -31,8 +31,7 @@
 import UIKit
 
 /// Protocol for interactions with an `OCKSimpleLogTaskView`.
-public protocol OCKSimpleLogTaskViewDelegate: class {
-    
+public protocol OCKSimpleLogTaskViewDelegate: AnyObject {
     /// Called when an item in the log was selected.
     ///
     /// - Parameters:
@@ -66,28 +65,27 @@ public protocol OCKSimpleLogTaskViewDelegate: class {
 ///     +-------------------------------------------------------+
 ///
 open class OCKSimpleLogTaskView: UIView, OCKCardable {
-    
     // MARK: Properties
-    
+
     private enum Constants {
         static let spacing: CGFloat = 16
     }
-    
+
     /// Delegate that gets notified of interactions with the `OCKSimpleLogTaskView`.
     public weak var delegate: OCKSimpleLogTaskViewDelegate?
-    
+
     /// The list of buttons in the log.
     public var items: [OCKButton] {
         guard let buttons = logItemsStackView.arrangedSubviews as? [OCKButton] else { fatalError("Unsupported type.") }
         return buttons
     }
-    
+
     private let logItemsStackView: OCKStackView = {
         var stackView = OCKStackView(style: .separated)
         stackView.showsOuterSeparators = false
         return stackView
     }()
-    
+
     /// The button that can be hooked up to modify the list of logged items.
     public let logButton: OCKButton = {
         let button = OCKLabeledButton()
@@ -96,47 +94,47 @@ open class OCKSimpleLogTaskView: UIView, OCKCardable {
         button.handlesSelectionStateAutomatically = false
         return button
     }()
-    
+
     /// The vertical stack view that holds the main content for the view.
     public let contentStackView: OCKStackView = {
         let stack = OCKStackView()
         stack.axis = .vertical
         return stack
     }()
-    
+
     /// Multi-line label below the header.
     public let instructionsLabel: OCKLabel = {
         let label = OCKLabel(textStyle: .subheadline, weight: .medium)
         label.numberOfLines = 0
         return label
     }()
-    
+
     /// The header view that shows a separator and a `detailDisclosureImage`.
     public let headerView = OCKHeaderView {
         $0.showsSeparator = true
         $0.showsDetailDisclosure = true
     }
-    
+
     // MARK: Life cycle
-    
+
     public init() {
         super.init(frame: .zero)
         setup()
     }
-    
-    required public init?(coder: NSCoder) {
+
+    public required init?(coder: NSCoder) {
         super.init(coder: coder)
         setup()
     }
-    
+
     // MARK: Methods
-    
+
     private func setup() {
         addSubviews()
         styleSubviews()
         constrainSubviews()
     }
-    
+
     private func styleSubviews() {
         preservesSuperviewLayoutMargins = true
         enableCardStyling(true)
@@ -144,12 +142,12 @@ open class OCKSimpleLogTaskView: UIView, OCKCardable {
         contentStackView.spacing = directionalLayoutMargins.top * 2
         setSpacingAfterLogButton(0, animated: false)
     }
-    
+
     private func addSubviews() {
         addSubview(contentStackView)
         [headerView, instructionsLabel, logButton, logItemsStackView].forEach { contentStackView.addArrangedSubview($0) }
     }
-    
+
     private func constrainSubviews() {
         [contentStackView].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
         NSLayoutConstraint.activate([
@@ -159,7 +157,7 @@ open class OCKSimpleLogTaskView: UIView, OCKCardable {
             contentStackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -directionalLayoutMargins.bottom * 2)
         ])
     }
-    
+
     private func makeItem(withTitle title: String, detail: String) -> OCKLogItemButton {
         let button = OCKLogItemButton()
         button.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
@@ -167,7 +165,7 @@ open class OCKSimpleLogTaskView: UIView, OCKCardable {
         button.setDetail(detail, for: .normal)
         return button
     }
-    
+
     /// Update the text for an item at a particular index.
     ///
     /// - Parameters:
@@ -183,7 +181,7 @@ open class OCKSimpleLogTaskView: UIView, OCKCardable {
         button.setDetail(detail, for: .normal)
         return button
     }
-    
+
     /// Insert an item in the list of logged items.
     ///
     /// - Parameters:
@@ -199,7 +197,7 @@ open class OCKSimpleLogTaskView: UIView, OCKCardable {
         logItemsStackView.insertArrangedSubview(button, at: index, animated: animated)
         return button
     }
-    
+
     /// Append an item to the list of logged items.
     ///
     /// - Parameters:
@@ -214,7 +212,7 @@ open class OCKSimpleLogTaskView: UIView, OCKCardable {
         logItemsStackView.addArrangedSubview(button, animated: animated)
         return button
     }
-    
+
     /// Remove an item from the list of logged items.
     ///
     /// - Parameters:
@@ -237,19 +235,19 @@ open class OCKSimpleLogTaskView: UIView, OCKCardable {
         setSpacingAfterLogButton(0, animated: true)
         logItemsStackView.clear(animated: animated)
     }
-    
+
     private func setSpacingAfterLogButton(_ spacing: CGFloat, animated: Bool) {
         let block = { [weak self] in
             guard let self = self else { return }
             self.contentStackView.setCustomSpacing(spacing, after: self.logButton)
         }
-        
+
         animated ?
             UIView.animate(withDuration: OCKStyle.animation.stateChangeDuration, delay: 0,
                            options: .curveEaseOut, animations: block, completion: nil) :
             block()
     }
-    
+
     @objc
     private func buttonTapped(_ sender: OCKButton) {
         guard let index = logItemsStackView.arrangedSubviews.firstIndex(of: sender) else {

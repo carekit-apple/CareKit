@@ -31,13 +31,18 @@
 import Foundation
 
 public extension OCKStore {
-    
     func fetchOutcomes(_ anchor: OCKOutcomeAnchor? = nil, query: OCKOutcomeQuery? = nil, queue: DispatchQueue = .main,
                        completion: @escaping (Result<[OCKOutcome], OCKStoreError>) -> Void) {
         context.perform {
             do {
-                let objects = OCKCDOutcome.fetchFromStore(in: self.context, where: try self.buildPredicate(for: anchor, and: query))
-                let outcomes = objects.map(self.makeOutcome).sorted { $0.taskOccurenceIndex < $1.taskOccurenceIndex }
+                let predicate = try self.buildPredicate(for: anchor, and: query)
+                let objects = OCKCDOutcome.fetchFromStore(in: self.context, where: predicate) { fetchRequest in
+                    fetchRequest.fetchLimit = query?.limit ?? 0
+                    fetchRequest.fetchOffset = query?.offset ?? 0
+                    fetchRequest.sortDescriptors = self.buildSortDescriptors(for: query)
+                }
+
+                let outcomes = objects.map(self.makeOutcome)
                 queue.async { completion(.success(outcomes)) }
             } catch {
                 self.context.rollback()
@@ -46,7 +51,7 @@ public extension OCKStore {
             }
         }
     }
-    
+
     func addOutcomes(_ outcomes: [OCKOutcome], queue: DispatchQueue = .main,
                      completion: ((Result<[OCKOutcome], OCKStoreError>) -> Void)? = nil) {
         context.perform {
@@ -92,7 +97,7 @@ public extension OCKStore {
             }
         }
     }
-    
+
     func deleteOutcomes(_ outcomes: [OCKOutcome], queue: DispatchQueue = .main,
                         completion: ((Result<[OCKOutcome], OCKStoreError>) -> Void)? = nil) {
         context.perform {
@@ -119,9 +124,9 @@ public extension OCKStore {
             }
         }
     }
-    
+
     // MARK: Private
-    
+
     /// - Remark: This does not commit the transaction. After calling this function one or more times, you must call `context.save()` in order to
     /// persist the changes to disk. This is an optimization to allow batching.
     /// - Remark: You should verify that the object does not already exist in the database and validate its values before calling this method.
@@ -130,7 +135,7 @@ public extension OCKStore {
         copyOutcome(outcome, to: persistableOutcome)
         return persistableOutcome
     }
-    
+
     private func copyOutcome(_ outcome: OCKOutcome, to persistableOutcome: OCKCDOutcome) {
         persistableOutcome.copyValues(from: outcome)
         persistableOutcome.allowsMissingRelationships = allowsEntitiesWithMissingRelationships
@@ -142,7 +147,7 @@ public extension OCKStore {
             persistableOutcome.task = task
         }
     }
-    
+
     /// - Remark: This does not commit the transaction. After calling this function one or more times, you must call `context.save()` in order to
     /// persist the changes to disk. This is an optimization to allow batching.
     internal func addValue(_ value: OCKOutcomeValue) -> OCKCDOutcomeValue {
@@ -153,7 +158,7 @@ public extension OCKStore {
         object.units = value.units
         return object
     }
-    
+
     /// - Remark: This method is intended to create a value type struct from a *persisted* NSManagedObject. Calling this method with an
     /// object that is not yet commited is a programmer error.
     private func makeOutcome(from object: OCKCDOutcome) -> OCKOutcome {
@@ -169,23 +174,39 @@ public extension OCKStore {
             buildSubquery(for: query)
         ])
     }
-    
+
     private func buildSubquery(for anchor: OCKOutcomeAnchor?) throws -> NSPredicate {
         guard let anchor = anchor else { return NSPredicate(value: true) }
         switch anchor {
-        case .taskIdentifier(let taskIdentifier):
-            return NSPredicate(format: "%K == %@", #keyPath(OCKCDOutcome.task.identifier), taskIdentifier)
-        case .outcomeVersion(let outcomeVersionedLocalID):
-            return NSPredicate(format: "self == %@", try objectID(for: outcomeVersionedLocalID))
-        case .taskVersion(let taskVersionedLocalID):
-            return NSPredicate(format: "%K == %@", #keyPath(OCKCDOutcome.task), try objectID(for: taskVersionedLocalID))
+        case .taskIdentifiers(let taskIdentifiers):
+            return NSPredicate(format: "%K IN %@", #keyPath(OCKCDOutcome.task.identifier), taskIdentifiers)
+        case .outcomeVersions(let outcomeVersionedLocalIDs):
+            return NSPredicate(format: "self IN %@", try outcomeVersionedLocalIDs.map { try objectID(for: $0) })
+        case .taskVersions(let taskVersionedLocalIDs):
+            return NSPredicate(format: "%K IN %@", #keyPath(OCKCDOutcome.task), try taskVersionedLocalIDs.map { try objectID(for: $0) })
         }
     }
-    
+
     private func buildSubquery(for query: OCKOutcomeQuery?) -> NSPredicate {
         guard let query = query else { return NSPredicate(value: true) }
         let afterPredicate = NSPredicate(format: "%K >= %@", #keyPath(OCKCDOutcome.date), query.start as NSDate)
         let beforePredicate = NSPredicate(format: "%K < %@", #keyPath(OCKCDOutcome.date), query.end as NSDate)
-        return NSCompoundPredicate(andPredicateWithSubpredicates: [afterPredicate, beforePredicate])
+        var predicate: NSPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [afterPredicate, beforePredicate])
+        if let groupIdentifiers = query.groupIdentifiers {
+            predicate = predicate.including(groupIdentifiers: groupIdentifiers)
+        }
+        if let tags = query.tags {
+            predicate = predicate.including(tags: tags)
+        }
+        return predicate
+    }
+
+    private func buildSortDescriptors(for query: OCKOutcomeQuery?) -> [NSSortDescriptor] {
+        guard let orders = query?.sortDescriptors else { return [] }
+        return orders.map { order -> NSSortDescriptor in
+            switch order {
+            case .date(ascending: let ascending): return NSSortDescriptor(keyPath: \OCKCDOutcome.date, ascending: ascending)
+            }
+        }
     }
 }

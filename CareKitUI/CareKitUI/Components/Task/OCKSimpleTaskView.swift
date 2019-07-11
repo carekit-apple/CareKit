@@ -47,7 +47,7 @@ open class OCKSimpleTaskView: UIView, OCKCardable, OCKCollapsible {
     // MARK: Properties
 
     /// The button in the trailing end of the card. Has an image that is defaulted to a checkmark when selected.
-    public let completionButton: OCKButton = OCKCircleButton()
+    public let completionButton: OCKButton = OCKCircleButton(checkmarkPointSize: .large)
 
     /// A default version of an `OCKHeaderView`.
     public let headerView = OCKHeaderView()

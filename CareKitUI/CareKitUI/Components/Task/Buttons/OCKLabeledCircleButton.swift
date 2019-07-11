@@ -44,7 +44,7 @@ internal class OCKLabeledCircleButton: OCKButton {
     }()
 
     private let _imageButton: OCKButton = {
-        let button = OCKCircleButton()
+        let button = OCKCircleButton(checkmarkPointSize: .large)
         button.layer.borderWidth = OCKStyle.appearance.borderWidth2
         button.isUserInteractionEnabled = false
         return button

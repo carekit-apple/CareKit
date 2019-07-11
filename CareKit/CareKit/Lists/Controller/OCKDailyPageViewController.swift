@@ -162,8 +162,7 @@ UIPageViewControllerDelegate {
     // MARK: OCKCalendarPageViewControllerDelegate
 
     internal func calendarPageViewController<Store>(_ calendarPageViewController: OCKCalendarPageViewController<Store>,
-                                                    didSelectDate date: Date, previousDate: Date?) where Store: OCKStoreProtocol {
-        guard let previousDate = previousDate else { return } // return if we have selected a date without a previous date
+                                                    didSelectDate date: Date, previousDate: Date) where Store: OCKStoreProtocol {
         let newComponents = Calendar.current.dateComponents([.weekday, .weekOfYear, .year], from: date)
         let oldComponents = Calendar.current.dateComponents([.weekday, .weekOfYear, .year], from: previousDate)
         guard newComponents != oldComponents else { return } // do nothing if we have selected a date for the same day of the year

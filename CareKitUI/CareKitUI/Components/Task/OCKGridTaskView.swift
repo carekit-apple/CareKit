@@ -51,7 +51,7 @@ import UIKit
 ///     |   [instructions]                                      |
 ///     +-------------------------------------------------------+
 ///
-open class OCKTaskGridView: UIView, OCKCardable, OCKCollapsible, OCKCollapsibleView {
+open class OCKGridTaskView: UIView, OCKCardable, OCKCollapsible, OCKCollapsibleView {
     // MARK: OCKCollapsibleView
 
     internal var collapsedViews: Set<UIView> { [collapsedView, collapserButton] }
@@ -106,7 +106,7 @@ open class OCKTaskGridView: UIView, OCKCardable, OCKCollapsible, OCKCollapsibleV
     public typealias DefaultCellType = OCKGridTaskCell
 
     /// A collection view that sizes itself based on the size of its content. Cells used should have a constant width constraint. The
-    /// default cell that is used is an `OCKTaskGridView.DefaultCellType` (`OCKGridTaskCell`). Set a data source to control the content
+    /// default cell that is used is an `OCKGridTaskView.DefaultCellType` (`OCKGridTaskCell`). Set a data source to control the content
     /// of the grid.
     public let collectionView: UICollectionView = {
         let layout = OCKGridCollectionViewFlowLayout()
@@ -122,6 +122,7 @@ open class OCKTaskGridView: UIView, OCKCardable, OCKCollapsible, OCKCollapsibleV
     public let instructionsLabel: OCKLabel = {
         let label = OCKLabel(textStyle: .caption1, weight: .regular)
         label.textColor = .lightGray
+        label.numberOfLines = 0
         return label
     }()
 

@@ -35,7 +35,7 @@ import UIKit
 internal protocol OCKCalendarPageViewControllerDelegate: AnyObject {
     func calendarPageViewController<Store: OCKStoreProtocol>(
         _ calendarPageViewController: OCKCalendarPageViewController<Store>,
-        didSelectDate date: Date, previousDate: Date?)
+        didSelectDate date: Date, previousDate: Date)
 
     func calendarPageViewController<Store: OCKStoreProtocol>(
         _ calendarPageViewController: OCKCalendarPageViewController<Store>,
@@ -58,7 +58,7 @@ UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelega
         return currentViewController?.calendarWeekView.dateRange
     }
 
-    private var previouslySelectedDate: Date?
+    private var previouslySelectedDate: Date
 
     var selectedDate: Date {
         guard let weekView = currentViewController?.calendarWeekView else { return Date() }
@@ -71,6 +71,7 @@ UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelega
 
     init(storeManager: OCKSynchronizedStoreManager<Store>, aggregator: OCKAdherenceAggregator<Store.Event> = .countOutcomes) {
         self.storeManager = storeManager
+        self.previouslySelectedDate = Date()
         self.aggregator = aggregator
         super.init(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
     }
@@ -85,12 +86,10 @@ UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelega
         dataSource = self
         delegate = self
 
-        let now = Date()
-        let viewController = makeViewController(for: now)
-        let completionRingButton = viewController.calendarWeekView.completionRingFor(date: now)
+        let viewController = makeViewController(for: previouslySelectedDate)
+        let completionRingButton = viewController.calendarWeekView.completionRingFor(date: previouslySelectedDate)
         completionRingButton?.sendActions(for: .touchUpInside)
         setViewControllers([viewController], direction: .forward, animated: false, completion: nil)
-        calendarDelegate?.calendarPageViewController(self, didSelectDate: now, previousDate: nil)
     }
 
     private func makeViewController(for date: Date) -> OCKWeekCalendarViewController<Store> {

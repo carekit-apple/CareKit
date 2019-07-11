@@ -33,7 +33,7 @@ import CareKitUI
 import UIKit
 
 internal class OCKBindableGridTaskView<Task: Equatable & OCKTaskConvertible, Outcome: Equatable & OCKOutcomeConvertible>:
-OCKTaskGridView, OCKBindable, UICollectionViewDataSource {
+OCKGridTaskView, OCKBindable, UICollectionViewDataSource {
     private var model: Model?
 
     private let scheduleFormatter = OCKScheduleFormatter<Task, Outcome>()

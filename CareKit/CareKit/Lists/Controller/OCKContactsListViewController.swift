@@ -28,14 +28,13 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Foundation
-import Combine
 import CareKitStore
+import Combine
+import Foundation
 
 /// Classes that conform to this protocol can recieve updates about the state of
 /// the `OCKContactsListViewControllerDelegate`.
 public protocol OCKContactsListViewControllerDelegate: OCKContactViewControllerDelegate {
-    
     /// Alerts the delegate when `contactListViewController` encounters a relevant error.
     func contactListViewController<Store: OCKStoreProtocol>(_ contactListViewController: OCKContactsListViewController<Store>,
                                                             didFailWithError error: Error)
@@ -44,18 +43,17 @@ public protocol OCKContactsListViewControllerDelegate: OCKContactViewControllerD
 /// An `OCKListViewController` that automatically queries and displays contacts in the `Store` using
 /// `OCKSimpleContactViewController`s.
 open class OCKContactsListViewController<Store: OCKStoreProtocol>: OCKListViewController {
-
     /// The manager of the `Store` from which the `Contact` data is fetched.
     public let storeManager: OCKSynchronizedStoreManager<Store>
-    
+
     /// If set, the delegate will receive callbacks when important events happen at the list view controller level.
     public weak var delegate: OCKContactsListViewControllerDelegate?
-    
+
     /// If set, the delegate will receive callbacks when important events happen inside the contact view controllers.
     public weak var contactDelegate: OCKContactViewControllerDelegate?
-    
+
     private var subscription: Cancellable?
-    
+
     /// Initialize using a store manager. All of the contacts in the store manager will be queried and dispalyed.
     ///
     /// - Parameters:
@@ -64,11 +62,12 @@ open class OCKContactsListViewController<Store: OCKStoreProtocol>: OCKListViewCo
         self.storeManager = storeManager
         super.init(nibName: nil, bundle: nil)
     }
-    
+
+    @available(*, unavailable)
     public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     override open func viewDidLoad() {
         super.viewDidLoad()
         navigationController?.navigationBar.prefersLargeTitles = true
@@ -76,14 +75,14 @@ open class OCKContactsListViewController<Store: OCKStoreProtocol>: OCKListViewCo
         subscribe()
         fetchContacts()
     }
-    
+
     private func subscribe() {
         subscription?.cancel()
         subscription = storeManager.contactsPublisher(categories: [.add, .update]).sink { _ in
             self.fetchContacts()
         }
     }
-    
+
     /// `fetchContacts` asynchronously retrieves an array of contacts stored in a `Result`
     /// and makes corresponding `OCKSimpleContactViewController`s.
     private func fetchContacts() {

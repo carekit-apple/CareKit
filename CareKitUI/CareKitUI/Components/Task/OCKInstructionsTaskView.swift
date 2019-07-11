@@ -53,94 +53,93 @@ import UIKit
 ///     +-------------------------------------------------------+
 ///
 open class OCKInstructionsTaskView: UIView, OCKCardable, OCKCollapsible, OCKCollapsibleView {
-    
     // MARK: OCKCollapsibleView
-    
+
     internal var collapsedViews: Set<UIView> { [collapsedView, collapserButton] }
     internal var expandedViews: Set<UIView> { [headerView, instructionsLabel, completionButton, spacerView] }
     internal var completeViews: Set<UIView> { [headerView, instructionsLabel, completionButton, collapserButton, spacerView] }
     internal var cardView: UIView { return self }
     internal var collapsedState: OCKCollapsibleState = .expanded
-    
+
     internal let collapserButton: OCKButton = {
         let collapserButton = OCKCollapserButton()
         collapserButton.isHidden = true
         collapserButton.alpha = 0
         return collapserButton
     }()
-    
+
     /// A vertical stack view that holds the main content for the view.
     public let contentStackView: OCKStackView = {
         let stack = OCKStackView()
         stack.axis = .vertical
         return stack
     }()
-    
+
     // MARK: Properties
-    
+
     private enum Constants {
         static let bundle = Bundle(for: OCKInstructionsTaskView.self)
     }
-    
+
     internal var shouldCollapse: Bool = true
-    
+
     internal let collapsedView: OCKCollapsedView = {
         let collapsedView = OCKCollapsedView()
         collapsedView.isHidden = true
         collapsedView.alpha = 0
         return collapsedView
     }()
-    
+
     private let contentView: UIView = {
         let view = UIView()
         view.clipsToBounds = true
         return view
     }()
-    
+
     private let spacerView = UIView()
-    
+
     /// The button on the bottom of the view. The background color is the `tintColor` when in a normal state. and gray when
     /// in a selected state. Also supports a `titleLabel`.
     public let completionButton: OCKButton = OCKLabeledButton()
-    
+
     /// Multi-line label over the `completionButton`.
     public let instructionsLabel: OCKLabel = {
         let label = OCKLabel(textStyle: .subheadline, weight: .medium)
         label.numberOfLines = 0
         return label
     }()
-    
+
     /// A header view that tshows a separator and a `detailDisclosureImage`.
     public let headerView = OCKHeaderView {
         $0.showsSeparator = true
         $0.showsDetailDisclosure = true
     }
-    
+
     // MARK: Life cycle
-    
+
     public init() {
         super.init(frame: .zero)
         setup()
     }
-    
-    required public init?(coder: NSCoder) {
+
+    public required init?(coder: NSCoder) {
         super.init(coder: coder)
         setup()
     }
-    
+
     // MARK: Methods
-    
+
     private func setup() {
         addSubviews()
         styleSubviews()
         constrainSubviews()
-        
+
         // setup targets for collapsing the view
         collapserButton.addTarget(self, action: #selector(toggleCollapse), for: .touchUpInside)
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(toggleCollapse))
         collapsedView.addGestureRecognizer(tapGesture)
     }
-    
+
     private func styleSubviews() {
         preservesSuperviewLayoutMargins = true
         enableCardStyling(true)
@@ -148,19 +147,19 @@ open class OCKInstructionsTaskView: UIView, OCKCardable, OCKCollapsible, OCKColl
         contentStackView.setCustomSpacing(0, after: completionButton)
         contentStackView.setCustomSpacing(0, after: spacerView)
     }
-    
+
     private func addSubviews() {
         addSubview(contentView)
         contentView.addSubview(contentStackView)
         [headerView, instructionsLabel, completionButton,
          spacerView, collapsedView, collapserButton].forEach { contentStackView.addArrangedSubview($0) }
     }
-    
+
     private func constrainSubviews() {
         [contentView, contentStackView, spacerView].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
         NSLayoutConstraint.activate([
             spacerView.heightAnchor.constraint(equalToConstant: directionalLayoutMargins.top * 2),
-            
+
             contentView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: directionalLayoutMargins.leading * 2),
             contentView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -directionalLayoutMargins.leading * 2),
             contentView.topAnchor.constraint(equalTo: topAnchor, constant: directionalLayoutMargins.leading * 2),
@@ -172,15 +171,15 @@ open class OCKInstructionsTaskView: UIView, OCKCardable, OCKCollapsible, OCKColl
             contentStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
         ])
     }
-    
+
     @objc
     private func toggleCollapse() {
         let newState: OCKCollapsibleState = collapsedState == .collapsed ? .complete : .collapsed
         setCollapsedState(newState, animated: true)
     }
-    
+
     // MARK: OCKCollapsible
-    
+
     internal func setCollapsedState(_ state: OCKCollapsibleState, animated: Bool) {
         guard shouldCollapse else { return }
         setViewCollapsedState(state, animated: animated)

@@ -31,34 +31,33 @@
 import UIKit
 
 internal class OCKGraphLegendView: UIStackView {
-    
     private enum Constants {
         static let iconCornerRadius: CGFloat = 4.0
         static let iconPadding: CGFloat = 6.0
         static let keySpacing: CGFloat = 10.0
     }
-    
+
     init() {
         super.init(frame: .zero)
         setup()
     }
-    
+
     required init(coder: NSCoder) {
         super.init(coder: coder)
         setup()
     }
-    
+
     private func setup() {
         axis = .horizontal
         distribution = .fillEqually
         spacing = Constants.keySpacing
     }
-    
+
     internal func setDataSeries(_ dataSeries: [OCKDataSeries]) {
         arrangedSubviews.forEach { $0.removeFromSuperview() }
         dataSeries.map(makeKey).forEach(addArrangedSubview)
     }
-    
+
     private func makeKey(for series: OCKDataSeries) -> UIView {
         let icon = makeIcon(startColor: series.gradientStartColor ?? tintColor, endColor: series.gradientEndColor ?? tintColor)
         let label = makeLabel(title: series.title, color: series.gradientStartColor ?? tintColor)
@@ -67,7 +66,7 @@ internal class OCKGraphLegendView: UIStackView {
         stack.spacing = Constants.iconPadding
         return stack
     }
-    
+
     private func makeLabel(title: String, color: UIColor) -> UIView {
         let label = UILabel()
         label.textAlignment = .left
@@ -77,7 +76,7 @@ internal class OCKGraphLegendView: UIStackView {
         label.clipsToBounds = true
         return label
     }
-    
+
     private func makeIcon(startColor: UIColor, endColor: UIColor) -> UIView {
         let icon = OCKGradientView()
         icon.startColor = startColor
@@ -91,33 +90,34 @@ internal class OCKGraphLegendView: UIStackView {
 }
 
 private class OCKGradientView: UIView {
-    
     var startColor: UIColor = .red {
         didSet { gradient.colors = [startColor.cgColor, endColor.cgColor] }
     }
-    
+
     var endColor: UIColor = .blue {
         didSet { gradient.colors = [startColor.cgColor, endColor.cgColor] }
     }
-    
+
     private var gradient: CAGradientLayer {
+        
         return layer as! CAGradientLayer
+        
     }
-    
+
     override class var layerClass: AnyClass {
         return CAGradientLayer.self
     }
-    
+
     init() {
         super.init(frame: .zero)
         setupGradient()
     }
-    
+
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         setupGradient()
     }
-    
+
     private func setupGradient() {
         gradient.colors = [startColor.cgColor, endColor.cgColor]
         gradient.startPoint = CGPoint(x: 0.5, y: 1)

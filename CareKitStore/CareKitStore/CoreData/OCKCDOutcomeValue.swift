@@ -35,21 +35,21 @@ class OCKCDOutcomeValue: OCKCDObject {
     @NSManaged var kind: String? // blood sugar, body weight, etc.
     @NSManaged var units: String?
     @NSManaged var outcome: OCKCDOutcome?
-    
+
     @NSManaged private var typeString: String
-    public var type: OCKOutcomeValueType {
+    var type: OCKOutcomeValueType {
         get { return OCKOutcomeValueType(rawValue: typeString)! }
         set { typeString = newValue.rawValue }
     }
-    
+
     @NSManaged var textValue: String?
     @NSManaged var binaryValue: Data?
     @NSManaged var booleanValue: Bool
     @NSManaged var integerValue: Int
     @NSManaged var doubleValue: Double
     @NSManaged var dateValue: Date?
-    
-    public var value: OCKOutcomeValueUnderlyingType {
+
+    var value: OCKOutcomeValueUnderlyingType {
         get {
             switch type {
             case .integer: return integerValue
@@ -60,44 +60,44 @@ class OCKCDOutcomeValue: OCKCDObject {
             case .date: return dateValue!
             }
         }
-        
+
         set {
             switch newValue {
             case let int as Int:
                 reset()
                 integerValue = int
                 type = .integer
-                
+
             case let double as Double:
                 reset()
                 doubleValue = double
                 type = .double
-                
+
             case let bool as Bool:
                 reset()
                 booleanValue = bool
                 type = .boolean
-                
+
             case let text as String:
                 reset()
                 textValue = text
                 type = .text
-                
+
             case let binary as Data:
                 reset()
                 binaryValue = binary
                 type = .binary
-                
+
             case let date as Date:
                 reset()
                 dateValue = date
                 type = .date
-                
+
             default: fatalError("Unexpected type!")
             }
         }
     }
-    
+
     private func reset() {
         textValue = nil
         binaryValue = nil

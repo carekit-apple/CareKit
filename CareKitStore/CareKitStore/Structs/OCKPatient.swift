@@ -32,17 +32,17 @@ import Foundation
 
 /// Represents a patient
 public struct OCKPatient: Codable, Equatable, OCKVersionSettable, OCKObjectCompatible, OCKPatientConvertible, OCKPatientInitializable {
-    
     public let identifier: String
-    
+
     /// The patient's name.
     public var name: PersonNameComponents
-    
+
     // MARK: OCKVersionable
+    public var effectiveAt: Date
     public internal(set) var localDatabaseID: OCKLocalVersionID?
     public internal(set) var nextVersionID: OCKLocalVersionID?
     public internal(set) var previousVersionID: OCKLocalVersionID?
-    
+
     // MARK: OCKObjectCompatible
     public internal(set) var createdAt: Date?
     public internal(set) var updatedAt: Date?
@@ -54,7 +54,7 @@ public struct OCKPatient: Codable, Equatable, OCKVersionSettable, OCKObjectCompa
     public var userInfo: [String: String]?
     public var asset: String?
     public var notes: [OCKNote]?
-    
+
     /// Initialize a patient with an identifier, a first name, and a last name.
     ///
     /// - Parameters:
@@ -67,8 +67,9 @@ public struct OCKPatient: Codable, Equatable, OCKVersionSettable, OCKObjectCompa
         components.familyName = familyName
         self.name = components
         self.identifier = identifier
+        self.effectiveAt = Date()
     }
-    
+
     /// Initialize a new patient with an identifier and a name.
     ///
     /// - Parameters:
@@ -77,8 +78,9 @@ public struct OCKPatient: Codable, Equatable, OCKVersionSettable, OCKObjectCompa
     public init(identifier: String, name: PersonNameComponents) {
         self.name = name
         self.identifier = identifier
+        self.effectiveAt = Date()
     }
-    
+
     /// Create an `OCKPatient` from an `OCKPatient`
     ///
     /// - Parameter value: The patient to make a copy of.
@@ -86,7 +88,7 @@ public struct OCKPatient: Codable, Equatable, OCKVersionSettable, OCKObjectCompa
     public init(value: OCKPatient) {
         self = value
     }
-    
+
     /// Converts to an `OCKPatient`
     ///
     /// - Returns: An unmodified copy of `self`.

@@ -31,14 +31,16 @@
 import Foundation
 
 /// A query that limits which events will be returned when computing insights.
-public struct OCKInsightQuery: OCKDateIntervalQueryable {
-    
+public struct OCKInsightQuery<Event: OCKEventConvertible & Equatable>: OCKDateIntervalQueryable {
     /// The earliest date at which outcomes should match.
     public var start: Date
-    
+
     /// The latest date at which outcomes should match.
     public var end: Date
-    
+
+    /// An aggregator used to derive an insight from a series of events.
+    public var aggregator: OCKEventAggregator<Event>
+
     /// Initialize a new `OCKInsightsQuery` by specifying the start and end dates.
     ///
     /// - Parameters:
@@ -47,5 +49,18 @@ public struct OCKInsightQuery: OCKDateIntervalQueryable {
     public init(start: Date, end: Date) {
         self.start = start
         self.end = end
+        self.aggregator = .countOutcomeValues
+    }
+
+    /// Initialize a new `OCKInsightsQuery` by specifying the start and end dates.
+    ///
+    /// - Parameters:
+    ///   - start: The earliest date at which events should match.
+    ///   - endDate: The latest date at which events should match.
+    ///   - aggregator: An aggregator used to derive an insight from a series of events.
+    public init(start: Date, end: Date, aggregator: OCKEventAggregator<Event>) {
+        self.start = start
+        self.end = end
+        self.aggregator = aggregator
     }
 }

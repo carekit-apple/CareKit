@@ -31,13 +31,12 @@
 import UIKit
 
 internal class OCKCircleButton: OCKButton {
-    
     // MARK: Properties
-    
+
     override internal var imageButton: OCKButton? {
         return _imageButton
     }
-   
+
     private let _imageButton: OCKButton = {
         let button = OCKButton()
         let bundle = Bundle(for: OCKChecklistItemButton.self)
@@ -49,32 +48,27 @@ internal class OCKCircleButton: OCKButton {
         button.isUserInteractionEnabled = false
         return button
     }()
-    
+
     // MARK: Life cycle
-    
-    internal override init() {
+
+    override internal init() {
         super.init()
         setup()
     }
-    
-    required internal init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        setup()
-    }
-    
-    open override func layoutSubviews() {
+
+    override func layoutSubviews() {
         super.layoutSubviews()
         layer.cornerRadius = frame.height / 2.0
     }
-    
+
     // MARK: Methods
-    
+
     private func setup() {
         styleSubviews()
         addSubviews()
         constrainSubviews()
     }
-    
+
     private func styleSubviews() {
         preservesSuperviewLayoutMargins = true
         clipsToBounds = true
@@ -83,11 +77,11 @@ internal class OCKCircleButton: OCKButton {
         _imageButton.tintColor = .white
         tintedTraits = [TintedTrait(trait: .backgroundColor, state: .selected)]
     }
-    
+
     private func addSubviews() {
         [_imageButton].forEach { addSubview($0) }
     }
-    
+
     private func constrainSubviews() {
         [_imageButton].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
         NSLayoutConstraint.activate([
@@ -96,7 +90,7 @@ internal class OCKCircleButton: OCKButton {
             _imageButton.centerYAnchor.constraint(equalTo: centerYAnchor)
         ])
     }
-    
+
     override func setBackgroundColor(_ color: UIColor, for state: UIControl.State) {
         super.setBackgroundColor(color, for: state)
         // match the layer's border color with the selected state color

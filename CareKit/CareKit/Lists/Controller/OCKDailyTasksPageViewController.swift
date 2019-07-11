@@ -28,27 +28,26 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import UIKit
-import Combine
 import CareKitStore
 import CareKitUI
+import Combine
+import UIKit
 
 /// Displays a calendar page view controller in the header, and a collection of tasks
 /// in the body. The tasks are automatically queried based on the selection in the calendar.
 open class OCKDailyTasksPageViewController<Store: OCKStoreProtocol>: OCKDailyPageViewController<Store> {
-    
     private let emptyLabelMargin: CGFloat = 4
-    
+
     /// If set, the delegate will receive callbacks when important events happen at the task view controller level.
     public weak var taskDelegate: OCKTaskViewControllerDelegate?
-    
-    open override func dailyPageViewController<S>(
+
+    override open func dailyPageViewController<S>(
         _ dailyPageViewController: OCKDailyPageViewController<S>,
         prepare listViewController: OCKListViewController,
         for date: Date) where S: OCKStoreProtocol {
         fetchTasks(for: date, andPopulateIn: listViewController)
     }
-    
+
     private func fetchTasks(for date: Date, andPopulateIn listViewController: OCKListViewController) {
         storeManager.store.fetchTasks(nil, query: OCKTaskQuery(for: date), queue: .main) { [weak self] result in
             guard let self = self else { return }
@@ -66,7 +65,7 @@ open class OCKDailyTasksPageViewController<Store: OCKStoreProtocol>: OCKDailyPag
                     taskViewController.delegate = self.taskDelegate
                     listViewController.appendViewController(taskViewController, animated: false)
                 }
-                
+
                 if tasks.isEmpty {
                     listViewController.listView.stackView.spacing = self.emptyLabelMargin
                     listViewController.appendView(self.makeEmptyLabel(), animated: false)
@@ -74,7 +73,7 @@ open class OCKDailyTasksPageViewController<Store: OCKStoreProtocol>: OCKDailyPag
             }
         }
     }
-    
+
     private func makeEmptyLabel() -> OCKLabel {
         let label = OCKLabel(textStyle: .subheadline, weight: .medium)
         label.textColor = .lightGray

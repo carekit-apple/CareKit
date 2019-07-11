@@ -28,25 +28,23 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import UIKit
-import CareKitUI
 import CareKitStore
+import CareKitUI
+import UIKit
 
-/// An synchronized view controller that displays a single event and it's outcomes and allows the patient to log outcomes.
+/// An synchronized view controller that displays a single event and its outcomes and allows the patient to log outcomes.
 ///
 /// - Note: `OCKEventViewController`s are created by specifying a task and an event query. If the event query
 /// returns more than one event, only the first event will be displayed.
 open class OCKSimpleLogTaskViewController<Store: OCKStoreProtocol>: OCKEventViewController<Store>, OCKSimpleLogTaskViewDelegate {
-
     public var taskView: OCKSimpleLogTaskView {
         guard let view = view as? OCKSimpleLogTaskView else { fatalError("Unexpected type") }
         return view
     }
-    
+
     /// Initialize using an identifier.
     ///
     /// - Parameters:
-    ///   - style: A style that determines which subclass will be instantiated.
     ///   - storeManager: A store manager that will be used to provide synchronization.
     ///   - taskIdentifier: The identifier event's task.
     ///   - eventQuery: An event query that specifies which events will be queried and displayed.
@@ -54,7 +52,7 @@ open class OCKSimpleLogTaskViewController<Store: OCKStoreProtocol>: OCKEventView
         super.init(storeManager: storeManager, taskIdentifier: taskIdentifier, eventQuery: eventQuery,
                    loadDefaultView: { OCKBindableSimpleLogTaskView<Store.Task, Store.Outcome>() })
     }
-    
+
     /// Initialize using a task.
     ///
     /// - Parameters:
@@ -64,19 +62,15 @@ open class OCKSimpleLogTaskViewController<Store: OCKStoreProtocol>: OCKEventView
     public convenience init(storeManager: OCKSynchronizedStoreManager<Store>, task: Store.Task, eventQuery: OCKEventQuery) {
         self.init(storeManager: storeManager, taskIdentifier: task.identifier, eventQuery: eventQuery)
     }
-    
-    required public init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
+
     override open func viewDidLoad() {
         super.viewDidLoad()
         taskView.delegate = self
         taskView.logButton.addTarget(self, action: #selector(outcomeButtonPressed(_:)), for: .touchUpInside)
     }
-    
+
     // MARK: OCKSimpleLogTaskViewDelegate
-    
+
     /// This method will be called each time the taps on a logged record. Override this method in a subclass to change the behavior.
     ///
     /// - Parameters:
@@ -90,17 +84,17 @@ open class OCKSimpleLogTaskViewController<Store: OCKStoreProtocol>: OCKEventView
 
         let actionSheet = UIAlertController(title: "Log Entry", message: logInfo, preferredStyle: .actionSheet)
         let cancel = UIAlertAction(title: OCKStyle.strings.cancel, style: .default, handler: nil)
-        
-        let delete = UIAlertAction(title: OCKStyle.strings.delete, style: .destructive) { [weak self] (action) in
+
+        let delete = UIAlertAction(title: OCKStyle.strings.delete, style: .destructive) { [weak self] _ in
             guard let self = self else { return }
-            
+
             // Sort values by date value
             let values = self.event?.convert().outcome?.values ?? []
             let sortedValues = values.sorted {
                 guard let date1 = $0.createdAt, let date2 = $1.createdAt else { return true }
                 return date1 < date2
             }
-            
+
             guard index < sortedValues.count else { return }
             let intValue = sortedValues[index].integerValue
             self.deleteOutcomeValue(intValue)

@@ -28,12 +28,11 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import UIKit
 import CareKitUI
+import UIKit
 
 internal class OCKBindableCalendarWeekView: OCKCalendarWeekView, OCKBindable {
-    
-    public func updateView(with model: [OCKCompletionRingButton.CompletionState]?, animated: Bool) {
+    func updateView(with model: [OCKCompletionRingButton.CompletionState]?, animated: Bool) {
         let values = model ?? []
         setCompletionRingStates(values, animated: animated)
     }

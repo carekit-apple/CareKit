@@ -33,29 +33,29 @@ import UIKit
 import CareKit
 
 class CareViewController: OCKDailyPageViewController<OCKStore> {
-    
+
         override func viewDidLoad() {
             super.viewDidLoad()
             navigationItem.rightBarButtonItem =
                 UIBarButtonItem(title: "Care Team", style: .plain, target: self,
                                 action: #selector(presentContactsListViewController))
         }
-    
+
         @objc private func presentContactsListViewController() {
             let viewController = OCKContactsListViewController(storeManager: storeManager)
             viewController.title = "Care Team"
             viewController.navigationItem.rightBarButtonItem =
                 UIBarButtonItem(title: "Done", style: .plain, target: self,
                                 action: #selector(dismissContactsListViewController))
-    
+
             let navigationController = UINavigationController(rootViewController: viewController)
             present(navigationController, animated: true, completion: nil)
         }
-    
+
         @objc private func dismissContactsListViewController() {
             dismiss(animated: true, completion: nil)
         }
-    
+
     // This will be called each time the selected date changes.
     // Use this as an opportunity to rebuild the content shown to the user.
     override func dailyPageViewController<S>(
@@ -65,13 +65,14 @@ class CareViewController: OCKDailyPageViewController<OCKStore> {
 
         let identifiers = ["doxylamine", "nausea", "kegels"]
         let anchor = OCKTaskAnchor.taskIdentifiers(identifiers)
-        let query = OCKTaskQuery(for: date, excludesTasksWithNoEvents: true)
+        var query = OCKTaskQuery(for: date)
+        query.excludesTasksWithNoEvents = true
 
         storeManager.store.fetchTasks(anchor, query: query) { result in
             switch result {
             case .failure(let error): print("Error: \(error)")
             case .success(let tasks):
-                
+
                 // Add a non-CareKit view into the list
                 let tipTitle = "Benefits of exercising"
                 let tipText = "Learn how activity can promote a healthy pregnancy."
@@ -84,7 +85,7 @@ class CareViewController: OCKDailyPageViewController<OCKStore> {
                     tipView.imageView.image = UIImage(named: "exercise.jpg")
                     listViewController.appendView(tipView, animated: false)
                 }
-                
+
                 // Since the kegel task is only sheduled every other day, there will be cases
                 // where it is not contained in the tasks array returned from the query.
                 if let kegelsTask = tasks.first(where: { $0.identifier == "kegels" }) {

@@ -37,47 +37,41 @@ import UIKit
 ///     +--------------------------+
 ///
 internal class OCKLabeledButton: OCKButton {
-    
     // MARK: Properties
-    
+
     override var titleButton: OCKButton? { _titleButton }
-    
+
     private let _titleButton: OCKButton = {
         let button = OCKButton(titleTextStyle: .subheadline, titleWeight: .medium)
         button.fitsSizeToTitleLabel = true
         button.isUserInteractionEnabled = false
         button.tintedTraits = [TintedTrait(trait: .titleColor, state: .selected)]
-        
+
         button.setTitle(OCKStyle.strings.markCompleted, for: .normal)
         button.setTitle(OCKStyle.strings.completed, for: .selected)
-        
+
         return button
     }()
-    
+
     // MARK: Life Cycle
-    
-    internal override init() {
+
+    override internal init() {
         super.init()
         setup()
     }
-    
-    required internal init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        setup()
-    }
-    
+
     // MARK: Methods
-    
+
     private func setup() {
         addSubviews()
         styleSubviews()
         constrainSubviews()
     }
-    
+
     private func addSubviews() {
         addSubview(_titleButton)
     }
-    
+
     private func styleSubviews() {
         animatesStateChanges = true
         adjustsImageWhenHighlighted = false
@@ -87,7 +81,7 @@ internal class OCKLabeledButton: OCKButton {
         setTitleColor(OCKStyle.color.white, for: .normal)
         tintedTraits = [TintedTrait(trait: .backgroundColor, state: .normal)]
     }
-    
+
     private func constrainSubviews() {
         _titleButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([

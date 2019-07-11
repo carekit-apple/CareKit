@@ -31,17 +31,21 @@
 import CoreData
 
 extension OCKStore {
-    
     public func fetchContacts(_ anchor: OCKContactAnchor? = nil, query: OCKContactQuery? = nil, queue: DispatchQueue = .main,
                               completion: @escaping (Result<[OCKContact], OCKStoreError>) -> Void) {
         context.perform {
             let predicate = self.buildPredicate(for: anchor, and: query)
-            let persistedContacts = OCKCDContact.fetchFromStore(in: self.context, where: predicate)
+            let persistedContacts = OCKCDContact.fetchFromStore(in: self.context, where: predicate) { fetchRequest in
+                fetchRequest.fetchLimit = query?.limit ?? 0
+                fetchRequest.fetchOffset = query?.offset ?? 0
+                fetchRequest.sortDescriptors = self.buildSortDescriptors(for: query)
+            }
+
             let contacts = persistedContacts.map(self.makeContact)
             queue.async { completion(.success(contacts)) }
         }
     }
-    
+
     public func addContacts(_ contacts: [OCKContact], queue: DispatchQueue = .main,
                             completion: ((Result<[OCKContact], OCKStoreError>) -> Void)? = nil) {
         context.perform {
@@ -62,16 +66,16 @@ extension OCKStore {
             }
         }
     }
-    
+
     public func updateContacts(_ contacts: [OCKContact], queue: DispatchQueue = .main, completion: OCKResultClosure<[OCKContact]>? = nil) {
         context.perform {
             do {
                 try OCKCDContact.validateUpdateIdentifiers(contacts.map { $0.identifier }, in: self.context)
-                
+
                 let updatedContacts = self.configuration.updatesCreateNewVersions ?
                     try self.performVersionedUpdate(values: contacts, addNewVersion: self.addContact) :
                     try self.performUnversionedUpdate(values: contacts, update: self.copyContact)
-                
+
                 try self.context.save()
                 let contacts = updatedContacts.map(self.makeContact)
                 queue.async {
@@ -86,15 +90,15 @@ extension OCKStore {
             }
         }
     }
-    
+
     public func deleteContacts(_ contacts: [OCKContact], queue: DispatchQueue = .main,
                                completion: ((Result<[OCKContact], OCKStoreError>) -> Void)? = nil) {
         context.perform {
             do {
-                let deletedContacts = try self.performUnversionedUpdate(values: contacts) { (_, persistableContact) in
+                let deletedContacts = try self.performUnversionedUpdate(values: contacts) { _, persistableContact in
                     persistableContact.deletedAt = Date()
                 }.map(self.makeContact)
-                
+
                 try self.context.save()
                 queue.async {
                     self.delegate?.store(self, didDeleteContacts: deletedContacts)
@@ -108,14 +112,14 @@ extension OCKStore {
             }
         }
     }
-    
+
     private func addContact(from contact: OCKContact) -> OCKCDContact {
         let persistableContact = OCKCDContact(context: context)
         persistableContact.name = OCKCDPersonName(context: context)
         copyContact(contact, to: persistableContact)
         return persistableContact
     }
-    
+
     private func copyContact(_ contact: OCKContact, to persistableContact: OCKCDContact) {
         persistableContact.copyVersionInfo(from: contact)
         persistableContact.allowsMissingRelationships = allowsEntitiesWithMissingRelationships
@@ -128,7 +132,7 @@ extension OCKStore {
         persistableContact.title = contact.title
         persistableContact.role = contact.role
         persistableContact.category = contact.category?.rawValue
-        
+
         if let carePlanID = contact.carePlanID { persistableContact.carePlan = try? fetchObject(havingLocalID: carePlanID) }
         if let address = contact.address {
             if let postalAddress = persistableContact.address {
@@ -140,13 +144,13 @@ extension OCKStore {
             persistableContact.address = nil
         }
     }
-    
+
     private func addPostalAddress(from address: OCKPostalAddress) -> OCKCDPostalAddress {
         let persistableAddress = OCKCDPostalAddress(context: context)
         copyPostalAddress(address, to: persistableAddress)
         return persistableAddress
     }
-    
+
     private func copyPostalAddress(_ address: OCKPostalAddress, to persitableAddress: OCKCDPostalAddress) {
         persitableAddress.street = address.street
         persitableAddress.subLocality = address.subLocality
@@ -157,7 +161,7 @@ extension OCKStore {
         persitableAddress.country = address.country
         persitableAddress.isoCountryCode = address.isoCountryCode
     }
-    
+
     private func makeContact(from object: OCKCDContact) -> OCKContact {
         var contact = OCKContact(identifier: object.identifier, name: object.name.makeComponents(), carePlanID: object.carePlan?.versionID)
         contact.copyVersionedValues(from: object)
@@ -172,7 +176,7 @@ extension OCKStore {
         if let rawValue = object.category { contact.category = OCKContact.Category(rawValue: rawValue) }
         return contact
     }
-    
+
     private func makePostalAddress(from object: OCKCDPostalAddress) -> OCKPostalAddress {
         let address = OCKPostalAddress()
         address.street = object.street
@@ -185,29 +189,49 @@ extension OCKStore {
         address.isoCountryCode = object.isoCountryCode
         return address
     }
-    
+
     private func buildPredicate(for anchor: OCKContactAnchor?, and query: OCKContactQuery?) -> NSPredicate {
         return NSCompoundPredicate(andPredicateWithSubpredicates: [
             buildSubPredicate(for: anchor),
-            buildSubPredicate(for: query)
+            buildSubPredicate(for: query),
+            NSPredicate(format: "%K == nil", #keyPath(OCKCDVersionedObject.deletedAt))
         ])
     }
-    
+
     private func buildSubPredicate(for anchor: OCKContactAnchor?) -> NSPredicate {
-        guard let anchor = anchor else { return OCKCDContact.headerPredicate() }
+        guard let anchor = anchor else { return NSPredicate(value: true) }
         switch anchor {
         case .contactIdentifier(let identifiers):
-            return OCKCDContact.headerPredicate(for: identifiers)
+            return NSPredicate(format: "%K IN %@", #keyPath(OCKCDVersionedObject.identifier), identifiers)
         case .carePlanVersion(let carePlanVersionIDs):
             fatalError("\(carePlanVersionIDs)")
         }
     }
-    
+
     private func buildSubPredicate(for query: OCKContactQuery?) -> NSPredicate {
-        guard let query = query else { return NSPredicate(value: true) }
-        return NSPredicate(format: "%K >= %@ AND %K != nil AND %K < %@",
-                           #keyPath(OCKCDContact.createdAt), query.date as NSDate,
-                           #keyPath(OCKCDContact.next),
-                           "next.createdAt", query.date as NSDate)
+        var predicate = NSPredicate(value: true)
+        if let interval = query?.dateInterval {
+            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [
+                predicate, OCKCDVersionedObject.newestVersionPredicate(in: interval)
+            ])
+        }
+        if let groupIdentifiers = query?.groupIdentifiers {
+            predicate = predicate.including(groupIdentifiers: groupIdentifiers)
+        }
+        if let tags = query?.tags {
+            predicate = predicate.including(tags: tags)
+        }
+        return predicate
+    }
+
+    private func buildSortDescriptors(for query: OCKContactQuery?) -> [NSSortDescriptor] {
+        guard let orders = query?.sortDescriptors else { return [] }
+        return orders.map { order -> NSSortDescriptor in
+            switch order {
+            case .effectiveAt(ascending: let ascending): return NSSortDescriptor(keyPath: \OCKCDContact.effectiveAt, ascending: ascending)
+            case .familyName(ascending: let ascending): return NSSortDescriptor(keyPath: \OCKCDContact.name.familyName, ascending: ascending)
+            case .givenName(ascending: let ascending): return NSSortDescriptor(keyPath: \OCKCDContact.name.givenName, ascending: ascending)
+            }
+        }
     }
 }

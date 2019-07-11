@@ -9,20 +9,21 @@
 /* Begin PBXBuildFile section */
 		E72B2C0A226939E3009A9438 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E72B2C09226939E3009A9438 /* AppDelegate.swift */; };
 		E72B2C14226939E4009A9438 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E72B2C12226939E4009A9438 /* LaunchScreen.storyboard */; };
-		E742330822C57EA0003C1A33 /* CareKit in Frameworks */ = {isa = PBXBuildFile; productRef = E742330722C57EA0003C1A33 /* CareKit */; };
 		E7440E4F229477F7007AD30A /* CareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7440E4E229477F7007AD30A /* CareViewController.swift */; };
+		E7BED11222C285ED002816A9 /* CareKit in Frameworks */ = {isa = PBXBuildFile; productRef = E7BED11122C285ED002816A9 /* CareKit */; };
 		E7C37849228F887800E982D8 /* TipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7C37848228F887800E982D8 /* TipView.swift */; };
 		E7C4CA0B22809AD500ECC3D7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E7C4CA0A22809AD500ECC3D7 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1409475222B025AD005C1D16 /* CareKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = CareKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E72B2C06226939E3009A9438 /* OCKSample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OCKSample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E72B2C09226939E3009A9438 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E72B2C13226939E4009A9438 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E72B2C15226939E4009A9438 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E737105922862B7B005D3B03 /* CareKitUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = CareKitUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		E742330922C58141003C1A33 /* carekit */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "carekit"; path = ..; sourceTree = "<group>"; };
 		E7440E4E229477F7007AD30A /* CareViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CareViewController.swift; sourceTree = "<group>"; };
+		E7BED11022C285E7002816A9 /* carekit */ = {isa = PBXFileReference; lastKnownFileType = folder; name = carekit; path = ..; sourceTree = "<group>"; };
 		E7C37848228F887800E982D8 /* TipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TipView.swift; sourceTree = "<group>"; };
 		E7C4CA0A22809AD500ECC3D7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E7C8B1F4228A1B41000B68FB /* CareKitStore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = CareKitStore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -33,7 +34,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E742330822C57EA0003C1A33 /* CareKit in Frameworks */,
+				E7BED11222C285ED002816A9 /* CareKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -53,7 +54,7 @@
 		E72B2BFD226939E3009A9438 = {
 			isa = PBXGroup;
 			children = (
-				E742330922C58141003C1A33 /* carekit */,
+				E7BED11022C285E7002816A9 /* carekit */,
 				E72B2C08226939E3009A9438 /* OCKSample */,
 				E72B2C07226939E3009A9438 /* Products */,
 				E72B2C2F22693C51009A9438 /* Frameworks */,
@@ -82,6 +83,7 @@
 		E72B2C2F22693C51009A9438 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1409475222B025AD005C1D16 /* CareKit.framework */,
 				E7C8B1F4228A1B41000B68FB /* CareKitStore.framework */,
 				E737105922862B7B005D3B03 /* CareKitUI.framework */,
 			);
@@ -105,7 +107,7 @@
 			);
 			name = OCKSample;
 			packageProductDependencies = (
-				E742330722C57EA0003C1A33 /* CareKit */,
+				E7BED11122C285ED002816A9 /* CareKit */,
 			);
 			productName = CareKitDemoApp;
 			productReference = E72B2C06226939E3009A9438 /* OCKSample.app */;
@@ -306,7 +308,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = "$(SRCROOT)/OCKSample/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -325,7 +327,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = "$(SRCROOT)/OCKSample/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -363,7 +365,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		E742330722C57EA0003C1A33 /* CareKit */ = {
+		E7BED11122C285ED002816A9 /* CareKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = CareKit;
 		};

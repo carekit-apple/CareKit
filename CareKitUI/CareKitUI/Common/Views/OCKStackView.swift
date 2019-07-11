@@ -33,9 +33,8 @@ import UIKit
 /// A stack view that supports animating showing/hiding arranged subviews,
 /// and has the option of dynamically creating separators when arranged subviews are added.
 open class OCKStackView: UIStackView {
-
     // MARK: Properties
-    
+
     /// The style for the stack view.
     ///
     /// - plain: A normal stack view.
@@ -43,7 +42,7 @@ open class OCKStackView: UIStackView {
     public enum Style {
         case plain, separated
     }
-    
+
     /// Types of animations that are applied to the stack view.
     ///
     /// - fade: Animate opacity.
@@ -51,10 +50,10 @@ open class OCKStackView: UIStackView {
     internal enum Animation {
         case fade, hidden
     }
-    
+
     /// The style of the stack view.
     public let style: Style
-    
+
     /// Flag determines if the top and bottom separators are shown when the style of the stack view is separated
     public var showsOuterSeparators = true {
         didSet {
@@ -65,7 +64,7 @@ open class OCKStackView: UIStackView {
     }
 
     // MARK: Life Cycle
-    
+
     /// Create the stack view with a style. A plain style is a typical stack view. A separated
     /// style will automatically create separators between arranged subviews whenever they're
     /// added.
@@ -77,16 +76,17 @@ open class OCKStackView: UIStackView {
         if style == .separated { axis = .vertical }
         preservesSuperviewLayoutMargins = true
     }
-    
-    required public init(coder: NSCoder) {
+
+    @available(*, unavailable)
+    public required init(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: Methods
-    
+
     /// The ordered subviews. When the stack view is a separated style, this will not
     /// include the separators.
-    open override var arrangedSubviews: [UIView] {
+    override open var arrangedSubviews: [UIView] {
         switch style {
         case .plain:
             return super.arrangedSubviews
@@ -96,12 +96,12 @@ open class OCKStackView: UIStackView {
                 super.arrangedSubviews.enumerated().filter { $0.0 % 2 == 0 }.map { $0.1 }      // all even subviews
         }
     }
-    
+
     /// Add a subview to the end of the stack view. If the style is separated,
     /// separators will automatically be added.
     ///
     /// - Parameter view: The view to add.
-    open override func addArrangedSubview(_ view: UIView) {
+    override open func addArrangedSubview(_ view: UIView) {
         switch style {
         case .plain:
             super.addArrangedSubview(view)
@@ -110,7 +110,7 @@ open class OCKStackView: UIStackView {
             viewsToAdd.forEach { super.addArrangedSubview($0) }
         }
     }
-    
+
     /// Add a subview to the end of the stack view. If the style is separated,
     /// separators will automatically be added. Provides the option to animate
     /// showing the new view.
@@ -123,7 +123,7 @@ open class OCKStackView: UIStackView {
             addArrangedSubview(view)
             return
         }
-        
+
         let viewsToAdd = makeSeparators(withView: view)
         viewsToAdd.forEach {
             $0.isHidden = true
@@ -131,7 +131,7 @@ open class OCKStackView: UIStackView {
         }
         toggleViews(viewsToAdd, shouldShow: true, animated: animated)
     }
-    
+
     /// Insert an arranged subview at a particular index in the stack view. If the style is
     /// separated, separators will be automatically added.  Provides the option to animate
     /// showing the new view.
@@ -145,38 +145,38 @@ open class OCKStackView: UIStackView {
             insertArrangedSubview(view, at: stackIndex)
             return
         }
-        
+
         let viewsToAdd = makeSeparators(withView: view)
-        for (i, view) in viewsToAdd.enumerated() {
+        for (index, view) in viewsToAdd.enumerated() {
             view.isHidden = true
-            super.insertArrangedSubview(view, at: i + stackIndex)
+            super.insertArrangedSubview(view, at: index + stackIndex)
         }
         toggleViews(viewsToAdd, shouldShow: true, animated: animated)
     }
-    
+
     /// Insert an arranged subview at a particular index in the stack view. If the style is
     /// separated, separators will automatically be added.
     ///
     /// - Parameters:
     ///   - view: The view to add.
     ///   - stackIndex: Index in the stack view to add the view.
-    open override func insertArrangedSubview(_ view: UIView, at stackIndex: Int) {
+    override open func insertArrangedSubview(_ view: UIView, at stackIndex: Int) {
         switch style {
         case .plain:
             super.insertArrangedSubview(view, at: stackIndex)
         case .separated:
             let viewsToAdd = makeSeparators(withView: view)
-            for (i, view) in viewsToAdd.enumerated() {
-                super.insertArrangedSubview(view, at: i + stackIndex)
+            for (index, view) in viewsToAdd.enumerated() {
+                super.insertArrangedSubview(view, at: index + stackIndex)
             }
         }
     }
-    
+
     /// Remove an arranged subview from the stack view. If the style is separated,
     /// the separators will be automatically removed.
     ///
     /// - Parameter view: The view to remove.
-    open override func removeArrangedSubview(_ view: UIView) {
+    override open func removeArrangedSubview(_ view: UIView) {
         switch style {
         case .plain:
             super.removeArrangedSubview(view)
@@ -185,7 +185,7 @@ open class OCKStackView: UIStackView {
             viewsToRemove.forEach { $0.removeFromSuperview() }
         }
     }
-    
+
     /// Remove an arranged subview from the stack view. If the style is separated,
     /// the separators will be automatically removed. Option to animated the removal of the
     /// view.
@@ -198,9 +198,9 @@ open class OCKStackView: UIStackView {
             view.removeFromSuperview()
             return
         }
-        
+
         let viewsToRemove = getSeparators(withView: view)
-        toggleViews(viewsToRemove, shouldShow: false, animated: animated) { (complete) in
+        toggleViews(viewsToRemove, shouldShow: false, animated: animated) { complete in
             guard complete else { return }
             viewsToRemove.forEach {
                 $0.removeFromSuperview()
@@ -209,7 +209,7 @@ open class OCKStackView: UIStackView {
             }
         }
     }
-    
+
     /// Batch view plus any needed separators
     private func makeSeparators(withView view: UIView) -> [UIView] {
         switch style {
@@ -228,7 +228,7 @@ open class OCKStackView: UIStackView {
             return views
         }
     }
-    
+
     /// Get the separators included with a view
     private func getSeparators(withView view: UIView) -> [UIView] {
         switch style {
@@ -236,7 +236,7 @@ open class OCKStackView: UIStackView {
             return [view]
         case .separated:
             guard let index = subviews.firstIndex(of: view) else { return [] }
-            
+
             if showsOuterSeparators && index == 0 {
                 return Array(subviews[..<3])
             } else if !showsOuterSeparators && index == 0 {
@@ -246,7 +246,7 @@ open class OCKStackView: UIStackView {
             }
         }
     }
-    
+
     /// Clear the views in the stack view.
     ///
     /// - Parameter animated: Flag to animate the removal of the views.
@@ -254,18 +254,18 @@ open class OCKStackView: UIStackView {
         let removeViewsBlock = { [weak self] in
             self?.subviews.forEach { $0.removeFromSuperview() }
         }
-        
+
         guard animated else {
             removeViewsBlock()
             return
         }
-        
-        toggleViews(subviews, shouldShow: false, animated: true) { (complete) in
+
+        toggleViews(subviews, shouldShow: false, animated: true) { complete in
             guard complete else { return }
             removeViewsBlock()
         }
     }
-    
+
     /// Hide or show the specified views in the stack view.
     ///
     /// - Parameters:
@@ -280,36 +280,35 @@ open class OCKStackView: UIStackView {
         animated: Bool,
         animations: [Animation] = [.fade, .hidden],
         completion: ((Bool) -> Void)? = nil) {
-        
         views.forEach { guard $0.superview == self else { return } }
-        
+
         // skip animation
         guard animated else {
             views.forEach { $0.isHidden = !shouldShow }
             return
         }
-        
+
         var completionWillBeCalled = false
 
         if animations.contains(.hidden) {
             let filteredViews = views.filter { $0.isHidden == shouldShow } // only animated views that are not yet animated
             filteredViews.forEach { $0.isHidden = shouldShow }
-            
+
             UIView.animate(withDuration: OCKStyle.animation.stateChangeDuration, delay: 0, options: .curveEaseOut, animations: {
                 filteredViews.forEach { $0.isHidden = !shouldShow }
-            }, completion: { (complete) in
+            }, completion: { complete in
                 if !completionWillBeCalled { completion?(complete) }
                 completionWillBeCalled = true
             })
         }
-        
+
         if animations.contains(.fade) {
             let filteredViews = views.filter { $0.alpha == (shouldShow ? 0 : 1) } // only animated views that are not yet animated
             filteredViews.forEach { $0.alpha = shouldShow ? 0 : 1 }
-            
+
             UIView.animate(withDuration: OCKStyle.animation.stateChangeDuration, delay: 0, options: .curveEaseOut, animations: {
                 filteredViews.forEach { $0.alpha = shouldShow ? 1 : 0 }
-            }, completion: { (complete) in
+            }, completion: { complete in
                 if !completionWillBeCalled { completion?(complete) }
                 completionWillBeCalled = true
             })

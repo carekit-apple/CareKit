@@ -28,82 +28,82 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
 import Foundation
 
 /// Classes that conform to this protocol can receive callbacks from a store when its contents change.
 /// The `OCKSynchronizedStoreManager` in `CareKit` makes use of this to alert views to updates.
-public protocol OCKStoreDelegate: class {
-    
+public protocol OCKStoreDelegate: AnyObject {
     /// Called each time patients are added into the store.
     /// - Parameter store: The store which was modified.
     /// - Parameter patients: The patients that were added.
     func store<S: OCKStoreProtocol>(_ store: S, didAddPatients patients: [S.Patient])
-    
+
     /// Called each time patients are updated the store.
     /// - Parameter store: The store which was modified.
     /// - Parameter patients: The patients that were updated.
     func store<S: OCKStoreProtocol>(_ store: S, didUpdatePatients patients: [S.Patient])
-    
+
     /// Called each time patients are deleted from the store.
     /// - Parameter store: The store which was modified.
     /// - Parameter patients: The patients that were deleted.
     func store<S: OCKStoreProtocol>(_ store: S, didDeletePatients patients: [S.Patient])
-    
+
     /// Called each time care plans are added to the store.
     /// - Parameter store: The store which was modified.
     /// - Parameter carePlans: The care plans that were added.
     func store<S: OCKStoreProtocol>(_ store: S, didAddCarePlans carePlans: [S.Plan])
-    
+
     /// Called each time care plans are updated in the store.
     /// - Parameter store: The store which was modified.
     /// - Parameter carePlans: The care plans that were updated.
     func store<S: OCKStoreProtocol>(_ store: S, didUpdateCarePlans carePlans: [S.Plan])
-    
+
     /// Called each time care plans are deleted from the store.
     /// - Parameter store: The store which was modified.
     /// - Parameter carePlans: The care plans that were deleted.
     func store<S: OCKStoreProtocol>(_ store: S, didDeleteCarePlans carePlans: [S.Plan])
-    
+
     /// Called each time contacts are added to the store.
     /// - Parameter store: The store which was modified.
     /// - Parameter contacts: The contacts that were added to the store.
     func store<S: OCKStoreProtocol>(_ store: S, didAddContacts contacts: [S.Contact])
-    
+
     /// Called each time contacts are updated in the store.
     /// - Parameter store: The store which was modified.
     /// - Parameter contacts: The contacts that were updated in the store.
     func store<S: OCKStoreProtocol>(_ store: S, didUpdateContacts contacts: [S.Contact])
-    
+
     /// Called each time contacts are deleted from the store.
     /// - Parameter store: The store which was modified.
     /// - Parameter contacts: The contacts that were deleted from the store.
     func store<S: OCKStoreProtocol>(_ store: S, didDeleteContacts contacts: [S.Contact])
-    
+
     /// Called each time tasks are added to the store.
     /// - Parameter store: The store which was modified.
     /// - Parameter tasks: The tasks that were added to the store.
     func store<S: OCKStoreProtocol>(_ store: S, didAddTasks tasks: [S.Task])
-    
+
     /// Called each time tasks are updated in the store.
     /// - Parameter store: The store which was modified.
     /// - Parameter tasks: The tasks that were updated in the store.
     func store<S: OCKStoreProtocol>(_ store: S, didUpdateTasks tasks: [S.Task])
-    
+
     /// Called each time tasks are deleted from the store.
     /// - Parameter store: The store which was modified.
     /// - Parameter tasks: The tasks that were deleted from the store.
     func store<S: OCKStoreProtocol>(_ store: S, didDeleteTasks tasks: [S.Task])
-    
+
     /// Called each time outcomes are added to the store.
     /// - Parameter store: The store which was modified.
     /// - Parameter outcomes: The outcomes that were added to the store.
     func store<S: OCKStoreProtocol>(_ store: S, didAddOutcomes outcomes: [S.Outcome])
-    
+
     /// Called each time outcomes are updated in the store.
     /// - Parameter store: The store which was modified.
     /// - Parameter outcomes: The outcomes that were updated in the store.
     func store<S: OCKStoreProtocol>(_ store: S, didUpdateOutcomes outcomes: [S.Outcome])
-    
+
     /// Called each time outcomes are added to the store.
     /// - Parameter store: The store which was modified.
     /// - Parameter outcomes: The outcomes that were deleted from the store.
@@ -132,20 +132,19 @@ public protocol OCKStoreDelegate: class {
 /// - Note: When non-standard associated types are used, they will be passed all the way to the view layer without being converted, fully
 /// preserving their typing. They will only be converted to and from native CareKit values if and when they are created or displayed by CareKit view
 /// controllers. Developers wishing to display properties not present on native CareKit values must implement new logic at the view layer.
-public protocol OCKStoreProtocol: class, Equatable {
-    
+public protocol OCKStoreProtocol: AnyObject, Equatable {
     associatedtype Patient: OCKPatientConvertible & OCKPatientInitializable & Equatable
     associatedtype Plan: OCKCarePlanConvertible & OCKCarePlanInitializable & Equatable
     associatedtype Contact: OCKContactConvertible & OCKContactInitializable & Equatable
     associatedtype Task: OCKTaskConvertible & OCKTaskInitializable & Equatable
     associatedtype Outcome: OCKOutcomeConvertible & OCKOutcomeInitializable & Equatable
     typealias Event = OCKEvent<Task, Outcome>
-    
+
     /// If set, the delegate's callback methods will be called each time data in the store changes.
     var delegate: OCKStoreDelegate? { get set }
-    
+
     // MARK: Fetching
-    
+
     /// `fetchPatients` asynchronously retrieves an array of patients from the store.
     ///
     /// - Parameters:
@@ -155,7 +154,7 @@ public protocol OCKStoreProtocol: class, Equatable {
     ///   - completion: A callback that will fire on a background thread.
     func fetchPatients(_ anchor: OCKPatientAnchor?, query: OCKPatientQuery?, queue: DispatchQueue,
                        completion: @escaping OCKResultClosure<[Patient]>)
-    
+
     /// `fetchCarePlans` asynchronously retrieves an array of care plans from the store.
     ///
     /// - Parameters:
@@ -163,8 +162,9 @@ public protocol OCKStoreProtocol: class, Equatable {
     ///   - query: A query used to constrain the values that will be fetched.
     ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on a background thread.
-    func fetchCarePlans(_ anchor: OCKCarePlanAnchor?, query: OCKCarePlanQuery?, queue: DispatchQueue, completion: @escaping OCKResultClosure<[Plan]>)
-    
+    func fetchCarePlans(_ anchor: OCKCarePlanAnchor?, query: OCKCarePlanQuery?, queue: DispatchQueue,
+                        completion: @escaping OCKResultClosure<[Plan]>)
+
     /// `fetchContacts` asynchronously retrieves an array of contacts from the store.
     ///
     /// - Parameters:
@@ -172,8 +172,9 @@ public protocol OCKStoreProtocol: class, Equatable {
     ///   - query: A query used to constrain the values that will be fetched.
     ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on a background thread.
-    func fetchContacts(_ anchor: OCKContactAnchor?, query: OCKContactQuery?, queue: DispatchQueue, completion: @escaping OCKResultClosure<[Contact]>)
-    
+    func fetchContacts(_ anchor: OCKContactAnchor?, query: OCKContactQuery?,
+                       queue: DispatchQueue, completion: @escaping OCKResultClosure<[Contact]>)
+
     /// `fetchTasks` asynchronously retrieves an array of tasks from the store.
     ///
     /// - Parameters:
@@ -182,7 +183,7 @@ public protocol OCKStoreProtocol: class, Equatable {
     ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on a background thread.
     func fetchTasks(_ anchor: OCKTaskAnchor?, query: OCKTaskQuery?, queue: DispatchQueue, completion: @escaping OCKResultClosure<[Task]>)
-    
+
     /// `fetchOutcomes` asynchronously retrieves an array of outcomes from the store.
     ///
     /// - Parameters:
@@ -192,9 +193,9 @@ public protocol OCKStoreProtocol: class, Equatable {
     ///   - completion: A callback that will fire on a background thread.
     func fetchOutcomes(_ anchor: OCKOutcomeAnchor?, query: OCKOutcomeQuery?, queue: DispatchQueue,
                        completion: @escaping OCKResultClosure<[Outcome]>)
-    
+
     // MARK: Adding
-    
+
     /// `addPatients` asynchronously adds an array of patients to the store.
     ///
     /// - Parameters:
@@ -202,7 +203,7 @@ public protocol OCKStoreProtocol: class, Equatable {
     ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on a background thread.
     func addPatients(_ patients: [Patient], queue: DispatchQueue, completion: OCKResultClosure<[Patient]>?)
-    
+
     /// `addCarePlans` asynchronously adds an array of care plans to the store.
     ///
     /// - Parameters:
@@ -210,7 +211,7 @@ public protocol OCKStoreProtocol: class, Equatable {
     ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on a background thread.
     func addCarePlans(_ plans: [Plan], queue: DispatchQueue, completion: OCKResultClosure<[Plan]>?)
-    
+
     /// `addContacts` asynchronously adds an array of contacts to the store.
     ///
     /// - Parameters:
@@ -218,7 +219,7 @@ public protocol OCKStoreProtocol: class, Equatable {
     ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on a background thread.
     func addContacts(_ contacts: [Contact], queue: DispatchQueue, completion: OCKResultClosure<[Contact]>?)
-    
+
     /// `addTasks` asynchronously adds an array of tasks to the store.
     ///
     /// - Parameters:
@@ -226,7 +227,7 @@ public protocol OCKStoreProtocol: class, Equatable {
     ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on a background thread.
     func addTasks(_ tasks: [Task], queue: DispatchQueue, completion: OCKResultClosure<[Task]>?)
-    
+
     /// `addOutcomes` asynchronously adds an array of outcomes to the store.
     ///
     /// - Parameters:
@@ -234,9 +235,9 @@ public protocol OCKStoreProtocol: class, Equatable {
     ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on a background thread.
     func addOutcomes(_ outcomes: [Outcome], queue: DispatchQueue, completion: OCKResultClosure<[Outcome]>?)
-    
+
     // MARK: Updating
-    
+
     /// `updatePatients` asynchronously updates an array of patients in the store.
     ///
     /// - Parameters:
@@ -244,7 +245,7 @@ public protocol OCKStoreProtocol: class, Equatable {
     ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on a background thread.
     func updatePatients(_ patients: [Patient], queue: DispatchQueue, completion: OCKResultClosure<[Patient]>?)
-    
+
     /// `updateCarePlans` asynchronously updates an array of care plans in the store.
     ///
     /// - Parameters:
@@ -252,7 +253,7 @@ public protocol OCKStoreProtocol: class, Equatable {
     ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on a background thread.
     func updateCarePlans(_ plans: [Plan], queue: DispatchQueue, completion: OCKResultClosure<[Plan]>?)
-    
+
     /// `updateContacts` asynchronously updates an array of contacts in the store.
     ///
     /// - Parameters:
@@ -260,7 +261,7 @@ public protocol OCKStoreProtocol: class, Equatable {
     ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on a background thread.
     func updateContacts(_ contacts: [Contact], queue: DispatchQueue, completion: OCKResultClosure<[Contact]>?)
-    
+
     /// `updateTasks` asynchronously updates an array of tasks in the store.
     ///
     /// - Parameters:
@@ -268,7 +269,7 @@ public protocol OCKStoreProtocol: class, Equatable {
     ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on a background thread.
     func updateTasks(_ tasks: [Task], queue: DispatchQueue, completion: OCKResultClosure<[Task]>?)
-    
+
     /// `updateOutcomes` asynchronously updates an array of outcomes in the store.
     ///
     /// - Parameters:
@@ -276,9 +277,9 @@ public protocol OCKStoreProtocol: class, Equatable {
     ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on a background thread.
     func updateOutcomes(_ outcomes: [Outcome], queue: DispatchQueue, completion: OCKResultClosure<[Outcome]>?)
-    
+
     // MARK: Deleting
-    
+
     /// `deletePatients` asynchronously deletes an array of patients from the store.
     ///
     /// - Parameters:
@@ -286,7 +287,7 @@ public protocol OCKStoreProtocol: class, Equatable {
     ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on a background thread.
     func deletePatients(_ patients: [Patient], queue: DispatchQueue, completion: OCKResultClosure<[Patient]>?)
-    
+
     /// `deleteCarePlans` asynchronously deletes an array of care plans from the store.
     ///
     /// - Parameters:
@@ -294,7 +295,7 @@ public protocol OCKStoreProtocol: class, Equatable {
     ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on a background thread.
     func deleteCarePlans(_ plans: [Plan], queue: DispatchQueue, completion: OCKResultClosure<[Plan]>?)
-    
+
     /// `deleteContacts` asynchronously deletes an array of contacts from the store.
     ///
     /// - Parameters:
@@ -302,7 +303,7 @@ public protocol OCKStoreProtocol: class, Equatable {
     ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on a background thread.
     func deleteContacts(_ contacts: [Contact], queue: DispatchQueue, completion: OCKResultClosure<[Contact]>?)
-    
+
     /// `deleteTasks` asynchronously deletes an array of tasks from the store.
     ///
     /// - Parameters:
@@ -310,7 +311,7 @@ public protocol OCKStoreProtocol: class, Equatable {
     ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on a background thread.
     func deleteTasks(_ tasks: [Task], queue: DispatchQueue, completion: OCKResultClosure<[Task]>?)
-    
+
     /// `deleteOutcomes` asynchronously deletes an array of outcomes from the store.
     ///
     /// - Parameters:
@@ -318,14 +319,14 @@ public protocol OCKStoreProtocol: class, Equatable {
     ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on a background thread.
     func deleteOutcomes(_ outcomes: [Outcome], queue: DispatchQueue, completion: OCKResultClosure<[Outcome]>?)
-    
+
     // MARK: Implementation Provided
     /// All methods below here are customization points. Naive implementations are provided in a protocol extension, so implementing these methods
     /// is not required to fulfill the `OCKStoreProtocol`, but developers may wish to provide a different implementation that takes advantage of
     /// their database's native features to optimize performance.
-    
+
     // MARK: Events
-    
+
     /// `fetchEvent` asynchronously retrieves a single event from the store.
     ///
     /// - Parameters:
@@ -335,7 +336,7 @@ public protocol OCKStoreProtocol: class, Equatable {
     ///   - completion: A callback that will fire on a background thread.
     func fetchEvent(withTaskVersionID taskVersionID: OCKLocalVersionID, occurenceIndex: Int,
                     queue: DispatchQueue, completion: @escaping OCKResultClosure<OCKEvent<Task, Outcome>>)
-    
+
     /// `fetchEvents` retrieves all the occurences of the speficied task in the interval specified by the provided query.
     ///
     /// - Parameters:
@@ -345,7 +346,7 @@ public protocol OCKStoreProtocol: class, Equatable {
     ///   - completion: A callback that will fire on a background thread.
     func fetchEvents(taskIdentifier: String, query: OCKEventQuery, queue: DispatchQueue,
                      completion: @escaping OCKResultClosure<[OCKEvent<Task, Outcome>]>)
-    
+
     /// `fetchAdherence` retrieves all the events and calculates the percent of tasks completed for every day between two dates.
     ///
     /// The way completion is computed depends on how many `expectedValues` a task has. If it has no expected values,
@@ -357,22 +358,21 @@ public protocol OCKStoreProtocol: class, Equatable {
     ///   - query: A query used to constrain the values that will be fetched.
     ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on a background thread. In the success case, it will contain an array with one value for each day.
-    func fetchAdherence(forTasks identifiers: [String]?, query: OCKAdherenceQuery,
+    func fetchAdherence(forTasks identifiers: [String]?, query: OCKAdherenceQuery<Event>,
                         queue: DispatchQueue, completion: @escaping OCKResultClosure<[OCKAdherence]>)
-    
+
     /// `fetchInsights` computes a metric for a given task between two dates using the provided closure.
     ///
     /// - Parameters:
     ///   - identifier: A user-defined unique identifier for the task.
     ///   - query: A query used to constrain the values that will be fetched.
-    ///   - computeValue: A closure used to compute the value for each event.
     ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on a background thread.
-    func fetchInsights(forTask identifier: String, query: OCKInsightQuery, queue: DispatchQueue,
-                       dailyAggregator: @escaping (_ outcomes: [OCKEvent<Task, Outcome>]) -> Double, completion: @escaping OCKResultClosure<[Double]>)
-    
+    func fetchInsights(forTask identifier: String, query: OCKInsightQuery<Event>,
+                       queue: DispatchQueue, completion: @escaping OCKResultClosure<[Double]>)
+
     // MARK: Singular Methods
-    
+
     /// `fetchPatient` asynchronously fetches a single patient from the store using its user-defined identifier. If a patient with the specified
     /// identifier does not exist, the completion handler will be called with an error.
     ///
@@ -380,8 +380,8 @@ public protocol OCKStoreProtocol: class, Equatable {
     ///   - identifier: A unique user-defined identifier
     ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on a background thread.
-    func fetchPatient(withIdentifier identifier: String, queue: DispatchQueue, completion: @escaping OCKResultClosure<Patient?>)
-    
+    func fetchPatient(withIdentifier identifier: String, queue: DispatchQueue, completion: @escaping OCKResultClosure<Patient>)
+
     /// `addPatient` asynchronously adds a patient to the store.
     ///
     /// - Parameters:
@@ -389,7 +389,7 @@ public protocol OCKStoreProtocol: class, Equatable {
     ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on a background thread.
     func addPatient(_ patient: Patient, queue: DispatchQueue, completion: OCKResultClosure<Patient>?)
-    
+
     /// `updatePatient` asynchronously updates a patient in the store.
     ///
     /// - Parameters:
@@ -397,7 +397,7 @@ public protocol OCKStoreProtocol: class, Equatable {
     ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on a background thread.
     func updatePatient(_ patient: Patient, queue: DispatchQueue, completion: OCKResultClosure<Patient>?)
-    
+
     /// `deletePatient` asynchronously deletes a patient from the store.
     ///
     /// - Parameters:
@@ -405,7 +405,7 @@ public protocol OCKStoreProtocol: class, Equatable {
     ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on a background thread.
     func deletePatient(_ patient: Patient, queue: DispatchQueue, completion: OCKResultClosure<Patient>?)
-    
+
     /// `fetchCarePlan` asynchronously retrieves a care plan from the store using its user-defined unique identifier. If a care plan with the
     /// specified identifier is not found, the completion handler will be called with an error.
     ///
@@ -413,8 +413,8 @@ public protocol OCKStoreProtocol: class, Equatable {
     ///   - identifier: A unique user-defined identifier
     ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on a background thread.
-    func fetchCarePlan(withIdentifier identifier: String, queue: DispatchQueue, completion: @escaping OCKResultClosure<Plan?>)
-    
+    func fetchCarePlan(withIdentifier identifier: String, queue: DispatchQueue, completion: @escaping OCKResultClosure<Plan>)
+
     /// `addCarePlan` asynchronously adds a care plans to the store.
     ///
     /// - Parameters:
@@ -422,7 +422,7 @@ public protocol OCKStoreProtocol: class, Equatable {
     ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on a background thread.
     func addCarePlan(_ plan: Plan, queue: DispatchQueue, completion: OCKResultClosure<Plan>?)
-    
+
     /// `updateCarePlan` asynchronously updates a care plan in the store.
     ///
     /// - Parameters:
@@ -430,7 +430,7 @@ public protocol OCKStoreProtocol: class, Equatable {
     ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on a background thread.
     func updateCarePlan(_ plan: Plan, queue: DispatchQueue, completion: OCKResultClosure<Plan>?)
-    
+
     /// `deleteCarePlan` asynchronously deletes a care plan from the store.
     ///
     /// - Parameters:
@@ -438,7 +438,7 @@ public protocol OCKStoreProtocol: class, Equatable {
     ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on a background thread.
     func deleteCarePlan(_ plan: Plan, queue: DispatchQueue, completion: OCKResultClosure<Plan>?)
-    
+
     /// `fetchContact` asynchronously retrieves a contact from the store using its user-defined unique identifier. If a contact with the
     /// specified identifier is not found, the completion handler will be called with an error.
     ///
@@ -446,8 +446,8 @@ public protocol OCKStoreProtocol: class, Equatable {
     ///   - identifier: A unique user-defined identifier.
     ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on a background thread.
-    func fetchContact(withIdentifier identifier: String, queue: DispatchQueue, completion: @escaping OCKResultClosure<Contact?>)
-    
+    func fetchContact(withIdentifier identifier: String, queue: DispatchQueue, completion: @escaping OCKResultClosure<Contact>)
+
     /// `addContact` asynchronously adds a contact to the store.
     ///
     /// - Parameters:
@@ -455,7 +455,7 @@ public protocol OCKStoreProtocol: class, Equatable {
     ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on a background thread.
     func addContact(_ contact: Contact, queue: DispatchQueue, completion: OCKResultClosure<Contact>?)
-    
+
     /// `updateContact` asynchronously updates a contacts in the store.
     ///
     /// - Parameters:
@@ -463,7 +463,7 @@ public protocol OCKStoreProtocol: class, Equatable {
     ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on a background thread.
     func updateContact(_ contact: Contact, queue: DispatchQueue, completion: OCKResultClosure<Contact>?)
-    
+
     /// `deleteContact` asynchronously deletes a contact from the store.
     ///
     /// - Parameters:
@@ -471,9 +471,9 @@ public protocol OCKStoreProtocol: class, Equatable {
     ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on a background thread.
     func deleteContact(_ contact: Contact, queue: DispatchQueue, completion: OCKResultClosure<Contact>?)
-    
+
     // MARK: Tasks
-    
+
     /// `fetchTask` asynchronously retrieves an array of tasks from the store using its user-defined unique identifier. If a task with the
     /// specified identifier is not found, the completion handler will be called with an error.
     ///
@@ -481,8 +481,8 @@ public protocol OCKStoreProtocol: class, Equatable {
     ///   - identifier: A unique user-defined identifier
     ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on a background thread.
-    func fetchTask(withIdentifier identifier: String, queue: DispatchQueue, completion: @escaping OCKResultClosure<Task?>)
-    
+    func fetchTask(withIdentifier identifier: String, queue: DispatchQueue, completion: @escaping OCKResultClosure<Task>)
+
     /// `fetchTask` asynchronously retrieves an array of tasks from the store using its versioned database identifier. If a task with the
     /// specified database identifier cannot be found, the completion handler will be called with an error.
     ///
@@ -490,8 +490,8 @@ public protocol OCKStoreProtocol: class, Equatable {
     ///   - identifier: A unique user-defined identifier
     ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on a background thread.
-    func fetchTask(withVersionID versionID: OCKLocalVersionID, queue: DispatchQueue, completion: @escaping OCKResultClosure<Task?>)
-    
+    func fetchTask(withVersionID versionID: OCKLocalVersionID, queue: DispatchQueue, completion: @escaping OCKResultClosure<Task>)
+
     /// `addTask` asynchronously adds a task to the store.
     ///
     /// - Parameters:
@@ -499,7 +499,7 @@ public protocol OCKStoreProtocol: class, Equatable {
     ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on a background thread.
     func addTask(_ task: Task, queue: DispatchQueue, completion: OCKResultClosure<Task>?)
-    
+
     /// `updateTask` asynchronously updates a task in the store.
     ///
     /// - Parameters:
@@ -507,7 +507,7 @@ public protocol OCKStoreProtocol: class, Equatable {
     ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on a background thread.
     func updateTask(_ task: Task, queue: DispatchQueue, completion: OCKResultClosure<Task>?)
-    
+
     /// `deleteTask` asynchronously deletes a task from the store.
     ///
     /// - Parameters:
@@ -515,9 +515,9 @@ public protocol OCKStoreProtocol: class, Equatable {
     ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on a background thread.
     func deleteTask(_ task: Task, queue: DispatchQueue, completion: OCKResultClosure<Task>?)
-    
+
     // MARK: Outcomes
-    
+
     /// `fetchOutcome` asynchronously retrieves a single outcome from the store. If more than one outcome matches the query, only the first
     /// will be returned. If no matching outcomes exist, the completion handler will be called with an error.
     ///
@@ -527,8 +527,8 @@ public protocol OCKStoreProtocol: class, Equatable {
     ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on a background thread.
     func fetchOutcome(_ anchor: OCKOutcomeAnchor?, query: OCKOutcomeQuery?, queue: DispatchQueue,
-                      completion: @escaping OCKResultClosure<Outcome?>)
-    
+                      completion: @escaping OCKResultClosure<Outcome>)
+
     /// `addOutcome` asynchronously adds an outcome to the store.
     ///
     /// - Parameters:
@@ -536,7 +536,7 @@ public protocol OCKStoreProtocol: class, Equatable {
     ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on a background thread.
     func addOutcome(_ outcome: Outcome, queue: DispatchQueue, completion: OCKResultClosure<Outcome>?)
-    
+
     /// `updateOutcome` asynchronously updates an outcome in the store.
     ///
     /// - Parameters:
@@ -544,7 +544,7 @@ public protocol OCKStoreProtocol: class, Equatable {
     ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on a background thread.
     func updateOutcome(_ outcome: Outcome, queue: DispatchQueue, completion: OCKResultClosure<Outcome>?)
-    
+
     /// `deleteOutcome` asynchronously deletes an outcome from the store.
     ///
     /// - Parameters:
@@ -553,3 +553,4 @@ public protocol OCKStoreProtocol: class, Equatable {
     ///   - completion: A callback that will fire on a background thread.
     func deleteOutcome(_ outcome: Outcome, queue: DispatchQueue, completion: OCKResultClosure<Outcome>?)
 }
+

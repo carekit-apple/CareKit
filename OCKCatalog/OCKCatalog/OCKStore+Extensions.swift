@@ -28,11 +28,10 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Foundation
 import CareKit
+import Foundation
 
 extension OCKSchedule {
-    
     /// Create a schedule that happens at meal times every day of the week.
     static func mealTimesEachDay(start: Date, end: Date?) -> OCKSchedule {
         let startDate = Calendar.current.startOfDay(for: start)
@@ -44,11 +43,10 @@ extension OCKSchedule {
 }
 
 extension OCKStore {
-    
     func fillWithDummyData(completion: @escaping () -> Void) {
         let dispatchGroup = DispatchGroup()
         let startDate = Calendar.current.startOfDay(for: Date())
-        
+
         dispatchGroup.enter()
         addTasks(makeTasks(on: startDate)) { result in
             switch result {
@@ -57,7 +55,7 @@ extension OCKStore {
             }
             dispatchGroup.leave()
         }
-        
+
         dispatchGroup.enter()
         addContacts(makeContacts()) { result in
             switch result {
@@ -66,22 +64,22 @@ extension OCKStore {
             }
             dispatchGroup.leave()
         }
-        
+
         dispatchGroup.notify(queue: .main) {
             completion()
         }
     }
-    
+
     private func makeTasks(on start: Date) -> [OCKTask] {
         var task1 = OCKTask(identifier: "nausea", title: "Nausea", carePlanID: nil,
                             schedule: .dailyAtTime(hour: 7, minutes: 0, start: start, end: nil, text: nil))
         task1.instructions = "Log any time you experience nausea."
         task1.impactsAdherence = false
-        
+
         var task2 = OCKTask(identifier: "doxylamine", title: "Doxylamine", carePlanID: nil,
                             schedule: .mealTimesEachDay(start: Calendar.current.startOfDay(for: Date()), end: nil))
         task2.instructions = "Take the tablet with a full glass of water."
-        
+
         return [task1, task2]
     }
 
@@ -99,7 +97,7 @@ extension OCKStore {
         address1.state = "MI"
         address1.postalCode = "48848"
         contact1.address = address1
-        
+
         var contact2 = OCKContact(identifier: "matthew-reiff", givenName: "Matthew", familyName: "Reiff", carePlanID: nil)
         contact2.role = "Dr. Reiff is a family practice doctor with over 20 years of experience."
         contact2.title = "Family Practice"
@@ -113,7 +111,7 @@ extension OCKStore {
         address2.state = "CA"
         address2.postalCode = "92007"
         contact2.address = address2
-        
+
         return [contact1, contact2]
     }
 }

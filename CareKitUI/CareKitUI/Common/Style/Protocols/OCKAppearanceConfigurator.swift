@@ -38,7 +38,7 @@ public protocol OCKAppearanceConfigurator {
 
     var cornerRadius1: CGFloat { get }
     var cornerRadius2: CGFloat { get }
-    
+
     var borderWidth1: CGFloat { get }
     var borderWidth2: CGFloat { get }
     var opacity1: CGFloat { get }
@@ -49,10 +49,10 @@ public extension OCKAppearanceConfigurator {
     var shadowRadius1: CGFloat { return 8 }
     var shadowOffset1: CGSize { return CGSize(width: 0, height: 2) }
     var opacity1: CGFloat { return 0.45 }
-    
+
     var cornerRadius1: CGFloat { return 15 }
     var cornerRadius2: CGFloat { return 10 }
-    
+
     var borderWidth1: CGFloat { return 2 }
     var borderWidth2: CGFloat { return 1 }
 }

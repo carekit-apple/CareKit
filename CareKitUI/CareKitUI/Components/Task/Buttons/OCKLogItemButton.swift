@@ -31,16 +31,15 @@
 import UIKit
 
 internal class OCKLogItemButton: OCKButton {
-    
     private enum Constants {
         static let bundle = Bundle(for: OCKChecklistItemButton.self)
         static let spacing: CGFloat = 2
     }
-    
+
     override var imageButton: OCKButton? { return _imageButton }
     override var detailButton: OCKButton? { _detailButton }
     override var titleButton: OCKButton? { _titleButton }
-    
+
     private let _imageButton: OCKButton = {
         let button = OCKButton()
 
@@ -50,49 +49,44 @@ internal class OCKLogItemButton: OCKButton {
         button.isUserInteractionEnabled = false
         return button
     }()
-    
+
     private let _titleButton: OCKButton = {
         let button = OCKButton(titleTextStyle: .caption1, titleWeight: .regular)
         button.setTitleColor(.black, for: .normal)
         button.isUserInteractionEnabled = false
         return button
     }()
-    
+
     private let _detailButton: OCKButton = {
         let button = OCKButton(titleTextStyle: .caption1, titleWeight: .regular)
         button.tintedTraits = [TintedTrait(trait: .titleColor, state: .normal)]
         button.isUserInteractionEnabled = false
         return button
     }()
-    
+
     // MARK: Life cycle
-    
-    internal override init() {
+
+    override internal init() {
         super.init()
         setup()
     }
-    
-    required internal init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        setup()
-    }
-    
+
     // MARK: Methods
-    
+
     private func setup() {
         styleSubviews()
         addSubviews()
         constrainSubviews()
     }
-    
+
     private func styleSubviews() {
         preservesSuperviewLayoutMargins = true
     }
-    
+
     private func addSubviews() {
         [_imageButton, _titleButton, _detailButton].forEach { addSubview($0) }
     }
-    
+
     private func constrainSubviews() {
         [_imageButton, _titleButton, _detailButton].forEach { $0?.translatesAutoresizingMaskIntoConstraints = false }
         NSLayoutConstraint.activate([
@@ -102,12 +96,12 @@ internal class OCKLogItemButton: OCKButton {
             _imageButton.centerYAnchor.constraint(equalTo: centerYAnchor),
             _imageButton.heightAnchor.constraint(equalToConstant: OCKStyle.dimension.iconHeight4),
             _imageButton.widthAnchor.constraint(equalTo: _imageButton.heightAnchor),
-            
+
             _detailButton.topAnchor.constraint(greaterThanOrEqualTo: topAnchor),
             _detailButton.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor),
             _detailButton.leadingAnchor.constraint(equalTo: _imageButton.trailingAnchor, constant: Constants.spacing),
             _detailButton.centerYAnchor.constraint(equalTo: centerYAnchor),
-            
+
             _titleButton.leadingAnchor.constraint(equalTo: _detailButton.trailingAnchor, constant: directionalLayoutMargins.leading),
             _titleButton.topAnchor.constraint(greaterThanOrEqualTo: topAnchor),
             _titleButton.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor),
@@ -115,7 +109,7 @@ internal class OCKLogItemButton: OCKButton {
             _titleButton.centerYAnchor.constraint(equalTo: centerYAnchor)
         ])
     }
-    
+
     override func setDetailColor(_ color: UIColor?, for state: UIControl.State) {
         super.setDetailColor(color, for: state)
         // match the detail image tint with the detail color

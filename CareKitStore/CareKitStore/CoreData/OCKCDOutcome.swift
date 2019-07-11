@@ -28,8 +28,8 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Foundation
 import CoreData
+import Foundation
 
 @objc(OCKCDOutcome)
 class OCKCDOutcome: OCKCDObject, OCKCDManageable {
@@ -37,24 +37,24 @@ class OCKCDOutcome: OCKCDObject, OCKCDManageable {
     @NSManaged var task: OCKCDTask?
     @NSManaged var values: Set<OCKCDOutcomeValue>
     @NSManaged var date: Date?
-    
+
     static var defaultSortDescriptors: [NSSortDescriptor] {
         return [NSSortDescriptor(keyPath: \OCKCDOutcome.createdAt, ascending: false)]
     }
-    
+
     internal var allowsMissingRelationships = false
-    
+
     func validateRelationships() throws {
         if !allowsMissingRelationships && task == nil {
             throw OCKStoreError.invalidValue(reason: "An OCKCDOutcome's task relationship may not be nil")
         }
     }
-    
+
     override func validateForInsert() throws {
         try super.validateForInsert()
         try validateRelationships()
     }
-    
+
     override func validateForUpdate() throws {
         try super.validateForUpdate()
         try validateRelationships()
@@ -62,7 +62,6 @@ class OCKCDOutcome: OCKCDObject, OCKCDManageable {
 }
 
 extension OCKCDOutcome {
-    
     override func awakeFromInsert() {
         super.awakeFromInsert()
         values = Set()

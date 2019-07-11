@@ -31,24 +31,23 @@
 import UIKit
 
 internal class OCKCollapserButton: OCKButton {
-    
     // MARK: Properties
-    
+
     internal enum Direction {
         case up, down
     }
-    
+
     private enum Const {
         static let bundle = Bundle(for: OCKCollapserButton.self)
     }
-    
+
     private var direction: Direction = .up
     private let seperatorView = OCKSeparatorView()
-    
+
     override var imageButton: OCKButton? {
         return _imageButton
     }
-    
+
     private let _imageButton: OCKButton = {
         let imageButton = OCKButton()
         imageButton.isUserInteractionEnabled = false
@@ -57,68 +56,63 @@ internal class OCKCollapserButton: OCKButton {
         imageButton.imageView?.tintColor = .gray
         return imageButton
     }()
-    
+
     // MARK: Life cycle
-    
+
     override internal init() {
         super.init()
         setup()
     }
-    
-    required internal init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        setup()
-    }
-    
+
     // MARK: Methods
-    
+
     private func setup() {
         styleSubviews()
         addSubviews()
         constrainSubviews()
         setDirection(.up, animated: false)
     }
-    
+
     private func styleSubviews() {
         preservesSuperviewLayoutMargins = true
     }
-    
+
     private func addSubviews() {
         [_imageButton, seperatorView].forEach { addSubview($0) }
     }
-    
+
     private func constrainSubviews() {
         [self, _imageButton, seperatorView].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
         NSLayoutConstraint.activate([
             heightAnchor.constraint(equalToConstant: OCKStyle.dimension.buttonHeight2),
-            
+
             _imageButton.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.25),
             _imageButton.centerYAnchor.constraint(equalTo: centerYAnchor),
             _imageButton.centerXAnchor.constraint(equalTo: centerXAnchor),
-            
+
             seperatorView.topAnchor.constraint(equalTo: topAnchor),
             seperatorView.leadingAnchor.constraint(equalTo: leadingAnchor),
             seperatorView.trailingAnchor.constraint(equalTo: trailingAnchor)
         ])
     }
-    
+
     internal func setDirection(_ direction: Direction, animated: Bool) {
         guard self.direction != direction else { return }
         self.direction = direction
-        
+
         let rotationBlock = { [weak self] in
             let angle = direction == .up ? 0 : CGFloat.pi
             self?._imageButton.transform = CGAffineTransform(rotationAngle: angle)
         }
-        
+
         guard animated else {
             rotationBlock()
             return
         }
-        
+
         UIView.animate(withDuration: OCKStyle.animation.stateChangeDuration, animations: rotationBlock)
     }
-    
+
     internal func setDirectionFromState(_ state: OCKCollapsibleState, animated: Bool) {
         guard state != .expanded else { return }
         let direction: Direction = state == .complete ? .down : .up

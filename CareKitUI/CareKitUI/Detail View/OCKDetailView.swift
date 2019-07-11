@@ -33,9 +33,8 @@ import UIKit
 /// A view with intended to display fine grained details. The view contains a configurable image, title, and instrucitons. To add
 /// custom views, insert into the `contentStackView`.
 open class OCKDetailView: UIView {
-    
     // MARK: Properties
-    
+
     /// Configurable image that spans the width of the view.
     public let imageView: UIImageView = {
         let imageView = UIImageView()
@@ -43,21 +42,21 @@ open class OCKDetailView: UIView {
         imageView.backgroundColor = OCKStyle.color.gray1
         return imageView
     }()
-    
+
     /// Primary multi-line label.
     public let titleLabel: OCKLabel = {
         let titleLabel = OCKLabel(textStyle: .title2, weight: .semibold)
         titleLabel.numberOfLines = 0
         return titleLabel
     }()
-    
+
     /// secondary multi-line label
     public let instructionsLabel: OCKLabel = {
         let label = OCKLabel(textStyle: .subheadline, weight: .medium)
         label.numberOfLines = 0
         return label
     }()
-    
+
     /// The vertical stack view thta holds the main contentt for the view.
     public let contentStackView: OCKStackView = {
         let stackView = OCKStackView()
@@ -65,38 +64,38 @@ open class OCKDetailView: UIView {
         stackView.distribution = .fillProportionally
         return stackView
     }()
-    
+
     // MARK: Life cycle
-    
+
     public init() {
         super.init(frame: .zero)
         setup()
     }
-    
+
     public required init?(coder: NSCoder) {
         super.init(coder: coder)
         setup()
     }
-    
+
     // MARK: Methods
-    
+
     private func setup() {
         styleSubviews()
         addSubviews()
         constrainSubviews()
     }
-    
+
     private func styleSubviews() {
         preservesSuperviewLayoutMargins = true
         backgroundColor = .white
         contentStackView.spacing = directionalLayoutMargins.bottom
     }
-    
+
     private func addSubviews() {
         [imageView, contentStackView].forEach { addSubview($0) }
         [titleLabel, instructionsLabel].forEach { contentStackView.addArrangedSubview($0) }
     }
-    
+
     private func constrainSubviews() {
         [imageView, contentStackView].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
         NSLayoutConstraint.activate([

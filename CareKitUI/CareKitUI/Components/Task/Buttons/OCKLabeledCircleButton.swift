@@ -31,46 +31,40 @@
 import UIKit
 
 internal class OCKLabeledCircleButton: OCKButton {
-    
     // MARK: Properties
-    
+
     override var titleButton: OCKButton? { return _titleButton }
     override var imageButton: OCKButton? { return _imageButton }
-    
+
     private let _titleButton: OCKButton = {
         let button = OCKButton(titleTextStyle: .caption1, titleWeight: .medium)
         button.isUserInteractionEnabled = false
         button.setTitleColor(.lightGray, for: .selected)
         return button
     }()
-    
+
     private let _imageButton: OCKButton = {
         let button = OCKCircleButton()
         button.layer.borderWidth = OCKStyle.appearance.borderWidth2
         button.isUserInteractionEnabled = false
         return button
     }()
-    
+
     // MARK: Life cycle
-    
+
     override init() {
         super.init()
         setup()
     }
-    
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        setup()
-    }
-    
+
     // MARK: Methods
-    
+
     private func setup() {
         addSubviews()
         styleSubviews()
         constrainSubviews()
     }
-    
+
     private func constrainSubviews() {
         [_titleButton, _imageButton].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
         NSLayoutConstraint.activate([
@@ -78,18 +72,18 @@ internal class OCKLabeledCircleButton: OCKButton {
             _imageButton.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.7),
             _imageButton.heightAnchor.constraint(equalTo: _imageButton.widthAnchor),
             _imageButton.centerXAnchor.constraint(equalTo: centerXAnchor),
-            
+
             _titleButton.topAnchor.constraint(equalTo: _imageButton.bottomAnchor),
             _titleButton.leadingAnchor.constraint(equalTo: leadingAnchor),
             _titleButton.trailingAnchor.constraint(equalTo: trailingAnchor),
             bottomAnchor.constraint(equalTo: _titleButton.bottomAnchor)
         ])
     }
-    
+
     private func addSubviews() {
         [_imageButton, _titleButton].forEach { addSubview($0) }
     }
-    
+
     private func styleSubviews() {
         preservesSuperviewLayoutMargins = true
     }

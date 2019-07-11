@@ -32,41 +32,40 @@ import UIKit
 
 /// A view enclosing a scrollable stack view.
 internal class OCKListView: UIView {
-    
     // MARK: Properties
-    
+
     /// The stack view embedded inside the scroll view.
-    public let stackView: OCKStackView = {
+    let stackView: OCKStackView = {
         let stackView = OCKStackView()
         stackView.axis = .vertical
         return stackView
     }()
-    
+
     /// The scroll view that contains the stack view.
-    public let scrollView = UIScrollView()
-    
+    let scrollView = UIScrollView()
+
     private let contentView = UIView()
-    
+
     // MARK: Life cycle
-    
-    public init() {
+
+    init() {
         super.init(frame: .zero)
         setup()
     }
-    
-    required public init?(coder: NSCoder) {
+
+    required init?(coder: NSCoder) {
         super.init(coder: coder)
         setup()
     }
-    
+
     // MARK: Methods
-    
+
     private func setup() {
         addSubviews()
         styleSubviews()
         constrainSubviews()
     }
-    
+
     private func styleSubviews() {
         preservesSuperviewLayoutMargins = true
         contentView.backgroundColor = OCKStyle.color.gray1
@@ -74,33 +73,32 @@ internal class OCKListView: UIView {
         stackView.spacing = directionalLayoutMargins.top * 3
         scrollView.alwaysBounceVertical = true
     }
-    
+
     private func addSubviews() {
         addSubview(scrollView)
         scrollView.addSubview(contentView)
         contentView.addSubview(stackView)
     }
-    
+
     private func constrainSubviews() {
         [scrollView, contentView, stackView].forEach { $0?.translatesAutoresizingMaskIntoConstraints = false }
-        
+
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: topAnchor),
             scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: trailingAnchor),
             scrollView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            
+
             contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
             contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
             contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             contentView.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor),
-            
+
             stackView.topAnchor.constraint(equalTo: contentView.topAnchor),
             stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: directionalLayoutMargins.leading * 2),
             stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -directionalLayoutMargins.trailing * 2),
             stackView.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor)
-            ])
+        ])
     }
-    
 }

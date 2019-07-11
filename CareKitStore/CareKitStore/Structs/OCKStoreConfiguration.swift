@@ -30,11 +30,10 @@
 
 /// Specifies options that can be applied to an `OCKStore`.
 public struct OCKStoreConfiguration: Equatable {
-    
     /// If true, all updates applied to versioned values will result in new versions of those values being created instead of updating them in place.
     /// If false, the values will be updated in place without creating a new version.
     public var updatesCreateNewVersions = true
-    
+
     /// Initialize a new `OCKStoreConfiguration` with default parameters.
     public init() {}
 }

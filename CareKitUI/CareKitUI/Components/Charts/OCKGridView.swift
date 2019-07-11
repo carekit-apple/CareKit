@@ -31,34 +31,35 @@
 import UIKit
 
 internal class OCKGridView: UIView, OCKCartesianGridProtocol {
- 
     override class var layerClass: AnyClass {
         return OCKGridLayer.self
     }
-    
+
     private var gridLayer: OCKGridLayer {
+        
         return layer as! OCKGridLayer
+        
     }
-    
+
     var numberOfDivisions: Int {
         return gridLayer.numberOfVerticalDivisions
     }
-    
+
     var xMinimum: CGFloat? {
         get { return gridLayer.xMinimum }
         set { gridLayer.xMinimum = newValue }
     }
-    
+
     var xMaximum: CGFloat? {
         get { return gridLayer.xMaximum }
         set { gridLayer.xMaximum = newValue }
     }
-    
+
     var yMinimum: CGFloat? {
         get { return gridLayer.yMinimum }
         set { gridLayer.yMinimum = newValue }
     }
-    
+
     var yMaximum: CGFloat? {
         get { return gridLayer.yMaximum }
         set { gridLayer.yMaximum = newValue }

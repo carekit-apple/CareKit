@@ -28,5 +28,5 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-@_exported import CareKitUI
 @_exported import CareKitStore
+@_exported import CareKitUI

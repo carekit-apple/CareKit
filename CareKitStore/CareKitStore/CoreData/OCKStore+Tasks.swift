@@ -31,18 +31,22 @@
 import Foundation
 
 extension OCKStore {
-    
     public func fetchTasks(_ anchor: OCKTaskAnchor? = nil, query: OCKTaskQuery? = nil, queue: DispatchQueue = .main,
                            completion: @escaping (Result<[OCKTask], OCKStoreError>) -> Void) {
         context.perform {
             do {
-                let predicate = try self.buildPredicate(for: anchor)
+                let predicate = try self.buildPredicate(for: anchor, and: query)
                 let tasks = OCKCDTask
-                    .fetchFromStore(in: self.context, where: predicate)
+                    .fetchFromStore(in: self.context, where: predicate) { fetchRequest in
+                        fetchRequest.fetchLimit = query?.limit ?? 0
+                        fetchRequest.fetchOffset = query?.offset ?? 0
+                        fetchRequest.sortDescriptors = self.buildSortDescriptors(for: query)
+                    }
                     .map(self.makeTask)
                     .filtered(against: query)
+
                 queue.async {
-                    completion(.success(tasks))
+                    completion(.success(Array(tasks)))
                 }
             } catch {
                 self.context.rollback()
@@ -53,7 +57,7 @@ extension OCKStore {
             }
         }
     }
-    
+
     public func addTasks(_ tasks: [OCKTask], queue: DispatchQueue = .main,
                          completion: ((Result<[OCKTask], OCKStoreError>) -> Void)? = nil) {
         context.perform {
@@ -74,14 +78,14 @@ extension OCKStore {
             }
         }
     }
-    
+
     public func updateTasks(_ tasks: [OCKTask], queue: DispatchQueue = .main,
                             completion: ((Result<[OCKTask], OCKStoreError>) -> Void)? = nil) {
         context.perform {
             do {
                 let identifiers = tasks.map { $0.identifier }
                 try OCKCDTask.validateUpdateIdentifiers(identifiers, in: self.context)
-                
+
                 let updatedTasks = self.configuration.updatesCreateNewVersions ?
                     try self.performVersionedUpdate(values: tasks, addNewVersion: self.addTask) :
                     try self.performUnversionedUpdate(values: tasks, update: self.copyTask)
@@ -100,14 +104,14 @@ extension OCKStore {
             }
         }
     }
-    
+
     public func deleteTasks(_ tasks: [OCKTask], queue: DispatchQueue = .main,
                             completion: ((Result<[OCKTask], OCKStoreError>) -> Void)? = nil) {
         context.perform {
             do {
                 let identifiers = tasks.map { $0.identifier }
                 try OCKCDTask.validateUpdateIdentifiers(identifiers, in: self.context)
-                let deletedTasks = try self.performUnversionedUpdate(values: tasks) { (_, persistableTask) in
+                let deletedTasks = try self.performUnversionedUpdate(values: tasks) { _, persistableTask in
                     persistableTask.deletedAt = Date()
                 }.map(self.makeTask)
                 try self.context.save()
@@ -123,9 +127,9 @@ extension OCKStore {
             }
         }
     }
-    
+
     // MARK: Private
-    
+
     /// - Remark: This does not commit the transaction. After calling this function one or more times, you must call `context.save()` in order to
     /// persist the changes to disk. This is an optimization to allow batching.
     /// - Remark: You should verify that the object does not already exist in the database and validate its values before calling this method.
@@ -134,7 +138,7 @@ extension OCKStore {
         copyTask(task, to: persistableTask)
         return persistableTask
     }
-    
+
     private func copyTask(_ task: OCKTask, to persistableTask: OCKCDTask) {
         persistableTask.copyVersionInfo(from: task)
         persistableTask.allowsMissingRelationships = allowsEntitiesWithMissingRelationships
@@ -144,21 +148,22 @@ extension OCKStore {
         persistableTask.scheduleElements = Set(makeScheduleElements(from: task.schedule))
         if let planId = task.carePlanID { persistableTask.carePlan = try? fetchObject(havingLocalID: planId) }
     }
-    
+
     private func makeScheduleElements(from schedule: OCKSchedule) -> [OCKCDScheduleElement] {
         return schedule.elements.map { element -> OCKCDScheduleElement in
-            let schedule = OCKCDScheduleElement(context: context)
-            schedule.interval = element.interval
-            schedule.startDate = element.start
-            schedule.endDate = element.end
-            schedule.interval = element.interval
-            schedule.text = element.text
-            schedule.targetValues = Set(element.targetValues.map(addValue))
-            schedule.copyValues(from: element)
-            return schedule
+            let scheduleElement = OCKCDScheduleElement(context: context)
+            scheduleElement.interval = element.interval
+            scheduleElement.startDate = element.start
+            scheduleElement.endDate = element.end
+            scheduleElement.interval = element.interval
+            scheduleElement.text = element.text
+            scheduleElement.isAllDay = element.isAllDay
+            scheduleElement.targetValues = Set(element.targetValues.map(addValue))
+            scheduleElement.copyValues(from: element)
+            return scheduleElement
         }
     }
-    
+
     /// - Remark: This method is intended to create a value type struct from a *persisted* NSManagedObject. Calling this method with an
     /// object that is not yet commited is a programmer error.
     private func makeTask(from object: OCKCDTask) -> OCKTask {
@@ -171,16 +176,45 @@ extension OCKStore {
         task.impactsAdherence = object.impactsAdherence
         return task
     }
-    
-    private func buildPredicate(for anchor: OCKTaskAnchor?) throws -> NSPredicate {
-        guard let anchor = anchor else { return OCKCDTask.headerPredicate() }
+
+    private func buildPredicate(for anchor: OCKTaskAnchor?, and query: OCKTaskQuery?) throws -> NSPredicate {
+        return NSCompoundPredicate(andPredicateWithSubpredicates: [
+            try buildSubPredicate(for: anchor),
+            buildSubPredicate(for: query),
+            NSPredicate(format: "%K == nil", #keyPath(OCKCDVersionedObject.deletedAt))
+        ])
+    }
+
+    private func buildSubPredicate(for anchor: OCKTaskAnchor?) throws -> NSPredicate {
+        guard let anchor = anchor else { return NSPredicate(value: true) }
         switch anchor {
         case .taskIdentifiers(let taskIdentifiers):
-            return OCKCDTask.headerPredicate(for: taskIdentifiers)
+            return NSPredicate(format: "%K IN %@", #keyPath(OCKCDVersionedObject.identifier), taskIdentifiers)
         case .taskVersions(let versionIDs):
             return NSPredicate(format: "self IN %@", try versionIDs.map(objectID))
         default:
-            fatalError("Not implemented yet")
+            fatalError("Not implemented yet.")
+        }
+    }
+
+    private func buildSubPredicate(for query: OCKTaskQuery?) -> NSPredicate {
+        var predicate = NSPredicate(value: true)
+        if let interval = query?.dateInterval {
+            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [
+                predicate, OCKCDVersionedObject.newestVersionPredicate(in: interval)
+            ])
+        }
+        return predicate
+    }
+
+    private func buildSortDescriptors(for query: OCKTaskQuery?) -> [NSSortDescriptor] {
+        guard let orders = query?.sortDescriptors else { return [] }
+        return orders.map { order -> NSSortDescriptor in
+            switch order {
+            case .effectiveAt(ascending: let ascending): return NSSortDescriptor(keyPath: \OCKCDTask.effectiveAt, ascending: ascending)
+            case .title(let ascending): return NSSortDescriptor(keyPath: \OCKCDTask.title, ascending: ascending)
+            case .groupIdentifier(let ascending): return NSSortDescriptor(keyPath: \OCKCDTask.groupIdentifier, ascending: ascending)
+            }
         }
     }
 }

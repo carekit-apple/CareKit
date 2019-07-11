@@ -32,26 +32,25 @@ import Foundation
 
 /// `OCKStoreError`s will be emitted from `OCKStoreProtocol` conformers if there is problem during a transaction.
 public enum OCKStoreError: LocalizedError {
-    
     /// Occurs when a fetch fails.
     case fetchFailed(reason: String)
-    
+
     /// Occurs when adding an entity fails.
     case addFailed(reason: String)
-    
+
     /// Occurs when an update to an existing entity fails.
     case updateFailed(reason: String)
-    
+
     /// Occurs when deleting an existing entity fails.
     case deleteFailed(reason: String)
-    
+
     /// Occurs when an invalid value is provided.
     case invalidValue(reason: String)
-    
+
     /// Occurs when an asynchronous action takes too long.
     /// - Note: This is intended for use by remote databases.
     case timedOut(reason: String)
-    
+
     var localizedDescription: String {
         switch self {
         case .fetchFailed(let reason): return "Failed to fetch: \(reason)"

@@ -58,11 +58,10 @@ import UIKit
 ///     +-------------------------------------------------------+
 ///
 open class OCKSimpleContactView: UIView, OCKCardable {
-    
     private enum Constants {
         static let bundle = Bundle(for: OCKSimpleContactView.self)
     }
-    
+
     /// A certical stack view that holds the main content in the view.
     public let contentStackView: OCKStackView = {
         let stackView = OCKStackView()
@@ -70,13 +69,13 @@ open class OCKSimpleContactView: UIView, OCKCardable {
         stackView.distribution = .fill
         return stackView
     }()
-    
+
     /// Header stack view that shows an `iconImageView` and a separator.
     public let headerView = OCKHeaderView {
         $0.showsIconImage = true
         $0.showsSeparator = true
     }
-    
+
     /// Stack view that holds phone, message, and email contact action buttons.
     private let contactStackView: OCKStackView = {
         let stackView = OCKStackView(style: .plain)
@@ -84,7 +83,7 @@ open class OCKSimpleContactView: UIView, OCKCardable {
         stackView.distribution = .fillEqually
         return stackView
     }()
-    
+
     /// Stack view that holds buttons in `contactStack` and `directionsButton`.
     /// You may choose to add or hide buttons
     private let buttonStackView: OCKStackView = {
@@ -93,30 +92,30 @@ open class OCKSimpleContactView: UIView, OCKCardable {
         stackView.distribution = .equalSpacing
         return stackView
     }()
-    
+
     /// Multi-line label under the `headerView`.
     public let instructionsLabel: OCKLabel = {
         let label = OCKLabel(textStyle: .subheadline, weight: .medium)
         label.numberOfLines = 0
         return label
     }()
-    
+
     /// Button with a phone image and `titleLabel`.
     /// Set the `isHidden` property to `false` to hide the button.
     public let callButton: OCKButton = OCKContactButton(type: .call)
-    
+
     /// Button with a messages images and `titleLabel`.
     /// Set the `isHidden` property to `false` to hide the button.
     public let messageButton: OCKButton = OCKContactButton(type: .message)
-    
+
     /// Button with an email image and `titleLabel`.
     /// Set the `isHidden` property to `false` to hide the button.
     public let emailButton: OCKButton = OCKContactButton(type: .email)
-    
+
     /// Button with a location image, `titleLabel`, and `detailLabel`.
     /// Set the `isHidden` property to `false` to hide the button.
     public let addressButton: OCKButton = OCKAddressButton()
-    
+
     /// The default image that can be used as a placeholder for the `iconImageView` in the `headerView`.
     public static let defaultImage = UIImage(systemName: "person.crop.circle")!
 
@@ -124,26 +123,26 @@ open class OCKSimpleContactView: UIView, OCKCardable {
         super.init(frame: .zero)
         setup()
     }
-    
-    required public init?(coder aDecoder: NSCoder) {
+
+    public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         setup()
     }
-    
+
     /// Prepares interface after initialization
     private func setup() {
         addSubviews()
         constrainSubviews()
         styleSubviews()
     }
-    
+
     private func addSubviews() {
         addSubview(contentStackView)
         [headerView, instructionsLabel, buttonStackView].forEach { contentStackView.addArrangedSubview($0) }
         [callButton, messageButton, emailButton].forEach { contactStackView.addArrangedSubview($0) }
         [contactStackView, addressButton].forEach { buttonStackView.addArrangedSubview($0) }
     }
-    
+
     private func constrainSubviews() {
         contentStackView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -153,14 +152,14 @@ open class OCKSimpleContactView: UIView, OCKCardable {
             contentStackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -directionalLayoutMargins.bottom * 2)
         ])
     }
-    
+
     private func styleSubviews() {
         preservesSuperviewLayoutMargins = true
         enableCardStyling(true)
-        
+
         contentStackView.spacing = directionalLayoutMargins.top * 2
         [contactStackView, buttonStackView].forEach { $0.spacing = directionalLayoutMargins.top }
-  
+
         // set default profile picture with tint
         headerView.iconImageView?.tintColor = OCKStyle.color.gray1
         headerView.iconImageView?.image = OCKSimpleContactView.defaultImage

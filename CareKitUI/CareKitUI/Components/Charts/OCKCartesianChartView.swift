@@ -32,22 +32,21 @@ import Foundation
 import UIKit
 
 open class OCKCartesianChartView: UIView, OCKCardable {
-    
     /// Vertical stack view that
     public let contentStackView: OCKStackView = {
         let stackView = OCKStackView()
         stackView.axis = .vertical
         return stackView
     }()
-    
+
     /// A default `OCKHeaderView`.
     public let headerView = OCKHeaderView()
-    
+
     /// The main content of the view.
     public let graphView: OCKCartesianGraphView
-    
+
     private let headerContainerView = UIView()
-    
+
     /// Create a chart with a specified type. Available charts include bar, plot, and scatter.
     ///
     /// - Parameter type: The type of the chart.
@@ -56,29 +55,30 @@ open class OCKCartesianChartView: UIView, OCKCardable {
         super.init(frame: .zero)
         setup()
     }
-    
-    required public init?(coder: NSCoder) {
+
+    @available(*, unavailable)
+    public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     private func setup() {
         addSubviews()
         styleSubviews()
         constrainSubviews()
     }
-    
+
     private func addSubviews() {
         addSubview(contentStackView)
         headerContainerView.addSubview(headerView)
         [headerContainerView, graphView].forEach { contentStackView.addArrangedSubview($0) }
     }
-    
+
     private func styleSubviews() {
         preservesSuperviewLayoutMargins = true
         enableCardStyling(true)
         contentStackView.spacing = directionalLayoutMargins.bottom * 2
     }
-    
+
     private func constrainSubviews() {
         [contentStackView, headerView].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
         NSLayoutConstraint.activate([
@@ -86,7 +86,7 @@ open class OCKCartesianChartView: UIView, OCKCardable {
             headerView.trailingAnchor.constraint(equalTo: headerContainerView.trailingAnchor, constant: -directionalLayoutMargins.trailing * 2),
             headerView.topAnchor.constraint(equalTo: headerContainerView.topAnchor),
             headerView.bottomAnchor.constraint(equalTo: headerContainerView.bottomAnchor),
-            
+
             contentStackView.leadingAnchor.constraint(equalTo: leadingAnchor),
             contentStackView.trailingAnchor.constraint(equalTo: trailingAnchor),
             contentStackView.topAnchor.constraint(equalTo: topAnchor, constant: directionalLayoutMargins.top * 2),

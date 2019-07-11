@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		512B013322C2F82900ABCB1D /* CareKitUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5174225B224185290054E97C /* CareKitUI.framework */; };
 		512EE90022975F850052F37C /* OCKDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 512EE8FF22975F850052F37C /* OCKDetailView.swift */; };
 		5137E5D122A5FBFE00AADE64 /* OCKGridCollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5137E5D022A5FBFE00AADE64 /* OCKGridCollectionViewFlowLayout.swift */; };
 		516C6E792299DE280098FAED /* OCKCollapserButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 516C6E782299DE280098FAED /* OCKCollapserButton.swift */; };
@@ -64,7 +65,19 @@
 		51F12D39229C81E200CA265B /* OCKLabeledCircleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F12D38229C81E200CA265B /* OCKLabeledCircleButton.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		512B013422C2F82900ABCB1D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 51742252224185290054E97C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 5174225A224185290054E97C;
+			remoteInfo = CareKitUI;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		512B012E22C2F82900ABCB1D /* CareKitUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CareKitUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		512B013222C2F82900ABCB1D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		512EE8FF22975F850052F37C /* OCKDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKDetailView.swift; sourceTree = "<group>"; };
 		5137E5D022A5FBFE00AADE64 /* OCKGridCollectionViewFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKGridCollectionViewFlowLayout.swift; sourceTree = "<group>"; };
 		516C6E782299DE280098FAED /* OCKCollapserButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKCollapserButton.swift; sourceTree = "<group>"; };
@@ -125,6 +138,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		512B012B22C2F82900ABCB1D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				512B013322C2F82900ABCB1D /* CareKitUI.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		51742258224185290054E97C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -135,10 +156,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		512B012F22C2F82900ABCB1D /* CareKitUITests */ = {
+			isa = PBXGroup;
+			children = (
+				512B013222C2F82900ABCB1D /* Info.plist */,
+			);
+			path = CareKitUITests;
+			sourceTree = "<group>";
+		};
 		51742251224185290054E97C = {
 			isa = PBXGroup;
 			children = (
 				5174225D224185290054E97C /* CareKitUI */,
+				512B012F22C2F82900ABCB1D /* CareKitUITests */,
 				5174225C224185290054E97C /* Products */,
 			);
 			sourceTree = "<group>";
@@ -147,6 +177,7 @@
 			isa = PBXGroup;
 			children = (
 				5174225B224185290054E97C /* CareKitUI.framework */,
+				512B012E22C2F82900ABCB1D /* CareKitUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -411,6 +442,24 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		512B012D22C2F82900ABCB1D /* CareKitUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 512B013822C2F82900ABCB1D /* Build configuration list for PBXNativeTarget "CareKitUITests" */;
+			buildPhases = (
+				512B012A22C2F82900ABCB1D /* Sources */,
+				512B012B22C2F82900ABCB1D /* Frameworks */,
+				512B012C22C2F82900ABCB1D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				512B013522C2F82900ABCB1D /* PBXTargetDependency */,
+			);
+			name = CareKitUITests;
+			productName = CareKitUITests;
+			productReference = 512B012E22C2F82900ABCB1D /* CareKitUITests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		5174225A224185290054E97C /* CareKitUI */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 51742263224185290054E97C /* Build configuration list for PBXNativeTarget "CareKitUI" */;
@@ -435,9 +484,13 @@
 		51742252224185290054E97C /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 1100;
 				LastUpgradeCheck = 1010;
 				ORGANIZATIONNAME = Apple;
 				TargetAttributes = {
+					512B012D22C2F82900ABCB1D = {
+						CreatedOnToolsVersion = 11.0;
+					};
 					5174225A224185290054E97C = {
 						CreatedOnToolsVersion = 10.1;
 						LastSwiftMigration = 1020;
@@ -458,11 +511,19 @@
 			projectRoot = "";
 			targets = (
 				5174225A224185290054E97C /* CareKitUI */,
+				512B012D22C2F82900ABCB1D /* CareKitUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		512B012C22C2F82900ABCB1D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		51742259224185290054E97C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -473,6 +534,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		512B012A22C2F82900ABCB1D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		51742257224185290054E97C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -537,7 +605,52 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		512B013522C2F82900ABCB1D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 5174225A224185290054E97C /* CareKitUI */;
+			targetProxy = 512B013422C2F82900ABCB1D /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		512B013622C2F82900ABCB1D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				INFOPLIST_FILE = CareKitUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = Apple.CareKitUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		512B013722C2F82900ABCB1D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = CareKitUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = Apple.CareKitUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		51742261224185290054E97C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -605,7 +718,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -681,7 +794,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				RUN_CLANG_STATIC_ANALYZER = YES;
@@ -700,7 +813,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -716,7 +829,6 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.carekit.CareKitUI;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				SUPPORTS_UIKITFORMAC = NO;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -727,7 +839,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -743,7 +855,6 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.carekit.CareKitUI;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				SUPPORTS_UIKITFORMAC = NO;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -753,6 +864,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		512B013822C2F82900ABCB1D /* Build configuration list for PBXNativeTarget "CareKitUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				512B013622C2F82900ABCB1D /* Debug */,
+				512B013722C2F82900ABCB1D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		51742255224185290054E97C /* Build configuration list for PBXProject "CareKitUI" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

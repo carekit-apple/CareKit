@@ -28,24 +28,23 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import UIKit
-import Combine
 import CareKitStore
 import CareKitUI
+import Combine
+import UIKit
 
 /// Conform to this protocol to receive callbacks when important events happen inside an `OCKEventViewController`.
-public protocol OCKEventViewControllerDelegate: class {
-    
+public protocol OCKEventViewControllerDelegate: AnyObject {
     /// Called when an event view controller is selected by the user.
     /// - Parameter eventViewController: The event view controller that was tapped.
     func didSelect<Store: OCKStoreProtocol>(eventViewController: OCKEventViewController<Store>)
-    
+
     /// Called each time an event view controller finishes querying an event.
     /// - Parameter eventViewController: The view controller which performed the query.
     /// - Parameter event: The event that was queried.
     func eventViewController<Store: OCKStoreProtocol>(_ eventViewController: OCKEventViewController<Store>,
                                                       didFinishQuerying event: Store.Event?)
-    
+
     /// Called if an unhandled error is encountered in an event view controller.
     /// - Parameter eventViewController: The event view controller in which the error occurred.
     /// - Parameter error: The error that occurred.
@@ -55,10 +54,10 @@ public protocol OCKEventViewControllerDelegate: class {
 
 public extension OCKEventViewControllerDelegate {
     func didSelect<Store: OCKStoreProtocol>(eventViewController: OCKEventViewController<Store>) {}
-    
+
     func eventViewController<Store: OCKStoreProtocol>(_ eventViewController: OCKEventViewController<Store>,
                                                       didFinishQuerying event: Store.Event?) {}
-    
+
     func eventViewController<Store: OCKStoreProtocol>(_ eventViewController: OCKEventViewController<Store>,
                                                       didFailWithError error: Error) {}
 }
@@ -79,38 +78,37 @@ public extension OCKEventViewControllerDelegate where Self: UIViewController {
 /// - Note: `OCKEventViewController`s are created by specifying a task and an event query. If the event query
 /// returns more than one event, only the first event will be displayed.
 open class OCKEventViewController<Store: OCKStoreProtocol>: OCKSynchronizedViewController<Store.Event>, OCKEventViewControllerDelegate {
-    
     // MARK: Properties
-    
+
     /// Specifies all the ways in which an event can be displayed.
     public enum Style: String, CaseIterable {
         /// A text label with a single large button to mark the event complete.
         case simple
-        
+
         /// A more detailed view including an instructions label.
         case instructions
-        
+
         /// A view that allows the patient to log multiple outcomes.
         case simpleLog
     }
-    
+
     internal var shouldCollapse: Bool { false }
-    
+
     public let storeManager: OCKSynchronizedStoreManager<Store>
-    
+
     private let taskIdentifier: String?
-    
+
     /// The event query used restrict which events are displayed for the task.
     public let eventQuery: OCKEventQuery?
-    
+
     /// The event that is currently being displayed. It will be nil until the query to the store returns.
     public private(set) var event: Store.Event?
-    
+
     /// If set, the delegate will receive callbacks when important events occur.
     public weak var delegate: OCKEventViewControllerDelegate?
-    
+
     internal var detailPresentingView: UIView? { return nil }
-    
+
     // Styled initializers
 
     /// A factory function that constructs the proper subclass of `OCKEventViewController` given a style parameter and
@@ -132,7 +130,7 @@ open class OCKEventViewController<Store: OCKStoreProtocol>: OCKSynchronizedViewC
             return OCKSimpleLogTaskViewController<Store>(storeManager: storeManager, taskIdentifier: taskIdentifier, eventQuery: eventQuery)
         }
     }
-    
+
     /// A factory function that constructs the proper subclass of `OCKEventViewController` given a style parameter and
     /// returns it upcast to `OCKEventViewController`.
     ///
@@ -145,22 +143,21 @@ open class OCKEventViewController<Store: OCKStoreProtocol>: OCKSynchronizedViewC
                                           eventQuery: OCKEventQuery) -> OCKEventViewController {
         return makeViewController(style: style, storeManager: storeManager, taskIdentifier: task.identifier, eventQuery: eventQuery)
     }
-    
+
     // MARK: Initializers
-    
+
     internal init(
         storeManager: OCKSynchronizedStoreManager<Store>,
         taskIdentifier: String,
         eventQuery: OCKEventQuery,
         loadCustomView: @escaping () -> UIView,
         modelDidChange: @escaping CustomModelDidChange) {
-
         self.storeManager = storeManager
         self.taskIdentifier = taskIdentifier
         self.eventQuery = eventQuery
         super.init(loadCustomView: loadCustomView, modelDidChange: modelDidChange)
     }
-        
+
     internal init<View: UIView & OCKBindable>(
         storeManager: OCKSynchronizedStoreManager<Store>,
         taskIdentifier: String,
@@ -168,19 +165,14 @@ open class OCKEventViewController<Store: OCKStoreProtocol>: OCKSynchronizedViewC
         loadDefaultView: @escaping () -> View,
         modelDidChange: ModelDidChange? = nil)
     where View.Model == Store.Event {
-
         self.storeManager = storeManager
         self.taskIdentifier = taskIdentifier
         self.eventQuery = eventQuery
         super.init(loadDefaultView: loadDefaultView, modelDidChange: modelDidChange)
     }
-    
-    required public init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
+
     // MARK: Life cycle
-    
+
     override open func viewDidLoad() {
         super.viewDidLoad()
         delegate = self
@@ -189,17 +181,17 @@ open class OCKEventViewController<Store: OCKStoreProtocol>: OCKSynchronizedViewC
             detailPresentingView.isUserInteractionEnabled = true
             detailPresentingView.addGestureRecognizer(tapGesture)
         }
-        
+
         event == nil ? fetchEvent() : modelUpdated(viewModel: event, animated: false)
     }
-    
+
     // MARK: Methods
-    
+
     @objc
     private func presentDetailViewController() {
         delegate?.didSelect(eventViewController: self)
     }
-    
+
     override func subscribe() {
         super.subscribe()
         guard let event = event else { return }
@@ -210,10 +202,10 @@ open class OCKEventViewController<Store: OCKStoreProtocol>: OCKSynchronizedViewC
             self.modelUpdated(viewModel: self.event, animated: shouldAnimate)
         }
     }
-    
+
     private func fetchEvent() {
         guard let taskIdentifier = taskIdentifier, let eventQuery = eventQuery else { return }
-        storeManager.store.fetchEvents(taskIdentifier: taskIdentifier, query: eventQuery) { [weak self] (result) in
+        storeManager.store.fetchEvents(taskIdentifier: taskIdentifier, query: eventQuery) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let events):
@@ -227,7 +219,7 @@ open class OCKEventViewController<Store: OCKStoreProtocol>: OCKSynchronizedViewC
             }
         }
     }
-    
+
     /// Save an outcome value with an integer value. If the value is nil, the function will find the missing value in the sorted
     /// sequence of current values
     internal func saveNewOutcomeValue(_ value: Int? = nil, allowDuplicates: Bool = false) {
@@ -236,7 +228,7 @@ open class OCKEventViewController<Store: OCKStoreProtocol>: OCKSynchronizedViewC
             saveNewOutcome(withValues: [OCKOutcomeValue(value ?? 0)])
             return
         }
-        
+
         // save a new outcome value if there is already an outcome
         var newValue: Int? = value
         var convertedOutcome = outcome.convert()
@@ -244,17 +236,17 @@ open class OCKEventViewController<Store: OCKStoreProtocol>: OCKSynchronizedViewC
             (value == nil) ||
                 (!allowDuplicates && convertedOutcome.values.filter({ $0.integerValue == value }).isEmpty) else { return }    // no duplicates
         var newValues = convertedOutcome.values
-        
+
         // Find the missing value in the sequence of integer values
         if newValue == nil {
             let values = newValues.compactMap { $0.integerValue }
             newValue = firstMissingNumberIn(values: values)
         }
         newValues.append(OCKOutcomeValue(newValue!))
-        
+
         convertedOutcome.values = newValues
         let updatedOutcome = Store.Outcome(value: convertedOutcome)
-        
+
         storeManager.store.updateOutcomes([updatedOutcome], queue: .main) { [weak self] result in
             guard let self = self else { return }
             switch result {
@@ -264,7 +256,7 @@ open class OCKEventViewController<Store: OCKStoreProtocol>: OCKSynchronizedViewC
             }
         }
     }
-    
+
     /// find the first missing number in a sorted sequence of integers
     private func firstMissingNumberIn(values: [Int]) -> Int {
         let sortedValues = values.sorted()
@@ -275,7 +267,7 @@ open class OCKEventViewController<Store: OCKStoreProtocol>: OCKSynchronizedViewC
         }
         return counter
     }
-    
+
     internal func deleteOutcomeValue(_ value: Int?) {
         guard let outcome = event?.outcome else { return }
         // delete the whole outcome if there is only one value remaining
@@ -290,7 +282,7 @@ open class OCKEventViewController<Store: OCKStoreProtocol>: OCKSynchronizedViewC
             }
             return
         }
-        
+
         // Update outcome
         var convertedOutcome = outcome.convert()
         var newValues = convertedOutcome.values
@@ -307,14 +299,14 @@ open class OCKEventViewController<Store: OCKStoreProtocol>: OCKSynchronizedViewC
             }
         }
     }
-    
+
     private func saveNewOutcome(withValues values: [OCKOutcomeValue]) {
         guard let event = event else { return }
         guard let taskID = event.task.versionID else { fatalError("Task has not been persisted yet!") }
-        
+
         let outcome = OCKOutcome(taskID: taskID, taskOccurenceIndex: event.scheduleEvent.occurence, values: values)
         let customOutcome = Store.Outcome(value: outcome)
-        
+
         storeManager.store.addOutcomes([customOutcome], queue: .main) { [weak self] result in
             guard let self = self else { return }
             switch result {
@@ -326,7 +318,7 @@ open class OCKEventViewController<Store: OCKStoreProtocol>: OCKSynchronizedViewC
             }
         }
     }
-    
+
     private func deleteOutcome() {
         guard let outcome = event?.outcome else { return }
         storeManager.store.deleteOutcomes([outcome], queue: .main) { [weak self] result in
@@ -340,13 +332,13 @@ open class OCKEventViewController<Store: OCKStoreProtocol>: OCKSynchronizedViewC
             }
         }
     }
-    
+
     @objc
     internal func eventButtonPressed(_ sender: UIControl) {
         guard let event = event else { return }
         event.outcome == nil ? saveNewOutcome(withValues: [OCKOutcomeValue(0)]) : deleteOutcome()
     }
-    
+
     @objc
     internal func outcomeButtonPressed(_ sender: UIControl) {
         saveNewOutcomeValue()

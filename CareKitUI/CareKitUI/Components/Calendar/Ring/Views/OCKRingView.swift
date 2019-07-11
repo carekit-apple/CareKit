@@ -32,40 +32,39 @@ import UIKit
 
 /// A fillable progress ring drawing.
 internal class OCKRingView: UIView {
-    
     // MARK: Properties
-    
+
     /// The progress of the ring between 0 and 1. The ring will fill based on the value.
     internal private(set) var progress: CGFloat = 1.0
-    
+
     /// The line width of the ring.
     internal var lineWidth: CGFloat = 10 {
         didSet { ringLayer.lineWidth = lineWidth }
     }
-    
+
     /// The stroke color of the ring.
     internal var strokeColor: UIColor = .blue {
         didSet { ringLayer.strokeColor = strokeColor.cgColor }
     }
-    
+
     /// The start angle of the ring to begin drawing.
     internal var startAngle: CGFloat = -.pi / 2 {
         didSet { ringLayer.path = ringPath() }
     }
-    
+
     /// The end angle of the ring to end drawing.
     internal var endAngle: CGFloat = 1.5 * .pi {
         didSet { ringLayer.path = ringPath() }
     }
-    
+
     /// Duration of the ring's fill animation.
     internal var duration: TimeInterval = 1.0
-    
+
     /// The radius oof the ring.
     internal var radius: CGFloat {
         return min(bounds.height, bounds.width) / 2 - lineWidth / 2
     }
-    
+
     private let ringLayer: CAShapeLayer = {
         let layer = CAShapeLayer()
         layer.lineCap = .round
@@ -73,38 +72,38 @@ internal class OCKRingView: UIView {
         layer.strokeStart = 0
         return layer
     }()
-    
+
     // MARK: Life Cycle
-    
+
     /// Create a ring view. The ring is filled by default.
     internal init() {
         super.init(frame: .zero)
         setup()
     }
-    
+
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         setup()
     }
-    
+
     override internal func layoutSubviews() {
         super.layoutSubviews()
         configureRing()
     }
-    
+
     // MARK: Methods
-    
+
     private func setup() {
         layer.addSublayer(ringLayer)
         styleRingLayer()
     }
-    
+
     private func styleRingLayer() {
         ringLayer.strokeColor = strokeColor.cgColor
         ringLayer.strokeEnd = min(progress, 1.0)
         ringLayer.lineWidth = lineWidth
     }
-    
+
     /// Set the progress value of the ring. The ring will fill based on the value.
     ///
     /// - Parameters:
@@ -112,12 +111,12 @@ internal class OCKRingView: UIView {
     ///   - animated: Flag for the fill ring's animation.
     internal func setProgress(_ value: CGFloat, animated: Bool) {
         layoutIfNeeded()
-        
+
         let oldValue = ringLayer.presentation()?.strokeEnd ?? progress
         progress = value
         ringLayer.strokeEnd = progress
         guard animated else { return }
-        
+
         let path = #keyPath(CAShapeLayer.strokeEnd)
         let fill = CABasicAnimation(keyPath: path)
         fill.fromValue = oldValue
@@ -126,12 +125,12 @@ internal class OCKRingView: UIView {
         fill.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
         ringLayer.add(fill, forKey: "fill")
     }
-    
+
     private func configureRing() {
         ringLayer.frame = bounds
         ringLayer.path = ringPath()
     }
-    
+
     private func ringPath() -> CGPath {
         let center = CGPoint(x: bounds.origin.x + frame.width / 2.0, y: bounds.origin.y + frame.height / 2.0)
         let circlePath = UIBezierPath(arcCenter: center, radius: radius, startAngle: startAngle, endAngle: endAngle, clockwise: true)

@@ -28,29 +28,28 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import UIKit
-import CareKitUI
 import CareKitStore
+import CareKitUI
 import Contacts
+import UIKit
 
 internal class OCKBindableSimpleContactView<Contact: Equatable & OCKContactConvertible>: OCKSimpleContactView, OCKBindable {
-    
     private let nameFormatter: PersonNameComponentsFormatter = {
         let nameFormatter = PersonNameComponentsFormatter()
         nameFormatter.style = .medium
         return nameFormatter
     }()
-    
+
     private let addressFormatter: CNPostalAddressFormatter = {
         let formatter = CNPostalAddressFormatter()
         formatter.style = .mailingAddress
         return formatter
     }()
-    
-    public func updateView(with model: Contact?, animated: Bool) {
+
+    func updateView(with model: Contact?, animated: Bool) {
         let contact = model?.convert()
         headerView.titleLabel.text = contact?.name != nil ? nameFormatter.string(from: contact!.name) : nil
-        
+
         if let asset = contact?.asset {
             // We can't be sure if the image they provide is in the assets folder, in the bundle, or in a directory.
             // We can check all 3 possibilities and then choose whichever is non-nil.
@@ -62,18 +61,18 @@ internal class OCKBindableSimpleContactView<Contact: Equatable & OCKContactConve
         } else {
             headerView.iconImageView?.image = OCKSimpleContactView.defaultImage
         }
-        
+
         // set the role label
         instructionsLabel.text = contact?.role
         headerView.detailLabel.text = contact?.title
-        
+
         // check we have have contact info needed for phone,
         // message, and email buttons to unhide them
         addressButton.isHidden = contact?.address == nil
         callButton.isHidden = contact?.phoneNumbers?.isEmpty ?? true
         emailButton.isHidden = contact?.emailAddresses?.isEmpty ?? true
         messageButton.isHidden = contact?.messagingNumbers?.isEmpty ?? true
-        
+
         // Format the address with current locale in mind and set button text.
         if let contactAddress = contact?.address {
             addressButton.setDetail(addressFormatter.string(from: contactAddress), for: .normal)

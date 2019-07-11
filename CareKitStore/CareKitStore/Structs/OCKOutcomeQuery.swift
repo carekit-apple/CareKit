@@ -32,20 +32,38 @@ import Foundation
 
 /// An enumerator that specifies the parameters by which outcomes can be queried.
 public enum OCKOutcomeAnchor {
-    case taskIdentifier(_ identifiers: String)
-    case taskVersion(_ versionID: OCKLocalVersionID)
-    case outcomeVersion(_ versionID: OCKLocalVersionID)
+    case taskIdentifiers(_ identifiers: [String])
+    case taskVersions(_ versionIDs: [OCKLocalVersionID])
+    case outcomeVersions(_ versionIDs: [OCKLocalVersionID])
 }
 
 /// A query that limits which outcomes will be returned when fetching.
 public struct OCKOutcomeQuery: OCKDateIntervalQueryable {
-    
+    public enum SortDescriptor {
+        case date(ascending: Bool)
+    }
+
     /// The earliest date at which outcomes should match.
     public var start: Date
-    
+
     /// The latest date at which outcomes should match.
     public var end: Date
-    
+
+    /// An array of group identifiers to match against.
+    public var groupIdentifiers: [String]?
+
+    /// The maximum number of results that will be returned by the query. A nil value indicates no upper limit.
+    public var limit: Int?
+
+    /// An offset that can be used to paginate results.
+    public var offset: Int?
+
+    /// The order in which the results will be sorted when returned from the query.
+    public var sortDescriptors: [SortDescriptor] = []
+
+    /// An array of tags to match against. If an object's tags contains one or more of entries, it will match the query.
+    public var tags: [String]?
+
     /// Initialize a new `OCKOutcomeQuery` by specifying the start and end dates.
     ///
     /// - Parameters:

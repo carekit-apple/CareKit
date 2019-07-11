@@ -31,52 +31,51 @@
 import UIKit
 
 internal class OCKCollapsedView: UIView {
-    
     private enum Const {
         static let bundle = Bundle(for: OCKCollapserButton.self)
     }
-    
-    public let headerView = OCKHeaderView()
-    
-    public let detailImageView: UIImageView = {
+
+    let headerView = OCKHeaderView()
+
+    let detailImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.image = UIImage(systemName: "checkmark")
         imageView.tintColor = .gray
         return imageView
     }()
-    
-    public init() {
+
+    init() {
         super.init(frame: .zero)
         setup()
     }
-    
-    required public init?(coder aDecoder: NSCoder) {
+
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         setup()
     }
-    
+
     private func setup() {
         styleSubviews()
         addSubviews()
         constrainSubviews()
     }
-    
+
     private func styleSubviews() {
         preservesSuperviewLayoutMargins = true
     }
-    
+
     private func addSubviews() {
         [headerView, detailImageView].forEach { addSubview($0) }
     }
-    
+
     private func constrainSubviews() {
         [headerView, detailImageView].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
         NSLayoutConstraint.activate([
             headerView.leadingAnchor.constraint(equalTo: leadingAnchor),
             headerView.topAnchor.constraint(equalTo: topAnchor),
             headerView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            
+
             detailImageView.widthAnchor.constraint(equalToConstant: OCKStyle.dimension.iconHeight1),
             detailImageView.trailingAnchor.constraint(equalTo: trailingAnchor),
             detailImageView.centerYAnchor.constraint(equalTo: centerYAnchor),

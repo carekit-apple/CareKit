@@ -28,14 +28,14 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Foundation
 import CareKitStore
+import Foundation
 
 /// CareKit will be able to automatically update any that conforms to this protocol.
 /// The Model is the type of the data that will be displayed in this view.
 internal protocol OCKBindable {
     associatedtype Model
-    
+
     /// This function will called by CareKit when the model for object changes.
     /// Use this as an opportunity to update views or caches.
     func updateView(with model: Model?, animated: Bool)

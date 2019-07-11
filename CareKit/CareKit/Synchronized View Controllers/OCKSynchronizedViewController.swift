@@ -28,25 +28,24 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import CareKitStore
+import Combine
 import Foundation
 import UIKit
-import Combine
-import CareKitStore
 
-internal protocol OCKViewUpdaterDelegate: class {
+internal protocol OCKViewUpdaterDelegate: AnyObject {
     func viewUpdater<ViewModel>(_ viewController: UIViewController, didUpdate view: UIView, with viewModel: ViewModel)
 }
 
 /// The `OCKSynchronizedViewController` acts as an absctract base class for many of CareKit's view controllers.
 /// It contains basic functionality pertaining to life cycles and subscription management. It should not be instantiated directly.
 open class OCKSynchronizedViewController<ViewModel>: UIViewController {
-    
     // MARK: Properties
-    
+
     internal typealias UpdateView = (_ viewModel: ViewModel?, _ animated: Bool) -> Void
     internal typealias ModelDidChange = (UpdateView, _ viewToUpdate: UIView, _ viewModel: ViewModel?, _ animated: Bool) -> Void
     internal typealias CustomModelDidChange = (_ viewToUpdate: UIView, _ viewModel: ViewModel?, _ animated: Bool) -> Void
-    
+
     internal var subscription: Cancellable?
     private var modelDidChange: ModelDidChange = { _, _, _, _ in }
     private var updateView: UpdateView = { _, _ in }
@@ -55,13 +54,13 @@ open class OCKSynchronizedViewController<ViewModel>: UIViewController {
     private var _loadView: () -> UIView
 
     // MARK: Life Cycle
-    
+
     internal init(loadCustomView: @escaping () -> UIView, modelDidChange: @escaping CustomModelDidChange) {
         self._loadView = loadCustomView
         super.init(nibName: nil, bundle: nil)
-        self.modelDidChange = { (_, view, viewModel, animated) in modelDidChange(view, viewModel, animated) }
+        self.modelDidChange = { _, view, viewModel, animated in modelDidChange(view, viewModel, animated) }
     }
-    
+
     internal init<View: UIView & OCKBindable>(loadDefaultView: @escaping () -> View,
                                               modelDidChange: ModelDidChange? = nil) where View.Model == ViewModel {
         self._loadView = loadDefaultView
@@ -72,51 +71,52 @@ open class OCKSynchronizedViewController<ViewModel>: UIViewController {
             view.updateView(with: viewModel, animated: animated)
             self.viewUpdaterDelegate?.viewUpdater(self, didUpdate: view, with: viewModel)
         }
-        
+
         // Use the block that was passed in as a parameter, if it is nil, use the default
-        self.modelDidChange = modelDidChange ?? { (superBindModel, _, viewModel, animated) in superBindModel(viewModel, animated) }
+        self.modelDidChange = modelDidChange ?? { superBindModel, _, viewModel, animated in superBindModel(viewModel, animated) }
     }
-    
-    required public init?(coder aDecoder: NSCoder) {
+
+    @available(*, unavailable)
+    public required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    open override func loadView() {
+
+    override open func loadView() {
         view = _loadView()
     }
-    
-    open override func viewDidLoad() {
+
+    override open func viewDidLoad() {
         super.viewDidLoad()
         subscribe()
     }
-    
-    open override func viewWillAppear(_ animated: Bool) {
+
+    override open func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         renewSubscriptionIfNeeded()
     }
-    
-    open override func viewWillDisappear(_ animated: Bool) {
+
+    override open func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         if unsubscribesWhenNotShown {
             cancelSubscription()
         }
     }
-    
+
     // This should be overriden by subsclasses
     internal func subscribe() {
         cancelSubscription()
     }
-    
+
     internal func cancelSubscription() {
         subscription?.cancel()
         subscription = nil
     }
-    
+
     internal func renewSubscriptionIfNeeded() {
         guard subscription == nil else { return }
         subscribe()
     }
-    
+
     // Call this to update the view and call the delegate method to notify listeners that the view has been updated.
     internal func modelUpdated(viewModel: ViewModel?, animated: Bool) {
         self.modelDidChange(self.updateView, self.view, viewModel, animated)

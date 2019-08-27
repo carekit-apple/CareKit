@@ -66,18 +66,18 @@ internal class OCKListView: UIView {
         constrainSubviews()
     }
 
+    private func addSubviews() {
+        addSubview(scrollView)
+        scrollView.addSubview(contentView)
+        contentView.addSubview(stackView)
+    }
+
     private func styleSubviews() {
         preservesSuperviewLayoutMargins = true
         contentView.backgroundColor = OCKStyle.color.gray1
         scrollView.backgroundColor = contentView.backgroundColor
         stackView.spacing = directionalLayoutMargins.top * 3
         scrollView.alwaysBounceVertical = true
-    }
-
-    private func addSubviews() {
-        addSubview(scrollView)
-        scrollView.addSubview(contentView)
-        contentView.addSubview(stackView)
     }
 
     private func constrainSubviews() {

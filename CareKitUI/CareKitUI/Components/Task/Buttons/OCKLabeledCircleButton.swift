@@ -65,6 +65,14 @@ internal class OCKLabeledCircleButton: OCKButton {
         constrainSubviews()
     }
 
+    private func addSubviews() {
+        [_imageButton, _titleButton].forEach { addSubview($0) }
+    }
+
+    private func styleSubviews() {
+        preservesSuperviewLayoutMargins = true
+    }
+
     private func constrainSubviews() {
         [_titleButton, _imageButton].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
         NSLayoutConstraint.activate([
@@ -78,13 +86,5 @@ internal class OCKLabeledCircleButton: OCKButton {
             _titleButton.trailingAnchor.constraint(equalTo: trailingAnchor),
             bottomAnchor.constraint(equalTo: _titleButton.bottomAnchor)
         ])
-    }
-
-    private func addSubviews() {
-        [_imageButton, _titleButton].forEach { addSubview($0) }
-    }
-
-    private func styleSubviews() {
-        preservesSuperviewLayoutMargins = true
     }
 }

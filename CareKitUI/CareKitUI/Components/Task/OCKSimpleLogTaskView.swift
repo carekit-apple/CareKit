@@ -135,17 +135,17 @@ open class OCKSimpleLogTaskView: UIView, OCKCardable {
         constrainSubviews()
     }
 
+    private func addSubviews() {
+        addSubview(contentStackView)
+        [headerView, instructionsLabel, logButton, logItemsStackView].forEach { contentStackView.addArrangedSubview($0) }
+    }
+
     private func styleSubviews() {
         preservesSuperviewLayoutMargins = true
         enableCardStyling(true)
         logItemsStackView.spacing = directionalLayoutMargins.top
         contentStackView.spacing = directionalLayoutMargins.top * 2
         setSpacingAfterLogButton(0, animated: false)
-    }
-
-    private func addSubviews() {
-        addSubview(contentStackView)
-        [headerView, instructionsLabel, logButton, logItemsStackView].forEach { contentStackView.addArrangedSubview($0) }
     }
 
     private func constrainSubviews() {

@@ -140,19 +140,19 @@ open class OCKInstructionsTaskView: UIView, OCKCardable, OCKCollapsible, OCKColl
         collapsedView.addGestureRecognizer(tapGesture)
     }
 
+    private func addSubviews() {
+        addSubview(contentView)
+        contentView.addSubview(contentStackView)
+        [headerView, instructionsLabel, completionButton,
+         spacerView, collapsedView, collapserButton].forEach { contentStackView.addArrangedSubview($0) }
+    }
+
     private func styleSubviews() {
         preservesSuperviewLayoutMargins = true
         enableCardStyling(true)
         contentStackView.spacing = directionalLayoutMargins.top * 2
         contentStackView.setCustomSpacing(0, after: completionButton)
         contentStackView.setCustomSpacing(0, after: spacerView)
-    }
-
-    private func addSubviews() {
-        addSubview(contentView)
-        contentView.addSubview(contentStackView)
-        [headerView, instructionsLabel, completionButton,
-         spacerView, collapsedView, collapserButton].forEach { contentStackView.addArrangedSubview($0) }
     }
 
     private func constrainSubviews() {

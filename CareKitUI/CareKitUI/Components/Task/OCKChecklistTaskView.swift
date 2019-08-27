@@ -168,20 +168,20 @@ open class OCKChecklistTaskView: UIView, OCKCardable, OCKCollapsible, OCKCollaps
         collapsedView.addGestureRecognizer(tapGesture)
     }
 
-    private func styleSubviews() {
-        preservesSuperviewLayoutMargins = true
-        enableCardStyling(true)
-        contentStackView.spacing = directionalLayoutMargins.top * 2
-        contentStackView.setCustomSpacing(0, after: instructionsLabel)
-        contentStackView.setCustomSpacing(0, after: spacerView)
-    }
-
     private func addSubviews() {
         addSubview(contentView)
         contentView.addSubview(contentStackView)
         [headerView, checklistItemsStackView, instructionsLabel, spacerView, collapsedView, collapserButton].forEach {
             contentStackView.addArrangedSubview($0)
         }
+    }
+
+    private func styleSubviews() {
+        preservesSuperviewLayoutMargins = true
+        enableCardStyling(true)
+        contentStackView.spacing = directionalLayoutMargins.top * 2
+        contentStackView.setCustomSpacing(0, after: instructionsLabel)
+        contentStackView.setCustomSpacing(0, after: spacerView)
     }
 
     private func constrainSubviews() {

@@ -31,6 +31,8 @@
 import UIKit
 
 internal class OCKCollapsedView: UIView {
+	// MARK: Properties
+
     private enum Const {
         static let bundle = Bundle(for: OCKCollapserButton.self)
     }
@@ -45,6 +47,8 @@ internal class OCKCollapsedView: UIView {
         return imageView
     }()
 
+	// MARK: Life cycle
+
     init() {
         super.init(frame: .zero)
         setup()
@@ -54,6 +58,8 @@ internal class OCKCollapsedView: UIView {
         super.init(coder: aDecoder)
         setup()
     }
+
+	// MARK: Methods
 
     private func setup() {
         styleSubviews()

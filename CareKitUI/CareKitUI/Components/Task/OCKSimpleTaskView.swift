@@ -74,13 +74,13 @@ open class OCKSimpleTaskView: UIView, OCKCardable, OCKCollapsible {
         constrainSubviews()
     }
 
+    private func addSubviews() {
+        [headerView, completionButton].forEach { addSubview($0) }
+    }
+
     private func styleSubviews() {
         preservesSuperviewLayoutMargins = true
         enableCardStyling(true)
-    }
-
-    private func addSubviews() {
-        [headerView, completionButton].forEach { addSubview($0) }
     }
 
     private func constrainSubviews() {

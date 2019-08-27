@@ -54,7 +54,7 @@ internal extension UIFont {
             UIFontDescriptor.AttributeName.family: UIFont.systemFont(ofSize: size).familyName
         ])
 
-        // add the font weight too the descriptor
+        // Add the font weight to the descriptor
         let weightedFontDescriptor = fontDescriptor.addingAttributes([
             UIFontDescriptor.AttributeName.traits: [
                 UIFontDescriptor.TraitKey.weight: weight

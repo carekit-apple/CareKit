@@ -30,7 +30,7 @@
 
 import UIKit
 
-/// A view with intended to display fine grained details. The view contains a configurable image, title, and instrucitons. To add
+/// A view intended to display fine grained details. The view contains a configurable image, title, and instructions. To add
 /// custom views, insert into the `contentStackView`.
 open class OCKDetailView: UIView {
     // MARK: Properties
@@ -50,14 +50,14 @@ open class OCKDetailView: UIView {
         return titleLabel
     }()
 
-    /// secondary multi-line label
+    /// Secondary multi-line label
     public let instructionsLabel: OCKLabel = {
         let label = OCKLabel(textStyle: .subheadline, weight: .medium)
         label.numberOfLines = 0
         return label
     }()
 
-    /// The vertical stack view thta holds the main contentt for the view.
+    /// The vertical stack view that holds the main content for the view.
     public let contentStackView: OCKStackView = {
         let stackView = OCKStackView()
         stackView.axis = .vertical

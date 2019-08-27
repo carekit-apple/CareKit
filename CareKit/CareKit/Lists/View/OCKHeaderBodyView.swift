@@ -70,7 +70,7 @@ internal class OCKHeaderBodyView: UIView {
 
     @available(*, unavailable)
     required init?(coder: NSCoder) {
-        fatalError("Unsupported Initializer.")
+        fatalError("init(coder:) has not been implemented")
     }
 
     // MARK: Methods

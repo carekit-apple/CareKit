@@ -33,6 +33,8 @@ import UIKit
 
 /// Separator view.
 open class OCKSeparatorView: UIView {
+	// MARK: Life cycle
+
     public init() {
         super.init(frame: .zero)
         setup()
@@ -42,6 +44,8 @@ open class OCKSeparatorView: UIView {
         super.init(coder: aDecoder)
         setup()
     }
+
+	// MARK: Methods
 
     private func setup() {
         styleSubviews()

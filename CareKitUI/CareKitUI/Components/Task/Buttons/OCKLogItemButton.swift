@@ -31,7 +31,9 @@
 import UIKit
 
 internal class OCKLogItemButton: OCKButton {
-    private enum Constants {
+	// MARK: Properties
+
+	private enum Constants {
         static let bundle = Bundle(for: OCKChecklistItemButton.self)
         static let spacing: CGFloat = 2
     }

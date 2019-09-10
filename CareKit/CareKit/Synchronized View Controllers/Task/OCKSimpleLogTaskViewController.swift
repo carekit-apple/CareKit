@@ -42,6 +42,10 @@ open class OCKSimpleLogTaskViewController<Store: OCKStoreProtocol>: OCKEventView
         return view
     }
 
+    override var detailPresentingView: UIView? {
+        taskView.headerView
+    }
+
     /// Initialize using an identifier.
     ///
     /// - Parameters:

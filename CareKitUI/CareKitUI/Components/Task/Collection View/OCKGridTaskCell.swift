@@ -32,8 +32,14 @@ import UIKit
 
 /// A cell used in the `collectionView` of the `OCKGridTaskView`. The cell shows a circular `completionButton` that has an image and a
 /// `titleLabel`. The default image is a checkmark.
-open class OCKGridTaskCell: UICollectionViewCell {
+open class OCKGridTaskCell: UICollectionViewCell, OCKStylable {
     // MARK: Properties
+
+    private var completionButtonRingWidthConstraint: NSLayoutConstraint?
+
+    public var customStyle: OCKStyler? {
+        didSet { styleChildren() }
+    }
 
     /// Circular button that shows an image and `titleLabel`. The default image is a checkmark when selected.
     /// The text for the `.normal` state will automatically adapt to the `tintColor`.
@@ -77,6 +83,7 @@ open class OCKGridTaskCell: UICollectionViewCell {
     private func styleSubviews() {
         preservesSuperviewLayoutMargins = true
         tintColorDidChange()
+        styleDidChange()
     }
 
     private func addSubviews() {
@@ -85,8 +92,11 @@ open class OCKGridTaskCell: UICollectionViewCell {
 
     private func constrainSubviews() {
         [contentView, completionButton].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
+
+        completionButtonRingWidthConstraint = completionButton.widthAnchor.constraint(equalToConstant: 0)
+
         NSLayoutConstraint.activate([
-            completionButton.widthAnchor.constraint(equalToConstant: OCKStyle.dimension.buttonHeight1),
+            completionButtonRingWidthConstraint!,
             completionButton.leadingAnchor.constraint(greaterThanOrEqualTo: contentView.leadingAnchor),
             completionButton.topAnchor.constraint(equalTo: contentView.topAnchor),
             completionButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
@@ -97,5 +107,21 @@ open class OCKGridTaskCell: UICollectionViewCell {
             contentView.topAnchor.constraint(equalTo: topAnchor),
             bottomAnchor.constraint(greaterThanOrEqualTo: contentView.bottomAnchor)
         ])
+    }
+
+    override open func didMoveToSuperview() {
+        super.didMoveToSuperview()
+        styleDidChange()
+    }
+
+    override open func removeFromSuperview() {
+        super.removeFromSuperview()
+        styleChildren()
+    }
+
+    public func styleDidChange() {
+        let cachedStyle = style()
+        completionButtonRingWidthConstraint?.constant = cachedStyle.dimension.buttonHeight1
+        (completionButton as? OCKCompletionRingButton)?.ring.lineWidth = cachedStyle.appearance.borderWidth2
     }
 }

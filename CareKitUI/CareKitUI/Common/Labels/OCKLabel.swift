@@ -36,8 +36,12 @@ import UIKit
 ///
 /// To have the label automatically change its text size whenever the accessibility content size changes,
 /// use the initialzer that takes a `textStyle` and `weight`.
-open class OCKLabel: UILabel {
+open class OCKLabel: UILabel, OCKStylable {
     // MARK: Properties
+
+    public var customStyle: OCKStyler? {
+        didSet { styleChildren() }
+    }
 
     /// Flag determining whether to animate text changes.
     public var animatesTextChanges = false
@@ -50,7 +54,7 @@ open class OCKLabel: UILabel {
             return super.text
         } set {
             guard animatesTextChanges else { super.text = newValue; return; }
-            UIView.transition(with: self, duration: OCKStyle.animation.stateChangeDuration, options: .transitionCrossDissolve, animations: {
+            UIView.transition(with: self, duration: style().animation.stateChangeDuration, options: .transitionCrossDissolve, animations: {
                 super.text = newValue
             }, completion: nil)
         }
@@ -101,5 +105,18 @@ open class OCKLabel: UILabel {
     private func setup() {
         preservesSuperviewLayoutMargins = true
         adjustsFontForContentSizeCategory = false
+        styleDidChange()
     }
+
+    override open func didMoveToSuperview() {
+        super.didMoveToSuperview()
+        styleDidChange()
+    }
+
+    override open func removeFromSuperview() {
+        super.removeFromSuperview()
+        styleChildren()
+    }
+
+    open func styleDidChange() {}
 }

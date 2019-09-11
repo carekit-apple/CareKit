@@ -33,61 +33,80 @@ import Combine
 import Foundation
 import UIKit
 
-internal protocol OCKViewUpdaterDelegate: AnyObject {
-    func viewUpdater<ViewModel>(_ viewController: UIViewController, didUpdate view: UIView, with viewModel: ViewModel)
+/// Provides context for a view model value.
+public struct OCKSynchronizationContext<ViewModel> {
+    /// The current view model value.
+    public let viewModel: ViewModel?
+
+    /// The previous view model value.
+    public let oldViewModel: ViewModel?
+
+    /// Animated flag.
+    public let animated: Bool
 }
 
-/// The `OCKSynchronizedViewController` acts as an absctract base class for many of CareKit's view controllers.
-/// It contains basic functionality pertaining to life cycles and subscription management. It should not be instantiated directly.
-open class OCKSynchronizedViewController<ViewModel>: UIViewController {
+protocol OCKSynchronizedViewControllerDelegate: AnyObject {
+    func synchronizedViewController<V: UIView, VM: Equatable>(_ viewController: OCKSynchronizedViewController<V, VM>,
+                                                              didUpdate synchronizedView: V,
+                                                              withContext context: OCKSynchronizationContext<VM>)
+}
+
+/// Abstract class that handles synchronization between a view model and a view.
+///
+/// To specify the view used by this view controller, specialize the generic `View` and override the `makeView()` method.
+///
+/// To set a new `viewModel` value, call `setViewModel(viewModel:animated)`. This will trigger an update to view.
+///
+/// To update the view based on the current context, override the `updateView(view:context)`. This method will be called any time
+/// `setViewModel(viewModel:animated)` is called. Do not call this method directly.
+///
+/// To set a subscription, call the `subscribe(makeSubscription)` method and provide a block to make a subscription. You will generally want to call
+/// `setViewModel(viewModel:animated)` inside the block to trigger updates when the view model changes. The life cycle of the subscription is handled
+/// internally.
+open class OCKSynchronizedViewController<View: UIView, ViewModel: Equatable>: UIViewController {
     // MARK: Properties
 
-    internal typealias UpdateView = (_ viewModel: ViewModel?, _ animated: Bool) -> Void
-    internal typealias ModelDidChange = (UpdateView, _ viewToUpdate: UIView, _ viewModel: ViewModel?, _ animated: Bool) -> Void
-    internal typealias CustomModelDidChange = (_ viewToUpdate: UIView, _ viewModel: ViewModel?, _ animated: Bool) -> Void
+    private var cachedContext: OCKSynchronizationContext<ViewModel>?
+    private var subscription: AnyCancellable?
+    var unsubscribesWhenNotShown = true
+    weak var synchronizationDelegate: OCKSynchronizedViewControllerDelegate?
 
-    internal var subscription: Cancellable?
-    private var modelDidChange: ModelDidChange = { _, _, _, _ in }
-    private var updateView: UpdateView = { _, _ in }
-    internal weak var viewUpdaterDelegate: OCKViewUpdaterDelegate?
-    internal var unsubscribesWhenNotShown = false
-    private var _loadView: () -> UIView
+    /// True if setting a new view model that is equal to the previous view model will trigger a view update.
+    var updatesViewWithDuplicates = true
+
+    /// The view that is synchronized with the view model.
+    public var synchronizedView: View {
+        guard let view = view as? View else { fatalError("Unsupported view type.") }
+        return view
+    }
+
+    /// The data that is used to populate the view.
+    public private (set) var viewModel: ViewModel?
 
     // MARK: Life Cycle
 
-    internal init(loadCustomView: @escaping () -> UIView, modelDidChange: @escaping CustomModelDidChange) {
-        self._loadView = loadCustomView
+    init() {
         super.init(nibName: nil, bundle: nil)
-        self.modelDidChange = { _, view, viewModel, animated in modelDidChange(view, viewModel, animated) }
-    }
-
-    internal init<View: UIView & OCKBindable>(loadDefaultView: @escaping () -> View,
-                                              modelDidChange: ModelDidChange? = nil) where View.Model == ViewModel {
-        self._loadView = loadDefaultView
-        super.init(nibName: nil, bundle: nil)
-        self.updateView = { [weak self] viewModel, animated in
-            guard let self = self else { return }
-            guard let view = self.view as? View else { fatalError("Unexpected view type") }
-            view.updateView(with: viewModel, animated: animated)
-            self.viewUpdaterDelegate?.viewUpdater(self, didUpdate: view, with: viewModel)
-        }
-
-        // Use the block that was passed in as a parameter, if it is nil, use the default
-        self.modelDidChange = modelDidChange ?? { superBindModel, _, viewModel, animated in superBindModel(viewModel, animated) }
     }
 
     @available(*, unavailable)
-    public required init?(coder aDecoder: NSCoder) {
+    public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
     override open func loadView() {
-        view = _loadView()
+        view = makeView()
     }
 
     override open func viewDidLoad() {
         super.viewDidLoad()
-        subscribe()
+
+        // Update the view if a cached update has been waiting
+        if let context = cachedContext {
+            updateView(synchronizedView, context: context)
+        }
+
+        renewSubscriptionIfNeeded()
     }
 
     override open func viewWillAppear(_ animated: Bool) {
@@ -102,24 +121,63 @@ open class OCKSynchronizedViewController<ViewModel>: UIViewController {
         }
     }
 
-    // This should be overriden by subsclasses
-    internal func subscribe() {
-        cancelSubscription()
-    }
+    // MARK: - Functions
 
-    internal func cancelSubscription() {
-        subscription?.cancel()
-        subscription = nil
-    }
-
-    internal func renewSubscriptionIfNeeded() {
+    private func renewSubscriptionIfNeeded() {
         guard subscription == nil else { return }
         subscribe()
     }
 
-    // Call this to update the view and call the delegate method to notify listeners that the view has been updated.
-    internal func modelUpdated(viewModel: ViewModel?, animated: Bool) {
-        self.modelDidChange(self.updateView, self.view, viewModel, animated)
-        self.viewUpdaterDelegate?.viewUpdater(self, didUpdate: view, with: viewModel)
+    private func cancelSubscription() {
+        subscription?.cancel()
+        subscription = nil
+    }
+
+    /// Make the view that is used by this view controller. The view will be lazy loaded.
+    open func makeView() -> View {
+        fatalError("Need to override makeView()")
+    }
+
+    /// Update the view with new `context` information. The default implementation of this method does nothing and should not be called, override to
+    /// define custom behavior. Do not call this method directly when the view needs an update, rather, call `updateView(view:context)`.
+    /// - Parameter view: The view to update.
+    /// - Parameter context: The context used to update the view.
+    open func updateView(_ view: View, context: OCKSynchronizationContext<ViewModel>) {
+        fatalError("Need to override updateView(view:context:)")
+    }
+
+    /// Create a subscription whose life cycle will be handled by the view controller. The stream should ideally call
+    /// `setViewModel(viewModel:animated)` when new view model data appears.
+    ///
+    /// This method will get called when the view is loaded. If you need to setup the subscription at a more specific time, see `subcribe()`.
+    open func makeSubscription() -> AnyCancellable? {
+        fatalError("Need to override makeSubscription()")
+    }
+
+    /// Set the view model and trigger an update to the view. If the view has not yet been loaded, the update will occur once it has loaded.
+    /// - Parameter viewModel: New view model value.
+    /// - Parameter animated: True to animate changes to the view.
+    open func setViewModel(_ viewModel: ViewModel?, animated: Bool) {
+        if !updatesViewWithDuplicates && viewModel == self.viewModel { return }
+        let context = OCKSynchronizationContext(viewModel: viewModel, oldViewModel: self.viewModel, animated: animated)
+        self.viewModel = viewModel
+
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            // update the view if it is loaded
+            if self.isViewLoaded {
+                self.updateView(self.synchronizedView, context: context)
+                self.synchronizationDelegate?.synchronizedViewController(self, didUpdate: self.synchronizedView, withContext: context)
+            // else cache the update for when the view is loaded
+            } else {
+                self.cachedContext = context
+            }
+        }
+    }
+
+    /// Cancels and renews the current subscription defined in `makeSubscription()`. This method will be called by default when the view is loaded.
+    open func subscribe() {
+        cancelSubscription()
+        subscription = makeSubscription()
     }
 }

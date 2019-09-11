@@ -33,15 +33,11 @@ import Foundation
 internal protocol OCKObjectCompatible {
     /// The date at which the object was first persisted to the database.
     /// It will be nil for unpersisted values and objects.
-    var createdAt: Date? { get set }
+    var createdDate: Date? { get set }
 
     /// The last date at which the object was updated.
     /// It will be nil for unpersisted values and objects.
-    var updatedAt: Date? { get set }
-
-    /// The date at which the object was marked deleted.
-    /// It will be nil for objects that have not been deleted.
-    var deletedAt: Date? { get set }
+    var updatedDate: Date? { get set }
 
     /// A user-defined group identifer that can be used both for querying and sorting results.
     /// Examples may include: "medications", "exercises", "family", "males", "diabetics", etc.
@@ -56,7 +52,7 @@ internal protocol OCKObjectCompatible {
 
     /// A unique identifier optionally used by a remote database. Its precise format will be
     /// determined by the remote database, but it is generally not expected to be human readable.
-    var externalID: String? { get set }
+    var remoteID: String? { get set }
 
     /// A dictionary of information that can be provided by developers to support their own unique
     /// use cases.
@@ -73,6 +69,10 @@ internal protocol OCKObjectCompatible {
 
     /// Any array of notes associated with this object.
     var notes: [OCKNote]? { get set }
+
+    /// The semantic version of the database schema when this object was created.
+    /// The value will be nil for objects that have not yet been persisted.
+    var schemaVersion: OCKSemanticVersion? { get set }
 }
 
 extension OCKObjectCompatible where Self: OCKVersionSettable {
@@ -97,14 +97,14 @@ extension OCKObjectCompatible where Self: OCKLocalPersistableSettable {
 
 extension OCKObjectCompatible {
     mutating func copyCommonValues(from other: OCKCDObject) {
-        createdAt = other.createdAt
-        updatedAt = other.updatedAt
-        deletedAt = other.deletedAt
+        createdDate = other.createdDate
+        updatedDate = other.updatedDate
+        schemaVersion = OCKSemanticVersion(other.schemaVersion)
         groupIdentifier = other.groupIdentifier
         tags = other.tags
         source = other.source
         internalID = other.localDatabaseID
-        externalID = other.remoteID
+        remoteID = other.remoteID
         userInfo = other.userInfo
         asset = other.asset
         notes = other.notes?.map {
@@ -117,10 +117,11 @@ extension OCKObjectCompatible {
 
 extension OCKObjectCompatible where Self: OCKVersionSettable {
     mutating func copyVersionedValues(from other: OCKCDVersionedObject) {
-        effectiveAt = other.effectiveAt
-        versionID = other.versionID
-        nextVersionID = other.next?.versionID
-        previousVersionID = other.previous?.versionID
+        deletedDate = other.deletedDate
+        effectiveDate = other.effectiveDate
+        versionID = other.localDatabaseID
+        nextVersionID = other.next?.localDatabaseID
+        previousVersionID = other.previous?.localDatabaseID
         copyCommonValues(from: other)
     }
 }

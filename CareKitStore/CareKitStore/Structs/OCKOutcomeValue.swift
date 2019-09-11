@@ -56,47 +56,39 @@ public struct OCKOutcomeValue: Codable, Equatable, OCKObjectCompatible, OCKLocal
     // MARK: Codable
     enum CodingKeys: CodingKey, CaseIterable {
         case
-        kind, units, localDatabaseID, value, type,
-        createdAt, updatedAt, deletedAt, tags, group, externalId, userInfo, source   // OCKObjectCompatible
+        kind, units, localDatabaseID, value, type, index,
+        createdDate, updatedDate, schemaVersion, tags, group, remoteID, userInfo, source   // OCKObjectCompatible
     }
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
+        let valueType = try container.decode(OCKOutcomeValueType.self, forKey: CodingKeys.type)
+
+        switch valueType {
+        case .integer:
+            value = try container.decode(Int.self, forKey: CodingKeys.value)
+        case .double:
+            value = try container.decode(Double.self, forKey: CodingKeys.value)
+        case .boolean:
+            value = try container.decode(Bool.self, forKey: CodingKeys.value)
+        case .text:
+            value = try container.decode(String.self, forKey: CodingKeys.value)
+        case .binary:
+            value = try container.decode(Data.self, forKey: CodingKeys.value)
+        case .date:
+            value = try container.decode(Date.self, forKey: CodingKeys.value)
+        }
 
         kind = try container.decode(String?.self, forKey: CodingKeys.kind)
         units = try container.decode(String?.self, forKey: CodingKeys.units)
+        index = try container.decode(Int?.self, forKey: CodingKeys.index)
         localDatabaseID = try container.decode(OCKLocalVersionID?.self, forKey: CodingKeys.localDatabaseID)
-
-        // use the type to tell which valyue type we must decode
-        let type = try container.decode(OCKOutcomeValueType.self, forKey: CodingKeys.type)
-        var tempValue: OCKOutcomeValueUnderlyingType?
-        switch type {
-        case .integer:
-            tempValue = try? container.decode(Int?.self, forKey: CodingKeys.value)
-        case .double:
-            tempValue = try? container.decode(Double?.self, forKey: CodingKeys.value)
-        case .boolean:
-            tempValue = try? container.decode(Bool?.self, forKey: CodingKeys.value)
-        case .text:
-            tempValue = try? container.decode(String?.self, forKey: CodingKeys.value)
-        case .binary:
-            tempValue = try? container.decode(Data?.self, forKey: CodingKeys.value)
-        case .date:
-            tempValue = try? container.decode(Date?.self, forKey: CodingKeys.value)
-        }
-
-        guard let existingValue = tempValue else {
-            let msg = "Value does not match a OCKOutcomeValueCompatible decodable type."
-            throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: [CodingKeys.value], debugDescription: msg))
-        }
-        value = existingValue
-
-        createdAt = try container.decode(Date?.self, forKey: CodingKeys.createdAt)
-        updatedAt = try container.decode(Date?.self, forKey: CodingKeys.updatedAt)
-        deletedAt = try container.decode(Date?.self, forKey: CodingKeys.deletedAt)
+        createdDate = try container.decode(Date?.self, forKey: CodingKeys.createdDate)
+        updatedDate = try container.decode(Date?.self, forKey: CodingKeys.updatedDate)
+        schemaVersion = try container.decode(OCKSemanticVersion?.self, forKey: CodingKeys.schemaVersion)
         groupIdentifier = try container.decode(String?.self, forKey: CodingKeys.group)
         tags = try container.decode([String]?.self, forKey: CodingKeys.tags)
-        externalID = try container.decode(String?.self, forKey: CodingKeys.externalId)
+        remoteID = try container.decode(String?.self, forKey: CodingKeys.remoteID)
         source = try container.decode(String?.self, forKey: CodingKeys.source)
         userInfo = try container.decode([String: String]?.self, forKey: CodingKeys.userInfo)
     }
@@ -107,6 +99,7 @@ public struct OCKOutcomeValue: Codable, Equatable, OCKObjectCompatible, OCKLocal
         try container.encode(type, forKey: .type)
         try container.encode(kind, forKey: .kind)
         try container.encode(units, forKey: .units)
+        try container.encode(index, forKey: .index)
         try container.encode(localDatabaseID, forKey: .localDatabaseID)
 
         var encodedValue = false
@@ -118,16 +111,16 @@ public struct OCKOutcomeValue: Codable, Equatable, OCKObjectCompatible, OCKLocal
         if let value = dateValue { try container.encode(value, forKey: .value); encodedValue = true }
 
         guard encodedValue else {
-            let msg = "Value could not be converted to a concrete type."
-            throw EncodingError.invalidValue(value, EncodingError.Context(codingPath: [CodingKeys.value], debugDescription: msg))
+            let message = "Value could not be converted to a concrete type."
+            throw EncodingError.invalidValue(value, EncodingError.Context(codingPath: [CodingKeys.value], debugDescription: message))
         }
 
-        try container.encode(updatedAt, forKey: .updatedAt)
-        try container.encode(createdAt, forKey: .createdAt)
-        try container.encode(deletedAt, forKey: .deletedAt)
+        try container.encode(updatedDate, forKey: .updatedDate)
+        try container.encode(createdDate, forKey: .createdDate)
+        try container.encode(schemaVersion, forKey: .schemaVersion)
         try container.encode(groupIdentifier, forKey: .group)
         try container.encode(tags, forKey: .tags)
-        try container.encode(externalID, forKey: .externalId)
+        try container.encode(remoteID, forKey: .remoteID)
         try container.encode(source, forKey: .source)
         try container.encode(userInfo, forKey: .userInfo)
     }
@@ -159,14 +152,17 @@ public struct OCKOutcomeValue: Codable, Equatable, OCKObjectCompatible, OCKLocal
     /// The underlying value as a date.
     public var dateValue: Date? { return value as? Date }
 
+    /// The index can be used to track the order or arrangement of outcomes values, when relevant.
+    public var index: Int?
+
     // MARK: OCKObjectCompatible
     public internal(set) var localDatabaseID: OCKLocalVersionID?
-    public internal(set) var createdAt: Date?
-    public internal(set) var updatedAt: Date?
-    public internal(set) var deletedAt: Date?
+    public internal(set) var createdDate: Date?
+    public internal(set) var updatedDate: Date?
+    public internal(set) var schemaVersion: OCKSemanticVersion?
     public var groupIdentifier: String?
     public var tags: [String]?
-    public var externalID: String?
+    public var remoteID: String?
     public var source: String?
     public var userInfo: [String: String]?
     public var asset: String?
@@ -189,15 +185,22 @@ public struct OCKOutcomeValue: Codable, Equatable, OCKObjectCompatible, OCKLocal
 
     public static func == (lhs: OCKOutcomeValue, rhs: OCKOutcomeValue) -> Bool {
         return lhs.localDatabaseID == rhs.localDatabaseID &&
-            lhs.externalID == rhs.externalID &&
+            lhs.remoteID == rhs.remoteID &&
             lhs.userInfo == rhs.userInfo &&
-            lhs.integerValue == rhs.integerValue &&
-            lhs.doubleValue == rhs.doubleValue &&
-            lhs.booleanValue == rhs.booleanValue &&
-            lhs.stringValue == rhs.stringValue &&
-            lhs.dataValue == rhs.dataValue &&
-            lhs.dateValue == rhs.dateValue &&
+            lhs.hasSameValueAs(rhs) &&
             lhs.asset == rhs.asset &&
-            lhs.kind == rhs.kind
+            lhs.kind == rhs.kind &&
+            lhs.index == rhs.index
+    }
+
+    public func hasSameValueAs(_ other: OCKOutcomeValue) -> Bool {
+        switch type {
+        case .binary: return dataValue == other.dataValue
+        case .boolean: return booleanValue == other.booleanValue
+        case .date: return dateValue == other.dateValue
+        case .double: return doubleValue == other.doubleValue
+        case .integer: return integerValue == other.integerValue
+        case .text: return stringValue == other.stringValue
+        }
     }
 }

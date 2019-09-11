@@ -34,6 +34,7 @@ import Foundation
 public enum OCKPatientAnchor {
     case patientIdentifiers(_ identifiers: [String])
     case patientVersions(_ versionIDs: [OCKLocalVersionID])
+    case patientRemoteIDs(_ remoteIDs: [String])
 }
 
 /// A query that limits which patients will be returned when fetching.
@@ -42,7 +43,7 @@ public struct OCKPatientQuery: OCKDateIntervalQueryable {
         case groupIdentifier(ascending: Bool)
         case givenName(ascending: Bool)
         case familyName(ascending: Bool)
-        case effectiveAt(ascending: Bool)
+        case effectiveDate(ascending: Bool)
     }
 
     public var start: Date

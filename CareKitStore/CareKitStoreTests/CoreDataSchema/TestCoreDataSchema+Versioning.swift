@@ -47,21 +47,21 @@ class TestCoreDataSchemaWithVersioning: XCTestCase {
         patient1.name = OCKCDPersonName(context: store.context)
         patient1.name.familyName = "Frost1"
         patient1.name.givenName = "Amy"
-        patient1.effectiveAt = Date()
+        patient1.effectiveDate = Date()
 
         let patient2 = OCKCDPatient(context: store.context)
         patient2.identifier = "my_id"
         patient2.name = OCKCDPersonName(context: store.context)
         patient2.name.familyName = "Foss2"
         patient2.name.givenName = "Christopher"
-        patient2.effectiveAt = Date()
+        patient2.effectiveDate = Date()
 
         let patient3 = OCKCDPatient(context: store.context)
         patient3.identifier = "my_id"
         patient3.name = OCKCDPersonName(context: store.context)
         patient3.name.familyName = "Gosler3"
         patient3.name.givenName = "Jared"
-        patient3.effectiveAt = Date()
+        patient3.effectiveDate = Date()
 
         XCTAssert(patient1.previous == nil)
         XCTAssert(patient1.next == nil)
@@ -106,10 +106,22 @@ class TestCoreDataSchemaWithVersioning: XCTestCase {
         patient.name = OCKCDPersonName(context: store.context)
         patient.name.nickname = "Wiggle Bogey"
         patient.userInfo = ["name": "Wiggle Bogey"]
-        patient.effectiveAt = Date()
+        patient.effectiveDate = Date()
         XCTAssertNoThrow(try store.context.save())
 
         guard let fetchedPatient = try store.context.existingObject(with: patient.objectID) as? OCKCDPatient else { XCTFail("Bad type"); return }
         XCTAssert(fetchedPatient.userInfo?["name"] == "Wiggle Bogey")
+    }
+
+    func testSchemaVersionIsAutomaticallyAttached() {
+        let patient = OCKCDPatient(context: store.context)
+        patient.identifier = "my_id"
+        patient.name = OCKCDPersonName(context: store.context)
+        patient.name.familyName = "Frost1"
+        patient.name.givenName = "Amy"
+        patient.effectiveDate = Date()
+
+        XCTAssertNoThrow(try store.context.save())
+        XCTAssertNotNil(patient.schemaVersion)
     }
 }

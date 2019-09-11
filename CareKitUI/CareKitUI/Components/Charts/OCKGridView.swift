@@ -30,15 +30,13 @@
 
 import UIKit
 
-internal class OCKGridView: UIView, OCKCartesianGridProtocol {
+class OCKGridView: UIView, OCKCartesianGridProtocol {
     override class var layerClass: AnyClass {
         return OCKGridLayer.self
     }
 
     private var gridLayer: OCKGridLayer {
-        
         return layer as! OCKGridLayer
-        
     }
 
     var numberOfDivisions: Int {

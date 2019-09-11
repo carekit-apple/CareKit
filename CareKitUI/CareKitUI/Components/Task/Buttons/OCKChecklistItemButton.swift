@@ -37,12 +37,14 @@ import UIKit
 ///     | [Title]           [Icon] |
 ///     +--------------------------+
 ///
-internal class OCKChecklistItemButton: OCKButton {
+class OCKChecklistItemButton: OCKButton {
     // MARK: Properties
 
     private enum Constants {
-        static let marginFactor: CGFloat = 1.8
+        static let marginFactor: CGFloat = 1.5
     }
+
+    private var circleButtonHeightConstraint: NSLayoutConstraint?
 
     override var titleButton: OCKButton? { _titleButton }
     override var imageButton: OCKButton? { circleButton }
@@ -51,60 +53,62 @@ internal class OCKChecklistItemButton: OCKButton {
     private let _titleButton: OCKButton = {
         let button = OCKButton(titleTextStyle: .subheadline, titleWeight: .regular)
         button.isUserInteractionEnabled = false
-        button.setTitle(OCKStyle.strings.event, for: .normal)
-        button.setTitle(OCKStyle.strings.event, for: .selected)
-        button.setTitleColor(.black, for: .normal)
-        button.setTitleColor(.lightGray, for: .selected)
-        button.fitsSizeToTitleLabel = true
+        button.setTitle(OCKStrings.event, for: .normal)
+        button.setTitle(OCKStrings.event, for: .selected)
         button.contentHorizontalAlignment = .left
+        button.sizesToFitTitleLabel = true
         return button
     }()
 
     /// The icon embedded inside this button.
-    private let circleButton: OCKButton = {
-        let button = OCKCircleButton(checkmarkPointSize: .small)
+    private let circleButton: OCKCircleButton = {
+        let button = OCKCircleButton()
         button.isUserInteractionEnabled = false
         return button
     }()
 
-    // MARK: Life Cycle
-
-    /// Create an instance of an event icon button.
-    override internal init() {
-        super.init()
-        setup()
-    }
+    private let contentStackView: OCKStackView = {
+        let stackView = OCKStackView()
+        stackView.axis = .horizontal
+        stackView.isUserInteractionEnabled = false
+        return stackView
+    }()
 
     // MARK: Methods
 
-    private func setup() {
+    override func setup() {
+        super.setup()
         addSubviews()
         constrainSubviews()
     }
 
     private func addSubviews() {
-        addSubview(_titleButton)
-        addSubview(circleButton)
+        [_titleButton, circleButton].forEach { contentStackView.addArrangedSubview($0) }
+        addSubview(contentStackView)
     }
 
     private func constrainSubviews() {
-        [self, _titleButton, circleButton].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
-
+        [contentStackView, circleButton].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
+        circleButtonHeightConstraint = circleButton.heightAnchor.constraint(equalToConstant: 0)
+        _titleButton.setContentHuggingPriority(.defaultLow, for: .horizontal)
         NSLayoutConstraint.activate([
-            _titleButton.leadingAnchor.constraint(equalTo: leadingAnchor),
-            _titleButton.topAnchor.constraint(greaterThanOrEqualTo: topAnchor, constant: directionalLayoutMargins.top * Constants.marginFactor),
-            _titleButton.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor,
-                                                 constant: -directionalLayoutMargins.bottom * Constants.marginFactor),
-            _titleButton.centerYAnchor.constraint(equalTo: centerYAnchor),
+            circleButtonHeightConstraint!,
+            circleButton.widthAnchor.constraint(equalTo: circleButton.heightAnchor),
 
-            circleButton.leadingAnchor.constraint(equalTo: _titleButton.trailingAnchor, constant: directionalLayoutMargins.leading * 2),
-            circleButton.topAnchor.constraint(greaterThanOrEqualTo: topAnchor, constant: directionalLayoutMargins.top * Constants.marginFactor),
-            circleButton.trailingAnchor.constraint(equalTo: trailingAnchor),
-            circleButton.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor,
-                                                 constant: -directionalLayoutMargins.bottom * Constants.marginFactor),
-            circleButton.centerYAnchor.constraint(equalTo: centerYAnchor),
-            circleButton.heightAnchor.constraint(equalToConstant: OCKStyle.dimension.buttonHeight3),
-            circleButton.widthAnchor.constraint(equalTo: circleButton.heightAnchor)
+            contentStackView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            contentStackView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            contentStackView.topAnchor.constraint(equalTo: layoutMarginsGuide.topAnchor),
+            contentStackView.bottomAnchor.constraint(equalTo: layoutMarginsGuide.bottomAnchor)
         ])
+    }
+
+    override func styleDidChange() {
+        super.styleDidChange()
+        let cachedStyle = style()
+        _titleButton.setTitleColor(cachedStyle.color.label, for: .normal)
+        _titleButton.setTitleColor(cachedStyle.color.secondaryLabel, for: .selected)
+        circleButtonHeightConstraint?.constant = cachedStyle.dimension.buttonHeight3
+        circleButton.checkmarkHeight = cachedStyle.dimension.iconHeight5
+        directionalLayoutMargins = cachedStyle.dimension.directionalInsets1
     }
 }

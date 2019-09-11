@@ -103,7 +103,7 @@ extension OCKStore {
         context.perform {
             do {
                 let deletedPlans = try self.performUnversionedUpdate(values: plans) { _, persistablePlan in
-                    persistablePlan.deletedAt = Date()
+                    persistablePlan.deletedDate = Date()
                 }.map(self.makePlan)
 
                 try self.context.save()
@@ -134,8 +134,8 @@ extension OCKStore {
     /// - Remark: This method is intended to create a value type struct from a *persisted* NSManagedObject. Calling this method with an
     /// object that is not yet commited is a programmer error.
     private func makePlan(from object: OCKCDCarePlan) -> OCKCarePlan {
-        assert(object.versionID != nil, "Don't this method with an object that isn't saved yet")
-        var plan = OCKCarePlan(identifier: object.identifier, title: object.title, patientID: object.patient?.versionID)
+        assert(object.localDatabaseID != nil, "Don't this method with an object that isn't saved yet")
+        var plan = OCKCarePlan(identifier: object.identifier, title: object.title, patientID: object.patient?.localDatabaseID)
         plan.copyVersionedValues(from: object)
         return plan
     }
@@ -151,7 +151,7 @@ extension OCKStore {
         return NSCompoundPredicate(andPredicateWithSubpredicates: [
             try buildSubPredicate(for: anchor),
             buildSubPredicate(for: query),
-            NSPredicate(format: "%K == nil", #keyPath(OCKCDVersionedObject.deletedAt))
+            NSPredicate(format: "%K == nil", #keyPath(OCKCDVersionedObject.deletedDate))
         ])
     }
 
@@ -162,10 +162,15 @@ extension OCKStore {
             return NSPredicate(format: "%K IN %@", #keyPath(OCKCDVersionedObject.identifier), planIdentifiers)
         case .carePlanVersions(let planVersionIDs):
             return NSPredicate(format: "self IN %@", try planVersionIDs.map(objectID))
+        case .carePlanRemoteIDs(let planRemoteIDs):
+            return NSPredicate(format: "%K IN %@", #keyPath(OCKCDVersionedObject.remoteID), planRemoteIDs)
+
         case .patientVersions(let patientVersionIDs):
             return NSPredicate(format: "%K IN %@", #keyPath(OCKCDCarePlan.patient), try patientVersionIDs.map(objectID))
         case .patientIdentifiers(let patientIdentifiers):
             return NSPredicate(format: "%K IN %@", #keyPath(OCKCDCarePlan.patient.identifier), patientIdentifiers)
+        case .patientRemoteIDs(let patientRemoteIDs):
+            return NSPredicate(format: "%K IN %@", #keyPath(OCKCDCarePlan.patient.remoteID), patientRemoteIDs)
         }
     }
 
@@ -192,7 +197,7 @@ extension OCKStore {
         guard let orders = query?.sortDescriptors else { return [] }
         return orders.map { order -> NSSortDescriptor in
             switch order {
-            case .effectiveAt(let ascending): return NSSortDescriptor(keyPath: \OCKCDCarePlan.effectiveAt, ascending: ascending)
+            case .effectiveDate(let ascending): return NSSortDescriptor(keyPath: \OCKCDCarePlan.effectiveDate, ascending: ascending)
             case .title(let ascending): return NSSortDescriptor(keyPath: \OCKCDCarePlan.title, ascending: ascending)
             }
         }

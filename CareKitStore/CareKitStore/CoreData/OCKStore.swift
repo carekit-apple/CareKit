@@ -171,13 +171,14 @@ open class OCKStore: OCKStoreProtocol {
             return OCKScheduleElement(start: object.startDate, end: object.endDate,
                                       interval: object.interval, text: object.text,
                                       targetValues: object.targetValues.map(makeValue),
-                                      isAllDay: object.isAllDay)
+                                      duration: object.duration, isAllDay: object.isAllDay)
         })
     }
 
     internal func makeValue(from object: OCKCDOutcomeValue) -> OCKOutcomeValue {
         assert(object.localDatabaseID != nil, "You shouldn't be calling this method with an object that hasn't been saved yet!")
         var value = OCKOutcomeValue(object.value, units: object.units)
+        value.index = object.index?.intValue
         value.copyCommonValues(from: object)
         return value
     }

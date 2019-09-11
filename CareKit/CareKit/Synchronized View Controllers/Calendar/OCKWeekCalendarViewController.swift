@@ -32,15 +32,45 @@ import CareKitStore
 import CareKitUI
 import UIKit
 
-internal class OCKWeekCalendarViewController<Store: OCKStoreProtocol>: OCKCalendarViewController<Store> {
-    var calendarWeekView: OCKCalendarWeekView {
-        guard let view = view as? OCKCalendarWeekView else { fatalError("Unexpected type") }
-        return view
+/// View controller that is synchronized with a list of completion states. Shows an `OCKCalendarWeekView` and handles user interactions
+/// automatically.
+open class OCKWeekCalendarViewController<Store: OCKStoreProtocol>: OCKCalendarViewController<OCKCalendarWeekView, Store> {
+    // MARK: Properties
+
+    /// The type of the view displayed by the view controller.
+    public typealias View = OCKCalendarWeekView
+
+    // MARK: Life Cycle
+
+    /// Create a view controller that queries for and displays completion states.
+    /// - Parameter storeManager: A store manager that will be used to provide synchronization.
+    /// - Parameter date: Any date in the date interval to display.
+    /// - Parameter aggregator: Used to aggregate events to compute completion.
+    override public init(storeManager: OCKSynchronizedStoreManager<Store>, date: Date, aggregator: OCKAdherenceAggregator<Store.Event>) {
+        super.init(storeManager: storeManager, date: date, aggregator: aggregator)
     }
 
-    init(storeManager: OCKSynchronizedStoreManager<Store>?, adherenceQuery: OCKAdherenceQuery<Store.Event>) {
-        super.init(storeManager: storeManager,
-                   adherenceQuery: adherenceQuery,
-                   loadDefaultView: { OCKBindableCalendarWeekView(weekOf: Date()) })
+    // MARK: Methods
+
+    /// Update the view whenever the view model changes.
+    /// - Parameter view: The view to update.
+    /// - Parameter context: The data associated with the updated state.
+    override open func updateView(_ view: OCKCalendarWeekView, context: OCKSynchronizationContext<[OCKCompletionRingButton.CompletionState]>) {
+        // clear the view
+        guard let states = context.viewModel else {
+            view.completionRingButtons.forEach { $0.setState(.empty, animated: true) }
+            return
+        }
+
+        // Else update the ring states
+        guard states.count == view.completionRingButtons.count else {
+            fatalError("Number of states and completions rings do not match")
+        }
+        view.completionRingButtons.enumerated().forEach { $1.setState(states[$0], animated: true) }
+    }
+
+    /// Create an instance of the view to be displayed.
+    override open func makeView() -> OCKCalendarWeekView {
+        return .init(weekOf: date)
     }
 }

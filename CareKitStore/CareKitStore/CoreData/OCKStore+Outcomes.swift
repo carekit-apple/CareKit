@@ -156,6 +156,7 @@ public extension OCKStore {
         object.value = value.value
         object.kind = value.kind
         object.units = value.units
+        object.index = value.index == nil ? nil : NSNumber(value: value.index!)
         return object
     }
 
@@ -164,7 +165,7 @@ public extension OCKStore {
     private func makeOutcome(from object: OCKCDOutcome) -> OCKOutcome {
         assert(object.localDatabaseID != nil, "You shouldn't be calling this method with an object that hasn't been saved yet!")
         let responses = object.values.map(makeValue)
-        var outcome = OCKOutcome(taskID: object.task?.versionID, taskOccurenceIndex: object.taskOccurenceIndex, values: responses)
+        var outcome = OCKOutcome(taskID: object.task?.localDatabaseID, taskOccurenceIndex: object.taskOccurenceIndex, values: responses)
         outcome.copyCommonValues(from: object)
         return outcome
     }
@@ -180,10 +181,15 @@ public extension OCKStore {
         switch anchor {
         case .taskIdentifiers(let taskIdentifiers):
             return NSPredicate(format: "%K IN %@", #keyPath(OCKCDOutcome.task.identifier), taskIdentifiers)
-        case .outcomeVersions(let outcomeVersionedLocalIDs):
-            return NSPredicate(format: "self IN %@", try outcomeVersionedLocalIDs.map { try objectID(for: $0) })
         case .taskVersions(let taskVersionedLocalIDs):
             return NSPredicate(format: "%K IN %@", #keyPath(OCKCDOutcome.task), try taskVersionedLocalIDs.map { try objectID(for: $0) })
+        case .taskRemoteIDs(let remoteIDs):
+            return NSPredicate(format: "%K IN %@", #keyPath(OCKCDOutcome.task.remoteID), remoteIDs)
+
+        case .outcomeVersions(let outcomeVersionedLocalIDs):
+            return NSPredicate(format: "self IN %@", try outcomeVersionedLocalIDs.map { try objectID(for: $0) })
+        case .outcomeRemoteIDs(let remoteIDs):
+            return NSPredicate(format: "%K IN %@", #keyPath(OCKCDVersionedObject.remoteID), remoteIDs)
         }
     }
 

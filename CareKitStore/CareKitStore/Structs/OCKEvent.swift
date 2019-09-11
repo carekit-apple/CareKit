@@ -73,6 +73,12 @@ public struct OCKEvent<
         return OCKEvent<OCKTask, OCKOutcome>(task: task.convert(), outcome: outcome?.convert(), scheduleEvent: scheduleEvent)
     }
 
+    public init(_ value: OCKEvent<OCKTask, OCKOutcome>) {
+        self.task = Task(value.task)
+        self.outcome = value.outcome == nil ? nil : Outcome(value.outcome!)
+        self.scheduleEvent = value.scheduleEvent
+    }
+
     public func isAssociated(with other: OCKEvent<Task, Outcome>) -> Bool {
         return task.isAssociated(with: other.task) && scheduleEvent == other.scheduleEvent
     }

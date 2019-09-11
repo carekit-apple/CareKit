@@ -1,21 +1,21 @@
 /*
  Copyright (c) 2019, Apple Inc. All rights reserved.
- 
+
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
- 
+
  1.  Redistributions of source code must retain the above copyright notice, this
  list of conditions and the following disclaimer.
- 
+
  2.  Redistributions in binary form must reproduce the above copyright notice,
  this list of conditions and the following disclaimer in the documentation and/or
  other materials provided with the distribution.
- 
+
  3. Neither the name of the copyright holder(s) nor the names of any contributors
  may be used to endorse or promote products derived from this software without
  specific prior written permission. No license is granted to the trademarks of
  the copyright holders even if such marks are included in this software.
- 
+
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -51,21 +51,12 @@ import UIKit
 ///     |   [instructions]                                      |
 ///     +-------------------------------------------------------+
 ///
-open class OCKGridTaskView: UIView, OCKCardable, OCKCollapsible, OCKCollapsibleView {
-    // MARK: OCKCollapsibleView
+open class OCKGridTaskView: OCKView, OCKTaskDisplayable, UICollectionViewDelegate {
+    // MARK: Properties
 
-    internal var collapsedViews: Set<UIView> { [collapsedView, collapserButton] }
-    internal var expandedViews: Set<UIView> { [headerView, instructionsLabel, collectionView, spacerView] }
-    internal var completeViews: Set<UIView> { [headerView, instructionsLabel, collectionView, collapserButton, spacerView] }
-    internal var cardView: UIView { return self }
-    internal var collapsedState: OCKCollapsibleState = .expanded
+    let contentView = OCKView()
 
-    internal let collapserButton: OCKButton = {
-        let collapserButton = OCKCollapserButton()
-        collapserButton.isHidden = true
-        collapserButton.alpha = 0
-        return collapserButton
-    }()
+    private lazy var cardAssembler = OCKCardAssembler(cardView: self, contentView: contentView)
 
     /// The vertical stack view that holds the main content in the view.
     public let contentStackView: OCKStackView = {
@@ -74,24 +65,8 @@ open class OCKGridTaskView: UIView, OCKCardable, OCKCollapsible, OCKCollapsibleV
         return stack
     }()
 
-    // MARK: Properties
-
-    private let contentView: UIView = {
-        let view = UIView()
-        view.clipsToBounds = true
-        return view
-    }()
-
-    internal var shouldCollapse: Bool = true
-
-    private let spacerView = UIView()
-
-    internal let collapsedView: OCKCollapsedView = {
-        let collapsedView = OCKCollapsedView()
-        collapsedView.isHidden = true
-        collapsedView.alpha = 0
-        return collapsedView
-    }()
+    /// Handles events related to an `OCKTaskDisplayable` object.
+    public weak var delegate: OCKTaskViewDelegate?
 
     /// A header view that shows a separator and a `detailDisclosureImage`.
     public let headerView = OCKHeaderView {
@@ -100,7 +75,7 @@ open class OCKGridTaskView: UIView, OCKCardable, OCKCollapsible, OCKCollapsibleV
     }
 
     /// The default cell identifier that is registered for the collection view.
-    public let defaultCellIdentifier = "outcome-value"
+    public static let defaultCellIdentifier = "outcome-value"
 
     /// The default cell type that is used for the `collectionView`.
     public typealias DefaultCellType = OCKGridTaskCell
@@ -113,7 +88,8 @@ open class OCKGridTaskView: UIView, OCKCardable, OCKCollapsible, OCKCollapsibleV
         layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
 
         let collectionView = OCKSelfSizingCollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.backgroundColor = .clear
+        collectionView.backgroundColor = nil
+        collectionView.register(OCKGridTaskView.DefaultCellType.self, forCellWithReuseIdentifier: OCKGridTaskView.defaultCellIdentifier)
         collectionView.showsVerticalScrollIndicator = false
         return collectionView
     }()
@@ -121,85 +97,68 @@ open class OCKGridTaskView: UIView, OCKCardable, OCKCollapsible, OCKCollapsibleV
     /// Multi-line label below the `collectionView`.
     public let instructionsLabel: OCKLabel = {
         let label = OCKLabel(textStyle: .caption1, weight: .regular)
-        label.textColor = .lightGray
         label.numberOfLines = 0
         return label
     }()
 
-    // MARK: Life Cycle
-
-    public init() {
-        super.init(frame: .zero)
-        setup()
-    }
-
-    public required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        setup()
-    }
-
     // MARK: Methods
 
-    private func setup() {
+    override func setup() {
+        super.setup()
         addSubviews()
         styleSubviews()
         constrainSubviews()
+        setupGestures()
+        collectionView.delegate = self
+    }
 
-        // setup targets for collapsing the view
-        collapserButton.addTarget(self, action: #selector(toggleCollapse), for: .touchUpInside)
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(toggleCollapse))
-        collapsedView.addGestureRecognizer(tapGesture)
-
-        collectionView.register(DefaultCellType.self, forCellWithReuseIdentifier: defaultCellIdentifier)
+    private func setupGestures() {
+        let tappedViewGesture = UITapGestureRecognizer(target: self, action: #selector(didTapView))
+        headerView.addGestureRecognizer(tappedViewGesture)
     }
 
     private func addSubviews() {
         addSubview(contentView)
         contentView.addSubview(contentStackView)
-        [headerView, collectionView, instructionsLabel,
-         spacerView, collapsedView, collapserButton].forEach { contentStackView.addArrangedSubview($0) }
+        [headerView, collectionView, instructionsLabel].forEach { contentStackView.addArrangedSubview($0) }
     }
 
     private func styleSubviews() {
-        preservesSuperviewLayoutMargins = true
-        enableCardStyling(true)
-
-        let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout
-        layout?.minimumInteritemSpacing = directionalLayoutMargins.top * 1.5
-        layout?.minimumLineSpacing = directionalLayoutMargins.top * 1.5
-
-        contentStackView.spacing = directionalLayoutMargins.top * 2
         contentStackView.setCustomSpacing(0, after: instructionsLabel)
-        contentStackView.setCustomSpacing(0, after: spacerView)
     }
 
     private func constrainSubviews() {
-        [contentView, contentStackView, spacerView].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
-        NSLayoutConstraint.activate([
-            spacerView.heightAnchor.constraint(equalToConstant: directionalLayoutMargins.top * 2),
-
-            contentView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: directionalLayoutMargins.leading * 2),
-            contentView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -directionalLayoutMargins.leading * 2),
-            contentView.topAnchor.constraint(equalTo: topAnchor, constant: directionalLayoutMargins.leading * 2),
-            bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-
-            contentStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            contentStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            contentStackView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            contentView.bottomAnchor.constraint(equalTo: contentStackView.bottomAnchor)
-        ])
+        [contentView, contentStackView].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
+        NSLayoutConstraint.activate(
+            contentStackView.constraints(equalTo: contentView) +
+            contentView.constraints(equalTo: layoutMarginsGuide))
     }
 
     @objc
-    private func toggleCollapse() {
-        let newState: OCKCollapsibleState = collapsedState == .collapsed ? .complete : .collapsed
-        setCollapsedState(newState, animated: true)
+    private func didTapView() {
+        delegate?.didSelectTaskView(self)
     }
 
-    // MARK: OCKCollapsible
+    override open func styleDidChange() {
+        super.styleDidChange()
+        let cachedStyle = style()
+        cardAssembler.enableCardStyling(true, style: cachedStyle)
+        instructionsLabel.textColor = cachedStyle.color.secondaryLabel
+        contentStackView.spacing = cachedStyle.dimension.directionalInsets1.top
+        directionalLayoutMargins = cachedStyle.dimension.directionalInsets1
 
-    internal func setCollapsedState(_ state: OCKCollapsibleState, animated: Bool) {
-        guard shouldCollapse else { return }
-        setViewCollapsedState(state, animated: animated)
+        let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout
+        let spacing = cachedStyle.dimension.directionalInsets1.top
+        layout?.minimumInteritemSpacing = spacing
+        layout?.minimumLineSpacing = spacing
+    }
+
+    // MARK: - UICollectionViewDelegate
+
+    open func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let cell = collectionView.cellForItem(at: indexPath) as? OCKGridTaskView.DefaultCellType else {
+            fatalError("Invalid cell type")
+        }
+        delegate?.taskView(self, didCompleteEvent: !cell.completionButton.isSelected, at: indexPath.row, sender: cell)
     }
 }

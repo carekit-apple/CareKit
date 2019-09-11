@@ -45,12 +45,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-
         let careViewController = CareViewController(storeManager: manager)
 
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.rootViewController = UINavigationController(rootViewController: careViewController)
-        window?.tintColor = #colorLiteral(red: 0.9960784314, green: 0.3725490196, blue: 0.368627451, alpha: 1)
+        window?.tintColor = UIColor { traitCollection -> UIColor in
+            return traitCollection.userInterfaceStyle == .light ? #colorLiteral(red: 0.9960784314, green: 0.3725490196, blue: 0.368627451, alpha: 1) : #colorLiteral(red: 0.8627432641, green: 0.2630574384, blue: 0.2592858295, alpha: 1)
+        }
         window?.makeKeyAndVisible()
 
         return true

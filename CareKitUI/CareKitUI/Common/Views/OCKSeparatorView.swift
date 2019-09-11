@@ -31,33 +31,40 @@
 import Foundation
 import UIKit
 
-/// Separator view.
-open class OCKSeparatorView: UIView {
-	// MARK: Life cycle
+/// Horizontal separator view.
+open class OCKSeparatorView: OCKView {
+    // MARK: Properties
 
-    public init() {
-        super.init(frame: .zero)
-        setup()
-    }
+    private var heightConstraint: NSLayoutConstraint?
 
-    public required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        setup()
-    }
+    // MARK: Methods
 
-	// MARK: Methods
-
-    private func setup() {
-        styleSubviews()
+    override func setup() {
+        super.setup()
         constrainSubviews()
-    }
-
-    private func styleSubviews() {
-        backgroundColor = OCKStyle.color.separator
+        styleDidChange()
     }
 
     private func constrainSubviews() {
         translatesAutoresizingMaskIntoConstraints = false
-        heightAnchor.constraint(equalToConstant: OCKStyle.dimension.separatorHeight).isActive = true
+        heightConstraint = heightAnchor.constraint(equalToConstant: 0)
+        heightConstraint?.isActive = true
+    }
+
+    override open func didMoveToSuperview() {
+        super.didMoveToSuperview()
+        styleDidChange()
+    }
+
+    override open func removeFromSuperview() {
+        super.removeFromSuperview()
+        styleChildren()
+    }
+
+    override open func styleDidChange() {
+        super.styleDidChange()
+        let cachedStyle = style()
+        backgroundColor = cachedStyle.color.separator
+        heightConstraint?.constant = cachedStyle.dimension.separatorHeight
     }
 }

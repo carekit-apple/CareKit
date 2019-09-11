@@ -37,7 +37,7 @@ public extension OCKStoreProtocol {
                       completion: @escaping OCKResultClosure<Patient>) {
         var query = OCKPatientQuery(for: Date())
         query.limit = 1
-        query.sortDescriptors = [.effectiveAt(ascending: true)]
+        query.sortDescriptors = [.effectiveDate(ascending: true)]
         fetchPatients(.patientIdentifiers([identifier]), query: query, queue: queue, completion:
             chooseFirst(then: completion, replacementError: .fetchFailed(reason: "No patient with identifier: \(identifier)")))
     }
@@ -62,7 +62,7 @@ public extension OCKStoreProtocol {
     func fetchCarePlan(withIdentifier identifier: String, queue: DispatchQueue = .main, completion: @escaping OCKResultClosure<Plan>) {
         var query = OCKCarePlanQuery(for: Date())
         query.limit = 1
-        query.sortDescriptors = [.effectiveAt(ascending: true)]
+        query.sortDescriptors = [.effectiveDate(ascending: true)]
         fetchCarePlans(.carePlanIdentifiers([identifier]), query: query, queue: queue, completion:
             chooseFirst(then: completion, replacementError: .fetchFailed(reason: "No care plan with identifier: \(identifier)")))
     }
@@ -88,7 +88,7 @@ public extension OCKStoreProtocol {
                       completion: @escaping OCKResultClosure<Contact>) {
         var query = OCKContactQuery(for: Date())
         query.limit = 1
-        query.sortDescriptors = [.effectiveAt(ascending: true)]
+        query.sortDescriptors = [.effectiveDate(ascending: true)]
         fetchContacts(.contactIdentifier([identifier]), query: query, queue: queue, completion:
             chooseFirst(then: completion, replacementError: .fetchFailed(reason: "No contact with identifier: \(identifier)")))
     }
@@ -112,7 +112,7 @@ public extension OCKStoreProtocol {
 
     func fetchTask(withIdentifier identifier: String, queue: DispatchQueue = .main, completion: @escaping OCKResultClosure<Task>) {
         var query = OCKTaskQuery(for: Date())
-        query.sortDescriptors = [.effectiveAt(ascending: true)]
+        query.sortDescriptors = [.effectiveDate(ascending: true)]
         query.limit = 1
         fetchTasks(.taskIdentifiers([identifier]), query: query, queue: queue, completion:
             chooseFirst(then: completion, replacementError: .fetchFailed(reason: "No task with identifier: \(identifier)")))

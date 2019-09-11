@@ -51,7 +51,7 @@ public extension OCKStoreProtocol {
                      completion: @escaping OCKResultClosure<[OCKEvent<Task, Outcome>]>) {
         var taskQuery = OCKTaskQuery(from: query)
         taskQuery.limit = 1
-        taskQuery.sortDescriptors = [.effectiveAt(ascending: true)]
+        taskQuery.sortDescriptors = [.effectiveDate(ascending: true)]
 
         fetchTasks(.taskIdentifiers([taskIdentifier]), query: taskQuery, queue: queue, completion: chooseFirst(then: { result in
             switch result {
@@ -62,7 +62,7 @@ public extension OCKStoreProtocol {
                     completion(result)
                 }
             }
-        }, replacementError: .fetchFailed(reason: "Not taks with identifier: \(taskIdentifier) for query: \(taskQuery)")))
+        }, replacementError: .fetchFailed(reason: "No task with identifier: \(taskIdentifier) for query: \(taskQuery)")))
     }
 
     func fetchEvent(withTaskVersionID taskVersionID: OCKLocalVersionID, occurenceIndex: Int,
@@ -95,7 +95,7 @@ public extension OCKStoreProtocol {
                              queue: DispatchQueue = .main, completion: @escaping (Result<[OCKEvent<Task, Outcome>], OCKStoreError>) -> Void) {
         let converted = task.convert()
         guard let versionID = converted.localDatabaseID else { completion(.failure(.fetchFailed(reason: "Task didn't have a versionID"))); return }
-        let start = max(converted.effectiveAt, query.start)
+        let start = max(converted.effectiveDate, query.start)
         let end = converted.schedule.end == nil ? query.end : min(converted.schedule.end!, query.end)
         let outcomeQuery = OCKOutcomeQuery(start: start, end: end)
         let scheduleEvents = converted.schedule.events(from: start, to: end)
@@ -109,8 +109,8 @@ public extension OCKStoreProtocol {
                     switch result {
                     case .failure(let error): completion(.failure(error))
                     case .success(let task):
-                        let nextEndDate = converted.effectiveAt
-                        let nextStartDate = max(query.start, task.convert().effectiveAt)
+                        let nextEndDate = converted.effectiveDate
+                        let nextStartDate = max(query.start, task.convert().effectiveDate)
                         let nextQuery = OCKEventQuery(start: nextStartDate, end: nextEndDate)
                         self.fetchEvents(task: task, query: nextQuery, previousEvents: events, queue: queue, completion: { result in
                             completion(result)

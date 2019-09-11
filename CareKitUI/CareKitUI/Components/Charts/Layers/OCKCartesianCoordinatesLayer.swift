@@ -31,12 +31,12 @@
 import UIKit
 
 /// Base class that provides graph coordinates for use in plotting numeric data.
-internal class OCKCartesianCoordinatesLayer: CALayer, OCKSinglePlotable {
-    internal static var defaultWidth: CGFloat { return 10.0 }
-    internal static var defaultHeight: CGFloat { return 10.0 }
+class OCKCartesianCoordinatesLayer: CALayer, OCKSinglePlotable {
+    static var defaultWidth: CGFloat { return 10.0 }
+    static var defaultHeight: CGFloat { return 10.0 }
 
     /// Data points for the graph.
-    internal var dataPoints: [CGPoint] = [] {
+    var dataPoints: [CGPoint] = [] {
         didSet {
             orderedDataPoints = dataPoints.sorted { $0.x < $1.x }
             let oldPoints = points
@@ -50,9 +50,9 @@ internal class OCKCartesianCoordinatesLayer: CALayer, OCKSinglePlotable {
         }
     }
 
-    internal func animateInGraphCoordinates(from oldPoints: [CGPoint], to newPoints: [CGPoint]) {}
+    func animateInGraphCoordinates(from oldPoints: [CGPoint], to newPoints: [CGPoint]) {}
 
-    internal func setPlotBounds(rect: CGRect) {
+    func setPlotBounds(rect: CGRect) {
         xMinimum = rect.minX
         xMaximum = rect.maxX
         yMinimum = rect.minY
@@ -60,32 +60,32 @@ internal class OCKCartesianCoordinatesLayer: CALayer, OCKSinglePlotable {
     }
 
     /// Minimum x value dislpayed in the graph.
-    internal var xMinimum: CGFloat? {
+    var xMinimum: CGFloat? {
         didSet { setNeedsLayout() }
     }
 
     /// Maximum x value displayed in the graph.
-    internal var xMaximum: CGFloat? {
+    var xMaximum: CGFloat? {
         didSet { setNeedsLayout() }
     }
 
     /// Minimum y values displayed in the graph.
-    internal var yMinimum: CGFloat? {
+    var yMinimum: CGFloat? {
         didSet { setNeedsLayout() }
     }
 
     /// Maximum y value displayed in the graph.
-    internal var yMaximum: CGFloat? {
+    var yMaximum: CGFloat? {
         didSet { setNeedsLayout() }
     }
 
     /// Default width of the graph.
-    internal var defaultWidth: CGFloat {
+    var defaultWidth: CGFloat {
         return 100
     }
 
     /// Default height of the graph.
-    internal var defaultHeight: CGFloat {
+    var defaultHeight: CGFloat {
         return 100
     }
 
@@ -93,12 +93,12 @@ internal class OCKCartesianCoordinatesLayer: CALayer, OCKSinglePlotable {
     private (set) var orderedDataPoints: [CGPoint] = []
 
     /// Create an instance if a graoh layer.
-    override internal init() {
+    override init() {
         super.init()
         setNeedsLayout()
     }
 
-    internal required init?(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         setNeedsLayout()
     }
@@ -116,7 +116,7 @@ internal class OCKCartesianCoordinatesLayer: CALayer, OCKSinglePlotable {
     /// Get the rectangle that will be displayed in graph space.
     ///
     /// - Returns: The rectangle in graph space.
-    internal func graphBounds() -> CGRect {
+    func graphBounds() -> CGRect {
         let xCoords = dataPoints.map { $0.x }
         let xMin = xMinimum ?? xCoords.min() ?? 0
         let xMax = xMaximum ?? xCoords.max() ?? defaultWidth
@@ -134,7 +134,7 @@ internal class OCKCartesianCoordinatesLayer: CALayer, OCKSinglePlotable {
     ///
     /// - Parameter point: The point in screen space.
     /// - Returns: The point in graph space.
-    internal func graphCoordinates(at point: CGPoint) -> CGPoint {
+    func graphCoordinates(at point: CGPoint) -> CGPoint {
         return convert(viewSpacePoints: [point]).first!
     }
 
@@ -144,7 +144,7 @@ internal class OCKCartesianCoordinatesLayer: CALayer, OCKSinglePlotable {
     ///
     /// - Parameter location: The coordinate in screen space.
     /// - Returns: The closest coordinate in graph space, and the correspoing screen coordinate.
-    internal func closestDataPoint(toViewCoordinates location: CGPoint) -> (viewCoordinates: CGPoint, graphCoordinates: CGPoint)? {
+    func closestDataPoint(toViewCoordinates location: CGPoint) -> (viewCoordinates: CGPoint, graphCoordinates: CGPoint)? {
         guard !orderedDataPoints.isEmpty else { return nil }
         let graphCoords = graphCoordinates(at: location)
         let distances = orderedDataPoints.map { point -> CGFloat in

@@ -39,18 +39,36 @@ class RootViewController: UITableViewController {
         static let contactID = "lexi-torres"
     }
 
-    private var storeManager: OCKSynchronizedStoreManager<OCKStore>?
-
-    private enum Sections: String, CaseIterable {
-        case task, event, contact, chart, lists
+    private enum Section: String, CaseIterable {
+        case task, contact, chart, lists
     }
 
-    private enum Lists: String, CaseIterable {
+    private enum TaskStyle: String, CaseIterable {
+        case grid, checklist
+        case simple, instructions, buttonLog = "button log"
+    }
+
+    private enum ContactStyle: String, CaseIterable {
+        case simple, detailed
+    }
+
+    private enum List: String, CaseIterable {
         case tasks, contacts
     }
 
+    var storeManager: OCKSynchronizedStoreManager<OCKStore>? {
+        didSet {
+            dataIsReady = false
+            storeManager?.store.fillWithDummyData { [weak self] in
+                guard let self = self else { return }
+                self.dataIsReady = true
+                self.tableView.reloadData()
+            }
+        }
+    }
+
     private var dataIsReady = false
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -60,42 +78,35 @@ class RootViewController: UITableViewController {
 
         navigationController?.navigationBar.prefersLargeTitles = true
         title = "CareKit Catalog"
-        
-        storeManager = OCKSynchronizedStoreManager(wrapping: OCKStore(name: "catalog", type: .inMemory))
-        storeManager?.store.fillWithDummyData { [weak self] in
-            guard let self = self else { return }
-            self.dataIsReady = true
-            self.tableView.reloadData()
-        }
     }
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return dataIsReady ? Sections.allCases.count : 0
+        return dataIsReady ? Section.allCases.count : 0
     }
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return Sections.allCases[section].rawValue
+        return Section.allCases[section].rawValue
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        switch Sections.allCases[section] {
-        case .task: return OCKTaskViewController<OCKStore>.Style.allCases.count
-        case .event: return OCKEventViewController<OCKStore>.Style.allCases.count
-        case .contact: return OCKContactViewController<OCKStore>.Style.allCases.count
+        switch Section.allCases[section] {
+        case .task: return TaskStyle.allCases.count
+        case .contact: return ContactStyle.allCases.count
         case .chart: return OCKCartesianGraphView.PlotType.allCases.count
-        case .lists: return Lists.allCases.count
+        case .lists: return List.allCases.count
         }
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: Constants.cellID, for: indexPath)
-        switch Sections.allCases[indexPath.section] {
-        case .task: cell.textLabel?.text = OCKTaskViewController<OCKStore>.Style.allCases[indexPath.row].rawValue
-        case .event: cell.textLabel?.text = OCKEventViewController<OCKStore>.Style.allCases[indexPath.row].rawValue
-        case .contact: cell.textLabel?.text = OCKContactViewController<OCKStore>.Style.allCases[indexPath.row].rawValue
-        case .chart: cell.textLabel?.text = OCKCartesianGraphView.PlotType.allCases[indexPath.row].rawValue
-        case .lists: cell.textLabel?.text = Lists.allCases[indexPath.row].rawValue
+        let title: String
+        switch Section.allCases[indexPath.section] {
+        case .task: title = TaskStyle.allCases[indexPath.row].rawValue
+        case .contact: title = ContactStyle.allCases[indexPath.row].rawValue
+        case .chart: title = OCKCartesianGraphView.PlotType.allCases[indexPath.row].rawValue
+        case .lists: title = List.allCases[indexPath.row].rawValue
         }
+        cell.textLabel?.text = title.capitalized
         return cell
     }
 
@@ -103,34 +114,23 @@ class RootViewController: UITableViewController {
         guard let storeManager = storeManager else { return }
         var viewController: UIViewController
 
-        let section = Sections.allCases[indexPath.section]
+        let section = Section.allCases[indexPath.section]
         switch section {
         case .task:
-            let style = OCKTaskViewController<OCKStore>.Style.allCases[indexPath.row]
-            let taskCard = OCKTaskViewController.makeViewController(style: style, storeManager: storeManager,
-                                                                    taskIdentifier: Constants.trackedTaskID, eventQuery: .today)
-            viewController = ContainerViewController(childViewController: taskCard)
-
-        case .event:
-            let style = OCKEventViewController<OCKStore>.Style.allCases[indexPath.row]
-            let taskIdentifier = style == .simpleLog ? Constants.untrackedTaskID : Constants.trackedTaskID
-            let eventCard = OCKEventViewController.makeViewController(style: style, storeManager: storeManager,
-                                                                      taskIdentifier: taskIdentifier, eventQuery: .today)
-            viewController = ContainerViewController(childViewController: eventCard)
+            let taskViewController = makeTaskViewController(withStyle: TaskStyle.allCases[indexPath.row], storeManager: storeManager)
+            viewController = ContainerViewController(childViewController: taskViewController)
 
         case .contact:
-            let style = OCKContactViewController<OCKStore>.Style.allCases[indexPath.row]
-            let contactCard = OCKContactViewController.makeViewController(style: style, storeManager: storeManager,
-                                                                          contactIdentifier: Constants.contactID)
-            viewController = ContainerViewController(childViewController: contactCard)
+            let contactViewController = makeContactViewController(withStyle: ContactStyle.allCases[indexPath.row], storeManager: storeManager)
+            viewController = ContainerViewController(childViewController: contactViewController)
 
         case .chart:
-            let style = OCKCartesianGraphView.PlotType.allCases[indexPath.row]
-            let graphCard = makeGraphViewController(withStyle: style, storeManager: storeManager)
-            viewController = ContainerViewController(childViewController: graphCard)
+            let chartViewController = makeChartViewController(withStyle: OCKCartesianGraphView.PlotType.allCases[indexPath.row],
+                                                              storeManager: storeManager)
+            viewController = ContainerViewController(childViewController: chartViewController)
 
         case .lists:
-            switch Lists.allCases[indexPath.row] {
+            switch List.allCases[indexPath.row] {
             case .tasks: viewController = UINavigationController(rootViewController: OCKDailyTasksPageViewController(storeManager: storeManager))
             case .contacts: viewController = UINavigationController(rootViewController: OCKContactsListViewController(storeManager: storeManager))
             }
@@ -144,23 +144,56 @@ class RootViewController: UITableViewController {
         clearSelection()
     }
 
-    private func makeGraphViewController(withStyle style: OCKCartesianGraphView.PlotType,
-                                         storeManager: OCKSynchronizedStoreManager<OCKStore>) -> OCKCartesianChartViewController<OCKStore> {
+    private func makeTaskViewController(withStyle style: TaskStyle, storeManager: OCKSynchronizedStoreManager<OCKStore>) -> UIViewController {
+        switch style {
+        case .checklist:
+            return OCKChecklistTaskViewController(storeManager: storeManager, taskIdentifier: Constants.trackedTaskID, eventQuery: .today)
+        case .grid:
+            return OCKGridTaskViewController(storeManager: storeManager, taskIdentifier: Constants.trackedTaskID, eventQuery: .today)
+        case .simple:
+            return OCKSimpleTaskViewController(storeManager: storeManager, taskIdentifier: Constants.trackedTaskID, eventQuery: .today)
+        case .instructions:
+            return OCKInstructionsTaskViewController(storeManager: storeManager, taskIdentifier: Constants.trackedTaskID, eventQuery: .today)
+        case .buttonLog:
+            return OCKButtonLogTaskViewController(storeManager: storeManager, taskIdentifier: Constants.untrackedTaskID, eventQuery: .today)
+        }
+    }
+
+    private func makeContactViewController(withStyle style: ContactStyle, storeManager: OCKSynchronizedStoreManager<OCKStore>) -> UIViewController {
+        switch style {
+        case .simple:
+            return OCKSimpleContactViewController(storeManager: storeManager, contactIdentifier: Constants.contactID, query: nil)
+        case .detailed:
+            return OCKDetailedContactViewController(storeManager: storeManager, contactIdentifier: Constants.contactID, query: nil)
+        }
+    }
+
+    private func makeChartViewController(withStyle style: OCKCartesianGraphView.PlotType,
+                                         storeManager: OCKSynchronizedStoreManager<OCKStore>) -> UIViewController {
+        let gradientStart = UIColor { traitCollection -> UIColor in
+            return traitCollection.userInterfaceStyle == .light ? #colorLiteral(red: 0.9960784314, green: 0.3725490196, blue: 0.368627451, alpha: 1) : #colorLiteral(red: 0.8627432641, green: 0.2630574384, blue: 0.2592858295, alpha: 1)
+        }
+        let gradientEnd = UIColor { traitCollection -> UIColor in
+            return traitCollection.userInterfaceStyle == .light ? #colorLiteral(red: 0.9960784314, green: 0.4732026144, blue: 0.368627451, alpha: 1) : #colorLiteral(red: 0.8627432641, green: 0.3598620686, blue: 0.2592858295, alpha: 1)
+        }
+
         let markerSize: CGFloat = style == .bar ? 10 : 2
         let startOfDay = Calendar.current.startOfDay(for: Date())
         let configurations = [
-            OCKCartesianChartViewController<OCKStore>.DataSeriesConfiguration(
+            OCKDataSeriesConfiguration<OCKStore>(
                 taskIdentifier: Constants.trackedTaskID,
                 legendTitle: Constants.trackedTaskID.capitalized,
-                gradientStartColor: #colorLiteral(red: 0.3058823529, green: 0.3294117647, blue: 0.7843137255, alpha: 1),
-                gradientEndColor: #colorLiteral(red: 0.5607843137, green: 0.5803921569, blue: 0.9843137255, alpha: 1),
+                gradientStartColor: gradientStart,
+                gradientEndColor: gradientEnd,
                 markerSize: markerSize,
                 eventAggregator: .countOutcomeValues)
         ]
-        let graphCard = OCKCartesianChartViewController(storeManager: storeManager, dataSeriesConfigurations: configurations,
-                                                        date: startOfDay, plotType: style)
-        graphCard.chartView.headerView.titleLabel.text = Constants.trackedTaskID.capitalized
-        return graphCard
+
+        let chartViewController = OCKCartesianChartViewController(storeManager: storeManager, type: style,
+                                                                  dataSeriesConfigurations: configurations, date: startOfDay)
+        chartViewController.synchronizedView.headerView.titleLabel.text = Constants.trackedTaskID.capitalized
+
+        return chartViewController
     }
 
     private func clearSelection() {

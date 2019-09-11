@@ -33,7 +33,7 @@ import Foundation
 
 /// An `OCKContact` represents a contact that a user may want to get in touch with. A contact may be a care provider, a friend, or a family
 /// member. Contacts must have at least a name, and may optionally have numerous other addresses at which to be contacted.
-public struct OCKContact: Codable, Equatable, OCKVersionSettable, OCKObjectCompatible, OCKContactConvertible, OCKContactInitializable {
+public struct OCKContact: Codable, Equatable, OCKVersionSettable, OCKObjectCompatible, OCKContactConvertible {
     /// The contact's name.
     public var name: PersonNameComponents
 
@@ -79,18 +79,19 @@ public struct OCKContact: Codable, Equatable, OCKVersionSettable, OCKObjectCompa
     public let identifier: String
 
     // MARK: OCKVersionable
-    public var effectiveAt: Date
+    public var effectiveDate: Date
+    public internal(set) var deletedDate: Date?
     public internal(set) var localDatabaseID: OCKLocalVersionID?
     public internal(set) var nextVersionID: OCKLocalVersionID?
     public internal(set) var previousVersionID: OCKLocalVersionID?
 
     // MARK: OCKObjectCompatible
-    public internal(set) var createdAt: Date?
-    public internal(set) var updatedAt: Date?
-    public internal(set) var deletedAt: Date?
+    public internal(set) var createdDate: Date?
+    public internal(set) var updatedDate: Date?
+    public internal(set) var schemaVersion: OCKSemanticVersion?
     public var groupIdentifier: String?
     public var tags: [String]?
-    public var externalID: String?
+    public var remoteID: String?
     public var userInfo: [String: String]?
     public var source: String?
     public var asset: String?
@@ -106,7 +107,7 @@ public struct OCKContact: Codable, Equatable, OCKVersionSettable, OCKObjectCompa
         self.identifier = identifier
         self.name = name
         self.carePlanID = carePlanID
-        self.effectiveAt = Date()
+        self.effectiveDate = Date()
     }
 
     /// Initialize a new `OCKContact` with a user-defined identifier, a name, and an optional care plan version ID.
@@ -121,13 +122,13 @@ public struct OCKContact: Codable, Equatable, OCKVersionSettable, OCKObjectCompa
         self.name.familyName = familyName
         self.identifier = identifier
         self.carePlanID = carePlanID
-        self.effectiveAt = Date()
+        self.effectiveDate = Date()
     }
 
     /// Initialize from an `OCKContact`
     ///
     /// - Parameter value: The contact which to copy.
-    public init(value: OCKContact) {
+    public init(_ value: OCKContact) {
         self = value
     }
 

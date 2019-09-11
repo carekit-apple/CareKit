@@ -32,53 +32,103 @@ import CareKitStore
 import CareKitUI
 import UIKit
 
-/// A synchronized view controller that displays a grid of events for a task.
-open class OCKGridTaskViewController<Store: OCKStoreProtocol>: OCKTaskViewController<Store>, UICollectionViewDelegate {
-    override var detailPresentingView: UIView? {
-        return taskView.headerView
+/// A view controller showing an `OCKGridTaskView` that is synchronized with a single task and its events. Displays events for the task, and
+/// allows the user to mark them as complete.
+open class OCKGridTaskViewController<Store: OCKStoreProtocol>: OCKTaskViewController<OCKGridTaskView, Store>, UICollectionViewDataSource {
+    // MARK: Properties
+
+    /// The type of the view being displayed.
+    public typealias View = OCKGridTaskView
+
+    let timeFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.timeStyle = .short
+        return formatter
+    }()
+
+    // MARK: - Life Cycle
+
+    /// Create an instance of the view controller that queries for the events for the specified task.
+    /// - Parameter storeManager: A store manager that will be used to provide synchronization.
+    /// - Parameter task: The task that has events to display.
+    /// - Parameter eventQuery: The query used to find events for the specified task.
+    override public init(storeManager: OCKSynchronizedStoreManager<Store>, task: Store.Task, eventQuery: OCKEventQuery) {
+        super.init(storeManager: storeManager, task: task, eventQuery: eventQuery)
     }
 
-    /// The view that the task and its events are displayed in.
-    public var taskView: OCKGridTaskView {
-        guard let view = view as? OCKGridTaskView else { fatalError("Unexpected type") }
-        return view
-    }
-
-    // MARK: Initializers
-
-    /// Initialize with a task.
-    ///
-    /// - Parameters:
-    ///   - storeManager: A store manager that will be used to provide synchronization.
-    ///   - task: The task which to display.
-    ///   - eventQuery: An event query that will specify which events will be displayed in the view.
-    public init(storeManager: OCKSynchronizedStoreManager<Store>, task: Store.Task, eventQuery: OCKEventQuery) {
-        super.init(storeManager: storeManager, task: task, eventQuery: eventQuery, loadDefaultView: {
-            OCKBindableGridTaskView<Store.Task, Store.Outcome>()
-        })
-    }
-
-    /// Initialize with a task identifier. The task will be fetched from the store automatically.
-    ///
-    /// - Parameters:
-    ///   - storeManager: A store manager that will be used to provide synchronization.
-    ///   - taskIdentifier: The identifier of the task which should be fetched and displayed.
-    ///   - eventQuery: An event query that will specify which events will be displayed in the view.
-    public init(storeManager: OCKSynchronizedStoreManager<Store>, taskIdentifier: String, eventQuery: OCKEventQuery) {
-        super.init(storeManager: storeManager, taskIdentifier: taskIdentifier, eventQuery: eventQuery,
-                   loadDefaultView: { OCKBindableGridTaskView<Store.Task, Store.Outcome>() })
+    /// Create an instance of the view controller by querying the task and events to display.
+    /// - Parameter storeManager: A store manager that will be used to provide synchronization.
+    /// - Parameter taskIdentifier: The identifier of the task to find.
+    /// - Parameter eventQuery: The query used to find events for the task.
+    override public init(storeManager: OCKSynchronizedStoreManager<Store>, taskIdentifier: String, eventQuery: OCKEventQuery) {
+        super.init(storeManager: storeManager, taskIdentifier: taskIdentifier, eventQuery: eventQuery)
     }
 
     override open func viewDidLoad() {
         super.viewDidLoad()
-        taskView.collectionView.delegate = self
+        synchronizedView.collectionView.dataSource = self
     }
 
-    // MARK: UICollectionViewDelegate
+    // MARK: - Methods
 
-    open func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard indexPath.row < events.count else { return }
-        let event = events[indexPath.row]
-        event.outcome == nil ? saveNewOutcome(forEvent: event) : deleteOutcome(forEvent: event)
+    /// Create an instance of the view to be displayed.
+    override open func makeView() -> OCKGridTaskView {
+        return .init()
+    }
+
+    /// Update the view whenever the view model changes.
+    /// - Parameter view: The view to update.
+    /// - Parameter context: The data associated with the updated state.
+    override open func updateView(_ view: OCKGridTaskView, context: OCKSynchronizationContext<[Store.Event]>) {
+        updateViewWithTask(viewModel?.first?.task, view: view)
+        updateViewWithEvents(viewModel, view: view)
+    }
+
+    private func updateViewWithTask(_ task: Store.Task?, view: OCKGridTaskView) {
+        guard let task = task?.convert() else {
+            view.headerView.titleLabel.text = nil
+            view.instructionsLabel.text = nil
+            view.headerView.detailLabel.text = nil
+            return
+        }
+
+        view.headerView.titleLabel.text = task.title
+        view.instructionsLabel.text = task.instructions
+    }
+
+    private func updateViewWithEvents(_ events: [OCKEvent<Store.Task, Store.Outcome>]?, view: OCKGridTaskView) {
+        view.headerView.detailLabel.text = OCKScheduleUtility.scheduleLabel(for: events ?? [])
+        view.collectionView.reloadData()
+    }
+
+    // MARK: - UICollectionViewDataSource
+
+    open func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
+    }
+
+    open func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return viewModel?.count ?? 0
+    }
+
+    open func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: OCKGridTaskView.defaultCellIdentifier,
+                                                            for: indexPath) as? OCKGridTaskView.DefaultCellType else {
+                                                                fatalError("Unsupported cell type.")
+        }
+
+        let event = viewModel?[indexPath.row]
+
+        // set label for completed state
+        let completeDate = event?.outcome?.convert().createdDate
+        let completeString = completeDate != nil ? timeFormatter.string(from: completeDate!) : nil
+        cell.completionButton.setTitle(completeString, for: .selected)
+
+        // set label for normal state to be the time of the event
+        let incompleteString = event != nil ? OCKScheduleUtility.timeLabel(for: event!, includesEnd: false) : indexPath.row.description
+        cell.completionButton.setTitle(incompleteString, for: .normal)
+
+        cell.completionButton.isSelected = event?.outcome != nil
+        return cell
     }
 }

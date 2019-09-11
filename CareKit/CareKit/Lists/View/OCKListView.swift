@@ -1,21 +1,21 @@
 /*
  Copyright (c) 2019, Apple Inc. All rights reserved.
- 
+
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
- 
+
  1.  Redistributions of source code must retain the above copyright notice, this
  list of conditions and the following disclaimer.
- 
+
  2.  Redistributions in binary form must reproduce the above copyright notice,
  this list of conditions and the following disclaimer in the documentation and/or
  other materials provided with the distribution.
- 
+
  3. Neither the name of the copyright holder(s) nor the names of any contributors
  may be used to endorse or promote products derived from this software without
  specific prior written permission. No license is granted to the trademarks of
  the copyright holders even if such marks are included in this software.
- 
+
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -31,7 +31,7 @@
 import UIKit
 
 /// A view enclosing a scrollable stack view.
-internal class OCKListView: UIView {
+internal class OCKListView: OCKView {
     // MARK: Properties
 
     /// The stack view embedded inside the scroll view.
@@ -46,10 +46,10 @@ internal class OCKListView: UIView {
 
     private let contentView = UIView()
 
-    // MARK: Life cycle
+    // MARK: Life Cycle
 
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setup()
     }
 
@@ -66,39 +66,37 @@ internal class OCKListView: UIView {
         constrainSubviews()
     }
 
+    private func styleSubviews() {
+        scrollView.backgroundColor = contentView.backgroundColor
+        scrollView.alwaysBounceVertical = true
+    }
+
     private func addSubviews() {
         addSubview(scrollView)
         scrollView.addSubview(contentView)
         contentView.addSubview(stackView)
     }
 
-    private func styleSubviews() {
-        preservesSuperviewLayoutMargins = true
-        contentView.backgroundColor = OCKStyle.color.gray1
-        scrollView.backgroundColor = contentView.backgroundColor
-        stackView.spacing = directionalLayoutMargins.top * 3
-        scrollView.alwaysBounceVertical = true
-    }
-
     private func constrainSubviews() {
         [scrollView, contentView, stackView].forEach { $0?.translatesAutoresizingMaskIntoConstraints = false }
 
         NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: topAnchor),
-            scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: bottomAnchor),
-
-            contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-            contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-            contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             contentView.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor),
 
             stackView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: directionalLayoutMargins.leading * 2),
-            stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -directionalLayoutMargins.trailing * 2),
+            stackView.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
             stackView.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor)
-        ])
+        ] + scrollView.constraints(equalTo: self) +
+            contentView.constraints(equalTo: scrollView))
+    }
+
+    override func styleDidChange() {
+        super.styleDidChange()
+        let cachedStyle = style()
+        contentView.directionalLayoutMargins = cachedStyle.dimension.directionalInsets1
+        backgroundColor = cachedStyle.color.systemGroupedBackground
+        contentView.backgroundColor = cachedStyle.color.systemGroupedBackground
+        stackView.spacing = cachedStyle.dimension.directionalInsets1.top
     }
 }

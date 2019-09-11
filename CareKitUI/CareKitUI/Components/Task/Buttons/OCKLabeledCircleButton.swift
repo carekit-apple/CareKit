@@ -30,7 +30,7 @@
 
 import UIKit
 
-internal class OCKLabeledCircleButton: OCKButton {
+class OCKLabeledCircleButton: OCKButton {
     // MARK: Properties
 
     override var titleButton: OCKButton? { return _titleButton }
@@ -39,38 +39,21 @@ internal class OCKLabeledCircleButton: OCKButton {
     private let _titleButton: OCKButton = {
         let button = OCKButton(titleTextStyle: .caption1, titleWeight: .medium)
         button.isUserInteractionEnabled = false
-        button.setTitleColor(.lightGray, for: .selected)
         return button
     }()
 
-    private let _imageButton: OCKButton = {
-        let button = OCKCircleButton(checkmarkPointSize: .large)
-        button.layer.borderWidth = OCKStyle.appearance.borderWidth2
+    private let _imageButton: OCKCircleButton = {
+        let button = OCKCircleButton()
         button.isUserInteractionEnabled = false
         return button
     }()
 
-    // MARK: Life cycle
-
-    override init() {
-        super.init()
-        setup()
-    }
-
     // MARK: Methods
 
-    private func setup() {
+    override func setup() {
+        super.setup()
         addSubviews()
-        styleSubviews()
         constrainSubviews()
-    }
-
-    private func addSubviews() {
-        [_imageButton, _titleButton].forEach { addSubview($0) }
-    }
-
-    private func styleSubviews() {
-        preservesSuperviewLayoutMargins = true
     }
 
     private func constrainSubviews() {
@@ -86,5 +69,17 @@ internal class OCKLabeledCircleButton: OCKButton {
             _titleButton.trailingAnchor.constraint(equalTo: trailingAnchor),
             bottomAnchor.constraint(equalTo: _titleButton.bottomAnchor)
         ])
+    }
+
+    private func addSubviews() {
+        [_imageButton, _titleButton].forEach { addSubview($0) }
+    }
+
+    override func styleDidChange() {
+        super.styleDidChange()
+        let cachedStyle = style()
+        _titleButton.setTitleColor(cachedStyle.color.secondaryLabel, for: .selected)
+        _imageButton.layer.borderWidth = cachedStyle.appearance.borderWidth2
+        _imageButton.checkmarkHeight = cachedStyle.dimension.iconHeight3
     }
 }

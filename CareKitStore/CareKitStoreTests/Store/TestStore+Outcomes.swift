@@ -65,6 +65,17 @@ class TestStoreOutcomes: XCTestCase {
         outcome = try store.addOutcomeAndWait(outcome)
         let outcomes = try store.fetchOutcomesAndWait()
         XCTAssert(outcomes == [outcome])
+        XCTAssertNotNil(outcomes.first?.localDatabaseID)
+        XCTAssertNotNil(outcomes.first?.schemaVersion)
+    }
+
+    func testTestOutcomeValueIndexIsPersisted() throws {
+        var value = OCKOutcomeValue(42)
+        value.index = 2
+        var outcome = OCKOutcome(taskID: nil, taskOccurenceIndex: 0, values: [value])
+        outcome = try store.addOutcomeAndWait(outcome)
+        let outcomes = try store.fetchOutcomesAndWait()
+        XCTAssert(outcomes.first?.values.first?.index == 2)
     }
 
     func testAddOutcomeToTask() throws {
@@ -125,6 +136,27 @@ class TestStoreOutcomes: XCTestCase {
         query.limit = 1
         let fetched = try store.fetchOutcomesAndWait(nil, query: query)
         XCTAssert(fetched.count == 1)
+    }
+
+    func testQueryOutcomesByRemoteID() throws {
+        var outcome = OCKOutcome(taskID: nil, taskOccurenceIndex: 0, values: [])
+        outcome.remoteID = "abc"
+        outcome = try store.addOutcomeAndWait(outcome)
+
+        let fetched = try store.fetchOutcomesAndWait(.outcomeRemoteIDs(["abc"]), query: nil).first
+        XCTAssert(fetched == outcome)
+    }
+
+    func testQueryOutcomeByTaskRemoteID() throws {
+        var task = OCKTask(identifier: "A", title: nil, carePlanID: nil, schedule: .mealTimesEachDay(start: Date(), end: nil))
+        task.remoteID = "abc"
+        task = try store.addTaskAndWait(task)
+
+        var outcome = OCKOutcome(taskID: task.versionID, taskOccurenceIndex: 0, values: [])
+        outcome = try store.addOutcomeAndWait(outcome)
+
+        let fetched = try store.fetchOutcomesAndWait(.taskRemoteIDs(["abc"]), query: .today).first
+        XCTAssert(fetched == outcome)
     }
 
     // MARK: Updating

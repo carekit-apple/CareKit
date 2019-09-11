@@ -1,21 +1,21 @@
 /*
  Copyright (c) 2019, Apple Inc. All rights reserved.
- 
+
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
- 
+
  1.  Redistributions of source code must retain the above copyright notice, this
  list of conditions and the following disclaimer.
- 
+
  2.  Redistributions in binary form must reproduce the above copyright notice,
  this list of conditions and the following disclaimer in the documentation and/or
  other materials provided with the distribution.
- 
+
  3. Neither the name of the copyright holder(s) nor the names of any contributors
  may be used to endorse or promote products derived from this software without
  specific prior written permission. No license is granted to the trademarks of
  the copyright holders even if such marks are included in this software.
- 
+
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -43,70 +43,91 @@ import UIKit
 ///     |                                                       |
 ///     +-------------------------------------------------------+
 ///
-open class OCKSimpleTaskView: UIView, OCKCardable, OCKCollapsible {
+open class OCKSimpleTaskView: OCKView, OCKEventDisplayable {
     // MARK: Properties
 
+    let contentView = OCKView()
+
+    private lazy var cardAssembler = OCKCardAssembler(cardView: self, contentView: contentView)
+
+    /// Handles events related to an `OCKEventDisplayable` object.
+    public weak var delegate: OCKEventViewDelegate?
+
+    /// The vertical stack view that holds the main content in the view.
+    public let contentStackView: OCKStackView = {
+        let stack = OCKStackView()
+        stack.axis = .vertical
+        return stack
+    }()
+
+    private let innerContentStackView: OCKStackView = {
+        let stack = OCKStackView()
+        stack.axis = .horizontal
+        return stack
+    }()
+
     /// The button in the trailing end of the card. Has an image that is defaulted to a checkmark when selected.
-    public let completionButton: OCKButton = OCKCircleButton(checkmarkPointSize: .large)
+    public let completionButton: OCKButton = {
+        let button = OCKCircleButton()
+        button.isUserInteractionEnabled = false
+        return button
+    }()
 
     /// A default version of an `OCKHeaderView`.
     public let headerView = OCKHeaderView()
 
-    internal var shouldCollapse: Bool = true
-
-    // MARK: Life cycle
-
-    public init() {
-        super.init(frame: .zero)
-        setup()
-    }
-
-    public required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        setup()
-    }
+    private var completionButtonHeightConstraint: NSLayoutConstraint?
 
     // MARK: Methods
 
-    private func setup() {
+    override func setup() {
+        super.setup()
+        setupGestures()
         addSubviews()
-        styleSubviews()
         constrainSubviews()
     }
 
-    private func addSubviews() {
-        [headerView, completionButton].forEach { addSubview($0) }
+    private func setupGestures() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didCompleteEvent(_:)))
+        addGestureRecognizer(tapGesture)
     }
 
-    private func styleSubviews() {
-        preservesSuperviewLayoutMargins = true
-        enableCardStyling(true)
+    private func addSubviews() {
+        addSubview(contentView)
+        contentView.addSubview(contentStackView)
+        contentStackView.addArrangedSubview(innerContentStackView)
+        [headerView, completionButton].forEach { innerContentStackView.addArrangedSubview($0) }
     }
 
     private func constrainSubviews() {
-        [headerView, completionButton].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
-        NSLayoutConstraint.activate([
-            headerView.topAnchor.constraint(greaterThanOrEqualTo: topAnchor, constant: directionalLayoutMargins.top * 2),
-            headerView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: directionalLayoutMargins.leading * 2),
-            headerView.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: -directionalLayoutMargins.bottom * 2),
-            headerView.centerYAnchor.constraint(equalTo: centerYAnchor),
+        [contentView, contentStackView, completionButton].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
+        completionButtonHeightConstraint = completionButton.heightAnchor.constraint(equalToConstant: 0)    // will get set when style updates
+        headerView.setContentHuggingPriority(.defaultLow, for: .horizontal)
 
-            completionButton.leadingAnchor.constraint(equalTo: headerView.trailingAnchor, constant: directionalLayoutMargins.leading * 2),
-            completionButton.topAnchor.constraint(greaterThanOrEqualTo: topAnchor, constant: directionalLayoutMargins.top * 2),
-            completionButton.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: -directionalLayoutMargins.bottom * 2),
-            completionButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -directionalLayoutMargins.trailing * 2),
-            completionButton.centerYAnchor.constraint(equalTo: centerYAnchor),
-            completionButton.heightAnchor.constraint(equalToConstant: OCKStyle.dimension.buttonHeight2),
+        NSLayoutConstraint.activate([
+            completionButtonHeightConstraint!,
             completionButton.widthAnchor.constraint(equalTo: completionButton.heightAnchor)
-        ])
+        ] + contentView.constraints(equalTo: layoutMarginsGuide) +
+            contentStackView.constraints(equalTo: contentView))
     }
 
-    // MARK: OCKCollapsible
+    override open func styleDidChange() {
+        super.styleDidChange()
+        let cachedStyle = style()
+        cardAssembler.enableCardStyling(true, style: cachedStyle)
+        directionalLayoutMargins = cachedStyle.dimension.directionalInsets1
+        completionButtonHeightConstraint?.constant = cachedStyle.dimension.buttonHeight2
+        (completionButton as? OCKCircleButton)?.checkmarkHeight = cachedStyle.dimension.iconHeight3
+    }
 
-    internal func setCollapsedState(_ state: OCKCollapsibleState, animated: Bool) {
-        guard shouldCollapse else { return }
-        UIView.animate(withDuration: OCKStyle.animation.stateChangeDuration) { [weak self] in
-            self?.alpha = state == .expanded ? 1 : OCKStyle.appearance.opacity1
-        }
+    @objc
+    private func didCompleteEvent(_ gesture: UITapGestureRecognizer) {
+        guard
+            let sender = gesture.view,
+            gesture.state == .ended
+        else { return }
+
+        completionButton.isSelected.toggle()
+        delegate?.eventView(self, didCompleteEvent: completionButton.isSelected, sender: sender)
     }
 }

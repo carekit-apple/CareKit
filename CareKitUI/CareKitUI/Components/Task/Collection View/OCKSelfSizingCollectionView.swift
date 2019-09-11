@@ -30,7 +30,7 @@
 
 import UIKit
 
-internal class OCKSelfSizingCollectionView: UICollectionView {
+class OCKSelfSizingCollectionView: UICollectionView {
     // MARK: Properties
 
     private var collectionViewHeightConstraint: NSLayoutConstraint?

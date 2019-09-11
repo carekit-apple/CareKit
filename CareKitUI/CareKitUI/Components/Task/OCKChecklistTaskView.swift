@@ -1,21 +1,21 @@
 /*
  Copyright (c) 2019, Apple Inc. All rights reserved.
- 
+
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
- 
+
  1.  Redistributions of source code must retain the above copyright notice, this
  list of conditions and the following disclaimer.
- 
+
  2.  Redistributions in binary form must reproduce the above copyright notice,
  this list of conditions and the following disclaimer in the documentation and/or
  other materials provided with the distribution.
- 
+
  3. Neither the name of the copyright holder(s) nor the names of any contributors
  may be used to endorse or promote products derived from this software without
  specific prior written permission. No license is granted to the trademarks of
  the copyright holders even if such marks are included in this software.
- 
+
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -29,17 +29,6 @@
  */
 
 import UIKit
-
-/// Protocol for interactions with the `OCKChecklistTaskView`.
-public protocol OCKChecklistTaskViewDelegate: AnyObject {
-    /// Called when an item in the checklist was selected.
-    ///
-    /// - Parameters:
-    ///   - checklistTaskView: The view containing the item.
-    ///   - item: The item that was selected.
-    ///   - index: The index of the item that was selected.
-    func checklistTaskView(_ checklistTaskView: OCKChecklistTaskView, didSelectItem item: OCKButton, at index: Int)
-}
 
 /// A card that displays a vertically stacked checklist of items. In CareKit, this view is intended to display
 /// multiple events for a particular task.
@@ -73,21 +62,12 @@ public protocol OCKChecklistTaskViewDelegate: AnyObject {
 ///     |  [instructions]                                       |
 ///     +-------------------------------------------------------+
 ///
-open class OCKChecklistTaskView: UIView, OCKCardable, OCKCollapsible, OCKCollapsibleView {
-    // MARK: OCKCollapsibleView
+open class OCKChecklistTaskView: OCKView, OCKTaskDisplayable {
+    // MARK: Properties
 
-    internal var collapsedViews: Set<UIView> { [collapsedView, collapserButton] }
-    internal var expandedViews: Set<UIView> { [headerView, instructionsLabel, checklistItemsStackView, instructionsLabel, spacerView] }
-    internal var completeViews: Set<UIView> { [headerView, instructionsLabel, checklistItemsStackView, collapserButton, spacerView] }
-    internal var cardView: UIView { return self }
-    internal var collapsedState: OCKCollapsibleState = .expanded
+    let contentView = OCKView()
 
-    internal let collapserButton: OCKButton = {
-        let collapserButton = OCKCollapserButton()
-        collapserButton.isHidden = true
-        collapserButton.alpha = 0
-        return collapserButton
-    }()
+    private lazy var cardAssembler = OCKCardAssembler(cardView: self, contentView: contentView)
 
     /// The vertical stack view that contains the main content in the view.
     public let contentStackView: OCKStackView = {
@@ -96,20 +76,8 @@ open class OCKChecklistTaskView: UIView, OCKCardable, OCKCollapsible, OCKCollaps
         return stack
     }()
 
-    // MARK: Properties
-
-    private let contentView: UIView = {
-        let view = UIView()
-        view.clipsToBounds = true
-        return view
-    }()
-
-    private let spacerView = UIView()
-
-    internal var shouldCollapse: Bool = true
-
-    /// Listens for interactions with the `OCKChecklistTaskView`.
-    public weak var delegate: OCKChecklistTaskViewDelegate?
+    /// Handles events related to an `OCKTaskDisplayable` object.
+    public weak var delegate: OCKTaskViewDelegate?
 
     /// The header that shows a `detailDisclosureImage`.
     public let headerView = OCKHeaderView {
@@ -119,7 +87,6 @@ open class OCKChecklistTaskView: UIView, OCKCardable, OCKCollapsible, OCKCollaps
     /// Multi-line label beneath the checklist items.
     public let instructionsLabel: OCKLabel = {
         let label = OCKLabel(textStyle: .caption1, weight: .regular)
-        label.textColor = .lightGray
         label.numberOfLines = 0
         return label
     }()
@@ -130,86 +97,54 @@ open class OCKChecklistTaskView: UIView, OCKCardable, OCKCollapsible, OCKCollaps
         return stackView
     }()
 
-    internal let collapsedView: OCKCollapsedView = {
-        let collapsedView = OCKCollapsedView()
-        collapsedView.isHidden = true
-        collapsedView.alpha = 0
-        return collapsedView
-    }()
-
     /// The buttons in the checklist.
     public var items: [OCKButton] {
         guard let items = checklistItemsStackView.arrangedSubviews as? [OCKButton] else { fatalError("Unsupported type.") }
         return items
     }
 
-    // MARK: Life cycle
-
-    public init() {
-        super.init(frame: .zero)
-        setup()
-    }
-
-    public required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        setup()
-    }
-
     // MARK: Methods
 
-    private func setup() {
+    override func setup() {
+        super.setup()
         addSubviews()
-        styleSubviews()
         constrainSubviews()
+        styleSubviews()
+        setupGestures()
+    }
 
-        // setup targets for collapsing the view
-        collapserButton.addTarget(self, action: #selector(toggleCollapse), for: .touchUpInside)
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(toggleCollapse))
-        collapsedView.addGestureRecognizer(tapGesture)
+    private func setupGestures() {
+        let tappedViewGesture = UITapGestureRecognizer(target: self, action: #selector(didTapView))
+        headerView.addGestureRecognizer(tappedViewGesture)
+    }
+
+    private func styleSubviews() {
+        contentStackView.setCustomSpacing(0, after: instructionsLabel)
     }
 
     private func addSubviews() {
         addSubview(contentView)
         contentView.addSubview(contentStackView)
-        [headerView, checklistItemsStackView, instructionsLabel, spacerView, collapsedView, collapserButton].forEach {
+        [headerView, checklistItemsStackView, instructionsLabel].forEach {
             contentStackView.addArrangedSubview($0)
         }
     }
 
-    private func styleSubviews() {
-        preservesSuperviewLayoutMargins = true
-        enableCardStyling(true)
-        contentStackView.spacing = directionalLayoutMargins.top * 2
-        contentStackView.setCustomSpacing(0, after: instructionsLabel)
-        contentStackView.setCustomSpacing(0, after: spacerView)
-    }
-
     private func constrainSubviews() {
-        [contentView, contentStackView, spacerView].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
-        NSLayoutConstraint.activate([
-            spacerView.heightAnchor.constraint(equalToConstant: directionalLayoutMargins.top * 2),
-
-            contentView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: directionalLayoutMargins.leading * 2),
-            contentView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -directionalLayoutMargins.leading * 2),
-            contentView.topAnchor.constraint(equalTo: topAnchor, constant: directionalLayoutMargins.leading * 2),
-            contentView.bottomAnchor.constraint(equalTo: bottomAnchor),
-
-            contentStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            contentStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            contentStackView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            contentStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
-        ])
+        [contentView, contentStackView].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
+        NSLayoutConstraint.activate(
+            contentStackView.constraints(equalTo: contentView) +
+            contentView.constraints(equalTo: layoutMarginsGuide))
     }
 
     @objc
-    private func toggleCollapse() {
-        let newState: OCKCollapsibleState = collapsedState == .collapsed ? .complete : .collapsed
-        setCollapsedState(newState, animated: true)
+    private func didTapView() {
+        delegate?.didSelectTaskView(self)
     }
 
     private func makeItem(withTitle title: String) -> OCKButton {
         let button = OCKChecklistItemButton()
-        button.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
+        button.addTarget(self, action: #selector(eventButtonTapped(_:)), for: .touchUpInside)
         button.setTitle(title, for: .normal)
         button.setTitle(title, for: .selected)
         return button
@@ -279,15 +214,19 @@ open class OCKChecklistTaskView: UIView, OCKCardable, OCKCollapsible, OCKCollaps
     }
 
     @objc
-    private func buttonTapped(_ sender: OCKButton) {
-        guard let index = checklistItemsStackView.arrangedSubviews.firstIndex(of: sender) else { return }    // should never happen
-        delegate?.checklistTaskView(self, didSelectItem: sender, at: index)
+    private func eventButtonTapped(_ sender: OCKButton) {
+        guard let index = checklistItemsStackView.arrangedSubviews.firstIndex(of: sender) else {
+            fatalError("Invalid index")
+        }
+        delegate?.taskView(self, didCompleteEvent: sender.isSelected, at: index, sender: sender)
     }
 
-    // MARK: OCKCollapsible
-
-    internal func setCollapsedState(_ state: OCKCollapsibleState, animated: Bool) {
-        guard shouldCollapse else { return }
-        setViewCollapsedState(state, animated: animated)
+    override open func styleDidChange() {
+        super.styleDidChange()
+        let cachedStyle = style()
+        cardAssembler.enableCardStyling(true, style: cachedStyle)
+        instructionsLabel.textColor = cachedStyle.color.secondaryLabel
+        directionalLayoutMargins = cachedStyle.dimension.directionalInsets1
+        contentStackView.spacing = cachedStyle.dimension.directionalInsets1.top
     }
 }

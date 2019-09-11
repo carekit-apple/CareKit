@@ -34,6 +34,9 @@ import Foundation
 @objc(OCKCDPatient)
 class OCKCDPatient: OCKCDVersionedObject {
     @NSManaged var name: OCKCDPersonName
+    @NSManaged var sex: String?
+    @NSManaged var birthday: Date?
+    @NSManaged var allergies: [String]?
     @NSManaged var carePlans: Set<OCKCDCarePlan>
 }
 

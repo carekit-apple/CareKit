@@ -30,23 +30,23 @@
 
 import UIKit
 
-internal class OCKBarLayer: OCKCartesianCoordinatesLayer, OCKGradientPlotable {
-    internal let gradientLayer = CAGradientLayer()
-    internal let pointsLayer = CAShapeLayer()
+class OCKBarLayer: OCKCartesianCoordinatesLayer, OCKGradientPlotable {
+    let gradientLayer = CAGradientLayer()
+    let pointsLayer = CAShapeLayer()
 
-    internal var startColor: UIColor = .blue {
+    var startColor: UIColor = OCKStyle().color.systemGray {
         didSet { gradientLayer.colors = [startColor.cgColor, endColor.cgColor] }
     }
 
-    internal var endColor: UIColor = .red {
+    var endColor: UIColor = OCKStyle().color.systemGray {
         didSet { gradientLayer.colors = [startColor.cgColor, endColor.cgColor] }
     }
 
-    internal var barWidth: CGFloat = 10 {
+    var barWidth: CGFloat = 10 {
         didSet { setNeedsLayout() }
     }
 
-    internal var horizontalOffset: CGFloat = 0 {
+    var horizontalOffset: CGFloat = 0 {
         didSet { setNeedsLayout() }
     }
 
@@ -60,7 +60,7 @@ internal class OCKBarLayer: OCKCartesianCoordinatesLayer, OCKGradientPlotable {
         setupSublayers()
     }
 
-    internal required init?(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         setupSublayers()
     }
@@ -72,11 +72,11 @@ internal class OCKBarLayer: OCKCartesianCoordinatesLayer, OCKGradientPlotable {
         gradientLayer.mask = pointsLayer
         addSublayer(gradientLayer)
 
-        pointsLayer.fillColor = UIColor.black.cgColor
+        pointsLayer.fillColor = OCKStyle().color.systemGray.cgColor
         pointsLayer.strokeColor = nil
     }
 
-    override internal func layoutSublayers() {
+    override func layoutSublayers() {
         super.layoutSublayers()
         drawPoints(points)
     }
@@ -90,7 +90,7 @@ internal class OCKBarLayer: OCKCartesianCoordinatesLayer, OCKGradientPlotable {
         pointsLayer.add(grow, forKey: "grow")
     }
 
-    internal func makePath(points: [CGPoint]) -> CGPath {
+    func makePath(points: [CGPoint]) -> CGPath {
         let path = UIBezierPath()
         for point in points {
             let origin = CGPoint(x: point.x - barWidth / 2 + horizontalOffset, y: point.y)

@@ -42,7 +42,7 @@ import UIKit
 ///     |                                                       |
 ///     +-------------------------------------------------------+
 ///
-open class OCKCartesianGraphView: UIView, OCKMultiPlotable {
+open class OCKCartesianGraphView: OCKView, OCKMultiPlotable {
     /// An enumerator specifying the types of plots this view can display.
     public enum PlotType: String, CaseIterable {
         case line
@@ -141,7 +141,7 @@ open class OCKCartesianGraphView: UIView, OCKMultiPlotable {
             case .bar: return OCKBarPlotView()
             }
         }()
-        super.init(frame: .zero)
+        super.init()
         setup()
     }
 
@@ -157,7 +157,8 @@ open class OCKCartesianGraphView: UIView, OCKMultiPlotable {
         gridView.yMaximum = chartMax
     }
 
-    private func setup() {
+    override func setup() {
+        super.setup()
         addSubview(gridView)
         addSubview(plotView)
         addSubview(axisView)

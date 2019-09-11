@@ -1,21 +1,21 @@
 /*
  Copyright (c) 2019, Apple Inc. All rights reserved.
- 
+
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
- 
+
  1.  Redistributions of source code must retain the above copyright notice, this
  list of conditions and the following disclaimer.
- 
+
  2.  Redistributions in binary form must reproduce the above copyright notice,
  this list of conditions and the following disclaimer in the documentation and/or
  other materials provided with the distribution.
- 
+
  3. Neither the name of the copyright holder(s) nor the names of any contributors
  may be used to endorse or promote products derived from this software without
  specific prior written permission. No license is granted to the trademarks of
  the copyright holders even if such marks are included in this software.
- 
+
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -43,7 +43,7 @@ import UIKit
 ///    |                                        |
 ///    +----------------------------------------+
 ///
-open class OCKHeaderView: UIView {
+open class OCKHeaderView: OCKView {
     // MARK: Properties
 
     /// Configuration for a header view.
@@ -65,6 +65,9 @@ open class OCKHeaderView: UIView {
         static let bundle = Bundle(for: OCKHeaderView.self)
         static let spacing: CGFloat = 4
     }
+
+    private var detailDisclosureImageWidthConstraint: NSLayoutConstraint?
+    private var iconImageHeightConstraint: NSLayoutConstraint?
 
     // MARK: Stack views
 
@@ -131,9 +134,7 @@ open class OCKHeaderView: UIView {
         iconImageView = configuration.showsIconImage ? OCKHeaderView.makeIconImageView() : nil
         detailDisclosureImage = configuration.showsDetailDisclosure ? OCKHeaderView.makeDetailDisclosureImage() : nil
         separatorView = configuration.showsSeparator ? OCKSeparatorView() : nil
-
-        super.init(frame: .zero)
-        setup()
+        super.init()
     }
 
     public required init?(coder aDecoder: NSCoder) {
@@ -142,15 +143,15 @@ open class OCKHeaderView: UIView {
         detailDisclosureImage = nil
         separatorView = nil
         super.init(coder: aDecoder)
-        setup()
     }
 
     // MARK: Methods
 
-    private func setup() {
+    override func setup() {
+        super.setup()
         addSubviews()
-        styleSubviews()
         constrainSubviews()
+        styleSubviews()
     }
 
     private func addSubviews() {
@@ -167,7 +168,6 @@ open class OCKHeaderView: UIView {
     }
 
     private func styleSubviews() {
-        preservesSuperviewLayoutMargins = true
         let margin = directionalLayoutMargins.top * 2
         contentStackView.spacing = margin
         headerStackView.spacing = margin / 2.0
@@ -178,7 +178,6 @@ open class OCKHeaderView: UIView {
     private static func makeIconImageView() -> UIImageView {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
-        imageView.layer.cornerRadius = OCKStyle.dimension.iconHeight1 / 2.0
         imageView.clipsToBounds = true
         return imageView
     }
@@ -186,35 +185,45 @@ open class OCKHeaderView: UIView {
     private static func makeDetailDisclosureImage() -> UIImageView {
         let image = UIImage(systemName: "chevron.right")
         let imageView = UIImageView(image: image)
-        imageView.tintColor = .lightGray
         imageView.contentMode = .scaleAspectFit
         return imageView
     }
 
     private func constrainSubviews() {
         contentStackView.translatesAutoresizingMaskIntoConstraints = false
-        var constraints = [
-            contentStackView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            contentStackView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            contentStackView.topAnchor.constraint(equalTo: topAnchor),
-            contentStackView.bottomAnchor.constraint(equalTo: bottomAnchor)
-        ]
+        var constraints = contentStackView.constraints(equalTo: self)
 
         if let detailDisclosureImage = detailDisclosureImage {
             detailDisclosureImage.translatesAutoresizingMaskIntoConstraints = false
-            constraints += [
-                detailDisclosureImage.widthAnchor.constraint(equalToConstant: OCKStyle.dimension.iconHeight4)
-            ]
+            // Constant will be set when style is updated
+            detailDisclosureImageWidthConstraint = detailDisclosureImage.widthAnchor.constraint(equalToConstant: 0)
+            constraints.append(detailDisclosureImageWidthConstraint!)
         }
 
         if let iconImageView = iconImageView {
             iconImageView.translatesAutoresizingMaskIntoConstraints = false
+            iconImageHeightConstraint = iconImageView.heightAnchor.constraint(equalToConstant: 0) // Constant will be set when style is updated
             constraints += [
-                iconImageView.heightAnchor.constraint(equalToConstant: OCKStyle.dimension.iconHeight1),
+                iconImageHeightConstraint!,
                 iconImageView.widthAnchor.constraint(equalTo: iconImageView.heightAnchor)
             ]
         }
 
         NSLayoutConstraint.activate(constraints)
+    }
+
+    override open func styleDidChange() {
+        super.styleDidChange()
+        let cachedStyle = style()
+        titleLabel.textColor = cachedStyle.color.label
+        detailLabel.textColor = cachedStyle.color.label
+
+        iconImageView?.layer.cornerRadius = cachedStyle.dimension.iconHeight1 / 2.0
+        iconImageView?.tintColor = cachedStyle.color.systemGray3
+
+        detailDisclosureImage?.tintColor = cachedStyle.color.systemGray3
+
+        detailDisclosureImageWidthConstraint?.constant = cachedStyle.dimension.iconHeight4
+        iconImageHeightConstraint?.constant = cachedStyle.dimension.iconHeight1
     }
 }

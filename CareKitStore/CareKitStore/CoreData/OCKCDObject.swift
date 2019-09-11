@@ -33,9 +33,8 @@ import Foundation
 
 @objc(OCKCDObject)
 class OCKCDObject: NSManagedObject {
-    @NSManaged var createdAt: Date
-    @NSManaged var updatedAt: Date
-    @NSManaged var deletedAt: Date?
+    @NSManaged var createdDate: Date
+    @NSManaged var updatedDate: Date
     @NSManaged var remoteID: String?
     @NSManaged var userInfo: [String: String]?
     @NSManaged var groupIdentifier: String?
@@ -43,6 +42,7 @@ class OCKCDObject: NSManagedObject {
     @NSManaged var source: String?
     @NSManaged var asset: String?
     @NSManaged var notes: Set<OCKCDNote>?
+    @NSManaged var schemaVersion: String
 
     var localDatabaseID: OCKLocalVersionID? {
         guard !objectID.isTemporaryID else { return nil }
@@ -53,20 +53,19 @@ class OCKCDObject: NSManagedObject {
 internal extension OCKCDObject {
     override func awakeFromInsert() {
         super.awakeFromInsert()
-        createdAt = Date()
-        updatedAt = Date()
+        createdDate = Date()
+        updatedDate = Date()
         notes = Set()
     }
 
     func copyValues(from other: OCKObjectCompatible) {
         guard let context = managedObjectContext else { fatalError("Managed object context should never be nil!") }
-        createdAt = other.createdAt ?? Date()
-        updatedAt = other.updatedAt ?? Date()
-        deletedAt = other.deletedAt
+        createdDate = other.createdDate ?? Date()
+        updatedDate = other.updatedDate ?? Date()
         groupIdentifier = other.groupIdentifier
         tags = other.tags
         source = other.source
-        remoteID = other.externalID
+        remoteID = other.remoteID
         userInfo = other.userInfo
         asset = other.asset
         notes = {

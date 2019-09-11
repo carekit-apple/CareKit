@@ -29,6 +29,7 @@
  */
 
 import CareKitStore
+import CareKitUI
 import Combine
 import Foundation
 
@@ -36,12 +37,12 @@ import Foundation
 /// the `OCKContactsListViewControllerDelegate`.
 public protocol OCKContactsListViewControllerDelegate: OCKContactViewControllerDelegate {
     /// Alerts the delegate when `contactListViewController` encounters a relevant error.
-    func contactListViewController<Store: OCKStoreProtocol>(_ contactListViewController: OCKContactsListViewController<Store>,
-                                                            didFailWithError error: Error)
+    func contactListViewController<S: OCKStoreProtocol>(_ contactListViewController: OCKContactsListViewController<S>,
+                                                        didFailWithError error: Error)
 }
 
 /// An `OCKListViewController` that automatically queries and displays contacts in the `Store` using
-/// `OCKSimpleContactViewController`s.
+/// `OCKDetailedContactViewController`s.
 open class OCKContactsListViewController<Store: OCKStoreProtocol>: OCKListViewController {
     /// The manager of the `Store` from which the `Contact` data is fetched.
     public let storeManager: OCKSynchronizedStoreManager<Store>
@@ -71,7 +72,7 @@ open class OCKContactsListViewController<Store: OCKStoreProtocol>: OCKListViewCo
     override open func viewDidLoad() {
         super.viewDidLoad()
         navigationController?.navigationBar.prefersLargeTitles = true
-        title = OCKStyle.strings.contacts
+        title = OCKStrings.contacts
         subscribe()
         fetchContacts()
     }
@@ -84,7 +85,7 @@ open class OCKContactsListViewController<Store: OCKStoreProtocol>: OCKListViewCo
     }
 
     /// `fetchContacts` asynchronously retrieves an array of contacts stored in a `Result`
-    /// and makes corresponding `OCKSimpleContactViewController`s.
+    /// and makes corresponding `OCKDetailedContactViewController`s.
     private func fetchContacts() {
         storeManager.store.fetchContacts(nil, query: nil, queue: .main) { [weak self] result in
             guard let self = self else { return }
@@ -94,8 +95,7 @@ open class OCKContactsListViewController<Store: OCKStoreProtocol>: OCKListViewCo
             case .success(let contacts):
                 self.clear()
                 for contact in contacts {
-                    let contactViewController = OCKContactViewController<Store>
-                        .makeViewController(style: .simple, storeManager: self.storeManager, contact: contact)
+                    let contactViewController = OCKDetailedContactViewController(storeManager: self.storeManager, contact: contact)
                     contactViewController.delegate = self.contactDelegate
                     self.appendViewController(contactViewController, animated: false)
                 }

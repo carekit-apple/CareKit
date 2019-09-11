@@ -57,27 +57,34 @@ open class OCKDailyTasksPageViewController<Store: OCKStoreProtocol>: OCKDailyPag
             case .success(let tasks):
                 let eventQuery = OCKEventQuery(for: date)
                 for task in tasks {
-                    let taskViewController = OCKTaskViewController<Store>.makeViewController(
-                        style: .grid,
-                        storeManager: self.storeManager,
-                        task: task,
-                        eventQuery: eventQuery)
+                    let taskViewController = OCKGridTaskViewController(storeManager: self.storeManager, task: task, eventQuery: eventQuery)
                     taskViewController.delegate = self.taskDelegate
                     listViewController.appendViewController(taskViewController, animated: false)
                 }
 
                 if tasks.isEmpty {
                     listViewController.listView.stackView.spacing = self.emptyLabelMargin
-                    listViewController.appendView(self.makeEmptyLabel(), animated: false)
+                    let emptyLabel = OCKEmptyLabel(textStyle: .subheadline, weight: .medium)
+                    listViewController.appendView(emptyLabel, animated: false)
                 }
             }
         }
     }
+}
 
-    private func makeEmptyLabel() -> OCKLabel {
-        let label = OCKLabel(textStyle: .subheadline, weight: .medium)
-        label.textColor = .lightGray
-        label.text = OCKStyle.strings.noTasks
-        return label
+private class OCKEmptyLabel: OCKLabel {
+    override init(textStyle: UIFont.TextStyle, weight: UIFont.Weight) {
+        super.init(textStyle: textStyle, weight: weight)
+        text = OCKStrings.noTasks
+    }
+
+    @available(*, unavailable)
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func styleDidChange() {
+        super.styleDidChange()
+        textColor = style().color.label
     }
 }

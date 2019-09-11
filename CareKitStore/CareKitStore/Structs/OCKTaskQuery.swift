@@ -34,14 +34,17 @@ import Foundation
 public enum OCKTaskAnchor {
     case carePlanIdentifiers(_ identifiers: [String])
     case carePlanVersions(_ versionIDs: [OCKLocalVersionID])
+    case carePlanRemoteIDs(_ remoteIDs: [String])
+
     case taskIdentifiers(_ identifiers: [String])
     case taskVersions(_ versionIDs: [OCKLocalVersionID])
+    case taskRemoteIDs(_ remoteIDs: [String])
 }
 
 /// A query that limits which tasks will be returned when fetching.
 public struct OCKTaskQuery: OCKDateIntervalQueryable {
     public enum SortDescriptor {
-        case effectiveAt(ascending: Bool)
+        case effectiveDate(ascending: Bool)
         case groupIdentifier(ascending: Bool)
         case title(ascending: Bool)
     }
@@ -93,14 +96,14 @@ internal extension Array where Element: OCKTaskConvertible, Element: Equatable {
             // Schedule with finite duration
             if let scheduleEnd = schedule.end {
                 let taskBeginsAfterQueryStarts = scheduleEnd >= query.start
-                let taskBeginsBeforeQueryEnds = ockTask.effectiveAt <= query.end
+                let taskBeginsBeforeQueryEnds = ockTask.effectiveDate <= query.end
                 guard taskBeginsAfterQueryStarts && taskBeginsBeforeQueryEnds else {
                     return false
                 }
             }
 
             // Schedule with infinite duration
-            else if events.isEmpty && ockTask.effectiveAt > query.end {
+            else if events.isEmpty && ockTask.effectiveDate > query.end {
                 return false
             }
 

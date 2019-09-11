@@ -113,7 +113,7 @@ class TestTask: XCTestCase {
 
         let schedule = OCKSchedule.dailyAtTime(hour: 12, minutes: 0, start: tomorrow, end: nil, text: nil)
         var task = OCKTask(identifier: "A", title: "a", carePlanID: nil, schedule: schedule)
-        task.effectiveAt = thisMorning
+        task.effectiveDate = thisMorning
 
         let query = OCKTaskQuery(start: thisMorning, end: tomorrow)
         XCTAssert([task].filtered(against: query) == [task])

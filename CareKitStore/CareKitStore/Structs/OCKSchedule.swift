@@ -104,7 +104,6 @@ public struct OCKSchedule: Codable, Equatable, OCKSchedulable {
     }
 
     /// Create a schedule that happens once per week, every week, at a fixed time.
-    
     public static func weeklyAtTime(weekday: Int, hours: Int, minutes: Int, start: Date, end: Date?, targetValues: [OCKOutcomeValue],
                                     text: String?, duration: TimeInterval = 0) -> OCKSchedule {
         let interval = DateComponents(weekOfYear: 1)
@@ -114,7 +113,6 @@ public struct OCKSchedule: Codable, Equatable, OCKSchedulable {
                                          text: text, targetValues: targetValues, duration: duration)
         return OCKSchedule(composing: [element])
     }
-    
 
     /// Computes the date of the Nth occurence of a schedule element. If the Nth occurence is beyond the end date, then nil will be returned.
     public func event(forOccurenceIndex occurence: Int) -> OCKScheduleEvent? {

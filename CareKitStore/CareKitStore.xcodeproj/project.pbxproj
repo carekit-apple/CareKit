@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		03CF3601230DCDF100A66A38 /* OCKSemanticVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CF3600230DCDF100A66A38 /* OCKSemanticVersion.swift */; };
+		03CF3603230DCE6600A66A38 /* TestSemanticVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CF3602230DCE6600A66A38 /* TestSemanticVersion.swift */; };
 		5112F92222CA6C8000E1AF99 /* OCKOperators.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5112F92122CA6C8000E1AF99 /* OCKOperators.swift */; };
 		51E0590D2240AA88004893F2 /* OCKConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51E0590C2240AA88004893F2 /* OCKConvertible.swift */; };
 		E7131DC12241FAA80001861B /* OCKTaskQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7131DC02241FAA80001861B /* OCKTaskQuery.swift */; };
@@ -26,10 +28,10 @@
 		E7460494223870C100A1B16B /* OCKObjectCompatible.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7460493223870C100A1B16B /* OCKObjectCompatible.swift */; };
 		E747EC462238140800775C0D /* TestCoreDataSchema+ScheduleElements.swift in Sources */ = {isa = PBXBuildFile; fileRef = E747EC452238140800775C0D /* TestCoreDataSchema+ScheduleElements.swift */; };
 		E747EC4822382BBC00775C0D /* OCKOutcomeValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = E747EC4722382BBC00775C0D /* OCKOutcomeValue.swift */; };
-		E74896BF227B4A460008DA0F /* OCKValueInitializable.swift in Sources */ = {isa = PBXBuildFile; fileRef = E74896BE227B4A460008DA0F /* OCKValueInitializable.swift */; };
 		E74B527C2239C26400986A2F /* TestCoreDataSchemaIntegration.swift in Sources */ = {isa = PBXBuildFile; fileRef = E74B527B2239C26400986A2F /* TestCoreDataSchemaIntegration.swift */; };
 		E74B527E2239C9EF00986A2F /* TestStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E74B527D2239C9EF00986A2F /* TestStore.swift */; };
 		E74B52822239CFDE00986A2F /* OCKStoreConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = E74B52812239CFDE00986A2F /* OCKStoreConfiguration.swift */; };
+		E760F75222F8C85A007FCB12 /* OCKBiologicalSex.swift in Sources */ = {isa = PBXBuildFile; fileRef = E760F75122F8C85A007FCB12 /* OCKBiologicalSex.swift */; };
 		E76FB6092267D89D00F5E1B8 /* OCKAdherenceQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = E76FB6082267D89D00F5E1B8 /* OCKAdherenceQuery.swift */; };
 		E77140E922C3090200D1BC36 /* OCKAdherenceAggregator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E77140E822C3090200D1BC36 /* OCKAdherenceAggregator.swift */; };
 		E77374892280FB6100F31F94 /* OCKNote.swift in Sources */ = {isa = PBXBuildFile; fileRef = E77374882280FB6100F31F94 /* OCKNote.swift */; };
@@ -97,7 +99,6 @@
 		E7E793D4225F9B53004BDD21 /* TestStoreProtocolExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7E793D3225F9B53004BDD21 /* TestStoreProtocolExtensions.swift */; };
 		E7E793D6225F9BD0004BDD21 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7E793D5225F9BD0004BDD21 /* Utils.swift */; };
 		E7F0C86D2294A1B600A015C6 /* OCKQueryable.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7F0C86C2294A1B600A015C6 /* OCKQueryable.swift */; };
-		E7FEBAC6227EA08300C25388 /* Calendar+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7FEBAC5227EA08300C25388 /* Calendar+Extensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -111,6 +112,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		03CF3600230DCDF100A66A38 /* OCKSemanticVersion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKSemanticVersion.swift; sourceTree = "<group>"; };
+		03CF3602230DCE6600A66A38 /* TestSemanticVersion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestSemanticVersion.swift; sourceTree = "<group>"; };
 		5112F92122CA6C8000E1AF99 /* OCKOperators.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKOperators.swift; sourceTree = "<group>"; };
 		51E0590C2240AA88004893F2 /* OCKConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKConvertible.swift; sourceTree = "<group>"; };
 		E7131DC02241FAA80001861B /* OCKTaskQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKTaskQuery.swift; sourceTree = "<group>"; };
@@ -130,10 +133,10 @@
 		E7460493223870C100A1B16B /* OCKObjectCompatible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKObjectCompatible.swift; sourceTree = "<group>"; };
 		E747EC452238140800775C0D /* TestCoreDataSchema+ScheduleElements.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TestCoreDataSchema+ScheduleElements.swift"; sourceTree = "<group>"; };
 		E747EC4722382BBC00775C0D /* OCKOutcomeValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKOutcomeValue.swift; sourceTree = "<group>"; };
-		E74896BE227B4A460008DA0F /* OCKValueInitializable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKValueInitializable.swift; sourceTree = "<group>"; };
 		E74B527B2239C26400986A2F /* TestCoreDataSchemaIntegration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestCoreDataSchemaIntegration.swift; sourceTree = "<group>"; };
 		E74B527D2239C9EF00986A2F /* TestStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestStore.swift; sourceTree = "<group>"; };
 		E74B52812239CFDE00986A2F /* OCKStoreConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKStoreConfiguration.swift; sourceTree = "<group>"; };
+		E760F75122F8C85A007FCB12 /* OCKBiologicalSex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKBiologicalSex.swift; sourceTree = "<group>"; };
 		E76FB6082267D89D00F5E1B8 /* OCKAdherenceQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKAdherenceQuery.swift; sourceTree = "<group>"; };
 		E77140E822C3090200D1BC36 /* OCKAdherenceAggregator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKAdherenceAggregator.swift; sourceTree = "<group>"; };
 		E77374882280FB6100F31F94 /* OCKNote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKNote.swift; sourceTree = "<group>"; };
@@ -204,7 +207,6 @@
 		E7E793D3225F9B53004BDD21 /* TestStoreProtocolExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestStoreProtocolExtensions.swift; sourceTree = "<group>"; };
 		E7E793D5225F9BD0004BDD21 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		E7F0C86C2294A1B600A015C6 /* OCKQueryable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKQueryable.swift; sourceTree = "<group>"; };
-		E7FEBAC5227EA08300C25388 /* Calendar+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Calendar+Extensions.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -239,6 +241,7 @@
 				E746049122385FD500A1B16B /* TestOutcome.swift */,
 				E746048F22385B8300A1B16B /* TestOutcomeValue.swift */,
 				E7B023A22241A145001F9552 /* TestVersionable.swift */,
+				03CF3602230DCE6600A66A38 /* TestSemanticVersion.swift */,
 			);
 			path = Structs;
 			sourceTree = "<group>";
@@ -271,7 +274,6 @@
 				E7AE853D2232F24600AF7C32 /* OCKStoreError.swift */,
 				E7A2E7B322C2C1F900520C37 /* OCKEventAggregator.swift */,
 				E77140E822C3090200D1BC36 /* OCKAdherenceAggregator.swift */,
-				E7FEBAC5227EA08300C25388 /* Calendar+Extensions.swift */,
 				E784B8FC2232EED600736CA5 /* Info.plist */,
 			);
 			path = CareKitStore;
@@ -281,13 +283,13 @@
 			isa = PBXGroup;
 			children = (
 				E7F445E022CFAC6F0090CC36 /* Store */,
-				E7E793D5225F9BD0004BDD21 /* Utils.swift */,
 				E746048E22385B5200A1B16B /* Structs */,
 				E7E6FF5A223718FA00782246 /* CoreDataSchema */,
 				E7E793D3225F9B53004BDD21 /* TestStoreProtocolExtensions.swift */,
 				E7A532A922C59A7200D1D112 /* TestEventAggregator.swift */,
 				E7A532AB22C59D7700D1D112 /* TestAdherenceAggregator.swift */,
 				E7BC32FB22332FB60055CA62 /* TestSchedule.swift */,
+				E7E793D5225F9BD0004BDD21 /* Utils.swift */,
 				E784B9082232EED600736CA5 /* Info.plist */,
 			);
 			path = CareKitStoreTests;
@@ -301,7 +303,6 @@
 				E7B7AF73226C26EB00646A91 /* OCKStoreProtocol+Singular.swift */,
 				E7B7AF71226C26C300646A91 /* OCKStoreProtocol+Synchronous.swift */,
 				51E0590C2240AA88004893F2 /* OCKConvertible.swift */,
-				E74896BE227B4A460008DA0F /* OCKValueInitializable.swift */,
 				E7AE85232232F24500AF7C32 /* OCKVersionable.swift */,
 				E77DD23322333DAF00E194A9 /* OCKSchedulable.swift */,
 				E782E5FB2236DB2D003EE55A /* OCKCDManageable.swift */,
@@ -337,6 +338,8 @@
 				E7F0C86C2294A1B600A015C6 /* OCKQueryable.swift */,
 				5112F92122CA6C8000E1AF99 /* OCKOperators.swift */,
 				E7B5C0152299E22400451AA5 /* OCKAdherence.swift */,
+				E760F75122F8C85A007FCB12 /* OCKBiologicalSex.swift */,
+				03CF3600230DCDF100A66A38 /* OCKSemanticVersion.swift */,
 			);
 			path = Structs;
 			sourceTree = "<group>";
@@ -535,8 +538,9 @@
 				E7AE854E2232F24600AF7C32 /* OCKPatient.swift in Sources */,
 				E7E6FF57223716A900782246 /* OCKCDCarePlan.swift in Sources */,
 				E7AE854A2232F24600AF7C32 /* OCKResultClosure.swift in Sources */,
+				E760F75222F8C85A007FCB12 /* OCKBiologicalSex.swift in Sources */,
 				5112F92222CA6C8000E1AF99 /* OCKOperators.swift in Sources */,
-				E74896BF227B4A460008DA0F /* OCKValueInitializable.swift in Sources */,
+				03CF3601230DCDF100A66A38 /* OCKSemanticVersion.swift in Sources */,
 				E7AE85482232F24600AF7C32 /* OCKVersionable.swift in Sources */,
 				E7D671C02281E3F30089E4B7 /* OCKContactQuery.swift in Sources */,
 				E7131DCF2242CF680001861B /* OCKCDNote.swift in Sources */,
@@ -553,7 +557,6 @@
 				E76FB6092267D89D00F5E1B8 /* OCKAdherenceQuery.swift in Sources */,
 				E7AE85512232F24600AF7C32 /* OCKCDScheduleElement.swift in Sources */,
 				E747EC4822382BBC00775C0D /* OCKOutcomeValue.swift in Sources */,
-				E7FEBAC6227EA08300C25388 /* Calendar+Extensions.swift in Sources */,
 				E7AE85522232F24600AF7C32 /* OCKCDOutcome.swift in Sources */,
 				E74B52822239CFDE00986A2F /* OCKStoreConfiguration.swift in Sources */,
 				E773748F2281145600F31F94 /* OCKContact.swift in Sources */,
@@ -596,6 +599,7 @@
 				E7D50C42228C889100F36DFC /* TestCarePlan.swift in Sources */,
 				E7A532AC22C59D7700D1D112 /* TestAdherenceAggregator.swift in Sources */,
 				E746049222385FD500A1B16B /* TestOutcome.swift in Sources */,
+				03CF3603230DCE6600A66A38 /* TestSemanticVersion.swift in Sources */,
 				E726C05222CFADF7001236E2 /* TestStore+Tasks.swift in Sources */,
 				E7B023A122419F01001F9552 /* TestPatient.swift in Sources */,
 				E7E6FF59223718BE00782246 /* TestCoreDataSchema+CarePlans.swift in Sources */,
@@ -674,7 +678,7 @@
 					"$(inherited)",
 				);
 				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
-				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
@@ -694,7 +698,7 @@
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
+				SWIFT_TREAT_WARNINGS_AS_ERRORS = NO;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -750,7 +754,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
-				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
@@ -769,7 +773,7 @@
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
-				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
+				SWIFT_TREAT_WARNINGS_AS_ERRORS = NO;
 				SWIFT_VERSION = 5.0;
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";

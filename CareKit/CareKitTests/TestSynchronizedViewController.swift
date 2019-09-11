@@ -28,37 +28,41 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import CareKit
+@testable import CareKit
 import Combine
 import XCTest
 
 class TestSynchronizedViewController: XCTestCase {
-    func testInitializerWithPlainView() {
-        let label = UILabel()
-        let viewController = MockSynchronizedViewController(loadCustomView: { label }, modelDidChange: { view, text, _ in
-            guard let label = view as? UILabel else { XCTFail("Wrong type"); return }
-            label.text = text
-        })
-
-        let publisher = PassthroughSubject<String?, Never>()
-        viewController.upstream = AnyPublisher(publisher)
-        viewController.subscribe()
-
-        XCTAssertNil(label.text)
-        publisher.send("CareKit")
-        XCTAssert(label.text == "CareKit")
+    private enum Constants {
+        static let timeout: TimeInterval = 3
     }
 
-    func testInitializerWithBindableView() {
-        let label = MockBindableLabel()
-        let viewController = MockSynchronizedViewController(loadDefaultView: { label })
+    private var delegateManager: MockSynchronizationDelegate<String>!
 
-        let publisher = PassthroughSubject<String?, Never>()
-        viewController.upstream = AnyPublisher(publisher)
-        viewController.subscribe()
+    func testBinding() {
+        let viewController = MockSynchronizedViewController()
+        delegateManager = MockSynchronizationDelegate()
+        viewController.synchronizationDelegate = delegateManager
 
-        XCTAssertNil(label.text)
-        publisher.send("CareKit")
-        XCTAssert(label.text == "CareKit")
+        // Setup expectation to validate the view
+        let initialExpectation = expectation(description: "Initial view setup")
+        let updateExpectation = expectation(description: "Updated view setup")
+        delegateManager.viewModelRecieved = { newValue, version in
+            switch version {
+            case 1:
+                XCTAssertNil(viewController.synchronizedView.text)
+                initialExpectation.fulfill()
+            case 2:
+                XCTAssert(viewController.synchronizedView.text == "CareKit")
+                updateExpectation.fulfill()
+            default: break
+            }
+        }
+
+        // Load the view to initiate the subscription
+        viewController.loadViewIfNeeded()
+        viewController.upstream.send(nil)
+        viewController.upstream.send("CareKit")
+        wait(for: [initialExpectation, updateExpectation], timeout: Constants.timeout)
     }
 }

@@ -34,15 +34,19 @@ extension OCKStore {
     public func fetchContacts(_ anchor: OCKContactAnchor? = nil, query: OCKContactQuery? = nil, queue: DispatchQueue = .main,
                               completion: @escaping (Result<[OCKContact], OCKStoreError>) -> Void) {
         context.perform {
-            let predicate = self.buildPredicate(for: anchor, and: query)
-            let persistedContacts = OCKCDContact.fetchFromStore(in: self.context, where: predicate) { fetchRequest in
-                fetchRequest.fetchLimit = query?.limit ?? 0
-                fetchRequest.fetchOffset = query?.offset ?? 0
-                fetchRequest.sortDescriptors = self.buildSortDescriptors(for: query)
-            }
+            do {
+                let predicate = try self.buildPredicate(for: anchor, and: query)
+                let persistedContacts = OCKCDContact.fetchFromStore(in: self.context, where: predicate) { fetchRequest in
+                    fetchRequest.fetchLimit = query?.limit ?? 0
+                    fetchRequest.fetchOffset = query?.offset ?? 0
+                    fetchRequest.sortDescriptors = self.buildSortDescriptors(for: query)
+                }
 
-            let contacts = persistedContacts.map(self.makeContact)
-            queue.async { completion(.success(contacts)) }
+                let contacts = persistedContacts.map(self.makeContact)
+                queue.async { completion(.success(contacts)) }
+            } catch {
+                queue.async { completion(.failure(.fetchFailed(reason: "Failed to fetch contacts. Error: \(error.localizedDescription)"))) }
+            }
         }
     }
 
@@ -96,7 +100,7 @@ extension OCKStore {
         context.perform {
             do {
                 let deletedContacts = try self.performUnversionedUpdate(values: contacts) { _, persistableContact in
-                    persistableContact.deletedAt = Date()
+                    persistableContact.deletedDate = Date()
                 }.map(self.makeContact)
 
                 try self.context.save()
@@ -163,7 +167,7 @@ extension OCKStore {
     }
 
     private func makeContact(from object: OCKCDContact) -> OCKContact {
-        var contact = OCKContact(identifier: object.identifier, name: object.name.makeComponents(), carePlanID: object.carePlan?.versionID)
+        var contact = OCKContact(identifier: object.identifier, name: object.name.makeComponents(), carePlanID: object.carePlan?.localDatabaseID)
         contact.copyVersionedValues(from: object)
         contact.address = object.address.map(makePostalAddress)
         contact.emailAddresses = object.emailAddresses
@@ -190,21 +194,25 @@ extension OCKStore {
         return address
     }
 
-    private func buildPredicate(for anchor: OCKContactAnchor?, and query: OCKContactQuery?) -> NSPredicate {
+    private func buildPredicate(for anchor: OCKContactAnchor?, and query: OCKContactQuery?) throws -> NSPredicate {
         return NSCompoundPredicate(andPredicateWithSubpredicates: [
-            buildSubPredicate(for: anchor),
+            try buildSubPredicate(for: anchor),
             buildSubPredicate(for: query),
-            NSPredicate(format: "%K == nil", #keyPath(OCKCDVersionedObject.deletedAt))
+            NSPredicate(format: "%K == nil", #keyPath(OCKCDVersionedObject.deletedDate))
         ])
     }
 
-    private func buildSubPredicate(for anchor: OCKContactAnchor?) -> NSPredicate {
+    private func buildSubPredicate(for anchor: OCKContactAnchor?) throws -> NSPredicate {
         guard let anchor = anchor else { return NSPredicate(value: true) }
         switch anchor {
         case .contactIdentifier(let identifiers):
             return NSPredicate(format: "%K IN %@", #keyPath(OCKCDVersionedObject.identifier), identifiers)
-        case .carePlanVersion(let carePlanVersionIDs):
-            fatalError("\(carePlanVersionIDs)")
+        case .contactRemoteIDs(let remoteIDs):
+            return NSPredicate(format: "%K IN %@", #keyPath(OCKCDVersionedObject.remoteID), remoteIDs)
+        case .carePlanRemoteIDs(let carePlanRemoteIDs):
+            return NSPredicate(format: "%K IN %@", #keyPath(OCKCDContact.carePlan.remoteID), carePlanRemoteIDs)
+        case .carePlanVersions(let carePlanVersionIDs):
+            return NSPredicate(format: "%K IN %@", #keyPath(OCKCDContact.carePlan), try carePlanVersionIDs.map(fetchObject))
         }
     }
 
@@ -228,7 +236,7 @@ extension OCKStore {
         guard let orders = query?.sortDescriptors else { return [] }
         return orders.map { order -> NSSortDescriptor in
             switch order {
-            case .effectiveAt(ascending: let ascending): return NSSortDescriptor(keyPath: \OCKCDContact.effectiveAt, ascending: ascending)
+            case .effectiveDate(ascending: let ascending): return NSSortDescriptor(keyPath: \OCKCDContact.effectiveDate, ascending: ascending)
             case .familyName(ascending: let ascending): return NSSortDescriptor(keyPath: \OCKCDContact.name.familyName, ascending: ascending)
             case .givenName(ascending: let ascending): return NSSortDescriptor(keyPath: \OCKCDContact.name.givenName, ascending: ascending)
             }

@@ -31,8 +31,8 @@
 import UIKit
 
 /// A graph view that shows one or more scatter plots
-internal class OCKScatterPlotView: OCKGradientPlotView {
-    override internal func resetLayers() {
+class OCKScatterPlotView: OCKGradientPlotView {
+    override func resetLayers() {
         let graphRect = graphBounds()
         let offsets = computeLineOffsets()
         resolveNumberOfLayers()

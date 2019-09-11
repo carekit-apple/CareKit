@@ -31,7 +31,7 @@
 import UIKit
 
 /// Any view or layer that can be plotted on conforms to this protocol.
-internal protocol OCKCartesianGridProtocol: AnyObject {
+protocol OCKCartesianGridProtocol: AnyObject {
     /// The smallest value shown on the x-axis. If not set, a reasonable default will be used.
     var xMinimum: CGFloat? { get set }
 
@@ -45,7 +45,7 @@ internal protocol OCKCartesianGridProtocol: AnyObject {
     var yMaximum: CGFloat? { get set }
 }
 
-internal extension OCKCartesianGridProtocol {
+extension OCKCartesianGridProtocol {
     /// The default width of the graph in plot space coordinates.
     static var defaultWidth: CGFloat { return 100 }
 
@@ -54,16 +54,16 @@ internal extension OCKCartesianGridProtocol {
 }
 
 /// Any view that only supports plotting a single data series should conform to this protocol.
-internal protocol OCKSinglePlotable: OCKCartesianGridProtocol {
+protocol OCKSinglePlotable: OCKCartesianGridProtocol {
     var dataPoints: [CGPoint] { get set }
 }
 
 /// Any view that supports plotting multiple data series should conform to this protocol.
-internal protocol OCKMultiPlotable: OCKCartesianGridProtocol {
+protocol OCKMultiPlotable: OCKCartesianGridProtocol {
     var dataSeries: [OCKDataSeries] { get set }
 }
 
-internal extension OCKMultiPlotable {
+extension OCKMultiPlotable {
     /// Computes the bounds of the area shown on the graph in graph coordinate space.
     func graphBounds() -> CGRect {
         let xCoords = dataSeries.flatMap { $0.dataPoints }.map { $0.x }
@@ -80,7 +80,7 @@ internal extension OCKMultiPlotable {
     }
 }
 
-internal protocol OCKGradientPlotable {
+protocol OCKGradientPlotable {
     var gradientLayer: CAGradientLayer { get }
     var pointsLayer: CAShapeLayer { get }
 

@@ -34,15 +34,18 @@ import Foundation
 public enum OCKCarePlanAnchor {
     case patientIdentifiers(_ identifiers: [String])
     case patientVersions(_ versionIDs: [OCKLocalVersionID])
+    case patientRemoteIDs(_ remoteIDs: [String])
+
     case carePlanIdentifiers(_ identifiers: [String])
     case carePlanVersions(_ versionIDs: [OCKLocalVersionID])
+    case carePlanRemoteIDs(_ remoteIDs: [String])
 }
 
 /// A query that limits which care plans will be returned when fetching.
 public struct OCKCarePlanQuery: OCKDateIntervalQueryable {
     public enum SortDescriptor {
         case title(ascending: Bool)
-        case effectiveAt(ascending: Bool)
+        case effectiveDate(ascending: Bool)
     }
 
     public var start: Date

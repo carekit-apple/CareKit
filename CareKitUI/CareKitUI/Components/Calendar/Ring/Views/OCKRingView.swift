@@ -31,37 +31,37 @@
 import UIKit
 
 /// A fillable progress ring drawing.
-internal class OCKRingView: UIView {
+class OCKRingView: OCKView {
     // MARK: Properties
 
     /// The progress of the ring between 0 and 1. The ring will fill based on the value.
-    internal private(set) var progress: CGFloat = 1.0
+    private(set) var progress: CGFloat = 1.0
 
     /// The line width of the ring.
-    internal var lineWidth: CGFloat = 10 {
+    var lineWidth: CGFloat = 10 {
         didSet { ringLayer.lineWidth = lineWidth }
     }
 
     /// The stroke color of the ring.
-    internal var strokeColor: UIColor = .blue {
+    var strokeColor: UIColor = OCKStyle().color.systemBlue {
         didSet { ringLayer.strokeColor = strokeColor.cgColor }
     }
 
     /// The start angle of the ring to begin drawing.
-    internal var startAngle: CGFloat = -.pi / 2 {
+    var startAngle: CGFloat = -.pi / 2 {
         didSet { ringLayer.path = ringPath() }
     }
 
     /// The end angle of the ring to end drawing.
-    internal var endAngle: CGFloat = 1.5 * .pi {
+    var endAngle: CGFloat = 1.5 * .pi {
         didSet { ringLayer.path = ringPath() }
     }
 
     /// Duration of the ring's fill animation.
-    internal var duration: TimeInterval = 1.0
+    var duration: TimeInterval = 1.0
 
     /// The radius oof the ring.
-    internal var radius: CGFloat {
+    var radius: CGFloat {
         return min(bounds.height, bounds.width) / 2 - lineWidth / 2
     }
 
@@ -75,30 +75,21 @@ internal class OCKRingView: UIView {
 
     // MARK: Life Cycle
 
-    /// Create a ring view. The ring is filled by default.
-    internal init() {
-        super.init(frame: .zero)
-        setup()
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        setup()
-    }
-
-    override internal func layoutSubviews() {
+    override func layoutSubviews() {
         super.layoutSubviews()
         configureRing()
     }
 
     // MARK: Methods
 
-    private func setup() {
+    override func setup() {
+        super.setup()
         layer.addSublayer(ringLayer)
         styleRingLayer()
     }
 
     private func styleRingLayer() {
+        strokeColor = tintColor
         ringLayer.strokeColor = strokeColor.cgColor
         ringLayer.strokeEnd = min(progress, 1.0)
         ringLayer.lineWidth = lineWidth
@@ -109,7 +100,7 @@ internal class OCKRingView: UIView {
     /// - Parameters:
     ///   - value: Progress value between 0 and 1.
     ///   - animated: Flag for the fill ring's animation.
-    internal func setProgress(_ value: CGFloat, animated: Bool) {
+    func setProgress(_ value: CGFloat, animated: Bool) {
         layoutIfNeeded()
 
         let oldValue = ringLayer.presentation()?.strokeEnd ?? progress

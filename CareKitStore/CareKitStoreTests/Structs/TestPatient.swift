@@ -29,6 +29,7 @@
  */
 
 import CareKitStore
+import Foundation
 import XCTest
 
 class TestPatient: XCTestCase {
@@ -42,5 +43,13 @@ class TestPatient: XCTestCase {
         let patientA = OCKPatient(identifier: "abc123", givenName: "Amy", familyName: "Frost")
         let patientB = OCKPatient(identifier: "def456", givenName: "Amy", familyName: "Frost")
         XCTAssert(!patientA.isAssociated(with: patientB))
+    }
+
+    func testPatientAge() {
+        var patient = OCKPatient(identifier: "A", givenName: "Amy", familyName: "Frost")
+        XCTAssertNil(patient.age)
+
+        patient.birthday = Calendar.current.date(byAdding: .year, value: -50, to: Date())
+        XCTAssert(patient.age == 50)
     }
 }

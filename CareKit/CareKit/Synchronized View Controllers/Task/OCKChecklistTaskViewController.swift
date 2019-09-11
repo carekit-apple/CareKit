@@ -32,58 +32,94 @@ import CareKitStore
 import CareKitUI
 import UIKit
 
-/// A synchronized view controller that displays a checklist of events for a task.
-open class OCKChecklistTaskViewController<Store: OCKStoreProtocol>:
-OCKTaskViewController<Store>, OCKChecklistTaskViewDelegate {
+/// A view controller showing an `OCKChecklistTaskView` that is synchronized with a single task and its events. Displays events for the task, and
+/// allows the user to mark them as complete.
+open class OCKChecklistTaskViewController<Store: OCKStoreProtocol>: OCKTaskViewController<OCKChecklistTaskView, Store> {
     // MARK: Properties
 
-    /// The view containing that task and its events.
-    public var taskView: OCKChecklistTaskView {
-        guard let view = view as? OCKChecklistTaskView else { fatalError("Unexpected type") }
-        return view
+    /// The type of the view being displayed.
+    public typealias View = OCKChecklistTaskView
+
+    // MARK: - Life Cycle
+
+    /// Create an instance of the view controller that queries for the events for the specified task.
+    /// - Parameter storeManager: A store manager that will be used to provide synchronization.
+    /// - Parameter task: The task that has events to display.
+    /// - Parameter eventQuery: The query used to find events for the specified task.
+    override public init(storeManager: OCKSynchronizedStoreManager<Store>, task: Store.Task, eventQuery: OCKEventQuery) {
+        super.init(storeManager: storeManager, task: task, eventQuery: eventQuery)
     }
 
-    override var detailPresentingView: UIView? {
-        return taskView.headerView
+    /// Create an instance of the view controller by querying the task and events to display.
+    /// - Parameter storeManager: A store manager that will be used to provide synchronization.
+    /// - Parameter taskIdentifier: The identifier of the task to find.
+    /// - Parameter eventQuery: The query used to find events for the task.
+    override public init(storeManager: OCKSynchronizedStoreManager<Store>, taskIdentifier: String, eventQuery: OCKEventQuery) {
+        super.init(storeManager: storeManager, taskIdentifier: taskIdentifier, eventQuery: eventQuery)
     }
 
-    // MARK: Initializers
+    // MARK: - Methods
 
-    /// Initialize with a task.
-    ///
-    /// - Parameters:
-    ///   - storeManager: A store manager that will be used to provide synchronization.
-    ///   - task: The task which to display.
-    ///   - eventQuery: An event query that will specify which events will be displayed in the view.
-    public init(storeManager: OCKSynchronizedStoreManager<Store>,
-                task: Store.Task, eventQuery: OCKEventQuery) {
-        super.init(storeManager: storeManager, task: task, eventQuery: eventQuery,
-                   loadDefaultView: { OCKBindableChecklistTaskView<Store.Task, Store.Outcome>() })
+    /// Create an instance of the view to be displayed.
+    override open func makeView() -> OCKChecklistTaskView {
+        return .init()
     }
 
-    /// Initialize with a task identifier. The task will be fetched from the store automatically.
-    ///
-    /// - Parameters:
-    ///   - storeManager: A store manager that will be used to provide synchronization.
-    ///   - taskIdentifier: The identifier of the task which should be fetched and displayed.
-    ///   - eventQuery: An event query that will specify which events will be displayed in the view.
-    public init(storeManager: OCKSynchronizedStoreManager<Store>, taskIdentifier: String, eventQuery: OCKEventQuery) {
-        super.init(storeManager: storeManager, taskIdentifier: taskIdentifier, eventQuery: eventQuery,
-                   loadDefaultView: { OCKBindableChecklistTaskView<Store.Task, Store.Outcome>() })
+    /// Update the view whenever the view model changes.
+    /// - Parameter view: The view to update.
+    /// - Parameter context: The data associated with the updated state.
+    override open func updateView(_ view: OCKChecklistTaskView, context: OCKSynchronizationContext<[Store.Event]>) {
+        let task = context.viewModel?.first?.task.convert()
+        let events = context.viewModel
+        setupViewWithTask(task, view: view)
+        setupViewWithEvents(events, view: view, animated: context.animated)
     }
 
-    // MARK: Life Cycle
-
-    override open func viewDidLoad() {
-        super.viewDidLoad()
-        taskView.delegate = self
+    private func setupViewWithNilTask(_ view: OCKChecklistTaskView) {
+        view.headerView.titleLabel.text = nil
+        view.headerView.detailLabel.text = nil
+        view.instructionsLabel.text = nil
     }
 
-    // MARK: OCKChecklistTaskViewDelegate
+    private func setupViewWithEmptyEvents(_ view: OCKChecklistTaskView, animated: Bool) {
+        view.clearItems(animated: animated)
+        view.headerView.detailLabel.text = nil
+    }
 
-    public func checklistTaskView(_ checklistTaskView: OCKChecklistTaskView, didSelectItem button: OCKButton, at index: Int) {
-        guard index < events.count else { return }
-        let event = events[index]
-        event.outcome == nil ? saveNewOutcome(forEvent: event) : deleteOutcome(forEvent: event)
+    private func setupViewWithTask(_ task: OCKTask?, view: OCKChecklistTaskView) {
+        guard let task = task else {
+            setupViewWithNilTask(view)
+            return
+        }
+        view.headerView.titleLabel.text = task.title
+        view.instructionsLabel.text = task.instructions
+    }
+
+    private func setupViewWithEvents(_ events: [Store.Event]?, view: OCKChecklistTaskView, animated: Bool) {
+        guard let events = events, !events.isEmpty else {
+            setupViewWithEmptyEvents(view, animated: animated)
+            return
+        }
+
+        for (index, event) in events.enumerated() {
+            let title = event.scheduleEvent.element.text ?? OCKScheduleUtility.timeLabel(for: event)
+            if index < view.items.count {
+                let item = view.updateItem(at: index, withTitle: title)
+                item?.isSelected = event.outcome != nil
+            } else {
+                let item = view.appendItem(withTitle: title, animated: animated)
+                item.isSelected = event.outcome != nil
+            }
+        }
+        trimItems(in: view, events: events, animated: animated)
+        view.headerView.detailLabel.text = OCKScheduleUtility.scheduleLabel(for: events)
+    }
+
+    // Remove any items that aren't needed
+    private func trimItems(in view: OCKChecklistTaskView, events: [Store.Event], animated: Bool) {
+        let countToRemove = view.items.count - events.count
+        for _ in 0..<countToRemove {
+            view.removeItem(at: view.items.count - 1, animated: animated)
+        }
     }
 }

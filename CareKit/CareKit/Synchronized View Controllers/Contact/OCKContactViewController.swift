@@ -29,191 +29,205 @@
  */
 
 import CareKitStore
+import CareKitUI
 import Combine
+import Contacts
+import ContactsUI
+import MapKit
+import MessageUI
 import UIKit
 
-/// Conform to receive callbacks when important events happen in an `OCKContactViewController`.
-public protocol OCKContactViewControllerDelegate: AnyObject {
-    /// Called when a contact view controller is tapped by the user.
-    /// - Parameter contactViewController: The contact view controller which was tapped.
-    func didSelect<Store: OCKStoreProtocol>(contactViewController: OCKContactViewController<Store>)
+/// A superclass to all view controllers that are synchronized with a contact. Actions in the view sent through the
+/// `OCKContactViewDelegate` protocol will be automatically hooked up to controller logic.
+///
+/// Alternatively, subclass and use your custom view by specializing the `View` generic and overriding the `makeView()` method. Override the
+/// `updateView(view:context)` method to hook up the contact to the view. This method will be called any time the contact is added, updated, or
+/// deleted.
+open class OCKContactViewController<View: UIView & OCKContactDisplayable, Store: OCKStoreProtocol>:
+OCKSynchronizedViewController<View, Store.Contact>,
+OCKContactDisplayer, OCKContactViewDelegate, MFMessageComposeViewControllerDelegate, MFMailComposeViewControllerDelegate {
+    /// An `Error` subclass detailing errors specific to a contact.
+    private enum ContactError: Error, LocalizedError {
+        case invalidAddress
+        /// `number` is the invalid phone number in context.
+        case invalidPhoneNumber(number: String)
+        case cannotSendMessage
+        case cannotSendMail
 
-    /// Called when an unhandled error is encounted in a contact view controller.
-    /// - Parameter contactViewController: The view controller in which the error occurred.
-    /// - Parameter error: The error that occurred.
-    func contactViewController<Store: OCKStoreProtocol>(_ contactViewController: OCKContactViewController<Store>,
-                                                        didFailWithError error: Error)
-
-    /// Called when a contact view controller finishes a query used to populate its contents.
-    /// - Parameter contactViewController: The contact view controller which completed its query.
-    /// - Parameter contact: The contact that was queried.
-    func contactViewController<Store: OCKStoreProtocol>(_ contactViewController: OCKContactViewController<Store>,
-                                                        didFinishQuerying contact: Store.Contact?)
-}
-
-public extension OCKContactViewControllerDelegate {
-    func didSelect<Store: OCKStoreProtocol>(contactViewController: OCKContactViewController<Store>) {}
-
-    func contactViewController<Store: OCKStoreProtocol>(_ contactViewController: OCKContactViewController<Store>,
-                                                        didFailWithError error: Error) {}
-
-    func contactViewController<Store: OCKStoreProtocol>(_ contactViewController: OCKContactViewController<Store>,
-                                                        didFinishQuerying contact: Store.Contact?) {}
-}
-
-/// An abstract superclass to all synchronized view controllers that display a contact.
-/// It has a factory function that can be used to conveniently initialize a concreted subclass.
-open class OCKContactViewController<Store: OCKStoreProtocol>: OCKSynchronizedViewController<Store.Contact> {
-    // MARK: Properties
-
-    /// Specifies all the ways in which a contact can be displayed.
-    public enum Style: String, CaseIterable {
-        case simple
+        var errorDescription: String? {
+            switch self {
+            case .invalidAddress: return "Invalid address"
+            case .invalidPhoneNumber(let number): return "Invalid number: \(number)"
+            case .cannotSendMessage: return "Unable to compose a message"
+            case .cannotSendMail: return "Unable to compose an email"
+            }
+        }
     }
 
-    internal var detailPresentingView: UIView? { return nil }
+    // MARK: - Properties
+
+    /// The view displayed by this view controller.
+    public var contactView: UIView & OCKContactDisplayable { synchronizedView }
 
     /// The store manager used to provide synchronization.
     public let storeManager: OCKSynchronizedStoreManager<Store>
-    private let contactIdentifier: String
-
-    /// The contact being displayed. If the view controller is initialized with a contact identifier, it will be nil until the query completes.
-    public private (set) var contact: Store.Contact?
 
     /// If set, the delegate will receive callbacks when important events happen.
     public weak var delegate: OCKContactViewControllerDelegate?
 
-    // MARK: Initializers
+    private let query: OCKContactQuery?
+    private let contactIdentifier: String
 
-    // Styled initializers
+    // MARK: - Initializers
 
-    /// Creates a concrete subclass of `OCKContactViewController` and returns it upcast to `OCKContactViewController`
-    /// - Parameter style: A style, which maps to a specific subclass.
-    /// - Parameter storeManager: The store manager, used for synchronization.
-    /// - Parameter contact: The contact to display in the view controller.
-    public static func makeViewController(style: Style, storeManager: OCKSynchronizedStoreManager<Store>,
-                                          contact: Store.Contact) -> OCKContactViewController<Store> {
-        switch style {
-        case .simple: return OCKSimpleContactViewController(storeManager: storeManager, contact: contact)
-        }
-    }
-
-    /// Creates a concrete subclass of `OCKContactViewController` and returns it upcast to `OCKContactViewController`
-    /// - Parameter style: A style, which maps to a specific subclass.
-    /// - Parameter storeManager: The store manager, used for synchronization.
-    /// - Parameter contactIdentifier: The identifier of the contact to be displayed in the view controller.
-    public static func makeViewController(style: Style, storeManager: OCKSynchronizedStoreManager<Store>,
-                                          contactIdentifier: String) -> OCKContactViewController<Store> {
-        switch style {
-        case .simple:
-            return OCKSimpleContactViewController(storeManager: storeManager, contactIdentifier: contactIdentifier)
-        }
-    }
-
-    // Custom view initializer
-
-    internal init(
-        storeManager: OCKSynchronizedStoreManager<Store>,
-        contact: Store.Contact,
-        loadCustomView: @escaping () -> UIView,
-        modelDidChange: @escaping CustomModelDidChange) {
-        self.contact = contact
+    /// Create a view controller with a contact to display.
+    /// - Parameter storeManager: A store manager that will be used to provide synchronization.
+    /// - Parameter contact: Contact to use as the view model.
+    init(storeManager: OCKSynchronizedStoreManager<Store>, contact: Store.Contact) {
         self.storeManager = storeManager
-        self.contactIdentifier = contact.identifier
-        super.init(loadCustomView: loadCustomView, modelDidChange: modelDidChange)
+        query = nil
+        contactIdentifier = contact.identifier
+        super.init()
+        setViewModel(contact, animated: false)
     }
 
-    internal init(
-        storeManager: OCKSynchronizedStoreManager<Store>,
-        contactIdentifier: String,
-        loadCustomView: @escaping () -> UIView,
-        modelDidChange: @escaping CustomModelDidChange) {
+    /// Create a view controller by querying for a contact to display.
+    /// - Parameter storeManager: A store manager that will be used to provide synchronization.
+    /// - Parameter contactIdentifier: The identifier of the contact for which to query.
+    /// - Parameter query: The query used to find the contact.
+    init(storeManager: OCKSynchronizedStoreManager<Store>, contactIdentifier: String, query: OCKContactQuery?) {
         self.storeManager = storeManager
         self.contactIdentifier = contactIdentifier
-        super.init(loadCustomView: loadCustomView, modelDidChange: modelDidChange)
+        self.query = query
+        super.init()
     }
 
-    // Bindable view initializers
-
-    internal init<View: UIView & OCKBindable>(
-        storeManager: OCKSynchronizedStoreManager<Store>,
-        contact: Store.Contact,
-        loadDefaultView: @escaping () -> View,
-        modelDidChange: ModelDidChange? = nil)
-    where View.Model == Store.Contact {
-        self.contact = contact
-        self.storeManager = storeManager
-        self.contactIdentifier = contact.identifier
-        super.init(loadDefaultView: loadDefaultView, modelDidChange: modelDidChange)
-    }
-
-    internal init<View: UIView & OCKBindable>(
-        storeManager: OCKSynchronizedStoreManager<Store>,
-        contactIdentifier: String,
-        loadDefaultView: @escaping () -> View,
-        modelDidChange: ModelDidChange? = nil)
-    where View.Model == Store.Contact {
-        self.storeManager = storeManager
-        self.contactIdentifier = contactIdentifier
-        super.init(loadDefaultView: loadDefaultView, modelDidChange: modelDidChange)
-    }
-
-    // MARK: Life cycle
+    // MARK: - Life cycle
 
     override open func viewDidLoad() {
         super.viewDidLoad()
-
-        // setup tap gesture on the view
-        if let detailPresentingView = detailPresentingView {
-            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(presentDetailViewController))
-            detailPresentingView.isUserInteractionEnabled = true
-            detailPresentingView.addGestureRecognizer(tapGesture)
+        contactView.delegate = self
+        if viewModel == nil {
+            fetchContact(withIdentifier: contactIdentifier, query: query)
         }
-
-        contact == nil ? fetchContact() : modelUpdated(viewModel: contact, animated: false)
     }
 
-    // MARK: Methods
+    // MARK: - Methods
 
-    @objc
-    private func presentDetailViewController() {
-        delegate?.didSelect(contactViewController: self)
-    }
-
-    private func fetchContact() {
-        storeManager.store.fetchContact(withIdentifier: contactIdentifier) { [weak self] result in
+    private func fetchContact(withIdentifier id: String, query: OCKContactQuery?) {
+        let anchor = OCKContactAnchor.contactIdentifier([id])
+        storeManager.store.fetchContacts(anchor, query: query, queue: .main) { [weak self] result in
             guard let self = self else { return }
             switch result {
-            case .success(let contact):
-                let shouldAnimate = self.contact != nil
-                self.contact = contact
-                self.modelUpdated(viewModel: self.contact, animated: shouldAnimate)
+            case .success(let contacts):
+                self.setViewModel(contacts.first, animated: self.viewModel != nil)
                 self.subscribe()
-                self.delegate?.contactViewController(self, didFinishQuerying: self.contact)
+                self.delegate?.contactViewController(self, didFinishQuerying: self.viewModel)
             case .failure(let error):
                 self.delegate?.contactViewController(self, didFailWithError: error)
             }
         }
     }
 
-    override internal func subscribe() {
-        super.subscribe()
-        guard let contact = contact else { return }
-        let changedSubscription = storeManager.publisher(forContact: contact, categories: [.add, .update]).sink { [weak self] updatedContact in
-            let shouldAnimate = self?.contact != nil
-            self?.contact = updatedContact
-            self?.modelUpdated(viewModel: self?.contact, animated: shouldAnimate)
+    /// Subscribe to update and delete notifications for the contact.
+    override open func makeSubscription() -> AnyCancellable? {
+        guard let contact = viewModel else { return nil }
+        let changedSubscription = storeManager.publisher(forContact: contact, categories: [.update]).sink { [weak self] updatedContact in
+            guard let self = self else { return }
+            self.setViewModel(updatedContact, animated: self.viewModel != nil)
         }
 
-        let deletedSubscription = storeManager.publisher(forContact: contact, categories: [.delete], fetchImmediately: false).sink { [weak self] _ in
-            let shouldAnimate = self?.contact != nil
-            self?.contact = nil
-            self?.modelUpdated(viewModel: self?.contact, animated: shouldAnimate)
-        }
+        let deletedSubscription = storeManager.publisher(forContact: contact, categories: [.delete], fetchImmediately: false)
+            .sink { [weak self] _ in
+                guard let self = self else { return }
+                self.setViewModel(nil, animated: self.viewModel != nil)
+            }
 
-        subscription = AnyCancellable {
+        return AnyCancellable {
             changedSubscription.cancel()
             deletedSubscription.cancel()
         }
+    }
+
+    // MARK: - OCKContactViewDelegate
+
+    /// Present an alert to call the contact. By default, calls the first phone number in the contact's list of phone numbers.
+    /// - Parameter contactView: The view that displays the contact.
+    /// - Parameter sender: The sender that is initiating the call process.
+    open func contactView(_ contactView: UIView & OCKContactDisplayable, senderDidInitiateCall sender: Any?) {
+        guard let phoneNumber = viewModel?.convert().phoneNumbers?.first?.value else { return }
+        let filteredNumber = phoneNumber.filter("0123456789".contains)  // remove non-numeric characters to provide to calling API
+        guard let url = URL(string: "tel://" + filteredNumber) else {
+            delegate?.contactViewController(self, didFailWithError: ContactError.invalidPhoneNumber(number: phoneNumber))
+            return
+        }
+        UIApplication.shared.open(url, options: [:], completionHandler: nil)
+    }
+
+    /// Present the UI to message the contact. By default, the first messaging number will be used.
+    /// - Parameter contactView: The view that displays the contact.
+    /// - Parameter sender: The sender that is initiating the messaging process.
+    open func contactView(_ contactView: UIView & OCKContactDisplayable, senderDidInitiateMessage sender: Any?) {
+        guard let messagesNumber = viewModel?.convert().messagingNumbers?.first?.value else { return }
+        guard MFMessageComposeViewController.canSendText() else {
+            self.delegate?.contactViewController(self, didFailWithError: ContactError.cannotSendMessage)
+            return
+        }
+
+        let filteredNumber = messagesNumber.filter("0123456789".contains)  // remove non-numeric characters to provide to message API
+        let composeViewController = MFMessageComposeViewController()
+        composeViewController.messageComposeDelegate = self
+        composeViewController.recipients = [filteredNumber]
+        self.present(composeViewController, animated: true, completion: nil)
+    }
+
+    /// Present the UI to email the contact. By default, the first email address will be used.
+    /// - Parameter contactView: The view that displays the contact.
+    /// - Parameter sender: The sender that is initiating the email process.
+    open func contactView(_ contactView: UIView & OCKContactDisplayable, senderDidInitiateEmail sender: Any?) {
+        guard let firstEmail = viewModel?.convert().emailAddresses?.first?.value else { return }
+        guard MFMailComposeViewController.canSendMail() else {
+            self.delegate?.contactViewController(self, didFailWithError: ContactError.cannotSendMail)
+            return
+        }
+
+        let mailViewController = MFMailComposeViewController()
+        mailViewController.mailComposeDelegate = self
+        mailViewController.setToRecipients([firstEmail])
+        self.present(mailViewController, animated: true, completion: nil)
+    }
+
+    /// Present a map with a marker on the contact's address.
+    /// - Parameter contactView: The view that displays the contact.
+    /// - Parameter sender: The sender that is initiating the address lookup process.
+    open func contactView(_ contactView: UIView & OCKContactDisplayable, senderDidInitiateAddressLookup sender: Any?) {
+        guard let address = viewModel?.convert().address else { return }
+
+        let geoloc = CLGeocoder()
+        geoloc.geocodePostalAddress(address) { [weak self] placemarks, _ in
+            guard let self = self else { return }
+            guard let placemark = placemarks?.first else {
+                self.delegate?.contactViewController(self, didFailWithError: ContactError.invalidAddress)
+                return
+            }
+
+            let mkPlacemark = MKPlacemark(placemark: placemark)
+            let mapItem = MKMapItem(placemark: mkPlacemark)
+            mapItem.openInMaps(launchOptions: nil)
+        }
+    }
+
+    open func didSelectContactView(_ contactView: UIView & OCKContactDisplayable) { }
+
+    // MARK: - MFMessageComposeViewControllerDelegate
+
+    open func messageComposeViewController(_ controller: MFMessageComposeViewController, didFinishWith result: MessageComposeResult) {
+        controller.dismiss(animated: true, completion: nil)
+    }
+
+    // MARK: - MFMailComposeViewControllerDelegate
+
+    open func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        controller.dismiss(animated: true, completion: nil)
     }
 }

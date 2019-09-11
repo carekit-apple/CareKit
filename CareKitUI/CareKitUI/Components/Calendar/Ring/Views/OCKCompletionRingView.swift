@@ -1,21 +1,21 @@
 /*
  Copyright (c) 2019, Apple Inc. All rights reserved.
- 
+
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
- 
+
  1.  Redistributions of source code must retain the above copyright notice, this
  list of conditions and the following disclaimer.
- 
+
  2.  Redistributions in binary form must reproduce the above copyright notice,
  this list of conditions and the following disclaimer in the documentation and/or
  other materials provided with the distribution.
- 
+
  3. Neither the name of the copyright holder(s) nor the names of any contributors
  may be used to endorse or promote products derived from this software without
  specific prior written permission. No license is granted to the trademarks of
  the copyright holders even if such marks are included in this software.
- 
+
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -31,19 +31,28 @@
 import UIKit
 
 /// A fillable ring with an inner checkmark.
-open class OCKCompletionRingView: UIView {
+open class OCKCompletionRingView: OCKView {
     override open var intrinsicContentSize: CGSize {
-        return CGSize(width: OCKStyle.dimension.iconHeight1, height: OCKStyle.dimension.iconHeight1)
+        return CGSize(width: style().dimension.iconHeight1, height: style().dimension.iconHeight1)
     }
 
+    private var checkmarkHeightConstraint: NSLayoutConstraint?
+
+    private lazy var checkmarkAnimator = UIViewPropertyAnimator(duration: duration, dampingRatio: 0.7)
+
     /// The fillable ring view.
-    internal let ringView = OCKRingView()
+    let ringView = OCKRingView()
 
     /// The groove in which the fillable ring resides.
-    internal let grooveView = OCKRingView()
+    let grooveView = OCKRingView()
 
     /// The checkmark image view inside of the ring view.
-    internal let checkmarkImageView = OCKCheckmarkImageView(pointSize: .medium)
+    let checkmarkImageView: UIImageView = {
+        let image = UIImage(systemName: "checkmark")?.applyingSymbolConfiguration(.init(weight: .bold))
+        let imageView = UIImageView(image: image)
+        imageView.contentMode = .scaleAspectFit
+        return imageView
+    }()
 
     /// The progress value of the ring view.
     public var progress: CGFloat {
@@ -53,10 +62,7 @@ open class OCKCompletionRingView: UIView {
     /// The duration for the ring and check view animations.
     public var duration: TimeInterval {
         get { return ringView.duration }
-        set {
-            ringView.duration = newValue
-            checkmarkImageView.duration = newValue
-        }
+        set { ringView.duration = newValue }
     }
 
     /// The line width of the ring and check views.
@@ -65,12 +71,11 @@ open class OCKCompletionRingView: UIView {
         set {
             grooveView.lineWidth = newValue
             ringView.lineWidth = newValue
-            checkmarkImageView.image = checkmarkImageView.image?.applyingSymbolConfiguration(.init(pointSize: newValue, weight: .bold))
         }
     }
 
     /// The stroke color of the ring and check views.
-    public var strokeColor: UIColor = .blue {
+    public var strokeColor: UIColor = OCKStyle().color.systemBlue {
         didSet {
             ringView.strokeColor = strokeColor
             checkmarkImageView.tintColor = strokeColor
@@ -84,51 +89,62 @@ open class OCKCompletionRingView: UIView {
     ///   - value: The progress value.
     ///   - animated: Flag for the ring and check view animations.
     public func setProgress(_ value: CGFloat, animated: Bool = true) {
+        let isComplete = value >= 1.0
+        if checkmarkAnimator.isRunning {
+            checkmarkAnimator.stopAnimation(true)
+        }
+
+        let animationHandler: () -> Void = { [weak self] in
+            self?.checkmarkImageView.transform = isComplete ? CGAffineTransform(scaleX: 1, y: 1) : CGAffineTransform(scaleX: 0.1, y: 0.1)
+            self?.checkmarkImageView.alpha = isComplete ? 1 : 0
+        }
+
+        if animated {
+            checkmarkAnimator.addAnimations(animationHandler)
+            checkmarkAnimator.startAnimation()
+        } else {
+            animationHandler()
+        }
+
         ringView.setProgress(value, animated: animated)
-        checkmarkImageView.setState(value >= 1.0 ? .checked : .unchecked, animated: animated)
     }
 
-    /// Create an instance of a completion ring view.
-    public init() {
-        super.init(frame: .zero)
-        setup()
-    }
-
-    public required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        setup()
-    }
-
-    private func setup() {
-        grooveView.strokeColor = .lightGray
+    override func setup() {
+        super.setup()
         grooveView.alpha = 0.25
         grooveView.setProgress(1.0, animated: false)
 
-        checkmarkImageView.tintColor = strokeColor
-        checkmarkImageView.setState(.unchecked, animated: false)
+        setProgress(0, animated: false)
 
+        checkmarkImageView.tintColor = strokeColor
         ringView.strokeColor = strokeColor
 
-        addSubview(grooveView)
-        addSubview(ringView)
-        addSubview(checkmarkImageView)
+        [grooveView, ringView, checkmarkImageView].forEach {
+            addSubview($0)
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
 
-        grooveView.translatesAutoresizingMaskIntoConstraints = false
-        ringView.translatesAutoresizingMaskIntoConstraints = false
-        checkmarkImageView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            grooveView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            grooveView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            grooveView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            grooveView.topAnchor.constraint(equalTo: topAnchor),
+        checkmarkHeightConstraint = checkmarkImageView.heightAnchor.constraint(equalToConstant: 0)
 
-            ringView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            ringView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            ringView.topAnchor.constraint(equalTo: topAnchor),
-            ringView.bottomAnchor.constraint(equalTo: bottomAnchor),
+        var constraints =
+            grooveView.constraints(equalTo: self) +
+            ringView.constraints(equalTo: self)
 
+        constraints += [
             checkmarkImageView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            checkmarkImageView.centerYAnchor.constraint(equalTo: centerYAnchor)
-        ])
+            checkmarkImageView.centerYAnchor.constraint(equalTo: centerYAnchor),
+            checkmarkHeightConstraint!
+        ]
+
+        NSLayoutConstraint.activate(constraints)
+    }
+
+    override open func styleDidChange() {
+        super.styleDidChange()
+        invalidateIntrinsicContentSize()
+        let cachedStyle = style()
+        strokeColor = tintColor
+        grooveView.strokeColor = cachedStyle.color.systemGray3
+        checkmarkHeightConstraint?.constant = cachedStyle.dimension.iconHeight3
     }
 }

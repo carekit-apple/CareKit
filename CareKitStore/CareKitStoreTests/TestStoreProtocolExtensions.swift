@@ -190,7 +190,7 @@ class TestStoreProtocolExtensions: XCTestCase {
         XCTAssert(tasks.isEmpty)
     }
 
-    func testFetchEventsRespectsEffectiveAtDate() throws {
+    func testFetchEventsRespectseffectiveDateDate() throws {
         let thisMorning = Calendar.current.startOfDay(for: Date())
         let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: thisMorning)!
         let nextWeek = Calendar.current.date(byAdding: .day, value: 7, to: thisMorning)!
@@ -201,7 +201,7 @@ class TestStoreProtocolExtensions: XCTestCase {
 
         let scheduleB = OCKSchedule.dailyAtTime(hour: 12, minutes: 0, start: nextWeek, end: nil, text: nil)
         var versionB = OCKTask(identifier: "A", title: "b", carePlanID: nil, schedule: scheduleB)
-        versionB.effectiveAt = tomorrow
+        versionB.effectiveDate = tomorrow
         versionB = try store.updateTaskAndWait(versionB)
 
         let query = OCKEventQuery(start: thisMorning,

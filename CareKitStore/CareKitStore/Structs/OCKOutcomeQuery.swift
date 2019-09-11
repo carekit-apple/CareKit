@@ -34,7 +34,10 @@ import Foundation
 public enum OCKOutcomeAnchor {
     case taskIdentifiers(_ identifiers: [String])
     case taskVersions(_ versionIDs: [OCKLocalVersionID])
+    case taskRemoteIDs(_ remoteIDs: [String])
+
     case outcomeVersions(_ versionIDs: [OCKLocalVersionID])
+    case outcomeRemoteIDs(_ remoteIDs: [String])
 }
 
 /// A query that limits which outcomes will be returned when fetching.

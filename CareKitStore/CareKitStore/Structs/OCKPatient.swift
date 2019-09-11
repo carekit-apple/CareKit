@@ -31,25 +31,35 @@
 import Foundation
 
 /// Represents a patient
-public struct OCKPatient: Codable, Equatable, OCKVersionSettable, OCKObjectCompatible, OCKPatientConvertible, OCKPatientInitializable {
+public struct OCKPatient: Codable, Equatable, OCKVersionSettable, OCKObjectCompatible, OCKPatientConvertible {
     public let identifier: String
 
     /// The patient's name.
     public var name: PersonNameComponents
 
+    /// The patient's biological sex.
+    public var sex: OCKBiologicalSex?
+
+    /// The patient's birthday, used to compute their age.
+    public var birthday: Date?
+
+    /// A list of substances this patient is allergic to.
+    public var allergies: [String]?
+
     // MARK: OCKVersionable
-    public var effectiveAt: Date
+    public var effectiveDate: Date
+    public internal(set) var deletedDate: Date?
     public internal(set) var localDatabaseID: OCKLocalVersionID?
     public internal(set) var nextVersionID: OCKLocalVersionID?
     public internal(set) var previousVersionID: OCKLocalVersionID?
 
     // MARK: OCKObjectCompatible
-    public internal(set) var createdAt: Date?
-    public internal(set) var updatedAt: Date?
-    public internal(set) var deletedAt: Date?
+    public internal(set) var createdDate: Date?
+    public internal(set) var updatedDate: Date?
+    public internal(set) var schemaVersion: OCKSemanticVersion?
     public var groupIdentifier: String?
     public var tags: [String]?
-    public var externalID: String?
+    public var remoteID: String?
     public var source: String?
     public var userInfo: [String: String]?
     public var asset: String?
@@ -67,7 +77,7 @@ public struct OCKPatient: Codable, Equatable, OCKVersionSettable, OCKObjectCompa
         components.familyName = familyName
         self.name = components
         self.identifier = identifier
-        self.effectiveAt = Date()
+        self.effectiveDate = Date()
     }
 
     /// Initialize a new patient with an identifier and a name.
@@ -78,14 +88,14 @@ public struct OCKPatient: Codable, Equatable, OCKVersionSettable, OCKObjectCompa
     public init(identifier: String, name: PersonNameComponents) {
         self.name = name
         self.identifier = identifier
-        self.effectiveAt = Date()
+        self.effectiveDate = Date()
     }
 
     /// Create an `OCKPatient` from an `OCKPatient`
     ///
     /// - Parameter value: The patient to make a copy of.
     /// - Note: Because `OCKPatient` is already an `OCKPatient`, this effectively just creates a copy.
-    public init(value: OCKPatient) {
+    public init(_ value: OCKPatient) {
         self = value
     }
 
@@ -95,5 +105,10 @@ public struct OCKPatient: Codable, Equatable, OCKVersionSettable, OCKObjectCompa
     /// - Note: Since `OCKPatient` is already an `OCKPatient`, this just returns `self`.
     public func convert() -> OCKPatient {
         return self
+    }
+
+    public var age: Int? {
+        guard let birthday = birthday else { return nil }
+        return Calendar.current.dateComponents(Set([.year]), from: birthday, to: Date()).year
     }
 }

@@ -34,7 +34,7 @@ import Foundation
 
 /// An `OCKSynchronizedStoreManager` wraps any store that conforms to `OCKStore` and provides synchronization to CareKit view
 /// controllers by listening in on the store's activity by setting itself as the store delegate.
-public class OCKSynchronizedStoreManager<Store: OCKStoreProtocol>: Equatable, OCKStoreDelegate {
+open class OCKSynchronizedStoreManager<Store: OCKStoreProtocol>: Equatable, OCKStoreDelegate {
     public static func == (lhs: OCKSynchronizedStoreManager<Store>, rhs: OCKSynchronizedStoreManager<Store>) -> Bool {
         return lhs.store == rhs.store
     }
@@ -71,9 +71,12 @@ public class OCKSynchronizedStoreManager<Store: OCKStoreProtocol>: Equatable, OC
     }
 
     private func dispatchPatientNotifications<S: OCKStoreProtocol>(store: S, category: OCKStoreNotificationCategory, patients: [S.Patient]) {
-        for patient in patients.compactMap({ $0 as? Store.Patient }) {
-            let notification = OCKPatientNotification<Store>(storeManager: self, patient: patient, category: category)
-            subject.send(notification)
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            for patient in patients.compactMap({ $0 as? Store.Patient }) {
+                let notification = OCKPatientNotification<Store>(storeManager: self, patient: patient, category: category)
+                self.subject.send(notification)
+            }
         }
     }
 
@@ -92,9 +95,12 @@ public class OCKSynchronizedStoreManager<Store: OCKStoreProtocol>: Equatable, OC
     }
 
     private func dispatchCarePlanNotifications<S: OCKStoreProtocol>(store: S, category: OCKStoreNotificationCategory, plans: [S.Plan]) {
-        for plan in plans.compactMap({ $0 as? Store.Plan }) {
-            let notification = OCKCarePlanNotification<Store>(storeManager: self, carePlan: plan, category: category)
-            subject.send(notification)
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            for plan in plans.compactMap({ $0 as? Store.Plan }) {
+                let notification = OCKCarePlanNotification<Store>(storeManager: self, carePlan: plan, category: category)
+                self.subject.send(notification)
+            }
         }
     }
 
@@ -113,9 +119,12 @@ public class OCKSynchronizedStoreManager<Store: OCKStoreProtocol>: Equatable, OC
     }
 
     private func dispatchContactNotifications<S: OCKStoreProtocol>(store: S, category: OCKStoreNotificationCategory, contacts: [S.Contact]) {
-        for contact in contacts.compactMap({ $0 as? Store.Contact }) {
-            let notification = OCKContactNotification<Store>(storeManager: self, contact: contact, category: category)
-            subject.send(notification)
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            for contact in contacts.compactMap({ $0 as? Store.Contact }) {
+                let notification = OCKContactNotification<Store>(storeManager: self, contact: contact, category: category)
+                self.subject.send(notification)
+            }
         }
     }
 
@@ -134,9 +143,12 @@ public class OCKSynchronizedStoreManager<Store: OCKStoreProtocol>: Equatable, OC
     }
 
     private func dispatchTaskNotifications<S: OCKStoreProtocol>(store: S, category: OCKStoreNotificationCategory, tasks: [S.Task]) {
-        for task in tasks.compactMap({ $0 as? Store.Task }) {
-            let notification = OCKTaskNotification<Store>(storeManager: self, task: task, category: category)
-            subject.send(notification)
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            for task in tasks.compactMap({ $0 as? Store.Task }) {
+                let notification = OCKTaskNotification<Store>(storeManager: self, task: task, category: category)
+                self.subject.send(notification)
+            }
         }
     }
 
@@ -155,9 +167,12 @@ public class OCKSynchronizedStoreManager<Store: OCKStoreProtocol>: Equatable, OC
     }
 
     private func dispatchOutcomeNotifications<S: OCKStoreProtocol>(store: S, category: OCKStoreNotificationCategory, outcomes: [S.Outcome]) {
-        for outcome in outcomes.compactMap({ $0 as? Store.Outcome }) {
-            let notification = OCKOutcomeNotification<Store>(storeManager: self, outcome: outcome, category: category)
-            subject.send(notification)
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            for outcome in outcomes.compactMap({ $0 as? Store.Outcome }) {
+                let notification = OCKOutcomeNotification<Store>(storeManager: self, outcome: outcome, category: category)
+                self.subject.send(notification)
+            }
         }
     }
 }

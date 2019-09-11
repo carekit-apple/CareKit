@@ -1,21 +1,21 @@
 /*
  Copyright (c) 2019, Apple Inc. All rights reserved.
- 
+
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
- 
+
  1.  Redistributions of source code must retain the above copyright notice, this
  list of conditions and the following disclaimer.
- 
+
  2.  Redistributions in binary form must reproduce the above copyright notice,
  this list of conditions and the following disclaimer in the documentation and/or
  other materials provided with the distribution.
- 
+
  3. Neither the name of the copyright holder(s) nor the names of any contributors
  may be used to endorse or promote products derived from this software without
  specific prior written permission. No license is granted to the trademarks of
  the copyright holders even if such marks are included in this software.
- 
+
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -29,144 +29,72 @@
  */
 
 import CareKitStore
+import CareKitUI
 import Contacts
-import MapKit
+import ContactsUI
 import MessageUI
 import UIKit
 
-/// An `Error` subclass detailing errors specific to `OCKSimpleContactViewController`.
-private enum OCKSimpleContactError: Error, LocalizedError {
-    case invalidAddress
-    /// `number` is the invalid phone number in context.
-    case invalidPhoneNumber(number: String)
-    case cannotSendMessage
-    case cannotSendMail
-
-    var errorDescription: String? {
-        switch self {
-        case .invalidAddress: return "Invalid address"
-        case .invalidPhoneNumber(let number): return "Invalid number: \(number)"
-        case .cannotSendMessage: return "Unable to compose a message"
-        case .cannotSendMail: return "Unable to compose an email"
-        }
-    }
-}
-
-open class OCKSimpleContactViewController<Store: OCKStoreProtocol>:
-OCKContactViewController<Store>, MFMessageComposeViewControllerDelegate, MFMailComposeViewControllerDelegate {
+/// View controller that is synchronized with a contact. Shows an `OCKSimpleContactView` and handles user interactions automatically.
+open class OCKSimpleContactViewController<Store: OCKStoreProtocol>: OCKContactViewController<OCKSimpleContactView, Store> {
     // MARK: Properties
 
-    /// A view displaying the name and title of the contact. By default, `detailPresentingView` returns an `OCKHeaderView`.
-    override var detailPresentingView: UIView? {
-        return contactView.headerView
+    /// The type of view being displayed.
+    public typealias View = OCKSimpleContactView
+
+    // MARK: Life Cycle
+
+    /// Create a view controller with a contact to display.
+    /// - Parameter storeManager: A store manager that will be used to provide synchronization.
+    /// - Parameter contact: Contact to use as the view model.
+    override public init(storeManager: OCKSynchronizedStoreManager<Store>, contact: Store.Contact) {
+        super.init(storeManager: storeManager, contact: contact)
     }
 
-    /// The view that the contact is displayed in.
-    public var contactView: OCKSimpleContactView {
-        guard let view = view as? OCKSimpleContactView else { fatalError("Unexpected class") }
-        return view
-    }
-
-    // MARK: Initializers
-
-    /// Initialize with a contact.
-    ///
-    /// - Parameters:
-    ///   - storeManager: A store manager that will be used to provide synchronization.
-    ///   - contact: The contact to be displayed in an `OCKSimpleContactView`.
-    public init(storeManager: OCKSynchronizedStoreManager<Store>, contact: Store.Contact) {
-        super.init(storeManager: storeManager, contact: contact, loadDefaultView: { OCKBindableSimpleContactView<Store.Contact>() })
-    }
-
-    /// Initialize with a contact identifier. The contact will be fetched from the store automatically.
-    ///
-    /// - Parameters:
-    ///   - storeManager: A store manager that will be used to provide synchronization.
-    ///   - contactIdentifier: The identifier of the contact which should be fetched and displayed.
-    public init(storeManager: OCKSynchronizedStoreManager<Store>, contactIdentifier: String) {
-        super.init(storeManager: storeManager, contactIdentifier: contactIdentifier,
-                   loadDefaultView: { OCKBindableSimpleContactView<Store.Contact>() })
-    }
-
-    // MARK: Life cycle
-
-    override open func viewDidLoad() {
-        super.viewDidLoad()
-        contactView.emailButton.addTarget(self, action: #selector(emailPressed), for: .touchUpInside)
-        contactView.messageButton.addTarget(self, action: #selector(messagesPressed), for: .touchUpInside)
-        contactView.callButton.addTarget(self, action: #selector(callPressed), for: .touchUpInside)
-        contactView.addressButton.addTarget(self, action: #selector(directionsPressed), for: .touchUpInside)
+    /// Create a view controller by querying for a contact to display.
+    /// - Parameter storeManager: A store manager that will be used to provide synchronization.
+    /// - Parameter contactIdentifier: The identifier of the contact for which to query.
+    /// - Parameter query: The query used to find the contact.
+    override public init(storeManager: OCKSynchronizedStoreManager<Store>, contactIdentifier: String, query: OCKContactQuery?) {
+        super.init(storeManager: storeManager, contactIdentifier: contactIdentifier, query: query)
     }
 
     // MARK: Methods
 
-    @objc
-    private func callPressed() {
-        guard let phoneNumber = contact?.convert().phoneNumbers?.first?.value else { return }
-        let filteredNumber = phoneNumber.filter("0123456789".contains)  // remove non-numeric characters to provide to calling API
-        guard let url = URL(string: "tel://" + filteredNumber) else {
-            delegate?.contactViewController(self, didFailWithError: OCKSimpleContactError.invalidPhoneNumber(number: phoneNumber))
-            return
-        }
-        UIApplication.shared.open(url, options: [:], completionHandler: nil)
+    /// Update the view whenever the view model changes.
+    /// - Parameter view: The view to update.
+    /// - Parameter context: The data associated with the updated state.
+    override open func updateView(_ view: OCKSimpleContactView, context: OCKSynchronizationContext<Store.Contact>) {
+        let contact = context.viewModel?.convert()
+        view.headerView.titleLabel.text = OCKContactUtility.string(from: contact?.name)
+        view.headerView.detailLabel.text = contact?.title
+        view.headerView.iconImageView?.image = OCKContactUtility.image(from: contact?.asset) ?? OCKSimpleContactView.defaultImage
+    }
+
+    /// Create an instance of the view to be displayed.
+    override open func makeView() -> OCKSimpleContactView {
+        return .init()
+    }
+
+    /// Presents an `OCKContactDetailsView` for the current contact.
+    /// - Parameter contactView: The view that was tapped.
+    override open func didSelectContactView(_ contactView: UIView & OCKContactDisplayable) {
+        guard let contact = viewModel?.convert() else { return }
+        let mutableContact = CNMutableContact(from: contact)
+
+        let contactController = CNContactViewController(forUnknownContact: mutableContact)
+        contactController.view.backgroundColor = OCKStyle().color.systemGroupedBackground
+        contactController.navigationItem.rightBarButtonItem =
+            UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(dismissViewController))
+        contactController.contactStore = CNContactStore()
+        contactController.allowsEditing = false
+
+        let navigationController = UINavigationController(rootViewController: contactController)
+        present(navigationController, animated: true, completion: nil)
     }
 
     @objc
-    private func directionsPressed() {
-        guard let address = contact?.convert().address else { return }
-
-        let geoloc = CLGeocoder()
-        geoloc.geocodePostalAddress(address) { [weak self] placemarks, _ in
-            guard let self = self else { return }
-            guard let placemark = placemarks?.first else {
-                self.delegate?.contactViewController(self, didFailWithError: OCKSimpleContactError.invalidAddress)
-                return
-            }
-
-            let mkPlacemark = MKPlacemark(placemark: placemark)
-            let mapItem = MKMapItem(placemark: mkPlacemark)
-            mapItem.openInMaps(launchOptions: nil)
-        }
-    }
-
-    @objc
-    private func emailPressed() {
-        guard let firstEmail = contact?.convert().emailAddresses?.first?.value else { return }
-        guard MFMailComposeViewController.canSendMail() else {
-            self.delegate?.contactViewController(self, didFailWithError: OCKSimpleContactError.cannotSendMail)
-            return
-        }
-
-        let mailViewController = MFMailComposeViewController()
-        mailViewController.mailComposeDelegate = self
-        mailViewController.setToRecipients([firstEmail])
-        self.present(mailViewController, animated: true, completion: nil)
-    }
-
-    @objc
-    private func messagesPressed() {
-        guard let messagesNumber = contact?.convert().messagingNumbers?.first?.value else { return }
-        guard MFMessageComposeViewController.canSendText() else {
-            self.delegate?.contactViewController(self, didFailWithError: OCKSimpleContactError.cannotSendMessage)
-            return
-        }
-
-        let filteredNumber = messagesNumber.filter("0123456789".contains)           // remove non-numeric characters to provide to message API
-        let composeViewController = MFMessageComposeViewController()
-        composeViewController.messageComposeDelegate = self
-        composeViewController.recipients = [filteredNumber]
-        self.present(composeViewController, animated: true, completion: nil)
-    }
-
-    // MARK: MFMessageComposeViewControllerDelegate
-
-    public func messageComposeViewController(_ controller: MFMessageComposeViewController, didFinishWith result: MessageComposeResult) {
-        controller.dismiss(animated: true, completion: nil)
-    }
-
-    // MARK: MFMailComposeViewControllerDelegate
-
-    public func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
-        controller.dismiss(animated: true, completion: nil)
+    private func dismissViewController() {
+        dismiss(animated: true, completion: nil)
     }
 }

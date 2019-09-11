@@ -1,21 +1,21 @@
 /*
  Copyright (c) 2019, Apple Inc. All rights reserved.
- 
+
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
- 
+
  1.  Redistributions of source code must retain the above copyright notice, this
  list of conditions and the following disclaimer.
- 
+
  2.  Redistributions in binary form must reproduce the above copyright notice,
  this list of conditions and the following disclaimer in the documentation and/or
  other materials provided with the distribution.
- 
+
  3. Neither the name of the copyright holder(s) nor the names of any contributors
  may be used to endorse or promote products derived from this software without
  specific prior written permission. No license is granted to the trademarks of
  the copyright holders even if such marks are included in this software.
- 
+
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -31,7 +31,14 @@
 import Foundation
 import UIKit
 
-open class OCKCartesianChartView: UIView, OCKCardable {
+open class OCKCartesianChartView: OCKView, OCKChartDisplayable {
+    let contentView = OCKView()
+
+    private lazy var cardAssembler = OCKCardAssembler(cardView: self, contentView: contentView)
+
+    /// Handles events related to an `OCKChartDisplayable` object.
+    public weak var delegate: OCKChartViewDelegate?
+
     /// Vertical stack view that
     public let contentStackView: OCKStackView = {
         let stackView = OCKStackView()
@@ -52,7 +59,7 @@ open class OCKCartesianChartView: UIView, OCKCardable {
     /// - Parameter type: The type of the chart.
     public init(type: OCKCartesianGraphView.PlotType) {
         graphView = OCKCartesianGraphView(type: type)
-        super.init(frame: .zero)
+        super.init()
         setup()
     }
 
@@ -61,36 +68,51 @@ open class OCKCartesianChartView: UIView, OCKCardable {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private func setup() {
+    override func setup() {
+        super.setup()
         addSubviews()
-        styleSubviews()
         constrainSubviews()
+        setupGestures()
+    }
+
+    private func setupGestures() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapHeader))
+        headerView.addGestureRecognizer(tapGesture)
     }
 
     private func addSubviews() {
-        addSubview(contentStackView)
+        addSubview(contentView)
+        contentView.addSubview(contentStackView)
         headerContainerView.addSubview(headerView)
         [headerContainerView, graphView].forEach { contentStackView.addArrangedSubview($0) }
-    }
-
-    private func styleSubviews() {
-        preservesSuperviewLayoutMargins = true
-        enableCardStyling(true)
-        contentStackView.spacing = directionalLayoutMargins.bottom * 2
     }
 
     private func constrainSubviews() {
         [contentStackView, headerView].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
         NSLayoutConstraint.activate([
-            headerView.leadingAnchor.constraint(equalTo: headerContainerView.leadingAnchor, constant: directionalLayoutMargins.leading * 2),
-            headerView.trailingAnchor.constraint(equalTo: headerContainerView.trailingAnchor, constant: -directionalLayoutMargins.trailing * 2),
+            headerView.leadingAnchor.constraint(equalTo: headerContainerView.layoutMarginsGuide.leadingAnchor),
+            headerView.trailingAnchor.constraint(equalTo: headerContainerView.layoutMarginsGuide.trailingAnchor),
             headerView.topAnchor.constraint(equalTo: headerContainerView.topAnchor),
             headerView.bottomAnchor.constraint(equalTo: headerContainerView.bottomAnchor),
 
             contentStackView.leadingAnchor.constraint(equalTo: leadingAnchor),
             contentStackView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            contentStackView.topAnchor.constraint(equalTo: topAnchor, constant: directionalLayoutMargins.top * 2),
-            contentStackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -directionalLayoutMargins.bottom * 2)
+            contentStackView.topAnchor.constraint(equalTo: layoutMarginsGuide.topAnchor),
+            contentStackView.bottomAnchor.constraint(equalTo: layoutMarginsGuide.bottomAnchor)
         ])
+    }
+
+    @objc
+    private func didTapHeader() {
+        delegate?.didSelectChartView(self)
+    }
+
+    override open func styleDidChange() {
+        super.styleDidChange()
+        let cachedStyle = style()
+        cardAssembler.enableCardStyling(true, style: cachedStyle)
+        contentStackView.spacing = cachedStyle.dimension.directionalInsets1.top
+        directionalLayoutMargins = cachedStyle.dimension.directionalInsets1
+        headerContainerView.directionalLayoutMargins = cachedStyle.dimension.directionalInsets1
     }
 }

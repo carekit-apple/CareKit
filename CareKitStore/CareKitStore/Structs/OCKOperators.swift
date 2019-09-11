@@ -33,8 +33,6 @@ import Foundation
 infix operator <=?: ComparisonPrecedence
 infix operator ?<=: ComparisonPrecedence
 
-
-
 /// Compare two nil values. Order of operations: nil, Comparable result
 func ?<= <T: Comparable>(lhs: T?, rhs: T?) -> Bool {
     guard let lhs = lhs else { return true }
@@ -48,5 +46,3 @@ func <=? <T: Comparable>(lhs: T?, rhs: T?) -> Bool {
     guard let rhs = rhs else { return true }
     return lhs <= rhs
 }
-
-

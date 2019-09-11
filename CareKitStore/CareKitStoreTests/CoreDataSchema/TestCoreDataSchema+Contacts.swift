@@ -45,7 +45,7 @@ class TestCoreDataSchemaWithContacts: XCTestCase {
         contact.allowsMissingRelationships = true
         contact.identifier = "Katie Abeles"
         contact.title = "Dr. Abeles"
-        contact.effectiveAt = Date()
+        contact.effectiveDate = Date()
         contact.name = OCKCDPersonName(context: store.context)
         contact.name.givenName = "Katie"
         contact.name.familyName = "Abeles"
@@ -71,7 +71,7 @@ class TestCoreDataSchemaWithContacts: XCTestCase {
 
     func testCannotSaveWithoutCarePlan() {
         let contact = OCKCDContact(context: store.context)
-        contact.effectiveAt = Date()
+        contact.effectiveDate = Date()
         contact.allowsMissingRelationships = false
         XCTAssertThrowsError(try store.context.save())
     }

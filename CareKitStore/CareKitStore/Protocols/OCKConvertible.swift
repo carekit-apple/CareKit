@@ -37,6 +37,7 @@ public protocol OCKConvertible {
 
     /// Converts this type to a new CareKit value.
     func convert() -> ConversionResult
+    init(_ value: ConversionResult)
 }
 
 public extension OCKConvertible where ConversionResult: OCKVersionable {

@@ -3,14 +3,19 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 50;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		51EF57C9229B21AA0071E2F6 /* OCKStore+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51EF57C8229B21AA0071E2F6 /* OCKStore+Extensions.swift */; };
 		51F81A49227A6E660075AF70 /* ContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F81A43227A6E650075AF70 /* ContainerViewController.swift */; };
 		51F81A4C227A6E660075AF70 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F81A47227A6E660075AF70 /* RootViewController.swift */; };
-		E7BED10F22C2835E002816A9 /* CareKit in Frameworks */ = {isa = PBXBuildFile; productRef = E7BED10E22C2835E002816A9 /* CareKit */; };
+		64D33B57231984B000D5E005 /* CareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1409475522B0261A005C1D16 /* CareKit.framework */; };
+		64D33B58231984B000D5E005 /* CareKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1409475522B0261A005C1D16 /* CareKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		64D33B5A231984B300D5E005 /* CareKitUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51D0ECFD2284894E00D24A76 /* CareKitUI.framework */; };
+		64D33B5B231984B300D5E005 /* CareKitUI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 51D0ECFD2284894E00D24A76 /* CareKitUI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		64D33B5C231984B500D5E005 /* CareKitStore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7C8B1F0228A1B34000B68FB /* CareKitStore.framework */; };
+		64D33B5D231984B500D5E005 /* CareKitStore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E7C8B1F0228A1B34000B68FB /* CareKitStore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E7D010FC222498F400C008DE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D010FB222498F400C008DE /* AppDelegate.swift */; };
 		E7D01103222498F400C008DE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E7D01102222498F400C008DE /* Assets.xcassets */; };
 		E7D01106222498F400C008DE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E7D01104222498F400C008DE /* LaunchScreen.storyboard */; };
@@ -27,12 +32,15 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		E70155DD2224A81C0063DA6E /* Embed Frameworks */ = {
+		64D33B59231984B000D5E005 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				64D33B5D231984B500D5E005 /* CareKitStore.framework in Embed Frameworks */,
+				64D33B5B231984B300D5E005 /* CareKitUI.framework in Embed Frameworks */,
+				64D33B58231984B000D5E005 /* CareKit.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -48,7 +56,6 @@
 		51EF57C8229B21AA0071E2F6 /* OCKStore+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OCKStore+Extensions.swift"; sourceTree = "<group>"; };
 		51F81A43227A6E650075AF70 /* ContainerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContainerViewController.swift; sourceTree = "<group>"; };
 		51F81A47227A6E660075AF70 /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
-		E7BED10D22C28351002816A9 /* carekit */ = {isa = PBXFileReference; lastKnownFileType = folder; name = carekit; path = ..; sourceTree = "<group>"; };
 		E7C8B1F0228A1B34000B68FB /* CareKitStore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = CareKitStore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E7D010F8222498F400C008DE /* OCKCatalog.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OCKCatalog.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E7D010FB222498F400C008DE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -69,7 +76,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E7BED10F22C2835E002816A9 /* CareKit in Frameworks */,
+				64D33B5C231984B500D5E005 /* CareKitStore.framework in Frameworks */,
+				64D33B5A231984B300D5E005 /* CareKitUI.framework in Frameworks */,
+				64D33B57231984B000D5E005 /* CareKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -97,7 +106,6 @@
 		E7D010EF222498F400C008DE = {
 			isa = PBXGroup;
 			children = (
-				E7BED10D22C28351002816A9 /* carekit */,
 				E7D010FA222498F400C008DE /* OCKCatalog */,
 				5143E1F722C2832600E32526 /* OCKCatalogTests */,
 				E7D010F9222498F400C008DE /* Products */,
@@ -157,7 +165,7 @@
 				E7D010F4222498F400C008DE /* Sources */,
 				E7D010F5222498F400C008DE /* Frameworks */,
 				E7D010F6222498F400C008DE /* Resources */,
-				E70155DD2224A81C0063DA6E /* Embed Frameworks */,
+				64D33B59231984B000D5E005 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -165,7 +173,6 @@
 			);
 			name = OCKCatalog;
 			packageProductDependencies = (
-				E7BED10E22C2835E002816A9 /* CareKit */,
 			);
 			productName = OCK2SampleApp;
 			productReference = E7D010F8222498F400C008DE /* OCKCatalog.app */;
@@ -348,6 +355,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(BUILD_DIR)/Debug-$(PLATFORM_NAME)";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -411,6 +419,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(BUILD_DIR)/Release-$(PLATFORM_NAME)";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -434,11 +443,9 @@
 		E7D0110B222498F400C008DE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = OCKCatalog/OCKCatalog.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = "$(SRCROOT)/OCKCatalog/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -455,11 +462,9 @@
 		E7D0110C222498F400C008DE /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = OCKCatalog/OCKCatalog.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = "$(SRCROOT)/OCKCatalog/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -504,13 +509,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		E7BED10E22C2835E002816A9 /* CareKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = CareKit;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = E7D010F0222498F400C008DE /* Project object */;
 }

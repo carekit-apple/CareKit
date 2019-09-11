@@ -39,7 +39,7 @@ class OCKCDOutcome: OCKCDObject, OCKCDManageable {
     @NSManaged var date: Date?
 
     static var defaultSortDescriptors: [NSSortDescriptor] {
-        return [NSSortDescriptor(keyPath: \OCKCDOutcome.createdAt, ascending: false)]
+        return [NSSortDescriptor(keyPath: \OCKCDOutcome.createdDate, ascending: false)]
     }
 
     internal var allowsMissingRelationships = false

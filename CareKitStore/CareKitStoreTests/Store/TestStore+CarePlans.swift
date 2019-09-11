@@ -61,6 +61,7 @@ class TestStoreCarePlans: XCTestCase {
     func testAddAndFetchCarePlans() throws {
         let plan = try store.addCarePlanAndWait(OCKCarePlan(identifier: "6789", title: "Diabetes Care Plan", patientID: nil))
         XCTAssertNotNil(plan.localDatabaseID)
+        XCTAssertNotNil(plan.schemaVersion)
     }
 
     func testAddCarePlanFailsIfIdentifierAlreadyExists() throws {
@@ -166,12 +167,12 @@ class TestStoreCarePlans: XCTestCase {
     func testCarePlanQueryOnPastDateReturnsPastVersionOfACarePlan() throws {
         let dateA = Date().addingTimeInterval(-100)
         var versionA = OCKCarePlan(identifier: "A", title: "a", patientID: nil)
-        versionA.effectiveAt = dateA
+        versionA.effectiveDate = dateA
         versionA = try store.addCarePlanAndWait(versionA)
 
         let dateB = Date().addingTimeInterval(100)
         var versionB = OCKCarePlan(identifier: "A", title: "b", patientID: nil)
-        versionB.effectiveAt = dateB
+        versionB.effectiveDate = dateB
         versionB = try store.updateCarePlanAndWait(versionB)
 
         let query = OCKCarePlanQuery(start: dateA.addingTimeInterval(10), end: dateB.addingTimeInterval(-10))
@@ -183,12 +184,12 @@ class TestStoreCarePlans: XCTestCase {
     func testCarePlanQuerySpanningVersionsReturnsNewestVersionOnly() throws {
         let dateA = Date().addingTimeInterval(-100)
         var versionA = OCKCarePlan(identifier: "A", title: "a", patientID: nil)
-        versionA.effectiveAt = dateA
+        versionA.effectiveDate = dateA
         versionA = try store.addCarePlanAndWait(versionA)
 
         let dateB = Date().addingTimeInterval(100)
         var versionB = OCKCarePlan(identifier: "A", title: "b", patientID: nil)
-        versionB.effectiveAt = dateB
+        versionB.effectiveDate = dateB
         versionB = try store.updateCarePlanAndWait(versionB)
 
         let query = OCKCarePlanQuery(start: dateA.addingTimeInterval(10), end: dateB.addingTimeInterval(10))
@@ -205,6 +206,25 @@ class TestStoreCarePlans: XCTestCase {
         XCTAssertTrue(fetched.isEmpty)
     }
 
+    func testQueryCarePlanByRemoteID() throws {
+        var plan = OCKCarePlan(identifier: "A", title: "Plan", patientID: nil)
+        plan.remoteID = "abc"
+        plan = try store.addCarePlanAndWait(plan)
+        let fetched = try store.fetchCarePlansAndWait(.carePlanRemoteIDs(["abc"]), query: .today).first
+        XCTAssert(plan == fetched)
+    }
+
+    func testQueryCarePlanByPatientRemoteID() throws {
+        var patient = OCKPatient(identifier: "A", givenName: "B", familyName: "C")
+        patient.remoteID = "abc"
+        patient = try store.addPatientAndWait(patient)
+
+        var plan = OCKCarePlan(identifier: "D", title: "E", patientID: patient.versionID)
+        plan = try store.addCarePlanAndWait(plan)
+
+        let fetched = try store.fetchCarePlansAndWait(.patientRemoteIDs(["abc"]), query: .today).first
+        XCTAssert(fetched == plan)
+    }
     // MARK: Deletion
 
     func testDeleteCarePlan() throws {

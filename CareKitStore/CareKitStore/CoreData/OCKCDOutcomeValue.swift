@@ -34,6 +34,7 @@ import Foundation
 class OCKCDOutcomeValue: OCKCDObject {
     @NSManaged var kind: String? // blood sugar, body weight, etc.
     @NSManaged var units: String?
+    @NSManaged var index: NSNumber?
     @NSManaged var outcome: OCKCDOutcome?
 
     @NSManaged private var typeString: String
@@ -105,5 +106,6 @@ class OCKCDOutcomeValue: OCKCDObject {
         integerValue = 0
         doubleValue = 0
         dateValue = nil
+        index = nil
     }
 }

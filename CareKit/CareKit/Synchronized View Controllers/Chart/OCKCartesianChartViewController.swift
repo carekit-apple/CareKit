@@ -28,181 +28,43 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import CareKitStore
 import CareKitUI
-import Combine
 import Foundation
 import UIKit
 
-/// Conform to this protocol to receive callbacks when important events happen inside an `OCKCartesianChartViewController`
-public protocol OCKCartesianChartViewControllerDelegate: AnyObject {
-    func cartesianChartViewController<Store: OCKStoreProtocol>(
-        _ cartesianChartViewController: OCKCartesianChartViewController<Store>,
-        didFailWithError error: Error)
-}
+/// A view controller that is synchronized with a data series. Shows an `OCKCartesianChartView` and handles user interactions automatically.
+open class OCKCartesianChartViewController<Store: OCKStoreProtocol>: OCKChartViewController<OCKCartesianChartView, Store> {
+    /// The type of the view being displayed.
+    public typealias View = OCKCartesianChartView
 
-/// A synchronized view controller that displays a chart with one or more data series populated with outcomes from tasks.
-open class OCKCartesianChartViewController<Store: OCKStoreProtocol>: UIViewController {
-    /// A chart view containing a graph, a legend, and an axis.
-    public let chartView: OCKCartesianChartView
-
-    /// The store manager used to provide synchronization with the underlying store.
-    public let storeManager: OCKSynchronizedStoreManager<Store>
-
-    /// If set, the delegate will receive callbacks when important events occur.
-    public weak var delegate: OCKCartesianChartViewControllerDelegate?
-
-    private var subscription: AnyCancellable?
-
-    /// The data series configurations determine which data will be displayed in the chart view.
-    public var dataSeriesConfigurations: [DataSeriesConfiguration] {
-        didSet { refetchEvents() }
-    }
-
-    /// The event query specifies the date range over which data will be queried and displayed.
-    public var eventQuery: OCKEventQuery {
-        didSet { refetchEvents() }
-    }
+    private let plotType: OCKCartesianGraphView.PlotType
 
     /// Initialize with a store manager and an array of data series configurations.
-    ///
     /// - Parameters:
     ///   - storeManager: The store manager used to provide synchronization with the underlying store.
+    ///   - type: The type of plot to be used, e.g., bar, line, or scatter.
     ///   - dataSeriesConfigurations: An array of objects that specify which data should be plotted.
-    public init(storeManager: OCKSynchronizedStoreManager<Store>, dataSeriesConfigurations: [DataSeriesConfiguration],
-                date: Date, plotType: OCKCartesianGraphView.PlotType) {
-        self.storeManager = storeManager
-        self.dataSeriesConfigurations = dataSeriesConfigurations
-        self.eventQuery = OCKEventQuery(dateInterval: Calendar.current.week(of: date))
-        self.chartView = OCKCartesianChartView(type: plotType)
-        self.chartView.graphView.selectedIndex = Calendar.current.component(.weekday, from: date) - 1
-        super.init(nibName: nil, bundle: nil)
+    ///   - date: The date lying in the week that will be displayed in the chart.
+    public init(storeManager: OCKSynchronizedStoreManager<Store>,
+                type: OCKCartesianGraphView.PlotType,
+                dataSeriesConfigurations: [OCKDataSeriesConfiguration<Store>],
+                date: Date) {
+        self.plotType = type
+        super.init(storeManager: storeManager, dataSeriesConfigurations: dataSeriesConfigurations, date: date)
     }
 
-    @available(*, unavailable)
-    public required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    /// Create an instance of the view to be displayed.
+    override open func makeView() -> OCKCartesianChartView {
+        let chartView = OCKCartesianChartView(type: plotType)
+        chartView.graphView.selectedIndex = Calendar.current.component(.weekday, from: date) - Calendar.current.firstWeekday
+        chartView.graphView.horizontalAxisMarkers = Calendar.current.orderedWeekdays()
+        return chartView
     }
 
-    override open func loadView() {
-        view = chartView
-    }
-
-    override open func viewDidLoad() {
-        super.viewDidLoad()
-        chartView.graphView.horizontalAxisMarkers = ["S", "M", "T", "W", "T", "F", "S"]
-        subscribe()
-    }
-
-    /// A configuration object that specifies which data should be queried and how it should be displayed by the graph.
-    public struct DataSeriesConfiguration {
-        /// A user-provided unique identifier for a task.
-        public var taskIdentifier: String
-
-        /// The title that will be used to represent this data series in the legend.
-        public var legendTitle: String
-
-        /// The first of two colors that will be used in the gradient when plotting the data.
-        public var gradientStartColor: UIColor
-
-        /// The second of two colors that will be used in the gradient when plotting the data.
-        public var gradientEndColor: UIColor
-
-        /// The marker size determines the size of the line, bar, or scatter plot elements. The precise behavior is different for each type of plot.
-        /// - For line plots, it will be the width of the line.
-        /// - For scatter plots, it will be the radius of the markers.
-        /// - For bar plots, it will be the width of the bar.
-        public var markerSize: CGFloat
-
-        /// A closure that accepts as an argument a day's worth of events and returns a y-axis value for that day.
-        public var aggregator: OCKEventAggregator<Store.Event>
-
-        /// Initialize a new `DataSeriesConfiguration`.
-        ///
-        /// - Parameters:
-        ///   - taskIdentifier: A user-provided unique identifier for a task.
-        ///   - legendTitle: The title that will be used to represent this data series in the legend.
-        ///   - gradientStartColor: The first of two colors that will be used in the gradient when plotting the data.
-        ///   - gradientEndColor: The second of two colors that will be used in the gradient when plotting the data.
-        ///   - markerSize: The marker size determines the size of the line, bar, or scatter plot elements. The precise behavior varies by plot type.
-        ///   - eventAggregator: A an aggregator that accepts as an argument a day's worth of events and returns a y-axis value for that day.
-        public init(taskIdentifier: String, legendTitle: String, gradientStartColor: UIColor, gradientEndColor: UIColor,
-                    markerSize: CGFloat, eventAggregator: OCKEventAggregator<Store.Event>) {
-            self.taskIdentifier = taskIdentifier
-            self.legendTitle = legendTitle
-            self.gradientStartColor = gradientStartColor
-            self.gradientEndColor = gradientEndColor
-            self.markerSize = markerSize
-            self.aggregator = eventAggregator
-        }
-    }
-
-    private func subscribe() {
-        let taskQuery = OCKTaskQuery(for: eventQuery.end)
-        storeManager.store.fetchTasks(.taskIdentifiers(dataSeriesConfigurations.map { $0.taskIdentifier }),
-                                      query: taskQuery, queue: .main) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .failure(let error):
-                self.delegate?.cartesianChartViewController(self, didFailWithError: error)
-            case .success(let tasks):
-                self.refetchEvents()
-                let taskSubscriptions = tasks.map { task in
-                    return self.storeManager.publisher(forTask: task, categories: [.add, .update, .delete],
-                                                       fetchImmediately: false).sink { _ in
-                        self.refetchEvents()
-                    }
-                }
-                let eventSubscriptions = tasks.map { task in
-                    return self.storeManager.publisher(forEventsBelongingToTask: task,
-                                                       categories: [.add, .update, .delete]).sink { _ in
-                        self.refetchEvents()
-                    }
-                }
-                self.subscription = AnyCancellable {
-                    taskSubscriptions.forEach { $0.cancel() }
-                    eventSubscriptions.forEach { $0.cancel() }
-                }
-            }
-        }
-    }
-
-    private func refetchEvents() {
-        var allDataSeries = [OCKDataSeries]()
-        var errors = [Error]()
-        let group = DispatchGroup()
-        let insightsQuery = OCKInsightQuery<Store.Event>(from: eventQuery)
-        for config in dataSeriesConfigurations {
-            group.enter()
-            storeManager.store.fetchInsights(forTask: config.taskIdentifier, query: insightsQuery) { result in
-                switch result {
-                case .failure(let error): errors.append(error)
-                case .success(let values):
-                    allDataSeries.append(OCKDataSeries(values: values.map { CGFloat($0) }, title: config.legendTitle,
-                                                       gradientStartColor: config.gradientStartColor,
-                                                       gradientEndColor: config.gradientEndColor,
-                                                       size: config.markerSize))
-                }
-                group.leave()
-            }
-        }
-
-        group.notify(queue: .main) { [weak self] in
-            guard let self = self else { return }
-            self.chartView.graphView.dataSeries = allDataSeries
-            errors.forEach { self.delegate?.cartesianChartViewController(self, didFailWithError: $0) }
-        }
-    }
-}
-
-private extension Calendar {
-    func week(of date: Date) -> DateInterval {
-        let morning = startOfDay(for: date)
-        let year = component(.year, from: morning)
-        let weekNumber = component(.weekOfYear, from: morning)
-        let firstDayOfWeek = self.date(from: DateComponents(year: year, weekday: 1, weekOfYear: weekNumber))!
-        let firstDayOfNextWeek = self.date(byAdding: .weekOfYear, value: 1, to: firstDayOfWeek)!
-        let lastMomentOfWeek = self.date(byAdding: .second, value: -1, to: firstDayOfNextWeek)!
-        return DateInterval(start: firstDayOfWeek, end: lastMomentOfWeek)
+    /// Update the view whenever the view model changes.
+    /// - Parameter view: The view to update.
+    /// - Parameter context: The data associated with the updated state.
+    override open func updateView(_ view: OCKCartesianChartView, context: OCKSynchronizationContext<[OCKDataSeries]>) {
+        view.graphView.dataSeries = context.viewModel ?? []
     }
 }

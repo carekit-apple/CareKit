@@ -30,27 +30,27 @@
 
 import UIKit
 
-internal class OCKScatterLayer: OCKCartesianCoordinatesLayer, OCKGradientPlotable {
-    internal let gradientLayer = CAGradientLayer()
-    internal let pointsLayer = CAShapeLayer()
+class OCKScatterLayer: OCKCartesianCoordinatesLayer, OCKGradientPlotable {
+    let gradientLayer = CAGradientLayer()
+    let pointsLayer = CAShapeLayer()
 
-    internal var markerSize: CGFloat = 3.0 {
+    var markerSize: CGFloat = 3.0 {
         didSet { pointsLayer.path = makePath(points: points) }
     }
 
-    internal var startColor: UIColor = .blue {
+    var startColor: UIColor = OCKStyle().color.systemGray {
         didSet { gradientLayer.colors = [startColor.cgColor, endColor.cgColor] }
     }
 
-    internal var endColor: UIColor = .red {
+    var endColor: UIColor = OCKStyle().color.systemGray {
         didSet { gradientLayer.colors = [startColor.cgColor, endColor.cgColor] }
     }
 
-    internal var offset: CGSize = .zero {
+    var offset: CGSize = .zero {
         didSet { setNeedsLayout() }
     }
 
-    override internal init() {
+    override init() {
         super.init()
         setupSublayers()
     }
@@ -60,13 +60,12 @@ internal class OCKScatterLayer: OCKCartesianCoordinatesLayer, OCKGradientPlotabl
         setupSublayers()
     }
 
-    internal required init?(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         setupSublayers()
     }
 
     private func setupSublayers() {
-        pointsLayer.fillColor = UIColor.black.cgColor
         pointsLayer.strokeColor = nil
         addSublayer(pointsLayer)
 
@@ -77,7 +76,7 @@ internal class OCKScatterLayer: OCKCartesianCoordinatesLayer, OCKGradientPlotabl
         addSublayer(gradientLayer)
     }
 
-    override internal func layoutSublayers() {
+    override func layoutSublayers() {
         super.layoutSublayers()
         drawPoints(points)
     }
@@ -90,7 +89,7 @@ internal class OCKScatterLayer: OCKCartesianCoordinatesLayer, OCKGradientPlotabl
         pointsLayer.add(grow, forKey: "grow")
     }
 
-    internal func makePath(points: [CGPoint]) -> CGPath {
+    func makePath(points: [CGPoint]) -> CGPath {
         let path = UIBezierPath()
         points.forEach { point in
             let adjustedPoint = CGPoint(x: point.x + offset.width, y: point.y + offset.height)

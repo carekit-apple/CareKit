@@ -261,14 +261,14 @@ class TestStoreTasks: XCTestCase {
         taskA.effectiveDate = dateA
         taskA = try store.addTaskAndWait(OCKTask(identifier: "A", title: "a", carePlanID: nil, schedule: schedule))
 
-        let dateB = Date().addingTimeInterval(100)
+        let dateB = dateA.addingTimeInterval(100)
         var taskB = OCKTask(identifier: "A", title: "b", carePlanID: nil, schedule: schedule)
         taskB.effectiveDate = dateB
         taskB = try store.updateTaskAndWait(taskB)
 
         let query = OCKTaskQuery(start: dateA.addingTimeInterval(10), end: dateB.addingTimeInterval(-10))
         let fetched = try store.fetchTasksAndWait(query: query)
-        XCTAssert(fetched.count == 1)
+        XCTAssert(fetched.count == 1, "Expected to get 1 task, but got \(fetched.count)")
         XCTAssert(fetched.first?.title == taskA.title)
     }
 

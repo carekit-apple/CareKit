@@ -60,13 +60,6 @@
             BlueprintName = "CareKit"
             ReferencedContainer = "container:CareKit.xcodeproj">
          </BuildableReference>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "E784B8F72232EED600736CA5"
-            BuildableName = "CareKitCarePlanStore.framework"
-            BlueprintName = "CareKitCarePlanStore"
-            ReferencedContainer = "container:CareKitCarePlanStore/CareKitCarePlanStore.xcodeproj">
-         </BuildableReference>
       </CodeCoverageTargets>
       <Testables>
          <TestableReference
@@ -87,6 +80,26 @@
                BuildableName = "CareKitTests.xctest"
                BlueprintName = "CareKitTests"
                ReferencedContainer = "container:CareKit.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "E784B9002232EED600736CA5"
+               BuildableName = "CareKitStoreTests.xctest"
+               BlueprintName = "CareKitStoreTests"
+               ReferencedContainer = "container:../CareKitStore/CareKitStore.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "512B012D22C2F82900ABCB1D"
+               BuildableName = "CareKitUITests.xctest"
+               BlueprintName = "CareKitUITests"
+               ReferencedContainer = "container:../CareKitUI/CareKitUI.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>

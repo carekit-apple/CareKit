@@ -74,7 +74,7 @@ OCKSynchronizedViewController<View, [OCKDataSeries]>, OCKChartDisplayer {
     ///   - storeManager: The store manager used to provide synchronization with the underlying store.
     ///   - dataSeriesConfigurations: An array of objects that specify which data should be plotted.
     ///   - date: The date lying in the week that will be displayed in the chart.
-    init(storeManager: OCKSynchronizedStoreManager<Store>, dataSeriesConfigurations: [OCKDataSeriesConfiguration<Store>], date: Date) {
+    public init(storeManager: OCKSynchronizedStoreManager<Store>, dataSeriesConfigurations: [OCKDataSeriesConfiguration<Store>], date: Date) {
         self.storeManager = storeManager
         self.date = date
         self.dataSeriesConfigurations = dataSeriesConfigurations

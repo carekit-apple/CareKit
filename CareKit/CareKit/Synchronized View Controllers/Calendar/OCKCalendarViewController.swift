@@ -61,7 +61,7 @@ OCKSynchronizedViewController<View, [OCKCompletionRingButton.CompletionState]>, 
     /// - Parameter storeManager: A store manager that will be used to provide synchronization.
     /// - Parameter date: Any date in the date interval to display.
     /// - Parameter aggregator: Used to aggregate events to compute completion.
-    init(storeManager: OCKSynchronizedStoreManager<Store>, date: Date, aggregator: OCKAdherenceAggregator<Store.Event>) {
+    public init(storeManager: OCKSynchronizedStoreManager<Store>, date: Date, aggregator: OCKAdherenceAggregator<Store.Event>) {
         self.storeManager = storeManager
         self.aggregator = aggregator
         self.date = date

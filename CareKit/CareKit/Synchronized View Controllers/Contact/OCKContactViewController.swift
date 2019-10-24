@@ -83,7 +83,7 @@ OCKContactDisplayer, OCKContactViewDelegate, MFMessageComposeViewControllerDeleg
     /// Create a view controller with a contact to display.
     /// - Parameter storeManager: A store manager that will be used to provide synchronization.
     /// - Parameter contact: Contact to use as the view model.
-    init(storeManager: OCKSynchronizedStoreManager<Store>, contact: Store.Contact) {
+    public init(storeManager: OCKSynchronizedStoreManager<Store>, contact: Store.Contact) {
         self.storeManager = storeManager
         query = nil
         contactIdentifier = contact.identifier
@@ -95,7 +95,7 @@ OCKContactDisplayer, OCKContactViewDelegate, MFMessageComposeViewControllerDeleg
     /// - Parameter storeManager: A store manager that will be used to provide synchronization.
     /// - Parameter contactIdentifier: The identifier of the contact for which to query.
     /// - Parameter query: The query used to find the contact.
-    init(storeManager: OCKSynchronizedStoreManager<Store>, contactIdentifier: String, query: OCKContactQuery?) {
+    public init(storeManager: OCKSynchronizedStoreManager<Store>, contactIdentifier: String, query: OCKContactQuery?) {
         self.storeManager = storeManager
         self.contactIdentifier = contactIdentifier
         self.query = query

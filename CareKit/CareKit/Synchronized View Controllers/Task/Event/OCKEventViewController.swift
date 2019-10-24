@@ -65,7 +65,7 @@ OCKEventViewControllerDelegate, OCKEventDisplayer, OCKEventViewDelegate {
     /// - Parameter storeManager: The store manager used to provide synchronization.
     /// - Parameter taskIdentifier: The identifier of the event's task.
     /// - Parameter eventQuery: The query used to find en event for the task.
-    init(storeManager: OCKSynchronizedStoreManager<Store>, taskIdentifier: String, eventQuery: OCKEventQuery) {
+    public init(storeManager: OCKSynchronizedStoreManager<Store>, taskIdentifier: String, eventQuery: OCKEventQuery) {
         self.storeManager = storeManager
         self.taskIdentifier = taskIdentifier
         self.eventQuery = eventQuery
@@ -76,7 +76,7 @@ OCKEventViewControllerDelegate, OCKEventDisplayer, OCKEventViewDelegate {
     /// - Parameter storeManager: The store manager used to provide synchronization.
     /// - Parameter task: The event's task.
     /// - Parameter eventQuery: The query used to find en event for the task.
-    init(storeManager: OCKSynchronizedStoreManager<Store>, task: Store.Task, eventQuery: OCKEventQuery) {
+    public init(storeManager: OCKSynchronizedStoreManager<Store>, task: Store.Task, eventQuery: OCKEventQuery) {
         self.storeManager = storeManager
         self.taskIdentifier = task.identifier
         self.eventQuery = eventQuery

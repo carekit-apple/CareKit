@@ -32,14 +32,16 @@ import UIKit
 
 /// A view intended to display fine grained details. The view contains a configurable image, title, and instructions. To add
 /// custom views, insert into the `contentStackView`.
-open class OCKDetailView: UIView {
+open class OCKDetailView: OCKView {
     // MARK: Properties
+
+    private var contentStackViewTopConstraint: NSLayoutConstraint?
+    private var imageViewHeightConstraint: NSLayoutConstraint?
 
     /// Configurable image that spans the width of the view.
     public let imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
-        imageView.backgroundColor = OCKStyle.color.gray1
         return imageView
     }()
 
@@ -61,34 +63,15 @@ open class OCKDetailView: UIView {
     public let contentStackView: OCKStackView = {
         let stackView = OCKStackView()
         stackView.axis = .vertical
-        stackView.distribution = .fillProportionally
         return stackView
     }()
 
-    // MARK: Life cycle
-
-    public init() {
-        super.init(frame: .zero)
-        setup()
-    }
-
-    public required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        setup()
-    }
-
     // MARK: Methods
 
-    private func setup() {
-        styleSubviews()
+    override func setup() {
+        super.setup()
         addSubviews()
         constrainSubviews()
-    }
-
-    private func styleSubviews() {
-        preservesSuperviewLayoutMargins = true
-        backgroundColor = .white
-        contentStackView.spacing = directionalLayoutMargins.bottom
     }
 
     private func addSubviews() {
@@ -98,16 +81,33 @@ open class OCKDetailView: UIView {
 
     private func constrainSubviews() {
         [imageView, contentStackView].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
+
+        imageViewHeightConstraint = imageView.heightAnchor.constraint(equalToConstant: 0)
+        contentStackViewTopConstraint = contentStackView.topAnchor.constraint(equalTo: imageView.bottomAnchor)
+
         NSLayoutConstraint.activate([
             imageView.leadingAnchor.constraint(equalTo: leadingAnchor),
             imageView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
             imageView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            imageView.heightAnchor.constraint(equalToConstant: OCKStyle.dimension.imageHeight1),
+            imageViewHeightConstraint!,
 
-            contentStackView.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: directionalLayoutMargins.bottom * 2),
-            contentStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: directionalLayoutMargins.leading * 2),
-            contentStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -directionalLayoutMargins.trailing * 2),
-            contentStackView.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: -directionalLayoutMargins.bottom * 2)
+            contentStackViewTopConstraint!,
+            contentStackView.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor),
+            contentStackView.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor),
+            contentStackView.bottomAnchor.constraint(lessThanOrEqualTo: layoutMarginsGuide.bottomAnchor)
         ])
+    }
+
+    override open func styleDidChange() {
+        super.styleDidChange()
+        let cachedStyle = style()
+        backgroundColor = cachedStyle.color.systemBackground
+        directionalLayoutMargins = cachedStyle.dimension.directionalInsets1
+        instructionsLabel.textColor = cachedStyle.color.label
+        imageView.backgroundColor = cachedStyle.color.secondarySystemFill
+        titleLabel.textColor = cachedStyle.color.label
+        imageViewHeightConstraint?.constant = cachedStyle.dimension.imageHeight1
+        contentStackViewTopConstraint?.constant = cachedStyle.dimension.directionalInsets1.top
+        contentStackView.spacing = cachedStyle.dimension.directionalInsets1.top / 2.0
     }
 }

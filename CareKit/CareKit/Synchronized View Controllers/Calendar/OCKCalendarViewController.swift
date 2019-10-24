@@ -30,92 +30,79 @@
 
 import CareKitStore
 import CareKitUI
+import Combine
 import UIKit
 
-internal protocol OCKCalendarViewControllerDelegate: AnyObject {
-    func calendarViewController<S: OCKStoreProtocol>(
-        _ calendarViewController: OCKCalendarViewController<S>,
-        didFailWithError error: Error)
-}
-
-internal class OCKCalendarViewController<Store: OCKStoreProtocol>: OCKSynchronizedViewController<[OCKCompletionRingButton.CompletionState]> {
+/// A superclass to all view controllers that are synchronized with a list of completion states. Actions in the view sent through the
+/// `OCKCalendarViewDelegate` protocol will automatically be hooked up to controller logic.
+///
+/// Alternatively, subclass and use your custom view by specializing the `View` generic and overriding the `makeView()` method. Override the
+/// `updateView(view:context)` method to hook up the completion states to the view. This method will be called any time an outcome is added,
+/// modified, or deleted.
+open class OCKCalendarViewController<View: UIView & OCKCalendarDisplayable, Store: OCKStoreProtocol>:
+OCKSynchronizedViewController<View, [OCKCompletionRingButton.CompletionState]>, OCKCalendarDisplayer, OCKCalendarViewDelegate {
     // MARK: Properties
 
-    enum Style: String, CaseIterable {
-        case week
-    }
+    /// The calendar view displayed by the view controller.
+    public var calendarView: UIView & OCKCalendarDisplayable { return synchronizedView }
 
-    weak var delegate: OCKCalendarViewControllerDelegate?
-    let adherenceQuery: OCKAdherenceQuery<Store.Event>
-    let storeManager: OCKSynchronizedStoreManager<Store>?
+    /// The delegate will receive callbacks when important events happen.
+    public weak var delegate: OCKCalendarViewControllerDelegate?
 
-    // Styled initializers
+    /// The store manager used to provide synchronization.
+    public let storeManager: OCKSynchronizedStoreManager<Store>
 
-    static func makeCalendar(style: Style, storeManager: OCKSynchronizedStoreManager<Store>?, adherenceQuery: OCKAdherenceQuery<Store.Event>) -> OCKCalendarViewController<Store> {
-        switch style {
-        case .week: return OCKWeekCalendarViewController<Store>(storeManager: storeManager, adherenceQuery: adherenceQuery)
-        }
-    }
+    let aggregator: OCKAdherenceAggregator<Store.Event>
+    let date: Date
 
-    // Custom view initializer
+    // MARK: - Initializers
 
-    internal init(
-        storeManager: OCKSynchronizedStoreManager<Store>?,
-        adherenceQuery: OCKAdherenceQuery<Store.Event>,
-        loadCustomView: @escaping () -> UIView,
-        modelDidChange: @escaping CustomModelDidChange) {
+    /// Create a view controller that queries for and displays completion states.
+    /// - Parameter storeManager: A store manager that will be used to provide synchronization.
+    /// - Parameter date: Any date in the date interval to display.
+    /// - Parameter aggregator: Used to aggregate events to compute completion.
+    init(storeManager: OCKSynchronizedStoreManager<Store>, date: Date, aggregator: OCKAdherenceAggregator<Store.Event>) {
         self.storeManager = storeManager
-        self.adherenceQuery = adherenceQuery
-        super.init(loadCustomView: loadCustomView, modelDidChange: modelDidChange)
+        self.aggregator = aggregator
+        self.date = date
+        super.init()
     }
 
-    // Bindable view initializers
+    // MARK: - Life cycle
 
-    internal init<View: UIView & OCKBindable>(
-        storeManager: OCKSynchronizedStoreManager<Store>?,
-        adherenceQuery: OCKAdherenceQuery<Store.Event>,
-        loadDefaultView: @escaping () -> View,
-        modelDidChange: ModelDidChange? = nil)
-    where View.Model == [OCKCompletionRingButton.CompletionState] {
-        self.storeManager = storeManager
-        self.adherenceQuery = adherenceQuery
-        super.init(loadDefaultView: loadDefaultView, modelDidChange: modelDidChange)
-    }
-
-    // MARK: Life cycle
-    override func viewDidLoad() {
+    override public func viewDidLoad() {
         super.viewDidLoad()
+        synchronizedView.showDate(date)
+        calendarView.delegate = self
         fetchAdherence()
+        subscribe()
     }
 
     // MARK: Methods
 
-    override internal func subscribe() {
-        super.subscribe()
-
-        subscription = storeManager?.notificationPublisher
+    /// Re-fetch adherence whenever an outcome notification occurs.
+    override open func makeSubscription() -> AnyCancellable? {
+        let subscription = storeManager.notificationPublisher
             .compactMap { $0 as? OCKOutcomeNotification<Store> }
             .sink(receiveValue: { [weak self] _ in
                 self?.fetchAdherence()
             }
         )
+        return AnyCancellable(subscription)
     }
 
-    internal func fetchAdherence() {
-        storeManager?.store.fetchAdherence(query: adherenceQuery) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .failure(let error):
-                self.delegate?.calendarViewController(self, didFailWithError: error)
-            case .success(let adherence):
-                let states = self.convertAdherenceToCompletionRingState(adherence: adherence)
-                self.modelUpdated(viewModel: states, animated: true)
-            }
-        }
+    private func makeAdherenceQuery() -> OCKAdherenceQuery<Store.Event> {
+        let component = type(of: synchronizedView).intervalComponent
+        var dateInterval = Calendar.current.dateInterval(of: component, for: date)!
+        dateInterval.duration -= 1  // The default interval contains 1 second of the next day after the interval. Subtract that off
+        var adherenceQuery = OCKAdherenceQuery<Store.Event>(dateInterval: dateInterval)
+        adherenceQuery.aggregator = aggregator
+        return adherenceQuery
     }
 
-    private func convertAdherenceToCompletionRingState(adherence: [OCKAdherence]) -> [OCKCompletionRingButton.CompletionState] {
-        return zip(adherenceQuery.dates(), adherence).map { date, adherence in
+    private func convertAdherenceToCompletionRingState(adherence: [OCKAdherence],
+                                                       query: OCKAdherenceQuery<Store.Event>) -> [OCKCompletionRingButton.CompletionState] {
+        return zip(query.dates(), adherence).map { date, adherence in
             let isInFuture = date > Date() && !Calendar.current.isDateInToday(date)
             switch adherence {
             case .noTasks: return .dimmed
@@ -126,4 +113,28 @@ internal class OCKCalendarViewController<Store: OCKStoreProtocol>: OCKSynchroniz
             }
         }
     }
+
+    /// Fetch the adherence state for the days in the calendar.
+    open func fetchAdherence() {
+        let query = makeAdherenceQuery()
+        storeManager.store.fetchAdherence(query: query) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .failure(let error):
+                self.delegate?.calendarViewController(self, didFailWithError: error)
+            case .success(let adherence):
+                let states = self.convertAdherenceToCompletionRingState(adherence: adherence, query: query)
+                self.setViewModel(states, animated: self.viewModel != nil)
+            }
+        }
+    }
+
+    // MARK: - OCKCalendarViewController
+
+    /// Called when a particular date in the calendar was selected. The default implementation does nothing.
+    /// - Parameter calendarView: The view displaying the calendar.
+    /// - Parameter date: The date that was selected.
+    /// - Parameter index: The index of the date that was selected with respect to the collection of days in the current `dateInterval`.
+    /// - Parameter sender: The sender that initiated the selection.
+    open func calendarView(_ calendarView: UIView & OCKCalendarDisplayable, didSelectDate date: Date, at index: Int, sender: Any?) { }
 }

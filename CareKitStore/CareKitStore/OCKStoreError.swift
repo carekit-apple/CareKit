@@ -51,7 +51,7 @@ public enum OCKStoreError: LocalizedError {
     /// - Note: This is intended for use by remote databases.
     case timedOut(reason: String)
 
-    var localizedDescription: String {
+    public var errorDescription: String? {
         switch self {
         case .fetchFailed(let reason): return "Failed to fetch: \(reason)"
         case .addFailed(let reason): return "Failed to add: \(reason)"

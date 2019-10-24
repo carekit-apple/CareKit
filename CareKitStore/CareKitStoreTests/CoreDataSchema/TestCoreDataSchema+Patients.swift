@@ -42,10 +42,13 @@ class TestCoreDataSchemaWithPatient: XCTestCase {
     func testCanSavePatient() {
         let patient = OCKCDPatient(context: store.context)
         patient.identifier = "my_id"
-        patient.effectiveAt = Date()
+        patient.effectiveDate = Date()
         patient.name = OCKCDPersonName(context: store.context)
         patient.name.givenName = "Amy"
         patient.name.familyName = "Frost"
+        patient.sex = "female"
+        patient.birthday = Date()
+        patient.allergies = ["latex"]
 
         XCTAssertNoThrow(try store.context.save())
         XCTAssert(patient.name.givenName == "Amy")

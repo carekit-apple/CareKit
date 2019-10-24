@@ -38,19 +38,16 @@ open class OCKCompletionRingButton: OCKButton {
     private let _titleButton = OCKButton()
 
     /// A fillable ring view.
-    private let ring = OCKCompletionRingView()
+    let ring = OCKCompletionRingView()
 
-    public enum CompletionState {
+    /// The completion state of the ring
+    public private (set) var completionState: CompletionState?
+
+    public enum CompletionState: Equatable {
         case dimmed
         case empty
         case zero
         case progress(_ value: CGFloat)
-    }
-
-    /// Create an instance of a completion ring button.
-    override public init() {
-        super.init()
-        setup()
     }
 
     /// Changes the display state of the button
@@ -59,24 +56,23 @@ open class OCKCompletionRingButton: OCKButton {
     ///   - state: The state that the completion ring button will be set to.
     ///   - animated: Determines if the change will be animated or instantaneous.
     public func setState(_ state: CompletionState, animated: Bool) {
+        completionState = state
         switch state {
-        case .dimmed:
-            ring.setProgress(0, animated: animated)
-            ring.grooveView.strokeColor = .lightGray
-            setTitleColor(.lightGray, for: .normal)
-        case .empty:
-            ring.setProgress(0, animated: animated)
-            ring.grooveView.strokeColor = .gray
-            setTitleColor(.darkText, for: .normal)
-        case .zero:
-            ring.setProgress(0.001, animated: animated)
-            ring.grooveView.strokeColor = .gray
-            setTitleColor(.darkText, for: .normal)
-        case .progress(let value):
-            ring.setProgress(value, animated: animated)
-            ring.grooveView.strokeColor = .gray
-            setTitleColor(.darkText, for: .normal)
+        case .dimmed: ring.setProgress(0, animated: animated)
+        case .empty: ring.setProgress(0, animated: animated)
+        case .zero: ring.setProgress(0.001, animated: animated)
+        case .progress(let value): ring.setProgress(value, animated: animated)
         }
+        updateRingColors()
+    }
+
+    private func updateRingColors() {
+        let cachedStyle = style()
+        let grooveStrokeColor = completionState == .dimmed ? cachedStyle.color.systemGray3 : cachedStyle.color.systemGray
+        let titleColor = completionState == .dimmed ? cachedStyle.color.tertiaryLabel : cachedStyle.color.label
+
+        setTitleColor(titleColor, for: .normal)
+        ring.grooveView.strokeColor = grooveStrokeColor
     }
 
     /// Called when the tint color of the view changes.
@@ -85,28 +81,31 @@ open class OCKCompletionRingButton: OCKButton {
         ring.strokeColor = tintColor
     }
 
-    private func setup() {
-        addSubview(ring)
-        addSubview(_titleButton)
+    override func setup() {
+        super.setup()
+        addSubviews()
+        constrainSubviews()
+        styleSubviews()
+    }
 
-        setTitleColor(.darkText, for: .normal)
-        setTitleColor(tintColor, for: .selected)
-
+    private func styleSubviews() {
         _titleButton.titleLabel?.font = UIFont.systemFont(ofSize: 12, weight: .semibold)
         _titleButton.isUserInteractionEnabled = false
 
         ring.isUserInteractionEnabled = false
-        ring.lineWidth = OCKStyle.dimension.completionRingLineWidth
-        ring.checkmarkImageView.pointSize = .medium
         ring.strokeColor = tintColor
+    }
 
-        _titleButton.translatesAutoresizingMaskIntoConstraints = false
+    private func addSubviews() {
+        addSubview(ring)
+        addSubview(_titleButton)
+    }
+
+    private func constrainSubviews() {
+        [_titleButton, ring, self].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
         _titleButton.setContentHuggingPriority(.defaultHigh, for: .vertical)
-
-        ring.translatesAutoresizingMaskIntoConstraints = false
         ring.setContentHuggingPriority(.defaultLow, for: .vertical)
 
-        translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             _titleButton.topAnchor.constraint(equalTo: topAnchor),
             _titleButton.leadingAnchor.constraint(equalTo: leadingAnchor),
@@ -117,5 +116,11 @@ open class OCKCompletionRingButton: OCKButton {
             ring.trailingAnchor.constraint(equalTo: trailingAnchor),
             ring.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
+    }
+
+    override public func styleDidChange() {
+        super.styleDidChange()
+        updateRingColors()
+        ring.lineWidth = style().appearance.lineWidth1
     }
 }

@@ -50,8 +50,9 @@ import CoreData
 //
 
 private let secureUnarchiver = "NSSecureUnarchiveFromData"
+private let schemaVersion = OCKSemanticVersion(majorVersion: 2, minorVersion: 0, patchNumber: 0)
 
-extension OCKStore {
+ extension OCKStore {
     internal static func makeManagedObjectModel() -> NSManagedObjectModel {
         let managedObjectModel = NSManagedObjectModel()
 
@@ -561,7 +562,24 @@ extension OCKStore {
         let patientEntity = NSEntityDescription()
         patientEntity.name = String(describing: OCKCDPatient.self)
         patientEntity.managedObjectClassName = String(describing: OCKCDPatient.self)
-        patientEntity.properties = makeObjectAttributes() + makeVersionedAttributes()
+
+        let birthday = NSAttributeDescription()
+        birthday.name = "birthday"
+        birthday.attributeType = .dateAttributeType
+        birthday.isOptional = true
+
+        let sex = NSAttributeDescription()
+        sex.name = "sex"
+        sex.attributeType = .stringAttributeType
+        sex.isOptional = true
+
+        let allergies = NSAttributeDescription()
+        allergies.name = "allergies"
+        allergies.attributeType = .transformableAttributeType
+        allergies.valueTransformerName = secureUnarchiver
+        allergies.isOptional = true
+
+        patientEntity.properties = makeObjectAttributes() + makeVersionedAttributes() + [birthday, sex, allergies]
         return patientEntity
     }
 
@@ -633,11 +651,10 @@ extension OCKStore {
         ]
         return contactEntity
     }
-    
 
     private static func makeTaskEntity() -> NSEntityDescription {
         let taskEntity = NSEntityDescription()
-        taskEntity.name = "DOGGY"//String(describing: OCKCDTask.self)
+        taskEntity.name = String(describing: OCKCDTask.self)
         taskEntity.managedObjectClassName = String(describing: OCKCDTask.self)
 
         let title = NSAttributeDescription()
@@ -662,7 +679,6 @@ extension OCKStore {
         return taskEntity
     }
 
-    
     private static func makeScheduleEntity() -> NSEntityDescription {
         let scheduleEntity = NSEntityDescription()
         scheduleEntity.name = String(describing: OCKCDScheduleElement.self)
@@ -744,7 +760,6 @@ extension OCKStore {
 
         return scheduleEntity
     }
-    
 
     private static func makeOutcomeEntity() -> NSEntityDescription {
         let outcomeEntity = NSEntityDescription()
@@ -765,7 +780,6 @@ extension OCKStore {
         return outcomeEntity
     }
 
-    
     private static func makeOutcomeValueEntity() -> NSEntityDescription {
         let valueEntity = NSEntityDescription()
         valueEntity.name = String(describing: OCKCDOutcomeValue.self)
@@ -780,6 +794,11 @@ extension OCKStore {
         units.name = "units"
         units.attributeType = .stringAttributeType
         units.isOptional = true
+
+        let index = NSAttributeDescription()
+        index.name = "index"
+        index.attributeType = .integer64AttributeType
+        index.isOptional = true
 
         let type = NSAttributeDescription()
         type.name = "typeString"
@@ -817,10 +836,9 @@ extension OCKStore {
         date.isOptional = true
 
         valueEntity.properties = makeObjectAttributes() +
-            [kind, units, type, text, binary, bool, integer, double, date]
+            [kind, units, index, type, text, binary, bool, integer, double, date]
         return valueEntity
     }
-    
 
     private static func makeNoteEntity() -> NSEntityDescription {
         let noteEntity = NSEntityDescription()
@@ -885,7 +903,6 @@ extension OCKStore {
         return nameEntity
     }
 
-    
     private static func makeAddressEntity() -> NSEntityDescription {
         let addressEntity = NSEntityDescription()
         addressEntity.name = String(describing: OCKCDPostalAddress.self)
@@ -943,7 +960,6 @@ extension OCKStore {
 
         return addressEntity
     }
-    
 
     // MARK: Attributes
 
@@ -953,15 +969,19 @@ extension OCKStore {
         identifier.attributeType = .stringAttributeType
         identifier.isOptional = false
 
-        let effectiveAt = NSAttributeDescription()
-        effectiveAt.name = "effectiveAt"
-        effectiveAt.attributeType = .dateAttributeType
-        effectiveAt.isOptional = false
+        let deletedDate = NSAttributeDescription()
+        deletedDate.name = "deletedDate"
+        deletedDate.attributeType = .dateAttributeType
+        deletedDate.isOptional = true
 
-        return [identifier, effectiveAt]
+        let effectiveDate = NSAttributeDescription()
+        effectiveDate.name = "effectiveDate"
+        effectiveDate.attributeType = .dateAttributeType
+        effectiveDate.isOptional = false
+
+        return [identifier, effectiveDate, deletedDate]
     }
 
-    
     private static func makeObjectAttributes() -> [NSAttributeDescription] {
         let allowsMissingRelationships = NSAttributeDescription()
         allowsMissingRelationships.name = "allowsMissingRelationships"
@@ -975,15 +995,10 @@ extension OCKStore {
         asset.isOptional = true
         asset.defaultValue = nil
 
-        let createdAt = NSAttributeDescription()
-        createdAt.name = "createdAt"
-        createdAt.attributeType = .dateAttributeType
-        createdAt.isOptional = false
-
-        let deletedAt = NSAttributeDescription()
-        deletedAt.name = "deletedAt"
-        deletedAt.attributeType = .dateAttributeType
-        deletedAt.isOptional = true
+        let createdDate = NSAttributeDescription()
+        createdDate.name = "createdDate"
+        createdDate.attributeType = .dateAttributeType
+        createdDate.isOptional = false
 
         let groupIdentifier = NSAttributeDescription()
         groupIdentifier.name = "groupIdentifier"
@@ -1006,10 +1021,10 @@ extension OCKStore {
         tags.valueTransformerName = secureUnarchiver
         tags.isOptional = true
 
-        let updatedAt = NSAttributeDescription()
-        updatedAt.name = "updatedAt"
-        updatedAt.attributeType = .dateAttributeType
-        updatedAt.isOptional = true
+        let updatedDate = NSAttributeDescription()
+        updatedDate.name = "updatedDate"
+        updatedDate.attributeType = .dateAttributeType
+        updatedDate.isOptional = true
 
         let userInfo = NSAttributeDescription()
         userInfo.name = "userInfo"
@@ -1017,9 +1032,13 @@ extension OCKStore {
         userInfo.isOptional = true
         userInfo.valueTransformerName = secureUnarchiver
 
-        return [allowsMissingRelationships, asset, createdAt, deletedAt,
-                groupIdentifier, remoteID, source, tags, updatedAt, userInfo]
-    }
-    
-}
+        let schema = NSAttributeDescription()
+        schema.name = "schemaVersion"
+        schema.attributeType = .stringAttributeType
+        schema.isOptional = false
+        schema.defaultValue = schemaVersion.description
 
+        return [allowsMissingRelationships, asset, createdDate, schema,
+                groupIdentifier, remoteID, source, tags, updatedDate, userInfo]
+    }
+}

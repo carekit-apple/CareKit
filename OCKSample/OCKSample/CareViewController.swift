@@ -89,9 +89,10 @@ class CareViewController: OCKDailyPageViewController<OCKStore> {
                 // Since the kegel task is only sheduled every other day, there will be cases
                 // where it is not contained in the tasks array returned from the query.
                 if let kegelsTask = tasks.first(where: { $0.identifier == "kegels" }) {
-                    let kegelsCard = OCKSimpleTaskViewController(storeManager: self.storeManager,
-                                                                 task: kegelsTask,
-                                                                 eventQuery: OCKEventQuery(for: date))
+                    let kegelsCard = OCKSimpleTaskViewController(
+                        storeManager: self.storeManager,
+                        task: kegelsTask,
+                        eventQuery: OCKEventQuery(for: date))
                     listViewController.appendViewController(kegelsCard, animated: false)
                 }
 
@@ -101,7 +102,6 @@ class CareViewController: OCKDailyPageViewController<OCKStore> {
                         storeManager: self.storeManager,
                         task: doxylamineTask,
                         eventQuery: OCKEventQuery(for: date))
-
                     listViewController.appendViewController(doxylamineCard, animated: false)
                 }
 
@@ -109,41 +109,46 @@ class CareViewController: OCKDailyPageViewController<OCKStore> {
                 // Its OCKSchedule was defined to have daily events, so this task should be
                 // found in `tasks` every day after the task start date.
                 if let nauseaTask = tasks.first(where: { $0.identifier == "nausea" }) {
+
+                    // dynamic gradient colors
+                    let nauseaGradientStart = UIColor { traitCollection -> UIColor in
+                        return traitCollection.userInterfaceStyle == .light ? #colorLiteral(red: 0.9960784314, green: 0.3725490196, blue: 0.368627451, alpha: 1) : #colorLiteral(red: 0.8627432641, green: 0.2630574384, blue: 0.2592858295, alpha: 1)
+                    }
+                    let nauseaGradientEnd = UIColor { traitCollection -> UIColor in
+                        return traitCollection.userInterfaceStyle == .light ? #colorLiteral(red: 0.9960784314, green: 0.4732026144, blue: 0.368627451, alpha: 1) : #colorLiteral(red: 0.8627432641, green: 0.3598620686, blue: 0.2592858295, alpha: 1)
+                    }
+
                     // Create a plot comparing nausea to medication adherence.
-                    let nauseaDataSeries = OCKCartesianChartViewController<OCKStore>.DataSeriesConfiguration(
+                    let nauseaDataSeries = OCKDataSeriesConfiguration<OCKStore>(
                         taskIdentifier: "nausea",
                         legendTitle: "Nausea",
-                        gradientStartColor: #colorLiteral(red: 0.9176470588, green: 0.3529411765, blue: 0.4588235294, alpha: 1),
-                        gradientEndColor: #colorLiteral(red: 0.9020889401, green: 0.5339772701, blue: 0.4407126009, alpha: 1),
+                        gradientStartColor: nauseaGradientStart,
+                        gradientEndColor: nauseaGradientEnd,
                         markerSize: 10,
                         eventAggregator: OCKEventAggregator.countOutcomeValues)
 
-                    let doxylamineDataSeries = OCKCartesianChartViewController<OCKStore>.DataSeriesConfiguration(
+                    let doxylamineDataSeries = OCKDataSeriesConfiguration<OCKStore>(
                         taskIdentifier: "doxylamine",
                         legendTitle: "Doxylamine",
-                        gradientStartColor: #colorLiteral(red: 0.7372466922, green: 0.7372466922, blue: 0.7372466922, alpha: 1),
-                        gradientEndColor: #colorLiteral(red: 0.7372466922, green: 0.7372466922, blue: 0.7372466922, alpha: 1),
+                        gradientStartColor: .systemGray2,
+                        gradientEndColor: .systemGray,
                         markerSize: 10,
                         eventAggregator: OCKEventAggregator.countOutcomeValues)
 
                     let insightsCard = OCKCartesianChartViewController(
                         storeManager: self.storeManager,
+                        type: .bar,
                         dataSeriesConfigurations: [nauseaDataSeries, doxylamineDataSeries],
-                        date: date,
-                        plotType: .bar)
-
-                    let titleText = "Nausea & Doxylamine Intake"
-                    let detailText = "This Week"
-
-                    insightsCard.chartView.headerView.titleLabel.text = titleText
-                    insightsCard.chartView.headerView.detailLabel.text = detailText
+                        date: date)
+                    insightsCard.synchronizedView.headerView.titleLabel.text = "Nausea & Doxylamine Intake"
+                    insightsCard.synchronizedView.headerView.detailLabel.text = "This Week"
 
                     listViewController.appendViewController(insightsCard, animated: false)
 
                     // Also create a card that displays a single event.
                     // The event query passed into the initializer specifies that only
                     // today's log entries should be displayed by this log task view controller.
-                    let nauseaCard = OCKSimpleLogTaskViewController(
+                    let nauseaCard = OCKButtonLogTaskViewController(
                         storeManager: self.storeManager,
                         task: nauseaTask,
                         eventQuery: OCKEventQuery(for: date))

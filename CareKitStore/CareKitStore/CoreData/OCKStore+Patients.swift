@@ -104,7 +104,7 @@ public extension OCKStore {
         context.perform {
             do {
                 let deletedPatients = try self.performUnversionedUpdate(values: patients) { _, persistablePatient in
-                    persistablePatient.deletedAt = Date()
+                    persistablePatient.deletedDate = Date()
                 }.map(self.makePatient)
 
                 try self.context.save()
@@ -137,13 +137,19 @@ public extension OCKStore {
         persistablePatient.copyVersionInfo(from: patient)
         persistablePatient.allowsMissingRelationships = allowsEntitiesWithMissingRelationships
         persistablePatient.name.copyPersonNameComponents(patient.name)
+        persistablePatient.sex = patient.sex?.rawValue
+        persistablePatient.birthday = patient.birthday
+        persistablePatient.allergies = patient.allergies
     }
 
     /// - Remark: This method is intended to create a value type struct from a *persisted* NSManagedObject. Calling this method with an
     /// object that is not yet commited is a programmer error.
     private func makePatient(from object: OCKCDPatient) -> OCKPatient {
-        assert(object.versionID != nil, "Do not create a patient from an object that isn't persisted yet!")
+        assert(object.localDatabaseID != nil, "Do not create a patient from an object that isn't persisted yet!")
         var patient = OCKPatient(identifier: object.identifier, name: object.name.makeComponents())
+        patient.sex = object.sex == nil ? nil : OCKBiologicalSex(rawValue: object.sex!)
+        patient.birthday = object.birthday
+        patient.allergies = object.allergies
         patient.copyVersionedValues(from: object)
         return patient
     }
@@ -151,7 +157,7 @@ public extension OCKStore {
     private func buildPredicate(from anchor: OCKPatientAnchor?, query: OCKPatientQuery?) throws -> NSPredicate {
         let anchorPredicate = try buildSubPredicate(from: anchor)
         let queryPredicate = buildSubPredicate(from: query)
-        let notDeletedPredicate = NSPredicate(format: "%K == nil", #keyPath(OCKCDVersionedObject.deletedAt))
+        let notDeletedPredicate = NSPredicate(format: "%K == nil", #keyPath(OCKCDVersionedObject.deletedDate))
         return NSCompoundPredicate(andPredicateWithSubpredicates: [anchorPredicate, queryPredicate, notDeletedPredicate])
     }
 
@@ -162,6 +168,8 @@ public extension OCKStore {
             return NSPredicate(format: "%K IN %@", #keyPath(OCKCDVersionedObject.identifier), patientIdentifiers)
         case .patientVersions(let patientVersionIDs):
             return NSPredicate(format: "self IN %@", try patientVersionIDs.map(objectID))
+        case .patientRemoteIDs(let patientremoteIDs):
+            return NSPredicate(format: "%K IN %@", #keyPath(OCKCDObject.remoteID), patientremoteIDs)
         }
     }
 
@@ -186,7 +194,7 @@ public extension OCKStore {
         guard let orders = query?.sortDescriptors else { return [] }
         return orders.map { order -> NSSortDescriptor in
             switch order {
-            case .effectiveAt(let ascending): return NSSortDescriptor(keyPath: \OCKCDPatient.effectiveAt, ascending: ascending)
+            case .effectiveDate(let ascending): return NSSortDescriptor(keyPath: \OCKCDPatient.effectiveDate, ascending: ascending)
             case .givenName(let ascending): return NSSortDescriptor(keyPath: \OCKCDPatient.name.givenName, ascending: ascending)
             case .familyName(let ascending): return NSSortDescriptor(keyPath: \OCKCDPatient.name.familyName, ascending: ascending)
             case .groupIdentifier(let ascending): return NSSortDescriptor(keyPath: \OCKCDPatient.groupIdentifier, ascending: ascending)

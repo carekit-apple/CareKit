@@ -33,7 +33,7 @@ import Foundation
 /// An `OCKTask` represents some task or action that a patient is supposed to perform. Tasks are optionally associable with an `OCKCarePlan`
 /// and must have a unique identifier and schedule. The schedule determines when and how often the task should be performed, and the
 /// `impactsAdherence` flag may be used to specify whether or not the patients adherence to this task will affect their daily completion rings.
-public struct OCKTask: Codable, Equatable, OCKVersionSettable, OCKObjectCompatible, OCKTaskConvertible, OCKTaskInitializable {
+public struct OCKTask: Codable, Equatable, OCKVersionSettable, OCKObjectCompatible, OCKTaskConvertible {
     /// The version ID in the local database of the care plan to which this task belongs.
     public var carePlanID: OCKLocalVersionID?
 
@@ -50,18 +50,19 @@ public struct OCKTask: Codable, Equatable, OCKVersionSettable, OCKObjectCompatib
     public let identifier: String
 
     // MARK: OCKVersionable
-    public var effectiveAt: Date
+    public var effectiveDate: Date
+    public internal(set) var deletedDate: Date?
     public internal(set) var localDatabaseID: OCKLocalVersionID?
     public internal(set) var nextVersionID: OCKLocalVersionID?
     public internal(set) var previousVersionID: OCKLocalVersionID?
 
     // MARK: OCKObjectCompatible
-    public internal(set) var createdAt: Date?
-    public internal(set) var updatedAt: Date?
-    public internal(set) var deletedAt: Date?
+    public internal(set) var createdDate: Date?
+    public internal(set) var updatedDate: Date?
+    public internal(set) var schemaVersion: OCKSemanticVersion?
     public var groupIdentifier: String?
     public var tags: [String]?
-    public var externalID: String?
+    public var remoteID: String?
     public var source: String?
     public var schedule: OCKSchedule
     public var userInfo: [String: String]?
@@ -80,10 +81,10 @@ public struct OCKTask: Codable, Equatable, OCKVersionSettable, OCKObjectCompatib
         self.title = title
         self.carePlanID = carePlanID
         self.schedule = schedule
-        self.effectiveAt = schedule.start
+        self.effectiveDate = schedule.start
     }
 
-    public init(value: OCKTask) {
+    public init(_ value: OCKTask) {
         self = value
     }
 

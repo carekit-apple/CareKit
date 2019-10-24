@@ -30,25 +30,10 @@
 
 import UIKit
 
-internal extension UIFont {
-    static let fontSizesTable: [TextStyle: [UIContentSizeCategory: CGFloat]] = [
-        .headline: OCKStyle.font.headlineFontSizes,
-        .callout: OCKStyle.font.calloutFontSizes,
-        .caption1: OCKStyle.font.caption1FontSizes,
-        .caption2: OCKStyle.font.caption2FontSizes,
-        .footnote: OCKStyle.font.footnoteFontSizes,
-        .largeTitle: OCKStyle.font.largeTitleFontSizes,
-        .subheadline: OCKStyle.font.subheadlineFontSizes,
-        .title1: OCKStyle.font.title1FontSizes,
-        .title2: OCKStyle.font.title2FontSizes,
-        .title3: OCKStyle.font.title3FontSizes
-    ]
-
+extension UIFont {
     static func preferredCustomFont(forTextStyle textStyle: TextStyle, weight: Weight) -> UIFont {
-        let sizeCategory = UIApplication.shared.preferredContentSizeCategory
-        let customPointSize = fontSizesTable[textStyle]?[sizeCategory]  // framework/developer defined point size
         let defaultDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: textStyle)
-        let size = customPointSize ?? defaultDescriptor.pointSize
+        let size = defaultDescriptor.pointSize
         let fontDescriptor = UIFontDescriptor(fontAttributes: [
             UIFontDescriptor.AttributeName.size: size,
             UIFontDescriptor.AttributeName.family: UIFont.systemFont(ofSize: size).familyName

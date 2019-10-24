@@ -103,9 +103,10 @@ open class OCKListViewController: UIViewController {
     /// - Parameter index: The index of the view to be removed. This must be a valid index in the number of views listed.
     open func remove(at index: Int) {
         let view = listView.stackView.arrangedSubviews[index]
-        view.removeFromSuperview()
         if let viewController = children.first(where: { $0.view == view }) {
             viewController.clearContainment()
+        } else {
+            view.removeFromSuperview()
         }
     }
 

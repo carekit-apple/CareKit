@@ -30,12 +30,12 @@
 
 import UIKit
 
-internal class OCKGraphAxisView: UIView {
-    internal var axisMarkers = [String]() {
+class OCKGraphAxisView: UIView {
+    var axisMarkers = [String]() {
         didSet { redrawLabels() }
     }
 
-    internal var selectedIndex: Int? {
+    var selectedIndex: Int? {
         didSet { redrawLabels() }
     }
 
@@ -65,7 +65,7 @@ internal class OCKGraphAxisView: UIView {
         return rect
     }
 
-    override internal func layoutSubviews() {
+    override func layoutSubviews() {
         super.layoutSubviews()
         tickViews.enumerated().forEach { index, view in
             view.frame = frameForMarker(atIndex: index)
@@ -73,7 +73,7 @@ internal class OCKGraphAxisView: UIView {
     }
 }
 
-private class OCKCircleLabelView: UIView {
+private class OCKCircleLabelView: OCKView {
     let label: OCKLabel
 
     var circleLayer: CAShapeLayer {
@@ -87,30 +87,32 @@ private class OCKCircleLabelView: UIView {
 
     override func tintColorDidChange() {
         super.tintColorDidChange()
-        circleLayer.fillColor = isSelected ? tintColor.cgColor : UIColor.clear.cgColor
+        circleLayer.fillColor = isSelected ? tintColor.cgColor : nil
     }
 
     var isSelected: Bool = false {
         didSet {
-            label.textColor = isSelected ? .white : .darkText
-            circleLayer.fillColor = isSelected ? tintColor.cgColor : UIColor.clear.cgColor
+            updateLabelColor()
+            circleLayer.fillColor = isSelected ? tintColor.cgColor : nil
         }
     }
 
     init(textStyle: UIFont.TextStyle) {
-        self.label = OCKLabel(textStyle: .caption2, weight: .medium)
-        super.init(frame: .zero)
+        label = OCKLabel(textStyle: .caption2, weight: .medium)
+        super.init()
         setup()
     }
 
     @available(*, unavailable)
     required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        fatalError("Unsupported initializer")
     }
 
-    private func setup() {
+    override func setup() {
+        super.setup()
         addSubview(label)
-        label.textColor = .white
+        updateLabelColor()
+
         label.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             label.centerXAnchor.constraint(equalTo: centerXAnchor),
@@ -128,6 +130,15 @@ private class OCKCircleLabelView: UIView {
         let origin = CGPoint(x: label.center.x - maxDimension / 2, y: label.center.y - maxDimension / 2)
 
         circleLayer.path = UIBezierPath(ovalIn: CGRect(origin: origin, size: size)).cgPath
-        circleLayer.fillColor = isSelected ? tintColor.cgColor : UIColor.clear.cgColor
+        circleLayer.fillColor = isSelected ? tintColor.cgColor : nil
+    }
+
+    private func updateLabelColor() {
+        label.textColor = isSelected ? style().color.systemBackground : style().color.label
+    }
+
+    override func styleDidChange() {
+        super.styleDidChange()
+        updateLabelColor()
     }
 }

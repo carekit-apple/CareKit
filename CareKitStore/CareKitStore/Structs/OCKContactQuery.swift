@@ -33,7 +33,10 @@ import Foundation
 /// An enumerator that specifies the paramters by which contacts can be queried.
 public enum OCKContactAnchor {
     case contactIdentifier(_ identifiers: [String])
-    case carePlanVersion(_ versionIDs: [OCKLocalVersionID])
+    case contactRemoteIDs(_ remoteIDs: [String])
+
+    case carePlanVersions(_ versionIDs: [OCKLocalVersionID])
+    case carePlanRemoteIDs(_ remoteIDs: [String])
 }
 
 /// A query that limits which contacts will be returned when fetching.
@@ -41,7 +44,7 @@ public struct OCKContactQuery: OCKDateIntervalQueryable {
     public enum SortDescriptor {
         case givenName(ascending: Bool)
         case familyName(ascending: Bool)
-        case effectiveAt(ascending: Bool)
+        case effectiveDate(ascending: Bool)
     }
 
     public var start: Date

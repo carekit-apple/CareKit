@@ -33,7 +33,7 @@ import UIKit
 /// Representa a single group of data to be plotted. In most cases, CareKit plots accept multiple data
 /// series, allowing for for several data series to be plotted on a single axis for easy comparison.
 /// - SeeAlso: `OCKGraphView`
-public struct OCKDataSeries {
+public struct OCKDataSeries: Equatable {
     /// An array of points given in plot space Cartesian coordinates
     /// The plot origin (0, 0) is in the bottom left hand corner.
     public var dataPoints: [CGPoint]

@@ -31,50 +31,50 @@
 import UIKit
 
 /// This layer shows horizontal grid lines and is intended to be added as a background to various kinds of graphs.
-internal class OCKGridLayer: OCKCartesianCoordinatesLayer {
+class OCKGridLayer: OCKCartesianCoordinatesLayer {
     private enum Constants {
         static let margin: CGFloat = 16
     }
 
     /// The number of vertical lines in the grid.
-    internal var numberOfVerticalDivisions = 4 {
+    var numberOfVerticalDivisions = 4 {
         didSet { setNeedsLayout() }
     }
 
     /// The color of the grid lines.
-    internal var gridLineColor: UIColor = .gray {
+    var gridLineColor: UIColor = OCKStyle().color.systemGray {
         didSet {
             bottomGridLine.strokeColor = gridLineColor.cgColor
             gridLines.strokeColor = gridLineColor.cgColor
         }
     }
 
-    internal var gridLineWidth: CGFloat = 0.7 {
+    var gridLineWidth: CGFloat = 0.7 {
         didSet {
             gridLines.lineWidth = gridLineWidth
             bottomGridLine.lineWidth = gridLineWidth
         }
     }
 
-    internal var gridLineOpacity: CGFloat = 0.25 {
+    var gridLineOpacity: CGFloat = 0.25 {
         didSet {
             gridLines.opacity = Float(gridLineOpacity)
             bottomGridLine.opacity = Float(gridLineOpacity)
         }
     }
 
-    internal let gridLines = CAShapeLayer()
-    internal let bottomGridLine = CAShapeLayer()
-    internal let topValueLayer = CATextLayer()
-    internal let middleValueLayer = CATextLayer()
+    let gridLines = CAShapeLayer()
+    let bottomGridLine = CAShapeLayer()
+    let topValueLayer = CATextLayer()
+    let middleValueLayer = CATextLayer()
 
     /// Create an instance of a grid layer.
-    override internal init() {
+    override init() {
         super.init()
         setup()
     }
 
-    internal required init?(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         setup()
     }
@@ -82,12 +82,12 @@ internal class OCKGridLayer: OCKCartesianCoordinatesLayer {
     /// Create an instance of a grid layer by specifying the layer class.
     ///
     /// - Parameter layer: Layer class to use as this object's layer.
-    override internal init(layer: Any) {
+    override init(layer: Any) {
         super.init(layer: layer)
         setup()
     }
 
-    internal func setup() {
+    func setup() {
         addSublayer(gridLines)
         addSublayer(bottomGridLine)
         addSublayer(topValueLayer)

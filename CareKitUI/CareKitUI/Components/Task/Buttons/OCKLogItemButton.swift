@@ -30,11 +30,10 @@
 
 import UIKit
 
-internal class OCKLogItemButton: OCKButton {
-	// MARK: Properties
+class OCKLogItemButton: OCKButton {
+    // MARK: Properties
 
-	private enum Constants {
-        static let bundle = Bundle(for: OCKChecklistItemButton.self)
+    private enum Constants {
         static let spacing: CGFloat = 2
     }
 
@@ -42,20 +41,22 @@ internal class OCKLogItemButton: OCKButton {
     override var detailButton: OCKButton? { _detailButton }
     override var titleButton: OCKButton? { _titleButton }
 
+    private var imageButtonConstraint: NSLayoutConstraint?
+
     private let _imageButton: OCKButton = {
         let button = OCKButton()
-
         let image = UIImage(systemName: "clock")
         button.setImage(image, for: .normal)
         button.imageView?.contentMode = .scaleAspectFit
         button.isUserInteractionEnabled = false
+        button.contentHorizontalAlignment = .fill
         return button
     }()
 
     private let _titleButton: OCKButton = {
         let button = OCKButton(titleTextStyle: .caption1, titleWeight: .regular)
-        button.setTitleColor(.black, for: .normal)
         button.isUserInteractionEnabled = false
+        button.sizesToFitTitleLabel = true
         return button
     }()
 
@@ -63,52 +64,53 @@ internal class OCKLogItemButton: OCKButton {
         let button = OCKButton(titleTextStyle: .caption1, titleWeight: .regular)
         button.tintedTraits = [TintedTrait(trait: .titleColor, state: .normal)]
         button.isUserInteractionEnabled = false
+        button.sizesToFitTitleLabel = true
         return button
     }()
 
-    // MARK: Life cycle
-
-    override internal init() {
-        super.init()
-        setup()
-    }
+    private let contentStackView: OCKStackView = {
+        let stackView = OCKStackView()
+        stackView.axis = .horizontal
+        stackView.alignment = .center
+        stackView.distribution = .fill
+        stackView.isUserInteractionEnabled = false
+        return stackView
+    }()
 
     // MARK: Methods
 
-    private func setup() {
-        styleSubviews()
+    override func setup() {
+        super.setup()
         addSubviews()
         constrainSubviews()
+        styleSubviews()
     }
 
     private func styleSubviews() {
-        preservesSuperviewLayoutMargins = true
+        contentStackView.setCustomSpacing(Constants.spacing, after: _imageButton)
     }
 
     private func addSubviews() {
-        [_imageButton, _titleButton, _detailButton].forEach { addSubview($0) }
+        addSubview(contentStackView)
+        [_imageButton, _detailButton, _titleButton].forEach { contentStackView.addArrangedSubview($0) }
     }
 
     private func constrainSubviews() {
-        [_imageButton, _titleButton, _detailButton].forEach { $0?.translatesAutoresizingMaskIntoConstraints = false }
+        [_imageButton, contentStackView].forEach { $0?.translatesAutoresizingMaskIntoConstraints = false }
+
+        _detailButton.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        _titleButton.contentHorizontalAlignment = .left
+
+        imageButtonConstraint = _imageButton.heightAnchor.constraint(equalToConstant: 0)
+
         NSLayoutConstraint.activate([
-            _imageButton.topAnchor.constraint(greaterThanOrEqualTo: topAnchor),
-            _imageButton.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor),
-            _imageButton.leadingAnchor.constraint(equalTo: leadingAnchor),
-            _imageButton.centerYAnchor.constraint(equalTo: centerYAnchor),
-            _imageButton.heightAnchor.constraint(equalToConstant: OCKStyle.dimension.iconHeight4),
+            imageButtonConstraint!,
             _imageButton.widthAnchor.constraint(equalTo: _imageButton.heightAnchor),
 
-            _detailButton.topAnchor.constraint(greaterThanOrEqualTo: topAnchor),
-            _detailButton.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor),
-            _detailButton.leadingAnchor.constraint(equalTo: _imageButton.trailingAnchor, constant: Constants.spacing),
-            _detailButton.centerYAnchor.constraint(equalTo: centerYAnchor),
-
-            _titleButton.leadingAnchor.constraint(equalTo: _detailButton.trailingAnchor, constant: directionalLayoutMargins.leading),
-            _titleButton.topAnchor.constraint(greaterThanOrEqualTo: topAnchor),
-            _titleButton.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor),
-            _titleButton.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor),
-            _titleButton.centerYAnchor.constraint(equalTo: centerYAnchor)
+            contentStackView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            contentStackView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            contentStackView.topAnchor.constraint(equalTo: layoutMarginsGuide.topAnchor),
+            contentStackView.bottomAnchor.constraint(equalTo: layoutMarginsGuide.bottomAnchor)
         ])
     }
 
@@ -118,5 +120,14 @@ internal class OCKLogItemButton: OCKButton {
         if state == .normal {
             imageButton?.tintColor = color
         }
+    }
+
+    override func styleDidChange() {
+        super.styleDidChange()
+        let cachedStyle = style()
+        _titleButton.setTitleColor(cachedStyle.color.label, for: .normal)
+        imageButtonConstraint?.constant = cachedStyle.dimension.iconHeight4
+        contentStackView.setCustomSpacing(cachedStyle.dimension.directionalInsets1.top, after: _detailButton)
+        directionalLayoutMargins = cachedStyle.dimension.directionalInsets1
     }
 }

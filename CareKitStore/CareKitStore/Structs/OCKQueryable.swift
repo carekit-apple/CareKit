@@ -60,18 +60,6 @@ public extension OCKDateIntervalQueryable {
         self = Self(start: query.start, end: query.end)
     }
 
-    /// - Returns: A query covering full extent of the current week.
-    static var thisWeek: Self {
-        return .weekOf(date: Date())
-    }
-
-    /// Builds a query that spans the full week of the date given.
-    /// - Parameter date: A date from a week in which the query should return objects.
-    /// - Returns: A query covering the full extent of the week that the given date fall in.
-    static func weekOf(date: Date) -> Self {
-        return Self(dateInterval: Calendar.current.week(of: date))
-    }
-
     /// Builds a query that spans the full date of the date given.
     /// - Parameter date: A date on which the query should return objects.
     /// - Returns: A query covering the full extent of the day the given date falls on.

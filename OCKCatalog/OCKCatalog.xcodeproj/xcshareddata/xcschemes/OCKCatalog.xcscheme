@@ -47,16 +47,6 @@
                ReferencedContainer = "container:OCKCatalog.xcodeproj">
             </BuildableReference>
          </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "512B013C22C30FCA00ABCB1D"
-               BuildableName = "OCKCatalogUITests.xctest"
-               BlueprintName = "OCKCatalogUITests"
-               ReferencedContainer = "container:OCKCatalog.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

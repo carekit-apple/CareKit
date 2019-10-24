@@ -87,6 +87,7 @@ class TestStoreContacts: XCTestCase {
         XCTAssert(contact.organization == "Apple Dumplings Corp.")
         XCTAssert(contact.title == "Manager of Apple Peeling")
         XCTAssert(contact.role == "Official Taste Tester")
+        XCTAssertNotNil(contact.schemaVersion)
     }
 
     func testAddContactFailsIfIdentifierAlreadyExists() throws {
@@ -184,6 +185,35 @@ class TestStoreContacts: XCTestCase {
         XCTAssertNotNil(contacts.count == 3)
     }
 
+    func testQueryContactByRemoteID() throws {
+        var contact = OCKContact(identifier: "A", givenName: "B", familyName: "C", carePlanID: nil)
+        contact.remoteID = "abc"
+        contact = try store.addContactAndWait(contact)
+
+        let fetched = try store.fetchContactsAndWait(.contactRemoteIDs(["abc"]), query: .today).first
+        XCTAssert(fetched == contact)
+    }
+
+    func testQueryContactByCarePlanRemoteID() throws {
+        var plan = OCKCarePlan(identifier: "D", title: "", patientID: nil)
+        plan.remoteID = "abc"
+        plan = try store.addCarePlanAndWait(plan)
+
+        var contact = OCKContact(identifier: "A", givenName: "B", familyName: "C", carePlanID: plan.versionID)
+        contact = try store.addContactAndWait(contact)
+
+        let fetched = try store.fetchContactsAndWait(.carePlanRemoteIDs(["abc"]), query: .today).first
+        XCTAssert(fetched == contact)
+    }
+
+    func testQueryContactByCarePlanVersionID() throws {
+        let plan = try store.addCarePlanAndWait(OCKCarePlan(identifier: "A", title: "B", patientID: nil))
+        guard let planID = plan.versionID else { XCTFail("Failed to save CarePlan"); return }
+        let contact = try store.addContactAndWait(OCKContact(identifier: "C", givenName: "D", familyName: "E", carePlanID: planID))
+        let fetched = try store.fetchContactsAndWait(.carePlanVersions([planID]), query: .today).first
+        XCTAssert(fetched == contact)
+    }
+
     // MARK: Versioning
 
     func testUpdateContactCreatesNewVersion() throws {
@@ -219,12 +249,12 @@ class TestStoreContacts: XCTestCase {
     func testContactQueryOnPastDateReturnsPastVersionOfAContact() throws {
         let dateA = Date().addingTimeInterval(-100)
         var versionA = OCKContact(identifier: "A", givenName: "a", familyName: "b", carePlanID: nil)
-        versionA.effectiveAt = dateA
+        versionA.effectiveDate = dateA
         versionA = try store.addContactAndWait(versionA)
 
         let dateB = Date().addingTimeInterval(100)
         var versionB = OCKContact(identifier: "A", givenName: "a", familyName: "c", carePlanID: nil)
-        versionB.effectiveAt = dateB
+        versionB.effectiveDate = dateB
         versionB = try store.updateContactAndWait(versionB)
 
         let query = OCKContactQuery(start: dateA.addingTimeInterval(10), end: dateB.addingTimeInterval(-10))
@@ -236,12 +266,12 @@ class TestStoreContacts: XCTestCase {
     func testContactQuerySpanningVersionsReturnsNewestVersionOnly() throws {
         let dateA = Date().addingTimeInterval(-100)
         var versionA = OCKContact(identifier: "A", givenName: "a", familyName: "b", carePlanID: nil)
-        versionA.effectiveAt = dateA
+        versionA.effectiveDate = dateA
         versionA = try store.addContactAndWait(versionA)
 
         let dateB = Date().addingTimeInterval(100)
         var versionB = OCKContact(identifier: "A", givenName: "a", familyName: "c", carePlanID: nil)
-        versionB.effectiveAt = dateB
+        versionB.effectiveDate = dateB
         versionB = try store.updateContactAndWait(versionB)
 
         let query = OCKContactQuery(start: dateA.addingTimeInterval(10), end: dateB.addingTimeInterval(10))
@@ -268,9 +298,7 @@ class TestStoreContacts: XCTestCase {
     }
 
     func testDeleteContactfailsIfContactDoesntExist() {
-        XCTAssertThrowsError(try store.deleteContactAndWait(OCKContact(identifier: "contact",
-                                                                       givenName: "Amy",
-                                                                       familyName: "Frost",
-                                                                       carePlanID: nil)))
+        let contact = OCKContact(identifier: "contact", givenName: "Amy", familyName: "Frost", carePlanID: nil)
+        XCTAssertThrowsError(try store.deleteContactAndWait(contact))
     }
 }

@@ -28,7 +28,6 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 import Foundation
 
 /// Classes that conform to this protocol can receive callbacks from a store when its contents change.
@@ -133,11 +132,11 @@ public protocol OCKStoreDelegate: AnyObject {
 /// preserving their typing. They will only be converted to and from native CareKit values if and when they are created or displayed by CareKit view
 /// controllers. Developers wishing to display properties not present on native CareKit values must implement new logic at the view layer.
 public protocol OCKStoreProtocol: AnyObject, Equatable {
-    associatedtype Patient: OCKPatientConvertible & OCKPatientInitializable & Equatable
-    associatedtype Plan: OCKCarePlanConvertible & OCKCarePlanInitializable & Equatable
-    associatedtype Contact: OCKContactConvertible & OCKContactInitializable & Equatable
-    associatedtype Task: OCKTaskConvertible & OCKTaskInitializable & Equatable
-    associatedtype Outcome: OCKOutcomeConvertible & OCKOutcomeInitializable & Equatable
+    associatedtype Patient: OCKPatientConvertible & Equatable
+    associatedtype Plan: OCKCarePlanConvertible & Equatable
+    associatedtype Contact: OCKContactConvertible & Equatable
+    associatedtype Task: OCKTaskConvertible & Equatable
+    associatedtype Outcome: OCKOutcomeConvertible & Equatable
     typealias Event = OCKEvent<Task, Outcome>
 
     /// If set, the delegate's callback methods will be called each time data in the store changes.
@@ -553,4 +552,3 @@ public protocol OCKStoreProtocol: AnyObject, Equatable {
     ///   - completion: A callback that will fire on a background thread.
     func deleteOutcome(_ outcome: Outcome, queue: DispatchQueue, completion: OCKResultClosure<Outcome>?)
 }
-

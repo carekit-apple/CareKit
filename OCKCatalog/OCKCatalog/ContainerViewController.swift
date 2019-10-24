@@ -39,8 +39,6 @@ class ContainerViewController: UIViewController {
         view.addSubview(childViewController.view)
         childViewController.didMove(toParent: self)
 
-        view.backgroundColor = OCKStyle.color.gray1
-
         let margin: CGFloat = inset ? 16 : 0
         childViewController.view.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -50,8 +48,23 @@ class ContainerViewController: UIViewController {
         ])
     }
 
+    override func loadView() {
+        view = BackgroundView()
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+    }
+
     @available(*, unavailable)
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+}
+
+private class BackgroundView: OCKView {
+    override func styleDidChange() {
+        super.styleDidChange()
+        backgroundColor = style().color.systemGroupedBackground
     }
 }

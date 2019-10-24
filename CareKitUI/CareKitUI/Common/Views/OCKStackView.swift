@@ -32,8 +32,12 @@ import UIKit
 
 /// A stack view that supports animating showing/hiding arranged subviews,
 /// and has the option of dynamically creating separators when arranged subviews are added.
-open class OCKStackView: UIStackView {
+open class OCKStackView: UIStackView, OCKStylable {
     // MARK: Properties
+
+    public var customStyle: OCKStyler? {
+        didSet { styleChildren() }
+    }
 
     /// The style for the stack view.
     ///
@@ -47,7 +51,7 @@ open class OCKStackView: UIStackView {
     ///
     /// - fade: Animate opacity.
     /// - hidden: Animate the isHidden property.
-    internal enum Animation {
+    enum Animation {
         case fade, hidden
     }
 
@@ -75,6 +79,7 @@ open class OCKStackView: UIStackView {
         super.init(frame: .zero)
         if style == .separated { axis = .vertical }
         preservesSuperviewLayoutMargins = true
+        styleDidChange()
     }
 
     @available(*, unavailable)
@@ -194,19 +199,24 @@ open class OCKStackView: UIStackView {
     ///     - view: The view to remove.
     ///     - animated: Flag that determines if the view removal should be animated.
     open func removeArrangedSubview(_ view: UIView, animated: Bool) {
-        guard animated else {
-            view.removeFromSuperview()
-            return
-        }
-
         let viewsToRemove = getSeparators(withView: view)
-        toggleViews(viewsToRemove, shouldShow: false, animated: animated) { complete in
-            guard complete else { return }
+
+        let removeBlock = {
             viewsToRemove.forEach {
                 $0.removeFromSuperview()
                 $0.isHidden = false
                 $0.alpha = 1
             }
+        }
+
+        guard UIView.areAnimationsEnabled && animated else {
+            removeBlock()
+            return
+        }
+
+        toggleViews(viewsToRemove, shouldShow: false, animated: animated) { complete in
+            guard complete else { return }
+            removeBlock()
         }
     }
 
@@ -255,7 +265,7 @@ open class OCKStackView: UIStackView {
             self?.subviews.forEach { $0.removeFromSuperview() }
         }
 
-        guard animated else {
+        guard UIView.areAnimationsEnabled && animated else {
             removeViewsBlock()
             return
         }
@@ -274,7 +284,7 @@ open class OCKStackView: UIStackView {
     ///   - animated: Animate the visibility of the views.
     ///   - animations: The particular animations to use when toggling the visibility.
     ///   - completion: Block to run when the visibility toggling and any animations are complete.
-    internal func toggleViews(
+    func toggleViews(
         _ views: [UIView],
         shouldShow: Bool,
         animated: Bool,
@@ -294,7 +304,7 @@ open class OCKStackView: UIStackView {
             let filteredViews = views.filter { $0.isHidden == shouldShow } // only animated views that are not yet animated
             filteredViews.forEach { $0.isHidden = shouldShow }
 
-            UIView.animate(withDuration: OCKStyle.animation.stateChangeDuration, delay: 0, options: .curveEaseOut, animations: {
+            UIView.animate(withDuration: style().animation.stateChangeDuration, delay: 0, options: .curveEaseOut, animations: {
                 filteredViews.forEach { $0.isHidden = !shouldShow }
             }, completion: { complete in
                 if !completionWillBeCalled { completion?(complete) }
@@ -306,7 +316,7 @@ open class OCKStackView: UIStackView {
             let filteredViews = views.filter { $0.alpha == (shouldShow ? 0 : 1) } // only animated views that are not yet animated
             filteredViews.forEach { $0.alpha = shouldShow ? 0 : 1 }
 
-            UIView.animate(withDuration: OCKStyle.animation.stateChangeDuration, delay: 0, options: .curveEaseOut, animations: {
+            UIView.animate(withDuration: style().animation.stateChangeDuration, delay: 0, options: .curveEaseOut, animations: {
                 filteredViews.forEach { $0.alpha = shouldShow ? 1 : 0 }
             }, completion: { complete in
                 if !completionWillBeCalled { completion?(complete) }
@@ -314,4 +324,16 @@ open class OCKStackView: UIStackView {
             })
         }
     }
+
+    override open func didMoveToSuperview() {
+        super.didMoveToSuperview()
+        styleDidChange()
+    }
+
+    override open func removeFromSuperview() {
+        super.removeFromSuperview()
+        styleChildren()
+    }
+
+    public func styleDidChange() {}
 }

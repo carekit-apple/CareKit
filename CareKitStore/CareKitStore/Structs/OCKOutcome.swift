@@ -33,7 +33,7 @@ import Foundation
 /// An `OCKOutcome` represents the outcome of an event corresponding to a task. An outcome may have 0 or more values associated with it.
 /// For example, a task that asks a patient to measure their temperature will have events whose outcome will contain a single value representing
 /// the patient's tempature.
-public struct OCKOutcome: Codable, Equatable, OCKLocalPersistableSettable, OCKObjectCompatible, OCKOutcomeConvertible, OCKOutcomeInitializable {
+public struct OCKOutcome: Codable, Equatable, OCKLocalPersistableSettable, OCKObjectCompatible, OCKOutcomeConvertible {
     /// The version ID of the task to which this outcomes belongs.
     public var taskID: OCKLocalVersionID?
 
@@ -53,11 +53,11 @@ public struct OCKOutcome: Codable, Equatable, OCKLocalPersistableSettable, OCKOb
 
     // MARK: OCKObjectCompatible
 
-    public internal(set) var createdAt: Date?
-    public internal(set) var updatedAt: Date?
-    public internal(set) var deletedAt: Date?
+    public internal(set) var createdDate: Date?
+    public internal(set) var updatedDate: Date?
+    public internal(set) var schemaVersion: OCKSemanticVersion?
     public internal(set) var localDatabaseID: OCKLocalVersionID?
-    public var externalID: String?
+    public var remoteID: String?
     public var groupIdentifier: String?
     public var tags: [String]?
     public var source: String?
@@ -79,7 +79,7 @@ public struct OCKOutcome: Codable, Equatable, OCKLocalPersistableSettable, OCKOb
 
     // MARK: OCKInitializable
 
-    public init(value: OCKOutcome) {
+    public init(_ value: OCKOutcome) {
         self = value
     }
 

@@ -30,7 +30,7 @@
 
 import UIKit
 
-internal class OCKGraphLegendView: UIStackView {
+class OCKGraphLegendView: UIStackView {
     private enum Constants {
         static let iconCornerRadius: CGFloat = 4.0
         static let iconPadding: CGFloat = 6.0
@@ -53,7 +53,7 @@ internal class OCKGraphLegendView: UIStackView {
         spacing = Constants.keySpacing
     }
 
-    internal func setDataSeries(_ dataSeries: [OCKDataSeries]) {
+    func setDataSeries(_ dataSeries: [OCKDataSeries]) {
         arrangedSubviews.forEach { $0.removeFromSuperview() }
         dataSeries.map(makeKey).forEach(addArrangedSubview)
     }
@@ -68,9 +68,8 @@ internal class OCKGraphLegendView: UIStackView {
     }
 
     private func makeLabel(title: String, color: UIColor) -> UIView {
-        let label = UILabel()
+        let label = OCKLabel(textStyle: .caption1, weight: .regular)
         label.textAlignment = .left
-        label.font = UIFont.systemFont(ofSize: 12, weight: .regular)
         label.textColor = color
         label.text = "\(title)"
         label.clipsToBounds = true
@@ -89,32 +88,26 @@ internal class OCKGraphLegendView: UIStackView {
     }
 }
 
-private class OCKGradientView: UIView {
-    var startColor: UIColor = .red {
+private class OCKGradientView: OCKView {
+    var startColor: UIColor = OCKStyle().color.systemGray2 {
         didSet { gradient.colors = [startColor.cgColor, endColor.cgColor] }
     }
 
-    var endColor: UIColor = .blue {
+    var endColor: UIColor = OCKStyle().color.systemGray2 {
         didSet { gradient.colors = [startColor.cgColor, endColor.cgColor] }
     }
 
     private var gradient: CAGradientLayer {
-        
-        return layer as! CAGradientLayer
-        
+        guard let layer = layer as? CAGradientLayer else { fatalError("Unsupported type") }
+        return layer
     }
 
     override class var layerClass: AnyClass {
         return CAGradientLayer.self
     }
 
-    init() {
-        super.init(frame: .zero)
-        setupGradient()
-    }
-
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
+    override func setup() {
+        super.setup()
         setupGradient()
     }
 

@@ -45,19 +45,19 @@ class TestCoreDataSchemaIntegration: XCTestCase {
         patient.name = OCKCDPersonName(context: store.context)
         patient.name.familyName = "Amy"
         patient.name.givenName = "Frost"
-        patient.effectiveAt = Date()
+        patient.effectiveDate = Date()
 
         let plan = OCKCDCarePlan(context: store.context)
         plan.title = "Post Operation Care Plan"
         plan.identifier = "post-op-plan"
         plan.patient = patient
-        plan.effectiveAt = Date()
+        plan.effectiveDate = Date()
 
         let task = OCKCDTask(context: store.context)
         task.identifier = "measure-pulse"
         task.instructions = "Take your pulse for a 60s and record in BPM"
         task.carePlan = plan
-        task.effectiveAt = Date()
+        task.effectiveDate = Date()
 
         let schedule = OCKCDScheduleElement(context: store.context)
         schedule.text = "Once each day"

@@ -118,7 +118,7 @@ extension OCKSynchronizedStoreManager {
 
     private func taskIsParent(_ task: Store.Task, ofOurcome outcome: Store.Outcome) -> Bool {
         guard let taskID = outcome.convert().taskID else { return false }
-        return task.versionID == taskID
+        return task.localDatabaseID == taskID
     }
 
     private func makeEvent(task: Store.Task, outcome: Store.Outcome, keepOutcome: Bool) -> Store.Event {
@@ -130,7 +130,7 @@ extension OCKSynchronizedStoreManager {
 
     // MARK: Events
     func publisher(forEvent event: Store.Event, categories: [OCKStoreNotificationCategory]) -> AnyPublisher<Store.Event, Never> {
-        guard let taskID = event.task.versionID else {
+        guard let taskID = event.task.localDatabaseID else {
             fatalError("Cannot create a publisher for an event with a task that has not been persisted.")
         }
         let presentValuePublisher = Future<Store.Event, Never>({ completion in
@@ -150,7 +150,7 @@ extension OCKSynchronizedStoreManager {
         guard let taskID = outcome.convert().taskID else {
             fatalError("Notifications should always contain outcomes with non-nil local database IDs")
         }
-        return event.task.versionID == taskID &&
+        return event.task.localDatabaseID == taskID &&
             event.scheduleEvent.occurence == outcome.convert().taskOccurenceIndex
     }
 }

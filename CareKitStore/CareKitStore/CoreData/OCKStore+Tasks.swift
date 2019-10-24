@@ -112,7 +112,7 @@ extension OCKStore {
                 let identifiers = tasks.map { $0.identifier }
                 try OCKCDTask.validateUpdateIdentifiers(identifiers, in: self.context)
                 let deletedTasks = try self.performUnversionedUpdate(values: tasks) { _, persistableTask in
-                    persistableTask.deletedAt = Date()
+                    persistableTask.deletedDate = Date()
                 }.map(self.makeTask)
                 try self.context.save()
                 queue.async {
@@ -155,6 +155,7 @@ extension OCKStore {
             scheduleElement.interval = element.interval
             scheduleElement.startDate = element.start
             scheduleElement.endDate = element.end
+            scheduleElement.duration = element.duration
             scheduleElement.interval = element.interval
             scheduleElement.text = element.text
             scheduleElement.isAllDay = element.isAllDay
@@ -167,10 +168,10 @@ extension OCKStore {
     /// - Remark: This method is intended to create a value type struct from a *persisted* NSManagedObject. Calling this method with an
     /// object that is not yet commited is a programmer error.
     private func makeTask(from object: OCKCDTask) -> OCKTask {
-        assert(object.versionID != nil, "This should never be called on an unsaved object")
+        assert(object.localDatabaseID != nil, "This should never be called on an unsaved object")
         let schedule = makeSchedule(from: object.scheduleElements)
         var task = OCKTask(identifier: object.identifier, title: object.title,
-                           carePlanID: object.carePlan?.versionID, schedule: schedule)
+                           carePlanID: object.carePlan?.localDatabaseID, schedule: schedule)
         task.copyVersionedValues(from: object)
         task.instructions = object.instructions
         task.impactsAdherence = object.impactsAdherence
@@ -181,7 +182,7 @@ extension OCKStore {
         return NSCompoundPredicate(andPredicateWithSubpredicates: [
             try buildSubPredicate(for: anchor),
             buildSubPredicate(for: query),
-            NSPredicate(format: "%K == nil", #keyPath(OCKCDVersionedObject.deletedAt))
+            NSPredicate(format: "%K == nil", #keyPath(OCKCDVersionedObject.deletedDate))
         ])
     }
 
@@ -192,8 +193,15 @@ extension OCKStore {
             return NSPredicate(format: "%K IN %@", #keyPath(OCKCDVersionedObject.identifier), taskIdentifiers)
         case .taskVersions(let versionIDs):
             return NSPredicate(format: "self IN %@", try versionIDs.map(objectID))
-        default:
-            fatalError("Not implemented yet.")
+        case .taskRemoteIDs(let remoteIDs):
+            return NSPredicate(format: "%K in %@", #keyPath(OCKCDVersionedObject.remoteID), remoteIDs)
+
+        case .carePlanIdentifiers(let carePlanIdentifiers):
+            return NSPredicate(format: "%K IN %@", #keyPath(OCKCDTask.carePlan.identifier), carePlanIdentifiers)
+        case .carePlanVersions(let versionIDs):
+            return NSPredicate(format: "%K IN %@", #keyPath(OCKCDTask.carePlan), try versionIDs.map(objectID))
+        case .carePlanRemoteIDs(let remoteIDs):
+            return NSPredicate(format: "%K IN %@", #keyPath(OCKCDTask.carePlan.remoteID), remoteIDs)
         }
     }
 
@@ -211,7 +219,7 @@ extension OCKStore {
         guard let orders = query?.sortDescriptors else { return [] }
         return orders.map { order -> NSSortDescriptor in
             switch order {
-            case .effectiveAt(ascending: let ascending): return NSSortDescriptor(keyPath: \OCKCDTask.effectiveAt, ascending: ascending)
+            case .effectiveDate(ascending: let ascending): return NSSortDescriptor(keyPath: \OCKCDTask.effectiveDate, ascending: ascending)
             case .title(let ascending): return NSSortDescriptor(keyPath: \OCKCDTask.title, ascending: ascending)
             case .groupIdentifier(let ascending): return NSSortDescriptor(keyPath: \OCKCDTask.groupIdentifier, ascending: ascending)
             }

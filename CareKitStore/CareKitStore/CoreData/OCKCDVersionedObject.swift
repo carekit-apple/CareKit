@@ -35,7 +35,8 @@ class OCKCDVersionedObject: OCKCDObject, OCKCDManageable, OCKVersionable {
     @NSManaged var identifier: String
     @NSManaged var previous: OCKCDVersionedObject?
     @NSManaged var allowsMissingRelationships: Bool
-    @NSManaged var effectiveAt: Date
+    @NSManaged var effectiveDate: Date
+    @NSManaged var deletedDate: Date?
     @NSManaged private(set) weak var next: OCKCDVersionedObject?
 
     var nextVersionID: OCKLocalVersionID? {
@@ -50,7 +51,7 @@ class OCKCDVersionedObject: OCKCDObject, OCKCDManageable, OCKVersionable {
     }
 
     static var defaultSortDescriptors: [NSSortDescriptor] {
-        return [NSSortDescriptor(keyPath: \OCKCDVersionedObject.effectiveAt, ascending: false)]
+        return [NSSortDescriptor(keyPath: \OCKCDVersionedObject.effectiveDate, ascending: false)]
     }
 
     static func fetchHeads<T: OCKCDVersionedObject>(identifiers: [String], in context: NSManagedObjectContext) -> [T] {
@@ -70,21 +71,21 @@ class OCKCDVersionedObject: OCKCDObject, OCKCDManageable, OCKVersionable {
     static func headerPredicate() -> NSPredicate {
         return NSCompoundPredicate(andPredicateWithSubpredicates: [
             NSPredicate(format: "%K == nil", #keyPath(OCKCDVersionedObject.next)),
-            NSPredicate(format: "%K == nil", #keyPath(OCKCDVersionedObject.deletedAt))
+            NSPredicate(format: "%K == nil", #keyPath(OCKCDVersionedObject.deletedDate))
         ])
     }
 
     static func newestVersionPredicate(in interval: DateInterval) -> NSPredicate {
         let notDeletedYet = NSPredicate(format: "%K < %@ AND %K == nil",
-                                        #keyPath(OCKCDVersionedObject.effectiveAt),
+                                        #keyPath(OCKCDVersionedObject.effectiveDate),
                                         interval.end as NSDate,
-                                        #keyPath(OCKCDVersionedObject.deletedAt))
+                                        #keyPath(OCKCDVersionedObject.deletedDate))
         let deletedAfterQueryStart = NSPredicate(format: "%K < %@ AND %K > %@",
-                                                 #keyPath(OCKCDVersionedObject.effectiveAt),
+                                                 #keyPath(OCKCDVersionedObject.effectiveDate),
                                                  interval.end as NSDate,
-                                                 #keyPath(OCKCDVersionedObject.deletedAt),
+                                                 #keyPath(OCKCDVersionedObject.deletedDate),
                                                  interval.start as NSDate)
-        let noNextVersion = NSPredicate(format: "%K == nil OR %K.effectiveAt > %@",
+        let noNextVersion = NSPredicate(format: "%K == nil OR %K.effectiveDate > %@",
                                         #keyPath(OCKCDVersionedObject.next),
                                         #keyPath(OCKCDVersionedObject.next),
                                         interval.end as NSDate)
@@ -109,7 +110,8 @@ internal extension OCKCDVersionedObject {
 
     func copyVersionInfo<T>(from other: T) where T: OCKVersionable & OCKObjectCompatible {
         identifier = other.identifier
-        effectiveAt = other.effectiveAt
+        deletedDate = other.deletedDate
+        effectiveDate = other.effectiveDate
         copyValues(from: other)
     }
 }

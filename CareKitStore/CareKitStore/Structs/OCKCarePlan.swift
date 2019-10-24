@@ -34,7 +34,7 @@ import Foundation
 /// or her treatment for a specific condition. For example, a care plan for obesity may include tasks requiring the patient to exercise, record their
 /// weight, and log meals. As the care plan evolves with the patient's progress, the care provider may modify the exercises and include notes each
 /// time about why the changes were made.
-public struct OCKCarePlan: Codable, Equatable, OCKVersionSettable, OCKObjectCompatible, OCKCarePlanConvertible, OCKCarePlanInitializable {
+public struct OCKCarePlan: Codable, Equatable, OCKVersionSettable, OCKObjectCompatible, OCKCarePlanConvertible {
     /// A title describing this care plan.
     public var title: String
 
@@ -45,18 +45,19 @@ public struct OCKCarePlan: Codable, Equatable, OCKVersionSettable, OCKObjectComp
     public let identifier: String
 
     // MARK: OCKVersionable
-    public var effectiveAt: Date
+    public var effectiveDate: Date
+    public internal(set) var deletedDate: Date?
     public internal(set) var localDatabaseID: OCKLocalVersionID?
     public internal(set) var nextVersionID: OCKLocalVersionID?
     public internal(set) var previousVersionID: OCKLocalVersionID?
 
     // MARK: OCKObjectCompatible
-    public var createdAt: Date?
-    public var updatedAt: Date?
-    public var deletedAt: Date?
+    public internal(set) var createdDate: Date?
+    public internal(set) var updatedDate: Date?
+    public internal(set) var schemaVersion: OCKSemanticVersion?
     public var groupIdentifier: String?
     public var tags: [String]?
-    public var externalID: String?
+    public var remoteID: String?
     public var userInfo: [String: String]?
     public var source: String?
     public var asset: String?
@@ -72,14 +73,14 @@ public struct OCKCarePlan: Codable, Equatable, OCKVersionSettable, OCKObjectComp
         self.title = title
         self.identifier = identifier
         self.patientID = patientID
-        self.effectiveAt = Date()
+        self.effectiveDate = Date()
     }
 
     /// Initialize a new care plan from an `OCKCarePlan`
     ///
     /// - Parameter value: The care plan to copy.
     /// - Note: This simply creates a copy of the provided care plan.
-    public init(value: OCKCarePlan) {
+    public init(_ value: OCKCarePlan) {
         self = value
     }
 

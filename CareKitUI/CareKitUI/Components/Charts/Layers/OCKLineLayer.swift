@@ -32,32 +32,32 @@ import UIKit
 
 /// This layer displays a single line graph. Multiple line graph layers can be stacked to
 /// generate plots with more than one data series.
-internal class OCKLineLayer: OCKCartesianCoordinatesLayer {
-    internal var startColor: UIColor = .blue {
+class OCKLineLayer: OCKCartesianCoordinatesLayer {
+    var startColor: UIColor = OCKStyle().color.systemGray {
         didSet { gradient.colors = [startColor.cgColor, endColor.cgColor] }
     }
 
-    internal var endColor: UIColor = .red {
+    var endColor: UIColor = OCKStyle().color.systemGray {
         didSet { gradient.colors = [startColor.cgColor, endColor.cgColor] }
     }
 
-    internal var outlineColor: UIColor = .white {
-        didSet { outline.strokeColor = outlineColor.cgColor }
+    var outlineColor: UIColor? = nil {
+        didSet { outline.strokeColor = outlineColor?.cgColor }
     }
 
-    internal var lineWidth: CGFloat = 4 {
+    var lineWidth: CGFloat = 4 {
         didSet { line.lineWidth = lineWidth }
     }
 
-    internal var offset: CGSize = .zero {
+    var offset: CGSize = .zero {
         didSet { setNeedsLayout() }
     }
 
-    internal let gradient = CAGradientLayer()
-    internal let line = CAShapeLayer()
+    let gradient = CAGradientLayer()
+    let line = CAShapeLayer()
 
     /// The layer for the ooutline around the line connecting the data points.
-    internal let outline = CAShapeLayer()
+    let outline = CAShapeLayer()
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -105,7 +105,7 @@ internal class OCKLineLayer: OCKCartesianCoordinatesLayer {
         line.lineWidth = lineWidth
         line.lineCap = .round
         line.lineJoin = .round
-        line.strokeColor = UIColor.black.cgColor
+        line.strokeColor = OCKStyle().color.systemGray.cgColor
         line.fillColor = nil
         line.frame = bounds.applying(CGAffineTransform(translationX: offset, y: 0))
 
@@ -113,7 +113,7 @@ internal class OCKLineLayer: OCKCartesianCoordinatesLayer {
         outline.lineWidth = lineWidth + 2
         outline.lineCap = .round
         outline.lineJoin = .round
-        outline.strokeColor = outlineColor.cgColor
+        outline.strokeColor = outlineColor?.cgColor
         outline.fillColor = nil
         outline.frame = bounds
     }

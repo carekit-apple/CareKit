@@ -52,6 +52,7 @@ class TestStorePatients: XCTestCase {
     func testAddPatient() throws {
         let patient = try store.addPatientAndWait(OCKPatient(identifier: "myID", givenName: "Amy", familyName: "Frost"))
         XCTAssertNotNil(patient.localDatabaseID)
+        XCTAssertNotNil(patient.schemaVersion)
     }
 
     func testAddPatientForAnyPatientBeyondTheFirstPatient() throws {
@@ -121,6 +122,39 @@ class TestStorePatients: XCTestCase {
         XCTAssert(patients.count == 6)
     }
 
+    func testQueryPatientByRemoteID() throws {
+        var patient = OCKPatient(identifier: "A", givenName: "B", familyName: "C")
+        patient.remoteID = "abc"
+        patient = try store.addPatientAndWait(patient)
+        let fetched = try store.fetchPatientsAndWait(.patientRemoteIDs(["abc"]), query: .today).first
+        XCTAssert(fetched == patient)
+    }
+
+    func testBiologicalSexIsPersistedCorrectly() throws {
+        var patient = OCKPatient(identifier: "A", givenName: "Amy", familyName: "Frost")
+        patient.sex = .female
+        patient = try store.addPatientAndWait(patient)
+        patient = try store.fetchPatientAndWait(identifier: "A")
+        XCTAssert(patient.sex == .female)
+    }
+
+    func testBirthdayIsPersistedCorrectly() throws {
+        let now = Date()
+        var patient = OCKPatient(identifier: "A", givenName: "Amy", familyName: "Frost")
+        patient.birthday = now
+        patient = try store.addPatientAndWait(patient)
+        patient = try store.fetchPatientAndWait(identifier: "A")
+        XCTAssert(patient.birthday == now)
+    }
+
+    func testAllergiesArePersistedCorrectly() throws {
+        var patient = OCKPatient(identifier: "A", givenName: "Amy", familyName: "Frost")
+        patient.allergies = ["A", "B", "C"]
+        patient = try store.addPatientAndWait(patient)
+        patient = try store.fetchPatientAndWait(identifier: "A")
+        XCTAssert(patient.allergies == ["A", "B", "C"])
+    }
+
     // MARK: Versioning
 
     func testUpdatePatientCreatesNewVersion() throws {
@@ -141,8 +175,7 @@ class TestStorePatients: XCTestCase {
     }
 
     func testUpdateFailsForUnsavedPatient() {
-        XCTAssertThrowsError(try store.updatePatientAndWait(
-            OCKPatient(identifier: "myID", givenName: "Christoper", familyName: "Foss")))
+        XCTAssertThrowsError(try store.updatePatientAndWait(OCKPatient(identifier: "myID", givenName: "Christoper", familyName: "Foss")))
     }
 
     func testPatientQueryWithNoDateOnlyReturnsLatestVersionOfAPatient() throws {
@@ -155,12 +188,12 @@ class TestStorePatients: XCTestCase {
     func testPatientQueryOnPastDateReturnsPastVersionOfAPatient() throws {
         let dateA = Date().addingTimeInterval(-100)
         var versionA = OCKPatient(identifier: "A", givenName: "Jared", familyName: "Gosler")
-        versionA.effectiveAt = dateA
+        versionA.effectiveDate = dateA
         versionA = try store.addPatientAndWait(versionA)
 
         let dateB = Date().addingTimeInterval(100)
         var versionB = OCKPatient(identifier: "A", givenName: "John", familyName: "Appleseed")
-        versionB.effectiveAt = dateB
+        versionB.effectiveDate = dateB
         versionB = try store.updatePatientAndWait(versionB)
 
         let query = OCKPatientQuery(start: dateA.addingTimeInterval(10), end: dateB.addingTimeInterval(-10))
@@ -172,12 +205,12 @@ class TestStorePatients: XCTestCase {
     func testPatientQuerySpanningVersionsReturnsNewestVersionOnly() throws {
         let dateA = Date().addingTimeInterval(-100)
         var versionA = OCKPatient(identifier: "A", givenName: "Jared", familyName: "Gosler")
-        versionA.effectiveAt = dateA
+        versionA.effectiveDate = dateA
         versionA = try store.addPatientAndWait(versionA)
 
         let dateB = Date().addingTimeInterval(100)
         var versionB = OCKPatient(identifier: "A", givenName: "John", familyName: "Appleseed")
-        versionB.effectiveAt = dateB
+        versionB.effectiveDate = dateB
         versionB = try store.updatePatientAndWait(versionB)
 
         let query = OCKPatientQuery(start: dateA.addingTimeInterval(10), end: dateB.addingTimeInterval(10))

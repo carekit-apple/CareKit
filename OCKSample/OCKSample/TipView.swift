@@ -31,8 +31,10 @@
 import UIKit
 import CareKit
 
-class TipView: UIView, OCKCardable {
+class TipView: OCKView, OCKCardable {
 
+    var cardView: UIView { self }
+    let contentView: UIView = OCKView()
     let headerView = OCKHeaderView()
     let imageView = UIImageView()
 
@@ -40,22 +42,18 @@ class TipView: UIView, OCKCardable {
         let blurEffect = UIBlurEffect(style: UIBlurEffect.Style.regular)
         return UIVisualEffectView(effect: blurEffect)
     }()
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    
+    override init() {
+        super.init()
         setup()
     }
-
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        setup()
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
-
+    
     private func setup() {
-        preservesSuperviewLayoutMargins = true
-        enableCardStyling(true)
-
-        headerView.detailLabel.textColor = .gray
+        headerView.detailLabel.textColor = .secondaryLabel
 
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
@@ -65,27 +63,41 @@ class TipView: UIView, OCKCardable {
         blurView.layer.cornerRadius = layer.cornerRadius
         blurView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
 
-        addSubview(imageView)
-        addSubview(blurView)
-        addSubview(headerView)
+        contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        contentView.frame = bounds
+
+        addSubview(contentView)
+        contentView.addSubview(imageView)
+        contentView.addSubview(blurView)
+        contentView.addSubview(headerView)
 
         imageView.translatesAutoresizingMaskIntoConstraints = false
         blurView.translatesAutoresizingMaskIntoConstraints = false
         headerView.translatesAutoresizingMaskIntoConstraints = false
 
+
         NSLayoutConstraint.activate([
-            headerView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: directionalLayoutMargins.leading * 2),
-            headerView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -directionalLayoutMargins.trailing * 2),
-            headerView.topAnchor.constraint(equalTo: topAnchor, constant: directionalLayoutMargins.top * 2),
-            blurView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            blurView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            blurView.topAnchor.constraint(equalTo: topAnchor),
-            blurView.bottomAnchor.constraint(equalTo: headerView.bottomAnchor, constant: directionalLayoutMargins.bottom),
-            imageView.topAnchor.constraint(equalTo: topAnchor),
-            imageView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            imageView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            imageView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            headerView.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
+            headerView.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
+            headerView.topAnchor.constraint(equalTo: contentView.layoutMarginsGuide.topAnchor),
+
+            blurView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            blurView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            blurView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            blurView.bottomAnchor.constraint(equalTo: headerView.bottomAnchor, constant: 16),
+
+            imageView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            imageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            imageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             imageView.heightAnchor.constraint(equalToConstant: 200)
         ])
+    }
+
+    override func styleDidChange() {
+        super.styleDidChange()
+        let cachedStyle = style()
+        enableCardStyling(true, style: cachedStyle)
+        directionalLayoutMargins = cachedStyle.dimension.directionalInsets1
     }
 }

@@ -44,13 +44,13 @@ public struct OCKNote: Codable, Equatable, OCKObjectCompatible {
     public var content: String?
 
     // MARK: OCKObjectCompatible
-    public internal (set) var createdAt: Date?
-    public internal (set) var updatedAt: Date?
-    public internal (set) var deletedAt: Date?
+    public internal(set) var createdDate: Date?
+    public internal(set) var updatedDate: Date?
+    public internal(set) var schemaVersion: OCKSemanticVersion?
     public var groupIdentifier: String?
     public var tags: [String]?
     public internal (set) var internalID: OCKLocalVersionID?
-    public var externalID: String?
+    public var remoteID: String?
     public var userInfo: [String: String]?
     public var source: String?
     public var asset: String?

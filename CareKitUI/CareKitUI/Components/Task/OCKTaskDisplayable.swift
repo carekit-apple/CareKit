@@ -38,14 +38,34 @@ public protocol OCKTaskDisplayable: AnyObject {
 
 /// Handles events related to an `OCKTaskDisplayable` object.
 public protocol OCKTaskViewDelegate: AnyObject {
-    /// Called when an event was marked complete.
-    /// - Parameter eventView: The view displaying the task.
-    /// - Parameter isComplete: True if the event was marked complete.
-    /// - Parameter index: Index of the event in the list of displayed events for the task.
-    /// - Parameter sender: The sender that triggered the completion of the event.
-    func taskView(_ taskView: UIView & OCKTaskDisplayable, didCompleteEvent isComplete: Bool, at index: Int, sender: Any?)
 
-    /// Called when the view displaying the task was selected.
-    /// - Parameter eventView: The view displaying the task.
-    func didSelectTaskView(_ taskView: UIView & OCKTaskDisplayable)
+    /// Called when an event is completed.
+    /// - Parameters:
+    ///   - taskView: View displaying the event.
+    ///   - isComplete: True if the event is complete.
+    ///   - indexPath: Index path of the event.
+    ///   - sender: Sender that initiated the completion.
+    func taskView(_ taskView: UIView & OCKTaskDisplayable, didCompleteEvent isComplete: Bool, at indexPath: IndexPath, sender: Any?)
+
+    /// Called when an outcome value was selected for a particular event.
+    /// - Parameters:
+    ///   - taskView: View displaying the outcome value.
+    ///   - index: Indec of the outcome value in the event's oucome.
+    ///   - eventIndexPath: index path of the event.
+    ///   - sender: Sender that initiated the selection.
+    func taskView(_ taskView: UIView & OCKTaskDisplayable, didSelectOutcomeValueAt index: Int, eventIndexPath: IndexPath, sender: Any?)
+
+    /// Called when an outcome value has been created at a particular index.
+    /// - Parameters:
+    ///   - taskView: View displaying the outcome.
+    ///   - index: Index of the new outcome value.
+    ///   - eventIndexPath: Index of the event.
+    ///   - sender: Sender that initiated the outcome value creation.
+    func taskView(_ taskView: UIView & OCKTaskDisplayable, didCreateOutcomeValueAt index: Int, eventIndexPath: IndexPath, sender: Any?)
+
+    /// Called when the task view has been selected.
+    /// - Parameters:
+    ///   - taskView: The task view that has been selected.
+    ///   - eventIndexPath: The index path of the event displayed by the task view.
+    func didSelectTaskView(_ taskView: UIView & OCKTaskDisplayable, eventIndexPath: IndexPath)
 }

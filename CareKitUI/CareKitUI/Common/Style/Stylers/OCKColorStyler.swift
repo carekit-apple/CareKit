@@ -36,26 +36,27 @@ public protocol OCKColorStyler {
     var secondaryLabel: UIColor { get }
     var tertiaryLabel: UIColor { get }
 
-    var systemBackground: UIColor { get }
-    var secondarySystemBackground: UIColor { get }
+    var customBackground: UIColor { get }
+    var secondaryCustomBackground: UIColor { get }
 
-    var systemGroupedBackground: UIColor { get }
-    var secondarySystemGroupedBackground: UIColor { get }
-    var tertiarySystemGroupedBackground: UIColor { get }
+    var customGroupedBackground: UIColor { get }
+    var secondaryCustomGroupedBackground: UIColor { get }
+    var tertiaryCustomGroupedBackground: UIColor { get }
 
     var separator: UIColor { get }
 
-    var systemFill: UIColor { get }
-    var secondarySystemFill: UIColor { get }
-    var tertiarySystemFill: UIColor { get }
-    var quaternarySystemFill: UIColor { get }
+    var customFill: UIColor { get }
+    var secondaryCustomFill: UIColor { get }
+    var tertiaryCustomFill: UIColor { get }
+    var quaternaryCustomFill: UIColor { get }
 
-    var systemBlue: UIColor { get }
+    var customBlue: UIColor { get }
 
-    var systemGray: UIColor { get }
-    var systemGray2: UIColor { get }
-    var systemGray3: UIColor { get }
-    var systemGray5: UIColor { get }
+    var customGray: UIColor { get }
+    var customGray2: UIColor { get }
+    var customGray3: UIColor { get }
+    var customGray4: UIColor { get }
+    var customGray5: UIColor { get }
 
     var black: UIColor { get }
     var white: UIColor { get }
@@ -68,26 +69,27 @@ public extension OCKColorStyler {
     var secondaryLabel: UIColor { .secondaryLabel }
     var tertiaryLabel: UIColor { .tertiaryLabel }
 
-    var systemBackground: UIColor { .systemBackground }
-    var secondarySystemBackground: UIColor { .secondarySystemBackground }
+    var customBackground: UIColor { .systemBackground }
+    var secondaryCustomBackground: UIColor { .secondarySystemBackground }
 
-    var systemGroupedBackground: UIColor { .systemGroupedBackground }
-    var secondarySystemGroupedBackground: UIColor { .secondarySystemGroupedBackground }
-    var tertiarySystemGroupedBackground: UIColor { .tertiarySystemGroupedBackground }
+    var customGroupedBackground: UIColor { .systemGroupedBackground }
+    var secondaryCustomGroupedBackground: UIColor { .secondarySystemGroupedBackground }
+    var tertiaryCustomGroupedBackground: UIColor { .tertiarySystemGroupedBackground }
 
     var separator: UIColor { .separator }
 
-    var systemFill: UIColor { .tertiarySystemFill }
-    var secondarySystemFill: UIColor { .secondarySystemFill }
-    var tertiarySystemFill: UIColor { .tertiarySystemFill }
-    var quaternarySystemFill: UIColor { .quaternarySystemFill }
+    var customFill: UIColor { .tertiarySystemFill }
+    var secondaryCustomFill: UIColor { .secondarySystemFill }
+    var tertiaryCustomFill: UIColor { .tertiarySystemFill }
+    var quaternaryCustomFill: UIColor { .quaternarySystemFill }
 
-    var systemBlue: UIColor { .systemBlue }
+    var customBlue: UIColor { .systemBlue }
 
-    var systemGray: UIColor { .systemGray }
-    var systemGray2: UIColor { .systemGray2 }
-    var systemGray3: UIColor { .systemGray3 }
-    var systemGray5: UIColor { .systemGray5 }
+    var customGray: UIColor { .systemGray }
+    var customGray2: UIColor { .systemGray2 }
+    var customGray3: UIColor { .systemGray3 }
+    var customGray4: UIColor { .systemGray4 }
+    var customGray5: UIColor { .systemGray5 }
 
     var white: UIColor { .white }
     var black: UIColor { .black }

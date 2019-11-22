@@ -29,19 +29,20 @@
  */
 
 @testable import CareKitStore
-import Foundation
 import XCTest
 
 class TestCarePlan: XCTestCase {
-    func testUnpersistedCarePlansAreAssociatedIfTheirIdentifiersMatch() {
-        let planA = OCKCarePlan(identifier: "abc123", title: "PlanA", patientID: nil)
-        let planB = OCKCarePlan(identifier: "abc123", title: "PlanB", patientID: nil)
-        XCTAssert(planA.isAssociated(with: planB))
+
+    func testBelongsToReturnsFalseWhenIDsDontMatch() {
+        let patient = OCKPatient(id: "A", givenName: "Mary", familyName: "Frost")
+        let plan = OCKCarePlan(id: "B", title: "obesity", patientID: nil)
+        XCTAssertFalse(plan.belongs(to: patient))
     }
 
-    func testCarePlansAreNotAssociatedIfTheirIdentifiersDoNoMatch() {
-        let planA = OCKCarePlan(identifier: "def456", title: "PlanA", patientID: nil)
-        let planB = OCKCarePlan(identifier: "abc123", title: "PlanB", patientID: nil)
-        XCTAssert(!planA.isAssociated(with: planB))
+    func testBelongsToReturnsTrueWHenIDsDoMatch() {
+        var patient = OCKPatient(id: "A", givenName: "Mary", familyName: "Frost")
+        patient.localDatabaseID = OCKLocalVersionID("abc")
+        let plan = OCKCarePlan(id: "B", title: "obesity", patientID: patient.localDatabaseID)
+        XCTAssertTrue(plan.belongs(to: patient))
     }
 }

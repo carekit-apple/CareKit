@@ -31,13 +31,14 @@
 import UIKit
 
 /// A graph that displays one or more vertical bar plots.
-class OCKBarPlotView: OCKGradientPlotView {
+class OCKBarPlotView: OCKGradientPlotView<OCKBarLayer> {
+    
     override func resetLayers() {
         let graphRect = graphBounds()
         let offsets = computeBarOffsets()
         resolveNumberOfLayers()
         dataSeries.enumerated().forEach { index, series in
-            guard let layer = seriesLayers[index] as? OCKBarLayer else { fatalError("Unsupported type.") }
+            let layer = seriesLayers[index]
             layer.dataPoints = series.dataPoints
             layer.horizontalOffset = offsets[index]
             layer.startColor = series.gradientStartColor ?? tintColor

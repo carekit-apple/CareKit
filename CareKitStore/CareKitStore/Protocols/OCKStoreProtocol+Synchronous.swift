@@ -46,227 +46,255 @@ internal func performSynchronously<T>(_ closure: (@escaping (Result<T, OCKStoreE
 
 private let backgroundQueue = DispatchQueue(label: "CareKit", qos: .background)
 
-internal extension OCKStoreProtocol {
-    // MARK: Patients
+// WARNING: These extensions are intended for use exclusively in unit tests.
 
-    func fetchPatientsAndWait(_ anchor: OCKPatientAnchor? = nil, query: OCKPatientQuery? = nil) throws -> [Patient] {
-        return try performSynchronously { fetchPatients(anchor, query: query, queue: backgroundQueue, completion: $0) }
+extension OCKAnyReadOnlyPatientStore {
+    func fetchAnyPatientsAndWait(query: OCKAnyPatientQuery) throws -> [OCKAnyPatient] {
+        try performSynchronously { fetchAnyPatients(query: query, callbackQueue: backgroundQueue, completion: $0) }
+    }
+}
+
+extension OCKAnyPatientStore {
+
+    @discardableResult
+    func addAnyPatientsAndWait(_ patients: [OCKAnyPatient]) throws -> [OCKAnyPatient] {
+        try performSynchronously { addAnyPatients(patients, callbackQueue: backgroundQueue, completion: $0) }
     }
 
     @discardableResult
-    func fetchPatientAndWait(identifier: String) throws -> Patient {
-        return try performSynchronously { fetchPatient(withIdentifier: identifier, queue: backgroundQueue, completion: $0) }
+    func addAnyPatientAndWait(_ patient: OCKAnyPatient) throws -> OCKAnyPatient {
+        try performSynchronously { addAnyPatient(patient, callbackQueue: backgroundQueue, completion: $0) }
+    }
+}
+
+extension OCKReadablePatientStore {
+    func fetchPatientsAndWait(query: PatientQuery = PatientQuery()) throws -> [Patient] {
+        try performSynchronously { fetchPatients(query: query, callbackQueue: backgroundQueue, completion: $0) }
     }
 
+    @discardableResult
+    func fetchPatientAndWait(id: String) throws -> Patient {
+        try performSynchronously { fetchPatient(withID: id, callbackQueue: backgroundQueue, completion: $0) }
+    }
+}
+
+extension OCKPatientStore {
     @discardableResult
     func addPatientsAndWait(_ patients: [Patient]) throws -> [Patient] {
-        return try performSynchronously { addPatients(patients, queue: backgroundQueue, completion: $0) }
+        try performSynchronously { addPatients(patients, callbackQueue: backgroundQueue, completion: $0) }
     }
 
     @discardableResult
     func addPatientAndWait(_ patient: Patient) throws -> Patient {
-        return try performSynchronously { addPatient(patient, queue: backgroundQueue, completion: $0) }
+        try performSynchronously { addPatient(patient, callbackQueue: backgroundQueue, completion: $0) }
     }
 
     @discardableResult
     func updatePatientsAndWait(_ patients: [Patient]) throws -> [Patient] {
-        return try performSynchronously { updatePatients(patients, queue: backgroundQueue, completion: $0) }
+        try performSynchronously { updatePatients(patients, callbackQueue: backgroundQueue, completion: $0) }
     }
 
     @discardableResult
     func updatePatientAndWait(_ patient: Patient) throws -> Patient {
-        return try performSynchronously { updatePatient(patient, queue: backgroundQueue, completion: $0) }
+        try performSynchronously { updatePatient(patient, callbackQueue: backgroundQueue, completion: $0) }
     }
 
     @discardableResult
     func deletePatientsAndWait(_ patients: [Patient]) throws -> [Patient] {
-        return try performSynchronously { deletePatients(patients, queue: backgroundQueue, completion: $0) }
+        try performSynchronously { deletePatients(patients, callbackQueue: backgroundQueue, completion: $0) }
     }
 
     @discardableResult
     func deletePatientAndWait(_ patient: Patient) throws -> Patient {
-        return try performSynchronously { deletePatient(patient, queue: backgroundQueue, completion: $0) }
+        try performSynchronously { deletePatient(patient, callbackQueue: backgroundQueue, completion: $0) }
     }
+}
 
-    // MARK: Care Plans
-
-    func fetchCarePlansAndWait(_ anchor: OCKCarePlanAnchor? = nil, query: OCKCarePlanQuery? = nil) throws -> [Plan] {
-        return try performSynchronously { fetchCarePlans(anchor, query: query, queue: backgroundQueue, completion: $0) }
+extension OCKReadableCarePlanStore {
+    func fetchCarePlansAndWait(query: PlanQuery = PlanQuery()) throws -> [Plan] {
+        try performSynchronously { fetchCarePlans(query: query, callbackQueue: backgroundQueue, completion: $0) }
     }
 
     @discardableResult
-    func fetchCarePlanAndWait(identifier: String) throws -> Plan? {
-        return try performSynchronously { fetchCarePlan(withIdentifier: identifier, queue: backgroundQueue, completion: $0) }
+    func fetchCarePlanAndWait(id: String) throws -> Plan? {
+        try performSynchronously { fetchCarePlan(withID: id, callbackQueue: backgroundQueue, completion: $0) }
     }
+}
 
+extension OCKCarePlanStore {
     @discardableResult
     func addCarePlansAndWait(_ plans: [Plan]) throws -> [Plan] {
-        return try performSynchronously { addCarePlans(plans, queue: backgroundQueue, completion: $0) }
+        try performSynchronously { addCarePlans(plans, callbackQueue: backgroundQueue, completion: $0) }
     }
 
     @discardableResult
     func addCarePlanAndWait(_ plan: Plan) throws -> Plan {
-        return try performSynchronously { addCarePlan(plan, queue: backgroundQueue, completion: $0) }
+        try performSynchronously { addCarePlan(plan, callbackQueue: backgroundQueue, completion: $0) }
     }
 
     @discardableResult
     func updateCarePlansAndWait(_ plans: [Plan]) throws -> [Plan] {
-        return try performSynchronously { updateCarePlans(plans, queue: backgroundQueue, completion: $0) }
+        try performSynchronously { updateCarePlans(plans, callbackQueue: backgroundQueue, completion: $0) }
     }
 
     @discardableResult
     func updateCarePlanAndWait(_ plan: Plan) throws -> Plan {
-        return try performSynchronously { updateCarePlan(plan, queue: backgroundQueue, completion: $0) }
+        try performSynchronously { updateCarePlan(plan, callbackQueue: backgroundQueue, completion: $0) }
     }
 
     @discardableResult
     func deleteCarePlansAndWait(_ plans: [Plan]) throws -> [Plan] {
-        return try performSynchronously { deleteCarePlans(plans, queue: backgroundQueue, completion: $0) }
+        try performSynchronously { deleteCarePlans(plans, callbackQueue: backgroundQueue, completion: $0) }
     }
 
     @discardableResult
     func deleteCarePlanAndWait(_ plan: Plan) throws -> Plan {
-        return try performSynchronously { deleteCarePlan(plan, queue: backgroundQueue, completion: $0) }
+        try performSynchronously { deleteCarePlan(plan, callbackQueue: backgroundQueue, completion: $0) }
+    }
+}
+
+extension OCKReadableContactStore {
+    func fetchContactAndWait(id: String) throws -> Contact? {
+        try performSynchronously { fetchContact(withID: id, callbackQueue: backgroundQueue, completion: $0) }
     }
 
-    // MARK: Contacts
-    func fetchContactAndWait(identifier: String) throws -> Contact? {
-        return try performSynchronously { fetchContact(withIdentifier: identifier, queue: backgroundQueue, completion: $0) }
+    func fetchContactsAndWait(query: ContactQuery = ContactQuery()) throws -> [Contact] {
+        try performSynchronously { fetchContacts(query: query, callbackQueue: backgroundQueue, completion: $0) }
     }
+}
 
-    func fetchContactsAndWait(_ anchor: OCKContactAnchor? = nil, query: OCKContactQuery? = nil) throws -> [Contact] {
-        return try performSynchronously { fetchContacts(anchor, query: query, queue: backgroundQueue, completion: $0) }
-    }
-
+extension OCKContactStore {
     @discardableResult
     func addContactsAndWait(_ contacts: [Contact]) throws -> [Contact] {
-        return try performSynchronously { addContacts(contacts, queue: backgroundQueue, completion: $0) }
+        return try performSynchronously { addContacts(contacts, callbackQueue: backgroundQueue, completion: $0) }
     }
 
     @discardableResult
     func addContactAndWait(_ contact: Contact) throws -> Contact {
-        return try performSynchronously { addContact(contact, queue: backgroundQueue, completion: $0) }
+        try performSynchronously { addContact(contact, callbackQueue: backgroundQueue, completion: $0) }
     }
 
     @discardableResult
     func updateContactsAndWait(_ contacts: [Contact]) throws -> [Contact] {
-        return try performSynchronously { updateContacts(contacts, queue: backgroundQueue, completion: $0) }
+        try performSynchronously { updateContacts(contacts, callbackQueue: backgroundQueue, completion: $0) }
     }
 
     @discardableResult
     func updateContactAndWait(_ contact: Contact) throws -> Contact {
-        return try performSynchronously { updateContact(contact, queue: backgroundQueue, completion: $0) }
+        try performSynchronously { updateContact(contact, callbackQueue: backgroundQueue, completion: $0) }
     }
 
     @discardableResult
     func deleteContactsAndWait(_ contacts: [Contact]) throws -> [Contact] {
-        return try performSynchronously { deleteContacts(contacts, queue: backgroundQueue, completion: $0) }
+        try performSynchronously { deleteContacts(contacts, callbackQueue: backgroundQueue, completion: $0) }
     }
 
     @discardableResult
     func deleteContactAndWait(_ contact: Contact) throws -> Contact {
-        return try performSynchronously { deleteContact(contact, queue: backgroundQueue, completion: $0) }
+        try performSynchronously { deleteContact(contact, callbackQueue: backgroundQueue, completion: $0) }
     }
+}
 
-    // MARK: Tasks
-
-    func fetchTasksAndWait(_ anchor: OCKTaskAnchor? = nil, query: OCKTaskQuery? = nil) throws -> [Task] {
-        return try performSynchronously { fetchTasks(anchor, query: query, queue: backgroundQueue, completion: $0) }
+extension OCKReadableTaskStore {
+    func fetchTasksAndWait(query: TaskQuery = TaskQuery()) throws -> [Task] {
+        try performSynchronously { fetchTasks(query: query, callbackQueue: backgroundQueue, completion: $0) }
     }
+}
 
+extension OCKTaskStore {
     @discardableResult
     func addTasksAndWait(_ tasks: [Task]) throws -> [Task] {
-        return try performSynchronously { addTasks(tasks, queue: backgroundQueue, completion: $0) }
+        try performSynchronously { addTasks(tasks, callbackQueue: backgroundQueue, completion: $0) }
     }
 
     @discardableResult
     func addTaskAndWait(_ task: Task) throws -> Task {
-        return try performSynchronously { addTask(task, queue: backgroundQueue, completion: $0) }
+        try performSynchronously { addTask(task, callbackQueue: backgroundQueue, completion: $0) }
     }
 
     @discardableResult
     func updateTasksAndWait(_ tasks: [Task]) throws -> [Task] {
-        return try performSynchronously { updateTasks(tasks, queue: backgroundQueue, completion: $0) }
+        try performSynchronously { updateTasks(tasks, callbackQueue: backgroundQueue, completion: $0) }
     }
 
     @discardableResult
     func updateTaskAndWait(_ task: Task) throws -> Task {
-        return try performSynchronously { updateTask(task, queue: backgroundQueue, completion: $0) }
+        try performSynchronously { updateTask(task, callbackQueue: backgroundQueue, completion: $0) }
     }
 
     @discardableResult
     func deleteTasksAndWait(_ tasks: [Task]) throws -> [Task] {
-        return try performSynchronously { deleteTasks(tasks, queue: backgroundQueue, completion: $0) }
+        try performSynchronously { deleteTasks(tasks, callbackQueue: backgroundQueue, completion: $0) }
     }
 
     @discardableResult
     func deleteTaskAndWait(_ task: Task) throws -> Task {
-        return try performSynchronously { deleteTask(task, queue: backgroundQueue, completion: $0) }
+        try performSynchronously { deleteTask(task, callbackQueue: backgroundQueue, completion: $0) }
     }
+}
 
-    // MARK: Outcomes
-
-    func fetchOutcomesAndWait(_ anchor: OCKOutcomeAnchor? = nil, query: OCKOutcomeQuery? = nil) throws -> [Outcome] {
-        return try performSynchronously { fetchOutcomes(anchor, query: query, queue: backgroundQueue, completion: $0) }
+extension OCKReadableOutcomeStore {
+    func fetchOutcomesAndWait(query: OutcomeQuery = OutcomeQuery()) throws -> [Outcome] {
+        try performSynchronously { fetchOutcomes(query: query, callbackQueue: backgroundQueue, completion: $0) }
     }
+}
 
+extension OCKOutcomeStore {
     @discardableResult
     func addOutcomesAndWait(_ outcomes: [Outcome]) throws -> [Outcome] {
-        return try performSynchronously { addOutcomes(outcomes, queue: backgroundQueue, completion: $0) }
+        try performSynchronously { addOutcomes(outcomes, callbackQueue: backgroundQueue, completion: $0) }
     }
 
     @discardableResult
     func addOutcomeAndWait(_ outcome: Outcome) throws -> Outcome {
-        return try performSynchronously { addOutcome(outcome, queue: backgroundQueue, completion: $0) }
+        try performSynchronously { addOutcome(outcome, callbackQueue: backgroundQueue, completion: $0) }
     }
 
     @discardableResult
     func updateOutcomesAndWait(_ outcomes: [Outcome]) throws -> [Outcome] {
-        return try performSynchronously { updateOutcomes(outcomes, queue: backgroundQueue, completion: $0) }
+        try performSynchronously { updateOutcomes(outcomes, callbackQueue: backgroundQueue, completion: $0) }
     }
 
     @discardableResult
     func updateOutcomeAndWait(_ outcome: Outcome) throws -> Outcome {
-        return try performSynchronously { updateOutcome(outcome, queue: backgroundQueue, completion: $0) }
+        try performSynchronously { updateOutcome(outcome, callbackQueue: backgroundQueue, completion: $0) }
     }
 
     @discardableResult
     func deleteOutcomesAndWait(_ outcomes: [Outcome]) throws -> [Outcome] {
-        return try performSynchronously { deleteOutcomes(outcomes, queue: backgroundQueue, completion: $0) }
+        try performSynchronously { deleteOutcomes(outcomes, callbackQueue: backgroundQueue, completion: $0) }
     }
 
     @discardableResult
     func deleteOutcomeAndWait(_ outcome: Outcome) throws -> Outcome {
-        return try performSynchronously { deleteOutcome(outcome, queue: backgroundQueue, completion: $0) }
+        try performSynchronously { deleteOutcome(outcome, callbackQueue: backgroundQueue, completion: $0) }
+    }
+}
+
+extension OCKReadOnlyEventStore {
+    func fetchEventsAndWait(taskID: String, query: OCKEventQuery) throws -> [OCKEvent<Task, Outcome>] {
+        try performSynchronously { fetchEvents(taskID: taskID, query: query, callbackQueue: backgroundQueue, completion: $0) }
     }
 
-    // MARK: Events
-
-    func fetchEventAndWait(taskVersionID: OCKLocalVersionID, occurenceIndex: Int) throws -> OCKEvent<Task, Outcome> {
-        return try performSynchronously {
-            fetchEvent(withTaskVersionID: taskVersionID, occurenceIndex: occurenceIndex, queue: backgroundQueue, completion: $0)
-        }
-    }
-
-    func fetchEventsAndWait(taskIdentifier: String, query: OCKEventQuery) throws -> [OCKEvent<Task, Outcome>] {
-        return try performSynchronously {
-            fetchEvents(taskIdentifier: taskIdentifier, query: query, queue: backgroundQueue, completion: $0)
-        }
+    func fetchEventAndWait(forTask task: Task, occurrence: Int) throws -> Event {
+        try performSynchronously { fetchEvent(forTask: task, occurrence: occurrence, callbackQueue: backgroundQueue, completion: $0) }
     }
 
     // MARK: Adherence
 
-    func fetchAdherenceAndWait(forTasks identifiers: [String]? = nil, query: OCKAdherenceQuery<Event>) throws -> [OCKAdherence] {
-        return try performSynchronously {
-            fetchAdherence(forTasks: identifiers, query: query, queue: backgroundQueue, completion: $0)
-        }
+    func fetchAdherenceAndWait(query: OCKAdherenceQuery) throws -> [OCKAdherence] {
+        try performSynchronously { fetchAdherence(query: query, callbackQueue: backgroundQueue, completion: $0) }
     }
 
     // MARK: Insights
 
-    func fetchInsightsAndWait(forTask identifier: String, query: OCKInsightQuery<Event>) throws -> [Double] {
-        return try performSynchronously {
-            fetchInsights(forTask: identifier, query: query, queue: backgroundQueue, completion: $0)
-        }
+    func fetchInsightsAndWait(query: OCKInsightQuery) throws -> [Double] {
+        try performSynchronously { fetchInsights(query: query, callbackQueue: backgroundQueue, completion: $0) }
+    }
+}
+
+extension OCKAnyTaskStore {
+    func addAnyTaskAndWait(_ task: OCKAnyTask) throws -> OCKAnyTask {
+        try performSynchronously { addAnyTask(task, callbackQueue: backgroundQueue, completion: $0) }
     }
 }

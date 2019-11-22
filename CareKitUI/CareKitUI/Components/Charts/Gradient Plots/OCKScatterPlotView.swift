@@ -31,13 +31,14 @@
 import UIKit
 
 /// A graph view that shows one or more scatter plots
-class OCKScatterPlotView: OCKGradientPlotView {
+class OCKScatterPlotView: OCKGradientPlotView<OCKScatterLayer> {
+
     override func resetLayers() {
         let graphRect = graphBounds()
         let offsets = computeLineOffsets()
         resolveNumberOfLayers()
         dataSeries.enumerated().forEach { index, series in
-            guard let layer = seriesLayers[index] as? OCKScatterLayer else { fatalError("Unsupported type.") }
+            let layer = seriesLayers[index]
             layer.dataPoints = series.dataPoints
             layer.offset = offsets[index]
             layer.startColor = series.gradientStartColor ?? tintColor

@@ -32,43 +32,43 @@ import Foundation
 import UIKit
 import CareKit
 
-class CareViewController: OCKDailyPageViewController<OCKStore> {
+class CareViewController: OCKDailyPageViewController {
 
-        override func viewDidLoad() {
-            super.viewDidLoad()
-            navigationItem.rightBarButtonItem =
-                UIBarButtonItem(title: "Care Team", style: .plain, target: self,
-                                action: #selector(presentContactsListViewController))
-        }
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        navigationItem.rightBarButtonItem =
+            UIBarButtonItem(title: "Care Team", style: .plain, target: self,
+                            action: #selector(presentContactsListViewController))
+    }
 
-        @objc private func presentContactsListViewController() {
-            let viewController = OCKContactsListViewController(storeManager: storeManager)
-            viewController.title = "Care Team"
-            viewController.navigationItem.rightBarButtonItem =
-                UIBarButtonItem(title: "Done", style: .plain, target: self,
-                                action: #selector(dismissContactsListViewController))
+    @objc private func presentContactsListViewController() {
+        let viewController = OCKContactsListViewController(storeManager: storeManager)
+        viewController.title = "Care Team"
+        viewController.isModalInPresentation = true
+        viewController.navigationItem.rightBarButtonItem =
+            UIBarButtonItem(title: "Done", style: .plain, target: self,
+                            action: #selector(dismissContactsListViewController))
 
-            let navigationController = UINavigationController(rootViewController: viewController)
-            present(navigationController, animated: true, completion: nil)
-        }
+        let navigationController = UINavigationController(rootViewController: viewController)
+        present(navigationController, animated: true, completion: nil)
+    }
 
-        @objc private func dismissContactsListViewController() {
-            dismiss(animated: true, completion: nil)
-        }
+    @objc private func dismissContactsListViewController() {
+        dismiss(animated: true, completion: nil)
+    }
 
     // This will be called each time the selected date changes.
     // Use this as an opportunity to rebuild the content shown to the user.
-    override func dailyPageViewController<S>(
-        _ dailyPageViewController: OCKDailyPageViewController<S>,
-        prepare listViewController: OCKListViewController,
-        for date: Date) where S: OCKStoreProtocol {
+
+    override func dailyPageViewController(_ dailyPageViewController: OCKDailyPageViewController,
+                                          prepare listViewController: OCKListViewController, for date: Date) {
 
         let identifiers = ["doxylamine", "nausea", "kegels"]
-        let anchor = OCKTaskAnchor.taskIdentifiers(identifiers)
         var query = OCKTaskQuery(for: date)
+        query.ids = identifiers
         query.excludesTasksWithNoEvents = true
 
-        storeManager.store.fetchTasks(anchor, query: query) { result in
+        storeManager.store.fetchAnyTasks(query: query, callbackQueue: .main) { result in
             switch result {
             case .failure(let error): print("Error: \(error)")
             case .success(let tasks):
@@ -88,27 +88,23 @@ class CareViewController: OCKDailyPageViewController<OCKStore> {
 
                 // Since the kegel task is only sheduled every other day, there will be cases
                 // where it is not contained in the tasks array returned from the query.
-                if let kegelsTask = tasks.first(where: { $0.identifier == "kegels" }) {
-                    let kegelsCard = OCKSimpleTaskViewController(
-                        storeManager: self.storeManager,
-                        task: kegelsTask,
-                        eventQuery: OCKEventQuery(for: date))
+                if let kegelsTask = tasks.first(where: { $0.id == "kegels" }) {
+                    let kegelsCard = OCKSimpleTaskViewController(task: kegelsTask, eventQuery: .init(for: date),
+                                                                 storeManager: self.storeManager)
                     listViewController.appendViewController(kegelsCard, animated: false)
                 }
 
                 // Create a card for the doxylamine task if there are events for it on this day.
-                if let doxylamineTask = tasks.first(where: { $0.identifier == "doxylamine" }) {
-                    let doxylamineCard = OCKChecklistTaskViewController(
-                        storeManager: self.storeManager,
-                        task: doxylamineTask,
-                        eventQuery: OCKEventQuery(for: date))
+                if let doxylamineTask = tasks.first(where: { $0.id == "doxylamine" }) {
+                    let doxylamineCard = OCKChecklistTaskViewController(task: doxylamineTask, eventQuery: .init(for: date),
+                                                                        storeManager: self.storeManager)
                     listViewController.appendViewController(doxylamineCard, animated: false)
                 }
 
                 // Create a card for the nausea task if there are events for it on this day.
                 // Its OCKSchedule was defined to have daily events, so this task should be
                 // found in `tasks` every day after the task start date.
-                if let nauseaTask = tasks.first(where: { $0.identifier == "nausea" }) {
+                if let nauseaTask = tasks.first(where: { $0.id == "nausea" }) {
 
                     // dynamic gradient colors
                     let nauseaGradientStart = UIColor { traitCollection -> UIColor in
@@ -119,41 +115,36 @@ class CareViewController: OCKDailyPageViewController<OCKStore> {
                     }
 
                     // Create a plot comparing nausea to medication adherence.
-                    let nauseaDataSeries = OCKDataSeriesConfiguration<OCKStore>(
-                        taskIdentifier: "nausea",
+                    let nauseaDataSeries = OCKDataSeriesConfiguration(
+                        taskID: "nausea",
                         legendTitle: "Nausea",
                         gradientStartColor: nauseaGradientStart,
                         gradientEndColor: nauseaGradientEnd,
                         markerSize: 10,
                         eventAggregator: OCKEventAggregator.countOutcomeValues)
 
-                    let doxylamineDataSeries = OCKDataSeriesConfiguration<OCKStore>(
-                        taskIdentifier: "doxylamine",
+                    let doxylamineDataSeries = OCKDataSeriesConfiguration(
+                        taskID: "doxylamine",
                         legendTitle: "Doxylamine",
                         gradientStartColor: .systemGray2,
                         gradientEndColor: .systemGray,
                         markerSize: 10,
                         eventAggregator: OCKEventAggregator.countOutcomeValues)
 
-                    let insightsCard = OCKCartesianChartViewController(
-                        storeManager: self.storeManager,
-                        type: .bar,
-                        dataSeriesConfigurations: [nauseaDataSeries, doxylamineDataSeries],
-                        date: date)
-                    insightsCard.synchronizedView.headerView.titleLabel.text = "Nausea & Doxylamine Intake"
-                    insightsCard.synchronizedView.headerView.detailLabel.text = "This Week"
-
+                    let insightsCard = OCKCartesianChartViewController(plotType: .bar, selectedDate: date,
+                                                                       configurations: [nauseaDataSeries, doxylamineDataSeries],
+                                                                       storeManager: self.storeManager)
+                    insightsCard.chartView.headerView.titleLabel.text = "Nausea & Doxylamine Intake"
+                    insightsCard.chartView.headerView.detailLabel.text = "This Week"
+                    insightsCard.chartView.headerView.accessibilityLabel = "Nausea & Doxylamine Intake, This Week"
                     listViewController.appendViewController(insightsCard, animated: false)
 
                     // Also create a card that displays a single event.
                     // The event query passed into the initializer specifies that only
                     // today's log entries should be displayed by this log task view controller.
-                    let nauseaCard = OCKButtonLogTaskViewController(
-                        storeManager: self.storeManager,
-                        task: nauseaTask,
-                        eventQuery: OCKEventQuery(for: date))
-
-                    listViewController.appendViewController(nauseaCard, animated: true)
+                    let nauseaCard = OCKButtonLogTaskViewController(task: nauseaTask, eventQuery: .init(for: date),
+                                                                    storeManager: self.storeManager)
+                    listViewController.appendViewController(nauseaCard, animated: false)
                 }
             }
         }

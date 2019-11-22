@@ -1,21 +1,21 @@
 /*
  Copyright (c) 2019, Apple Inc. All rights reserved.
-
+ 
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
-
+ 
  1.  Redistributions of source code must retain the above copyright notice, this
  list of conditions and the following disclaimer.
-
+ 
  2.  Redistributions in binary form must reproduce the above copyright notice,
  this list of conditions and the following disclaimer in the documentation and/or
  other materials provided with the distribution.
-
+ 
  3. Neither the name of the copyright holder(s) nor the names of any contributors
  may be used to endorse or promote products derived from this software without
  specific prior written permission. No license is granted to the trademarks of
  the copyright holders even if such marks are included in this software.
-
+ 
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -36,54 +36,79 @@ import UIKit
 ///     |         [Title]          |
 ///     +--------------------------+
 ///
-class OCKLabeledButton: OCKButton {
+open class OCKLabeledButton: OCKAnimatedButton<OCKLabel> {
+
     // MARK: Properties
 
-    override var titleButton: OCKButton? { _titleButton }
-
-    private let _titleButton: OCKButton = {
-        let button = OCKButton(titleTextStyle: .subheadline, titleWeight: .medium)
-        button.isUserInteractionEnabled = false
-        button.tintedTraits = [TintedTrait(trait: .titleColor, state: .selected)]
-        button.sizesToFitTitleLabel = true
-
-        button.setTitle(OCKStrings.markCompleted, for: .normal)
-        button.setTitle(OCKStrings.completed, for: .selected)
-
-        return button
+    /// Label in the center of the buttton.
+    public let label: OCKLabel = {
+        let label = OCKLabel(textStyle: .subheadline, weight: .medium)
+        label.text = loc("MARK_COMPLETE")
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textAlignment = .center
+        label.numberOfLines = 0
+        return label
     }()
+
+    // MARK: Life Cycle
+
+    public init() {
+        super.init(contentView: label, handlesSelection: true)
+        constrainSubviews()
+    }
+
+    @available(*, unavailable)
+    public required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     // MARK: Methods
 
-    override func setup() {
-        super.setup()
-        addSubviews()
-        constrainSubviews()
-        styleSubviews()
+    override open func setStyleForSelectedState(_ isSelected: Bool) {
+        let completionString = isSelected ? loc("COMPLETED") : loc("MARK_COMPLETE")
+        let attributedText = NSMutableAttributedString(string: completionString)
+
+        // Set a checkmark next to the text if the button is in the completed state
+        if isSelected, let checkmark = UIImage.from(systemName: "checkmark") {
+            let attachment = NSTextAttachment(image: checkmark)
+            let checkmarkString = NSAttributedString(attachment: attachment)
+            attributedText.append(.init(string: " "))
+            attributedText.append(checkmarkString)
+        }
+
+        label.attributedText = attributedText
+
+        updateColors()
     }
 
-    private func addSubviews() {
-        addSubview(_titleButton)
+    override open func styleDidChange() {
+        super.styleDidChange()
+        let style = self.style()
+        updateColors()
+        layer.cornerRadius = style.appearance.cornerRadius2
+        directionalLayoutMargins = style.dimension.directionalInsets1
     }
 
-    private func styleSubviews() {
-        animatesStateChanges = true
-        adjustsImageWhenHighlighted = false
-        clipsToBounds = true
-        tintedTraits = [TintedTrait(trait: .backgroundColor, state: .normal)]
+    override open func tintColorDidChange() {
+        super.tintColorDidChange()
+        updateColors()
     }
 
     private func constrainSubviews() {
-        _titleButton.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate(_titleButton.constraints(equalTo: layoutMarginsGuide))
+        NSLayoutConstraint.activate(label.constraints(equalTo: layoutMarginsGuide))
     }
 
-    override func styleDidChange() {
-        super.styleDidChange()
-        let cachedStyle = style()
-        _titleButton.setTitleColor(cachedStyle.color.white, for: .normal)
-        layer.cornerRadius = cachedStyle.appearance.cornerRadius2
-        setBackgroundColor(cachedStyle.color.tertiarySystemFill, for: .selected)
-        directionalLayoutMargins = cachedStyle.dimension.directionalInsets1
+    private func updateColors() {
+        let style = self.style()
+        backgroundColor = isSelected ? style.color.tertiaryCustomFill : tintColor
+        label.textColor = isSelected ? tintColor : style.color.white
+    }
+}
+
+private extension UIImage {
+    static func from(systemName: String) -> UIImage? {
+        let image = UIImage(systemName: systemName)
+        assert(image != nil, "Unable to locate symbol for system name: \(systemName)")
+        return image
     }
 }

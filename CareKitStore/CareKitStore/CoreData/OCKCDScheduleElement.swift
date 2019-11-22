@@ -33,8 +33,6 @@ import Foundation
 @objc(OCKCDScheduleElement)
 class OCKCDScheduleElement: OCKCDObject {
     @NSManaged var text: String?
-    @NSManaged var duration: Double
-    @NSManaged var isAllDay: Bool
     @NSManaged var task: OCKCDTask?
     @NSManaged var targetValues: Set<OCKCDOutcomeValue>
 
@@ -48,6 +46,18 @@ class OCKCDScheduleElement: OCKCDObject {
     @NSManaged var weeksInterval: Int
     @NSManaged var monthsInterval: Int
     @NSManaged var yearsInterval: Int
+
+    // These 3 are controlled by the `duration` computed property.
+    @NSManaged private var durationInSeconds: Double
+    @NSManaged private var isAllDay: Bool
+
+    var duration: OCKScheduleElement.Duration {
+        get { isAllDay ? .allDay : .seconds(durationInSeconds) }
+        set {
+            isAllDay = newValue == .allDay
+            durationInSeconds = newValue.seconds
+        }
+    }
 
     var interval: DateComponents {
         get {
@@ -85,8 +95,14 @@ extension OCKCDScheduleElement {
         try validateForConsistency()
     }
 
-    func validateForConsistency() throws {
-        if !atLeastOneIntervalIsNonZero { throw OCKStoreError.invalidValue(reason: "OCKCDScheduleElement must have at least 1 non-zero interval") }
+    override func validateForUpdate() throws {
+        try super.validateForUpdate()
+        try validateForConsistency()
+    }
+
+    private func validateForConsistency() throws {
+        if !atLeastOneIntervalIsNonZero { throw OCKStoreError.invalidValue(reason: "OCKScheduleElement must have at least 1 non-zero interval") }
+        if task == nil && targetValues.isEmpty { throw OCKStoreError.invalidValue(reason: "OCKScheduleElement must be associated with a task!") }
     }
 
     private var atLeastOneIntervalIsNonZero: Bool {

@@ -31,22 +31,26 @@
 import CareKitUI
 import UIKit
 
-internal class OCKDetailViewController: UIViewController {
+/// A view controller that can be customized to display the details of another view.
+/// The detail view's content stack view can be populated with arbitrary content.
+open class OCKDetailViewController: UIViewController {
     private lazy var doneButton: UIBarButtonItem = {
         let item = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(dismissViewController))
         return item
     }()
 
-    internal var detailView: OCKDetailView {
+    /// A detailed content view.
+    public var detailView: OCKDetailView {
         guard let view = view as? OCKDetailView else { fatalError("Unsupported view.") }
         return view
     }
 
-    override func loadView() {
+    @available(*, unavailable)
+    override open func loadView() {
         view = OCKDetailView()
     }
 
-    override func viewDidLoad() {
+    override open func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.rightBarButtonItem = doneButton
     }

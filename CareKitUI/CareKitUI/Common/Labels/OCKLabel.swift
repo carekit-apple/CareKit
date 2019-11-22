@@ -37,6 +37,7 @@ import UIKit
 /// To have the label automatically change its text size whenever the accessibility content size changes,
 /// use the initialzer that takes a `textStyle` and `weight`.
 open class OCKLabel: UILabel, OCKStylable {
+
     // MARK: Properties
 
     public var customStyle: OCKStyler? {
@@ -45,9 +46,6 @@ open class OCKLabel: UILabel, OCKStylable {
 
     /// Flag determining whether to animate text changes.
     public var animatesTextChanges = false
-
-    private let textStyle: UIFont.TextStyle?
-    private let weight: UIFont.Weight?
 
     override open var text: String? {
         get {
@@ -59,6 +57,9 @@ open class OCKLabel: UILabel, OCKStylable {
             }, completion: nil)
         }
     }
+
+    private let textStyle: UIFont.TextStyle?
+    private let weight: UIFont.Weight?
 
     // MARK: Life Cycle
 

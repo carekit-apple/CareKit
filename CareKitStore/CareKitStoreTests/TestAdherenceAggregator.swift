@@ -27,38 +27,98 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-import CareKitStore
+@testable import CareKitStore
 import Foundation
 import XCTest
 
 class TestAdherenceAggregators: XCTestCase {
-    func makeEvents() -> [OCKStore.Event] {
+    func makeEvents(outcomeValues: [OCKOutcomeValueUnderlyingType], targetValues: [OCKOutcomeValueUnderlyingType]) -> [OCKAnyEvent] {
         let element = OCKScheduleElement(start: Date(), end: nil, interval: DateComponents(day: 1),
-                                         text: nil, targetValues: [OCKOutcomeValue(10), OCKOutcomeValue("test")],
-                                         duration: 100, isAllDay: false)
-        let task = OCKTask(identifier: "A", title: "A", carePlanID: nil, schedule: OCKSchedule(composing: [element]))
-        let outcome = OCKOutcome(taskID: nil, taskOccurenceIndex: 0, values: [OCKOutcomeValue("test")])
-        guard let scheduleEvent = task.schedule[0] else { XCTFail("Bad schedule"); return [] }
+                                         text: nil, targetValues: targetValues.map { OCKOutcomeValue($0) },
+                                         duration: .seconds(100))
+        let task = OCKTask(id: "A", title: "A", carePlanID: nil, schedule: OCKSchedule(composing: [element]))
+        let values = outcomeValues.map { OCKOutcomeValue($0) }
+        let outcome = OCKOutcome(taskID: OCKLocalVersionID("dummy"), taskOccurrenceIndex: 0, values: values)
+        let scheduleEvent = task.schedule[0]
         let event1: OCKStore.Event = OCKEvent(task: task, outcome: outcome, scheduleEvent: scheduleEvent)
         let event2: OCKStore.Event = OCKEvent(task: task, outcome: nil, scheduleEvent: scheduleEvent)
-        return [event1, event2]
+        return [event1.anyEvent, event2.anyEvent]
     }
 
-    func testCountOutcomes() {
-        let aggregator = OCKAdherenceAggregator<OCKStore.Event>.countOutcomes
-        let result = aggregator.aggregate(events: makeEvents())
-        XCTAssert(result == .progress(0.5))
+    func testOutcomesExist() {
+        let events = makeEvents(outcomeValues: [0], targetValues: [])
+        let aggregator = OCKAdherenceAggregator.outcomeExists
+        let result = aggregator.aggregate(events: events)
+        XCTAssert(result == .progress(0.5), "Expected 0.5, but got \(result)")
     }
 
-    func testCountOutcomeValues() {
-        let aggregator = OCKAdherenceAggregator<OCKStore.Event>.countOutcomeValues
-        let result = aggregator.aggregate(events: makeEvents())
-        XCTAssert(result == .progress(0.25))
+    func testPercentOfOutcomeValuesThatExist() {
+        let events = makeEvents(outcomeValues: [0], targetValues: [10, "test"])
+        let aggregator = OCKAdherenceAggregator.percentOfOutcomeValuesThatExist
+        let result = aggregator.aggregate(events: events)
+        XCTAssert(result == .progress(0.25), "Expected 0.25, but got \(result)")
+    }
+
+    func testPercentOfOutcomesvaluesThatExistWithNoGoals() {
+        let events = makeEvents(outcomeValues: [0], targetValues: [])
+        let aggregator = OCKAdherenceAggregator.percentOfOutcomeValuesThatExist
+        let result = aggregator.aggregate(events: events)
+        XCTAssert(result == .progress(0.5), "Expected 0.5, but got \(result)")
+    }
+
+    func testCompareTargetValuesWithUnequalNumberOfValuesAndTargetValues() {
+        let events = makeEvents(outcomeValues: [10], targetValues: [10, "test"])
+        let aggregator = OCKAdherenceAggregator.compareTargetValues
+        let result = aggregator.aggregate(events: events)
+        XCTAssert(result == .progress(0.0), "Expected 0.0 but got \(result)")
+    }
+
+    func testCompareTargetValuesWithUnmetGoal() {
+        let events = makeEvents(outcomeValues: [9, "test"], targetValues: [10, "test"])
+        let aggregator = OCKAdherenceAggregator.compareTargetValues
+        let result = aggregator.aggregate(events: events)
+        XCTAssert(result == .progress(0.0), "Expected 0.0 but got \(result)")
+    }
+
+    func testCompareTargetValuesWithAllGoalsMet() {
+        let events = makeEvents(outcomeValues: [10, "test"], targetValues: [10, "test"])
+        let aggregator = OCKAdherenceAggregator.compareTargetValues
+        let result = aggregator.aggregate(events: events)
+        XCTAssert(result == .progress(0.5), "Expected 0.5 but got \(result)")
+    }
+
+    func testCompareTargetValuesWithNoGoals() {
+        let events = makeEvents(outcomeValues: [10], targetValues: [])
+        let aggregator = OCKAdherenceAggregator.compareTargetValues
+        let result = aggregator.aggregate(events: events)
+        XCTAssert(result == .progress(0.5), "Expected 0.5 but got \(result)")
+    }
+
+    func testTargetCompletionPercentage() {
+        let events = makeEvents(outcomeValues: [10, "fail"], targetValues: [10, "fail"])
+        let aggregator = OCKAdherenceAggregator.percentOfTargetValuesMet
+        let result = aggregator.aggregate(events: events)
+        XCTAssert(result == .progress(0.5), "Expected 0.5 but got \(result)")
+    }
+
+    func testTargetCompletionPercentWithNoOutcomeValues() {
+        let events = makeEvents(outcomeValues: [], targetValues: [10, "test"])
+        let aggregator = OCKAdherenceAggregator.percentOfTargetValuesMet
+        let result = aggregator.aggregate(events: events)
+        XCTAssert(result == .progress(0.0), "Expected 0.0 but got \(result)")
+    }
+
+    func testTargetCompletionPercentWithNoTargetValues() {
+        let events = makeEvents(outcomeValues: [10, "test"], targetValues: [])
+        let aggregator = OCKAdherenceAggregator.percentOfTargetValuesMet
+        let result = aggregator.aggregate(events: events)
+        XCTAssert(result == .progress(0.5), "Expected 0.5 but got \(result)")
     }
 
     func testCustomAggregator() {
-        let aggregator = OCKAdherenceAggregator<OCKStore.Event>.custom({ _ in .noTasks })
-        let result = aggregator.aggregate(events: makeEvents())
-        XCTAssert(result == .noTasks)
+        let events = makeEvents(outcomeValues: [], targetValues: [])
+        let aggregator = OCKAdherenceAggregator.custom({ _ in .noTasks })
+        let result = aggregator.aggregate(events: events)
+        XCTAssert(result == .noTasks, "Expected `noTasks` but got \(result)")
     }
 }

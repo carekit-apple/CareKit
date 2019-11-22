@@ -42,13 +42,27 @@ extension Calendar {
     }
 
     /// Returns string representations of the weekdays, in the order the weekdays occur on the local calendar.
+    /// This differs with the Foundation `Calendar.varyShortWeekdaySymbols` in that the ordering is changed such
+    /// that the first element of the array corresponds to the first weekday in the current locale, instead of Sunday.
+    ///
+    /// This method is required for handling certain regions in which the first day of the week is Monday.
+    func orderedWeekdaySymbolsVeryShort() -> [String] {
+        var symbols = veryShortWeekdaySymbols
+        Array(1..<firstWeekday).forEach { _ in
+            let symbol = symbols.removeFirst()
+            symbols.append(symbol)
+        }
+        return symbols
+    }
+
+    /// Returns string representations of the weekdays, in the order the weekdays occur on the local calendar.
     /// This differs with the Foundation `Calendar.weekdaySymbols` in that the ordering is changed such
     /// that the first element of the array corresponds to the first weekday in the current locale, instead of Sunday.
     ///
     /// This method is required for handling certain regions in which the first day of the week is Monday.
-    func orderedWeekdays() -> [String] {
-        var symbols = veryShortWeekdaySymbols
-        for _ in 1..<firstWeekday {
+    func orderedWeekdaySymbols() -> [String] {
+        var symbols = weekdaySymbols
+        Array(1..<firstWeekday).forEach { _ in
             let symbol = symbols.removeFirst()
             symbols.append(symbol)
         }

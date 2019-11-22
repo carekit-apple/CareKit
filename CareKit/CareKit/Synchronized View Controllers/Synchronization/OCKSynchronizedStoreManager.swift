@@ -34,13 +34,11 @@ import Foundation
 
 /// An `OCKSynchronizedStoreManager` wraps any store that conforms to `OCKStore` and provides synchronization to CareKit view
 /// controllers by listening in on the store's activity by setting itself as the store delegate.
-open class OCKSynchronizedStoreManager<Store: OCKStoreProtocol>: Equatable, OCKStoreDelegate {
-    public static func == (lhs: OCKSynchronizedStoreManager<Store>, rhs: OCKSynchronizedStoreManager<Store>) -> Bool {
-        return lhs.store == rhs.store
-    }
+open class OCKSynchronizedStoreManager:
+OCKPatientStoreDelegate, OCKCarePlanStoreDelegate, OCKContactStoreDelegate, OCKTaskStoreDelegate, OCKOutcomeStoreDelegate {
 
     /// The underlying database.
-    public let store: Store
+    public let store: OCKAnyStoreProtocol
 
     internal lazy var subject = PassthroughSubject<OCKStoreNotification, Never>()
     internal private (set) lazy var notificationPublisher = subject.share()
@@ -51,54 +49,58 @@ open class OCKSynchronizedStoreManager<Store: OCKStoreProtocol>: Equatable, OCKS
     ///   - store: Any object that conforms to `OCKStoreProtocol`.
     ///
     /// - SeeAlso: `OCKStore`
-    public init(wrapping store: Store) {
+    public init(wrapping store: OCKAnyStoreProtocol) {
         self.store = store
-        self.store.delegate = self
+        self.store.patientDelegate = self
+        self.store.carePlanDelegate = self
+        self.store.contactDelegate = self
+        self.store.taskDelegate = self
+        self.store.outcomeDelegate = self
     }
 
     // MARK: OCKStoreDelegate Patients
 
-    public func store<S>(_ store: S, didAddPatients patients: [S.Patient]) where S: OCKStoreProtocol {
-        dispatchPatientNotifications(store: store, category: .add, patients: patients)
+    open func patientStore(_ store: OCKAnyReadOnlyPatientStore, didAddPatients patients: [OCKAnyPatient]) {
+        dispatchPatientNotifications(category: .add, patients: patients)
     }
 
-    public func store<S>(_ store: S, didUpdatePatients patients: [S.Patient]) where S: OCKStoreProtocol {
-        dispatchPatientNotifications(store: store, category: .update, patients: patients)
+    open func patientStore(_ store: OCKAnyReadOnlyPatientStore, didUpdatePatients patients: [OCKAnyPatient]) {
+        dispatchPatientNotifications(category: .update, patients: patients)
     }
 
-    public func store<S>(_ store: S, didDeletePatients patients: [S.Patient]) where S: OCKStoreProtocol {
-        dispatchPatientNotifications(store: store, category: .delete, patients: patients)
+    open func patientStore(_ store: OCKAnyReadOnlyPatientStore, didDeletePatients patients: [OCKAnyPatient]) {
+        dispatchPatientNotifications(category: .delete, patients: patients)
     }
 
-    private func dispatchPatientNotifications<S: OCKStoreProtocol>(store: S, category: OCKStoreNotificationCategory, patients: [S.Patient]) {
+    private func dispatchPatientNotifications(category: OCKStoreNotificationCategory, patients: [OCKAnyPatient]) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
-            for patient in patients.compactMap({ $0 as? Store.Patient }) {
-                let notification = OCKPatientNotification<Store>(storeManager: self, patient: patient, category: category)
-                self.subject.send(notification)
+            patients.forEach {
+                let notifications = OCKPatientNotification(patient: $0, category: category, storeManager: self)
+                self.subject.send(notifications)
             }
         }
     }
 
     // MARK: OCKStoreDelegate CarePlans
 
-    public func store<S>(_ store: S, didAddCarePlans carePlans: [S.Plan]) where S: OCKStoreProtocol {
-        dispatchCarePlanNotifications(store: store, category: .add, plans: carePlans)
+    open func carePlanStore(_ store: OCKAnyReadOnlyCarePlanStore, didAddCarePlans carePlans: [OCKAnyCarePlan]) {
+        dispatchCarePlanNotifications(category: .add, plans: carePlans)
     }
 
-    public func store<S>(_ store: S, didUpdateCarePlans carePlans: [S.Plan]) where S: OCKStoreProtocol {
-        dispatchCarePlanNotifications(store: store, category: .update, plans: carePlans)
+    open func carePlanStore(_ store: OCKAnyReadOnlyCarePlanStore, didUpdateCarePlans carePlans: [OCKAnyCarePlan]) {
+        dispatchCarePlanNotifications(category: .update, plans: carePlans)
     }
 
-    public func store<S>(_ store: S, didDeleteCarePlans carePlans: [S.Plan]) where S: OCKStoreProtocol {
-        dispatchCarePlanNotifications(store: store, category: .delete, plans: carePlans)
+    open func carePlanStore(_ store: OCKAnyReadOnlyCarePlanStore, didDeleteCarePlans carePlans: [OCKAnyCarePlan]) {
+        dispatchCarePlanNotifications(category: .delete, plans: carePlans)
     }
 
-    private func dispatchCarePlanNotifications<S: OCKStoreProtocol>(store: S, category: OCKStoreNotificationCategory, plans: [S.Plan]) {
+    private func dispatchCarePlanNotifications(category: OCKStoreNotificationCategory, plans: [OCKAnyCarePlan]) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
-            for plan in plans.compactMap({ $0 as? Store.Plan }) {
-                let notification = OCKCarePlanNotification<Store>(storeManager: self, carePlan: plan, category: category)
+            plans.forEach {
+                let notification = OCKCarePlanNotification(carePlan: $0, category: category, storeManager: self)
                 self.subject.send(notification)
             }
         }
@@ -106,23 +108,23 @@ open class OCKSynchronizedStoreManager<Store: OCKStoreProtocol>: Equatable, OCKS
 
     // MARK: OCKStoreDelegate Contacts
 
-    public func store<S>(_ store: S, didAddContacts contacts: [S.Contact]) where S: OCKStoreProtocol {
-        dispatchContactNotifications(store: store, category: .add, contacts: contacts)
+    open func contactStore(_ store: OCKAnyReadOnlyContactStore, didAddContacts contacts: [OCKAnyContact]) {
+        dispatchContactNotifications(category: .add, contacts: contacts)
     }
 
-    public func store<S>(_ store: S, didUpdateContacts contacts: [S.Contact]) where S: OCKStoreProtocol {
-        dispatchContactNotifications(store: store, category: .update, contacts: contacts)
+    open func contactStore(_ store: OCKAnyReadOnlyContactStore, didUpdateContacts contacts: [OCKAnyContact]) {
+        dispatchContactNotifications(category: .update, contacts: contacts)
     }
 
-    public func store<S>(_ store: S, didDeleteContacts contacts: [S.Contact]) where S: OCKStoreProtocol {
-        dispatchContactNotifications(store: store, category: .delete, contacts: contacts)
+    open func contactStore(_ store: OCKAnyReadOnlyContactStore, didDeleteContacts contacts: [OCKAnyContact]) {
+        dispatchContactNotifications(category: .delete, contacts: contacts)
     }
 
-    private func dispatchContactNotifications<S: OCKStoreProtocol>(store: S, category: OCKStoreNotificationCategory, contacts: [S.Contact]) {
+    private func dispatchContactNotifications(category: OCKStoreNotificationCategory, contacts: [OCKAnyContact]) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
-            for contact in contacts.compactMap({ $0 as? Store.Contact }) {
-                let notification = OCKContactNotification<Store>(storeManager: self, contact: contact, category: category)
+            contacts.forEach {
+                let notification = OCKContactNotification(contact: $0, category: category, storeManager: self)
                 self.subject.send(notification)
             }
         }
@@ -130,23 +132,23 @@ open class OCKSynchronizedStoreManager<Store: OCKStoreProtocol>: Equatable, OCKS
 
     // MARK: OCKStoreDelegate Tasks
 
-    public func store<S>(_ store: S, didAddTasks tasks: [S.Task]) where S: OCKStoreProtocol {
-        dispatchTaskNotifications(store: store, category: .add, tasks: tasks)
+    open func taskStore(_ store: OCKAnyReadOnlyTaskStore, didAddTasks tasks: [OCKAnyTask]) {
+        dispatchTaskNotifications(category: .add, tasks: tasks)
     }
 
-    public func store<S>(_ store: S, didUpdateTasks tasks: [S.Task]) where S: OCKStoreProtocol {
-        dispatchTaskNotifications(store: store, category: .update, tasks: tasks)
+    open func taskStore(_ store: OCKAnyReadOnlyTaskStore, didUpdateTasks tasks: [OCKAnyTask]) {
+        dispatchTaskNotifications(category: .update, tasks: tasks)
     }
 
-    public func store<S>(_ store: S, didDeleteTasks tasks: [S.Task]) where S: OCKStoreProtocol {
-        dispatchTaskNotifications(store: store, category: .delete, tasks: tasks)
+    open func taskStore(_ store: OCKAnyReadOnlyTaskStore, didDeleteTasks tasks: [OCKAnyTask]) {
+        dispatchTaskNotifications(category: .delete, tasks: tasks)
     }
 
-    private func dispatchTaskNotifications<S: OCKStoreProtocol>(store: S, category: OCKStoreNotificationCategory, tasks: [S.Task]) {
+    private func dispatchTaskNotifications(category: OCKStoreNotificationCategory, tasks: [OCKAnyTask]) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
-            for task in tasks.compactMap({ $0 as? Store.Task }) {
-                let notification = OCKTaskNotification<Store>(storeManager: self, task: task, category: category)
+            tasks.forEach {
+                let notification = OCKTaskNotification(task: $0, category: category, storeManager: self)
                 self.subject.send(notification)
             }
         }
@@ -154,23 +156,23 @@ open class OCKSynchronizedStoreManager<Store: OCKStoreProtocol>: Equatable, OCKS
 
     // MARK: OCKStoreDelegate Outcomes
 
-    public func store<S>(_ store: S, didAddOutcomes outcomes: [S.Outcome]) where S: OCKStoreProtocol {
-        dispatchOutcomeNotifications(store: store, category: .add, outcomes: outcomes)
+    open func outcomeStore(_ store: OCKAnyReadOnlyOutcomeStore, didAddOutcomes outcomes: [OCKAnyOutcome]) {
+        dispatchOutcomeNotifications(category: .add, outcomes: outcomes)
     }
 
-    public func store<S>(_ store: S, didUpdateOutcomes outcomes: [S.Outcome]) where S: OCKStoreProtocol {
-        dispatchOutcomeNotifications(store: store, category: .update, outcomes: outcomes)
+    open func outcomeStore(_ store: OCKAnyReadOnlyOutcomeStore, didUpdateOutcomes outcomes: [OCKAnyOutcome]) {
+        dispatchOutcomeNotifications(category: .update, outcomes: outcomes)
     }
 
-    public func store<S>(_ store: S, didDeleteOutcomes outcomes: [S.Outcome]) where S: OCKStoreProtocol {
-        dispatchOutcomeNotifications(store: store, category: .delete, outcomes: outcomes)
+    open func outcomeStore(_ store: OCKAnyReadOnlyOutcomeStore, didDeleteOutcomes outcomes: [OCKAnyOutcome]) {
+        dispatchOutcomeNotifications(category: .delete, outcomes: outcomes)
     }
 
-    private func dispatchOutcomeNotifications<S: OCKStoreProtocol>(store: S, category: OCKStoreNotificationCategory, outcomes: [S.Outcome]) {
+    private func dispatchOutcomeNotifications(category: OCKStoreNotificationCategory, outcomes: [OCKAnyOutcome]) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
-            for outcome in outcomes.compactMap({ $0 as? Store.Outcome }) {
-                let notification = OCKOutcomeNotification<Store>(storeManager: self, outcome: outcome, category: category)
+            outcomes.forEach {
+                let notification = OCKOutcomeNotification(outcome: $0, category: category, storeManager: self)
                 self.subject.send(notification)
             }
         }

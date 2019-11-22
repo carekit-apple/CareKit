@@ -165,7 +165,7 @@ class OCKCartesianCoordinatesLayer: CALayer, OCKSinglePlotable {
     }
 
     /// Converts points from graph space to view space
-    private func convert(graphSpacePoints points: [CGPoint]) -> [CGPoint] {
+    func convert(graphSpacePoints points: [CGPoint]) -> [CGPoint] {
         let graphRect = graphBounds()
         let viewRect = bounds
 

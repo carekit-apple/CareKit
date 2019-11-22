@@ -30,50 +30,51 @@
 
 import Foundation
 
-public extension OCKStore {
-    func fetchOutcomes(_ anchor: OCKOutcomeAnchor? = nil, query: OCKOutcomeQuery? = nil, queue: DispatchQueue = .main,
-                       completion: @escaping (Result<[OCKOutcome], OCKStoreError>) -> Void) {
+extension OCKStore {
+
+    open func fetchOutcomes(query: OCKOutcomeQuery = OCKOutcomeQuery(), callbackQueue: DispatchQueue = .main,
+                            completion: @escaping (Result<[OCKOutcome], OCKStoreError>) -> Void) {
         context.perform {
             do {
-                let predicate = try self.buildPredicate(for: anchor, and: query)
+                let predicate = try self.buildPredicate(for: query)
                 let objects = OCKCDOutcome.fetchFromStore(in: self.context, where: predicate) { fetchRequest in
-                    fetchRequest.fetchLimit = query?.limit ?? 0
-                    fetchRequest.fetchOffset = query?.offset ?? 0
+                    fetchRequest.fetchLimit = query.limit ?? 0
+                    fetchRequest.fetchOffset = query.offset
                     fetchRequest.sortDescriptors = self.buildSortDescriptors(for: query)
                 }
 
-                let outcomes = objects.map(self.makeOutcome)
-                queue.async { completion(.success(outcomes)) }
+                let outcomes = try objects.map(self.makeOutcome)
+                callbackQueue.async { completion(.success(outcomes)) }
             } catch {
                 self.context.rollback()
                 let reason = "Failed to fetch outcomes with query: \(String(describing: query)). \(error.localizedDescription)"
-                queue.async { completion(.failure(.fetchFailed(reason: reason))) }
+                callbackQueue.async { completion(.failure(.fetchFailed(reason: reason))) }
             }
         }
     }
 
-    func addOutcomes(_ outcomes: [OCKOutcome], queue: DispatchQueue = .main,
-                     completion: ((Result<[OCKOutcome], OCKStoreError>) -> Void)? = nil) {
+    open func addOutcomes(_ outcomes: [OCKOutcome], callbackQueue: DispatchQueue = .main,
+                          completion: ((Result<[OCKOutcome], OCKStoreError>) -> Void)? = nil) {
         context.perform {
             do {
-                let persistableOutcomes = outcomes.map { self.addOutcome($0) }
+                let persistableOutcomes = outcomes.map(self.createOutcome)
                 try self.context.save()
-                let updatedOutcomes = persistableOutcomes.map(self.makeOutcome)
-                queue.async {
-                    self.delegate?.store(self, didAddOutcomes: updatedOutcomes)
+                let updatedOutcomes = try persistableOutcomes.map(self.makeOutcome)
+                callbackQueue.async {
+                    self.outcomeDelegate?.outcomeStore(self, didAddOutcomes: updatedOutcomes)
                     completion?(.success(updatedOutcomes))
                 }
             } catch {
                 self.context.rollback()
-                queue.async {
+                callbackQueue.async {
                     completion?(.failure(.addFailed(reason: "Failed to insert OKCOutomes: [\(outcomes)]. \(error.localizedDescription)")))
                 }
             }
         }
     }
 
-    func updateOutcomes(_ outcomes: [OCKOutcome], queue: DispatchQueue = .main,
-                        completion: ((Result<[OCKOutcome], OCKStoreError>) -> Void)? = nil) {
+    open func updateOutcomes(_ outcomes: [OCKOutcome], callbackQueue: DispatchQueue = .main,
+                             completion: ((Result<[OCKOutcome], OCKStoreError>) -> Void)? = nil) {
         do {
             let objectIDs = try retrieveObjectIDs(for: outcomes)
             let predicate = NSPredicate(format: "self IN %@", objectIDs)
@@ -85,21 +86,21 @@ public extension OCKStore {
                 copyOutcome(outcomes[outcomeIndex], to: currentOutcomes[index])
             }
             try context.save()
-            let updatedOutcomes = currentOutcomes.map(makeOutcome)
-            queue.async {
-                self.delegate?.store(self, didUpdateOutcomes: updatedOutcomes)
+            let updatedOutcomes = try currentOutcomes.map(makeOutcome)
+            callbackQueue.async {
+                self.outcomeDelegate?.outcomeStore(self, didUpdateOutcomes: updatedOutcomes)
                 completion?(.success(updatedOutcomes))
             }
         } catch {
             context.rollback()
-            queue.async {
+            callbackQueue.async {
                 completion?(.failure(.updateFailed(reason: "Failed to update OCKOutcomes: [\(outcomes)]. \(error.localizedDescription)")))
             }
         }
     }
 
-    func deleteOutcomes(_ outcomes: [OCKOutcome], queue: DispatchQueue = .main,
-                        completion: ((Result<[OCKOutcome], OCKStoreError>) -> Void)? = nil) {
+    open func deleteOutcomes(_ outcomes: [OCKOutcome], callbackQueue: DispatchQueue = .main,
+                             completion: ((Result<[OCKOutcome], OCKStoreError>) -> Void)? = nil) {
         context.perform {
             do {
                 let objectIDs = try self.retrieveObjectIDs(for: outcomes)
@@ -112,13 +113,13 @@ public extension OCKStore {
                 }
                 persistableOutcomes.forEach { self.context.delete($0) }
                 try self.context.save()
-                queue.async {
-                    self.delegate?.store(self, didDeleteOutcomes: outcomes)
+                callbackQueue.async {
+                    self.outcomeDelegate?.outcomeStore(self, didDeleteOutcomes: outcomes)
                     completion?(.success(outcomes))
                 }
             } catch {
                 self.context.rollback()
-                queue.async {
+                callbackQueue.async {
                     completion?(.failure(.deleteFailed(reason: "Failed to delete OCKOutcomes: [\(outcomes)]. \(error.localizedDescription)")))
                 }
             }
@@ -127,10 +128,7 @@ public extension OCKStore {
 
     // MARK: Private
 
-    /// - Remark: This does not commit the transaction. After calling this function one or more times, you must call `context.save()` in order to
-    /// persist the changes to disk. This is an optimization to allow batching.
-    /// - Remark: You should verify that the object does not already exist in the database and validate its values before calling this method.
-    private func addOutcome(_ outcome: OCKOutcome) -> OCKCDOutcome {
+    private func createOutcome(from outcome: OCKOutcome) -> OCKCDOutcome {
         let persistableOutcome = OCKCDOutcome(context: context)
         copyOutcome(outcome, to: persistableOutcome)
         return persistableOutcome
@@ -138,77 +136,73 @@ public extension OCKStore {
 
     private func copyOutcome(_ outcome: OCKOutcome, to persistableOutcome: OCKCDOutcome) {
         persistableOutcome.copyValues(from: outcome)
-        persistableOutcome.allowsMissingRelationships = allowsEntitiesWithMissingRelationships
-        persistableOutcome.values = Set(outcome.values.map(addValue))
-        persistableOutcome.taskOccurenceIndex = outcome.taskOccurenceIndex
-        if let taskID = outcome.taskID, let task: OCKCDTask = try? fetchObject(havingLocalID: taskID) {
-            let schedule = makeSchedule(from: task.scheduleElements)
-            persistableOutcome.date = schedule.event(forOccurenceIndex: outcome.taskOccurenceIndex)?.start
+        persistableOutcome.values = Set(outcome.values.map(createValue))
+        persistableOutcome.taskOccurrenceIndex = outcome.taskOccurrenceIndex
+        if let task: OCKCDTask = try? fetchObject(havingLocalID: outcome.taskID) {
+            let schedule = makeSchedule(elements: Array(task.scheduleElements))
+            persistableOutcome.date = schedule.event(forOccurrenceIndex: outcome.taskOccurrenceIndex)?.start
             persistableOutcome.task = task
         }
     }
 
-    /// - Remark: This does not commit the transaction. After calling this function one or more times, you must call `context.save()` in order to
-    /// persist the changes to disk. This is an optimization to allow batching.
-    internal func addValue(_ value: OCKOutcomeValue) -> OCKCDOutcomeValue {
-        let object = OCKCDOutcomeValue(context: context)
-        object.copyValues(from: value)
-        object.value = value.value
-        object.kind = value.kind
-        object.units = value.units
-        object.index = value.index == nil ? nil : NSNumber(value: value.index!)
-        return object
-    }
-
     /// - Remark: This method is intended to create a value type struct from a *persisted* NSManagedObject. Calling this method with an
     /// object that is not yet commited is a programmer error.
-    private func makeOutcome(from object: OCKCDOutcome) -> OCKOutcome {
+    private func makeOutcome(from object: OCKCDOutcome) throws -> OCKOutcome {
         assert(object.localDatabaseID != nil, "You shouldn't be calling this method with an object that hasn't been saved yet!")
+        guard let taskID = object.task?.localDatabaseID else { throw OCKStoreError.invalidValue(reason: "Couldn't find a task for the outcome!") }
         let responses = object.values.map(makeValue)
-        var outcome = OCKOutcome(taskID: object.task?.localDatabaseID, taskOccurenceIndex: object.taskOccurenceIndex, values: responses)
+        var outcome = OCKOutcome(taskID: taskID, taskOccurrenceIndex: object.taskOccurrenceIndex, values: responses)
         outcome.copyCommonValues(from: object)
         return outcome
     }
-    private func buildPredicate(for anchor: OCKOutcomeAnchor?, and query: OCKOutcomeQuery?) throws -> NSPredicate {
-        return NSCompoundPredicate(andPredicateWithSubpredicates: [
-            try buildSubquery(for: anchor),
-            buildSubquery(for: query)
-        ])
-    }
 
-    private func buildSubquery(for anchor: OCKOutcomeAnchor?) throws -> NSPredicate {
-        guard let anchor = anchor else { return NSPredicate(value: true) }
-        switch anchor {
-        case .taskIdentifiers(let taskIdentifiers):
-            return NSPredicate(format: "%K IN %@", #keyPath(OCKCDOutcome.task.identifier), taskIdentifiers)
-        case .taskVersions(let taskVersionedLocalIDs):
-            return NSPredicate(format: "%K IN %@", #keyPath(OCKCDOutcome.task), try taskVersionedLocalIDs.map { try objectID(for: $0) })
-        case .taskRemoteIDs(let remoteIDs):
-            return NSPredicate(format: "%K IN %@", #keyPath(OCKCDOutcome.task.remoteID), remoteIDs)
+    private func buildPredicate(for query: OCKOutcomeQuery) throws -> NSPredicate {
+        var predicate = NSPredicate(value: true)
 
-        case .outcomeVersions(let outcomeVersionedLocalIDs):
-            return NSPredicate(format: "self IN %@", try outcomeVersionedLocalIDs.map { try objectID(for: $0) })
-        case .outcomeRemoteIDs(let remoteIDs):
-            return NSPredicate(format: "%K IN %@", #keyPath(OCKCDVersionedObject.remoteID), remoteIDs)
+        if let interval = query.dateInterval {
+            let afterPredicate = NSPredicate(format: "%K >= %@", #keyPath(OCKCDOutcome.date), interval.start as NSDate)
+            let beforePredicate = NSPredicate(format: "%K < %@", #keyPath(OCKCDOutcome.date), interval.end as NSDate)
+            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, afterPredicate, beforePredicate])
         }
-    }
 
-    private func buildSubquery(for query: OCKOutcomeQuery?) -> NSPredicate {
-        guard let query = query else { return NSPredicate(value: true) }
-        let afterPredicate = NSPredicate(format: "%K >= %@", #keyPath(OCKCDOutcome.date), query.start as NSDate)
-        let beforePredicate = NSPredicate(format: "%K < %@", #keyPath(OCKCDOutcome.date), query.end as NSDate)
-        var predicate: NSPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [afterPredicate, beforePredicate])
-        if let groupIdentifiers = query.groupIdentifiers {
-            predicate = predicate.including(groupIdentifiers: groupIdentifiers)
+        if !query.localIDs.isEmpty {
+            let localPredicate = NSPredicate(format: "self IN %@", try query.localIDs.map { try objectID(for: $0) })
+            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, localPredicate])
         }
-        if let tags = query.tags {
-            predicate = predicate.including(tags: tags)
+
+        if !query.remoteIDs.isEmpty {
+            let remotePredicate = NSPredicate(format: "%K IN %@", #keyPath(OCKCDVersionedObject.remoteID), query.remoteIDs)
+            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, remotePredicate])
         }
+
+        if !query.taskIDs.isEmpty {
+            let taskPredicate = NSPredicate(format: "%K IN %@", #keyPath(OCKCDOutcome.task.id), query.taskIDs)
+            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, taskPredicate])
+        }
+
+        if !query.taskVersionIDs.isEmpty {
+            let taskPredicate = NSPredicate(format: "%K IN %@", #keyPath(OCKCDOutcome.task), try query.taskVersionIDs.map { try objectID(for: $0) })
+            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, taskPredicate])
+        }
+
+        if !query.taskRemoteIDs.isEmpty {
+            let taskPredicate = NSPredicate(format: "%K IN %@", #keyPath(OCKCDOutcome.task.remoteID), query.taskRemoteIDs)
+            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, taskPredicate])
+        }
+
+        if !query.groupIdentifiers.isEmpty {
+            predicate = predicate.including(groupIdentifiers: query.groupIdentifiers)
+        }
+
+        if !query.tags.isEmpty {
+            predicate = predicate.including(tags: query.tags)
+        }
+
         return predicate
     }
 
     private func buildSortDescriptors(for query: OCKOutcomeQuery?) -> [NSSortDescriptor] {
-        guard let orders = query?.sortDescriptors else { return [] }
+        guard let orders = query?.extendedSortDescriptors else { return [] }
         return orders.map { order -> NSSortDescriptor in
             switch order {
             case .date(ascending: let ascending): return NSSortDescriptor(keyPath: \OCKCDOutcome.date, ascending: ascending)

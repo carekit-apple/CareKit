@@ -33,27 +33,13 @@ import UIKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-    var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        let rootViewController = RootViewController(style: .grouped)
-        let navigationController = UINavigationController(rootViewController: rootViewController)
-
-        window = UIWindow(frame: UIScreen.main.bounds)
-
-        window?.tintColor = UIColor { traitCollection -> UIColor in
-            return traitCollection.userInterfaceStyle == .light ? #colorLiteral(red: 0.9960784314, green: 0.3725490196, blue: 0.368627451, alpha: 1) : #colorLiteral(red: 0.8627432641, green: 0.2630574384, blue: 0.2592858295, alpha: 1)
-        }
-
-        window?.rootViewController = navigationController
-        window?.makeKeyAndVisible()
-        configureApp(rootViewController: rootViewController)
-
         return true
     }
 
-    private func configureApp(rootViewController: RootViewController) {
-        let store = OCKStore(name: "carekit-catalog")
-        rootViewController.storeManager = .init(wrapping: store)
+    func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession,
+                     options: UIScene.ConnectionOptions) -> UISceneConfiguration {
+        return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
     }
 }

@@ -30,9 +30,11 @@
 
 /// Specifies options that can be applied to an `OCKStore`.
 public struct OCKStoreConfiguration: Equatable {
-    /// If true, all updates applied to versioned values will result in new versions of those values being created instead of updating them in place.
-    /// If false, the values will be updated in place without creating a new version.
-    public var updatesCreateNewVersions = true
+
+    /// True by default. Setting to false will enforce that all database entities have the expected relationships.
+    /// Specifically, it will cause errors to be throw if any care plan's patient is not specified, and task's care
+    /// plan is not specified, any contact's care plan is not specified, or any outcome's task is not specified.
+    public var allowsEntitiesWithMissingRelationships = true
 
     /// Initialize a new `OCKStoreConfiguration` with default parameters.
     public init() {}

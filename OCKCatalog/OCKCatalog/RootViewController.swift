@@ -1,21 +1,21 @@
 /*
  Copyright (c) 2019, Apple Inc. All rights reserved.
- 
+
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
- 
+
  1.  Redistributions of source code must retain the above copyright notice, this
  list of conditions and the following disclaimer.
- 
+
  2.  Redistributions in binary form must reproduce the above copyright notice,
  this list of conditions and the following disclaimer in the documentation and/or
  other materials provided with the distribution.
- 
+
  3. Neither the name of the copyright holder(s) nor the names of any contributors
  may be used to endorse or promote products derived from this software without
  specific prior written permission. No license is granted to the trademarks of
  the copyright holders even if such marks are included in this software.
- 
+
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -28,8 +28,8 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import AuthenticationServices
 import CareKit
+import UIKit
 
 class RootViewController: UITableViewController {
     private enum Constants {
@@ -40,7 +40,7 @@ class RootViewController: UITableViewController {
     }
 
     private enum Section: String, CaseIterable {
-        case task, contact, chart, lists
+        case task, contact, chart, list
     }
 
     private enum TaskStyle: String, CaseIterable {
@@ -56,18 +56,17 @@ class RootViewController: UITableViewController {
         case tasks, contacts
     }
 
-    var storeManager: OCKSynchronizedStoreManager<OCKStore>? {
-        didSet {
-            dataIsReady = false
-            storeManager?.store.fillWithDummyData { [weak self] in
-                guard let self = self else { return }
-                self.dataIsReady = true
-                self.tableView.reloadData()
-            }
-        }
+    private let storeManager: OCKSynchronizedStoreManager
+
+    init(store: OCKStore) {
+        self.storeManager =  .init(wrapping: store)
+        super.init(style: .grouped)
     }
 
-    private var dataIsReady = false
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -78,10 +77,12 @@ class RootViewController: UITableViewController {
 
         navigationController?.navigationBar.prefersLargeTitles = true
         title = "CareKit Catalog"
+
+        tableView.reloadData()
     }
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return dataIsReady ? Section.allCases.count : 0
+        return Section.allCases.count
     }
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -93,7 +94,7 @@ class RootViewController: UITableViewController {
         case .task: return TaskStyle.allCases.count
         case .contact: return ContactStyle.allCases.count
         case .chart: return OCKCartesianGraphView.PlotType.allCases.count
-        case .lists: return List.allCases.count
+        case .list: return List.allCases.count
         }
     }
 
@@ -104,39 +105,54 @@ class RootViewController: UITableViewController {
         case .task: title = TaskStyle.allCases[indexPath.row].rawValue
         case .contact: title = ContactStyle.allCases[indexPath.row].rawValue
         case .chart: title = OCKCartesianGraphView.PlotType.allCases[indexPath.row].rawValue
-        case .lists: title = List.allCases[indexPath.row].rawValue
+        case .list: title = List.allCases[indexPath.row].rawValue
         }
         cell.textLabel?.text = title.capitalized
         return cell
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let storeManager = storeManager else { return }
         var viewController: UIViewController
 
         let section = Section.allCases[indexPath.section]
         switch section {
         case .task:
             let taskViewController = makeTaskViewController(withStyle: TaskStyle.allCases[indexPath.row], storeManager: storeManager)
-            viewController = ContainerViewController(childViewController: taskViewController)
+            let listController = OCKListViewController()
+            listController.appendViewController(taskViewController, animated: false)
+            viewController = listController
 
         case .contact:
             let contactViewController = makeContactViewController(withStyle: ContactStyle.allCases[indexPath.row], storeManager: storeManager)
-            viewController = ContainerViewController(childViewController: contactViewController)
+            let listController = OCKListViewController()
+            listController.appendViewController(contactViewController, animated: false)
+            viewController = listController
 
         case .chart:
             let chartViewController = makeChartViewController(withStyle: OCKCartesianGraphView.PlotType.allCases[indexPath.row],
                                                               storeManager: storeManager)
-            viewController = ContainerViewController(childViewController: chartViewController)
+            let listController = OCKListViewController()
+            listController.appendViewController(chartViewController, animated: false)
+            viewController = listController
 
-        case .lists:
+        case .list:
             switch List.allCases[indexPath.row] {
-            case .tasks: viewController = UINavigationController(rootViewController: OCKDailyTasksPageViewController(storeManager: storeManager))
-            case .contacts: viewController = UINavigationController(rootViewController: OCKContactsListViewController(storeManager: storeManager))
+            case .tasks:
+                let rootViewController = OCKDailyTasksPageViewController(storeManager: storeManager)
+                rootViewController.isModalInPresentation = true
+                rootViewController.navigationItem.rightBarButtonItem = .init(barButtonSystemItem: .done,
+                                                                             target: self, action: #selector(dismissViewController))
+                viewController = UINavigationController(rootViewController: rootViewController)
+
+            case .contacts:
+                let rootViewController = OCKContactsListViewController(storeManager: storeManager)
+                rootViewController.isModalInPresentation = true
+                rootViewController.navigationItem.rightBarButtonItem = .init(barButtonSystemItem: .done,
+                                                                             target: self, action: #selector(dismissViewController))
+                viewController = UINavigationController(rootViewController: rootViewController)
             }
         }
-
-        if section == .lists {
+        if section == .list {
             present(viewController, animated: true, completion: nil)
         } else {
             navigationController?.pushViewController(viewController, animated: true)
@@ -144,32 +160,36 @@ class RootViewController: UITableViewController {
         clearSelection()
     }
 
-    private func makeTaskViewController(withStyle style: TaskStyle, storeManager: OCKSynchronizedStoreManager<OCKStore>) -> UIViewController {
+    private func makeTaskViewController(withStyle style: TaskStyle, storeManager: OCKSynchronizedStoreManager) -> UIViewController {
         switch style {
         case .checklist:
-            return OCKChecklistTaskViewController(storeManager: storeManager, taskIdentifier: Constants.trackedTaskID, eventQuery: .today)
+            return OCKChecklistTaskViewController(taskID: Constants.trackedTaskID, eventQuery: .init(for: Date()), storeManager: storeManager)
         case .grid:
-            return OCKGridTaskViewController(storeManager: storeManager, taskIdentifier: Constants.trackedTaskID, eventQuery: .today)
+            return OCKGridTaskViewController(taskID: Constants.trackedTaskID, eventQuery: .init(for: Date()), storeManager: storeManager)
         case .simple:
-            return OCKSimpleTaskViewController(storeManager: storeManager, taskIdentifier: Constants.trackedTaskID, eventQuery: .today)
+            return OCKSimpleTaskViewController(taskID: Constants.trackedTaskID, eventQuery: .init(for: Date()), storeManager: storeManager)
         case .instructions:
-            return OCKInstructionsTaskViewController(storeManager: storeManager, taskIdentifier: Constants.trackedTaskID, eventQuery: .today)
+           return OCKInstructionsTaskViewController(taskID: Constants.trackedTaskID, eventQuery: .init(for: Date()), storeManager: storeManager)
         case .buttonLog:
-            return OCKButtonLogTaskViewController(storeManager: storeManager, taskIdentifier: Constants.untrackedTaskID, eventQuery: .today)
+            return OCKButtonLogTaskViewController(taskID: Constants.untrackedTaskID, eventQuery: .init(for: Date()), storeManager: storeManager)
         }
     }
 
-    private func makeContactViewController(withStyle style: ContactStyle, storeManager: OCKSynchronizedStoreManager<OCKStore>) -> UIViewController {
+    private func makeContactViewController(withStyle style: ContactStyle, storeManager: OCKSynchronizedStoreManager) -> UIViewController {
         switch style {
         case .simple:
-            return OCKSimpleContactViewController(storeManager: storeManager, contactIdentifier: Constants.contactID, query: nil)
+            let viewController = OCKSimpleContactViewController(contactID: Constants.contactID, storeManager: storeManager)
+            return viewController
+
         case .detailed:
-            return OCKDetailedContactViewController(storeManager: storeManager, contactIdentifier: Constants.contactID, query: nil)
+           let viewController = OCKDetailedContactViewController(contactID: Constants.contactID, storeManager: storeManager)
+           viewController.controller.fetchAndObserveContact(withID: Constants.contactID)
+            return viewController
         }
     }
 
     private func makeChartViewController(withStyle style: OCKCartesianGraphView.PlotType,
-                                         storeManager: OCKSynchronizedStoreManager<OCKStore>) -> UIViewController {
+                                         storeManager: OCKSynchronizedStoreManager) -> UIViewController {
         let gradientStart = UIColor { traitCollection -> UIColor in
             return traitCollection.userInterfaceStyle == .light ? #colorLiteral(red: 0.9960784314, green: 0.3725490196, blue: 0.368627451, alpha: 1) : #colorLiteral(red: 0.8627432641, green: 0.2630574384, blue: 0.2592858295, alpha: 1)
         }
@@ -180,8 +200,8 @@ class RootViewController: UITableViewController {
         let markerSize: CGFloat = style == .bar ? 10 : 2
         let startOfDay = Calendar.current.startOfDay(for: Date())
         let configurations = [
-            OCKDataSeriesConfiguration<OCKStore>(
-                taskIdentifier: Constants.trackedTaskID,
+            OCKDataSeriesConfiguration(
+                taskID: Constants.trackedTaskID,
                 legendTitle: Constants.trackedTaskID.capitalized,
                 gradientStartColor: gradientStart,
                 gradientEndColor: gradientEnd,
@@ -189,10 +209,10 @@ class RootViewController: UITableViewController {
                 eventAggregator: .countOutcomeValues)
         ]
 
-        let chartViewController = OCKCartesianChartViewController(storeManager: storeManager, type: style,
-                                                                  dataSeriesConfigurations: configurations, date: startOfDay)
-        chartViewController.synchronizedView.headerView.titleLabel.text = Constants.trackedTaskID.capitalized
-
+        let chartViewController = OCKCartesianChartViewController(plotType: style, selectedDate: startOfDay,
+                                                                  configurations: configurations, storeManager: storeManager)
+        chartViewController.controller.fetchAndObserveInsights(forConfigurations: configurations)
+        chartViewController.chartView.headerView.titleLabel.text = Constants.trackedTaskID.capitalized
         return chartViewController
     }
 
@@ -200,5 +220,10 @@ class RootViewController: UITableViewController {
         if let selectionPath = self.tableView.indexPathForSelectedRow {
             self.tableView.deselectRow(at: selectionPath, animated: true)
         }
+    }
+
+    @objc
+    private func dismissViewController() {
+        dismiss(animated: true, completion: nil)
     }
 }

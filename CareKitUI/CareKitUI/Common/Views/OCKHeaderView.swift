@@ -1,21 +1,21 @@
 /*
  Copyright (c) 2019, Apple Inc. All rights reserved.
-
+ 
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
-
+ 
  1.  Redistributions of source code must retain the above copyright notice, this
  list of conditions and the following disclaimer.
-
+ 
  2.  Redistributions in binary form must reproduce the above copyright notice,
  this list of conditions and the following disclaimer in the documentation and/or
  other materials provided with the distribution.
-
+ 
  3. Neither the name of the copyright holder(s) nor the names of any contributors
  may be used to endorse or promote products derived from this software without
  specific prior written permission. No license is granted to the trademarks of
  the copyright holders even if such marks are included in this software.
-
+ 
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -44,7 +44,10 @@ import UIKit
 ///    +----------------------------------------+
 ///
 open class OCKHeaderView: OCKView {
-    // MARK: Properties
+
+    private enum Constants {
+        static let spacing: CGFloat = 4
+    }
 
     /// Configuration for a header view.
     public struct Configuration {
@@ -58,18 +61,7 @@ open class OCKHeaderView: OCKView {
         public var showsIconImage: Bool = false
     }
 
-    /// The configuration for the view.
-    private let configuration: Configuration
-
-    private enum Constants {
-        static let bundle = Bundle(for: OCKHeaderView.self)
-        static let spacing: CGFloat = 4
-    }
-
-    private var detailDisclosureImageWidthConstraint: NSLayoutConstraint?
-    private var iconImageHeightConstraint: NSLayoutConstraint?
-
-    // MARK: Stack views
+    // MARK: Properties
 
     /// Vertical stack view that holds the main content.
     public let contentStackView: OCKStackView = {
@@ -78,29 +70,8 @@ open class OCKHeaderView: OCKView {
         return stackView
     }()
 
-    /// Stack view that holds the text content in the header.
-    private let headerTextStackView: OCKStackView = {
-        let stackView = OCKStackView(style: .plain)
-        stackView.axis = .vertical
-        return stackView
-    }()
-
-    /// Stack view that holds the content in the header.
-    private let headerStackView: OCKStackView = {
-        let stackView = OCKStackView(style: .plain)
-        stackView.alignment = .center
-        return stackView
-    }()
-
-    // MARK: Images
-
-    /// The image on the leading end of the text in the view. Depending on the configuration, this may be ni.
-    public let iconImageView: UIImageView?
-
     /// The image on the trialing end of the view. The default image is an arrow. Depending on the configuration, this may be nil.
     public let detailDisclosureImage: UIImageView?
-
-    // MARK: Labels
 
     /// Multi-line title label above `detailLabel`
     public let titleLabel: OCKLabel = {
@@ -118,7 +89,32 @@ open class OCKHeaderView: OCKView {
         return label
     }()
 
-    // MARK: Misc views
+    /// The image on the leading end of the text in the view. Depending on the configuration, this may be ni.
+    public let iconImageView: UIImageView?
+
+    /// The configuration for the view.
+    private let configuration: Configuration
+
+    /// Stack view that holds the text content in the header.
+    private let headerTextStackView = OCKStackView.vertical()
+
+    /// Stack view that holds the content in the header.
+    private let headerStackView: OCKStackView = {
+        let stackView = OCKStackView.horizontal()
+        stackView.alignment = .center
+        return stackView
+    }()
+
+    private var iconImageHeightConstraint: NSLayoutConstraint?
+
+    private lazy var iconHeight = OCKAccessibleValue(container: style(), keyPath: \.dimension.imageHeight2) { [weak self] newHeight in
+        self?.iconImageHeightConstraint?.constant = newHeight
+    }
+
+    private lazy var detailDisclosurePointSize = OCKAccessibleValue(container: style(),
+                                                                    keyPath: \.dimension.symbolPointSize4) { [detailDisclosureImage] newPointSize in
+        detailDisclosureImage?.preferredSymbolConfiguration = .init(pointSize: newPointSize)
+    }
 
     /// Separator between the header and the body.
     private let separatorView: OCKSeparatorView?
@@ -135,6 +131,8 @@ open class OCKHeaderView: OCKView {
         detailDisclosureImage = configuration.showsDetailDisclosure ? OCKHeaderView.makeDetailDisclosureImage() : nil
         separatorView = configuration.showsSeparator ? OCKSeparatorView() : nil
         super.init()
+
+        accessibilityTraits = configuration.showsDetailDisclosure ? [.header, .button] : [.header]
     }
 
     public required init?(coder aDecoder: NSCoder) {
@@ -152,6 +150,7 @@ open class OCKHeaderView: OCKView {
         addSubviews()
         constrainSubviews()
         styleSubviews()
+        isAccessibilityElement = true
     }
 
     private func addSubviews() {
@@ -168,7 +167,7 @@ open class OCKHeaderView: OCKView {
     }
 
     private func styleSubviews() {
-        let margin = directionalLayoutMargins.top * 2
+        let margin = style().dimension.directionalInsets1.top
         contentStackView.spacing = margin
         headerStackView.spacing = margin / 2.0
         headerTextStackView.spacing = margin / 4.0
@@ -176,36 +175,29 @@ open class OCKHeaderView: OCKView {
     }
 
     private static func makeIconImageView() -> UIImageView {
-        let imageView = UIImageView()
+        let imageView = OCKCircleImageView()
         imageView.contentMode = .scaleAspectFill
-        imageView.clipsToBounds = true
         return imageView
     }
 
     private static func makeDetailDisclosureImage() -> UIImageView {
         let image = UIImage(systemName: "chevron.right")
         let imageView = UIImageView(image: image)
-        imageView.contentMode = .scaleAspectFit
         return imageView
     }
 
     private func constrainSubviews() {
         contentStackView.translatesAutoresizingMaskIntoConstraints = false
+        detailDisclosureImage?.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        iconImageView?.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         var constraints = contentStackView.constraints(equalTo: self)
 
-        if let detailDisclosureImage = detailDisclosureImage {
-            detailDisclosureImage.translatesAutoresizingMaskIntoConstraints = false
-            // Constant will be set when style is updated
-            detailDisclosureImageWidthConstraint = detailDisclosureImage.widthAnchor.constraint(equalToConstant: 0)
-            constraints.append(detailDisclosureImageWidthConstraint!)
-        }
-
-        if let iconImageView = iconImageView {
-            iconImageView.translatesAutoresizingMaskIntoConstraints = false
-            iconImageHeightConstraint = iconImageView.heightAnchor.constraint(equalToConstant: 0) // Constant will be set when style is updated
+        if let imageView = iconImageView {
+            imageView.translatesAutoresizingMaskIntoConstraints = false
+            iconImageHeightConstraint = imageView.heightAnchor.constraint(equalToConstant: iconHeight.scaledValue)
             constraints += [
-                iconImageHeightConstraint!,
-                iconImageView.widthAnchor.constraint(equalTo: iconImageView.heightAnchor)
+                imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor),
+                iconImageHeightConstraint!
             ]
         }
 
@@ -214,16 +206,59 @@ open class OCKHeaderView: OCKView {
 
     override open func styleDidChange() {
         super.styleDidChange()
-        let cachedStyle = style()
-        titleLabel.textColor = cachedStyle.color.label
-        detailLabel.textColor = cachedStyle.color.label
+        let style = self.style()
+        titleLabel.textColor = style.color.label
+        detailLabel.textColor = style.color.label
 
-        iconImageView?.layer.cornerRadius = cachedStyle.dimension.iconHeight1 / 2.0
-        iconImageView?.tintColor = cachedStyle.color.systemGray3
+        detailDisclosureImage?.tintColor = style.color.customGray3
+        iconImageView?.tintColor = style.color.customGray3
 
-        detailDisclosureImage?.tintColor = cachedStyle.color.systemGray3
+        iconHeight.update(withContainer: style)
+        detailDisclosurePointSize.update(withContainer: style)
+    }
 
-        detailDisclosureImageWidthConstraint?.constant = cachedStyle.dimension.iconHeight4
-        iconImageHeightConstraint?.constant = cachedStyle.dimension.iconHeight1
+    override open func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        if previousTraitCollection?.preferredContentSizeCategory != traitCollection.preferredContentSizeCategory {
+            [iconHeight, detailDisclosurePointSize].forEach { $0.apply() }
+        }
+    }
+}
+
+private class OCKCircleImageView: UIImageView {
+
+    private let maskLayer = CAShapeLayer()
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setup()
+    }
+
+    override init(image: UIImage?) {
+        super.init(image: image)
+        setup()
+    }
+
+    override init(image: UIImage?, highlightedImage: UIImage?) {
+        super.init(image: image, highlightedImage: highlightedImage)
+        setup()
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    private func setup() {
+        maskLayer.path = CGPath(ellipseIn: bounds, transform: nil)
+        maskLayer.backgroundColor = UIColor.black.cgColor
+
+        layer.mask = maskLayer
+        clipsToBounds = true
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        maskLayer.path = CGPath(ellipseIn: bounds, transform: nil)
     }
 }

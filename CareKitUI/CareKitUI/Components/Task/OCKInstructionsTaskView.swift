@@ -1,21 +1,21 @@
 /*
  Copyright (c) 2019, Apple Inc. All rights reserved.
-
+ 
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
-
+ 
  1.  Redistributions of source code must retain the above copyright notice, this
  list of conditions and the following disclaimer.
-
+ 
  2.  Redistributions in binary form must reproduce the above copyright notice,
  this list of conditions and the following disclaimer in the documentation and/or
  other materials provided with the distribution.
-
+ 
  3. Neither the name of the copyright holder(s) nor the names of any contributors
  may be used to endorse or promote products derived from this software without
  specific prior written permission. No license is granted to the trademarks of
  the copyright holders even if such marks are included in this software.
-
+ 
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -52,26 +52,36 @@ import UIKit
 ///     |                                                       |
 ///     +-------------------------------------------------------+
 ///
-open class OCKInstructionsTaskView: OCKView, OCKEventDisplayable {
+open class OCKInstructionsTaskView: OCKView, OCKTaskDisplayable {
+
     // MARK: Properties
 
-    let contentView = OCKView()
+    let contentView: OCKView = {
+        let view = OCKView()
+        view.clipsToBounds = true
+        return view
+    }()
 
-    private lazy var cardAssembler = OCKCardAssembler(cardView: self, contentView: contentView)
+    private lazy var cardBuilder = OCKCardBuilder(cardView: self, contentView: contentView)
+
+    private lazy var headerButton = OCKAnimatedButton(contentView: headerView, highlightOptions: [.defaultDelayOnSelect, .defaultOverlay],
+                                                      handlesSelection: false)
+
+    private let headerStackView = OCKStackView.vertical()
 
     /// A vertical stack view that holds the main content for the view.
     public let contentStackView: OCKStackView = {
-        let stack = OCKStackView()
-        stack.axis = .vertical
+        let stack = OCKStackView.vertical()
+        stack.isLayoutMarginsRelativeArrangement = true
         return stack
     }()
 
-    /// Handles events related to an `OCKEventDisplayable` object.
-    public weak var delegate: OCKEventViewDelegate?
+    /// Handles events related to an `OCKTaskDisplayable` object.
+    public weak var delegate: OCKTaskViewDelegate?
 
     /// The button on the bottom of the view. The background color is the `tintColor` when in a normal state. and gray when
-    /// in a selected state. Also supports a `titleLabel`.
-    public let completionButton: OCKButton = OCKLabeledButton()
+    /// in a selected state.
+    public let completionButton = OCKLabeledButton()
 
     /// Multi-line label over the `completionButton`.
     public let instructionsLabel: OCKLabel = {
@@ -97,9 +107,7 @@ open class OCKInstructionsTaskView: OCKView, OCKEventDisplayable {
     }
 
     private func setupGestures() {
-        let tappedViewGesture = UITapGestureRecognizer(target: self, action: #selector(didTapView))
-        headerView.addGestureRecognizer(tappedViewGesture)
-
+        headerButton.addTarget(self, action: #selector(didTapView), for: .touchUpInside)
         completionButton.addTarget(self, action: #selector(completionButtonTapped(_:)), for: .touchUpInside)
     }
 
@@ -109,33 +117,37 @@ open class OCKInstructionsTaskView: OCKView, OCKEventDisplayable {
 
     private func addSubviews() {
         addSubview(contentView)
-        contentView.addSubview(contentStackView)
-        [headerView, instructionsLabel, completionButton].forEach { contentStackView.addArrangedSubview($0) }
+        contentView.addSubview(headerStackView)
+        [headerButton, contentStackView].forEach { headerStackView.addArrangedSubview($0) }
+        [instructionsLabel, completionButton].forEach { contentStackView.addArrangedSubview($0) }
     }
 
     private func constrainSubviews() {
-        [contentView, contentStackView].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
+        [contentView, headerStackView, headerView].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
         NSLayoutConstraint.activate(
-            contentStackView.constraints(equalTo: contentView) +
-            contentView.constraints(equalTo: layoutMarginsGuide))
+            contentView.constraints(equalTo: self) +
+            headerStackView.constraints(equalTo: contentView) +
+            headerView.constraints(equalTo: headerButton.layoutMarginsGuide, directions: [.horizontal, .top]) +
+            headerView.constraints(equalTo: headerButton, directions: [.bottom]))
     }
 
     @objc
     private func didTapView() {
-        delegate?.didSelectEventView(self)
+        delegate?.didSelectTaskView(self, eventIndexPath: .init(row: 0, section: 0))
     }
 
     @objc
-    private func completionButtonTapped(_ sender: OCKButton) {
-        delegate?.eventView(self, didCompleteEvent: sender.isSelected, sender: sender)
+    private func completionButtonTapped(_ sender: UIControl) {
+        delegate?.taskView(self, didCompleteEvent: !sender.isSelected, at: .init(row: 0, section: 0), sender: sender)
     }
 
     override open func styleDidChange() {
         super.styleDidChange()
-        let cachedStyle = style()
-        cardAssembler.enableCardStyling(true, style: cachedStyle)
-        instructionsLabel.textColor = cachedStyle.color.label
-        contentStackView.spacing = cachedStyle.dimension.directionalInsets1.top
-        directionalLayoutMargins = cachedStyle.dimension.directionalInsets1
+        let style = self.style()
+        cardBuilder.enableCardStyling(true, style: style)
+        instructionsLabel.textColor = style.color.label
+        contentStackView.spacing = style.dimension.directionalInsets1.top
+        directionalLayoutMargins = style.dimension.directionalInsets1
+        contentStackView.directionalLayoutMargins = style.dimension.directionalInsets1
     }
 }

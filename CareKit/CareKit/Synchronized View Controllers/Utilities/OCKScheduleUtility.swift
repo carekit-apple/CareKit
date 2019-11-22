@@ -32,8 +32,6 @@ import CareKitStore
 import Foundation
 
 struct OCKScheduleUtility {
-    typealias Task = OCKTaskConvertible & Equatable
-    typealias Outcome = OCKOutcomeConvertible & Equatable
 
     private static let timeFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -47,14 +45,14 @@ struct OCKScheduleUtility {
         return formatter
     }()
 
-    static func scheduleLabel<T: Task, O: Outcome>(for events: [OCKEvent<T, O>]) -> String? {
+    static func scheduleLabel(for events: [OCKAnyEvent]) -> String? {
         let result = [completionLabel(for: events), dateLabel(for: events)]
             .compactMap { $0 }
             .joined(separator: " ")
         return !result.isEmpty ? result : nil
     }
 
-    static func scheduleLabel<T: Task, O: Outcome>(for event: OCKEvent<T, O>) -> String? {
+    static func scheduleLabel(for event: OCKAnyEvent) -> String? {
         let result = [
             timeLabel(for: event),
             dateLabel(forStart: event.scheduleEvent.start, end: event.scheduleEvent.end)
@@ -65,25 +63,42 @@ struct OCKScheduleUtility {
         return !result.isEmpty ? result : nil
     }
 
-    static func timeLabel<T: Task, O: Outcome>(for event: OCKEvent<T, O>, includesEnd: Bool = true) -> String {
-        if event.scheduleEvent.element.isAllDay {   // The event is all day
-            return "all day"
-        } else if includesEnd && event.scheduleEvent.start != event.scheduleEvent.end {    // the event has a duration
-            let start = event.scheduleEvent.start
-            let end = event.scheduleEvent.end
-            return "\(timeFormatter.string(from: start)) to \(timeFormatter.string(from: end))"
+    static func timeLabel(for event: OCKAnyEvent, includesEnd: Bool = true) -> String {
+        switch event.scheduleEvent.element.duration {
+
+        case .allDay: return "all day"
+        case .seconds:
+            if includesEnd && event.scheduleEvent.start != event.scheduleEvent.end {
+                let start = event.scheduleEvent.start
+                let end = event.scheduleEvent.end
+                return "\(timeFormatter.string(from: start)) to \(timeFormatter.string(from: end))"
+            }
         }
         let label = timeFormatter.string(from: event.scheduleEvent.start).description
         return label
     }
 
-    private static func dateLabel<T: Task, O: Outcome>(for events: [OCKEvent<T, O>]) -> String? {
+    static func completedTimeLabel(for event: OCKAnyEvent) -> String? {
+        guard let completedDate = event.outcome?.values
+            .max(by: { isMoreRecent(lhs: $0.createdDate, rhs: $1.createdDate) })?
+            .createdDate
+        else { return nil }
+        return timeFormatter.string(from: completedDate)
+    }
+
+    private static func dateLabel(for events: [OCKAnyEvent]) -> String? {
         guard !events.isEmpty else { return nil }
         if events.count > 1 {
             let schedule = events.first!.scheduleEvent
             return dateLabel(forStart: schedule.start, end: schedule.end)
         }
         return dateLabel(forStart: events.first!.scheduleEvent.start, end: events.last!.scheduleEvent.end)
+    }
+
+    private static func isMoreRecent(lhs: Date?, rhs: Date?) -> Bool {
+        guard let lhs = lhs else { return false }
+        guard let rhs = rhs else { return true }
+        return lhs > rhs
     }
 
     private static func dateLabel(forStart start: Date, end: Date) -> String? {
@@ -97,16 +112,21 @@ struct OCKScheduleUtility {
 
     private static func label(for date: Date) -> String {
         if Calendar.current.isDateInToday(date) {
-            return "today"
+            return loc("TODAY")
         }
         let label = dateFormatter.string(from: date)
         return label
     }
 
-    private static func completionLabel<T: Task, O: Outcome>(for events: [OCKEvent<T, O>]) -> String? {
+    private static func completionLabel(for events: [OCKAnyEvent]) -> String? {
         guard !events.isEmpty else { return nil }
         let completed = events.filter { $0.outcome != nil }.count
         let remaining = events.count - completed
-        return "\(remaining) remaining"
+        let format = OCKLocalization.localized("EVENTS_REMAINING",
+                                               tableName: "Localizable",
+                                               bundle: nil,
+                                               value: "",
+                                               comment: "The number of events that the user has not yet marked completed")
+        return String.localizedStringWithFormat(format, remaining)
     }
 }

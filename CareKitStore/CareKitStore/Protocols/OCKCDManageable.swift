@@ -69,27 +69,3 @@ extension OCKCDManageable where Self: NSManagedObject {
         return results
     }
 }
-
-extension OCKCDManageable where Self: OCKVersionable & NSManagedObject {
-    static func validateNewIdentifiers(_ identifiers: [String], in context: NSManagedObjectContext) throws {
-        guard Set(identifiers).count == identifiers.count else {
-            throw OCKStoreError.invalidValue(reason: "Identifiers contains duplicate values! [\(identifiers)]")
-        }
-
-        let existingPredicate = NSPredicate(format: "%K IN %@", #keyPath(OCKCDVersionedObject.identifier), identifiers)
-        let existingIdentifiers = fetchFromStore(in: context, where: existingPredicate, configureFetchRequest: { request in
-            request.propertiesToFetch = [#keyPath(OCKCDVersionedObject.identifier)]
-        }).map { $0.identifier }
-
-        guard existingIdentifiers.isEmpty else {
-            let objectClass = String(describing: type(of: self))
-            throw OCKStoreError.invalidValue(reason: "\(objectClass) with identifiers [\(Set(existingIdentifiers))] already exists!")
-        }
-    }
-
-    static func validateUpdateIdentifiers(_ identifiers: [String], in context: NSManagedObjectContext) throws {
-        guard Set(identifiers).count == identifiers.count else {
-            throw OCKStoreError.invalidValue(reason: "Identifiers contains duplicate values! [\(identifiers)]")
-        }
-    }
-}

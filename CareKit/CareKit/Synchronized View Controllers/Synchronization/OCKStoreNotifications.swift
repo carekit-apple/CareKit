@@ -31,65 +31,40 @@
 import CareKitStore
 import Foundation
 
-internal protocol OCKStoreNotification {}
+protocol OCKStoreNotification {}
 
-internal enum OCKStoreNotificationCategory {
+enum OCKStoreNotificationCategory {
     case add
     case update
     case delete
 }
 
-internal struct OCKPatientNotification<Store: OCKStoreProtocol>: OCKStoreNotification {
-    let patient: Store.Patient
+struct OCKPatientNotification: OCKStoreNotification {
+    let patient: OCKAnyPatient
     let category: OCKStoreNotificationCategory
-
-    init(storeManager: OCKSynchronizedStoreManager<Store>, patient: Store.Patient,
-         category: OCKStoreNotificationCategory) {
-        self.patient = patient
-        self.category = category
-    }
+    let storeManager: OCKSynchronizedStoreManager
 }
 
-internal struct OCKCarePlanNotification<Store: OCKStoreProtocol>: OCKStoreNotification {
-    let carePlan: Store.Plan
+struct OCKCarePlanNotification: OCKStoreNotification {
+    let carePlan: OCKAnyCarePlan
     let category: OCKStoreNotificationCategory
-
-    init(storeManager: OCKSynchronizedStoreManager<Store>, carePlan: Store.Plan,
-         category: OCKStoreNotificationCategory) {
-        self.carePlan = carePlan
-        self.category = category
-    }
+    let storeManager: OCKSynchronizedStoreManager
 }
 
-internal struct OCKContactNotification<Store: OCKStoreProtocol>: OCKStoreNotification {
-    let contact: Store.Contact
+struct OCKContactNotification: OCKStoreNotification {
+    let contact: OCKAnyContact
     let category: OCKStoreNotificationCategory
-
-    init(storeManager: OCKSynchronizedStoreManager<Store>, contact: Store.Contact,
-         category: OCKStoreNotificationCategory) {
-        self.contact = contact
-        self.category = category
-    }
+    let storeManager: OCKSynchronizedStoreManager
 }
 
-internal struct OCKTaskNotification<Store: OCKStoreProtocol>: OCKStoreNotification {
-    let task: Store.Task
+struct OCKTaskNotification: OCKStoreNotification {
+    let task: OCKAnyTask
     let category: OCKStoreNotificationCategory
-
-    init(storeManager: OCKSynchronizedStoreManager<Store>, task: Store.Task,
-         category: OCKStoreNotificationCategory) {
-        self.task = task
-        self.category = category
-    }
+    let storeManager: OCKSynchronizedStoreManager
 }
 
-internal struct OCKOutcomeNotification<Store: OCKStoreProtocol>: OCKStoreNotification {
-    let outcome: Store.Outcome
+struct OCKOutcomeNotification: OCKStoreNotification {
+    let outcome: OCKAnyOutcome
     let category: OCKStoreNotificationCategory
-
-    init(storeManager: OCKSynchronizedStoreManager<Store>, outcome: Store.Outcome,
-         category: OCKStoreNotificationCategory) {
-        self.outcome = outcome
-        self.category = category
-    }
+    let storeManager: OCKSynchronizedStoreManager
 }

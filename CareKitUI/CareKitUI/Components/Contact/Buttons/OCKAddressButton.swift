@@ -1,21 +1,21 @@
 /*
  Copyright (c) 2019, Apple Inc. All rights reserved.
-
+ 
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
-
+ 
  1.  Redistributions of source code must retain the above copyright notice, this
  list of conditions and the following disclaimer.
-
+ 
  2.  Redistributions in binary form must reproduce the above copyright notice,
  this list of conditions and the following disclaimer in the documentation and/or
  other materials provided with the distribution.
-
+ 
  3. Neither the name of the copyright holder(s) nor the names of any contributors
  may be used to endorse or promote products derived from this software without
  specific prior written permission. No license is granted to the trademarks of
  the copyright holders even if such marks are included in this software.
-
+ 
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -30,103 +30,109 @@
 
 import UIKit
 
-class OCKAddressButton: OCKButton {
+open class OCKAddressButton: OCKAnimatedButton<OCKStackView> {
     // MARK: Properties
-
-    override var detailButton: OCKButton? { _detailButton }
-    override var titleButton: OCKButton? { _titleButton }
-    override var imageButton: OCKButton? { _imageButton }
-
-    private var imageButtonHeightConstraint: NSLayoutConstraint?
 
     private enum Constants {
         static let textSpacing: CGFloat = 2
     }
 
+    private lazy var imageViewPointSize = OCKAccessibleValue(container: style(), keyPath: \.dimension.symbolPointSize3) { [imageView] scaledValue in
+        imageView.preferredSymbolConfiguration = .init(pointSize: scaledValue, weight: .regular)
+    }
+
     private let textStackView: OCKStackView = {
-        let stackView = OCKStackView()
-        stackView.axis = .vertical
+        let stackView = OCKStackView.vertical()
         stackView.spacing = Constants.textSpacing
-        stackView.isUserInteractionEnabled = false
         return stackView
     }()
 
-    private let contentStackView: OCKStackView = {
-        let stackView = OCKStackView()
-        stackView.axis = .horizontal
+    /// Holds the main content in the button.
+    public let contentStackView: OCKStackView = {
+        let stackView = OCKStackView.horizontal()
         stackView.alignment = .top
-        stackView.isUserInteractionEnabled = false
         return stackView
     }()
 
-    private let _imageButton: OCKButton = {
-        let button = OCKButton()
-        button.isUserInteractionEnabled = false
-        let image = UIImage(systemName: "location")?.applyingSymbolConfiguration(.init(weight: .bold))
-        button.setImage(image, for: .normal)
-        button.imageView?.contentMode = .scaleAspectFit
-        button.contentHorizontalAlignment = .fill   // Sizes the button's frame to the image view
-        button.tag = 1
-        return button
+    /// Image in the corner of the view. The default image is set to the location icon.
+    public let imageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(systemName: "location")
+        return imageView
     }()
 
-    private let _titleButton: OCKButton = {
-        let button = OCKButton(titleTextStyle: .footnote, titleWeight: .semibold)
-        button.titleLabel?.numberOfLines = 0
-        button.isUserInteractionEnabled = false
-        button.sizesToFitTitleLabel = true
-        button.setTitle(OCKStrings.address, for: .normal)
-        button.tintedTraits = [.init(trait: .titleColor, state: .normal)]
-        button.contentHorizontalAlignment = .leading
-        return button
+    /// The main text in the button.
+    public let titleLabel: OCKLabel = {
+        let label = OCKLabel(textStyle: .footnote, weight: .semibold)
+        label.numberOfLines = 0
+        label.text = loc("ADDRESS")
+        return label
     }()
 
-    private let _detailButton: OCKButton = {
-        let button = OCKButton(titleTextStyle: .footnote, titleWeight: .regular)
-        button.titleLabel?.numberOfLines = 0
-        button.isUserInteractionEnabled = false
-        button.sizesToFitTitleLabel = true
-        button.contentHorizontalAlignment = .leading
-        return button
+    /// Below the main text in the button.
+    public let detailLabel: OCKLabel = {
+        let label = OCKLabel(textStyle: .footnote, weight: .regular)
+        label.numberOfLines = 0
+        return label
     }()
+
+    // MARK: - Life Cycle
+
+    public init() {
+        super.init(contentView: contentStackView, handlesSelection: false)
+        setup()
+    }
+
+    public required init?(coder: NSCoder) {
+        super.init(contentView: contentStackView, handlesSelection: false)
+        setup()
+    }
 
     // MARK: Methods
 
-    override func setup() {
-        super.setup()
+    private func setup() {
         styleSubviews()
         addSubviews()
         constrainSubviews()
     }
 
     private func styleSubviews() {
-        clipsToBounds = true
-        adjustsImageWhenHighlighted = false
+        accessibilityLabel = titleLabel.text
+        accessibilityHint = loc("DOUBLE_TAP_MAP")
     }
 
     private func addSubviews() {
-        [_titleButton, _detailButton].forEach { textStackView.addArrangedSubview($0) }
-        [textStackView, _imageButton].forEach { contentStackView.addArrangedSubview($0) }
+        [titleLabel, detailLabel].forEach { textStackView.addArrangedSubview($0) }
+        [textStackView, imageView].forEach { contentStackView.addArrangedSubview($0) }
         addSubview(contentStackView)
     }
 
-    func constrainSubviews() {
-        [contentStackView, _imageButton].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
-        imageButtonHeightConstraint = _imageButton.heightAnchor.constraint(equalToConstant: 0)
-        _imageButton.setContentHuggingPriority(.defaultHigh, for: .horizontal)
-        NSLayoutConstraint.activate(
-            [imageButtonHeightConstraint!] +
-            contentStackView.constraints(equalTo: layoutMarginsGuide))
+    private func constrainSubviews() {
+        [contentStackView, imageView].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
+        imageView.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        NSLayoutConstraint.activate(contentStackView.constraints(equalTo: layoutMarginsGuide))
     }
 
-    override func styleDidChange() {
+    override open func styleDidChange() {
         super.styleDidChange()
-        let cachedStyle = style()
-        _detailButton.setTitleColor(cachedStyle.color.label, for: .normal)
-        setBackgroundColor(cachedStyle.color.quaternarySystemFill, for: .normal)
-        directionalLayoutMargins = cachedStyle.dimension.directionalInsets1
-        layer.cornerRadius = cachedStyle.appearance.cornerRadius2
-        imageButtonHeightConstraint?.constant = cachedStyle.dimension.iconHeight3
-        contentStackView.spacing = cachedStyle.dimension.directionalInsets1.leading
+        let style = self.style()
+        detailLabel.textColor = style.color.label
+        backgroundColor = style.color.quaternaryCustomFill
+        directionalLayoutMargins = style.dimension.directionalInsets1
+        layer.cornerRadius = style.appearance.cornerRadius2
+        imageViewPointSize.update(withContainer: style)
+        contentStackView.spacing = style.dimension.directionalInsets1.leading
+    }
+
+    override open func tintColorDidChange() {
+        super.tintColorDidChange()
+        titleLabel.textColor = tintColor
+    }
+
+    override open func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        if previousTraitCollection?.preferredContentSizeCategory != traitCollection.preferredContentSizeCategory {
+            imageViewPointSize.apply()
+        }
     }
 }

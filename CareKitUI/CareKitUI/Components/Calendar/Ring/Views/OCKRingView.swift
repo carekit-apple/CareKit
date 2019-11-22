@@ -32,10 +32,19 @@ import UIKit
 
 /// A fillable progress ring drawing.
 class OCKRingView: OCKView {
+
     // MARK: Properties
 
     /// The progress of the ring between 0 and 1. The ring will fill based on the value.
     private(set) var progress: CGFloat = 1.0
+
+    private let ringLayer: CAShapeLayer = {
+        let layer = CAShapeLayer()
+        layer.lineCap = .round
+        layer.fillColor = nil
+        layer.strokeStart = 0
+        return layer
+    }()
 
     /// The line width of the ring.
     var lineWidth: CGFloat = 10 {
@@ -43,7 +52,7 @@ class OCKRingView: OCKView {
     }
 
     /// The stroke color of the ring.
-    var strokeColor: UIColor = OCKStyle().color.systemBlue {
+    var strokeColor: UIColor = OCKStyle().color.customBlue {
         didSet { ringLayer.strokeColor = strokeColor.cgColor }
     }
 
@@ -65,14 +74,6 @@ class OCKRingView: OCKView {
         return min(bounds.height, bounds.width) / 2 - lineWidth / 2
     }
 
-    private let ringLayer: CAShapeLayer = {
-        let layer = CAShapeLayer()
-        layer.lineCap = .round
-        layer.fillColor = nil
-        layer.strokeStart = 0
-        return layer
-    }()
-
     // MARK: Life Cycle
 
     override func layoutSubviews() {
@@ -86,13 +87,6 @@ class OCKRingView: OCKView {
         super.setup()
         layer.addSublayer(ringLayer)
         styleRingLayer()
-    }
-
-    private func styleRingLayer() {
-        strokeColor = tintColor
-        ringLayer.strokeColor = strokeColor.cgColor
-        ringLayer.strokeEnd = min(progress, 1.0)
-        ringLayer.lineWidth = lineWidth
     }
 
     /// Set the progress value of the ring. The ring will fill based on the value.
@@ -115,6 +109,13 @@ class OCKRingView: OCKView {
         fill.duration = duration
         fill.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
         ringLayer.add(fill, forKey: "fill")
+    }
+
+    private func styleRingLayer() {
+        strokeColor = tintColor
+        ringLayer.strokeColor = strokeColor.cgColor
+        ringLayer.strokeEnd = min(progress, 1.0)
+        ringLayer.lineWidth = lineWidth
     }
 
     private func configureRing() {

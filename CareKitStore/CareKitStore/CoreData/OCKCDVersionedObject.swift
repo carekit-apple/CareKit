@@ -31,8 +31,8 @@
 import CoreData
 import Foundation
 
-class OCKCDVersionedObject: OCKCDObject, OCKCDManageable, OCKVersionable {
-    @NSManaged var identifier: String
+class OCKCDVersionedObject: OCKCDObject, OCKCDManageable {
+    @NSManaged var id: String
     @NSManaged var previous: OCKCDVersionedObject?
     @NSManaged var allowsMissingRelationships: Bool
     @NSManaged var effectiveDate: Date
@@ -54,16 +54,16 @@ class OCKCDVersionedObject: OCKCDObject, OCKCDManageable, OCKVersionable {
         return [NSSortDescriptor(keyPath: \OCKCDVersionedObject.effectiveDate, ascending: false)]
     }
 
-    static func fetchHeads<T: OCKCDVersionedObject>(identifiers: [String], in context: NSManagedObjectContext) -> [T] {
-        return fetchFromStore(in: context, where: headerPredicate(for: identifiers)) { request in
-            request.fetchLimit = identifiers.count
+    static func fetchHeads<T: OCKCDVersionedObject>(ids: [String], in context: NSManagedObjectContext) -> [T] {
+        return fetchFromStore(in: context, where: headerPredicate(for: ids)) { request in
+            request.fetchLimit = ids.count
             request.returnsObjectsAsFaults = false
         }.compactMap { $0 as? T }
     }
 
-    static func headerPredicate(for identifiers: [String]) -> NSPredicate {
+    static func headerPredicate(for ids: [String]) -> NSPredicate {
         return NSCompoundPredicate(andPredicateWithSubpredicates: [
-            NSPredicate(format: "%K IN %@", #keyPath(OCKCDVersionedObject.identifier), identifiers),
+            NSPredicate(format: "%K IN %@", #keyPath(OCKCDVersionedObject.id), ids),
             headerPredicate()
         ])
     }
@@ -95,9 +95,29 @@ class OCKCDVersionedObject: OCKCDObject, OCKCDManageable, OCKVersionable {
         return NSCompoundPredicate(andPredicateWithSubpredicates: [
             existsDuringQuery, noNextVersion])
     }
-}
 
-internal extension OCKCDVersionedObject {
+    static func validateNewIDs(_ ids: [String], in context: NSManagedObjectContext) throws {
+        guard Set(ids).count == ids.count else {
+            throw OCKStoreError.invalidValue(reason: "Identifiers contains duplicate values! [\(ids)]")
+        }
+
+        let existingPredicate = NSPredicate(format: "%K IN %@", #keyPath(OCKCDVersionedObject.id), ids)
+        let existingIDs = fetchFromStore(in: context, where: existingPredicate, configureFetchRequest: { request in
+            request.propertiesToFetch = [#keyPath(OCKCDVersionedObject.id)]
+        }).map { $0.id }
+
+        guard existingIDs.isEmpty else {
+            let objectClass = String(describing: type(of: self))
+            throw OCKStoreError.invalidValue(reason: "\(objectClass) with IDs [\(Set(existingIDs))] already exists!")
+        }
+    }
+
+    static func validateUpdateIdentifiers(_ ids: [String], in context: NSManagedObjectContext) throws {
+        guard Set(ids).count == ids.count else {
+            throw OCKStoreError.invalidValue(reason: "Identifiers contains duplicate values! [\(ids)]")
+        }
+    }
+
     override func validateForInsert() throws {
         try super.validateForInsert()
         try validateRelationships()
@@ -108,8 +128,8 @@ internal extension OCKCDVersionedObject {
         try validateRelationships()
     }
 
-    func copyVersionInfo<T>(from other: T) where T: OCKVersionable & OCKObjectCompatible {
-        identifier = other.identifier
+    func copyVersionInfo(from other: OCKVersionedObjectCompatible) {
+        id = other.id
         deletedDate = other.deletedDate
         effectiveDate = other.effectiveDate
         copyValues(from: other)

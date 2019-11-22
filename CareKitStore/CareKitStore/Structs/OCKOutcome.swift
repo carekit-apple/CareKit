@@ -33,26 +33,17 @@ import Foundation
 /// An `OCKOutcome` represents the outcome of an event corresponding to a task. An outcome may have 0 or more values associated with it.
 /// For example, a task that asks a patient to measure their temperature will have events whose outcome will contain a single value representing
 /// the patient's tempature.
-public struct OCKOutcome: Codable, Equatable, OCKLocalPersistableSettable, OCKObjectCompatible, OCKOutcomeConvertible {
+public struct OCKOutcome: Codable, Equatable, Identifiable, OCKAnyOutcome, OCKObjectCompatible {
+
     /// The version ID of the task to which this outcomes belongs.
-    public var taskID: OCKLocalVersionID?
+    public var taskID: OCKLocalVersionID
 
-    /// Specifies how many events occured before this outcome was created. For example, if a task is schedule to happen twice per day, then
-    /// the 2nd outcome on the 2nd day will have a `taskOccurenceIndex` of 3.
-    ///
-    /// - Note: The task occurence references a specific version of a task, so if a new version the task is created, the task occurence index
-    ///  will start again from 0.
-    public var taskOccurenceIndex: Int
-
-    /// An array of values associated with this outcome. Most outcomes will have 0 or 1 values, but some may have more.
-    /// - Examples:
-    ///   - A task to call a physician might have 0 values, or 1 value containing the time stamp of when the call was placed.
-    ///   - A task to walk 2,000 steps might have 1 value, with that value being the number of steps that were actually.
-    ///   - A task to complete a survey might have multiple values corresponding to the answers to the questions in the survey.
+    // MARK: OCKAnyOutcome
+    public var id: String { taskID.stringValue + "_\(taskOccurrenceIndex)" }
+    public var taskOccurrenceIndex: Int
     public var values: [OCKOutcomeValue]
 
     // MARK: OCKObjectCompatible
-
     public internal(set) var createdDate: Date?
     public internal(set) var updatedDate: Date?
     public internal(set) var schemaVersion: OCKSemanticVersion?
@@ -64,38 +55,23 @@ public struct OCKOutcome: Codable, Equatable, OCKLocalPersistableSettable, OCKOb
     public var userInfo: [String: String]?
     public var asset: String?
     public var notes: [OCKNote]?
+    public var timezone: TimeZone
 
     /// Initialize by specifying the version of the task that owns this outcome, how many events have occured before this outcome, and the values.
     ///
     /// - Parameters:
     ///   - taskID: The version ID of the task that owns this outcome. This ID can be retrieved from any task that has been queried from the store.
-    ///   - taskOccurenceIndex: The number of events that occurred before the event this outcome corresponds to.
+    ///   - taskOccurrenceIndex: The number of events that occurred before the event this outcome corresponds to.
     ///   - values: An array outcome values.
-    public init(taskID: OCKLocalVersionID?, taskOccurenceIndex: Int, values: [OCKOutcomeValue]) {
+    public init(taskID: OCKLocalVersionID, taskOccurrenceIndex: Int, values: [OCKOutcomeValue]) {
         self.taskID = taskID
-        self.taskOccurenceIndex = taskOccurenceIndex
+        self.taskOccurrenceIndex = taskOccurrenceIndex
         self.values = values
+        self.timezone = TimeZone.current
     }
 
-    // MARK: OCKInitializable
-
-    public init(_ value: OCKOutcome) {
-        self = value
-    }
-
-    // MARK: OCKOutcomeConvertible
-
-    public func convert() -> OCKOutcome {
-        return self
-    }
-
-    // MARK: OCKIdentifiable
-
-    public func isAssociated(with other: OCKOutcome) -> Bool {
-        guard let localID = localDatabaseID else { return false }
-        if localID == other.localDatabaseID { return true }
-
-        guard let taskID = taskID else { return false }
-        return taskID == other.taskID && taskOccurenceIndex == other.taskOccurenceIndex
+    public func belongs(to task: OCKAnyTask) -> Bool {
+        guard let task = task as? OCKTask else { return false }
+        return task.localDatabaseID == taskID
     }
 }

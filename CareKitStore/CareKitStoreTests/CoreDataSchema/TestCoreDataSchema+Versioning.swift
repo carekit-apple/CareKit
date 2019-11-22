@@ -43,21 +43,21 @@ class TestCoreDataSchemaWithVersioning: XCTestCase {
 
     func testVersioning() {
         let patient1 = OCKCDPatient(context: store.context)
-        patient1.identifier = "my_id"
+        patient1.id = "my_id"
         patient1.name = OCKCDPersonName(context: store.context)
         patient1.name.familyName = "Frost1"
         patient1.name.givenName = "Amy"
         patient1.effectiveDate = Date()
 
         let patient2 = OCKCDPatient(context: store.context)
-        patient2.identifier = "my_id"
+        patient2.id = "my_id"
         patient2.name = OCKCDPersonName(context: store.context)
         patient2.name.familyName = "Foss2"
         patient2.name.givenName = "Christopher"
         patient2.effectiveDate = Date()
 
         let patient3 = OCKCDPatient(context: store.context)
-        patient3.identifier = "my_id"
+        patient3.id = "my_id"
         patient3.name = OCKCDPersonName(context: store.context)
         patient3.name.familyName = "Gosler3"
         patient3.name.givenName = "Jared"
@@ -76,7 +76,7 @@ class TestCoreDataSchemaWithVersioning: XCTestCase {
         patient2.previous = patient1
         XCTAssertNoThrow(try store.context.save())
 
-        let head = OCKCDPatient.fetchHeads(identifiers: ["my_id"], in: store.context).first
+        let head = OCKCDPatient.fetchHeads(ids: ["my_id"], in: store.context).first
         XCTAssert(head == patient3)
         XCTAssert(head?.next == nil)
         XCTAssert(head?.previous == patient2)
@@ -85,16 +85,16 @@ class TestCoreDataSchemaWithVersioning: XCTestCase {
     }
 
     func testAddVersionedObectsFailsIfIdentifersArentUnique() {
-        let patient1 = OCKPatient(identifier: "my_id", givenName: "John", familyName: "Appleseed")
-        let patient2 = OCKPatient(identifier: "my_id", givenName: "Jane", familyName: "Appleseed")
+        let patient1 = OCKPatient(id: "my_id", givenName: "John", familyName: "Appleseed")
+        let patient2 = OCKPatient(id: "my_id", givenName: "Jane", familyName: "Appleseed")
         store.addPatients([patient1, patient2]) { result in
             XCTAssertNil(try? result.get())
         }
     }
 
     func testUpdateVersionedObjectsFailsIfIdentifiersArentUnique() {
-        let patient1 = OCKPatient(identifier: "my_id", givenName: "John", familyName: "Appleseed")
-        let patient2 = OCKPatient(identifier: "my_id", givenName: "Jane", familyName: "Appleseed")
+        let patient1 = OCKPatient(id: "my_id", givenName: "John", familyName: "Appleseed")
+        let patient2 = OCKPatient(id: "my_id", givenName: "Jane", familyName: "Appleseed")
         store.updatePatients([patient1, patient2]) { result in
             XCTAssertNil(try? result.get())
         }
@@ -102,7 +102,7 @@ class TestCoreDataSchemaWithVersioning: XCTestCase {
 
     func testSavingUserInfo() throws {
         let patient = OCKCDPatient(context: store.context)
-        patient.identifier = "my_id"
+        patient.id = "my_id"
         patient.name = OCKCDPersonName(context: store.context)
         patient.name.nickname = "Wiggle Bogey"
         patient.userInfo = ["name": "Wiggle Bogey"]
@@ -115,7 +115,7 @@ class TestCoreDataSchemaWithVersioning: XCTestCase {
 
     func testSchemaVersionIsAutomaticallyAttached() {
         let patient = OCKCDPatient(context: store.context)
-        patient.identifier = "my_id"
+        patient.id = "my_id"
         patient.name = OCKCDPersonName(context: store.context)
         patient.name.familyName = "Frost1"
         patient.name.givenName = "Amy"

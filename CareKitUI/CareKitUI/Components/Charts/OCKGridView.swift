@@ -35,6 +35,19 @@ class OCKGridView: UIView, OCKCartesianGridProtocol {
         return OCKGridLayer.self
     }
 
+    private let layout = OCKResponsiveLayout<CGFloat>(
+        defaultLayout: 4,
+        anySizeClassRuleSet: [
+            .init(layout: 6, greaterThanOrEqualToContentSizeCategory: .small),
+            .init(layout: 8, greaterThanOrEqualToContentSizeCategory: .medium),
+            .init(layout: 10, greaterThanOrEqualToContentSizeCategory: .large),
+            .init(layout: 12, greaterThanOrEqualToContentSizeCategory: .extraLarge),
+            .init(layout: 14, greaterThanOrEqualToContentSizeCategory: .accessibilityMedium),
+            .init(layout: 16, greaterThanOrEqualToContentSizeCategory: .accessibilityLarge),
+            .init(layout: 18, greaterThanOrEqualToContentSizeCategory: .accessibilityExtraLarge)
+        ]
+    )
+
     private var gridLayer: OCKGridLayer {
         return layer as! OCKGridLayer
     }
@@ -61,5 +74,30 @@ class OCKGridView: UIView, OCKCartesianGridProtocol {
     var yMaximum: CGFloat? {
         get { return gridLayer.yMaximum }
         set { gridLayer.yMaximum = newValue }
+    }
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setup()
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setup()
+    }
+
+    private func setup() {
+
+        let fontSize = layout.responsiveLayoutRule(traitCollection: traitCollection)
+        gridLayer.fontSize = fontSize
+
+    }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        let fontSize = layout.responsiveLayoutRule(traitCollection: traitCollection)
+        gridLayer.fontSize = fontSize
+
     }
 }

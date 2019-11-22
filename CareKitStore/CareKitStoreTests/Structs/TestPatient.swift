@@ -33,20 +33,9 @@ import Foundation
 import XCTest
 
 class TestPatient: XCTestCase {
-    func testUnpersistedPatientsAreAssociatedIfTheirIdentifiersMatch() {
-        let patientA = OCKPatient(identifier: "abc123", givenName: "Amy", familyName: "Frost")
-        let patientB = OCKPatient(identifier: "abc123", givenName: "Christopher", familyName: "Foss")
-        XCTAssert(patientA.isAssociated(with: patientB))
-    }
-
-    func testPatientsAreNotAssociatedIfTheirIdentifiersDoNoMatch() {
-        let patientA = OCKPatient(identifier: "abc123", givenName: "Amy", familyName: "Frost")
-        let patientB = OCKPatient(identifier: "def456", givenName: "Amy", familyName: "Frost")
-        XCTAssert(!patientA.isAssociated(with: patientB))
-    }
 
     func testPatientAge() {
-        var patient = OCKPatient(identifier: "A", givenName: "Amy", familyName: "Frost")
+        var patient = OCKPatient(id: "A", givenName: "Amy", familyName: "Frost")
         XCTAssertNil(patient.age)
 
         patient.birthday = Calendar.current.date(byAdding: .year, value: -50, to: Date())

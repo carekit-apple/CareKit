@@ -31,15 +31,3 @@
 import Foundation
 
 public typealias OCKResultClosure<T> = (Result<T, OCKStoreError>) -> Void
-
-internal func chooseFirst<T>(then singularResultClosure: OCKResultClosure<T>?, replacementError: OCKStoreError) -> OCKResultClosure<[T]> {
-    return { arrayResult in
-        switch arrayResult {
-        case .failure(let error):
-            singularResultClosure?(.failure(error))
-        case .success(let array):
-            if let first = array.first { singularResultClosure?(.success(first)); return }
-            singularResultClosure?(.failure(replacementError))
-        }
-    }
-}

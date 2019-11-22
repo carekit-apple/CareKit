@@ -52,12 +52,12 @@ public enum OCKOutcomeValueType: String, Codable {
 
 /// An `OCKOutcomeValue` is a representation of any response of measurement that a user gives in response to a task. The underlying type could be
 /// any of a number of types including integers, booleans, dates, text, and binary data, among others.
-public struct OCKOutcomeValue: Codable, Equatable, OCKObjectCompatible, OCKLocalPersistableSettable {
+public struct OCKOutcomeValue: Codable, Equatable, OCKObjectCompatible, CustomStringConvertible {
     // MARK: Codable
     enum CodingKeys: CodingKey, CaseIterable {
         case
         kind, units, localDatabaseID, value, type, index,
-        createdDate, updatedDate, schemaVersion, tags, group, remoteID, userInfo, source   // OCKObjectCompatible
+        createdDate, updatedDate, schemaVersion, tags, group, remoteID, userInfo, source, timezone   // OCKObjectCompatible
     }
 
     public init(from decoder: Decoder) throws {
@@ -91,6 +91,7 @@ public struct OCKOutcomeValue: Codable, Equatable, OCKObjectCompatible, OCKLocal
         remoteID = try container.decode(String?.self, forKey: CodingKeys.remoteID)
         source = try container.decode(String?.self, forKey: CodingKeys.source)
         userInfo = try container.decode([String: String]?.self, forKey: CodingKeys.userInfo)
+        timezone = try container.decode(TimeZone.self, forKey: CodingKeys.timezone)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -123,6 +124,18 @@ public struct OCKOutcomeValue: Codable, Equatable, OCKObjectCompatible, OCKLocal
         try container.encode(remoteID, forKey: .remoteID)
         try container.encode(source, forKey: .source)
         try container.encode(userInfo, forKey: .userInfo)
+        try container.encode(timezone, forKey: .timezone)
+    }
+
+    public var description: String {
+        switch type {
+        case .integer: return "\(value as! Int)"
+        case .double: return "\(value as! Double)"
+        case .boolean: return "\(value as! Bool)"
+        case .text: return "\(value as! String)"
+        case .binary: return "\(value as! Data)"
+        case .date: return "\(value as! Date)"
+        }
     }
 
     /// An optional property that can be used to specify what kind of value this is (e.g. blood pressure, qualatative stress, weight)
@@ -167,7 +180,9 @@ public struct OCKOutcomeValue: Codable, Equatable, OCKObjectCompatible, OCKLocal
     public var userInfo: [String: String]?
     public var asset: String?
     public var notes: [OCKNote]?
+    public var timezone: TimeZone
 
+    /// Holds information about the type of this value.
     public var type: OCKOutcomeValueType {
         if value is Int { return .integer }
         if value is Double { return .double }
@@ -178,22 +193,31 @@ public struct OCKOutcomeValue: Codable, Equatable, OCKObjectCompatible, OCKLocal
         fatalError("Unknown type!")
     }
 
+    /// Initialize by specifying a value and an optional unit
     public init(_ value: OCKOutcomeValueUnderlyingType, units: String? = nil) {
         self.value = value
         self.units = units
+        self.timezone = TimeZone.current
     }
 
     public static func == (lhs: OCKOutcomeValue, rhs: OCKOutcomeValue) -> Bool {
-        return lhs.localDatabaseID == rhs.localDatabaseID &&
-            lhs.remoteID == rhs.remoteID &&
-            lhs.userInfo == rhs.userInfo &&
-            lhs.hasSameValueAs(rhs) &&
-            lhs.asset == rhs.asset &&
-            lhs.kind == rhs.kind &&
-            lhs.index == rhs.index
+        lhs.hasSameValueAs(rhs) &&
+        lhs.type == rhs.type &&
+        lhs.localDatabaseID == rhs.localDatabaseID &&
+        lhs.remoteID == rhs.remoteID &&
+        lhs.userInfo == rhs.userInfo &&
+        lhs.asset == rhs.asset &&
+        lhs.kind == rhs.kind &&
+        lhs.index == rhs.index &&
+        lhs.timezone == rhs.timezone &&
+        lhs.notes == rhs.notes &&
+        lhs.groupIdentifier == rhs.groupIdentifier &&
+        lhs.tags == rhs.tags &&
+        lhs.source == rhs.source
     }
 
-    public func hasSameValueAs(_ other: OCKOutcomeValue) -> Bool {
+    /// Checks if two `OCKOutcomeValue`s have equal value properties, without checking their other properties.
+    func hasSameValueAs(_ other: OCKOutcomeValue) -> Bool {
         switch type {
         case .binary: return dataValue == other.dataValue
         case .boolean: return booleanValue == other.booleanValue

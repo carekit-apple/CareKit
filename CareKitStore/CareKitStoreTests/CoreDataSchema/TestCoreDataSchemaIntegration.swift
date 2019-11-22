@@ -41,7 +41,7 @@ class TestCoreDataSchemaIntegration: XCTestCase {
 
     func testAllEntitiesCanBeChainedAndSavedInABatch() {
         let patient = OCKCDPatient(context: store.context)
-        patient.identifier = "my_id"
+        patient.id = "my_id"
         patient.name = OCKCDPersonName(context: store.context)
         patient.name.familyName = "Amy"
         patient.name.givenName = "Frost"
@@ -49,12 +49,12 @@ class TestCoreDataSchemaIntegration: XCTestCase {
 
         let plan = OCKCDCarePlan(context: store.context)
         plan.title = "Post Operation Care Plan"
-        plan.identifier = "post-op-plan"
+        plan.id = "post-op-plan"
         plan.patient = patient
         plan.effectiveDate = Date()
 
         let task = OCKCDTask(context: store.context)
-        task.identifier = "measure-pulse"
+        task.id = "measure-pulse"
         task.instructions = "Take your pulse for a 60s and record in BPM"
         task.carePlan = plan
         task.effectiveDate = Date()
@@ -63,10 +63,11 @@ class TestCoreDataSchemaIntegration: XCTestCase {
         schedule.text = "Once each day"
         schedule.startDate = Date()
         schedule.daysInterval = 1
+        schedule.duration = .hours(1)
         schedule.task = task
 
         let outcome = OCKCDOutcome(context: store.context)
-        outcome.taskOccurenceIndex = 0
+        outcome.taskOccurrenceIndex = 0
         outcome.task = task
 
         let value = OCKCDOutcomeValue(context: store.context)

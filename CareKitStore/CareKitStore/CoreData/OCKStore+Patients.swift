@@ -30,91 +30,87 @@
 
 import Foundation
 
-public extension OCKStore {
-    func fetchPatients(_ anchor: OCKPatientAnchor? = nil, query: OCKPatientQuery? = nil,
-                       queue: DispatchQueue = .main, completion: @escaping (Result<[OCKPatient], OCKStoreError>) -> Void) {
+extension OCKStore {
+
+    open func fetchPatients(query: OCKPatientQuery = OCKPatientQuery(), callbackQueue: DispatchQueue = .main,
+                            completion: @escaping (Result<[OCKPatient], OCKStoreError>) -> Void) {
         context.perform {
             do {
-                let predicate = try self.buildPredicate(from: anchor, query: query)
+                let predicate = try self.buildPredicate(for: query)
                 let patientsObjects = OCKCDPatient.fetchFromStore(in: self.context, where: predicate) { fetchRequest in
-                    fetchRequest.fetchLimit = query?.limit ?? 0
-                    fetchRequest.fetchOffset = query?.offset ?? 0
+                    fetchRequest.fetchLimit = query.limit ?? 0
+                    fetchRequest.fetchOffset = query.offset
                     fetchRequest.sortDescriptors = self.buildSortDescriptors(from: query)
                 }
 
                 let patients = patientsObjects.map(self.makePatient)
-                queue.async { completion(.success(patients)) }
+                callbackQueue.async { completion(.success(patients)) }
             } catch {
                 self.context.rollback()
                 let message = "Failed to fetch patients with query: \(String(describing: query)). \(error.localizedDescription)"
-                queue.async { completion(.failure(.fetchFailed(reason: message))) }
+                callbackQueue.async { completion(.failure(.fetchFailed(reason: message))) }
             }
         }
     }
 
-    func addPatients(_ patients: [OCKPatient], queue: DispatchQueue = .main, completion: ((Result<[OCKPatient], OCKStoreError>) -> Void)? = nil) {
+    open func addPatients(_ patients: [OCKPatient], callbackQueue: DispatchQueue = .main,
+                          completion: ((Result<[OCKPatient], OCKStoreError>) -> Void)? = nil) {
         context.perform {
             do {
                 try self.validateNumberOfPatients()
-                try OCKCDPatient.validateNewIdentifiers(patients.map { $0.identifier }, in: self.context)
-                let persistablePatients = patients.map(self.addPatient)
+                try OCKCDPatient.validateNewIDs(patients.map { $0.id }, in: self.context)
+                let persistablePatients = patients.map(self.createPatient)
                 try self.context.save()
                 let updatedPatients = persistablePatients.map(self.makePatient)
-                queue.async {
-                    self.delegate?.store(self, didAddPatients: updatedPatients)
+                callbackQueue.async {
+                    self.patientDelegate?.patientStore(self, didAddPatients: updatedPatients)
                     completion?(.success(updatedPatients))
                 }
             } catch {
                 self.context.rollback()
-                queue.async {
+                callbackQueue.async {
                     completion?(.failure(.addFailed(reason: "Failed to insert OCKPatients: [\(patients)]. \(error.localizedDescription)")))
                 }
             }
         }
     }
 
-    func updatePatients(_ patients: [OCKPatient], queue: DispatchQueue = .main,
-                        completion: ((Result<[OCKPatient], OCKStoreError>) -> Void)? = nil) {
+    open func updatePatients(_ patients: [OCKPatient], callbackQueue: DispatchQueue = .main,
+                             completion: ((Result<[OCKPatient], OCKStoreError>) -> Void)? = nil) {
         context.perform {
             do {
-                let identifiers = patients.map { $0.identifier }
-                try OCKCDPatient.validateUpdateIdentifiers(identifiers, in: self.context)
-
-                let updatedPatients = self.configuration.updatesCreateNewVersions ?
-                    try self.performVersionedUpdate(values: patients, addNewVersion: self.addPatient) :
-                    try self.performUnversionedUpdate(values: patients, update: self.copyPatient)
-
+                let ids = patients.map { $0.id }
+                try OCKCDPatient.validateUpdateIdentifiers(ids, in: self.context)
+                let updatedPatients = try self.performVersionedUpdate(values: patients, addNewVersion: self.createPatient)
                 try self.context.save()
                 let patients = updatedPatients.map(self.makePatient)
-                queue.async {
-                    self.delegate?.store(self, didUpdatePatients: patients)
+                callbackQueue.async {
+                    self.patientDelegate?.patientStore(self, didUpdatePatients: patients)
                     completion?(.success(patients))
                 }
             } catch {
                 self.context.rollback()
-                queue.async {
+                callbackQueue.async {
                     completion?(.failure(.updateFailed(reason: "Failed to update OCKPatients: [\(patients)]. \(error.localizedDescription)")))
                 }
             }
         }
     }
 
-    func deletePatients(_ patients: [OCKPatient], queue: DispatchQueue = .main,
-                        completion: ((Result<[OCKPatient], OCKStoreError>) -> Void)? = nil) {
+    open func deletePatients(_ patients: [OCKPatient], callbackQueue: DispatchQueue = .main,
+                             completion: ((Result<[OCKPatient], OCKStoreError>) -> Void)? = nil) {
         context.perform {
             do {
-                let deletedPatients = try self.performUnversionedUpdate(values: patients) { _, persistablePatient in
-                    persistablePatient.deletedDate = Date()
-                }.map(self.makePatient)
-
+                let markedDeleted: [OCKCDPatient] = try self.performDeletion(values: patients)
                 try self.context.save()
-                queue.async {
-                    self.delegate?.store(self, didDeletePatients: deletedPatients)
+                let deletedPatients = markedDeleted.map(self.makePatient)
+                callbackQueue.async {
+                    self.patientDelegate?.patientStore(self, didDeletePatients: deletedPatients)
                     completion?(.success(deletedPatients))
                 }
             } catch {
                 self.context.rollback()
-                queue.async {
+                callbackQueue.async {
                     completion?(.failure(.deleteFailed(reason: "Failed to delete OCKPatients: [\(patients)]. \(error.localizedDescription)")))
                 }
             }
@@ -126,27 +122,23 @@ public extension OCKStore {
     /// - Remark: This does not commit the transaction. After calling this function one or more times, you must call `context.save()` in order to
     /// persist the changes to disk. This is an optimization to allow batching.
     /// - Remark: You should verify that the object does not already exist in the database and validate its values before calling this method.
-    private func addPatient(_ patient: OCKPatient) -> OCKCDPatient {
+    private func createPatient(from patient: OCKPatient) -> OCKCDPatient {
         let persistablePatient = OCKCDPatient(context: context)
         persistablePatient.name = OCKCDPersonName(context: context)
-        copyPatient(from: patient, to: persistablePatient)
-        return persistablePatient
-    }
-
-    private func copyPatient(from patient: OCKPatient, to persistablePatient: OCKCDPatient) {
         persistablePatient.copyVersionInfo(from: patient)
-        persistablePatient.allowsMissingRelationships = allowsEntitiesWithMissingRelationships
+        persistablePatient.allowsMissingRelationships = configuration.allowsEntitiesWithMissingRelationships
         persistablePatient.name.copyPersonNameComponents(patient.name)
         persistablePatient.sex = patient.sex?.rawValue
         persistablePatient.birthday = patient.birthday
         persistablePatient.allergies = patient.allergies
+        return persistablePatient
     }
 
     /// - Remark: This method is intended to create a value type struct from a *persisted* NSManagedObject. Calling this method with an
     /// object that is not yet commited is a programmer error.
     private func makePatient(from object: OCKCDPatient) -> OCKPatient {
         assert(object.localDatabaseID != nil, "Do not create a patient from an object that isn't persisted yet!")
-        var patient = OCKPatient(identifier: object.identifier, name: object.name.makeComponents())
+        var patient = OCKPatient(id: object.id, name: object.name.makeComponents())
         patient.sex = object.sex == nil ? nil : OCKBiologicalSex(rawValue: object.sex!)
         patient.birthday = object.birthday
         patient.allergies = object.allergies
@@ -154,44 +146,45 @@ public extension OCKStore {
         return patient
     }
 
-    private func buildPredicate(from anchor: OCKPatientAnchor?, query: OCKPatientQuery?) throws -> NSPredicate {
-        let anchorPredicate = try buildSubPredicate(from: anchor)
-        let queryPredicate = buildSubPredicate(from: query)
-        let notDeletedPredicate = NSPredicate(format: "%K == nil", #keyPath(OCKCDVersionedObject.deletedDate))
-        return NSCompoundPredicate(andPredicateWithSubpredicates: [anchorPredicate, queryPredicate, notDeletedPredicate])
-    }
-
-    private func buildSubPredicate(from anchor: OCKPatientAnchor?) throws -> NSPredicate {
-        guard let anchor = anchor else { return NSPredicate(value: true) }
-        switch anchor {
-        case .patientIdentifiers(let patientIdentifiers):
-            return NSPredicate(format: "%K IN %@", #keyPath(OCKCDVersionedObject.identifier), patientIdentifiers)
-        case .patientVersions(let patientVersionIDs):
-            return NSPredicate(format: "self IN %@", try patientVersionIDs.map(objectID))
-        case .patientRemoteIDs(let patientremoteIDs):
-            return NSPredicate(format: "%K IN %@", #keyPath(OCKCDObject.remoteID), patientremoteIDs)
-        }
-    }
-
-    private func buildSubPredicate(from query: OCKPatientQuery?) -> NSPredicate {
+    private func buildPredicate(for query: OCKPatientQuery) throws -> NSPredicate {
         var predicate = NSPredicate(value: true)
 
-        if let interval = query?.dateInterval {
-            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [
-                predicate, OCKCDVersionedObject.newestVersionPredicate(in: interval)
-            ])
+        let notDeletedPredicate = NSPredicate(format: "%K == nil", #keyPath(OCKCDVersionedObject.deletedDate))
+        predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, notDeletedPredicate])
+
+        if let interval = query.dateInterval {
+            let intervalPredicate = OCKCDVersionedObject.newestVersionPredicate(in: interval)
+            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, intervalPredicate])
         }
-        if let groupIdentifiers = query?.groupIdentifiers {
-            predicate = predicate.including(groupIdentifiers: groupIdentifiers)
+
+        if !query.ids.isEmpty {
+            let idPredicate = NSPredicate(format: "%K IN %@", #keyPath(OCKCDVersionedObject.id), query.ids)
+            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, idPredicate])
         }
-        if let tags = query?.tags {
-            predicate = predicate.including(tags: tags)
+
+        if !query.versionIDs.isEmpty {
+            let versionPredicate = NSPredicate(format: "self IN %@", try query.versionIDs.map(objectID))
+            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, versionPredicate])
         }
+
+        if !query.remoteIDs.isEmpty {
+            let remotePredicate = NSPredicate(format: "%K IN %@", #keyPath(OCKCDObject.remoteID), query.remoteIDs)
+            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, remotePredicate])
+        }
+
+        if !query.groupIdentifiers.isEmpty {
+            predicate = predicate.including(groupIdentifiers: query.groupIdentifiers)
+        }
+
+        if !query.tags.isEmpty {
+            predicate = predicate.including(tags: query.tags)
+        }
+
         return predicate
     }
 
     private func buildSortDescriptors(from query: OCKPatientQuery?) -> [NSSortDescriptor] {
-        guard let orders = query?.sortDescriptors else { return [] }
+        guard let orders = query?.extendedSortDescriptors else { return [] }
         return orders.map { order -> NSSortDescriptor in
             switch order {
             case .effectiveDate(let ascending): return NSSortDescriptor(keyPath: \OCKCDPatient.effectiveDate, ascending: ascending)

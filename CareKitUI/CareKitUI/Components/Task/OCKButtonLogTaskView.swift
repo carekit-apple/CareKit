@@ -65,12 +65,13 @@ import UIKit
 ///     +-------------------------------------------------------+
 ///
 open class OCKButtonLogTaskView: OCKLogTaskView, UICollectionViewDelegate, UICollectionViewDataSource {
-    // MARK: Properties
 
     private enum Constants {
         static let spacing: CGFloat = 16
         static let estimatedCellHeight: CGFloat = 44
     }
+
+    // MARK: Properties
 
     /// The default cell type used for the `logButtonCollectionView`.
     public typealias DefaultCellType = OCKLogButtonCell
@@ -97,20 +98,6 @@ open class OCKButtonLogTaskView: OCKLogTaskView, UICollectionViewDelegate, UICol
         return collectionView
     }
 
-    override func setup() {
-        logButtonsCollectionView = makeCollectionView()
-        logButtonsCollectionView.delegate = self
-        logButtonsCollectionView.dataSource = self
-
-        super.setup()
-    }
-
-    override func addSubviews() {
-        super.addSubviews()
-        contentStackView.insertArrangedSubview(instructionsLabel, at: 1)
-        contentStackView.insertArrangedSubview(logButtonsCollectionView, at: 2)
-    }
-
     private func makeLayout() -> UICollectionViewCompositionalLayout {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(Constants.estimatedCellHeight))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
@@ -125,6 +112,24 @@ open class OCKButtonLogTaskView: OCKLogTaskView, UICollectionViewDelegate, UICol
         return layout
     }
 
+    @objc
+    private func didTapLogButton(_ sender: UIControl) {
+        delegate?.taskView(self, didCreateOutcomeValueAt: 0, eventIndexPath: .init(row: 0, section: 0), sender: sender)
+    }
+
+    override func setup() {
+        logButtonsCollectionView = makeCollectionView()
+        logButtonsCollectionView.delegate = self
+        logButtonsCollectionView.dataSource = self
+
+        super.setup()
+    }
+
+    override func addSubviews() {
+        super.addSubviews()
+        [logButtonsCollectionView, instructionsLabel].forEach { contentStackView.insertArrangedSubview($0, at: 0) }
+    }
+
     override open func styleDidChange() {
         super.styleDidChange()
         let cachedStyle = style()
@@ -134,21 +139,19 @@ open class OCKButtonLogTaskView: OCKLogTaskView, UICollectionViewDelegate, UICol
 
     // MARK: - UICollectionViewDelegate & DataSource
 
-    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    open func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 1
     }
 
-    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    open func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: OCKButtonLogTaskView.defaultCellIdentifier, for: indexPath)
         guard let typedCell = cell as? OCKButtonLogTaskView.DefaultCellType else { return cell }
-        typedCell.logButton.setTitle(OCKStrings.log, for: .normal)
+        typedCell.logButton.addTarget(self, action: #selector(didTapLogButton(_:)), for: .touchUpInside)
+        typedCell.logButton.label.text = loc("LOG")
+        typedCell.isAccessibilityElement = true
+        typedCell.accessibilityLabel = loc("LOG")
+        typedCell.accessibilityHint = loc("DOUBLE_TAP_TO_RECORD_EVENT")
+        typedCell.accessibilityTraits = .button
         return cell
-    }
-
-    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let cell = collectionView.cellForItem(at: indexPath) else {
-            fatalError("Cells not set up properly")
-        }
-        delegate?.eventView(self, didCreateOutcomeValueAt: indexPath.row, sender: cell)
     }
 }

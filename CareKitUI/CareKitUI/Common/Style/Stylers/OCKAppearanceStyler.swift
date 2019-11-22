@@ -54,9 +54,9 @@ public extension OCKAppearanceStyler {
     var lineWidth1: CGFloat { 4 }
 
     var cornerRadius1: CGFloat { 15 }
-    var cornerRadius2: CGFloat { 10 }
+    var cornerRadius2: CGFloat { 12 }
 
-    var borderWidth1: CGFloat { 2 }
+    var borderWidth1: CGFloat { 3 }
     var borderWidth2: CGFloat { 1 }
 }
 

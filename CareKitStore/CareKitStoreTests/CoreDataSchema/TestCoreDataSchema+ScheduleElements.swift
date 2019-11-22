@@ -55,8 +55,18 @@ class TestCoreDataSchemaWithScheduleElements: XCTestCase {
         let element = OCKCDScheduleElement(context: store.context)
         element.startDate = Date()
         element.interval = DateComponents(day: 1)
+        element.duration = .hours(1)
         element.targetValues = Set([value])
 
         XCTAssertNoThrow(try store.context.save())
+    }
+
+    func testCannotSaveScheduleElementsWithoutAnAssociatedTaskOrScheduleElement() {
+        let element = OCKCDScheduleElement(context: store.context)
+        element.startDate = Date()
+        element.interval = DateComponents(day: 1)
+        element.duration = .hours(1)
+
+        XCTAssertThrowsError(try store.context.save())
     }
 }

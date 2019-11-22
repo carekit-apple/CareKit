@@ -1,21 +1,21 @@
 /*
  Copyright (c) 2019, Apple Inc. All rights reserved.
-
+ 
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
-
+ 
  1.  Redistributions of source code must retain the above copyright notice, this
  list of conditions and the following disclaimer.
-
+ 
  2.  Redistributions in binary form must reproduce the above copyright notice,
  this list of conditions and the following disclaimer in the documentation and/or
  other materials provided with the distribution.
-
+ 
  3. Neither the name of the copyright holder(s) nor the names of any contributors
  may be used to endorse or promote products derived from this software without
  specific prior written permission. No license is granted to the trademarks of
  the copyright holders even if such marks are included in this software.
-
+ 
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -31,7 +31,8 @@
 import UIKit
 
 /// Base class for all log view. Shows an `OCKHeaderView` and a dynamic stack view of log items.
-open class OCKLogTaskView: OCKView, OCKEventDisplayable {
+open class OCKLogTaskView: OCKView, OCKTaskDisplayable {
+
     // MARK: Properties
 
     private let contentView: OCKView = {
@@ -40,10 +41,12 @@ open class OCKLogTaskView: OCKView, OCKEventDisplayable {
         return view
     }()
 
-    private lazy var cardAssembler = OCKCardAssembler(cardView: self, contentView: contentView)
+    private lazy var cardBuilder = OCKCardBuilder(cardView: self, contentView: contentView)
 
-    /// Handles events related to an `OCKEventDisplayable` object.
-    public weak var delegate: OCKEventViewDelegate?
+    private lazy var headerButton = OCKAnimatedButton(contentView: headerView, highlightOptions: [.defaultDelayOnSelect, .defaultOverlay],
+                                                      handlesSelection: false)
+
+    private let headerStackView = OCKStackView.vertical()
 
     let logItemsStackView: OCKStackView = {
         var stackView = OCKStackView(style: .separated)
@@ -51,23 +54,26 @@ open class OCKLogTaskView: OCKView, OCKEventDisplayable {
         return stackView
     }()
 
-    /// The vertical stack view that holds the main content for the view.
+    /// A vertical stack view that holds the main content for the view.
     public let contentStackView: OCKStackView = {
-        let stack = OCKStackView()
-        stack.axis = .vertical
+        let stack = OCKStackView.vertical()
+        stack.isLayoutMarginsRelativeArrangement = true
         return stack
     }()
 
-    /// The list of buttons in the log.
-    open var items: [OCKButton] {
-        guard let buttons = logItemsStackView.arrangedSubviews as? [OCKButton] else { fatalError("Unsupported type.") }
-        return buttons
-    }
+    /// Handles events related to an `OCKTaskDisplayable` object.
+    public weak var delegate: OCKTaskViewDelegate?
 
     /// The header view that shows a separator and a `detailDisclosureImage`.
     public let headerView = OCKHeaderView {
         $0.showsSeparator = true
         $0.showsDetailDisclosure = true
+    }
+
+    /// The list of buttons in the log.
+    open var items: [OCKLogItemButton] {
+        guard let buttons = logItemsStackView.arrangedSubviews as? [OCKLogItemButton] else { fatalError("Unsupported type.") }
+        return buttons
     }
 
     // MARK: - Methods
@@ -81,28 +87,54 @@ open class OCKLogTaskView: OCKView, OCKEventDisplayable {
 
     func addSubviews() {
         addSubview(contentView)
-        contentView.addSubview(contentStackView)
-        [headerView, logItemsStackView].forEach { contentStackView.addArrangedSubview($0) }
+        contentView.addSubview(headerStackView)
+        [headerButton, contentStackView].forEach { headerStackView.addArrangedSubview($0) }
+        [logItemsStackView].forEach { contentStackView.addArrangedSubview($0) }
     }
 
     func constrainSubviews() {
-        [contentView, contentStackView].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
+        [contentView, headerStackView, headerView].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
         NSLayoutConstraint.activate(
-            contentStackView.constraints(equalTo: contentView) +
-            contentView.constraints(equalTo: layoutMarginsGuide))
+            contentView.constraints(equalTo: self) +
+            headerStackView.constraints(equalTo: contentView) +
+            headerView.constraints(equalTo: headerButton.layoutMarginsGuide, directions: [.horizontal, .top]) +
+            headerView.constraints(equalTo: headerButton, directions: [.bottom]))
     }
 
     private func setupGestures() {
-        let tappedViewGesture = UITapGestureRecognizer(target: self, action: #selector(didTapView))
-        headerView.addGestureRecognizer(tappedViewGesture)
+        headerButton.addTarget(self, action: #selector(didTapView), for: .touchUpInside)
+    }
+
+    private func makeItem(withTitle title: String?, detail: String?) -> OCKLogItemButton {
+        let button = OCKLogItemButton()
+        button.addTarget(self, action: #selector(itemTapped(_:)), for: .touchUpInside)
+        button.titleLabel.text = title
+        button.detailLabel.text = detail
+        button.accessibilityLabel = (detail ?? "") + " " + (title ?? "")
+        button.accessibilityHint = loc("DOUBLE_TAP_TO_REMOVE_EVENT")
+        return button
+    }
+
+    @objc
+    private func didTapView() {
+        delegate?.didSelectTaskView(self, eventIndexPath: .init(row: 0, section: 0))
+    }
+
+    @objc
+    private func itemTapped(_ sender: UIControl) {
+        guard let index = logItemsStackView.arrangedSubviews.firstIndex(of: sender) else {
+            fatalError("Target was not set up properly.")
+        }
+        delegate?.taskView(self, didSelectOutcomeValueAt: index, eventIndexPath: .init(row: 0, section: 0), sender: sender)
     }
 
     override open func styleDidChange() {
         super.styleDidChange()
-        let cachedStyle = style()
-        cardAssembler.enableCardStyling(true, style: cachedStyle)
-        contentStackView.spacing = cachedStyle.dimension.directionalInsets1.top
-        directionalLayoutMargins = cachedStyle.dimension.directionalInsets1
+        let style = self.style()
+        cardBuilder.enableCardStyling(true, style: style)
+        contentStackView.spacing = style.dimension.directionalInsets1.top
+        directionalLayoutMargins = style.dimension.directionalInsets1
+        contentStackView.directionalLayoutMargins = style.dimension.directionalInsets1
     }
 
     /// Update the text for an item at a particular index.
@@ -113,11 +145,12 @@ open class OCKLogTaskView: OCKView, OCKEventDisplayable {
     ///   - detail: The detail text to display in the item. The text is tinted by default.
     /// - Returns: The item that was updated.
     @discardableResult
-    open func updateItem(at index: Int, withTitle title: String?, detail: String?) -> OCKButton? {
+    open func updateItem(at index: Int, withTitle title: String?, detail: String?) -> OCKLogItemButton? {
         guard index < logItemsStackView.arrangedSubviews.count else { return nil }
         let button = items[index]
-        button.setTitle(title, for: .normal)
-        button.setDetail(detail, for: .normal)
+        button.accessibilityLabel = title
+        button.titleLabel.text = title
+        button.detailLabel.text = detail
         return button
     }
 
@@ -130,7 +163,7 @@ open class OCKLogTaskView: OCKView, OCKEventDisplayable {
     ///   - animated: Animate the insertion of the logged item.
     /// - Returns: The item that was inserted.
     @discardableResult
-    open func insertItem(withTitle title: String?, detail: String?, at index: Int, animated: Bool) -> OCKButton {
+    open func insertItem(withTitle title: String?, detail: String?, at index: Int, animated: Bool) -> OCKLogItemButton {
         let button = makeItem(withTitle: title, detail: detail)
         logItemsStackView.insertArrangedSubview(button, at: index, animated: animated)
         return button
@@ -144,7 +177,7 @@ open class OCKLogTaskView: OCKView, OCKEventDisplayable {
     ///   - animated: Animate appending the item.
     /// - Returns: The item that was appended.
     @discardableResult
-    open func appendItem(withTitle title: String?, detail: String?, animated: Bool) -> OCKButton {
+    open func appendItem(withTitle title: String?, detail: String?, animated: Bool) -> OCKLogItemButton {
         let button = makeItem(withTitle: title, detail: detail)
         logItemsStackView.addArrangedSubview(button, animated: animated)
         return button
@@ -157,7 +190,7 @@ open class OCKLogTaskView: OCKView, OCKEventDisplayable {
     ///   - animated: Animate the removal of the item.
     /// - Returns: The item that was removed.
     @discardableResult
-    open func removeItem(at index: Int, animated: Bool) -> OCKButton? {
+    open func removeItem(at index: Int, animated: Bool) -> OCKLogItemButton? {
         guard index < logItemsStackView.arrangedSubviews.count else { return nil }
         let button = items[index]
         logItemsStackView.removeArrangedSubview(button, animated: animated)
@@ -169,26 +202,5 @@ open class OCKLogTaskView: OCKView, OCKEventDisplayable {
     /// - Parameter animated: Animate clearing the items.
     open func clearItems(animated: Bool) {
         logItemsStackView.clear(animated: animated)
-    }
-
-    private func makeItem(withTitle title: String?, detail: String?) -> OCKLogItemButton {
-        let button = OCKLogItemButton()
-        button.addTarget(self, action: #selector(itemTapped(_:)), for: .touchUpInside)
-        button.setTitle(title, for: .normal)
-        button.setDetail(detail, for: .normal)
-        return button
-    }
-
-    @objc
-    private func didTapView() {
-        delegate?.didSelectEventView(self)
-    }
-
-    @objc
-    private func itemTapped(_ sender: OCKButton) {
-        guard let index = logItemsStackView.arrangedSubviews.firstIndex(of: sender) else {
-            fatalError("Target was not set up properly.")
-        }
-        delegate?.eventView(self, didSelectOutcomeValueAt: index, sender: sender)
     }
 }

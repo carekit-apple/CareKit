@@ -33,11 +33,11 @@ import UIKit
 /// This layer displays a single line graph. Multiple line graph layers can be stacked to
 /// generate plots with more than one data series.
 class OCKLineLayer: OCKCartesianCoordinatesLayer {
-    var startColor: UIColor = OCKStyle().color.systemGray {
+    var startColor: UIColor = OCKStyle().color.customGray {
         didSet { gradient.colors = [startColor.cgColor, endColor.cgColor] }
     }
 
-    var endColor: UIColor = OCKStyle().color.systemGray {
+    var endColor: UIColor = OCKStyle().color.customGray {
         didSet { gradient.colors = [startColor.cgColor, endColor.cgColor] }
     }
 
@@ -105,7 +105,7 @@ class OCKLineLayer: OCKCartesianCoordinatesLayer {
         line.lineWidth = lineWidth
         line.lineCap = .round
         line.lineJoin = .round
-        line.strokeColor = OCKStyle().color.systemGray.cgColor
+        line.strokeColor = OCKStyle().color.customGray.cgColor
         line.fillColor = nil
         line.frame = bounds.applying(CGAffineTransform(translationX: offset, y: 0))
 

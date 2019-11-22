@@ -47,15 +47,15 @@ class OCKGraphLegendView: UIStackView {
         setup()
     }
 
+    func setDataSeries(_ dataSeries: [OCKDataSeries]) {
+        arrangedSubviews.forEach { $0.removeFromSuperview() }
+        dataSeries.map(makeKey).forEach(addArrangedSubview)
+    }
+
     private func setup() {
         axis = .horizontal
         distribution = .fillEqually
         spacing = Constants.keySpacing
-    }
-
-    func setDataSeries(_ dataSeries: [OCKDataSeries]) {
-        arrangedSubviews.forEach { $0.removeFromSuperview() }
-        dataSeries.map(makeKey).forEach(addArrangedSubview)
     }
 
     private func makeKey(for series: OCKDataSeries) -> UIView {
@@ -68,11 +68,12 @@ class OCKGraphLegendView: UIStackView {
     }
 
     private func makeLabel(title: String, color: UIColor) -> UIView {
-        let label = OCKLabel(textStyle: .caption1, weight: .regular)
+        let label = OCKCappedSizeLabel(textStyle: .caption1, weight: .regular)
         label.textAlignment = .left
         label.textColor = color
         label.text = "\(title)"
         label.clipsToBounds = true
+        label.isAccessibilityElement = false
         return label
     }
 
@@ -89,11 +90,11 @@ class OCKGraphLegendView: UIStackView {
 }
 
 private class OCKGradientView: OCKView {
-    var startColor: UIColor = OCKStyle().color.systemGray2 {
+    var startColor: UIColor = OCKStyle().color.customGray2 {
         didSet { gradient.colors = [startColor.cgColor, endColor.cgColor] }
     }
 
-    var endColor: UIColor = OCKStyle().color.systemGray2 {
+    var endColor: UIColor = OCKStyle().color.customGray2 {
         didSet { gradient.colors = [startColor.cgColor, endColor.cgColor] }
     }
 

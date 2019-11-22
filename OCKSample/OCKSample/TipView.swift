@@ -37,6 +37,7 @@ class TipView: OCKView, OCKCardable {
     let contentView: UIView = OCKView()
     let headerView = OCKHeaderView()
     let imageView = UIImageView()
+    var imageHeightConstraint: NSLayoutConstraint!
 
     private let blurView: UIVisualEffectView = {
         let blurEffect = UIBlurEffect(style: UIBlurEffect.Style.regular)
@@ -74,7 +75,7 @@ class TipView: OCKView, OCKCardable {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         blurView.translatesAutoresizingMaskIntoConstraints = false
         headerView.translatesAutoresizingMaskIntoConstraints = false
-
+        imageHeightConstraint = imageView.heightAnchor.constraint(equalToConstant: scaledImageHeight(compatibleWith: traitCollection))
 
         NSLayoutConstraint.activate([
             headerView.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
@@ -90,8 +91,19 @@ class TipView: OCKView, OCKCardable {
             imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             imageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             imageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            imageView.heightAnchor.constraint(equalToConstant: 200)
+            imageHeightConstraint
         ])
+    }
+
+    func scaledImageHeight(compatibleWith traitCollection: UITraitCollection) -> CGFloat {
+        return UIFontMetrics.default.scaledValue(for: 200, compatibleWith: traitCollection)
+    }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        if previousTraitCollection?.preferredContentSizeCategory != traitCollection.preferredContentSizeCategory {
+            imageHeightConstraint.constant = scaledImageHeight(compatibleWith: traitCollection)
+        }
     }
 
     override func styleDidChange() {

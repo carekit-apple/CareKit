@@ -33,49 +33,139 @@ import CareKitUI
 import Combine
 import UIKit
 
+/// Handles events related to an `OCKDailyTasksPageViewController`.
+public protocol OCKDailyTasksPageViewControllerDelegate: OCKTaskViewControllerDelegate {
+
+    /// Return a view controller to display for the given task and events.
+    /// - Parameters:
+    ///   - viewController: The view controller displaying the returned view controller.
+    ///   - task: The task to be displayed by the returned view controller.
+    ///   - events: The events to be displayed by the returned view controller.
+    ///   - eventQuery: The query used to retrieve the events for the task.
+    func dailyTasksPageViewController(_ viewController: OCKDailyTasksPageViewController, viewControllerForTask task: OCKAnyTask,
+                                      events: [OCKAnyEvent], eventQuery: OCKEventQuery) -> UIViewController?
+}
+
 /// Displays a calendar page view controller in the header, and a collection of tasks
 /// in the body. The tasks are automatically queried based on the selection in the calendar.
-open class OCKDailyTasksPageViewController<Store: OCKStoreProtocol>: OCKDailyPageViewController<Store> {
+open class OCKDailyTasksPageViewController: OCKDailyPageViewController, OCKDailyTasksPageViewControllerDelegate {
     private let emptyLabelMargin: CGFloat = 4
 
-    /// If set, the delegate will receive callbacks when important events happen at the task view controller level.
-    public weak var taskDelegate: OCKTaskViewControllerDelegate?
+    // MARK: Properties
 
-    override open func dailyPageViewController<S>(
-        _ dailyPageViewController: OCKDailyPageViewController<S>,
-        prepare listViewController: OCKListViewController,
-        for date: Date) where S: OCKStoreProtocol {
-        fetchTasks(for: date, andPopulateIn: listViewController)
+    /// If set, the delegate will receive callbacks when important events happen at the task view controller level.
+    public weak var tasksDelegate: OCKDailyTasksPageViewControllerDelegate?
+
+    // MARK: - Life Cycle
+
+    override open func viewDidLoad() {
+        super.viewDidLoad()
+        tasksDelegate = self
     }
 
+    // MARK: - Methods
+
     private func fetchTasks(for date: Date, andPopulateIn listViewController: OCKListViewController) {
-        storeManager.store.fetchTasks(nil, query: OCKTaskQuery(for: date), queue: .main) { [weak self] result in
+        let taskQuery = OCKTaskQuery(for: date)
+        storeManager.store.fetchAnyTasks(query: taskQuery, callbackQueue: .main) { [weak self] result in
             guard let self = self else { return }
             switch result {
-            case .failure(let error):
-                self.delegate?.dailyPageViewController(self, didFailWithError: error)
+            case .failure(let error): self.delegate?.dailyPageViewController(self, didFailWithError: error)
             case .success(let tasks):
-                let eventQuery = OCKEventQuery(for: date)
-                for task in tasks {
-                    let taskViewController = OCKGridTaskViewController(storeManager: self.storeManager, task: task, eventQuery: eventQuery)
-                    taskViewController.delegate = self.taskDelegate
-                    listViewController.appendViewController(taskViewController, animated: false)
-                }
 
-                if tasks.isEmpty {
+                // Show an empty label if there are no tasks
+                guard !tasks.isEmpty else {
                     listViewController.listView.stackView.spacing = self.emptyLabelMargin
                     let emptyLabel = OCKEmptyLabel(textStyle: .subheadline, weight: .medium)
                     listViewController.appendView(emptyLabel, animated: false)
+                    return
+                }
+
+                // Aggregate the view controllers returned after fetching the events
+                let group = DispatchGroup()
+                var viewControllers: [UIViewController] = []
+                tasks.forEach {
+                    group.enter()
+                    self.viewController(forTask: $0, fromQuery: taskQuery) { viewController in
+                        viewController.map { viewControllers.append($0) }
+                        group.leave()
+                    }
+                }
+
+                // Add the view controllers to the view
+                group.notify(queue: .main) {
+                    viewControllers.forEach { listViewController.appendViewController($0, animated: false) }
                 }
             }
         }
+    }
+
+    // Fetch events and return a view controller to display the data
+    private func viewController(forTask task: OCKAnyTask, fromQuery query: OCKTaskQuery,
+                                result: @escaping (UIViewController?) -> Void) {
+        guard let dateInterval = query.dateInterval else { fatalError("Task query should have a set date") }
+        let eventQuery = OCKEventQuery(dateInterval: dateInterval)
+        self.storeManager.store.fetchAnyEvents(taskID: task.id, query: eventQuery, callbackQueue: .main) { [weak self] fetchResult in
+            guard let self = self else { return }
+            switch fetchResult {
+            case .failure(let error): self.delegate?.dailyPageViewController(self, didFailWithError: error)
+            case .success(let events):
+                let viewController =
+                    self.tasksDelegate?.dailyTasksPageViewController(self, viewControllerForTask: task, events: events, eventQuery: eventQuery) ??
+                    self.dailyTasksPageViewController(self, viewControllerForTask: task, events: events, eventQuery: eventQuery)
+                result(viewController)
+            }
+        }
+    }
+
+    override open func dailyPageViewController(_ dailyPageViewController: OCKDailyPageViewController,
+                                               prepare listViewController: OCKListViewController, for date: Date) {
+        fetchTasks(for: date, andPopulateIn: listViewController)
+    }
+
+    // MARK: - OCKDailyTasksPageViewControllerDelegate
+
+    open func dailyTasksPageViewController(_ viewController: OCKDailyTasksPageViewController, viewControllerForTask task: OCKAnyTask,
+                                           events: [OCKAnyEvent], eventQuery: OCKEventQuery) -> UIViewController? {
+        // Show the button log if the task does not impact adherence
+        if !task.impactsAdherence {
+            let taskViewController = OCKButtonLogTaskViewController(controller: .init(storeManager: self.storeManager),
+                                                                    viewSynchronizer: .init())
+            taskViewController.setup(withEvents: events, task: task, eventQuery: eventQuery, delegate: self.tasksDelegate)
+            return taskViewController
+
+        // Show the simple if there is only one event. Visually this is the best style for a single event.
+        } else if events.count == 1 {
+            let taskViewController = OCKSimpleTaskViewController(controller: .init(storeManager: self.storeManager),
+                                                                 viewSynchronizer: .init())
+            taskViewController.setup(withEvents: events, task: task, eventQuery: eventQuery, delegate: self.tasksDelegate)
+            return taskViewController
+
+        // Else default to the grid
+        } else {
+            let taskViewController = OCKGridTaskViewController(controller: .init(storeManager: self.storeManager),
+                                                               viewSynchronizer: .init())
+            taskViewController.setup(withEvents: events, task: task, eventQuery: eventQuery, delegate: self.tasksDelegate)
+            return taskViewController
+        }
+    }
+
+    open func taskViewController<C, VS>(_ viewController: OCKTaskViewController<C, VS>,
+                                        didEncounterError: Error) where C: OCKTaskControllerProtocol, VS: OCKTaskViewSynchronizerProtocol {}
+}
+
+private extension OCKTaskViewController where Controller: OCKTaskController {
+    func setup(withEvents events: [OCKAnyEvent], task: OCKAnyTask, eventQuery: OCKEventQuery, delegate: OCKTaskViewControllerDelegate?) {
+        controller.updateViewModel(withEvents: events)
+        controller.subscribeTo(eventsBelongingToTask: task, eventQuery: eventQuery)
+        self.delegate = delegate
     }
 }
 
 private class OCKEmptyLabel: OCKLabel {
     override init(textStyle: UIFont.TextStyle, weight: UIFont.Weight) {
         super.init(textStyle: textStyle, weight: weight)
-        text = OCKStrings.noTasks
+        text = loc("NO_TASKS")
     }
 
     @available(*, unavailable)

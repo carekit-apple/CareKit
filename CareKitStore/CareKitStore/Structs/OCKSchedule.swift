@@ -37,27 +37,34 @@ import Foundation
 /// - Note: A variety of initializers are provided to quickly create commonly used schedules. Used in
 ///         combination with the offset method, building up complex schedules can be performed quite
 ///         efficiently.
-public struct OCKSchedule: Codable, Equatable, OCKSchedulable {
+public struct OCKSchedule: Codable, Equatable {
+
     /// The constituent components this schedule was built from.
     public let elements: [OCKScheduleElement]
 
     /// Create a new schedule by combining an array of other `OCKSchedule` objects.
-    public init(composing schedules: [OCKSchedulable]) {
+    public init(composing schedules: [OCKSchedule]) {
         assert(!schedules.isEmpty, "You cannot create a schedule with 0 elements")
         self.elements = schedules.flatMap { $0.elements }
     }
 
-    /// Returns the Nth event of this schedule, or nil if the schedule ends before the Nth occurence.
+    /// Create a new schedule by combining an array of other `OCKSchedule` objects.
+    public init(composing elements: [OCKScheduleElement]) {
+        assert(!elements.isEmpty, "You cannot create a schedule with 0 elements")
+        self.elements = elements.flatMap { $0.elements }
+    }
+
+    /// Returns the Nth event of this schedule.
     ///
-    /// - Parameter occurence: The Nth occurence.
-    public subscript(occurence: Int) -> OCKScheduleEvent? {
-        return event(forOccurenceIndex: occurence)
+    /// - Parameter occurrence: The Nth occurrence.
+    public subscript(occurrence: Int) -> OCKScheduleEvent {
+        return event(forOccurrenceIndex: occurrence)!
     }
 
     /// The date of the first event of this schedule.
     ///
     /// - Note: This operation has an upperbound complexity of O(NlogN).
-    public var start: Date {
+    public func startDate() -> Date {
         guard let earliestStartDate = elements.map({ $0.start }).sorted().min()
             else { fatalError("OCKSchedule should always have at least 1 element!") }
         return earliestStartDate
@@ -66,7 +73,7 @@ public struct OCKSchedule: Codable, Equatable, OCKSchedulable {
     /// The date of the last event of this schedule, or nil if the schedule is of infinite length.
     ///
     /// - Note: This operation has an upperbound complexity of O(NlogN)
-    public var end: Date? {
+    public func endDate() -> Date? {
         let endDates = elements.map { $0.end }
         if endDates.contains(nil) { return nil }
         let finiteEndDates = endDates.compactMap({ $0 }).sorted()
@@ -74,14 +81,20 @@ public struct OCKSchedule: Codable, Equatable, OCKSchedulable {
         return lastEndDate
     }
 
+    /// Computes an array of events between two dates.
+    /// The lower bound is inclusive and the upper bound is exclusive.
+    ///
+    /// - Parameters:
+    ///   - start: The earliest date at which an event could be returned. Inclusive.
+    ///   - end: The latest date at which an event could be returned. Exclusive.
     public func events(from start: Date, to end: Date) -> [OCKScheduleEvent] {
         var allEvents = elements
-            .flatMap { $0.events(from: self.start, to: end) }
+            .flatMap { $0.events(from: self.startDate(), to: end) }
             .sorted()
         for index in 0..<allEvents.count {
-            allEvents[index] = allEvents[index].changing(occurenceIndex: index)
+            allEvents[index] = allEvents[index].changing(occurrenceIndex: index)
         }
-        return allEvents.filter { $0.start + $0.element.duration >= start }
+        return allEvents.filter { $0.start + $0.element.duration.seconds >= start }
     }
 
     /// Create a new schedule by shifting this schedule.
@@ -94,7 +107,7 @@ public struct OCKSchedule: Codable, Equatable, OCKSchedulable {
 
     /// Create a schedule that happens once per day, every day, at a fixed time.
     public static func dailyAtTime(hour: Int, minutes: Int, start: Date, end: Date?,
-                                   text: String?, duration: TimeInterval = 3_600,
+                                   text: String?, duration: OCKScheduleElement.Duration = .hours(1),
                                    targetValues: [OCKOutcomeValue] = []) -> OCKSchedule {
         let interval = DateComponents(day: 1)
         let startTime = Calendar.current.date(bySettingHour: hour, minute: minutes, second: 0, of: start)!
@@ -105,7 +118,7 @@ public struct OCKSchedule: Codable, Equatable, OCKSchedulable {
 
     /// Create a schedule that happens once per week, every week, at a fixed time.
     public static func weeklyAtTime(weekday: Int, hours: Int, minutes: Int, start: Date, end: Date?, targetValues: [OCKOutcomeValue],
-                                    text: String?, duration: TimeInterval = 0) -> OCKSchedule {
+                                    text: String?, duration: OCKScheduleElement.Duration = .hours(1)) -> OCKSchedule {
         let interval = DateComponents(weekOfYear: 1)
         var startTime = Calendar.current.date(bySettingHour: hours, minute: minutes, second: 0, of: start)!
         startTime = Calendar.current.date(bySetting: .weekday, value: weekday, of: startTime)!
@@ -114,11 +127,11 @@ public struct OCKSchedule: Codable, Equatable, OCKSchedulable {
         return OCKSchedule(composing: [element])
     }
 
-    /// Computes the date of the Nth occurence of a schedule element. If the Nth occurence is beyond the end date, then nil will be returned.
-    public func event(forOccurenceIndex occurence: Int) -> OCKScheduleEvent? {
+    /// Computes the date of the Nth occurrence of a schedule element. If the Nth occurrence is beyond the end date, then nil will be returned.
+    public func event(forOccurrenceIndex occurrence: Int) -> OCKScheduleEvent? {
         // This could be optimized. It is not an efficient algorithm.
-        assert(occurence >= 0, "Schedule events cannot have negative occurence indices")
-        let events = elements.flatMap { $0.events(betweenOccurenceIndex: 0, and: occurence + 1) }
+        assert(occurrence >= 0, "Schedule events cannot have negative occurrence indices")
+        let events = elements.flatMap { $0.events(betweenOccurrenceIndex: 0, and: occurrence + 1) }
         let sortedEvents = events.sorted { eventA, eventB -> Bool in
             if let eventA = eventA, let eventB = eventB {
                 return eventA < eventB
@@ -126,9 +139,25 @@ public struct OCKSchedule: Codable, Equatable, OCKSchedulable {
                 return eventA != nil && eventB == nil
             }
         }
-        guard let localEvent = sortedEvents[occurence] else { return nil }
+        guard let localEvent = sortedEvents[occurrence] else { return nil }
         let globalEvent = OCKScheduleEvent(start: localEvent.start, end: localEvent.end,
-                                           element: localEvent.element, occurence: occurence)
+                                           element: localEvent.element, occurrence: occurrence)
         return globalEvent
+    }
+
+    func exists(onDay date: Date) -> Bool {
+        let firstMomentOfTheDay = Calendar.current.startOfDay(for: date)
+        let lastMomentOfTheDay = Calendar.current.date(byAdding: DateComponents(day: 1, second: -1), to: firstMomentOfTheDay)!
+
+        // If there is no end date, we just have to check that it starts before the end of the given day.
+        guard let end = endDate() else {
+            return startDate() <= lastMomentOfTheDay
+        }
+
+        // If there is an end date, the we need to ensure that it has already started, and hasn't ended yet.
+        let startedOnTime = startDate() < lastMomentOfTheDay
+        let didntEndTooEarly = end > firstMomentOfTheDay
+
+        return startedOnTime && didntEndTooEarly
     }
 }

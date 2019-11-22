@@ -1,21 +1,21 @@
 /*
  Copyright (c) 2019, Apple Inc. All rights reserved.
-
+ 
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
-
+ 
  1.  Redistributions of source code must retain the above copyright notice, this
  list of conditions and the following disclaimer.
-
+ 
  2.  Redistributions in binary form must reproduce the above copyright notice,
  this list of conditions and the following disclaimer in the documentation and/or
  other materials provided with the distribution.
-
+ 
  3. Neither the name of the copyright holder(s) nor the names of any contributors
  may be used to endorse or promote products derived from this software without
  specific prior written permission. No license is granted to the trademarks of
  the copyright holders even if such marks are included in this software.
-
+ 
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -32,9 +32,14 @@ import Foundation
 import UIKit
 
 open class OCKCartesianChartView: OCKView, OCKChartDisplayable {
-    let contentView = OCKView()
 
-    private lazy var cardAssembler = OCKCardAssembler(cardView: self, contentView: contentView)
+    // MARK: Properties
+
+    private let contentView = OCKView()
+
+    private lazy var cardBuilder = OCKCardBuilder(cardView: self, contentView: contentView)
+
+    private let headerContainerView = UIView()
 
     /// Handles events related to an `OCKChartDisplayable` object.
     public weak var delegate: OCKChartViewDelegate?
@@ -52,7 +57,7 @@ open class OCKCartesianChartView: OCKView, OCKChartDisplayable {
     /// The main content of the view.
     public let graphView: OCKCartesianGraphView
 
-    private let headerContainerView = UIView()
+    // MARK: - Life Cycle
 
     /// Create a chart with a specified type. Available charts include bar, plot, and scatter.
     ///
@@ -67,6 +72,8 @@ open class OCKCartesianChartView: OCKView, OCKChartDisplayable {
     public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
+    // MARK: - Methods
 
     override func setup() {
         super.setup()
@@ -88,18 +95,13 @@ open class OCKCartesianChartView: OCKView, OCKChartDisplayable {
     }
 
     private func constrainSubviews() {
-        [contentStackView, headerView].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
-        NSLayoutConstraint.activate([
-            headerView.leadingAnchor.constraint(equalTo: headerContainerView.layoutMarginsGuide.leadingAnchor),
-            headerView.trailingAnchor.constraint(equalTo: headerContainerView.layoutMarginsGuide.trailingAnchor),
-            headerView.topAnchor.constraint(equalTo: headerContainerView.topAnchor),
-            headerView.bottomAnchor.constraint(equalTo: headerContainerView.bottomAnchor),
-
-            contentStackView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            contentStackView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            contentStackView.topAnchor.constraint(equalTo: layoutMarginsGuide.topAnchor),
-            contentStackView.bottomAnchor.constraint(equalTo: layoutMarginsGuide.bottomAnchor)
-        ])
+        [contentView, contentStackView, headerView].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
+        NSLayoutConstraint.activate(
+            contentStackView.constraints(equalTo: self, directions: [.horizontal]) +
+            contentStackView.constraints(equalTo: layoutMarginsGuide, directions: [.vertical]) +
+            headerView.constraints(equalTo: headerContainerView.layoutMarginsGuide, directions: [.horizontal]) +
+            headerView.constraints(equalTo: headerContainerView, directions: [.vertical]) +
+            contentStackView.constraints(equalTo: contentView))
     }
 
     @objc
@@ -110,7 +112,7 @@ open class OCKCartesianChartView: OCKView, OCKChartDisplayable {
     override open func styleDidChange() {
         super.styleDidChange()
         let cachedStyle = style()
-        cardAssembler.enableCardStyling(true, style: cachedStyle)
+        cardBuilder.enableCardStyling(true, style: cachedStyle)
         contentStackView.spacing = cachedStyle.dimension.directionalInsets1.top
         directionalLayoutMargins = cachedStyle.dimension.directionalInsets1
         headerContainerView.directionalLayoutMargins = cachedStyle.dimension.directionalInsets1

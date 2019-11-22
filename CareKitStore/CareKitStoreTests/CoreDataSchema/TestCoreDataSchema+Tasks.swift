@@ -43,10 +43,10 @@ class TestCoreDataSchemaWithTasks: XCTestCase {
         let scheduleElement = OCKCDScheduleElement(context: store.context)
         scheduleElement.startDate = Date()
         scheduleElement.daysInterval = 1
-        scheduleElement.duration = 42
+        scheduleElement.duration = .seconds(42)
 
         let task1 = OCKCDTask(context: store.context)
-        task1.identifier = "task_1"
+        task1.id = "task_1"
         task1.effectiveDate = Date()
         task1.allowsMissingRelationships = true
         task1.scheduleElements = Set([scheduleElement])
@@ -56,7 +56,7 @@ class TestCoreDataSchemaWithTasks: XCTestCase {
 
     func testCannotSaveTaskWithoutSchedule() {
         let task1 = OCKCDTask(context: store.context)
-        task1.identifier = "task_1"
+        task1.id = "task_1"
         task1.effectiveDate = Date()
         task1.allowsMissingRelationships = true
 

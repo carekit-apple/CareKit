@@ -1,21 +1,21 @@
 /*
  Copyright (c) 2019, Apple Inc. All rights reserved.
-
+ 
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
-
+ 
  1.  Redistributions of source code must retain the above copyright notice, this
  list of conditions and the following disclaimer.
-
+ 
  2.  Redistributions in binary form must reproduce the above copyright notice,
  this list of conditions and the following disclaimer in the documentation and/or
  other materials provided with the distribution.
-
+ 
  3. Neither the name of the copyright holder(s) nor the names of any contributors
  may be used to endorse or promote products derived from this software without
  specific prior written permission. No license is granted to the trademarks of
  the copyright holders even if such marks are included in this software.
-
+ 
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -30,8 +30,11 @@
 
 import UIKit
 
+private let accessibilityElementBoundingBoxSize = CGSize(width: 10, height: 10)
+
 /// This is an abstract base class for plots that use a gradient mask.
-class OCKGradientPlotView: UIView, OCKGradientPlotable, OCKMultiPlotable {
+class OCKGradientPlotView<LayerType: OCKCartesianCoordinatesLayer> : UIView, OCKGradientPlotable, OCKMultiPlotable {
+    
     let gradientLayer = CAGradientLayer()
     let pointsLayer = CAShapeLayer()
 
@@ -59,7 +62,7 @@ class OCKGradientPlotView: UIView, OCKGradientPlotable, OCKMultiPlotable {
         didSet { seriesLayers.forEach { $0.yMaximum = yMaximum } }
     }
 
-    var seriesLayers: [CALayer & OCKSinglePlotable] = []
+    var seriesLayers: [LayerType] = []
 
     override var intrinsicContentSize: CGSize {
         return CGSize(width: 200, height: 75)
@@ -68,9 +71,36 @@ class OCKGradientPlotView: UIView, OCKGradientPlotable, OCKMultiPlotable {
     override func layoutSubviews() {
         super.layoutSubviews()
         seriesLayers.forEach { $0.frame = bounds }
+        resetAccessibilityElements()
     }
 
     func resetLayers() {
         fatalError("This method must be overridden in subclasses!")
+    }
+
+    func resetAccessibilityElements() {
+        accessibilityElements = []
+
+        dataSeries.enumerated().forEach { seriesIndex, series in
+            series.dataPoints.enumerated().forEach { pointIndex, point in
+
+                let pointInViewSpace = seriesLayers[seriesIndex].convert(graphSpacePoints: [point]).first!
+                let axOrigin = CGPoint(x: pointInViewSpace.x - accessibilityElementBoundingBoxSize.width / 2,
+                                       y: pointInViewSpace.y - accessibilityElementBoundingBoxSize.height / 2)
+                let axFrame = CGRect(origin: axOrigin, size: accessibilityElementBoundingBoxSize)
+
+                // Create the labels for this data point
+                let useProvidedLabel = pointIndex < series.accessibilityLabels.count
+                let label = useProvidedLabel ? series.accessibilityLabels[pointIndex] : "\(series.title), \(point.x), \(point.y)"
+
+                // Create an accessibility element for this singular data point
+                let element = UIAccessibilityElement(accessibilityContainer: self)
+                element.accessibilityFrameInContainerSpace = axFrame
+                element.accessibilityLabel = label
+                element.accessibilityTraits = UIAccessibilityTraits.staticText
+
+                accessibilityElements?.append(element)
+            }
+        }
     }
 }

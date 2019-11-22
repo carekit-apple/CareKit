@@ -35,17 +35,18 @@ import Foundation
 
 /// Classes that conform to this protocol can recieve updates about the state of
 /// the `OCKContactsListViewControllerDelegate`.
-public protocol OCKContactsListViewControllerDelegate: OCKContactViewControllerDelegate {
-    /// Alerts the delegate when `contactListViewController` encounters a relevant error.
-    func contactListViewController<S: OCKStoreProtocol>(_ contactListViewController: OCKContactsListViewController<S>,
-                                                        didFailWithError error: Error)
+public protocol OCKContactsListViewControllerDelegate: AnyObject {
+    func contactsListViewController(_ viewController: OCKContactsListViewController, didEncounterError: Error)
 }
 
 /// An `OCKListViewController` that automatically queries and displays contacts in the `Store` using
 /// `OCKDetailedContactViewController`s.
-open class OCKContactsListViewController<Store: OCKStoreProtocol>: OCKListViewController {
+open class OCKContactsListViewController: OCKListViewController {
+
+    // MARK: Properties
+
     /// The manager of the `Store` from which the `Contact` data is fetched.
-    public let storeManager: OCKSynchronizedStoreManager<Store>
+    public let storeManager: OCKSynchronizedStoreManager
 
     /// If set, the delegate will receive callbacks when important events happen at the list view controller level.
     public weak var delegate: OCKContactsListViewControllerDelegate?
@@ -55,11 +56,13 @@ open class OCKContactsListViewController<Store: OCKStoreProtocol>: OCKListViewCo
 
     private var subscription: Cancellable?
 
+    // MARK: - Life Cycle
+
     /// Initialize using a store manager. All of the contacts in the store manager will be queried and dispalyed.
     ///
     /// - Parameters:
     ///   - storeManager: The store manager owning the store whose contacts should be displayed.
-    public init(storeManager: OCKSynchronizedStoreManager<Store>) {
+    public init(storeManager: OCKSynchronizedStoreManager) {
         self.storeManager = storeManager
         super.init(nibName: nil, bundle: nil)
     }
@@ -72,10 +75,12 @@ open class OCKContactsListViewController<Store: OCKStoreProtocol>: OCKListViewCo
     override open func viewDidLoad() {
         super.viewDidLoad()
         navigationController?.navigationBar.prefersLargeTitles = true
-        title = OCKStrings.contacts
+        title = loc("CONTACTS")
         subscribe()
         fetchContacts()
     }
+
+    // MARK: - Methods
 
     private func subscribe() {
         subscription?.cancel()
@@ -87,15 +92,15 @@ open class OCKContactsListViewController<Store: OCKStoreProtocol>: OCKListViewCo
     /// `fetchContacts` asynchronously retrieves an array of contacts stored in a `Result`
     /// and makes corresponding `OCKDetailedContactViewController`s.
     private func fetchContacts() {
-        storeManager.store.fetchContacts(nil, query: nil, queue: .main) { [weak self] result in
+        storeManager.store.fetchAnyContacts(query: OCKContactQuery(), callbackQueue: .main) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .failure(let error):
-                self.delegate?.contactListViewController(self, didFailWithError: error)
+                self.delegate?.contactsListViewController(self, didEncounterError: error)
             case .success(let contacts):
                 self.clear()
                 for contact in contacts {
-                    let contactViewController = OCKDetailedContactViewController(storeManager: self.storeManager, contact: contact)
+                    let contactViewController = OCKDetailedContactViewController(contact: contact, storeManager: self.storeManager)
                     contactViewController.delegate = self.contactDelegate
                     self.appendViewController(contactViewController, animated: false)
                 }

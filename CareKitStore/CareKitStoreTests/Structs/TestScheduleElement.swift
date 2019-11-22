@@ -53,14 +53,8 @@ class TestScheduleElement: XCTestCase {
     }
 
     func testSubscript() {
-        let event = element[0]!
+        let event = element[0]
         assert(event.start == element.start)
-    }
-
-    func testSubscriptReturnsNilForDatePastEndDate() {
-        var finiteElement = element
-        finiteElement.end = Calendar.current.date(byAdding: interval, to: finiteElement.start)!
-        assert(finiteElement[2] == nil)
     }
 
     func testOneScheduleElementIsEqualToItsElements() {
@@ -99,13 +93,13 @@ class TestScheduleElement: XCTestCase {
         XCTAssert(events.isEmpty)
     }
 
-    func testEventOccurenceIsCorrectOnQueriesThatDontStartFromTheBeginning() {
+    func testEventOccurrenceIsCorrectOnQueriesThatDontStartFromTheBeginning() {
         let mid = Calendar.current.date(byAdding: .year, value: 2, to: date)!
         let end = Calendar.current.date(byAdding: .year, value: 4, to: date)!
         let events = element.events(from: mid, to: end)
         XCTAssert(events.count == 2)
-        XCTAssert(events[0].occurence == 2)
-        XCTAssert(events[1].occurence == 3)
+        XCTAssert(events[0].occurrence == 2)
+        XCTAssert(events[1].occurrence == 3)
     }
 
     func testReturnsEmptyArrayIfAskedForEventsStartingAfterEndDate() {
@@ -122,17 +116,17 @@ class TestScheduleElement: XCTestCase {
         for (index, event) in events.enumerated() {
             let expectedDate = Calendar.current.date(byAdding: .year, value: index, to: element.start)!
             XCTAssert(event.start == expectedDate)
-            XCTAssert(event.occurence == index)
+            XCTAssert(event.occurrence == index)
         }
     }
 
     func testEventsBetweenEqualIndicesReturnSingleElementArray() {
-        XCTAssert(element.events(betweenOccurenceIndex: 0, and: 1).count == 1)
+        XCTAssert(element.events(betweenOccurrenceIndex: 0, and: 1).count == 1)
     }
 
     func testEventsBetweeUnequalIndicesReturnsTheCorrectNumberOfElements() {
-        XCTAssert(element.events(betweenOccurenceIndex: 0, and: 2).count == 2)
-        XCTAssert(element.events(betweenOccurenceIndex: 2, and: 5).count == 3)
+        XCTAssert(element.events(betweenOccurrenceIndex: 0, and: 2).count == 2)
+        XCTAssert(element.events(betweenOccurrenceIndex: 2, and: 5).count == 3)
     }
 
     func testEventsBetweenIndicesFillsTheArrayWithNilBeyondTheEndDate() {
@@ -140,11 +134,11 @@ class TestScheduleElement: XCTestCase {
         let end = Calendar.current.date(byAdding: .year, value: 5, to: start)
         let interval = DateComponents(year: 1)
         let element = OCKScheduleElement(start: start, end: end, interval: interval, text: nil, targetValues: [])
-        let events = element.events(betweenOccurenceIndex: 2, and: 10)
+        let events = element.events(betweenOccurrenceIndex: 2, and: 10)
         for index in 0..<8 {
             if index <= 3 {
                 XCTAssert(events[index] != nil)
-                XCTAssert(events[index]?.occurence == index + 2)
+                XCTAssert(events[index]?.occurrence == index + 2)
             }
             if index > 3 {
                 XCTAssert(events[index] == nil)
@@ -154,7 +148,7 @@ class TestScheduleElement: XCTestCase {
 
     func testEventsBetweenDatesIncludesEventsThatStartedBeforeTheStartDateButAreAllDayEvents() {
         let allDayElement = OCKScheduleElement(start: Calendar.current.startOfDay(for: Date()), end: nil,
-                                               interval: DateComponents(weekOfYear: 1), isAllDay: true)
+                                               interval: DateComponents(weekOfYear: 1), duration: .allDay)
 
         let afternoon = Calendar.current.startOfDay(for: Date()).addingTimeInterval(60 * 60 * 12) // 12:00
         let evening = Calendar.current.startOfDay(for: Date()).addingTimeInterval(60 * 60 * 20) // 20:00
@@ -168,7 +162,7 @@ class TestScheduleElement: XCTestCase {
         let evening = Calendar.current.startOfDay(for: Date()).addingTimeInterval(60 * 60 * 20) // 20:00
 
         let allDayElement = OCKScheduleElement(start: evening, end: nil,
-                                               interval: DateComponents(weekOfYear: 1), isAllDay: true)
+                                               interval: DateComponents(weekOfYear: 1), duration: .allDay)
 
         let events = allDayElement.events(from: morning, to: afternoon)
         XCTAssert(events.count == 1, "Expected 1 event, but got: \(events.count)")
@@ -176,19 +170,7 @@ class TestScheduleElement: XCTestCase {
 
     func testEventsBetweenDatesIncludeEventsWithMultidayDurationsThatStartedOnPreviousDays() {
         let morning = Calendar.current.startOfDay(for: Date())
-        let threeDays = TimeInterval(60 * 60 * 24 * 3)
-        let element = OCKScheduleElement(start: morning, end: nil, interval: DateComponents(day: 7), duration: threeDays)
-        let twoDaysLater = Calendar.current.date(byAdding: .day, value: 2, to: morning)!
-        let fourDaysLater = Calendar.current.date(byAdding: .day, value: 4, to: morning)!
-        let events = element.events(from: twoDaysLater, to: fourDaysLater)
-        XCTAssert(events.count == 1, "Expected 1 event, but got: \(events.count)")
-    }
-
-    func testEventsBetweenDatesIncludesMultidayAllDayEventsThatStartedOnPreviousDays() {
-        let morning = Calendar.current.startOfDay(for: Date())
-        let threeDays = TimeInterval(60 * 60 * 24 * 3)
-        let element = OCKScheduleElement(start: morning, end: nil, interval: DateComponents(day: 7),
-                                         duration: threeDays, isAllDay: true)
+        let element = OCKScheduleElement(start: morning, end: nil, interval: DateComponents(day: 7), duration: .hours(24 * 3))
         let twoDaysLater = Calendar.current.date(byAdding: .day, value: 2, to: morning)!
         let fourDaysLater = Calendar.current.date(byAdding: .day, value: 4, to: morning)!
         let events = element.events(from: twoDaysLater, to: fourDaysLater)
@@ -197,8 +179,7 @@ class TestScheduleElement: XCTestCase {
 
     func testEventsBetweenDatesCanOverlap() {
         let morning = Calendar.current.startOfDay(for: Date())
-        let twoHours = TimeInterval(60 * 60 * 2)
-        let element = OCKScheduleElement(start: morning, end: nil, interval: DateComponents(hour: 1), duration: twoHours)
+        let element = OCKScheduleElement(start: morning, end: nil, interval: DateComponents(hour: 1), duration: .hours(2))
         let queryStart = morning.addingTimeInterval(60 * 60 * 1.5)
         let queryEnd = queryStart.addingTimeInterval(1)
         let events = element.events(from: queryStart, to: queryEnd)

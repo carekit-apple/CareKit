@@ -101,8 +101,7 @@ extension OCKGradientPlotable where Self: CALayer {
 
         // The points layer is positioned as a sublayer in the gradient, but it needs to appear
         // in the same position it would if the gradient layer were exactly the same size as its parent.
-        let translation = CGAffineTransform(translationX: -gradientFrame.minX,
-                                            y: 0)//path.boundingBoxOfPath.height - bounds.height)
+        let translation = CGAffineTransform(translationX: -gradientFrame.minX, y: 0)
         let adjustedFrame = bounds.applying(translation)
         pointsLayer.frame = adjustedFrame
     }

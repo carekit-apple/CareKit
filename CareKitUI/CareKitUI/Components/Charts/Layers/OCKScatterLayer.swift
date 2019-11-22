@@ -38,11 +38,11 @@ class OCKScatterLayer: OCKCartesianCoordinatesLayer, OCKGradientPlotable {
         didSet { pointsLayer.path = makePath(points: points) }
     }
 
-    var startColor: UIColor = OCKStyle().color.systemGray {
+    var startColor: UIColor = OCKStyle().color.customGray {
         didSet { gradientLayer.colors = [startColor.cgColor, endColor.cgColor] }
     }
 
-    var endColor: UIColor = OCKStyle().color.systemGray {
+    var endColor: UIColor = OCKStyle().color.customGray {
         didSet { gradientLayer.colors = [startColor.cgColor, endColor.cgColor] }
     }
 

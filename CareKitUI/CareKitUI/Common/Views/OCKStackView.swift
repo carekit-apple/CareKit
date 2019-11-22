@@ -33,6 +33,15 @@ import UIKit
 /// A stack view that supports animating showing/hiding arranged subviews,
 /// and has the option of dynamically creating separators when arranged subviews are added.
 open class OCKStackView: UIStackView, OCKStylable {
+
+    /// Types of animations that are applied to the stack view.
+    ///
+    /// - fade: Animate opacity.
+    /// - hidden: Animate the isHidden property.
+    enum Animation {
+        case fade, hidden
+    }
+
     // MARK: Properties
 
     public var customStyle: OCKStyler? {
@@ -45,14 +54,6 @@ open class OCKStackView: UIStackView, OCKStylable {
     /// - separated: Creates separators between arranges subview.
     public enum Style {
         case plain, separated
-    }
-
-    /// Types of animations that are applied to the stack view.
-    ///
-    /// - fade: Animate opacity.
-    /// - hidden: Animate the isHidden property.
-    enum Animation {
-        case fade, hidden
     }
 
     /// The style of the stack view.
@@ -87,7 +88,31 @@ open class OCKStackView: UIStackView, OCKStylable {
         fatalError("init(coder:) has not been implemented")
     }
 
+    static func vertical() -> OCKStackView {
+        let stackView = OCKStackView()
+        stackView.axis = .vertical
+        return stackView
+    }
+
+    static func horizontal() -> OCKStackView {
+        let stackView = OCKStackView()
+        stackView.axis = .horizontal
+        return stackView
+    }
+
     // MARK: Methods
+
+    override open func didMoveToSuperview() {
+        super.didMoveToSuperview()
+        styleDidChange()
+    }
+
+    override open func removeFromSuperview() {
+        super.removeFromSuperview()
+        styleChildren()
+    }
+
+    open func styleDidChange() {}
 
     /// The ordered subviews. When the stack view is a separated style, this will not
     /// include the separators.
@@ -324,16 +349,4 @@ open class OCKStackView: UIStackView, OCKStylable {
             })
         }
     }
-
-    override open func didMoveToSuperview() {
-        super.didMoveToSuperview()
-        styleDidChange()
-    }
-
-    override open func removeFromSuperview() {
-        super.removeFromSuperview()
-        styleChildren()
-    }
-
-    public func styleDidChange() {}
 }

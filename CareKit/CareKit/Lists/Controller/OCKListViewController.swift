@@ -36,21 +36,22 @@ import UIKit
 /// `OCKDailyPageViewController` uses `OCKListViewController`s to display scrollable stacks of
 /// embedded view controllers.
 open class OCKListViewController: UIViewController {
+
     // MARK: Properties
 
     /// The list view that displays the view controller's views.
-    internal var listView: OCKListView {
+    var listView: OCKListView {
         guard let view = self.view as? OCKListView else { fatalError("Unsupported view type.") }
         return view
     }
 
-    // MARK: Life cycle
+    // MARK: - Life cycle
 
     override open func loadView() {
         view = OCKListView()
     }
 
-    // MARK: Methods
+    // MARK: - Methods
 
     /// Sets up the containment of `viewController` in OCKListViewController and appends its view
     /// to the vertical stack of listed views.

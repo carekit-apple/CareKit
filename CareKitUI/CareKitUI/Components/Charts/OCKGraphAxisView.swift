@@ -48,6 +48,7 @@ class OCKGraphAxisView: UIView {
             view.frame = frameForMarker(atIndex: index)
             view.label.text = text
             view.label.textAlignment = .center
+            view.label.isAccessibilityElement = false
             view.isSelected = index == selectedIndex
             return view
         }
@@ -98,7 +99,7 @@ private class OCKCircleLabelView: OCKView {
     }
 
     init(textStyle: UIFont.TextStyle) {
-        label = OCKLabel(textStyle: .caption2, weight: .medium)
+        label = OCKCappedSizeLabel(textStyle: .caption1, weight: .medium)
         super.init()
         setup()
     }
@@ -134,7 +135,7 @@ private class OCKCircleLabelView: OCKView {
     }
 
     private func updateLabelColor() {
-        label.textColor = isSelected ? style().color.systemBackground : style().color.label
+        label.textColor = isSelected ? style().color.customBackground : style().color.label
     }
 
     override func styleDidChange() {

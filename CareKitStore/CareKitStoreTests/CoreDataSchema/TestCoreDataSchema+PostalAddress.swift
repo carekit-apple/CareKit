@@ -39,7 +39,16 @@ class TestCoreDataSchemaWithPostalAddress: XCTestCase {
         store = OCKStore(name: "test", type: .inMemory)
     }
 
-    func testCanSaveNote() {
+    func testCanSaveAddress() {
+        let contact = OCKCDContact(context: store.context)
+        contact.allowsMissingRelationships = true
+        contact.id = "Katie Abeles"
+        contact.title = "Dr. Abeles"
+        contact.effectiveDate = Date()
+        contact.name = OCKCDPersonName(context: store.context)
+        contact.name.givenName = "Katie"
+        contact.name.familyName = "Abeles"
+
         let address = OCKCDPostalAddress(context: store.context)
         address.street = "A"
         address.subLocality = "B"
@@ -50,6 +59,22 @@ class TestCoreDataSchemaWithPostalAddress: XCTestCase {
         address.country = "G"
         address.isoCountryCode = "H"
 
+        contact.address = address
+
         XCTAssertNoThrow(try store.context.save())
+    }
+
+    func testCannotSaveAddressThatIsNotAssociatedWithAContact() {
+        let address = OCKCDPostalAddress(context: store.context)
+        address.street = "A"
+        address.subLocality = "B"
+        address.city = "C"
+        address.subAdministrativeArea = "D"
+        address.state = "E"
+        address.postalCode = "F"
+        address.country = "G"
+        address.isoCountryCode = "H"
+
+        XCTAssertThrowsError(try store.context.save())
     }
 }

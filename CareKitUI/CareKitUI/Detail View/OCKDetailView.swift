@@ -60,11 +60,7 @@ open class OCKDetailView: OCKView {
     }()
 
     /// The vertical stack view that holds the main content for the view.
-    public let contentStackView: OCKStackView = {
-        let stackView = OCKStackView()
-        stackView.axis = .vertical
-        return stackView
-    }()
+    public let contentStackView = OCKStackView.vertical()
 
     // MARK: Methods
 
@@ -101,10 +97,10 @@ open class OCKDetailView: OCKView {
     override open func styleDidChange() {
         super.styleDidChange()
         let cachedStyle = style()
-        backgroundColor = cachedStyle.color.systemBackground
+        backgroundColor = cachedStyle.color.customBackground
         directionalLayoutMargins = cachedStyle.dimension.directionalInsets1
         instructionsLabel.textColor = cachedStyle.color.label
-        imageView.backgroundColor = cachedStyle.color.secondarySystemFill
+        imageView.backgroundColor = cachedStyle.color.secondaryCustomFill
         titleLabel.textColor = cachedStyle.color.label
         imageViewHeightConstraint?.constant = cachedStyle.dimension.imageHeight1
         contentStackViewTopConstraint?.constant = cachedStyle.dimension.directionalInsets1.top

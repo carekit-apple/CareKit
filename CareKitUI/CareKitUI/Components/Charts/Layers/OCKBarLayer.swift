@@ -34,11 +34,11 @@ class OCKBarLayer: OCKCartesianCoordinatesLayer, OCKGradientPlotable {
     let gradientLayer = CAGradientLayer()
     let pointsLayer = CAShapeLayer()
 
-    var startColor: UIColor = OCKStyle().color.systemGray {
+    var startColor: UIColor = OCKStyle().color.customGray {
         didSet { gradientLayer.colors = [startColor.cgColor, endColor.cgColor] }
     }
 
-    var endColor: UIColor = OCKStyle().color.systemGray {
+    var endColor: UIColor = OCKStyle().color.customGray {
         didSet { gradientLayer.colors = [startColor.cgColor, endColor.cgColor] }
     }
 
@@ -72,7 +72,7 @@ class OCKBarLayer: OCKCartesianCoordinatesLayer, OCKGradientPlotable {
         gradientLayer.mask = pointsLayer
         addSublayer(gradientLayer)
 
-        pointsLayer.fillColor = OCKStyle().color.systemGray.cgColor
+        pointsLayer.fillColor = OCKStyle().color.customGray.cgColor
         pointsLayer.strokeColor = nil
     }
 

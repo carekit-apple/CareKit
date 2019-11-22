@@ -1,21 +1,21 @@
 /*
  Copyright (c) 2019, Apple Inc. All rights reserved.
-
+ 
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
-
+ 
  1.  Redistributions of source code must retain the above copyright notice, this
  list of conditions and the following disclaimer.
-
+ 
  2.  Redistributions in binary form must reproduce the above copyright notice,
  this list of conditions and the following disclaimer in the documentation and/or
  other materials provided with the distribution.
-
+ 
  3. Neither the name of the copyright holder(s) nor the names of any contributors
  may be used to endorse or promote products derived from this software without
  specific prior written permission. No license is granted to the trademarks of
  the copyright holders even if such marks are included in this software.
-
+ 
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -63,17 +63,33 @@ import UIKit
 ///     +-------------------------------------------------------+
 ///
 open class OCKChecklistTaskView: OCKView, OCKTaskDisplayable {
+
     // MARK: Properties
 
-    let contentView = OCKView()
+    let contentView: OCKView = {
+        let view = OCKView()
+        view.clipsToBounds = true
+        return view
+    }()
 
-    private lazy var cardAssembler = OCKCardAssembler(cardView: self, contentView: contentView)
+    private let checklistItemsStackView: OCKStackView = {
+        let stackView = OCKStackView(style: .separated)
+        stackView.axis = .vertical
+        return stackView
+    }()
 
-    /// The vertical stack view that contains the main content in the view.
+    private lazy var cardBuilder = OCKCardBuilder(cardView: self, contentView: contentView)
+
+    private let headerStackView = OCKStackView.vertical()
+
+    private lazy var headerButton = OCKAnimatedButton(contentView: headerView, highlightOptions: [.defaultDelayOnSelect, .defaultOverlay],
+                                                      handlesSelection: false)
+
+    /// The vertical stack view that holds the main content in the view.
     public let contentStackView: OCKStackView = {
-        let stack = OCKStackView()
-        stack.axis = .vertical
-        return stack
+        let stackView = OCKStackView.vertical()
+        stackView.isLayoutMarginsRelativeArrangement = true
+        return stackView
     }()
 
     /// Handles events related to an `OCKTaskDisplayable` object.
@@ -91,15 +107,9 @@ open class OCKChecklistTaskView: OCKView, OCKTaskDisplayable {
         return label
     }()
 
-    private let checklistItemsStackView: OCKStackView = {
-        let stackView = OCKStackView(style: .separated)
-        stackView.axis = .vertical
-        return stackView
-    }()
-
     /// The buttons in the checklist.
-    public var items: [OCKButton] {
-        guard let items = checklistItemsStackView.arrangedSubviews as? [OCKButton] else { fatalError("Unsupported type.") }
+    public var items: [OCKChecklistItemButton] {
+        guard let items = checklistItemsStackView.arrangedSubviews as? [OCKChecklistItemButton] else { fatalError("Unsupported type.") }
         return items
     }
 
@@ -114,8 +124,7 @@ open class OCKChecklistTaskView: OCKView, OCKTaskDisplayable {
     }
 
     private func setupGestures() {
-        let tappedViewGesture = UITapGestureRecognizer(target: self, action: #selector(didTapView))
-        headerView.addGestureRecognizer(tappedViewGesture)
+        headerButton.addTarget(self, action: #selector(didTapView), for: .touchUpInside)
     }
 
     private func styleSubviews() {
@@ -124,29 +133,37 @@ open class OCKChecklistTaskView: OCKView, OCKTaskDisplayable {
 
     private func addSubviews() {
         addSubview(contentView)
-        contentView.addSubview(contentStackView)
-        [headerView, checklistItemsStackView, instructionsLabel].forEach {
-            contentStackView.addArrangedSubview($0)
-        }
+        contentView.addSubview(headerStackView)
+        [headerButton, contentStackView].forEach { headerStackView.addArrangedSubview($0) }
+        [checklistItemsStackView, instructionsLabel].forEach { contentStackView.addArrangedSubview($0) }
     }
 
     private func constrainSubviews() {
-        [contentView, contentStackView].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
+        [contentView, headerStackView, headerView].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
         NSLayoutConstraint.activate(
-            contentStackView.constraints(equalTo: contentView) +
-            contentView.constraints(equalTo: layoutMarginsGuide))
+            contentView.constraints(equalTo: self) +
+            headerStackView.constraints(equalTo: contentView) +
+            headerView.constraints(equalTo: headerButton.layoutMarginsGuide))
     }
 
     @objc
     private func didTapView() {
-        delegate?.didSelectTaskView(self)
+        delegate?.didSelectTaskView(self, eventIndexPath: .init(row: 0, section: 0))
     }
 
-    private func makeItem(withTitle title: String) -> OCKButton {
+    @objc
+    private func eventButtonTapped(_ sender: UIControl) {
+        guard let row = checklistItemsStackView.arrangedSubviews.firstIndex(of: sender) else {
+            fatalError("Invalid index")
+        }
+        delegate?.taskView(self, didCompleteEvent: !sender.isSelected, at: .init(row: row, section: 0), sender: sender)
+    }
+
+    private func makeItem(withTitle title: String) -> OCKChecklistItemButton {
         let button = OCKChecklistItemButton()
         button.addTarget(self, action: #selector(eventButtonTapped(_:)), for: .touchUpInside)
-        button.setTitle(title, for: .normal)
-        button.setTitle(title, for: .selected)
+        button.label.text = title
+        button.accessibilityLabel = title
         return button
     }
 
@@ -157,11 +174,10 @@ open class OCKChecklistTaskView: OCKView, OCKTaskDisplayable {
     ///   - title: The new text for the item.
     /// - Returns: The item that was modified.
     @discardableResult
-    public func updateItem(at index: Int, withTitle title: String) -> OCKButton? {
+    public func updateItem(at index: Int, withTitle title: String) -> OCKChecklistItemButton? {
         guard index < checklistItemsStackView.arrangedSubviews.count else { return nil }
         let button = items[index]
-        button.setTitle(title, for: .normal)
-        button.setTitle(title, for: .selected)
+        button.label.text = title
         return button
     }
 
@@ -173,7 +189,7 @@ open class OCKChecklistTaskView: OCKView, OCKTaskDisplayable {
     ///   - animated: Animate the insertion of the view.
     /// - Returns: The item that was inserted.
     @discardableResult
-    public func insertItem(withTitle title: String, at index: Int, animated: Bool) -> OCKButton {
+    public func insertItem(withTitle title: String, at index: Int, animated: Bool) -> OCKChecklistItemButton {
         let button = makeItem(withTitle: title)
         checklistItemsStackView.insertArrangedSubview(button, at: index, animated: animated)
         return button
@@ -186,7 +202,7 @@ open class OCKChecklistTaskView: OCKView, OCKTaskDisplayable {
     ///   - animated: Animate the appending of the view.
     /// - Returns: The view that was appended.
     @discardableResult
-    public func appendItem(withTitle title: String, animated: Bool) -> OCKButton {
+    public func appendItem(withTitle title: String, animated: Bool) -> OCKChecklistItemButton {
         let button = makeItem(withTitle: title)
         checklistItemsStackView.addArrangedSubview(button, animated: animated)
         return button
@@ -199,7 +215,7 @@ open class OCKChecklistTaskView: OCKView, OCKTaskDisplayable {
     ///   - animated: Animate the removal of the item.
     /// - Returns: The item that was removed from the checklist.
     @discardableResult
-    public func removeItem(at index: Int, animated: Bool) -> OCKButton? {
+    public func removeItem(at index: Int, animated: Bool) -> OCKChecklistItemButton? {
         guard index < checklistItemsStackView.arrangedSubviews.count else { return nil }
         let button = items[index]
         checklistItemsStackView.removeArrangedSubview(button, animated: animated)
@@ -213,20 +229,16 @@ open class OCKChecklistTaskView: OCKView, OCKTaskDisplayable {
         checklistItemsStackView.clear(animated: animated)
     }
 
-    @objc
-    private func eventButtonTapped(_ sender: OCKButton) {
-        guard let index = checklistItemsStackView.arrangedSubviews.firstIndex(of: sender) else {
-            fatalError("Invalid index")
-        }
-        delegate?.taskView(self, didCompleteEvent: sender.isSelected, at: index, sender: sender)
-    }
-
     override open func styleDidChange() {
         super.styleDidChange()
-        let cachedStyle = style()
-        cardAssembler.enableCardStyling(true, style: cachedStyle)
-        instructionsLabel.textColor = cachedStyle.color.secondaryLabel
-        directionalLayoutMargins = cachedStyle.dimension.directionalInsets1
-        contentStackView.spacing = cachedStyle.dimension.directionalInsets1.top
+        let style = self.style()
+        cardBuilder.enableCardStyling(true, style: style)
+        instructionsLabel.textColor = style.color.secondaryLabel
+        directionalLayoutMargins = style.dimension.directionalInsets1
+        contentStackView.spacing = style.dimension.directionalInsets1.top
+        contentStackView.directionalLayoutMargins = .init(top: 0,
+                                                          leading: style.dimension.directionalInsets1.leading,
+                                                          bottom: style.dimension.directionalInsets1.bottom,
+                                                          trailing: style.dimension.directionalInsets1.trailing)
     }
 }

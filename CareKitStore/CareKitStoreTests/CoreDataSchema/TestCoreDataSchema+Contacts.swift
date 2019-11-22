@@ -43,7 +43,7 @@ class TestCoreDataSchemaWithContacts: XCTestCase {
     func testCanSaveContact() {
         let contact = OCKCDContact(context: store.context)
         contact.allowsMissingRelationships = true
-        contact.identifier = "Katie Abeles"
+        contact.id = "Katie Abeles"
         contact.title = "Dr. Abeles"
         contact.effectiveDate = Date()
         contact.name = OCKCDPersonName(context: store.context)

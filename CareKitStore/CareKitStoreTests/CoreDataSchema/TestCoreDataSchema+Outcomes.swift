@@ -40,6 +40,17 @@ class TestCoreDataSchemaWithOutcomes: XCTestCase {
     }
 
     func testCanSaveOutcomeWithvalues() {
+        let scheduleElement = OCKCDScheduleElement(context: store.context)
+        scheduleElement.startDate = Date()
+        scheduleElement.daysInterval = 1
+        scheduleElement.duration = .seconds(42)
+
+        let task1 = OCKCDTask(context: store.context)
+        task1.id = "task_1"
+        task1.effectiveDate = Date()
+        task1.allowsMissingRelationships = true
+        task1.scheduleElements = Set([scheduleElement])
+
         let value1 = OCKCDOutcomeValue(context: store.context)
         value1.kind = "sleep-time"
         value1.dateValue = Date()
@@ -56,11 +67,19 @@ class TestCoreDataSchemaWithOutcomes: XCTestCase {
         value3.type = .integer
 
         let outcome = OCKCDOutcome(context: store.context)
-        outcome.allowsMissingRelationships = true
-        outcome.taskOccurenceIndex = 0
+        outcome.taskOccurrenceIndex = 0
         outcome.values = Set([value1, value2, value3])
+        outcome.task = task1
 
         XCTAssertNoThrow(try store.context.save())
         XCTAssert(outcome.values.count == 3)
+    }
+
+    func testCannotSaveOutcomeWithoutAssociatingItWithATask() {
+        let outcome = OCKCDOutcome(context: store.context)
+        outcome.taskOccurrenceIndex = 0
+        outcome.values = Set([])
+
+        XCTAssertThrowsError(try store.context.save())
     }
 }

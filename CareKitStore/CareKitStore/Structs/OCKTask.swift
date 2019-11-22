@@ -31,23 +31,21 @@
 import Foundation
 
 /// An `OCKTask` represents some task or action that a patient is supposed to perform. Tasks are optionally associable with an `OCKCarePlan`
-/// and must have a unique identifier and schedule. The schedule determines when and how often the task should be performed, and the
+/// and must have a unique id and schedule. The schedule determines when and how often the task should be performed, and the
 /// `impactsAdherence` flag may be used to specify whether or not the patients adherence to this task will affect their daily completion rings.
-public struct OCKTask: Codable, Equatable, OCKVersionSettable, OCKObjectCompatible, OCKTaskConvertible {
+public struct OCKTask: Codable, Equatable, Identifiable, OCKAnyVersionableTask, OCKAnyMutableTask, OCKVersionedObjectCompatible {
+
     /// The version ID in the local database of the care plan to which this task belongs.
     public var carePlanID: OCKLocalVersionID?
 
-    /// A title that will be used to represent this care plan to the patient.
+    // MARK: OCKAnyTask
+    public let id: String
     public var title: String?
-
-    /// Instructions about how this task should be performed.
     public var instructions: String?
-
-    /// If true, completion of this task will be factored into the patient's overall adherence. True by default.
     public var impactsAdherence = true
-
-    // MARK: OCKIdentifiable
-    public let identifier: String
+    public var schedule: OCKSchedule
+    public var groupIdentifier: String?
+    public var tags: [String]?
 
     // MARK: OCKVersionable
     public var effectiveDate: Date
@@ -60,35 +58,31 @@ public struct OCKTask: Codable, Equatable, OCKVersionSettable, OCKObjectCompatib
     public internal(set) var createdDate: Date?
     public internal(set) var updatedDate: Date?
     public internal(set) var schemaVersion: OCKSemanticVersion?
-    public var groupIdentifier: String?
-    public var tags: [String]?
     public var remoteID: String?
     public var source: String?
-    public var schedule: OCKSchedule
     public var userInfo: [String: String]?
     public var asset: String?
     public var notes: [OCKNote]?
+    public var timezone: TimeZone
 
     /// Instantiate a new `OCKCarePlan`
     ///
     /// - Parameters:
-    ///   - identifier: A unique identifier for this care plan chosen by the developer.
+    ///   - id: A unique id for this care plan chosen by the developer.
     ///   - title: A title that will be used to represent this care plan to the patient.
     ///   - carePlanID: The versioned ID in the local database of the care plan that this task belongs to.
     ///   - schedule: A schedule specifying when this task is to be completed.
-    public init(identifier: String, title: String?, carePlanID: OCKLocalVersionID?, schedule: OCKSchedule) {
-        self.identifier = identifier
+    public init(id: String, title: String?, carePlanID: OCKLocalVersionID?, schedule: OCKSchedule) {
+        self.id = id
         self.title = title
         self.carePlanID = carePlanID
         self.schedule = schedule
-        self.effectiveDate = schedule.start
+        self.effectiveDate = schedule.startDate()
+        self.timezone = TimeZone.current
     }
 
-    public init(_ value: OCKTask) {
-        self = value
-    }
-
-    public func convert() -> OCKTask {
-        return self
+    public func belongs(to plan: OCKAnyCarePlan) -> Bool {
+        guard let plan = plan as? OCKCarePlan, let planID = plan.localDatabaseID else { return false }
+        return carePlanID == planID
     }
 }

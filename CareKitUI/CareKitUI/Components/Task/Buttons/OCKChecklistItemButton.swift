@@ -37,78 +37,84 @@ import UIKit
 ///     | [Title]           [Icon] |
 ///     +--------------------------+
 ///
-class OCKChecklistItemButton: OCKButton {
+open class OCKChecklistItemButton: OCKAnimatedButton<OCKStackView> {
+
     // MARK: Properties
 
-    private enum Constants {
-        static let marginFactor: CGFloat = 1.5
-    }
-
-    private var circleButtonHeightConstraint: NSLayoutConstraint?
-
-    override var titleButton: OCKButton? { _titleButton }
-    override var imageButton: OCKButton? { circleButton }
-
-    /// The title button embedded inside this button.
-    private let _titleButton: OCKButton = {
-        let button = OCKButton(titleTextStyle: .subheadline, titleWeight: .regular)
-        button.isUserInteractionEnabled = false
-        button.setTitle(OCKStrings.event, for: .normal)
-        button.setTitle(OCKStrings.event, for: .selected)
-        button.contentHorizontalAlignment = .left
-        button.sizesToFitTitleLabel = true
-        return button
+    /// The label on the leading side of the button.
+    public let label: OCKLabel = {
+        let label = OCKLabel(textStyle: .subheadline, weight: .regular)
+        label.text = loc("EVENT")
+        return label
     }()
 
-    /// The icon embedded inside this button.
-    private let circleButton: OCKCircleButton = {
-        let button = OCKCircleButton()
+    /// The checkmark button on the trailing end of the view.
+    public let checkmarkButton: OCKCheckmarkButton = {
+        let button = OCKCheckmarkButton()
         button.isUserInteractionEnabled = false
         return button
     }()
 
-    private let contentStackView: OCKStackView = {
-        let stackView = OCKStackView()
-        stackView.axis = .horizontal
-        stackView.isUserInteractionEnabled = false
+    /// Holds the main content in the button.
+    public let contentStackView: OCKStackView = {
+        let stackView = OCKStackView.horizontal()
+        stackView.alignment = .center
         return stackView
     }()
 
+    // MARK: - Life Cycle
+
+    public init() {
+        super.init(contentView: contentStackView, handlesSelection: true)
+        setup()
+    }
+
+    public required init?(coder: NSCoder) {
+        super.init(contentView: contentStackView, handlesSelection: true)
+        setup()
+    }
+
     // MARK: Methods
 
-    override func setup() {
-        super.setup()
+    private func setup() {
         addSubviews()
         constrainSubviews()
+        setupAccessibility()
     }
 
     private func addSubviews() {
-        [_titleButton, circleButton].forEach { contentStackView.addArrangedSubview($0) }
+        [label, checkmarkButton].forEach { contentStackView.addArrangedSubview($0) }
         addSubview(contentStackView)
     }
 
     private func constrainSubviews() {
-        [contentStackView, circleButton].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
-        circleButtonHeightConstraint = circleButton.heightAnchor.constraint(equalToConstant: 0)
-        _titleButton.setContentHuggingPriority(.defaultLow, for: .horizontal)
-        NSLayoutConstraint.activate([
-            circleButtonHeightConstraint!,
-            circleButton.widthAnchor.constraint(equalTo: circleButton.heightAnchor),
-
-            contentStackView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            contentStackView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            contentStackView.topAnchor.constraint(equalTo: layoutMarginsGuide.topAnchor),
-            contentStackView.bottomAnchor.constraint(equalTo: layoutMarginsGuide.bottomAnchor)
-        ])
+        [contentStackView].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
+        checkmarkButton.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        NSLayoutConstraint.activate(
+            contentStackView.constraints(equalTo: self, directions: [.horizontal]) +
+            contentStackView.constraints(equalTo: layoutMarginsGuide, directions: [.vertical])
+        )
     }
 
-    override func styleDidChange() {
+    private func setupAccessibility() {
+        accessibilityValue = isSelected ? loc("COMPLETED") : loc("INCOMPLETE")
+        accessibilityHint = isSelected ? loc("DOUBLE_TAP_TO_COMPLETE") : loc("DOUBLE_TAP_TO_INCOMPLETE")
+    }
+
+    override open func styleDidChange() {
         super.styleDidChange()
-        let cachedStyle = style()
-        _titleButton.setTitleColor(cachedStyle.color.label, for: .normal)
-        _titleButton.setTitleColor(cachedStyle.color.secondaryLabel, for: .selected)
-        circleButtonHeightConstraint?.constant = cachedStyle.dimension.buttonHeight3
-        circleButton.checkmarkHeight = cachedStyle.dimension.iconHeight5
-        directionalLayoutMargins = cachedStyle.dimension.directionalInsets1
+        let style = self.style()
+        directionalLayoutMargins = style.dimension.directionalInsets1
+        checkmarkButton.height.update(withContainer: style, keyPath: \.dimension.buttonHeight3)
+        checkmarkButton.imageViewPointSize.update(withContainer: style, keyPath: \.dimension.symbolPointSize5)
+        label.textColor = style.color.label
     }
+
+    override open func setSelected(_ isSelected: Bool, animated: Bool) {
+        super.setSelected(isSelected, animated: animated)
+        checkmarkButton.setSelected(isSelected, animated: animated)
+        setupAccessibility()
+    }
+
+    override open func setStyleForSelectedState(_ isSelected: Bool) {}
 }

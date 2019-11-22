@@ -28,7 +28,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import CareKitStore
+@testable import CareKitStore
 import Foundation
 
 extension Result {
@@ -57,5 +57,12 @@ extension OCKSchedule {
         let dinner = OCKSchedule.dailyAtTime(hour: 17, minutes: 30, start: startDate, end: end,
                                              text: "Dinner", targetValues: targetValues)
         return OCKSchedule(composing: [breakfast, lunch, dinner])
+    }
+}
+
+extension OCKObjectCompatible {
+    func getLocalID() throws -> OCKLocalVersionID {
+        guard let localID = localDatabaseID else { throw OCKStoreError.invalidValue(reason: "Missing local database ID") }
+        return localID
     }
 }

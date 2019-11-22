@@ -32,22 +32,13 @@ import UIKit
 
 /// A cell used in the `collectionView` of the `OCKGridTaskView`. The cell shows a circular `completionButton` that has an image and a
 /// `titleLabel`. The default image is a checkmark.
-open class OCKGridTaskCell: UICollectionViewCell, OCKStylable {
+open class OCKGridTaskCell: UICollectionViewCell {
+
     // MARK: Properties
 
-    private var completionButtonRingWidthConstraint: NSLayoutConstraint?
-
-    public var customStyle: OCKStyler? {
-        didSet { styleChildren() }
-    }
-
-    /// Circular button that shows an image and `titleLabel`. The default image is a checkmark when selected.
-    /// The text for the `.normal` state will automatically adapt to the `tintColor`.
-    public let completionButton: OCKButton = {
-        let button = OCKLabeledCircleButton()
-        button.isUserInteractionEnabled = false
-        return button
-    }()
+    /// Circular button that shows an image and label. The default image is a checkmark when selected.
+    /// The text for the deselected state will automatically adapt to the `tintColor`.
+    public let completionButton = OCKLabeledCheckmarkButton()
 
     // MARK: Life cycle
 
@@ -61,29 +52,22 @@ open class OCKGridTaskCell: UICollectionViewCell, OCKStylable {
         setup()
     }
 
+    // MARK: Methods
+
     override open func prepareForReuse() {
         super.prepareForReuse()
         completionButton.isSelected = false
-        completionButton.setTitle(nil, for: .normal)
-        completionButton.setTitle(nil, for: .selected)
-    }
-
-    // MARK: Methods
-
-    override open func tintColorDidChange() {
-        completionButton.setTitleColor(tintColor, for: .normal)
+        completionButton.label.text = nil
+        accessibilityLabel = nil
+        accessibilityValue = nil
     }
 
     private func setup() {
-        styleSubviews()
         addSubviews()
         constrainSubviews()
-    }
-
-    private func styleSubviews() {
-        preservesSuperviewLayoutMargins = true
-        tintColorDidChange()
-        styleDidChange()
+        completionButton.isEnabled = false
+        isAccessibilityElement = true
+        accessibilityTraits = .button
     }
 
     private func addSubviews() {
@@ -91,37 +75,10 @@ open class OCKGridTaskCell: UICollectionViewCell, OCKStylable {
     }
 
     private func constrainSubviews() {
-        [contentView, completionButton].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
-
-        completionButtonRingWidthConstraint = completionButton.widthAnchor.constraint(equalToConstant: 0)
-
-        NSLayoutConstraint.activate([
-            completionButtonRingWidthConstraint!,
-            completionButton.leadingAnchor.constraint(greaterThanOrEqualTo: contentView.leadingAnchor),
-            completionButton.topAnchor.constraint(equalTo: contentView.topAnchor),
-            completionButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            contentView.bottomAnchor.constraint(equalTo: completionButton.bottomAnchor),
-
-            contentView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            contentView.trailingAnchor.constraint(greaterThanOrEqualTo: trailingAnchor),
-            contentView.topAnchor.constraint(equalTo: topAnchor),
-            bottomAnchor.constraint(greaterThanOrEqualTo: contentView.bottomAnchor)
-        ])
-    }
-
-    override open func didMoveToSuperview() {
-        super.didMoveToSuperview()
-        styleDidChange()
-    }
-
-    override open func removeFromSuperview() {
-        super.removeFromSuperview()
-        styleChildren()
-    }
-
-    public func styleDidChange() {
-        let cachedStyle = style()
-        completionButtonRingWidthConstraint?.constant = cachedStyle.dimension.buttonHeight1
-        (completionButton as? OCKCompletionRingButton)?.ring.lineWidth = cachedStyle.appearance.borderWidth2
+        completionButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate(
+            completionButton.constraints(equalTo: contentView, directions: [.top, .leading]) +
+            completionButton.constraints(equalTo: contentView, directions: [.bottom, .trailing], priority: .almostRequired)
+        )
     }
 }

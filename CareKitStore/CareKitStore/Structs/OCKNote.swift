@@ -47,14 +47,15 @@ public struct OCKNote: Codable, Equatable, OCKObjectCompatible {
     public internal(set) var createdDate: Date?
     public internal(set) var updatedDate: Date?
     public internal(set) var schemaVersion: OCKSemanticVersion?
+    public internal (set) var localDatabaseID: OCKLocalVersionID?
     public var groupIdentifier: String?
     public var tags: [String]?
-    public internal (set) var internalID: OCKLocalVersionID?
     public var remoteID: String?
     public var userInfo: [String: String]?
     public var source: String?
     public var asset: String?
     public var notes: [OCKNote]?
+    public var timezone: TimeZone
 
     /// Initialize a new note with an optional author, title, and content.
     ///
@@ -66,5 +67,6 @@ public struct OCKNote: Codable, Equatable, OCKObjectCompatible {
         self.author = author
         self.title = title
         self.content = content
+        self.timezone = TimeZone.current
     }
 }

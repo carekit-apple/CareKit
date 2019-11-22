@@ -117,23 +117,6 @@ class TestOutcomeValue: XCTestCase {
         }
     }
 
-    func testOutcomeValuesThatArentPersistedAreNotAssociatedEvenIfTheyAreEqual() {
-        let valueA = OCKOutcomeValue(10.0)
-        let valueB = OCKOutcomeValue(10.0)
-        XCTAssert(valueA == valueB)
-        XCTAssert(!valueA.isAssociated(with: valueB))
-    }
-
-    func testOutcomeValuesThatHaveTheSameVersionAreAssociated() {
-        var valueA = OCKOutcomeValue(33.0)
-        valueA.localDatabaseID = OCKLocalVersionID("abc123")
-
-        var valueB = OCKOutcomeValue(55.0)
-        valueB.localDatabaseID = OCKLocalVersionID("abc123")
-
-        XCTAssert(valueA.isAssociated(with: valueB))
-    }
-
     func testEvolvingValue() {
         var value = OCKOutcomeValue("abc")
         let oldType = value.type

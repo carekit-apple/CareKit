@@ -43,48 +43,40 @@ extension OCKSchedule {
 }
 
 extension OCKStore {
-    func fillWithDummyData(completion: @escaping () -> Void) {
-        let dispatchGroup = DispatchGroup()
-        let startDate = Calendar.current.startOfDay(for: Date())
-
-        dispatchGroup.enter()
-        addTasks(makeTasks(on: startDate)) { result in
+    func fillWithDummyData() {
+        // Note: If the tasks and contacts already exist in the store, these methods will fail. If you have modified the data and would like the
+        // changes to be reflected in the app, delete and reinstall the catalog app.
+        let aFewDaysAgo = Calendar.current.startOfDay(for: Calendar.current.date(byAdding: .day, value: -10, to: Date())!)
+        addTasks(makeTasks(on: aFewDaysAgo), callbackQueue: .main) { result in
             switch result {
             case .failure(let error): print("[ERROR] \(error.localizedDescription)")
             case .success: break
             }
-            dispatchGroup.leave()
         }
 
-        dispatchGroup.enter()
-        addContacts(makeContacts()) { result in
+        addContacts(makeContacts(), callbackQueue: .main) { result in
             switch result {
             case .failure(let error): print("[ERROR] \(error.localizedDescription)")
             case .success: break
             }
-            dispatchGroup.leave()
-        }
-
-        dispatchGroup.notify(queue: .main) {
-            completion()
         }
     }
 
     private func makeTasks(on start: Date) -> [OCKTask] {
-        var task1 = OCKTask(identifier: "nausea", title: "Nausea", carePlanID: nil,
+        var task1 = OCKTask(id: "nausea", title: "Nausea", carePlanID: nil,
                             schedule: .dailyAtTime(hour: 7, minutes: 0, start: start, end: nil, text: nil))
         task1.instructions = "Log any time you experience nausea."
         task1.impactsAdherence = false
 
-        var task2 = OCKTask(identifier: "doxylamine", title: "Doxylamine", carePlanID: nil,
-                            schedule: .mealTimesEachDay(start: Calendar.current.startOfDay(for: Date()), end: nil))
+        var task2 = OCKTask(id: "doxylamine", title: "Doxylamine", carePlanID: nil,
+                            schedule: .mealTimesEachDay(start: start, end: nil))
         task2.instructions = "Take the tablet with a full glass of water."
 
         return [task1, task2]
     }
 
     private func makeContacts() -> [OCKContact] {
-        var contact1 = OCKContact(identifier: "lexi-torres", givenName: "Lexi", familyName: "Torres", carePlanID: nil)
+        var contact1 = OCKContact(id: "lexi-torres", givenName: "Lexi", familyName: "Torres", carePlanID: nil)
         contact1.role = "Dr. Torres is a family practice doctor with over 20 years of experience."
         let phoneNumbers1 = [OCKLabeledValue(label: "work", value: "2135558479")]
         contact1.phoneNumbers = phoneNumbers1
@@ -98,7 +90,7 @@ extension OCKStore {
         address1.postalCode = "48848"
         contact1.address = address1
 
-        var contact2 = OCKContact(identifier: "matthew-reiff", givenName: "Matthew", familyName: "Reiff", carePlanID: nil)
+        var contact2 = OCKContact(id: "matthew-reiff", givenName: "Matthew", familyName: "Reiff", carePlanID: nil)
         contact2.role = "Dr. Reiff is a family practice doctor with over 20 years of experience."
         contact2.title = "Family Practice"
         let phoneNumbers2 = [OCKLabeledValue(label: "work", value: "7745550146")]

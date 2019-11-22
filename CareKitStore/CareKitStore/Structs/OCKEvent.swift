@@ -32,25 +32,15 @@ import Foundation
 
 /// An `OCKEvent` represents a single occassion on which a task was scheduled to occur. It contains a copy of the task itself as well as the
 /// schedule event and an outcome that will be non-nil if progress was made on the task.
-public struct OCKEvent<
-    Task: Equatable & OCKTaskConvertible,
-    Outcome: Equatable & OCKOutcomeConvertible
->: Equatable, OCKLocalPersistable, OCKEventConvertible, OCKIdentifiable {
-    /// The task that this event is associated with
+public struct OCKEvent<Task: OCKAnyTask, Outcome: OCKAnyOutcome> {
+
+    /// A fully typed version of the task associated with this event.
     public let task: Task
 
-    /// The outcome for this event. If the outcome is empty, that means that no actions were recorded.
-    ///
-    /// - Note: The outcome may be non-nil even if if the task was not completed, so simply checking the presence of an outcome is not sufficient
-    /// to determing whether or not the task was completed. Examples of times when the outcome is non-nil but the task was not completed could
-    /// include, among others
-    ///     1. The user created a note specifying why they weren't able to complete the task.
-    ///     2. The user completed the task, but then deleted all the values they recorded.
-    ///     3. The user only partially completed the task.
+    /// A fully typed version of the outcome associated with this event.
     public var outcome: Outcome?
 
-    /// The schedule event for this task occurence. It contains information about the start, duration, occurence number, and schedule element that
-    /// resulted in this event.
+    /// A value containing scheduling information for this event.
     public let scheduleEvent: OCKScheduleEvent
 
     /// Initialize an `OCKEvent` with a task, optional outcome, and schedule event.
@@ -65,21 +55,8 @@ public struct OCKEvent<
         self.scheduleEvent = scheduleEvent
     }
 
-    /// Converts to an `OCKEvent`.
-    ///
-    /// - Returns: an umodified copy of self.
-    /// - Note: Since `OCKEvent` is already an `OCKEvent`, this method just returns `self`.
-    public func convert() -> OCKEvent<OCKTask, OCKOutcome> {
-        return OCKEvent<OCKTask, OCKOutcome>(task: task.convert(), outcome: outcome?.convert(), scheduleEvent: scheduleEvent)
-    }
-
-    public init(_ value: OCKEvent<OCKTask, OCKOutcome>) {
-        self.task = Task(value.task)
-        self.outcome = value.outcome == nil ? nil : Outcome(value.outcome!)
-        self.scheduleEvent = value.scheduleEvent
-    }
-
-    public func isAssociated(with other: OCKEvent<Task, Outcome>) -> Bool {
-        return task.isAssociated(with: other.task) && scheduleEvent == other.scheduleEvent
+    /// Creates an `OCKAnyEvent` from this event.
+    var anyEvent: OCKAnyEvent {
+        OCKAnyEvent(task: task, outcome: outcome, scheduleEvent: scheduleEvent)
     }
 }

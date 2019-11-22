@@ -29,19 +29,20 @@
  */
 
 @testable import CareKitStore
-import Foundation
 import XCTest
 
 class TestContact: XCTestCase {
-    func testUnpersistedContactsAreAssociatedIfTheirIdentifiersMatch() {
-        let contactA = OCKContact(identifier: "abc123", givenName: "John", familyName: "Appleseed", carePlanID: nil)
-        let contactB = OCKContact(identifier: "abc123", givenName: "Jane", familyName: "Appleseed", carePlanID: nil)
-        XCTAssert(contactA.isAssociated(with: contactB))
+
+    func testBelongsToReturnsFalseWhenIDsDontMatch() {
+        let plan = OCKCarePlan(id: "A", title: "Medication", patientID: nil)
+        let contact = OCKContact(id: "B", givenName: "Mary", familyName: "Frost", carePlanID: nil)
+        XCTAssertFalse(contact.belongs(to: plan))
     }
 
-    func testContactsAreNotAssociatedIfTheirIdentifiersDoNoMatch() {
-        let contactA = OCKContact(identifier: "abc123", givenName: "John", familyName: "Appleseed", carePlanID: nil)
-        let contactB = OCKContact(identifier: "def456", givenName: "John", familyName: "Appleseed", carePlanID: nil)
-        XCTAssert(!contactA.isAssociated(with: contactB))
+    func testBelongsToReturnsTrueWhenIDsDoMatach() {
+        var plan = OCKCarePlan(id: "A", title: "Medication", patientID: nil)
+        plan.localDatabaseID = OCKLocalVersionID("abc")
+        let contact = OCKContact(id: "B", givenName: "Mary", familyName: "Frost", carePlanID: plan.localDatabaseID)
+        XCTAssertTrue(contact.belongs(to: plan))
     }
 }

@@ -34,15 +34,14 @@ import Foundation
 /// or her treatment for a specific condition. For example, a care plan for obesity may include tasks requiring the patient to exercise, record their
 /// weight, and log meals. As the care plan evolves with the patient's progress, the care provider may modify the exercises and include notes each
 /// time about why the changes were made.
-public struct OCKCarePlan: Codable, Equatable, OCKVersionSettable, OCKObjectCompatible, OCKCarePlanConvertible {
-    /// A title describing this care plan.
-    public var title: String
+public struct OCKCarePlan: Codable, Equatable, Identifiable, OCKAnyCarePlan, OCKVersionedObjectCompatible {
 
-    /// The version identifier in the local database of the patient to whom this care plan belongs.
+    /// The version id in the local database of the patient to whom this care plan belongs.
     public var patientID: OCKLocalVersionID?
 
-    // MARK: OCKIdentifiable
-    public let identifier: String
+    // MARK: OCKAnyCarePlan
+    public let id: String
+    public var title: String
 
     // MARK: OCKVersionable
     public var effectiveDate: Date
@@ -62,30 +61,24 @@ public struct OCKCarePlan: Codable, Equatable, OCKVersionSettable, OCKObjectComp
     public var source: String?
     public var asset: String?
     public var notes: [OCKNote]?
+    public var timezone: TimeZone
 
-    /// Initialize a care plan with a title, identifier, and optional patient version.
+    /// Initialize a care plan with a title, id, and optional patient version.
     ///
     /// - Parameters:
-    ///   - identifier: A user-defined identifier for the care plane.
+    ///   - id: A user-defined id for the care plane.
     ///   - title: A title for the care plan.
-    ///   - patientID: The version identifier in the local database of the patient to whom this care plan belongs.
-    public init(identifier: String, title: String, patientID: OCKLocalVersionID?) {
+    ///   - patientID: The version id in the local database of the patient to whom this care plan belongs.
+    public init(id: String, title: String, patientID: OCKLocalVersionID?) {
         self.title = title
-        self.identifier = identifier
+        self.id = id
         self.patientID = patientID
         self.effectiveDate = Date()
+        self.timezone = TimeZone.current
     }
 
-    /// Initialize a new care plan from an `OCKCarePlan`
-    ///
-    /// - Parameter value: The care plan to copy.
-    /// - Note: This simply creates a copy of the provided care plan.
-    public init(_ value: OCKCarePlan) {
-        self = value
-    }
-
-    /// Convert an `OCKCarePlan` to an `OCKCarePlan`. This method just returns `self` unmodified.
-    public func convert() -> OCKCarePlan {
-        return self
+    public func belongs(to patient: OCKAnyPatient) -> Bool {
+        guard let other = patient as? OCKPatient, let otherID = other.localDatabaseID else { return false }
+        return patientID == otherID
     }
 }

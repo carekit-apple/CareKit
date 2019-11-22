@@ -1,0 +1,60 @@
+{
+  "configurations" : [
+    {
+      "id" : "28C2AC89-B957-4FB0-9242-53AEB9E6D4B0",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : {
+      "targets" : [
+        {
+          "containerPath" : "container:CareKit.xcodeproj",
+          "identifier" : "8605A5B91C4F04EC00DD65FF",
+          "name" : "CareKit"
+        },
+        {
+          "containerPath" : "container:CareKitCarePlanStore\/CareKitCarePlanStore.xcodeproj",
+          "identifier" : "E784B8F72232EED600736CA5",
+          "name" : "CareKitCarePlanStore"
+        }
+      ]
+    },
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:CareKit.xcodeproj",
+      "identifier" : "8605A5B91C4F04EC00DD65FF",
+      "name" : "CareKit"
+    }
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:CareKit.xcodeproj",
+        "identifier" : "5196C7F8226F8F8F00F1C2A2",
+        "name" : "CareKitTests"
+      }
+    },
+    {
+      "skippedTests" : [
+        "TestSchedule\/testEventGenerationPerformanceBasicSchedule()",
+        "TestSchedule\/testEventGenerationPerformanceHeavySchedule()"
+      ],
+      "target" : {
+        "containerPath" : "container:..\/CareKitStore\/CareKitStore.xcodeproj",
+        "identifier" : "E784B9002232EED600736CA5",
+        "name" : "CareKitStoreTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:..\/CareKitUI\/CareKitUI.xcodeproj",
+        "identifier" : "512B012D22C2F82900ABCB1D",
+        "name" : "CareKitUITests"
+      }
+    }
+  ],
+  "version" : 1
+}

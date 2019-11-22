@@ -1,21 +1,21 @@
 /*
  Copyright (c) 2019, Apple Inc. All rights reserved.
-
+ 
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
-
+ 
  1.  Redistributions of source code must retain the above copyright notice, this
  list of conditions and the following disclaimer.
-
+ 
  2.  Redistributions in binary form must reproduce the above copyright notice,
  this list of conditions and the following disclaimer in the documentation and/or
  other materials provided with the distribution.
-
+ 
  3. Neither the name of the copyright holder(s) nor the names of any contributors
  may be used to endorse or promote products derived from this software without
  specific prior written permission. No license is granted to the trademarks of
  the copyright holders even if such marks are included in this software.
-
+ 
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -30,12 +30,19 @@
 
 import UIKit
 
-class OCKContactButton: OCKButton {
+open class OCKContactButton: OCKAnimatedButton<OCKStackView> {
     // MARK: Properties
 
-    enum `Type`: String {
+    /// Determines the label text and image shown in the button.
+    public enum `Type`: String {
+
+        /// Button for phone calls.
         case call = "Call"
+
+        /// Button for text messages.
         case message = "Message"
+
+        /// Button for emails.
         case email = "E-mail"
 
         var image: UIImage? {
@@ -45,33 +52,27 @@ class OCKContactButton: OCKButton {
             case .message: image = UIImage(systemName: "text.bubble")
             case .email: image = UIImage(systemName: "envelope")
             }
-            return image?.applyingSymbolConfiguration(.init(weight: .medium))
+            return image
         }
     }
 
-    override var imageButton: OCKButton? { _imageButton }
-    override var titleButton: OCKButton? { _titleButton }
-
-    private let _imageButton: OCKButton = {
-        let button = OCKButton()
-        button.imageView?.contentMode = .scaleAspectFit
-        button.isUserInteractionEnabled = false
-        button.contentHorizontalAlignment = .fill
-        return button
+    /// Image above the title label.
+    public let imageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit
+        return imageView
     }()
 
-    private let _titleButton: OCKButton = {
-        let button = OCKButton(titleTextStyle: .footnote, titleWeight: .semibold)
-//        button.titleLabel?.textAlignment = .center
-        button.isUserInteractionEnabled = false
-        button.sizesToFitTitleLabel = true
-        button.tintedTraits = [.init(trait: .titleColor, state: .normal)]
-        return button
+    /// Title label under the image.
+    public let label: OCKLabel = {
+        let label = OCKLabel(textStyle: .footnote, weight: .semibold)
+        label.textAlignment = .center
+        return label
     }()
 
-    private let contentStackView: OCKStackView = {
-        let stackView = OCKStackView()
-        stackView.axis = .vertical
+    /// Holds the main content for the view.
+    public let contentStackView: OCKStackView = {
+        let stackView = OCKStackView.vertical()
         stackView.spacing = 2
         stackView.isUserInteractionEnabled = false
         return stackView
@@ -79,55 +80,73 @@ class OCKContactButton: OCKButton {
 
     let type: Type
 
-    private var imageButtonHeightConstraint: NSLayoutConstraint?
+    private lazy var imageViewPointSize = OCKAccessibleValue(container: style(), keyPath: \.dimension.symbolPointSize2) { [imageView] scaledValue in
+        imageView.preferredSymbolConfiguration = .init(pointSize: scaledValue, weight: .regular)
+    }
 
     // MARK: Life cycle
 
-    init(type: Type) {
+    /// Initialize the button with a type. The type determines the label text and image.
+    /// - Parameter type: The type of the button.
+    public init(type: Type) {
         self.type = type
-        super.init()
+        super.init(contentView: contentStackView, handlesSelection: false)
+        setup()
+    }
+
+    public required init?(coder: NSCoder) {
+        self.type = .call
+        super.init(contentView: contentStackView, handlesSelection: false)
+        setup()
     }
 
     // MARK: Methods
 
-    override func setup() {
-        super.setup()
+    private func setup() {
         styleSubviews()
         addSubviews()
         constrainSubviews()
     }
 
     private func styleSubviews() {
-        setImage(type.image, for: .normal)
-        _titleButton.setTitle(type.rawValue, for: .normal)
-        clipsToBounds = true
-        adjustsImageWhenHighlighted = false
+        imageView.image = type.image
+        label.text = type.rawValue
+
+        switch type {
+        case .call: accessibilityLabel = loc("CALL")
+        case .email: accessibilityLabel = loc("EMAIL")
+        case .message: accessibilityLabel = loc("MESSAGE")
+        }
     }
 
-    func addSubviews() {
-        addSubview(contentStackView)
-        [_imageButton, _titleButton].forEach { contentStackView.addArrangedSubview($0) }
+    private func addSubviews() {
+        [imageView, label].forEach { contentStackView.addArrangedSubview($0) }
     }
 
-    func constrainSubviews() {
-        [contentStackView, _imageButton].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
-        imageButtonHeightConstraint = _imageButton.heightAnchor.constraint(equalToConstant: 0)
-        NSLayoutConstraint.activate(
-            [imageButtonHeightConstraint!] +
-            contentStackView.constraints(equalTo: layoutMarginsGuide))
+    private func constrainSubviews() {
+        [contentStackView, imageView].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
+        NSLayoutConstraint.activate(contentStackView.constraints(equalTo: layoutMarginsGuide))
     }
 
-    override func tintColorDidChange() {
+    override open func tintColorDidChange() {
         super.tintColorDidChange()
-        _imageButton.imageView?.tintColor = tintColor
+        imageView.tintColor = tintColor
+        label.textColor = tintColor
     }
 
-    override func styleDidChange() {
+    override open func styleDidChange() {
         super.styleDidChange()
-        let cachedStyle = style()
-        setBackgroundColor(cachedStyle.color.quaternarySystemFill, for: .normal)
-        layer.cornerRadius = cachedStyle.appearance.cornerRadius2
-        imageButtonHeightConstraint?.constant = cachedStyle.dimension.buttonHeight3
-        directionalLayoutMargins = cachedStyle.dimension.directionalInsets1
+        let style = self.style()
+        backgroundColor = style.color.quaternaryCustomFill
+        layer.cornerRadius = style.appearance.cornerRadius2
+        imageViewPointSize.update(withContainer: style)
+        directionalLayoutMargins = style.dimension.directionalInsets1
+    }
+
+    override open func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        if previousTraitCollection?.preferredContentSizeCategory != traitCollection.preferredContentSizeCategory {
+            imageViewPointSize.apply()
+        }
     }
 }

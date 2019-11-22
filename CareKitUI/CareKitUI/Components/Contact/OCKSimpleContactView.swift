@@ -40,16 +40,15 @@ import UIKit
 ///     +-------------------------------------------------------+
 ///
 open class OCKSimpleContactView: OCKView, OCKContactDisplayable {
+
+    // MARK: Properties
+
     /// Handles events related to an `OCKContactDisplayable` object.
     public weak var delegate: OCKContactViewDelegate?
 
-    /// The default image that can be used as a placeholder for the `iconImageView` in the `headerView`.
-    public static let defaultImage = UIImage(systemName: "person.crop.circle")!
-
     /// A vertical stack view that holds the main content in the view.
     public let contentStackView: OCKStackView = {
-        let stackView = OCKStackView()
-        stackView.axis = .vertical
+        let stackView = OCKStackView.vertical()
         stackView.distribution = .fill
         return stackView
     }()
@@ -60,52 +59,61 @@ open class OCKSimpleContactView: OCKView, OCKContactDisplayable {
         $0.showsDetailDisclosure = true
     }
 
-    let contentView = OCKView()
+    let contentView: OCKView = {
+        let view = OCKView()
+        view.clipsToBounds = true
+        return view
+    }()
 
-    private lazy var cardAssembler = OCKCardAssembler(cardView: self, contentView: contentView)
+    private lazy var cardBuilder = OCKCardBuilder(cardView: self, contentView: contentView)
+
+    // Button that displays the highlighted state for the view.
+    private lazy var backgroundButton = OCKAnimatedButton(contentView: contentStackView, highlightOptions: [.defaultOverlay, .defaultDelayOnSelect],
+                                                          handlesSelection: false)
+
+    // MARK: - Methods
 
     /// Prepares interface after initialization
     override func setup() {
         super.setup()
         addSubviews()
         constrainSubviews()
-        styleSubviews()
         setupGestures()
+        styleSubviews()
     }
 
     private func setupGestures() {
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(viewTapped))
-        headerView.addGestureRecognizer(tapGesture)
+        backgroundButton.addTarget(self, action: #selector(viewTapped(_:)), for: .touchUpInside)
     }
 
     private func addSubviews() {
         addSubview(contentView)
-        contentView.addSubview(contentStackView)
+        contentView.addSubview(backgroundButton)
         contentStackView.addArrangedSubview(headerView)
     }
 
-    private func constrainSubviews() {
-        [contentView, contentStackView].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
-        NSLayoutConstraint.activate(
-            contentView.constraints(equalTo: layoutMarginsGuide) +
-            contentStackView.constraints(equalTo: contentView)
-        )
+    @objc
+    private func viewTapped(_ sender: UIControl) {
+        delegate?.didSelectContactView(self)
     }
 
     private func styleSubviews() {
-        headerView.iconImageView?.image = OCKSimpleContactView.defaultImage   // set default profile picture
+        headerView.iconImageView?.image = UIImage(systemName: "person.crop.circle")
     }
 
-    @objc
-    func viewTapped(_ sender: UITapGestureRecognizer) {
-        delegate?.didSelectContactView(self)
+    private func constrainSubviews() {
+        [contentView, backgroundButton, contentStackView].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
+        NSLayoutConstraint.activate(
+            contentView.constraints(equalTo: self) +
+            backgroundButton.constraints(equalTo: contentView) +
+            contentStackView.constraints(equalTo: backgroundButton.layoutMarginsGuide))
     }
 
     override open func styleDidChange() {
         super.styleDidChange()
-        let cachedStyle = style()
-        cardAssembler.enableCardStyling(true, style: cachedStyle)
-        directionalLayoutMargins = cachedStyle.dimension.directionalInsets1
-        contentStackView.spacing = cachedStyle.dimension.directionalInsets1.top
+        let style = self.style()
+        cardBuilder.enableCardStyling(true, style: style)
+        directionalLayoutMargins = style.dimension.directionalInsets1
+        contentStackView.spacing = style.dimension.directionalInsets1.top
     }
 }

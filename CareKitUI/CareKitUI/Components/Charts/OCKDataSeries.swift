@@ -51,6 +51,10 @@ public struct OCKDataSeries: Equatable {
     /// Its precise interpretation may vary depending on plot type used.
     public var size: CGFloat
 
+    /// Used to set the accessibility labels of each of the data points.
+    /// This array should either be empty or contain the same number of elements as the data series array.
+    public var accessibilityLabels: [String] = []
+
     /// Creates a new data series that can be passed to chart to be plotted. The series will be plotted in a single
     /// solid color. Use this initialize if you wish to plot data at precise or irregular intervals.
     ///

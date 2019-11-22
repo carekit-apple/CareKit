@@ -46,11 +46,11 @@ internal protocol OCKObjectCompatible {
     /// An array of user-defined tags that can be used to sort or classify objects or values.
     var tags: [String]? { get set }
 
-    /// A unique identifier used by the local database. Its precise format will be determined
+    /// A unique id used by the local database. Its precise format will be determined
     /// by the underlying database, but it is generally not expected to be human readable.
-    var internalID: OCKLocalVersionID? { get set }
+    var localDatabaseID: OCKLocalVersionID? { get set }
 
-    /// A unique identifier optionally used by a remote database. Its precise format will be
+    /// A unique id optionally used by a remote database. Its precise format will be
     /// determined by the remote database, but it is generally not expected to be human readable.
     var remoteID: String? { get set }
 
@@ -73,26 +73,28 @@ internal protocol OCKObjectCompatible {
     /// The semantic version of the database schema when this object was created.
     /// The value will be nil for objects that have not yet been persisted.
     var schemaVersion: OCKSemanticVersion? { get set }
+
+    /// The timezone this record was created in.
+    var timezone: TimeZone { get set }
 }
 
-extension OCKObjectCompatible where Self: OCKVersionSettable {
-    var internalID: OCKLocalVersionID? {
-        get { return versionID }
-        set { localDatabaseID = newValue }
-    }
-}
+internal protocol OCKVersionedObjectCompatible: OCKObjectCompatible {
+    /// A human readable unique identifier. It is used strictly by the developer and will never be shown to a user.
+    var id: String { get }
 
-extension OCKObjectCompatible where Self: OCKLocalPersistable {
-    var internalID: OCKLocalVersionID? {
-        return localDatabaseID
-    }
-}
+    /// The database ID of the previous version of this object, or nil if there is no previous version.
+    var previousVersionID: OCKLocalVersionID? { get set }
 
-extension OCKObjectCompatible where Self: OCKLocalPersistableSettable {
-    var internalID: OCKLocalVersionID? {
-        get { return localDatabaseID }
-        set { localDatabaseID = newValue }
-    }
+    /// The database ID of the next version of this object, or nil if there is no next version.
+    var nextVersionID: OCKLocalVersionID? { get set }
+
+    /// The date that this version of the object begins to take precedence over the previous version.
+    /// Often this will be the same as the `createdDate`, but is not required to be.
+    var effectiveDate: Date { get set }
+
+    /// The date on which this object was marked deleted. Note that objects are never actually deleted,
+    /// but rather they are marked deleted and will no longer be returned from queries.
+    var deletedDate: Date? { get set }
 }
 
 extension OCKObjectCompatible {
@@ -103,10 +105,11 @@ extension OCKObjectCompatible {
         groupIdentifier = other.groupIdentifier
         tags = other.tags
         source = other.source
-        internalID = other.localDatabaseID
+        localDatabaseID = other.localDatabaseID
         remoteID = other.remoteID
         userInfo = other.userInfo
         asset = other.asset
+        timezone = TimeZone(identifier: other.timezoneIdentifier)!
         notes = other.notes?.map {
             var note = OCKNote(author: $0.author, title: $0.title, content: $0.content)
             note.copyCommonValues(from: $0)
@@ -115,11 +118,11 @@ extension OCKObjectCompatible {
     }
 }
 
-extension OCKObjectCompatible where Self: OCKVersionSettable {
+extension OCKVersionedObjectCompatible {
     mutating func copyVersionedValues(from other: OCKCDVersionedObject) {
         deletedDate = other.deletedDate
         effectiveDate = other.effectiveDate
-        versionID = other.localDatabaseID
+        localDatabaseID = other.localDatabaseID
         nextVersionID = other.next?.localDatabaseID
         previousVersionID = other.previous?.localDatabaseID
         copyCommonValues(from: other)

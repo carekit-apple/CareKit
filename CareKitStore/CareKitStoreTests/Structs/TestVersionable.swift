@@ -32,14 +32,5 @@
 import XCTest
 
 class TestVersionable: XCTestCase {
-    func testHasNextAndPrevious() {
-        var patient = OCKPatient(identifier: "my_id", givenName: "Bob", familyName: "Ross")
-        XCTAssert(!patient.hasPreviousVersion)
-        XCTAssert(!patient.hasNextVersion)
 
-        patient.nextVersionID = OCKLocalVersionID("123")
-        patient.previousVersionID = OCKLocalVersionID("abc")
-        XCTAssert(patient.hasNextVersion)
-        XCTAssert(patient.hasPreviousVersion)
-    }
 }

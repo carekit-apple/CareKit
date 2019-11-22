@@ -33,58 +33,71 @@ import Combine
 import Foundation
 
 extension OCKSynchronizedStoreManager {
+
     // MARK: Patients
-    func publisher(forPatient patient: Store.Patient,
-                   categories: [OCKStoreNotificationCategory]) -> AnyPublisher<Store.Patient, Never> {
-        let presentValuePublisher = Future<Store.Patient, Never>({ completion in
-            self.store.fetchPatient(withIdentifier: patient.identifier) { result in
+
+    func publisher(forPatient patient: OCKAnyPatient,
+                   categories: [OCKStoreNotificationCategory]) -> AnyPublisher<OCKAnyPatient, Never> {
+        let presentValuePublisher = Future<OCKAnyPatient, Never>({ completion in
+            self.store.fetchAnyPatient(withID: patient.id) { result in
                 completion(.success((try? result.get()) ?? patient))
             }
         })
 
         return AnyPublisher(notificationPublisher
-            .compactMap { $0 as? OCKPatientNotification<Store> }
-            .filter { $0.patient.isAssociated(with: patient) && categories.contains($0.category) }
+            .compactMap { $0 as? OCKPatientNotification }
+            .filter { $0.patient.id == patient.id && categories.contains($0.category) }
             .map { $0.patient }
             .prepend(presentValuePublisher))
     }
 
     // MARK: CarePlans
-    func publisher(forCarePlan plan: Store.Plan,
-                   categories: [OCKStoreNotificationCategory]) -> AnyPublisher<Store.Plan, Never> {
-        let presentValuePublisher = Future<Store.Plan, Never> { completion in
-            self.store.fetchCarePlan(withIdentifier: plan.identifier) { result in
+
+    func publisher(forCarePlan plan: OCKAnyCarePlan,
+                   categories: [OCKStoreNotificationCategory]) -> AnyPublisher<OCKAnyCarePlan, Never> {
+        let presentValuePublisher = Future<OCKAnyCarePlan, Never> { completion in
+            self.store.fetchAnyCarePlan(withID: plan.id) { result in
                 completion(.success((try? result.get()) ?? plan))
             }
         }
 
         return AnyPublisher(notificationPublisher
-            .compactMap { $0 as? OCKCarePlanNotification<Store> }
-            .filter { $0.carePlan.isAssociated(with: plan) && categories.contains($0.category) }
+            .compactMap { $0 as? OCKCarePlanNotification }
+            .filter { $0.carePlan.id == plan.id && categories.contains($0.category) }
             .map { $0.carePlan }
             .prepend(presentValuePublisher))
     }
 
     // MARK: Contacts
-    func contactsPublisher(categories: [OCKStoreNotificationCategory]) -> AnyPublisher<Store.Contact, Never> {
+
+    func contactsPublisher(categories: [OCKStoreNotificationCategory]) -> AnyPublisher<OCKAnyContact, Never> {
         return AnyPublisher(notificationPublisher
-            .compactMap { $0 as? OCKContactNotification<Store> }
+            .compactMap { $0 as? OCKContactNotification }
             .filter { categories.contains($0.category) }
             .map { $0.contact })
     }
 
-    func publisher(forContact contact: Store.Contact,
+    func publisher(forContactID id: String,
+                   categories: [OCKStoreNotificationCategory]) -> AnyPublisher<OCKAnyContact, Never> {
+        return notificationPublisher
+            .compactMap { $0 as? OCKContactNotification }
+            .filter { $0.contact.id == id && categories.contains($0.category) }
+            .map { $0.contact }
+            .eraseToAnyPublisher()
+    }
+
+    func publisher(forContact contact: OCKAnyContact,
                    categories: [OCKStoreNotificationCategory],
-                   fetchImmediately: Bool = true) -> AnyPublisher<Store.Contact, Never> {
-        let presentValuePublisher = Future<Store.Contact, Never>({ completion in
-            self.store.fetchContact(withIdentifier: contact.identifier) { result in
+                   fetchImmediately: Bool = true) -> AnyPublisher<OCKAnyContact, Never> {
+        let presentValuePublisher = Future<OCKAnyContact, Never>({ completion in
+            self.store.fetchAnyContact(withID: contact.id) { result in
                 completion(.success((try? result.get()) ?? contact))
             }
         })
 
         let changePublisher = notificationPublisher
-            .compactMap { $0 as? OCKContactNotification<Store> }
-            .filter { $0.contact.isAssociated(with: contact) && categories.contains($0.category) }
+            .compactMap { $0 as? OCKContactNotification }
+            .filter { $0.contact.id == contact.id && categories.contains($0.category) }
             .map { $0.contact }
 
         return fetchImmediately ? AnyPublisher(changePublisher.prepend(presentValuePublisher)) : AnyPublisher(changePublisher)
@@ -92,65 +105,65 @@ extension OCKSynchronizedStoreManager {
 
     // MARK: Tasks
 
-    func publisher(forTask task: Store.Task, categories: [OCKStoreNotificationCategory],
-                   fetchImmediately: Bool = true) -> AnyPublisher<Store.Task, Never> {
-        let presentValuePublisher = Future<Store.Task, Never>({ completion in
-            self.store.fetchTask(withIdentifier: task.identifier) { result in
+    func publisher(forTask task: OCKAnyTask, categories: [OCKStoreNotificationCategory],
+                   fetchImmediately: Bool = true) -> AnyPublisher<OCKAnyTask, Never> {
+        let presentValuePublisher = Future<OCKAnyTask, Never>({ completion in
+            self.store.fetchAnyTask(withID: task.id) { result in
                 completion(.success((try? result.get()) ?? task))
             }
         })
 
         let publisher = notificationPublisher
-            .compactMap { $0 as? OCKTaskNotification<Store> }
-            .filter { $0.task.isAssociated(with: task) && categories.contains($0.category) }
+            .compactMap { $0 as? OCKTaskNotification }
+            .filter { $0.task.id == task.id && categories.contains($0.category) }
             .map { $0.task }
 
         return fetchImmediately ? AnyPublisher(publisher.append(presentValuePublisher)) : AnyPublisher(publisher)
     }
 
-    func publisher(forEventsBelongingToTask task: Store.Task,
-                   categories: [OCKStoreNotificationCategory]) -> AnyPublisher<Store.Event, Never> {
+    func publisher(forEventsBelongingToTask task: OCKAnyTask,
+                   categories: [OCKStoreNotificationCategory]) -> AnyPublisher<OCKAnyEvent, Never> {
         return AnyPublisher(notificationPublisher
-            .compactMap { $0 as? OCKOutcomeNotification<Store> }
-            .filter { self.taskIsParent(task, ofOurcome: $0.outcome) && categories.contains($0.category) }
+            .compactMap { $0 as? OCKOutcomeNotification }
+            .filter { $0.outcome.belongs(to: task) && categories.contains($0.category) }
             .map { self.makeEvent(task: task, outcome: $0.outcome, keepOutcome: $0.category != .delete) })
     }
 
-    private func taskIsParent(_ task: Store.Task, ofOurcome outcome: Store.Outcome) -> Bool {
-        guard let taskID = outcome.convert().taskID else { return false }
-        return task.localDatabaseID == taskID
+    func publisher(forEventsBelongingToTask task: OCKAnyTask, query: OCKEventQuery,
+                   categories: [OCKStoreNotificationCategory]) -> AnyPublisher<OCKAnyEvent, Never> {
+
+        let validIndices = task.schedule.events(from: query.dateInterval.start, to: query.dateInterval.end)
+            .map { $0.occurrence }
+
+        return publisher(forEventsBelongingToTask: task, categories: categories)
+            .filter { validIndices.contains($0.scheduleEvent.occurrence) }
+            .eraseToAnyPublisher()
     }
 
-    private func makeEvent(task: Store.Task, outcome: Store.Outcome, keepOutcome: Bool) -> Store.Event {
-        guard let scheduleEvent = task.convert().schedule.event(forOccurenceIndex: outcome.convert().taskOccurenceIndex) else {
-            fatalError("The outcome had an index of \(outcome.convert().taskOccurenceIndex), but the task's schedule doesn't have that many events.")
+    private func makeEvent(task: OCKAnyTask, outcome: OCKAnyOutcome, keepOutcome: Bool) -> OCKAnyEvent {
+        guard let scheduleEvent = task.schedule.event(forOccurrenceIndex: outcome.taskOccurrenceIndex) else {
+            fatalError("The outcome had an index of \(outcome.taskOccurrenceIndex), but the task's schedule doesn't have that many events.")
         }
-        return Store.Event(task: task, outcome: keepOutcome ? outcome : nil, scheduleEvent: scheduleEvent)
+        return OCKAnyEvent(task: task, outcome: keepOutcome ? outcome : nil, scheduleEvent: scheduleEvent)
     }
 
     // MARK: Events
-    func publisher(forEvent event: Store.Event, categories: [OCKStoreNotificationCategory]) -> AnyPublisher<Store.Event, Never> {
-        guard let taskID = event.task.localDatabaseID else {
-            fatalError("Cannot create a publisher for an event with a task that has not been persisted.")
-        }
-        let presentValuePublisher = Future<Store.Event, Never>({ completion in
-            self.store.fetchEvent(withTaskVersionID: taskID, occurenceIndex: event.scheduleEvent.occurence, queue: .main) { result in
+
+    func publisher(forEvent event: OCKAnyEvent, categories: [OCKStoreNotificationCategory]) -> AnyPublisher<OCKAnyEvent, Never> {
+        let presentValuePublisher = Future<OCKAnyEvent, Never>({ completion in
+            self.store.fetchAnyEvent(forTask: event.task, occurrence: event.scheduleEvent.occurrence, callbackQueue: .main) { result in
                 completion(.success((try? result.get()) ?? event))
             }
         })
 
         return AnyPublisher(notificationPublisher
-            .compactMap { $0 as? OCKOutcomeNotification<Store> }
+            .compactMap { $0 as? OCKOutcomeNotification }
             .filter { self.outcomeMatchesEvent(outcome: $0.outcome, event: event) }
             .map { self.makeEvent(task: event.task, outcome: $0.outcome, keepOutcome: $0.category != .delete) }
             .prepend(presentValuePublisher))
     }
 
-    private func outcomeMatchesEvent(outcome: Store.Outcome, event: Store.Event) -> Bool {
-        guard let taskID = outcome.convert().taskID else {
-            fatalError("Notifications should always contain outcomes with non-nil local database IDs")
-        }
-        return event.task.localDatabaseID == taskID &&
-            event.scheduleEvent.occurence == outcome.convert().taskOccurenceIndex
+    private func outcomeMatchesEvent(outcome: OCKAnyOutcome, event: OCKAnyEvent) -> Bool {
+        outcome.belongs(to: event.task) && event.scheduleEvent.occurrence == outcome.taskOccurrenceIndex
     }
 }

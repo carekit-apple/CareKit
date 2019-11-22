@@ -30,6 +30,20 @@
 
 import UIKit
 
+struct LayoutDirection: OptionSet {
+    let rawValue: Int
+
+    static let top = LayoutDirection(rawValue: 1 << 0)
+    static let bottom = LayoutDirection(rawValue: 1 << 1)
+    static let leading = LayoutDirection(rawValue: 1 << 2)
+    static let trailing = LayoutDirection(rawValue: 1 << 3)
+
+    static let horizontal: LayoutDirection = [.leading, .trailing]
+    static let vertical: LayoutDirection = [.top, .bottom]
+
+    static let all: LayoutDirection = [.horizontal, .vertical]
+}
+
 extension UILayoutPriority {
     static var almostRequired: UILayoutPriority {
         return .required - 1
@@ -54,22 +68,40 @@ extension UIView {
         setContentCompressionResistancePriority(new, for: .vertical)
     }
 
-    func constraints(equalTo other: UIView) -> [NSLayoutConstraint] {
-        return [
-            topAnchor.constraint(equalTo: other.topAnchor),
-            leftAnchor.constraint(equalTo: other.leftAnchor),
-            bottomAnchor.constraint(equalTo: other.bottomAnchor),
-            rightAnchor.constraint(equalTo: other.rightAnchor)
-        ]
+    func constraints(equalTo other: UIView, directions: LayoutDirection = .all,
+                     priority: UILayoutPriority = .required) -> [NSLayoutConstraint] {
+        var constraints: [NSLayoutConstraint] = []
+        if directions.contains(.top) {
+            constraints.append(topAnchor.constraint(equalTo: other.topAnchor).withPriority(priority))
+        }
+        if directions.contains(.leading) {
+            constraints.append(leadingAnchor.constraint(equalTo: other.leadingAnchor).withPriority(priority))
+        }
+        if directions.contains(.bottom) {
+            constraints.append(bottomAnchor.constraint(equalTo: other.bottomAnchor).withPriority(priority))
+        }
+        if directions.contains(.trailing) {
+            constraints.append(trailingAnchor.constraint(equalTo: other.trailingAnchor).withPriority(priority))
+        }
+        return constraints
     }
 
-    func constraints(equalTo layoutGuide: UILayoutGuide) -> [NSLayoutConstraint] {
-        return [
-            topAnchor.constraint(equalTo: layoutGuide.topAnchor),
-            leftAnchor.constraint(equalTo: layoutGuide.leftAnchor),
-            bottomAnchor.constraint(equalTo: layoutGuide.bottomAnchor),
-            rightAnchor.constraint(equalTo: layoutGuide.rightAnchor)
-        ]
+    func constraints(equalTo layoutGuide: UILayoutGuide, directions: LayoutDirection = .all,
+                     priority: UILayoutPriority = .required) -> [NSLayoutConstraint] {
+        var constraints: [NSLayoutConstraint] = []
+        if directions.contains(.top) {
+            constraints.append(topAnchor.constraint(equalTo: layoutGuide.topAnchor).withPriority(priority))
+        }
+        if directions.contains(.leading) {
+            constraints.append(leadingAnchor.constraint(equalTo: layoutGuide.leadingAnchor).withPriority(priority))
+        }
+        if directions.contains(.bottom) {
+            constraints.append(bottomAnchor.constraint(equalTo: layoutGuide.bottomAnchor).withPriority(priority))
+        }
+        if directions.contains(.trailing) {
+            constraints.append(trailingAnchor.constraint(equalTo: layoutGuide.trailingAnchor).withPriority(priority))
+        }
+        return constraints
     }
 
     var isRightToLeft: Bool {

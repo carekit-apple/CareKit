@@ -1,0 +1,33 @@
+{
+  "configurations" : [
+    {
+      "id" : "5E58A793-A721-42C8-8A91-318D8D05AB0F",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false,
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:CareKitStore.xcodeproj",
+      "identifier" : "E784B8F72232EED600736CA5",
+      "name" : "CareKitStore"
+    }
+  },
+  "testTargets" : [
+    {
+      "skippedTests" : [
+        "TestSchedule\/testEventGenerationPerformanceBasicSchedule()",
+        "TestSchedule\/testEventGenerationPerformanceHeavySchedule()"
+      ],
+      "target" : {
+        "containerPath" : "container:CareKitStore.xcodeproj",
+        "identifier" : "E784B9002232EED600736CA5",
+        "name" : "CareKitStoreTests"
+      }
+    }
+  ],
+  "version" : 1
+}

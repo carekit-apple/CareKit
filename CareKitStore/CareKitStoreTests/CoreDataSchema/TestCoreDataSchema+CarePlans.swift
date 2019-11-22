@@ -42,7 +42,7 @@ class TestCoreDataSchemaWithCarePlan: XCTestCase {
     func testCanSaveCarePlan() {
         let plan1 = OCKCDCarePlan(context: store.context)
         plan1.title = "Plan 1"
-        plan1.identifier = "plan_1"
+        plan1.id = "plan_1"
         plan1.effectiveDate = Date()
         plan1.allowsMissingRelationships = true
         XCTAssertNoThrow(try store.context.save())

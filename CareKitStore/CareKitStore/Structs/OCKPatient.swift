@@ -31,29 +31,23 @@
 import Foundation
 
 /// Represents a patient
-public struct OCKPatient: Codable, Equatable, OCKVersionSettable, OCKObjectCompatible, OCKPatientConvertible {
-    public let identifier: String
+public struct OCKPatient: Codable, Equatable, Identifiable, OCKAnyPatient, OCKVersionedObjectCompatible {
 
-    /// The patient's name.
+    // MARK: OCKAnyPatient
+    public let id: String
     public var name: PersonNameComponents
-
-    /// The patient's biological sex.
     public var sex: OCKBiologicalSex?
-
-    /// The patient's birthday, used to compute their age.
     public var birthday: Date?
-
-    /// A list of substances this patient is allergic to.
     public var allergies: [String]?
 
-    // MARK: OCKVersionable
+    // MARK: OCKVersionedObjectCompatible
     public var effectiveDate: Date
     public internal(set) var deletedDate: Date?
-    public internal(set) var localDatabaseID: OCKLocalVersionID?
     public internal(set) var nextVersionID: OCKLocalVersionID?
     public internal(set) var previousVersionID: OCKLocalVersionID?
 
     // MARK: OCKObjectCompatible
+    public internal(set) var localDatabaseID: OCKLocalVersionID?
     public internal(set) var createdDate: Date?
     public internal(set) var updatedDate: Date?
     public internal(set) var schemaVersion: OCKSemanticVersion?
@@ -64,49 +58,37 @@ public struct OCKPatient: Codable, Equatable, OCKVersionSettable, OCKObjectCompa
     public var userInfo: [String: String]?
     public var asset: String?
     public var notes: [OCKNote]?
+    public var timezone: TimeZone
 
-    /// Initialize a patient with an identifier, a first name, and a last name.
+    /// Initialize a patient with an id, a first name, and a last name.
     ///
     /// - Parameters:
-    ///   - identifier: A user-defined identifier unique to this patient.
+    ///   - id: A user-defined id unique to this patient.
     ///   - givenName: The patient's given name.
     ///   - familyName: The patient's family name.
-    public init(identifier: String, givenName: String, familyName: String) {
+    public init(id: String, givenName: String, familyName: String) {
         var components = PersonNameComponents()
         components.givenName = givenName
         components.familyName = familyName
         self.name = components
-        self.identifier = identifier
+        self.id = id
         self.effectiveDate = Date()
+        self.timezone = TimeZone.current
     }
 
-    /// Initialize a new patient with an identifier and a name.
+    /// Initialize a new patient with an id and a name.
     ///
     /// - Parameters:
-    ///   - identifier: A user-defined identifier unique to this patient.
+    ///   - id: A user-defined id unique to this patient.
     ///   - name: The name components for the patient's name.
-    public init(identifier: String, name: PersonNameComponents) {
+    public init(id: String, name: PersonNameComponents) {
         self.name = name
-        self.identifier = identifier
+        self.id = id
         self.effectiveDate = Date()
+        self.timezone = TimeZone.current
     }
 
-    /// Create an `OCKPatient` from an `OCKPatient`
-    ///
-    /// - Parameter value: The patient to make a copy of.
-    /// - Note: Because `OCKPatient` is already an `OCKPatient`, this effectively just creates a copy.
-    public init(_ value: OCKPatient) {
-        self = value
-    }
-
-    /// Converts to an `OCKPatient`
-    ///
-    /// - Returns: An unmodified copy of `self`.
-    /// - Note: Since `OCKPatient` is already an `OCKPatient`, this just returns `self`.
-    public func convert() -> OCKPatient {
-        return self
-    }
-
+    /// The patient's age in years, as of the current date.
     public var age: Int? {
         guard let birthday = birthday else { return nil }
         return Calendar.current.dateComponents(Set([.year]), from: birthday, to: Date()).year

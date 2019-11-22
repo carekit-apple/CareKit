@@ -33,7 +33,7 @@ import Foundation
 
 @objc(OCKCDOutcome)
 class OCKCDOutcome: OCKCDObject, OCKCDManageable {
-    @NSManaged var taskOccurenceIndex: Int
+    @NSManaged var taskOccurrenceIndex: Int
     @NSManaged var task: OCKCDTask?
     @NSManaged var values: Set<OCKCDOutcomeValue>
     @NSManaged var date: Date?
@@ -42,22 +42,26 @@ class OCKCDOutcome: OCKCDObject, OCKCDManageable {
         return [NSSortDescriptor(keyPath: \OCKCDOutcome.createdDate, ascending: false)]
     }
 
-    internal var allowsMissingRelationships = false
-
-    func validateRelationships() throws {
-        if !allowsMissingRelationships && task == nil {
-            throw OCKStoreError.invalidValue(reason: "An OCKCDOutcome's task relationship may not be nil")
-        }
-    }
-
     override func validateForInsert() throws {
         try super.validateForInsert()
-        try validateRelationships()
+        try validateNoDuplicates()
     }
 
     override func validateForUpdate() throws {
         try super.validateForUpdate()
-        try validateRelationships()
+        try validateNoDuplicates()
+    }
+
+    private func validateNoDuplicates() throws {
+        guard let task = task else { throw OCKStoreError.invalidValue(reason: "Outcomes must have a task!") }
+        guard let context = managedObjectContext else { throw OCKStoreError.invalidValue(reason: "Context was nil!") }
+        let predicate = NSPredicate(format: "%K == %@ AND %K == %d AND self != %@",
+                                    #keyPath(OCKCDOutcome.task), task,
+                                    #keyPath(OCKCDOutcome.taskOccurrenceIndex), taskOccurrenceIndex,
+                                    self)
+        let request = OCKCDOutcome.sortedFetchRequest(withPredicate: predicate)
+        let numberOfDuplicates = try context.count(for: request)
+        if numberOfDuplicates > 0 { throw OCKStoreError.invalidValue(reason: "Duplicate outcome!") }
     }
 }
 

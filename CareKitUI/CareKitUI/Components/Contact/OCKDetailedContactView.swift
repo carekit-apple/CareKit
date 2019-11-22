@@ -1,21 +1,21 @@
 /*
  Copyright (c) 2019, Apple Inc. All rights reserved.
-
+ 
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
-
+ 
  1.  Redistributions of source code must retain the above copyright notice, this
  list of conditions and the following disclaimer.
-
+ 
  2.  Redistributions in binary form must reproduce the above copyright notice,
  this list of conditions and the following disclaimer in the documentation and/or
  other materials provided with the distribution.
-
+ 
  3. Neither the name of the copyright holder(s) nor the names of any contributors
  may be used to endorse or promote products derived from this software without
  specific prior written permission. No license is granted to the trademarks of
  the copyright holders even if such marks are included in this software.
-
+ 
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -58,25 +58,15 @@ import UIKit
 ///     +-------------------------------------------------------+
 ///
 open class OCKDetailedContactView: OCKView, OCKContactDisplayable {
+
+    // MARK: Properties
+
     /// Handles events related to an `OCKContactDisplayable` object.
     public weak var delegate: OCKContactViewDelegate?
 
-    private var buttons: [OCKButton] {
-        return [addressButton, callButton, messageButton, emailButton]
-    }
-
-    private var contactButtons: [OCKContactButton] {
-        return buttons.compactMap { $0 as? OCKContactButton }
-    }
-
-    let contentView = OCKView()
-
-    private lazy var cardAssembler = OCKCardAssembler(cardView: self, contentView: contentView)
-
     /// A vertical stack view that holds the main content in the view.
     public let contentStackView: OCKStackView = {
-        let stackView = OCKStackView()
-        stackView.axis = .vertical
+        let stackView = OCKStackView.vertical()
         stackView.distribution = .fill
         return stackView
     }()
@@ -87,23 +77,6 @@ open class OCKDetailedContactView: OCKView, OCKContactDisplayable {
         $0.showsSeparator = true
     }
 
-    /// Stack view that holds phone, message, and email contact action buttons.
-    private let contactStackView: OCKStackView = {
-        let stackView = OCKStackView(style: .plain)
-        stackView.axis = .horizontal
-        stackView.distribution = .fillEqually
-        return stackView
-    }()
-
-    /// Stack view that holds buttons in `contactStack` and `directionsButton`.
-    /// You may choose to add or hide buttons
-    private let buttonStackView: OCKStackView = {
-        let stackView = OCKStackView(style: .plain)
-        stackView.axis = .vertical
-        stackView.distribution = .equalSpacing
-        return stackView
-    }()
-
     /// Multi-line label under the `headerView`.
     public let instructionsLabel: OCKLabel = {
         let label = OCKLabel(textStyle: .subheadline, weight: .medium)
@@ -111,24 +84,54 @@ open class OCKDetailedContactView: OCKView, OCKContactDisplayable {
         return label
     }()
 
-    /// Button with a phone image and `titleLabel`.
+    /// Button with a phone image and title label.
     /// Set the `isHidden` property to `false` to hide the button.
-    public let callButton: OCKButton = OCKContactButton(type: .call)
+    public let callButton = OCKContactButton(type: .call)
 
-    /// Button with a messages images and `titleLabel`.
+    /// Button with a messages images and title label.
     /// Set the `isHidden` property to `false` to hide the button.
-    public let messageButton: OCKButton = OCKContactButton(type: .message)
+    public let messageButton = OCKContactButton(type: .message)
 
-    /// Button with an email image and `titleLabel`.
+    /// Button with an email image and title label.
     /// Set the `isHidden` property to `false` to hide the button.
-    public let emailButton: OCKButton = OCKContactButton(type: .email)
+    public let emailButton = OCKContactButton(type: .email)
 
-    /// Button with a location image, `titleLabel`, and `detailLabel`.
+    /// Button with a location image, title and detail labels.
     /// Set the `isHidden` property to `false` to hide the button.
-    public let addressButton: OCKButton = OCKAddressButton()
+    public let addressButton = OCKAddressButton()
 
     /// The default image that can be used as a placeholder for the `iconImageView` in the `headerView`.
     public static let defaultImage = UIImage(systemName: "person.crop.circle")!
+
+    let contentView = OCKView()
+
+    private var buttons: [OCKAnimatedButton<OCKStackView>] {
+        return [addressButton, callButton, messageButton, emailButton]
+    }
+
+    private var contactButtons: [OCKContactButton] {
+        return buttons.compactMap { $0 as? OCKContactButton }
+    }
+
+    private lazy var cardBuilder = OCKCardBuilder(cardView: self, contentView: contentView)
+
+    /// Stack view that holds phone, message, and email contact action buttons.
+    private lazy var contactStackView: OCKStackView = {
+        let stackView = OCKStackView()
+        stackView.axis = self.contactStackAxisDirection()
+        stackView.distribution = .fillEqually
+        return stackView
+    }()
+
+    /// Stack view that holds buttons in `contactStack` and `directionsButton`.
+    /// You may choose to add or hide buttons
+    private let buttonStackView: OCKStackView = {
+        let stackView = OCKStackView.vertical()
+        stackView.distribution = .equalSpacing
+        return stackView
+    }()
+
+    // MARK: - Methods
 
     /// Prepares interface after initialization
     override func setup() {
@@ -140,9 +143,6 @@ open class OCKDetailedContactView: OCKView, OCKContactDisplayable {
     }
 
     private func setupGestures() {
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(viewTapped))
-        headerView.addGestureRecognizer(tapGesture)
-
         [messageButton, callButton, addressButton, emailButton].forEach {
             $0.addTarget(self, action: #selector(didTapButton(_:)), for: .touchUpInside)
         }
@@ -169,7 +169,8 @@ open class OCKDetailedContactView: OCKView, OCKContactDisplayable {
     }
 
     @objc
-    private func didTapButton(_ sender: OCKButton) {
+    private func didTapButton(_ sender: UIControl) {
+        sender.isSelected = false // Immediately deselect since these buttons aren't intended to be toggleable
         switch sender {
         case messageButton: delegate?.contactView(self, senderDidInitiateMessage: sender)
         case callButton: delegate?.contactView(self, senderDidInitiateCall: sender)
@@ -179,26 +180,25 @@ open class OCKDetailedContactView: OCKView, OCKContactDisplayable {
         }
     }
 
-    @objc
-    func viewTapped(_ sender: UITapGestureRecognizer) {
-        delegate?.didSelectContactView(self)
-    }
-
     override open func styleDidChange() {
         super.styleDidChange()
         let cachedStyle = style()
-        cardAssembler.enableCardStyling(true, style: cachedStyle)
+        cardBuilder.enableCardStyling(true, style: cachedStyle)
         instructionsLabel.textColor = cachedStyle.color.label
         directionalLayoutMargins = cachedStyle.dimension.directionalInsets1
-        addressButton.detailButton?.setTitleColor(cachedStyle.color.label, for: .normal)
-
-        buttons.forEach {
-            $0.setBackgroundColor(cachedStyle.color.quaternarySystemFill, for: .normal)
-            $0.layer.cornerRadius = cachedStyle.appearance.cornerRadius2
-        }
-
         let topInset = cachedStyle.dimension.directionalInsets1.top
         contentStackView.spacing = topInset
         [contactStackView, buttonStackView].forEach { $0.spacing = topInset / 2.0 }
+    }
+
+    // MARK: Accessibility Scaling
+
+    override open func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        contactStackView.axis = contactStackAxisDirection()
+    }
+
+    private func contactStackAxisDirection() -> NSLayoutConstraint.Axis {
+        traitCollection.preferredContentSizeCategory < .extraExtraLarge ? .horizontal : .vertical
     }
 }

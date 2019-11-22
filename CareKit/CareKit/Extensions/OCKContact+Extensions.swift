@@ -28,6 +28,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import CareKitStore
 import Contacts
 import Foundation
 
@@ -40,14 +41,16 @@ private extension OCKPostalAddress {
     func toCNLabeledValue() -> CNLabeledValue<CNPostalAddress> { CNLabeledValue(label: "", value: self) }
 }
 
+
 extension CNMutableContact {
-    convenience init(from contact: OCKContact) {
+    convenience init(from contact: OCKAnyContact) {
         self.init()
         if let value = contact.organization      { organizationName = value }
         if let value = contact.phoneNumbers      { phoneNumbers = value.map { $0.toLabeledPhoneNumber() } }
         if let value = contact.address           { postalAddresses = [value.toCNLabeledValue()] }
         if let value = contact.emailAddresses    { emailAddresses = value.map { $0.toLabeledString() } }
-        if let value = contact.role              { jobTitle = value }
+        if let value = contact.title             { jobTitle = value }
+        if let value = contact.role              { note = value }
         if let value = contact.organization      { departmentName = value }
         if let value = contact.emailAddresses    { emailAddresses = value.map { $0.toLabeledString() } }
         if let value = contact.name.familyName   { familyName = value }
@@ -62,3 +65,4 @@ extension CNMutableContact {
         if let value = contact.name.phoneticRepresentation?.middleName       { phoneticMiddleName = value }
     }
 }
+

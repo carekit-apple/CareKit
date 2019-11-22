@@ -32,26 +32,8 @@ import UIKit
 
 /// Any object that can display and handle interactions with a calendar. A calendar displays information about a specified range of days.
 public protocol OCKCalendarDisplayable: AnyObject {
-    /// The component of the date interval displayed in the calendar.
-    static var intervalComponent: Calendar.Component { get }
-
     /// Handles events related to an `OCKCalendarDisplayable` object.
     var delegate: OCKCalendarViewDelegate? { get set }
-
-    /// The current date interval being displayed in the calendar.
-    var dateInterval: DateInterval { get }
-
-    /// The currently selected date in the calendar.
-    var selectedDate: Date { get }
-
-    /// Select a particular date in the calendar, and update `selectedDate`.
-    /// - Parameter date: The date to select in the calendar.
-    func selectDate(_ date: Date)
-
-    /// Show a particular date in the calendar. if the `date` is out of the current `dateInterval`, a new interval that contains the `date` will be
-    /// displayed, and `dateInterval` will be updated.
-    /// - Parameter date: The date to display in the calendar.
-    func showDate(_ date: Date)
 }
 
 /// Handles events related to an `OCKCalendarDisplayable` object.

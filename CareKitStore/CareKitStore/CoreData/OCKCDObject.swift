@@ -43,19 +43,19 @@ class OCKCDObject: NSManagedObject {
     @NSManaged var asset: String?
     @NSManaged var notes: Set<OCKCDNote>?
     @NSManaged var schemaVersion: String
+    @NSManaged var timezoneIdentifier: String
 
     var localDatabaseID: OCKLocalVersionID? {
         guard !objectID.isTemporaryID else { return nil }
         return OCKLocalVersionID(objectID.uriRepresentation().absoluteString)
     }
-}
 
-internal extension OCKCDObject {
     override func awakeFromInsert() {
         super.awakeFromInsert()
         createdDate = Date()
         updatedDate = Date()
         notes = Set()
+        timezoneIdentifier = TimeZone.current.identifier
     }
 
     func copyValues(from other: OCKObjectCompatible) {
@@ -68,6 +68,7 @@ internal extension OCKCDObject {
         remoteID = other.remoteID
         userInfo = other.userInfo
         asset = other.asset
+        timezoneIdentifier = other.timezone.identifier
         notes = {
             guard let otherNotes = other.notes else { return nil }
             return Set(otherNotes.map {

@@ -31,23 +31,65 @@
 import UIKit
 
 /// A selectable completion ring with an inner check view and a title label.
-open class OCKCompletionRingButton: OCKButton {
-    override var titleButton: OCKButton? { _titleButton }
+open class OCKCompletionRingButton: OCKAnimatedButton<OCKStackView> {
 
-    /// Button that displays a title label.
-    private let _titleButton = OCKButton()
+    // MARK: Properties
+
+    /// Label above the completion ring.
+    public let label: OCKLabel = {
+        let label = OCKCappedSizeLabel(textStyle: .caption1, weight: .semibold)
+        label.maxFontSize = 20
+        return label
+    }()
 
     /// A fillable ring view.
-    let ring = OCKCompletionRingView()
+    public let ring = OCKCompletionRingView()
 
     /// The completion state of the ring
-    public private (set) var completionState: CompletionState?
+    public private (set) var completionState = CompletionState.empty
+
+    public let contentStackView: OCKStackView = {
+        let stackView = OCKStackView.vertical()
+        stackView.alignment = .center
+        stackView.distribution = .fillProportionally
+        return stackView
+    }()
 
     public enum CompletionState: Equatable {
         case dimmed
         case empty
         case zero
         case progress(_ value: CGFloat)
+    }
+
+    // MARK: - Life cycle
+
+    public init() {
+        super.init(contentView: contentStackView, handlesSelection: true)
+        setup()
+    }
+
+    public required init?(coder: NSCoder) {
+        super.init(contentView: contentStackView, handlesSelection: true)
+        setup()
+    }
+
+    // MARK: - Methods
+
+    override open func styleDidChange() {
+        super.styleDidChange()
+        updateRingColors()
+        ring.lineWidth = style().appearance.lineWidth1
+    }
+
+    override open func setStyleForSelectedState(_ isSelected: Bool) {
+        updateRingColors()
+    }
+
+    /// Called when the tint color of the view changes.
+    override open func tintColorDidChange() {
+        updateRingColors()
+        ring.strokeColor = tintColor
     }
 
     /// Changes the display state of the button
@@ -66,61 +108,22 @@ open class OCKCompletionRingButton: OCKButton {
         updateRingColors()
     }
 
+    private func setup() {
+        addSubviews()
+    }
+
     private func updateRingColors() {
         let cachedStyle = style()
-        let grooveStrokeColor = completionState == .dimmed ? cachedStyle.color.systemGray3 : cachedStyle.color.systemGray
-        let titleColor = completionState == .dimmed ? cachedStyle.color.tertiaryLabel : cachedStyle.color.label
+        let grooveStrokeColor = completionState == .dimmed ? cachedStyle.color.customGray3 : cachedStyle.color.customGray
+        let deselectedLabelColor = completionState == .dimmed ? cachedStyle.color.tertiaryLabel : cachedStyle.color.label
 
-        setTitleColor(titleColor, for: .normal)
+        label.textColor = isSelected ? tintColor : deselectedLabelColor
         ring.grooveView.strokeColor = grooveStrokeColor
-    }
-
-    /// Called when the tint color of the view changes.
-    override open func tintColorDidChange() {
-        setTitleColor(tintColor, for: .selected)
-        ring.strokeColor = tintColor
-    }
-
-    override func setup() {
-        super.setup()
-        addSubviews()
-        constrainSubviews()
-        styleSubviews()
-    }
-
-    private func styleSubviews() {
-        _titleButton.titleLabel?.font = UIFont.systemFont(ofSize: 12, weight: .semibold)
-        _titleButton.isUserInteractionEnabled = false
-
-        ring.isUserInteractionEnabled = false
         ring.strokeColor = tintColor
     }
 
     private func addSubviews() {
-        addSubview(ring)
-        addSubview(_titleButton)
-    }
-
-    private func constrainSubviews() {
-        [_titleButton, ring, self].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
-        _titleButton.setContentHuggingPriority(.defaultHigh, for: .vertical)
-        ring.setContentHuggingPriority(.defaultLow, for: .vertical)
-
-        NSLayoutConstraint.activate([
-            _titleButton.topAnchor.constraint(equalTo: topAnchor),
-            _titleButton.leadingAnchor.constraint(equalTo: leadingAnchor),
-            _titleButton.trailingAnchor.constraint(equalTo: trailingAnchor),
-            _titleButton.bottomAnchor.constraint(equalTo: ring.topAnchor),
-
-            ring.leadingAnchor.constraint(equalTo: leadingAnchor),
-            ring.trailingAnchor.constraint(equalTo: trailingAnchor),
-            ring.bottomAnchor.constraint(equalTo: bottomAnchor)
-        ])
-    }
-
-    override public func styleDidChange() {
-        super.styleDidChange()
-        updateRingColors()
-        ring.lineWidth = style().appearance.lineWidth1
+        addSubview(contentStackView)
+        [label, ring].forEach { contentStackView.addArrangedSubview($0) }
     }
 }

@@ -30,7 +30,7 @@
 import Foundation
 
 /// An enumerator that specifies a number of methods for computing a value given an array of events that occurred on some day.
-public enum OCKEventAggregator<Event: OCKEventConvertible & Equatable> {
+public enum OCKEventAggregator {
     /// Counts the total number of outcome values in the entire array of events.
     case countOutcomeValues
 
@@ -38,18 +38,18 @@ public enum OCKEventAggregator<Event: OCKEventConvertible & Equatable> {
     case countOutcomes
 
     /// Custom logic that operates a day's worth of events and returns a y-axis value.
-    case custom(_ closure: ([Event]) -> Double)
+    case custom(_ closure: ([OCKAnyEvent]) -> Double)
 
     /// Aggregates an array of events into an adherence score.
     ///
     /// - Parameters:
     ///   - events: An array of events
-    public func aggregate(events: [Event]) -> Double {
+    public func aggregate(events: [OCKAnyEvent]) -> Double {
         switch self {
         case .countOutcomeValues:
-            return Double(events.map { $0.convert().outcome?.values.count ?? 0 }.reduce(0, +))
+            return Double(events.map { $0.outcome?.values.count ?? 0 }.reduce(0, +))
         case .countOutcomes:
-            return Double(events.map { $0.convert().outcome != nil ? 1 : 0 }.reduce(0, +))
+            return Double(events.map { $0.outcome != nil ? 1 : 0 }.reduce(0, +))
         case .custom(let closure):
             return closure(events)
         }

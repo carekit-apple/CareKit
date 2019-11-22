@@ -32,35 +32,17 @@
 import XCTest
 
 class TestOutcome: XCTestCase {
-    func testMakeOutcome() {
-        let index = 0
-        let outcome = OCKOutcome(taskID: OCKLocalVersionID(UUID().uuidString), taskOccurenceIndex: index, values: [])
-        XCTAssert(outcome.convert() == outcome)
+
+    func testBelongsToReturnsFalseIfTaskIDsDontMatch() {
+        let outcome = OCKOutcome(taskID: OCKLocalVersionID("abc"), taskOccurrenceIndex: 0, values: [])
+        let task = OCKTask(id: "medicine", title: nil, carePlanID: nil, schedule: .mealTimesEachDay(start: Date(), end: nil))
+        XCTAssert(outcome.belongs(to: task) == false)
     }
 
-    func testUnpersistedOutcomesAreNotAssociatedEvenIfTheyAreEqual() {
-        let outcomeA = OCKOutcome(taskID: OCKLocalVersionID("abc123"), taskOccurenceIndex: 0, values: [])
-        let outcomeB = OCKOutcome(taskID: OCKLocalVersionID("abc123"), taskOccurenceIndex: 0, values: [])
-        XCTAssert(outcomeA == outcomeB)
-        XCTAssert(!outcomeA.isAssociated(with: outcomeB))
-    }
-
-    func testOutcomeWithTheSameTaskVersionAndIndexAreAssociated() {
-        var outcomeA = OCKOutcome(taskID: OCKLocalVersionID("abc123"), taskOccurenceIndex: 4, values: [])
-        outcomeA.localDatabaseID = OCKLocalVersionID("qwerty")
-
-        var outcomeB = OCKOutcome(taskID: OCKLocalVersionID("abc123"), taskOccurenceIndex: 4, values: [OCKOutcomeValue(10.0)])
-        outcomeB.localDatabaseID = OCKLocalVersionID("dvorak")
-        XCTAssert(outcomeA.isAssociated(with: outcomeB))
-    }
-
-    func testOutcomesWithTheSameLocalDatabaseIDAreAssociated() {
-        var outcomeA = OCKOutcome(taskID: nil, taskOccurenceIndex: 0, values: [])
-        outcomeA.localDatabaseID = OCKLocalVersionID("abc123")
-
-        var outcomeB = OCKOutcome(taskID: nil, taskOccurenceIndex: 0, values: [])
-        outcomeB.localDatabaseID = OCKLocalVersionID("abc123")
-
-        XCTAssert(outcomeA.isAssociated(with: outcomeB))
+    func testBelongsToReturnsTrueIfTasksIDsDoMatch() {
+        let outcome = OCKOutcome(taskID: OCKLocalVersionID("abc"), taskOccurrenceIndex: 0, values: [])
+        var task = OCKTask(id: "medicine", title: nil, carePlanID: nil, schedule: .mealTimesEachDay(start: Date(), end: nil))
+        task.localDatabaseID = OCKLocalVersionID("abc")
+        XCTAssert(outcome.belongs(to: task))
     }
 }

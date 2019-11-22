@@ -42,7 +42,7 @@ class OCKGridLayer: OCKCartesianCoordinatesLayer {
     }
 
     /// The color of the grid lines.
-    var gridLineColor: UIColor = OCKStyle().color.systemGray {
+    var gridLineColor: UIColor = OCKStyle().color.customGray {
         didSet {
             bottomGridLine.strokeColor = gridLineColor.cgColor
             gridLines.strokeColor = gridLineColor.cgColor
@@ -61,6 +61,10 @@ class OCKGridLayer: OCKCartesianCoordinatesLayer {
             gridLines.opacity = Float(gridLineOpacity)
             bottomGridLine.opacity = Float(gridLineOpacity)
         }
+    }
+
+    var fontSize: CGFloat = 10 {
+        didSet { setNeedsLayout() }
     }
 
     let gridLines = CAShapeLayer()
@@ -130,7 +134,7 @@ class OCKGridLayer: OCKCartesianCoordinatesLayer {
         topValueLayer.contentsScale = UIScreen.main.scale
         topValueLayer.string = "\(graphBounds().height)"
         topValueLayer.foregroundColor = gridLineColor.cgColor
-        topValueLayer.fontSize = 10
+        topValueLayer.fontSize = fontSize
         topValueLayer.frame = CGRect(origin: CGPoint(x: Constants.margin, y: 0), size: CGSize(width: 100, height: 44))
     }
 
@@ -138,7 +142,7 @@ class OCKGridLayer: OCKCartesianCoordinatesLayer {
         middleValueLayer.contentsScale = UIScreen.main.scale
         middleValueLayer.string = "\(graphBounds().height / 2)"
         middleValueLayer.foregroundColor = gridLineColor.cgColor
-        middleValueLayer.fontSize = 10
+        middleValueLayer.fontSize = fontSize
         middleValueLayer.frame = CGRect(origin: CGPoint(x: Constants.margin, y: bounds.height / 2), size: CGSize(width: 100, height: 44))
     }
 

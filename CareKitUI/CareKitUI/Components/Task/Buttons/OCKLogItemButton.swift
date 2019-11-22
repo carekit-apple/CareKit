@@ -30,104 +30,91 @@
 
 import UIKit
 
-class OCKLogItemButton: OCKButton {
-    // MARK: Properties
+open class OCKLogItemButton: OCKAnimatedButton<OCKStackView> {
 
     private enum Constants {
-        static let spacing: CGFloat = 2
+        static let spacing: CGFloat = 3
     }
 
-    override var imageButton: OCKButton? { return _imageButton }
-    override var detailButton: OCKButton? { _detailButton }
-    override var titleButton: OCKButton? { _titleButton }
+    // MARK: Properties
 
-    private var imageButtonConstraint: NSLayoutConstraint?
-
-    private let _imageButton: OCKButton = {
-        let button = OCKButton()
-        let image = UIImage(systemName: "clock")
-        button.setImage(image, for: .normal)
-        button.imageView?.contentMode = .scaleAspectFit
-        button.isUserInteractionEnabled = false
-        button.contentHorizontalAlignment = .fill
-        return button
+    /// The icon on the leading end of the button.
+    public let imageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(systemName: "clock")
+        imageView.preferredSymbolConfiguration = .init(textStyle: .caption1)
+        return imageView
     }()
 
-    private let _titleButton: OCKButton = {
-        let button = OCKButton(titleTextStyle: .caption1, titleWeight: .regular)
-        button.isUserInteractionEnabled = false
-        button.sizesToFitTitleLabel = true
-        return button
+    /// Main content label.
+    public let titleLabel: OCKLabel = {
+        let label = OCKLabel(textStyle: .caption1, weight: .regular)
+        return label
     }()
 
-    private let _detailButton: OCKButton = {
-        let button = OCKButton(titleTextStyle: .caption1, titleWeight: .regular)
-        button.tintedTraits = [TintedTrait(trait: .titleColor, state: .normal)]
-        button.isUserInteractionEnabled = false
-        button.sizesToFitTitleLabel = true
-        return button
+    /// Tinted accessory label.
+    public let detailLabel: OCKLabel = {
+        let label = OCKLabel(textStyle: .caption1, weight: .regular)
+        return label
     }()
 
-    private let contentStackView: OCKStackView = {
-        let stackView = OCKStackView()
-        stackView.axis = .horizontal
+    /// Holds the main content in the button.
+    public let contentStackView: OCKStackView = {
+        let stackView = OCKStackView.horizontal()
         stackView.alignment = .center
         stackView.distribution = .fill
-        stackView.isUserInteractionEnabled = false
         return stackView
     }()
 
+    // MARK: - Life cycle
+
+    public init() {
+        super.init(contentView: contentStackView, handlesSelection: false)
+        setup()
+    }
+
+    public required init?(coder: NSCoder) {
+        super.init(contentView: contentStackView, handlesSelection: false)
+        setup()
+    }
+
     // MARK: Methods
 
-    override func setup() {
-        super.setup()
+    private func setup() {
         addSubviews()
         constrainSubviews()
         styleSubviews()
     }
 
     private func styleSubviews() {
-        contentStackView.setCustomSpacing(Constants.spacing, after: _imageButton)
+        contentStackView.setCustomSpacing(Constants.spacing, after: imageView)
     }
 
     private func addSubviews() {
         addSubview(contentStackView)
-        [_imageButton, _detailButton, _titleButton].forEach { contentStackView.addArrangedSubview($0) }
+        [imageView, detailLabel, titleLabel].forEach { contentStackView.addArrangedSubview($0) }
     }
 
     private func constrainSubviews() {
-        [_imageButton, contentStackView].forEach { $0?.translatesAutoresizingMaskIntoConstraints = false }
-
-        _detailButton.setContentHuggingPriority(.defaultHigh, for: .horizontal)
-        _titleButton.contentHorizontalAlignment = .left
-
-        imageButtonConstraint = _imageButton.heightAnchor.constraint(equalToConstant: 0)
-
-        NSLayoutConstraint.activate([
-            imageButtonConstraint!,
-            _imageButton.widthAnchor.constraint(equalTo: _imageButton.heightAnchor),
-
-            contentStackView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            contentStackView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            contentStackView.topAnchor.constraint(equalTo: layoutMarginsGuide.topAnchor),
-            contentStackView.bottomAnchor.constraint(equalTo: layoutMarginsGuide.bottomAnchor)
-        ])
+        [contentStackView].forEach { $0?.translatesAutoresizingMaskIntoConstraints = false }
+        detailLabel.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        imageView.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        NSLayoutConstraint.activate(
+            contentStackView.constraints(equalTo: self, directions: [.horizontal]) +
+            contentStackView.constraints(equalTo: layoutMarginsGuide, directions: [.vertical])
+        )
     }
 
-    override func setDetailColor(_ color: UIColor?, for state: UIControl.State) {
-        super.setDetailColor(color, for: state)
-        // match the detail image tint with the detail color
-        if state == .normal {
-            imageButton?.tintColor = color
-        }
-    }
-
-    override func styleDidChange() {
+    override open func styleDidChange() {
         super.styleDidChange()
-        let cachedStyle = style()
-        _titleButton.setTitleColor(cachedStyle.color.label, for: .normal)
-        imageButtonConstraint?.constant = cachedStyle.dimension.iconHeight4
-        contentStackView.setCustomSpacing(cachedStyle.dimension.directionalInsets1.top, after: _detailButton)
-        directionalLayoutMargins = cachedStyle.dimension.directionalInsets1
+        let style = self.style()
+        titleLabel.textColor = style.color.label
+        contentStackView.setCustomSpacing(style.dimension.directionalInsets1.top, after: detailLabel)
+        directionalLayoutMargins = style.dimension.directionalInsets1
+    }
+
+    override open func tintColorDidChange() {
+        super.tintColorDidChange()
+        detailLabel.textColor = tintColor
     }
 }

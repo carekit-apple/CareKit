@@ -42,7 +42,7 @@ extension Calendar {
     }
 
     /// Returns string representations of the weekdays, in the order the weekdays occur on the local calendar.
-    /// This differs with the Foundation `Calendar.varyShortWeekdaySymbols` in that the ordering is changed such
+    /// This differs with the Foundation `Calendar.veryShortWeekdaySymbols` in that the ordering is changed such
     /// that the first element of the array corresponds to the first weekday in the current locale, instead of Sunday.
     ///
     /// This method is required for handling certain regions in which the first day of the week is Monday.

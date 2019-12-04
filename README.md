@@ -45,7 +45,7 @@ The primary CareKit framework codebase supports iOS and requires Xcode 11.0 or n
 
 ### Installation (Option One): SPM
 
-CareKit can be installed via SPM. Create a new XCode project and navigate to `File > Swift Packages > Add Package Dependency`. Enter the url `https://github.com/carekit-apple/CareKit` and tap `Next`. Choose the master branch, and on the next screen, check off the packages as needed.
+CareKit can be installed via SPM. Create a new Xcode project and navigate to `File > Swift Packages > Add Package Dependency`. Enter the url `https://github.com/carekit-apple/CareKit` and tap `Next`. Choose the master branch, and on the next screen, check off the packages as needed.
 
 To add localized strings to your project, add the strings file to your project: [English Strings](CareKitUI/CareKitUI/Supporting%20Files/Localization/en.lproj)
 

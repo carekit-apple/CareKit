@@ -37,9 +37,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
 
-        let store = OCKStore(name: "carekit-catalog")
-        store.fillWithDummyData()
-        let rootViewController = RootViewController(store: store)
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let rootViewController = RootViewController(store: appDelegate.store)
         let navigationController = UINavigationController(rootViewController: rootViewController)
 
         if let windowScene = scene as? UIWindowScene {

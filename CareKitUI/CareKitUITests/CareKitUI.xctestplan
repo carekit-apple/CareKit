@@ -1,0 +1,29 @@
+{
+  "configurations" : [
+    {
+      "id" : "F686CBA9-D127-405A-9EE0-ADAD9E5BDD49",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false,
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:CareKitUI.xcodeproj",
+      "identifier" : "5174225A224185290054E97C",
+      "name" : "CareKitUI"
+    }
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:CareKitUI.xcodeproj",
+        "identifier" : "512B012D22C2F82900ABCB1D",
+        "name" : "CareKitUITests"
+      }
+    }
+  ],
+  "version" : 1
+}

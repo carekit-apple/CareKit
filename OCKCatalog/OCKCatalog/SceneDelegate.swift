@@ -38,7 +38,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
 
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        let rootViewController = RootViewController(store: appDelegate.store)
+        let rootViewController = RootViewController(storeManager: appDelegate.storeManager)
         let navigationController = UINavigationController(rootViewController: rootViewController)
 
         if let windowScene = scene as? UIWindowScene {

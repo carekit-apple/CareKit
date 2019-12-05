@@ -34,10 +34,10 @@ import UIKit
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-    let store: OCKStore = {
+    let storeManager: OCKSynchronizedStoreManager = {
         let store = OCKStore(name: "carekit-catalog")
         store.fillWithDummyData()
-        return store
+        return OCKSynchronizedStoreManager(wrapping: store)
     }()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {

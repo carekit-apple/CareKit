@@ -53,7 +53,13 @@ open class OCKCartesianChartViewSynchronizer: OCKChartViewSynchronizerProtocol {
 
     open func makeView() -> OCKCartesianChartView {
         let chartView = OCKCartesianChartView(type: plotType)
-        chartView.graphView.selectedIndex = Calendar.current.component(.weekday, from: selectedDate) - Calendar.current.firstWeekday
+        let currentWeekday = Calendar.current.component(.weekday, from: selectedDate)
+        let firstWeekday = Calendar.current.firstWeekday
+        var offset = (currentWeekday - 1) - (firstWeekday - 1)
+        if offset < 0 {
+            offset += 7
+        }
+        chartView.graphView.selectedIndex = offset
         chartView.graphView.horizontalAxisMarkers = Calendar.current.orderedWeekdaySymbolsVeryShort()
         return chartView
     }

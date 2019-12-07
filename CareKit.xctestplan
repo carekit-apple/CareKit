@@ -2,9 +2,92 @@
   "configurations" : [
     {
       "id" : "28C2AC89-B957-4FB0-9242-53AEB9E6D4B0",
-      "name" : "Configuration 1",
+      "name" : "Default",
       "options" : {
 
+      }
+    },
+    {
+      "id" : "42D7C666-B3E1-4F36-88FB-E0B87436BB05",
+      "name" : "Germany",
+      "options" : {
+        "language" : "de",
+        "locationScenario" : {
+          "identifier" : "London, England",
+          "referenceType" : "built-in"
+        },
+        "region" : "DE"
+      }
+    },
+    {
+      "id" : "76269B8E-AEA1-4864-AA9A-F583B2F54AF1",
+      "name" : "Africa",
+      "options" : {
+        "locationScenario" : {
+          "identifier" : "Johannesburg, South Africa",
+          "referenceType" : "built-in"
+        },
+        "region" : "EG"
+      }
+    },
+    {
+      "id" : "34F9B126-5A5C-4F0A-A861-84C9B2376FA2",
+      "name" : "Australia",
+      "options" : {
+        "language" : "en-AU",
+        "locationScenario" : {
+          "identifier" : "Sydney, Australia",
+          "referenceType" : "built-in"
+        },
+        "region" : "AU"
+      }
+    },
+    {
+      "id" : "05B1E279-40AF-49C6-8BAC-86779932468D",
+      "name" : "England",
+      "options" : {
+        "language" : "en-GB",
+        "locationScenario" : {
+          "identifier" : "London, England",
+          "referenceType" : "built-in"
+        },
+        "region" : "GB"
+      }
+    },
+    {
+      "id" : "F4D2A746-C1E8-4D5A-BCD7-EEEC3D73CEC5",
+      "name" : "Japan",
+      "options" : {
+        "language" : "ja",
+        "locationScenario" : {
+          "identifier" : "Tokyo, Japan",
+          "referenceType" : "built-in"
+        },
+        "region" : "JP"
+      }
+    },
+    {
+      "id" : "4DB57CAB-36AB-4D1A-8259-C918197191CE",
+      "name" : "Hong Kong",
+      "options" : {
+        "language" : "zh-HK",
+        "locationScenario" : {
+          "identifier" : "Hong Kong, China",
+          "referenceType" : "built-in"
+        },
+        "region" : "HK"
+      }
+    },
+    {
+      "id" : "2DEE87AE-1E91-4B64-BA06-8B37298B2A16",
+      "name" : "Mexico",
+      "options" : {
+        "language" : "es-419",
+        "locationScenario" : {
+          "identifier" : "Mexico City, Mexico",
+          "referenceType" : "built-in"
+        },
+        "region" : "MX"
       }
     }
   ],
@@ -19,7 +102,7 @@
         {
           "containerPath" : "container:CareKitCarePlanStore\/CareKitCarePlanStore.xcodeproj",
           "identifier" : "E784B8F72232EED600736CA5",
-          "name" : "CareKitCarePlanStore"
+          "name" : "CareKitStore"
         }
       ]
     },

@@ -34,6 +34,12 @@ import UIKit
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
+    let storeManager: OCKSynchronizedStoreManager = {
+        let store = OCKStore(name: "carekit-catalog")
+        store.fillWithDummyData()
+        return OCKSynchronizedStoreManager(wrapping: store)
+    }()
+
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         return true
     }

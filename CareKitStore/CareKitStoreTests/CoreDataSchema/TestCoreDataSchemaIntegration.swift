@@ -69,6 +69,7 @@ class TestCoreDataSchemaIntegration: XCTestCase {
         let outcome = OCKCDOutcome(context: store.context)
         outcome.taskOccurrenceIndex = 0
         outcome.task = task
+        outcome.date = Date()
 
         let value = OCKCDOutcomeValue(context: store.context)
         value.kind = "pulse"

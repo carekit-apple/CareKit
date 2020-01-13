@@ -237,6 +237,45 @@ class TestStoreTasks: XCTestCase {
         XCTAssert(updatedTask.previousVersionID == task.localDatabaseID)
     }
 
+    func testCanFetchEventsWhenCurrentTaskVersionStartsAtSameTimeOrEarlierThanThePreviousVersion() throws {
+        let thisMorning = Calendar.current.startOfDay(for: Date())
+        let aFewDaysAgo = Calendar.current.date(byAdding: .day, value: -4, to: thisMorning)!
+        let manyDaysAgo = Calendar.current.date(byAdding: .day, value: -10, to: thisMorning)!
+        let scheduleV1 = OCKSchedule.dailyAtTime(hour: 8, minutes: 0, start: manyDaysAgo, end: nil, text: nil)
+        let scheduleV2 = OCKSchedule.dailyAtTime(hour: 8, minutes: 0, start: aFewDaysAgo, end: nil, text: nil)
+        let scheduleV3 = OCKSchedule.dailyAtTime(hour: 8, minutes: 0, start: aFewDaysAgo, end: nil, text: nil)
+
+        var nausea = OCKTask(id: "nausea", title: "V1", carePlanID: nil, schedule: scheduleV1)
+        let v1 = try store.addTaskAndWait(nausea)
+        XCTAssert(v1.effectiveDate == scheduleV1.startDate())
+
+        nausea.title = "V2"
+        nausea.schedule = scheduleV2
+        nausea.effectiveDate = scheduleV2.startDate()
+        let v2 = try store.updateTaskAndWait(nausea)
+        XCTAssert(v2.effectiveDate == scheduleV2.startDate())
+
+        nausea.title = "V3"
+        nausea.schedule = scheduleV3
+        nausea.effectiveDate = scheduleV3.startDate()
+        let v3 = try store.updateTaskAndWait(nausea)
+        XCTAssert(v3.effectiveDate == scheduleV3.startDate())
+
+        let query = OCKEventQuery(dateInterval: DateInterval(start: manyDaysAgo, end: thisMorning))
+        let events = try store.fetchEventsAndWait(taskID: "nausea", query: query)
+        XCTAssert(events.count == 10, "Expected 10, but got \(events.count)")
+        XCTAssert(events.first?.task.title == "V1")
+        XCTAssert(events.last?.task.title == "V3")
+    }
+
+    func testCannotUpdateTaskIfItResultsInImplicitDataLoss() throws {
+        let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
+        let task = try store.addTaskAndWait(OCKTask(id: "meds", title: "Medication", carePlanID: nil, schedule: schedule))
+        let outcome = OCKOutcome(taskID: try task.getLocalID(), taskOccurrenceIndex: 5, values: [OCKOutcomeValue(1)])
+        try store.addOutcomesAndWait([outcome])
+        XCTAssertThrowsError(try store.updateTaskAndWait(task))
+    }
+
     func testUpdateFailsForUnsavedTasks() {
         let task = OCKTask(id: "meds", title: "Medication", carePlanID: nil, schedule: .mealTimesEachDay(start: Date(), end: nil))
         XCTAssertThrowsError(try store.updateTaskAndWait(task))

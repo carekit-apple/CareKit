@@ -105,6 +105,7 @@ extension OCKCoreDataTaskStoreProtocol {
             do {
                 let ids = tasks.map { $0.id }
                 try OCKCDTask.validateUpdateIdentifiers(ids, in: self.context)
+                try self.confirmUpdateWillNotCauseDataLoss(tasks: tasks)
                 let updatedTasks = try self.performVersionedUpdate(values: tasks, addNewVersion: self.createTask)
                 try self.context.save()
                 let tasks = updatedTasks.map(self.makeTask)
@@ -226,6 +227,46 @@ extension OCKCoreDataTaskStoreProtocol {
         let identifier = HKQuantityTypeIdentifier(rawValue: linkage.quantityIdentifier)
         let unit = HKUnit(from: linkage.unitString)
         return OCKHealthKitLinkage(quantityIdentifier: identifier, quantityType: quantity, unit: unit)
+    }
+
+    // Ensure that new versions of tasks do not overwrite regions of previous
+    // versions that already have outcomes saved to them.
+    //
+    // |<------------- Time Line --------------->|
+    //  TaskV1 ------x------------------->
+    //                     V2 ---------->
+    //              V3------------------>
+    //
+    // Throws an error when updating to V3 from V2 if V1 has outcomes after `x`.
+    // Throws an error when updating to V3 from V2 if V2 has any outcomes.
+    // Does not trow when updating to V3 from V2 if V1 has outcomes before `x`.
+    private func confirmUpdateWillNotCauseDataLoss(tasks: [Task]) throws {
+        let heads: [OCKCDTask] = OCKCDTask.fetchHeads(ids: tasks.map { $0.id }, in: context)
+        for task in heads {
+
+            // For each task, gather all outcomes
+            var allOutcomes: Set<OCKCDOutcome> = []
+            var currentVersion: OCKCDTask? = task
+            while let version = currentVersion {
+                allOutcomes = allOutcomes.union(version.outcomes)
+                currentVersion = version.previous as? OCKCDTask
+            }
+
+            // Get the date highest date on which an outcome exists.
+            // If there are no outcomes, then any update is safe.
+            guard let latestDate = allOutcomes.map({ $0.date }).max()
+                else { continue }
+
+            if task.effectiveDate <= latestDate {
+                throw OCKStoreError.updateFailed(reason: """
+                    Updating task \(task.id) failed. The new version of the task takes effect on \(task.effectiveDate), but an outcome for a
+                    previous version of the task exists on \(latestDate). To prevent implicit data loss, you must explicitly delete all outcomes
+                    that exist after the new version's `effectiveDate` before applying the update, or move the new version's `effectiveDate` to
+                    some date past the latest outcome's date.
+                    """
+                )
+            }
+        }
     }
 
     func buildPredicate(for query: OCKTaskQuery) throws -> NSPredicate {

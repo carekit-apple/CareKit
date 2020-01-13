@@ -57,6 +57,7 @@ extension OCKStore {
                           completion: ((Result<[OCKOutcome], OCKStoreError>) -> Void)? = nil) {
         context.perform {
             do {
+                try self.confirmOutcomesAreInValidRegionOfTaskVersionChain(outcomes)
                 let persistableOutcomes = outcomes.map(self.createOutcome)
                 try self.context.save()
                 let updatedOutcomes = try persistableOutcomes.map(self.makeOutcome)
@@ -75,26 +76,29 @@ extension OCKStore {
 
     open func updateOutcomes(_ outcomes: [OCKOutcome], callbackQueue: DispatchQueue = .main,
                              completion: ((Result<[OCKOutcome], OCKStoreError>) -> Void)? = nil) {
-        do {
-            let objectIDs = try retrieveObjectIDs(for: outcomes)
-            let predicate = NSPredicate(format: "self IN %@", objectIDs)
-            let currentOutcomes = OCKCDOutcome.fetchFromStore(in: context, where: predicate)
-            for (outcomeIndex, objectID) in objectIDs.enumerated() {
-                guard let index = currentOutcomes.firstIndex(where: { $0.objectID == objectID }) else {
-                    throw OCKStoreError.updateFailed(reason: "No OCKOutcome with matching ID could be found: \(objectID)")
+        context.perform {
+            do {
+                try self.confirmOutcomesAreInValidRegionOfTaskVersionChain(outcomes)
+                let objectIDs = try self.retrieveObjectIDs(for: outcomes)
+                let predicate = NSPredicate(format: "self IN %@", objectIDs)
+                let currentOutcomes = OCKCDOutcome.fetchFromStore(in: self.context, where: predicate)
+                for (outcomeIndex, objectID) in objectIDs.enumerated() {
+                    guard let index = currentOutcomes.firstIndex(where: { $0.objectID == objectID }) else {
+                        throw OCKStoreError.updateFailed(reason: "No OCKOutcome with matching ID could be found: \(objectID)")
+                    }
+                    self.copyOutcome(outcomes[outcomeIndex], to: currentOutcomes[index])
                 }
-                copyOutcome(outcomes[outcomeIndex], to: currentOutcomes[index])
-            }
-            try context.save()
-            let updatedOutcomes = try currentOutcomes.map(makeOutcome)
-            callbackQueue.async {
-                self.outcomeDelegate?.outcomeStore(self, didUpdateOutcomes: updatedOutcomes)
-                completion?(.success(updatedOutcomes))
-            }
-        } catch {
-            context.rollback()
-            callbackQueue.async {
-                completion?(.failure(.updateFailed(reason: "Failed to update OCKOutcomes: [\(outcomes)]. \(error.localizedDescription)")))
+                try self.context.save()
+                let updatedOutcomes = try currentOutcomes.map(self.makeOutcome)
+                callbackQueue.async {
+                    self.outcomeDelegate?.outcomeStore(self, didUpdateOutcomes: updatedOutcomes)
+                    completion?(.success(updatedOutcomes))
+                }
+            } catch {
+                self.context.rollback()
+                callbackQueue.async {
+                    completion?(.failure(.updateFailed(reason: "Failed to update OCKOutcomes: [\(outcomes)]. \(error.localizedDescription)")))
+                }
             }
         }
     }
@@ -128,6 +132,34 @@ extension OCKStore {
 
     // MARK: Private
 
+    // Confirms that outcomes cannot be added to past versions of a task in regions covered by a newer version.
+    //
+    // |<------------- Time Line --------------->|
+    //  TaskV1 a-------b------------------->
+    //                     V2 ---------->
+    //                V3------------------>
+    //
+    // Throws an error if the outcome is added to V1 outside the region between `a` and `b`.
+    // Throws an error if the outcome is added to V2 anywhere because V2 is fully eclipsed.
+    // Does not throw an error for outcomes to added to V3 because V3 is the newest version.
+    private func confirmOutcomesAreInValidRegionOfTaskVersionChain(_ outcomes: [Outcome]) throws {
+        for outcome in outcomes {
+            let taskID = try objectID(for: outcome.taskID)
+            guard var task = context.object(with: taskID) as? OCKCDTask else { fatalError("taskID pointed to a non-task class") }
+            let schedule = makeSchedule(elements: Array(task.scheduleElements))
+            while let nextVersion = task.next as? OCKCDTask {
+                let outcomeDate = schedule.event(forOccurrenceIndex: outcome.taskOccurrenceIndex)!.start
+                if nextVersion.effectiveDate <= outcomeDate {
+                    throw OCKStoreError.invalidValue(reason: """
+                        Tried to place an outcome in a date range overshadowed by a future version of task.
+                        The outcome is dated \(outcomeDate), but a newer version of the task starts on \(nextVersion.effectiveDate).
+                        """)
+                }
+                task = nextVersion
+            }
+        }
+    }
+
     private func createOutcome(from outcome: OCKOutcome) -> OCKCDOutcome {
         let persistableOutcome = OCKCDOutcome(context: context)
         copyOutcome(outcome, to: persistableOutcome)
@@ -140,7 +172,7 @@ extension OCKStore {
         persistableOutcome.taskOccurrenceIndex = outcome.taskOccurrenceIndex
         if let task: OCKCDTask = try? fetchObject(havingLocalID: outcome.taskID) {
             let schedule = makeSchedule(elements: Array(task.scheduleElements))
-            persistableOutcome.date = schedule.event(forOccurrenceIndex: outcome.taskOccurrenceIndex)?.start
+            persistableOutcome.date = schedule.event(forOccurrenceIndex: outcome.taskOccurrenceIndex)!.start
             persistableOutcome.task = task
         }
     }

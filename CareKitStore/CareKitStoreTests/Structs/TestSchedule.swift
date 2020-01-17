@@ -57,6 +57,17 @@ class TestSchedule: XCTestCase {
         XCTAssert(events[2].occurrence == 2)
     }
 
+    func testAllDayEventsCapturedByEventsBetweenDates() {
+         let morning = Calendar.current.startOfDay(for: Date())
+         let breakfast = Calendar.current.date(byAdding: .hour, value: 7, to: morning)!
+         let lunch = Calendar.current.date(byAdding: .hour, value: 12, to: morning)!
+         let dinner = Calendar.current.date(byAdding: .hour, value: 18, to: morning)!
+         let allDay = OCKScheduleElement(start: breakfast, end: nil, interval: DateComponents(day: 1), text: "Daily", duration: .allDay)
+         let schedule = OCKSchedule(composing: [allDay])
+         let events = schedule.events(from: lunch, to: dinner)
+         XCTAssert(events.count == 1, "Expected 1 all day event, but got \(events.count)")
+     }
+
     func testWeeklySchedule() {
         let schedule = OCKSchedule.weeklyAtTime(weekday: 1, hours: 0, minutes: 0, start: Date(), end: nil, targetValues: [], text: nil)
         for index in 0..<5 {

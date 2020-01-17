@@ -94,7 +94,12 @@ public struct OCKSchedule: Codable, Equatable {
         for index in 0..<allEvents.count {
             allEvents[index] = allEvents[index].changing(occurrenceIndex: index)
         }
-        return allEvents.filter { $0.start + $0.element.duration.seconds >= start }
+        return allEvents.filter { event in
+            if event.element.duration == .allDay {
+                return event.start >= Calendar.current.startOfDay(for: start)
+            }
+            return event.start + event.element.duration.seconds >= start
+        }
     }
 
     /// Create a new schedule by shifting this schedule.

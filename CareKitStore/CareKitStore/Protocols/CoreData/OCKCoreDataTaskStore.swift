@@ -257,7 +257,10 @@ extension OCKCoreDataTaskStoreProtocol {
             guard let latestDate = allOutcomes.map({ $0.date }).max()
                 else { continue }
 
-            if task.effectiveDate <= latestDate {
+            guard let proposedUpdate = tasks.first(where: { $0.id == task.id })
+                else { fatalError("Fetched an OCKCDTask for which an update was not proposed.") }
+
+            if proposedUpdate.effectiveDate <= latestDate {
                 throw OCKStoreError.updateFailed(reason: """
                     Updating task \(task.id) failed. The new version of the task takes effect on \(task.effectiveDate), but an outcome for a
                     previous version of the task exists on \(latestDate). To prevent implicit data loss, you must explicitly delete all outcomes

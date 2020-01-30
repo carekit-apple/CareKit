@@ -276,6 +276,15 @@ class TestStoreTasks: XCTestCase {
         XCTAssertThrowsError(try store.updateTaskAndWait(task))
     }
 
+    func testCanUpdateTaskWithOutcomesIfDoesNotCauseDataLoss() throws {
+        let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
+        var task = try store.addTaskAndWait(OCKTask(id: "meds", title: "Medication", carePlanID: nil, schedule: schedule))
+        let outcome = OCKOutcome(taskID: try task.getLocalID(), taskOccurrenceIndex: 0, values: [OCKOutcomeValue(1)])
+        try store.addOutcomesAndWait([outcome])
+        task.effectiveDate = task.schedule[5].start
+        XCTAssertNoThrow(try store.updateTaskAndWait(task))
+    }
+
     func testUpdateFailsForUnsavedTasks() {
         let task = OCKTask(id: "meds", title: "Medication", carePlanID: nil, schedule: .mealTimesEachDay(start: Date(), end: nil))
         XCTAssertThrowsError(try store.updateTaskAndWait(task))

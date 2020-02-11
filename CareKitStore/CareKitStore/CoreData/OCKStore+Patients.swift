@@ -160,7 +160,7 @@ extension OCKStore {
         }
 
         if !query.versionIDs.isEmpty {
-            let versionPredicate = NSPredicate(format: "%self IN %@", try query.versionIDs.map(objectID))
+            let versionPredicate = NSPredicate(format: "self IN %@", try query.versionIDs.map(objectID))
             predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, versionPredicate])
         }
 

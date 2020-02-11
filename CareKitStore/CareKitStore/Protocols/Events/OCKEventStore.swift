@@ -154,6 +154,13 @@ public extension OCKReadOnlyEventStore where Task: OCKAnyVersionableTask, Outcom
             case .failure(let error): completion(.failure(error))
             case .success(let outcomes):
                 let events = self.join(task: task, with: outcomes, and: scheduleEvents) + previousEvents
+
+                // If the query doesn't go back in time beyond the start of this version of the task, we're done.
+                guard query.dateInterval.start < task.effectiveDate else {
+                    completion(.success(events))
+                    return
+                }
+
                 self.fetchNextValidPreviousVersion(for: task, callbackQueue: callbackQueue) { result in
                     switch result {
                     case .failure(let error): completion(.failure(error))

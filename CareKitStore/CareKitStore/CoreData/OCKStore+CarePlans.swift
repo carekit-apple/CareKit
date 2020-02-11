@@ -68,7 +68,7 @@ extension OCKStore {
         context.perform {
             do {
                 try OCKCDCarePlan.validateNewIDs(plans.map { $0.id }, in: self.context)
-                let persistablePlans = plans.map (self.createCarePlan)
+                let persistablePlans = plans.map(self.createCarePlan)
                 try self.context.save()
                 let addedPlans = persistablePlans.map(self.makePlan)
                 callbackQueue.async {
@@ -150,9 +150,7 @@ extension OCKStore {
     }
 
     private func buildPredicate(for query: OCKCarePlanQuery) throws -> NSPredicate {
-        var predicate = NSPredicate(value: true)
-        let notDeletedPredicate = NSPredicate(format: "%K == nil", #keyPath(OCKCDVersionedObject.deletedDate))
-        predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, notDeletedPredicate])
+        var predicate = OCKCDVersionedObject.notDeletedPredicate
 
         if let interval = query.dateInterval {
             let intervalPredicate = OCKCDVersionedObject.newestVersionPredicate(in: interval)
@@ -165,7 +163,7 @@ extension OCKStore {
         }
 
         if !query.versionIDs.isEmpty {
-            let versionPredicate = NSPredicate(format: "self IN %@", try query.versionIDs.map(objectID(for:)))
+            let versionPredicate = NSPredicate(format: "self IN %@", try query.versionIDs.map(objectID))
             predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, versionPredicate])
         }
 

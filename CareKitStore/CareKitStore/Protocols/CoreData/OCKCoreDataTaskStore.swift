@@ -273,7 +273,7 @@ extension OCKCoreDataTaskStoreProtocol {
     }
 
     func buildPredicate(for query: OCKTaskQuery) throws -> NSPredicate {
-        var predicate = NSPredicate(format: "%K == nil", #keyPath(OCKCDVersionedObject.deletedDate)) // Not deleted
+        var predicate = OCKCDVersionedObject.notDeletedPredicate
 
         if let interval = query.dateInterval {
             let headPredicate = OCKCDVersionedObject.newestVersionPredicate(in: interval)

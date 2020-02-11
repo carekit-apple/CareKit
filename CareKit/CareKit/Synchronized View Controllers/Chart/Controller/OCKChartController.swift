@@ -46,8 +46,8 @@ open class OCKChartController: OCKChartControllerProtocol, ObservableObject {
 
     // MARK: Properties
 
-    private let weekOfDate: Date
-    private var subscription: AnyCancellable?
+    private let eventQuery: OCKEventQuery
+    private var cancellables: Set<AnyCancellable> = Set()
 
     // MARK: - Life Cycle
 
@@ -55,7 +55,7 @@ open class OCKChartController: OCKChartControllerProtocol, ObservableObject {
     /// - Parameter weekOfDate: A date in the week of the insights range.
     /// - Parameter storeManager: Wraps the store that contains the insight data.
     public required init(weekOfDate: Date, storeManager: OCKSynchronizedStoreManager) {
-        self.weekOfDate = weekOfDate
+        self.eventQuery = OCKEventQuery(dateInterval: Calendar.current.dateIntervalOfWeek(for: weekOfDate))
         self.storeManager = storeManager
         self.objectWillChange = .init([])
     }
@@ -67,44 +67,31 @@ open class OCKChartController: OCKChartControllerProtocol, ObservableObject {
     ///   - configurations: An array of configurations to be plotted.
     open func fetchAndObserveInsights(forConfigurations configurations: [OCKDataSeriesConfiguration],
                                       errorHandler: ((Error) -> Void)? = nil) {
-
-        // Fetch tasks, then fetch events for the tasks and set the view model
-        let eventQuery = OCKEventQuery(dateInterval: Calendar.current.dateIntervalOfWeek(for: weekOfDate))
-        fetchTasks(eventQuery: eventQuery, configurations: configurations, errorHandler: errorHandler)
-    }
-
-    private func fetchTasks(eventQuery: OCKEventQuery, configurations: [OCKDataSeriesConfiguration],
-                            errorHandler: ((Error) -> Void)? = nil) {
-
-        // Build up the task query
-        var taskQuery = OCKTaskQuery(for: Date())
-        taskQuery.ids = configurations.map { $0.taskID }
-
-        storeManager.store.fetchAnyTasks(query: taskQuery, callbackQueue: .main) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let tasks):
-
-                // Fetch events and set the view model. Also set the view model when the events change
-                self.refetchEvents(eventQuery: eventQuery, configurations: configurations) { result in
-                    if case let .failure(error) = result {
-                        errorHandler?(error)
+        cancellables = Set()
+        configurations.forEach { config in
+            store.fetchAnyEvents(taskID: config.taskID, query: eventQuery, callbackQueue: .main) { result in
+                switch result {
+                case let .failure(error): errorHandler?(error)
+                case let .success(events):
+                    self.refetchEvents(configurations: configurations, completion: nil)
+                    events.forEach { event in
+                        self.storeManager
+                            .publisher(forEvent: event, categories: [.add, .update, .delete])
+                            .sink(receiveValue: { _ in
+                                self.refetchEvents(configurations: configurations) { result in
+                                    if case let .failure(error) = result {
+                                        errorHandler?(error)
+                                    }
+                                }
+                            })
+                            .store(in: &self.cancellables)
                     }
                 }
-
-                self.subscribeTo(tasks: tasks, eventQuery: eventQuery, configurations: configurations) { result in
-                    if case let .failure(error) = result {
-                        errorHandler?(error)
-                    }
-                }
-
-            case .failure(let error):
-                errorHandler?(error)
             }
         }
     }
 
-    private func refetchEvents(eventQuery: OCKEventQuery, configurations: [OCKDataSeriesConfiguration],
+    private func refetchEvents(configurations: [OCKDataSeriesConfiguration],
                                completion: OCKResultClosure<[OCKDataSeries]>?) {
         var allDataSeries = [OCKDataSeries]()
         let group = DispatchGroup()
@@ -136,27 +123,6 @@ open class OCKChartController: OCKChartControllerProtocol, ObservableObject {
             guard let self = self else { return }
             self.objectWillChange.value = allDataSeries
             completion?(.success(allDataSeries))
-        }
-    }
-
-    private func subscribeTo(tasks: [OCKAnyTask],
-                             eventQuery: OCKEventQuery, configurations: [OCKDataSeriesConfiguration],
-                             completion: OCKResultClosure<[OCKDataSeries]>?) {
-        // Set the view model when the tasks change
-        let taskSubscriptions = tasks.map { task in
-            return storeManager.publisher(forTask: task, categories: [.update, .delete], fetchImmediately: false)
-                .sink { _ in self.refetchEvents(eventQuery: eventQuery, configurations: configurations, completion: completion) }
-        }
-
-        // Set the view model when the events for the tasks change
-        let eventSubscriptions = tasks.map { task in
-            return self.storeManager.publisher(forEventsBelongingToTask: task, categories: [.update, .add, .delete])
-                .sink { _ in self.refetchEvents(eventQuery: eventQuery, configurations: configurations, completion: completion) }
-        }
-
-        subscription = AnyCancellable {
-            taskSubscriptions.forEach { $0.cancel() }
-            eventSubscriptions.forEach { $0.cancel() }
         }
     }
 }

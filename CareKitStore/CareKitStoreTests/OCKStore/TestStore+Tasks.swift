@@ -285,6 +285,23 @@ class TestStoreTasks: XCTestCase {
         XCTAssertNoThrow(try store.updateTaskAndWait(task))
     }
 
+    func testQueryUpdatedTasksEvents() throws {
+        let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil) // 7:30AM, 12:00PM, 5:30PM
+        let original = try store.addTaskAndWait(OCKTask(id: "meds", title: "Original", carePlanID: nil, schedule: schedule))
+
+        var updated = original
+        updated.effectiveDate = schedule[5].start // 5:30PM tomorrow
+        updated.title = "Updated"
+        updated = try store.updateTaskAndWait(updated)
+        let query = OCKEventQuery(for: schedule[5].start) // 0:00AM - 23:59.99PM tomorrow
+        let events = try store.fetchEventsAndWait(taskID: "meds", query: query)
+
+        XCTAssert(events.count == 3)
+        XCTAssert(events[0].task.localDatabaseID == original.localDatabaseID)
+        XCTAssert(events[1].task.localDatabaseID == original.localDatabaseID)
+        XCTAssert(events[2].task.localDatabaseID == updated.localDatabaseID)
+    }
+
     func testUpdateFailsForUnsavedTasks() {
         let task = OCKTask(id: "meds", title: "Medication", carePlanID: nil, schedule: .mealTimesEachDay(start: Date(), end: nil))
         XCTAssertThrowsError(try store.updateTaskAndWait(task))
@@ -325,6 +342,18 @@ class TestStoreTasks: XCTestCase {
         let fetched = try store.fetchTasksAndWait(query: query)
         XCTAssert(fetched.count == 1, "Expected to get 1 task, but got \(fetched.count)")
         XCTAssert(fetched.first?.title == taskA.title)
+    }
+
+    func testTaskQueryStartingExactlyOnEffectiveDateOfNewVersion() throws {
+        let schedule = OCKSchedule.dailyAtTime(hour: 0, minutes: 0, start: Date(), end: nil, text: nil)
+        let query = OCKTaskQuery(dateInterval: DateInterval(start: schedule[5].start, end: schedule[5].end))
+
+        var task = try store.addTaskAndWait(OCKTask(id: "meds", title: "Medication", carePlanID: nil, schedule: schedule))
+        task.effectiveDate = task.schedule[5].start
+        task = try store.updateTaskAndWait(task)
+
+        let fetched = try store.fetchTasksAndWait(query: query)
+        XCTAssert(fetched.first == task)
     }
 
     func testTaskQuerySpanningVersionsReturnsNewestVersionOnly() throws {

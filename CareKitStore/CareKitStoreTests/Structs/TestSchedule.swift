@@ -58,15 +58,15 @@ class TestSchedule: XCTestCase {
     }
 
     func testAllDayEventsCapturedByEventsBetweenDates() {
-         let morning = Calendar.current.startOfDay(for: Date())
-         let breakfast = Calendar.current.date(byAdding: .hour, value: 7, to: morning)!
-         let lunch = Calendar.current.date(byAdding: .hour, value: 12, to: morning)!
-         let dinner = Calendar.current.date(byAdding: .hour, value: 18, to: morning)!
-         let allDay = OCKScheduleElement(start: breakfast, end: nil, interval: DateComponents(day: 1), text: "Daily", duration: .allDay)
-         let schedule = OCKSchedule(composing: [allDay])
-         let events = schedule.events(from: lunch, to: dinner)
-         XCTAssert(events.count == 1, "Expected 1 all day event, but got \(events.count)")
-     }
+        let morning = Calendar.current.startOfDay(for: Date())
+        let breakfast = Calendar.current.date(byAdding: .hour, value: 7, to: morning)!
+        let lunch = Calendar.current.date(byAdding: .hour, value: 12, to: morning)!
+        let dinner = Calendar.current.date(byAdding: .hour, value: 18, to: morning)!
+        let allDay = OCKScheduleElement(start: breakfast, end: nil, interval: DateComponents(day: 1), text: "Daily", duration: .allDay)
+        let schedule = OCKSchedule(composing: [allDay])
+        let events = schedule.events(from: lunch, to: dinner)
+        XCTAssert(events.count == 1, "Expected 1 all day event, but got \(events.count)")
+    }
 
     func testWeeklySchedule() {
         let schedule = OCKSchedule.weeklyAtTime(weekday: 1, hours: 0, minutes: 0, start: Date(), end: nil, targetValues: [], text: nil)
@@ -179,6 +179,14 @@ class TestSchedule: XCTestCase {
         XCTAssert(events[0].occurrence == 3)
         XCTAssert(events[1].occurrence == 4)
         XCTAssert(events[2].occurrence == 5)
+    }
+
+    func testScheduleIntervalsHaveInclusiveLowerBoundAndExclusiveUpperBound() {
+        let element = OCKScheduleElement(start: Date(), end: nil, interval: DateComponents(day: 1), text: nil, targetValues: [], duration: .allDay)
+        let schedule = OCKSchedule(composing: [element])
+        let events = schedule.events(from: schedule[1].start, to: schedule[1].end)
+        XCTAssert(events.count == 1)
+        XCTAssert(events.first?.occurrence == 1)
     }
 
     // Measure how long it takes to generate 10 years worth of events for a highly complex schedule with hourly events.

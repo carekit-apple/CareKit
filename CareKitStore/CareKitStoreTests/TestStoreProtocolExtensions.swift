@@ -217,6 +217,20 @@ class TestStoreProtocolExtensions: XCTestCase {
         XCTAssert(events.first?.task.title == versionA.title)
     }
 
+    func testFetchEventsReturnsOnlyTheNewerOfTwoEventsWhenTwoVersionsOfATaskHaveEventsAtQueryStart() throws {
+        let element = OCKScheduleElement(start: Date(), end: nil, interval: DateComponents(day: 1),
+                                         text: nil, targetValues: [], duration: .allDay)
+        let schedule = OCKSchedule(composing: [element])
+        let versionA = OCKTask(id: "123", title: "A", carePlanID: nil, schedule: schedule)
+        try store.addTaskAndWait(versionA)
+        var versionB = OCKTask(id: "123", title: "B", carePlanID: nil, schedule: schedule)
+        versionB.effectiveDate = schedule[4].start
+        try store.updateTaskAndWait(versionB)
+        let events = try store.fetchEventsAndWait(taskID: "123", query: .init(for: schedule[4].start))
+        XCTAssert(events.count == 1, "Expected 1, but got \(events.count)")
+        XCTAssert(events.first?.task.title == "B")
+    }
+
     // MARK: Adherence and Insights
 
     func testFetchAdherenceAggregatesEventsAcrossTasks() throws {

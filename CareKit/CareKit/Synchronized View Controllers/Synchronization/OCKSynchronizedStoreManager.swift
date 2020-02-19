@@ -41,7 +41,7 @@ OCKPatientStoreDelegate, OCKCarePlanStoreDelegate, OCKContactStoreDelegate, OCKT
     public let store: OCKAnyStoreProtocol
 
     internal lazy var subject = PassthroughSubject<OCKStoreNotification, Never>()
-    internal private (set) lazy var notificationPublisher = subject.share()
+    public private (set) lazy var notificationPublisher = subject.share().eraseToAnyPublisher()
 
     /// Initialize by wrapping a store.
     ///

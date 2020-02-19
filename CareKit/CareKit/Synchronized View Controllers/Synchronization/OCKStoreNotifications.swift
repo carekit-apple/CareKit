@@ -31,40 +31,40 @@
 import CareKitStore
 import Foundation
 
-protocol OCKStoreNotification {}
+public protocol OCKStoreNotification {}
 
-enum OCKStoreNotificationCategory {
+public enum OCKStoreNotificationCategory {
     case add
     case update
     case delete
 }
 
-struct OCKPatientNotification: OCKStoreNotification {
-    let patient: OCKAnyPatient
-    let category: OCKStoreNotificationCategory
-    let storeManager: OCKSynchronizedStoreManager
+public struct OCKPatientNotification: OCKStoreNotification {
+    public let patient: OCKAnyPatient
+    public let category: OCKStoreNotificationCategory
+    public let storeManager: OCKSynchronizedStoreManager
 }
 
-struct OCKCarePlanNotification: OCKStoreNotification {
-    let carePlan: OCKAnyCarePlan
-    let category: OCKStoreNotificationCategory
-    let storeManager: OCKSynchronizedStoreManager
+public struct OCKCarePlanNotification: OCKStoreNotification {
+    public let carePlan: OCKAnyCarePlan
+    public let category: OCKStoreNotificationCategory
+    public let storeManager: OCKSynchronizedStoreManager
 }
 
-struct OCKContactNotification: OCKStoreNotification {
-    let contact: OCKAnyContact
-    let category: OCKStoreNotificationCategory
-    let storeManager: OCKSynchronizedStoreManager
+public struct OCKContactNotification: OCKStoreNotification {
+    public let contact: OCKAnyContact
+    public let category: OCKStoreNotificationCategory
+    public let storeManager: OCKSynchronizedStoreManager
 }
 
-struct OCKTaskNotification: OCKStoreNotification {
-    let task: OCKAnyTask
-    let category: OCKStoreNotificationCategory
-    let storeManager: OCKSynchronizedStoreManager
+public struct OCKTaskNotification: OCKStoreNotification {
+    public let task: OCKAnyTask
+    public let category: OCKStoreNotificationCategory
+    public let storeManager: OCKSynchronizedStoreManager
 }
 
-struct OCKOutcomeNotification: OCKStoreNotification {
-    let outcome: OCKAnyOutcome
-    let category: OCKStoreNotificationCategory
-    let storeManager: OCKSynchronizedStoreManager
+public struct OCKOutcomeNotification: OCKStoreNotification {
+    public let outcome: OCKAnyOutcome
+    public let category: OCKStoreNotificationCategory
+    public let storeManager: OCKSynchronizedStoreManager
 }

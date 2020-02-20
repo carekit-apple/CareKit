@@ -110,6 +110,10 @@ UIPageViewControllerDataSource, UIPageViewControllerDelegate {
 
     // MARK: - Properties
 
+    open func selectDate(_ date: Date, animated: Bool) {
+        calendarWeekPageViewController.selectDate(date, animated: animated)
+    }
+    
     override open func viewSafeAreaInsetsDidChange() {
         updateScrollViewInsets()
     }

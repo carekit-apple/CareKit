@@ -43,7 +43,10 @@ extension OCKStore {
                     fetchRequest.sortDescriptors = self.buildSortDescriptors(for: query)
                 }
 
-                let outcomes = try objects.map(self.makeOutcome)
+                let outcomes = try objects
+                    .map(self.makeOutcome)
+                    .filter({ $0.matches(tags: query.tags) })
+
                 callbackQueue.async { completion(.success(outcomes)) }
             } catch {
                 self.context.rollback()
@@ -148,11 +151,11 @@ extension OCKStore {
             guard var task = context.object(with: taskID) as? OCKCDTask else { fatalError("taskID pointed to a non-task class") }
             let schedule = makeSchedule(elements: Array(task.scheduleElements))
             while let nextVersion = task.next as? OCKCDTask {
-                let outcomeDate = schedule.event(forOccurrenceIndex: outcome.taskOccurrenceIndex)!.start
-                if nextVersion.effectiveDate <= outcomeDate {
+                let eventDate = schedule.event(forOccurrenceIndex: outcome.taskOccurrenceIndex)!.start
+                if nextVersion.effectiveDate <= eventDate {
                     throw OCKStoreError.invalidValue(reason: """
                         Tried to place an outcome in a date range overshadowed by a future version of task.
-                        The outcome is dated \(outcomeDate), but a newer version of the task starts on \(nextVersion.effectiveDate).
+                        The event for the outcome is dated \(eventDate), but a newer version of the task starts on \(nextVersion.effectiveDate).
                         """)
                 }
                 task = nextVersion
@@ -224,10 +227,6 @@ extension OCKStore {
 
         if !query.groupIdentifiers.isEmpty {
             predicate = predicate.including(groupIdentifiers: query.groupIdentifiers)
-        }
-
-        if !query.tags.isEmpty {
-            predicate = predicate.including(tags: query.tags)
         }
 
         return predicate

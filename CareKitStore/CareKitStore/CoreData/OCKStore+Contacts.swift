@@ -43,7 +43,10 @@ extension OCKStore {
                     fetchRequest.sortDescriptors = self.buildSortDescriptors(for: query)
                 }
 
-                let contacts = persistedContacts.map(self.makeContact)
+                let contacts = persistedContacts
+                    .map(self.makeContact)
+                    .filter({ $0.matches(tags: query.tags) })
+
                 callbackQueue.async { completion(.success(contacts)) }
             } catch {
                 callbackQueue.async { completion(.failure(.fetchFailed(reason: "Failed to fetch contacts. Error: \(error.localizedDescription)"))) }
@@ -225,10 +228,6 @@ extension OCKStore {
 
         if !query.groupIdentifiers.isEmpty {
             predicate = predicate.including(groupIdentifiers: query.groupIdentifiers)
-        }
-
-        if !query.tags.isEmpty {
-            predicate = predicate.including(tags: query.tags)
         }
 
         return predicate

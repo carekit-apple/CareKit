@@ -95,9 +95,4 @@ internal extension NSPredicate {
         let groupPredicate = NSPredicate(format: "%K IN %@", #keyPath(OCKCDObject.groupIdentifier), groupIdentifiers)
         return NSCompoundPredicate(andPredicateWithSubpredicates: [self, groupPredicate])
     }
-
-    func including(tags: [String]) -> NSPredicate {
-        let tagsPredicate = NSPredicate(format: "SOME %K IN %@", #keyPath(OCKCDObject.tags), tags)
-        return NSCompoundPredicate(andPredicateWithSubpredicates: [self, tagsPredicate])
-    }
 }

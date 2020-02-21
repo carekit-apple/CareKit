@@ -54,7 +54,10 @@ extension OCKStore {
                     fetchRequest.sortDescriptors = self.buildSortDescriptors(from: query)
                 }
 
-                let plans = persistedPlans.map(self.makePlan)
+                let plans = persistedPlans
+                    .map(self.makePlan)
+                    .filter({ $0.matches(tags: query.tags) })
+
                 callbackQueue.async { completion(.success(plans)) }
             } catch {
                 self.context.rollback()
@@ -189,10 +192,6 @@ extension OCKStore {
 
         if !query.groupIdentifiers.isEmpty {
             predicate = predicate.including(groupIdentifiers: query.groupIdentifiers)
-        }
-
-        if !query.tags.isEmpty {
-            predicate = predicate.including(tags: query.tags)
         }
 
         return predicate

@@ -75,7 +75,7 @@ class OCKCDVersionedObject: OCKCDObject, OCKCDManageable {
     static func headerPredicate() -> NSPredicate {
         return NSCompoundPredicate(andPredicateWithSubpredicates: [
             notDeletedPredicate,
-            NSPredicate(format: "%K == nil", #keyPath(OCKCDVersionedObject.deletedDate))
+            NSPredicate(format: "%K == nil", #keyPath(OCKCDVersionedObject.next))
         ])
     }
 

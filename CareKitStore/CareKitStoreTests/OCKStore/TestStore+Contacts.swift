@@ -234,12 +234,33 @@ class TestStoreContacts: XCTestCase {
         XCTAssertThrowsError(try store.updateContactAndWait(patient))
     }
 
-    func testContactQueryOnlyReturnsLatestVersionOfAContact() throws {
-        let versionA = try store.addContactAndWait(OCKContact(id: "contact", givenName: "Amy", familyName: "Frost", carePlanID: nil))
-        let versionB = try store.updateContactAndWait(OCKContact(id: "contact", givenName: "Mariana", familyName: "Lin", carePlanID: nil))
-        let fetched = try store.fetchContactAndWait(id: versionA.id)
-        XCTAssert(fetched?.id == versionB.id)
-        XCTAssert(fetched?.name == versionB.name)
+    func testContactQueryByIDOnlyReturnsLatestVersionOfAContact() throws {
+        try store.addContactAndWait(OCKContact(id: "contact", givenName: "A", familyName: "", carePlanID: nil))
+        try store.updateContactAndWait(OCKContact(id: "contact", givenName: "B", familyName: "", carePlanID: nil))
+        try store.updateContactAndWait(OCKContact(id: "contact", givenName: "C", familyName: "", carePlanID: nil))
+        let versionD = try store.updateContactAndWait(OCKContact(id: "contact", givenName: "D", familyName: "", carePlanID: nil))
+        let fetched = try store.fetchContactAndWait(id: "contact")
+        XCTAssert(fetched?.id == versionD.id)
+        XCTAssert(fetched?.name == versionD.name)
+    }
+
+    func testContactQueryWithDateOnlyReturnsLatestVersionOfAContact() throws {
+        try store.addContactAndWait(OCKContact(id: "contact", givenName: "A", familyName: "", carePlanID: nil))
+        try store.updateContactAndWait(OCKContact(id: "contact", givenName: "B", familyName: "", carePlanID: nil))
+        try store.updateContactAndWait(OCKContact(id: "contact", givenName: "C", familyName: "", carePlanID: nil))
+        try store.updateContactAndWait(OCKContact(id: "contact", givenName: "D", familyName: "", carePlanID: nil))
+        let fetched = try store.fetchContactsAndWait(query: OCKContactQuery(for: Date()))
+        XCTAssert(fetched.count == 1)
+        XCTAssert(fetched.first?.name.givenName == "D")
+    }
+
+    func testContactQueryWithNoDateReturnsAllVersionsOfAContact() throws {
+        try store.addContactAndWait(OCKContact(id: "contact", givenName: "A", familyName: "", carePlanID: nil))
+        try store.updateContactAndWait(OCKContact(id: "contact", givenName: "B", familyName: "", carePlanID: nil))
+        try store.updateContactAndWait(OCKContact(id: "contact", givenName: "C", familyName: "", carePlanID: nil))
+        try store.updateContactAndWait(OCKContact(id: "contact", givenName: "D", familyName: "", carePlanID: nil))
+        let fetched = try store.fetchContactsAndWait(query: OCKContactQuery())
+        XCTAssert(fetched.count == 4)
     }
 
     func testContactQueryOnPastDateReturnsPastVersionOfAContact() throws {

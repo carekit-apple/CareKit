@@ -127,11 +127,12 @@ public extension OCKReadOnlyEventStore where Task: OCKAnyVersionableTask, Outcom
                 let late = scheduleEvent.end.addingTimeInterval(1)
                 var query = OCKOutcomeQuery(dateInterval: DateInterval(start: early, end: late))
                 query.taskVersionIDs = [taskVersionID]
-                self.fetchOutcome(query: query, callbackQueue: callbackQueue, completion: { result in
+                self.fetchOutcomes(query: query, callbackQueue: callbackQueue, completion: { result in
                     switch result {
                     case .failure(let error): completion(.failure(.fetchFailed(reason: "Couldn't find outcome. \(error.localizedDescription)")))
-                    case .success(let outcome):
-                        let event = OCKEvent(task: task, outcome: outcome, scheduleEvent: scheduleEvent)
+                    case .success(let outcomes):
+                        let matchingOutcome = outcomes.first(where: { $0.taskOccurrenceIndex == occurrenceIndex })
+                        let event = OCKEvent(task: task, outcome: matchingOutcome, scheduleEvent: scheduleEvent)
                         completion(.success(event))
                     }
                 })

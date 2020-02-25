@@ -246,6 +246,12 @@ class TestStoreProtocolExtensions: XCTestCase {
         XCTAssert(events.count == 11)
     }
 
+    func testFetchSingleEventSucceedsEvenIfThereIsNoOutcome() throws {
+        let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
+        let task = try store.addTaskAndWait(OCKTask(id: "A", title: "ABC", carePlanID: nil, schedule: schedule))
+        XCTAssertNoThrow(try store.fetchEventAndWait(forTask: task, occurrence: 0))
+    }
+
     // MARK: Adherence and Insights
 
     func testFetchAdherenceAggregatesEventsAcrossTasks() throws {

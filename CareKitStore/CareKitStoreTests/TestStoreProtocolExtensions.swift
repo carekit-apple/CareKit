@@ -231,6 +231,21 @@ class TestStoreProtocolExtensions: XCTestCase {
         XCTAssert(events.first?.task.title == "B")
     }
 
+    func testFetchEventsReturnsAnEventForEachVersionOfATaskWhenEventsAreAllDayDuration() throws {
+        let midnight = Calendar.current.startOfDay(for: Date())
+        let schedule = OCKSchedule.dailyAtTime(hour: 0, minutes: 0, start: midnight, end: nil, text: nil, duration: .allDay, targetValues: [])
+        let task = OCKTask(id: "A", title: "Original", carePlanID: nil, schedule: schedule)
+        try store.addTaskAndWait(task)
+        for i in 1...10 {
+            var update = task
+            update.effectiveDate = midnight.advanced(by: 10 * TimeInterval(i))
+            update.title = "Update \(i)"
+            try store.updateTaskAndWait(update)
+        }
+        let events = try store.fetchEventsAndWait(taskID: "A", query: .init(for: midnight))
+        XCTAssert(events.count == 11)
+    }
+
     // MARK: Adherence and Insights
 
     func testFetchAdherenceAggregatesEventsAcrossTasks() throws {

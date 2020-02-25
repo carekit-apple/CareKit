@@ -175,7 +175,7 @@ public extension OCKReadOnlyEventStore where Task: OCKAnyVersionableTask, Outcom
                         // If there is a previous version, fetch the events for it that don't overlap with
                         // any of the versions we've already fetched events for.
                         let nextEndDate = task.effectiveDate
-                        let nextStartDate = max(query.dateInterval.start, previousVersion.effectiveDate)
+                        let nextStartDate = query.dateInterval.start
                         let nextInterval = DateInterval(start: nextStartDate, end: nextEndDate)
                         let nextQuery = OCKEventQuery(dateInterval: nextInterval)
                         self.fetchEvents(task: previousVersion, query: nextQuery, previousEvents: events,

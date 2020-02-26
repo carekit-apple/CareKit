@@ -45,7 +45,7 @@ open class OCKTaskController: OCKTaskControllerProtocol, ObservableObject {
     /// The store manager against which the task will be synchronized.
     public let storeManager: OCKSynchronizedStoreManager
 
-    private var subscription: AnyCancellable?
+    private var cancellables: Set<AnyCancellable> = Set()
 
     // MARK: - Life Cycle
 
@@ -63,7 +63,7 @@ open class OCKTaskController: OCKTaskControllerProtocol, ObservableObject {
     ///   - task: The task to watch for changes.
     ///   - eventQuery: A query describing the date range over which to watch for changes.
     open func fetchAndObserveEvents(forTask task: OCKAnyTask, eventQuery: OCKEventQuery, errorHandler: ((Error) -> Void)? = nil) {
-        fetchAndSubscribeToEvents(forTask: task, query: eventQuery, errorHandler: errorHandler)
+        fetchAndObserveEvents(forTaskIDs: [task.id], eventQuery: eventQuery, errorHandler: errorHandler)
     }
 
     /// Begin watching events from multiple tasks for changes.
@@ -72,6 +72,7 @@ open class OCKTaskController: OCKTaskControllerProtocol, ObservableObject {
     ///   - taskIDs: The user-chosen unique identifiers for the tasks to be watched.
     ///   - eventQuery: A query describing the date range over which to watch for changes.
     open func fetchAndObserveEvents(forTaskIDs taskIDs: [String], eventQuery: OCKEventQuery, errorHandler: ((Error) -> Void)? = nil) {
+        cancellables = Set()
 
         // Build the task query from the event query
         var taskQuery = OCKTaskQuery(dateInterval: eventQuery.dateInterval)
@@ -83,7 +84,11 @@ open class OCKTaskController: OCKTaskControllerProtocol, ObservableObject {
             case .failure(let error): errorHandler?(error)
             case .success(let tasks):
                 tasks.forEach {
-                    self?.fetchAndSubscribeToEvents(forTask: $0, query: eventQuery, errorHandler: errorHandler)
+                    guard let self = self else { return }
+                    self.fetchAndSubscribeToEvents(forTask: $0, query: eventQuery, errorHandler: errorHandler)
+                    self.storeManager.publisher(forTask: $0, categories: [.add, .update, .delete]).sink { [weak self] _ in
+                        self?.fetchAndObserveEvents(forTaskIDs: taskIDs, eventQuery: eventQuery, errorHandler: errorHandler)
+                    }.store(in: &self.cancellables)
                 }
             }
         }
@@ -103,7 +108,7 @@ open class OCKTaskController: OCKTaskControllerProtocol, ObservableObject {
         assert(taskIds.dropFirst().allSatisfy { $0 == taskIds.first }, "Events should belong to the same task.")
 
         // Add each event to the view model and set the view model value
-        var viewModel = self.objectWillChange.value ?? OCKTaskEvents()
+        var viewModel = OCKTaskEvents()
         events.map { self.modified(event: $0) }
             .sorted(by: { $0.scheduleEvent.start < $1.scheduleEvent.start })
             .forEach { viewModel.addEvent($0) }
@@ -116,14 +121,14 @@ open class OCKTaskController: OCKTaskControllerProtocol, ObservableObject {
 
     // Update the view model when events for a particular task change
     func subscribeTo(eventsBelongingToTask task: OCKAnyTask, eventQuery: OCKEventQuery) {
-        subscription = storeManager.publisher(forEventsBelongingToTask: task, query: eventQuery, categories: [.update, .add, .delete])
+        storeManager.publisher(forEventsBelongingToTask: task, query: eventQuery, categories: [.update, .add, .delete])
             .sink { [weak self] newValue in
                 guard let self = self else { return }
                 let modifiedEvent = self.modified(event: newValue)
                 self.objectWillChange.value?.containsEvent(modifiedEvent) ?? false ?
                     self.objectWillChange.value?.updateEvent(modifiedEvent) :
                     self.objectWillChange.value?.addEvent(modifiedEvent)
-            }
+        }.store(in: &cancellables)
     }
 
     private func fetchAndSubscribeToEvents(forTask task: OCKAnyTask, query: OCKEventQuery, errorHandler: ((Error) -> Void)? = nil) {

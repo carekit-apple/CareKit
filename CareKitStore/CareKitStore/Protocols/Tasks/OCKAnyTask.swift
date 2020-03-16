@@ -69,4 +69,5 @@ internal protocol OCKAnyMutableTask: OCKAnyTask {
     var instructions: String? { get set }
     var impactsAdherence: Bool { get set }
     var schedule: OCKSchedule { get set }
+    var taskCategory: OCKTaskCategory? { get set }
 }

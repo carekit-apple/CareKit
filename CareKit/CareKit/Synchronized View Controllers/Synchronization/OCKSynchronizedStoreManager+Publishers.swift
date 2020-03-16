@@ -103,6 +103,41 @@ extension OCKSynchronizedStoreManager {
         return fetchImmediately ? AnyPublisher(changePublisher.prepend(presentValuePublisher)) : AnyPublisher(changePublisher)
     }
 
+    // MARK: TaskCategories
+
+    func taskCategoriesPublisher(categories: [OCKStoreNotificationCategory]) -> AnyPublisher<OCKAnyTaskCategory, Never> {
+        return AnyPublisher(notificationPublisher
+            .compactMap { $0 as? OCKTaskCategoryNotification }
+            .filter { categories.contains($0.category) }
+            .map { $0.taskCategory })
+    }
+
+    func publisher(forTaskCategoryID id: String,
+                   categories: [OCKStoreNotificationCategory]) -> AnyPublisher<OCKAnyTaskCategory, Never> {
+        return notificationPublisher
+            .compactMap { $0 as? OCKTaskCategoryNotification }
+            .filter { $0.taskCategory.id == id && categories.contains($0.category) }
+            .map { $0.taskCategory }
+            .eraseToAnyPublisher()
+    }
+
+    func publisher(forTaskCategory taskCategory: OCKAnyTaskCategory,
+                   categories: [OCKStoreNotificationCategory],
+                   fetchImmediately: Bool = true) -> AnyPublisher<OCKAnyTaskCategory, Never> {
+        let presentValuePublisher = Future<OCKAnyTaskCategory, Never>({ completion in
+            self.store.fetchAnyTaskCategory(withID: taskCategory.id) { result in
+                completion(.success((try? result.get()) ?? taskCategory))
+            }
+        })
+
+        let changePublisher = notificationPublisher
+            .compactMap { $0 as? OCKTaskCategoryNotification }
+            .filter { $0.taskCategory.id == taskCategory.id && categories.contains($0.category) }
+            .map { $0.taskCategory }
+
+        return fetchImmediately ? AnyPublisher(changePublisher.prepend(presentValuePublisher)) : AnyPublisher(changePublisher)
+    }
+
     // MARK: Tasks
 
     func publisher(forTask task: OCKAnyTask, categories: [OCKStoreNotificationCategory],

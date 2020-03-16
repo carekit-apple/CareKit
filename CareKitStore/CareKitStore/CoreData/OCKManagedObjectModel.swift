@@ -61,6 +61,7 @@ private func makeManagedObjectModel() -> NSManagedObjectModel {
     let patient = makePatientEntity()
     let carePlan = makeCarePlanEntity()
     let contact = makeContactEntity()
+    let taskCategory = makeTaskCategoryEntity()
     let task = makeTaskEntity()
     let schedule = makeScheduleEntity()
     let outcome = makeOutcomeEntity()
@@ -129,6 +130,14 @@ private func makeManagedObjectModel() -> NSManagedObjectModel {
     carePlanToContact.minCount = 0
     carePlanToContact.maxCount = 0
     carePlanToContact.deleteRule = .cascadeDeleteRule
+
+    let carePlanToTaskCategory = NSRelationshipDescription()
+    carePlanToTaskCategory.name = "taskCategories"
+    carePlanToTaskCategory.destinationEntity = taskCategory
+    carePlanToTaskCategory.isOptional = true
+    carePlanToTaskCategory.minCount = 0
+    carePlanToTaskCategory.maxCount = 0
+    carePlanToTaskCategory.deleteRule = .cascadeDeleteRule
 
     let carePlanToTask = NSRelationshipDescription()
     carePlanToTask.name = "tasks"
@@ -212,8 +221,48 @@ private func makeManagedObjectModel() -> NSManagedObjectModel {
     contactPrevVersion.maxCount = 1
     contactPrevVersion.deleteRule = .cascadeDeleteRule
 
-    // MARK: Task Relationships
+    // MARK: TaskCategory Relationships
+    let taskCategoryToCarePlan = NSRelationshipDescription()
+    taskCategoryToCarePlan.name = "carePlan"
+    taskCategoryToCarePlan.destinationEntity = carePlan
+    taskCategoryToCarePlan.isOptional = true
+    taskCategoryToCarePlan.minCount = 0
+    taskCategoryToCarePlan.maxCount = 1
+    taskCategoryToCarePlan.deleteRule = .nullifyDeleteRule
 
+    let taskCategoryToNote = NSRelationshipDescription()
+    taskCategoryToNote.name = "notes"
+    taskCategoryToNote.destinationEntity = note
+    taskCategoryToNote.isOptional = true
+    taskCategoryToNote.minCount = 0
+    taskCategoryToNote.maxCount = 0
+    taskCategoryToNote.deleteRule = .cascadeDeleteRule
+
+    let taskCategoryNextVersion = NSRelationshipDescription()
+    taskCategoryNextVersion.name = "next"
+    taskCategoryNextVersion.destinationEntity = taskCategory
+    taskCategoryNextVersion.isOptional = true
+    taskCategoryNextVersion.minCount = 0
+    taskCategoryNextVersion.maxCount = 1
+    taskCategoryNextVersion.deleteRule = .cascadeDeleteRule
+
+    let taskCategoryPrevVersion = NSRelationshipDescription()
+    taskCategoryPrevVersion.name = "previous"
+    taskCategoryPrevVersion.destinationEntity = taskCategory
+    taskCategoryPrevVersion.isOptional = true
+    taskCategoryPrevVersion.minCount = 0
+    taskCategoryPrevVersion.maxCount = 1
+    taskCategoryPrevVersion.deleteRule = .cascadeDeleteRule
+
+    let taskCategoryToTask = NSRelationshipDescription()
+    taskCategoryToTask.name = "tasks"
+    taskCategoryToTask.destinationEntity = task
+    taskCategoryToTask.isOptional = true
+    taskCategoryToTask.minCount = 0
+    taskCategoryToTask.maxCount = 0
+    taskCategoryToTask.deleteRule = .cascadeDeleteRule
+
+    // MARK: Task Relationships
     let taskToCarePlan = NSRelationshipDescription()
     taskToCarePlan.name = "carePlan"
     taskToCarePlan.destinationEntity = carePlan
@@ -221,6 +270,14 @@ private func makeManagedObjectModel() -> NSManagedObjectModel {
     taskToCarePlan.minCount = 0
     taskToCarePlan.maxCount = 1
     taskToCarePlan.deleteRule = .nullifyDeleteRule
+
+    let taskToTaskCategory = NSRelationshipDescription()
+    taskToTaskCategory.name = "taskCategory"
+    taskToTaskCategory.destinationEntity = taskCategory
+    taskToTaskCategory.isOptional = true
+    taskToTaskCategory.minCount = 0
+    taskToTaskCategory.maxCount = 1
+    taskToTaskCategory.deleteRule = .cascadeDeleteRule
 
     let taskToSchedule = NSRelationshipDescription()
     taskToSchedule.name = "scheduleElements"
@@ -374,6 +431,14 @@ private func makeManagedObjectModel() -> NSManagedObjectModel {
     noteToContact.maxCount = 1
     noteToContact.deleteRule = .nullifyDeleteRule
 
+    let noteToTaskCategory = NSRelationshipDescription()
+    noteToTaskCategory.name = "taskCategories"
+    noteToTaskCategory.destinationEntity = taskCategory
+    noteToTaskCategory.isOptional = true
+    noteToTaskCategory.minCount = 0
+    noteToTaskCategory.maxCount = 1
+    noteToTaskCategory.deleteRule = .nullifyDeleteRule
+
     let noteToTask = NSRelationshipDescription()
     noteToTask.name = "task"
     noteToTask.destinationEntity = task
@@ -465,7 +530,7 @@ private func makeManagedObjectModel() -> NSManagedObjectModel {
     addressToContact.minCount = 1
     addressToContact.maxCount = 1
     addressToContact.deleteRule = .nullifyDeleteRule
-
+    
     // MARK: HealthKitLinkage Relationships
 
     let healthToTask = NSRelationshipDescription()
@@ -486,6 +551,7 @@ private func makeManagedObjectModel() -> NSManagedObjectModel {
 
     carePlanToPatient.inverseRelationship = patientToCarePlan
     carePlanToContact.inverseRelationship = contactToCarePlan
+    carePlanToTaskCategory.inverseRelationship = taskCategoryToCarePlan
     carePlanToTask.inverseRelationship = taskToCarePlan
     carePlanToNote.inverseRelationship = noteToCarePlan
     carePlanNextVersion.inverseRelationship = carePlanPrevVersion
@@ -498,6 +564,13 @@ private func makeManagedObjectModel() -> NSManagedObjectModel {
     contactNextVersion.inverseRelationship = contactPrevVersion
     contactPrevVersion.inverseRelationship = contactNextVersion
 
+    taskCategoryToCarePlan.inverseRelationship = carePlanToTaskCategory
+    taskCategoryToNote.inverseRelationship = noteToTaskCategory
+    taskCategoryNextVersion.inverseRelationship = taskCategoryPrevVersion
+    taskCategoryPrevVersion.inverseRelationship = taskCategoryNextVersion
+    taskCategoryToTask.inverseRelationship = taskToTaskCategory
+
+    taskToTaskCategory.inverseRelationship = taskCategoryToTask
     taskToCarePlan.inverseRelationship = carePlanToTask
     taskToNote.inverseRelationship = noteToTask
     taskToOutcome.inverseRelationship = outcomeToTask
@@ -517,6 +590,7 @@ private func makeManagedObjectModel() -> NSManagedObjectModel {
     noteToPatient.inverseRelationship = patientToNote
     noteToCarePlan.inverseRelationship = carePlanToNote
     noteToContact.inverseRelationship = contactToNote
+    noteToTaskCategory.inverseRelationship = taskCategoryToNote
     noteToTask.inverseRelationship = taskToNote
     noteToOutcome.inverseRelationship = outcomeToNote
     noteToOutcomeValue.inverseRelationship = outcomeValueToNote
@@ -545,7 +619,7 @@ private func makeManagedObjectModel() -> NSManagedObjectModel {
     ]
 
     carePlan.properties += [
-        carePlanToPatient, carePlanToNote, carePlanToContact,
+        carePlanToPatient, carePlanToNote, carePlanToContact, carePlanToTaskCategory,
         carePlanToTask, carePlanNextVersion, carePlanPrevVersion
     ]
 
@@ -554,7 +628,11 @@ private func makeManagedObjectModel() -> NSManagedObjectModel {
         contactToAddress, contactNextVersion, contactPrevVersion
     ]
 
-    task.properties += [taskToCarePlan, taskToOutcome, taskToHealth, taskToSchedule, taskToNote, taskNextVersion, taskPrevVersion]
+    taskCategory.properties += [
+        taskCategoryToCarePlan, taskCategoryToNote, taskCategoryNextVersion, taskCategoryPrevVersion, taskCategoryToTask
+    ]
+
+    task.properties += [taskToCarePlan, taskToOutcome, taskToHealth, taskToSchedule, taskToNote, taskNextVersion, taskPrevVersion, taskToTaskCategory]
 
     outcome.properties += [outcomeToTask, outcomeToValue, outcomeToNote]
 
@@ -569,12 +647,12 @@ private func makeManagedObjectModel() -> NSManagedObjectModel {
     name.properties += [nameToPatient, nameToContact, nameToPhoneticName, nameToParentName]
 
     note.properties += [
-        noteToPatient, noteToCarePlan, noteToContact, noteToTask, noteToSchedule,
+        noteToPatient, noteToCarePlan, noteToContact, noteToTaskCategory, noteToTask, noteToSchedule,
         noteToOutcome, noteToOutcomeValue, noteToChildNote, noteToParentNote
     ]
 
     managedObjectModel.entities = [
-        patient, carePlan, contact, task, outcome,
+        patient, carePlan, contact, taskCategory, task, outcome,
         outcomeValue, schedule, note, name, address,
         healthLink
     ]
@@ -676,6 +754,28 @@ private func makeContactEntity() -> NSEntityDescription {
         organization, title, role, category, email, message, phone, other
     ]
     return contactEntity
+}
+
+private func makeTaskCategoryEntity() -> NSEntityDescription {
+    let taskCategoryEntity = NSEntityDescription()
+    taskCategoryEntity.name = String(describing: OCKCDTaskCategory.self)
+    taskCategoryEntity.managedObjectClassName = String(describing: OCKCDTaskCategory.self)
+
+    let title = NSAttributeDescription()
+    title.name = "title"
+    title.attributeType = .stringAttributeType
+    title.isOptional = true
+
+    let other = NSAttributeDescription()
+    other.name = "otherTaskCategoryInfoDictionary"
+    other.attributeType = .transformableAttributeType
+    other.isOptional = true
+    other.valueTransformerName = secureUnarchiver
+
+    taskCategoryEntity.properties = makeObjectAttributes() + makeVersionedAttributes() + [
+        title, other
+    ]
+    return taskCategoryEntity
 }
 
 private func makeTaskEntity() -> NSEntityDescription {

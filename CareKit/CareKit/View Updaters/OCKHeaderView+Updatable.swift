@@ -32,7 +32,7 @@ import CareKitStore
 import CareKitUI
 import UIKit
 
-extension OCKHeaderView: OCKEventUpdatable, OCKTaskUpdatable, OCKContactUpdatable {
+extension OCKHeaderView: OCKEventUpdatable, OCKTaskUpdatable, OCKContactUpdatable, OCKTaskCategoryUpdatable {
     func updateWith(event: OCKAnyEvent?, animated: Bool) {
         guard let event = event else {
             clearView(animated: animated)
@@ -67,9 +67,20 @@ extension OCKHeaderView: OCKEventUpdatable, OCKTaskUpdatable, OCKContactUpdatabl
         updateAccessibilityLabel()
     }
 
+    func updateWith(taskCategory: OCKAnyTaskCategory?, animated: Bool) {
+        guard let taskCategory = taskCategory else {
+            clearView(animated: animated)
+            return
+        }
+
+        titleLabel.text = taskCategory.title
+        iconImageView?.image = OCKTaskCategoryUtility.image(from: taskCategory.asset) ?? UIImage(systemName: "questionmark.circle.fill")
+        updateAccessibilityLabel()
+    }
+
     private func clearView(animated: Bool) {
         [titleLabel, detailLabel].forEach { $0.text = nil }
-        iconImageView?.image = UIImage(systemName: "person.crop.circle")
+        iconImageView?.image = UIImage(systemName: "questionmark.circle.fill")
         accessibilityLabel = nil
     }
 

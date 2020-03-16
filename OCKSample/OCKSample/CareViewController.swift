@@ -33,23 +33,40 @@ import UIKit
 import CareKit
 
 class CareViewController: OCKDailyPageViewController {
-
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.rightBarButtonItem =
+        navigationItem.rightBarButtonItems = [
             UIBarButtonItem(title: "Care Team", style: .plain, target: self,
-                            action: #selector(presentContactsListViewController))
+                            action: #selector(presentContactsListViewController)),
+            UIBarButtonItem(title: "Task Categories", style: .plain, target: self,
+                            action: #selector(presentTaskCategoriesViewController))
+        ]
     }
 
-    @objc private func presentContactsListViewController() {
-        let viewController = OCKContactsListViewController(storeManager: storeManager)
-        viewController.title = "Care Team"
+
+    @objc private func presentTaskCategoriesViewController() {
+        let viewController = OCKTaskCategoriesListViewController(storeManager: storeManager)
+        viewController.title = "Task Categories"
         viewController.isModalInPresentation = true
         viewController.navigationItem.rightBarButtonItem =
             UIBarButtonItem(title: "Done", style: .plain, target: self,
                             action: #selector(dismissContactsListViewController))
 
         let navigationController = UINavigationController(rootViewController: viewController)
+        navigationController.modalPresentationStyle = .fullScreen
+        present(navigationController, animated: true, completion: nil)
+    }
+
+    @objc private func presentContactsListViewController() {
+        let viewController = OCKContactsListViewController(storeManager: storeManager)
+        viewController.title = "Task Categories"
+        viewController.isModalInPresentation = true
+        viewController.navigationItem.rightBarButtonItem =
+            UIBarButtonItem(title: "Done", style: .plain, target: self,
+                            action: #selector(dismissContactsListViewController))
+
+        let navigationController = UINavigationController(rootViewController: viewController)
+        navigationController.modalPresentationStyle = .fullScreen
         present(navigationController, animated: true, completion: nil)
     }
 

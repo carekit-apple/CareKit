@@ -46,6 +46,11 @@ protocol OCKContactUpdatable {
     func updateWith(contact: OCKAnyContact?, animated: Bool)
 }
 
+/// Can be updated with a taskCategory.
+protocol OCKTaskCategoryUpdatable {
+    func updateWith(taskCategory: OCKAnyTaskCategory?, animated: Bool)
+}
+
 /// Can be updated with a data series.
 protocol OCKDataSeriesUpdatable {
     func updateWith(dataSeries: [OCKDataSeries], animated: Bool)

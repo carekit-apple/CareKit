@@ -35,7 +35,7 @@ import Foundation
 /// An `OCKSynchronizedStoreManager` wraps any store that conforms to `OCKStore` and provides synchronization to CareKit view
 /// controllers by listening in on the store's activity by setting itself as the store delegate.
 open class OCKSynchronizedStoreManager:
-OCKPatientStoreDelegate, OCKCarePlanStoreDelegate, OCKContactStoreDelegate, OCKTaskStoreDelegate, OCKOutcomeStoreDelegate {
+OCKPatientStoreDelegate, OCKCarePlanStoreDelegate, OCKContactStoreDelegate, OCKTaskCategoryStoreDelegate, OCKTaskStoreDelegate, OCKOutcomeStoreDelegate {
 
     /// The underlying database.
     public let store: OCKAnyStoreProtocol
@@ -125,6 +125,30 @@ OCKPatientStoreDelegate, OCKCarePlanStoreDelegate, OCKContactStoreDelegate, OCKT
             guard let self = self else { return }
             contacts.forEach {
                 let notification = OCKContactNotification(contact: $0, category: category, storeManager: self)
+                self.subject.send(notification)
+            }
+        }
+    }
+
+    // MARK: OCKStoreDelegate TaskCategory
+
+    open func taskCategoryStore(_ store: OCKAnyReadOnlyTaskCategoryStore, didAddTaskCategories taskCategories: [OCKAnyTaskCategory]) {
+        dispatchTaskCategoryNotifications(category: .add, taskCategories: taskCategories)
+    }
+
+    open func taskCategoryStore(_ store: OCKAnyReadOnlyTaskCategoryStore, didUpdateTaskCategories taskCategories: [OCKAnyTaskCategory]) {
+        dispatchTaskCategoryNotifications(category: .update, taskCategories: taskCategories)
+    }
+
+    open func taskCategoryStore(_ store: OCKAnyReadOnlyTaskCategoryStore, didDeleteTaskCategories taskCategories: [OCKAnyTaskCategory]) {
+        dispatchTaskCategoryNotifications(category: .delete, taskCategories: taskCategories)
+    }
+
+    private func dispatchTaskCategoryNotifications(category: OCKStoreNotificationCategory, taskCategories: [OCKAnyTaskCategory]) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            taskCategories.forEach {
+                let notification = OCKTaskCategoryNotification(taskCategory: $0, category: category, storeManager: self)
                 self.subject.send(notification)
             }
         }

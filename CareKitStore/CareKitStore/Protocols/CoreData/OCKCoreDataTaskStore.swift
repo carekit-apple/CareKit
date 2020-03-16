@@ -43,7 +43,6 @@ extension OCKTask: OCKCDTaskCompatible {
     }
 }
 
-
 protocol OCKCoreDataTaskStoreProtocol: OCKCoreDataStoreProtocol, OCKTaskStore where Task: OCKCDTaskCompatible {
     func makeTask(from task: OCKCDTask) -> Task
 }
@@ -153,7 +152,9 @@ extension OCKCoreDataTaskStoreProtocol {
         persistableTask.impactsAdherence = task.impactsAdherence
         persistableTask.scheduleElements = Set(createScheduleElements(from: task.schedule))
         persistableTask.healthKitLinkage = task.optionalHealthKitLinkage == nil ? nil : createHealthKitLinkage(from: task.optionalHealthKitLinkage!)
+
         if let planId = task.carePlanID { persistableTask.carePlan = try? fetchObject(havingLocalID: planId) }
+        if let taskCategoryId = task.taskCategory?.localDatabaseID { persistableTask.taskCategory = try? fetchObject(havingLocalID: taskCategoryId) }
 
         return persistableTask
     }
@@ -167,6 +168,9 @@ extension OCKCoreDataTaskStoreProtocol {
         mutable.instructions = other.instructions
         mutable.impactsAdherence = other.impactsAdherence
         mutable.schedule = makeSchedule(elements: Array(other.scheduleElements))
+        if let category = other.taskCategory {
+            mutable.taskCategory = makeTaskCategory(category: category)
+        }
         return mutable
     }
 
@@ -194,6 +198,15 @@ extension OCKCoreDataTaskStoreProtocol {
         return linkage
     }
 
+    private func createTaskCategory(from category: OCKTaskCategory?) -> OCKCDTaskCategory? {
+        guard let category = category else { return nil }
+        let taskCategory = OCKCDTaskCategory(context: context)
+        taskCategory.copyValues(from: category)
+        taskCategory.copyVersionInfo(from: category)
+        taskCategory.title = category.title
+        return taskCategory
+    }
+
     internal func createValue(from value: OCKOutcomeValue) -> OCKCDOutcomeValue {
         let object = OCKCDOutcomeValue(context: context)
         object.copyValues(from: value)
@@ -211,6 +224,10 @@ extension OCKCoreDataTaskStoreProtocol {
                                targetValues: object.targetValues.map(makeValue),
                                duration: object.duration)
         })
+    }
+
+    func makeTaskCategory(category: OCKCDTaskCategory) -> OCKTaskCategory {
+        return OCKTaskCategory(id: category.id, title: category.title, carePlanID: nil)
     }
 
     func makeValue(persistableValue: OCKCDOutcomeValue) -> OCKOutcomeValue {

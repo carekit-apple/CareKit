@@ -46,6 +46,7 @@ public extension OCKCardable {
     /// - Parameter enabled: true to turn the card styling on.
     /// - Parameter style: The style to use for the card.
     func enableCardStyling(_ enabled: Bool, style: OCKStyler) {
+
         cardView.backgroundColor = style.color.secondaryCustomGroupedBackground
         cardView.layer.masksToBounds = false
         cardView.layer.cornerCurve = .continuous

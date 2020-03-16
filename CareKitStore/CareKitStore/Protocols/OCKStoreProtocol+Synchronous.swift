@@ -195,6 +195,48 @@ extension OCKContactStore {
     }
 }
 
+extension OCKReadableTaskCategoryStore {
+    func fetchTaskCategoryAndWait(id: String) throws -> TaskCategory? {
+        try performSynchronously { fetchTaskCategory(withID: id, callbackQueue: backgroundQueue, completion: $0) }
+    }
+
+    func fetchTaskCategoriesAndWait(query: TaskCategoryQuery = TaskCategoryQuery()) throws -> [TaskCategory] {
+        try performSynchronously { fetchTaskCategories(query: query, callbackQueue: backgroundQueue, completion: $0) }
+    }
+}
+
+extension OCKTaskCategoryStore {
+    @discardableResult
+    func addTaskCategoriesAndWait(_ taskCategories: [TaskCategory]) throws -> [TaskCategory] {
+        return try performSynchronously { addTaskCategories(taskCategories, callbackQueue: backgroundQueue, completion: $0) }
+    }
+
+    @discardableResult
+    func addTaskCategoryAndWait(_ taskCategory: TaskCategory) throws -> TaskCategory {
+        try performSynchronously { addTaskCategory(taskCategory, callbackQueue: backgroundQueue, completion: $0) }
+    }
+
+    @discardableResult
+    func updateTaskCategoriesAndWait(_ taskCategories: [TaskCategory]) throws -> [TaskCategory] {
+        try performSynchronously { updateTaskCategories(taskCategories, callbackQueue: backgroundQueue, completion: $0) }
+    }
+
+    @discardableResult
+    func updateTaskCategoryAndWait(_ taskCategory: TaskCategory) throws -> TaskCategory {
+        try performSynchronously { updateTaskCategory(taskCategory, callbackQueue: backgroundQueue, completion: $0) }
+    }
+
+    @discardableResult
+    func deleteTaskCategoriesAndWait(_ taskCategories: [TaskCategory]) throws -> [TaskCategory] {
+        try performSynchronously { deleteTaskCategories(taskCategories, callbackQueue: backgroundQueue, completion: $0) }
+    }
+
+    @discardableResult
+    func deleteContactAndWait(_ taskCategory: TaskCategory) throws -> TaskCategory {
+        try performSynchronously { deleteTaskCategory(taskCategory, callbackQueue: backgroundQueue, completion: $0) }
+    }
+}
+
 extension OCKReadableTaskStore {
     func fetchTasksAndWait(query: TaskQuery = TaskQuery()) throws -> [Task] {
         try performSynchronously { fetchTasks(query: query, callbackQueue: backgroundQueue, completion: $0) }

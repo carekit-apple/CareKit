@@ -46,11 +46,19 @@ extension OCKStore {
     func fillWithDummyData() {
         // Note: If the tasks and contacts already exist in the store, these methods will fail. If you have modified the data and would like the
         // changes to be reflected in the app, delete and reinstall the catalog app.
-        let aFewDaysAgo = Calendar.current.startOfDay(for: Calendar.current.date(byAdding: .day, value: -10, to: Date())!)
-        addTasks(makeTasks(on: aFewDaysAgo), callbackQueue: .main) { result in
+        addTaskCategories(makeTaskCategory()) { result in
             switch result {
             case .failure(let error): print("[ERROR] \(error.localizedDescription)")
-            case .success: break
+            case .success:
+                let aFewDaysAgo = Calendar.current.startOfDay(for: Calendar.current.date(byAdding: .day, value: -10, to: Date())!)
+                self.makeTasks(on: aFewDaysAgo) { (tasks) in
+                    self.addTasks(tasks, callbackQueue: .main) { result in
+                        switch result {
+                        case .failure(let error): print("[ERROR] \(error.localizedDescription)")
+                        case .success: break
+                        }
+                    }
+                }
             }
         }
 
@@ -62,17 +70,37 @@ extension OCKStore {
         }
     }
 
-    private func makeTasks(on start: Date) -> [OCKTask] {
-        var task1 = OCKTask(id: "nausea", title: "Nausea", carePlanID: nil,
-                            schedule: .dailyAtTime(hour: 7, minutes: 0, start: start, end: nil, text: nil))
-        task1.instructions = "Log any time you experience nausea."
-        task1.impactsAdherence = false
+    private func makeTasks(on start: Date, completion: @escaping([OCKTask]) -> ()) {
+        fetchTaskCategories { (result) in
+            switch result {
+            case .failure(let error): print("[ERROR] \(error.localizedDescription)")
+                completion([])
+            case .success(let categories):
+                let medicineCategory = categories.first(where: { $0.id == "medicine" })
+                let exersiseCategory = categories.first(where: { $0.id == "exercise" })
+                var task1 = OCKTask(id: "nausea", title: "Nausea", carePlanID: nil,
+                                    schedule: .dailyAtTime(hour: 7, minutes: 0, start: start, end: nil, text: nil))
+                task1.instructions = "Log any time you experience nausea."
+                task1.impactsAdherence = false
+                task1.taskCategory = exersiseCategory
 
-        var task2 = OCKTask(id: "doxylamine", title: "Doxylamine", carePlanID: nil,
-                            schedule: .mealTimesEachDay(start: start, end: nil))
-        task2.instructions = "Take the tablet with a full glass of water."
+                var task2 = OCKTask(id: "doxylamine", title: "Doxylamine", carePlanID: nil,
+                                    schedule: .mealTimesEachDay(start: start, end: nil))
+                task2.instructions = "Take the tablet with a full glass of water."
+                task2.taskCategory = medicineCategory
+                completion([task1, task2])
+            }
+        }
+    }
 
-        return [task1, task2]
+    private func makeTaskCategory() -> [OCKTaskCategory] {
+        var medicineCategory = OCKTaskCategory(id: "medicine", title: "Medicine", carePlanID: nil)
+        medicineCategory.asset = "avatar1"
+
+        var exerciseCategory = OCKTaskCategory(id: "exercise", title: "Exercise", carePlanID: nil)
+        exerciseCategory.asset = "avatar2"
+
+        return [medicineCategory, exerciseCategory]
     }
 
     private func makeContacts() -> [OCKContact] {

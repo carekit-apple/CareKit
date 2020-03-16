@@ -57,39 +57,66 @@ private extension OCKStore {
     // Adds tasks and contacts into the store
     func populateSampleData() {
 
-        let thisMorning = Calendar.current.startOfDay(for: Date())
-        let aFewDaysAgo = Calendar.current.date(byAdding: .day, value: -4, to: thisMorning)!
-        let beforeBreakfast = Calendar.current.date(byAdding: .hour, value: 8, to: aFewDaysAgo)!
-        let afterLunch = Calendar.current.date(byAdding: .hour, value: 14, to: aFewDaysAgo)!
+        var taskCategoryMedicine = OCKTaskCategory(id: "A", title: "Medicine", carePlanID: nil)
+        taskCategoryMedicine.asset = "avatar1"
 
-        let schedule = OCKSchedule(composing: [
-            OCKScheduleElement(start: beforeBreakfast, end: nil,
-                               interval: DateComponents(day: 1)),
+        var taskCategoryExercise = OCKTaskCategory(id: "B", title: "Exercise", carePlanID: nil)
+        taskCategoryExercise.asset = "avatar2"
 
-            OCKScheduleElement(start: afterLunch, end: nil,
-                               interval: DateComponents(day: 2))
-        ])
+        var taskCategorySymptom = OCKTaskCategory(id: "C", title: "Symptom", carePlanID: nil)
+        taskCategorySymptom.asset = "avatar3"
 
-        var doxylamine = OCKTask(id: "doxylamine", title: "Take Doxylamine",
-                             carePlanID: nil, schedule: schedule)
-        doxylamine.instructions = "Take 25mg of doxylamine when you experience nausea."
+        addTaskCategories([taskCategoryMedicine, taskCategoryExercise, taskCategorySymptom]) { (result: Result<[OCKTaskCategory], OCKStoreError>) in
+            switch result {
+            case .failure(let error):
+                print("\(error.localizedDescription)")
+                break
+            case .success(let categories):
 
-        let nauseaSchedule = OCKSchedule(composing: [
-            OCKScheduleElement(start: beforeBreakfast, end: nil, interval: DateComponents(day: 1),
-                               text: "Anytime throughout the day", targetValues: [], duration: .allDay)
-            ])
+                guard let taskCategoryExercise2 = categories.filter({ category in category.id == taskCategoryExercise.id } ).first,
+                      let taskCategoryMedicine2 = categories.filter({ category in category.id == taskCategoryMedicine.id } ).first,
+                      let taskCategorySymptom2 = categories.filter({ category in category.id == taskCategorySymptom.id } ).first
+                      else { return }
 
-        var nausea = OCKTask(id: "nausea", title: "Track your nausea",
-                             carePlanID: nil, schedule: nauseaSchedule)
-        nausea.impactsAdherence = false
-        nausea.instructions = "Tap the button below anytime you experience nausea."
+                let thisMorning = Calendar.current.startOfDay(for: Date())
+                let aFewDaysAgo = Calendar.current.date(byAdding: .day, value: -4, to: thisMorning)!
+                let beforeBreakfast = Calendar.current.date(byAdding: .hour, value: 8, to: aFewDaysAgo)!
+                let afterLunch = Calendar.current.date(byAdding: .hour, value: 14, to: aFewDaysAgo)!
 
-        let kegelSchedule = OCKSchedule(composing: [OCKScheduleElement(start: beforeBreakfast, end: nil, interval: DateComponents(day: 2))])
-        var kegels = OCKTask(id: "kegels", title: "Kegel Exercises", carePlanID: nil, schedule: kegelSchedule)
-        kegels.impactsAdherence = true
-        kegels.instructions = "Perform kegel exercies"
+                let schedule = OCKSchedule(composing: [
+                    OCKScheduleElement(start: beforeBreakfast, end: nil,
+                                       interval: DateComponents(day: 1)),
 
-        addTasks([nausea, doxylamine, kegels], callbackQueue: .main, completion: nil)
+                    OCKScheduleElement(start: afterLunch, end: nil,
+                                       interval: DateComponents(day: 2))
+                ])
+
+                var doxylamine = OCKTask(id: "doxylamine", title: "Take Doxylamine",
+                                     carePlanID: nil, schedule: schedule)
+                doxylamine.instructions = "Take 25mg of doxylamine when you experience nausea."
+                doxylamine.taskCategory = taskCategoryMedicine2
+
+                let nauseaSchedule = OCKSchedule(composing: [
+                    OCKScheduleElement(start: beforeBreakfast, end: nil, interval: DateComponents(day: 1),
+                                       text: "Anytime throughout the day", targetValues: [], duration: .allDay)
+                    ])
+
+                var nausea = OCKTask(id: "nausea", title: "Track your nausea",
+                                     carePlanID: nil, schedule: nauseaSchedule)
+                nausea.impactsAdherence = false
+                nausea.instructions = "Tap the button below anytime you experience nausea."
+                nausea.taskCategory = taskCategorySymptom2
+
+                let kegelSchedule = OCKSchedule(composing: [OCKScheduleElement(start: beforeBreakfast, end: nil, interval: DateComponents(day: 2))])
+                var kegels = OCKTask(id: "kegels", title: "Kegel Exercises", carePlanID: nil, schedule: kegelSchedule)
+                kegels.impactsAdherence = true
+                kegels.instructions = "Perform kegel exercies"
+                kegels.taskCategory = taskCategoryExercise2
+
+                self.addTasks([nausea, doxylamine, kegels], callbackQueue: .main, completion: nil)
+            }
+        }
+
 
         var contact1 = OCKContact(id: "jane", givenName: "Jane",
                                   familyName: "Daniels", carePlanID: nil)
@@ -126,5 +153,6 @@ private extension OCKStore {
         }()
 
         addContacts([contact1, contact2])
+
     }
 }

@@ -57,6 +57,11 @@ public struct OCKContactNotification: OCKStoreNotification {
     public let storeManager: OCKSynchronizedStoreManager
 }
 
+public struct OCKTaskCategoryNotification: OCKStoreNotification {
+    public let taskCategory: OCKAnyTaskCategory
+    public let category: OCKStoreNotificationCategory
+    public let storeManager: OCKSynchronizedStoreManager
+}
 public struct OCKTaskNotification: OCKStoreNotification {
     public let task: OCKAnyTask
     public let category: OCKStoreNotificationCategory

@@ -232,7 +232,7 @@ extension OCKTaskCategoryStore {
     }
 
     @discardableResult
-    func deleteContactAndWait(_ taskCategory: TaskCategory) throws -> TaskCategory {
+    func deleteTaskCategoryAndWait(_ taskCategory: TaskCategory) throws -> TaskCategory {
         try performSynchronously { deleteTaskCategory(taskCategory, callbackQueue: backgroundQueue, completion: $0) }
     }
 }

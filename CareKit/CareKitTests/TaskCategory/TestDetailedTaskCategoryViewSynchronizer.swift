@@ -60,14 +60,14 @@ class TestDetailedTaskCategoryViewSynchronizer: XCTestCase {
     // View should be cleared in the initial state
     func testInitialStateIsEmpty() {
         XCTAssertNil(view.headerView.titleLabel.text)
-        XCTAssertEqual(view.headerView.iconImageView?.image, UIImage(systemName: "person.crop.circle"))
+        XCTAssertEqual(view.headerView.iconImageView?.image, UIImage(systemName: "questionmark.circle.fill"))
     }
 
     // View should fill with task category data
     func testDoesUpdate() {
         let taskCategory = OCKTaskCategory.mock()
         viewSynchronizer.updateView(view, context: .init(viewModel: taskCategory, oldViewModel: nil, animated: false))
-        XCTAssertEqual(view.headerView.iconImageView?.image, UIImage(systemName: "person.crop.circle"))
+        XCTAssertEqual(view.headerView.iconImageView?.image, UIImage(systemName: "questionmark.circle.fill"))
     }
 
     // View should be cleared after updating with a nil task category
@@ -75,11 +75,11 @@ class TestDetailedTaskCategoryViewSynchronizer: XCTestCase {
         let taskCategory = OCKTaskCategory.mock()
         viewSynchronizer.updateView(view, context: .init(viewModel: taskCategory, oldViewModel: nil, animated: false))
         XCTAssertNotNil(view.headerView.titleLabel.text)
-        XCTAssertEqual(view.headerView.iconImageView?.image, UIImage(systemName: "person.crop.circle"))
+        XCTAssertEqual(view.headerView.iconImageView?.image, UIImage(systemName: "questionmark.circle.fill"))
 
         // Update with a nil task category
         viewSynchronizer.updateView(view, context: .init(viewModel: nil, oldViewModel: nil, animated: false))
         XCTAssertNil(view.headerView.titleLabel.text)
-        XCTAssertEqual(view.headerView.iconImageView?.image, UIImage(systemName: "person.crop.circle"))
+        XCTAssertEqual(view.headerView.iconImageView?.image, UIImage(systemName: "questionmark.circle.fill"))
     }
 }

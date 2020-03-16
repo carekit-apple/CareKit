@@ -88,8 +88,8 @@ class TestStoreTaskCategories: XCTestCase {
 
     func testQueryTaskCategoriesByCarePlanID() throws {
         let carePlan = try store.addCarePlanAndWait(OCKCarePlan(id: "B", title: "Care Plan A", patientID: nil))
-        try store.addTaskCategoryAndWait(OCKTaskCategory(id: "care plan 1", title: "Mark", familyName: "Brown", carePlanID: nil))
-        var taskCategory = OCKTaskCategory(id: "care plan 2", givenName: "Amy", familyName: "Frost", carePlanID: try carePlan.getLocalID())
+        try store.addTaskCategoryAndWait(OCKTaskCategory(id: "task category 1", title: "Medicine", carePlanID: nil))
+        var taskCategory = OCKTaskCategory(id: "task category 1", title: "Medicine", carePlanID: try carePlan.getLocalID())
         taskCategory = try store.addTaskCategoryAndWait(taskCategory)
         var query = OCKTaskCategoryQuery()
         query.carePlanIDs = [carePlan.id]
@@ -98,24 +98,24 @@ class TestStoreTaskCategories: XCTestCase {
     }
 
     func testTaskCategoriesQueryGroupIdentifiers() throws {
-        var taskCategoryA = OCKTaskCategory(id: "A", givenName: "a", familyName: "aaa", carePlanID: nil)
+        var taskCategoryA = OCKTaskCategory(id: "A", title: "Medicine", carePlanID: nil)
         taskCategoryA.groupIdentifier = "Alpha"
-        var taskCategoryB = OCKTaskCategory(id: "B", givenName: "b", familyName: "bbb", carePlanID: nil)
-        taskCategorytB.groupIdentifier = "Beta"
+        var taskCategoryB = OCKTaskCategory(id: "B", title: "Exercise", carePlanID: nil)
+        taskCategoryB.groupIdentifier = "Beta"
         try store.addTaskCategoriesAndWait([taskCategoryA, taskCategoryB])
         var query = OCKTaskCategoryQuery(for: Date())
         query.groupIdentifiers = ["Alpha"]
-        let fetched = try store.fetchTdaskCategoriesAndWait(query: query)
+        let fetched = try store.fetchTaskCategoriesAndWait(query: query)
         XCTAssert(fetched.count == 1)
         XCTAssert(fetched.first?.groupIdentifier == "Alpha")
     }
 
     func testTaskCategoryQueryTags() throws {
-        var taskCategoryA = OCKTaskCategory(id: "A", givenName: "a", familyName: "aaa", carePlanID: nil)
+        var taskCategoryA = OCKTaskCategory(id: "A", title: "Medicine", carePlanID: nil)
         taskCategoryA.tags = ["A"]
-        var taskCategoryB = OCKTaskCategory(id: "B", givenName: "b", familyName: "bbb", carePlanID: nil)
+        var taskCategoryB = OCKTaskCategory(id: "B", title: "Exercise", carePlanID: nil)
         taskCategoryB.tags = ["B", "C"]
-        var taskCategoryC = OCKTaskCategory(id: "C", givenName: "c", familyName: "cccc", carePlanID: nil)
+        var taskCategoryC = OCKTaskCategory(id: "C", title: "Symptom", carePlanID: nil)
         taskCategoryC.tags = ["C"]
         try store.addTaskCategoriesAndWait([taskCategoryA, taskCategoryB, taskCategoryC])
         var query = OCKTaskCategoryQuery(for: Date())
@@ -125,9 +125,9 @@ class TestStoreTaskCategories: XCTestCase {
     }
 
     func testTaskCategoryQueryLimited() throws {
-        let taskCategoryA = OCKTaskCategory(id: "A", givenName: "a", familyName: "aaa", carePlanID: nil)
-        let taskCategoryB = OCKTaskCategory(id: "B", givenName: "b", familyName: "bbb", carePlanID: nil)
-        let taskCategoryC = OCKTaskCategory(id: "C", givenName: "c", familyName: "cccc", carePlanID: nil)
+        let taskCategoryA = OCKTaskCategory(id: "A", title: "Medicine", carePlanID: nil)
+        let taskCategoryB = OCKTaskCategory(id: "B", title: "Exercise", carePlanID: nil)
+        let taskCategoryC = OCKTaskCategory(id: "C", title: "Symptom", carePlanID: nil)
         try store.addTaskCategoriesAndWait([taskCategoryA, taskCategoryB, taskCategoryC])
         var query = OCKTaskCategoryQuery(for: Date())
         query.limit = 2
@@ -136,38 +136,38 @@ class TestStoreTaskCategories: XCTestCase {
     }
 
     func testTaskCategoryQueryOffset() throws {
-        let taskCategoryA = OCKTaskCategory(id: "A", givenName: "a", familyName: "aaa", carePlanID: nil)
-        let taskCategoryB = OCKTaskCategory(id: "B", givenName: "b", familyName: "bbb", carePlanID: nil)
-        let taskCategoryC = OCKTaskCategory(id: "C", givenName: "c", familyName: "cccc", carePlanID: nil)
+        let taskCategoryA = OCKTaskCategory(id: "A", title: "Medicine", carePlanID: nil)
+        let taskCategoryB = OCKTaskCategory(id: "B", title: "Exercise", carePlanID: nil)
+        let taskCategoryC = OCKTaskCategory(id: "C", title: "Symptom", carePlanID: nil)
         try store.addTaskCategoriesAndWait([taskCategoryA, taskCategoryB, taskCategoryC])
         var query = OCKTaskCategoryQuery(for: Date())
         query.offset = 2
-        let fetched = try store.fetchCTaskCategoriesAndWait(query: query)
+        let fetched = try store.fetchTaskCategoriesAndWait(query: query)
         XCTAssert(fetched.count == 1)
     }
 
     func testTaskCategoryQuerySorted() throws {
-        let taskCategoryA = OCKTaskCategory(id: "A", givenName: "a", familyName: "aaa", carePlanID: nil)
-        let taskCategoryB = OCKTaskCategory(id: "B", givenName: "b", familyName: "bbb", carePlanID: nil)
-        let taskCategoryC = OCKTaskCategory(id: "C", givenName: "c", familyName: "cccc", carePlanID: nil)
+        let taskCategoryA = OCKTaskCategory(id: "A", title: "Medicine", carePlanID: nil)
+        let taskCategoryB = OCKTaskCategory(id: "B", title: "Exercise", carePlanID: nil)
+        let taskCategoryC = OCKTaskCategory(id: "C", title: "Symptom", carePlanID: nil)
         try store.addTaskCategoriesAndWait([taskCategoryA, taskCategoryB, taskCategoryC])
         var query = OCKTaskCategoryQuery(for: Date())
-        query.sortDescriptors = [.givenName(ascending: true)]
+        query.sortDescriptors = [.title(ascending: true)]
         let fetched = try store.fetchTaskCategoriesAndWait(query: query)
-        XCTAssert(fetched.map { $0.name.givenName } == ["a", "b", "c"])
+        XCTAssert(fetched.map { $0.title } == ["b", "a", "c"])
     }
 
     func testTaskCategoryNilQueryReturnsAllTaskCategories() throws {
-        let taskCategoryA = OCKTaskCategory(id: "A", givenName: "a", familyName: "aaa", carePlanID: nil)
-        let taskCategoryB = OCKTaskCategory(id: "B", givenName: "b", familyName: "bbb", carePlanID: nil)
-        let taskCategoryC = OCKTaskCategory(id: "C", givenName: "c", familyName: "cccc", carePlanID: nil)
+        let taskCategoryA = OCKTaskCategory(id: "A", title: "Medicine", carePlanID: nil)
+        let taskCategoryB = OCKTaskCategory(id: "B", title: "Exercise", carePlanID: nil)
+        let taskCategoryC = OCKTaskCategory(id: "C", title: "Symptom", carePlanID: nil)
         try store.addTaskCategoriesAndWait([taskCategoryA, taskCategoryB, taskCategoryC])
         let taskCategories = try store.fetchTaskCategoriesAndWait()
         XCTAssertNotNil(taskCategories.count == 3)
     }
 
     func testQueryTaskCategoryByRemoteID() throws {
-        var taskCategory = OCKTaskCategory(id: "A", givenName: "B", familyName: "C", carePlanID: nil)
+        var taskCategory = OCKTaskCategory(id: "A", title: "Medicine", carePlanID: nil)
         taskCategory.remoteID = "abc"
         taskCategory = try store.addTaskCategoryAndWait(taskCategory)
         var query = OCKTaskCategoryQuery()
@@ -181,7 +181,7 @@ class TestStoreTaskCategories: XCTestCase {
         plan.remoteID = "abc"
         plan = try store.addCarePlanAndWait(plan)
 
-        var taskCategory = OCKTaskCategory(id: "A", givenName: "B", familyName: "C", carePlanID: plan.localDatabaseID)
+        var taskCategory = OCKTaskCategory(id: "A", title: "Medicine", carePlanID: plan.localDatabaseID)
         taskCategory = try store.addTaskCategoryAndWait(taskCategory)
         var query = OCKTaskCategoryQuery(for: Date())
         query.carePlanRemoteIDs = ["abc"]
@@ -192,7 +192,7 @@ class TestStoreTaskCategories: XCTestCase {
     func testQueryTaskCategoryByCarePlanVersionID() throws {
         let plan = try store.addCarePlanAndWait(OCKCarePlan(id: "A", title: "B", patientID: nil))
         let planID = try plan.getLocalID()
-        let taskCategory = try store.addTaskCategoryAndWait(OCKTaskCategory(id: "C", givenName: "D", familyName: "E", carePlanID: planID))
+        let taskCategory = try store.addTaskCategoryAndWait(OCKTaskCategory(id: "A", title: "Medicine", carePlanID: planID))
         var query = OCKTaskCategoryQuery(for: Date())
         query.carePlanVersionIDs = [planID]
         let fetched = try store.fetchTaskCategoriesAndWait(query: query).first
@@ -202,34 +202,34 @@ class TestStoreTaskCategories: XCTestCase {
     // MARK: Versioning
 
     func testUpdateTaskCategoryCreatesNewVersion() throws {
-        let taskCategory = try store.addTaskCategoryAndWait(OCKTaskCategory(id: "taskCategory", givenName: "John", familyName: "Appleseed", carePlanID: nil))
-        let updated = try store.updateTaskCategoryAndWait(OCKTaskCategory(id: "taskCategory", givenName: "Jane", familyName: "Appleseed", carePlanID: nil))
-        XCTAssert(updated.name.givenName == "Jane")
+        let taskCategory = try store.addTaskCategoryAndWait(OCKTaskCategory(id: "A", title: "Medicine", carePlanID: nil))
+        let updated = try store.updateTaskCategoryAndWait(OCKTaskCategory(id: "A", title: "Exercise", carePlanID: nil))
+        XCTAssert(updated.title == "Exercise")
         XCTAssert(updated.localDatabaseID != taskCategory.localDatabaseID)
         XCTAssert(updated.previousVersionID == taskCategory.localDatabaseID)
     }
 
     func testUpdateFailsForUnsavedTaskCategories() {
-        let patient = OCKTaskCategory(id: "careplan", givenName: "John", familyName: "Appleseed", carePlanID: nil)
-        XCTAssertThrowsError(try store.updateTaskCategoryAndWait(patient))
+        let taskCategory = OCKTaskCategory(id: "A", title: "Medicine", carePlanID: nil)
+        XCTAssertThrowsError(try store.updateTaskCategoryAndWait(taskCategory))
     }
 
     func testTaskCategoryQueryOnlyReturnsLatestVersionOfATaskCategory() throws {
-        let versionA = try store.addTaskCategoryAndWait(OCKTaskCategory(id: "taskCategory", givenName: "Amy", familyName: "Frost", carePlanID: nil))
-        let versionB = try store.updateTaskCategoryAndWait(OCKTaskCategory(id: "taskCategory", givenName: "Mariana", familyName: "Lin", carePlanID: nil))
+        let versionA = try store.addTaskCategoryAndWait(OCKTaskCategory(id: "A", title: "Medicine", carePlanID: nil))
+        let versionB = try store.updateTaskCategoryAndWait(OCKTaskCategory(id: "A", title: "Exercise", carePlanID: nil))
         let fetched = try store.fetchTaskCategoryAndWait(id: versionA.id)
         XCTAssert(fetched?.id == versionB.id)
-        XCTAssert(fetched?.name == versionB.name)
+        XCTAssert(fetched?.title == versionB.title)
     }
 
     func testTaskCategoryQueryOnPastDateReturnsPastVersionOfATaskCategory() throws {
         let dateA = Date().addingTimeInterval(-100)
-        var versionA = OCKTaskCategory(id: "A", givenName: "a", familyName: "b", carePlanID: nil)
+        var versionA = OCKTaskCategory(id: "A", title: "Medicine", carePlanID: nil)
         versionA.effectiveDate = dateA
         versionA = try store.addTaskCategoryAndWait(versionA)
 
         let dateB = Date().addingTimeInterval(100)
-        var versionB = OCKTaskCategory(id: "A", givenName: "a", familyName: "c", carePlanID: nil)
+        var versionB = OCKTaskCategory(id: "A", title: "Exercise", carePlanID: nil)
         versionB.effectiveDate = dateB
         versionB = try store.updateTaskCategoryAndWait(versionB)
 
@@ -237,17 +237,17 @@ class TestStoreTaskCategories: XCTestCase {
         let query = OCKTaskCategoryQuery(dateInterval: interval)
         let fetched = try store.fetchTaskCategoriesAndWait(query: query)
         XCTAssert(fetched.count == 1)
-        XCTAssert(fetched.first?.name == versionA.name)
+        XCTAssert(fetched.first?.title == versionA.title)
     }
 
     func testTaskCategoryQuerySpanningVersionsReturnsNewestVersionOnly() throws {
         let dateA = Date().addingTimeInterval(-100)
-        var versionA = OCKTaskCategory(id: "A", givenName: "a", familyName: "b", carePlanID: nil)
+        var versionA = OCKTaskCategory(id: "A", title: "Medicine", carePlanID: nil)
         versionA.effectiveDate = dateA
         versionA = try store.addTaskCategoryAndWait(versionA)
 
         let dateB = Date().addingTimeInterval(100)
-        var versionB = OCKTaskCategory(id: "A", givenName: "a", familyName: "c", carePlanID: nil)
+        var versionB = OCKTaskCategory(id: "A", title: "Exercise", carePlanID: nil)
         versionB.effectiveDate = dateB
         versionB = try store.updateTaskCategoryAndWait(versionB)
 
@@ -256,12 +256,12 @@ class TestStoreTaskCategories: XCTestCase {
 
         let fetched = try store.fetchTaskCategoriesAndWait(query: query)
         XCTAssert(fetched.count == 1)
-        XCTAssert(fetched.first?.name == versionB.name)
+        XCTAssert(fetched.first?.title == versionB.title)
     }
 
     func testTaskCategoryQueryBeforeTaskCategoryWasCreatedReturnsNoResults() throws {
         let dateA = Date()
-        try store.addTaskCategoryAndWait(OCKTaskCategory(id: "A", givenName: "a", familyName: "b", carePlanID: nil))
+        try store.addTaskCategoryAndWait(OCKTaskCategory(id: "A", title: "Medicine", carePlanID: nil))
         let interval = DateInterval(start: dateA.addingTimeInterval(-100), end: dateA)
         let query = OCKTaskCategoryQuery(dateInterval: interval)
         let fetched = try store.fetchTaskCategoriesAndWait(query: query)
@@ -271,14 +271,14 @@ class TestStoreTaskCategories: XCTestCase {
     // MARK: Deletion
 
     func testDeleteTaskCategory() throws {
-        let taskCategory = try store.addTaskCategoryAndWait(OCKTaskCategory(id: "taskCategory", givenName: "Christopher", familyName: "Foss", carePlanID: nil))
+        let taskCategory = try store.addTaskCategoryAndWait(OCKTaskCategory(id: "A", title: "Medicine", carePlanID: nil))
         try store.deleteTaskCategoryAndWait(taskCategory)
         let fetched = try store.fetchTaskCategoriesAndWait()
         XCTAssert(fetched.isEmpty)
     }
 
     func testDeleteTaskCategoryfailsIfTaskCategoryDoesntExist() {
-        let taskCategory = OCKTaskCategory(id: "taskCategory", givenName: "Amy", familyName: "Frost", carePlanID: nil)
+        let taskCategory = OCKTaskCategory(id: "A", title: "Medicine", carePlanID: nil)
         XCTAssertThrowsError(try store.deleteTaskCategoryAndWait(taskCategory))
     }
 }

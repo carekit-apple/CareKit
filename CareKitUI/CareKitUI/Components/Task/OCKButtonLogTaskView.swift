@@ -89,6 +89,7 @@ open class OCKButtonLogTaskView: OCKLogTaskView, UICollectionViewDelegate, UICol
         return label
     }()
     
+    /// Completion after log button is pressed
     public var logPressedCompleted: (() -> ())?
 
     // MARK: Methods

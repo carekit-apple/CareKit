@@ -88,6 +88,8 @@ open class OCKButtonLogTaskView: OCKLogTaskView, UICollectionViewDelegate, UICol
         label.numberOfLines = 0
         return label
     }()
+    
+    public var logPressedCompleted: (() -> ())?
 
     // MARK: Methods
 
@@ -115,6 +117,9 @@ open class OCKButtonLogTaskView: OCKLogTaskView, UICollectionViewDelegate, UICol
     @objc
     private func didTapLogButton(_ sender: UIControl) {
         delegate?.taskView(self, didCreateOutcomeValueAt: 0, eventIndexPath: .init(row: 0, section: 0), sender: sender)
+        if logPressedCompleted != nil {
+            logPressedCompleted!()
+        }
     }
 
     override func setup() {

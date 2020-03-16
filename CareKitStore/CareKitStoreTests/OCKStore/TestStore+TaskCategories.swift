@@ -48,12 +48,12 @@ class TestStoreTaskCategories: XCTestCase {
     // MARK: Relationship Validation
 
     func testStoreAllowsMissingCarePlanRelationshipOnTaskCategories() {
-        let taskCategory = OCKTaskCategory(id: "taskCategory", title: "Amy", carePlanID: nil)
+        let taskCategory = OCKTaskCategory(id: "taskCategory", title: "Medicine", carePlanID: nil)
         XCTAssertNoThrow(try store.addTaskCategoryAndWait(taskCategory))
     }
 
     func testStorePreventsMissingCarePlanRelationshipOnTaskCategories() {
-        let taskCategory = OCKTaskCategory(id: "taskCategory", title: "Amy", carePlanID: nil)
+        let taskCategory = OCKTaskCategory(id: "taskCategory", title: "Medicine", carePlanID: nil)
         store.configuration.allowsEntitiesWithMissingRelationships = false
         XCTAssertThrowsError(try store.addTaskCategoryAndWait(taskCategory))
     }
@@ -61,38 +61,34 @@ class TestStoreTaskCategories: XCTestCase {
     // MARK: Insertion
 
     func testAddTaskCategory() throws {
-        var taskCategory = OCKTaskCategory(id: "taskCategory", title: "Amy", carePlanID: nil)
-
+        var taskCategory = OCKTaskCategory(id: "taskCategory", title: "Medicine", carePlanID: nil)
 
         taskCategory = try store.addTaskCategoryAndWait(taskCategory)
-        let fetchedTaskCategories = try store.fetchTaskCategoriesAndWait()
 
         XCTAssert(taskCategory.title == "Amy")
         XCTAssertNotNil(taskCategory.schemaVersion)
     }
 
     func testAddTaskCategoryFailsIfIdentifierAlreadyExists() throws {
-        let taksCatetory1 = OCKTaskCategory(id: "taskCategory1", title: "Amy", carePlanID: nil)
-        let taskCategory2 = OCKTaskCategory(id: "taskCategory2", title: "Amy2", carePlanID: nil)
+        let taksCatetory1 = OCKTaskCategory(id: "taskCategory1", title: "Medicine", carePlanID: nil)
+        let taskCategory2 = OCKTaskCategory(id: "taskCategory1", title: "Exercise", carePlanID: nil)
         try store.addTaskCategoryAndWait(taksCatetory1)
         XCTAssertThrowsError(try store.addTaskCategoryAndWait(taskCategory2))
     }
 
     // MARK: Querying
     func testQueryTaskCategoriesByIdentifier() throws {
-        let taskCategory1 = try store.addTaskCategoryAndWait(OCKTaskCategory(id: "taskCategory1", title: "Amy", carePlanID: nil))
-        try store.addTaskCategoryAndWait(OCKTaskCategory(id: "taskCategory2", title: "Amy2", carePlanID: nil))
+        let taskCategory1 = try store.addTaskCategoryAndWait(OCKTaskCategory(id: "taskCategory1", title: "Medicine", carePlanID: nil))
+        try store.addTaskCategoryAndWait(OCKTaskCategory(id: "taskCategory2", title: "Medicine2", carePlanID: nil))
         let fetchedTaskCategories = try store.fetchTaskCategoriesAndWait(query: OCKTaskCategoryQuery(id: "taskCategory1"))
         XCTAssert(fetchedTaskCategories == [taskCategory1])
     }
 
     func testQueryTaskCategoriesByCarePlanID() throws {
-        let carePlan = try store.addCarePlanAndWait(OCKCarePlan(id: "B", title: "Care Plan A", patientID: nil))
-        try store.addTaskCategoryAndWait(OCKTaskCategory(id: "task category 1", title: "Medicine", carePlanID: nil))
-        var taskCategory = OCKTaskCategory(id: "task category 1", title: "Medicine", carePlanID: try carePlan.getLocalID())
-        taskCategory = try store.addTaskCategoryAndWait(taskCategory)
+        let carePlan = try store.addCarePlanAndWait(OCKCarePlan(id: "A", title: "Care Plan A", patientID: nil))
+        let taskCategory = try store.addTaskCategoryAndWait(OCKTaskCategory(id: "task category 1", title: "Medicine", carePlanID: try carePlan.getLocalID()))
         var query = OCKTaskCategoryQuery()
-        query.carePlanIDs = [carePlan.id]
+        query.ids = [taskCategory.id]
         let fetchedTaskCategories = try store.fetchTaskCategoriesAndWait(query: query)
         XCTAssert(fetchedTaskCategories == [taskCategory])
     }
@@ -154,7 +150,7 @@ class TestStoreTaskCategories: XCTestCase {
         var query = OCKTaskCategoryQuery(for: Date())
         query.sortDescriptors = [.title(ascending: true)]
         let fetched = try store.fetchTaskCategoriesAndWait(query: query)
-        XCTAssert(fetched.map { $0.title } == ["b", "a", "c"])
+        XCTAssert(fetched.map { $0.title } == ["Exercise", "Medicine", "Symptom"])
     }
 
     func testTaskCategoryNilQueryReturnsAllTaskCategories() throws {

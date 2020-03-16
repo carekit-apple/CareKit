@@ -103,7 +103,7 @@ public struct OCKTaskCategoryQuery: OCKAnyTaskCategoryQuery, Equatable {
     /// An array of tags to match against. If an object's tags contains one or more of entries, it will match the query.
     public var tags: [String] = []
 
-    // MARK: OCKAnyContactQuery
+    // MARK: OCKAnyTaskCategoryQuery
     public var ids: [String] = []
     public var remoteIDs: [String] = []
     public var carePlanIDs: [String] = []

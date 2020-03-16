@@ -65,7 +65,7 @@ class TestStoreTaskCategories: XCTestCase {
 
         taskCategory = try store.addTaskCategoryAndWait(taskCategory)
 
-        XCTAssert(taskCategory.title == "Amy")
+        XCTAssert(taskCategory.title == "Medicine")
         XCTAssertNotNil(taskCategory.schemaVersion)
     }
 

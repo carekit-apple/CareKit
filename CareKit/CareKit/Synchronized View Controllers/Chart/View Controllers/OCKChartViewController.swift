@@ -104,9 +104,9 @@ UIViewController, OCKChartViewDelegate {
         viewModelSubscription?.cancel()
         viewModelSubscription = controller.objectWillChange
             .context()
-            .sink { [view] context in
-                guard let typedView = view as? ViewSynchronizer.View else { fatalError("View should be of type \(ViewSynchronizer.View.self)") }
-                self.viewSynchronizer.updateView(typedView, context: context)
+            .sink { [weak self] context in
+                guard let typedView = self?.view as? ViewSynchronizer.View else { fatalError("View should be of type \(ViewSynchronizer.View.self)") }
+                self?.viewSynchronizer.updateView(typedView, context: context)
             }
     }
 

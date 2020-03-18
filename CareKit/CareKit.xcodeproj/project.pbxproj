@@ -8,9 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		032C86F02326B68D00D0A0EA /* Calendar+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 032C86EF2326B68D00D0A0EA /* Calendar+Extensions.swift */; };
-		1409474C22B020C4005C1D16 /* CareKitStore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1409474A22B020C4005C1D16 /* CareKitStore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1409474E22B020CA005C1D16 /* CareKitUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1409474D22B020CA005C1D16 /* CareKitUI.framework */; };
-		1409474F22B020CA005C1D16 /* CareKitUI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1409474D22B020CA005C1D16 /* CareKitUI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1409475122B02153005C1D16 /* CareKitStore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1409475022B02153005C1D16 /* CareKitStore.framework */; };
 		5101E6CB23733F3B0023B8A6 /* TestCustomCalendarViewSynchronizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5101E6CA23733F3B0023B8A6 /* TestCustomCalendarViewSynchronizer.swift */; };
 		51094D94234F8E3E00B4BFFB /* OCKTaskController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51094D93234F8E3E00B4BFFB /* OCKTaskController.swift */; };
@@ -141,21 +139,6 @@
 			remoteInfo = CareKit;
 		};
 /* End PBXContainerItemProxy section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		1409474722B020A2005C1D16 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				1409474F22B020CA005C1D16 /* CareKitUI.framework in Embed Frameworks */,
-				1409474C22B020C4005C1D16 /* CareKitStore.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		032C86EF2326B68D00D0A0EA /* Calendar+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Calendar+Extensions.swift"; sourceTree = "<group>"; };
@@ -750,7 +733,6 @@
 				8605A5B71C4F04EC00DD65FF /* Headers */,
 				8605A5B61C4F04EC00DD65FF /* Frameworks */,
 				8605A5B81C4F04EC00DD65FF /* Resources */,
-				1409474722B020A2005C1D16 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);

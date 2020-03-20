@@ -48,21 +48,17 @@ open class OCKCheckmarkButton: OCKAnimatedButton<UIView> {
         self?.invalidateIntrinsicContentSize()
     }
 
-    lazy var lineWidth = OCKAccessibleValue(container: style(), keyPath: \.appearance.borderWidth1) { [circleMaskBorderLayer] scaledValue in
-        circleMaskBorderLayer.lineWidth = scaledValue
+    lazy var lineWidth = OCKAccessibleValue(container: style(), keyPath: \.appearance.borderWidth1) { [weak self] scaledValue in
+        guard let self = self else { return }
+        self.updateLayers(for: self.bounds, borderWidth: scaledValue)
     }
 
     lazy var imageViewPointSize = OCKAccessibleValue(container: style(), keyPath: \.dimension.symbolPointSize3) { [imageView] scaledValue in
         imageView.preferredSymbolConfiguration = .init(pointSize: scaledValue, weight: .bold)
     }
 
-    private let circleMaskBorderLayer: CAShapeLayer = {
-        let layer = CAShapeLayer()
-        layer.fillColor = UIColor.clear.cgColor
-        return layer
-    }()
-
-    private let circleMask = CAShapeLayer()
+    private let borderLayer = CAShapeLayer()
+    private let fillLayer = CAShapeLayer()
 
     // MARK: Life cycle
 
@@ -78,7 +74,7 @@ open class OCKCheckmarkButton: OCKAnimatedButton<UIView> {
 
     override open func layoutSubviews() {
         super.layoutSubviews()
-        updateMaskFor(rect: bounds)
+        updateLayers(for: bounds, borderWidth: lineWidth.scaledValue)
     }
 
     // MARK: Methods
@@ -87,12 +83,13 @@ open class OCKCheckmarkButton: OCKAnimatedButton<UIView> {
         constrainSubviews()
         styleSubviews()
 
-        layer.mask = circleMask
-        layer.addSublayer(circleMaskBorderLayer)
+        layer.insertSublayer(borderLayer, below: imageView.layer)
+        layer.insertSublayer(fillLayer, below: imageView.layer)
     }
 
     private func styleSubviews() {
         clipsToBounds = true
+        updateLayerTintColors()
         setStyleForSelectedState(false)
     }
 
@@ -104,9 +101,22 @@ open class OCKCheckmarkButton: OCKAnimatedButton<UIView> {
         ])
     }
 
-    private func updateMaskFor(rect: CGRect) {
-        circleMask.path = UIBezierPath(ovalIn: rect).cgPath
-        circleMaskBorderLayer.path = UIBezierPath(ovalIn: rect).cgPath
+    private func updateLayers(for bounds: CGRect, borderWidth: CGFloat) {
+        // Outer mask to make the view a circle
+        let circleMask = UIBezierPath(ovalIn: bounds)
+
+        // Set the path for the fill layer
+        fillLayer.path = circleMask.cgPath
+
+        // A smaller rect that takes the border width into account
+        let innerRect = CGRect(x: bounds.minX + borderWidth, y: bounds.minY + borderWidth,
+                               width: bounds.width - borderWidth * 2, height: bounds.height - borderWidth * 2)
+        let path = UIBezierPath(ovalIn: innerRect)
+        path.append(circleMask)
+
+        // Set the path for the border layer
+        borderLayer.fillRule = .evenOdd
+        borderLayer.path = path.cgPath
     }
 
     override open func styleDidChange() {
@@ -122,11 +132,7 @@ open class OCKCheckmarkButton: OCKAnimatedButton<UIView> {
 
     override open func tintColorDidChange() {
         super.tintColorDidChange()
-        circleMaskBorderLayer.strokeColor = tintColor.cgColor
-
-        if isSelected {
-            backgroundColor = tintColor
-        }
+        updateLayerTintColors()
     }
 
     override open func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -141,10 +147,30 @@ open class OCKCheckmarkButton: OCKAnimatedButton<UIView> {
     override open func setStyleForSelectedState(_ isSelected: Bool) {
         if isSelected {
             imageView.tintColor = style().color.customBackground
-            backgroundColor = tintColor
         } else {
             imageView.tintColor = .clear
-            backgroundColor = .clear
         }
+    }
+
+    open override func setSelected(_ isSelected: Bool, animated: Bool) {
+        super.setSelected(isSelected, animated: animated)
+
+        CATransaction.performWithoutAnimations { [weak self] in
+            self?.fillLayer.isHidden = !isSelected
+        }
+    }
+
+    private func updateLayerTintColors() {
+        fillLayer.fillColor = tintColor.cgColor
+        borderLayer.fillColor = tintColor.cgColor
+    }
+}
+
+private extension CATransaction {
+    static func performWithoutAnimations(_ block: () -> Void) {
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        block()
+        CATransaction.commit()
     }
 }

@@ -142,22 +142,16 @@ open class OCKCheckmarkButton: OCKAnimatedButton<UIView> {
         }
     }
 
-    /// Set the style for the selected state. This function may be called in an animation block if the state is being animated.
-    /// - Parameter isSelected: True if the button is in the selected state.
-    override open func setStyleForSelectedState(_ isSelected: Bool) {
-        if isSelected {
-            imageView.tintColor = style().color.customBackground
-        } else {
-            imageView.tintColor = .clear
-        }
-    }
+    override open func setStyleForSelectedState(_ isSelected: Bool) {}
 
-    open override func setSelected(_ isSelected: Bool, animated: Bool) {
+    override open func setSelected(_ isSelected: Bool, animated: Bool) {
         super.setSelected(isSelected, animated: animated)
 
         CATransaction.performWithoutAnimations { [weak self] in
             self?.fillLayer.isHidden = !isSelected
         }
+
+        imageView.tintColor = isSelected ? style().color.customBackground : .clear
     }
 
     private func updateLayerTintColors() {

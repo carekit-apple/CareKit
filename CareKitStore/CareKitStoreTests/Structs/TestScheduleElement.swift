@@ -51,6 +51,13 @@ class TestScheduleElement: XCTestCase {
     var element: OCKScheduleElement {
         return OCKScheduleElement(start: date, end: nil, interval: interval, text: "Wedding Anniversary", targetValues: [])
     }
+    
+    func testSerialization() throws {
+        XCTAssertNoThrow(try JSONEncoder().encode(element))
+        let data = try JSONEncoder().encode(element)
+        let decoded = try JSONDecoder().decode(OCKScheduleElement.self, from: data)
+        XCTAssert(element == decoded)
+    }
 
     func testSubscript() {
         let event = element[0]

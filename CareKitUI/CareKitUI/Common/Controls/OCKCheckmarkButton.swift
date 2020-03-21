@@ -147,10 +147,11 @@ open class OCKCheckmarkButton: OCKAnimatedButton<UIView> {
     override open func setSelected(_ isSelected: Bool, animated: Bool) {
         super.setSelected(isSelected, animated: animated)
 
+        // Note: CALayers properties are implicitly animated, but this function may get called multiple times during the course of an animation.
+        // Without turning off animations, the button will flash when tapped multiple times.
         CATransaction.performWithoutAnimations { [weak self] in
             self?.fillLayer.isHidden = !isSelected
         }
-
         imageView.tintColor = isSelected ? style().color.customBackground : .clear
     }
 

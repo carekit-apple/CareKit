@@ -34,7 +34,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 "CALL" = "Call";
 "COMPLETED" = "Completed";
 "CONTACTS" = "Contacts";
-"TASKCATEGORIES" = "Task Categories";
+"TASK_CATEGORIES" = "Task Categories";
 "DELETE" = "Delete";
 "DONE" = "Done";
 "DOUBLE_TAP_MAP" = "Double-tap to open directions in Maps";

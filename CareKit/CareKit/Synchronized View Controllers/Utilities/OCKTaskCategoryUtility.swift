@@ -1,5 +1,4 @@
 
-//
 /*
  Copyright (c) 2020, Apple Inc. All rights reserved.
  
@@ -30,7 +29,6 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import MapKit
 import UIKit
 
 struct OCKTaskCategoryUtility {

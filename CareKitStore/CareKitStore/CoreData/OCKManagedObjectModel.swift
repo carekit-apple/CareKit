@@ -766,14 +766,8 @@ private func makeTaskCategoryEntity() -> NSEntityDescription {
     title.attributeType = .stringAttributeType
     title.isOptional = true
 
-    let other = NSAttributeDescription()
-    other.name = "otherTaskCategoryInfoDictionary"
-    other.attributeType = .transformableAttributeType
-    other.isOptional = true
-    other.valueTransformerName = secureUnarchiver
-
     taskCategoryEntity.properties = makeObjectAttributes() + makeVersionedAttributes() + [
-        title, other
+        title
     ]
     return taskCategoryEntity
 }

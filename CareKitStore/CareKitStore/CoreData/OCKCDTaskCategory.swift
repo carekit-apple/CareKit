@@ -1,4 +1,3 @@
-//
 /*
  Copyright (c) 2020, Apple Inc. All rights reserved.
  
@@ -41,22 +40,5 @@ class OCKCDTaskCategory: OCKCDVersionedObject {
         if !allowsMissingRelationships && carePlan == nil {
             throw OCKStoreError.invalidValue(reason: "Care Plan relationship may not be nil!")
         }
-    }
-}
-
-private extension Dictionary where Key == String, Value == String {
-    func asLabeledValues() -> [OCKLabeledValue] {
-        let sortedKeys = keys.sorted()
-        return sortedKeys.map { OCKLabeledValue(label: $0, value: self[$0]!) }
-    }
-}
-
-private extension Array where Element == OCKLabeledValue {
-    func asDictionary() -> [String: String] {
-        var dictionary = [String: String]()
-        for labeldValue in self {
-            dictionary[labeldValue.label] = labeldValue.value
-        }
-        return dictionary
     }
 }

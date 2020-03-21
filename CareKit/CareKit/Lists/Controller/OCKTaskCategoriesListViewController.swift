@@ -1,4 +1,3 @@
-//
 /*
  Copyright (c) 2020, Apple Inc. All rights reserved.
  
@@ -77,7 +76,7 @@ open class OCKTaskCategoriesListViewController: OCKListViewController {
     override open func viewDidLoad() {
         super.viewDidLoad()
         navigationController?.navigationBar.prefersLargeTitles = true
-        title = loc("TASKCATEGORIES")
+        title = loc("TASK_CATEGORIES")
         subscribe()
         fetchTaskCategories()
     }

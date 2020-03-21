@@ -57,7 +57,6 @@
 		5167B925233418AA002BC69C /* Updatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5167B924233418AA002BC69C /* Updatable.swift */; };
 		5167B92723341AB3002BC69C /* OCKInstructionsTaskView+Updatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5167B92623341AB3002BC69C /* OCKInstructionsTaskView+Updatable.swift */; };
 		5167B92923341C00002BC69C /* OCKLogTaskView+Updatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5167B92823341C00002BC69C /* OCKLogTaskView+Updatable.swift */; };
-		5167B92F23343A64002BC69C /* OCKHeaderView+Updatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5167B92E23343A64002BC69C /* OCKHeaderView+Updatable.swift */; };
 		5167B93223343CE0002BC69C /* OCKChecklistTaskView+Updatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5167B93123343CE0002BC69C /* OCKChecklistTaskView+Updatable.swift */; };
 		51692D9D23564C2C00D03A44 /* OCKDailyPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64EABD9C2321B1AF00CFBB9F /* OCKDailyPageViewController.swift */; };
 		516CD56A2354D370005E2779 /* OCKGridTaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 516CD5692354D370005E2779 /* OCKGridTaskViewController.swift */; };
@@ -116,7 +115,7 @@
 		CE27483F23F9867B009A10E4 /* OCKSimpleTaskCategoryView+Updatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27483E23F9867B009A10E4 /* OCKSimpleTaskCategoryView+Updatable.swift */; };
 		CE27484123F9870D009A10E4 /* OCKDetailedTaskCategoryView+Updatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27484023F9870D009A10E4 /* OCKDetailedTaskCategoryView+Updatable.swift */; };
 		CE27484323F98766009A10E4 /* OCKTaskCategoryUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27484223F98766009A10E4 /* OCKTaskCategoryUtility.swift */; };
-		CE6EDF8923FEC6BC00387CD7 /* OCKTaskCategoryHeaderView+Updatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6EDF8823FEC6BC00387CD7 /* OCKTaskCategoryHeaderView+Updatable.swift */; };
+		CE5466DE2426A1FC00BE15CB /* OCKHeaderView+Updatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5466DD2426A1FC00BE15CB /* OCKHeaderView+Updatable.swift */; };
 		CEC85B1A23FA847A003F1B4F /* TestSimpleTaskCategoryViewSynchronizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC85B1923FA847A003F1B4F /* TestSimpleTaskCategoryViewSynchronizer.swift */; };
 		CEC85B1C23FA8522003F1B4F /* TestDetailedTaskCategoryViewSynchronizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC85B1B23FA8522003F1B4F /* TestDetailedTaskCategoryViewSynchronizer.swift */; };
 		CEC85B1E23FA8623003F1B4F /* TestCustomTaskCategoryViewSynchronizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC85B1D23FA8623003F1B4F /* TestCustomTaskCategoryViewSynchronizer.swift */; };
@@ -228,7 +227,6 @@
 		5167B924233418AA002BC69C /* Updatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Updatable.swift; sourceTree = "<group>"; };
 		5167B92623341AB3002BC69C /* OCKInstructionsTaskView+Updatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OCKInstructionsTaskView+Updatable.swift"; sourceTree = "<group>"; };
 		5167B92823341C00002BC69C /* OCKLogTaskView+Updatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OCKLogTaskView+Updatable.swift"; sourceTree = "<group>"; };
-		5167B92E23343A64002BC69C /* OCKHeaderView+Updatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OCKHeaderView+Updatable.swift"; sourceTree = "<group>"; };
 		5167B93123343CE0002BC69C /* OCKChecklistTaskView+Updatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OCKChecklistTaskView+Updatable.swift"; sourceTree = "<group>"; };
 		516CD5692354D370005E2779 /* OCKGridTaskViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKGridTaskViewController.swift; sourceTree = "<group>"; };
 		517F3E4423345872004FE251 /* OCKCartesianChartView+Updatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OCKCartesianChartView+Updatable.swift"; sourceTree = "<group>"; };
@@ -290,7 +288,7 @@
 		CE27483E23F9867B009A10E4 /* OCKSimpleTaskCategoryView+Updatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OCKSimpleTaskCategoryView+Updatable.swift"; sourceTree = "<group>"; };
 		CE27484023F9870D009A10E4 /* OCKDetailedTaskCategoryView+Updatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OCKDetailedTaskCategoryView+Updatable.swift"; sourceTree = "<group>"; };
 		CE27484223F98766009A10E4 /* OCKTaskCategoryUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKTaskCategoryUtility.swift; sourceTree = "<group>"; };
-		CE6EDF8823FEC6BC00387CD7 /* OCKTaskCategoryHeaderView+Updatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OCKTaskCategoryHeaderView+Updatable.swift"; sourceTree = "<group>"; };
+		CE5466DD2426A1FC00BE15CB /* OCKHeaderView+Updatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OCKHeaderView+Updatable.swift"; sourceTree = "<group>"; };
 		CEC85B1923FA847A003F1B4F /* TestSimpleTaskCategoryViewSynchronizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestSimpleTaskCategoryViewSynchronizer.swift; sourceTree = "<group>"; };
 		CEC85B1B23FA8522003F1B4F /* TestDetailedTaskCategoryViewSynchronizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestDetailedTaskCategoryViewSynchronizer.swift; sourceTree = "<group>"; };
 		CEC85B1D23FA8623003F1B4F /* TestCustomTaskCategoryViewSynchronizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestCustomTaskCategoryViewSynchronizer.swift; sourceTree = "<group>"; };
@@ -427,8 +425,7 @@
 			isa = PBXGroup;
 			children = (
 				5167B924233418AA002BC69C /* Updatable.swift */,
-				5167B92E23343A64002BC69C /* OCKHeaderView+Updatable.swift */,
-				CE6EDF8823FEC6BC00387CD7 /* OCKTaskCategoryHeaderView+Updatable.swift */,
+				CE5466DD2426A1FC00BE15CB /* OCKHeaderView+Updatable.swift */,
 				CE27483D23F98656009A10E4 /* TaskCategory */,
 				5167B93023343CB6002BC69C /* Task */,
 				517F3E4323345831004FE251 /* Chart */,
@@ -1008,7 +1005,6 @@
 				515E17D22351262100637153 /* OCKTaskEvents.swift in Sources */,
 				CE27481623F8445F009A10E4 /* OCKDetailedTaskCategoryViewController.swift in Sources */,
 				51586185235525C7006872CE /* OCKContactControllerProtocol+Methods.swift in Sources */,
-				5167B92F23343A64002BC69C /* OCKHeaderView+Updatable.swift in Sources */,
 				5112731A235E588B007B18DF /* OCKCartesianChartController.swift in Sources */,
 				51EF7E48234FAB7A00B28C0A /* OCKInstructionsTaskViewSynchronizer.swift in Sources */,
 				51B1E41B2348149D00AA77D0 /* OCKContactController.swift in Sources */,
@@ -1023,6 +1019,7 @@
 				64EABDF12321B1AF00CFBB9F /* UIViewController+Extensions.swift in Sources */,
 				51108C6523596BBD0029F7A2 /* OCKSynchronizationContext.swift in Sources */,
 				51127320235E58D5007B18DF /* OCKSimpleTaskController.swift in Sources */,
+				CE5466DE2426A1FC00BE15CB /* OCKHeaderView+Updatable.swift in Sources */,
 				51AA2304234E687B00A90DA2 /* OCKSimpleContactViewSynchronizer.swift in Sources */,
 				64EABE002321B1AF00CFBB9F /* OCKStoreNotifications.swift in Sources */,
 				64EABDEF2321B1AF00CFBB9F /* CareKit.swift in Sources */,
@@ -1066,7 +1063,6 @@
 				51094D94234F8E3E00B4BFFB /* OCKTaskController.swift in Sources */,
 				64EABDEA2321B1AF00CFBB9F /* OCKListViewController.swift in Sources */,
 				64EABE012321B1AF00CFBB9F /* OCKSynchronizedStoreManager.swift in Sources */,
-				CE6EDF8923FEC6BC00387CD7 /* OCKTaskCategoryHeaderView+Updatable.swift in Sources */,
 				514FDE392356362B0044E3B8 /* OCKCalendarController.swift in Sources */,
 				51676C0A23556F29002C97E7 /* OCKCalendarControllerProtocol.swift in Sources */,
 				CE27483A23F983F9009A10E4 /* OCKSimpleTaskCategorySynchronizer.swift in Sources */,

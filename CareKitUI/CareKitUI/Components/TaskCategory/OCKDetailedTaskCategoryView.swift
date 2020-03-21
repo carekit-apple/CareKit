@@ -1,4 +1,3 @@
-//
 /*
  Copyright (c) 2020, Apple Inc. All rights reserved.
  
@@ -58,11 +57,11 @@ open class OCKDetailedTaskCategoryView: OCKView, OCKTaskCategoryDisplayable {
     }()
 
     /// Header stack view that shows an `iconImageView` and a separator.
-    public let headerView = OCKTaskCategoryHeaderView {
+    public let headerView = OCKHeaderView {
         $0.showsIconImage = true
         $0.showsSeparator = false
         $0.showsDetailDisclosure = true
-        $0.circleImageView = true
+        $0.isIconImageCircular = true
     }
 
     /// The default image that can be used as a placeholder for the `iconImageView` in the `headerView`.

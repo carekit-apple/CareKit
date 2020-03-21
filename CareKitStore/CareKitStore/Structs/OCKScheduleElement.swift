@@ -78,9 +78,11 @@ public struct OCKScheduleElement: Codable, Equatable, OCKObjectCompatible {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             if try container.decodeIfPresent(Bool.self, forKey: .isAllDay) == true {
                 self = .allDay
+                return
             }
             if let seconds = try container.decodeIfPresent(Double.self, forKey: .seconds) {
                 self = .seconds(seconds)
+                return
             }
             throw DecodingError.dataCorruptedError(forKey: CodingKeys.seconds, in: container, debugDescription: "No seconds or allDay key was found!")
         }

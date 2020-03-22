@@ -88,6 +88,7 @@ open class OCKCompletionRingButton: OCKAnimatedButton<OCKStackView> {
 
     /// Called when the tint color of the view changes.
     override open func tintColorDidChange() {
+        super.tintColorDidChange()
         updateRingColors()
         styleTintedViews()
     }

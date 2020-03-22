@@ -152,7 +152,7 @@ open class OCKCartesianGraphView: OCKView, OCKMultiPlotable {
 
     override open func tintColorDidChange() {
         super.tintColorDidChange()
-        axisView.tintColor = tintColor
+        applyTintColor()
     }
 
     private func updateScaling(for dataSeries: [OCKDataSeries]) {
@@ -191,5 +191,11 @@ open class OCKCartesianGraphView: OCKView, OCKMultiPlotable {
             legend.centerXAnchor.constraint(equalTo: centerXAnchor),
             legend.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor)
         ])
+
+        applyTintColor()
+    }
+
+    private func applyTintColor() {
+        axisView.tintColor = tintColor
     }
 }

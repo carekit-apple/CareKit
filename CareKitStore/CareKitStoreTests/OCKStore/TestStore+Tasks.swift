@@ -92,6 +92,24 @@ class TestStoreTasks: XCTestCase {
         guard let fetchedElement = task.schedule.elements.first else { XCTFail("Bad schedule"); return }
         XCTAssertTrue(fetchedElement.duration == .allDay)
     }
+    
+    func testAddUpdateOrDelete() throws {
+        let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
+        let taskC = OCKTask(id: "C", title: "OriginalC", carePlanID: nil, schedule: schedule)
+        try store.addTaskAndWait(OCKTask(id: "A", title: "OriginalA", carePlanID: nil, schedule: schedule))
+        try store.addTaskAndWait(taskC)
+        
+        let taskA = OCKTask(id: "A", title: "UpdatedA", carePlanID: nil, schedule: schedule)
+        let taskB = OCKTask(id: "B", title: "OriginalB", carePlanID: nil, schedule: schedule)
+        try store.addUpdateOrDeleteTasksAndWait(addOrUpdate: [taskA, taskB], delete: [taskC])
+        
+        let tasks = try store.fetchTasksAndWait(query: OCKTaskQuery())
+        let titles = tasks.map { $0.title }
+        XCTAssert(tasks.count == 3)
+        XCTAssert(titles.contains("OriginalA"))
+        XCTAssert(titles.contains("UpdatedA"))
+        XCTAssert(titles.contains("OriginalB"))
+    }
 
     // MARK: Querying
 
@@ -227,6 +245,7 @@ class TestStoreTasks: XCTestCase {
         let fetched = try store.fetchTasksAndWait(query: query).first
         XCTAssert(fetched == task)
     }
+    
     // MARK: Versioning
 
     func testUpdateTaskCreateNewVersion() throws {

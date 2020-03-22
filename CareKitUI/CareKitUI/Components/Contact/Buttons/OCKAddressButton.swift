@@ -99,10 +99,10 @@ open class OCKAddressButton: OCKAnimatedButton<OCKStackView> {
     private func styleSubviews() {
         accessibilityLabel = titleLabel.text
         accessibilityHint = loc("DOUBLE_TAP_MAP")
-        styleTintedViews()
+        applyTintColor()
     }
 
-    private func styleTintedViews() {
+    private func applyTintColor() {
         titleLabel.textColor = tintColor
     }
 
@@ -131,7 +131,7 @@ open class OCKAddressButton: OCKAnimatedButton<OCKStackView> {
 
     override open func tintColorDidChange() {
         super.tintColorDidChange()
-        styleTintedViews()
+        applyTintColor()
     }
 
     override open func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {

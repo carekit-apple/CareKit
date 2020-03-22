@@ -88,7 +88,7 @@ open class OCKLogItemButton: OCKAnimatedButton<OCKStackView> {
 
     private func styleSubviews() {
         contentStackView.setCustomSpacing(Constants.spacing, after: imageView)
-        styleTintedViews()
+        applyTintColor()
     }
 
     private func addSubviews() {
@@ -106,7 +106,7 @@ open class OCKLogItemButton: OCKAnimatedButton<OCKStackView> {
         )
     }
 
-    private func styleTintedViews() {
+    private func applyTintColor() {
         detailLabel.textColor = tintColor
     }
 
@@ -120,6 +120,6 @@ open class OCKLogItemButton: OCKAnimatedButton<OCKStackView> {
 
     override open func tintColorDidChange() {
         super.tintColorDidChange()
-        styleTintedViews()
+        applyTintColor()
     }
 }

@@ -88,7 +88,7 @@ private class OCKCircleLabelView: OCKView {
 
     override func tintColorDidChange() {
         super.tintColorDidChange()
-        styleTintedViews()
+        applyTintColor()
     }
 
     var isSelected: Bool = false {
@@ -113,7 +113,7 @@ private class OCKCircleLabelView: OCKView {
         super.setup()
         addSubview(label)
         updateLabelColor()
-        styleTintedViews()
+        applyTintColor()
 
         label.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -144,7 +144,7 @@ private class OCKCircleLabelView: OCKView {
         updateLabelColor()
     }
 
-    private func styleTintedViews() {
+    private func applyTintColor() {
         circleLayer.fillColor = isSelected ? tintColor.cgColor : nil
     }
 }

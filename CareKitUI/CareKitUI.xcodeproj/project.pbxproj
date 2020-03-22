@@ -67,7 +67,6 @@
 		518F9DBC22961BF6009CAA48 /* OCKCardable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9D8322961BF5009CAA48 /* OCKCardable.swift */; };
 		518F9DC022961BF6009CAA48 /* OCKStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9D8722961BF5009CAA48 /* OCKStackView.swift */; };
 		519288732427E2DC00D0AF43 /* CATransaction+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 519288722427E2DC00D0AF43 /* CATransaction+Extension.swift */; };
-		519288742427E2DC00D0AF43 /* CATransaction+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 519288722427E2DC00D0AF43 /* CATransaction+Extension.swift */; };
 		5196B54322D5872C00800706 /* OCKTaskDisplayable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5196B54222D5872C00800706 /* OCKTaskDisplayable.swift */; };
 		51AB06C022FE539400B73FC2 /* OCKStylable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51AB06BF22FE539400B73FC2 /* OCKStylable.swift */; };
 		51AB06C222FE53E300B73FC2 /* TestStylableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51AB06C122FE53E300B73FC2 /* TestStylableView.swift */; };

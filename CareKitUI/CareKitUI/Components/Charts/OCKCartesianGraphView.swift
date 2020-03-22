@@ -152,7 +152,7 @@ open class OCKCartesianGraphView: OCKView, OCKMultiPlotable {
 
     override open func tintColorDidChange() {
         super.tintColorDidChange()
-        applyTintColor()
+        axisView.tintColor = tintColor
     }
 
     private func updateScaling(for dataSeries: [OCKDataSeries]) {
@@ -164,9 +164,6 @@ open class OCKCartesianGraphView: OCKView, OCKMultiPlotable {
 
     override func setup() {
         super.setup()
-
-        applyTintColor()
-
         [gridView, plotView, axisView, legend].forEach { addSubview($0) }
 
         gridView.xMinimum = plotView.xMinimum
@@ -194,9 +191,5 @@ open class OCKCartesianGraphView: OCKView, OCKMultiPlotable {
             legend.centerXAnchor.constraint(equalTo: centerXAnchor),
             legend.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor)
         ])
-    }
-
-    private func applyTintColor() {
-        axisView.tintColor = tintColor
     }
 }

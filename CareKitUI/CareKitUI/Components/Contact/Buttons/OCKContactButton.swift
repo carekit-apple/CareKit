@@ -117,6 +117,8 @@ open class OCKContactButton: OCKAnimatedButton<OCKStackView> {
         case .email: accessibilityLabel = loc("EMAIL")
         case .message: accessibilityLabel = loc("MESSAGE")
         }
+
+        styleTintedViews()
     }
 
     private func addSubviews() {
@@ -128,10 +130,14 @@ open class OCKContactButton: OCKAnimatedButton<OCKStackView> {
         NSLayoutConstraint.activate(contentStackView.constraints(equalTo: layoutMarginsGuide))
     }
 
-    override open func tintColorDidChange() {
-        super.tintColorDidChange()
+    private func styleTintedViews() {
         imageView.tintColor = tintColor
         label.textColor = tintColor
+    }
+
+    override open func tintColorDidChange() {
+        super.tintColorDidChange()
+        styleTintedViews()
     }
 
     override open func styleDidChange() {

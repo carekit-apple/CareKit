@@ -160,12 +160,3 @@ open class OCKCheckmarkButton: OCKAnimatedButton<UIView> {
         borderLayer.fillColor = tintColor.cgColor
     }
 }
-
-private extension CATransaction {
-    static func performWithoutAnimations(_ block: () -> Void) {
-        CATransaction.begin()
-        CATransaction.setDisableActions(true)
-        block()
-        CATransaction.commit()
-    }
-}

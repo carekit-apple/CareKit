@@ -145,6 +145,9 @@ private class OCKCircleLabelView: OCKView {
     }
 
     private func applyTintColor() {
-        circleLayer.fillColor = isSelected ? tintColor.cgColor : nil
+        // Note: If animation is not disabled, the axis will fly in from the top of the view.
+        CATransaction.performWithoutAnimations {
+            circleLayer.fillColor = isSelected ? tintColor.cgColor : nil
+        }
     }
 }

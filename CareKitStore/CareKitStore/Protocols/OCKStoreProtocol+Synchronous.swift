@@ -294,7 +294,21 @@ extension OCKReadOnlyEventStore {
 }
 
 extension OCKAnyTaskStore {
+    @discardableResult
     func addAnyTaskAndWait(_ task: OCKAnyTask) throws -> OCKAnyTask {
         try performSynchronously { addAnyTask(task, callbackQueue: backgroundQueue, completion: $0) }
+    }
+}
+
+extension OCKCoreDataTaskStoreProtocol {
+    @discardableResult
+    func addUpdateOrDeleteTasksAndWait(addOrUpdate tasksToAddOrUpdate: [Task],
+                                       delete tasksToDelete: [Task]) throws -> ([Task], [Task], [Task]) {
+        try performSynchronously {
+            addUpdateOrDeleteTasks(
+                addOrUpdate: tasksToAddOrUpdate,
+                delete: tasksToDelete,
+                callbackQueue: backgroundQueue, completion: $0)
+        }
     }
 }

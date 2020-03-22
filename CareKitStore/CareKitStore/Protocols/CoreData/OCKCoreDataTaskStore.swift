@@ -83,7 +83,7 @@ extension OCKCoreDataTaskStoreProtocol {
         context.perform {
             do {
                 try OCKCDTask.validateNewIDs(tasks.map { $0.id }, in: self.context)
-                let persistableTasks = tasks.map { self.createTask(from: $0) }
+                let persistableTasks = tasks.map(self.createTask)
                 try self.context.save()
                 let addedTasks = persistableTasks.map(self.makeTask)
                 callbackQueue.async {
@@ -113,6 +113,47 @@ extension OCKCoreDataTaskStoreProtocol {
                     self.taskDelegate?.taskStore(self, didUpdateTasks: tasks)
                     completion?(.success(tasks))
                 }
+            } catch {
+                self.context.rollback()
+                callbackQueue.async {
+                    completion?(.failure(.updateFailed(reason: "\(error.localizedDescription)")))
+                }
+            }
+        }
+    }
+    
+    /// Adds, updates, and deletes tasks in a single atomic transaction
+    /// - Parameter tasks: Tasks that should be either added or updated, depending on whether or not they already exist.
+    /// - Parameter deleteTasks: Tasks that should be deleted from the store.
+    /// - Parameter callbackQueue: The queue that the callback will be performed on
+    /// - Parameter completion: A result closure that takes arrays of added, updated, and deleted tasks.
+    public func addUpdateOrDeleteTasks(addOrUpdate tasks: [Task], delete deleteTasks: [Task],
+                                       callbackQueue: DispatchQueue = .main,
+                                       completion: ((Result<([Task], [Task], [Task]), OCKStoreError>) -> Void)? = nil) {
+        context.perform {
+            do {
+                let existingTaskIDs = OCKCDTask.fetchHeads(ids: tasks.map { $0.id }, in: self.context).map { $0.id }
+                let addTasks = tasks.filter { !existingTaskIDs.contains($0.id) }
+                let updateTasks = tasks.filter { existingTaskIDs.contains($0.id) }
+                try self.confirmUpdateWillNotCauseDataLoss(tasks: updateTasks)
+                
+                let inserted = addTasks.map(self.createTask)
+                let updated = try self.performVersionedUpdate(values: updateTasks, addNewVersion: self.createTask)
+                let deleted: [OCKCDTask] = try self.performDeletion(values: deleteTasks)
+
+                try self.context.save()
+                
+                let addedTasks = inserted.map(self.makeTask)
+                let updatedTasks = updated.map(self.makeTask)
+                let deletedTasks = deleted.map(self.makeTask)
+                
+                callbackQueue.async {
+                    self.taskDelegate?.taskStore(self, didAddTasks: addedTasks)
+                    self.taskDelegate?.taskStore(self, didUpdateTasks: updatedTasks)
+                    self.taskDelegate?.taskStore(self, didDeleteTasks: deleteTasks)
+                    completion?(.success((addedTasks, updateTasks, deletedTasks)))
+                }
+                
             } catch {
                 self.context.rollback()
                 callbackQueue.async {

@@ -88,7 +88,7 @@ private class OCKCircleLabelView: OCKView {
 
     override func tintColorDidChange() {
         super.tintColorDidChange()
-        circleLayer.fillColor = isSelected ? tintColor.cgColor : nil
+        applyTintColor()
     }
 
     var isSelected: Bool = false {
@@ -113,6 +113,7 @@ private class OCKCircleLabelView: OCKView {
         super.setup()
         addSubview(label)
         updateLabelColor()
+        applyTintColor()
 
         label.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -141,5 +142,12 @@ private class OCKCircleLabelView: OCKView {
     override func styleDidChange() {
         super.styleDidChange()
         updateLabelColor()
+    }
+
+    private func applyTintColor() {
+        // Note: If animation is not disabled, the axis will fly in from the top of the view.
+        CATransaction.performWithoutAnimations {
+            circleLayer.fillColor = isSelected ? tintColor.cgColor : nil
+        }
     }
 }

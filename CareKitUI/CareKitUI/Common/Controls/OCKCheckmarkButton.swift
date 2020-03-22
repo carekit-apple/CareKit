@@ -89,7 +89,7 @@ open class OCKCheckmarkButton: OCKAnimatedButton<UIView> {
 
     private func styleSubviews() {
         clipsToBounds = true
-        updateLayerTintColors()
+        applyTintColor()
         setStyleForSelectedState(false)
     }
 
@@ -132,7 +132,7 @@ open class OCKCheckmarkButton: OCKAnimatedButton<UIView> {
 
     override open func tintColorDidChange() {
         super.tintColorDidChange()
-        updateLayerTintColors()
+        applyTintColor()
     }
 
     override open func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -155,17 +155,8 @@ open class OCKCheckmarkButton: OCKAnimatedButton<UIView> {
         imageView.tintColor = isSelected ? style().color.customBackground : .clear
     }
 
-    private func updateLayerTintColors() {
+    private func applyTintColor() {
         fillLayer.fillColor = tintColor.cgColor
         borderLayer.fillColor = tintColor.cgColor
-    }
-}
-
-private extension CATransaction {
-    static func performWithoutAnimations(_ block: () -> Void) {
-        CATransaction.begin()
-        CATransaction.setDisableActions(true)
-        block()
-        CATransaction.commit()
     }
 }

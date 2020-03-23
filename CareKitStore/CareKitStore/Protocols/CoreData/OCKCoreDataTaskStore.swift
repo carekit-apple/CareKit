@@ -122,11 +122,6 @@ extension OCKCoreDataTaskStoreProtocol {
         }
     }
     
-    /// Adds, updates, and deletes tasks in a single atomic transaction
-    /// - Parameter tasks: Tasks that should be either added or updated, depending on whether or not they already exist.
-    /// - Parameter deleteTasks: Tasks that should be deleted from the store.
-    /// - Parameter callbackQueue: The queue that the callback will be performed on
-    /// - Parameter completion: A result closure that takes arrays of added, updated, and deleted tasks.
     public func addUpdateOrDeleteTasks(addOrUpdate tasks: [Task], delete deleteTasks: [Task],
                                        callbackQueue: DispatchQueue = .main,
                                        completion: ((Result<([Task], [Task], [Task]), OCKStoreError>) -> Void)? = nil) {

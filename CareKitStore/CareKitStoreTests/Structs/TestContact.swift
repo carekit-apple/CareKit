@@ -30,6 +30,7 @@
 
 @testable import CareKitStore
 import XCTest
+import Contacts
 
 class TestContact: XCTestCase {
 
@@ -44,5 +45,35 @@ class TestContact: XCTestCase {
         plan.localDatabaseID = OCKLocalVersionID("abc")
         let contact = OCKContact(id: "B", givenName: "Mary", familyName: "Frost", carePlanID: plan.localDatabaseID)
         XCTAssertTrue(contact.belongs(to: plan))
+    }
+    
+    func testContactSerialzation() throws {
+        var contact = OCKContact(id: "jane", givenName: "Jane", familyName: "Daniels", carePlanID: nil)
+        contact.asset = "JaneDaniels"
+        contact.title = "Family Practice Doctor"
+        contact.role = "Dr. Daniels is a family practice doctor with 8 years of experience."
+        contact.emailAddresses = [OCKLabeledValue(label: CNLabelEmailiCloud, value: "janedaniels@icloud.com")]
+        contact.phoneNumbers = [OCKLabeledValue(label: CNLabelWork, value: "(324) 555-7415")]
+        contact.messagingNumbers = [OCKLabeledValue(label: CNLabelWork, value: "(324) 555-7415")]
+
+        contact.address = {
+            let address = OCKPostalAddress()
+            address.street = "2598 Reposa Way"
+            address.city = "San Francisco"
+            address.state = "CA"
+            address.postalCode = "94127"
+            return address
+        }()
+        
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted]
+        XCTAssertNoThrow(try encoder.encode(contact))
+        
+        let data = try encoder.encode(contact)
+        let json = String(data: data, encoding: .utf8)!
+        XCTAssertNoThrow(try JSONDecoder().decode(OCKContact.self, from: json.data(using: .utf8)!))
+        
+        let deserialized = try JSONDecoder().decode(OCKContact.self, from: json.data(using: .utf8)!)
+        XCTAssertEqual(deserialized, contact)
     }
 }

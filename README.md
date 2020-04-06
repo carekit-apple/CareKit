@@ -209,7 +209,7 @@ struct ContentView: View {
                 let isComplete = self.event?.outcome != nil
                 self.controller.setEvent(atIndexPath: IndexPath(row: 0, section: 0), isComplete: !isComplete, completion: nil)
             }) {
-                self.event?.outcome != nil ? Text("Mark as Completed") : Text("Completed")
+                self.event?.outcome == nil ? Text("Mark as Completed") : Text("Completed")
             }
         }
     }

@@ -31,4 +31,49 @@ import Contacts
 
 /// A `Codable` subclass of `CNMutablePostalAddress`.
 @objc // We subclass for sole purpose of adding conformance to Codable.
-public class OCKPostalAddress: CNMutablePostalAddress, Codable {}
+public class OCKPostalAddress: CNMutablePostalAddress, Codable {
+    
+    public required init(from decoder: Decoder) throws {
+        super.init()
+        let container = try decoder.container(keyedBy: Keys.self)
+        self.street = try container.decode(String.self, forKey: .street)
+        self.subLocality = try container.decode(String.self, forKey: .subLocality)
+        self.city = try container.decode(String.self, forKey: .city)
+        self.subAdministrativeArea = try container.decode(String.self, forKey: .subAdministrativeArea)
+        self.state = try container.decode(String.self, forKey: .state)
+        self.postalCode = try container.decode(String.self, forKey: .postalCode)
+        self.country = try container.decode(String.self, forKey: .country)
+        self.isoCountryCode = try container.decode(String.self, forKey: .isoCountryCode)
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: Keys.self)
+        try container.encode(street, forKey: .street)
+        try container.encode(subLocality, forKey: .subLocality)
+        try container.encode(city, forKey: .city)
+        try container.encode(subAdministrativeArea, forKey: .subAdministrativeArea)
+        try container.encode(state, forKey: .state)
+        try container.encode(postalCode, forKey: .postalCode)
+        try container.encode(country, forKey: .country)
+        try container.encode(isoCountryCode, forKey: .isoCountryCode)
+    }
+    
+    public override init() {
+        super.init()
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
+    
+    private enum Keys: CodingKey, CaseIterable {
+        case street
+        case subLocality
+        case city
+        case subAdministrativeArea
+        case state
+        case postalCode
+        case country
+        case isoCountryCode
+    }
+}

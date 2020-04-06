@@ -56,8 +56,6 @@ open class OCKSimpleTaskView: OCKView, OCKTaskDisplayable {
     // Button that displays the highlighted state for the view.
     private lazy var backgroundButton = OCKAnimatedButton(contentView: horizontalContentStackView, handlesSelection: false)
 
-    private lazy var cardBuilder = OCKCardBuilder(cardView: self, contentView: contentView)
-
     private let horizontalContentStackView: OCKStackView = {
         let stack = OCKStackView.horizontal()
         stack.alignment = .center
@@ -117,6 +115,7 @@ open class OCKSimpleTaskView: OCKView, OCKTaskDisplayable {
     override open func styleDidChange() {
         super.styleDidChange()
         let style = self.style()
+        let cardBuilder = OCKCardBuilder(cardView: self, contentView: contentView)
         cardBuilder.enableCardStyling(true, style: style)
         backgroundButton.directionalLayoutMargins = style.dimension.directionalInsets1
     }

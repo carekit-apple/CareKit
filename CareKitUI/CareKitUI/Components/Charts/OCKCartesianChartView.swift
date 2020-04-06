@@ -37,8 +37,6 @@ open class OCKCartesianChartView: OCKView, OCKChartDisplayable {
 
     private let contentView = OCKView()
 
-    private lazy var cardBuilder = OCKCardBuilder(cardView: self, contentView: contentView)
-
     private let headerContainerView = UIView()
 
     /// Handles events related to an `OCKChartDisplayable` object.
@@ -112,6 +110,7 @@ open class OCKCartesianChartView: OCKView, OCKChartDisplayable {
     override open func styleDidChange() {
         super.styleDidChange()
         let cachedStyle = style()
+        let cardBuilder = OCKCardBuilder(cardView: self, contentView: contentView)
         cardBuilder.enableCardStyling(true, style: cachedStyle)
         contentStackView.spacing = cachedStyle.dimension.directionalInsets1.top
         directionalLayoutMargins = cachedStyle.dimension.directionalInsets1

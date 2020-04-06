@@ -107,7 +107,6 @@ open class OCKGridTaskView: OCKView, OCKTaskDisplayable, UICollectionViewDelegat
         return view
     }()
 
-    private lazy var cardBuilder = OCKCardBuilder(cardView: self, contentView: contentView)
     private let headerStackView = OCKStackView.vertical()
 
     private lazy var headerButton = OCKAnimatedButton(contentView: headerView, highlightOptions: [.defaultDelayOnSelect, .defaultOverlay],
@@ -228,6 +227,7 @@ open class OCKGridTaskView: OCKView, OCKTaskDisplayable, UICollectionViewDelegat
     override open func styleDidChange() {
         super.styleDidChange()
         let style = self.style()
+        let cardBuilder = OCKCardBuilder(cardView: self, contentView: contentView)
         cardBuilder.enableCardStyling(true, style: style)
         instructionsLabel.textColor = style.color.secondaryLabel
         contentStackView.spacing = style.dimension.directionalInsets1.top

@@ -113,8 +113,6 @@ open class OCKDetailedContactView: OCKView, OCKContactDisplayable {
         return buttons.compactMap { $0 as? OCKContactButton }
     }
 
-    private lazy var cardBuilder = OCKCardBuilder(cardView: self, contentView: contentView)
-
     /// Stack view that holds phone, message, and email contact action buttons.
     private lazy var contactStackView: OCKStackView = {
         let stackView = OCKStackView()
@@ -183,6 +181,7 @@ open class OCKDetailedContactView: OCKView, OCKContactDisplayable {
     override open func styleDidChange() {
         super.styleDidChange()
         let cachedStyle = style()
+        let cardBuilder = OCKCardBuilder(cardView: self, contentView: contentView)
         cardBuilder.enableCardStyling(true, style: cachedStyle)
         instructionsLabel.textColor = cachedStyle.color.label
         directionalLayoutMargins = cachedStyle.dimension.directionalInsets1

@@ -65,8 +65,6 @@ open class OCKSimpleContactView: OCKView, OCKContactDisplayable {
         return view
     }()
 
-    private lazy var cardBuilder = OCKCardBuilder(cardView: self, contentView: contentView)
-
     // Button that displays the highlighted state for the view.
     private lazy var backgroundButton = OCKAnimatedButton(contentView: contentStackView, highlightOptions: [.defaultOverlay, .defaultDelayOnSelect],
                                                           handlesSelection: false)
@@ -112,6 +110,7 @@ open class OCKSimpleContactView: OCKView, OCKContactDisplayable {
     override open func styleDidChange() {
         super.styleDidChange()
         let style = self.style()
+        let cardBuilder = OCKCardBuilder(cardView: self, contentView: contentView)
         cardBuilder.enableCardStyling(true, style: style)
         directionalLayoutMargins = style.dimension.directionalInsets1
         contentStackView.spacing = style.dimension.directionalInsets1.top

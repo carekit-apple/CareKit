@@ -19,4 +19,7 @@
    <FileRef
       location = "group:OCKCatalog/OCKCatalog.xcodeproj">
    </FileRef>
+   <FileRef
+      location = "group:OCKCatalogSwiftUI/OCKCatalogSwiftUI.xcodeproj">
+   </FileRef>
 </Workspace>

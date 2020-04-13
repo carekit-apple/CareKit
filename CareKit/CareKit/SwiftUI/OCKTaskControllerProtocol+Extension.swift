@@ -1,21 +1,21 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
- 
+ Copyright (c) 2020, Apple Inc. All rights reserved.
+
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
- 
+
  1.  Redistributions of source code must retain the above copyright notice, this
  list of conditions and the following disclaimer.
- 
+
  2.  Redistributions in binary form must reproduce the above copyright notice,
  this list of conditions and the following disclaimer in the documentation and/or
  other materials provided with the distribution.
- 
+
  3. Neither the name of the copyright holder(s) nor the names of any contributors
  may be used to endorse or promote products derived from this software without
  specific prior written permission. No license is granted to the trademarks of
  the copyright holders even if such marks are included in this software.
- 
+
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -28,48 +28,36 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import CareKitStore
 import Foundation
 import SwiftUI
 
-/// Defines styling constants.
-public protocol OCKStyler {
-    var color: OCKColorStyler { get }
-    var animation: OCKAnimationStyler { get }
-    var appearance: OCKAppearanceStyler { get }
-    var dimension: OCKDimensionStyler { get }
-}
+extension OCKTaskControllerProtocol {
 
-/// Defines default values for style constants.
-public extension OCKStyler {
-    var color: OCKColorStyler { OCKColorStyle() }
-    var animation: OCKAnimationStyler { OCKAnimationStyle() }
-    var appearance: OCKAppearanceStyler { OCKAppearanceStyle() }
-    var dimension: OCKDimensionStyler { OCKDimensionStyle() }
-}
+    var event: OCKAnyEvent? { objectWillChange.value?.firstEvent }
 
-// Concrete object that contains style constants.
-public struct OCKStyle: OCKStyler {
-    public init() {}
-}
+    var title: String { event?.task.title ?? "" }
 
-private struct StyleEnvironmentKey: EnvironmentKey {
-    static var defaultValue: OCKStyler = OCKStyle()
-}
+    var instructions: String { event?.task.instructions ?? "" }
 
-public extension EnvironmentValues {
+    var isFirstEventComplete: Bool { event?.outcome != nil }
 
-    /// Style constants that can be used by a view.
-    var careKitStyle: OCKStyler {
-        get { self[StyleEnvironmentKey.self] }
-        set { self[StyleEnvironmentKey.self] = newValue }
+    var toggleActionForFirstEvent: () -> Void { { self.toggleFirstEvent() } }
+
+    func isEventComplete(atIndexPath indexPath: IndexPath) -> Bool {
+        return eventFor(indexPath: indexPath)?.outcome != nil
     }
-}
 
-public extension View {
+    func toggleActionForEvent(atIndexPath indexPath: IndexPath) -> () -> Void {
+        return { self.toggleEvent(atIndexPath: indexPath) }
+    }
 
-    /// Provide style constants that can be used by a view.
-    /// - Parameter style: Style constants that can be used by a view.
-    func careKitStyle(_ style: OCKStyler) -> some View {
-        return self.environment(\.careKitStyle, style)
+    private func toggleEvent(atIndexPath indexPath: IndexPath) {
+        let isComplete = isEventComplete(atIndexPath: indexPath)
+        setEvent(atIndexPath: indexPath, isComplete: !isComplete, completion: nil)
+    }
+
+    private func toggleFirstEvent() {
+        setEvent(atIndexPath: .init(row: 0, section: 0), isComplete: !isFirstEventComplete, completion: nil)
     }
 }

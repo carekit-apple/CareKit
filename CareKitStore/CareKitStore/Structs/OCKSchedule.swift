@@ -125,8 +125,8 @@ public struct OCKSchedule: Codable, Equatable {
     public static func weeklyAtTime(weekday: Int, hours: Int, minutes: Int, start: Date, end: Date?, targetValues: [OCKOutcomeValue],
                                     text: String?, duration: OCKScheduleElement.Duration = .hours(1)) -> OCKSchedule {
         let interval = DateComponents(weekOfYear: 1)
-        var startTime = Calendar.current.date(bySettingHour: hours, minute: minutes, second: 0, of: start)!
-        startTime = Calendar.current.date(bySetting: .weekday, value: weekday, of: startTime)!
+        var startTime = Calendar.current.date(bySetting: .weekday, value: weekday, of: start)!
+        startTime = Calendar.current.date(bySettingHour: hours, minute: minutes, second: 0, of: startTime)!
         let element = OCKScheduleElement(start: startTime, end: end, interval: interval,
                                          text: text, targetValues: targetValues, duration: duration)
         return OCKSchedule(composing: [element])

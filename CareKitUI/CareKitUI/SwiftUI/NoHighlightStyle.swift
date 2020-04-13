@@ -28,48 +28,11 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Foundation
 import SwiftUI
 
-/// Defines styling constants.
-public protocol OCKStyler {
-    var color: OCKColorStyler { get }
-    var animation: OCKAnimationStyler { get }
-    var appearance: OCKAppearanceStyler { get }
-    var dimension: OCKDimensionStyler { get }
-}
-
-/// Defines default values for style constants.
-public extension OCKStyler {
-    var color: OCKColorStyler { OCKColorStyle() }
-    var animation: OCKAnimationStyler { OCKAnimationStyle() }
-    var appearance: OCKAppearanceStyler { OCKAppearanceStyle() }
-    var dimension: OCKDimensionStyler { OCKDimensionStyle() }
-}
-
-// Concrete object that contains style constants.
-public struct OCKStyle: OCKStyler {
-    public init() {}
-}
-
-private struct StyleEnvironmentKey: EnvironmentKey {
-    static var defaultValue: OCKStyler = OCKStyle()
-}
-
-public extension EnvironmentValues {
-
-    /// Style constants that can be used by a view.
-    var careKitStyle: OCKStyler {
-        get { self[StyleEnvironmentKey.self] }
-        set { self[StyleEnvironmentKey.self] = newValue }
-    }
-}
-
-public extension View {
-
-    /// Provide style constants that can be used by a view.
-    /// - Parameter style: Style constants that can be used by a view.
-    func careKitStyle(_ style: OCKStyler) -> some View {
-        return self.environment(\.careKitStyle, style)
+/// Turns off the highlighted (AKA pressed) state.
+struct NoHighlightStyle: ButtonStyle {
+    func makeBody(configuration: Self.Configuration) -> some View {
+        configuration.label
     }
 }

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2020, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -29,47 +29,30 @@
  */
 
 import Foundation
-import SwiftUI
 
-/// Defines styling constants.
-public protocol OCKStyler {
-    var color: OCKColorStyler { get }
-    var animation: OCKAnimationStyler { get }
-    var appearance: OCKAppearanceStyler { get }
-    var dimension: OCKDimensionStyler { get }
-}
+/// Default data used to map data from an `OCKInstructionsTaskController` to a `CareKitUI.InstructionsTaskView`.
+public struct InstructionsTaskViewConfiguration {
 
-/// Defines default values for style constants.
-public extension OCKStyler {
-    var color: OCKColorStyler { OCKColorStyle() }
-    var animation: OCKAnimationStyler { OCKAnimationStyle() }
-    var appearance: OCKAppearanceStyler { OCKAppearanceStyle() }
-    var dimension: OCKDimensionStyler { OCKDimensionStyle() }
-}
+    /// The title text to display in the header.
+    public let title: String
 
-// Concrete object that contains style constants.
-public struct OCKStyle: OCKStyler {
-    public init() {}
-}
+    /// The detail text to display in the header.
+    public let detail: String?
 
-private struct StyleEnvironmentKey: EnvironmentKey {
-    static var defaultValue: OCKStyler = OCKStyle()
-}
+    /// The instructions text to display under the header.
+    public let instructions: String?
 
-public extension EnvironmentValues {
+    /// The action to perform when the button is tapped.
+    public let action: (() -> Void)?
 
-    /// Style constants that can be used by a view.
-    var careKitStyle: OCKStyler {
-        get { self[StyleEnvironmentKey.self] }
-        set { self[StyleEnvironmentKey.self] = newValue }
-    }
-}
+    /// True if the labeled button is complete.
+    public let isComplete: Bool
 
-public extension View {
-
-    /// Provide style constants that can be used by a view.
-    /// - Parameter style: Style constants that can be used by a view.
-    func careKitStyle(_ style: OCKStyler) -> some View {
-        return self.environment(\.careKitStyle, style)
+    init(controller: OCKTaskControllerProtocol) {
+        self.title = controller.title
+        self.detail = controller.event.map { OCKScheduleUtility.scheduleLabel(for: $0) } ?? ""
+        self.instructions = controller.instructions
+        self.isComplete = controller.isFirstEventComplete
+        self.action = controller.toggleActionForFirstEvent
     }
 }

@@ -134,6 +134,11 @@ UIViewController, OCKTaskViewDelegate {
         do {
             let alert = try controller.initiateDeletionForOutcomeValue(atIndex: index, eventIndexPath: eventIndexPath,
                                                                        deletionCompletion: notifyDelegateAndResetViewOnError)
+            if let anchorPoint = sender as? UIView {
+                alert.popoverPresentationController?.sourceRect = anchorPoint.bounds
+                alert.popoverPresentationController?.sourceView = anchorPoint
+                alert.popoverPresentationController?.permittedArrowDirections = .any
+            }
             present(alert, animated: true, completion: nil)
         } catch {
             delegate?.taskViewController(self, didEncounterError: error)

@@ -28,48 +28,50 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Foundation
 import SwiftUI
 
-/// Defines styling constants.
-public protocol OCKStyler {
-    var color: OCKColorStyler { get }
-    var animation: OCKAnimationStyler { get }
-    var appearance: OCKAppearanceStyler { get }
-    var dimension: OCKDimensionStyler { get }
-}
+/// Header used for most CareKit cards.
+///
+/// # Style
+/// The card supports styling using `careKitStyle(_:)`.
+///
+/// ```
+///    +----------------------------------------+
+///    |                                        |
+///    |  <Title>                               |
+///    |  <Detail>                              |
+///    |                                        |
+///    +----------------------------------------+
+/// ```
+public struct HeaderView: View {
 
-/// Defines default values for style constants.
-public extension OCKStyler {
-    var color: OCKColorStyler { OCKColorStyle() }
-    var animation: OCKAnimationStyler { OCKAnimationStyle() }
-    var appearance: OCKAppearanceStyler { OCKAppearanceStyle() }
-    var dimension: OCKDimensionStyler { OCKDimensionStyle() }
-}
+    // MARK: - Properties
 
-// Concrete object that contains style constants.
-public struct OCKStyle: OCKStyler {
-    public init() {}
-}
+    @Environment(\.careKitStyle) private var style
 
-private struct StyleEnvironmentKey: EnvironmentKey {
-    static var defaultValue: OCKStyler = OCKStyle()
-}
+    private let title: Text
+    private let detail: Text?
 
-public extension EnvironmentValues {
-
-    /// Style constants that can be used by a view.
-    var careKitStyle: OCKStyler {
-        get { self[StyleEnvironmentKey.self] }
-        set { self[StyleEnvironmentKey.self] = newValue }
+    public var body: some View {
+        HStack {
+            VStack(alignment: .leading, spacing: style.dimension.directionalInsets1.top / 4.0) {
+                title
+                    .font(.headline)
+                    .fontWeight(.bold)
+                detail?
+                    .font(.caption)
+                    .fontWeight(.medium)
+            }.foregroundColor(Color.primary)
+        }
     }
-}
 
-public extension View {
+    // MARK: - Init
 
-    /// Provide style constants that can be used by a view.
-    /// - Parameter style: Style constants that can be used by a view.
-    func careKitStyle(_ style: OCKStyler) -> some View {
-        return self.environment(\.careKitStyle, style)
+    /// Create an instance.
+    /// - Parameter title: The title text to display above the detail.
+    /// - Parameter detail: The detail text to display below the title.
+    public init(title: Text, detail: Text?) {
+        self.title = title
+        self.detail = detail
     }
 }

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2020, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -31,45 +31,46 @@
 import Foundation
 import SwiftUI
 
-/// Defines styling constants.
-public protocol OCKStyler {
-    var color: OCKColorStyler { get }
-    var animation: OCKAnimationStyler { get }
-    var appearance: OCKAppearanceStyler { get }
-    var dimension: OCKDimensionStyler { get }
-}
+/// A view that denotes a completion state. The style of the view differs based on the completion state.
+///
+///  # Style
+/// The view supports styling using `careKitStyle(_:)`.
+///
+/// ```
+///     +----------------------+
+///     |      <Content>       |
+///     +----------------------+
+/// ```
+public struct RectangularCompletionView<Content: View>: View {
 
-/// Defines default values for style constants.
-public extension OCKStyler {
-    var color: OCKColorStyler { OCKColorStyle() }
-    var animation: OCKAnimationStyler { OCKAnimationStyle() }
-    var appearance: OCKAppearanceStyler { OCKAppearanceStyle() }
-    var dimension: OCKDimensionStyler { OCKDimensionStyle() }
-}
+    @Environment(\.careKitStyle) private var style
 
-// Concrete object that contains style constants.
-public struct OCKStyle: OCKStyler {
-    public init() {}
-}
-
-private struct StyleEnvironmentKey: EnvironmentKey {
-    static var defaultValue: OCKStyler = OCKStyle()
-}
-
-public extension EnvironmentValues {
-
-    /// Style constants that can be used by a view.
-    var careKitStyle: OCKStyler {
-        get { self[StyleEnvironmentKey.self] }
-        set { self[StyleEnvironmentKey.self] = newValue }
+    private var foregroundColor: Color {
+        isComplete ? Color.accentColor : Color(style.color.white)
     }
-}
 
-public extension View {
+    private var backgroundColor: Color {
+        isComplete ? .init(style.color.tertiaryCustomFill) : .accentColor
+    }
 
-    /// Provide style constants that can be used by a view.
-    /// - Parameter style: Style constants that can be used by a view.
-    func careKitStyle(_ style: OCKStyler) -> some View {
-        return self.environment(\.careKitStyle, style)
+    private let content: Content
+    private let isComplete: Bool
+
+    public var body: some View {
+        VStack { content }
+            .padding()
+            .font(Font.subheadline.weight(.medium))
+            .foregroundColor(foregroundColor)
+            .background(backgroundColor)
+            .cornerRadius(style.appearance.cornerRadius2)
+    }
+
+    /// Create an instance.
+    /// - Parameters:
+    ///   - isComplete: The completion state that affects the style of the view.
+    ///   - content: The content of the view. The content will be vertically stacked.
+    public init(isComplete: Bool, @ViewBuilder content: () -> Content) {
+        self.isComplete = isComplete
+        self.content = content()
     }
 }

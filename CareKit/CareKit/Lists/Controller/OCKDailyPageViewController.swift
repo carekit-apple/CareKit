@@ -113,7 +113,7 @@ UIPageViewControllerDataSource, UIPageViewControllerDelegate {
     open func selectDate(_ date: Date, animated: Bool) {
         let previousDate = selectedDate
         guard !Calendar.current.isDate(previousDate, inSameDayAs: date) else { return }
-        calendarWeekPageViewController.selectDate(date, animated: true)
+        calendarWeekPageViewController.selectDate(date, animated: animated)
         weekCalendarPageViewController(calendarWeekPageViewController, didSelectDate: date, previousDate: previousDate)
     }
     

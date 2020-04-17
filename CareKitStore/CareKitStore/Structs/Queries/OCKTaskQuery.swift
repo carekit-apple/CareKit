@@ -117,6 +117,8 @@ public struct OCKTaskQuery: OCKAnyTaskQuery, Equatable {
     public var limit: Int?
     public var offset: Int = 0
 
+    public var taskCategoryIDs: [String] = []
+
     public init() {}
 }
 
@@ -140,6 +142,11 @@ internal extension Array where Element: OCKCDTaskCompatible {
             if !query.groupIdentifiers.isEmpty {
                 guard let taskGroupIdentifier = task.groupIdentifier else { return false }
                 if !query.groupIdentifiers.contains(taskGroupIdentifier) { return false }
+            }
+
+            if !query.taskCategoryIDs.isEmpty {
+                guard let taskCategoryId = task.taskCategory?.id else { return false }
+                if !query.taskCategoryIDs.contains(taskCategoryId) { return false }
             }
 
             return true

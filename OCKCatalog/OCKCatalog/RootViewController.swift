@@ -53,6 +53,7 @@ class RootViewController: UITableViewController {
     }
 
     private enum List: String, CaseIterable {
+        case taskCategories = "Tasks by Category"
         case tasks, contacts
     }
 
@@ -137,6 +138,12 @@ class RootViewController: UITableViewController {
 
         case .list:
             switch List.allCases[indexPath.row] {
+            case .taskCategories:
+                let rootViewController = OCKTaskCategoriesListViewController(storeManager: storeManager)
+                rootViewController.isModalInPresentation = true
+                rootViewController.navigationItem.rightBarButtonItem = .init(barButtonSystemItem: .done,
+                                                                             target: self, action: #selector(dismissViewController))
+                viewController = UINavigationController(rootViewController: rootViewController)
             case .tasks:
                 let rootViewController = OCKDailyTasksPageViewController(storeManager: storeManager)
                 rootViewController.isModalInPresentation = true

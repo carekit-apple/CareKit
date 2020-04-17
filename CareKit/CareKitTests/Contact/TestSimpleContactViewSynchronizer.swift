@@ -85,6 +85,6 @@ class TestSimpleContactViewSynchronizer: XCTestCase {
         viewSynchronizer.updateView(view, context: .init(viewModel: nil, oldViewModel: nil, animated: false))
         XCTAssertNil(view.headerView.titleLabel.text)
         XCTAssertNil(view.headerView.detailLabel.text)
-        XCTAssertEqual(view.headerView.iconImageView?.image, UIImage(systemName: "person.crop.circle"))
+        XCTAssertEqual(view.headerView.iconImageView?.image, UIImage(systemName: "questionmark.circle.fill"))
     }
 }

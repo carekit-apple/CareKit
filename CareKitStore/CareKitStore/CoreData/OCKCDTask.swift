@@ -37,6 +37,7 @@ class OCKCDTask: OCKCDVersionedObject {
     @NSManaged var instructions: String?
     @NSManaged var impactsAdherence: Bool
     @NSManaged var carePlan: OCKCDCarePlan?
+    @NSManaged var taskCategory: OCKCDTaskCategory?
     @NSManaged var scheduleElements: Set<OCKCDScheduleElement>
     @NSManaged var outcomes: Set<OCKCDOutcome>
     @NSManaged var healthKitLinkage: OCKCDHealthKitLinkage?

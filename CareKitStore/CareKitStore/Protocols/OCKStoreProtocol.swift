@@ -41,5 +41,5 @@ import Foundation
 /// If any one operation should fail, the state of the store should be returned to the state it was in before the transaction began. For example,
 /// if an attempt to save an array of 10 outcomes fails on the 6th outcome, the first successfully persisted 6 outcomes must be rolled back to restore
 /// the store to the state it was in prior to the transaction.
-public typealias OCKStoreProtocol = OCKPatientStore & OCKCarePlanStore & OCKContactStore & OCKEventStore
-public typealias OCKAnyStoreProtocol = OCKAnyPatientStore & OCKAnyCarePlanStore & OCKAnyContactStore & OCKAnyEventStore
+public typealias OCKStoreProtocol = OCKPatientStore & OCKCarePlanStore & OCKContactStore & OCKTaskCategoryStore & OCKEventStore
+public typealias OCKAnyStoreProtocol = OCKAnyPatientStore & OCKAnyCarePlanStore & OCKAnyContactStore & OCKAnyTaskCategoryStore & OCKAnyEventStore

@@ -83,6 +83,9 @@
 		64E1BD4E2309FCF200DFFE52 /* OCKResponsiveLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64E1BD4D2309FCF200DFFE52 /* OCKResponsiveLayout.swift */; };
 		64EEC2382318253B00B1012F /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 64EEC2362318253B00B1012F /* Localizable.strings */; };
 		64EEC23B231825DD00B1012F /* OCKLocalization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64EEC23A231825DD00B1012F /* OCKLocalization.swift */; };
+		CE27481F23F84792009A10E4 /* OCKTaskCategoryDisplayable.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27481E23F84792009A10E4 /* OCKTaskCategoryDisplayable.swift */; };
+		CE27484923F99178009A10E4 /* OCKSimpleTaskCategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27484823F99178009A10E4 /* OCKSimpleTaskCategoryView.swift */; };
+		CE27484B23F9918C009A10E4 /* OCKDetailedTaskCategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27484A23F9918C009A10E4 /* OCKDetailedTaskCategoryView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -176,6 +179,9 @@
 		64E1BD4D2309FCF200DFFE52 /* OCKResponsiveLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKResponsiveLayout.swift; sourceTree = "<group>"; };
 		64EEC2372318253B00B1012F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		64EEC23A231825DD00B1012F /* OCKLocalization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKLocalization.swift; sourceTree = "<group>"; };
+		CE27481E23F84792009A10E4 /* OCKTaskCategoryDisplayable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKTaskCategoryDisplayable.swift; sourceTree = "<group>"; };
+		CE27484823F99178009A10E4 /* OCKSimpleTaskCategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKSimpleTaskCategoryView.swift; sourceTree = "<group>"; };
+		CE27484A23F9918C009A10E4 /* OCKDetailedTaskCategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKDetailedTaskCategoryView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -263,6 +269,7 @@
 		518F9D4322961BF5009CAA48 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				CE27481C23F84747009A10E4 /* TaskCategory */,
 				51F12D49229CAB3600CA265B /* Calendar */,
 				518F9D4422961BF5009CAA48 /* Contact */,
 				64E1BD50230A011700DFFE52 /* Picker */,
@@ -563,6 +570,16 @@
 			path = "Picker Supplementary Views";
 			sourceTree = "<group>";
 		};
+		CE27481C23F84747009A10E4 /* TaskCategory */ = {
+			isa = PBXGroup;
+			children = (
+				CE27481E23F84792009A10E4 /* OCKTaskCategoryDisplayable.swift */,
+				CE27484823F99178009A10E4 /* OCKSimpleTaskCategoryView.swift */,
+				CE27484A23F9918C009A10E4 /* OCKDetailedTaskCategoryView.swift */,
+			);
+			path = TaskCategory;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -740,17 +757,20 @@
 				03181064236A158E006D4870 /* OCKCappedSizeLabel.swift in Sources */,
 				518F9DB422961BF6009CAA48 /* OCKHeaderView.swift in Sources */,
 				518F9D9222961BF5009CAA48 /* OCKSelfSizingCollectionView.swift in Sources */,
+				CE27481F23F84792009A10E4 /* OCKTaskCategoryDisplayable.swift in Sources */,
 				518F9D8E22961BF5009CAA48 /* OCKSimpleTaskView.swift in Sources */,
 				51637EA322F3A68400BAF65C /* OCKLogTaskView.swift in Sources */,
 				5178FBDA22E253FC00794353 /* OCKChartDisplayable.swift in Sources */,
 				510A4D8B2444DE97009D7FC2 /* InstructionsTaskView.swift in Sources */,
 				518F9D8F22961BF5009CAA48 /* OCKChecklistItemButton.swift in Sources */,
+				CE27484923F99178009A10E4 /* OCKSimpleTaskCategoryView.swift in Sources */,
 				518F9DB722961BF6009CAA48 /* OCKSeparatorView.swift in Sources */,
 				516A02BC22F363D900D55AD7 /* OCKView.swift in Sources */,
 				518F9DB122961BF6009CAA48 /* OCKAppearanceStyler.swift in Sources */,
 				518F9DA222961BF6009CAA48 /* OCKBarPlotView.swift in Sources */,
 				510A5762234A7B920006C376 /* OCKAnimatedButton.swift in Sources */,
 				518F9DAB22961BF6009CAA48 /* UIFont+Extensions.swift in Sources */,
+				CE27484B23F9918C009A10E4 /* OCKDetailedTaskCategoryView.swift in Sources */,
 				5103C55222F37B44007A7403 /* Number+Extensions.swift in Sources */,
 				510A4D8E2444DE97009D7FC2 /* HeaderView.swift in Sources */,
 				64E1BD4E2309FCF200DFFE52 /* OCKResponsiveLayout.swift in Sources */,

@@ -65,6 +65,8 @@ public struct OCKTask: Codable, Equatable, Identifiable, OCKAnyVersionableTask, 
     public var notes: [OCKNote]?
     public var timezone: TimeZone
 
+    public var taskCategory: OCKTaskCategory?
+
     /// Instantiate a new `OCKCarePlan`
     ///
     /// - Parameters:

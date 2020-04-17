@@ -54,6 +54,8 @@ open class OCKStore: OCKStoreProtocol, OCKCoreDataStoreProtocol, Equatable {
     /// In `CareKit` apps, the delegate will be set automatically, and it should not be modified.
     public weak var outcomeDelegate: OCKOutcomeStoreDelegate?
 
+    public weak var taskCategoryDelegate: OCKTaskCategoryStoreDelegate?
+
     /// The configuration can be modified to enable or disable versioning of database entities.
     public var configuration = OCKStoreConfiguration()
 
@@ -108,5 +110,10 @@ internal extension NSPredicate {
     func including(groupIdentifiers: [String]) -> NSPredicate {
         let groupPredicate = NSPredicate(format: "%K IN %@", #keyPath(OCKCDObject.groupIdentifier), groupIdentifiers)
         return NSCompoundPredicate(andPredicateWithSubpredicates: [self, groupPredicate])
+    }
+
+    func including(tags: [String]) -> NSPredicate {
+        let tagsPredicate = NSPredicate(format: "SOME %K IN %@", #keyPath(OCKCDObject.tags), tags)
+        return NSCompoundPredicate(andPredicateWithSubpredicates: [self, tagsPredicate])
     }
 }

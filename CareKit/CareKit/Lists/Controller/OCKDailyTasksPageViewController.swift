@@ -52,11 +52,17 @@ open class OCKDailyTasksPageViewController: OCKDailyPageViewController, OCKDaily
     private let emptyLabelMargin: CGFloat = 4
 
     // MARK: Properties
+    private (set) var taskCategory: OCKTaskCategory?
 
     /// If set, the delegate will receive callbacks when important events happen at the task view controller level.
     public weak var tasksDelegate: OCKDailyTasksPageViewControllerDelegate?
 
     // MARK: - Life Cycle
+
+    public init(storeManager: OCKSynchronizedStoreManager, taskCategory: OCKTaskCategory? = nil) {
+        self.taskCategory  = taskCategory
+        super.init(storeManager: storeManager)
+    }
 
     override open func viewDidLoad() {
         super.viewDidLoad()
@@ -66,7 +72,10 @@ open class OCKDailyTasksPageViewController: OCKDailyPageViewController, OCKDaily
     // MARK: - Methods
 
     private func fetchTasks(for date: Date, andPopulateIn listViewController: OCKListViewController) {
-        let taskQuery = OCKTaskQuery(for: date)
+        var taskQuery = OCKTaskQuery(for: date)
+        if let category = taskCategory {
+            taskQuery.taskCategoryIDs = [category.id]
+        }
         storeManager.store.fetchAnyTasks(query: taskQuery, callbackQueue: .main) { [weak self] result in
             guard let self = self else { return }
             switch result {

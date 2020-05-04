@@ -36,7 +36,7 @@ import Foundation
 public struct OCKContact: Codable, Equatable, Identifiable, OCKAnyContact, OCKVersionedObjectCompatible {
 
     /// The version id in the local database for the care plan associated with this contact.
-    public var carePlanID: OCKLocalVersionID?
+    public var carePlanUUID: UUID?
 
     // MARK: OCKAnyContact
     public let id: String
@@ -54,9 +54,9 @@ public struct OCKContact: Codable, Equatable, Identifiable, OCKAnyContact, OCKVe
     // MARK: OCKVersionable
     public var effectiveDate: Date
     public internal(set) var deletedDate: Date?
-    public internal(set) var localDatabaseID: OCKLocalVersionID?
-    public internal(set) var nextVersionID: OCKLocalVersionID?
-    public internal(set) var previousVersionID: OCKLocalVersionID?
+    public internal(set) var uuid: UUID?
+    public internal(set) var nextVersionUUID: UUID?
+    public internal(set) var previousVersionUUID: UUID?
 
     // MARK: OCKObjectCompatible
     public internal(set) var createdDate: Date?
@@ -71,16 +71,18 @@ public struct OCKContact: Codable, Equatable, Identifiable, OCKAnyContact, OCKVe
     public var notes: [OCKNote]?
     public var timezone: TimeZone
 
+    // MARK: Deprecated
+
     /// Initialize a new `OCKContact` with a user-defined id, a name, and an optional care plan version ID.
     ///
     /// - Parameters:
     ///   - id: A user-defined id
     ///   - name: The contact's name
-    ///   - carePlanID: The local database id of the careplan with which this contact is associated.
-    public init(id: String, name: PersonNameComponents, carePlanID: OCKLocalVersionID?) {
+    ///   - carePlanUUID: The UUID of the care plan with which this contact is associated.
+    public init(id: String, name: PersonNameComponents, carePlanUUID: UUID?) {
         self.id = id
         self.name = name
-        self.carePlanID = carePlanID
+        self.carePlanUUID = carePlanUUID
         self.effectiveDate = Date()
         self.timezone = TimeZone.current
     }
@@ -91,18 +93,18 @@ public struct OCKContact: Codable, Equatable, Identifiable, OCKAnyContact, OCKVe
     ///   - id: A user-defined id
     ///   - name: The contact's name
     ///   - carePlanID: The local database id of the careplan with which this contact is associated.
-    public init(id: String, givenName: String, familyName: String, carePlanID: OCKLocalVersionID?) {
+    public init(id: String, givenName: String, familyName: String, carePlanUUID: UUID?) {
         self.name = PersonNameComponents()
         self.name.givenName = givenName
         self.name.familyName = familyName
         self.id = id
-        self.carePlanID = carePlanID
+        self.carePlanUUID = carePlanUUID
         self.effectiveDate = Date()
         self.timezone = TimeZone.current
     }
 
     public func belongs(to plan: OCKAnyCarePlan) -> Bool {
-        guard let plan = plan as? OCKCarePlan, let planID = plan.localDatabaseID else { return false }
-        return carePlanID == planID
+        guard let plan = plan as? OCKCarePlan, let planUUID = plan.uuid else { return false }
+        return carePlanUUID == planUUID
     }
 }

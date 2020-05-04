@@ -52,7 +52,7 @@ class TestStoreNotes: XCTestCase {
     }
 
     func testCanAttachNotesToCarePlan() throws {
-        var plan = OCKCarePlan(id: "obesity", title: "Obesity", patientID: nil)
+        var plan = OCKCarePlan(id: "obesity", title: "Obesity", patientUUID: nil)
         plan.notes = [OCKNote(author: "Mariana", title: "Refrigerator Notes", content: "Butter, milk, eggs")]
         let savedPlan = try store.addCarePlanAndWait(plan)
         XCTAssert(savedPlan.notes?.count == 1)
@@ -60,7 +60,7 @@ class TestStoreNotes: XCTestCase {
 
     func testCanAttachNotesToTask() throws {
         let schedule = OCKSchedule.dailyAtTime(hour: 06, minutes: 0, start: Date(), end: nil, text: nil)
-        var task = OCKTask(id: "id123", title: "prayer", carePlanID: nil, schedule: schedule)
+        var task = OCKTask(id: "id123", title: "prayer", carePlanUUID: nil, schedule: schedule)
         task.notes = [OCKNote(author: "Jared", title: "Note", content: "Made some remarks")]
         let savedTask = try store.addTaskAndWait(task)
         XCTAssert(savedTask.notes?.count == 1)
@@ -68,21 +68,21 @@ class TestStoreNotes: XCTestCase {
 
     func testCanAttachNotesToOutcome() throws {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
-        let task = try store.addTaskAndWait(OCKTask(id: "A", title: "A", carePlanID: nil, schedule: schedule))
-        var outcome = OCKOutcome(taskID: try task.getLocalID(), taskOccurrenceIndex: 0, values: [])
+        let task = try store.addTaskAndWait(OCKTask(id: "A", title: "A", carePlanUUID: nil, schedule: schedule))
+        var outcome = OCKOutcome(taskUUID: try task.getUUID(), taskOccurrenceIndex: 0, values: [])
         outcome.notes = [OCKNote(author: "Jared", title: "My Recipe", content: "Bacon, eggs, and cheese")]
         let savedOutcome = try store.addOutcomeAndWait(outcome)
         XCTAssert(savedOutcome.notes?.count == 1)
     }
 
     func testCanAttachNotesToOutcomeValues() throws {
-        var task = OCKTask(id: "A", title: "A", carePlanID: nil, schedule: .mealTimesEachDay(start: Date(), end: nil))
+        var task = OCKTask(id: "A", title: "A", carePlanUUID: nil, schedule: .mealTimesEachDay(start: Date(), end: nil))
         task = try store.addTaskAndWait(task)
 
         var value = OCKOutcomeValue(10.0)
         value.notes = [OCKNote(author: "Amy", title: "High Temperature",
                                content: "Stopped taking medication because it gave me a fever")]
-        let outcome = OCKOutcome(taskID: try task.getLocalID(), taskOccurrenceIndex: 0, values: [value])
+        let outcome = OCKOutcome(taskUUID: try task.getUUID(), taskOccurrenceIndex: 0, values: [value])
         let savedOutcome = try store.addOutcomeAndWait(outcome)
         XCTAssertNotNil(savedOutcome.values.first?.notes?.first)
     }

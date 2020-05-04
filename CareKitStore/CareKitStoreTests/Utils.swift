@@ -60,9 +60,9 @@ extension OCKSchedule {
     }
 }
 
-extension OCKObjectCompatible {
-    func getLocalID() throws -> OCKLocalVersionID {
-        guard let localID = localDatabaseID else { throw OCKStoreError.invalidValue(reason: "Missing local database ID") }
-        return localID
+extension OCKVersionedObjectCompatible {
+    func getUUID() throws -> UUID {
+        guard let uuid = uuid else { throw OCKStoreError.invalidValue(reason: "Missing UUID") }
+        return uuid
     }
 }

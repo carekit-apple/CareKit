@@ -36,9 +36,8 @@ class TestEventAggregators: XCTestCase {
         let element = OCKScheduleElement(start: Date(), end: nil, interval: DateComponents(day: 1),
                                          text: nil, targetValues: [OCKOutcomeValue(10), OCKOutcomeValue("test")],
                                          duration: .seconds(100))
-        let task = OCKTask(id: "A", title: "A", carePlanID: nil, schedule: OCKSchedule(composing: [element]))
-        let taskID = OCKLocalVersionID("test")
-        let outcome = OCKOutcome(taskID: taskID, taskOccurrenceIndex: 0, values: [OCKOutcomeValue(10), OCKOutcomeValue("test")])
+        let task = OCKTask(id: "A", title: "A", carePlanUUID: nil, schedule: OCKSchedule(composing: [element]))
+        let outcome = OCKOutcome(taskUUID: UUID(), taskOccurrenceIndex: 0, values: [OCKOutcomeValue(10), OCKOutcomeValue("test")])
         let scheduleEvent = task.schedule[0]
         let event1: OCKStore.Event = OCKEvent(task: task, outcome: outcome, scheduleEvent: scheduleEvent)
         let event2: OCKStore.Event = OCKEvent(task: task, outcome: nil, scheduleEvent: scheduleEvent)
@@ -57,7 +56,7 @@ class TestEventAggregators: XCTestCase {
         XCTAssert(result == 2)
     }
 
-    func testCustomAggreator() {
+    func testCustomAggregator() {
         let aggregator = OCKEventAggregator.custom({ events in Double(events.count) })
         let result = aggregator.aggregate(events: makeEvents())
         XCTAssert(result == 2)

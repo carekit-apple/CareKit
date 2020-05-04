@@ -44,6 +44,9 @@ public enum OCKStoreError: LocalizedError {
     /// Occurs when deleting an existing entity fails.
     case deleteFailed(reason: String)
 
+    /// Occurs when synchronization with a remote server fails.
+    case remoteSynchronizationFailed(reason: String)
+
     /// Occurs when an invalid value is provided.
     case invalidValue(reason: String)
 
@@ -57,6 +60,7 @@ public enum OCKStoreError: LocalizedError {
         case .addFailed(let reason): return "Failed to add: \(reason)"
         case .updateFailed(let reason): return "Failed to update: \(reason)"
         case .deleteFailed(let reason): return "Failed to delete: \(reason)"
+        case .remoteSynchronizationFailed(let reason): return "Sync failed: \(reason)"
         case .timedOut(let reason): return "Timed out: \(reason)"
         case .invalidValue(let reason): return "Invalid value: \(reason)"
         }

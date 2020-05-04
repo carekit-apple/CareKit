@@ -45,13 +45,13 @@ public struct OCKSchedule: Codable, Equatable {
     /// Create a new schedule by combining an array of other `OCKSchedule` objects.
     public init(composing schedules: [OCKSchedule]) {
         assert(!schedules.isEmpty, "You cannot create a schedule with 0 elements")
-        self.elements = schedules.flatMap { $0.elements }
+        self.elements = schedules.flatMap { $0.elements }.sorted(by: { $0.start < $1.start })
     }
 
     /// Create a new schedule by combining an array of other `OCKSchedule` objects.
     public init(composing elements: [OCKScheduleElement]) {
         assert(!elements.isEmpty, "You cannot create a schedule with 0 elements")
-        self.elements = elements.flatMap { $0.elements }
+        self.elements = elements.flatMap { $0.elements }.sorted(by: { $0.start < $1.start })
     }
 
     /// Returns the Nth event of this schedule.

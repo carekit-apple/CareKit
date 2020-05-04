@@ -250,7 +250,6 @@
 			isa = PBXGroup;
 			children = (
 				510A4D852444DE7A009D7FC2 /* SwiftUI */,
-				51E7643A22C2ED7300160C22 /* Authentication */,
 				51F12D3C229CA88800CA265B /* Common */,
 				64EEC2342318252B00B1012F /* Supporting Files */,
 				518F9D4322961BF5009CAA48 /* Components */,
@@ -367,13 +366,6 @@
 				518F9D7822961BF5009CAA48 /* OCKDimensionStyler.swift */,
 			);
 			path = Stylers;
-			sourceTree = "<group>";
-		};
-		51E7643A22C2ED7300160C22 /* Authentication */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Authentication;
 			sourceTree = "<group>";
 		};
 		51F12D3C229CA88800CA265B /* Common */ = {

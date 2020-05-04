@@ -81,7 +81,7 @@ public struct OCKPatientQuery: OCKAnyPatientQuery, Equatable {
     }
 
     /// Specific versions to be included in the query results.
-    public var versionIDs: [OCKLocalVersionID] = []
+    public var uuids: [UUID] = []
 
     /// The order in which the results will be sorted when returned from the query.
     public var sortDescriptors: [OCKPatientSortDescriptor] {

@@ -36,9 +36,9 @@ class TestAdherenceAggregators: XCTestCase {
         let element = OCKScheduleElement(start: Date(), end: nil, interval: DateComponents(day: 1),
                                          text: nil, targetValues: targetValues.map { OCKOutcomeValue($0) },
                                          duration: .seconds(100))
-        let task = OCKTask(id: "A", title: "A", carePlanID: nil, schedule: OCKSchedule(composing: [element]))
+        let task = OCKTask(id: "A", title: "A", carePlanUUID: nil, schedule: OCKSchedule(composing: [element]))
         let values = outcomeValues.map { OCKOutcomeValue($0) }
-        let outcome = OCKOutcome(taskID: OCKLocalVersionID("dummy"), taskOccurrenceIndex: 0, values: values)
+        let outcome = OCKOutcome(taskUUID: UUID(), taskOccurrenceIndex: 0, values: values)
         let scheduleEvent = task.schedule[0]
         let event1: OCKStore.Event = OCKEvent(task: task, outcome: outcome, scheduleEvent: scheduleEvent)
         let event2: OCKStore.Event = OCKEvent(task: task, outcome: nil, scheduleEvent: scheduleEvent)

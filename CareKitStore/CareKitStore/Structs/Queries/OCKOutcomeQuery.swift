@@ -69,19 +69,18 @@ public struct OCKOutcomeQuery: OCKAnyOutcomeQuery, Equatable {
     /// Specifies the order in which query results will be sorted.
     enum SortDescriptor: Equatable {
         case date(ascending: Bool)
+        case createdDate(ascending: Bool)
 
         fileprivate var basicVersion: OCKOutcomeSortDescriptor? {
             switch self {
             case .date(let ascending): return .date(ascending: ascending)
+            case .createdDate: return nil
             }
         }
     }
 
-    /// An array of local database version identifiers specifying the versions to be returned.
-    public var localIDs: [OCKLocalVersionID] = []
-
-    /// An array of local database IDs of tasks for which outcomes should be returned.
-    public var taskVersionIDs: [OCKLocalVersionID] = []
+    /// An array of universally unique identifiers of tasks for which outcomes should be returned.
+    public var taskUUIDs: [UUID] = []
 
     /// An array of remote IDs of tasks for which outcomes should be returned.
     public var taskRemoteIDs: [String] = []
@@ -110,5 +109,10 @@ public struct OCKOutcomeQuery: OCKAnyOutcomeQuery, Equatable {
     public var limit: Int?
     public var offset: Int = 0
 
-    public init() {}
+    public init() {
+        extendedSortDescriptors = [
+            .date(ascending: false),
+            .createdDate(ascending: false)
+        ]
+    }
 }

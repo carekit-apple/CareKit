@@ -32,7 +32,7 @@ import Foundation
 
 /// The simplest possible `OCKSchedulable`, representing a single event that repeats at
 /// fixed intervals. It may have fixed duration or repeat indefinitely.
-public struct OCKScheduleElement: Codable, Equatable, OCKObjectCompatible {
+public struct OCKScheduleElement: Codable, Equatable {
 
     // Disabled because nested types are an internal implementation detail.
 
@@ -114,21 +114,6 @@ public struct OCKScheduleElement: Codable, Equatable, OCKObjectCompatible {
     /// For example, for a medcation, it may be the dose that the patient is expected to take.
     public var targetValues: [OCKOutcomeValue]
 
-    // MARK: OCKObjectCompatible
-    internal var localDatabaseID: OCKLocalVersionID?
-    public internal(set) var createdDate: Date?
-    public internal(set) var updatedDate: Date?
-    public internal(set) var schemaVersion: OCKSemanticVersion?
-    public var groupIdentifier: String?
-    public var tags: [String]?
-    public var versionID: OCKLocalVersionID?
-    public var remoteID: String?
-    public var source: String?
-    public var userInfo: [String: String]?
-    public var asset: String?
-    public var notes: [OCKNote]?
-    public var timezone: TimeZone
-
     /// Create a `ScheduleElement` by specying the start date, end date, and interval.
     ///
     /// - Parameters:
@@ -149,7 +134,6 @@ public struct OCKScheduleElement: Codable, Equatable, OCKObjectCompatible {
         self.text = text
         self.duration = duration
         self.targetValues = targetValues
-        self.timezone = TimeZone.current
     }
 
     /// Returns the Nth event of this schedule.

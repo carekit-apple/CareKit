@@ -83,7 +83,7 @@ extension OCKCoreDataTaskStoreProtocol {
         context.perform {
             do {
                 try OCKCDTask.validateNewIDs(tasks.map { $0.id }, in: self.context)
-                let persistableTasks = tasks.map { self.createTask(from: $0) }
+                let persistableTasks = tasks.map(self.createTask)
                 try self.context.save()
                 let addedTasks = persistableTasks.map(self.makeTask)
                 callbackQueue.async {
@@ -105,6 +105,7 @@ extension OCKCoreDataTaskStoreProtocol {
             do {
                 let ids = tasks.map { $0.id }
                 try OCKCDTask.validateUpdateIdentifiers(ids, in: self.context)
+                try self.confirmUpdateWillNotCauseDataLoss(tasks: tasks)
                 let updatedTasks = try self.performVersionedUpdate(values: tasks, addNewVersion: self.createTask)
                 try self.context.save()
                 let tasks = updatedTasks.map(self.makeTask)
@@ -112,6 +113,42 @@ extension OCKCoreDataTaskStoreProtocol {
                     self.taskDelegate?.taskStore(self, didUpdateTasks: tasks)
                     completion?(.success(tasks))
                 }
+            } catch {
+                self.context.rollback()
+                callbackQueue.async {
+                    completion?(.failure(.updateFailed(reason: "\(error.localizedDescription)")))
+                }
+            }
+        }
+    }
+    
+    public func addUpdateOrDeleteTasks(addOrUpdate tasks: [Task], delete deleteTasks: [Task],
+                                       callbackQueue: DispatchQueue = .main,
+                                       completion: ((Result<([Task], [Task], [Task]), OCKStoreError>) -> Void)? = nil) {
+        context.perform {
+            do {
+                let existingTaskIDs = OCKCDTask.fetchHeads(ids: tasks.map { $0.id }, in: self.context).map { $0.id }
+                let addTasks = tasks.filter { !existingTaskIDs.contains($0.id) }
+                let updateTasks = tasks.filter { existingTaskIDs.contains($0.id) }
+                try self.confirmUpdateWillNotCauseDataLoss(tasks: updateTasks)
+                
+                let inserted = addTasks.map(self.createTask)
+                let updated = try self.performVersionedUpdate(values: updateTasks, addNewVersion: self.createTask)
+                let deleted: [OCKCDTask] = try self.performDeletion(values: deleteTasks)
+
+                try self.context.save()
+                
+                let addedTasks = inserted.map(self.makeTask)
+                let updatedTasks = updated.map(self.makeTask)
+                let deletedTasks = deleted.map(self.makeTask)
+                
+                callbackQueue.async {
+                    self.taskDelegate?.taskStore(self, didAddTasks: addedTasks)
+                    self.taskDelegate?.taskStore(self, didUpdateTasks: updatedTasks)
+                    self.taskDelegate?.taskStore(self, didDeleteTasks: deleteTasks)
+                    completion?(.success((addedTasks, updateTasks, deletedTasks)))
+                }
+                
             } catch {
                 self.context.rollback()
                 callbackQueue.async {
@@ -228,8 +265,51 @@ extension OCKCoreDataTaskStoreProtocol {
         return OCKHealthKitLinkage(quantityIdentifier: identifier, quantityType: quantity, unit: unit)
     }
 
+    // Ensure that new versions of tasks do not overwrite regions of previous
+    // versions that already have outcomes saved to them.
+    //
+    // |<------------- Time Line --------------->|
+    //  TaskV1 ------x------------------->
+    //                     V2 ---------->
+    //              V3------------------>
+    //
+    // Throws an error when updating to V3 from V2 if V1 has outcomes after `x`.
+    // Throws an error when updating to V3 from V2 if V2 has any outcomes.
+    // Does not trow when updating to V3 from V2 if V1 has outcomes before `x`.
+    private func confirmUpdateWillNotCauseDataLoss(tasks: [Task]) throws {
+        let heads: [OCKCDTask] = OCKCDTask.fetchHeads(ids: tasks.map { $0.id }, in: context)
+        for task in heads {
+
+            // For each task, gather all outcomes
+            var allOutcomes: Set<OCKCDOutcome> = []
+            var currentVersion: OCKCDTask? = task
+            while let version = currentVersion {
+                allOutcomes = allOutcomes.union(version.outcomes)
+                currentVersion = version.previous as? OCKCDTask
+            }
+
+            // Get the date highest date on which an outcome exists.
+            // If there are no outcomes, then any update is safe.
+            guard let latestDate = allOutcomes.map({ $0.date }).max()
+                else { continue }
+
+            guard let proposedUpdate = tasks.first(where: { $0.id == task.id })
+                else { fatalError("Fetched an OCKCDTask for which an update was not proposed.") }
+
+            if proposedUpdate.effectiveDate <= latestDate {
+                throw OCKStoreError.updateFailed(reason: """
+                    Updating task \(task.id) failed. The new version of the task takes effect on \(task.effectiveDate), but an outcome for a
+                    previous version of the task exists on \(latestDate). To prevent implicit data loss, you must explicitly delete all outcomes
+                    that exist after the new version's `effectiveDate` before applying the update, or move the new version's `effectiveDate` to
+                    some date past the latest outcome's date.
+                    """
+                )
+            }
+        }
+    }
+
     func buildPredicate(for query: OCKTaskQuery) throws -> NSPredicate {
-        var predicate = NSPredicate(format: "%K == nil", #keyPath(OCKCDVersionedObject.deletedDate)) // Not deleted
+        var predicate = OCKCDVersionedObject.notDeletedPredicate
 
         if let interval = query.dateInterval {
             let headPredicate = OCKCDVersionedObject.newestVersionPredicate(in: interval)

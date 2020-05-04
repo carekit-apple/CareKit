@@ -66,6 +66,7 @@
 		518F9DBB22961BF6009CAA48 /* OCKLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9D8222961BF5009CAA48 /* OCKLabel.swift */; };
 		518F9DBC22961BF6009CAA48 /* OCKCardable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9D8322961BF5009CAA48 /* OCKCardable.swift */; };
 		518F9DC022961BF6009CAA48 /* OCKStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9D8722961BF5009CAA48 /* OCKStackView.swift */; };
+		519288732427E2DC00D0AF43 /* CATransaction+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 519288722427E2DC00D0AF43 /* CATransaction+Extension.swift */; };
 		5196B54322D5872C00800706 /* OCKTaskDisplayable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5196B54222D5872C00800706 /* OCKTaskDisplayable.swift */; };
 		51AB06C022FE539400B73FC2 /* OCKStylable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51AB06BF22FE539400B73FC2 /* OCKStylable.swift */; };
 		51AB06C222FE53E300B73FC2 /* TestStylableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51AB06C122FE53E300B73FC2 /* TestStylableView.swift */; };
@@ -153,6 +154,7 @@
 		518F9D8222961BF5009CAA48 /* OCKLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKLabel.swift; sourceTree = "<group>"; };
 		518F9D8322961BF5009CAA48 /* OCKCardable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKCardable.swift; sourceTree = "<group>"; };
 		518F9D8722961BF5009CAA48 /* OCKStackView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKStackView.swift; sourceTree = "<group>"; };
+		519288722427E2DC00D0AF43 /* CATransaction+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CATransaction+Extension.swift"; sourceTree = "<group>"; };
 		5196B54222D5872C00800706 /* OCKTaskDisplayable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKTaskDisplayable.swift; sourceTree = "<group>"; };
 		51AB06BF22FE539400B73FC2 /* OCKStylable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKStylable.swift; sourceTree = "<group>"; };
 		51AB06C122FE53E300B73FC2 /* TestStylableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestStylableView.swift; sourceTree = "<group>"; };
@@ -318,6 +320,7 @@
 				518F9D6F22961BF5009CAA48 /* UIFont+Extensions.swift */,
 				5103C55122F37B44007A7403 /* Number+Extensions.swift */,
 				03089D7E231ED7AF0054EA23 /* Calendar+Extensions.swift */,
+				519288722427E2DC00D0AF43 /* CATransaction+Extension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -676,6 +679,7 @@
 				518F9DA022961BF6009CAA48 /* OCKDataSeries.swift in Sources */,
 				512EE90022975F850052F37C /* OCKDetailView.swift in Sources */,
 				51AB06C022FE539400B73FC2 /* OCKStylable.swift in Sources */,
+				519288732427E2DC00D0AF43 /* CATransaction+Extension.swift in Sources */,
 				51656029234AB47500F2A21F /* OCKCheckmarkButton.swift in Sources */,
 				518F9DA422961BF6009CAA48 /* OCKLinePlotView.swift in Sources */,
 				518F9DA322961BF6009CAA48 /* OCKGridView.swift in Sources */,

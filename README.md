@@ -42,8 +42,9 @@ The primary CareKit framework codebase supports iOS and requires Xcode 11.0 or n
 
 # Getting Started <a name="getting-started"></a>
 
+* [Website](https://www.researchandcare.org)
 * [Documentation](https://developer.apple.com/documentation/carekit)
-* WWDC Video: [ResearchKit and CareKit Reimagined](https://developer.apple.com/videos/play/wwdc2019/217/)
+* [WWDC: ResearchKit and CareKit Reimagined](https://developer.apple.com/videos/play/wwdc2019/217/)
 
 ### Installation (Option One): SPM
 
@@ -208,7 +209,7 @@ struct ContentView: View {
                 let isComplete = self.event?.outcome != nil
                 self.controller.setEvent(atIndexPath: IndexPath(row: 0, section: 0), isComplete: !isComplete, completion: nil)
             }) {
-                self.event?.outcome != nil ? Text("Mark as Completed") : Text("Completed")
+                self.event?.outcome == nil ? Text("Mark as Completed") : Text("Completed")
             }
         }
     }
@@ -336,7 +337,7 @@ store.addTask(task) { result in
 ```
 
 The most important feature of `OCKStore` is that it is a versioned store with a notion of time. When querying the store using a date range, the result returned will be for the
-state of the store during the interval specified.
+state of the store during the interval specified. If no date interval is provided, all versions of the entity will be returned.
 
 ```swift
 // On January 1st
@@ -351,20 +352,33 @@ store.updateTask(task)
 
 let earlyQuery = OCKTaskQuery(dateInterval: /* Jan 1st - 5th */)
 store.fetchTasks(query: earlyQuery, callbackQueue: .main) { result in
-    let title = try! result.get().first?.title // Take 1 Tablet of Doxylamine
+    let title = try! result.get().first?.title 
+    // "Take 1 Tablet of Doxylamine"
 }
 
 let laterQuery = OCKTaskQuery(dateInterval: /* Jan 12th - 17th */)
 store.fetchTasks(query: laterQuery, callbackQueue: .main) { result in
-    let title = try! result.get().first?.title // Take 2 Tablets of Doxylamine
+    let title = try! result.get().first?.title 
+    // "Take 2 Tablets of Doxylamine"
 }
 
 // Queries return the newest version of the task during the query interval!
 let midQuery = OCKTaskQuery(dateInterval: /* Jan 5th - 15th */)
 store.fetchTasks(query: laterQuery, callbackQueue: .main) { result in
-    let title = try! result.get().first?.title // Take 2 Tablets of Doxylamine
+    let title = try! result.get().first?.title 
+    // "Take 2 Tablets of Doxylamine"
+}
+
+// Queries with no date interval return all versions of the task
+let allQuery = OCKTaskQuery()
+store.fetchTasks(query: allQuery, callbackQueue: .main) { result in 
+    let titles = try! result.get().map { $0.title } 
+    // ["Take 2 Tablets of Doxylamine", "Take 1 Tablet of Doxylamine"]
 }
 ```
+
+This graphic visualizes how results are retrieved when querying versioned objects in CareKit. Note how a query over a date range returns the version of the object valid in that date range.  
+![3d608700-5193-11ea-8ec0-452688468c72](https://user-images.githubusercontent.com/51723116/74690609-8c5aec00-5194-11ea-919a-53196eeefb9f.png)
 
 ### Schema <a name="schema"></a>
 
@@ -539,8 +553,8 @@ class SurveyViewController: OCKInstructionsTaskViewController, ORKTaskViewContro
         // 3a. Present the survey to the user
         present(surveyViewController, animated: true, completion: nil)
     }
-    
-    // 3b. This method will be called when the user completes the survey. 
+
+    // 3b. This method will be called when the user completes the survey.
     func taskViewController(_ taskViewController: ORKTaskViewController, didFinishWith reason: ORKTaskViewControllerFinishReason, error: Error?) {        
         taskViewController.dismiss(animated: true, completion: nil)
         guard reason == .completed else {
@@ -616,4 +630,3 @@ GitHub is our primary forum for CareKit. Feel free to open up issues about quest
 # License <a name="license"></a>
 
 This project is made available under the terms of a BSD license. See the [LICENSE](LICENSE) file.
-

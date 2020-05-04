@@ -110,6 +110,13 @@ UIPageViewControllerDataSource, UIPageViewControllerDelegate {
 
     // MARK: - Properties
 
+    open func selectDate(_ date: Date, animated: Bool) {
+        let previousDate = selectedDate
+        guard !Calendar.current.isDate(previousDate, inSameDayAs: date) else { return }
+        calendarWeekPageViewController.selectDate(date, animated: animated)
+        weekCalendarPageViewController(calendarWeekPageViewController, didSelectDate: date, previousDate: previousDate)
+    }
+    
     override open func viewSafeAreaInsetsDidChange() {
         updateScrollViewInsets()
     }
@@ -145,11 +152,7 @@ UIPageViewControllerDataSource, UIPageViewControllerDelegate {
 
     @objc
     private func pressedToday(sender: UIBarButtonItem) {
-        let previousDate = selectedDate
-        let currentDate = Date()
-        guard !Calendar.current.isDate(previousDate, inSameDayAs: currentDate) else { return }
-        calendarWeekPageViewController.selectDate(currentDate, animated: true)
-        weekCalendarPageViewController(calendarWeekPageViewController, didSelectDate: currentDate, previousDate: previousDate)
+        selectDate(Date(), animated: true)
     }
 
     private func updateScrollViewInsets() {

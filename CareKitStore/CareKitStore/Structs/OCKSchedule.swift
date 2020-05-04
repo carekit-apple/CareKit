@@ -94,7 +94,12 @@ public struct OCKSchedule: Codable, Equatable {
         for index in 0..<allEvents.count {
             allEvents[index] = allEvents[index].changing(occurrenceIndex: index)
         }
-        return allEvents.filter { $0.start + $0.element.duration.seconds >= start }
+        return allEvents.filter { event in
+            if event.element.duration == .allDay {
+                return event.start >= Calendar.current.startOfDay(for: start)
+            }
+            return event.start + event.element.duration.seconds >= start
+        }
     }
 
     /// Create a new schedule by shifting this schedule.
@@ -120,8 +125,8 @@ public struct OCKSchedule: Codable, Equatable {
     public static func weeklyAtTime(weekday: Int, hours: Int, minutes: Int, start: Date, end: Date?, targetValues: [OCKOutcomeValue],
                                     text: String?, duration: OCKScheduleElement.Duration = .hours(1)) -> OCKSchedule {
         let interval = DateComponents(weekOfYear: 1)
-        var startTime = Calendar.current.date(bySettingHour: hours, minute: minutes, second: 0, of: start)!
-        startTime = Calendar.current.date(bySetting: .weekday, value: weekday, of: startTime)!
+        var startTime = Calendar.current.date(bySetting: .weekday, value: weekday, of: start)!
+        startTime = Calendar.current.date(bySettingHour: hours, minute: minutes, second: 0, of: startTime)!
         let element = OCKScheduleElement(start: startTime, end: end, interval: interval,
                                          text: text, targetValues: targetValues, duration: duration)
         return OCKSchedule(composing: [element])

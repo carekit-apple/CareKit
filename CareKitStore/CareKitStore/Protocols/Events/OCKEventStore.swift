@@ -36,7 +36,7 @@ public protocol OCKReadOnlyEventStore: OCKAnyReadOnlyEventStore, OCKReadableTask
 
     // MARK: Implementation Provided when Task == OCKTask and Outcome == OCKOutcome
 
-    /// `fetchEvents` retrieves all the occurrences of the speficied task in the interval specified by the provided query.
+    /// `fetchEvents` retrieves all the occurrences of the specified task in the interval specified by the provided query.
     ///
     /// - Parameters:
     ///   - taskID: A user-defined unique identifier for the task.
@@ -127,11 +127,12 @@ public extension OCKReadOnlyEventStore where Task: OCKAnyVersionableTask, Outcom
                 let late = scheduleEvent.end.addingTimeInterval(1)
                 var query = OCKOutcomeQuery(dateInterval: DateInterval(start: early, end: late))
                 query.taskVersionIDs = [taskVersionID]
-                self.fetchOutcome(query: query, callbackQueue: callbackQueue, completion: { result in
+                self.fetchOutcomes(query: query, callbackQueue: callbackQueue, completion: { result in
                     switch result {
                     case .failure(let error): completion(.failure(.fetchFailed(reason: "Couldn't find outcome. \(error.localizedDescription)")))
-                    case .success(let outcome):
-                        let event = OCKEvent(task: task, outcome: outcome, scheduleEvent: scheduleEvent)
+                    case .success(let outcomes):
+                        let matchingOutcome = outcomes.first(where: { $0.taskOccurrenceIndex == occurrenceIndex })
+                        let event = OCKEvent(task: task, outcome: matchingOutcome, scheduleEvent: scheduleEvent)
                         completion(.success(event))
                     }
                 })
@@ -154,23 +155,60 @@ public extension OCKReadOnlyEventStore where Task: OCKAnyVersionableTask, Outcom
             case .failure(let error): completion(.failure(error))
             case .success(let outcomes):
                 let events = self.join(task: task, with: outcomes, and: scheduleEvents) + previousEvents
-                guard let version = task.previousVersionID else { completion(.success(events)); return }
-                self.fetchTask(withVersionID: version, callbackQueue: callbackQueue, completion: { (result: Result<Task, OCKStoreError>) in
+
+                // If the query doesn't go back in time beyond the start of this version of the task, we're done.
+                guard query.dateInterval.start < task.effectiveDate else {
+                    completion(.success(events))
+                    return
+                }
+
+                self.fetchNextValidPreviousVersion(for: task, callbackQueue: callbackQueue) { result in
                     switch result {
                     case .failure(let error): completion(.failure(error))
-                    case .success(let nextTask):
+                    case .success(let previousVersion):
+
+                        // If there is no previous version, then we're done fetching all events.
+                        guard let previousVersion = previousVersion else {
+                            completion(.success(events))
+                            return
+                        }
+
+                        // If there is a previous version, fetch the events for it that don't overlap with
+                        // any of the versions we've already fetched events for.
                         let nextEndDate = task.effectiveDate
-                        let nextStartDate = max(query.dateInterval.start, nextTask.effectiveDate)
+                        let nextStartDate = query.dateInterval.start
                         let nextInterval = DateInterval(start: nextStartDate, end: nextEndDate)
                         let nextQuery = OCKEventQuery(dateInterval: nextInterval)
-                        self.fetchEvents(task: nextTask, query: nextQuery, previousEvents: events,
-                                         callbackQueue: callbackQueue, completion: { result in
-                            completion(result)
-                        })
+                        self.fetchEvents(task: previousVersion, query: nextQuery, previousEvents: events,
+                                         callbackQueue: callbackQueue, completion: completion)
                     }
-                })
+
+                }
             }
         })
+    }
+
+    private func fetchNextValidPreviousVersion(for task: Task, callbackQueue: DispatchQueue, completion: @escaping OCKResultClosure<Task?>) {
+
+        guard let versionID = task.previousVersionID else {
+            completion(.success(nil))
+            return
+        }
+
+        fetchTask(withVersionID: versionID, callbackQueue: callbackQueue) { result in
+            switch result {
+            case .failure(let error): completion(.failure(error))
+            case .success(let previousVersion):
+
+                // If the newer version goes back further in time than the pervious version, skip fetching events for the older version.
+                if task.effectiveDate <= previousVersion.effectiveDate {
+                    self.fetchNextValidPreviousVersion(for: previousVersion, callbackQueue: callbackQueue, completion: completion)
+                    return
+                }
+
+                completion(.success(previousVersion))
+            }
+        }
     }
 
     private func fetchTask(withVersionID versionID: OCKLocalVersionID, callbackQueue: DispatchQueue, completion: @escaping OCKResultClosure<Task>) {

@@ -29,23 +29,16 @@
  */
 
 import CareKit
-import Contacts
 import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 
-    // Manages synchronization of a CoreData store
-    lazy var manager: OCKSynchronizedStoreManager = {
-        let store = OCKStore(name: "SampleAppStore")
-        store.populateSampleData()
-        let manager = OCKSynchronizedStoreManager(wrapping: store)
-        return manager
-    }()
-
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
 
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let manager = appDelegate.synchronizedStoreManager
         let careViewController = UINavigationController(rootViewController: CareViewController(storeManager: manager))
 
         if let windowScene = scene as? UIWindowScene {
@@ -54,82 +47,5 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             window?.tintColor = UIColor { $0.userInterfaceStyle == .light ? #colorLiteral(red: 0.9960784314, green: 0.3725490196, blue: 0.368627451, alpha: 1) : #colorLiteral(red: 0.8627432641, green: 0.2630574384, blue: 0.2592858295, alpha: 1) }
             window?.makeKeyAndVisible()
         }
-    }
-}
-
-private extension OCKStore {
-
-    // Adds tasks and contacts into the store
-    func populateSampleData() {
-
-        let thisMorning = Calendar.current.startOfDay(for: Date())
-        let aFewDaysAgo = Calendar.current.date(byAdding: .day, value: -4, to: thisMorning)!
-        let beforeBreakfast = Calendar.current.date(byAdding: .hour, value: 8, to: aFewDaysAgo)!
-        let afterLunch = Calendar.current.date(byAdding: .hour, value: 14, to: aFewDaysAgo)!
-
-        let schedule = OCKSchedule(composing: [
-            OCKScheduleElement(start: beforeBreakfast, end: nil,
-                               interval: DateComponents(day: 1)),
-
-            OCKScheduleElement(start: afterLunch, end: nil,
-                               interval: DateComponents(day: 2))
-        ])
-
-        var doxylamine = OCKTask(id: "doxylamine", title: "Take Doxylamine",
-                             carePlanID: nil, schedule: schedule)
-        doxylamine.instructions = "Take 25mg of doxylamine when you experience nausea."
-
-        let nauseaSchedule = OCKSchedule(composing: [
-            OCKScheduleElement(start: beforeBreakfast, end: nil, interval: DateComponents(day: 1),
-                               text: "Anytime throughout the day", targetValues: [], duration: .allDay)
-            ])
-
-        var nausea = OCKTask(id: "nausea", title: "Track your nausea",
-                             carePlanID: nil, schedule: nauseaSchedule)
-        nausea.impactsAdherence = false
-        nausea.instructions = "Tap the button below anytime you experience nausea."
-
-        let kegelSchedule = OCKSchedule(composing: [OCKScheduleElement(start: beforeBreakfast, end: nil, interval: DateComponents(day: 2))])
-        var kegels = OCKTask(id: "kegels", title: "Kegel Exercises", carePlanID: nil, schedule: kegelSchedule)
-        kegels.impactsAdherence = true
-        kegels.instructions = "Perform kegel exercies"
-
-        addTasks([nausea, doxylamine, kegels], callbackQueue: .main, completion: nil)
-
-        var contact1 = OCKContact(id: "jane", givenName: "Jane",
-                                  familyName: "Daniels", carePlanID: nil)
-        contact1.asset = "JaneDaniels"
-        contact1.title = "Family Practice Doctor"
-        contact1.role = "Dr. Daniels is a family practice doctor with 8 years of experience."
-        contact1.emailAddresses = [OCKLabeledValue(label: CNLabelEmailiCloud, value: "janedaniels@icloud.com")]
-        contact1.phoneNumbers = [OCKLabeledValue(label: CNLabelWork, value: "(324) 555-7415")]
-        contact1.messagingNumbers = [OCKLabeledValue(label: CNLabelWork, value: "(324) 555-7415")]
-
-        contact1.address = {
-            let address = OCKPostalAddress()
-            address.street = "2598 Reposa Way"
-            address.city = "San Francisco"
-            address.state = "CA"
-            address.postalCode = "94127"
-            return address
-        }()
-
-        var contact2 = OCKContact(id: "matthew", givenName: "Matthew",
-                                  familyName: "Reiff", carePlanID: nil)
-        contact2.asset = "MatthewReiff"
-        contact2.title = "OBGYN"
-        contact2.role = "Dr. Reiff is an OBGYN with 13 years of experience."
-        contact2.phoneNumbers = [OCKLabeledValue(label: CNLabelWork, value: "(324) 555-7415")]
-        contact2.messagingNumbers = [OCKLabeledValue(label: CNLabelWork, value: "(324) 555-7415")]
-        contact2.address = {
-            let address = OCKPostalAddress()
-            address.street = "396 El Verano Way"
-            address.city = "San Francisco"
-            address.state = "CA"
-            address.postalCode = "94127"
-            return address
-        }()
-
-        addContacts([contact1, contact2])
     }
 }

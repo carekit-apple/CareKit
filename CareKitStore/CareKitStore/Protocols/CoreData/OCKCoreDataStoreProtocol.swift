@@ -57,10 +57,26 @@ internal protocol OCKCoreDataStoreProtocol {
 
 extension OCKCoreDataStoreProtocol {
 
+    var storeDirectory: URL {
+        NSPersistentContainer.defaultDirectoryURL()
+    }
+
+    var storeURL: URL {
+        storeDirectory.appendingPathComponent(name + ".sqlite")
+    }
+
+    var walFileURL: URL {
+        storeDirectory.appendingPathComponent(name + ".sqlite-wal")
+    }
+
+    var shmFileURL: URL {
+        storeDirectory.appendingPathComponent(name + ".sqlite-shm")
+    }
+
     func makePersistentContainer() -> NSPersistentContainer {
         let container = NSPersistentContainer(name: self.name, managedObjectModel: sharedManagedObjectModel)
         let descriptor = NSPersistentStoreDescription()
-        descriptor.url = NSPersistentContainer.defaultDirectoryURL().appendingPathComponent(name + ".sqlite")
+        descriptor.url = storeURL
         descriptor.type = storeType.stringValue
         descriptor.shouldAddStoreAsynchronously = false
         descriptor.setOption(FileProtectionType.complete as NSObject, forKey: NSPersistentStoreFileProtectionKey)

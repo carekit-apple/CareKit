@@ -73,6 +73,7 @@ open class OCKLabeledCheckmarkButton: OCKAnimatedButton<OCKStackView> {
     private func setup() {
         addSubviews()
         constrainSubviews()
+        applyTintColor()
     }
 
     private func addSubviews() {
@@ -85,16 +86,19 @@ open class OCKLabeledCheckmarkButton: OCKAnimatedButton<OCKStackView> {
         NSLayoutConstraint.activate(contentStackView.constraints(equalTo: self))
     }
 
+    private func applyTintColor() {
+        label.textColor = tintColor
+    }
+
     override open func styleDidChange() {
         super.styleDidChange()
         let style = self.style()
-        label.textColor = style.color.secondaryLabel
         contentStackView.spacing = style.dimension.directionalInsets2.bottom
     }
 
     override open func tintColorDidChange() {
         super.tintColorDidChange()
-        label.textColor = tintColor
+        applyTintColor()
     }
 
     override open func setSelected(_ isSelected: Bool, animated: Bool) {

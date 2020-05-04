@@ -70,6 +70,7 @@ class TestCoreDataSchemaWithOutcomes: XCTestCase {
         outcome.taskOccurrenceIndex = 0
         outcome.values = Set([value1, value2, value3])
         outcome.task = task1
+        outcome.date = Date()
 
         XCTAssertNoThrow(try store.context.save())
         XCTAssert(outcome.values.count == 3)

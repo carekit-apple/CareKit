@@ -78,9 +78,11 @@ public struct OCKScheduleElement: Codable, Equatable, OCKObjectCompatible {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             if try container.decodeIfPresent(Bool.self, forKey: .isAllDay) == true {
                 self = .allDay
+                return
             }
             if let seconds = try container.decodeIfPresent(Double.self, forKey: .seconds) {
                 self = .seconds(seconds)
+                return
             }
             throw DecodingError.dataCorruptedError(forKey: CodingKeys.seconds, in: container, debugDescription: "No seconds or allDay key was found!")
         }
@@ -223,6 +225,13 @@ public struct OCKScheduleElement: Codable, Equatable, OCKObjectCompatible {
 
     /// Determines the last date at which an event could possibly occur
     private func determineStopDate(onOrBefore date: Date) -> Date {
+        if duration == .allDay {
+          let stopDay = end ?? date
+          let morningOfStopDay = Calendar.current.startOfDay(for: stopDay)
+          let endOfStopDay = Calendar.current.date(byAdding: .init(day: 1, second: -1), to: morningOfStopDay)!
+          return endOfStopDay
+        }
+        
         guard let endDate = end else { return date }
         return min(endDate, date)
     }

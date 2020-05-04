@@ -88,8 +88,9 @@ open class OCKCompletionRingButton: OCKAnimatedButton<OCKStackView> {
 
     /// Called when the tint color of the view changes.
     override open func tintColorDidChange() {
+        super.tintColorDidChange()
         updateRingColors()
-        ring.strokeColor = tintColor
+        applyTintColor()
     }
 
     /// Changes the display state of the button
@@ -110,6 +111,7 @@ open class OCKCompletionRingButton: OCKAnimatedButton<OCKStackView> {
 
     private func setup() {
         addSubviews()
+        applyTintColor()
     }
 
     private func updateRingColors() {
@@ -125,5 +127,9 @@ open class OCKCompletionRingButton: OCKAnimatedButton<OCKStackView> {
     private func addSubviews() {
         addSubview(contentStackView)
         [label, ring].forEach { contentStackView.addArrangedSubview($0) }
+    }
+
+    private func applyTintColor() {
+        ring.strokeColor = tintColor
     }
 }

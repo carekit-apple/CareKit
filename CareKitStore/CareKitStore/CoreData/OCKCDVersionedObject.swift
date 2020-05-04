@@ -61,6 +61,10 @@ class OCKCDVersionedObject: OCKCDObject, OCKCDManageable {
         }.compactMap { $0 as? T }
     }
 
+    static var notDeletedPredicate: NSPredicate {
+        NSPredicate(format: "%K == nil", #keyPath(OCKCDVersionedObject.deletedDate))
+    }
+
     static func headerPredicate(for ids: [String]) -> NSPredicate {
         return NSCompoundPredicate(andPredicateWithSubpredicates: [
             NSPredicate(format: "%K IN %@", #keyPath(OCKCDVersionedObject.id), ids),
@@ -70,30 +74,25 @@ class OCKCDVersionedObject: OCKCDObject, OCKCDManageable {
 
     static func headerPredicate() -> NSPredicate {
         return NSCompoundPredicate(andPredicateWithSubpredicates: [
-            NSPredicate(format: "%K == nil", #keyPath(OCKCDVersionedObject.next)),
-            NSPredicate(format: "%K == nil", #keyPath(OCKCDVersionedObject.deletedDate))
+            notDeletedPredicate,
+            NSPredicate(format: "%K == nil", #keyPath(OCKCDVersionedObject.next))
         ])
     }
 
     static func newestVersionPredicate(in interval: DateInterval) -> NSPredicate {
-        let notDeletedYet = NSPredicate(format: "%K < %@ AND %K == nil",
-                                        #keyPath(OCKCDVersionedObject.effectiveDate),
-                                        interval.end as NSDate,
-                                        #keyPath(OCKCDVersionedObject.deletedDate))
-        let deletedAfterQueryStart = NSPredicate(format: "%K < %@ AND %K > %@",
+        let startsBeforeEndOfQuery = NSPredicate(format: "%K < %@",
                                                  #keyPath(OCKCDVersionedObject.effectiveDate),
-                                                 interval.end as NSDate,
-                                                 #keyPath(OCKCDVersionedObject.deletedDate),
-                                                 interval.start as NSDate)
-        let noNextVersion = NSPredicate(format: "%K == nil OR %K.effectiveDate > %@",
+                                                 interval.end as NSDate)
+
+        let noNextVersion = NSPredicate(format: "%K == nil OR %K.effectiveDate >= %@",
                                         #keyPath(OCKCDVersionedObject.next),
                                         #keyPath(OCKCDVersionedObject.next),
                                         interval.end as NSDate)
-        let existsDuringQuery = NSCompoundPredicate(orPredicateWithSubpredicates: [
-            notDeletedYet, deletedAfterQueryStart])
 
         return NSCompoundPredicate(andPredicateWithSubpredicates: [
-            existsDuringQuery, noNextVersion])
+            startsBeforeEndOfQuery,
+            noNextVersion
+        ])
     }
 
     static func validateNewIDs(_ ids: [String], in context: NSManagedObjectContext) throws {

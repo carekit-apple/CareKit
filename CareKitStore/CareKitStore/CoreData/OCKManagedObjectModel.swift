@@ -52,7 +52,7 @@ import CoreData
 //
 
 private let secureUnarchiver = "NSSecureUnarchiveFromData"
-private let schemaVersion = OCKSemanticVersion(majorVersion: 2, minorVersion: 0, patchNumber: 0)
+private let schemaVersion = OCKSemanticVersion(majorVersion: 2, minorVersion: 0, patchNumber: 1)
 
 private func makeManagedObjectModel() -> NSManagedObjectModel {
     let managedObjectModel = NSManagedObjectModel()
@@ -801,7 +801,7 @@ private func makeOutcomeEntity() -> NSEntityDescription {
     let date = NSAttributeDescription()
     date.name = "date"
     date.attributeType = .dateAttributeType
-    date.isOptional = true
+    date.isOptional = false
 
     outcomeEntity.properties = makeObjectAttributes() + [index, date]
     return outcomeEntity

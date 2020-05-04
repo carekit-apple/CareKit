@@ -41,8 +41,6 @@ open class OCKLogTaskView: OCKView, OCKTaskDisplayable {
         return view
     }()
 
-    private lazy var cardBuilder = OCKCardBuilder(cardView: self, contentView: contentView)
-
     private lazy var headerButton = OCKAnimatedButton(contentView: headerView, highlightOptions: [.defaultDelayOnSelect, .defaultOverlay],
                                                       handlesSelection: false)
 
@@ -131,6 +129,7 @@ open class OCKLogTaskView: OCKView, OCKTaskDisplayable {
     override open func styleDidChange() {
         super.styleDidChange()
         let style = self.style()
+        let cardBuilder = OCKCardBuilder(cardView: self, contentView: contentView)
         cardBuilder.enableCardStyling(true, style: style)
         contentStackView.spacing = style.dimension.directionalInsets1.top
         directionalLayoutMargins = style.dimension.directionalInsets1

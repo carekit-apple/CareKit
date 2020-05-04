@@ -217,6 +217,41 @@ class TestStoreProtocolExtensions: XCTestCase {
         XCTAssert(events.first?.task.title == versionA.title)
     }
 
+    func testFetchEventsReturnsOnlyTheNewerOfTwoEventsWhenTwoVersionsOfATaskHaveEventsAtQueryStart() throws {
+        let element = OCKScheduleElement(start: Date(), end: nil, interval: DateComponents(day: 1),
+                                         text: nil, targetValues: [], duration: .allDay)
+        let schedule = OCKSchedule(composing: [element])
+        let versionA = OCKTask(id: "123", title: "A", carePlanID: nil, schedule: schedule)
+        try store.addTaskAndWait(versionA)
+        var versionB = OCKTask(id: "123", title: "B", carePlanID: nil, schedule: schedule)
+        versionB.effectiveDate = schedule[4].start
+        try store.updateTaskAndWait(versionB)
+        let events = try store.fetchEventsAndWait(taskID: "123", query: .init(for: schedule[4].start))
+        XCTAssert(events.count == 1, "Expected 1, but got \(events.count)")
+        XCTAssert(events.first?.task.title == "B")
+    }
+
+    func testFetchEventsReturnsAnEventForEachVersionOfATaskWhenEventsAreAllDayDuration() throws {
+        let midnight = Calendar.current.startOfDay(for: Date())
+        let schedule = OCKSchedule.dailyAtTime(hour: 0, minutes: 0, start: midnight, end: nil, text: nil, duration: .allDay, targetValues: [])
+        let task = OCKTask(id: "A", title: "Original", carePlanID: nil, schedule: schedule)
+        try store.addTaskAndWait(task)
+        for i in 1...10 {
+            var update = task
+            update.effectiveDate = midnight.advanced(by: 10 * TimeInterval(i))
+            update.title = "Update \(i)"
+            try store.updateTaskAndWait(update)
+        }
+        let events = try store.fetchEventsAndWait(taskID: "A", query: .init(for: midnight))
+        XCTAssert(events.count == 11)
+    }
+
+    func testFetchSingleEventSucceedsEvenIfThereIsNoOutcome() throws {
+        let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
+        let task = try store.addTaskAndWait(OCKTask(id: "A", title: "ABC", carePlanID: nil, schedule: schedule))
+        XCTAssertNoThrow(try store.fetchEventAndWait(forTask: task, occurrence: 0))
+    }
+
     // MARK: Adherence and Insights
 
     func testFetchAdherenceAggregatesEventsAcrossTasks() throws {

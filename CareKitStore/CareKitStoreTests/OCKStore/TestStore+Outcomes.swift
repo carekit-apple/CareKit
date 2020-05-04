@@ -83,13 +83,43 @@ class TestStoreOutcomes: XCTestCase {
         XCTAssert(outcome.taskID == taskID)
     }
 
-    func testTwoOutcomesWithoutSameTaskIDAndOccurenceIndexCannotBeAdded() throws {
+    func testTwoOutcomesWithoutSameTaskIDAndOccurrenceIndexCannotBeAdded() throws {
         var task = OCKTask(id: "task", title: "My Task", carePlanID: nil, schedule: .mealTimesEachDay(start: Date(), end: nil))
         task = try store.addTaskAndWait(task)
         let taskID = try task.getLocalID()
 
         let outcome = OCKOutcome(taskID: taskID, taskOccurrenceIndex: 2, values: [])
         XCTAssertThrowsError(try store.addOutcomesAndWait([outcome, outcome]))
+    }
+
+    func testCannotAddOutcomeToCoveredRegionOfPreviousTaskVersion() throws {
+        let thisMorning = Calendar.current.startOfDay(for: Date())
+        let schedule = OCKSchedule.mealTimesEachDay(start: thisMorning, end: nil)
+        let task = OCKTask(id: "meds", title: "Medications", carePlanID: nil, schedule: schedule)
+        let taskV1 = try store.addTaskAndWait(task)
+        let taskV2 = try store.updateTaskAndWait(task)
+        let value = OCKOutcomeValue(123)
+        let outcome = OCKOutcome(taskID: try taskV1.getLocalID(), taskOccurrenceIndex: 1, values: [value])
+        XCTAssert(taskV2.previousVersionID == taskV1.localDatabaseID)
+        XCTAssertThrowsError(try store.addOutcomeAndWait(outcome))
+    }
+
+    func testCannotUpdateOutcomeToCoveredRegionOfPreviousTaskVersion() throws {
+        let thisMorning = Calendar.current.startOfDay(for: Date())
+        let tomorrowMorning = Calendar.current.date(byAdding: .day, value: 1, to: thisMorning)!
+        let schedule = OCKSchedule.mealTimesEachDay(start: thisMorning, end: nil)
+
+        var task = OCKTask(id: "meds", title: "Medications", carePlanID: nil, schedule: schedule)
+        let taskV1 = try store.addTaskAndWait(task)
+
+        task.effectiveDate = tomorrowMorning
+        try store.updateTaskAndWait(task)
+
+        let value = OCKOutcomeValue(123)
+        var outcome = OCKOutcome(taskID: try taskV1.getLocalID(), taskOccurrenceIndex: 0, values: [value])
+        outcome = try store.addOutcomeAndWait(outcome)
+        outcome.taskOccurrenceIndex = 8
+        XCTAssertThrowsError(try store.updateOutcomeAndWait(outcome))
     }
 
     // MARK: Querying
@@ -169,6 +199,21 @@ class TestStoreOutcomes: XCTestCase {
 
         var query = OCKOutcomeQuery(for: Date())
         query.taskRemoteIDs = ["abc"]
+        let fetched = try store.fetchOutcomesAndWait(query: query).first
+        XCTAssert(fetched == outcome)
+    }
+
+    func testQueryOutcomeByTag() throws {
+        var task = OCKTask(id: "A", title: nil, carePlanID: nil, schedule: .mealTimesEachDay(start: Date(), end: nil))
+        task = try store.addTaskAndWait(task)
+
+        var outcome = OCKOutcome(taskID: try task.getLocalID(), taskOccurrenceIndex: 0, values: [])
+        outcome.tags = ["123"]
+        outcome = try store.addOutcomeAndWait(outcome)
+
+        var query = OCKOutcomeQuery(for: Date())
+        query.tags = ["123"]
+
         let fetched = try store.fetchOutcomesAndWait(query: query).first
         XCTAssert(fetched == outcome)
     }

@@ -104,15 +104,15 @@ UIViewController, OCKTaskViewDelegate {
         viewModelSubscription?.cancel()
         viewModelSubscription = controller.objectWillChange
             .context()
-            .sink { [view] context in
-                guard let typedView = view as? ViewSynchronizer.View else { fatalError("View should be of type \(ViewSynchronizer.View.self)") }
-                self.viewSynchronizer.updateView(typedView, context: context)
+            .sink { [weak self] context in
+                guard let typedView = self?.view as? ViewSynchronizer.View else { fatalError("View should be of type \(ViewSynchronizer.View.self)") }
+                self?.viewSynchronizer.updateView(typedView, context: context)
             }
     }
 
     // Reset view state on a failure
     // Note: This is needed because the UI assumes user interactions (lke button taps) will be successful, and displays the corresponding
-    // state immedately. When the interaction is actually unsuccessful, we need to reset the UI.
+    // state immediately. When the interaction is actually unsuccessful, we need to reset the UI.
     func resetViewState() {
         controller.objectWillChange.value = controller.objectWillChange.value // triggers an update to the view
     }
@@ -134,6 +134,11 @@ UIViewController, OCKTaskViewDelegate {
         do {
             let alert = try controller.initiateDeletionForOutcomeValue(atIndex: index, eventIndexPath: eventIndexPath,
                                                                        deletionCompletion: notifyDelegateAndResetViewOnError)
+            if let anchor = sender as? UIView {
+                alert.popoverPresentationController?.sourceRect = anchor.bounds
+                alert.popoverPresentationController?.sourceView = anchor
+                alert.popoverPresentationController?.permittedArrowDirections = .any
+            }
             present(alert, animated: true, completion: nil)
         } catch {
             delegate?.taskViewController(self, didEncounterError: error)

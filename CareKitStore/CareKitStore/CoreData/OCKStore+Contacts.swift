@@ -43,7 +43,10 @@ extension OCKStore {
                     fetchRequest.sortDescriptors = self.buildSortDescriptors(for: query)
                 }
 
-                let contacts = persistedContacts.map(self.makeContact)
+                let contacts = persistedContacts
+                    .map(self.makeContact)
+                    .filter({ $0.matches(tags: query.tags) })
+
                 callbackQueue.async { completion(.success(contacts)) }
             } catch {
                 callbackQueue.async { completion(.failure(.fetchFailed(reason: "Failed to fetch contacts. Error: \(error.localizedDescription)"))) }
@@ -186,9 +189,7 @@ extension OCKStore {
     }
 
     private func buildPredicate(for query: OCKContactQuery) throws -> NSPredicate {
-        var predicate = NSPredicate(value: true)
-        let notDeletedPredicate = NSPredicate(format: "%K == nil", #keyPath(OCKCDVersionedObject.deletedDate))
-        predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, notDeletedPredicate])
+        var predicate = OCKCDVersionedObject.notDeletedPredicate
 
         if let interval = query.dateInterval {
             let intervalPredicate = OCKCDVersionedObject.newestVersionPredicate(in: interval)
@@ -201,7 +202,7 @@ extension OCKStore {
         }
 
         if !query.versionIDs.isEmpty {
-            let versionPredicate = NSPredicate(format: "self IN %@", try query.versionIDs.map(objectID(for:)))
+            let versionPredicate = NSPredicate(format: "self IN %@", try query.versionIDs.map(objectID))
             predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, versionPredicate])
         }
 
@@ -227,10 +228,6 @@ extension OCKStore {
 
         if !query.groupIdentifiers.isEmpty {
             predicate = predicate.including(groupIdentifiers: query.groupIdentifiers)
-        }
-
-        if !query.tags.isEmpty {
-            predicate = predicate.including(tags: query.tags)
         }
 
         return predicate

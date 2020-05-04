@@ -58,8 +58,8 @@ class RootViewController: UITableViewController {
 
     private let storeManager: OCKSynchronizedStoreManager
 
-    init(store: OCKStore) {
-        self.storeManager =  .init(wrapping: store)
+    init(storeManager: OCKSynchronizedStoreManager) {
+        self.storeManager = storeManager
         super.init(style: .grouped)
     }
 

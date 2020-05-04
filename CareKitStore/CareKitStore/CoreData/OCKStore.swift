@@ -79,6 +79,20 @@ open class OCKStore: OCKStoreProtocol, OCKCoreDataStoreProtocol, Equatable {
         self.name = name
     }
 
+    /// Completely deletes the store and all its files from disk.
+    ///
+    /// You should not attempt to call any other methods an instance of `OCKStore`
+    /// after it has been deleted.
+    public func delete() throws {
+        try persistentContainer
+            .persistentStoreCoordinator
+            .destroyPersistentStore(at: storeURL, ofType: storeType.stringValue, options: nil)
+
+        try FileManager.default.removeItem(at: storeURL)
+        try FileManager.default.removeItem(at: shmFileURL)
+        try FileManager.default.removeItem(at: walFileURL)
+    }
+    
     // MARK: Internal
 
     internal lazy var persistentContainer: NSPersistentContainer = {
@@ -94,10 +108,5 @@ internal extension NSPredicate {
     func including(groupIdentifiers: [String]) -> NSPredicate {
         let groupPredicate = NSPredicate(format: "%K IN %@", #keyPath(OCKCDObject.groupIdentifier), groupIdentifiers)
         return NSCompoundPredicate(andPredicateWithSubpredicates: [self, groupPredicate])
-    }
-
-    func including(tags: [String]) -> NSPredicate {
-        let tagsPredicate = NSPredicate(format: "SOME %K IN %@", #keyPath(OCKCDObject.tags), tags)
-        return NSCompoundPredicate(andPredicateWithSubpredicates: [self, tagsPredicate])
     }
 }

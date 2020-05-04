@@ -38,6 +38,7 @@
 		03678DE82342C59200E27926 /* OCKLabeledValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03678DE72342C59200E27926 /* OCKLabeledValue.swift */; };
 		03678DF02343B21F00E27926 /* OCKAnyEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03678DEF2343B21F00E27926 /* OCKAnyEvent.swift */; };
 		03678DF22343B23400E27926 /* OCKAnyEventStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03678DF12343B23400E27926 /* OCKAnyEventStore.swift */; };
+		03D40832240D87CC0033C09E /* TestStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D40831240D87CC0033C09E /* TestStore.swift */; };	
 		03ABAAB823146772001FCACE /* OCKUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03ABAAB723146772001FCACE /* OCKUtilities.swift */; };
 		03CB6EBF2316F14C0081AA7C /* OCKHealthKitLinkage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CB6EBE2316F14C0081AA7C /* OCKHealthKitLinkage.swift */; };
 		03CF3601230DCDF100A66A38 /* OCKSemanticVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CF3600230DCDF100A66A38 /* OCKSemanticVersion.swift */; };
@@ -172,6 +173,7 @@
 		03678DE72342C59200E27926 /* OCKLabeledValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKLabeledValue.swift; sourceTree = "<group>"; };
 		03678DEF2343B21F00E27926 /* OCKAnyEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKAnyEvent.swift; sourceTree = "<group>"; };
 		03678DF12343B23400E27926 /* OCKAnyEventStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKAnyEventStore.swift; sourceTree = "<group>"; };
+		03D40831240D87CC0033C09E /* TestStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestStore.swift; sourceTree = "<group>"; };
 		03ABAAB723146772001FCACE /* OCKUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKUtilities.swift; sourceTree = "<group>"; };
 		03CB6EBE2316F14C0081AA7C /* OCKHealthKitLinkage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKHealthKitLinkage.swift; sourceTree = "<group>"; };
 		03CF3600230DCDF100A66A38 /* OCKSemanticVersion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKSemanticVersion.swift; sourceTree = "<group>"; };
@@ -568,6 +570,7 @@
 		E7F445E022CFAC6F0090CC36 /* OCKStore */ = {
 			isa = PBXGroup;
 			children = (
+				03D40831240D87CC0033C09E /* TestStore.swift */,
 				E726C04B22CFADCD001236E2 /* TestStore+Patients.swift */,
 				E726C04D22CFADDE001236E2 /* TestStore+CarePlans.swift */,
 				E726C04F22CFADEC001236E2 /* TestStore+Contacts.swift */,
@@ -683,7 +686,6 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
-
 /* Begin PBXSourcesBuildPhase section */
 		E784B8F42232EED600736CA5 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -780,6 +782,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E747EC462238140800775C0D /* TestCoreDataSchema+ScheduleElements.swift in Sources */,
+				03D40832240D87CC0033C09E /* TestStore.swift in Sources */,
 				E726C05422CFAE04001236E2 /* TestStore+Outcomes.swift in Sources */,
 				035FE18123451E7600851723 /* TestContact.swift in Sources */,
 				E7857A8C229B60B100FBEFAF /* TestCoreDataSchema+PostalAddress.swift in Sources */,

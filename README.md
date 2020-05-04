@@ -27,7 +27,6 @@ CareKit™ is an open source software framework for creating apps that help peop
     * [Charts](#charts)
     * [Contacts](#contacts)
     * [Styling](#styling)
-    * [SwiftUI](#carekitui-swiftui)
 * [CareKitStore](#carekitstore)
     * [Store](#store)
     * [Schema](#schema)
@@ -188,41 +187,9 @@ let viewController = TaskButtonViewController(controller: TaskButtonController(s
 viewController.controller.fetchAndObserveEvents(forTaskID: "Doxylamine", eventQuery: OCKEventQuery(for: Date()))
 ```
 
-### SwiftUI <a name="carekit-swiftui"></a>
+### SwiftUI <a name="swiftui"></a>
 
-A SwiftUI API is currently available for the `InstructionsTaskView`. The API is a starting point to demonstrate the API architecture. We would love to integrate community contributions that follow the API structure!
-
-Similar to our UIKit API, there are two types of views - views in CareKitUI that can be initialized with static properties, and views in CareKit that are dynamic and update when data in the store changes.
-
-To create a view in CareKit that is synchronized with the store:
-
-```swift
-// Create a controller that acts as an `ObservableObject` for the view.
-let controller = OCKInstructionsTaskController(storeManager: storeManager)
-
-// Fetch events for the Doxylamine task, and listen for changes to the task in the store.
-controller.fetchAndObserveEvents(forTaskID: "doxylamine", eventQuery: OCKEventQuery(for: Date()))
-
-// Create the view with the controller.
-let view = InstructionsTaskView(controller: controller)
-```
-
-Data from the controller will be automatically mapped to the view. When the data in the controller changes, the view will update itself. You may want to customize the way in which data is mapped from the controller to the view. To do so, use this initializer on the CareKit view:
-
-```swift
-CareKit.InstructionsTaskView(controller: controller) { configuration in
-
-    // Create an instance of a CareKitUI.InstructionsTaskView to render. Use the `configuration` for the default values to map to the view.
-    CareKitUI.InstructionsTaskView(title: Text("Custom Title"),    // Inject custom text into the title here.
-                                   detail: configuration.detail.map { Text($0) },
-                                   instructions: configuration.instructions.map { Text($0) },
-                                   isComplete: configuration.isComplete,
-                                   action: configuration.action)
-```
-
-This initializer requires the initialization of a static SwiftUI view from CareKitUI. That opens up the customization points that are available in CareKitUI. See [SwiftUI in CareKitUI](#carekitui-swiftui)
-
-You can also create your own SwiftUI views that are synchronized with the store. CareKit controllers are compatible with SwiftUI and can help update the view when data in the store changes:
+CareKit controllers are compatible with SwiftUI, and can help take care of synchronization with the store. Start by defining a SwiftUI view:
 
 ```swift
 struct ContentView: View {
@@ -247,6 +214,14 @@ struct ContentView: View {
         }
     }
 }
+```
+
+Next, create a controller and instantiate the view:
+
+```swift
+let controller = OCKSimpleTaskController(storeManager: manager)
+controller.fetchAndObserveEvents(forTaskID: "doxylamine", eventQuery: OCKEventQuery(for: Date()))
+let contentView = ContentView(controller: controller)
 ```
 
 # CareKitUI <a name="carekitui"></a>
@@ -335,57 +310,6 @@ view.customStyle = CustomStyle()
 Note that each view in CareKitUI is by default styled with `OCKStyle`. Setting a custom style on a view will propagate the custom style down to any subviews that do not already have a custom style set. The style propagation rules can be visualized in this diagram demonstrating three separate view hierarchies:
 
 ![Styling](https://user-images.githubusercontent.com/51756298/69107433-32784800-0a26-11ea-9622-74bb30ce4abd.png)
-
-For information on styling SwiftUI views with `OCKStylable`, see [SwiftUI in CareKitUI](#carekitui-swiftui).
-
-### SwiftUI <a name="carekitui-swiftui"></a>
-
-A SwiftUI API is currently available for the `InstructionsTaskView`. The API is a starting point to demonstrate the API architecture. We would love to integrate community contributions that follow the API structure!
-
-SwiftUI views in CareKitUI are static. To create a static view:
-
-```swift
-InstructionsTaskView(title: Text("Title"),
-                     detail: Text("Detail"),
-                     instructions: Text("Instructions"),
-                     isComplete: false,
-                     action: action)
-```
-
-Given that the initializer takes `Text`, you can apply custom modifiers to style the view:
-
-```swift
-InstructionsTaskView(title: Text("Title").font(Font.title.weight(.bold)),    // Apply custom modifiers here.
-                     detail: Text("Detail"),
-                     instructions: Text("Instructions"),
-                     isComplete: false,
-                     action: action)
-```
-
-The SwiftUI views are structured with generic containers in which custom content can be placed. The default versions of the views place content in the containers for you, but you can stray from the default behavior and inject custom content. For example, rather than using the default header, you can inject your own custom header:
-
-```swift
-InstructionsTaskView(isComplete: false,
-                     instructions: Text("Instructions"),
-                     action: action,
-                     header: { CustomHeaderView() })    // Inject a custom header here.
-```
-
-You can also append or prepend custom views. To do so, wrap the default view and your custom views in a `CardView`. Both views will render inside of the same card:
-
-```swift
-CardView {
-    InstructionsTaskView(/*...*/)
-    CustomAppendedView()
-}
-```
-
-Finally, SwiftUI views support styling with `OCKStylable` using a view modifier:
-
-```swift
-InstructionsTaskView(/*...*/)
-    .careKitStyle(CustomStyle())
-```
 
 # CareKitStore <a name="carekitstore"></a>
 

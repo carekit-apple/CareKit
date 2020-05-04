@@ -31,8 +31,7 @@
 import UIKit
 
 // An object that can be styled.
-public protocol OCKStylable {
-
+public protocol OCKStylable: AnyObject {
     /// Used to override the style.
     var customStyle: OCKStyler? { get set }
 

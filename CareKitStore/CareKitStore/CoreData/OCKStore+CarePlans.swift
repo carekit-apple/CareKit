@@ -48,7 +48,7 @@ extension OCKStore {
         context.perform {
             do {
                 let predicate = try self.buildPredicate(for: query)
-                let persistedPlans = OCKCDCarePlan.fetchFromStore(in: self.context, where: predicate) { fetchRequest in
+                let persistedPlans = self.fetchFromStore(OCKCDCarePlan.self, where: predicate) { fetchRequest in
                     fetchRequest.fetchLimit = query.limit ?? 0
                     fetchRequest.fetchOffset = query.offset
                     fetchRequest.sortDescriptors = self.buildSortDescriptors(from: query)
@@ -70,12 +70,13 @@ extension OCKStore {
                            completion: ((Result<[OCKCarePlan], OCKStoreError>) -> Void)? = nil) {
         context.perform {
             do {
-                try OCKCDCarePlan.validateNewIDs(plans.map { $0.id }, in: self.context)
+                try self.validateNew(OCKCDCarePlan.self, plans)
                 let persistablePlans = plans.map(self.createCarePlan)
                 try self.context.save()
                 let addedPlans = persistablePlans.map(self.makePlan)
                 callbackQueue.async {
                     self.carePlanDelegate?.carePlanStore(self, didAddCarePlans: addedPlans)
+                    self.autoSynchronizeIfRequired()
                     completion?(.success(addedPlans))
                 }
             } catch {
@@ -91,13 +92,13 @@ extension OCKStore {
                               completion: ((Result<[OCKCarePlan], OCKStoreError>) -> Void)? = nil) {
         context.perform {
             do {
-                let ids = plans.map { $0.id }
-                try OCKCDCarePlan.validateUpdateIdentifiers(ids, in: self.context)
+                try self.validateUpdateIdentifiers(plans.map { $0.id })
                 let updatedPlans = try self.performVersionedUpdate(values: plans, addNewVersion: self.createCarePlan)
                 try self.context.save()
                 let plans = updatedPlans.map(self.makePlan)
                 callbackQueue.async {
                     self.carePlanDelegate?.carePlanStore(self, didUpdateCarePlans: plans)
+                    self.autoSynchronizeIfRequired()
                     completion?(.success(updatedPlans.map(self.makePlan)))
                 }
             } catch {
@@ -113,11 +114,15 @@ extension OCKStore {
                               completion: ((Result<[OCKCarePlan], OCKStoreError>) -> Void)? = nil) {
         context.perform {
             do {
-                let markedPlans: [OCKCDCarePlan] = try self.performDeletion(values: plans)
+                let markedPlans: [OCKCDCarePlan] = try self.performDeletion(
+                    values: plans,
+                    addNewVersion: self.createCarePlan)
+                
                 try self.context.save()
                 let deletedPlans = markedPlans.map(self.makePlan)
                 callbackQueue.async {
                     self.carePlanDelegate?.carePlanStore(self, didDeleteCarePlans: deletedPlans)
+                    self.autoSynchronizeIfRequired()
                     completion?(.success(deletedPlans))
                 }
             } catch {
@@ -139,15 +144,15 @@ extension OCKStore {
         persistablePlan.copyVersionInfo(from: plan)
         persistablePlan.allowsMissingRelationships = configuration.allowsEntitiesWithMissingRelationships
         persistablePlan.title = plan.title
-        if let patientId = plan.patientID { persistablePlan.patient = try? fetchObject(havingLocalID: patientId) }
+        if let patientUUID = plan.patientUUID { persistablePlan.patient = try? fetchObject(uuid: patientUUID) }
         return persistablePlan
     }
 
     /// - Remark: This method is intended to create a value type struct from a *persisted* NSManagedObject. Calling this method with an
     /// object that is not yet commited is a programmer error.
     private func makePlan(from object: OCKCDCarePlan) -> OCKCarePlan {
-        assert(object.localDatabaseID != nil, "Don't this method with an object that isn't saved yet")
-        var plan = OCKCarePlan(id: object.id, title: object.title, patientID: object.patient?.localDatabaseID)
+        assert(!object.objectID.isTemporaryID, "Don't call this method with an object that isn't saved yet")
+        var plan = OCKCarePlan(id: object.id, title: object.title, patientUUID: object.patient?.uuid)
         plan.copyVersionedValues(from: object)
         return plan
     }
@@ -165,8 +170,8 @@ extension OCKStore {
             predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, idPredicate])
         }
 
-        if !query.versionIDs.isEmpty {
-            let versionPredicate = NSPredicate(format: "self IN %@", try query.versionIDs.map(objectID))
+        if !query.uuids.isEmpty {
+            let versionPredicate = NSPredicate(format: "%K IN %@", #keyPath(OCKCDVersionedObject.uuid), query.uuids)
             predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, versionPredicate])
         }
 
@@ -180,8 +185,8 @@ extension OCKStore {
             predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, patientPredicate])
         }
 
-        if !query.patientVersionIDs.isEmpty {
-            let versionPredicate = NSPredicate(format: "%K IN %@", #keyPath(OCKCDCarePlan.patient), try query.patientVersionIDs.map(fetchObject))
+        if !query.patientUUIDs.isEmpty {
+            let versionPredicate = NSPredicate(format: "%K IN %@", #keyPath(OCKCDCarePlan.patient), query.patientUUIDs)
             predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, versionPredicate])
         }
 
@@ -204,6 +209,6 @@ extension OCKStore {
             case .effectiveDate(let ascending): return NSSortDescriptor(keyPath: \OCKCDCarePlan.effectiveDate, ascending: ascending)
             case .title(let ascending): return NSSortDescriptor(keyPath: \OCKCDCarePlan.title, ascending: ascending)
             }
-        }
+        } + defaultSortDescritors()
     }
 }

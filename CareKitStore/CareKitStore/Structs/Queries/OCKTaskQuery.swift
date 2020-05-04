@@ -71,6 +71,7 @@ public struct OCKTaskQuery: OCKAnyTaskQuery, Equatable {
     /// Specifies the order in which query results will be sorted.
     enum SortDescriptor: Equatable {
         case effectiveDate(ascending: Bool)
+        case createdDate(ascending: Bool)
         case groupIdentifier(ascending: Bool)
         case title(ascending: Bool)
 
@@ -78,13 +79,13 @@ public struct OCKTaskQuery: OCKAnyTaskQuery, Equatable {
             switch self {
             case .groupIdentifier(let ascending): return .groupIdentifier(ascending: ascending)
             case .title(let ascending): return .title(ascending: ascending)
-            case .effectiveDate: return nil
+            case .effectiveDate, .createdDate: return nil
             }
         }
     }
 
     /// The version of the care plans for which tasks should match.
-    public var carePlanVersionIDs: [OCKLocalVersionID] = []
+    public var carePlanUUIDs: [UUID] = []
 
     /// The remote IDs of the care plans for which tasks should match.
     public var carePlanRemoteIDs: [String] = []
@@ -110,14 +111,20 @@ public struct OCKTaskQuery: OCKAnyTaskQuery, Equatable {
 
     // MARK: OCKAnyTaskQuery
     public var ids: [String] = []
-    public var versionIDs: [OCKLocalVersionID] = []
+    public var uuids: [UUID] = []
     public var remoteIDs: [String] = []
     public var carePlanIDs: [String] = []
     public var dateInterval: DateInterval?
     public var limit: Int?
     public var offset: Int = 0
 
-    public init() {}
+    public init() {
+        extendedSortDescriptors = [
+            .effectiveDate(ascending: false),
+            .createdDate(ascending: false),
+            .title(ascending: false)
+        ]
+    }
 }
 
 internal extension Array where Element: OCKCDTaskCompatible {

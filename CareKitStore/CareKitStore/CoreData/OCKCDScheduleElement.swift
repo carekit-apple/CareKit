@@ -28,10 +28,11 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import CoreData
 import Foundation
 
 @objc(OCKCDScheduleElement)
-class OCKCDScheduleElement: OCKCDObject {
+class OCKCDScheduleElement: NSManagedObject {
     @NSManaged var text: String?
     @NSManaged var task: OCKCDTask?
     @NSManaged var targetValues: Set<OCKCDOutcomeValue>
@@ -39,15 +40,15 @@ class OCKCDScheduleElement: OCKCDObject {
     @NSManaged var startDate: Date
     @NSManaged var endDate: Date?
 
-    @NSManaged var secondsInterval: Int
-    @NSManaged var minutesInterval: Int
-    @NSManaged var hoursInterval: Int
-    @NSManaged var daysInterval: Int
-    @NSManaged var weeksInterval: Int
-    @NSManaged var monthsInterval: Int
-    @NSManaged var yearsInterval: Int
+    @NSManaged var secondsInterval: Int64
+    @NSManaged var minutesInterval: Int64
+    @NSManaged var hoursInterval: Int64
+    @NSManaged var daysInterval: Int64
+    @NSManaged var weeksInterval: Int64
+    @NSManaged var monthsInterval: Int64
+    @NSManaged var yearsInterval: Int64
 
-    // These 3 are controlled by the `duration` computed property.
+    // These 2 are controlled by the `duration` computed property.
     @NSManaged private var durationInSeconds: Double
     @NSManaged private var isAllDay: Bool
 
@@ -62,24 +63,24 @@ class OCKCDScheduleElement: OCKCDObject {
     var interval: DateComponents {
         get {
             var interval = DateComponents()
-            interval.year = yearsInterval
-            interval.month = monthsInterval
-            interval.weekOfYear = weeksInterval
-            interval.day = daysInterval
-            interval.hour = hoursInterval
-            interval.minute = minutesInterval
-            interval.second = secondsInterval
+            interval.year = Int(yearsInterval)
+            interval.month = Int(monthsInterval)
+            interval.weekOfYear = Int(weeksInterval)
+            interval.day = Int(daysInterval)
+            interval.hour = Int(hoursInterval)
+            interval.minute = Int(minutesInterval)
+            interval.second = Int(secondsInterval)
             return interval
         }
 
         set {
-            yearsInterval = newValue.year ?? 0
-            monthsInterval = newValue.month ?? 0
-            weeksInterval = newValue.weekOfYear ?? 0
-            daysInterval = newValue.day ?? 0
-            hoursInterval = newValue.hour ?? 0
-            minutesInterval = newValue.minute ?? 0
-            secondsInterval = newValue.second ?? 0
+            yearsInterval = Int64(newValue.year ?? 0)
+            monthsInterval = Int64(newValue.month ?? 0)
+            weeksInterval = Int64(newValue.weekOfYear ?? 0)
+            daysInterval = Int64(newValue.day ?? 0)
+            hoursInterval = Int64(newValue.hour ?? 0)
+            minutesInterval = Int64(newValue.minute ?? 0)
+            secondsInterval = Int64(newValue.second ?? 0)
         }
     }
 }

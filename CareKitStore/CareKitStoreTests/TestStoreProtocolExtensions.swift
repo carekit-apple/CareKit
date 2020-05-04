@@ -58,8 +58,8 @@ class TestStoreProtocolExtensions: XCTestCase {
         let schedule1 = OCKSchedule.dailyAtTime(hour: 12, minutes: 0, start: startDate, end: midDate, text: nil)
         let schedule2 = OCKSchedule.dailyAtTime(hour: 12, minutes: 0, start: midDate, end: endDate, text: nil)
 
-        let taskV1 = OCKTask(id: "task", title: "Version 1", carePlanID: nil, schedule: schedule1)
-        let taskV2 = OCKTask(id: "task", title: "Version 2", carePlanID: nil, schedule: schedule2)
+        let taskV1 = OCKTask(id: "task", title: "Version 1", carePlanUUID: nil, schedule: schedule1)
+        let taskV2 = OCKTask(id: "task", title: "Version 2", carePlanUUID: nil, schedule: schedule2)
 
         let query = OCKEventQuery(dateInterval: DateInterval(start: queryStart, end: endDate))
         try store.addTaskAndWait(taskV1)
@@ -80,8 +80,8 @@ class TestStoreProtocolExtensions: XCTestCase {
         let schedule1 = OCKSchedule.dailyAtTime(hour: 12, minutes: 0, start: date1, end: nil, text: nil)
         let schedule2 = OCKSchedule.dailyAtTime(hour: 12, minutes: 0, start: date3, end: nil, text: nil)
 
-        let taskV1 = OCKTask(id: "task", title: "Version 1", carePlanID: nil, schedule: schedule1)
-        let taskV2 = OCKTask(id: "task", title: "Version 2", carePlanID: nil, schedule: schedule2)
+        let taskV1 = OCKTask(id: "task", title: "Version 1", carePlanUUID: nil, schedule: schedule1)
+        let taskV2 = OCKTask(id: "task", title: "Version 2", carePlanUUID: nil, schedule: schedule2)
 
         let query = OCKEventQuery(dateInterval: DateInterval(start: date2, end: date4))
         try store.addTaskAndWait(taskV1)
@@ -99,9 +99,9 @@ class TestStoreProtocolExtensions: XCTestCase {
         let date3 = Calendar.current.date(byAdding: .day, value: 3, to: beginningOfDay)!
 
         let schedule = OCKSchedule.dailyAtTime(hour: 12, minutes: 0, start: date1, end: nil, text: nil)
-        var task = OCKTask(id: "task", title: "Medication", carePlanID: nil, schedule: schedule)
+        var task = OCKTask(id: "task", title: "Medication", carePlanUUID: nil, schedule: schedule)
         task = try store.addTaskAndWait(task)
-        let outcome = OCKOutcome(taskID: try task.getLocalID(), taskOccurrenceIndex: 3, values: [])
+        let outcome = OCKOutcome(taskUUID: try task.getUUID(), taskOccurrenceIndex: 3, values: [])
         try store.addOutcomeAndWait(outcome)
 
         let query = OCKEventQuery(dateInterval: DateInterval(start: date2, end: date3))
@@ -116,10 +116,10 @@ class TestStoreProtocolExtensions: XCTestCase {
 
     func testFetchSingleEvent() throws {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
-        var task = OCKTask(id: "exercise", title: "Push Ups", carePlanID: nil, schedule: schedule)
+        var task = OCKTask(id: "exercise", title: "Push Ups", carePlanUUID: nil, schedule: schedule)
         task = try store.addTaskAndWait(task)
-        let taskID = try task.getLocalID()
-        var outcome = OCKOutcome(taskID: taskID, taskOccurrenceIndex: 5, values: [])
+        let taskID = try task.getUUID()
+        var outcome = OCKOutcome(taskUUID: taskID, taskOccurrenceIndex: 5, values: [])
         outcome = try store.addOutcomeAndWait(outcome)
         let event = try store.fetchEventAndWait(forTask: task, occurrence: 5)
         XCTAssert(event.outcome == outcome)
@@ -127,7 +127,7 @@ class TestStoreProtocolExtensions: XCTestCase {
 
     func testFetchSingleEventFailsIfTaskIsNotPersistedYet() {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
-        let task = OCKTask(id: "exercise", title: "Push Ups", carePlanID: nil, schedule: schedule)
+        let task = OCKTask(id: "exercise", title: "Push Ups", carePlanUUID: nil, schedule: schedule)
         XCTAssertThrowsError(try store.fetchEventAndWait(forTask: task, occurrence: 0))
     }
 
@@ -150,8 +150,8 @@ class TestStoreProtocolExtensions: XCTestCase {
                                text: nil,
                                duration: .seconds(1))
         ])
-        let allDayRepeatingTask1 = OCKTask(id: "task1", title: "task1", carePlanID: nil, schedule: allDayEveryOtherDay)
-        let shortRepeatingTask2 = OCKTask(id: "task2", title: "task2", carePlanID: nil, schedule: oneSecondEveryOtherDay)
+        let allDayRepeatingTask1 = OCKTask(id: "task1", title: "task1", carePlanUUID: nil, schedule: allDayEveryOtherDay)
+        let shortRepeatingTask2 = OCKTask(id: "task2", title: "task2", carePlanUUID: nil, schedule: oneSecondEveryOtherDay)
 
         try store.addTaskAndWait(allDayRepeatingTask1)
         try store.addTaskAndWait(shortRepeatingTask2)
@@ -186,7 +186,7 @@ class TestStoreProtocolExtensions: XCTestCase {
                                end: endDate,
                                interval: DateComponents(second: 1))
         ])
-        let task = OCKTask(id: "exercise", title: "Push Ups", carePlanID: nil, schedule: schedule)
+        let task = OCKTask(id: "exercise", title: "Push Ups", carePlanUUID: nil, schedule: schedule)
         try store.addTaskAndWait(task)
 
         let interval = DateInterval(start: afterEndDate, end: Date.distantFuture)
@@ -202,11 +202,11 @@ class TestStoreProtocolExtensions: XCTestCase {
         let nextWeek = Calendar.current.date(byAdding: .day, value: 7, to: thisMorning)!
 
         let scheduleA = OCKSchedule.dailyAtTime(hour: 12, minutes: 0, start: thisMorning, end: nil, text: nil)
-        var versionA = OCKTask(id: "A", title: "a", carePlanID: nil, schedule: scheduleA)
+        var versionA = OCKTask(id: "A", title: "a", carePlanUUID: nil, schedule: scheduleA)
         versionA = try store.addTaskAndWait(versionA)
 
         let scheduleB = OCKSchedule.dailyAtTime(hour: 12, minutes: 0, start: nextWeek, end: nil, text: nil)
-        var versionB = OCKTask(id: "A", title: "b", carePlanID: nil, schedule: scheduleB)
+        var versionB = OCKTask(id: "A", title: "b", carePlanUUID: nil, schedule: scheduleB)
         versionB.effectiveDate = tomorrow
         versionB = try store.updateTaskAndWait(versionB)
 
@@ -221,9 +221,9 @@ class TestStoreProtocolExtensions: XCTestCase {
         let element = OCKScheduleElement(start: Date(), end: nil, interval: DateComponents(day: 1),
                                          text: nil, targetValues: [], duration: .allDay)
         let schedule = OCKSchedule(composing: [element])
-        let versionA = OCKTask(id: "123", title: "A", carePlanID: nil, schedule: schedule)
+        let versionA = OCKTask(id: "123", title: "A", carePlanUUID: nil, schedule: schedule)
         try store.addTaskAndWait(versionA)
-        var versionB = OCKTask(id: "123", title: "B", carePlanID: nil, schedule: schedule)
+        var versionB = OCKTask(id: "123", title: "B", carePlanUUID: nil, schedule: schedule)
         versionB.effectiveDate = schedule[4].start
         try store.updateTaskAndWait(versionB)
         let events = try store.fetchEventsAndWait(taskID: "123", query: .init(for: schedule[4].start))
@@ -234,7 +234,7 @@ class TestStoreProtocolExtensions: XCTestCase {
     func testFetchEventsReturnsAnEventForEachVersionOfATaskWhenEventsAreAllDayDuration() throws {
         let midnight = Calendar.current.startOfDay(for: Date())
         let schedule = OCKSchedule.dailyAtTime(hour: 0, minutes: 0, start: midnight, end: nil, text: nil, duration: .allDay, targetValues: [])
-        let task = OCKTask(id: "A", title: "Original", carePlanID: nil, schedule: schedule)
+        let task = OCKTask(id: "A", title: "Original", carePlanUUID: nil, schedule: schedule)
         try store.addTaskAndWait(task)
         for i in 1...10 {
             var update = task
@@ -248,7 +248,7 @@ class TestStoreProtocolExtensions: XCTestCase {
 
     func testFetchSingleEventSucceedsEvenIfThereIsNoOutcome() throws {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
-        let task = try store.addTaskAndWait(OCKTask(id: "A", title: "ABC", carePlanID: nil, schedule: schedule))
+        let task = try store.addTaskAndWait(OCKTask(id: "A", title: "ABC", carePlanUUID: nil, schedule: schedule))
         XCTAssertNoThrow(try store.fetchEventAndWait(forTask: task, occurrence: 0))
     }
 
@@ -260,12 +260,12 @@ class TestStoreProtocolExtensions: XCTestCase {
         let twoDaysLater = Calendar.current.date(byAdding: DateComponents(day: 2, second: -1), to: start)!
         let element = OCKScheduleElement(start: start, end: nil, interval: DateComponents(day: 2))
         let schedule = OCKSchedule(composing: [element])
-        let task1 = OCKTask(id: "meditate", title: "Medidate", carePlanID: nil, schedule: schedule)
-        let task2 = OCKTask(id: "sleep", title: "Nap", carePlanID: nil, schedule: schedule)
+        let task1 = OCKTask(id: "meditate", title: "Medidate", carePlanUUID: nil, schedule: schedule)
+        let task2 = OCKTask(id: "sleep", title: "Nap", carePlanUUID: nil, schedule: schedule)
         let task = try store.addTasksAndWait([task1, task2]).first!
-        let taskID = try task.getLocalID()
+        let taskID = try task.getUUID()
         let value = OCKOutcomeValue(20.0, units: "minutes")
-        let outcome = OCKOutcome(taskID: taskID, taskOccurrenceIndex: 0, values: [value])
+        let outcome = OCKOutcome(taskUUID: taskID, taskOccurrenceIndex: 0, values: [value])
         try store.addOutcomeAndWait(outcome)
         let query = OCKAdherenceQuery(taskIDs: [task1.id, task2.id], dateInterval: DateInterval(start: twoDaysEarly, end: twoDaysLater))
         let adherence = try store.fetchAdherenceAndWait(query: query)
@@ -277,7 +277,7 @@ class TestStoreProtocolExtensions: XCTestCase {
         let twoDaysEarly = Calendar.current.date(byAdding: .day, value: -2, to: start)!
         let twoDaysLater = Calendar.current.date(byAdding: DateComponents(day: 2, second: -1), to: start)!
         let schedule = OCKSchedule.dailyAtTime(hour: 12, minutes: 0, start: start, end: nil, text: nil)
-        let task = OCKTask(id: "meditate", title: "Medidate", carePlanID: nil, schedule: schedule)
+        let task = OCKTask(id: "meditate", title: "Medidate", carePlanUUID: nil, schedule: schedule)
         try store.addTaskAndWait(task)
         var query = OCKAdherenceQuery(taskIDs: [task.id], dateInterval: DateInterval(start: twoDaysEarly, end: twoDaysLater))
         var timesCalled = 0
@@ -294,7 +294,7 @@ class TestStoreProtocolExtensions: XCTestCase {
         let thisMorning = Calendar.current.startOfDay(for: Date())
         let aWeekAgo = Calendar.current.date(byAdding: DateComponents(second: 1, weekOfYear: -1), to: thisMorning)!
         let schedule = OCKSchedule.dailyAtTime(hour: 8, minutes: 0, start: aWeekAgo, end: nil, text: nil)
-        let task = OCKTask(id: "walk", title: "Walk", carePlanID: nil, schedule: schedule)
+        let task = OCKTask(id: "walk", title: "Walk", carePlanUUID: nil, schedule: schedule)
         let mockData: [Double] = [10, 20, 30, 40, 50, 60, 70]
         try store.addTaskAndWait(task)
         var index = -1

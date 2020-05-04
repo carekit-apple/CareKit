@@ -43,11 +43,11 @@ public struct OCKPatient: Codable, Equatable, Identifiable, OCKAnyPatient, OCKVe
     // MARK: OCKVersionedObjectCompatible
     public var effectiveDate: Date
     public internal(set) var deletedDate: Date?
-    public internal(set) var nextVersionID: OCKLocalVersionID?
-    public internal(set) var previousVersionID: OCKLocalVersionID?
+    public internal(set) var uuid: UUID?
+    public internal(set) var nextVersionUUID: UUID?
+    public internal(set) var previousVersionUUID: UUID?
 
     // MARK: OCKObjectCompatible
-    public internal(set) var localDatabaseID: OCKLocalVersionID?
     public internal(set) var createdDate: Date?
     public internal(set) var updatedDate: Date?
     public internal(set) var schemaVersion: OCKSemanticVersion?

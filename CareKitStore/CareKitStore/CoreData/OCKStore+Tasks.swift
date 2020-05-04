@@ -36,14 +36,11 @@ extension OCKStore: OCKCoreDataTaskStoreProtocol {
     // MARK: OCKCoreDataTaskStoreProtocol
     public typealias Task = OCKTask
 
-    /// - Remark: This method is intended to create a value type struct from a *persisted* NSManagedObject. Calling this method with an
-    /// object that is not yet commited is a programmer error.
     internal func makeTask(from object: OCKCDTask) -> OCKTask {
-        assert(object.localDatabaseID != nil, "This should never be called on an unpersisted object")
         let schedule = makeSchedule(elements: Array(object.scheduleElements))
         let task = OCKTask(id: object.id,
                            title: object.title,
-                           carePlanID: object.carePlan?.localDatabaseID,
+                           carePlanUUID: object.carePlan?.uuid,
                            schedule: schedule)
         return copyTaskValues(from: object, to: task)
     }

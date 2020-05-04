@@ -56,8 +56,9 @@ public struct OCKOutcomeValue: Codable, Equatable, OCKObjectCompatible, CustomSt
     // MARK: Codable
     enum CodingKeys: CodingKey, CaseIterable {
         case
-        kind, units, localDatabaseID, value, type, index,
-        createdDate, updatedDate, schemaVersion, tags, group, remoteID, userInfo, source, timezone   // OCKObjectCompatible
+        kind, units, uuid, value, type, index,
+        createdDate, updatedDate, schemaVersion, tags,
+        group, remoteID, userInfo, source, timezone
     }
 
     public init(from decoder: Decoder) throws {
@@ -82,7 +83,7 @@ public struct OCKOutcomeValue: Codable, Equatable, OCKObjectCompatible, CustomSt
         kind = try container.decode(String?.self, forKey: CodingKeys.kind)
         units = try container.decode(String?.self, forKey: CodingKeys.units)
         index = try container.decode(Int?.self, forKey: CodingKeys.index)
-        localDatabaseID = try container.decode(OCKLocalVersionID?.self, forKey: CodingKeys.localDatabaseID)
+        uuid = try container.decode(UUID?.self, forKey: CodingKeys.uuid)
         createdDate = try container.decode(Date?.self, forKey: CodingKeys.createdDate)
         updatedDate = try container.decode(Date?.self, forKey: CodingKeys.updatedDate)
         schemaVersion = try container.decode(OCKSemanticVersion?.self, forKey: CodingKeys.schemaVersion)
@@ -101,7 +102,7 @@ public struct OCKOutcomeValue: Codable, Equatable, OCKObjectCompatible, CustomSt
         try container.encode(kind, forKey: .kind)
         try container.encode(units, forKey: .units)
         try container.encode(index, forKey: .index)
-        try container.encode(localDatabaseID, forKey: .localDatabaseID)
+        try container.encode(uuid, forKey: .uuid)
 
         var encodedValue = false
         if let value = integerValue { try container.encode(value, forKey: .value); encodedValue = true } else
@@ -169,7 +170,7 @@ public struct OCKOutcomeValue: Codable, Equatable, OCKObjectCompatible, CustomSt
     public var index: Int?
 
     // MARK: OCKObjectCompatible
-    public internal(set) var localDatabaseID: OCKLocalVersionID?
+    internal var uuid: UUID?
     public internal(set) var createdDate: Date?
     public internal(set) var updatedDate: Date?
     public internal(set) var schemaVersion: OCKSemanticVersion?
@@ -203,7 +204,7 @@ public struct OCKOutcomeValue: Codable, Equatable, OCKObjectCompatible, CustomSt
     public static func == (lhs: OCKOutcomeValue, rhs: OCKOutcomeValue) -> Bool {
         lhs.hasSameValueAs(rhs) &&
         lhs.type == rhs.type &&
-        lhs.localDatabaseID == rhs.localDatabaseID &&
+        lhs.uuid == rhs.uuid &&
         lhs.remoteID == rhs.remoteID &&
         lhs.userInfo == rhs.userInfo &&
         lhs.asset == rhs.asset &&

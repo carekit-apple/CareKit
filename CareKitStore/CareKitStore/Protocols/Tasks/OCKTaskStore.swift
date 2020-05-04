@@ -31,7 +31,7 @@ import Foundation
 
 /// Any store from which a single type conforming to `OCKAnyTask` can be queried is considered a `OCKReadableTaskStore`.
 public protocol OCKReadableTaskStore: OCKAnyReadOnlyTaskStore {
-    associatedtype Task: OCKAnyTask & Equatable & Identifiable
+    associatedtype Task: OCKAnyTask & Equatable
     associatedtype TaskQuery: OCKAnyTaskQuery
 
     /// `fetchTasks` asynchronously retrieves an array of tasks from the store.

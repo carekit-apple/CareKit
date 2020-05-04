@@ -35,20 +35,20 @@ import Contacts
 class TestContact: XCTestCase {
 
     func testBelongsToReturnsFalseWhenIDsDontMatch() {
-        let plan = OCKCarePlan(id: "A", title: "Medication", patientID: nil)
-        let contact = OCKContact(id: "B", givenName: "Mary", familyName: "Frost", carePlanID: nil)
+        let plan = OCKCarePlan(id: "A", title: "Medication", patientUUID: nil)
+        let contact = OCKContact(id: "B", givenName: "Mary", familyName: "Frost", carePlanUUID: nil)
         XCTAssertFalse(contact.belongs(to: plan))
     }
 
     func testBelongsToReturnsTrueWhenIDsDoMatach() {
-        var plan = OCKCarePlan(id: "A", title: "Medication", patientID: nil)
-        plan.localDatabaseID = OCKLocalVersionID("abc")
-        let contact = OCKContact(id: "B", givenName: "Mary", familyName: "Frost", carePlanID: plan.localDatabaseID)
+        var plan = OCKCarePlan(id: "A", title: "Medication", patientUUID: nil)
+        plan.uuid = UUID()
+        let contact = OCKContact(id: "B", givenName: "Mary", familyName: "Frost", carePlanUUID: plan.uuid)
         XCTAssertTrue(contact.belongs(to: plan))
     }
     
     func testContactSerialzation() throws {
-        var contact = OCKContact(id: "jane", givenName: "Jane", familyName: "Daniels", carePlanID: nil)
+        var contact = OCKContact(id: "jane", givenName: "Jane", familyName: "Daniels", carePlanUUID: nil)
         contact.asset = "JaneDaniels"
         contact.title = "Family Practice Doctor"
         contact.role = "Dr. Daniels is a family practice doctor with 8 years of experience."

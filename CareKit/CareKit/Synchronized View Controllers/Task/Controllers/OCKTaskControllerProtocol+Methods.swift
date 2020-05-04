@@ -29,19 +29,10 @@
  */
 
 import CareKitStore
+import CareKitUI
 import UIKit
 
 public extension OCKTaskControllerProtocol {
-
-    func initiateDetailsViewController(forIndexPath indexPath: IndexPath) throws -> OCKDetailViewController {
-        _ = try validatedViewModel()
-        let task = try validatedEvent(forIndexPath: indexPath).task
-
-        let detailViewController = OCKDetailViewController()
-        detailViewController.detailView.titleLabel.text = task.title
-        detailViewController.detailView.instructionsLabel.text = task.instructions
-        return detailViewController
-    }
 
     func setEvent(atIndexPath indexPath: IndexPath, isComplete: Bool, completion: ((Result<OCKAnyOutcome, Error>) -> Void)?) {
         let event: OCKAnyEvent
@@ -112,33 +103,11 @@ public extension OCKTaskControllerProtocol {
         }
     }
 
-    func initiateDeletionForOutcomeValue(atIndex index: Int, eventIndexPath: IndexPath,
-                                         deletionCompletion: ((Result<OCKAnyOutcome, Error>) -> Void)?) throws -> UIAlertController {
-        _ = try validatedViewModel()
-        let event = try validatedEvent(forIndexPath: eventIndexPath)
-
-        // Make sure there is an outcome value to delete
-        guard
-            let outcome = event.outcome,
-            index < outcome.values.count else {
-                throw OCKTaskControllerError.noOutcomeValueForEvent(event, index)
-            }
-
-        // Make an action sheet to delete the outcome value
-        let actionSheet = UIAlertController(title: loc("LOG_ENTRY"), message: nil, preferredStyle: .actionSheet)
-        let cancel = UIAlertAction(title: loc("CANCEL"), style: .default, handler: nil)
-        let delete = UIAlertAction(title: loc("DELETE"), style: .destructive) { [weak self] _ in
-            self?.deleteOutcomeValue(at: index, for: outcome, completion: deletionCompletion)
-        }
-        [delete, cancel].forEach { actionSheet.addAction($0) }
-        return actionSheet
-    }
-
     func makeOutcomeFor(event: OCKAnyEvent, withValues values: [OCKOutcomeValue]) throws -> OCKAnyOutcome {
         guard
-            let task = event.task as? OCKTask,
-            let taskID = task.localDatabaseID else { throw OCKTaskControllerError.cannotMakeOutcomeFor(event) }
-        return OCKOutcome(taskID: taskID, taskOccurrenceIndex: event.scheduleEvent.occurrence, values: values)
+            let task = event.task as? OCKAnyVersionableTask,
+            let taskID = task.uuid else { throw OCKTaskControllerError.cannotMakeOutcomeFor(event) }
+        return OCKOutcome(taskUUID: taskID, taskOccurrenceIndex: event.scheduleEvent.occurrence, values: values)
     }
 
     func eventFor(indexPath: IndexPath) -> OCKAnyEvent? {
@@ -174,6 +143,38 @@ public extension OCKTaskControllerProtocol {
         store.updateAnyOutcome(newOutcome, callbackQueue: .main) { result in
             completion?(result.mapError { $0 as Error })
         }
+    }
+    
+    func initiateDeletionForOutcomeValue(atIndex index: Int, eventIndexPath: IndexPath,
+                                         deletionCompletion: ((Result<OCKAnyOutcome, Error>) -> Void)?) throws -> UIAlertController {
+        _ = try validatedViewModel()
+        let event = try validatedEvent(forIndexPath: eventIndexPath)
+
+        // Make sure there is an outcome value to delete
+        guard
+            let outcome = event.outcome,
+            index < outcome.values.count else {
+                throw OCKTaskControllerError.noOutcomeValueForEvent(event, index)
+            }
+
+        // Make an action sheet to delete the outcome value
+        let actionSheet = UIAlertController(title: loc("LOG_ENTRY"), message: nil, preferredStyle: .actionSheet)
+        let cancel = UIAlertAction(title: loc("CANCEL"), style: .default, handler: nil)
+        let delete = UIAlertAction(title: loc("DELETE"), style: .destructive) { [weak self] _ in
+            self?.deleteOutcomeValue(at: index, for: outcome, completion: deletionCompletion)
+        }
+        [delete, cancel].forEach { actionSheet.addAction($0) }
+        return actionSheet
+    }
+
+    func initiateDetailsViewController(forIndexPath indexPath: IndexPath) throws -> OCKDetailViewController {
+        _ = try validatedViewModel()
+        let task = try validatedEvent(forIndexPath: indexPath).task
+
+        let detailViewController = OCKDetailViewController()
+        detailViewController.detailView.titleLabel.text = task.title
+        detailViewController.detailView.instructionsLabel.text = task.instructions
+        return detailViewController
     }
 }
 

@@ -36,18 +36,19 @@ import Foundation
 public struct OCKOutcome: Codable, Equatable, Identifiable, OCKAnyOutcome, OCKObjectCompatible {
 
     /// The version ID of the task to which this outcomes belongs.
-    public var taskID: OCKLocalVersionID
+    public var taskUUID: UUID
 
     // MARK: OCKAnyOutcome
-    public var id: String { taskID.stringValue + "_\(taskOccurrenceIndex)" }
+    public var id: String { taskUUID.uuidString + "_\(taskOccurrenceIndex)" }
     public var taskOccurrenceIndex: Int
     public var values: [OCKOutcomeValue]
 
     // MARK: OCKObjectCompatible
+    internal var uuid: UUID?
     public internal(set) var createdDate: Date?
     public internal(set) var updatedDate: Date?
+    internal var deletedDate: Date?
     public internal(set) var schemaVersion: OCKSemanticVersion?
-    public internal(set) var localDatabaseID: OCKLocalVersionID?
     public var remoteID: String?
     public var groupIdentifier: String?
     public var tags: [String]?
@@ -60,11 +61,11 @@ public struct OCKOutcome: Codable, Equatable, Identifiable, OCKAnyOutcome, OCKOb
     /// Initialize by specifying the version of the task that owns this outcome, how many events have occured before this outcome, and the values.
     ///
     /// - Parameters:
-    ///   - taskID: The version ID of the task that owns this outcome. This ID can be retrieved from any task that has been queried from the store.
-    ///   - taskOccurrenceIndex: The number of events that occurred before the event this outcome corresponds to.
+    ///   - taskUUID: The UUID of the task that owns this outcome. This ID can be retrieved from any task that has been queried from the store.
+    ///   - taskOccurrenceIndex: The number of events that occurred before the event that owns this outcome.
     ///   - values: An array outcome values.
-    public init(taskID: OCKLocalVersionID, taskOccurrenceIndex: Int, values: [OCKOutcomeValue]) {
-        self.taskID = taskID
+    public init(taskUUID: UUID, taskOccurrenceIndex: Int, values: [OCKOutcomeValue]) {
+        self.taskUUID = taskUUID
         self.taskOccurrenceIndex = taskOccurrenceIndex
         self.values = values
         self.timezone = TimeZone.current
@@ -72,6 +73,6 @@ public struct OCKOutcome: Codable, Equatable, Identifiable, OCKAnyOutcome, OCKOb
 
     public func belongs(to task: OCKAnyTask) -> Bool {
         guard let task = task as? OCKTask else { return false }
-        return task.localDatabaseID == taskID
+        return task.uuid == taskUUID
     }
 }

@@ -84,10 +84,10 @@ public struct OCKContactQuery: OCKAnyContactQuery, Equatable {
     }
 
     /// Specific versions to be included in the query results.
-    public var versionIDs: [OCKLocalVersionID] = []
+    public var uuids: [UUID] = []
 
     /// The version of the care plans for which contacts should match.
-    public var carePlanVersionIDs: [OCKLocalVersionID] = []
+    public var carePlanUUIDs: [UUID] = []
 
     /// The remote ID of care plans for which contacts should match.
     public var carePlanRemoteIDs: [String] = []

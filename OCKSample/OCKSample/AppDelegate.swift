@@ -71,7 +71,7 @@ private extension OCKStore {
         ])
 
         var doxylamine = OCKTask(id: "doxylamine", title: "Take Doxylamine",
-                             carePlanID: nil, schedule: schedule)
+                                 carePlanUUID: nil, schedule: schedule)
         doxylamine.instructions = "Take 25mg of doxylamine when you experience nausea."
 
         let nauseaSchedule = OCKSchedule(composing: [
@@ -80,19 +80,19 @@ private extension OCKStore {
             ])
 
         var nausea = OCKTask(id: "nausea", title: "Track your nausea",
-                             carePlanID: nil, schedule: nauseaSchedule)
+                             carePlanUUID: nil, schedule: nauseaSchedule)
         nausea.impactsAdherence = false
         nausea.instructions = "Tap the button below anytime you experience nausea."
 
         let kegelSchedule = OCKSchedule(composing: [OCKScheduleElement(start: beforeBreakfast, end: nil, interval: DateComponents(day: 2))])
-        var kegels = OCKTask(id: "kegels", title: "Kegel Exercises", carePlanID: nil, schedule: kegelSchedule)
+        var kegels = OCKTask(id: "kegels", title: "Kegel Exercises", carePlanUUID: nil, schedule: kegelSchedule)
         kegels.impactsAdherence = true
         kegels.instructions = "Perform kegel exercies"
 
         addTasks([nausea, doxylamine, kegels], callbackQueue: .main, completion: nil)
 
         var contact1 = OCKContact(id: "jane", givenName: "Jane",
-                                  familyName: "Daniels", carePlanID: nil)
+                                  familyName: "Daniels", carePlanUUID: nil)
         contact1.asset = "JaneDaniels"
         contact1.title = "Family Practice Doctor"
         contact1.role = "Dr. Daniels is a family practice doctor with 8 years of experience."
@@ -110,7 +110,7 @@ private extension OCKStore {
         }()
 
         var contact2 = OCKContact(id: "matthew", givenName: "Matthew",
-                                  familyName: "Reiff", carePlanID: nil)
+                                  familyName: "Reiff", carePlanUUID: nil)
         contact2.asset = "MatthewReiff"
         contact2.title = "OBGYN"
         contact2.role = "Dr. Reiff is an OBGYN with 13 years of experience."

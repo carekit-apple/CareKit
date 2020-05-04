@@ -80,10 +80,10 @@ public struct OCKCarePlanQuery: OCKAnyCarePlanQuery, Equatable {
     }
 
     /// Specific versions to be included in the query results.
-    public var versionIDs: [OCKLocalVersionID] = []
+    public var uuids: [UUID] = []
 
-    /// The version of the patients for which care plans should match.
-    public var patientVersionIDs: [OCKLocalVersionID] = []
+    /// The UUID the patients for which care plans should match.
+    public var patientUUIDs: [UUID] = []
 
     /// The remote ID of patients for which care plans should match.
     public var patientRemoteIDs: [String] = []

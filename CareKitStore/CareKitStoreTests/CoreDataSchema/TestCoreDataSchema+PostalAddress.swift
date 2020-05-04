@@ -43,6 +43,7 @@ class TestCoreDataSchemaWithPostalAddress: XCTestCase {
         let contact = OCKCDContact(context: store.context)
         contact.allowsMissingRelationships = true
         contact.id = "Katie Abeles"
+        contact.uuid = UUID()
         contact.title = "Dr. Abeles"
         contact.effectiveDate = Date()
         contact.name = OCKCDPersonName(context: store.context)

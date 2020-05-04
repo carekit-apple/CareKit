@@ -37,7 +37,7 @@ extension OCKStore {
         context.perform {
             do {
                 let predicate = try self.buildPredicate(for: query)
-                let persistedContacts = OCKCDContact.fetchFromStore(in: self.context, where: predicate) { fetchRequest in
+                let persistedContacts = self.fetchFromStore(OCKCDContact.self, where: predicate) { fetchRequest in
                     fetchRequest.fetchLimit = query.limit ?? 0
                     fetchRequest.fetchOffset = query.offset
                     fetchRequest.sortDescriptors = self.buildSortDescriptors(for: query)
@@ -58,12 +58,13 @@ extension OCKStore {
                           completion: ((Result<[OCKContact], OCKStoreError>) -> Void)? = nil) {
         context.perform {
             do {
-                try OCKCDContact.validateNewIDs(contacts.map { $0.id }, in: self.context)
+                try self.validateNew(OCKCDContact.self, contacts)
                 let persistableContacts = contacts.map(self.createContact)
                 try self.context.save()
                 let savedContacts = persistableContacts.map(self.makeContact)
                 callbackQueue.async {
                     self.contactDelegate?.contactStore(self, didAddContacts: savedContacts)
+                    self.autoSynchronizeIfRequired()
                     completion?(.success(savedContacts))
                 }
             } catch {
@@ -78,12 +79,13 @@ extension OCKStore {
     open func updateContacts(_ contacts: [OCKContact], callbackQueue: DispatchQueue = .main, completion: OCKResultClosure<[OCKContact]>? = nil) {
         context.perform {
             do {
-                try OCKCDContact.validateUpdateIdentifiers(contacts.map { $0.id }, in: self.context)
+                try self.validateUpdateIdentifiers(contacts.map { $0.id })
                 let updatedContacts = try self.performVersionedUpdate(values: contacts, addNewVersion: self.createContact)
                 try self.context.save()
                 let contacts = updatedContacts.map(self.makeContact)
                 callbackQueue.async {
                     self.contactDelegate?.contactStore(self, didUpdateContacts: contacts)
+                    self.autoSynchronizeIfRequired()
                     completion?(.success(contacts))
                 }
             } catch {
@@ -99,11 +101,15 @@ extension OCKStore {
                              completion: ((Result<[OCKContact], OCKStoreError>) -> Void)? = nil) {
         context.perform {
             do {
-                let markedDeleted: [OCKCDContact] = try self.performDeletion(values: contacts)
+                let markedDeleted: [OCKCDContact] = try self.performDeletion(
+                    values: contacts,
+                    addNewVersion: self.createContact)
+                
                 try self.context.save()
                 let deletedContacts = markedDeleted.map(self.makeContact)
                 callbackQueue.async {
                     self.contactDelegate?.contactStore(self, didDeleteContacts: deletedContacts)
+                    self.autoSynchronizeIfRequired()
                     completion?(.success(deletedContacts))
                 }
             } catch {
@@ -130,7 +136,7 @@ extension OCKStore {
         persistableContact.role = contact.role
         persistableContact.category = contact.category?.rawValue
 
-        if let carePlanID = contact.carePlanID { persistableContact.carePlan = try? fetchObject(havingLocalID: carePlanID) }
+        if let carePlanUUID = contact.carePlanUUID { persistableContact.carePlan = try? fetchObject(uuid: carePlanUUID) }
         if let address = contact.address {
             if let postalAddress = persistableContact.address {
                 copyPostalAddress(address, to: postalAddress)
@@ -161,7 +167,7 @@ extension OCKStore {
     }
 
     private func makeContact(from object: OCKCDContact) -> OCKContact {
-        var contact = OCKContact(id: object.id, name: object.name.makeComponents(), carePlanID: object.carePlan?.localDatabaseID)
+        var contact = OCKContact(id: object.id, name: object.name.makeComponents(), carePlanUUID: object.carePlan?.uuid)
         contact.copyVersionedValues(from: object)
         contact.address = object.address.map(makePostalAddress)
         contact.emailAddresses = object.emailAddresses
@@ -201,8 +207,8 @@ extension OCKStore {
             predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, idPredicate])
         }
 
-        if !query.versionIDs.isEmpty {
-            let versionPredicate = NSPredicate(format: "self IN %@", try query.versionIDs.map(objectID))
+        if !query.uuids.isEmpty {
+            let versionPredicate = NSPredicate(format: "%K IN %@", #keyPath(OCKCDVersionedObject.id), query.uuids)
             predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, versionPredicate])
         }
 
@@ -216,8 +222,8 @@ extension OCKStore {
             predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, planPredicate])
         }
 
-        if !query.carePlanVersionIDs.isEmpty {
-            let versionPredicate = NSPredicate(format: "%K IN %@", #keyPath(OCKCDContact.carePlan), try query.carePlanVersionIDs.map(fetchObject))
+        if !query.carePlanUUIDs.isEmpty {
+            let versionPredicate = NSPredicate(format: "%K IN %@", #keyPath(OCKCDContact.carePlan.uuid), query.carePlanUUIDs)
             predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, versionPredicate])
         }
 
@@ -241,6 +247,6 @@ extension OCKStore {
             case .familyName(ascending: let ascending): return NSSortDescriptor(keyPath: \OCKCDContact.name.familyName, ascending: ascending)
             case .givenName(ascending: let ascending): return NSSortDescriptor(keyPath: \OCKCDContact.name.givenName, ascending: ascending)
             }
-        }
+        } + defaultSortDescritors()
     }
 }

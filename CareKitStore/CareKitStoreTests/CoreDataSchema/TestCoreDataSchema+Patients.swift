@@ -42,6 +42,7 @@ class TestCoreDataSchemaWithPatient: XCTestCase {
     func testCanSavePatient() {
         let patient = OCKCDPatient(context: store.context)
         patient.id = "my_id"
+        patient.uuid = UUID()
         patient.effectiveDate = Date()
         patient.name = OCKCDPersonName(context: store.context)
         patient.name.givenName = "Amy"

@@ -29,6 +29,8 @@
  */
 
 @testable import CareKit
+import CareKitStore
+import CareKitUI
 import Foundation
 import XCTest
 
@@ -38,7 +40,7 @@ private extension OCKTask {
         let schedules = (1...eventCount).map {
             OCKSchedule.dailyAtTime(hour: $0, minutes: 0, start: startOfDay, end: nil, text: nil)
         }
-        var task = OCKTask(id: "doxylamine", title: "Doxylamine", carePlanID: nil, schedule: .init(composing: schedules))
+        var task = OCKTask(id: "doxylamine", title: "Doxylamine", carePlanUUID: nil, schedule: .init(composing: schedules))
         task.impactsAdherence = impactsAdherence
         let events = schedules.enumerated().map {
             return OCKAnyEvent(task: task, outcome: nil, scheduleEvent: $1.event(forOccurrenceIndex: $0)!)

@@ -49,14 +49,14 @@ class TestStoreTasks: XCTestCase {
 
     func testStorePreventsMissingPlanRelationshipOnTasks() {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
-        let task = OCKTask(id: "medicine", title: "Advil", carePlanID: nil, schedule: schedule)
+        let task = OCKTask(id: "medicine", title: "Advil", carePlanUUID: nil, schedule: schedule)
         store.configuration.allowsEntitiesWithMissingRelationships = false
         XCTAssertThrowsError(try store.addTaskAndWait(task))
     }
 
     func testStoreAllowsMissingPlanRelationshipOnTasks() {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
-        let task = OCKTask(id: "medicine", title: "Advil", carePlanID: nil, schedule: schedule)
+        let task = OCKTask(id: "medicine", title: "Advil", carePlanUUID: nil, schedule: schedule)
         XCTAssertNoThrow(try store.addTaskAndWait(task))
     }
 
@@ -64,22 +64,22 @@ class TestStoreTasks: XCTestCase {
 
     func testAddTask() throws {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil, targetValues: [OCKOutcomeValue(11.1)])
-        var task = OCKTask(id: "squats", title: "Front Squats", carePlanID: nil, schedule: schedule)
+        var task = OCKTask(id: "squats", title: "Front Squats", carePlanUUID: nil, schedule: schedule)
         task = try store.addTaskAndWait(task)
-        XCTAssertNotNil(task.localDatabaseID)
+        XCTAssertNotNil(task.uuid)
         XCTAssertNotNil(task.schemaVersion)
     }
 
     func testScheduleDurationIsPersisted() throws {
         let schedule = OCKSchedule.dailyAtTime(hour: 8, minutes: 0, start: Date(), end: nil, text: nil, duration: .seconds(123), targetValues: [])
-        var task = OCKTask(id: "lunges", title: "Lunges", carePlanID: nil, schedule: schedule)
+        var task = OCKTask(id: "lunges", title: "Lunges", carePlanUUID: nil, schedule: schedule)
         task = try store.addTaskAndWait(task)
         XCTAssert(task.schedule.elements.allSatisfy { $0.duration == .seconds(123) })
     }
 
     func testAddTaskFailsIfIdentifierAlreadyExists() throws {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
-        let task = OCKTask(id: "exercise", title: "Push Ups", carePlanID: nil, schedule: schedule)
+        let task = OCKTask(id: "exercise", title: "Push Ups", carePlanUUID: nil, schedule: schedule)
         try store.addTaskAndWait(task)
         XCTAssertThrowsError(try store.addTaskAndWait(task))
     }
@@ -87,7 +87,7 @@ class TestStoreTasks: XCTestCase {
     func testAllDaySchedulesArePersistedCorrectly() throws {
         let element = OCKScheduleElement(start: Date(), end: nil, interval: DateComponents(day: 1), duration: .allDay)
         let schedule = OCKSchedule(composing: [element])
-        var task = OCKTask(id: "benadryl", title: "Benadryl", carePlanID: nil, schedule: schedule)
+        var task = OCKTask(id: "benadryl", title: "Benadryl", carePlanUUID: nil, schedule: schedule)
         task = try store.addTaskAndWait(task)
         guard let fetchedElement = task.schedule.elements.first else { XCTFail("Bad schedule"); return }
         XCTAssertTrue(fetchedElement.duration == .allDay)
@@ -95,18 +95,17 @@ class TestStoreTasks: XCTestCase {
     
     func testAddUpdateOrDelete() throws {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
-        let taskC = OCKTask(id: "C", title: "OriginalC", carePlanID: nil, schedule: schedule)
-        try store.addTaskAndWait(OCKTask(id: "A", title: "OriginalA", carePlanID: nil, schedule: schedule))
+        let taskC = OCKTask(id: "C", title: "OriginalC", carePlanUUID: nil, schedule: schedule)
+        try store.addTaskAndWait(OCKTask(id: "A", title: "OriginalA", carePlanUUID: nil, schedule: schedule))
         try store.addTaskAndWait(taskC)
         
-        let taskA = OCKTask(id: "A", title: "UpdatedA", carePlanID: nil, schedule: schedule)
-        let taskB = OCKTask(id: "B", title: "OriginalB", carePlanID: nil, schedule: schedule)
+        let taskA = OCKTask(id: "A", title: "UpdatedA", carePlanUUID: nil, schedule: schedule)
+        let taskB = OCKTask(id: "B", title: "OriginalB", carePlanUUID: nil, schedule: schedule)
         try store.addUpdateOrDeleteTasksAndWait(addOrUpdate: [taskA, taskB], delete: [taskC])
         
-        let tasks = try store.fetchTasksAndWait(query: OCKTaskQuery())
+        let tasks = try store.fetchTasksAndWait(query: OCKTaskQuery(for: Date()))
         let titles = tasks.map { $0.title }
-        XCTAssert(tasks.count == 3)
-        XCTAssert(titles.contains("OriginalA"))
+        XCTAssert(tasks.count == 2)
         XCTAssert(titles.contains("UpdatedA"))
         XCTAssert(titles.contains("OriginalB"))
     }
@@ -115,8 +114,8 @@ class TestStoreTasks: XCTestCase {
 
     func testQueryTaskByIdentifier() throws {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
-        let task1 = OCKTask(id: "squats", title: "Front Squats", carePlanID: nil, schedule: schedule)
-        let task2 = OCKTask(id: "lunges", title: "Forward Lunges", carePlanID: nil, schedule: schedule)
+        let task1 = OCKTask(id: "squats", title: "Front Squats", carePlanUUID: nil, schedule: schedule)
+        let task2 = OCKTask(id: "lunges", title: "Forward Lunges", carePlanUUID: nil, schedule: schedule)
         try store.addTasksAndWait([task1, task2])
         let tasks = try store.fetchTasksAndWait(query: OCKTaskQuery(id: task1.id))
         XCTAssert(tasks.count == 1)
@@ -124,9 +123,9 @@ class TestStoreTasks: XCTestCase {
     }
 
     func testQueryTaskByCarePlanIdentifier() throws {
-        let carePlan = try store.addCarePlanAndWait(OCKCarePlan(id: "plan", title: "Plan", patientID: nil))
+        let carePlan = try store.addCarePlanAndWait(OCKCarePlan(id: "plan", title: "Plan", patientUUID: nil))
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
-        let task = try store.addTaskAndWait(OCKTask(id: "A", title: "Task", carePlanID: carePlan.localDatabaseID, schedule: schedule))
+        let task = try store.addTaskAndWait(OCKTask(id: "A", title: "Task", carePlanUUID: carePlan.uuid, schedule: schedule))
         var query = OCKTaskQuery()
         query.carePlanIDs = [carePlan.id]
         let fetched = try store.fetchTasksAndWait(query: query)
@@ -134,20 +133,20 @@ class TestStoreTasks: XCTestCase {
     }
 
     func testQueryTaskByCarePlanVersionID() throws {
-        let carePlan = try store.addCarePlanAndWait(OCKCarePlan(id: "plan", title: "Plan", patientID: nil))
-        guard let versionID = carePlan.localDatabaseID else { XCTFail("Missing versionID"); return }
+        let carePlan = try store.addCarePlanAndWait(OCKCarePlan(id: "plan", title: "Plan", patientUUID: nil))
+        guard let versionID = carePlan.uuid else { XCTFail("Missing versionID"); return }
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
-        let task = try store.addTaskAndWait(OCKTask(id: "A", title: "Task", carePlanID: carePlan.localDatabaseID, schedule: schedule))
+        let task = try store.addTaskAndWait(OCKTask(id: "A", title: "Task", carePlanUUID: carePlan.uuid, schedule: schedule))
         var query = OCKTaskQuery()
-        query.carePlanVersionIDs = [versionID]
+        query.carePlanUUIDs = [versionID]
         let fetched = try store.fetchTasksAndWait(query: query)
         XCTAssert(fetched == [task])
     }
 
     func testTaskQueryGroupIdentifier() throws {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
-        var task1 = OCKTask(id: "squats", title: "Front Squats", carePlanID: nil, schedule: schedule)
-        let task2 = OCKTask(id: "lunges", title: "Forward Lunges", carePlanID: nil, schedule: schedule)
+        var task1 = OCKTask(id: "squats", title: "Front Squats", carePlanUUID: nil, schedule: schedule)
+        let task2 = OCKTask(id: "lunges", title: "Forward Lunges", carePlanUUID: nil, schedule: schedule)
         task1.groupIdentifier = "group1"
         try store.addTasksAndWait([task1, task2])
 
@@ -163,9 +162,9 @@ class TestStoreTasks: XCTestCase {
         let today = Calendar.current.startOfDay(for: Date())
         let schedule1 = OCKSchedule.mealTimesEachDay(start: today, end: nil)
         let schedule2 = OCKSchedule.mealTimesEachDay(start: today, end: Calendar.current.date(byAdding: .day, value: 1, to: today)!)
-        let task1 = OCKTask(id: "aa", title: "aa", carePlanID: nil, schedule: schedule2)
-        let task2 = OCKTask(id: "bb", title: "bb", carePlanID: nil, schedule: schedule1)
-        let task3 = OCKTask(id: "cc", title: nil, carePlanID: nil, schedule: schedule2)
+        let task1 = OCKTask(id: "aa", title: "aa", carePlanUUID: nil, schedule: schedule2)
+        let task2 = OCKTask(id: "bb", title: "bb", carePlanUUID: nil, schedule: schedule1)
+        let task3 = OCKTask(id: "cc", title: nil, carePlanUUID: nil, schedule: schedule2)
         try store.addTasksAndWait([task1, task2, task3])
 
         let interval = DateInterval(start: Date(), end: Calendar.current.date(byAdding: .day, value: 10, to: today)!)
@@ -177,9 +176,9 @@ class TestStoreTasks: XCTestCase {
 
     func testTaskQueryLimited() throws {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
-        let task1 = OCKTask(id: "a", title: "a", carePlanID: nil, schedule: schedule)
-        let task2 = OCKTask(id: "b", title: "b", carePlanID: nil, schedule: schedule)
-        let task3 = OCKTask(id: "c", title: "c", carePlanID: nil, schedule: schedule)
+        let task1 = OCKTask(id: "a", title: "a", carePlanUUID: nil, schedule: schedule)
+        let task2 = OCKTask(id: "b", title: "b", carePlanUUID: nil, schedule: schedule)
+        let task3 = OCKTask(id: "c", title: "c", carePlanUUID: nil, schedule: schedule)
         try store.addTasksAndWait([task1, task2, task3])
 
         let interval = DateInterval(start: Date(), end: Calendar.current.date(byAdding: .day, value: 2, to: Date())!)
@@ -195,11 +194,11 @@ class TestStoreTasks: XCTestCase {
 
     func testTaskQueryTags() throws {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
-        var task1 = OCKTask(id: "a", title: "a", carePlanID: nil, schedule: schedule)
+        var task1 = OCKTask(id: "a", title: "a", carePlanUUID: nil, schedule: schedule)
         task1.tags = ["A"]
-        var task2 = OCKTask(id: "b", title: "b", carePlanID: nil, schedule: schedule)
+        var task2 = OCKTask(id: "b", title: "b", carePlanUUID: nil, schedule: schedule)
         task2.tags = ["A", "B"]
-        var task3 = OCKTask(id: "c", title: "c", carePlanID: nil, schedule: schedule)
+        var task3 = OCKTask(id: "c", title: "c", carePlanUUID: nil, schedule: schedule)
         task3.tags = ["A", "B", "C"]
         try store.addTasksAndWait([task1, task2, task3])
 
@@ -213,16 +212,16 @@ class TestStoreTasks: XCTestCase {
 
     func testTaskQueryWithNilQueryReturnsAllTasks() throws {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
-        let task1 = OCKTask(id: "a", title: "a", carePlanID: nil, schedule: schedule)
-        let task2 = OCKTask(id: "b", title: "b", carePlanID: nil, schedule: schedule)
-        let task3 = OCKTask(id: "c", title: "c", carePlanID: nil, schedule: schedule)
+        let task1 = OCKTask(id: "a", title: "a", carePlanUUID: nil, schedule: schedule)
+        let task2 = OCKTask(id: "b", title: "b", carePlanUUID: nil, schedule: schedule)
+        let task3 = OCKTask(id: "c", title: "c", carePlanUUID: nil, schedule: schedule)
         try store.addTasksAndWait([task1, task2, task3])
         let tasks = try store.fetchTasksAndWait(query: OCKTaskQuery())
         XCTAssert(tasks.count == 3)
     }
 
     func testQueryTaskByRemoteID() throws {
-        var task = OCKTask(id: "A", title: nil, carePlanID: nil, schedule: .mealTimesEachDay(start: Date(), end: nil))
+        var task = OCKTask(id: "A", title: nil, carePlanUUID: nil, schedule: .mealTimesEachDay(start: Date(), end: nil))
         task.remoteID = "abc"
         task = try store.addTaskAndWait(task)
 
@@ -233,11 +232,11 @@ class TestStoreTasks: XCTestCase {
     }
 
     func testQueryTaskByCarePlanRemoteID() throws {
-        var plan = OCKCarePlan(id: "A", title: "B", patientID: nil)
+        var plan = OCKCarePlan(id: "A", title: "B", patientUUID: nil)
         plan.remoteID = "abc"
         plan = try store.addCarePlanAndWait(plan)
 
-        var task = OCKTask(id: "B", title: "C", carePlanID: plan.localDatabaseID, schedule: .mealTimesEachDay(start: Date(), end: nil))
+        var task = OCKTask(id: "B", title: "C", carePlanUUID: plan.uuid, schedule: .mealTimesEachDay(start: Date(), end: nil))
         task = try store.addTaskAndWait(task)
 
         var query = OCKTaskQuery(for: Date())
@@ -250,10 +249,10 @@ class TestStoreTasks: XCTestCase {
 
     func testUpdateTaskCreateNewVersion() throws {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
-        let task = try store.addTaskAndWait(OCKTask(id: "meds", title: "Medication", carePlanID: nil, schedule: schedule))
-        let updatedTask = try store.updateTaskAndWait(OCKTask(id: "meds", title: "New Medication", carePlanID: nil, schedule: schedule))
+        let task = try store.addTaskAndWait(OCKTask(id: "meds", title: "Medication", carePlanUUID: nil, schedule: schedule))
+        let updatedTask = try store.updateTaskAndWait(OCKTask(id: "meds", title: "New Medication", carePlanUUID: nil, schedule: schedule))
         XCTAssert(updatedTask.title == "New Medication")
-        XCTAssert(updatedTask.previousVersionID == task.localDatabaseID)
+        XCTAssert(updatedTask.previousVersionUUID == task.uuid)
     }
 
     func testCanFetchEventsWhenCurrentTaskVersionStartsAtSameTimeOrEarlierThanThePreviousVersion() throws {
@@ -264,7 +263,7 @@ class TestStoreTasks: XCTestCase {
         let scheduleV2 = OCKSchedule.dailyAtTime(hour: 8, minutes: 0, start: aFewDaysAgo, end: nil, text: nil)
         let scheduleV3 = OCKSchedule.dailyAtTime(hour: 8, minutes: 0, start: aFewDaysAgo, end: nil, text: nil)
 
-        var nausea = OCKTask(id: "nausea", title: "V1", carePlanID: nil, schedule: scheduleV1)
+        var nausea = OCKTask(id: "nausea", title: "V1", carePlanUUID: nil, schedule: scheduleV1)
         let v1 = try store.addTaskAndWait(nausea)
         XCTAssert(v1.effectiveDate == scheduleV1.startDate())
 
@@ -289,16 +288,16 @@ class TestStoreTasks: XCTestCase {
 
     func testCannotUpdateTaskIfItResultsInImplicitDataLoss() throws {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
-        let task = try store.addTaskAndWait(OCKTask(id: "meds", title: "Medication", carePlanID: nil, schedule: schedule))
-        let outcome = OCKOutcome(taskID: try task.getLocalID(), taskOccurrenceIndex: 5, values: [OCKOutcomeValue(1)])
+        let task = try store.addTaskAndWait(OCKTask(id: "meds", title: "Medication", carePlanUUID: nil, schedule: schedule))
+        let outcome = OCKOutcome(taskUUID: try task.getUUID(), taskOccurrenceIndex: 5, values: [OCKOutcomeValue(1)])
         try store.addOutcomesAndWait([outcome])
         XCTAssertThrowsError(try store.updateTaskAndWait(task))
     }
 
     func testCanUpdateTaskWithOutcomesIfDoesNotCauseDataLoss() throws {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
-        var task = try store.addTaskAndWait(OCKTask(id: "meds", title: "Medication", carePlanID: nil, schedule: schedule))
-        let outcome = OCKOutcome(taskID: try task.getLocalID(), taskOccurrenceIndex: 0, values: [OCKOutcomeValue(1)])
+        var task = try store.addTaskAndWait(OCKTask(id: "meds", title: "Medication", carePlanUUID: nil, schedule: schedule))
+        let outcome = OCKOutcome(taskUUID: try task.getUUID(), taskOccurrenceIndex: 0, values: [OCKOutcomeValue(1)])
         try store.addOutcomesAndWait([outcome])
         task.effectiveDate = task.schedule[5].start
         XCTAssertNoThrow(try store.updateTaskAndWait(task))
@@ -306,7 +305,7 @@ class TestStoreTasks: XCTestCase {
 
     func testQueryUpdatedTasksEvents() throws {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil) // 7:30AM, 12:00PM, 5:30PM
-        let original = try store.addTaskAndWait(OCKTask(id: "meds", title: "Original", carePlanID: nil, schedule: schedule))
+        let original = try store.addTaskAndWait(OCKTask(id: "meds", title: "Original", carePlanUUID: nil, schedule: schedule))
 
         var updated = original
         updated.effectiveDate = schedule[5].start // 5:30PM tomorrow
@@ -316,13 +315,13 @@ class TestStoreTasks: XCTestCase {
         let events = try store.fetchEventsAndWait(taskID: "meds", query: query)
 
         XCTAssert(events.count == 3)
-        XCTAssert(events[0].task.localDatabaseID == original.localDatabaseID)
-        XCTAssert(events[1].task.localDatabaseID == original.localDatabaseID)
-        XCTAssert(events[2].task.localDatabaseID == updated.localDatabaseID)
+        XCTAssert(events[0].task.uuid == original.uuid)
+        XCTAssert(events[1].task.uuid == original.uuid)
+        XCTAssert(events[2].task.uuid == updated.uuid)
     }
 
     func testUpdateFailsForUnsavedTasks() {
-        let task = OCKTask(id: "meds", title: "Medication", carePlanID: nil, schedule: .mealTimesEachDay(start: Date(), end: nil))
+        let task = OCKTask(id: "meds", title: "Medication", carePlanUUID: nil, schedule: .mealTimesEachDay(start: Date(), end: nil))
         XCTAssertThrowsError(try store.updateTaskAndWait(task))
     }
 
@@ -332,10 +331,10 @@ class TestStoreTasks: XCTestCase {
         let lastWeek = Calendar.current.date(byAdding: .weekOfYear, value: -1, to: today)!
 
         let schedule1 = OCKSchedule.mealTimesEachDay(start: lastWeek, end: nil, targetValues: [OCKOutcomeValue(11.1)])
-        let task1 = OCKTask(id: "squats", title: "Front Squats", carePlanID: nil, schedule: schedule1)
+        let task1 = OCKTask(id: "squats", title: "Front Squats", carePlanUUID: nil, schedule: schedule1)
 
         let schedule2 = OCKSchedule.mealTimesEachDay(start: tomorrow, end: nil)
-        let task2 = OCKTask(id: "lunges", title: "Forward Lunges", carePlanID: nil, schedule: schedule2)
+        let task2 = OCKTask(id: "lunges", title: "Forward Lunges", carePlanUUID: nil, schedule: schedule2)
         try store.addTasksAndWait([task1, task2])
 
         let tasks = try store.fetchTasksAndWait(query: OCKTaskQuery(for: Date()))
@@ -347,12 +346,12 @@ class TestStoreTasks: XCTestCase {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
 
         let dateA = Date().addingTimeInterval(-100)
-        var taskA = OCKTask(id: "A", title: "a", carePlanID: nil, schedule: schedule)
+        var taskA = OCKTask(id: "A", title: "a", carePlanUUID: nil, schedule: schedule)
         taskA.effectiveDate = dateA
-        taskA = try store.addTaskAndWait(OCKTask(id: "A", title: "a", carePlanID: nil, schedule: schedule))
+        taskA = try store.addTaskAndWait(OCKTask(id: "A", title: "a", carePlanUUID: nil, schedule: schedule))
 
         let dateB = dateA.addingTimeInterval(100)
-        var taskB = OCKTask(id: "A", title: "b", carePlanID: nil, schedule: schedule)
+        var taskB = OCKTask(id: "A", title: "b", carePlanUUID: nil, schedule: schedule)
         taskB.effectiveDate = dateB
         taskB = try store.updateTaskAndWait(taskB)
 
@@ -367,7 +366,7 @@ class TestStoreTasks: XCTestCase {
         let schedule = OCKSchedule.dailyAtTime(hour: 0, minutes: 0, start: Date(), end: nil, text: nil)
         let query = OCKTaskQuery(dateInterval: DateInterval(start: schedule[5].start, end: schedule[5].end))
 
-        var task = try store.addTaskAndWait(OCKTask(id: "meds", title: "Medication", carePlanID: nil, schedule: schedule))
+        var task = try store.addTaskAndWait(OCKTask(id: "meds", title: "Medication", carePlanUUID: nil, schedule: schedule))
         task.effectiveDate = task.schedule[5].start
         task = try store.updateTaskAndWait(task)
 
@@ -379,12 +378,12 @@ class TestStoreTasks: XCTestCase {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
 
         let dateA = Date().addingTimeInterval(-100)
-        var taskA = OCKTask(id: "A", title: "a", carePlanID: nil, schedule: schedule)
+        var taskA = OCKTask(id: "A", title: "a", carePlanUUID: nil, schedule: schedule)
         taskA.effectiveDate = dateA
-        taskA = try store.addTaskAndWait(OCKTask(id: "A", title: "a", carePlanID: nil, schedule: schedule))
+        taskA = try store.addTaskAndWait(OCKTask(id: "A", title: "a", carePlanUUID: nil, schedule: schedule))
 
         let dateB = Date().addingTimeInterval(100)
-        var taskB = OCKTask(id: "A", title: "b", carePlanID: nil, schedule: schedule)
+        var taskB = OCKTask(id: "A", title: "b", carePlanUUID: nil, schedule: schedule)
         taskB.effectiveDate = dateB
         taskB = try store.updateTaskAndWait(taskB)
 
@@ -399,15 +398,15 @@ class TestStoreTasks: XCTestCase {
 
     func testDeleteTask() throws {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
-        let task = try store.addTaskAndWait(OCKTask(id: "meds", title: "Medication", carePlanID: nil, schedule: schedule))
+        let task = try store.addTaskAndWait(OCKTask(id: "meds", title: "Medication", carePlanUUID: nil, schedule: schedule))
         try store.deleteTaskAndWait(task)
-        let fetched = try store.fetchTasksAndWait()
+        let fetched = try store.fetchTasksAndWait(query: .init(for: Date()))
         XCTAssert(fetched.isEmpty)
     }
 
     func testDeleteTaskFailsIfTaskDoesntExist() {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
-        let task = OCKTask(id: "meds", title: "Medication", carePlanID: nil, schedule: schedule)
+        let task = OCKTask(id: "meds", title: "Medication", carePlanUUID: nil, schedule: schedule)
         XCTAssertThrowsError(try store.deleteTaskAndWait(task))
     }
 }

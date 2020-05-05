@@ -40,10 +40,11 @@ class TestCoreDataSchemaWithContacts: XCTestCase {
         store = OCKStore(name: "test", type: .inMemory)
     }
 
-    func testCanSaveContact() {
+    func testCanSaveContactWithAddressAndContactInfo() {
         let contact = OCKCDContact(context: store.context)
         contact.allowsMissingRelationships = true
         contact.id = "Katie Abeles"
+        contact.uuid = UUID()
         contact.title = "Dr. Abeles"
         contact.effectiveDate = Date()
         contact.name = OCKCDPersonName(context: store.context)
@@ -71,8 +72,15 @@ class TestCoreDataSchemaWithContacts: XCTestCase {
 
     func testCannotSaveWithoutCarePlan() {
         let contact = OCKCDContact(context: store.context)
-        contact.effectiveDate = Date()
         contact.allowsMissingRelationships = false
+        contact.id = "Katie Abeles"
+        contact.uuid = UUID()
+        contact.title = "Dr. Abeles"
+        contact.effectiveDate = Date()
+        contact.name = OCKCDPersonName(context: store.context)
+        contact.name.givenName = "Katie"
+        contact.name.familyName = "Abeles"
+
         XCTAssertThrowsError(try store.context.save())
     }
 }

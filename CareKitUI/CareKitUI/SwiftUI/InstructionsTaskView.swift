@@ -137,8 +137,6 @@ public extension InstructionsTaskView where Header == HeaderView, Footer == _Ins
     }
 }
 
-// swiftlint:disable type_name
-
 /// The default footer used by an `InstructionsTaskView`.
 public struct _InstructionsTaskViewFooter: View {
 
@@ -163,5 +161,3 @@ public struct _InstructionsTaskViewFooter: View {
         }.buttonStyle(NoHighlightStyle())
     }
 }
-
-// swiftlint:enable type_name

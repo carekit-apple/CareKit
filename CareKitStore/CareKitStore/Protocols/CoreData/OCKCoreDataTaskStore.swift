@@ -32,7 +32,7 @@ import CoreData
 import HealthKit
 
 protocol OCKCDTaskCompatible: OCKAnyMutableTask, OCKVersionedObjectCompatible {
-    var carePlanID: OCKLocalVersionID? { get set }
+    var carePlanUUID: UUID? { get set }
     var optionalHealthKitLinkage: OCKHealthKitLinkage? { get set }
 }
 
@@ -42,7 +42,6 @@ extension OCKTask: OCKCDTaskCompatible {
         set { /* No-op */ }
     }
 }
-
 
 protocol OCKCoreDataTaskStoreProtocol: OCKCoreDataStoreProtocol, OCKTaskStore where Task: OCKCDTaskCompatible {
     func makeTask(from task: OCKCDTask) -> Task
@@ -56,14 +55,13 @@ extension OCKCoreDataTaskStoreProtocol {
         context.perform {
             do {
                 let predicate = try self.buildPredicate(for: query)
-                let tasks = OCKCDTask
-                    .fetchFromStore(in: self.context, where: predicate) { fetchRequest in
-                        fetchRequest.fetchLimit = query.limit ?? 0
-                        fetchRequest.fetchOffset = query.offset
-                        fetchRequest.sortDescriptors = self.buildSortDescriptors(for: query)
-                    }
-                    .map(self.makeTask)
-                    .filtered(against: query)
+                let tasks = self.fetchFromStore(OCKCDTask.self, where: predicate) { fetchRequest in
+                    fetchRequest.fetchLimit = query.limit ?? 0
+                    fetchRequest.fetchOffset = query.offset
+                    fetchRequest.sortDescriptors = self.buildSortDescriptors(for: query)
+                }
+                .map(self.makeTask)
+                .filtered(against: query)
 
                 callbackQueue.async {
                     completion(.success(tasks))
@@ -82,12 +80,11 @@ extension OCKCoreDataTaskStoreProtocol {
                          completion: ((Result<[Task], OCKStoreError>) -> Void)? = nil) {
         context.perform {
             do {
-                try OCKCDTask.validateNewIDs(tasks.map { $0.id }, in: self.context)
-                let persistableTasks = tasks.map(self.createTask)
+                let addedTasks = try self.createTasksWithoutCommitting(tasks)
                 try self.context.save()
-                let addedTasks = persistableTasks.map(self.makeTask)
                 callbackQueue.async {
                     self.taskDelegate?.taskStore(self, didAddTasks: addedTasks)
+                    self.autoSynchronizeIfRequired()
                     completion?(.success(addedTasks))
                 }
             } catch {
@@ -103,52 +100,13 @@ extension OCKCoreDataTaskStoreProtocol {
                             completion: ((Result<[Task], OCKStoreError>) -> Void)? = nil) {
         context.perform {
             do {
-                let ids = tasks.map { $0.id }
-                try OCKCDTask.validateUpdateIdentifiers(ids, in: self.context)
-                try self.confirmUpdateWillNotCauseDataLoss(tasks: tasks)
-                let updatedTasks = try self.performVersionedUpdate(values: tasks, addNewVersion: self.createTask)
+                let updated = try self.updateTasksWithoutCommitting(tasks, copyUUIDs: false)
                 try self.context.save()
-                let tasks = updatedTasks.map(self.makeTask)
                 callbackQueue.async {
-                    self.taskDelegate?.taskStore(self, didUpdateTasks: tasks)
-                    completion?(.success(tasks))
+                    self.taskDelegate?.taskStore(self, didUpdateTasks: updated)
+                    self.autoSynchronizeIfRequired()
+                    completion?(.success(updated))
                 }
-            } catch {
-                self.context.rollback()
-                callbackQueue.async {
-                    completion?(.failure(.updateFailed(reason: "\(error.localizedDescription)")))
-                }
-            }
-        }
-    }
-    
-    public func addUpdateOrDeleteTasks(addOrUpdate tasks: [Task], delete deleteTasks: [Task],
-                                       callbackQueue: DispatchQueue = .main,
-                                       completion: ((Result<([Task], [Task], [Task]), OCKStoreError>) -> Void)? = nil) {
-        context.perform {
-            do {
-                let existingTaskIDs = OCKCDTask.fetchHeads(ids: tasks.map { $0.id }, in: self.context).map { $0.id }
-                let addTasks = tasks.filter { !existingTaskIDs.contains($0.id) }
-                let updateTasks = tasks.filter { existingTaskIDs.contains($0.id) }
-                try self.confirmUpdateWillNotCauseDataLoss(tasks: updateTasks)
-                
-                let inserted = addTasks.map(self.createTask)
-                let updated = try self.performVersionedUpdate(values: updateTasks, addNewVersion: self.createTask)
-                let deleted: [OCKCDTask] = try self.performDeletion(values: deleteTasks)
-
-                try self.context.save()
-                
-                let addedTasks = inserted.map(self.makeTask)
-                let updatedTasks = updated.map(self.makeTask)
-                let deletedTasks = deleted.map(self.makeTask)
-                
-                callbackQueue.async {
-                    self.taskDelegate?.taskStore(self, didAddTasks: addedTasks)
-                    self.taskDelegate?.taskStore(self, didUpdateTasks: updatedTasks)
-                    self.taskDelegate?.taskStore(self, didDeleteTasks: deleteTasks)
-                    completion?(.success((addedTasks, updateTasks, deletedTasks)))
-                }
-                
             } catch {
                 self.context.rollback()
                 callbackQueue.async {
@@ -162,13 +120,16 @@ extension OCKCoreDataTaskStoreProtocol {
                             completion: ((Result<[Task], OCKStoreError>) -> Void)? = nil) {
         context.perform {
             do {
-                let ids = tasks.map { $0.id }
-                try OCKCDTask.validateUpdateIdentifiers(ids, in: self.context)
-                let markedTasks: [OCKCDTask] = try self.performDeletion(values: tasks)
+                try self.validateUpdateIdentifiers(tasks.map { $0.id })
+                let markedTasks: [OCKCDTask] = try self.performDeletion(
+                    values: tasks,
+                    addNewVersion: self.createTask)
+
                 try self.context.save()
                 let deletedTasks = markedTasks.map(self.makeTask)
                 callbackQueue.async {
                     self.taskDelegate?.taskStore(self, didDeleteTasks: deletedTasks)
+                    self.autoSynchronizeIfRequired()
                     completion?(.success(deletedTasks))
                 }
             } catch {
@@ -180,24 +141,95 @@ extension OCKCoreDataTaskStoreProtocol {
         }
     }
 
-    private func createTask(from task: Task) -> OCKCDTask {
+    public func addUpdateOrDeleteTasks(addOrUpdate tasks: [Task], delete deleteTasks: [Task],
+                                       callbackQueue: DispatchQueue = .main,
+                                       completion: ((Result<([Task], [Task], [Task]), OCKStoreError>) -> Void)? = nil) {
+        context.perform {
+            do {
+                let existingTaskIDs = self.fetchHeads(OCKCDTask.self, ids: tasks.map { $0.id }).map { $0.id }
+                let addTasks = tasks.filter { !existingTaskIDs.contains($0.id) }
+                let updateTasks = tasks.filter { existingTaskIDs.contains($0.id) }
+                try self.confirmUpdateWillNotCauseDataLoss(tasks: updateTasks)
+
+                let inserted = addTasks.map(self.createTask)
+                let updated = try self.performVersionedUpdate(values: updateTasks, addNewVersion: self.createTask)
+                let deleted: [OCKCDTask] = try self.performDeletion(values: deleteTasks, addNewVersion: self.createTask)
+
+                try self.context.save()
+
+                let addedTasks = inserted.map(self.makeTask)
+                let updatedTasks = updated.map(self.makeTask)
+                let deletedTasks = deleted.map(self.makeTask)
+
+                callbackQueue.async {
+                    self.taskDelegate?.taskStore(self, didAddTasks: addedTasks)
+                    self.taskDelegate?.taskStore(self, didUpdateTasks: updatedTasks)
+                    self.taskDelegate?.taskStore(self, didDeleteTasks: deleteTasks)
+                    completion?(.success((addedTasks, updateTasks, deletedTasks)))
+                }
+
+            } catch {
+                self.context.rollback()
+                callbackQueue.async {
+                    completion?(.failure(.updateFailed(reason: "\(error.localizedDescription)")))
+                }
+            }
+        }
+    }
+
+    // MARK: Internal
+    // These methods are called from elsewhere in CareKit, but must always be called
+    // from the `contexts`'s thread.
+
+    func createTasksWithoutCommitting(_ tasks: [Task]) throws -> [Task] {
+        try self.validateNew(OCKCDTask.self, tasks)
+        let persistableTasks = tasks.map(self.createTask)
+        let addedTasks = persistableTasks.map(self.makeTask)
+        return addedTasks
+    }
+
+    /// Updates existing tasks to the versions passed in.
+    ///
+    /// The copyUUIDs argument should be true when ingesting tasks from a remote to ensure
+    /// the UUIDs match on all devices, and false when creating a new version of a task locally
+    /// to ensure that the new version has a different UUID than its parent version.
+    ///
+    /// - Parameters:
+    ///   - tasks: The new versions of the tasks.
+    ///   - copyUUIDs: If true, the UUIDs of the tasks will be copied to the new versions
+    func updateTasksWithoutCommitting(_ tasks: [Task], copyUUIDs: Bool) throws -> [Task] {
+        try validateUpdateIdentifiers(tasks.map { $0.id })
+        try confirmUpdateWillNotCauseDataLoss(tasks: tasks)
+        let updatedTasks = try self.performVersionedUpdate(values: tasks, addNewVersion: self.createTask)
+        if copyUUIDs {
+            updatedTasks.enumerated().forEach { $1.uuid = tasks[$0].uuid! }
+        }
+        let updated = updatedTasks.map(self.makeTask)
+        return updated
+    }
+
+    func createTask(from task: Task) -> OCKCDTask {
         let persistableTask = OCKCDTask(context: context)
+        copyTask(task, to: persistableTask)
+        return persistableTask
+    }
+
+    func copyTask(_ task: Task, to persistableTask: OCKCDTask) {
         persistableTask.copyVersionInfo(from: task)
         persistableTask.allowsMissingRelationships = configuration.allowsEntitiesWithMissingRelationships
         persistableTask.title = task.title
         persistableTask.instructions = task.instructions
         persistableTask.impactsAdherence = task.impactsAdherence
+        persistableTask.scheduleElements.forEach { context.delete($0) }
         persistableTask.scheduleElements = Set(createScheduleElements(from: task.schedule))
         persistableTask.healthKitLinkage = task.optionalHealthKitLinkage == nil ? nil : createHealthKitLinkage(from: task.optionalHealthKitLinkage!)
-        if let planId = task.carePlanID { persistableTask.carePlan = try? fetchObject(havingLocalID: planId) }
-
-        return persistableTask
+        if let planUUID = task.carePlanUUID { persistableTask.carePlan = try? fetchObject(uuid: planUUID) }
     }
 
-    internal func copyTaskValues<T: OCKCDTaskCompatible>(from other: OCKCDTask, to task: T) -> T {
+    func copyTaskValues<T: OCKCDTaskCompatible>(from other: OCKCDTask, to task: T) -> T {
         var mutable = task
         mutable.copyVersionedValues(from: other)
-        mutable.carePlanID = other.carePlan?.localDatabaseID
+        mutable.carePlanUUID = other.carePlan?.uuid
         mutable.optionalHealthKitLinkage = makeHealthKitLinkage(from: other.healthKitLinkage)
         mutable.title = other.title
         mutable.instructions = other.instructions
@@ -216,7 +248,6 @@ extension OCKCoreDataTaskStoreProtocol {
             scheduleElement.interval = element.interval
             scheduleElement.text = element.text
             scheduleElement.targetValues = Set(element.targetValues.map(createValue))
-            scheduleElement.copyValues(from: element)
             return scheduleElement
         }
     }
@@ -250,7 +281,6 @@ extension OCKCoreDataTaskStoreProtocol {
     }
 
     func makeValue(persistableValue: OCKCDOutcomeValue) -> OCKOutcomeValue {
-        assert(persistableValue.localDatabaseID != nil, "You shouldn't be calling this method with an object that hasn't been saved yet!")
         var value = OCKOutcomeValue(persistableValue.value, units: persistableValue.units)
         value.index = persistableValue.index?.intValue
         value.copyCommonValues(from: persistableValue)
@@ -275,9 +305,9 @@ extension OCKCoreDataTaskStoreProtocol {
     //
     // Throws an error when updating to V3 from V2 if V1 has outcomes after `x`.
     // Throws an error when updating to V3 from V2 if V2 has any outcomes.
-    // Does not trow when updating to V3 from V2 if V1 has outcomes before `x`.
-    private func confirmUpdateWillNotCauseDataLoss(tasks: [Task]) throws {
-        let heads: [OCKCDTask] = OCKCDTask.fetchHeads(ids: tasks.map { $0.id }, in: context)
+    // Does not throw when updating to V3 from V2 if V1 has outcomes before `x`.
+    func confirmUpdateWillNotCauseDataLoss(tasks: [Task]) throws {
+        let heads = fetchHeads(OCKCDTask.self, ids: tasks.map { $0.id })
         for task in heads {
 
             // For each task, gather all outcomes
@@ -321,8 +351,8 @@ extension OCKCoreDataTaskStoreProtocol {
             predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, idPredicate])
         }
 
-        if !query.versionIDs.isEmpty {
-            let versionPredicate = NSPredicate(format: "self IN %@", try query.versionIDs.map(objectID))
+        if !query.uuids.isEmpty {
+            let versionPredicate = NSPredicate(format: "%K IN %@", #keyPath(OCKCDVersionedObject.uuid), query.uuids)
             predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, versionPredicate])
         }
 
@@ -336,8 +366,8 @@ extension OCKCoreDataTaskStoreProtocol {
             predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, planPredicate])
         }
 
-        if !query.carePlanVersionIDs.isEmpty {
-            let planPredicate = NSPredicate(format: "%K IN %@", #keyPath(OCKCDTask.carePlan), try query.carePlanVersionIDs.map(objectID))
+        if !query.carePlanUUIDs.isEmpty {
+            let planPredicate = NSPredicate(format: "%K IN %@", #keyPath(OCKCDTask.carePlan.uuid), query.carePlanUUIDs)
             predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, planPredicate])
         }
 
@@ -349,14 +379,16 @@ extension OCKCoreDataTaskStoreProtocol {
         return predicate
     }
 
-    func buildSortDescriptors(for query: OCKTaskQuery?) -> [NSSortDescriptor] {
-        guard let orders = query?.extendedSortDescriptors else { return [] }
+    func buildSortDescriptors(for query: OCKTaskQuery) -> [NSSortDescriptor] {
+        let orders = query.extendedSortDescriptors
         return orders.map { order -> NSSortDescriptor in
             switch order {
             case .effectiveDate(ascending: let ascending): return NSSortDescriptor(keyPath: \OCKCDTask.effectiveDate, ascending: ascending)
             case .title(let ascending): return NSSortDescriptor(keyPath: \OCKCDTask.title, ascending: ascending)
             case .groupIdentifier(let ascending): return NSSortDescriptor(keyPath: \OCKCDTask.groupIdentifier, ascending: ascending)
+            case .createdDate(ascending: let ascending):
+                return NSSortDescriptor(keyPath: \OCKCDTask.createdDate, ascending: ascending)
             }
-        }
+        } + defaultSortDescritors()
     }
 }

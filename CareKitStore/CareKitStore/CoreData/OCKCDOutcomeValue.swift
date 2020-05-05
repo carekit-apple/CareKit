@@ -46,14 +46,14 @@ class OCKCDOutcomeValue: OCKCDObject {
     @NSManaged var textValue: String?
     @NSManaged var binaryValue: Data?
     @NSManaged var booleanValue: Bool
-    @NSManaged var integerValue: Int
+    @NSManaged var integerValue: Int64
     @NSManaged var doubleValue: Double
     @NSManaged var dateValue: Date?
 
     var value: OCKOutcomeValueUnderlyingType {
         get {
             switch type {
-            case .integer: return integerValue
+            case .integer: return Int(integerValue)
             case .double: return doubleValue
             case .boolean: return booleanValue
             case .text: return textValue!
@@ -66,7 +66,7 @@ class OCKCDOutcomeValue: OCKCDObject {
             switch newValue {
             case let int as Int:
                 reset()
-                integerValue = int
+                integerValue = Int64(int)
                 type = .integer
 
             case let double as Double:

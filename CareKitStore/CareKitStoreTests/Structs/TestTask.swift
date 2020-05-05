@@ -34,15 +34,15 @@ import XCTest
 class TestTask: XCTestCase {
 
     func testBelongsToReturnsFalseIfIDsDontMatch() {
-        let plan = OCKCarePlan(id: "A", title: "obesity", patientID: nil)
-        let task = OCKTask(id: "B", title: nil, carePlanID: nil, schedule: .mealTimesEachDay(start: Date(), end: nil))
+        let plan = OCKCarePlan(id: "A", title: "obesity", patientUUID: nil)
+        let task = OCKTask(id: "B", title: nil, carePlanUUID: nil, schedule: .mealTimesEachDay(start: Date(), end: nil))
         XCTAssertFalse(task.belongs(to: plan))
     }
 
     func testBelongsToReturnsTrueIfIDsDoMatch() {
-        var plan = OCKCarePlan(id: "A", title: "obesity", patientID: nil)
-        plan.localDatabaseID = OCKLocalVersionID("abc")
-        let task = OCKTask(id: "B", title: nil, carePlanID: plan.localDatabaseID, schedule: .mealTimesEachDay(start: Date(), end: nil))
+        var plan = OCKCarePlan(id: "A", title: "obesity", patientUUID: nil)
+        plan.uuid = UUID()
+        let task = OCKTask(id: "B", title: nil, carePlanUUID: plan.uuid, schedule: .mealTimesEachDay(start: Date(), end: nil))
         XCTAssertTrue(task.belongs(to: plan))
     }
 
@@ -51,7 +51,7 @@ class TestTask: XCTestCase {
     func testFilteringIncludesEventsThatStartBeforeTheQueryButHaveADurationIntoTheQueryInterval() {
         let thisMorning = Calendar.current.startOfDay(for: Date())
         let schedule = OCKSchedule.dailyAtTime(hour: 9, minutes: 0, start: thisMorning, end: nil, text: nil, duration: .hours(2))
-        let task = OCKTask(id: "abc123", title: "TaskA", carePlanID: nil, schedule: schedule)
+        let task = OCKTask(id: "abc123", title: "TaskA", carePlanUUID: nil, schedule: schedule)
 
         let queryStart = Calendar.current.date(byAdding: .hour, value: 1, to: schedule.startDate())! // 10:00
         let queryEnd = Calendar.current.date(byAdding: .hour, value: 4, to: schedule.startDate())! // 13:00
@@ -63,7 +63,7 @@ class TestTask: XCTestCase {
         let thisMorning = Calendar.current.startOfDay(for: Date())
         let element = OCKScheduleElement(start: thisMorning, end: nil, interval: DateComponents(weekOfYear: 1), text: nil, duration: .allDay)
         let schedule = OCKSchedule(composing: [element])
-        let task = OCKTask(id: "abc123", title: "TaskA", carePlanID: nil, schedule: schedule)
+        let task = OCKTask(id: "abc123", title: "TaskA", carePlanUUID: nil, schedule: schedule)
 
         let queryStart = Calendar.current.date(byAdding: .hour, value: 10, to: thisMorning)! // 10:00
         let queryEnd = Calendar.current.date(byAdding: .hour, value: 13, to: thisMorning)! // 13:00
@@ -76,7 +76,7 @@ class TestTask: XCTestCase {
         let tonight = Calendar.current.date(byAdding: .hour, value: 20, to: thisMorning)! // 20:00
         let element = OCKScheduleElement(start: tonight, end: nil, interval: DateComponents(weekOfYear: 1), text: nil, duration: .allDay)
         let schedule = OCKSchedule(composing: [element])
-        let task = OCKTask(id: "abc123", title: "TaskA", carePlanID: nil, schedule: schedule)
+        let task = OCKTask(id: "abc123", title: "TaskA", carePlanUUID: nil, schedule: schedule)
 
         let queryStart = Calendar.current.date(byAdding: .hour, value: 10, to: thisMorning)! // 10:00
         let queryEnd = Calendar.current.date(byAdding: .hour, value: 13, to: thisMorning)! // 13:00
@@ -87,7 +87,7 @@ class TestTask: XCTestCase {
     func testFilteringIncludesTasksForWhichNoEventOccursDuringTheQueryRange() {
         let thisMorning = Calendar.current.startOfDay(for: Date())
         let schedule = OCKSchedule.dailyAtTime(hour: 6, minutes: 0, start: thisMorning, end: nil, text: nil)
-        let task = OCKTask(id: "abc123", title: "TaskA", carePlanID: nil, schedule: schedule)
+        let task = OCKTask(id: "abc123", title: "TaskA", carePlanUUID: nil, schedule: schedule)
 
         let queryStart = Calendar.current.date(byAdding: .hour, value: 10, to: thisMorning)! // 10:00
         let queryEnd = Calendar.current.date(byAdding: .hour, value: 13, to: thisMorning)! // 13:00
@@ -99,7 +99,7 @@ class TestTask: XCTestCase {
         let thisMorning = Calendar.current.startOfDay(for: Date())
         let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: thisMorning)!
         let schedule = OCKSchedule.dailyAtTime(hour: 11, minutes: 0, start: yesterday, end: nil, text: nil, duration: .hours(5))
-        let task = OCKTask(id: "abc123", title: "TaskA", carePlanID: nil, schedule: schedule)
+        let task = OCKTask(id: "abc123", title: "TaskA", carePlanUUID: nil, schedule: schedule)
 
         let queryStart = Calendar.current.date(byAdding: .hour, value: 1, to: thisMorning)! // 01:00
         let queryEnd = Calendar.current.date(byAdding: .hour, value: 2, to: thisMorning)!
@@ -112,7 +112,7 @@ class TestTask: XCTestCase {
         let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: thisMorning)!
 
         let schedule = OCKSchedule.dailyAtTime(hour: 12, minutes: 0, start: tomorrow, end: nil, text: nil)
-        var task = OCKTask(id: "A", title: "a", carePlanID: nil, schedule: schedule)
+        var task = OCKTask(id: "A", title: "a", carePlanUUID: nil, schedule: schedule)
         task.effectiveDate = thisMorning
 
         let query = OCKTaskQuery(dateInterval: DateInterval(start: thisMorning, end: tomorrow))
@@ -123,7 +123,7 @@ class TestTask: XCTestCase {
         let thisMorning = Calendar.current.startOfDay(for: Date())
         let tomorrowMorning = Calendar.current.date(byAdding: .day, value: 1, to: thisMorning)!
         let schedule = OCKSchedule.dailyAtTime(hour: 6, minutes: 0, start: thisMorning, end: tomorrowMorning, text: nil)
-        let task = OCKTask(id: "abc123", title: "TaskA", carePlanID: nil, schedule: schedule)
+        let task = OCKTask(id: "abc123", title: "TaskA", carePlanUUID: nil, schedule: schedule)
 
         let queryStart = Calendar.current.date(byAdding: .hour, value: 10, to: tomorrowMorning)! // 10:00
         let queryEnd = Calendar.current.date(byAdding: .hour, value: 13, to: tomorrowMorning)! // 13:00
@@ -136,7 +136,7 @@ class TestTask: XCTestCase {
         let nextWeek = Calendar.current.date(byAdding: .weekOfYear, value: 1, to: thisMorning)!
         let element = OCKScheduleElement(start: thisMorning, end: nextWeek, interval: DateComponents(day: 7), duration: .hours(24 * 3 + 1))
         let schedule = OCKSchedule(composing: [element])
-        let task = OCKTask(id: "abc123", title: "TaskA", carePlanID: nil, schedule: schedule)
+        let task = OCKTask(id: "abc123", title: "TaskA", carePlanUUID: nil, schedule: schedule)
 
         for dayOffset in 0...3 {
             let day = Calendar.current.date(byAdding: .day, value: dayOffset, to: thisMorning)!

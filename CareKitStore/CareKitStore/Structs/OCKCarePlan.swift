@@ -36,8 +36,8 @@ import Foundation
 /// time about why the changes were made.
 public struct OCKCarePlan: Codable, Equatable, Identifiable, OCKAnyCarePlan, OCKVersionedObjectCompatible {
 
-    /// The version id in the local database of the patient to whom this care plan belongs.
-    public var patientID: OCKLocalVersionID?
+    /// The UUID of the patient to whom this care plan belongs.
+    public var patientUUID: UUID?
 
     // MARK: OCKAnyCarePlan
     public let id: String
@@ -46,9 +46,9 @@ public struct OCKCarePlan: Codable, Equatable, Identifiable, OCKAnyCarePlan, OCK
     // MARK: OCKVersionable
     public var effectiveDate: Date
     public internal(set) var deletedDate: Date?
-    public internal(set) var localDatabaseID: OCKLocalVersionID?
-    public internal(set) var nextVersionID: OCKLocalVersionID?
-    public internal(set) var previousVersionID: OCKLocalVersionID?
+    public internal(set) var uuid: UUID?
+    public internal(set) var nextVersionUUID: UUID?
+    public internal(set) var previousVersionUUID: UUID?
 
     // MARK: OCKObjectCompatible
     public internal(set) var createdDate: Date?
@@ -68,17 +68,17 @@ public struct OCKCarePlan: Codable, Equatable, Identifiable, OCKAnyCarePlan, OCK
     /// - Parameters:
     ///   - id: A user-defined id for the care plane.
     ///   - title: A title for the care plan.
-    ///   - patientID: The version id in the local database of the patient to whom this care plan belongs.
-    public init(id: String, title: String, patientID: OCKLocalVersionID?) {
+    ///   - patientUUID: The UUID of the patient to whom this care plan belongs.
+    public init(id: String, title: String, patientUUID: UUID?) {
         self.title = title
         self.id = id
-        self.patientID = patientID
+        self.patientUUID = patientUUID
         self.effectiveDate = Date()
         self.timezone = TimeZone.current
     }
 
     public func belongs(to patient: OCKAnyPatient) -> Bool {
-        guard let other = patient as? OCKPatient, let otherID = other.localDatabaseID else { return false }
-        return patientID == otherID
+        guard let other = patient as? OCKPatient, let otherUUID = other.uuid else { return false }
+        return patientUUID == otherUUID
     }
 }

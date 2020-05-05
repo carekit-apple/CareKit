@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2020, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -28,20 +28,34 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import CoreData
 import Foundation
 
-public struct OCKLocalVersionID: Equatable, Comparable, Hashable, Codable, CustomStringConvertible {
-    public static func < (lhs: OCKLocalVersionID, rhs: OCKLocalVersionID) -> Bool {
-        return lhs.stringValue < rhs.stringValue
+@objc(OCKCDClock)
+class OCKCDClock: NSManagedObject {
+    @NSManaged private(set) var uuid: UUID
+    @NSManaged private var vectorClock: [UUID: Int64]
+
+    override func awakeFromInsert() {
+        super.awakeFromInsert()
+        uuid = UUID()
+        vectorClock = [uuid: 0]
     }
 
-    public var description: String {
-        return stringValue
+    var vector: OCKRevisionRecord.KnowledgeVector {
+        get { .init(vectorClock.mapValues(Int.init)) }
+        set { vectorClock = newValue.processes.mapValues(Int64.init) }
     }
 
-    public let stringValue: String
+    static func fetch(context: NSManagedObjectContext) -> OCKCDClock {
+        let request = NSFetchRequest<OCKCDClock>(entityName: String(describing: OCKCDClock.self))
+        request.fetchLimit = 1
 
-    public init(_ id: String) {
-        self.stringValue = id
+        if let vector = try! context.fetch(request).first {
+            return vector
+        }
+
+        let vector = OCKCDClock(context: context)
+        return vector
     }
 }

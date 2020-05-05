@@ -31,6 +31,10 @@
 import Foundation
 
 internal protocol OCKObjectCompatible {
+    
+    /// A universally unique identifer for this object.
+    var uuid: UUID? { get set }
+    
     /// The date at which the object was first persisted to the database.
     /// It will be nil for unpersisted values and objects.
     var createdDate: Date? { get set }
@@ -45,10 +49,6 @@ internal protocol OCKObjectCompatible {
 
     /// An array of user-defined tags that can be used to sort or classify objects or values.
     var tags: [String]? { get set }
-
-    /// A unique id used by the local database. Its precise format will be determined
-    /// by the underlying database, but it is generally not expected to be human readable.
-    var localDatabaseID: OCKLocalVersionID? { get set }
 
     /// A unique id optionally used by a remote database. Its precise format will be
     /// determined by the remote database, but it is generally not expected to be human readable.
@@ -82,11 +82,14 @@ internal protocol OCKVersionedObjectCompatible: OCKObjectCompatible {
     /// A human readable unique identifier. It is used strictly by the developer and will never be shown to a user.
     var id: String { get }
 
-    /// The database ID of the previous version of this object, or nil if there is no previous version.
-    var previousVersionID: OCKLocalVersionID? { get set }
+    /// A universally unique identifier for this object.
+    var uuid: UUID? { get set }
 
-    /// The database ID of the next version of this object, or nil if there is no next version.
-    var nextVersionID: OCKLocalVersionID? { get set }
+    /// The UUID of the previous version of this object, or nil if there is no previous version.
+    var previousVersionUUID: UUID? { get set }
+
+    /// The database UUID of the next version of this object, or nil if there is no next version.
+    var nextVersionUUID: UUID? { get set }
 
     /// The date that this version of the object begins to take precedence over the previous version.
     /// Often this will be the same as the `createdDate`, but is not required to be.
@@ -99,13 +102,13 @@ internal protocol OCKVersionedObjectCompatible: OCKObjectCompatible {
 
 extension OCKObjectCompatible {
     mutating func copyCommonValues(from other: OCKCDObject) {
+        uuid = other.uuid
         createdDate = other.createdDate
         updatedDate = other.updatedDate
         schemaVersion = OCKSemanticVersion(other.schemaVersion)
         groupIdentifier = other.groupIdentifier
         tags = other.tags
         source = other.source
-        localDatabaseID = other.localDatabaseID
         remoteID = other.remoteID
         userInfo = other.userInfo
         asset = other.asset
@@ -125,11 +128,12 @@ extension OCKObjectCompatible {
 
 extension OCKVersionedObjectCompatible {
     mutating func copyVersionedValues(from other: OCKCDVersionedObject) {
+        uuid = other.uuid
         deletedDate = other.deletedDate
         effectiveDate = other.effectiveDate
-        localDatabaseID = other.localDatabaseID
-        nextVersionID = other.next?.localDatabaseID
-        previousVersionID = other.previous?.localDatabaseID
+        uuid = other.uuid
+        nextVersionUUID = other.next?.uuid
+        previousVersionUUID = other.previous?.uuid
         copyCommonValues(from: other)
     }
 }

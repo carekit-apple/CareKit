@@ -51,7 +51,7 @@ class TestStorePatients: XCTestCase {
 
     func testAddPatient() throws {
         let patient = try store.addPatientAndWait(OCKPatient(id: "myID", givenName: "Amy", familyName: "Frost"))
-        XCTAssertNotNil(patient.localDatabaseID)
+        XCTAssertNotNil(patient.uuid)
         XCTAssertNotNil(patient.schemaVersion)
     }
 
@@ -163,7 +163,7 @@ class TestStorePatients: XCTestCase {
         let patient = try store.addPatientAndWait(OCKPatient(id: "myID", givenName: "Chris", familyName: "Saari"))
         let updatedPatient = try store.updatePatientAndWait(OCKPatient(id: "myID", givenName: "Chris", familyName: "Sillers"))
         XCTAssert(updatedPatient.name.familyName == "Sillers")
-        XCTAssert(updatedPatient.previousVersionID == patient.localDatabaseID)
+        XCTAssert(updatedPatient.previousVersionUUID == patient.uuid)
     }
 
     func testUpdateFailsForUnsavedPatient() {
@@ -234,7 +234,7 @@ class TestStorePatients: XCTestCase {
     func testDeletePatient() throws {
         let patient = try store.addPatientAndWait(OCKPatient(id: "myID", givenName: "John", familyName: "Appleseed"))
         try store.deletePatientAndWait(patient)
-        let fetched = try store.fetchPatientsAndWait(query: OCKPatientQuery())
+        let fetched = try store.fetchPatientsAndWait(query: .init(for: Date()))
         XCTAssert(fetched.isEmpty)
     }
 

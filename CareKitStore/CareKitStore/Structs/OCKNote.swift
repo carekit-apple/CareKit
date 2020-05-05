@@ -34,7 +34,8 @@ import Foundation
 /// to explain why a medication dose was changed, or a note left from a patient to a care provider explaining why they weren't able to complete a
 /// task on a certain occassion.
 public struct OCKNote: Codable, Equatable, OCKObjectCompatible {
-    /// The person who created the note.
+    
+    /// The person who created this note.
     public var author: String?
 
     /// A title for the note.
@@ -44,10 +45,10 @@ public struct OCKNote: Codable, Equatable, OCKObjectCompatible {
     public var content: String?
 
     // MARK: OCKObjectCompatible
+    internal var uuid: UUID?
     public internal(set) var createdDate: Date?
     public internal(set) var updatedDate: Date?
     public internal(set) var schemaVersion: OCKSemanticVersion?
-    public internal (set) var localDatabaseID: OCKLocalVersionID?
     public var groupIdentifier: String?
     public var tags: [String]?
     public var remoteID: String?

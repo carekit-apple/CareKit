@@ -32,11 +32,12 @@ import CoreData
 import Foundation
 
 @objc(OCKCDOutcome)
-class OCKCDOutcome: OCKCDObject, OCKCDManageable {
-    @NSManaged var taskOccurrenceIndex: Int
-    @NSManaged var task: OCKCDTask?
+class OCKCDOutcome: OCKCDObject {
+    @NSManaged var taskOccurrenceIndex: Int64
+    @NSManaged var task: OCKCDTask
     @NSManaged var values: Set<OCKCDOutcomeValue>
     @NSManaged var date: Date
+    @NSManaged var deletedDate: Date?
 
     static var defaultSortDescriptors: [NSSortDescriptor] {
         return [NSSortDescriptor(keyPath: \OCKCDOutcome.createdDate, ascending: false)]
@@ -47,21 +48,19 @@ class OCKCDOutcome: OCKCDObject, OCKCDManageable {
         try validateNoDuplicates()
     }
 
-    override func validateForUpdate() throws {
-        try super.validateForUpdate()
-        try validateNoDuplicates()
-    }
-
     private func validateNoDuplicates() throws {
-        guard let task = task else { throw OCKStoreError.invalidValue(reason: "Outcomes must have a task!") }
         guard let context = managedObjectContext else { throw OCKStoreError.invalidValue(reason: "Context was nil!") }
-        let predicate = NSPredicate(format: "%K == %@ AND %K == %d AND self != %@",
+        let predicate = NSPredicate(format: "%K == %@ AND %K == %lld AND %K == nil AND self != %@",
                                     #keyPath(OCKCDOutcome.task), task,
-                                    #keyPath(OCKCDOutcome.taskOccurrenceIndex), taskOccurrenceIndex,
+                                    #keyPath(OCKCDOutcome.taskOccurrenceIndex), Int64(taskOccurrenceIndex),
+                                    #keyPath(OCKCDOutcome.deletedDate),
                                     self)
-        let request = OCKCDOutcome.sortedFetchRequest(withPredicate: predicate)
+        let request = NSFetchRequest<OCKCDOutcome>(entityName: String(describing: OCKCDOutcome.self))
+        request.predicate = predicate
         let numberOfDuplicates = try context.count(for: request)
-        if numberOfDuplicates > 0 { throw OCKStoreError.invalidValue(reason: "Duplicate outcome!") }
+        if numberOfDuplicates > 0 {
+            throw OCKStoreError.invalidValue(reason: "Duplicate outcome!")
+        }
     }
 }
 

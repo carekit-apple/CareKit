@@ -69,14 +69,24 @@ open class OCKStore: OCKStoreProtocol, OCKCoreDataStoreProtocol, Equatable {
     /// for development and testing purposes.
     internal let storeType: OCKCoreDataStoreType
 
+    /// A remote store synchronizer.
+    internal let remote: OCKRemoteSynchronizable?
+
+    /// Used to prevent simultaneous sync operations.
+    /// - Warning: Should only ever be set or read from the context's queue inside `synchronize`.
+    internal var isSynchronizing: Bool
+
     /// Initialize a new store by specifying its name and store type. Store's with conflicting names and types must not be created.
     ///
     /// - Parameters:
     ///   - name: A unique name for the store. It will be used for the filename if stored on disk.
-    ///   - type: The type of store to be used.
-    public init(name: String, type: OCKCoreDataStoreType = .onDisk) {
+    ///   - type: The type of store to be used. `.onDisk` is used by default.
+    ///   - synchronizer: A store synchronization endpoint.
+    public init(name: String, type: OCKCoreDataStoreType = .onDisk, remote: OCKRemoteSynchronizable? = nil) {
         self.storeType = type
         self.name = name
+        self.remote = remote
+        self.isSynchronizing = false
     }
 
     /// Completely deletes the store and all its files from disk.
@@ -92,8 +102,36 @@ open class OCKStore: OCKStoreProtocol, OCKCoreDataStoreProtocol, Equatable {
         try FileManager.default.removeItem(at: shmFileURL)
         try FileManager.default.removeItem(at: walFileURL)
     }
-    
+
     // MARK: Internal
+
+    internal func deleteAllContent() throws {
+        deleteAll(entity: OCKCDPatient.self)
+        deleteAll(entity: OCKCDCarePlan.self)
+        deleteAll(entity: OCKCDContact.self)
+        deleteAll(entity: OCKCDTask.self)
+        deleteAll(entity: OCKCDOutcome.self)
+        deleteAll(entity: OCKCDOutcomeValue.self)
+        deleteAll(entity: OCKCDNote.self)
+        deleteAll(entity: OCKCDPostalAddress.self)
+        deleteAll(entity: OCKCDScheduleElement.self)
+        deleteAll(entity: OCKCDHealthKitLinkage.self)
+        deleteAll(entity: OCKCDPersonName.self)
+
+        var saveError: Error?
+
+        context.performAndWait {
+            do {
+                try context.save()
+            } catch {
+                saveError = error
+            }
+        }
+
+        if let error = saveError {
+            throw error
+        }
+    }
 
     internal lazy var persistentContainer: NSPersistentContainer = {
         makePersistentContainer()
@@ -102,6 +140,22 @@ open class OCKStore: OCKStoreProtocol, OCKCoreDataStoreProtocol, Equatable {
     internal lazy var context: NSManagedObjectContext = {
         return self.persistentContainer.newBackgroundContext()
     }()
+
+    private func deleteAll<T: NSManagedObject>(entity: T.Type) {
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: String(describing: entity))
+        fetchRequest.includesPropertyValues = false
+        fetchRequest.includesSubentities = false
+        fetchRequest.includesPendingChanges = false
+
+        context.performAndWait {
+            do {
+                let objects = try context.fetch(fetchRequest)
+                objects.forEach { context.delete($0) }
+            } catch {
+                debugPrint("Failed to delete all objects of type: \(entity). \(error.localizedDescription)")
+            }
+        }
+    }
 }
 
 internal extension NSPredicate {

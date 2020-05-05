@@ -47,6 +47,7 @@ class TestCoreDataSchemaWithTasks: XCTestCase {
 
         let task1 = OCKCDTask(context: store.context)
         task1.id = "task_1"
+        task1.uuid = UUID()
         task1.effectiveDate = Date()
         task1.allowsMissingRelationships = true
         task1.scheduleElements = Set([scheduleElement])

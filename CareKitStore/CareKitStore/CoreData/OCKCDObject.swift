@@ -33,6 +33,8 @@ import Foundation
 
 @objc(OCKCDObject)
 class OCKCDObject: NSManagedObject {
+    @NSManaged var uuid: UUID
+    @NSManaged var logicalClock: Int64
     @NSManaged var createdDate: Date
     @NSManaged var updatedDate: Date
     @NSManaged var remoteID: String?
@@ -45,23 +47,21 @@ class OCKCDObject: NSManagedObject {
     @NSManaged var schemaVersion: String
     @NSManaged var timezoneIdentifier: String
 
-    var localDatabaseID: OCKLocalVersionID? {
-        guard !objectID.isTemporaryID else { return nil }
-        return OCKLocalVersionID(objectID.uriRepresentation().absoluteString)
-    }
-
     override func awakeFromInsert() {
         super.awakeFromInsert()
+        uuid = UUID()
         createdDate = Date()
         updatedDate = Date()
         notes = Set()
         timezoneIdentifier = TimeZone.current.identifier
+        logicalClock = Int64(managedObjectContext!.clockTime)
     }
 
     func copyValues(from other: OCKObjectCompatible) {
         guard let context = managedObjectContext else { fatalError("Managed object context should never be nil!") }
-        createdDate = other.createdDate ?? Date()
-        updatedDate = other.updatedDate ?? Date()
+        uuid = other.uuid ?? uuid
+        createdDate = other.createdDate ?? createdDate
+        updatedDate = other.updatedDate ?? updatedDate
         groupIdentifier = other.groupIdentifier
         tags = other.tags
         source = other.source

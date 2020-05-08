@@ -106,18 +106,22 @@ struct OCKSimpleTaskView: UIViewControllerRepresentable {
 }
 
 struct OCKInstructionsTaskView: UIViewControllerRepresentable {
-    typealias UIViewControllerType = OCKInstructionsTaskViewController
+    typealias UIViewControllerType = OCKListViewController
 
-    func makeUIViewController(context: Context) -> OCKInstructionsTaskViewController {
+    func makeUIViewController(context: Context) -> OCKListViewController {
 
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
 
         let trackedTaskID = "doxylamine"
         let viewController = OCKInstructionsTaskViewController(taskID: trackedTaskID, eventQuery: .init(for: Date()), storeManager: appDelegate.storeManager)
-        return viewController
+
+
+        let listController = OCKListViewController()
+        listController.appendViewController(viewController, animated: false)
+        return listController
     }
 
-    func updateUIViewController(_ uiViewController: OCKInstructionsTaskViewController, context: Context) {
+    func updateUIViewController(_ uiViewController: OCKListViewController, context: Context) {
 
     }
 }

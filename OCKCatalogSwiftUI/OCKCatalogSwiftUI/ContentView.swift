@@ -65,7 +65,7 @@ struct ContentView: View {
                     ListItem(destination: OCKCartesianChartView(type: .bar), title: "Bar")
                 }
                 Section(header: Text("LIST")) {
-                    ListItem(destination: OCKDailyTasksPageView(), title: "Task")
+                    ListItem(destination: OCKDailyTasksPageView(), title: "Tasks")
                     ListItem(destination: OCKContactsListView(), title: "Contacts")
                 }
             }

@@ -35,8 +35,8 @@ import XCTest
 private struct MockQuery: OCKAnyCarePlanQuery {
 
     var ids: [String] = []
-    var remoteIDs: [String] = []
-    var groupIdentifiers: [String] = []
+    var remoteIDs: [String?] = []
+    var groupIdentifiers: [String?] = []
     var dateInterval: DateInterval?
     var limit: Int?
     var offset: Int = 0

@@ -357,8 +357,7 @@ extension OCKCoreDataTaskStoreProtocol {
         }
 
         if !query.remoteIDs.isEmpty {
-            let remotePredicate = NSPredicate(format: "%K in %@", #keyPath(OCKCDVersionedObject.remoteID), query.remoteIDs)
-            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, remotePredicate])
+            predicate = predicate.including(query.remoteIDs, for: #keyPath(OCKCDObject.remoteID))
         }
 
         if !query.carePlanIDs.isEmpty {

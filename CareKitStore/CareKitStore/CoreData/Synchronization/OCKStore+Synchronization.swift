@@ -401,6 +401,327 @@ extension OCKStore {
     }
 
     /// - Warning: This method must be called on the `context`'s queue.
+    private func mergePatientRevision(
+        patient: OCKPatient,
+        vector: OCKRevisionRecord.KnowledgeVector,
+        completion: @escaping (Error?) -> Void) {
+        do {
+            // If the task exists on disk already, it means that another device
+            // ruled to overwrite this value as part of a conflict resolution.
+            if entityExists(OCKCDPatient.self, uuid: patient.uuid!) {
+                completion(nil)
+                return
+            }
+
+            // The task is either a brand new task or an update of an existing task.
+            // Deletes count as updates since they are just a new version with the
+            // `deletedDate` property set to a non-nil value.
+            //
+            // Make sure there are no conflicts locally. If the device's knowledge
+            // vector is strictly less than the remotes, we can guarantee there is no
+            // conflict. Otherwise we need to check.
+            let localPatientRevisions = computeRevision(since: vector.clock(for: self.context.clockID))
+                .entities
+                .compactMap { $0.value as? OCKPatient }
+
+            if let local = localPatientRevisions.first(where: {
+                $0.id == patient.id &&
+                $0.previousVersionUUID == patient.previousVersionUUID
+            }) {
+
+                let conflict = OCKMergeConflictDescription(
+                    entities: .patients(
+                        deviceVersion: local,
+                        remoteVersion: patient))
+
+                remote!.chooseConflictResolutionPolicy(conflict) { strategy in
+                    switch strategy {
+                    case .abortMerge:
+                        let error = OCKStoreError.remoteSynchronizationFailed(
+                            reason: "Aborted merge because of conflict in two versions of task \(patient.id)")
+                        completion(error)
+
+                    case .keepRemote:
+                        do {
+                            // If the remote is a new version of an existing task, find the previous
+                            // version and delete its conflicting next version. This will cascade
+                            // delete all future versions and their outcomes. Then update the previous
+                            // version to the new version from the remote.
+                            if let previousUUD = task.previousVersionUUID {
+                                let previous: OCKCDPatient = try self.fetchObject(uuid: previousUUD)
+                                previous.next.map(self.context.delete)
+
+                                let updated = try self.updateTasksWithoutCommitting([task], copyUUIDs: true)
+                                self.taskDelegate?.taskStore(self, didUpdateTasks: updated)
+
+                                completion(nil)
+                                return
+                            }
+
+                            // A new task with the same id was created on both the server
+                            // and the local device. Delete the local one and keep the remote.
+                            let localTask: OCKCDTask = try self.fetchObject(uuid: local.uuid!)
+                            self.context.delete(localTask)
+                            let added = try self.createTasksWithoutCommitting([task])
+                            self.taskDelegate?.taskStore(self, didAddTasks: added)
+                            completion(nil)
+
+                        } catch {
+                            completion(error)
+                        }
+
+                    case .keepDevice:
+                        // No action needs to be taken. When the entity from this
+                        // device lands on a peer device, ingesting it will cause
+                        // any conflicts to be overwritten.
+                        completion(nil)
+                    }
+                }
+
+                return
+            }
+
+            // There is no conflict. This is the simplest case, we can just create a new task.
+            if task.previousVersionUUID == nil {
+                let newTasks = try createTasksWithoutCommitting([task])
+                taskDelegate?.taskStore(self, didAddTasks: newTasks)
+
+            // This is a new version of an existing task. We might need to delete future versions
+            // and their outcomes before adding this version in their place. This happens when
+            // one node processes a conflict resolution performed on a different node.
+            } else {
+                let current: OCKCDTask = try self.fetchObject(uuid: task.previousVersionUUID!)
+                current.next.map(self.context.delete)
+                let updated = try updateTasksWithoutCommitting([task], copyUUIDs: true)
+                for update in updated {
+                    update.deletedDate == nil ?
+                        taskDelegate?.taskStore(self, didUpdateTasks: [update]) :
+                        taskDelegate?.taskStore(self, didDeleteTasks: [update])
+                }
+            }
+
+            completion(nil)
+
+        } catch {
+            completion(error)
+        }
+    }
+    
+    /// - Warning: This method must be called on the `context`'s queue.
+    private func mergeTaskRevision(
+        task: OCKTask,
+        vector: OCKRevisionRecord.KnowledgeVector,
+        completion: @escaping (Error?) -> Void) {
+        do {
+            // If the task exists on disk already, it means that another device
+            // ruled to overwrite this value as part of a conflict resolution.
+            if entityExists(OCKCDTask.self, uuid: task.uuid!) {
+                completion(nil)
+                return
+            }
+
+            // The task is either a brand new task or an update of an existing task.
+            // Deletes count as updates since they are just a new version with the
+            // `deletedDate` property set to a non-nil value.
+            //
+            // Make sure there are no conflicts locally. If the device's knowledge
+            // vector is strictly less than the remotes, we can guarantee there is no
+            // conflict. Otherwise we need to check.
+            let localTaskRevisions = computeRevision(since: vector.clock(for: self.context.clockID))
+                .entities
+                .compactMap { $0.value as? OCKTask }
+
+            if let local = localTaskRevisions.first(where: {
+                $0.id == task.id &&
+                $0.previousVersionUUID == task.previousVersionUUID
+            }) {
+
+                let conflict = OCKMergeConflictDescription(
+                    entities: .tasks(
+                        deviceVersion: local,
+                        remoteVersion: task))
+
+                remote!.chooseConflictResolutionPolicy(conflict) { strategy in
+                    switch strategy {
+                    case .abortMerge:
+                        let error = OCKStoreError.remoteSynchronizationFailed(
+                            reason: "Aborted merge because of conflict in two versions of task \(task.id)")
+                        completion(error)
+
+                    case .keepRemote:
+                        do {
+                            // If the remote is a new version of an existing task, find the previous
+                            // version and delete its conflicting next version. This will cascade
+                            // delete all future versions and their outcomes. Then update the previous
+                            // version to the new version from the remote.
+                            if let previousUUD = task.previousVersionUUID {
+                                let previous: OCKCDTask = try self.fetchObject(uuid: previousUUD)
+                                previous.next.map(self.context.delete)
+
+                                let updated = try self.updateTasksWithoutCommitting([task], copyUUIDs: true)
+                                self.taskDelegate?.taskStore(self, didUpdateTasks: updated)
+
+                                completion(nil)
+                                return
+                            }
+
+                            // A new task with the same id was created on both the server
+                            // and the local device. Delete the local one and keep the remote.
+                            let localTask: OCKCDTask = try self.fetchObject(uuid: local.uuid!)
+                            self.context.delete(localTask)
+                            let added = try self.createTasksWithoutCommitting([task])
+                            self.taskDelegate?.taskStore(self, didAddTasks: added)
+                            completion(nil)
+
+                        } catch {
+                            completion(error)
+                        }
+
+                    case .keepDevice:
+                        // No action needs to be taken. When the entity from this
+                        // device lands on a peer device, ingesting it will cause
+                        // any conflicts to be overwritten.
+                        completion(nil)
+                    }
+                }
+
+                return
+            }
+
+            // There is no conflict. This is the simplest case, we can just create a new task.
+            if task.previousVersionUUID == nil {
+                let newTasks = try createTasksWithoutCommitting([task])
+                taskDelegate?.taskStore(self, didAddTasks: newTasks)
+
+            // This is a new version of an existing task. We might need to delete future versions
+            // and their outcomes before adding this version in their place. This happens when
+            // one node processes a conflict resolution performed on a different node.
+            } else {
+                let current: OCKCDTask = try self.fetchObject(uuid: task.previousVersionUUID!)
+                current.next.map(self.context.delete)
+                let updated = try updateTasksWithoutCommitting([task], copyUUIDs: true)
+                for update in updated {
+                    update.deletedDate == nil ?
+                        taskDelegate?.taskStore(self, didUpdateTasks: [update]) :
+                        taskDelegate?.taskStore(self, didDeleteTasks: [update])
+                }
+            }
+
+            completion(nil)
+
+        } catch {
+            completion(error)
+        }
+    }
+    
+    /// - Warning: This method must be called on the `context`'s queue.
+    private func mergeTaskRevision(
+        task: OCKTask,
+        vector: OCKRevisionRecord.KnowledgeVector,
+        completion: @escaping (Error?) -> Void) {
+        do {
+            // If the task exists on disk already, it means that another device
+            // ruled to overwrite this value as part of a conflict resolution.
+            if entityExists(OCKCDTask.self, uuid: task.uuid!) {
+                completion(nil)
+                return
+            }
+
+            // The task is either a brand new task or an update of an existing task.
+            // Deletes count as updates since they are just a new version with the
+            // `deletedDate` property set to a non-nil value.
+            //
+            // Make sure there are no conflicts locally. If the device's knowledge
+            // vector is strictly less than the remotes, we can guarantee there is no
+            // conflict. Otherwise we need to check.
+            let localTaskRevisions = computeRevision(since: vector.clock(for: self.context.clockID))
+                .entities
+                .compactMap { $0.value as? OCKTask }
+
+            if let local = localTaskRevisions.first(where: {
+                $0.id == task.id &&
+                $0.previousVersionUUID == task.previousVersionUUID
+            }) {
+
+                let conflict = OCKMergeConflictDescription(
+                    entities: .tasks(
+                        deviceVersion: local,
+                        remoteVersion: task))
+
+                remote!.chooseConflictResolutionPolicy(conflict) { strategy in
+                    switch strategy {
+                    case .abortMerge:
+                        let error = OCKStoreError.remoteSynchronizationFailed(
+                            reason: "Aborted merge because of conflict in two versions of task \(task.id)")
+                        completion(error)
+
+                    case .keepRemote:
+                        do {
+                            // If the remote is a new version of an existing task, find the previous
+                            // version and delete its conflicting next version. This will cascade
+                            // delete all future versions and their outcomes. Then update the previous
+                            // version to the new version from the remote.
+                            if let previousUUD = task.previousVersionUUID {
+                                let previous: OCKCDTask = try self.fetchObject(uuid: previousUUD)
+                                previous.next.map(self.context.delete)
+
+                                let updated = try self.updateTasksWithoutCommitting([task], copyUUIDs: true)
+                                self.taskDelegate?.taskStore(self, didUpdateTasks: updated)
+
+                                completion(nil)
+                                return
+                            }
+
+                            // A new task with the same id was created on both the server
+                            // and the local device. Delete the local one and keep the remote.
+                            let localTask: OCKCDTask = try self.fetchObject(uuid: local.uuid!)
+                            self.context.delete(localTask)
+                            let added = try self.createTasksWithoutCommitting([task])
+                            self.taskDelegate?.taskStore(self, didAddTasks: added)
+                            completion(nil)
+
+                        } catch {
+                            completion(error)
+                        }
+
+                    case .keepDevice:
+                        // No action needs to be taken. When the entity from this
+                        // device lands on a peer device, ingesting it will cause
+                        // any conflicts to be overwritten.
+                        completion(nil)
+                    }
+                }
+
+                return
+            }
+
+            // There is no conflict. This is the simplest case, we can just create a new task.
+            if task.previousVersionUUID == nil {
+                let newTasks = try createTasksWithoutCommitting([task])
+                taskDelegate?.taskStore(self, didAddTasks: newTasks)
+
+            // This is a new version of an existing task. We might need to delete future versions
+            // and their outcomes before adding this version in their place. This happens when
+            // one node processes a conflict resolution performed on a different node.
+            } else {
+                let current: OCKCDTask = try self.fetchObject(uuid: task.previousVersionUUID!)
+                current.next.map(self.context.delete)
+                let updated = try updateTasksWithoutCommitting([task], copyUUIDs: true)
+                for update in updated {
+                    update.deletedDate == nil ?
+                        taskDelegate?.taskStore(self, didUpdateTasks: [update]) :
+                        taskDelegate?.taskStore(self, didDeleteTasks: [update])
+                }
+            }
+
+            completion(nil)
+
+        } catch {
+            completion(error)
+        }
+    }
+    
+    /// - Warning: This method must be called on the `context`'s queue.
     private func mergeTaskRevision(
         task: OCKTask,
         vector: OCKRevisionRecord.KnowledgeVector,

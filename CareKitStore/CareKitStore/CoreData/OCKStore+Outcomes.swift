@@ -241,6 +241,11 @@ extension OCKStore {
             predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, afterPredicate, beforePredicate])
         }
 
+        if !query.uuids.isEmpty {
+            let versionPredicate = NSPredicate(format: "%K IN %@", #keyPath(OCKCDObject.uuid), query.uuids)
+            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, versionPredicate])
+        }
+     
         if !query.remoteIDs.isEmpty {
             let remotePredicate = NSPredicate(format: "%K IN %@", #keyPath(OCKCDVersionedObject.remoteID), query.remoteIDs)
             predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, remotePredicate])

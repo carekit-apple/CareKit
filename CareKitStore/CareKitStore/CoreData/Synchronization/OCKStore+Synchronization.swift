@@ -399,7 +399,7 @@ extension OCKStore {
         let results = try! context.fetch(request)
         return results
     }
-
+/*
     /// - Warning: This method must be called on the `context`'s queue.
     private func mergePatientRevision(
         patient: OCKPatient,
@@ -719,7 +719,7 @@ extension OCKStore {
         } catch {
             completion(error)
         }
-    }
+    }*/
     
     /// - Warning: This method must be called on the `context`'s queue.
     private func mergeTaskRevision(

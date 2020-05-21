@@ -227,7 +227,7 @@ class TestStoreOutcomes: XCTestCase {
         outcome = try store.addOutcomeAndWait(outcome)
 
         var query = OCKOutcomeQuery(for: Date())
-        query.uuids = [ outcome.uuid!]
+        query.uuids = [try outcome.getUUID()]
         
         let fetched = try store.fetchOutcomesAndWait(query: query).first
         XCTAssert(fetched == outcome)

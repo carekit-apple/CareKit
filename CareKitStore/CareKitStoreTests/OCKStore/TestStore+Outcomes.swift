@@ -217,6 +217,20 @@ class TestStoreOutcomes: XCTestCase {
         let fetched = try store.fetchOutcomesAndWait(query: query).first
         XCTAssert(fetched == outcome)
     }
+ 
+    func testQueryOutcomeByUUID() throws {
+        var task = OCKTask(id: "A", title: nil, carePlanUUID: nil, schedule: .mealTimesEachDay(start: Date(), end: nil))
+        task = try store.addTaskAndWait(task)
+
+        var outcome = OCKOutcome(taskUUID: try task.getUUID(), taskOccurrenceIndex: 0, values: [])
+        outcome = try store.addOutcomeAndWait(outcome)
+
+        var query = OCKOutcomeQuery(for: Date())
+        query.uuids = [try outcome.getUUID()]
+        
+        let fetched = try store.fetchOutcomesAndWait(query: query).first
+        XCTAssert(fetched == outcome)
+    }
 
     // MARK: Updating
 

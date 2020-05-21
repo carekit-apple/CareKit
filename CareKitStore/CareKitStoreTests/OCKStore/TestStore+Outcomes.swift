@@ -223,7 +223,6 @@ class TestStoreOutcomes: XCTestCase {
         task = try store.addTaskAndWait(task)
 
         var outcome = OCKOutcome(taskUUID: try task.getUUID(), taskOccurrenceIndex: 0, values: [])
-        outcome.tags = ["123"]
         outcome = try store.addOutcomeAndWait(outcome)
 
         var query = OCKOutcomeQuery(for: Date())

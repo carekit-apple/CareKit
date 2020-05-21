@@ -148,6 +148,17 @@ class TestStoreCarePlans: XCTestCase {
         let fetched = try store.fetchCarePlansAndWait(query: query)
         XCTAssert(fetched.map { $0.title } == ["A", "B"])
     }
+    
+    func testCarePlaneQueryByPatientUUID() throws {
+        let patient = try store.addPatientAndWait(.init(id: "A", givenName: "B", familyName: "C"))
+        let plan = try store.addCarePlanAndWait(.init(id: "F", title: "G", patientUUID: try patient.getUUID()))
+
+        var query = OCKCarePlanQuery()
+        query.patientUUIDs = [try patient.getUUID()]
+
+        let fetched = try store.fetchCarePlansAndWait(query: query)
+        XCTAssert(fetched == [plan])
+    }
 
     // MARK: Versioning
 

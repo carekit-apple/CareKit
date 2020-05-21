@@ -219,6 +219,15 @@ class TestStoreContacts: XCTestCase {
         let fetched = try store.fetchContactsAndWait(query: query).first
         XCTAssert(fetched == contact)
     }
+    
+    func testQueryContactByUUID() throws {
+        var contact = OCKContact(id: "A", givenName: "B", familyName: "C", carePlanUUID: nil)
+        contact = try store.addContactAndWait(contact)
+        var query = OCKContactQuery()
+        query.uuids = [try contact.getUUID()]
+        let fetched = try store.fetchContactsAndWait(query: query).first
+        XCTAssert(fetched == contact)
+    }
 
     // MARK: Versioning
 

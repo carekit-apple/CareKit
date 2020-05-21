@@ -103,6 +103,7 @@ public struct OCKOutcomeQuery: OCKAnyOutcomeQuery, Equatable {
 
     // MARK: OCKAnyOutcomeQuery
     public var ids: [String] = []
+    public var uuids: [UUID] = []
     public var remoteIDs: [String] = []
     public var taskIDs: [String] = []
     public var dateInterval: DateInterval?

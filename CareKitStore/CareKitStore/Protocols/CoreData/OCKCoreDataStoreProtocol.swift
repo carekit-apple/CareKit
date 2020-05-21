@@ -141,8 +141,8 @@ extension OCKCoreDataStoreProtocol {
     }
 
     func validateNew<T: OCKCDVersionedObject, U: OCKVersionedObjectCompatible>(_ type: T.Type, _ objects: [U]) throws {
-        let ids = objects.map(\.id)
-        let uuids = objects.map(\.uuid)
+        let ids = objects.map{$0.id}
+        let uuids = objects.map{$0.uuid}
 
         guard Set(ids).count == ids.count else {
             throw OCKStoreError.invalidValue(reason: "Identifiers contains duplicate values! \(ids)")

@@ -60,7 +60,7 @@ extension OCKSchedule {
     }
 }
 
-extension OCKVersionedObjectCompatible {
+extension OCKObjectCompatible {
     func getUUID() throws -> UUID {
         guard let uuid = uuid else { throw OCKStoreError.invalidValue(reason: "Missing UUID") }
         return uuid

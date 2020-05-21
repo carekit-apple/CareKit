@@ -220,8 +220,8 @@ extension OCKStore {
         }
 
         if !query.uuids.isEmpty {
-            let versionPredicate = NSPredicate(format: "%K IN %@", #keyPath(OCKCDVersionedObject.uuid), query.uuids)
-            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, versionPredicate])
+            let objectPredicate = NSPredicate(format: "%K IN %@", #keyPath(OCKCDObject.uuid), query.uuids)
+            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, objectPredicate])
         }
 
         if !query.remoteIDs.isEmpty {
@@ -235,8 +235,8 @@ extension OCKStore {
         }
 
         if !query.patientUUIDs.isEmpty {
-            let versionPredicate = NSPredicate(format: "%K IN %@", #keyPath(OCKCDCarePlan.patient), query.patientUUIDs)
-            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, versionPredicate])
+            let objectPredicate = NSPredicate(format: "%K IN %@", #keyPath(OCKCDCarePlan.patient.uuid), query.patientUUIDs)
+            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, objectPredicate])
         }
 
         if !query.patientRemoteIDs.isEmpty {

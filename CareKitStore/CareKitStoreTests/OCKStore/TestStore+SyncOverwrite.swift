@@ -46,7 +46,9 @@ class TestStoreSyncOverwrite: XCTestCase {
         try store.addPatientAndWait(patient)
 
         XCTAssertNoThrow(try store.syncAndWait(mode: .overwriteDeviceRecordsWithRemote))
-        XCTAssert(try store.fetchPatientsAndWait().isEmpty)
+        XCTAssert(try store.fetchPatientsAndWait().count == 1)
+        XCTAssert(try store.fetchCarePlansAndWait().count == 1)
+        XCTAssert(try store.fetchContactsAndWait().count == 1)
         XCTAssert(try store.fetchTasksAndWait().count == 1)
         XCTAssert(try store.fetchOutcomesAndWait().count == 1)
     }

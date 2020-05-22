@@ -699,6 +699,7 @@ extension OCKStore {
                             // A new contact with the same id was created on both the server
                             // and the local device. Delete the local one and keep the remote.
                             let localContact: OCKCDContact = try self.fetchObject(uuid: local.uuid!)
+                            self.context.delete(localContact.name)
                             self.context.delete(localContact)
                             let added = try self.createContactsWithoutCommitting([contact])
                             self.contactDelegate?.contactStore(self, didAddContacts: added)
@@ -729,6 +730,7 @@ extension OCKStore {
             // one node processes a conflict resolution performed on a different node.
             } else {
                 let current: OCKCDContact = try self.fetchObject(uuid: contact.previousVersionUUID!)
+                current.next.map{self.context.delete(($0 as! OCKCDContact).name)}
                 current.next.map(self.context.delete)
                 let updated = try updateContactsWithoutCommitting([contact], copyUUIDs: true)
                 for update in updated {

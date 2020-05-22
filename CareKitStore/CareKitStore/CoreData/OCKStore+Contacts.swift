@@ -58,7 +58,6 @@ extension OCKStore {
                           completion: ((Result<[OCKContact], OCKStoreError>) -> Void)? = nil) {
         context.perform {
             do {
-                
                 let addedContacts = try self.createContactsWithoutCommitting(contacts)
                 try self.context.save()
                 callbackQueue.async {

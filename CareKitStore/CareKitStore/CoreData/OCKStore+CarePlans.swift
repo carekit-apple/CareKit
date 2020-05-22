@@ -71,6 +71,7 @@ extension OCKStore {
         context.perform {
             do {
                 let addedPlans = try self.createCarePlansWithoutCommitting(plans)
+                try self.context.save()
                 callbackQueue.async {
                     self.carePlanDelegate?.carePlanStore(self, didAddCarePlans: addedPlans)
                     self.autoSynchronizeIfRequired()

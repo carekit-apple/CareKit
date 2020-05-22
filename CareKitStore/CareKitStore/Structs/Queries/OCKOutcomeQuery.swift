@@ -86,7 +86,7 @@ public struct OCKOutcomeQuery: OCKAnyOutcomeQuery, Equatable {
     public var taskRemoteIDs: [String] = []
 
     /// An array of group identifiers to match against.
-    public var groupIdentifiers: [String] = []
+    public var groupIdentifiers: [String?] = []
 
     /// The order in which the results will be sorted when returned from the query.
     public var sortDescriptors: [OCKOutcomeSortDescriptor] {
@@ -104,7 +104,7 @@ public struct OCKOutcomeQuery: OCKAnyOutcomeQuery, Equatable {
     // MARK: OCKAnyOutcomeQuery
     public var ids: [String] = []
     public var uuids: [UUID] = []
-    public var remoteIDs: [String] = []
+    public var remoteIDs: [String?] = []
     public var taskIDs: [String] = []
     public var dateInterval: DateInterval?
     public var limit: Int?

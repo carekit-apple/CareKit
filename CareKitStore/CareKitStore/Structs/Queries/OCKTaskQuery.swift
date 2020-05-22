@@ -104,7 +104,7 @@ public struct OCKTaskQuery: OCKAnyTaskQuery, Equatable {
     internal var extendedSortDescriptors: [SortDescriptor] = []
 
     /// An array of group identifiers to match against.
-    public var groupIdentifiers: [String] = []
+    public var groupIdentifiers: [String?] = []
 
     /// An array of tags to match against. If an object's tags contains one or more of entries, it will match the query.
     public var tags: [String] = []
@@ -112,7 +112,7 @@ public struct OCKTaskQuery: OCKAnyTaskQuery, Equatable {
     // MARK: OCKAnyTaskQuery
     public var ids: [String] = []
     public var uuids: [UUID] = []
-    public var remoteIDs: [String] = []
+    public var remoteIDs: [String?] = []
     public var carePlanIDs: [String] = []
     public var dateInterval: DateInterval?
     public var limit: Int?

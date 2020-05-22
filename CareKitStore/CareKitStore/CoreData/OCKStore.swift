@@ -159,8 +159,12 @@ open class OCKStore: OCKStoreProtocol, OCKCoreDataStoreProtocol, Equatable {
 }
 
 internal extension NSPredicate {
-    func including(groupIdentifiers: [String]) -> NSPredicate {
-        let groupPredicate = NSPredicate(format: "%K IN %@", #keyPath(OCKCDObject.groupIdentifier), groupIdentifiers)
-        return NSCompoundPredicate(andPredicateWithSubpredicates: [self, groupPredicate])
+    func including(_ identifiers: [String?], for keyPath: String) -> NSPredicate {
+        let idPredicate = NSPredicate(format: "%K IN %@", keyPath, identifiers)
+        let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [self, idPredicate])
+        let nilPredicate = NSPredicate(format: "%K == NIL", keyPath)
+        let andNilPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [self, nilPredicate])
+        let orNilPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: [predicate, andNilPredicate])
+        return identifiers.contains(nil) ? orNilPredicate : predicate
     }
 }

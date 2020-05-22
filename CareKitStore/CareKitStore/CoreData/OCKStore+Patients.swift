@@ -125,7 +125,6 @@ extension OCKStore {
     // from the `contexts`'s thread.
 
     func createPatientsWithoutCommitting(_ patients: [Patient]) throws -> [Patient] {
-        try self.validateNumberOfPatients()
         try self.validateNew(OCKCDPatient.self, patients)
         let persistablePatients = patients.map(self.createPatient)
         let addedPatients = persistablePatients.map(self.makePatient)
@@ -244,17 +243,5 @@ extension OCKStore {
             case .groupIdentifier(let ascending): return NSSortDescriptor(keyPath: \OCKCDPatient.groupIdentifier, ascending: ascending)
             }
         } + defaultSortDescritors()
-    }
-
-    private func validateNumberOfPatients() throws {
-        let fetchRequest = OCKCDPatient.fetchRequest()
-        let numberOfPatients = try context.count(for: fetchRequest)
-        if numberOfPatients > 0 {
-            let explanation = """
-            OCKStore` only supports one patient per store.
-            If you would like to have more than one patient, create a new store for that patient.
-            """
-            throw OCKStoreError.addFailed(reason: explanation)
-        }
     }
 }

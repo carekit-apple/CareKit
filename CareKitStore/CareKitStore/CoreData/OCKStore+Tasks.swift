@@ -29,7 +29,6 @@
  */
 
 import Foundation
-import HealthKit
 
 extension OCKStore: OCKCoreDataTaskStoreProtocol {
 

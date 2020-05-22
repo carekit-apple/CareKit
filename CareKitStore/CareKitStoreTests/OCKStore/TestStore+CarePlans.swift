@@ -87,11 +87,32 @@ class TestStoreCarePlans: XCTestCase {
     func testCarePlanQueryGroupIdentifier() throws {
         var plan1 = OCKCarePlan(id: "id_1", title: "Diabetes Care Plan", patientUUID: nil)
         plan1.groupIdentifier = "1"
+
         var plan2 = OCKCarePlan(id: "id_2", title: "Obesity Care Plan", patientUUID: nil)
         plan2.groupIdentifier = "2"
+
         try store.addCarePlansAndWait([plan1, plan2])
+
         var query = OCKCarePlanQuery(for: Date())
         query.groupIdentifiers = ["1"]
+
+        let fetched = try store.fetchCarePlansAndWait(query: query)
+        XCTAssert(fetched.count == 1)
+        XCTAssert(fetched.first?.id == "id_1")
+    }
+
+    func testCarePlanQueryNilGroupIdentifier() throws {
+        var plan1 = OCKCarePlan(id: "id_1", title: "Diabetes Care Plan", patientUUID: nil)
+        plan1.groupIdentifier = nil
+
+        var plan2 = OCKCarePlan(id: "id_2", title: "Obesity Care Plan", patientUUID: nil)
+        plan2.groupIdentifier = "2"
+
+        try store.addCarePlansAndWait([plan1, plan2])
+
+        var query = OCKCarePlanQuery(for: Date())
+        query.groupIdentifiers = [nil]
+
         let fetched = try store.fetchCarePlansAndWait(query: query)
         XCTAssert(fetched.count == 1)
         XCTAssert(fetched.first?.id == "id_1")
@@ -158,6 +179,40 @@ class TestStoreCarePlans: XCTestCase {
 
         let fetched = try store.fetchCarePlansAndWait(query: query)
         XCTAssert(fetched == [plan])
+    }
+
+    func testCarePlanQueryByRemoteID() throws {
+        var plan1 = OCKCarePlan(id: "A", title: "A", patientUUID: nil)
+        plan1.remoteID = "abc"
+        plan1 = try store.addCarePlanAndWait(plan1)
+
+        var plan2 = OCKCarePlan(id: "B", title: "B", patientUUID: nil)
+        plan2.remoteID = "def"
+        plan2 = try store.addCarePlanAndWait(plan2)
+
+        var query = OCKCarePlanQuery()
+        query.remoteIDs = ["abc"]
+
+        let fetched = try store.fetchCarePlansAndWait(query: query)
+        XCTAssert(fetched.count == 1)
+        XCTAssert(fetched.first == plan1)
+    }
+
+    func testCarePlanQueryByNilRemoteID() throws {
+        var plan1 = OCKCarePlan(id: "A", title: "A", patientUUID: nil)
+        plan1.remoteID = nil
+        plan1 = try store.addCarePlanAndWait(plan1)
+
+        var plan2 = OCKCarePlan(id: "B", title: "B", patientUUID: nil)
+        plan2.remoteID = "abc"
+        plan2 = try store.addCarePlanAndWait(plan2)
+
+        var query = OCKCarePlanQuery()
+        query.remoteIDs = [nil]
+
+        let fetched = try store.fetchCarePlansAndWait(query: query)
+        XCTAssert(fetched.count == 1)
+        XCTAssert(fetched.first == plan1)
     }
 
     // MARK: Versioning

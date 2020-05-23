@@ -55,7 +55,7 @@ class TestStorePatients: XCTestCase {
         XCTAssertNotNil(patient.schemaVersion)
     }
 
-    func testAddPatientMultiplePatients() throws {
+    func testAddPatientForMultiplePatients() throws {
         let patient1 = OCKPatient(id: "id1", givenName: "Amy", familyName: "Frost")
         let patient2 = OCKPatient(id: "id2", givenName: "Christopher", familyName: "Foss")
         try store.addPatientAndWait(patient1)

@@ -46,6 +46,7 @@ open class OCKCartesianChartView: OCKView, OCKChartDisplayable {
     public let contentStackView: OCKStackView = {
         let stackView = OCKStackView()
         stackView.axis = .vertical
+        stackView.distribution = .fillProportionally
         return stackView
     }()
 
@@ -93,6 +94,10 @@ open class OCKCartesianChartView: OCKView, OCKChartDisplayable {
     }
 
     private func constrainSubviews() {
+
+        // Ensure that the graph grows vertically before the legend
+        graphView.setContentHuggingPriority(.defaultLow, for: .vertical)
+
         [contentView, contentStackView, headerView].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
         NSLayoutConstraint.activate(
             contentStackView.constraints(equalTo: self, directions: [.horizontal]) +

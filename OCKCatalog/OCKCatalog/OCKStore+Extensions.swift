@@ -63,12 +63,12 @@ extension OCKStore {
     }
 
     private func makeTasks(on start: Date) -> [OCKTask] {
-        var task1 = OCKTask(id: "nausea", title: "Nausea", carePlanID: nil,
+        var task1 = OCKTask(id: "nausea", title: "Nausea", carePlanUUID: nil,
                             schedule: .dailyAtTime(hour: 7, minutes: 0, start: start, end: nil, text: nil))
         task1.instructions = "Log any time you experience nausea."
         task1.impactsAdherence = false
 
-        var task2 = OCKTask(id: "doxylamine", title: "Doxylamine", carePlanID: nil,
+        var task2 = OCKTask(id: "doxylamine", title: "Doxylamine", carePlanUUID: nil,
                             schedule: .mealTimesEachDay(start: start, end: nil))
         task2.instructions = "Take the tablet with a full glass of water."
 
@@ -76,7 +76,7 @@ extension OCKStore {
     }
 
     private func makeContacts() -> [OCKContact] {
-        var contact1 = OCKContact(id: "lexi-torres", givenName: "Lexi", familyName: "Torres", carePlanID: nil)
+        var contact1 = OCKContact(id: "lexi-torres", givenName: "Lexi", familyName: "Torres", carePlanUUID: nil)
         contact1.role = "Dr. Torres is a family practice doctor with over 20 years of experience."
         let phoneNumbers1 = [OCKLabeledValue(label: "work", value: "2135558479")]
         contact1.phoneNumbers = phoneNumbers1
@@ -90,7 +90,7 @@ extension OCKStore {
         address1.postalCode = "48848"
         contact1.address = address1
 
-        var contact2 = OCKContact(id: "matthew-reiff", givenName: "Matthew", familyName: "Reiff", carePlanID: nil)
+        var contact2 = OCKContact(id: "matthew-reiff", givenName: "Matthew", familyName: "Reiff", carePlanUUID: nil)
         contact2.role = "Dr. Reiff is a family practice doctor with over 20 years of experience."
         contact2.title = "Family Practice"
         let phoneNumbers2 = [OCKLabeledValue(label: "work", value: "7745550146")]

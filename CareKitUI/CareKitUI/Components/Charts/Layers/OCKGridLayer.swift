@@ -143,7 +143,7 @@ class OCKGridLayer: OCKCartesianCoordinatesLayer {
 
     private func drawMiddleValue() {
         middleValueLayer.contentsScale = UIScreen.main.scale
-        middleValueLayer.string = numberFormatter.string(for: graphBounds().minY)
+        middleValueLayer.string = numberFormatter.string(for: graphBounds().midY)
         middleValueLayer.foregroundColor = gridLineColor.cgColor
         middleValueLayer.fontSize = fontSize
         middleValueLayer.frame = CGRect(origin: CGPoint(x: Constants.margin, y: bounds.height / 2), size: CGSize(width: 100, height: 44))

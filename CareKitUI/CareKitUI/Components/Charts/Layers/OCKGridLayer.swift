@@ -36,6 +36,9 @@ class OCKGridLayer: OCKCartesianCoordinatesLayer {
         static let margin: CGFloat = 16
     }
 
+    /// A number formatter used for the vertical axis values.
+    var numberFormatter = NumberFormatter()
+
     /// The number of vertical lines in the grid.
     var numberOfVerticalDivisions = 4 {
         didSet { setNeedsLayout() }
@@ -132,7 +135,7 @@ class OCKGridLayer: OCKCartesianCoordinatesLayer {
 
     private func drawTopValue() {
         topValueLayer.contentsScale = UIScreen.main.scale
-        topValueLayer.string = "\(graphBounds().height)"
+        topValueLayer.string = numberFormatter.string(for: graphBounds().maxY)
         topValueLayer.foregroundColor = gridLineColor.cgColor
         topValueLayer.fontSize = fontSize
         topValueLayer.frame = CGRect(origin: CGPoint(x: Constants.margin, y: 0), size: CGSize(width: 100, height: 44))
@@ -140,7 +143,7 @@ class OCKGridLayer: OCKCartesianCoordinatesLayer {
 
     private func drawMiddleValue() {
         middleValueLayer.contentsScale = UIScreen.main.scale
-        middleValueLayer.string = "\(graphBounds().height / 2)"
+        middleValueLayer.string = numberFormatter.string(for: graphBounds().midY)
         middleValueLayer.foregroundColor = gridLineColor.cgColor
         middleValueLayer.fontSize = fontSize
         middleValueLayer.frame = CGRect(origin: CGPoint(x: Constants.margin, y: bounds.height / 2), size: CGSize(width: 100, height: 44))

@@ -52,6 +52,11 @@ class OCKGridView: UIView, OCKCartesianGridProtocol {
         return layer as! OCKGridLayer
     }
 
+    var numberFormatter: NumberFormatter {
+        get { gridLayer.numberFormatter }
+        set { gridLayer.numberFormatter = newValue }
+    }
+
     var numberOfDivisions: Int {
         return gridLayer.numberOfVerticalDivisions
     }

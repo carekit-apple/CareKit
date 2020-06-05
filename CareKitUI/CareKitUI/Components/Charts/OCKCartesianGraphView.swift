@@ -68,6 +68,12 @@ open class OCKCartesianGraphView: OCKView, OCKMultiPlotable {
         didSet { axisView.axisMarkers = horizontalAxisMarkers }
     }
 
+    /// A number formatter used for the vertical axis values
+    public var numberFormatter: NumberFormatter {
+        get { gridView.numberFormatter }
+        set { gridView.numberFormatter = newValue }
+    }
+
     /// Get the bounds of the graph.
     ///
     /// - Returns: The bounds of the graph.

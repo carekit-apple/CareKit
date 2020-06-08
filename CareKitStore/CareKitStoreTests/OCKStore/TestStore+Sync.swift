@@ -277,9 +277,11 @@ class TestStoreSync: XCTestCase {
         let taskUUID = try task.getUUID()
 
         let outcome = try testStore.addOutcomeAndWait(OCKOutcome(taskUUID: taskUUID, taskOccurrenceIndex: 0, values: [OCKOutcomeValue("test")]))
-    
+        XCTAssertNoThrow(try testStore.syncAndWait()) //Sync original outcome
+        
+        dummy.entitiesInPushRevision.removeAll(keepingCapacity: false)
         try testStore.deleteOutcomeAndWait(outcome)
-        XCTAssertNoThrow(try testStore.syncAndWait())
+        XCTAssertNoThrow(try testStore.syncAndWait()) //Sync tombstoned outcome
         XCTAssert(dummy.entitiesInPushRevision.count == 3)
         
         let tombstonedOutcomes = dummy.entitiesInPushRevision.compactMap{

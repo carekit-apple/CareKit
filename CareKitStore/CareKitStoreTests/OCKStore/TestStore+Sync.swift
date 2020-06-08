@@ -460,8 +460,14 @@ class DummyEndpoint2: OCKRemoteSynchronizable {
             .task(task),
             .outcome(outcome)
         ]
+        
+        let revision: OCKRevisionRecord!
+        if self.dummyKnowledgeVector == nil{
+            revision = OCKRevisionRecord(entities: entities, knowledgeVector: .init())
+        }else{
+            revision = OCKRevisionRecord(entities: entities, knowledgeVector: self.dummyKnowledgeVector!)
+        }
 
-        let revision = OCKRevisionRecord(entities: entities, knowledgeVector: .init())
         return revision
     }
 }

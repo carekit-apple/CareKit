@@ -388,7 +388,7 @@ class DummyEndpoint2: OCKRemoteSynchronizable {
     private(set) var timesPushWasCalled = 0
     private(set) var timesForcePushed = 0
     private(set) var uuid = UUID()
-    private(set) var dummyKnowledgeVector:OCKRevisionRecord.KnowledgeVector!
+    private(set) var dummyKnowledgeVector:OCKRevisionRecord.KnowledgeVector? = nil
     public internal(set) var revisionsPushedInLastSynch = [OCKEntity]()
 
     var conflictPolicy = OCKMergeConflictResolutionPolicy.keepRemote
@@ -409,7 +409,7 @@ class DummyEndpoint2: OCKRemoteSynchronizable {
             if self.dummyKnowledgeVector == nil{
                 revision = OCKRevisionRecord(entities: [], knowledgeVector: .init())
             }else{
-                revision = OCKRevisionRecord(entities: [], knowledgeVector: self.dummyKnowledgeVector)
+                revision = OCKRevisionRecord(entities: [], knowledgeVector: self.dummyKnowledgeVector!)
             }
             
             mergeRevision(revision, completion)
@@ -432,8 +432,8 @@ class DummyEndpoint2: OCKRemoteSynchronizable {
         if dummyKnowledgeVector == nil{
             dummyKnowledgeVector = .init([uuid:0])
         }
-        dummyKnowledgeVector.increment(clockFor: uuid)
-        dummyKnowledgeVector.merge(with: deviceRevision.knowledgeVector)
+        dummyKnowledgeVector?.increment(clockFor: uuid)
+        dummyKnowledgeVector?.merge(with: deviceRevision.knowledgeVector)
         
         completion(nil)
     }

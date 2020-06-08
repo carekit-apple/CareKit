@@ -282,10 +282,10 @@ class TestStoreSync: XCTestCase {
         
         try testStore.deleteOutcomeAndWait(outcome)
         XCTAssertNoThrow(try testStore.syncAndWait()) //Sync tombstoned outcome
-        let synchedEntities = dummy2.entitiesPushed
-        XCTAssert(synchedEntities.count == 2)
+        let latestRevisions = dummy2.revisionsPushedInLastSynch
+        XCTAssert(latestRevisions.count == 2)
         
-        let tombstonedOutcomes = synchedEntities.compactMap{
+        let tombstonedOutcomes = latestRevisions.compactMap{
             entity -> OCKOutcome? in
             switch entity{
             case .outcome(let outcome):
@@ -389,7 +389,7 @@ class DummyEndpoint2: OCKRemoteSynchronizable {
     private(set) var timesForcePushed = 0
     private(set) var uuid = UUID()
     private(set) var dummyKnowledgeVector:OCKRevisionRecord.KnowledgeVector!
-    public internal(set) var entitiesPushed = [OCKEntity]()
+    public internal(set) var revisionsPushedInLastSynch = [OCKEntity]()
 
     var conflictPolicy = OCKMergeConflictResolutionPolicy.keepRemote
 
@@ -424,11 +424,11 @@ class DummyEndpoint2: OCKRemoteSynchronizable {
         timesPushWasCalled += 1
         timesForcePushed += overwriteRemote ? 1 : 0
         
-        entitiesPushed.removeAll()
+        revisionsPushedInLastSynch.removeAll()
         if dummyKnowledgeVector == nil{
             dummyKnowledgeVector = .init([uuid:0])
         }
-        entitiesPushed.append(contentsOf: deviceRevision.entities)
+        revisionsPushedInLastSynch.append(contentsOf: deviceRevision.entities)
         
         //Update KnowledgeVector
         dummyKnowledgeVector.increment(clockFor: uuid)

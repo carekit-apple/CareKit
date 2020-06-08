@@ -296,11 +296,15 @@ class TestStoreSync: XCTestCase {
         }
         XCTAssert(tombstonedOutcomes.count == 2)
         
-        let tombstonedWithSameUUID = try tombstonedOutcomes.filter({$0.uuid == outcome.uuid}).first!
+        guard let tombstonedWithSameUUID = tombstonedOutcomes.filter({$0.uuid == outcome.uuid}).first else{
+            throw OCKStoreError.invalidValue(reason: "Filter doesn't contain UUID")
+        }
         XCTAssert(tombstonedWithSameUUID.values.isEmpty)
         XCTAssert(tombstonedWithSameUUID.deletedDate != nil)
         
-        let tombstonedWithDifferentUUID = tombstonedOutcomes.filter({$0.uuid != outcome.uuid}).first!
+        guard let tombstonedWithDifferentUUID = tombstonedOutcomes.filter({$0.uuid != outcome.uuid}).first else{
+            throw OCKStoreError.invalidValue(reason: "Filter doesn't contain UUID")
+        }
         XCTAssert(tombstonedWithDifferentUUID.values.count == 1)
         XCTAssert(tombstonedWithDifferentUUID.deletedDate != nil)
     }

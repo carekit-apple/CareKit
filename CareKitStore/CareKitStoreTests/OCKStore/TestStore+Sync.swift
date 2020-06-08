@@ -424,13 +424,14 @@ class DummyEndpoint2: OCKRemoteSynchronizable {
         timesPushWasCalled += 1
         timesForcePushed += overwriteRemote ? 1 : 0
         
+        //Save latest revisions
         revisionsPushedInLastSynch.removeAll()
-        if dummyKnowledgeVector == nil{
-            dummyKnowledgeVector = .init([uuid:0])
-        }
         revisionsPushedInLastSynch.append(contentsOf: deviceRevision.entities)
         
         //Update KnowledgeVector
+        if dummyKnowledgeVector == nil{
+            dummyKnowledgeVector = .init([uuid:0])
+        }
         dummyKnowledgeVector.increment(clockFor: uuid)
         dummyKnowledgeVector.merge(with: deviceRevision.knowledgeVector)
         

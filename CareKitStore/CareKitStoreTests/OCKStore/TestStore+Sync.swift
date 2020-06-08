@@ -120,7 +120,7 @@ class TestStoreSync: XCTestCase {
         XCTAssert(localTasks.count == 2)
         XCTAssert(localOutcomes.count == 2)
     }
-
+    
     func testKeepRemoteTaskWithFirstVersionOfTasks() throws {
         peer.automaticallySynchronizes = false
         peer.conflictPolicy = .keepRemote
@@ -267,6 +267,40 @@ class TestStoreSync: XCTestCase {
         XCTAssert(localOutcomes == remoteOutcomes)
         XCTAssert(localOutcomes.count == 1)
     }
+    
+    func testTombstoningOutcomePushedToRemote() throws {
+        let testStore = OCKStore(name: "test", type: .inMemory, remote: dummy)
+        dummy.automaticallySynchronizes = false
+        
+        let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
+        let task = try testStore.addTaskAndWait(OCKTask(id: "A", title: "A", carePlanUUID: nil, schedule: schedule))
+        let taskUUID = try task.getUUID()
+
+        let outcome = try testStore.addOutcomeAndWait(OCKOutcome(taskUUID: taskUUID, taskOccurrenceIndex: 0, values: [OCKOutcomeValue("test")]))
+    
+        try testStore.deleteOutcomeAndWait(outcome)
+        XCTAssertNoThrow(try testStore.syncAndWait())
+        XCTAssert(dummy.entitiesInPushRevision.count == 3)
+        
+        let tombstonedOutcomes = dummy.entitiesInPushRevision.compactMap{
+            entity -> OCKOutcome? in
+            switch entity{
+            case .outcome(let outcome):
+                return outcome
+            default:
+                return nil
+            }
+        }
+        XCTAssert(tombstonedOutcomes.count == 2)
+        
+        let tombstonedWithSameUUID = tombstonedOutcomes.filter({$0.uuid == outcome.uuid}).first!
+        XCTAssert(tombstonedWithSameUUID.values.isEmpty)
+        XCTAssert(tombstonedWithSameUUID.deletedDate != nil)
+        
+        let tombstonedWithDifferentUUID = tombstonedOutcomes.filter({$0.uuid != outcome.uuid}).first!
+        XCTAssert(tombstonedWithDifferentUUID.values.count == 1)
+        XCTAssert(tombstonedWithDifferentUUID.deletedDate != nil)
+    }
 }
 
 class DummyEndpoint: OCKRemoteSynchronizable {
@@ -279,6 +313,7 @@ class DummyEndpoint: OCKRemoteSynchronizable {
     private(set) var timesPullWasCalled = 0
     private(set) var timesPushWasCalled = 0
     private(set) var timesForcePushed = 0
+    var entitiesInPushRevision = [OCKEntity]()
 
     var conflictPolicy = OCKMergeConflictResolutionPolicy.keepRemote
     var revision = OCKRevisionRecord(entities: [], knowledgeVector: .init())
@@ -303,6 +338,7 @@ class DummyEndpoint: OCKRemoteSynchronizable {
         overwriteRemote: Bool,
         completion: @escaping (Error?) -> Void) {
 
+        entitiesInPushRevision.append(contentsOf: deviceRevision.entities)
         timesPushWasCalled += 1
         timesForcePushed += overwriteRemote ? 1 : 0
         completion(nil)

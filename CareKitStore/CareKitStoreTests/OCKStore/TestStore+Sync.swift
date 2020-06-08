@@ -269,8 +269,9 @@ class TestStoreSync: XCTestCase {
     }
     
     func testTombstoningOutcomePushedToRemote() throws {
-        let testStore = OCKStore(name: "test", type: .inMemory, remote: dummy)
-        dummy.automaticallySynchronizes = false
+        let dummy2 = DummyEndpoint2()
+        let testStore = OCKStore(name: "test", type: .inMemory, remote: dummy2)
+        dummy2.automaticallySynchronizes = false
         
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
         let task = try testStore.addTaskAndWait(OCKTask(id: "A", title: "A", carePlanUUID: nil, schedule: schedule))
@@ -279,12 +280,12 @@ class TestStoreSync: XCTestCase {
         let outcome = try testStore.addOutcomeAndWait(OCKOutcome(taskUUID: taskUUID, taskOccurrenceIndex: 0, values: [OCKOutcomeValue("test")]))
         XCTAssertNoThrow(try testStore.syncAndWait()) //Sync original outcome
         
-        dummy.entitiesInPushRevision.removeAll(keepingCapacity: false)
         try testStore.deleteOutcomeAndWait(outcome)
         XCTAssertNoThrow(try testStore.syncAndWait()) //Sync tombstoned outcome
-        XCTAssert(dummy.entitiesInPushRevision.count == 3)
+        let synchedEntities = dummy2.getLatestSynchronizedEntities()
+        XCTAssert(synchedEntities.count == 2)
         
-        let tombstonedOutcomes = dummy.entitiesInPushRevision.compactMap{
+        let tombstonedOutcomes = synchedEntities.compactMap{
             entity -> OCKOutcome? in
             switch entity{
             case .outcome(let outcome):
@@ -295,7 +296,7 @@ class TestStoreSync: XCTestCase {
         }
         XCTAssert(tombstonedOutcomes.count == 2)
         
-        let tombstonedWithSameUUID = tombstonedOutcomes.filter({$0.uuid == outcome.uuid}).first!
+        let tombstonedWithSameUUID = try tombstonedOutcomes.filter({$0.uuid == outcome.uuid}).first!
         XCTAssert(tombstonedWithSameUUID.values.isEmpty)
         XCTAssert(tombstonedWithSameUUID.deletedDate != nil)
         
@@ -315,7 +316,6 @@ class DummyEndpoint: OCKRemoteSynchronizable {
     private(set) var timesPullWasCalled = 0
     private(set) var timesPushWasCalled = 0
     private(set) var timesForcePushed = 0
-    var entitiesInPushRevision = [OCKEntity]()
 
     var conflictPolicy = OCKMergeConflictResolutionPolicy.keepRemote
     var revision = OCKRevisionRecord(entities: [], knowledgeVector: .init())
@@ -340,10 +340,129 @@ class DummyEndpoint: OCKRemoteSynchronizable {
         overwriteRemote: Bool,
         completion: @escaping (Error?) -> Void) {
 
-        entitiesInPushRevision.append(contentsOf: deviceRevision.entities)
         timesPushWasCalled += 1
         timesForcePushed += overwriteRemote ? 1 : 0
         completion(nil)
+    }
+
+    func chooseConflictResolutionPolicy(
+        _ conflict: OCKMergeConflictDescription,
+        completion: @escaping (OCKMergeConflictResolutionPolicy) -> Void) {
+        completion(conflictPolicy)
+    }
+
+    func dummyRevision() -> OCKRevisionRecord {
+        let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
+        var task = OCKTask(id: "a", title: "A", carePlanUUID: nil, schedule: schedule)
+        task.uuid = UUID()
+        task.createdDate = Date()
+        task.updatedDate = task.createdDate
+
+        var outcome = OCKOutcome(taskUUID: task.uuid!, taskOccurrenceIndex: 0, values: [])
+        outcome.uuid = UUID()
+        outcome.createdDate = Date()
+        outcome.updatedDate = outcome.createdDate
+
+        let entities: [OCKEntity] = [
+            .task(task),
+            .outcome(outcome)
+        ]
+
+        let revision = OCKRevisionRecord(entities: entities, knowledgeVector: .init())
+        return revision
+    }
+}
+
+class DummyEndpoint2: OCKRemoteSynchronizable {
+
+    var automaticallySynchronizes = true
+    var shouldSucceed = true
+    var delay: TimeInterval = 0.0
+    weak var delegate: OCKRemoteSynchronizationDelegate?
+
+    private(set) var timesPullWasCalled = 0
+    private(set) var timesPushWasCalled = 0
+    private(set) var timesForcePushed = 0
+    private(set) var uuid = UUID()
+    private(set) var dummyKnowledgeVector:OCKRevisionRecord.KnowledgeVector!
+    private(set) var stamps = [UUID:Int]()
+    private(set) var entitiesInPushedToDummy = [UUID:OCKEntity]()
+
+    var conflictPolicy = OCKMergeConflictResolutionPolicy.keepRemote
+
+    func pullRevisions(
+        since knowledgeVector: OCKRevisionRecord.KnowledgeVector,
+        mergeRevision: @escaping (OCKRevisionRecord, @escaping (Error?) -> Void) -> Void,
+        completion: @escaping (Error?) -> Void) {
+        
+        timesPullWasCalled += 1
+        DispatchQueue.global(qos: .userInteractive).asyncAfter(deadline: .now() + delay) {
+            if !self.shouldSucceed {
+                completion(OCKStoreError.remoteSynchronizationFailed(reason: "Failed on purpose"))
+                return
+            }
+            let revision: OCKRevisionRecord!
+            if self.dummyKnowledgeVector == nil{
+                revision = OCKRevisionRecord(entities: [], knowledgeVector: .init())
+            }else{
+                revision = OCKRevisionRecord(entities: [], knowledgeVector: self.dummyKnowledgeVector)
+            }
+            mergeRevision(revision, completion)
+        }
+    }
+
+    func pushRevisions(
+        deviceRevision: OCKRevisionRecord,
+        overwriteRemote: Bool,
+        completion: @escaping (Error?) -> Void) {
+        
+        timesPushWasCalled += 1
+        timesForcePushed += overwriteRemote ? 1 : 0
+        
+        if dummyKnowledgeVector == nil{
+            dummyKnowledgeVector = .init([uuid:0])
+        }
+        let dummyClock = dummyKnowledgeVector.clock(for: self.uuid)
+        
+        deviceRevision.entities.forEach{
+            stampEntity($0, clock: dummyClock)
+            guard let entityUUID = $0.uuid else{return}
+            entitiesInPushedToDummy[entityUUID] = $0
+        }
+        
+        dummyKnowledgeVector.increment(clockFor: uuid)
+        dummyKnowledgeVector.merge(with: deviceRevision.knowledgeVector)
+        
+        completion(nil)
+    }
+    
+    func stampEntity(_ entity: OCKEntity, clock: Int){
+        guard let entityUUID = entity.uuid else{
+            return
+        }
+        stamps[entityUUID] = clock
+    }
+    
+    func getLatestSynchronizedEntities()->[OCKEntity]{
+        if dummyKnowledgeVector == nil{
+            dummyKnowledgeVector = .init([uuid:0])
+        }
+        let previousClock = (dummyKnowledgeVector.clock(for: self.uuid) > 0) ? dummyKnowledgeVector.clock(for: self.uuid)-1 : 0
+        
+        let keys = stamps.compactMap{
+            (key,value) -> UUID? in
+            if value >= previousClock{
+                return key
+            }
+            return nil
+        }
+        return entitiesInPushedToDummy.compactMap{
+            (key,value) -> OCKEntity? in
+            if keys.contains(key){
+                return value
+            }
+            return nil
+        }
     }
 
     func chooseConflictResolutionPolicy(

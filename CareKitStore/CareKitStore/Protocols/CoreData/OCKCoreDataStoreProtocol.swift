@@ -180,6 +180,8 @@ extension OCKCoreDataStoreProtocol {
             let newVersion = addNewVersion(value)
             newVersion.previous = current
             newVersion.uuid = UUID()
+            current.next = newVersion
+            current.logicalClock = Int64(context.clockTime)
             return newVersion
         }
     }

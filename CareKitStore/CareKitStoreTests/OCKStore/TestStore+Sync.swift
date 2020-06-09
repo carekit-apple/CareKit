@@ -308,6 +308,53 @@ class TestStoreSync: XCTestCase {
         XCTAssert(tombstonedWithDifferentUUID.values.count == 1)
         XCTAssert(tombstonedWithDifferentUUID.deletedDate != nil)
     }
+    
+    func testUpdateTaskVersionPushedToRemote() throws {
+        let dummy2 = DummyEndpoint2()
+        let testStore = OCKStore(name: "test", type: .inMemory, remote: dummy2)
+        dummy2.automaticallySynchronizes = false
+        
+        let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
+        var task = try testStore.addTaskAndWait(OCKTask(id: "A", title: "A", carePlanUUID: nil, schedule: schedule))
+        let taskUUID = try task.getUUID()
+
+        XCTAssertNoThrow(try testStore.syncAndWait()) //Sync original outcome
+        
+        task.instructions = "Updated instructions"
+        try testStore.updateTaskAndWait(task)
+        XCTAssertNoThrow(try testStore.syncAndWait()) //Sync updated outcome
+        
+        let latestRevisions = dummy2.revisionsPushedInLastSynch
+        XCTAssert(latestRevisions.count == 2)
+        
+        let versionedTasks = latestRevisions.compactMap{
+            entity -> OCKTask? in
+            switch entity{
+            case .task(let task):
+                return task
+            default:
+                return nil
+            }
+        }
+        XCTAssert(versionedTasks.count == 2)
+        
+        guard let previousVersionTask = versionedTasks.filter({$0.uuid == taskUUID}).first else{
+            throw OCKStoreError.invalidValue(reason: "Filter doesn't contain UUID")
+        }
+        
+        guard let currentVersionTask = versionedTasks.filter({$0.uuid != taskUUID}).first else{
+            throw OCKStoreError.invalidValue(reason: "Filter doesn't contain UUID")
+        }
+        
+        XCTAssert(previousVersionTask.instructions == nil)
+        XCTAssert(previousVersionTask.nextVersionUUID != nil)
+        XCTAssert(previousVersionTask.nextVersionUUID == currentVersionTask.uuid)
+        
+        XCTAssert(currentVersionTask.instructions != nil)
+        XCTAssert(currentVersionTask.previousVersionUUID == taskUUID)
+        XCTAssert(currentVersionTask.nextVersionUUID == nil)
+        
+    }
 }
 
 class DummyEndpoint: OCKRemoteSynchronizable {

@@ -38,7 +38,7 @@ class OCKCDVersionedObject: OCKCDObject {
     @NSManaged var allowsMissingRelationships: Bool
     @NSManaged var effectiveDate: Date
     @NSManaged var deletedDate: Date?
-    @NSManaged private(set) weak var next: OCKCDVersionedObject?
+    @NSManaged var next: OCKCDVersionedObject?
 
     var nextVersionUUID: UUID? {
         return next?.uuid

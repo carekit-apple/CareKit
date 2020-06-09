@@ -278,6 +278,7 @@ class TestStoreSync: XCTestCase {
         let taskUUID = try task.getUUID()
 
         let outcome = try testStore.addOutcomeAndWait(OCKOutcome(taskUUID: taskUUID, taskOccurrenceIndex: 0, values: [OCKOutcomeValue("test")]))
+        let outcomeUUID = try outcome.getUUID()
         XCTAssertNoThrow(try testStore.syncAndWait()) //Sync original outcome
         
         try testStore.deleteOutcomeAndWait(outcome)
@@ -296,13 +297,13 @@ class TestStoreSync: XCTestCase {
         }
         XCTAssert(tombstonedOutcomes.count == 2)
         
-        guard let tombstonedWithSameUUID = tombstonedOutcomes.filter({$0.uuid == outcome.uuid}).first else{
+        guard let tombstonedWithSameUUID = try tombstonedOutcomes.filter({try $0.getUUID() == outcomeUUID}).first else{
             throw OCKStoreError.invalidValue(reason: "Filter doesn't contain UUID")
         }
         XCTAssert(tombstonedWithSameUUID.values.isEmpty)
         XCTAssert(tombstonedWithSameUUID.deletedDate != nil)
         
-        guard let tombstonedWithDifferentUUID = tombstonedOutcomes.filter({$0.uuid != outcome.uuid}).first else{
+        guard let tombstonedWithDifferentUUID = try tombstonedOutcomes.filter({try $0.getUUID() != outcomeUUID}).first else{
             throw OCKStoreError.invalidValue(reason: "Filter doesn't contain UUID")
         }
         XCTAssert(tombstonedWithDifferentUUID.values.count == 1)
@@ -338,22 +339,19 @@ class TestStoreSync: XCTestCase {
         }
         XCTAssert(versionedTasks.count == 2)
         
-        guard let previousVersionTask = versionedTasks.filter({$0.uuid == taskUUID}).first else{
+        guard let previousVersionTask = try versionedTasks.filter({try $0.getUUID() == taskUUID}).first else{
             throw OCKStoreError.invalidValue(reason: "Filter doesn't contain UUID")
         }
         
-        guard let currentVersionTask = versionedTasks.filter({$0.uuid != taskUUID}).first else{
+        guard let currentVersionTask = try versionedTasks.filter({try $0.getUUID() != taskUUID}).first else{
             throw OCKStoreError.invalidValue(reason: "Filter doesn't contain UUID")
         }
-        
         XCTAssert(previousVersionTask.instructions == nil)
-        XCTAssert(previousVersionTask.nextVersionUUID != nil)
-        XCTAssert(previousVersionTask.nextVersionUUID == currentVersionTask.uuid)
+        XCTAssert(try previousVersionTask.getNextVersionUUID() == currentVersionTask.getUUID())
         
         XCTAssert(currentVersionTask.instructions != nil)
-        XCTAssert(currentVersionTask.previousVersionUUID == taskUUID)
-        XCTAssert(currentVersionTask.nextVersionUUID == nil)
-        
+        XCTAssert(try currentVersionTask.getPreviousVersionUUID() == taskUUID)
+        XCTAssertThrowsError(try currentVersionTask.getNextVersionUUID())
     }
 }
 

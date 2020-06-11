@@ -177,10 +177,10 @@ extension OCKCoreDataStoreProtocol {
             guard let current = currentVersions.first(where: { $0.id == value.id }) else {
                 throw OCKStoreError.invalidValue(reason: "No matching object could be found for id: \(value.id)")
             }
+            current.logicalClock = Int64(context.clockTime)
             let newVersion = addNewVersion(value)
             newVersion.previous = current
             newVersion.uuid = UUID()
-            current.logicalClock = Int64(context.clockTime)
             return newVersion
         }
     }

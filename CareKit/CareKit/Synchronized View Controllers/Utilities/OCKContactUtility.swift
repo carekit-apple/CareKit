@@ -41,7 +41,7 @@ struct OCKContactUtility {
 
     private static let nameFormatter: PersonNameComponentsFormatter = {
         let nameFormatter = PersonNameComponentsFormatter()
-        nameFormatter.style = .medium
+        nameFormatter.style = .long
         return nameFormatter
     }()
 

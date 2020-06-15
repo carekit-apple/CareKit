@@ -64,10 +64,6 @@ class OCKGradientPlotView<LayerType: OCKCartesianCoordinatesLayer> : UIView, OCK
 
     var seriesLayers: [LayerType] = []
 
-    override var intrinsicContentSize: CGSize {
-        return CGSize(width: 200, height: 75)
-    }
-
     override func layoutSubviews() {
         super.layoutSubviews()
         seriesLayers.forEach { $0.frame = bounds }

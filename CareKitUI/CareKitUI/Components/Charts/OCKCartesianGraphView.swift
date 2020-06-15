@@ -179,24 +179,49 @@ open class OCKCartesianGraphView: OCKView, OCKMultiPlotable {
 
         [gridView, plotView, axisView, legend].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
 
-        NSLayoutConstraint.activate([
+        let gridConstraints = [
             gridView.topAnchor.constraint(equalTo: plotView.topAnchor),
             gridView.leadingAnchor.constraint(equalTo: leadingAnchor),
             gridView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            gridView.bottomAnchor.constraint(equalTo: plotView.bottomAnchor),
+            gridView.bottomAnchor.constraint(equalTo: plotView.bottomAnchor)
+        ]
+
+        let plotTrailing = plotView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -horizontalPlotPadding)
+        plotTrailing.priority -= 1
+
+        let plotBottom = plotView.bottomAnchor.constraint(equalTo: axisView.topAnchor)
+        plotBottom.priority -= 1
+
+        let plotConstraints = [
             plotView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: horizontalPlotPadding),
-            plotView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -horizontalPlotPadding),
+            plotTrailing,
             plotView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
-            plotView.bottomAnchor.constraint(equalTo: axisView.topAnchor),
+            plotBottom
+        ]
+
+        let axisTrailing = axisView.trailingAnchor.constraint(equalTo: plotView.trailingAnchor)
+        axisTrailing.priority -= 1
+
+        let axisBottom = axisView.bottomAnchor.constraint(equalTo: legend.topAnchor)
+        axisBottom.priority -= 1
+
+        let axisConstraints = [
             axisView.leadingAnchor.constraint(equalTo: plotView.leadingAnchor),
-            axisView.trailingAnchor.constraint(equalTo: plotView.trailingAnchor),
+            axisTrailing,
             axisView.heightAnchor.constraint(equalToConstant: axisHeight),
-            axisView.bottomAnchor.constraint(equalTo: legend.topAnchor),
-            legend.leadingAnchor.constraint(greaterThanOrEqualTo: safeAreaLayoutGuide.leadingAnchor),
-            legend.trailingAnchor.constraint(lessThanOrEqualTo: safeAreaLayoutGuide.trailingAnchor),
+            axisBottom
+        ]
+
+        let legendWidth = legend.widthAnchor.constraint(lessThanOrEqualTo: widthAnchor)
+        legendWidth.priority -= 1
+
+        let legendConstraints = [
+            legendWidth,
             legend.centerXAnchor.constraint(equalTo: centerXAnchor),
             legend.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor)
-        ])
+        ]
+
+        NSLayoutConstraint.activate(gridConstraints + plotConstraints + axisConstraints + legendConstraints)
 
         applyTintColor()
     }

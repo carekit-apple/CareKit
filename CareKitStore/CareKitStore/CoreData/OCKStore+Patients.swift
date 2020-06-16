@@ -132,15 +132,15 @@ extension OCKStore {
         return addedPatients
     }
 
-    /// Updates existing tasks to the versions passed in.
+    /// Updates existing patients to the versions passed in.
     ///
-    /// The copyUUIDs argument should be true when ingesting tasks from a remote to ensure
-    /// the UUIDs match on all devices, and false when creating a new version of a task locally
+    /// The copyUUIDs argument should be true when ingesting patients from a remote to ensure
+    /// the UUIDs match on all devices, and false when creating a new version of a patient locally
     /// to ensure that the new version has a different UUID than its parent version.
     ///
     /// - Parameters:
-    ///   - tasks: The new versions of the tasks.
-    ///   - copyUUIDs: If true, the UUIDs of the tasks will be copied to the new versions
+    ///   - patients: The new versions of the patients.
+    ///   - copyUUIDs: If true, the UUIDs of the patients will be copied to the new versions
     func updatePatientsWithoutCommitting(_ patients: [Patient], copyUUIDs: Bool) throws -> [Patient] {
         try validateUpdateIdentifiers(patients.map { $0.id })
         let updatedPatients = try self.performVersionedUpdate(values: patients, addNewVersion: self.createPatient)

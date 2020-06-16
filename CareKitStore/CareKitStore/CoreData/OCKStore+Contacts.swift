@@ -128,15 +128,15 @@ extension OCKStore {
         return addedContacts
     }
 
-    /// Updates existing tasks to the versions passed in.
+    /// Updates existing contacts to the versions passed in.
     ///
-    /// The copyUUIDs argument should be true when ingesting tasks from a remote to ensure
-    /// the UUIDs match on all devices, and false when creating a new version of a task locally
+    /// The copyUUIDs argument should be true when ingesting contacts from a remote to ensure
+    /// the UUIDs match on all devices, and false when creating a new version of a contact locally
     /// to ensure that the new version has a different UUID than its parent version.
     ///
     /// - Parameters:
-    ///   - tasks: The new versions of the tasks.
-    ///   - copyUUIDs: If true, the UUIDs of the tasks will be copied to the new versions
+    ///   - contacts: The new versions of the contacts.
+    ///   - copyUUIDs: If true, the UUIDs of the contacts will be copied to the new versions
     func updateContactsWithoutCommitting(_ contacts: [Contact], copyUUIDs: Bool) throws -> [Contact] {
         try validateUpdateIdentifiers(contacts.map { $0.id })
         let updatedContacts = try self.performVersionedUpdate(values: contacts, addNewVersion: self.createContact)

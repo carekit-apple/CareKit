@@ -58,14 +58,12 @@ extension OCKStore {
                           completion: ((Result<[OCKContact], OCKStoreError>) -> Void)? = nil) {
         context.perform {
             do {
-                try self.validateNew(OCKCDContact.self, contacts)
-                let persistableContacts = contacts.map(self.createContact)
+                let addedContacts = try self.createContactsWithoutCommitting(contacts)
                 try self.context.save()
-                let savedContacts = persistableContacts.map(self.makeContact)
                 callbackQueue.async {
-                    self.contactDelegate?.contactStore(self, didAddContacts: savedContacts)
+                    self.contactDelegate?.contactStore(self, didAddContacts: addedContacts)
                     self.autoSynchronizeIfRequired()
-                    completion?(.success(savedContacts))
+                    completion?(.success(addedContacts))
                 }
             } catch {
                 self.context.rollback()
@@ -79,14 +77,12 @@ extension OCKStore {
     open func updateContacts(_ contacts: [OCKContact], callbackQueue: DispatchQueue = .main, completion: OCKResultClosure<[OCKContact]>? = nil) {
         context.perform {
             do {
-                try self.validateUpdateIdentifiers(contacts.map { $0.id })
-                let updatedContacts = try self.performVersionedUpdate(values: contacts, addNewVersion: self.createContact)
+                let updated = try self.updateContactsWithoutCommitting(contacts, copyUUIDs: false)
                 try self.context.save()
-                let contacts = updatedContacts.map(self.makeContact)
                 callbackQueue.async {
-                    self.contactDelegate?.contactStore(self, didUpdateContacts: contacts)
+                    self.contactDelegate?.contactStore(self, didUpdateContacts: updated)
                     self.autoSynchronizeIfRequired()
-                    completion?(.success(contacts))
+                    completion?(.success(updated))
                 }
             } catch {
                 self.context.rollback()
@@ -120,7 +116,37 @@ extension OCKStore {
             }
         }
     }
+    
+    // MARK: Internal
+    // These methods are called from elsewhere in CareKit, but must always be called
+    // from the `contexts`'s thread.
 
+    func createContactsWithoutCommitting(_ contacts: [Contact]) throws -> [Contact] {
+        try self.validateNew(OCKCDContact.self, contacts)
+        let persistableContacts = contacts.map(self.createContact)
+        let addedContacts = persistableContacts.map(self.makeContact)
+        return addedContacts
+    }
+
+    /// Updates existing contacts to the versions passed in.
+    ///
+    /// The copyUUIDs argument should be true when ingesting contacts from a remote to ensure
+    /// the UUIDs match on all devices, and false when creating a new version of a contact locally
+    /// to ensure that the new version has a different UUID than its parent version.
+    ///
+    /// - Parameters:
+    ///   - contacts: The new versions of the contacts.
+    ///   - copyUUIDs: If true, the UUIDs of the contacts will be copied to the new versions
+    func updateContactsWithoutCommitting(_ contacts: [Contact], copyUUIDs: Bool) throws -> [Contact] {
+        try validateUpdateIdentifiers(contacts.map { $0.id })
+        let updatedContacts = try self.performVersionedUpdate(values: contacts, addNewVersion: self.createContact)
+        if copyUUIDs {
+            updatedContacts.enumerated().forEach { $1.uuid = contacts[$0].uuid! }
+        }
+        let updated = updatedContacts.map(self.makeContact)
+        return updated
+    }
+    
     private func createContact(from contact: OCKContact) -> OCKCDContact {
         let persistableContact = OCKCDContact(context: context)
         persistableContact.name = OCKCDPersonName(context: context)
@@ -166,7 +192,7 @@ extension OCKStore {
         persitableAddress.isoCountryCode = address.isoCountryCode
     }
 
-    private func makeContact(from object: OCKCDContact) -> OCKContact {
+    internal func makeContact(from object: OCKCDContact) -> OCKContact {
         var contact = OCKContact(id: object.id, name: object.name.makeComponents(), carePlanUUID: object.carePlan?.uuid)
         contact.copyVersionedValues(from: object)
         contact.address = object.address.map(makePostalAddress)

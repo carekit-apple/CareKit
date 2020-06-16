@@ -289,6 +289,15 @@ extension OCKStore {
         var localRevisions = [OCKEntity]()
 
         context.performAndWait {
+            changedQuery(OCKCDPatient.self, since: clock).forEach { patient in
+                localRevisions.append(.patient(makePatient(from: patient)))
+            }
+            changedQuery(OCKCDCarePlan.self, since: clock).forEach { carePlan in
+                localRevisions.append(.carePlan(makePlan(from: carePlan)))
+            }
+            changedQuery(OCKCDContact.self, since: clock).forEach { contact in
+                localRevisions.append(.contact(makeContact(from: contact)))
+            }
             changedQuery(OCKCDTask.self, since: clock).forEach { task in
                 localRevisions.append(.task(makeTask(from: task)))
             }
@@ -365,9 +374,24 @@ extension OCKStore {
 
         switch revision.entities[currentIndex] {
 
-        case .patient, .carePlan, .contact:
-            assertionFailure("Not implemented yet")
-
+        case let .patient(patient):
+            self.mergePatientRevision(
+                patient: patient,
+                vector: revision.knowledgeVector,
+                completion: nextIteration)
+            
+        case let .carePlan(carePlan):
+            self.mergeCarePlanRevision(
+                carePlan: carePlan,
+                vector: revision.knowledgeVector,
+                completion: nextIteration)
+            
+        case let .contact(contact):
+            self.mergeContactRevision(
+            contact: contact,
+            vector: revision.knowledgeVector,
+            completion: nextIteration)
+            
         case let .task(task):
             self.mergeTaskRevision(
                 task: task,
@@ -400,6 +424,329 @@ extension OCKStore {
         return results
     }
 
+    /// - Warning: This method must be called on the `context`'s queue.
+    private func mergePatientRevision(
+        patient: OCKPatient,
+        vector: OCKRevisionRecord.KnowledgeVector,
+        completion: @escaping (Error?) -> Void) {
+        do {
+            // If the patient exists on disk already, it means that another device
+            // ruled to overwrite this value as part of a conflict resolution.
+            if entityExists(OCKCDPatient.self, uuid: patient.uuid!) {
+                completion(nil)
+                return
+            }
+
+            // The patient is either a brand new patient or an update of an existing patient.
+            // Deletes count as updates since they are just a new version with the
+            // `deletedDate` property set to a non-nil value.
+            //
+            // Make sure there are no conflicts locally. If the device's knowledge
+            // vector is strictly less than the remotes, we can guarantee there is no
+            // conflict. Otherwise we need to check.
+            let localPatientRevisions = computeRevision(since: vector.clock(for: self.context.clockID))
+                .entities
+                .compactMap { $0.value as? OCKPatient }
+
+            if let local = localPatientRevisions.first(where: {
+                $0.id == patient.id &&
+                $0.previousVersionUUID == patient.previousVersionUUID
+            }) {
+
+                let conflict = OCKMergeConflictDescription(
+                    entities: .patients(
+                        deviceVersion: local,
+                        remoteVersion: patient))
+
+                remote!.chooseConflictResolutionPolicy(conflict) { strategy in
+                    switch strategy {
+                    case .abortMerge:
+                        let error = OCKStoreError.remoteSynchronizationFailed(
+                            reason: "Aborted merge because of conflict in two versions of patient \(patient.id)")
+                        completion(error)
+
+                    case .keepRemote:
+                        do {
+                            // If the remote is a new version of an existing patient, find the previous
+                            // version and delete its conflicting next version. This will cascade
+                            // delete all future versions and their outcomes. Then update the previous
+                            // version to the new version from the remote.
+                            if let previousUUD = patient.previousVersionUUID {
+                                let previous: OCKCDPatient = try self.fetchObject(uuid: previousUUD)
+                                previous.next.map(self.context.delete)
+
+                                let updated = try self.updatePatientsWithoutCommitting([patient], copyUUIDs: true)
+                                self.patientDelegate?.patientStore(self, didUpdatePatients: updated)
+
+                                completion(nil)
+                                return
+                            }
+
+                            // A new patient with the same id was created on both the server
+                            // and the local device. Delete the local one and keep the remote.
+                            let localPatient: OCKCDPatient = try self.fetchObject(uuid: local.uuid!)
+                            self.context.delete(localPatient)
+                            let added = try self.createPatientsWithoutCommitting([patient])
+                            self.patientDelegate?.patientStore(self, didAddPatients: added)
+                            completion(nil)
+
+                        } catch {
+                            completion(error)
+                        }
+
+                    case .keepDevice:
+                        // No action needs to be taken. When the entity from this
+                        // device lands on a peer device, ingesting it will cause
+                        // any conflicts to be overwritten.
+                        completion(nil)
+                    }
+                }
+
+                return
+            }
+
+            // There is no conflict. This is the simplest case, we can just create a new patient.
+            if patient.previousVersionUUID == nil {
+                let newPatients = try createPatientsWithoutCommitting([patient])
+                patientDelegate?.patientStore(self, didAddPatients: newPatients)
+
+            // This is a new version of an existing patient. We might need to delete future versions
+            // and their outcomes before adding this version in their place. This happens when
+            // one node processes a conflict resolution performed on a different node.
+            } else {
+                let current: OCKCDPatient = try self.fetchObject(uuid: patient.previousVersionUUID!)
+                current.next.map(self.context.delete)
+                let updated = try updatePatientsWithoutCommitting([patient], copyUUIDs: true)
+                for update in updated {
+                    update.deletedDate == nil ?
+                        patientDelegate?.patientStore(self, didUpdatePatients: [update]) :
+                        patientDelegate?.patientStore(self, didDeletePatients: [update])
+                }
+            }
+
+            completion(nil)
+
+        } catch {
+            completion(error)
+        }
+    }
+    
+    /// - Warning: This method must be called on the `context`'s queue.
+    private func mergeCarePlanRevision(
+        carePlan: OCKCarePlan,
+        vector: OCKRevisionRecord.KnowledgeVector,
+        completion: @escaping (Error?) -> Void) {
+        do {
+            // If the carePlan exists on disk already, it means that another device
+            // ruled to overwrite this value as part of a conflict resolution.
+            if entityExists(OCKCDCarePlan.self, uuid: carePlan.uuid!) {
+                completion(nil)
+                return
+            }
+
+            // The carePlan is either a brand new carePlan or an update of an existing carePlan.
+            // Deletes count as updates since they are just a new version with the
+            // `deletedDate` property set to a non-nil value.
+            //
+            // Make sure there are no conflicts locally. If the device's knowledge
+            // vector is strictly less than the remotes, we can guarantee there is no
+            // conflict. Otherwise we need to check.
+            let localCarePlanRevisions = computeRevision(since: vector.clock(for: self.context.clockID))
+                .entities
+                .compactMap { $0.value as? OCKCarePlan }
+
+            if let local = localCarePlanRevisions.first(where: {
+                $0.id == carePlan.id &&
+                $0.previousVersionUUID == carePlan.previousVersionUUID
+            }) {
+
+                let conflict = OCKMergeConflictDescription(
+                    entities: .carePlans(
+                        deviceVersion: local,
+                        remoteVersion: carePlan))
+
+                remote!.chooseConflictResolutionPolicy(conflict) { strategy in
+                    switch strategy {
+                    case .abortMerge:
+                        let error = OCKStoreError.remoteSynchronizationFailed(
+                            reason: "Aborted merge because of conflict in two versions of carePlan \(carePlan.id)")
+                        completion(error)
+
+                    case .keepRemote:
+                        do {
+                            // If the remote is a new version of an existing carePlan, find the previous
+                            // version and delete its conflicting next version. This will cascade
+                            // delete all future versions and their outcomes. Then update the previous
+                            // version to the new version from the remote.
+                            if let previousUUD = carePlan.previousVersionUUID {
+                                let previous: OCKCDCarePlan = try self.fetchObject(uuid: previousUUD)
+                                previous.next.map(self.context.delete)
+
+                                let updated = try self.updateCarePlansWithoutCommitting([carePlan], copyUUIDs: true)
+                                self.carePlanDelegate?.carePlanStore(self, didUpdateCarePlans: updated)
+
+                                completion(nil)
+                                return
+                            }
+
+                            // A new carePlan with the same id was created on both the server
+                            // and the local device. Delete the local one and keep the remote.
+                            let localCarePlan: OCKCDCarePlan = try self.fetchObject(uuid: local.uuid!)
+                            self.context.delete(localCarePlan)
+                            let added = try self.createCarePlansWithoutCommitting([carePlan])
+                            self.carePlanDelegate?.carePlanStore(self, didAddCarePlans: added)
+                            completion(nil)
+
+                        } catch {
+                            completion(error)
+                        }
+
+                    case .keepDevice:
+                        // No action needs to be taken. When the entity from this
+                        // device lands on a peer device, ingesting it will cause
+                        // any conflicts to be overwritten.
+                        completion(nil)
+                    }
+                }
+
+                return
+            }
+
+            // There is no conflict. This is the simplest case, we can just create a new carePlan.
+            if carePlan.previousVersionUUID == nil {
+                let newCarePlans = try createCarePlansWithoutCommitting([carePlan])
+                carePlanDelegate?.carePlanStore(self, didAddCarePlans: newCarePlans)
+
+            // This is a new version of an existing carePlan. We might need to delete future versions
+            // and their outcomes before adding this version in their place. This happens when
+            // one node processes a conflict resolution performed on a different node.
+            } else {
+                let current: OCKCDCarePlan = try self.fetchObject(uuid: carePlan.previousVersionUUID!)
+                current.next.map(self.context.delete)
+                let updated = try updateCarePlansWithoutCommitting([carePlan], copyUUIDs: true)
+                for update in updated {
+                    update.deletedDate == nil ?
+                        carePlanDelegate?.carePlanStore(self, didUpdateCarePlans: [update]) :
+                        carePlanDelegate?.carePlanStore(self, didDeleteCarePlans: [update])
+                }
+            }
+
+            completion(nil)
+
+        } catch {
+            completion(error)
+        }
+    }
+    
+    /// - Warning: This method must be called on the `context`'s queue.
+    private func mergeContactRevision(
+        contact: OCKContact,
+        vector: OCKRevisionRecord.KnowledgeVector,
+        completion: @escaping (Error?) -> Void) {
+        do {
+            // If the contact exists on disk already, it means that another device
+            // ruled to overwrite this value as part of a conflict resolution.
+            if entityExists(OCKCDContact.self, uuid: contact.uuid!) {
+                completion(nil)
+                return
+            }
+
+            // The contact is either a brand new contact or an update of an existing contact.
+            // Deletes count as updates since they are just a new version with the
+            // `deletedDate` property set to a non-nil value.
+            //
+            // Make sure there are no conflicts locally. If the device's knowledge
+            // vector is strictly less than the remotes, we can guarantee there is no
+            // conflict. Otherwise we need to check.
+            let localContactRevisions = computeRevision(since: vector.clock(for: self.context.clockID))
+                .entities
+                .compactMap { $0.value as? OCKContact }
+
+            if let local = localContactRevisions.first(where: {
+                $0.id == contact.id &&
+                $0.previousVersionUUID == contact.previousVersionUUID
+            }) {
+
+                let conflict = OCKMergeConflictDescription(
+                    entities: .contacts(
+                        deviceVersion: local,
+                        remoteVersion: contact))
+
+                remote!.chooseConflictResolutionPolicy(conflict) { strategy in
+                    switch strategy {
+                    case .abortMerge:
+                        let error = OCKStoreError.remoteSynchronizationFailed(
+                            reason: "Aborted merge because of conflict in two versions of contact \(contact.id)")
+                        completion(error)
+
+                    case .keepRemote:
+                        do {
+                            // If the remote is a new version of an existing contact, find the previous
+                            // version and delete its conflicting next version. This will cascade
+                            // delete all future versions and their outcomes. Then update the previous
+                            // version to the new version from the remote.
+                            if let previousUUD = contact.previousVersionUUID {
+                                let previous: OCKCDContact = try self.fetchObject(uuid: previousUUD)
+                                previous.next.map(self.context.delete)
+
+                                let updated = try self.updateContactsWithoutCommitting([contact], copyUUIDs: true)
+                                self.contactDelegate?.contactStore(self, didUpdateContacts: updated)
+
+                                completion(nil)
+                                return
+                            }
+
+                            // A new contact with the same id was created on both the server
+                            // and the local device. Delete the local one and keep the remote.
+                            let localContact: OCKCDContact = try self.fetchObject(uuid: local.uuid!)
+                            self.context.delete(localContact.name)
+                            self.context.delete(localContact)
+                            let added = try self.createContactsWithoutCommitting([contact])
+                            self.contactDelegate?.contactStore(self, didAddContacts: added)
+                            completion(nil)
+
+                        } catch {
+                            completion(error)
+                        }
+
+                    case .keepDevice:
+                        // No action needs to be taken. When the entity from this
+                        // device lands on a peer device, ingesting it will cause
+                        // any conflicts to be overwritten.
+                        completion(nil)
+                    }
+                }
+
+                return
+            }
+
+            // There is no conflict. This is the simplest case, we can just create a new contact.
+            if contact.previousVersionUUID == nil {
+                let newContacts = try createContactsWithoutCommitting([contact])
+                contactDelegate?.contactStore(self, didAddContacts: newContacts)
+
+            // This is a new version of an existing contact. We might need to delete future versions
+            // and their outcomes before adding this version in their place. This happens when
+            // one node processes a conflict resolution performed on a different node.
+            } else {
+                let current: OCKCDContact = try self.fetchObject(uuid: contact.previousVersionUUID!)
+                current.next.map{self.context.delete(($0 as! OCKCDContact).name)}
+                current.next.map(self.context.delete)
+                let updated = try updateContactsWithoutCommitting([contact], copyUUIDs: true)
+                for update in updated {
+                    update.deletedDate == nil ?
+                        contactDelegate?.contactStore(self, didUpdateContacts: [update]) :
+                        contactDelegate?.contactStore(self, didDeleteContacts: [update])
+                }
+            }
+
+            completion(nil)
+
+        } catch {
+            completion(error)
+        }
+    }
+    
     /// - Warning: This method must be called on the `context`'s queue.
     private func mergeTaskRevision(
         task: OCKTask,

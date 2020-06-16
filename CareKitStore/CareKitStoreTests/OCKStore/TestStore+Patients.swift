@@ -54,15 +54,12 @@ class TestStorePatients: XCTestCase {
         XCTAssertNotNil(patient.uuid)
         XCTAssertNotNil(patient.schemaVersion)
     }
-
-    func testAddPatientForMultiplePatients() throws {
+    
+    func testAddPatientForAnyPatientBeyondTheFirstPatient() throws {
         let patient1 = OCKPatient(id: "id1", givenName: "Amy", familyName: "Frost")
         let patient2 = OCKPatient(id: "id2", givenName: "Christopher", familyName: "Foss")
         try store.addPatientAndWait(patient1)
-        try store.addPatientAndWait(patient2)
-        let query = OCKPatientQuery(for: Date())
-        let patients = try store.fetchPatientsAndWait(query: query)
-        XCTAssert(patients.count == 2)
+        XCTAssertThrowsError(try store.addPatientAndWait(patient2))
     }
     
     func testAddPatientFailsIfIdentifierAlreadyExists() throws {

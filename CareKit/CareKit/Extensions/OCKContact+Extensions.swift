@@ -34,7 +34,7 @@ import Foundation
 
 private extension OCKLabeledValue {
     func toLabeledString() -> CNLabeledValue<NSString> { CNLabeledValue(label: label, value: NSString(string: value)) }
-    func toLabeledPhoneNumber() -> CNLabeledValue<CNPhoneNumber> { CNLabeledValue(label: label, value: CNPhoneNumber(stringValue: label)) }
+    func toLabeledPhoneNumber() -> CNLabeledValue<CNPhoneNumber> { CNLabeledValue(label: label, value: CNPhoneNumber(stringValue: value)) }
 }
 
 private extension OCKPostalAddress {

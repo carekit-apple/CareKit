@@ -401,6 +401,22 @@ class DummyEndpoint: OCKRemoteSynchronizable {
     }
 
     func dummyRevision() -> OCKRevisionRecord {
+        
+        var patient = OCKPatient(id: "id1", givenName: "Amy", familyName: "Frost")
+        patient.uuid = UUID()
+        patient.createdDate = Date()
+        patient.updatedDate = patient.createdDate
+        
+        var carePlan = OCKCarePlan(id: "diabetes_type_1", title: "Diabetes Care Plan", patientUUID: nil)
+        carePlan.uuid = UUID()
+        carePlan.createdDate = Date()
+        carePlan.updatedDate = carePlan.createdDate
+        
+        var contact = OCKContact(id: "contact", givenName: "Amy", familyName: "Frost", carePlanUUID: nil)
+        contact.uuid = UUID()
+        contact.createdDate = Date()
+        contact.updatedDate = contact.createdDate
+        
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
         var task = OCKTask(id: "a", title: "A", carePlanUUID: nil, schedule: schedule)
         task.uuid = UUID()
@@ -413,6 +429,9 @@ class DummyEndpoint: OCKRemoteSynchronizable {
         outcome.updatedDate = outcome.createdDate
 
         let entities: [OCKEntity] = [
+            .patient(patient),
+            .carePlan(carePlan),
+            .contact(contact),
             .task(task),
             .outcome(outcome)
         ]

@@ -70,10 +70,11 @@ class OCKGridLayer: OCKCartesianCoordinatesLayer {
         didSet { setNeedsLayout() }
     }
 
-    let gridLines = CAShapeLayer()
-    let bottomGridLine = CAShapeLayer()
-    let topValueLayer = CATextLayer()
-    let middleValueLayer = CATextLayer()
+    private let gridLines = CAShapeLayer()
+    private let bottomGridLine = CAShapeLayer()
+    private let topValueLayer = CATextLayer()
+    private let middleValueLayer = CATextLayer()
+    private let bottomValueLayer = CATextLayer()
 
     /// Create an instance of a grid layer.
     override init() {
@@ -99,6 +100,7 @@ class OCKGridLayer: OCKCartesianCoordinatesLayer {
         addSublayer(bottomGridLine)
         addSublayer(topValueLayer)
         addSublayer(middleValueLayer)
+        addSublayer(bottomValueLayer)
     }
 
     override func layoutSublayers() {
@@ -111,6 +113,10 @@ class OCKGridLayer: OCKCartesianCoordinatesLayer {
         drawMiddleGridLines()
         drawTopValue()
         drawMiddleValue()
+        drawBottomValue()
+
+        // Don't show the bottom value if it's 0
+        bottomValueLayer.isHidden = graphBounds().minY == 0
     }
 
     private func drawBottomGridLine() {
@@ -147,6 +153,14 @@ class OCKGridLayer: OCKCartesianCoordinatesLayer {
         middleValueLayer.foregroundColor = gridLineColor.cgColor
         middleValueLayer.fontSize = fontSize
         middleValueLayer.frame = CGRect(origin: CGPoint(x: Constants.margin, y: bounds.height / 2), size: CGSize(width: 100, height: 44))
+    }
+
+    private func drawBottomValue() {
+        bottomValueLayer.contentsScale = UIScreen.main.scale
+        bottomValueLayer.string = numberFormatter.string(for: graphBounds().minY)
+        bottomValueLayer.foregroundColor = gridLineColor.cgColor
+        bottomValueLayer.fontSize = fontSize
+        bottomValueLayer.frame = CGRect(origin: CGPoint(x: Constants.margin, y: bounds.height), size: CGSize(width: 100, height: 44))
     }
 
     private func pathForBottomLine() -> UIBezierPath {

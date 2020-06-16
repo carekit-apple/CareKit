@@ -124,7 +124,10 @@ public struct OCKMergeConflictDescription: Equatable, Codable {
     public enum EntityPair: Equatable, Codable {
         case outcomes(deviceVersion: OCKOutcome, remoteVersion: OCKOutcome)
         case tasks(deviceVersion: OCKTask, remoteVersion: OCKTask)
-
+        case carePlans(deviceVersion: OCKCarePlan, remoteVersion: OCKCarePlan)
+        case contacts(deviceVersion: OCKContact, remoteVersion: OCKContact)
+        case patients(deviceVersion: OCKPatient, remoteVersion: OCKPatient)
+        
         private enum Keys: CodingKey {
             case device
             case remote
@@ -135,14 +138,15 @@ public struct OCKMergeConflictDescription: Equatable, Codable {
             switch self {
             case .outcomes: return .outcome
             case .tasks: return .task
+            case .carePlans: return .carePlan
+            case .contacts: return .contact
+            case .patients: return .patient
             }
         }
 
         public init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: Keys.self)
             switch try container.decode(OCKEntity.EntityType.self, forKey: .entity) {
-            case .patient, .carePlan, .contact:
-                fatalError("Not implemented yet")
             case .outcome:
                 self = .outcomes(
                     deviceVersion: try container.decode(OCKOutcome.self, forKey: .device),
@@ -151,6 +155,18 @@ public struct OCKMergeConflictDescription: Equatable, Codable {
                 self = .tasks(
                     deviceVersion: try container.decode(OCKTask.self, forKey: .device),
                     remoteVersion: try container.decode(OCKTask.self, forKey: .remote))
+            case .carePlan:
+                self = .carePlans(
+                    deviceVersion: try container.decode(OCKCarePlan.self, forKey: .device),
+                    remoteVersion: try container.decode(OCKCarePlan.self, forKey: .remote))
+            case .contact:
+                self = .contacts(
+                    deviceVersion: try container.decode(OCKContact.self, forKey: .device),
+                    remoteVersion: try container.decode(OCKContact.self, forKey: .remote))
+            case .patient:
+                self = .patients(
+                    deviceVersion: try container.decode(OCKPatient.self, forKey: .device),
+                    remoteVersion: try container.decode(OCKPatient.self, forKey: .remote))
             }
         }
 
@@ -162,6 +178,15 @@ public struct OCKMergeConflictDescription: Equatable, Codable {
                 try container.encode(deviceVersion, forKey: .device)
                 try container.encode(remoteVersion, forKey: .remote)
             case let .tasks(deviceVersion, remoteVersion):
+                try container.encode(deviceVersion, forKey: .device)
+                try container.encode(remoteVersion, forKey: .remote)
+            case let .carePlans(deviceVersion, remoteVersion):
+                try container.encode(deviceVersion, forKey: .device)
+                try container.encode(remoteVersion, forKey: .remote)
+            case let .contacts(deviceVersion, remoteVersion):
+                try container.encode(deviceVersion, forKey: .device)
+                try container.encode(remoteVersion, forKey: .remote)
+            case let .patients(deviceVersion, remoteVersion):
                 try container.encode(deviceVersion, forKey: .device)
                 try container.encode(remoteVersion, forKey: .remote)
             }

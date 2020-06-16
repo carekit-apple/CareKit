@@ -128,4 +128,106 @@ class TestStoreBuildRevisions: XCTestCase {
         XCTAssert(revision.entities.first?.entityType == .outcome)
         XCTAssert(revision.entities.count == 3)
     }
+    
+    // MARK: Patients
+
+    func testAddingPatientCreatesRevisionRecord() throws {
+        let patient = OCKPatient(id: "id1", givenName: "Amy", familyName: "Frost")
+        try store.addPatientAndWait(patient)
+
+        let revision = store.computeRevision(since: 0)
+        XCTAssert(revision.entities.count == 1)
+        XCTAssert(revision.entities.first?.entityType == .patient)
+    }
+
+    func testUpdatingPatientCreatesRevisionRecord() throws {
+        var patient = OCKPatient(id: "id1", givenName: "Amy", familyName: "Frost")
+        try store.addPatientAndWait(patient)
+
+        patient.asset = "Updated"
+        try store.updatePatientAndWait(patient)
+
+        let revision = store.computeRevision(since: 0)
+        XCTAssert(revision.entities.count == 2)
+        XCTAssert(revision.entities.first?.entityType == .patient)
+    }
+
+    func testRevisionForDeletingPatient() throws {
+        let patient = OCKPatient(id: "id1", givenName: "Amy", familyName: "Frost")
+        try store.addPatientAndWait(patient)
+      
+        try store.deletePatientsAndWait([patient])
+        let revision = store.computeRevision(since: 0)
+
+        XCTAssert(revision.entities.count == 2)
+        XCTAssert(revision.entities.first?.deletedDate != nil)
+    }
+    
+    // MARK: CarePlans
+
+    func testAddingCarePlanCreatesRevisionRecord() throws {
+        let plan = OCKCarePlan(id: "diabetes_type_1", title: "Diabetes Care Plan", patientUUID: nil)
+        try store.addCarePlanAndWait(plan)
+
+        let revision = store.computeRevision(since: 0)
+        XCTAssert(revision.entities.count == 1)
+        XCTAssert(revision.entities.first?.entityType == .carePlan)
+    }
+
+    func testUpdatingCarePlanCreatesRevisionRecord() throws {
+        var plan = OCKCarePlan(id: "diabetes_type_1", title: "Diabetes Care Plan", patientUUID: nil)
+        try store.addCarePlanAndWait(plan)
+
+        plan.title = "Updated"
+        try store.updateCarePlanAndWait(plan)
+
+        let revision = store.computeRevision(since: 0)
+        XCTAssert(revision.entities.count == 2)
+        XCTAssert(revision.entities.first?.entityType == .carePlan)
+    }
+
+    func testRevisionForDeletingCarePlan() throws {
+        let plan = OCKCarePlan(id: "diabetes_type_1", title: "Diabetes Care Plan", patientUUID: nil)
+        try store.addCarePlanAndWait(plan)
+      
+        try store.deleteCarePlansAndWait([plan])
+        let revision = store.computeRevision(since: 0)
+
+        XCTAssert(revision.entities.count == 2)
+        XCTAssert(revision.entities.first?.deletedDate != nil)
+    }
+    
+    // MARK: Contact
+
+    func testAddingContactCreatesRevisionRecord() throws {
+        let contact = OCKContact(id: "contact", givenName: "Amy", familyName: "Frost", carePlanUUID: nil)
+        try store.addContactAndWait(contact)
+
+        let revision = store.computeRevision(since: 0)
+        XCTAssert(revision.entities.count == 1)
+        XCTAssert(revision.entities.first?.entityType == .contact)
+    }
+
+    func testUpdatingContactCreatesRevisionRecord() throws {
+        var contact = OCKContact(id: "contact", givenName: "Amy", familyName: "Frost", carePlanUUID: nil)
+        try store.addContactAndWait(contact)
+
+        contact.organization = "Updated"
+        try store.updateContactAndWait(contact)
+
+        let revision = store.computeRevision(since: 0)
+        XCTAssert(revision.entities.count == 2)
+        XCTAssert(revision.entities.first?.entityType == .contact)
+    }
+
+    func testRevisionForDeletingContact() throws {
+        let contact = OCKContact(id: "contact", givenName: "Amy", familyName: "Frost", carePlanUUID: nil)
+        try store.addContactAndWait(contact)
+      
+        try store.deleteContactsAndWait([contact])
+        let revision = store.computeRevision(since: 0)
+
+        XCTAssert(revision.entities.count == 2)
+        XCTAssert(revision.entities.first?.deletedDate != nil)
+    }
 }

@@ -143,36 +143,12 @@ extension OCKStore {
     ///   - copyUUIDs: If true, the UUIDs of the tasks will be copied to the new versions
     func updatePatientsWithoutCommitting(_ patients: [Patient], copyUUIDs: Bool) throws -> [Patient] {
         try validateUpdateIdentifiers(patients.map { $0.id })
-        try confirmUpdateWillNotCauseDataLoss(patients: patients)
         let updatedPatients = try self.performVersionedUpdate(values: patients, addNewVersion: self.createPatient)
         if copyUUIDs {
             updatedPatients.enumerated().forEach { $1.uuid = patients[$0].uuid! }
         }
         let updated = updatedPatients.map(self.makePatient)
         return updated
-    }
-    
-    // Ensure that new versions of tasks do not overwrite regions of previous
-    // versions that already have outcomes saved to them.
-    //
-    // |<------------- Time Line --------------->|
-    //  TaskV1 ------x------------------->
-    //                     V2 ---------->
-    //              V3------------------>
-    //
-    // Throws an error when updating to V3 from V2 if V1 has outcomes after `x`.
-    // Throws an error when updating to V3 from V2 if V2 has any outcomes.
-    // Does not throw when updating to V3 from V2 if V1 has outcomes before `x`.
-    func confirmUpdateWillNotCauseDataLoss(patients: [Patient]) throws {
-        let heads = fetchHeads(OCKCDPatient.self, ids: patients.map { $0.id })
-        for patient in heads {
-
-            // For each task, gather all outcomes
-            var currentVersion: OCKCDPatient? = patient
-            while let version = currentVersion {
-                currentVersion = version.previous as? OCKCDPatient
-            }
-        }
     }
 
     // MARK: Private

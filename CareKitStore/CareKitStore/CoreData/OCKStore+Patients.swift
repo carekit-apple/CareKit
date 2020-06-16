@@ -60,6 +60,7 @@ extension OCKStore {
                           completion: ((Result<[OCKPatient], OCKStoreError>) -> Void)? = nil) {
         context.perform {
             do {
+                try self.validateNumberOfPatients()
                 let addedPatients = try self.createPatientsWithoutCommitting(patients)
                 try self.context.save()
                 callbackQueue.async {
@@ -125,7 +126,6 @@ extension OCKStore {
     // from the `contexts`'s thread.
 
     func createPatientsWithoutCommitting(_ patients: [Patient]) throws -> [Patient] {
-        try self.validateNumberOfPatients()
         try self.validateNew(OCKCDPatient.self, patients)
         let persistablePatients = patients.map(self.createPatient)
         let addedPatients = persistablePatients.map(self.makePatient)

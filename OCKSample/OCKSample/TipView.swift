@@ -30,6 +30,7 @@
 
 import UIKit
 import CareKit
+import CareKitUI
 
 class TipView: OCKView, OCKCardable {
 
@@ -43,16 +44,16 @@ class TipView: OCKView, OCKCardable {
         let blurEffect = UIBlurEffect(style: UIBlurEffect.Style.regular)
         return UIVisualEffectView(effect: blurEffect)
     }()
-    
+
     override init() {
         super.init()
         setup()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     private func setup() {
         headerView.detailLabel.textColor = .secondaryLabel
 
@@ -75,7 +76,8 @@ class TipView: OCKView, OCKCardable {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         blurView.translatesAutoresizingMaskIntoConstraints = false
         headerView.translatesAutoresizingMaskIntoConstraints = false
-        imageHeightConstraint = imageView.heightAnchor.constraint(equalToConstant: scaledImageHeight(compatibleWith: traitCollection))
+        imageHeightConstraint = imageView.heightAnchor.constraint(
+            equalToConstant: scaledImageHeight(compatibleWith: traitCollection))
 
         NSLayoutConstraint.activate([
             headerView.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),

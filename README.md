@@ -39,7 +39,7 @@ CareKit™ is an open source software framework for creating apps that help peop
 
 # Requirements <a name="requirements"></a>
 
-The primary CareKit framework codebase supports iOS and requires Xcode 11.0 or newer. The CareKit framework has a Base SDK version of 13.0.
+The primary CareKit framework codebase supports iOS and requires Xcode 12.0 or newer. The CareKit framework has a Base SDK version of 13.0.
 
 # Getting Started <a name="getting-started"></a>
 
@@ -242,7 +242,7 @@ struct ContentView: View {
                 let isComplete = self.event?.outcome != nil
                 self.controller.setEvent(atIndexPath: IndexPath(row: 0, section: 0), isComplete: !isComplete, completion: nil)
             }) {
-                self.event?.outcome == nil ? Text("Mark as Completed") : Text("Completed")
+                self.event?.outcome != nil ? Text("Mark as Completed") : Text("Completed")
             }
         }
     }

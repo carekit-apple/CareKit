@@ -33,7 +33,7 @@ import Foundation
 /// A protocol that all outcome queries are expected to conform to.
 public protocol OCKAnyOutcomeQuery: OCKEntityQuery {
 
-    /// Any array of local database IDs of tass for which outcomes should be returned.
+    /// Any array of local database IDs of tasks for which outcomes should be returned.
     var taskIDs: [String] { get set }
 
     /// The order in which the results will be sorted when returned from the query.
@@ -69,12 +69,10 @@ public struct OCKOutcomeQuery: OCKAnyOutcomeQuery, Equatable {
     /// Specifies the order in which query results will be sorted.
     enum SortDescriptor: Equatable {
         case date(ascending: Bool)
-        case createdDate(ascending: Bool)
 
         fileprivate var basicVersion: OCKOutcomeSortDescriptor? {
             switch self {
             case .date(let ascending): return .date(ascending: ascending)
-            case .createdDate: return nil
             }
         }
     }
@@ -110,10 +108,5 @@ public struct OCKOutcomeQuery: OCKAnyOutcomeQuery, Equatable {
     public var limit: Int?
     public var offset: Int = 0
 
-    public init() {
-        extendedSortDescriptors = [
-            .date(ascending: false),
-            .createdDate(ascending: false)
-        ]
-    }
+    public init() {}
 }

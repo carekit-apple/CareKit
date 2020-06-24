@@ -152,4 +152,27 @@ class TestTask: XCTestCase {
             XCTAssert([task].filtered(against: query) == [], "Failed on offset: \(dayOffset)")
         }
     }
+
+    func testIdentitiesMatch() {
+        let schedule = OCKSchedule.dailyAtTime(hour: 7, minutes: 0, start: Date(), end: nil, text: nil)
+
+        var task1 = OCKTask(id: "doxylamine", title: "Title1", carePlanUUID: nil, schedule: schedule)
+        var task2 = OCKTask(id: "doxylamine", title: "Title2", carePlanUUID: nil, schedule: schedule)
+        XCTAssertEqual(task1.stableID, task2.stableID)
+
+        let uuid = UUID()
+        task1.uuid = uuid
+        task2.uuid = uuid
+        XCTAssertEqual(task1.stableID, task2.stableID)
+    }
+
+    func testIdentitiesDoNotMatch() {
+        let schedule = OCKSchedule.dailyAtTime(hour: 7, minutes: 0, start: Date(), end: nil, text: nil)
+
+        var task1 = OCKTask(id: "doxylamine", title: "Title1", carePlanUUID: nil, schedule: schedule)
+        var task2 = OCKTask(id: "doxylamine", title: "Title2", carePlanUUID: nil, schedule: schedule)
+        task1.uuid = UUID()
+        task2.uuid = UUID()
+        XCTAssertNotEqual(task1.stableID, task2.stableID)
+    }
 }

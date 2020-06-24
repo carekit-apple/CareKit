@@ -95,7 +95,7 @@ public protocol OCKPatientStore: OCKReadablePatientStore, OCKAnyPatientStore {
     /// `updatePatient` asynchronously updates a patient in the store.
     ///
     /// - Parameters:
-    ///   - patient: Apatients to be updated. The patient must already exist in the store.
+    ///   - patient: A patient to be updated. The patient must already exist in the store.
     ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on the provided callback queue.
     func updatePatient(_ patient: Patient, callbackQueue: DispatchQueue, completion: OCKResultClosure<Patient>?)

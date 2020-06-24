@@ -38,7 +38,7 @@ public protocol OCKAnyVersionableTask: OCKAnyTask {
     /// An identifier that uniquely identifies a specific version of the task in a database.
     var uuid: UUID? { get }
 
-    /// An identifer that uniquely identifies the previous version of the task in a database.
+    /// An identifier that uniquely identifies the previous version of the task in a database.
     var previousVersionUUID: UUID? { get }
 
     /// An identifier that uniquely identifies the next version of the task in a database.

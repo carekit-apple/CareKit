@@ -3,7 +3,7 @@ import PackageDescription
 
 let package = Package(
     name: "CareKit",
-    platforms: [.iOS(.v13), .macOS(.v10_15)],
+    platforms: [.iOS(.v13), .watchOS(.v6)],
     products: [
         .library(
             name: "CareKit",
@@ -15,7 +15,7 @@ let package = Package(
 
         .library(
             name: "CareKitStore",
-            targets: ["CareKitStore"])
+            targets: ["CareKitStore"]),
     ],
     targets: [
         .target(

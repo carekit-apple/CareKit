@@ -8,6 +8,7 @@
       }
     },
     {
+      "enabled" : false,
       "id" : "42D7C666-B3E1-4F36-88FB-E0B87436BB05",
       "name" : "Germany",
       "options" : {
@@ -20,6 +21,7 @@
       }
     },
     {
+      "enabled" : false,
       "id" : "76269B8E-AEA1-4864-AA9A-F583B2F54AF1",
       "name" : "Africa",
       "options" : {
@@ -31,6 +33,7 @@
       }
     },
     {
+      "enabled" : false,
       "id" : "34F9B126-5A5C-4F0A-A861-84C9B2376FA2",
       "name" : "Australia",
       "options" : {
@@ -43,6 +46,7 @@
       }
     },
     {
+      "enabled" : false,
       "id" : "05B1E279-40AF-49C6-8BAC-86779932468D",
       "name" : "England",
       "options" : {
@@ -55,6 +59,7 @@
       }
     },
     {
+      "enabled" : false,
       "id" : "F4D2A746-C1E8-4D5A-BCD7-EEEC3D73CEC5",
       "name" : "Japan",
       "options" : {
@@ -67,6 +72,7 @@
       }
     },
     {
+      "enabled" : false,
       "id" : "4DB57CAB-36AB-4D1A-8259-C918197191CE",
       "name" : "Hong Kong",
       "options" : {
@@ -79,6 +85,7 @@
       }
     },
     {
+      "enabled" : false,
       "id" : "2DEE87AE-1E91-4B64-BA06-8B37298B2A16",
       "name" : "Mexico",
       "options" : {
@@ -92,20 +99,7 @@
     }
   ],
   "defaultOptions" : {
-    "codeCoverage" : {
-      "targets" : [
-        {
-          "containerPath" : "container:CareKit.xcodeproj",
-          "identifier" : "8605A5B91C4F04EC00DD65FF",
-          "name" : "CareKit"
-        },
-        {
-          "containerPath" : "container:CareKitCarePlanStore\/CareKitCarePlanStore.xcodeproj",
-          "identifier" : "E784B8F72232EED600736CA5",
-          "name" : "CareKitStore"
-        }
-      ]
-    },
+    "codeCoverage" : false,
     "targetForVariableExpansion" : {
       "containerPath" : "container:CareKit.xcodeproj",
       "identifier" : "8605A5B91C4F04EC00DD65FF",
@@ -117,25 +111,7 @@
       "target" : {
         "containerPath" : "container:CareKit.xcodeproj",
         "identifier" : "5196C7F8226F8F8F00F1C2A2",
-        "name" : "CareKitTests"
-      }
-    },
-    {
-      "skippedTests" : [
-        "TestSchedule\/testEventGenerationPerformanceBasicSchedule()",
-        "TestSchedule\/testEventGenerationPerformanceHeavySchedule()"
-      ],
-      "target" : {
-        "containerPath" : "container:..\/CareKitStore\/CareKitStore.xcodeproj",
-        "identifier" : "E784B9002232EED600736CA5",
-        "name" : "CareKitStoreTests"
-      }
-    },
-    {
-      "target" : {
-        "containerPath" : "container:..\/CareKitUI\/CareKitUI.xcodeproj",
-        "identifier" : "512B012D22C2F82900ABCB1D",
-        "name" : "CareKitUITests"
+        "name" : "CareKitTests iOS"
       }
     }
   ],

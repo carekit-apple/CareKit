@@ -30,6 +30,7 @@
 
 import CoreData
 import Foundation
+import os.log
 
 /// The default store used in CareKit. The underlying database used is CoreData.
 open class OCKStore: OCKStoreProtocol, OCKCoreDataStoreProtocol, Equatable {
@@ -74,7 +75,7 @@ open class OCKStore: OCKStoreProtocol, OCKCoreDataStoreProtocol, Equatable {
 
     /// Used to prevent simultaneous sync operations.
     /// - Warning: Should only ever be set or read from the context's queue inside `synchronize`.
-    internal var isSynchronizing: Bool
+    var isSynchronizing: Bool
 
     /// Initialize a new store by specifying its name and store type. Store's with conflicting names and types must not be created.
     ///
@@ -106,22 +107,17 @@ open class OCKStore: OCKStoreProtocol, OCKCoreDataStoreProtocol, Equatable {
     // MARK: Internal
 
     internal func deleteAllContent() throws {
-        deleteAll(entity: OCKCDPatient.self)
-        deleteAll(entity: OCKCDCarePlan.self)
-        deleteAll(entity: OCKCDContact.self)
-        deleteAll(entity: OCKCDTask.self)
-        deleteAll(entity: OCKCDOutcome.self)
-        deleteAll(entity: OCKCDOutcomeValue.self)
-        deleteAll(entity: OCKCDNote.self)
-        deleteAll(entity: OCKCDPostalAddress.self)
-        deleteAll(entity: OCKCDScheduleElement.self)
-        deleteAll(entity: OCKCDHealthKitLinkage.self)
-        deleteAll(entity: OCKCDPersonName.self)
 
         var saveError: Error?
 
         context.performAndWait {
             do {
+                OCKEntity
+                    .EntityType
+                    .allCases
+                    .map(\.coreDataType)
+                    .forEach(deleteAll)
+
                 try context.save()
             } catch {
                 saveError = error
@@ -138,21 +134,21 @@ open class OCKStore: OCKStoreProtocol, OCKCoreDataStoreProtocol, Equatable {
     }()
 
     internal lazy var context: NSManagedObjectContext = {
-        return self.persistentContainer.newBackgroundContext()
+        persistentContainer.newBackgroundContext()
     }()
 
     private func deleteAll<T: NSManagedObject>(entity: T.Type) {
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: String(describing: entity))
         fetchRequest.includesPropertyValues = false
         fetchRequest.includesSubentities = false
-        fetchRequest.includesPendingChanges = false
 
         context.performAndWait {
             do {
                 let objects = try context.fetch(fetchRequest)
                 objects.forEach { context.delete($0) }
             } catch {
-                debugPrint("Failed to delete all objects of type: \(entity). \(error.localizedDescription)")
+                os_log("Failed to delete objects of type %{public}@: %{public}@",
+                       log: .store, type: .error, "\(entity)", error.localizedDescription)
             }
         }
     }
@@ -166,5 +162,17 @@ internal extension NSPredicate {
         let andNilPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [self, nilPredicate])
         let orNilPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: [predicate, andNilPredicate])
         return identifiers.contains(nil) ? orNilPredicate : predicate
+    }
+}
+
+private extension OCKEntity.EntityType {
+    var coreDataType: NSManagedObject.Type {
+        switch self {
+        case .patient: return OCKCDPatient.self
+        case .carePlan: return OCKCDCarePlan.self
+        case .contact: return OCKCDContact.self
+        case .task: return OCKCDTask.self
+        case .outcome: return OCKCDOutcome.self
+        }
     }
 }

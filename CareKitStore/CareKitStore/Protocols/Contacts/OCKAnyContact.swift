@@ -80,7 +80,7 @@ public protocol OCKAnyContact {
     /// An identifier for this contact in a remote store.
     var remoteID: String? { get }
 
-    /// An identifier that can be uesd to group this contact with others.
+    /// An identifier that can be used to group this contact with others.
     var groupIdentifier: String? { get }
 
     /// Any array of notes associated with this object.

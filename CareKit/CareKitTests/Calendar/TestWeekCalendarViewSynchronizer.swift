@@ -29,6 +29,7 @@
  */
 
 import CareKit
+import CareKitUI
 import Foundation
 import XCTest
 
@@ -58,7 +59,7 @@ class TestWeekCalendarViewSynchronizer: XCTestCase {
 
     // View should fill with data
     func testDoesUpdate() {
-        var states: [OCKCompletionRingButton.CompletionState] = Array(repeating: .empty, count: 7)
+        var states: [OCKCompletionState] = Array(repeating: .empty, count: 7)
         viewSynchronizer.updateView(view, context: .init(viewModel: states, oldViewModel: [], animated: false))
         view.completionRingButtons.forEach {
             XCTAssertEqual($0.completionState, .empty)
@@ -75,7 +76,7 @@ class TestWeekCalendarViewSynchronizer: XCTestCase {
 
     // View should be cleared after updating with no data
     func testDoesClear() {
-        let states: [OCKCompletionRingButton.CompletionState] = Array(repeating: .empty, count: 7)
+        let states: [OCKCompletionState] = Array(repeating: .empty, count: 7)
         viewSynchronizer.updateView(view, context: .init(viewModel: states, oldViewModel: [], animated: false))
         view.completionRingButtons.forEach {
             XCTAssertNotEqual($0.completionState, .dimmed)
@@ -97,7 +98,7 @@ class TestWeekCalendarViewSynchronizer: XCTestCase {
     }
 
     func testAccessibilityValueAfterUpdate() {
-        var states: [OCKCompletionRingButton.CompletionState] = Array(repeating: .empty, count: 7)
+        var states: [OCKCompletionState] = Array(repeating: .empty, count: 7)
         viewSynchronizer.updateView(view, context: .init(viewModel: states, oldViewModel: [], animated: false))
         view.completionRingButtons.forEach {
             XCTAssertEqual($0.accessibilityValue, loc("NO_EVENTS"))
@@ -123,7 +124,7 @@ class TestWeekCalendarViewSynchronizer: XCTestCase {
     }
 
     func testAccessibilityAfterUpdate() {
-        let states: [OCKCompletionRingButton.CompletionState] = Array(repeating: .empty, count: 7)
+        let states: [OCKCompletionState] = Array(repeating: .empty, count: 7)
         viewSynchronizer.updateView(view, context: .init(viewModel: states, oldViewModel: [], animated: false))
         view.completionRingButtons.enumerated().forEach {
             let date = Calendar.current.date(byAdding: DateComponents(day: $0), to: view.dateInterval.start)!

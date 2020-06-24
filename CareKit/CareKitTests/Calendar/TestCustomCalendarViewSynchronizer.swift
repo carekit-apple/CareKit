@@ -29,6 +29,7 @@
  */
 
 import CareKit
+import CareKitUI
 import Foundation
 import XCTest
 
@@ -38,14 +39,14 @@ private class CustomWeekCalendarViewSynchronizer: OCKWeekCalendarViewSynchronize
         return super.makeView()
     }
 
-    override func updateView(_ view: OCKWeekCalendarView, context: OCKSynchronizationContext<[OCKCompletionRingButton.CompletionState]>) {
+    override func updateView(_ view: OCKWeekCalendarView, context: OCKSynchronizationContext<[OCKCompletionState]>) {
         super.updateView(view, context: context)
     }
 }
 
 private class MockCalendarView: UILabel, OCKCalendarDisplayable {
     weak var delegate: OCKCalendarViewDelegate?
-    var completionStates: [OCKCompletionRingButton.CompletionState] = []
+    var completionStates: [OCKCompletionState] = []
 }
 
 private class CustomCalendarViewSynchronizer: OCKCalendarViewSynchronizerProtocol {
@@ -53,7 +54,7 @@ private class CustomCalendarViewSynchronizer: OCKCalendarViewSynchronizerProtoco
         return .init()
     }
 
-    func updateView(_ view: MockCalendarView, context: OCKSynchronizationContext<[OCKCompletionRingButton.CompletionState]>) {
+    func updateView(_ view: MockCalendarView, context: OCKSynchronizationContext<[OCKCompletionState]>) {
         view.completionStates = context.viewModel
     }
 }
@@ -76,14 +77,14 @@ class TestCustomCalendarViewSynchronizer: XCTestCase {
 
     // View should fill with data
     func testDoesUpdate() {
-        let states: [OCKCompletionRingButton.CompletionState] = Array(repeating: .empty, count: 7)
+        let states: [OCKCompletionState] = Array(repeating: .empty, count: 7)
         viewSynchronizer.updateView(view, context: .init(viewModel: states, oldViewModel: [], animated: false))
         XCTAssertEqual(view.completionStates, states)
     }
 
     // View should be cleared after updating with a no data
     func testDoesClear() {
-       let states: [OCKCompletionRingButton.CompletionState] = Array(repeating: .empty, count: 7)
+       let states: [OCKCompletionState] = Array(repeating: .empty, count: 7)
         viewSynchronizer.updateView(view, context: .init(viewModel: states, oldViewModel: [], animated: false))
         XCTAssertFalse(view.completionStates.isEmpty)
 

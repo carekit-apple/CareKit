@@ -87,7 +87,7 @@ class TestCoreDataSchemaWithVersioning: XCTestCase {
         XCTAssert(head?.previous?.previous?.previous == nil)
     }
 
-    func testAddVersionedObectsFailsIfIdentifersArentUnique() {
+    func testAddVersionedObectsFailsIfidentifiersArentUnique() {
         let patient1 = OCKPatient(id: "my_id", givenName: "John", familyName: "Appleseed")
         let patient2 = OCKPatient(id: "my_id", givenName: "Jane", familyName: "Appleseed")
         store.addPatients([patient1, patient2]) { result in
@@ -128,5 +128,14 @@ class TestCoreDataSchemaWithVersioning: XCTestCase {
 
         XCTAssertNoThrow(try store.context.save())
         XCTAssertNotNil(patient.schemaVersion)
+    }
+
+    func testLogicalClockIsAttachedToNewObjects() {
+        store.context.knowledgeVector.increment(clockFor: store.context.clockID)
+        store.context.knowledgeVector.increment(clockFor: store.context.clockID)
+        store.context.knowledgeVector.increment(clockFor: store.context.clockID)
+
+        let patient = OCKCDPatient(context: store.context)
+        XCTAssert(patient.logicalClock == 3)
     }
 }

@@ -1,0 +1,36 @@
+{
+  "configurations" : [
+    {
+      "id" : "6F428C52-F000-45A7-ADB1-8783873EA253",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false,
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:OCKCatalog.xcodeproj",
+      "identifier" : "E7D010F7222498F400C008DE",
+      "name" : "OCKCatalog"
+    }
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:OCKCatalog.xcodeproj",
+        "identifier" : "5173CBA123C3AB22007655A0",
+        "name" : "OCKCatalogUITests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:OCKCatalog.xcodeproj",
+        "identifier" : "5143E1F522C2832600E32526",
+        "name" : "OCKCatalogTests"
+      }
+    }
+  ],
+  "version" : 1
+}

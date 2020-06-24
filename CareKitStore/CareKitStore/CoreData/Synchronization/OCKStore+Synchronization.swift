@@ -1,21 +1,21 @@
 /*
  Copyright (c) 2020, Apple Inc. All rights reserved.
- 
+
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
- 
+
  1.  Redistributions of source code must retain the above copyright notice, this
  list of conditions and the following disclaimer.
- 
+
  2.  Redistributions in binary form must reproduce the above copyright notice,
  this list of conditions and the following disclaimer in the documentation and/or
  other materials provided with the distribution.
- 
+
  3. Neither the name of the copyright holder(s) nor the names of any contributors
  may be used to endorse or promote products derived from this software without
  specific prior written permission. No license is granted to the trademarks of
  the copyright holders even if such marks are included in this software.
- 
+
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -30,6 +30,7 @@
 
 import CoreData
 import Foundation
+import os.log
 
 extension NSManagedObjectContext {
 
@@ -111,7 +112,8 @@ extension OCKStore {
         if remote?.automaticallySynchronizes == true {
             pullThenPush { error in
                 if let error = error {
-                    print("Failed to automatically synchronize. \(error.localizedDescription)")
+                    os_log("Failed to automatically synchronize. %{public}@",
+                           log: .store, type: .info, error.localizedDescription)
                 }
             }
         }
@@ -145,7 +147,7 @@ extension OCKStore {
                 self.isSynchronizing = false
                 self.context.rollback()
                 completion(OCKStoreError.remoteSynchronizationFailed(
-                    reason: "Failed to delete some store contents."))
+                            reason: "Failed to delete some store contents. \(error)"))
                 return
             }
 
@@ -379,19 +381,19 @@ extension OCKStore {
                 patient: patient,
                 vector: revision.knowledgeVector,
                 completion: nextIteration)
-            
+
         case let .carePlan(carePlan):
             self.mergeCarePlanRevision(
                 carePlan: carePlan,
                 vector: revision.knowledgeVector,
                 completion: nextIteration)
-            
+
         case let .contact(contact):
             self.mergeContactRevision(
             contact: contact,
             vector: revision.knowledgeVector,
             completion: nextIteration)
-            
+
         case let .task(task):
             self.mergeTaskRevision(
                 task: task,
@@ -530,7 +532,7 @@ extension OCKStore {
             completion(error)
         }
     }
-    
+
     /// - Warning: This method must be called on the `context`'s queue.
     private func mergeCarePlanRevision(
         carePlan: OCKCarePlan,
@@ -637,7 +639,7 @@ extension OCKStore {
             completion(error)
         }
     }
-    
+
     /// - Warning: This method must be called on the `context`'s queue.
     private func mergeContactRevision(
         contact: OCKContact,
@@ -730,7 +732,7 @@ extension OCKStore {
             // one node processes a conflict resolution performed on a different node.
             } else {
                 let current: OCKCDContact = try self.fetchObject(uuid: contact.previousVersionUUID!)
-                current.next.map{self.context.delete(($0 as! OCKCDContact).name)}
+                current.next.map { self.context.delete(($0 as! OCKCDContact).name) }
                 current.next.map(self.context.delete)
                 let updated = try updateContactsWithoutCommitting([contact], copyUUIDs: true)
                 for update in updated {
@@ -746,7 +748,7 @@ extension OCKStore {
             completion(error)
         }
     }
-    
+
     /// - Warning: This method must be called on the `context`'s queue.
     private func mergeTaskRevision(
         task: OCKTask,
@@ -896,7 +898,7 @@ extension OCKStore {
                             }
 
                             do {
-                                let updated = try self.createOutcomesWithoutCommiting([outcome])
+                                let updated = try self.createOutcomesWithoutCommitting([outcome])
                                 self.outcomeDelegate?.outcomeStore(self, didUpdateOutcomes: updated)
                                 completion(nil)
                             } catch {
@@ -924,7 +926,7 @@ extension OCKStore {
 
                 let updated = existing.map(makeOutcome)
 
-                let created = try createOutcomesWithoutCommiting([outcome])
+                let created = try createOutcomesWithoutCommitting([outcome])
                 let deleted = updated + created.filter { $0.deletedDate != nil }
                 let added = created.filter { $0.deletedDate == nil }
 

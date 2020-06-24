@@ -1,21 +1,21 @@
 /*
  Copyright (c) 2019, Apple Inc. All rights reserved.
- 
+
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
- 
+
  1.  Redistributions of source code must retain the above copyright notice, this
  list of conditions and the following disclaimer.
- 
+
  2.  Redistributions in binary form must reproduce the above copyright notice,
  this list of conditions and the following disclaimer in the documentation and/or
  other materials provided with the distribution.
- 
+
  3. Neither the name of the copyright holder(s) nor the names of any contributors
  may be used to endorse or promote products derived from this software without
  specific prior written permission. No license is granted to the trademarks of
  the copyright holders even if such marks are included in this software.
- 
+
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -60,7 +60,7 @@ extension OCKStore {
                           completion: ((Result<[OCKOutcome], OCKStoreError>) -> Void)? = nil) {
         context.perform {
             do {
-                let updatedOutcomes = try self.createOutcomesWithoutCommiting(outcomes)
+                let updatedOutcomes = try self.createOutcomesWithoutCommitting(outcomes)
                 try self.context.save()
                 callbackQueue.async {
                     self.outcomeDelegate?.outcomeStore(self, didAddOutcomes: updatedOutcomes)
@@ -126,7 +126,7 @@ extension OCKStore {
     // These methods are also used when syncing with a remote store.
     // Make sure these are always called from the context's queue.
 
-    func createOutcomesWithoutCommiting(_ outcomes: [OCKOutcome]) throws -> [OCKOutcome] {
+    func createOutcomesWithoutCommitting(_ outcomes: [OCKOutcome]) throws -> [OCKOutcome] {
         try confirmOutcomesAreInValidRegionOfTaskVersionChain(outcomes)
         let persistableOutcomes = outcomes.map(self.createOutcome)
         let addedOutcomes = persistableOutcomes.map(self.makeOutcome)
@@ -240,12 +240,12 @@ extension OCKStore {
             let beforePredicate = NSPredicate(format: "%K < %@", #keyPath(OCKCDOutcome.date), interval.end as NSDate)
             predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, afterPredicate, beforePredicate])
         }
-        
+
         if !query.uuids.isEmpty {
             let objectPredicate = NSPredicate(format: "%K IN %@", #keyPath(OCKCDObject.uuid), query.uuids)
             predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, objectPredicate])
         }
-     
+
         if !query.remoteIDs.isEmpty {
             predicate = predicate.including(query.remoteIDs, for: #keyPath(OCKCDObject.remoteID))
         }
@@ -279,7 +279,6 @@ extension OCKStore {
         return orders.map { order -> NSSortDescriptor in
             switch order {
             case .date(let ascending): return NSSortDescriptor(keyPath: \OCKCDOutcome.date, ascending: ascending)
-            case .createdDate(let ascending): return NSSortDescriptor(keyPath: \OCKCDOutcome.createdDate, ascending: ascending)
             }
         } + defaultSortDescritors()
     }

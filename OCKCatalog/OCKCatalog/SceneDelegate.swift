@@ -29,6 +29,7 @@
  */
 
 import CareKit
+import SwiftUI
 import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
@@ -37,13 +38,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
 
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        let rootViewController = RootViewController(storeManager: appDelegate.storeManager)
-        let navigationController = UINavigationController(rootViewController: rootViewController)
-
         if let windowScene = scene as? UIWindowScene {
             window = UIWindow(windowScene: windowScene)
-            window?.rootViewController = navigationController
+            window?.rootViewController = UIHostingController(rootView: CatalogView())
             window?.tintColor = UIColor { $0.userInterfaceStyle == .light ? #colorLiteral(red: 0.9960784314, green: 0.3725490196, blue: 0.368627451, alpha: 1) : #colorLiteral(red: 0.8627432641, green: 0.2630574384, blue: 0.2592858295, alpha: 1) }
             window?.makeKeyAndVisible()
         }

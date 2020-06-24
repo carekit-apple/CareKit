@@ -47,4 +47,9 @@ public protocol OCKOutcomeStoreDelegate: AnyObject {
     /// - Parameter store: The store which was modified.
     /// - Parameter outcomes: The outcomes that were deleted from the store.
     func outcomeStore(_ store: OCKAnyReadOnlyOutcomeStore, didDeleteOutcomes outcomes: [OCKAnyOutcome])
+
+    /// Called if outcomes in the store change, but it's not possible to identify specifically what happened.
+    /// - Parameter store: The store which was modified.
+    /// - Parameter change: A description of what happened. This is strictly for debug purposes.
+    func outcomeStore(_ store: OCKAnyReadOnlyOutcomeStore, didEncounterUnknownChange change: String)
 }

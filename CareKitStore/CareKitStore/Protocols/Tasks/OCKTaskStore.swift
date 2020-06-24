@@ -80,18 +80,7 @@ public protocol OCKTaskStore: OCKReadableTaskStore, OCKAnyTaskStore {
     ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on the provided callback queue.
     func deleteTasks(_ tasks: [Task], callbackQueue: DispatchQueue, completion: OCKResultClosure<[Task]>?)
-    
-    /// Adds, updates, and deletes tasks in a single atomic transaction
-    /// - Parameter tasks: Tasks that should be either added or updated, depending on whether or not they already exist.
-    /// - Parameter deleteTasks: Tasks that should be deleted from the store.
-    /// - Parameter callbackQueue: The queue that the callback will be performed on
-    /// - Parameter completion: A result closure that takes arrays of added, updated, and deleted tasks.
-    func addUpdateOrDeleteTasks(
-        addOrUpdate tasks: [Task],
-        delete deleteTasks: [Task],
-        callbackQueue: DispatchQueue,
-        completion: ((Result<([Task], [Task], [Task]), OCKStoreError>) -> Void)?)
-    
+
     // MARK: Implementation Provided
 
     /// `addTask` asynchronously adds a task to the store.
@@ -117,6 +106,16 @@ public protocol OCKTaskStore: OCKReadableTaskStore, OCKAnyTaskStore {
     ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on the provided callback queue.
     func deleteTask(_ task: Task, callbackQueue: DispatchQueue, completion: OCKResultClosure<Task>?)
+
+    /// Adds, updates, and deletes tasks in a single atomic transaction
+    /// - Parameter tasks: Tasks that should be either added or updated, depending on whether or not they already exist.
+    /// - Parameter deleteTasks: Tasks that should be deleted from the store.
+    /// - Parameter callbackQueue: The queue that the callback will be performed on
+    /// - Parameter completion: A result closure that takes arrays of added, updated, and deleted tasks.
+    func addUpdateOrDeleteTasks(addOrUpdate tasks: [Task],
+                                delete deleteTasks: [Task],
+                                callbackQueue: DispatchQueue,
+                                completion: ((Result<([Task], [Task], [Task]), OCKStoreError>) -> Void)?)
 }
 
 // MARK: Singular Methods for OCKReadableTaskStore

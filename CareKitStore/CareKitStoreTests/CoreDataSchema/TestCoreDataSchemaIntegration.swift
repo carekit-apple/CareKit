@@ -86,6 +86,5 @@ class TestCoreDataSchemaIntegration: XCTestCase {
         XCTAssert(task.scheduleElements.first == schedule)
         XCTAssert(task.outcomes.first == outcome)
         XCTAssert(outcome.values.first == value)
-        XCTAssertNoThrow(try store.deleteAllContent())
     }
 }

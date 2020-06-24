@@ -7,38 +7,71 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		039A9EAA236B97B400158EDD /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039A9EA9236B97B400158EDD /* SceneDelegate.swift */; };
-		03A2F78E237F51DF00A13638 /* CareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03A2F771237F51BA00A13638 /* CareKit.framework */; };
-		03A2F78F237F51DF00A13638 /* CareKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 03A2F771237F51BA00A13638 /* CareKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		03A2F790237F51DF00A13638 /* CareKitStore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7C8B1F0228A1B34000B68FB /* CareKitStore.framework */; };
-		03A2F791237F51DF00A13638 /* CareKitStore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E7C8B1F0228A1B34000B68FB /* CareKitStore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		03A2F792237F51DF00A13638 /* CareKitUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03A2F78D237F51DF00A13638 /* CareKitUI.framework */; };
-		03A2F793237F51DF00A13638 /* CareKitUI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 03A2F78D237F51DF00A13638 /* CareKitUI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		03FEBEA2237A0C7E00ACB35E /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 03FEBEA0237A0C7D00ACB35E /* Localizable.stringsdict */; };
-		03FEBEA3237A0C7E00ACB35E /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 03FEBEA1237A0C7E00ACB35E /* Localizable.strings */; };
-		51EF57C9229B21AA0071E2F6 /* OCKStore+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51EF57C8229B21AA0071E2F6 /* OCKStore+Extensions.swift */; };
-		51F81A4C227A6E660075AF70 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F81A47227A6E660075AF70 /* RootViewController.swift */; };
-		E7D010FC222498F400C008DE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D010FB222498F400C008DE /* AppDelegate.swift */; };
+		03AE491E24A2DC7C001DF6F0 /* OCKCatalogTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03AE491D24A2DC7C001DF6F0 /* OCKCatalogTests.swift */; };
+		0574211523D230A3004B48BA /* UIUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0574210B23D230A3004B48BA /* UIUtilities.swift */; };
+		0574211623D230A3004B48BA /* OCKCatalogGridTaskScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0574210D23D230A3004B48BA /* OCKCatalogGridTaskScreen.swift */; };
+		0574211723D230A3004B48BA /* OCKCatalogHomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0574210E23D230A3004B48BA /* OCKCatalogHomeScreen.swift */; };
+		0574211823D230A3004B48BA /* OCKCatalogScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0574210F23D230A3004B48BA /* OCKCatalogScreen.swift */; };
+		0574211923D230A3004B48BA /* OCKCatalogTaskCardScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0574211023D230A3004B48BA /* OCKCatalogTaskCardScreen.swift */; };
+		0574211A23D230A3004B48BA /* OCKCatalogTaskListScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0574211123D230A3004B48BA /* OCKCatalogTaskListScreen.swift */; };
+		0574211B23D230A3004B48BA /* OCKCatalogTaskScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0574211223D230A3004B48BA /* OCKCatalogTaskScreen.swift */; };
+		0574211C23D230A3004B48BA /* UITestCatalogHomePage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0574211423D230A3004B48BA /* UITestCatalogHomePage.swift */; };
+		511F7810249AC8FB004077A8 /* FeaturedContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 511F780F249AC8FB004077A8 /* FeaturedContentViewController.swift */; };
+		51338C6D23FB5A74002A2E58 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51338C6323FB5A74002A2E58 /* AppDelegate.swift */; };
+		51338C6E23FB5A74002A2E58 /* OCKStore+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51338C6423FB5A74002A2E58 /* OCKStore+Extensions.swift */; };
+		51338C7223FB5A74002A2E58 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51338C6923FB5A74002A2E58 /* SceneDelegate.swift */; };
+		51355EED249986A7009DE0A4 /* Environment+StoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51355EEC249986A7009DE0A4 /* Environment+StoreManager.swift */; };
+		5152E500249822A200A6225A /* ChartSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5152E4FF249822A200A6225A /* ChartSection.swift */; };
+		5152E5022498245F00A6225A /* HigherOrderSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5152E5012498245F00A6225A /* HigherOrderSection.swift */; };
+		515327EF2447951800EEB862 /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 515327ED2447951800EEB862 /* Interface.storyboard */; };
+		515327F12447951C00EEB862 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 515327F02447951C00EEB862 /* Assets.xcassets */; };
+		515327F82447951C00EEB862 /* OCKWatchCatalog Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 515327F72447951C00EEB862 /* OCKWatchCatalog Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		515327FF2447951C00EEB862 /* HostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 515327FE2447951C00EEB862 /* HostingController.swift */; };
+		515328012447951C00EEB862 /* ExtensionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 515328002447951C00EEB862 /* ExtensionDelegate.swift */; };
+		515328032447951D00EEB862 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 515328022447951D00EEB862 /* Assets.xcassets */; };
+		515328062447951D00EEB862 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 515328052447951D00EEB862 /* Preview Assets.xcassets */; };
+		515328172447964C00EEB862 /* CareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 515328142447964C00EEB862 /* CareKit.framework */; };
+		515328182447964C00EEB862 /* CareKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 515328142447964C00EEB862 /* CareKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		515328192447964C00EEB862 /* CareKitStore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 515328152447964C00EEB862 /* CareKitStore.framework */; };
+		5153281A2447964C00EEB862 /* CareKitStore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 515328152447964C00EEB862 /* CareKitStore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		5153281B2447964C00EEB862 /* CareKitUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 515328162447964C00EEB862 /* CareKitUI.framework */; };
+		5153281C2447964C00EEB862 /* CareKitUI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 515328162447964C00EEB862 /* CareKitUI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		51633E5C24492C63009F1E32 /* UIApplication+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51633E5B24492C63009F1E32 /* UIApplication+Extension.swift */; };
+		51746F2D2448BD1C00B647E1 /* OCKHealthKitStore+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51746F2C2448BD1C00B647E1 /* OCKHealthKitStore+Extension.swift */; };
+		51746F302448BEE500B647E1 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51746F2F2448BEE500B647E1 /* HealthKit.framework */; };
+		5177A16724981596001791D2 /* CardBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5177A16624981596001791D2 /* CardBackground.swift */; };
+		5177A1692498160B001791D2 /* TaskSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5177A1682498160B001791D2 /* TaskSection.swift */; };
+		5177A16B24981661001791D2 /* PlatformPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5177A16A24981661001791D2 /* PlatformPicker.swift */; };
+		5177A16D2498175F001791D2 /* MiscellaneousSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5177A16C2498175F001791D2 /* MiscellaneousSection.swift */; };
+		5177A16F24981F0C001791D2 /* ContactSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5177A16E24981F0C001791D2 /* ContactSection.swift */; };
+		517A8FFD23D167D000B64144 /* CareKitStore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 517A8FF923D167D000B64144 /* CareKitStore.framework */; };
+		517A8FFE23D167D000B64144 /* CareKitStore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 517A8FF923D167D000B64144 /* CareKitStore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		517A8FFF23D167D000B64144 /* CareKitUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 517A8FFA23D167D000B64144 /* CareKitUI.framework */; };
+		517A900023D167D000B64144 /* CareKitUI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 517A8FFA23D167D000B64144 /* CareKitUI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		51ACAFAE246B010A001E18F3 /* Environment+StoreManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51ACAFAD246B010A001E18F3 /* Environment+StoreManager.swift */; };
+		51E2143324450C3B0063A121 /* CareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51E2143224450C3B0063A121 /* CareKit.framework */; };
+		51E2143424450C3B0063A121 /* CareKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 51E2143224450C3B0063A121 /* CareKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		51FF41862497EE4A00B616B4 /* CatalogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51FF41852497EE4A00B616B4 /* CatalogView.swift */; };
 		E7D01103222498F400C008DE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E7D01102222498F400C008DE /* Assets.xcassets */; };
 		E7D01106222498F400C008DE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E7D01104222498F400C008DE /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		03A2F770237F51BA00A13638 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 03A2F76B237F51BA00A13638 /* CareKit.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 8605A5BA1C4F04EC00DD65FF;
-			remoteInfo = CareKit;
-		};
-		03A2F772237F51BA00A13638 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 03A2F76B237F51BA00A13638 /* CareKit.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 5196C7F9226F8F8F00F1C2A2;
-			remoteInfo = CareKitTests;
-		};
 		5143E1FB22C2832600E32526 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E7D010F0222498F400C008DE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E7D010F7222498F400C008DE;
+			remoteInfo = OCKCatalog;
+		};
+		515327F92447951C00EEB862 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E7D010F0222498F400C008DE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 515327F62447951C00EEB862;
+			remoteInfo = "OCKWatchCatalog Extension";
+		};
+		5173CBA723C3AB22007655A0 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = E7D010F0222498F400C008DE /* Project object */;
 			proxyType = 1;
@@ -48,15 +81,39 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		516CD56823543678005E2779 /* Embed Frameworks */ = {
+		5153280E2447951D00EEB862 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				515327F82447951C00EEB862 /* OCKWatchCatalog Extension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5153281D2447964D00EEB862 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				03A2F791237F51DF00A13638 /* CareKitStore.framework in Embed Frameworks */,
-				03A2F78F237F51DF00A13638 /* CareKit.framework in Embed Frameworks */,
-				03A2F793237F51DF00A13638 /* CareKitUI.framework in Embed Frameworks */,
+				5153281A2447964C00EEB862 /* CareKitStore.framework in Embed Frameworks */,
+				515328182447964C00EEB862 /* CareKit.framework in Embed Frameworks */,
+				5153281C2447964C00EEB862 /* CareKitUI.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		517A900223D167D000B64144 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				51E2143424450C3B0063A121 /* CareKit.framework in Embed Frameworks */,
+				517A8FFE23D167D000B64144 /* CareKitStore.framework in Embed Frameworks */,
+				517A900023D167D000B64144 /* CareKitUI.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -64,82 +121,229 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		039A9EA9236B97B400158EDD /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		03A2F76B237F51BA00A13638 /* CareKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CareKit.xcodeproj; path = ../CareKit/CareKit.xcodeproj; sourceTree = "<group>"; };
-		03A2F78D237F51DF00A13638 /* CareKitUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = CareKitUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		03FEBEA0237A0C7D00ACB35E /* Localizable.stringsdict */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.stringsdict; path = Localizable.stringsdict; sourceTree = "<group>"; };
-		03FEBEA1237A0C7E00ACB35E /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
-		1409475522B0261A005C1D16 /* CareKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = CareKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		03AE491D24A2DC7C001DF6F0 /* OCKCatalogTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKCatalogTests.swift; sourceTree = "<group>"; };
+		051FFF8B247853CE00761821 /* CareKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = CareKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		051FFF90247853D600761821 /* CareKitUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = CareKitUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		051FFF93247853E200761821 /* CareKitStore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = CareKitStore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		0520468123C3C181004F0F36 /* OCKCatalog.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = OCKCatalog.xctestplan; sourceTree = "<group>"; };
+		0538B08F237A178000713256 /* OCKCatalog QA.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = "OCKCatalog QA.xctestplan"; sourceTree = "<group>"; };
+		0574210B23D230A3004B48BA /* UIUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIUtilities.swift; sourceTree = "<group>"; };
+		0574210D23D230A3004B48BA /* OCKCatalogGridTaskScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKCatalogGridTaskScreen.swift; sourceTree = "<group>"; };
+		0574210E23D230A3004B48BA /* OCKCatalogHomeScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKCatalogHomeScreen.swift; sourceTree = "<group>"; };
+		0574210F23D230A3004B48BA /* OCKCatalogScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKCatalogScreen.swift; sourceTree = "<group>"; };
+		0574211023D230A3004B48BA /* OCKCatalogTaskCardScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKCatalogTaskCardScreen.swift; sourceTree = "<group>"; };
+		0574211123D230A3004B48BA /* OCKCatalogTaskListScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKCatalogTaskListScreen.swift; sourceTree = "<group>"; };
+		0574211223D230A3004B48BA /* OCKCatalogTaskScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKCatalogTaskScreen.swift; sourceTree = "<group>"; };
+		0574211423D230A3004B48BA /* UITestCatalogHomePage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UITestCatalogHomePage.swift; sourceTree = "<group>"; };
+		511F780F249AC8FB004077A8 /* FeaturedContentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeaturedContentViewController.swift; sourceTree = "<group>"; };
+		51338C6323FB5A74002A2E58 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		51338C6423FB5A74002A2E58 /* OCKStore+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OCKStore+Extensions.swift"; sourceTree = "<group>"; };
+		51338C6923FB5A74002A2E58 /* SceneDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		51355EEC249986A7009DE0A4 /* Environment+StoreManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Environment+StoreManager.swift"; sourceTree = "<group>"; };
 		5143E1F622C2832600E32526 /* OCKCatalogTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OCKCatalogTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5143E1FA22C2832600E32526 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		51D0ECFD2284894E00D24A76 /* CareKitUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = CareKitUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		51EF57C8229B21AA0071E2F6 /* OCKStore+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OCKStore+Extensions.swift"; sourceTree = "<group>"; };
-		51F81A47227A6E660075AF70 /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
-		E7C8B1F0228A1B34000B68FB /* CareKitStore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = CareKitStore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		5152E4FF249822A200A6225A /* ChartSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartSection.swift; sourceTree = "<group>"; };
+		5152E5012498245F00A6225A /* HigherOrderSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HigherOrderSection.swift; sourceTree = "<group>"; };
+		515327EB2447951800EEB862 /* OCKWatchCatalog.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OCKWatchCatalog.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		515327EE2447951800EEB862 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Interface.storyboard; sourceTree = "<group>"; };
+		515327F02447951C00EEB862 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		515327F22447951C00EEB862 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		515327F72447951C00EEB862 /* OCKWatchCatalog Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "OCKWatchCatalog Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		515327FE2447951C00EEB862 /* HostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostingController.swift; sourceTree = "<group>"; };
+		515328002447951C00EEB862 /* ExtensionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionDelegate.swift; sourceTree = "<group>"; };
+		515328022447951D00EEB862 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		515328052447951D00EEB862 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		515328072447951D00EEB862 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		515328142447964C00EEB862 /* CareKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = CareKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		515328152447964C00EEB862 /* CareKitStore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = CareKitStore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		515328162447964C00EEB862 /* CareKitUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = CareKitUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		51633E5B24492C63009F1E32 /* UIApplication+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+Extension.swift"; sourceTree = "<group>"; };
+		5173CBA223C3AB22007655A0 /* OCKCatalogUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OCKCatalogUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		5173CBA623C3AB22007655A0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		51746F2C2448BD1C00B647E1 /* OCKHealthKitStore+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OCKHealthKitStore+Extension.swift"; sourceTree = "<group>"; };
+		51746F2E2448BEE400B647E1 /* OCKCatalog.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = OCKCatalog.entitlements; sourceTree = "<group>"; };
+		51746F2F2448BEE500B647E1 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
+		5177A16624981596001791D2 /* CardBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardBackground.swift; sourceTree = "<group>"; };
+		5177A1682498160B001791D2 /* TaskSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskSection.swift; sourceTree = "<group>"; };
+		5177A16A24981661001791D2 /* PlatformPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlatformPicker.swift; sourceTree = "<group>"; };
+		5177A16C2498175F001791D2 /* MiscellaneousSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiscellaneousSection.swift; sourceTree = "<group>"; };
+		5177A16E24981F0C001791D2 /* ContactSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactSection.swift; sourceTree = "<group>"; };
+		517A8FF823D167D000B64144 /* CareKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = CareKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		517A8FF923D167D000B64144 /* CareKitStore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = CareKitStore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		517A8FFA23D167D000B64144 /* CareKitUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = CareKitUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		51ACAFAD246B010A001E18F3 /* Environment+StoreManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Environment+StoreManager.swift"; sourceTree = "<group>"; };
+		51E13C2423E0A7F600E7F5F0 /* CareKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = CareKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		51E13C2523E0A7F600E7F5F0 /* CareKitStore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = CareKitStore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		51E13C2623E0A7F600E7F5F0 /* CareKitUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = CareKitUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		51E2143224450C3B0063A121 /* CareKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = CareKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		51FF41852497EE4A00B616B4 /* CatalogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogView.swift; sourceTree = "<group>"; };
 		E7D010F8222498F400C008DE /* OCKCatalog.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OCKCatalog.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		E7D010FB222498F400C008DE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E7D01102222498F400C008DE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E7D01105222498F400C008DE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E7D01107222498F400C008DE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		5143E1F322C2832600E32526 /* Frameworks */ = {
+		515327F42447951C00EEB862 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				515328192447964C00EEB862 /* CareKitStore.framework in Frameworks */,
+				515328172447964C00EEB862 /* CareKit.framework in Frameworks */,
+				5153281B2447964C00EEB862 /* CareKitUI.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E7D010F5222498F400C008DE /* Frameworks */ = {
+		517A900123D167D000B64144 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				03A2F790237F51DF00A13638 /* CareKitStore.framework in Frameworks */,
-				03A2F78E237F51DF00A13638 /* CareKit.framework in Frameworks */,
-				03A2F792237F51DF00A13638 /* CareKitUI.framework in Frameworks */,
+				51E2143324450C3B0063A121 /* CareKit.framework in Frameworks */,
+				51746F302448BEE500B647E1 /* HealthKit.framework in Frameworks */,
+				517A8FFD23D167D000B64144 /* CareKitStore.framework in Frameworks */,
+				517A8FFF23D167D000B64144 /* CareKitUI.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		03A2F76C237F51BA00A13638 /* Products */ = {
+		0574210A23D230A3004B48BA /* TestUtils */ = {
 			isa = PBXGroup;
 			children = (
-				03A2F771237F51BA00A13638 /* CareKit.framework */,
-				03A2F773237F51BA00A13638 /* CareKitTests.xctest */,
+				0574210B23D230A3004B48BA /* UIUtilities.swift */,
 			);
-			name = Products;
+			path = TestUtils;
+			sourceTree = "<group>";
+		};
+		0574210C23D230A3004B48BA /* Screens */ = {
+			isa = PBXGroup;
+			children = (
+				0574210D23D230A3004B48BA /* OCKCatalogGridTaskScreen.swift */,
+				0574210E23D230A3004B48BA /* OCKCatalogHomeScreen.swift */,
+				0574210F23D230A3004B48BA /* OCKCatalogScreen.swift */,
+				0574211023D230A3004B48BA /* OCKCatalogTaskCardScreen.swift */,
+				0574211123D230A3004B48BA /* OCKCatalogTaskListScreen.swift */,
+				0574211223D230A3004B48BA /* OCKCatalogTaskScreen.swift */,
+			);
+			path = Screens;
+			sourceTree = "<group>";
+		};
+		0574211323D230A3004B48BA /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				0574211423D230A3004B48BA /* UITestCatalogHomePage.swift */,
+			);
+			path = Tests;
 			sourceTree = "<group>";
 		};
 		5143E1F722C2832600E32526 /* OCKCatalogTests */ = {
 			isa = PBXGroup;
 			children = (
+				03AE491D24A2DC7C001DF6F0 /* OCKCatalogTests.swift */,
 				5143E1FA22C2832600E32526 /* Info.plist */,
 			);
 			path = OCKCatalogTests;
 			sourceTree = "<group>";
 		};
-		51D0ECFC2284894E00D24A76 /* Frameworks */ = {
+		5152E503249825DA00A6225A /* Sections */ = {
 			isa = PBXGroup;
 			children = (
-				03A2F78D237F51DF00A13638 /* CareKitUI.framework */,
-				1409475522B0261A005C1D16 /* CareKit.framework */,
-				E7C8B1F0228A1B34000B68FB /* CareKitStore.framework */,
-				51D0ECFD2284894E00D24A76 /* CareKitUI.framework */,
+				5177A1682498160B001791D2 /* TaskSection.swift */,
+				5177A16E24981F0C001791D2 /* ContactSection.swift */,
+				5152E4FF249822A200A6225A /* ChartSection.swift */,
+				5177A16C2498175F001791D2 /* MiscellaneousSection.swift */,
+				5152E5012498245F00A6225A /* HigherOrderSection.swift */,
+			);
+			path = Sections;
+			sourceTree = "<group>";
+		};
+		515327EC2447951800EEB862 /* OCKWatchCatalog */ = {
+			isa = PBXGroup;
+			children = (
+				515327ED2447951800EEB862 /* Interface.storyboard */,
+				515327F02447951C00EEB862 /* Assets.xcassets */,
+				515327F22447951C00EEB862 /* Info.plist */,
+			);
+			path = OCKWatchCatalog;
+			sourceTree = "<group>";
+		};
+		515327FB2447951C00EEB862 /* OCKWatchCatalog Extension */ = {
+			isa = PBXGroup;
+			children = (
+				51355EEC249986A7009DE0A4 /* Environment+StoreManager.swift */,
+				515327FE2447951C00EEB862 /* HostingController.swift */,
+				515328002447951C00EEB862 /* ExtensionDelegate.swift */,
+				515328022447951D00EEB862 /* Assets.xcassets */,
+				515328072447951D00EEB862 /* Info.plist */,
+				515328042447951D00EEB862 /* Preview Content */,
+			);
+			path = "OCKWatchCatalog Extension";
+			sourceTree = "<group>";
+		};
+		515328042447951D00EEB862 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				515328052447951D00EEB862 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		5173CBA323C3AB22007655A0 /* OCKCatalogUITests */ = {
+			isa = PBXGroup;
+			children = (
+				0574210C23D230A3004B48BA /* Screens */,
+				0574211323D230A3004B48BA /* Tests */,
+				0574210A23D230A3004B48BA /* TestUtils */,
+				5173CBA623C3AB22007655A0 /* Info.plist */,
+			);
+			path = OCKCatalogUITests;
+			sourceTree = "<group>";
+		};
+		517A8FF723D167D000B64144 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				051FFF93247853E200761821 /* CareKitStore.framework */,
+				051FFF90247853D600761821 /* CareKitUI.framework */,
+				051FFF8B247853CE00761821 /* CareKit.framework */,
+				51746F2F2448BEE500B647E1 /* HealthKit.framework */,
+				515328142447964C00EEB862 /* CareKit.framework */,
+				515328152447964C00EEB862 /* CareKitStore.framework */,
+				515328162447964C00EEB862 /* CareKitUI.framework */,
+				51E2143224450C3B0063A121 /* CareKit.framework */,
+				51E13C2423E0A7F600E7F5F0 /* CareKit.framework */,
+				51E13C2523E0A7F600E7F5F0 /* CareKitStore.framework */,
+				51E13C2623E0A7F600E7F5F0 /* CareKitUI.framework */,
+				517A8FF823D167D000B64144 /* CareKit.framework */,
+				517A8FF923D167D000B64144 /* CareKitStore.framework */,
+				517A8FFA23D167D000B64144 /* CareKitUI.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		5195C5FB249827F600F980D8 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				51633E5B24492C63009F1E32 /* UIApplication+Extension.swift */,
+				51338C6423FB5A74002A2E58 /* OCKStore+Extensions.swift */,
+				51746F2C2448BD1C00B647E1 /* OCKHealthKitStore+Extension.swift */,
+				51ACAFAD246B010A001E18F3 /* Environment+StoreManager.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 		E7D010EF222498F400C008DE = {
 			isa = PBXGroup;
 			children = (
-				03A2F76B237F51BA00A13638 /* CareKit.xcodeproj */,
+				0520468123C3C181004F0F36 /* OCKCatalog.xctestplan */,
+				0538B08F237A178000713256 /* OCKCatalog QA.xctestplan */,
 				E7D010FA222498F400C008DE /* OCKCatalog */,
 				5143E1F722C2832600E32526 /* OCKCatalogTests */,
+				5173CBA323C3AB22007655A0 /* OCKCatalogUITests */,
+				515327EC2447951800EEB862 /* OCKWatchCatalog */,
+				515327FB2447951C00EEB862 /* OCKWatchCatalog Extension */,
 				E7D010F9222498F400C008DE /* Products */,
-				51D0ECFC2284894E00D24A76 /* Frameworks */,
+				517A8FF723D167D000B64144 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -148,6 +352,9 @@
 			children = (
 				E7D010F8222498F400C008DE /* OCKCatalog.app */,
 				5143E1F622C2832600E32526 /* OCKCatalogTests.xctest */,
+				5173CBA223C3AB22007655A0 /* OCKCatalogUITests.xctest */,
+				515327EB2447951800EEB862 /* OCKWatchCatalog.app */,
+				515327F72447951C00EEB862 /* OCKWatchCatalog Extension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -155,14 +362,17 @@
 		E7D010FA222498F400C008DE /* OCKCatalog */ = {
 			isa = PBXGroup;
 			children = (
-				51EF57C8229B21AA0071E2F6 /* OCKStore+Extensions.swift */,
-				51F81A47227A6E660075AF70 /* RootViewController.swift */,
-				E7D010FB222498F400C008DE /* AppDelegate.swift */,
-				039A9EA9236B97B400158EDD /* SceneDelegate.swift */,
+				51746F2E2448BEE400B647E1 /* OCKCatalog.entitlements */,
+				51338C6323FB5A74002A2E58 /* AppDelegate.swift */,
+				51338C6923FB5A74002A2E58 /* SceneDelegate.swift */,
+				51FF41852497EE4A00B616B4 /* CatalogView.swift */,
+				5177A16A24981661001791D2 /* PlatformPicker.swift */,
+				5177A16624981596001791D2 /* CardBackground.swift */,
+				511F780F249AC8FB004077A8 /* FeaturedContentViewController.swift */,
+				5195C5FB249827F600F980D8 /* Extensions */,
+				5152E503249825DA00A6225A /* Sections */,
 				E7D01107222498F400C008DE /* Info.plist */,
 				E7D01104222498F400C008DE /* LaunchScreen.storyboard */,
-				03FEBEA1237A0C7E00ACB35E /* Localizable.strings */,
-				03FEBEA0237A0C7D00ACB35E /* Localizable.stringsdict */,
 				E7D01102222498F400C008DE /* Assets.xcassets */,
 			);
 			path = OCKCatalog;
@@ -176,7 +386,6 @@
 			buildConfigurationList = 5143E1FF22C2832600E32526 /* Build configuration list for PBXNativeTarget "OCKCatalogTests" */;
 			buildPhases = (
 				5143E1F222C2832600E32526 /* Sources */,
-				5143E1F322C2832600E32526 /* Frameworks */,
 				5143E1F422C2832600E32526 /* Resources */,
 			);
 			buildRules = (
@@ -189,16 +398,67 @@
 			productReference = 5143E1F622C2832600E32526 /* OCKCatalogTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		515327EA2447951800EEB862 /* OCKWatchCatalog */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 515328132447951D00EEB862 /* Build configuration list for PBXNativeTarget "OCKWatchCatalog" */;
+			buildPhases = (
+				515327E92447951800EEB862 /* Resources */,
+				5153280E2447951D00EEB862 /* Embed App Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				515327FA2447951C00EEB862 /* PBXTargetDependency */,
+			);
+			name = OCKWatchCatalog;
+			productName = OCKWatchCatalog;
+			productReference = 515327EB2447951800EEB862 /* OCKWatchCatalog.app */;
+			productType = "com.apple.product-type.application.watchapp2";
+		};
+		515327F62447951C00EEB862 /* OCKWatchCatalog Extension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 515328122447951D00EEB862 /* Build configuration list for PBXNativeTarget "OCKWatchCatalog Extension" */;
+			buildPhases = (
+				515327F32447951C00EEB862 /* Sources */,
+				515327F42447951C00EEB862 /* Frameworks */,
+				515327F52447951C00EEB862 /* Resources */,
+				5153281D2447964D00EEB862 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "OCKWatchCatalog Extension";
+			productName = "OCKWatchCatalog Extension";
+			productReference = 515327F72447951C00EEB862 /* OCKWatchCatalog Extension.appex */;
+			productType = "com.apple.product-type.watchkit2-extension";
+		};
+		5173CBA123C3AB22007655A0 /* OCKCatalogUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5173CBB223C3AB22007655A0 /* Build configuration list for PBXNativeTarget "OCKCatalogUITests" */;
+			buildPhases = (
+				5173CB9E23C3AB22007655A0 /* Sources */,
+				5173CBA023C3AB22007655A0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				5173CBA823C3AB22007655A0 /* PBXTargetDependency */,
+			);
+			name = OCKCatalogUITests;
+			productName = OCKCatalogUITests;
+			productReference = 5173CBA223C3AB22007655A0 /* OCKCatalogUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		E7D010F7222498F400C008DE /* OCKCatalog */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = E7D0110A222498F400C008DE /* Build configuration list for PBXNativeTarget "OCKCatalog" */;
 			buildPhases = (
-				0588EAC82357CC4F00F2646B /* Fix SPM */,
 				E7D010F4222498F400C008DE /* Sources */,
-				E7D010F5222498F400C008DE /* Frameworks */,
 				E7D010F6222498F400C008DE /* Resources */,
 				51936B1B22418DAA00F7B1DD /* ShellScript */,
-				516CD56823543678005E2779 /* Embed Frameworks */,
+				517A900123D167D000B64144 /* Frameworks */,
+				517A900223D167D000B64144 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -217,17 +477,28 @@
 		E7D010F0222498F400C008DE /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1100;
-				LastUpgradeCheck = 1010;
+				LastSwiftUpdateCheck = 1130;
+				LastUpgradeCheck = 1200;
 				ORGANIZATIONNAME = Apple;
 				TargetAttributes = {
 					5143E1F522C2832600E32526 = {
 						CreatedOnToolsVersion = 11.0;
+						LastSwiftMigration = 1200;
+						TestTargetID = E7D010F7222498F400C008DE;
+					};
+					515327EA2447951800EEB862 = {
+						CreatedOnToolsVersion = 11.3.1;
+					};
+					515327F62447951C00EEB862 = {
+						CreatedOnToolsVersion = 11.3.1;
+					};
+					5173CBA123C3AB22007655A0 = {
+						CreatedOnToolsVersion = 11.1;
 						TestTargetID = E7D010F7222498F400C008DE;
 					};
 					E7D010F7222498F400C008DE = {
 						CreatedOnToolsVersion = 10.1;
-						LastSwiftMigration = 1020;
+						LastSwiftMigration = 1100;
 					};
 				};
 			};
@@ -242,39 +513,44 @@
 			mainGroup = E7D010EF222498F400C008DE;
 			productRefGroup = E7D010F9222498F400C008DE /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = 03A2F76C237F51BA00A13638 /* Products */;
-					ProjectRef = 03A2F76B237F51BA00A13638 /* CareKit.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				E7D010F7222498F400C008DE /* OCKCatalog */,
 				5143E1F522C2832600E32526 /* OCKCatalogTests */,
+				5173CBA123C3AB22007655A0 /* OCKCatalogUITests */,
+				515327EA2447951800EEB862 /* OCKWatchCatalog */,
+				515327F62447951C00EEB862 /* OCKWatchCatalog Extension */,
 			);
 		};
 /* End PBXProject section */
 
-/* Begin PBXReferenceProxy section */
-		03A2F771237F51BA00A13638 /* CareKit.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = CareKit.framework;
-			remoteRef = 03A2F770237F51BA00A13638 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		03A2F773237F51BA00A13638 /* CareKitTests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = CareKitTests.xctest;
-			remoteRef = 03A2F772237F51BA00A13638 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
-
 /* Begin PBXResourcesBuildPhase section */
 		5143E1F422C2832600E32526 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		515327E92447951800EEB862 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				515327F12447951C00EEB862 /* Assets.xcassets in Resources */,
+				515327EF2447951800EEB862 /* Interface.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		515327F52447951C00EEB862 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				515328062447951D00EEB862 /* Preview Assets.xcassets in Resources */,
+				515328032447951D00EEB862 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5173CBA023C3AB22007655A0 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -286,56 +562,43 @@
 			buildActionMask = 2147483647;
 			files = (
 				E7D01106222498F400C008DE /* LaunchScreen.storyboard in Resources */,
-				03FEBEA3237A0C7E00ACB35E /* Localizable.strings in Resources */,
 				E7D01103222498F400C008DE /* Assets.xcassets in Resources */,
-				03FEBEA2237A0C7E00ACB35E /* Localizable.stringsdict in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		0588EAC82357CC4F00F2646B /* Fix SPM */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Fix SPM";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if [ -d \"${SYMROOT}/Release${EFFECTIVE_PLATFORM_NAME}/\" ] && [ \"${SYMROOT}/Release${EFFECTIVE_PLATFORM_NAME}/\" != \"${SYMROOT}/${CONFIGURATION}${EFFECTIVE_PLATFORM_NAME}/\" ] \nthen\n  cp -f -R \"${SYMROOT}/Release${EFFECTIVE_PLATFORM_NAME}/\" \"${SYMROOT}/${CONFIGURATION}${EFFECTIVE_PLATFORM_NAME}/\"\nfi\n";
-		};
-		51936B1B22418DAA00F7B1DD /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		5143E1F222C2832600E32526 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				03AE491E24A2DC7C001DF6F0 /* OCKCatalogTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		515327F32447951C00EEB862 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				515327FF2447951C00EEB862 /* HostingController.swift in Sources */,
+				51355EED249986A7009DE0A4 /* Environment+StoreManager.swift in Sources */,
+				515328012447951C00EEB862 /* ExtensionDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5173CB9E23C3AB22007655A0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0574211B23D230A3004B48BA /* OCKCatalogTaskScreen.swift in Sources */,
+				0574211923D230A3004B48BA /* OCKCatalogTaskCardScreen.swift in Sources */,
+				0574211823D230A3004B48BA /* OCKCatalogScreen.swift in Sources */,
+				0574211523D230A3004B48BA /* UIUtilities.swift in Sources */,
+				0574211C23D230A3004B48BA /* UITestCatalogHomePage.swift in Sources */,
+				0574211A23D230A3004B48BA /* OCKCatalogTaskListScreen.swift in Sources */,
+				0574211723D230A3004B48BA /* OCKCatalogHomeScreen.swift in Sources */,
+				0574211623D230A3004B48BA /* OCKCatalogGridTaskScreen.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -343,10 +606,21 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				51F81A4C227A6E660075AF70 /* RootViewController.swift in Sources */,
-				E7D010FC222498F400C008DE /* AppDelegate.swift in Sources */,
-				51EF57C9229B21AA0071E2F6 /* OCKStore+Extensions.swift in Sources */,
-				039A9EAA236B97B400158EDD /* SceneDelegate.swift in Sources */,
+				511F7810249AC8FB004077A8 /* FeaturedContentViewController.swift in Sources */,
+				5177A16F24981F0C001791D2 /* ContactSection.swift in Sources */,
+				51338C6D23FB5A74002A2E58 /* AppDelegate.swift in Sources */,
+				5152E500249822A200A6225A /* ChartSection.swift in Sources */,
+				5177A16B24981661001791D2 /* PlatformPicker.swift in Sources */,
+				51338C6E23FB5A74002A2E58 /* OCKStore+Extensions.swift in Sources */,
+				5177A16724981596001791D2 /* CardBackground.swift in Sources */,
+				5152E5022498245F00A6225A /* HigherOrderSection.swift in Sources */,
+				51ACAFAE246B010A001E18F3 /* Environment+StoreManager.swift in Sources */,
+				5177A16D2498175F001791D2 /* MiscellaneousSection.swift in Sources */,
+				51746F2D2448BD1C00B647E1 /* OCKHealthKitStore+Extension.swift in Sources */,
+				51633E5C24492C63009F1E32 /* UIApplication+Extension.swift in Sources */,
+				51FF41862497EE4A00B616B4 /* CatalogView.swift in Sources */,
+				5177A1692498160B001791D2 /* TaskSection.swift in Sources */,
+				51338C7223FB5A74002A2E58 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -358,9 +632,27 @@
 			target = E7D010F7222498F400C008DE /* OCKCatalog */;
 			targetProxy = 5143E1FB22C2832600E32526 /* PBXContainerItemProxy */;
 		};
+		515327FA2447951C00EEB862 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 515327F62447951C00EEB862 /* OCKWatchCatalog Extension */;
+			targetProxy = 515327F92447951C00EEB862 /* PBXContainerItemProxy */;
+		};
+		5173CBA823C3AB22007655A0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E7D010F7222498F400C008DE /* OCKCatalog */;
+			targetProxy = 5173CBA723C3AB22007655A0 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		515327ED2447951800EEB862 /* Interface.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				515327EE2447951800EEB862 /* Base */,
+			);
+			name = Interface.storyboard;
+			sourceTree = "<group>";
+		};
 		E7D01104222498F400C008DE /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -372,13 +664,101 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		5143E1FD22C2832600E32526 /* Debug */ = {
+		052F8B31235779A900E45940 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				DEBUG_INFORMATION_FORMAT = dwarf;
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 7JYUG8QGJ3;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(BUILD_DIR)/Release-$(PLATFORM_NAME)";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
+				SWIFT_VERSION = 5.0;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		052F8B32235779A900E45940 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = OCKCatalog/OCKCatalog.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_BITCODE = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
+				INFOPLIST_FILE = "$(SRCROOT)/OCKCatalog/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.example.carekit-samplecode.OCKCatalog";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_TREAT_WARNINGS_AS_ERRORS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		052F8B33235779A900E45940 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = OCKCatalogTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -391,13 +771,149 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/OCKCatalog.app/OCKCatalog";
 			};
-			name = Debug;
+			name = Release;
 		};
-		E7D01108222498F400C008DE /* Debug */ = {
+		5143E1FD22C2832600E32526 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = OCKCatalogTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = Apple.OCKCatalogTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/OCKCatalog.app/OCKCatalog";
+			};
+			name = Debug;
+		};
+		5153280B2447951D00EEB862 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				IBSC_MODULE = OCKWatchCatalog_Extension;
+				INFOPLIST_FILE = OCKWatchCatalog/Info.plist;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.example.carekit-samplecode.OCKCatalog.watchkitapp";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 6.1;
+			};
+			name = Debug;
+		};
+		5153280D2447951D00EEB862 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
+				IBSC_MODULE = OCKWatchCatalog_Extension;
+				INFOPLIST_FILE = OCKWatchCatalog/Info.plist;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.example.carekit-samplecode.OCKCatalog.watchkitapp";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 6.1;
+			};
+			name = Release;
+		};
+		5153280F2447951D00EEB862 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
+				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_ASSET_PATHS = "\"OCKWatchCatalog Extension/Preview Content\"";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = "OCKWatchCatalog Extension/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.example.carekit-samplecode.OCKCatalog.watchkitapp.watchkitextension";
+				PRODUCT_NAME = "${TARGET_NAME}";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 6.1;
+			};
+			name = Debug;
+		};
+		515328112447951D00EEB862 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_ASSET_PATHS = "\"OCKWatchCatalog Extension/Preview Content\"";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = "OCKWatchCatalog Extension/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.example.carekit-samplecode.OCKCatalog.watchkitapp.watchkitextension";
+				PRODUCT_NAME = "${TARGET_NAME}";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 6.1;
+			};
+			name = Release;
+		};
+		5173CBA923C3AB22007655A0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = OCKCatalogUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = Apple.OCKCatalogUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = OCKCatalog;
+			};
+			name = Debug;
+		};
+		5173CBAB23C3AB22007655A0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -426,9 +942,78 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = OCKCatalogUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = Apple.OCKCatalogUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = OCKCatalog;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		E7D01108222498F400C008DE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 7JYUG8QGJ3;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(BUILD_DIR)/Debug-$(PLATFORM_NAME)";
@@ -462,10 +1047,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = OCKCatalog/OCKCatalog.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 17;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
+				ENABLE_BITCODE = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/OCKCatalog/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -474,6 +1063,10 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.example.carekit-samplecode.OCKCatalog";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_TREAT_WARNINGS_AS_ERRORS = NO;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
@@ -485,6 +1078,34 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				5143E1FD22C2832600E32526 /* Debug */,
+				052F8B33235779A900E45940 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		515328122447951D00EEB862 /* Build configuration list for PBXNativeTarget "OCKWatchCatalog Extension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5153280F2447951D00EEB862 /* Debug */,
+				515328112447951D00EEB862 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		515328132447951D00EEB862 /* Build configuration list for PBXNativeTarget "OCKWatchCatalog" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5153280B2447951D00EEB862 /* Debug */,
+				5153280D2447951D00EEB862 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		5173CBB223C3AB22007655A0 /* Build configuration list for PBXNativeTarget "OCKCatalogUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5173CBA923C3AB22007655A0 /* Debug */,
+				5173CBAB23C3AB22007655A0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
@@ -493,6 +1114,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E7D01108222498F400C008DE /* Debug */,
+				052F8B31235779A900E45940 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
@@ -501,6 +1123,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E7D0110B222498F400C008DE /* Debug */,
+				052F8B32235779A900E45940 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

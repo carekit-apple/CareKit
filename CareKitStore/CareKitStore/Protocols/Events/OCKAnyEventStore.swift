@@ -33,7 +33,7 @@ import Foundation
 /// Any store from which `OCKAnyEvent`s  can be queried is considered `OCKAnyReadOnlyEventStore`.
 public protocol OCKAnyReadOnlyEventStore: OCKAnyReadOnlyTaskStore, OCKAnyReadOnlyOutcomeStore {
 
-    /// `fetchAnyEvents` retrieves all the occurrences of the speficied task in the interval specified by the provided query.
+    /// `fetchAnyEvents` retrieves all the occurrences of the specified task in the interval specified by the provided query.
     ///
     /// - Parameters:
     ///   - taskID: A user-defined unique identifier for the task.
@@ -43,7 +43,7 @@ public protocol OCKAnyReadOnlyEventStore: OCKAnyReadOnlyTaskStore, OCKAnyReadOnl
     func fetchAnyEvents(taskID: String, query: OCKEventQuery, callbackQueue: DispatchQueue,
                         completion: @escaping OCKResultClosure<[OCKAnyEvent]>)
 
-    /// `fetchAnyEvent` retrieves a single occurrence of the speficied task.
+    /// `fetchAnyEvent` retrieves a single occurrence of the specified task.
     ///
     /// - Parameter task: The task for which to retrieve an event.
     /// - Parameter occurrence: The occurrence index of the desired event.

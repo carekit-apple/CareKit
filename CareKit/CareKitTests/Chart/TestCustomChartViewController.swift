@@ -29,6 +29,8 @@
  */
 
 import CareKit
+import CareKitStore
+import CareKitUI
 import Foundation
 import XCTest
 

@@ -1,21 +1,21 @@
 /*
  Copyright (c) 2019, Apple Inc. All rights reserved.
- 
+
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
- 
+
  1.  Redistributions of source code must retain the above copyright notice, this
  list of conditions and the following disclaimer.
- 
+
  2.  Redistributions in binary form must reproduce the above copyright notice,
  this list of conditions and the following disclaimer in the documentation and/or
  other materials provided with the distribution.
- 
+
  3. Neither the name of the copyright holder(s) nor the names of any contributors
  may be used to endorse or promote products derived from this software without
  specific prior written permission. No license is granted to the trademarks of
  the copyright holders even if such marks are included in this software.
- 
+
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -32,7 +32,7 @@ import Foundation
 
 /// An `OCKOutcome` represents the outcome of an event corresponding to a task. An outcome may have 0 or more values associated with it.
 /// For example, a task that asks a patient to measure their temperature will have events whose outcome will contain a single value representing
-/// the patient's tempature.
+/// the patient's temperature.
 public struct OCKOutcome: Codable, Equatable, Identifiable, OCKAnyOutcome, OCKObjectCompatible {
 
     /// The version ID of the task to which this outcomes belongs.
@@ -58,7 +58,7 @@ public struct OCKOutcome: Codable, Equatable, Identifiable, OCKAnyOutcome, OCKOb
     public var notes: [OCKNote]?
     public var timezone: TimeZone
 
-    /// Initialize by specifying the version of the task that owns this outcome, how many events have occured before this outcome, and the values.
+    /// Initialize by specifying the version of the task that owns this outcome, how many events have occurred before this outcome, and the values.
     ///
     /// - Parameters:
     ///   - taskUUID: The UUID of the task that owns this outcome. This ID can be retrieved from any task that has been queried from the store.

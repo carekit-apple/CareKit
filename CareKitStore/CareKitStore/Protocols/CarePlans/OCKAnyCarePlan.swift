@@ -42,7 +42,7 @@ public protocol OCKAnyCarePlan {
     /// An identifier for this care plan in a remote store.
     var remoteID: String? { get }
 
-    /// An identifier that can be uesd to group this care plan with others.
+    /// An identifier that can be used to group this care plan with others.
     var groupIdentifier: String? { get }
 
     /// Any array of notes associated with this object.

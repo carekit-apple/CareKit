@@ -43,6 +43,15 @@ extension OCKTask: OCKCDTaskCompatible {
     }
 }
 
+#if os(iOS)
+extension OCKHealthKitTask: OCKCDTaskCompatible {
+    var optionalHealthKitLinkage: OCKHealthKitLinkage? {
+        get { healthKitLinkage }
+        set { healthKitLinkage = newValue ?? healthKitLinkage }
+    }
+}
+#endif
+
 protocol OCKCoreDataTaskStoreProtocol: OCKCoreDataStoreProtocol, OCKTaskStore where Task: OCKCDTaskCompatible {
     func makeTask(from task: OCKCDTask) -> Task
 }
@@ -222,7 +231,8 @@ extension OCKCoreDataTaskStoreProtocol {
         persistableTask.impactsAdherence = task.impactsAdherence
         persistableTask.scheduleElements.forEach { context.delete($0) }
         persistableTask.scheduleElements = Set(createScheduleElements(from: task.schedule))
-        persistableTask.healthKitLinkage = task.optionalHealthKitLinkage == nil ? nil : createHealthKitLinkage(from: task.optionalHealthKitLinkage!)
+        persistableTask.healthKitLinkage = task.optionalHealthKitLinkage == nil ?
+            nil : createHealthKitLinkage(from: task.optionalHealthKitLinkage!)
         if let planUUID = task.carePlanUUID { persistableTask.carePlan = try? fetchObject(uuid: planUUID) }
     }
 
@@ -386,8 +396,6 @@ extension OCKCoreDataTaskStoreProtocol {
             case .effectiveDate(ascending: let ascending): return NSSortDescriptor(keyPath: \OCKCDTask.effectiveDate, ascending: ascending)
             case .title(let ascending): return NSSortDescriptor(keyPath: \OCKCDTask.title, ascending: ascending)
             case .groupIdentifier(let ascending): return NSSortDescriptor(keyPath: \OCKCDTask.groupIdentifier, ascending: ascending)
-            case .createdDate(ascending: let ascending):
-                return NSSortDescriptor(keyPath: \OCKCDTask.createdDate, ascending: ascending)
             }
         } + defaultSortDescritors()
     }

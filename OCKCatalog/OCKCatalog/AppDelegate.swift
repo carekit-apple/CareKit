@@ -28,24 +28,82 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import AuthenticationServices
 import CareKit
+import CareKitStore
 import UIKit
+import WatchConnectivity
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-    let storeManager: OCKSynchronizedStoreManager = {
-        let store = OCKStore(name: "carekit-catalog")
-        store.fillWithDummyData()
-        return OCKSynchronizedStoreManager(wrapping: store)
+    private(set) lazy var peer = OCKWatchConnectivityPeer()
+    private(set) lazy var cdStore = OCKStore(name: "carekit-catalog-cd", type: .inMemory, remote: peer)
+    private(set) lazy var hkStore = OCKHealthKitPassthroughStore(name: "carekit-catalog-hk", type: .inMemory)
+
+    private lazy var sessionManager: SessionManager = {
+        let sessionManager = SessionManager()
+        sessionManager.peer = self.peer
+        sessionManager.store = self.cdStore
+        return sessionManager
+    }()
+
+    private(set) lazy var storeManager: OCKSynchronizedStoreManager = {
+
+        cdStore.fillWithDummyData()
+        hkStore.fillWithDummyData()
+
+        let coordinator = OCKStoreCoordinator()
+        coordinator.attach(store: cdStore)
+        coordinator.attach(eventStore: hkStore)
+
+        return OCKSynchronizedStoreManager(wrapping: coordinator)
     }()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+
+        WCSession.default.delegate = sessionManager
+        WCSession.default.activate()
+
         return true
     }
 
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession,
                      options: UIScene.ConnectionOptions) -> UISceneConfiguration {
         return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
+    }
+}
+
+private class SessionManager: NSObject, WCSessionDelegate {
+
+    fileprivate var peer: OCKWatchConnectivityPeer!
+    fileprivate var store: OCKStore!
+
+    func session(
+        _ session: WCSession,
+        activationDidCompleteWith activationState: WCSessionActivationState,
+        error: Error?) {
+
+        print("WCSession activation did complete: \(activationState)")
+    }
+
+    func sessionDidBecomeInactive(_ session: WCSession) {
+        print("WCSession did become inactive")
+    }
+
+    func sessionDidDeactivate(_ session: WCSession) {
+        print("WCSession did deactivate")
+    }
+
+    func session(
+        _ session: WCSession,
+        didReceiveMessage message: [String: Any],
+        replyHandler: @escaping ([String: Any]) -> Void) {
+
+        print("Did receive message!")
+
+        peer.reply(to: message, store: store) { reply in
+            replyHandler(reply)
+        }
     }
 }

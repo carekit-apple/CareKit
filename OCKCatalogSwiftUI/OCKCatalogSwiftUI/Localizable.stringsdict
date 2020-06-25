@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>EVENTS_REMAINING</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@events_remaining@</string>
+		<key>events_remaining</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>i</string>
+			<key>zero</key>
+			<string>0 remaining</string>
+			<key>one</key>
+			<string>1 remaining</string>
+			<key>two</key>
+			<string></string>
+			<key>few</key>
+			<string></string>
+			<key>many</key>
+			<string></string>
+			<key>other</key>
+			<string>%i remaining</string>
+		</dict>
+	</dict>
+</dict>
+</plist>

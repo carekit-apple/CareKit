@@ -172,7 +172,7 @@ class TestWatchConnectivityPeer: XCTestCase {
         try storeA.syncAndWait()
         try storeA.deleteOutcomeAndWait(outcomeA)
         try storeA.syncAndWait()
-        XCTAssert(peerA.lastRevisionPushedToPeer?.entities.count == 1)
+        XCTAssert(peerA.lastRevisionPushedToPeer?.entities.count == 2)
 
         let tasksA = try storeA.fetchTasksAndWait()
         let tasksB = try storeB.fetchTasksAndWait()

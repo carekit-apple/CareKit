@@ -45,7 +45,7 @@ class TestCoreDataSchemaWithNotes: XCTestCase {
         note.title = "Patient"
         note.content = """
         I plan on doing a 30 minute run this evening.
-        If I'm lucky, I might see the mother of the swift
+        If I'm lucky, I might see the mother of the swift \
         birds nesting in our front yard!
         """
 

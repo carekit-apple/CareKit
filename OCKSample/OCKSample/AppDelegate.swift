@@ -29,25 +29,36 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 import CareKit
+import CareKitStore
 import Contacts
 import UIKit
+import HealthKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-    // Manages synchronization of a CoreData store
-    lazy var synchronizedStoreManager: OCKSynchronizedStoreManager = {
-        let store = OCKStore(name: "SampleAppStore")
-        store.populateSampleData()
-        let manager = OCKSynchronizedStoreManager(wrapping: store)
-        return manager
-    }()
+    let coreDataStore = OCKStore(name: "SampleAppStore", type: .inMemory)
+    let healthKitStore = OCKHealthKitPassthroughStore(name: "SampleAppHealthKitPassthroughStore", type: .inMemory)
+    private(set) var synchronizedStoreManager: OCKSynchronizedStoreManager!
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+    func application(_ application: UIApplication,
+                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+
+        coreDataStore.populateSampleData()
+        healthKitStore.populateSampleData()
+
+        let coordinator = OCKStoreCoordinator()
+        coordinator.attach(eventStore: healthKitStore)
+        coordinator.attach(store: coreDataStore)
+
+        synchronizedStoreManager = OCKSynchronizedStoreManager(wrapping: coordinator)
+
         return true
     }
 
-    func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
+    func application(_ application: UIApplication,
+                     configurationForConnecting connectingSceneSession: UISceneSession,
+                     options: UIScene.ConnectionOptions) -> UISceneConfiguration {
         return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
     }
 }
@@ -84,7 +95,8 @@ private extension OCKStore {
         nausea.impactsAdherence = false
         nausea.instructions = "Tap the button below anytime you experience nausea."
 
-        let kegelSchedule = OCKSchedule(composing: [OCKScheduleElement(start: beforeBreakfast, end: nil, interval: DateComponents(day: 2))])
+        let kegelElement = OCKScheduleElement(start: beforeBreakfast, end: nil, interval: DateComponents(day: 2))
+        let kegelSchedule = OCKSchedule(composing: [kegelElement])
         var kegels = OCKTask(id: "kegels", title: "Kegel Exercises", carePlanUUID: nil, schedule: kegelSchedule)
         kegels.impactsAdherence = true
         kegels.instructions = "Perform kegel exercies"
@@ -126,5 +138,32 @@ private extension OCKStore {
         }()
 
         addContacts([contact1, contact2])
+    }
+}
+
+extension OCKHealthKitPassthroughStore {
+
+    func populateSampleData() {
+
+        let schedule = OCKSchedule.dailyAtTime(
+            hour: 8, minutes: 0, start: Date(), end: nil, text: nil,
+            duration: .hours(12), targetValues: [OCKOutcomeValue(2000.0, units: "Steps")])
+
+        let steps = OCKHealthKitTask(
+            id: "steps",
+            title: "Steps",
+            carePlanUUID: nil,
+            schedule: schedule,
+            healthKitLinkage: OCKHealthKitLinkage(
+                quantityIdentifier: .stepCount,
+                quantityType: .cumulative,
+                unit: .count()))
+
+        addTasks([steps]) { result in
+            switch result {
+            case .success: print("Added tasks into HealthKitPassthroughStore!")
+            case .failure(let error): print("Error: \(error)")
+            }
+        }
     }
 }

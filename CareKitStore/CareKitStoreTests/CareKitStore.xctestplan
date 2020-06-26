@@ -2,9 +2,99 @@
   "configurations" : [
     {
       "id" : "5E58A793-A721-42C8-8A91-318D8D05AB0F",
-      "name" : "Configuration 1",
+      "name" : "Default",
       "options" : {
 
+      }
+    },
+    {
+      "enabled" : false,
+      "id" : "3F56FB7A-75CC-48E8-A4A8-32B1B9B3085B",
+      "name" : "Germany",
+      "options" : {
+        "language" : "de",
+        "locationScenario" : {
+          "identifier" : "London, England",
+          "referenceType" : "built-in"
+        },
+        "region" : "DE"
+      }
+    },
+    {
+      "enabled" : false,
+      "id" : "1FDDF753-ED0C-4813-8197-A1AB830ED175",
+      "name" : "Africa",
+      "options" : {
+        "locationScenario" : {
+          "identifier" : "Johannesburg, South Africa",
+          "referenceType" : "built-in"
+        },
+        "region" : "EG"
+      }
+    },
+    {
+      "enabled" : false,
+      "id" : "A0D131BB-7390-46A9-A225-01A5D6445C00",
+      "name" : "Australia",
+      "options" : {
+        "language" : "en-AU",
+        "locationScenario" : {
+          "identifier" : "Sydney, Australia",
+          "referenceType" : "built-in"
+        },
+        "region" : "AU"
+      }
+    },
+    {
+      "enabled" : false,
+      "id" : "A3E1088D-A5E2-4100-A461-2FCF899BEFC4",
+      "name" : "England",
+      "options" : {
+        "language" : "en-GB",
+        "locationScenario" : {
+          "identifier" : "London, England",
+          "referenceType" : "built-in"
+        },
+        "region" : "GB"
+      }
+    },
+    {
+      "enabled" : false,
+      "id" : "0066C1C0-22D4-4BB6-B84A-7B686104F847",
+      "name" : "Japan",
+      "options" : {
+        "language" : "ja",
+        "locationScenario" : {
+          "identifier" : "Tokyo, Japan",
+          "referenceType" : "built-in"
+        },
+        "region" : "JP"
+      }
+    },
+    {
+      "enabled" : false,
+      "id" : "2D196529-053A-4877-9423-8A380C57C18F",
+      "name" : "Hong Kong",
+      "options" : {
+        "language" : "zh-HK",
+        "locationScenario" : {
+          "identifier" : "Hong Kong, China",
+          "referenceType" : "built-in"
+        },
+        "region" : "HK"
+      }
+    },
+    {
+      "enabled" : false,
+      "id" : "77C8509F-0A85-4AE3-A184-D79EB8E28F84",
+      "name" : "Mexico",
+      "options" : {
+        "language" : "es-419",
+        "locationScenario" : {
+          "identifier" : "Mexico City, Mexico",
+          "referenceType" : "built-in"
+        },
+        "region" : "MX"
       }
     }
   ],
@@ -25,7 +115,7 @@
       "target" : {
         "containerPath" : "container:CareKitStore.xcodeproj",
         "identifier" : "E784B9002232EED600736CA5",
-        "name" : "CareKitStoreTests"
+        "name" : "CareKitStoreTests iOS"
       }
     }
   ],

@@ -42,7 +42,7 @@ public struct OCKSemanticVersion: Codable, Equatable, Comparable, LosslessString
     /// The patch number, i.e. the *2* in 3.11.2.
     public let patchNumber: Int
 
-    /// The errors that could occur while atttempting to parse a string into an `OCKSemanticVersion`.
+    /// The errors that could occur while attempting to parse a string into an `OCKSemanticVersion`.
     public enum ParsingError: Error {
         case emptyString
         case tooManySeparators

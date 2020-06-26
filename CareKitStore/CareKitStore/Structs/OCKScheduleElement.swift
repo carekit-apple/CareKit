@@ -1,21 +1,21 @@
 /*
  Copyright (c) 2019, Apple Inc. All rights reserved.
- 
+
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
- 
+
  1.  Redistributions of source code must retain the above copyright notice, this
  list of conditions and the following disclaimer.
- 
+
  2.  Redistributions in binary form must reproduce the above copyright notice,
  this list of conditions and the following disclaimer in the documentation and/or
  other materials provided with the distribution.
- 
+
  3. Neither the name of the copyright holder(s) nor the names of any contributors
  may be used to endorse or promote products derived from this software without
  specific prior written permission. No license is granted to the trademarks of
  the copyright holders even if such marks are included in this software.
- 
+
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -111,10 +111,10 @@ public struct OCKScheduleElement: Codable, Equatable {
     public var interval: DateComponents
 
     /// An array of values that specify what values the user is expected to record.
-    /// For example, for a medcation, it may be the dose that the patient is expected to take.
+    /// For example, for a medication, it may be the dose that the patient is expected to take.
     public var targetValues: [OCKOutcomeValue]
 
-    /// Create a `ScheduleElement` by specying the start date, end date, and interval.
+    /// Create a `ScheduleElement` by specifying the start date, end date, and interval.
     ///
     /// - Parameters:
     ///   - start: Date specifying the exact day and time that the first occurrence of this task happens.
@@ -143,6 +143,7 @@ public struct OCKScheduleElement: Codable, Equatable {
         makeScheduleEvent(on: date(ofOccurrence: occurrence)!, for: occurrence)
     }
 
+    @available(*, deprecated, message: "OCKScheduleElement.elements has been deprecated")
     public var elements: [OCKScheduleElement] {
         return [self]
     }
@@ -215,7 +216,7 @@ public struct OCKScheduleElement: Codable, Equatable {
           let endOfStopDay = Calendar.current.date(byAdding: .init(day: 1, second: -1), to: morningOfStopDay)!
           return endOfStopDay
         }
-        
+
         guard let endDate = end else { return date }
         return min(endDate, date)
     }

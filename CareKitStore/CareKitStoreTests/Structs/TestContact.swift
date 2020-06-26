@@ -29,8 +29,8 @@
  */
 
 @testable import CareKitStore
-import XCTest
 import Contacts
+import XCTest
 
 class TestContact: XCTestCase {
 
@@ -46,7 +46,7 @@ class TestContact: XCTestCase {
         let contact = OCKContact(id: "B", givenName: "Mary", familyName: "Frost", carePlanUUID: plan.uuid)
         XCTAssertTrue(contact.belongs(to: plan))
     }
-    
+
     func testContactSerialzation() throws {
         var contact = OCKContact(id: "jane", givenName: "Jane", familyName: "Daniels", carePlanUUID: nil)
         contact.asset = "JaneDaniels"
@@ -64,15 +64,15 @@ class TestContact: XCTestCase {
             address.postalCode = "94127"
             return address
         }()
-        
+
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.prettyPrinted]
         XCTAssertNoThrow(try encoder.encode(contact))
-        
+
         let data = try encoder.encode(contact)
         let json = String(data: data, encoding: .utf8)!
         XCTAssertNoThrow(try JSONDecoder().decode(OCKContact.self, from: json.data(using: .utf8)!))
-        
+
         let deserialized = try JSONDecoder().decode(OCKContact.self, from: json.data(using: .utf8)!)
         XCTAssertEqual(deserialized, contact)
     }

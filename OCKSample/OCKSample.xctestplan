@@ -1,0 +1,29 @@
+{
+  "configurations" : [
+    {
+      "id" : "F6F1CE15-E14A-446C-B415-806E8BCD9D76",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false,
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:OCKSample.xcodeproj",
+      "identifier" : "E72B2C05226939E3009A9438",
+      "name" : "OCKSample"
+    }
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:OCKSample.xcodeproj",
+        "identifier" : "5173CB8623C3A846007655A0",
+        "name" : "OCKSampleUITests"
+      }
+    }
+  ],
+  "version" : 1
+}

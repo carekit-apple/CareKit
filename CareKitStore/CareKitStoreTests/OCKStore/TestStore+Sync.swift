@@ -47,7 +47,6 @@ class TestStoreSync: XCTestCase {
         remoteStore = OCKStore(name: "peer", type: .inMemory, remote: remoteDummy)
         peer = OCKLocalPeer(peerStore: remoteStore)
         store = OCKStore(name: "store", type: .inMemory, remote: peer)
-        peer.store = store
     }
 
     override func tearDown() {
@@ -401,22 +400,22 @@ class DummyEndpoint: OCKRemoteSynchronizable {
     }
 
     func dummyRevision() -> OCKRevisionRecord {
-        
+
         var patient = OCKPatient(id: "id1", givenName: "Amy", familyName: "Frost")
         patient.uuid = UUID()
         patient.createdDate = Date()
         patient.updatedDate = patient.createdDate
-        
+
         var carePlan = OCKCarePlan(id: "diabetes_type_1", title: "Diabetes Care Plan", patientUUID: nil)
         carePlan.uuid = UUID()
         carePlan.createdDate = Date()
         carePlan.updatedDate = carePlan.createdDate
-        
+
         var contact = OCKContact(id: "contact", givenName: "Amy", familyName: "Frost", carePlanUUID: nil)
         contact.uuid = UUID()
         contact.createdDate = Date()
         contact.updatedDate = contact.createdDate
-        
+
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
         var task = OCKTask(id: "a", title: "A", carePlanUUID: nil, schedule: schedule)
         task.uuid = UUID()
@@ -533,5 +532,43 @@ class DummyEndpoint2: OCKRemoteSynchronizable {
         }
 
         return revision
+    }
+}
+
+final class OCKLocalPeer: OCKRemoteSynchronizable {
+
+    public weak var delegate: OCKRemoteSynchronizationDelegate?
+    public let peerStore: OCKStore
+
+    public init(peerStore: OCKStore) {
+        self.peerStore = peerStore
+    }
+
+    public var conflictPolicy: OCKMergeConflictResolutionPolicy = .keepDevice
+    public var automaticallySynchronizes: Bool = true
+
+    public func pullRevisions(
+        since knowledgeVector: OCKRevisionRecord.KnowledgeVector,
+        mergeRevision: @escaping (OCKRevisionRecord, @escaping (Error?) -> Void) -> Void,
+        completion: @escaping (Error?) -> Void) {
+
+        let clock = knowledgeVector.clock(for: peerStore.context.clockID)
+        let revision = peerStore.computeRevision(since: clock)
+        mergeRevision(revision, completion)
+    }
+
+    public func pushRevisions(
+        deviceRevision: OCKRevisionRecord,
+        overwriteRemote: Bool,
+        completion: @escaping (Error?) -> Void) {
+
+        peerStore.mergeRevision(deviceRevision, completion: completion)
+    }
+
+    public func chooseConflictResolutionPolicy(
+        _ conflict: OCKMergeConflictDescription,
+        completion: @escaping (OCKMergeConflictResolutionPolicy) -> Void) {
+
+        completion(conflictPolicy)
     }
 }

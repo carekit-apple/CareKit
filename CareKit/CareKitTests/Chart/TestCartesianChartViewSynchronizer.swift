@@ -29,6 +29,7 @@
  */
 
 import CareKit
+import CareKitUI
 import Foundation
 import XCTest
 

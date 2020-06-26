@@ -31,6 +31,8 @@
 import Foundation
 import UIKit
 import CareKit
+import CareKitStore
+import SwiftUI
 
 class CareViewController: OCKDailyPageViewController {
 
@@ -59,11 +61,10 @@ class CareViewController: OCKDailyPageViewController {
 
     // This will be called each time the selected date changes.
     // Use this as an opportunity to rebuild the content shown to the user.
-
     override func dailyPageViewController(_ dailyPageViewController: OCKDailyPageViewController,
                                           prepare listViewController: OCKListViewController, for date: Date) {
 
-        let identifiers = ["doxylamine", "nausea", "kegels"]
+        let identifiers = ["doxylamine", "nausea", "kegels", "steps", "heartRate"]
         var query = OCKTaskQuery(for: date)
         query.ids = identifiers
         query.excludesTasksWithNoEvents = true
@@ -86,7 +87,18 @@ class CareViewController: OCKDailyPageViewController {
                     listViewController.appendView(tipView, animated: false)
                 }
 
-                // Since the kegel task is only sheduled every other day, there will be cases
+                if #available(iOS 14, *), let walkTask = tasks.first(where: { $0.id == "steps" }) {
+
+                    let view = NumericProgressTaskView(
+                        task: walkTask,
+                        eventQuery: OCKEventQuery(for: date),
+                        storeManager: self.storeManager)
+                        .padding([.vertical], 10)
+
+                    listViewController.appendViewController(view.formattedHostingController(), animated: false)
+                }
+
+                // Since the kegel task is only scheduled every other day, there will be cases
                 // where it is not contained in the tasks array returned from the query.
                 if let kegelsTask = tasks.first(where: { $0.id == "kegels" }) {
                     let kegelsCard = OCKSimpleTaskViewController(task: kegelsTask, eventQuery: .init(for: date),
@@ -96,8 +108,12 @@ class CareViewController: OCKDailyPageViewController {
 
                 // Create a card for the doxylamine task if there are events for it on this day.
                 if let doxylamineTask = tasks.first(where: { $0.id == "doxylamine" }) {
-                    let doxylamineCard = OCKChecklistTaskViewController(task: doxylamineTask, eventQuery: .init(for: date),
-                                                                        storeManager: self.storeManager)
+
+                    let doxylamineCard = OCKChecklistTaskViewController(
+                        task: doxylamineTask,
+                        eventQuery: .init(for: date),
+                        storeManager: self.storeManager)
+
                     listViewController.appendViewController(doxylamineCard, animated: false)
                 }
 
@@ -131,9 +147,12 @@ class CareViewController: OCKDailyPageViewController {
                         markerSize: 10,
                         eventAggregator: OCKEventAggregator.countOutcomeValues)
 
-                    let insightsCard = OCKCartesianChartViewController(plotType: .bar, selectedDate: date,
-                                                                       configurations: [nauseaDataSeries, doxylamineDataSeries],
-                                                                       storeManager: self.storeManager)
+                    let insightsCard = OCKCartesianChartViewController(
+                        plotType: .bar,
+                        selectedDate: date,
+                        configurations: [nauseaDataSeries, doxylamineDataSeries],
+                        storeManager: self.storeManager)
+
                     insightsCard.chartView.headerView.titleLabel.text = "Nausea & Doxylamine Intake"
                     insightsCard.chartView.headerView.detailLabel.text = "This Week"
                     insightsCard.chartView.headerView.accessibilityLabel = "Nausea & Doxylamine Intake, This Week"
@@ -148,5 +167,13 @@ class CareViewController: OCKDailyPageViewController {
                 }
             }
         }
+    }
+}
+
+private extension View {
+    func formattedHostingController() -> UIHostingController<Self> {
+        let viewController = UIHostingController(rootView: self)
+        viewController.view.backgroundColor = .clear
+        return viewController
     }
 }

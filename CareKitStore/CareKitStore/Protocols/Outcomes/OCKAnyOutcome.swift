@@ -53,7 +53,7 @@ public protocol OCKAnyOutcome {
     /// An identifier for this outcome in a remote store.
     var remoteID: String? { get }
 
-    /// An identifier that can be uesd to group this outcome with others.
+    /// An identifier that can be used to group this outcome with others.
     var groupIdentifier: String? { get }
 
     /// Any array of notes associated with this object.

@@ -22,12 +22,13 @@
 		03AFA931233E69830091DD45 /* OCKR4PatientCoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03AFA92E233E69830091DD45 /* OCKR4PatientCoder.swift */; };
 		03AFA93D233E74610091DD45 /* FHIRResourceDataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03AFA93C233E74610091DD45 /* FHIRResourceDataTests.swift */; };
 		03AFA943233E80C40091DD45 /* DSTU2PatientConverterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03AFA942233E80C40091DD45 /* DSTU2PatientConverterTests.swift */; };
-		03C75C5724A50248009F1896 /* ModelsR4 in Frameworks */ = {isa = PBXBuildFile; productRef = 03C75C5624A50248009F1896 /* ModelsR4 */; };
-		03C75C5924A50248009F1896 /* ModelsDSTU2 in Frameworks */ = {isa = PBXBuildFile; productRef = 03C75C5824A50248009F1896 /* ModelsDSTU2 */; };
 		03C85E6E233D71EC002C5901 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03C85E6D233D71EC002C5901 /* Utils.swift */; };
 		03C85E73233D7215002C5901 /* CareKitFHIRTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03C85E72233D7215002C5901 /* CareKitFHIRTests.swift */; };
 		03C85E76233D721F002C5901 /* R4PatientConverterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03C85E75233D721F002C5901 /* R4PatientConverterTests.swift */; };
 		03E5929123736D0D00B6E9DE /* DSTU2TaskConverterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E5929023736D0D00B6E9DE /* DSTU2TaskConverterTests.swift */; };
+		915266B424A7C95E009CB68A /* ModelsDSTU2 in Frameworks */ = {isa = PBXBuildFile; productRef = 915266B324A7C95E009CB68A /* ModelsDSTU2 */; };
+		915266B624A7C95E009CB68A /* ModelsR4 in Frameworks */ = {isa = PBXBuildFile; productRef = 915266B524A7C95E009CB68A /* ModelsR4 */; };
+		915266B824A7C95E009CB68A /* ModelsBuild in Frameworks */ = {isa = PBXBuildFile; productRef = 915266B724A7C95E009CB68A /* ModelsBuild */; };
 		E746B33A2378F55600278A95 /* OCKDSTU2ScheduleCoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = E746B3392378F55600278A95 /* OCKDSTU2ScheduleCoder.swift */; };
 		E746B33E2378F6D500278A95 /* OCKDSTU2MedicationOrderCoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = E746B33D2378F6D500278A95 /* OCKDSTU2MedicationOrderCoder.swift */; };
 		E746B3422378F95100278A95 /* DSTU2MedicationOrderConverterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E746B3412378F95100278A95 /* DSTU2MedicationOrderConverterTests.swift */; };
@@ -81,9 +82,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				03C75C5924A50248009F1896 /* ModelsDSTU2 in Frameworks */,
-				03C75C5724A50248009F1896 /* ModelsR4 in Frameworks */,
 				0364BB6423C421E30047F952 /* CareKitStore.framework in Frameworks */,
+				915266B624A7C95E009CB68A /* ModelsR4 in Frameworks */,
+				915266B424A7C95E009CB68A /* ModelsDSTU2 in Frameworks */,
+				915266B824A7C95E009CB68A /* ModelsBuild in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -224,8 +226,9 @@
 			);
 			name = CareKitFHIR;
 			packageProductDependencies = (
-				03C75C5624A50248009F1896 /* ModelsR4 */,
-				03C75C5824A50248009F1896 /* ModelsDSTU2 */,
+				915266B324A7C95E009CB68A /* ModelsDSTU2 */,
+				915266B524A7C95E009CB68A /* ModelsR4 */,
+				915266B724A7C95E009CB68A /* ModelsBuild */,
 			);
 			productName = CareKitFHIR;
 			productReference = 0396EF36233D187800C28FC0 /* CareKitFHIR.framework */;
@@ -279,7 +282,7 @@
 			);
 			mainGroup = 0396EF2C233D187800C28FC0;
 			packageReferences = (
-				03C75C5524A50248009F1896 /* XCRemoteSwiftPackageReference "FHIRModels" */,
+				915266B224A7C95E009CB68A /* XCRemoteSwiftPackageReference "FHIRModels" */,
 			);
 			productRefGroup = 0396EF37233D187800C28FC0 /* Products */;
 			projectDirPath = "";
@@ -609,9 +612,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		03C75C5524A50248009F1896 /* XCRemoteSwiftPackageReference "FHIRModels" */ = {
+		915266B224A7C95E009CB68A /* XCRemoteSwiftPackageReference "FHIRModels" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "git@github.com:apple/FHIRModels.git";
+			repositoryURL = "https://github.com/apple/FHIRModels.git";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 0.1.0;
@@ -620,15 +623,20 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		03C75C5624A50248009F1896 /* ModelsR4 */ = {
+		915266B324A7C95E009CB68A /* ModelsDSTU2 */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 03C75C5524A50248009F1896 /* XCRemoteSwiftPackageReference "FHIRModels" */;
+			package = 915266B224A7C95E009CB68A /* XCRemoteSwiftPackageReference "FHIRModels" */;
+			productName = ModelsDSTU2;
+		};
+		915266B524A7C95E009CB68A /* ModelsR4 */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 915266B224A7C95E009CB68A /* XCRemoteSwiftPackageReference "FHIRModels" */;
 			productName = ModelsR4;
 		};
-		03C75C5824A50248009F1896 /* ModelsDSTU2 */ = {
+		915266B724A7C95E009CB68A /* ModelsBuild */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 03C75C5524A50248009F1896 /* XCRemoteSwiftPackageReference "FHIRModels" */;
-			productName = ModelsDSTU2;
+			package = 915266B224A7C95E009CB68A /* XCRemoteSwiftPackageReference "FHIRModels" */;
+			productName = ModelsBuild;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

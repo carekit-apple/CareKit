@@ -1,7 +1,9 @@
 language: swift 
 osx_image: xcode12
+before_script:
+  - for ip in $(dig @8.8.8.8 github.com +short); do ssh-keyscan github.com,$ip; ssh-keyscan $ip; done 2>/dev/null >> ~/.ssh/known_hosts
 script:
-  set -o pipefail && xcodebuild -workspace CKWorkspace.xcworkspace -scheme CareKit -resolvePackageDependencies -destination platform\=iOS\ Simulator,OS\=14.0,name\=iPhone\ 11\ Pro\ Max build test | xcpretty
+  - set -o pipefail && xcodebuild -workspace CKWorkspace.xcworkspace -scheme CareKit -resolvePackageDependencies -destination platform\=iOS\ Simulator,OS\=14.0,name\=iPhone\ 11\ Pro\ Max build test | xcpretty
 
 #xcode_workspace: CKWorkspace.xcworkspace
 #xcode_scheme: CareKit

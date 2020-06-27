@@ -278,7 +278,7 @@ class TestTaskController: XCTestCase {
         let expectations = try setupDeletedTaskNotificationTest(controller: controller)
 
         controller.fetchAndObserveEvents(forTaskIDs: ["doxylamine"], eventQuery: .init(for: Date()))
-        wait(for: expectations, timeout: 2)
+        wait(for: expectations, timeout: 3)
     }
 
     func testFetchWithTaskQueryReceivesDeletedTaskNotifications() throws {

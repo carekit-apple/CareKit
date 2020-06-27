@@ -5,22 +5,14 @@ matrix:
   include:
     - xcode_scheme: CareKit iOS
       xcode_destination: platform=iOS Simulator,OS=14.0,name=iPhone 11 Pro Max
-    - xcode_scheme: CareKit Watch
-      xcode_destination: platform=watchOS Simulator,OS=7.0,name=Apple Watch Series 5 - 44mm
     - xcode_scheme: CareKitFHIR
       xcode_destination: platform=iOS Simulator,OS=14.0,name=iPhone 11 Pro Max
     - xcode_scheme: CareKitStore iOS
       xcode_destination: platform=iOS Simulator,OS=14.0,name=iPhone 11 Pro Max
-    - xcode_scheme: CareKitStore Watch
-      xcode_destination: platform=watchOS Simulator,OS=7.0,name=Apple Watch Series 5 - 44mm
     - xcode_scheme: CareKitUI iOS
       xcode_destination: platform=iOS Simulator,OS=14.0,name=iPhone 11 Pro Max
-    - xcode_scheme: CareKitUI Watch
-      xcode_destination: platform=watchOS Simulator,OS=7.0,name=Apple Watch Series 5 - 44mm
     - xcode_scheme: OCKCatalog
       xcode_destination: platform=iOS Simulator,OS=14.0,name=iPhone 11 Pro Max
     - xcode_scheme: OCKSample
       xcode_destination: platform=iOS Simulator,OS=14.0,name=iPhone 11 Pro Max
-    - xcode_scheme: OCKWatchCatalog
-      xcode_destination: platform=watchOS Simulator,OS=7.0,name=Apple Watch Series 5 - 44mm
 

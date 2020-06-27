@@ -16,4 +16,7 @@
    <FileRef
       location = "group:OCKCatalog/OCKCatalog.xcodeproj">
    </FileRef>
+   <FileRef
+      location = "group:CareKitFHIR/CareKitFHIR.xcodeproj">
+   </FileRef>
 </Workspace>

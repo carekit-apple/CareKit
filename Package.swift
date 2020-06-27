@@ -16,6 +16,13 @@ let package = Package(
         .library(
             name: "CareKitStore",
             targets: ["CareKitStore"]),
+
+        .library(
+            name: "CareKitFHIR",
+            targets: ["CareKitFHIR"])
+    ],
+    dependencies: [
+        .package(url: "git@github.com:apple/FHIRModels.git", from: "0.1.0")
     ],
     targets: [
         .target(
@@ -31,10 +38,20 @@ let package = Package(
             name: "CareKitStore",
             path: "CareKitStore/CareKitStore"),
 
+        .target(
+            name: "CareKitFHIR",
+            dependencies: ["CareKitStore", "ModelsR4", "ModelsDSTU2"],
+            path: "CareKitFHIR/CareKitFHIR"),
+
         .testTarget(
             name: "CareKitStoreTests",
             dependencies: ["CareKitStore"],
             path: "CareKitStore/CareKitStoreTests"),
+
+        .testTarget(
+            name: "CareKitFHIRTests",
+            dependencies: ["CareKitFHIR"],
+            path: "CareKitFHIR/CareKitFHIRTests"),
 
         .testTarget(
             name: "CareKitTests",

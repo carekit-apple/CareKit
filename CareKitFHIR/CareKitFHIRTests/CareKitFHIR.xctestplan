@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "BF12B243-8B44-45E6-B20B-147E4E2A7D50",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:CareKitFHIR.xcodeproj",
+        "identifier" : "0396EF3E233D187800C28FC0",
+        "name" : "CareKitFHIRTests"
+      }
+    }
+  ],
+  "version" : 1
+}

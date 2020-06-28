@@ -120,4 +120,10 @@ open class OCKLabel: UILabel, OCKStylable {
     }
 
     open func styleDidChange() {}
+
+    open override func layoutSubviews() {
+        super.layoutSubviews()
+
+        preferredMaxLayoutWidth = frame.size.width
+    }
 }

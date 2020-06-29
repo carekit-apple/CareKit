@@ -26,9 +26,8 @@
 		03C85E73233D7215002C5901 /* CareKitFHIRTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03C85E72233D7215002C5901 /* CareKitFHIRTests.swift */; };
 		03C85E76233D721F002C5901 /* R4PatientConverterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03C85E75233D721F002C5901 /* R4PatientConverterTests.swift */; };
 		03E5929123736D0D00B6E9DE /* DSTU2TaskConverterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E5929023736D0D00B6E9DE /* DSTU2TaskConverterTests.swift */; };
-		915266B424A7C95E009CB68A /* ModelsDSTU2 in Frameworks */ = {isa = PBXBuildFile; productRef = 915266B324A7C95E009CB68A /* ModelsDSTU2 */; };
-		915266B624A7C95E009CB68A /* ModelsR4 in Frameworks */ = {isa = PBXBuildFile; productRef = 915266B524A7C95E009CB68A /* ModelsR4 */; };
-		915266B824A7C95E009CB68A /* ModelsBuild in Frameworks */ = {isa = PBXBuildFile; productRef = 915266B724A7C95E009CB68A /* ModelsBuild */; };
+		911F09AF24AA4D2100764C86 /* ModelsR4 in Frameworks */ = {isa = PBXBuildFile; productRef = 911F09AE24AA4D2100764C86 /* ModelsR4 */; };
+		911F09B124AA4D2100764C86 /* ModelsDSTU2 in Frameworks */ = {isa = PBXBuildFile; productRef = 911F09B024AA4D2100764C86 /* ModelsDSTU2 */; };
 		E746B33A2378F55600278A95 /* OCKDSTU2ScheduleCoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = E746B3392378F55600278A95 /* OCKDSTU2ScheduleCoder.swift */; };
 		E746B33E2378F6D500278A95 /* OCKDSTU2MedicationOrderCoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = E746B33D2378F6D500278A95 /* OCKDSTU2MedicationOrderCoder.swift */; };
 		E746B3422378F95100278A95 /* DSTU2MedicationOrderConverterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E746B3412378F95100278A95 /* DSTU2MedicationOrderConverterTests.swift */; };
@@ -82,10 +81,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				911F09B124AA4D2100764C86 /* ModelsDSTU2 in Frameworks */,
+				911F09AF24AA4D2100764C86 /* ModelsR4 in Frameworks */,
 				0364BB6423C421E30047F952 /* CareKitStore.framework in Frameworks */,
-				915266B624A7C95E009CB68A /* ModelsR4 in Frameworks */,
-				915266B424A7C95E009CB68A /* ModelsDSTU2 in Frameworks */,
-				915266B824A7C95E009CB68A /* ModelsBuild in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -226,9 +224,8 @@
 			);
 			name = CareKitFHIR;
 			packageProductDependencies = (
-				915266B324A7C95E009CB68A /* ModelsDSTU2 */,
-				915266B524A7C95E009CB68A /* ModelsR4 */,
-				915266B724A7C95E009CB68A /* ModelsBuild */,
+				911F09AE24AA4D2100764C86 /* ModelsR4 */,
+				911F09B024AA4D2100764C86 /* ModelsDSTU2 */,
 			);
 			productName = CareKitFHIR;
 			productReference = 0396EF36233D187800C28FC0 /* CareKitFHIR.framework */;
@@ -282,7 +279,7 @@
 			);
 			mainGroup = 0396EF2C233D187800C28FC0;
 			packageReferences = (
-				915266B224A7C95E009CB68A /* XCRemoteSwiftPackageReference "FHIRModels" */,
+				911F09AD24AA4D2100764C86 /* XCRemoteSwiftPackageReference "FHIRModels" */,
 			);
 			productRefGroup = 0396EF37233D187800C28FC0 /* Products */;
 			projectDirPath = "";
@@ -612,7 +609,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		915266B224A7C95E009CB68A /* XCRemoteSwiftPackageReference "FHIRModels" */ = {
+		911F09AD24AA4D2100764C86 /* XCRemoteSwiftPackageReference "FHIRModels" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/FHIRModels.git";
 			requirement = {
@@ -623,20 +620,15 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		915266B324A7C95E009CB68A /* ModelsDSTU2 */ = {
+		911F09AE24AA4D2100764C86 /* ModelsR4 */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 915266B224A7C95E009CB68A /* XCRemoteSwiftPackageReference "FHIRModels" */;
-			productName = ModelsDSTU2;
-		};
-		915266B524A7C95E009CB68A /* ModelsR4 */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 915266B224A7C95E009CB68A /* XCRemoteSwiftPackageReference "FHIRModels" */;
+			package = 911F09AD24AA4D2100764C86 /* XCRemoteSwiftPackageReference "FHIRModels" */;
 			productName = ModelsR4;
 		};
-		915266B724A7C95E009CB68A /* ModelsBuild */ = {
+		911F09B024AA4D2100764C86 /* ModelsDSTU2 */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 915266B224A7C95E009CB68A /* XCRemoteSwiftPackageReference "FHIRModels" */;
-			productName = ModelsBuild;
+			package = 911F09AD24AA4D2100764C86 /* XCRemoteSwiftPackageReference "FHIRModels" */;
+			productName = ModelsDSTU2;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

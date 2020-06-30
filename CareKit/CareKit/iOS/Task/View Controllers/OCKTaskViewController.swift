@@ -32,7 +32,6 @@
 import CareKitStore
 import CareKitUI
 import Combine
-import os.log
 import UIKit
 
 /// Types wishing to receive updates from task view controllers can conform to this protocol.
@@ -138,8 +137,7 @@ UIViewController, OCKTaskViewDelegate {
             .compactMap { $0 }
             .sink { [unowned self] error in
                 if self.delegate == nil {
-                    os_log("A task error occurred, but no delegate was set to forward it to! %{public}@",
-                           log: .carekit, type: .error, error.localizedDescription)
+                    log(.error, "A task error occurred, but no delegate was set to forward it to!", error: error)
                 }
                 self.delegate?.taskViewController(self, didEncounterError: error)
             }
@@ -173,8 +171,7 @@ UIViewController, OCKTaskViewDelegate {
     func notifyDelegateAndResetViewOnError<Success, Error>(result: Result<Success, Error>) {
         if case let .failure(error) = result {
             if delegate == nil {
-                os_log("A task error occurred, but no delegate was set to forward it to! %{public}@",
-                       log: .carekit, type: .error, error.localizedDescription)
+                log(.error, "A task error occurred, but no delegate was set to forward it to!", error: error)
             }
             delegate?.taskViewController(self, didEncounterError: error)
             resetViewState()
@@ -199,8 +196,7 @@ UIViewController, OCKTaskViewDelegate {
             present(alert, animated: true, completion: nil)
         } catch {
             if delegate == nil {
-                os_log("A task error occurred, but no delegate was set to forward it to! %{public}@",
-                       log: .carekit, type: .error, error.localizedDescription)
+                log(.error, "A task error occurred, but no delegate was set to forward it to!", error: error)
             }
             delegate?.taskViewController(self, didEncounterError: error)
         }
@@ -216,8 +212,7 @@ UIViewController, OCKTaskViewDelegate {
             present(detailsViewController, animated: true)
         } catch {
             if delegate == nil {
-                os_log("A task error occurred, but no delegate was set to forward it to! %{public}@",
-                       log: .carekit, type: .error, error.localizedDescription)
+                log(.error, "A task error occurred, but no delegate was set to forward it to!", error: error)
             }
             delegate?.taskViewController(self, didEncounterError: error)
         }

@@ -33,7 +33,6 @@ import CareKitStore
 import CareKitUI
 import Combine
 import MessageUI
-import os.log
 import UIKit
 
 /// Types wishing to receive updates from contact view controllers can conform to this protocol.
@@ -125,8 +124,7 @@ UIViewController, OCKContactViewDelegate, MFMessageComposeViewControllerDelegate
             .compactMap { $0 }
             .sink { [unowned self] error in
                 if self.delegate == nil {
-                    os_log("A task error occurred, but no delegate was set to forward it to! %{public}@",
-                           log: .carekit, type: .error, error.localizedDescription)
+                    log(.error, "A task error occurred, but no delegate was set to forward it to!", error: error)
                 }
                 self.delegate?.contactViewController(self, didEncounterError: error)
             }
@@ -159,8 +157,7 @@ UIViewController, OCKContactViewDelegate, MFMessageComposeViewControllerDelegate
         switch result {
         case .failure(let error):
             if delegate == nil {
-                os_log("A contact error occurred, but no delegate was set to forward it to! %{public}@",
-                       log: .carekit, type: .error, error.localizedDescription)
+                log(.error, "A contact error occurred, but no delegate was set to forward it to!", error: error)
             }
             delegate?.contactViewController(self, didEncounterError: error)
         case .success(let value): successCompletion(value)
@@ -173,8 +170,7 @@ UIViewController, OCKContactViewDelegate, MFMessageComposeViewControllerDelegate
             success(result)
         } catch {
             if delegate == nil {
-                os_log("A contact error occurred, but no delegate was set to forward it to! %{public}@",
-                       log: .carekit, type: .error, error.localizedDescription)
+                log(.error, "A contact error occurred, but no delegate was set to forward it to!", error: error)
             }
             delegate?.contactViewController(self, didEncounterError: error)
         }

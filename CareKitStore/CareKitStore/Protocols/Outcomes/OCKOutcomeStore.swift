@@ -122,17 +122,17 @@ public extension OCKReadableOutcomeStore {
 public extension OCKOutcomeStore {
     func addOutcome(_ outcome: Outcome, callbackQueue: DispatchQueue = .main, completion: OCKResultClosure<Outcome>? = nil) {
         addOutcomes([outcome], callbackQueue: callbackQueue, completion:
-            chooseFirst(then: completion, replacementError: .addFailed(reason: "Failed to add outcome: \(outcome)")))
+            chooseFirst(then: completion, replacementError: .addFailed(reason: "Failed to add outcome")))
     }
 
     func updateOutcome(_ outcome: Outcome, callbackQueue: DispatchQueue = .main, completion: OCKResultClosure<Outcome>? = nil) {
         updateOutcomes([outcome], callbackQueue: callbackQueue, completion:
-            chooseFirst(then: completion, replacementError: .updateFailed(reason: "Failed to update outcome: \(outcome)")))
+            chooseFirst(then: completion, replacementError: .updateFailed(reason: "Failed to update outcome")))
     }
 
     func deleteOutcome(_ outcome: Outcome, callbackQueue: DispatchQueue = .main, completion: OCKResultClosure<Outcome>? = nil) {
         deleteOutcomes([outcome], callbackQueue: callbackQueue, completion:
-            chooseFirst(then: completion, replacementError: .deleteFailed(reason: "Failed to delete outcome: \(outcome)")))
+            chooseFirst(then: completion, replacementError: .deleteFailed(reason: "Failed to delete outcome")))
     }
 }
 

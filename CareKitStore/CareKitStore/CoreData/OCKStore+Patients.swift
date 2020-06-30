@@ -50,7 +50,7 @@ extension OCKStore {
                 callbackQueue.async { completion(.success(patients)) }
             } catch {
                 self.context.rollback()
-                let message = "Failed to fetch patients with query: \(String(describing: query)). \(error.localizedDescription)"
+                let message = "Failed to fetch patients for query. \(error.localizedDescription)"
                 callbackQueue.async { completion(.failure(.fetchFailed(reason: message))) }
             }
         }
@@ -71,7 +71,7 @@ extension OCKStore {
             } catch {
                 self.context.rollback()
                 callbackQueue.async {
-                    completion?(.failure(.addFailed(reason: "Failed to insert OCKPatients: [\(patients)]. \(error.localizedDescription)")))
+                    completion?(.failure(.addFailed(reason: "Failed to insert OCKPatients. \(error.localizedDescription)")))
                 }
             }
         }
@@ -91,7 +91,7 @@ extension OCKStore {
             } catch {
                 self.context.rollback()
                 callbackQueue.async {
-                    completion?(.failure(.updateFailed(reason: "Failed to update OCKPatients: [\(patients)]. \(error.localizedDescription)")))
+                    completion?(.failure(.updateFailed(reason: "Failed to update OCKPatients. \(error.localizedDescription)")))
                 }
             }
         }
@@ -115,7 +115,7 @@ extension OCKStore {
             } catch {
                 self.context.rollback()
                 callbackQueue.async {
-                    completion?(.failure(.deleteFailed(reason: "Failed to delete OCKPatients: [\(patients)]. \(error.localizedDescription)")))
+                    completion?(.failure(.deleteFailed(reason: "Failed to delete OCKPatients. \(error.localizedDescription)")))
                 }
             }
         }

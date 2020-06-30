@@ -30,7 +30,6 @@
 
 import CoreData
 import Foundation
-import os.log
 
 extension NSManagedObjectContext {
 
@@ -112,8 +111,7 @@ extension OCKStore {
         if remote?.automaticallySynchronizes == true {
             pullThenPush { error in
                 if let error = error {
-                    os_log("Failed to automatically synchronize. %{public}@",
-                           log: .store, type: .info, error.localizedDescription)
+                    log(.error, "Failed to automatically synchronize.", error: error)
                 }
             }
         }
@@ -147,7 +145,7 @@ extension OCKStore {
                 self.isSynchronizing = false
                 self.context.rollback()
                 completion(OCKStoreError.remoteSynchronizationFailed(
-                            reason: "Failed to delete some store contents. \(error)"))
+                    reason: "Failed to delete some store contents. \(error.localizedDescription)"))
                 return
             }
 

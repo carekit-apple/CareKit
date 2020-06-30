@@ -122,7 +122,7 @@ public extension OCKAnyReadOnlyContactStore {
         query.ids = [id]
 
         fetchAnyContacts(query: query, callbackQueue: callbackQueue, completion:
-            chooseFirst(then: completion, replacementError: .fetchFailed(reason: "No contact with ID: \(id)")))
+            chooseFirst(then: completion, replacementError: .fetchFailed(reason: "No contact with matching ID")))
     }
 }
 
@@ -131,16 +131,16 @@ public extension OCKAnyReadOnlyContactStore {
 public extension OCKAnyContactStore {
     func addAnyContact(_ contact: OCKAnyContact, callbackQueue: DispatchQueue = .main, completion: OCKResultClosure<OCKAnyContact>? = nil) {
         addAnyContacts([contact], callbackQueue: callbackQueue, completion:
-            chooseFirst(then: completion, replacementError: .addFailed(reason: "Failed to add contact: \(contact)")))
+            chooseFirst(then: completion, replacementError: .addFailed(reason: "Failed to add contact")))
     }
 
     func updateAnyContact(_ contact: OCKAnyContact, callbackQueue: DispatchQueue = .main, completion: OCKResultClosure<OCKAnyContact>? = nil) {
         updateAnyContacts([contact], callbackQueue: callbackQueue, completion:
-            chooseFirst(then: completion, replacementError: .updateFailed(reason: "Failed to update contact: \(contact)")))
+            chooseFirst(then: completion, replacementError: .updateFailed(reason: "Failed to update contact")))
     }
 
     func deleteAnyContact(_ contact: OCKAnyContact, callbackQueue: DispatchQueue = .main, completion: OCKResultClosure<OCKAnyContact>? = nil) {
         deleteAnyContacts([contact], callbackQueue: callbackQueue, completion:
-            chooseFirst(then: completion, replacementError: .deleteFailed(reason: "Failed to delete contact: \(contact)")))
+            chooseFirst(then: completion, replacementError: .deleteFailed(reason: "Failed to delete contact")))
     }
 }

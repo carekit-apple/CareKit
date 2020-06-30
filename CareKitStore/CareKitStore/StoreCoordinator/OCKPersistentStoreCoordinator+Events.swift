@@ -74,7 +74,8 @@ extension OCKStoreCoordinator {
 
         group.notify(queue: .main) {
             guard let store = respondingStore else {
-                completion(.failure(.fetchFailed(reason: "Unable to find a task with id: \(taskID)")))
+                completion(.failure(.fetchFailed(
+                    reason: "Unable to find a task with the given id.")))
                 return
             }
 

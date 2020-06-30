@@ -33,7 +33,6 @@ import CareKitStore
 import CareKitUI
 import Combine
 import MessageUI
-import os.log
 import UIKit
 
 /// Types wishing to receive updates from calendar view controllers can conform to this protocol.
@@ -116,8 +115,7 @@ UIViewController, OCKCalendarViewDelegate {
             .compactMap { $0 }
             .sink { [unowned self] error in
                 if self.delegate == nil {
-                    os_log("A calendar error occurred, but no delegate was set to forward it to! %{public}@",
-                           log: .carekit, type: .error, error.localizedDescription)
+                    log(.error, "A calendar error occurred, but no delegate was set to forward it to!", error: error)
                 }
                 self.delegate?.calendarViewController(self, didEncounterError: error)
             }

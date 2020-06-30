@@ -22,7 +22,7 @@ let package = Package(
             targets: ["CareKitFHIR"])
     ],
     dependencies: [
-        .package(url: "git@github.com:apple/FHIRModels.git", from: "0.1.0")
+        .package(url: "https://github.com/apple/FHIRModels.git", from: "0.1.0")
     ],
     targets: [
         .target(

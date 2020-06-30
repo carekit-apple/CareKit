@@ -127,16 +127,16 @@ public extension OCKAnyOutcomeStore {
 
     func addAnyOutcome(_ outcome: OCKAnyOutcome, callbackQueue: DispatchQueue = .main, completion: OCKResultClosure<OCKAnyOutcome>? = nil) {
         addAnyOutcomes([outcome], callbackQueue: callbackQueue, completion:
-            chooseFirst(then: completion, replacementError: .addFailed(reason: "Failed to add outcome: \(outcome)")))
+            chooseFirst(then: completion, replacementError: .addFailed(reason: "Failed to add outcome")))
     }
 
     func updateAnyOutcome(_ outcome: OCKAnyOutcome, callbackQueue: DispatchQueue = .main, completion: OCKResultClosure<OCKAnyOutcome>? = nil) {
         updateAnyOutcomes([outcome], callbackQueue: callbackQueue, completion:
-            chooseFirst(then: completion, replacementError: .updateFailed(reason: "Failed to update outcome: \(outcome)")))
+            chooseFirst(then: completion, replacementError: .updateFailed(reason: "Failed to update outcome")))
     }
 
     func deleteAnyOutcome(_ outcome: OCKAnyOutcome, callbackQueue: DispatchQueue = .main, completion: OCKResultClosure<OCKAnyOutcome>? = nil) {
         deleteAnyOutcomes([outcome], callbackQueue: callbackQueue, completion:
-            chooseFirst(then: completion, replacementError: .deleteFailed(reason: "Failed to delete outcome: \(outcome)")))
+            chooseFirst(then: completion, replacementError: .deleteFailed(reason: "Failed to delete outcome")))
     }
 }

@@ -50,7 +50,7 @@ extension OCKStore {
                 callbackQueue.async { completion(.success(outcomes)) }
             } catch {
                 self.context.rollback()
-                let reason = "Failed to fetch outcomes with query: \(String(describing: query)). \(error.localizedDescription)"
+                let reason = "Failed to fetch outcomes for query. \(error.localizedDescription)"
                 callbackQueue.async { completion(.failure(.fetchFailed(reason: reason))) }
             }
         }
@@ -70,7 +70,7 @@ extension OCKStore {
             } catch {
                 self.context.rollback()
                 callbackQueue.async {
-                    completion?(.failure(.addFailed(reason: "Failed to insert OKCOutomes: [\(outcomes)]. \(error.localizedDescription)")))
+                    completion?(.failure(.addFailed(reason: "Failed to insert OKCOutomes. \(error.localizedDescription)")))
                 }
             }
         }

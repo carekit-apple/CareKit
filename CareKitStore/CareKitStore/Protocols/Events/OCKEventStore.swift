@@ -98,7 +98,7 @@ public extension OCKReadOnlyEventStore where Task: OCKAnyVersionableTask {
             case .success(let task):
                 self.fetchEvents(task: task, query: query, previousEvents: [], callbackQueue: callbackQueue, completion: completion)
             }
-        }, replacementError: .fetchFailed(reason: "No task with id: \(taskID) for query: \(taskQuery)")))
+        }, replacementError: .fetchFailed(reason: "No task with ID matching query")))
     }
 
     func fetchEvent(forTask task: Task, occurrence: Int, callbackQueue: DispatchQueue = .main, completion: @escaping OCKResultClosure<Event>) {
@@ -214,7 +214,7 @@ public extension OCKReadOnlyEventStore where Task: OCKAnyVersionableTask {
         var query = OCKTaskQuery()
         query.uuids = [uuid]
         fetchTasks(query: TaskQuery(query), callbackQueue: callbackQueue, completion:
-            chooseFirst(then: completion, replacementError: .fetchFailed(reason: "No task with versionID: \(uuid)")))
+            chooseFirst(then: completion, replacementError: .fetchFailed(reason: "No task with UUID: \(uuid)")))
     }
 
     private func join(task: Task, with outcomes: [Outcome], and scheduleEvents: [OCKScheduleEvent]) -> [OCKEvent<Task, Outcome>] {

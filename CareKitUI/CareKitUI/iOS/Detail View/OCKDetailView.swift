@@ -29,7 +29,6 @@
  */
 #if !os(watchOS)
 
-import os.log
 import UIKit
 
 /// A scrollable view with an image header and text content.
@@ -270,8 +269,7 @@ public extension OCKDetailView {
                     options: [.documentType: NSAttributedString.DocumentType.html],
                     documentAttributes: nil)
             else {
-                os_log("Could not convert string to HTML. %{private}@",
-                       log: .ui, type: .error, html)
+                log(.error, "Could not convert string to HTML")
                 return nil
             }
 

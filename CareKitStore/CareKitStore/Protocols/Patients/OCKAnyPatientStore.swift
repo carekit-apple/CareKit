@@ -123,7 +123,7 @@ public extension OCKAnyReadOnlyPatientStore {
         query.ids = [id]
 
         fetchAnyPatients(query: query, callbackQueue: callbackQueue, completion:
-            chooseFirst(then: completion, replacementError: .fetchFailed(reason: "No patient with ID: \(id)")))
+            chooseFirst(then: completion, replacementError: .fetchFailed(reason: "No patient with matching ID")))
     }
 }
 
@@ -132,16 +132,16 @@ public extension OCKAnyReadOnlyPatientStore {
 public extension OCKAnyPatientStore {
     func addAnyPatient(_ patient: OCKAnyPatient, callbackQueue: DispatchQueue = .main, completion: OCKResultClosure<OCKAnyPatient>? = nil) {
         addAnyPatients([patient], callbackQueue: callbackQueue, completion:
-            chooseFirst(then: completion, replacementError: .addFailed(reason: "Failed to add patient: \(patient)")))
+            chooseFirst(then: completion, replacementError: .addFailed(reason: "Failed to add patient")))
     }
 
     func updateAnyPatient(_ patient: OCKAnyPatient, callbackQueue: DispatchQueue = .main, completion: OCKResultClosure<OCKAnyPatient>? = nil) {
         updateAnyPatients([patient], callbackQueue: callbackQueue, completion:
-            chooseFirst(then: completion, replacementError: .updateFailed(reason: "Failed to update patient: \(patient)")))
+            chooseFirst(then: completion, replacementError: .updateFailed(reason: "Failed to update patient")))
     }
 
     func deleteAnyPatient(_ patient: OCKAnyPatient, callbackQueue: DispatchQueue = .main, completion: OCKResultClosure<OCKAnyPatient>? = nil) {
         deleteAnyPatients([patient], callbackQueue: callbackQueue, completion:
-            chooseFirst(then: completion, replacementError: .deleteFailed(reason: "Failed to delete patient: \(patient)")))
+            chooseFirst(then: completion, replacementError: .deleteFailed(reason: "Failed to delete patient")))
     }
 }

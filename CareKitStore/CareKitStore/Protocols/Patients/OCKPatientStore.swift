@@ -120,7 +120,7 @@ public extension OCKReadablePatientStore {
         query.extendedSortDescriptors = [.effectiveDate(ascending: true)]
 
         fetchPatients(query: PatientQuery(query), callbackQueue: callbackQueue, completion:
-            chooseFirst(then: completion, replacementError: .fetchFailed(reason: "No patient with ID: \(id)")))
+            chooseFirst(then: completion, replacementError: .fetchFailed(reason: "No patient with matching ID")))
     }
 }
 
@@ -130,17 +130,17 @@ public extension OCKPatientStore {
 
     func addPatient(_ patient: Patient, callbackQueue: DispatchQueue = .main, completion: OCKResultClosure<Patient>? = nil) {
         addPatients([patient], callbackQueue: callbackQueue, completion:
-            chooseFirst(then: completion, replacementError: .addFailed(reason: "Failed to add patient: \(patient)")))
+            chooseFirst(then: completion, replacementError: .addFailed(reason: "Failed to add patient")))
     }
 
     func updatePatient(_ patient: Patient, callbackQueue: DispatchQueue = .main, completion: OCKResultClosure<Patient>? = nil) {
         updatePatients([patient], callbackQueue: callbackQueue, completion:
-            chooseFirst(then: completion, replacementError: .updateFailed(reason: "Failed to update patient: \(patient)")))
+            chooseFirst(then: completion, replacementError: .updateFailed(reason: "Failed to update patient")))
     }
 
     func deletePatient(_ patient: Patient, callbackQueue: DispatchQueue = .main, completion: OCKResultClosure<Patient>? = nil) {
         deletePatients([patient], callbackQueue: callbackQueue, completion:
-            chooseFirst(then: completion, replacementError: .deleteFailed(reason: "Failed to delete patient: \(patient)")))
+            chooseFirst(then: completion, replacementError: .deleteFailed(reason: "Failed to delete patient")))
     }
 }
 

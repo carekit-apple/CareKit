@@ -31,7 +31,6 @@
 
 import CareKitStore
 import CareKitUI
-import os.log
 import UIKit
 
 /// Conform to this protocol to receive callbacks when important events occur in an `OCKDailyPageViewController`.
@@ -187,8 +186,7 @@ UIPageViewControllerDataSource, UIPageViewControllerDelegate {
 
     public func weekCalendarPageViewController(_ viewController: OCKWeekCalendarPageViewController, didEncounterError error: Error) {
         if delegate == nil {
-            os_log("An error occurred in the calendar, but no delegate was set to forward it to! %{public}@",
-                   log: .carekit, type: .error, error.localizedDescription)
+            log(.error, "An error occurred in the calendar, but no delegate was set to forward it to!", error: error)
         }
         delegate?.dailyPageViewController(self, didFailWithError: error)
     }

@@ -66,6 +66,7 @@ open class OCKAddressButton: OCKAnimatedButton<OCKStackView> {
     public let titleLabel: OCKLabel = {
         let label = OCKLabel(textStyle: .footnote, weight: .semibold)
         label.numberOfLines = 0
+        label.lineBreakMode = .byWordWrapping
         label.text = loc("ADDRESS")
         return label
     }()
@@ -74,6 +75,7 @@ open class OCKAddressButton: OCKAnimatedButton<OCKStackView> {
     public let detailLabel: OCKLabel = {
         let label = OCKLabel(textStyle: .footnote, weight: .regular)
         label.numberOfLines = 0
+        label.lineBreakMode = .byWordWrapping
         return label
     }()
 

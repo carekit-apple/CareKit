@@ -104,8 +104,10 @@ public extension OCKAnyReadOnlyEventStore where Self: OCKAnyReadOnlyTaskStore, S
                     let query = OCKEventQuery(dateInterval: query.dateInterval)
                     self.fetchAnyEvents(taskID: id, query: query, callbackQueue: callbackQueue, completion: { result in
                         switch result {
-                        case .failure(let fetchError):      error = fetchError
-                        case .success(let fetchedEvents):   events.append(contentsOf: fetchedEvents)
+                        case .failure(let fetchError):
+                            error = fetchError
+                        case .success(let fetchedEvents):
+                            events.append(contentsOf: fetchedEvents)
                         }
                         group.leave()
                     })

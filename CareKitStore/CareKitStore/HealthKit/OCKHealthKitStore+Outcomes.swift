@@ -69,7 +69,7 @@ public extension OCKHealthKitPassthroughStore {
                 guard let value = outcome.values.first?.doubleValue
                     else { throw OCKStoreError.addFailed(reason: "OCKHealthKitOutcome's value must be of type Double, but was not.") }
                 guard let task = tasks.first(where: { $0.uuid == outcome.taskUUID })
-                    else { throw OCKStoreError.addFailed(reason: "No task could be for outcome: \(outcome)") }
+                    else { throw OCKStoreError.addFailed(reason: "No task could be for outcome") }
 
                 let unit = HKUnit(from: task.healthKitLinkage.unitString)
                 let quantity = HKQuantity(unit: unit, doubleValue: value)
@@ -85,7 +85,8 @@ public extension OCKHealthKitPassthroughStore {
             store.save(samples) { _, error in
                 if let error = error {
                     callbackQueue.async {
-                        completion?(.failure(.addFailed(reason: "Failed to add outcomes to HealthKit. Error: \(error)")))
+                        completion?(.failure(.addFailed(
+                            reason: "Failed to add outcomes to HealthKit. Error: \(error.localizedDescription)")))
                     }
                     return
                 }
@@ -104,7 +105,8 @@ public extension OCKHealthKitPassthroughStore {
 
         } catch {
             callbackQueue.async {
-                completion?(.failure(.addFailed(reason: "Failed to add outcomes to HealthKit. Error: \(error)")))
+                completion?(.failure(.addFailed(
+                    reason: "Failed to add outcomes to HealthKit. Error: \(error.localizedDescription)")))
             }
         }
     }
@@ -134,7 +136,8 @@ public extension OCKHealthKitPassthroughStore {
             store.deleteObjects(of: objectType, predicate: predicate) { _, _, error in
                 if let error = error {
                     callbackQueue.async {
-                        completion?(.failure(.deleteFailed(reason: "Failed to delete HealthKit samples. Error: \(error)")))
+                        completion?(.failure(.deleteFailed(
+                            reason: "Failed to delete HealthKit samples. Error: \(error.localizedDescription)")))
                     }
                     return
                 }
@@ -145,7 +148,8 @@ public extension OCKHealthKitPassthroughStore {
             }
         } catch {
             callbackQueue.async {
-                completion?(.failure(.deleteFailed(reason: "Failed to delete HealthKit samples. Error: \(error)")))
+                completion?(.failure(.deleteFailed(
+                    reason: "Failed to delete HealthKit samples. Error: \(error.localizedDescription)")))
             }
         }
     }

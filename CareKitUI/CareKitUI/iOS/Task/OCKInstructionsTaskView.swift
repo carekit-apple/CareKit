@@ -87,6 +87,7 @@ open class OCKInstructionsTaskView: OCKView, OCKTaskDisplayable {
     public let instructionsLabel: OCKLabel = {
         let label = OCKLabel(textStyle: .subheadline, weight: .medium)
         label.numberOfLines = 0
+        label.lineBreakMode = .byWordWrapping
         return label
     }()
 

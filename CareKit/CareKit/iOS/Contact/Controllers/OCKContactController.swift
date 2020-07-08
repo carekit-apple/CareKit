@@ -190,7 +190,7 @@ open class OCKContactController: ObservableObject {
         }
         return contact
     }
-    
+
     #if os(iOS)
 
     /// Locate the current `contact` in the system contacts.
@@ -254,7 +254,7 @@ open class OCKContactController: ObservableObject {
         viewController.setToRecipients([email])
         return viewController
     }
-    
+
     #endif
 }
 

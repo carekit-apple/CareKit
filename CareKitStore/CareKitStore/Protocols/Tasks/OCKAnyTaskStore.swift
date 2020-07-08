@@ -122,7 +122,7 @@ public extension OCKAnyReadOnlyTaskStore {
         query.ids = [id]
         query.limit = 1
         fetchAnyTasks(query: query, callbackQueue: callbackQueue, completion:
-            chooseFirst(then: completion, replacementError: .fetchFailed(reason: "No task with ID: \(id)")))
+            chooseFirst(then: completion, replacementError: .fetchFailed(reason: "No task with matching ID")))
     }
 }
 
@@ -131,16 +131,16 @@ public extension OCKAnyReadOnlyTaskStore {
 public extension OCKAnyTaskStore {
     func addAnyTask(_ task: OCKAnyTask, callbackQueue: DispatchQueue = .main, completion: OCKResultClosure<OCKAnyTask>? = nil) {
         addAnyTasks([task], callbackQueue: callbackQueue, completion:
-            chooseFirst(then: completion, replacementError: .addFailed(reason: "Failed to add task \(task)")))
+            chooseFirst(then: completion, replacementError: .addFailed(reason: "Failed to add task")))
     }
 
     func updateAnyTask(_ task: OCKAnyTask, callbackQueue: DispatchQueue = .main, completion: OCKResultClosure<OCKAnyTask>? = nil) {
         updateAnyTasks([task], callbackQueue: callbackQueue, completion:
-            chooseFirst(then: completion, replacementError: .updateFailed(reason: "Failed to update task: \(task)")))
+            chooseFirst(then: completion, replacementError: .updateFailed(reason: "Failed to update task")))
     }
 
     func deleteAnyTask(_ task: OCKAnyTask, callbackQueue: DispatchQueue = .main, completion: OCKResultClosure<OCKAnyTask>? = nil) {
         deleteAnyTasks([task], callbackQueue: callbackQueue, completion:
-            chooseFirst(then: completion, replacementError: .deleteFailed(reason: "Failed to delete task: \(task)")))
+            chooseFirst(then: completion, replacementError: .deleteFailed(reason: "Failed to delete task")))
     }
 }

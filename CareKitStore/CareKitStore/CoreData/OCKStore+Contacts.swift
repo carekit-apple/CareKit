@@ -68,7 +68,7 @@ extension OCKStore {
             } catch {
                 self.context.rollback()
                 callbackQueue.async {
-                    completion?(.failure(.addFailed(reason: "Failed to insert contacts: [\(contacts)]. \(error.localizedDescription)")))
+                    completion?(.failure(.addFailed(reason: "Failed to insert contacts. \(error.localizedDescription)")))
                 }
             }
         }
@@ -87,7 +87,7 @@ extension OCKStore {
             } catch {
                 self.context.rollback()
                 callbackQueue.async {
-                    completion?(.failure(.updateFailed(reason: "Failed to update contacts: [\(contacts)]. \(error.localizedDescription)")))
+                    completion?(.failure(.updateFailed(reason: "Failed to update contacts. \(error.localizedDescription)")))
                 }
             }
         }
@@ -111,7 +111,7 @@ extension OCKStore {
             } catch {
                 self.context.rollback()
                 callbackQueue.async {
-                    completion?(.failure(.deleteFailed(reason: "Failed to delete contacts: [\(contacts)]. \(error.localizedDescription)")))
+                    completion?(.failure(.deleteFailed(reason: "Failed to delete contacts. \(error.localizedDescription)")))
                 }
             }
         }

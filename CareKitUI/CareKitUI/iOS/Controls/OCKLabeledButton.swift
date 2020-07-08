@@ -48,6 +48,7 @@ open class OCKLabeledButton: OCKAnimatedButton<OCKLabel> {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .center
         label.numberOfLines = 0
+        label.lineBreakMode = .byWordWrapping
         return label
     }()
 

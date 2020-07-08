@@ -46,7 +46,10 @@ extension OCKStoreCoordinator {
         do {
             try findStore(forPatients: patients).addAnyPatients(patients, callbackQueue: callbackQueue, completion: completion)
         } catch {
-            callbackQueue.async { completion?(.failure(.addFailed(reason: "Failed to find store accepting patients. Error: \(error)"))) }
+            callbackQueue.async {
+                completion?(.failure(.addFailed(
+                    reason: "Failed to find store accepting patients. Error: \(error.localizedDescription)")))
+            }
         }
     }
 
@@ -55,7 +58,10 @@ extension OCKStoreCoordinator {
         do {
             try findStore(forPatients: patients).updateAnyPatients(patients, callbackQueue: callbackQueue, completion: completion)
         } catch {
-            callbackQueue.async { completion?(.failure(.updateFailed(reason: "Failed to find store accepting patients. Error: \(error)"))) }
+            callbackQueue.async {
+                completion?(.failure(.updateFailed(
+                    reason: "Failed to find store accepting patients. Error: \(error.localizedDescription)")))
+            }
         }
     }
 
@@ -64,7 +70,10 @@ extension OCKStoreCoordinator {
         do {
             try findStore(forPatients: patients).deleteAnyPatients(patients, callbackQueue: callbackQueue, completion: completion)
         } catch {
-            callbackQueue.async { completion?(.failure(.deleteFailed(reason: "Failed to find store accepting patients. Error: \(error)"))) }
+            callbackQueue.async {
+                completion?(.failure(.deleteFailed(
+                    reason: "Failed to find store accepting patients. Error: \(error.localizedDescription)")))
+            }
         }
     }
 

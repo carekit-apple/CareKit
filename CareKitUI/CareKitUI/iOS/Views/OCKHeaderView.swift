@@ -79,6 +79,7 @@ open class OCKHeaderView: OCKView {
     public let titleLabel: OCKLabel = {
         let label = OCKLabel(textStyle: .headline, weight: .bold)
         label.numberOfLines = 0
+        label.lineBreakMode = .byWordWrapping
         label.animatesTextChanges = true
         return label
     }()
@@ -87,6 +88,7 @@ open class OCKHeaderView: OCKView {
     public let detailLabel: OCKLabel = {
         let label = OCKLabel(textStyle: .caption1, weight: .medium)
         label.numberOfLines = 0
+        label.lineBreakMode = .byWordWrapping
         label.animatesTextChanges = true
         return label
     }()

@@ -27,12 +27,48 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 import Foundation
 import os.log
 
-extension OSLog {
+public struct OCKLog {
+
+    /// Controls the log level for all of CareKitStore. You may set this value from within your CareKit app.
+    /// To see messages that are helpful for app developers, use `.fault` or `.error`.
+    /// To see messages that are helpful for framework developers, use `.debug` or `.info`.
+    public static var level: OSLogType = .debug
+}
+
+/// Prints a message to the console that may be useful to app or framework developers.
+/// Messages that are intended for app developers should typically be logged at level `.error`.
+/// Messages for framework developers can use any appropriate log level.
+///
+/// Only log messages with a level at or above the value of  the global `logLevel` variable will be displayed.
+/// No log messages will be displayed when building for production.
+///
+/// - Parameter level: A level indicating the importance of this log message. Defaults to `.info`
+/// - Parameter message: A message to the developer.
+/// - Parameter error: An optional error to log.
+internal func log(_ level: OSLogType = .info,
+                  _ message: StaticString,
+                  error: Error? = nil) {
+
+    #if DEBUG
+    guard level.rawValue >= OCKLog.level.rawValue else {
+        return
+    }
+
+    os_log(message, log: .store, type: level)
+
+    if let error = error {
+        os_log("Error: %{private}@", log: .store,
+               type: level, error.localizedDescription)
+    }
+    #endif
+}
+
+private extension OSLog {
+
     private static var subsystem = Bundle.main.bundleIdentifier!
 
-    static let ui = OSLog(subsystem: subsystem, category: "CareKitUI")
+    static let store = OSLog(subsystem: subsystem, category: "CareKitStore")
 }

@@ -80,7 +80,7 @@ extension OCKStore {
             } catch {
                 self.context.rollback()
                 callbackQueue.async {
-                    completion?(.failure(.addFailed(reason: "Failed to add OCKCarePlans: [\(plans)]. \(error.localizedDescription)")))
+                    completion?(.failure(.addFailed(reason: "Failed to add OCKCarePlans. \(error.localizedDescription)")))
                 }
             }
         }
@@ -100,7 +100,7 @@ extension OCKStore {
             } catch {
                 self.context.rollback()
                 callbackQueue.async {
-                    completion?(.failure(.updateFailed(reason: "Failed to update OCKCarePlans: \(plans). \(error.localizedDescription)")))
+                    completion?(.failure(.updateFailed(reason: "Failed to update OCKCarePlans. \(error.localizedDescription)")))
                 }
             }
         }
@@ -124,7 +124,7 @@ extension OCKStore {
             } catch {
                 self.context.rollback()
                 callbackQueue.async {
-                    completion?(.failure(.deleteFailed(reason: "Failed to update OCKCarePlans: [\(plans)]. \(error.localizedDescription)")))
+                    completion?(.failure(.deleteFailed(reason: "Failed to update OCKCarePlans. \(error.localizedDescription)")))
                 }
             }
         }

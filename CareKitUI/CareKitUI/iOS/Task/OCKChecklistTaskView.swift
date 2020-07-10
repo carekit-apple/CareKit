@@ -104,6 +104,7 @@ open class OCKChecklistTaskView: OCKView, OCKTaskDisplayable {
     public let instructionsLabel: OCKLabel = {
         let label = OCKLabel(textStyle: .caption1, weight: .regular)
         label.numberOfLines = 0
+        label.lineBreakMode = .byWordWrapping
         return label
     }()
 

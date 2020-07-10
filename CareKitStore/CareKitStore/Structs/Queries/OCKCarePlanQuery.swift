@@ -80,10 +80,10 @@ public struct OCKCarePlanQuery: OCKAnyCarePlanQuery, Equatable {
     }
 
     /// Specific versions to be included in the query results.
-    public var versionIDs: [OCKLocalVersionID] = []
+    public var uuids: [UUID] = []
 
-    /// The version of the patients for which care plans should match.
-    public var patientVersionIDs: [OCKLocalVersionID] = []
+    /// The UUID the patients for which care plans should match.
+    public var patientUUIDs: [UUID] = []
 
     /// The remote ID of patients for which care plans should match.
     public var patientRemoteIDs: [String] = []
@@ -99,7 +99,7 @@ public struct OCKCarePlanQuery: OCKAnyCarePlanQuery, Equatable {
     internal var extendedSortDescriptors: [SortDescriptor] = []
 
     /// An array of group identifiers to match against.
-    public var groupIdentifiers: [String] = []
+    public var groupIdentifiers: [String?] = []
 
     /// An array of tags to match against. If an object's tags contains one or more of entries, it will match the query.
     public var tags: [String] = []
@@ -108,7 +108,7 @@ public struct OCKCarePlanQuery: OCKAnyCarePlanQuery, Equatable {
     public var patientIDs: [String] = []
     public var dateInterval: DateInterval?
     public var ids: [String] = []
-    public var remoteIDs: [String] = []
+    public var remoteIDs: [String?] = []
     public var offset: Int = 0
     public var limit: Int?
 

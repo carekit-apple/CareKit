@@ -30,9 +30,12 @@
 
 import Foundation
 
-/// An `OCKEvent` represents a single occassion on which a task was scheduled to occur. It contains a copy of the task itself as well as the
+/// An `OCKEvent` represents a single occasion on which a task was scheduled to occur. It contains a copy of the task itself as well as the
 /// schedule event and an outcome that will be non-nil if progress was made on the task.
-public struct OCKEvent<Task: OCKAnyTask, Outcome: OCKAnyOutcome> {
+public struct OCKEvent<Task: OCKAnyTask, Outcome: OCKAnyOutcome>: Identifiable {
+
+    /// The stable identifier that can be used for the `Identifiable` protocol.
+    public let id: String
 
     /// A fully typed version of the task associated with this event.
     public let task: Task
@@ -53,6 +56,11 @@ public struct OCKEvent<Task: OCKAnyTask, Outcome: OCKAnyOutcome> {
         self.task = task
         self.outcome = outcome
         self.scheduleEvent = scheduleEvent
+
+        var hasher = Hasher()
+        hasher.combine(task.stableID)
+        hasher.combine(scheduleEvent.occurrence)
+        id = "\(hasher.finalize())"
     }
 
     /// Creates an `OCKAnyEvent` from this event.

@@ -33,7 +33,7 @@ import Foundation
 /// A protocol that all outcome queries are expected to conform to.
 public protocol OCKAnyOutcomeQuery: OCKEntityQuery {
 
-    /// Any array of local database IDs of tass for which outcomes should be returned.
+    /// Any array of local database IDs of tasks for which outcomes should be returned.
     var taskIDs: [String] { get set }
 
     /// The order in which the results will be sorted when returned from the query.
@@ -77,17 +77,14 @@ public struct OCKOutcomeQuery: OCKAnyOutcomeQuery, Equatable {
         }
     }
 
-    /// An array of local database version identifiers specifying the versions to be returned.
-    public var localIDs: [OCKLocalVersionID] = []
-
-    /// An array of local database IDs of tasks for which outcomes should be returned.
-    public var taskVersionIDs: [OCKLocalVersionID] = []
+    /// An array of universally unique identifiers of tasks for which outcomes should be returned.
+    public var taskUUIDs: [UUID] = []
 
     /// An array of remote IDs of tasks for which outcomes should be returned.
     public var taskRemoteIDs: [String] = []
 
     /// An array of group identifiers to match against.
-    public var groupIdentifiers: [String] = []
+    public var groupIdentifiers: [String?] = []
 
     /// The order in which the results will be sorted when returned from the query.
     public var sortDescriptors: [OCKOutcomeSortDescriptor] {
@@ -104,7 +101,8 @@ public struct OCKOutcomeQuery: OCKAnyOutcomeQuery, Equatable {
 
     // MARK: OCKAnyOutcomeQuery
     public var ids: [String] = []
-    public var remoteIDs: [String] = []
+    public var uuids: [UUID] = []
+    public var remoteIDs: [String?] = []
     public var taskIDs: [String] = []
     public var dateInterval: DateInterval?
     public var limit: Int?

@@ -1,21 +1,21 @@
 /*
  Copyright (c) 2019, Apple Inc. All rights reserved.
- 
+
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
- 
+
  1.  Redistributions of source code must retain the above copyright notice, this
  list of conditions and the following disclaimer.
- 
+
  2.  Redistributions in binary form must reproduce the above copyright notice,
  this list of conditions and the following disclaimer in the documentation and/or
  other materials provided with the distribution.
- 
+
  3. Neither the name of the copyright holder(s) nor the names of any contributors
  may be used to endorse or promote products derived from this software without
  specific prior written permission. No license is granted to the trademarks of
  the copyright holders even if such marks are included in this software.
- 
+
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -48,7 +48,7 @@ extension OCKStore {
         context.perform {
             do {
                 let predicate = try self.buildPredicate(for: query)
-                let persistedPlans = OCKCDCarePlan.fetchFromStore(in: self.context, where: predicate) { fetchRequest in
+                let persistedPlans = self.fetchFromStore(OCKCDCarePlan.self, where: predicate) { fetchRequest in
                     fetchRequest.fetchLimit = query.limit ?? 0
                     fetchRequest.fetchOffset = query.offset
                     fetchRequest.sortDescriptors = self.buildSortDescriptors(from: query)
@@ -70,18 +70,17 @@ extension OCKStore {
                            completion: ((Result<[OCKCarePlan], OCKStoreError>) -> Void)? = nil) {
         context.perform {
             do {
-                try OCKCDCarePlan.validateNewIDs(plans.map { $0.id }, in: self.context)
-                let persistablePlans = plans.map(self.createCarePlan)
+                let addedPlans = try self.createCarePlansWithoutCommitting(plans)
                 try self.context.save()
-                let addedPlans = persistablePlans.map(self.makePlan)
                 callbackQueue.async {
                     self.carePlanDelegate?.carePlanStore(self, didAddCarePlans: addedPlans)
+                    self.autoSynchronizeIfRequired()
                     completion?(.success(addedPlans))
                 }
             } catch {
                 self.context.rollback()
                 callbackQueue.async {
-                    completion?(.failure(.addFailed(reason: "Failed to add OCKCarePlans: [\(plans)]. \(error.localizedDescription)")))
+                    completion?(.failure(.addFailed(reason: "Failed to add OCKCarePlans. \(error.localizedDescription)")))
                 }
             }
         }
@@ -91,19 +90,17 @@ extension OCKStore {
                               completion: ((Result<[OCKCarePlan], OCKStoreError>) -> Void)? = nil) {
         context.perform {
             do {
-                let ids = plans.map { $0.id }
-                try OCKCDCarePlan.validateUpdateIdentifiers(ids, in: self.context)
-                let updatedPlans = try self.performVersionedUpdate(values: plans, addNewVersion: self.createCarePlan)
+                let updated = try self.updateCarePlansWithoutCommitting(plans, copyUUIDs: false)
                 try self.context.save()
-                let plans = updatedPlans.map(self.makePlan)
                 callbackQueue.async {
-                    self.carePlanDelegate?.carePlanStore(self, didUpdateCarePlans: plans)
-                    completion?(.success(updatedPlans.map(self.makePlan)))
+                    self.carePlanDelegate?.carePlanStore(self, didUpdateCarePlans: updated)
+                    self.autoSynchronizeIfRequired()
+                    completion?(.success(updated))
                 }
             } catch {
                 self.context.rollback()
                 callbackQueue.async {
-                    completion?(.failure(.updateFailed(reason: "Failed to update OCKCarePlans: \(plans). \(error.localizedDescription)")))
+                    completion?(.failure(.updateFailed(reason: "Failed to update OCKCarePlans. \(error.localizedDescription)")))
                 }
             }
         }
@@ -113,20 +110,54 @@ extension OCKStore {
                               completion: ((Result<[OCKCarePlan], OCKStoreError>) -> Void)? = nil) {
         context.perform {
             do {
-                let markedPlans: [OCKCDCarePlan] = try self.performDeletion(values: plans)
+                let markedPlans: [OCKCDCarePlan] = try self.performDeletion(
+                    values: plans,
+                    addNewVersion: self.createCarePlan)
+
                 try self.context.save()
                 let deletedPlans = markedPlans.map(self.makePlan)
                 callbackQueue.async {
                     self.carePlanDelegate?.carePlanStore(self, didDeleteCarePlans: deletedPlans)
+                    self.autoSynchronizeIfRequired()
                     completion?(.success(deletedPlans))
                 }
             } catch {
                 self.context.rollback()
                 callbackQueue.async {
-                    completion?(.failure(.deleteFailed(reason: "Failed to update OCKCarePlans: [\(plans)]. \(error.localizedDescription)")))
+                    completion?(.failure(.deleteFailed(reason: "Failed to update OCKCarePlans. \(error.localizedDescription)")))
                 }
             }
         }
+    }
+
+    // MARK: Internal
+    // These methods are called from elsewhere in CareKit, but must always be called
+    // from the `contexts`'s thread.
+
+    func createCarePlansWithoutCommitting(_ plans: [Plan]) throws -> [Plan] {
+        try self.validateNew(OCKCDCarePlan.self, plans)
+        let persistablePlans = plans.map(self.createCarePlan)
+        let addedPlans = persistablePlans.map(self.makePlan)
+        return addedPlans
+    }
+
+    /// Updates existing plans to the versions passed in.
+    ///
+    /// The copyUUIDs argument should be true when ingesting plans from a remote to ensure
+    /// the UUIDs match on all devices, and false when creating a new version of a plan locally
+    /// to ensure that the new version has a different UUID than its parent version.
+    ///
+    /// - Parameters:
+    ///   - plans: The new versions of the plans.
+    ///   - copyUUIDs: If true, the UUIDs of the plans will be copied to the new versions
+    func updateCarePlansWithoutCommitting(_ plans: [Plan], copyUUIDs: Bool) throws -> [Plan] {
+        try validateUpdateIdentifiers(plans.map { $0.id })
+        let updatedPlans = try self.performVersionedUpdate(values: plans, addNewVersion: self.createCarePlan)
+        if copyUUIDs {
+            updatedPlans.enumerated().forEach { $1.uuid = plans[$0].uuid! }
+        }
+        let updated = updatedPlans.map(self.makePlan)
+        return updated
     }
 
     // MARK: Private
@@ -139,15 +170,14 @@ extension OCKStore {
         persistablePlan.copyVersionInfo(from: plan)
         persistablePlan.allowsMissingRelationships = configuration.allowsEntitiesWithMissingRelationships
         persistablePlan.title = plan.title
-        if let patientId = plan.patientID { persistablePlan.patient = try? fetchObject(havingLocalID: patientId) }
+        if let patientUUID = plan.patientUUID { persistablePlan.patient = try? fetchObject(uuid: patientUUID) }
         return persistablePlan
     }
 
     /// - Remark: This method is intended to create a value type struct from a *persisted* NSManagedObject. Calling this method with an
     /// object that is not yet commited is a programmer error.
-    private func makePlan(from object: OCKCDCarePlan) -> OCKCarePlan {
-        assert(object.localDatabaseID != nil, "Don't this method with an object that isn't saved yet")
-        var plan = OCKCarePlan(id: object.id, title: object.title, patientID: object.patient?.localDatabaseID)
+    internal func makePlan(from object: OCKCDCarePlan) -> OCKCarePlan {
+        var plan = OCKCarePlan(id: object.id, title: object.title, patientUUID: object.patient?.uuid)
         plan.copyVersionedValues(from: object)
         return plan
     }
@@ -165,14 +195,13 @@ extension OCKStore {
             predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, idPredicate])
         }
 
-        if !query.versionIDs.isEmpty {
-            let versionPredicate = NSPredicate(format: "self IN %@", try query.versionIDs.map(objectID))
-            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, versionPredicate])
+        if !query.uuids.isEmpty {
+            let objectPredicate = NSPredicate(format: "%K IN %@", #keyPath(OCKCDObject.uuid), query.uuids)
+            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, objectPredicate])
         }
 
         if !query.remoteIDs.isEmpty {
-            let remotePredicate = NSPredicate(format: "%K IN %@", #keyPath(OCKCDObject.remoteID), query.remoteIDs)
-            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, remotePredicate])
+            predicate = predicate.including(query.remoteIDs, for: #keyPath(OCKCDObject.remoteID))
         }
 
         if !query.patientIDs.isEmpty {
@@ -180,9 +209,9 @@ extension OCKStore {
             predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, patientPredicate])
         }
 
-        if !query.patientVersionIDs.isEmpty {
-            let versionPredicate = NSPredicate(format: "%K IN %@", #keyPath(OCKCDCarePlan.patient), try query.patientVersionIDs.map(fetchObject))
-            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, versionPredicate])
+        if !query.patientUUIDs.isEmpty {
+            let objectPredicate = NSPredicate(format: "%K IN %@", #keyPath(OCKCDCarePlan.patient.uuid), query.patientUUIDs)
+            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, objectPredicate])
         }
 
         if !query.patientRemoteIDs.isEmpty {
@@ -191,7 +220,9 @@ extension OCKStore {
         }
 
         if !query.groupIdentifiers.isEmpty {
-            predicate = predicate.including(groupIdentifiers: query.groupIdentifiers)
+            predicate = predicate.including(
+                query.groupIdentifiers,
+                for: #keyPath(OCKCDObject.groupIdentifier))
         }
 
         return predicate
@@ -204,6 +235,6 @@ extension OCKStore {
             case .effectiveDate(let ascending): return NSSortDescriptor(keyPath: \OCKCDCarePlan.effectiveDate, ascending: ascending)
             case .title(let ascending): return NSSortDescriptor(keyPath: \OCKCDCarePlan.title, ascending: ascending)
             }
-        }
+        } + defaultSortDescritors()
     }
 }

@@ -1,21 +1,21 @@
 /*
  Copyright (c) 2019, Apple Inc. All rights reserved.
- 
+
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
- 
+
  1.  Redistributions of source code must retain the above copyright notice, this
  list of conditions and the following disclaimer.
- 
+
  2.  Redistributions in binary form must reproduce the above copyright notice,
  this list of conditions and the following disclaimer in the documentation and/or
  other materials provided with the distribution.
- 
+
  3. Neither the name of the copyright holder(s) nor the names of any contributors
  may be used to endorse or promote products derived from this software without
  specific prior written permission. No license is granted to the trademarks of
  the copyright holders even if such marks are included in this software.
- 
+
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -45,13 +45,13 @@ public struct OCKSchedule: Codable, Equatable {
     /// Create a new schedule by combining an array of other `OCKSchedule` objects.
     public init(composing schedules: [OCKSchedule]) {
         assert(!schedules.isEmpty, "You cannot create a schedule with 0 elements")
-        self.elements = schedules.flatMap { $0.elements }
+        self.elements = schedules.flatMap { $0.elements }.sorted(by: { $0.start < $1.start })
     }
 
     /// Create a new schedule by combining an array of other `OCKSchedule` objects.
     public init(composing elements: [OCKScheduleElement]) {
         assert(!elements.isEmpty, "You cannot create a schedule with 0 elements")
-        self.elements = elements.flatMap { $0.elements }
+        self.elements = elements.sorted(by: { $0.start < $1.start })
     }
 
     /// Returns the Nth event of this schedule.
@@ -125,8 +125,8 @@ public struct OCKSchedule: Codable, Equatable {
     public static func weeklyAtTime(weekday: Int, hours: Int, minutes: Int, start: Date, end: Date?, targetValues: [OCKOutcomeValue],
                                     text: String?, duration: OCKScheduleElement.Duration = .hours(1)) -> OCKSchedule {
         let interval = DateComponents(weekOfYear: 1)
-        var startTime = Calendar.current.date(bySettingHour: hours, minute: minutes, second: 0, of: start)!
-        startTime = Calendar.current.date(bySetting: .weekday, value: weekday, of: startTime)!
+        var startTime = Calendar.current.date(bySetting: .weekday, value: weekday, of: start)!
+        startTime = Calendar.current.date(bySettingHour: hours, minute: minutes, second: 0, of: startTime)!
         let element = OCKScheduleElement(start: startTime, end: end, interval: interval,
                                          text: text, targetValues: targetValues, duration: duration)
         return OCKSchedule(composing: [element])

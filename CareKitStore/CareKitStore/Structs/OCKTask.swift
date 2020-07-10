@@ -33,10 +33,10 @@ import Foundation
 /// An `OCKTask` represents some task or action that a patient is supposed to perform. Tasks are optionally associable with an `OCKCarePlan`
 /// and must have a unique id and schedule. The schedule determines when and how often the task should be performed, and the
 /// `impactsAdherence` flag may be used to specify whether or not the patients adherence to this task will affect their daily completion rings.
-public struct OCKTask: Codable, Equatable, Identifiable, OCKAnyVersionableTask, OCKAnyMutableTask, OCKVersionedObjectCompatible {
+public struct OCKTask: Codable, Equatable, OCKAnyVersionableTask, OCKAnyMutableTask, OCKVersionedObjectCompatible {
 
-    /// The version ID in the local database of the care plan to which this task belongs.
-    public var carePlanID: OCKLocalVersionID?
+    /// The UUID of the care plan to which this task belongs.
+    public var carePlanUUID: UUID?
 
     // MARK: OCKAnyTask
     public let id: String
@@ -50,9 +50,9 @@ public struct OCKTask: Codable, Equatable, Identifiable, OCKAnyVersionableTask, 
     // MARK: OCKVersionable
     public var effectiveDate: Date
     public internal(set) var deletedDate: Date?
-    public internal(set) var localDatabaseID: OCKLocalVersionID?
-    public internal(set) var nextVersionID: OCKLocalVersionID?
-    public internal(set) var previousVersionID: OCKLocalVersionID?
+    public internal(set) var uuid: UUID?
+    public internal(set) var nextVersionUUID: UUID?
+    public internal(set) var previousVersionUUID: UUID?
 
     // MARK: OCKObjectCompatible
     public internal(set) var createdDate: Date?
@@ -70,19 +70,20 @@ public struct OCKTask: Codable, Equatable, Identifiable, OCKAnyVersionableTask, 
     /// - Parameters:
     ///   - id: A unique id for this care plan chosen by the developer.
     ///   - title: A title that will be used to represent this care plan to the patient.
-    ///   - carePlanID: The versioned ID in the local database of the care plan that this task belongs to.
+    ///   - carePlanUUID: The UUID of the care plan that this task belongs to.
     ///   - schedule: A schedule specifying when this task is to be completed.
-    public init(id: String, title: String?, carePlanID: OCKLocalVersionID?, schedule: OCKSchedule) {
+    ///   - healthKitLinkage: A structure specifying how this task is linked with HealthKit.
+    public init(id: String, title: String?, carePlanUUID: UUID?, schedule: OCKSchedule) {
         self.id = id
         self.title = title
-        self.carePlanID = carePlanID
+        self.carePlanUUID = carePlanUUID
         self.schedule = schedule
         self.effectiveDate = schedule.startDate()
         self.timezone = TimeZone.current
     }
 
     public func belongs(to plan: OCKAnyCarePlan) -> Bool {
-        guard let plan = plan as? OCKCarePlan, let planID = plan.localDatabaseID else { return false }
-        return carePlanID == planID
+        guard let plan = plan as? OCKCarePlan, let planUUID = plan.uuid else { return false }
+        return carePlanUUID == planUUID
     }
 }

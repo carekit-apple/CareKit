@@ -84,7 +84,7 @@ public struct OCKTaskQuery: OCKAnyTaskQuery, Equatable {
     }
 
     /// The version of the care plans for which tasks should match.
-    public var carePlanVersionIDs: [OCKLocalVersionID] = []
+    public var carePlanUUIDs: [UUID] = []
 
     /// The remote IDs of the care plans for which tasks should match.
     public var carePlanRemoteIDs: [String] = []
@@ -103,15 +103,15 @@ public struct OCKTaskQuery: OCKAnyTaskQuery, Equatable {
     internal var extendedSortDescriptors: [SortDescriptor] = []
 
     /// An array of group identifiers to match against.
-    public var groupIdentifiers: [String] = []
+    public var groupIdentifiers: [String?] = []
 
     /// An array of tags to match against. If an object's tags contains one or more of entries, it will match the query.
     public var tags: [String] = []
 
     // MARK: OCKAnyTaskQuery
     public var ids: [String] = []
-    public var versionIDs: [OCKLocalVersionID] = []
-    public var remoteIDs: [String] = []
+    public var uuids: [UUID] = []
+    public var remoteIDs: [String?] = []
     public var carePlanIDs: [String] = []
     public var dateInterval: DateInterval?
     public var limit: Int?

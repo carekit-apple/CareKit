@@ -47,4 +47,20 @@ class TestStore: XCTestCase {
         XCTAssertFalse(FileManager.default.fileExists(atPath: store.walFileURL.path))
         XCTAssertFalse(FileManager.default.fileExists(atPath: store.shmFileURL.path))
     }
+
+    func testRollingBackContextRollsBackKnowledgeVector() {
+        let store = OCKStore(name: "test", type: .inMemory)
+        XCTAssert(store.context.clockTime == 0)
+
+        store.context.knowledgeVector.increment(clockFor: store.context.clockID)
+        XCTAssertNoThrow(try store.context.save())
+        XCTAssert(store.context.clockTime == 1)
+
+        store.context.knowledgeVector.increment(clockFor: store.context.clockID)
+        XCTAssert(store.context.clockTime == 2)
+
+        store.context.knowledgeVector.increment(clockFor: store.context.clockID)
+        store.context.rollback()
+        XCTAssert(store.context.clockTime == 1)
+    }
 }

@@ -34,15 +34,16 @@ import XCTest
 class TestOutcome: XCTestCase {
 
     func testBelongsToReturnsFalseIfTaskIDsDontMatch() {
-        let outcome = OCKOutcome(taskID: OCKLocalVersionID("abc"), taskOccurrenceIndex: 0, values: [])
-        let task = OCKTask(id: "medicine", title: nil, carePlanID: nil, schedule: .mealTimesEachDay(start: Date(), end: nil))
+        let outcome = OCKOutcome(taskUUID: UUID(), taskOccurrenceIndex: 0, values: [])
+        let task = OCKTask(id: "medicine", title: nil, carePlanUUID: nil, schedule: .mealTimesEachDay(start: Date(), end: nil))
         XCTAssert(outcome.belongs(to: task) == false)
     }
 
     func testBelongsToReturnsTrueIfTasksIDsDoMatch() {
-        let outcome = OCKOutcome(taskID: OCKLocalVersionID("abc"), taskOccurrenceIndex: 0, values: [])
-        var task = OCKTask(id: "medicine", title: nil, carePlanID: nil, schedule: .mealTimesEachDay(start: Date(), end: nil))
-        task.localDatabaseID = OCKLocalVersionID("abc")
+        let uuid = UUID()
+        let outcome = OCKOutcome(taskUUID: uuid, taskOccurrenceIndex: 0, values: [])
+        var task = OCKTask(id: "medicine", title: nil, carePlanUUID: nil, schedule: .mealTimesEachDay(start: Date(), end: nil))
+        task.uuid = uuid
         XCTAssert(outcome.belongs(to: task))
     }
 }

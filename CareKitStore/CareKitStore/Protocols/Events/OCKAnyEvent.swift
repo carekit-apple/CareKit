@@ -34,6 +34,9 @@ import Foundation
 /// schedule event and an outcome that will be non-nil if progress was made on the task.
 public struct OCKAnyEvent {
 
+    /// The stable identifier that can be used for the `Identifiable` protocol.
+    public let id: String
+
     /// The task that this event is associated with
     public let task: OCKAnyTask
 
@@ -60,5 +63,10 @@ public struct OCKAnyEvent {
         self.task = task
         self.outcome = outcome
         self.scheduleEvent = scheduleEvent
+
+        var hasher = Hasher()
+        hasher.combine(task.stableID)
+        hasher.combine(scheduleEvent.occurrence)
+        id = "\(hasher.finalize())"
     }
 }

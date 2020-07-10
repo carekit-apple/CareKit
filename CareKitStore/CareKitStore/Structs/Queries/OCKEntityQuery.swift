@@ -38,10 +38,10 @@ public protocol OCKEntityQuery {
     var ids: [String] { get set }
 
     /// An array of remote IDs for entities that should match the query.
-    var remoteIDs: [String] { get set }
+    var remoteIDs: [String?] { get set }
 
-    /// An array of group identifers that should match the query.
-    var groupIdentifiers: [String] { get set }
+    /// An array of group identifiers that should match the query.
+    var groupIdentifiers: [String?] { get set }
 
     /// A date interval for entities that should match the query.
     var dateInterval: DateInterval? { get set }

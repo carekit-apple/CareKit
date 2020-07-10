@@ -69,14 +69,24 @@ open class OCKStore: OCKStoreProtocol, OCKCoreDataStoreProtocol, Equatable {
     /// for development and testing purposes.
     internal let storeType: OCKCoreDataStoreType
 
+    /// A remote store synchronizer.
+    internal let remote: OCKRemoteSynchronizable?
+
+    /// Used to prevent simultaneous sync operations.
+    /// - Warning: Should only ever be set or read from the context's queue inside `synchronize`.
+    var isSynchronizing: Bool
+
     /// Initialize a new store by specifying its name and store type. Store's with conflicting names and types must not be created.
     ///
     /// - Parameters:
     ///   - name: A unique name for the store. It will be used for the filename if stored on disk.
-    ///   - type: The type of store to be used.
-    public init(name: String, type: OCKCoreDataStoreType = .onDisk) {
+    ///   - type: The type of store to be used. `.onDisk` is used by default.
+    ///   - synchronizer: A store synchronization endpoint.
+    public init(name: String, type: OCKCoreDataStoreType = .onDisk, remote: OCKRemoteSynchronizable? = nil) {
         self.storeType = type
         self.name = name
+        self.remote = remote
+        self.isSynchronizing = false
     }
 
     /// Completely deletes the store and all its files from disk.
@@ -92,21 +102,75 @@ open class OCKStore: OCKStoreProtocol, OCKCoreDataStoreProtocol, Equatable {
         try FileManager.default.removeItem(at: shmFileURL)
         try FileManager.default.removeItem(at: walFileURL)
     }
-    
+
     // MARK: Internal
+
+    internal func deleteAllContent() throws {
+
+        var saveError: Error?
+
+        context.performAndWait {
+            do {
+                OCKEntity
+                    .EntityType
+                    .allCases
+                    .map(\.coreDataType)
+                    .forEach(deleteAll)
+
+                try context.save()
+            } catch {
+                saveError = error
+            }
+        }
+
+        if let error = saveError {
+            throw error
+        }
+    }
 
     internal lazy var persistentContainer: NSPersistentContainer = {
         makePersistentContainer()
     }()
 
     internal lazy var context: NSManagedObjectContext = {
-        return self.persistentContainer.newBackgroundContext()
+        persistentContainer.newBackgroundContext()
     }()
+
+    private func deleteAll<T: NSManagedObject>(entity: T.Type) {
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: String(describing: entity))
+        fetchRequest.includesPropertyValues = false
+        fetchRequest.includesSubentities = false
+
+        context.performAndWait {
+            do {
+                let objects = try context.fetch(fetchRequest)
+                objects.forEach { context.delete($0) }
+            } catch {
+                log(.error, "Failed to delete objects", error: error)
+            }
+        }
+    }
 }
 
 internal extension NSPredicate {
-    func including(groupIdentifiers: [String]) -> NSPredicate {
-        let groupPredicate = NSPredicate(format: "%K IN %@", #keyPath(OCKCDObject.groupIdentifier), groupIdentifiers)
-        return NSCompoundPredicate(andPredicateWithSubpredicates: [self, groupPredicate])
+    func including(_ identifiers: [String?], for keyPath: String) -> NSPredicate {
+        let idPredicate = NSPredicate(format: "%K IN %@", keyPath, identifiers)
+        let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [self, idPredicate])
+        let nilPredicate = NSPredicate(format: "%K == NIL", keyPath)
+        let andNilPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [self, nilPredicate])
+        let orNilPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: [predicate, andNilPredicate])
+        return identifiers.contains(nil) ? orNilPredicate : predicate
+    }
+}
+
+private extension OCKEntity.EntityType {
+    var coreDataType: NSManagedObject.Type {
+        switch self {
+        case .patient: return OCKCDPatient.self
+        case .carePlan: return OCKCDCarePlan.self
+        case .contact: return OCKCDContact.self
+        case .task: return OCKCDTask.self
+        case .outcome: return OCKCDOutcome.self
+        }
     }
 }

@@ -75,6 +75,20 @@ class TestSchedule: XCTestCase {
         }
     }
 
+    func testWeeklyScheduleStartDate() {
+        let firstDay = Date()
+
+        let weekly = OCKSchedule.weeklyAtTime(
+            weekday: 1, hours: 5, minutes: 30,
+            start: firstDay, end: nil, targetValues: [], text: nil)
+
+        let hours = Calendar.current.component(.hour, from: weekly.startDate())
+        let minutes = Calendar.current.component(.minute, from: weekly.startDate())
+
+        XCTAssert(hours == 5, "Expected 5, but got \(hours)")
+        XCTAssert(minutes == 30, "Expected 30, but got \(minutes)")
+    }
+
     func testScheduleComposition() {
         let components = DateComponents(year: 2_019, month: 1, day: 19, hour: 15, minute: 30)
         let startDate = Calendar.current.date(from: components)!

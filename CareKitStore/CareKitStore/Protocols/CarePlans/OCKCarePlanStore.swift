@@ -118,7 +118,7 @@ public extension OCKReadableCarePlanStore {
         query.ids = [id]
 
         fetchCarePlans(query: PlanQuery(query), callbackQueue: callbackQueue, completion:
-            chooseFirst(then: completion, replacementError: .fetchFailed(reason: "No care plan with ID: \(id)")))
+            chooseFirst(then: completion, replacementError: .fetchFailed(reason: "No care plan with matching ID")))
     }
 }
 
@@ -128,17 +128,17 @@ public extension OCKCarePlanStore {
 
     func addCarePlan(_ plan: Plan, callbackQueue: DispatchQueue = .main, completion: OCKResultClosure<Plan>? = nil) {
         addCarePlans([plan], callbackQueue: callbackQueue, completion:
-            chooseFirst(then: completion, replacementError: .addFailed(reason: "Failed to add care plan: \(plan)")))
+            chooseFirst(then: completion, replacementError: .addFailed(reason: "Failed to add care plan")))
     }
 
     func updateCarePlan(_ plan: Plan, callbackQueue: DispatchQueue = .main, completion: OCKResultClosure<Plan>? = nil) {
         updateCarePlans([plan], callbackQueue: callbackQueue, completion:
-            chooseFirst(then: completion, replacementError: .updateFailed(reason: "Failed to update care plan: \(plan)")))
+            chooseFirst(then: completion, replacementError: .updateFailed(reason: "Failed to update care plan")))
     }
 
     func deleteCarePlan(_ plan: Plan, callbackQueue: DispatchQueue = .main, completion: OCKResultClosure<Plan>? = nil) {
         deleteCarePlans([plan], callbackQueue: callbackQueue, completion:
-            chooseFirst(then: completion, replacementError: .deleteFailed(reason: "Failed to delete care plan: \(plan)")))
+            chooseFirst(then: completion, replacementError: .deleteFailed(reason: "Failed to delete care plan")))
     }
 }
 

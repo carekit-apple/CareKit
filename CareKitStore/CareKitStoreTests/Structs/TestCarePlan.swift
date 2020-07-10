@@ -35,14 +35,14 @@ class TestCarePlan: XCTestCase {
 
     func testBelongsToReturnsFalseWhenIDsDontMatch() {
         let patient = OCKPatient(id: "A", givenName: "Mary", familyName: "Frost")
-        let plan = OCKCarePlan(id: "B", title: "obesity", patientID: nil)
+        let plan = OCKCarePlan(id: "B", title: "obesity", patientUUID: nil)
         XCTAssertFalse(plan.belongs(to: patient))
     }
 
     func testBelongsToReturnsTrueWHenIDsDoMatch() {
         var patient = OCKPatient(id: "A", givenName: "Mary", familyName: "Frost")
-        patient.localDatabaseID = OCKLocalVersionID("abc")
-        let plan = OCKCarePlan(id: "B", title: "obesity", patientID: patient.localDatabaseID)
+        patient.uuid = UUID()
+        let plan = OCKCarePlan(id: "B", title: "obesity", patientUUID: patient.uuid)
         XCTAssertTrue(plan.belongs(to: patient))
     }
 }

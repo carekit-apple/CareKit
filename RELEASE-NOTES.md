@@ -1,5 +1,45 @@
 # CareKit Release Notes
 
+## CareKit 2.1 Release Notes
+
+*CareKit 2.1* supports *iOS* and *watchOS* and requires *Xcode 12.0* or later. The minimum supported *Base SDK* is *13.0* for *iOS* and *7.0* for *watchOS*.
+
+*CareKit 2.1* includes the following new features and enhancements by Apple Inc. (https://github.com/carekit-apple)
+
+### New Views
+- SimpleTaskView (SwiftUI)
+- InstructionsTaskView (SwiftUI)
+- LabeledValueTaskView (SwiftUI)
+- NumericProgressTaskView (SwiftUI)
+- LinkView (SwiftUI)
+- OCKFeaturedContentView (UIKit)
+- DetailView enhancements (UIKit)
+
+### watchOS Support
+- CareKit, CareKitUI, CareKitStore and the new CareKitFHIR now build for watchOS
+
+### HealthKit Driven Tasks
+- HealthKit data can now be used to autocomplete CareKit tasks
+- OCKStoreCoordinator
+- OCKHealthKitPassthroughStore
+- OCKHealthKitTask & OCKHealthKitOutcome
+
+### FHIR Compatibility
+- A new package, CareKitFHIR, for converting to and from FHIR resources
+- Support for DSTU2 Patient, CarePlanActivity, and MedicationOrder resources
+- Support for R4 Patient resources
+
+### Remote Synchronization
+- Extension on OCKStore for synchronization with a remote server
+- OCKRemoteSynchronizable protocol for adding new integrations
+- OCKWatchConnectivityPeer for synchronizing a store on watchOS with a store on iOS
+
+### Miscellaneous
+- Updated sample app
+- Enhanced catalog app
+- Minor bug fixes
+
+
 ## CareKit 2.0 Release Notes
 
 *CareKit 2.0* supports *iOS* and requires *Xcode 11.0* or later. The minimum supported *Base SDK* is *13.0*.

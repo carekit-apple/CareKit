@@ -42,6 +42,7 @@ class TestCoreDataSchemaIntegration: XCTestCase {
     func testAllEntitiesCanBeChainedAndSavedInABatch() {
         let patient = OCKCDPatient(context: store.context)
         patient.id = "my_id"
+        patient.uuid = UUID()
         patient.name = OCKCDPersonName(context: store.context)
         patient.name.familyName = "Amy"
         patient.name.givenName = "Frost"
@@ -50,11 +51,13 @@ class TestCoreDataSchemaIntegration: XCTestCase {
         let plan = OCKCDCarePlan(context: store.context)
         plan.title = "Post Operation Care Plan"
         plan.id = "post-op-plan"
+        plan.uuid = UUID()
         plan.patient = patient
         plan.effectiveDate = Date()
 
         let task = OCKCDTask(context: store.context)
         task.id = "measure-pulse"
+        task.uuid = UUID()
         task.instructions = "Take your pulse for a 60s and record in BPM"
         task.carePlan = plan
         task.effectiveDate = Date()

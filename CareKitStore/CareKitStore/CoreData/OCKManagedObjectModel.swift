@@ -1,21 +1,21 @@
 /*
  Copyright (c) 2019, Apple Inc. All rights reserved.
- 
+
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
- 
+
  1.  Redistributions of source code must retain the above copyright notice, this
  list of conditions and the following disclaimer.
- 
+
  2.  Redistributions in binary form must reproduce the above copyright notice,
  this list of conditions and the following disclaimer in the documentation and/or
  other materials provided with the distribution.
- 
+
  3. Neither the name of the copyright holder(s) nor the names of any contributors
  may be used to endorse or promote products derived from this software without
  specific prior written permission. No license is granted to the trademarks of
  the copyright holders even if such marks are included in this software.
- 
+
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -51,8 +51,9 @@ import CoreData
 // - Task
 //
 
+
 private let secureUnarchiver = "NSSecureUnarchiveFromData"
-private let schemaVersion = OCKSemanticVersion(majorVersion: 2, minorVersion: 0, patchNumber: 1)
+private let schemaVersion = OCKSemanticVersion(majorVersion: 2, minorVersion: 0, patchNumber: 4)
 
 private func makeManagedObjectModel() -> NSManagedObjectModel {
     let managedObjectModel = NSManagedObjectModel()
@@ -69,6 +70,7 @@ private func makeManagedObjectModel() -> NSManagedObjectModel {
     let name = makePersonNameEntity()
     let address = makeAddressEntity()
     let healthLink = makeHealthKitLinkageEntity()
+    let clock = makeClockEntity()
 
     // MARK: Patient Relationships
 
@@ -86,7 +88,7 @@ private func makeManagedObjectModel() -> NSManagedObjectModel {
     patientToName.isOptional = false
     patientToName.minCount = 1
     patientToName.maxCount = 1
-    patientToName.deleteRule = .denyDeleteRule
+    patientToName.deleteRule = .cascadeDeleteRule
 
     let patientToNote = NSRelationshipDescription()
     patientToNote.name = "notes"
@@ -110,7 +112,7 @@ private func makeManagedObjectModel() -> NSManagedObjectModel {
     patientPrevVersion.isOptional = true
     patientPrevVersion.minCount = 0
     patientPrevVersion.maxCount = 1
-    patientPrevVersion.deleteRule = .cascadeDeleteRule
+    patientPrevVersion.deleteRule = .nullifyDeleteRule
 
     // MARK: Care Plan Relationships
 
@@ -160,7 +162,7 @@ private func makeManagedObjectModel() -> NSManagedObjectModel {
     carePlanPrevVersion.isOptional = true
     carePlanPrevVersion.minCount = 0
     carePlanPrevVersion.maxCount = 1
-    carePlanPrevVersion.deleteRule = .cascadeDeleteRule
+    carePlanPrevVersion.deleteRule = .nullifyDeleteRule
 
     // MARK: Conctact Relationships
 
@@ -186,7 +188,7 @@ private func makeManagedObjectModel() -> NSManagedObjectModel {
     contactToName.isOptional = false
     contactToName.minCount = 1
     contactToName.maxCount = 1
-    contactToName.deleteRule = .denyDeleteRule
+    contactToName.deleteRule = .cascadeDeleteRule
 
     let contactToNote = NSRelationshipDescription()
     contactToNote.name = "notes"
@@ -210,7 +212,7 @@ private func makeManagedObjectModel() -> NSManagedObjectModel {
     contactPrevVersion.isOptional = true
     contactPrevVersion.minCount = 0
     contactPrevVersion.maxCount = 1
-    contactPrevVersion.deleteRule = .cascadeDeleteRule
+    contactPrevVersion.deleteRule = .nullifyDeleteRule
 
     // MARK: Task Relationships
 
@@ -268,7 +270,7 @@ private func makeManagedObjectModel() -> NSManagedObjectModel {
     taskPrevVersion.isOptional = true
     taskPrevVersion.minCount = 0
     taskPrevVersion.maxCount = 1
-    taskPrevVersion.deleteRule = .cascadeDeleteRule
+    taskPrevVersion.deleteRule = .nullifyDeleteRule
 
     // MARK: Schedule Relationships
 
@@ -576,7 +578,7 @@ private func makeManagedObjectModel() -> NSManagedObjectModel {
     managedObjectModel.entities = [
         patient, carePlan, contact, task, outcome,
         outcomeValue, schedule, note, name, address,
-        healthLink
+        healthLink, clock
     ]
 
     return managedObjectModel
@@ -606,6 +608,7 @@ private func makePatientEntity() -> NSEntityDescription {
     allergies.isOptional = true
 
     patientEntity.properties = makeObjectAttributes() + makeVersionedAttributes() + [birthday, sex, allergies]
+    patientEntity.uniquenessConstraints = makeUniquenessConstraints()
     return patientEntity
 }
 
@@ -620,6 +623,8 @@ private func makeCarePlanEntity() -> NSEntityDescription {
     title.isOptional = false
 
     planEntity.properties = makeObjectAttributes() + makeVersionedAttributes() + [title]
+    planEntity.uniquenessConstraints = makeUniquenessConstraints()
+
     return planEntity
 }
 
@@ -675,6 +680,8 @@ private func makeContactEntity() -> NSEntityDescription {
     contactEntity.properties = makeObjectAttributes() + makeVersionedAttributes() + [
         organization, title, role, category, email, message, phone, other
     ]
+    contactEntity.uniquenessConstraints = makeUniquenessConstraints()
+
     return contactEntity
 }
 
@@ -702,6 +709,7 @@ private func makeTaskEntity() -> NSEntityDescription {
     taskEntity.properties = makeObjectAttributes() + makeVersionedAttributes() + [
         title, instructions, impactsAdherence
     ]
+    taskEntity.uniquenessConstraints = makeUniquenessConstraints()
 
     return taskEntity
 }
@@ -780,7 +788,7 @@ private func makeScheduleEntity() -> NSEntityDescription {
     years.isOptional = false
     years.defaultValue = 0
 
-    scheduleEntity.properties = makeObjectAttributes() + [
+    scheduleEntity.properties = [
         text, duration, isAllDay, start, end, seconds,
         minutes, hours, days, weeks, months, years
     ]
@@ -803,7 +811,14 @@ private func makeOutcomeEntity() -> NSEntityDescription {
     date.attributeType = .dateAttributeType
     date.isOptional = false
 
-    outcomeEntity.properties = makeObjectAttributes() + [index, date]
+    let deletedDate = NSAttributeDescription()
+    deletedDate.name = "deletedDate"
+    deletedDate.attributeType = .dateAttributeType
+    deletedDate.isOptional = true
+
+    outcomeEntity.properties = makeObjectAttributes() + [index, date, deletedDate]
+    outcomeEntity.uniquenessConstraints = makeUniquenessConstraints()
+
     return outcomeEntity
 }
 
@@ -1013,7 +1028,27 @@ private func makeHealthKitLinkageEntity() -> NSEntityDescription {
     return linkEntity
 }
 
+private func makeClockEntity() -> NSEntityDescription {
 
+    let clockEntity = NSEntityDescription()
+    clockEntity.name = String(describing: OCKCDClock.self)
+    clockEntity.managedObjectClassName = String(describing: OCKCDClock.self)
+
+    let uuid = NSAttributeDescription()
+    uuid.name = "uuid"
+    uuid.attributeType = .UUIDAttributeType
+    uuid.isOptional = false
+
+    let vectorClock = NSAttributeDescription()
+    vectorClock.name = "vectorClock"
+    vectorClock.attributeType = .transformableAttributeType
+    vectorClock.valueTransformerName = secureUnarchiver
+    vectorClock.isOptional = false
+
+    clockEntity.properties = [uuid, vectorClock]
+
+    return clockEntity
+}
 // MARK: Attributes
 
 private func makeVersionedAttributes() -> [NSAttributeDescription] {
@@ -1058,6 +1093,16 @@ private func makeObjectAttributes() -> [NSAttributeDescription] {
     groupIdentifier.attributeType = .stringAttributeType
     groupIdentifier.isOptional = true
 
+    let uuid = NSAttributeDescription()
+    uuid.name = "uuid"
+    uuid.attributeType = .UUIDAttributeType
+    uuid.isOptional = false
+
+    let logicalClock = NSAttributeDescription()
+    logicalClock.name = "logicalClock"
+    logicalClock.attributeType = .integer64AttributeType
+    logicalClock.isOptional = false
+
     let remoteID = NSAttributeDescription()
     remoteID.name = "remoteID"
     remoteID.attributeType = .stringAttributeType
@@ -1097,9 +1142,12 @@ private func makeObjectAttributes() -> [NSAttributeDescription] {
     timezone.isOptional = false
 
     return [allowsMissingRelationships, asset, createdDate, schema,
-            groupIdentifier, remoteID, source, tags, updatedDate,
-            userInfo, timezone]
+            groupIdentifier, uuid, logicalClock, remoteID, source,
+            tags, updatedDate, userInfo, timezone]
+}
+
+func makeUniquenessConstraints() -> [[Any]] {
+    [["uuid"]]
 }
 
 let sharedManagedObjectModel = makeManagedObjectModel()
-

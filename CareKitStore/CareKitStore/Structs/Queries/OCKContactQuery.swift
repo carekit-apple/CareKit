@@ -84,10 +84,10 @@ public struct OCKContactQuery: OCKAnyContactQuery, Equatable {
     }
 
     /// Specific versions to be included in the query results.
-    public var versionIDs: [OCKLocalVersionID] = []
+    public var uuids: [UUID] = []
 
     /// The version of the care plans for which contacts should match.
-    public var carePlanVersionIDs: [OCKLocalVersionID] = []
+    public var carePlanUUIDs: [UUID] = []
 
     /// The remote ID of care plans for which contacts should match.
     public var carePlanRemoteIDs: [String] = []
@@ -103,14 +103,14 @@ public struct OCKContactQuery: OCKAnyContactQuery, Equatable {
     internal var extendedSortDescriptors: [SortDescriptor] = []
 
     /// An array of group identifiers to match against.
-    public var groupIdentifiers: [String] = []
+    public var groupIdentifiers: [String?] = []
 
     /// An array of tags to match against. If an object's tags contains one or more of entries, it will match the query.
     public var tags: [String] = []
 
     // MARK: OCKAnyContactQuery
     public var ids: [String] = []
-    public var remoteIDs: [String] = []
+    public var remoteIDs: [String?] = []
     public var carePlanIDs: [String] = []
     public var dateInterval: DateInterval?
     public var limit: Int?

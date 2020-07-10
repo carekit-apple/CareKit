@@ -29,13 +29,15 @@
  */
 
 import CareKit
+import CareKitStore
+import CareKitUI
 import Contacts
 import Foundation
 import XCTest
 
 private extension OCKContact {
     static func mock() -> OCKContact {
-        var contact = OCKContact(id: "lexi-torres", givenName: "Lexi", familyName: "Torres", carePlanID: nil)
+        var contact = OCKContact(id: "lexi-torres", givenName: "Lexi", familyName: "Torres", carePlanUUID: nil)
         contact.role = "Dr. Torres is a family practice doctor with over 20 years of experience."
         let phoneNumbers = [OCKLabeledValue(label: "work", value: "2135558479")]
         contact.phoneNumbers = phoneNumbers

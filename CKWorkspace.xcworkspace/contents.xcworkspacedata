@@ -2,10 +2,10 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:CareKit/CareKit.xcodeproj">
+      location = "group:CareKitUI/CareKitUI.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:CareKitUI/CareKitUI.xcodeproj">
+      location = "group:CareKit/CareKit.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:CareKitStore/CareKitStore.xcodeproj">
@@ -15,5 +15,8 @@
    </FileRef>
    <FileRef
       location = "group:OCKCatalog/OCKCatalog.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:CareKitFHIR/CareKitFHIR.xcodeproj">
    </FileRef>
 </Workspace>

@@ -57,12 +57,6 @@ class TestScheduleElement: XCTestCase {
         assert(event.start == element.start)
     }
 
-    func testOneScheduleElementIsEqualToItsElements() {
-        let interval = DateComponents(day: 1)
-        let schedule = OCKScheduleElement(start: date, end: nil, interval: interval, text: nil, targetValues: [])
-        XCTAssert([schedule] == schedule.elements)
-    }
-
     func testOffset() {
         let offset = DateComponents(year: 1)
         let originalElement = OCKScheduleElement(start: date, end: date.addingTimeInterval(10), interval: interval,
@@ -184,5 +178,13 @@ class TestScheduleElement: XCTestCase {
         let queryEnd = queryStart.addingTimeInterval(1)
         let events = element.events(from: queryStart, to: queryEnd)
         XCTAssert(events.count == 2)
+    }
+
+    func testSerialization() throws {
+        let morning = Calendar.current.startOfDay(for: Date())
+        let element = OCKScheduleElement(start: morning, end: nil, interval: DateComponents(hour: 1), duration: .hours(2))
+        let data = try JSONEncoder().encode(element)
+        let decodedElement = try JSONDecoder().decode(OCKScheduleElement.self, from: data)
+        XCTAssert(element == decodedElement)
     }
 }

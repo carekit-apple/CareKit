@@ -47,12 +47,12 @@ class TestStoreContacts: XCTestCase {
     // MARK: Relationship Validation
 
     func testStoreAllowsMissingCarePlanRelationshipOnContacts() {
-        let contact = OCKContact(id: "contact", givenName: "Amy", familyName: "Frost", carePlanID: nil)
+        let contact = OCKContact(id: "contact", givenName: "Amy", familyName: "Frost", carePlanUUID: nil)
         XCTAssertNoThrow(try store.addContactAndWait(contact))
     }
 
     func testStorePreventsMissingCarePlanRelationshipOnContacts() {
-        let contact = OCKContact(id: "contact", givenName: "Amy", familyName: "Frost", carePlanID: nil)
+        let contact = OCKContact(id: "contact", givenName: "Amy", familyName: "Frost", carePlanUUID: nil)
         store.configuration.allowsEntitiesWithMissingRelationships = false
         XCTAssertThrowsError(try store.addContactAndWait(contact))
     }
@@ -60,7 +60,7 @@ class TestStoreContacts: XCTestCase {
     // MARK: Insertion
 
     func testAddContact() throws {
-        var contact = OCKContact(id: "contact", givenName: "Amy", familyName: "Frost", carePlanID: nil)
+        var contact = OCKContact(id: "contact", givenName: "Amy", familyName: "Frost", carePlanUUID: nil)
         let address = OCKPostalAddress()
         address.state = "CO"
         address.country = "US"
@@ -88,11 +88,12 @@ class TestStoreContacts: XCTestCase {
         XCTAssert(contact.title == "Manager of Apple Peeling")
         XCTAssert(contact.role == "Official Taste Tester")
         XCTAssertNotNil(contact.schemaVersion)
+        XCTAssertNotNil(contact.uuid)
     }
 
     func testAddContactFailsIfIdentifierAlreadyExists() throws {
-        let contact1 = OCKContact(id: "contact", givenName: "Amy", familyName: "Frost", carePlanID: nil)
-        let contact2 = OCKContact(id: "contact", givenName: "Jared", familyName: "Gosler", carePlanID: nil)
+        let contact1 = OCKContact(id: "contact", givenName: "Amy", familyName: "Frost", carePlanUUID: nil)
+        let contact2 = OCKContact(id: "contact", givenName: "Jared", familyName: "Gosler", carePlanUUID: nil)
         try store.addContactAndWait(contact1)
         XCTAssertThrowsError(try store.addContactAndWait(contact2))
     }
@@ -100,16 +101,16 @@ class TestStoreContacts: XCTestCase {
     // MARK: Querying
 
     func testQueryContactsByIdentifier() throws {
-        let contact1 = try store.addContactAndWait(OCKContact(id: "contact1", givenName: "Amy", familyName: "Frost", carePlanID: nil))
-        try store.addContactAndWait(OCKContact(id: "contact2", givenName: "Amy", familyName: "Frost", carePlanID: nil))
+        let contact1 = try store.addContactAndWait(OCKContact(id: "contact1", givenName: "Amy", familyName: "Frost", carePlanUUID: nil))
+        try store.addContactAndWait(OCKContact(id: "contact2", givenName: "Amy", familyName: "Frost", carePlanUUID: nil))
         let fetchedContacts = try store.fetchContactsAndWait(query: OCKContactQuery(id: "contact1"))
         XCTAssert(fetchedContacts == [contact1])
     }
 
     func testQueryContactsByCarePlanID() throws {
-        let carePlan = try store.addCarePlanAndWait(OCKCarePlan(id: "B", title: "Care Plan A", patientID: nil))
-        try store.addContactAndWait(OCKContact(id: "care plan 1", givenName: "Mark", familyName: "Brown", carePlanID: nil))
-        var contact = OCKContact(id: "care plan 2", givenName: "Amy", familyName: "Frost", carePlanID: try carePlan.getLocalID())
+        let carePlan = try store.addCarePlanAndWait(OCKCarePlan(id: "B", title: "Care Plan A", patientUUID: nil))
+        try store.addContactAndWait(OCKContact(id: "care plan 1", givenName: "Mark", familyName: "Brown", carePlanUUID: nil))
+        var contact = OCKContact(id: "care plan 2", givenName: "Amy", familyName: "Frost", carePlanUUID: try carePlan.getUUID())
         contact = try store.addContactAndWait(contact)
         var query = OCKContactQuery()
         query.carePlanIDs = [carePlan.id]
@@ -118,9 +119,9 @@ class TestStoreContacts: XCTestCase {
     }
 
     func testContactsQueryGroupIdentifiers() throws {
-        var contactA = OCKContact(id: "A", givenName: "a", familyName: "aaa", carePlanID: nil)
+        var contactA = OCKContact(id: "A", givenName: "a", familyName: "aaa", carePlanUUID: nil)
         contactA.groupIdentifier = "Alpha"
-        var contactB = OCKContact(id: "B", givenName: "b", familyName: "bbb", carePlanID: nil)
+        var contactB = OCKContact(id: "B", givenName: "b", familyName: "bbb", carePlanUUID: nil)
         contactB.groupIdentifier = "Beta"
         try store.addContactsAndWait([contactA, contactB])
         var query = OCKContactQuery(for: Date())
@@ -131,11 +132,11 @@ class TestStoreContacts: XCTestCase {
     }
 
     func testContactQueryTags() throws {
-        var contactA = OCKContact(id: "A", givenName: "a", familyName: "aaa", carePlanID: nil)
+        var contactA = OCKContact(id: "A", givenName: "a", familyName: "aaa", carePlanUUID: nil)
         contactA.tags = ["A"]
-        var contactB = OCKContact(id: "B", givenName: "b", familyName: "bbb", carePlanID: nil)
+        var contactB = OCKContact(id: "B", givenName: "b", familyName: "bbb", carePlanUUID: nil)
         contactB.tags = ["B", "C"]
-        var contactC = OCKContact(id: "C", givenName: "c", familyName: "cccc", carePlanID: nil)
+        var contactC = OCKContact(id: "C", givenName: "c", familyName: "cccc", carePlanUUID: nil)
         contactC.tags = ["C"]
         try store.addContactsAndWait([contactA, contactB, contactC])
         var query = OCKContactQuery(for: Date())
@@ -145,9 +146,9 @@ class TestStoreContacts: XCTestCase {
     }
 
     func testContactQueryLimited() throws {
-        let contactA = OCKContact(id: "A", givenName: "a", familyName: "aaa", carePlanID: nil)
-        let contactB = OCKContact(id: "B", givenName: "b", familyName: "bbb", carePlanID: nil)
-        let contactC = OCKContact(id: "C", givenName: "c", familyName: "cccc", carePlanID: nil)
+        let contactA = OCKContact(id: "A", givenName: "a", familyName: "aaa", carePlanUUID: nil)
+        let contactB = OCKContact(id: "B", givenName: "b", familyName: "bbb", carePlanUUID: nil)
+        let contactC = OCKContact(id: "C", givenName: "c", familyName: "cccc", carePlanUUID: nil)
         try store.addContactsAndWait([contactA, contactB, contactC])
         var query = OCKContactQuery(for: Date())
         query.limit = 2
@@ -156,9 +157,9 @@ class TestStoreContacts: XCTestCase {
     }
 
     func testContactQueryOffset() throws {
-        let contactA = OCKContact(id: "A", givenName: "a", familyName: "aaa", carePlanID: nil)
-        let contactB = OCKContact(id: "B", givenName: "b", familyName: "bbb", carePlanID: nil)
-        let contactC = OCKContact(id: "C", givenName: "c", familyName: "cccc", carePlanID: nil)
+        let contactA = OCKContact(id: "A", givenName: "a", familyName: "aaa", carePlanUUID: nil)
+        let contactB = OCKContact(id: "B", givenName: "b", familyName: "bbb", carePlanUUID: nil)
+        let contactC = OCKContact(id: "C", givenName: "c", familyName: "cccc", carePlanUUID: nil)
         try store.addContactsAndWait([contactA, contactB, contactC])
         var query = OCKContactQuery(for: Date())
         query.offset = 2
@@ -167,9 +168,9 @@ class TestStoreContacts: XCTestCase {
     }
 
     func testContactQuerySorted() throws {
-        let contactA = OCKContact(id: "A", givenName: "a", familyName: "aaa", carePlanID: nil)
-        let contactB = OCKContact(id: "B", givenName: "b", familyName: "bbb", carePlanID: nil)
-        let contactC = OCKContact(id: "C", givenName: "c", familyName: "cccc", carePlanID: nil)
+        let contactA = OCKContact(id: "A", givenName: "a", familyName: "aaa", carePlanUUID: nil)
+        let contactB = OCKContact(id: "B", givenName: "b", familyName: "bbb", carePlanUUID: nil)
+        let contactC = OCKContact(id: "C", givenName: "c", familyName: "cccc", carePlanUUID: nil)
         try store.addContactsAndWait([contactA, contactB, contactC])
         var query = OCKContactQuery(for: Date())
         query.sortDescriptors = [.givenName(ascending: true)]
@@ -178,16 +179,16 @@ class TestStoreContacts: XCTestCase {
     }
 
     func testContactNilQueryReturnsAllContacts() throws {
-        let contactA = OCKContact(id: "A", givenName: "a", familyName: "aaa", carePlanID: nil)
-        let contactB = OCKContact(id: "B", givenName: "b", familyName: "bbb", carePlanID: nil)
-        let contactC = OCKContact(id: "C", givenName: "c", familyName: "cccc", carePlanID: nil)
+        let contactA = OCKContact(id: "A", givenName: "a", familyName: "aaa", carePlanUUID: nil)
+        let contactB = OCKContact(id: "B", givenName: "b", familyName: "bbb", carePlanUUID: nil)
+        let contactC = OCKContact(id: "C", givenName: "c", familyName: "cccc", carePlanUUID: nil)
         try store.addContactsAndWait([contactA, contactB, contactC])
         let contacts = try store.fetchContactsAndWait()
         XCTAssertNotNil(contacts.count == 3)
     }
 
     func testQueryContactByRemoteID() throws {
-        var contact = OCKContact(id: "A", givenName: "B", familyName: "C", carePlanID: nil)
+        var contact = OCKContact(id: "A", givenName: "B", familyName: "C", carePlanUUID: nil)
         contact.remoteID = "abc"
         contact = try store.addContactAndWait(contact)
         var query = OCKContactQuery()
@@ -197,11 +198,11 @@ class TestStoreContacts: XCTestCase {
     }
 
     func testQueryContactByCarePlanRemoteID() throws {
-        var plan = OCKCarePlan(id: "D", title: "", patientID: nil)
+        var plan = OCKCarePlan(id: "D", title: "", patientUUID: nil)
         plan.remoteID = "abc"
         plan = try store.addCarePlanAndWait(plan)
 
-        var contact = OCKContact(id: "A", givenName: "B", familyName: "C", carePlanID: plan.localDatabaseID)
+        var contact = OCKContact(id: "A", givenName: "B", familyName: "C", carePlanUUID: plan.uuid)
         contact = try store.addContactAndWait(contact)
         var query = OCKContactQuery(for: Date())
         query.carePlanRemoteIDs = ["abc"]
@@ -210,11 +211,20 @@ class TestStoreContacts: XCTestCase {
     }
 
     func testQueryContactByCarePlanVersionID() throws {
-        let plan = try store.addCarePlanAndWait(OCKCarePlan(id: "A", title: "B", patientID: nil))
-        let planID = try plan.getLocalID()
-        let contact = try store.addContactAndWait(OCKContact(id: "C", givenName: "D", familyName: "E", carePlanID: planID))
+        let plan = try store.addCarePlanAndWait(OCKCarePlan(id: "A", title: "B", patientUUID: nil))
+        let planID = try plan.getUUID()
+        let contact = try store.addContactAndWait(OCKContact(id: "C", givenName: "D", familyName: "E", carePlanUUID: planID))
         var query = OCKContactQuery(for: Date())
-        query.carePlanVersionIDs = [planID]
+        query.carePlanUUIDs = [planID]
+        let fetched = try store.fetchContactsAndWait(query: query).first
+        XCTAssert(fetched == contact)
+    }
+
+    func testQueryContactByUUID() throws {
+        var contact = OCKContact(id: "A", givenName: "B", familyName: "C", carePlanUUID: nil)
+        contact = try store.addContactAndWait(contact)
+        var query = OCKContactQuery()
+        query.uuids = [try contact.getUUID()]
         let fetched = try store.fetchContactsAndWait(query: query).first
         XCTAssert(fetched == contact)
     }
@@ -222,55 +232,55 @@ class TestStoreContacts: XCTestCase {
     // MARK: Versioning
 
     func testUpdateContactCreatesNewVersion() throws {
-        let contact = try store.addContactAndWait(OCKContact(id: "contact", givenName: "John", familyName: "Appleseed", carePlanID: nil))
-        let updated = try store.updateContactAndWait(OCKContact(id: "contact", givenName: "Jane", familyName: "Appleseed", carePlanID: nil))
+        let contact = try store.addContactAndWait(OCKContact(id: "contact", givenName: "John", familyName: "Appleseed", carePlanUUID: nil))
+        let updated = try store.updateContactAndWait(OCKContact(id: "contact", givenName: "Jane", familyName: "Appleseed", carePlanUUID: nil))
         XCTAssert(updated.name.givenName == "Jane")
-        XCTAssert(updated.localDatabaseID != contact.localDatabaseID)
-        XCTAssert(updated.previousVersionID == contact.localDatabaseID)
+        XCTAssert(updated.uuid != contact.uuid)
+        XCTAssert(updated.previousVersionUUID == contact.uuid)
     }
 
     func testUpdateFailsForUnsavedContacts() {
-        let patient = OCKContact(id: "careplan", givenName: "John", familyName: "Appleseed", carePlanID: nil)
+        let patient = OCKContact(id: "careplan", givenName: "John", familyName: "Appleseed", carePlanUUID: nil)
         XCTAssertThrowsError(try store.updateContactAndWait(patient))
     }
 
     func testContactQueryByIDOnlyReturnsLatestVersionOfAContact() throws {
-        try store.addContactAndWait(OCKContact(id: "contact", givenName: "A", familyName: "", carePlanID: nil))
-        try store.updateContactAndWait(OCKContact(id: "contact", givenName: "B", familyName: "", carePlanID: nil))
-        try store.updateContactAndWait(OCKContact(id: "contact", givenName: "C", familyName: "", carePlanID: nil))
-        let versionD = try store.updateContactAndWait(OCKContact(id: "contact", givenName: "D", familyName: "", carePlanID: nil))
+        try store.addContactAndWait(OCKContact(id: "contact", givenName: "A", familyName: "", carePlanUUID: nil))
+        try store.updateContactAndWait(OCKContact(id: "contact", givenName: "B", familyName: "", carePlanUUID: nil))
+        try store.updateContactAndWait(OCKContact(id: "contact", givenName: "C", familyName: "", carePlanUUID: nil))
+        let versionD = try store.updateContactAndWait(OCKContact(id: "contact", givenName: "D", familyName: "", carePlanUUID: nil))
         let fetched = try store.fetchContactAndWait(id: "contact")
         XCTAssert(fetched?.id == versionD.id)
         XCTAssert(fetched?.name == versionD.name)
     }
 
     func testContactQueryWithDateOnlyReturnsLatestVersionOfAContact() throws {
-        try store.addContactAndWait(OCKContact(id: "contact", givenName: "A", familyName: "", carePlanID: nil))
-        try store.updateContactAndWait(OCKContact(id: "contact", givenName: "B", familyName: "", carePlanID: nil))
-        try store.updateContactAndWait(OCKContact(id: "contact", givenName: "C", familyName: "", carePlanID: nil))
-        try store.updateContactAndWait(OCKContact(id: "contact", givenName: "D", familyName: "", carePlanID: nil))
+        try store.addContactAndWait(OCKContact(id: "contact", givenName: "A", familyName: "", carePlanUUID: nil))
+        try store.updateContactAndWait(OCKContact(id: "contact", givenName: "B", familyName: "", carePlanUUID: nil))
+        try store.updateContactAndWait(OCKContact(id: "contact", givenName: "C", familyName: "", carePlanUUID: nil))
+        try store.updateContactAndWait(OCKContact(id: "contact", givenName: "D", familyName: "", carePlanUUID: nil))
         let fetched = try store.fetchContactsAndWait(query: OCKContactQuery(for: Date()))
         XCTAssert(fetched.count == 1)
         XCTAssert(fetched.first?.name.givenName == "D")
     }
 
     func testContactQueryWithNoDateReturnsAllVersionsOfAContact() throws {
-        try store.addContactAndWait(OCKContact(id: "contact", givenName: "A", familyName: "", carePlanID: nil))
-        try store.updateContactAndWait(OCKContact(id: "contact", givenName: "B", familyName: "", carePlanID: nil))
-        try store.updateContactAndWait(OCKContact(id: "contact", givenName: "C", familyName: "", carePlanID: nil))
-        try store.updateContactAndWait(OCKContact(id: "contact", givenName: "D", familyName: "", carePlanID: nil))
+        try store.addContactAndWait(OCKContact(id: "contact", givenName: "A", familyName: "", carePlanUUID: nil))
+        try store.updateContactAndWait(OCKContact(id: "contact", givenName: "B", familyName: "", carePlanUUID: nil))
+        try store.updateContactAndWait(OCKContact(id: "contact", givenName: "C", familyName: "", carePlanUUID: nil))
+        try store.updateContactAndWait(OCKContact(id: "contact", givenName: "D", familyName: "", carePlanUUID: nil))
         let fetched = try store.fetchContactsAndWait(query: OCKContactQuery())
         XCTAssert(fetched.count == 4)
     }
 
     func testContactQueryOnPastDateReturnsPastVersionOfAContact() throws {
         let dateA = Date().addingTimeInterval(-100)
-        var versionA = OCKContact(id: "A", givenName: "a", familyName: "b", carePlanID: nil)
+        var versionA = OCKContact(id: "A", givenName: "a", familyName: "b", carePlanUUID: nil)
         versionA.effectiveDate = dateA
         versionA = try store.addContactAndWait(versionA)
 
         let dateB = Date().addingTimeInterval(100)
-        var versionB = OCKContact(id: "A", givenName: "a", familyName: "c", carePlanID: nil)
+        var versionB = OCKContact(id: "A", givenName: "a", familyName: "c", carePlanUUID: nil)
         versionB.effectiveDate = dateB
         versionB = try store.updateContactAndWait(versionB)
 
@@ -283,12 +293,12 @@ class TestStoreContacts: XCTestCase {
 
     func testContactQuerySpanningVersionsReturnsNewestVersionOnly() throws {
         let dateA = Date().addingTimeInterval(-100)
-        var versionA = OCKContact(id: "A", givenName: "a", familyName: "b", carePlanID: nil)
+        var versionA = OCKContact(id: "A", givenName: "a", familyName: "b", carePlanUUID: nil)
         versionA.effectiveDate = dateA
         versionA = try store.addContactAndWait(versionA)
 
         let dateB = Date().addingTimeInterval(100)
-        var versionB = OCKContact(id: "A", givenName: "a", familyName: "c", carePlanID: nil)
+        var versionB = OCKContact(id: "A", givenName: "a", familyName: "c", carePlanUUID: nil)
         versionB.effectiveDate = dateB
         versionB = try store.updateContactAndWait(versionB)
 
@@ -302,7 +312,7 @@ class TestStoreContacts: XCTestCase {
 
     func testContactQueryBeforeContactWasCreatedReturnsNoResults() throws {
         let dateA = Date()
-        try store.addContactAndWait(OCKContact(id: "A", givenName: "a", familyName: "b", carePlanID: nil))
+        try store.addContactAndWait(OCKContact(id: "A", givenName: "a", familyName: "b", carePlanUUID: nil))
         let interval = DateInterval(start: dateA.addingTimeInterval(-100), end: dateA)
         let query = OCKContactQuery(dateInterval: interval)
         let fetched = try store.fetchContactsAndWait(query: query)
@@ -312,14 +322,14 @@ class TestStoreContacts: XCTestCase {
     // MARK: Deletion
 
     func testDeleteContact() throws {
-        let contact = try store.addContactAndWait(OCKContact(id: "contact", givenName: "Christopher", familyName: "Foss", carePlanID: nil))
+        let contact = try store.addContactAndWait(OCKContact(id: "contact", givenName: "Christopher", familyName: "Foss", carePlanUUID: nil))
         try store.deleteContactAndWait(contact)
-        let fetched = try store.fetchContactsAndWait()
+        let fetched = try store.fetchContactsAndWait(query: .init(for: Date()))
         XCTAssert(fetched.isEmpty)
     }
 
-    func testDeleteContactfailsIfContactDoesntExist() {
-        let contact = OCKContact(id: "contact", givenName: "Amy", familyName: "Frost", carePlanID: nil)
+    func testDeleteContactFailsIfContactDoesntExist() {
+        let contact = OCKContact(id: "contact", givenName: "Amy", familyName: "Frost", carePlanUUID: nil)
         XCTAssertThrowsError(try store.deleteContactAndWait(contact))
     }
 }

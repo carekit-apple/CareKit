@@ -68,8 +68,10 @@ UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelega
     }
 
     private let aggregator: OCKAdherenceAggregator
-    private var previouslySelectedDate = Date()
-    private let storeManager: OCKSynchronizedStoreManager
+
+    private(set) var previousSelectedDate = Date()
+
+    let storeManager: OCKSynchronizedStoreManager
 
     var currentViewController: OCKWeekCalendarViewController? {
         guard
@@ -99,9 +101,9 @@ UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelega
         delegate = self
 
         // Create the first view controller
-        let viewController = makeViewController(forDate: previouslySelectedDate)
+        let viewController = makeViewController(forDate: previousSelectedDate)
         viewController.calendarView.delegate = self
-        viewController.calendarView.selectDate(previouslySelectedDate)
+        viewController.calendarView.selectDate(previousSelectedDate)
         setViewControllers([viewController], direction: .forward, animated: false, completion: nil)
     }
 
@@ -127,45 +129,59 @@ UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelega
         }
     }
 
+    private func makePage(beside page: OCKWeekCalendarViewController, addingWeeks value: Int) -> OCKWeekCalendarViewController {
+        let dateInterval = page.calendarView.dateInterval
+        let date = Calendar.current.date(byAdding: .weekOfYear, value: value, to: dateInterval.start)!
+        let page = makeViewController(forDate: date)
+        page.calendarView.delegate = self
+        return page
+    }
+
     /// Select a date in the calendar. If the date is not in the current date interval being displayed, the view controller will automatically
     /// page to the date interval that contains the new date.
     /// - Parameter date: The new date to select.
     /// - Parameter animated: True to animate selection of the new date.
     open func selectDate(_ date: Date, animated: Bool) {
-        guard let currentVC = currentViewController else { return }
+        guard
+            !Calendar.current.isDate(date, inSameDayAs: previousSelectedDate),
+            let currentVC = currentViewController
+        else { return }
+
+        // Always make sure to cache the previously selected date
+        let previouslySelectedDate = currentVC.calendarView.selectedDate
+        defer {
+            self.previousSelectedDate = previouslySelectedDate
+        }
+
+        // If the new date is within the currently displayed week, select it
         if currentVC.calendarView.dateInterval.contains(date) {
             currentVC.calendarView.selectDate(date)
+            calendarDelegate?.weekCalendarPageViewController(self, didSelectDate: date, previousDate: previousSelectedDate)
             return
         }
 
-        // Create the next view controller
+        // Else create a new calendar view that contains the new date
         let nextVC = makeViewController(forDate: date)
         nextVC.calendarView.delegate = self
         let isLeft = currentVC.calendarView.dateInterval.start > date
         nextVC.calendarView.selectDate(date)
-        setViewControllers([nextVC], direction: isLeft ? .reverse : .forward, animated: animated, completion: nil )
+        setViewControllers([nextVC], direction: isLeft ? .reverse : .forward, animated: animated, completion: nil)
+
+        calendarDelegate?.weekCalendarPageViewController(self, didSelectDate: date, previousDate: previousSelectedDate)
     }
 
     // MARK: UIPageViewController DataSource & Delegate
 
     open func pageViewController(_ pageViewController: UIPageViewController,
                                  viewControllerBefore viewController: UIViewController) -> UIViewController? {
-        guard let typedViewController = viewController as? OCKWeekCalendarViewController else { fatalError("Unsupported type") }
-        let dateInterval = typedViewController.calendarView.dateInterval
-        let previousDate = Calendar.current.date(byAdding: .weekOfYear, value: -1, to: dateInterval.start)!
-        let previousPage = makeViewController(forDate: previousDate)
-        previousPage.calendarView.delegate = self
-        return previousPage
+        guard let page = viewController as? OCKWeekCalendarViewController else { fatalError("Unsupported type") }
+        return makePage(beside: page, addingWeeks: -1)
     }
 
     open func pageViewController(_ pageViewController: UIPageViewController,
                                  viewControllerAfter viewController: UIViewController) -> UIViewController? {
-        guard let typedViewController = viewController as? OCKWeekCalendarViewController else { fatalError("Unsupported type") }
-        let dateInterval = typedViewController.calendarView.dateInterval
-        let nextDate = Calendar.current.date(byAdding: .weekOfYear, value: 1, to: dateInterval.start)!
-        let nextPage = makeViewController(forDate: nextDate)
-        nextPage.calendarView.delegate = self
-        return nextPage
+        guard let page = viewController as? OCKWeekCalendarViewController else { fatalError("Unsupported type") }
+        return makePage(beside: page, addingWeeks: 1)
     }
 
     open func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool,
@@ -175,17 +191,17 @@ UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelega
             let previousViewController = previousViewControllers.first,
             let currentViewController = currentViewController,
             let currentWeek = dateInterval
-            else { return }
+        else { return }
+
         guard let typedPreviousViewController = previousViewController as? OCKWeekCalendarViewController else { fatalError("Unsupported type") }
 
         let didMoveForwards = typedPreviousViewController.calendarView.dateInterval < currentViewController.calendarView.dateInterval
         let offset = didMoveForwards ? 1 : -1
-        let previousSelectedDate = typedPreviousViewController.calendarView.selectedDate
-        let newSelectedDate = Calendar.current.date(byAdding: .weekOfYear, value: offset,
-                                                    to: typedPreviousViewController.calendarView.selectedDate)!
-        currentViewController.calendarView.selectDate(newSelectedDate)
+        previousSelectedDate = typedPreviousViewController.calendarView.selectedDate
+        let currentSelectedDate = Calendar.current.date(byAdding: .weekOfYear, value: offset, to: previousSelectedDate)!
+        currentViewController.calendarView.selectDate(currentSelectedDate)
         calendarDelegate?.weekCalendarPageViewController(self, didChangeDateInterval: currentWeek)
-        calendarDelegate?.weekCalendarPageViewController(self, didSelectDate: newSelectedDate, previousDate: previousSelectedDate)
+        calendarDelegate?.weekCalendarPageViewController(self, didSelectDate: currentSelectedDate, previousDate: previousSelectedDate)
     }
 
     // MARK: OCKCalendarViewDelegate
@@ -198,11 +214,13 @@ UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelega
     open func calendarView(_ calendarView: UIView & OCKCalendarDisplayable, didSelectDate date: Date, at index: Int, sender: Any?) {
         guard
             let startOfWeek = dateInterval?.start,
-            let dateInterval = dateInterval else { return }
+            let dateInterval = dateInterval
+        else { return }
+
         let comparison = Calendar.current.compare(dateInterval.start, to: startOfWeek, toGranularity: .weekOfYear)
         guard comparison == .orderedSame else { return }
-        calendarDelegate?.weekCalendarPageViewController(self, didSelectDate: date, previousDate: previouslySelectedDate)
-        previouslySelectedDate = date
+        calendarDelegate?.weekCalendarPageViewController(self, didSelectDate: date, previousDate: previousSelectedDate)
+        previousSelectedDate = date
     }
 }
 #endif

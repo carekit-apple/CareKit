@@ -1,3 +1,4 @@
+//
 /*
  Copyright (c) 2020, Apple Inc. All rights reserved.
  
@@ -28,28 +29,61 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+@testable import CareKit
+import CareKitStore
+import CareKitUI
+import Combine
 import Foundation
 import SwiftUI
+import XCTest
+import Contacts
 
-extension View {
+class TestDetailedContactViewModel: XCTestCase {
 
-    /// Conditionally apply modifiers to a view.
-    func `if`<TrueContent: View>(_ condition: Bool, trueContent: (Self) -> TrueContent) -> some View {
-        condition ?
-            ViewBuilder.buildEither(first: trueContent(self)) :
-            ViewBuilder.buildEither(second: self)
+    var controller: OCKDetailedContactController!
+    var cancellable: AnyCancellable?
+    var model: ContactViewModel!
+
+    override func setUp() {
+        super.setUp()
+        let data = OCKContact.mock()
+        let store = OCKStore(name: "carekit-store", type: .inMemory)
+        controller = .init(storeManager: .init(wrapping: store))
+        controller.contact = data
+        model = controller.viewModel
     }
 
-    /// Opposite effect of applying a `mask`. This will use the alpha channel of the mask to cut a shape out of the view.
-    func inverseMask<Mask: View>(_ mask: Mask) -> some View {
-        self.mask(mask
-            .foregroundColor(.black)
-            .background(Color.white)
-            .compositingGroup()
-            .luminanceToAlpha())
+    func testViewModelCreation() {
+        XCTAssertEqual(formatName(controller.contact?.name), model.title)
+        XCTAssertEqual(formatAddress(controller.contact?.address), model.address)
     }
     
-    func scaled(size: CGFloat) -> some View {
-        return self.modifier(ScaledFontModifier(size: size))
+    private func formatName(_ name: PersonNameComponents?) -> String {
+        guard let name = name else {
+            return ""
+        }
+        let formatter = PersonNameComponentsFormatter()
+        formatter.style = .medium
+        
+        return formatter.string(from: name)
+    }
+    
+    
+    private func formatAddress(_ address: OCKPostalAddress?) -> String {
+        guard let address = address else {
+            return ""
+        }
+        let formatter = CNPostalAddressFormatter()
+        formatter.style = .mailingAddress
+        
+        return formatter.string(from: address)
+    }
+}
+
+private extension OCKContact {
+    static func mock() -> OCKContact {
+        var contact = OCKContact(id: "lexi-torres", givenName: "Lexi", familyName: "Torres", carePlanUUID: nil)
+        contact.title = "Family Practice"
+        return contact
     }
 }

@@ -1,3 +1,4 @@
+//
 /*
  Copyright (c) 2020, Apple Inc. All rights reserved.
  
@@ -28,28 +29,34 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import CareKit
+import CareKitStore
+import CareKitUI
 import Foundation
 import SwiftUI
+import XCTest
 
-extension View {
+@available(iOS 14.0, watchOS 7.0, *)
+class TestSimpleContactView: XCTestCase {
 
-    /// Conditionally apply modifiers to a view.
-    func `if`<TrueContent: View>(_ condition: Bool, trueContent: (Self) -> TrueContent) -> some View {
-        condition ?
-            ViewBuilder.buildEither(first: trueContent(self)) :
-            ViewBuilder.buildEither(second: self)
+    let controller: OCKSimpleContactController = {
+        let store = OCKStore(name: "carekit-store", type: .onDisk)
+        return .init(storeManager: .init(wrapping: store))
+    }()
+
+    let query = OCKContactQuery(id: "lexi-torres")
+    let data = OCKContact(id: "lexi-torres", givenName: "Lexi", familyName: "Torres", carePlanUUID: nil)
+    let staticView = CareKitUI.SimpleContactView(title: Text("Title"), detail: Text("Detail"), image: Image(systemName: "person.crop.circle"))
+
+    func testDefaultContentInitializers() {
+        _ = CareKit.SimpleContactView(contact: data, contactQuery: query, storeManager: controller.storeManager)
+        _ = CareKit.SimpleContactView(contactID: "lexi-torres", storeManager:  controller.storeManager)
+        _ = CareKit.SimpleContactView(controller: controller)
     }
 
-    /// Opposite effect of applying a `mask`. This will use the alpha channel of the mask to cut a shape out of the view.
-    func inverseMask<Mask: View>(_ mask: Mask) -> some View {
-        self.mask(mask
-            .foregroundColor(.black)
-            .background(Color.white)
-            .compositingGroup()
-            .luminanceToAlpha())
-    }
-    
-    func scaled(size: CGFloat) -> some View {
-        return self.modifier(ScaledFontModifier(size: size))
+    func testCustomContentInitializers() {
+        _ = CareKit.SimpleContactView(contact: data, contactQuery: query, storeManager: controller.storeManager) { _ in self.staticView }
+        _ = CareKit.SimpleContactView(contactID: "lexi-torres", storeManager: controller.storeManager) { _ in self.staticView }
+        _ = CareKit.SimpleContactView(controller: controller) { _ in self.staticView }
     }
 }

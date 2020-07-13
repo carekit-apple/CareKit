@@ -1,3 +1,4 @@
+//
 /*
  Copyright (c) 2020, Apple Inc. All rights reserved.
  
@@ -28,28 +29,41 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import CareKitStore
 import Foundation
 import SwiftUI
 
-extension View {
+@available(iOS 14.0, watchOS 7.0, *)
+struct SynchronizedContactView<Controller: OCKContactController, Content: View>: View {
 
-    /// Conditionally apply modifiers to a view.
-    func `if`<TrueContent: View>(_ condition: Bool, trueContent: (Self) -> TrueContent) -> some View {
-        condition ?
-            ViewBuilder.buildEither(first: trueContent(self)) :
-            ViewBuilder.buildEither(second: self)
+    @StateObject private var controller: Controller
+
+    private let errorHandler: ((Error) -> Void)?
+    private let content: (_ controller: Controller) -> Content
+    private let query: OCKSynchronizedContactQuery?
+
+    var body: some View {
+        content(controller)
+            .onAppear {
+                self.query?.perform(using: self.controller)
+            }
+            .onReceive(controller.$error.compactMap { $0 }) { error in
+                self.errorHandler?(error)
+            }
     }
 
-    /// Opposite effect of applying a `mask`. This will use the alpha channel of the mask to cut a shape out of the view.
-    func inverseMask<Mask: View>(_ mask: Mask) -> some View {
-        self.mask(mask
-            .foregroundColor(.black)
-            .background(Color.white)
-            .compositingGroup()
-            .luminanceToAlpha())
+    init(controller: Controller, query: OCKSynchronizedContactQuery? = nil, errorHandler: ((Error) -> Void)? = nil,
+         content: @escaping (_ viewModel: Controller) -> Content) {
+        self.query = query
+        self._controller = .init(wrappedValue: controller)
+        self.errorHandler = errorHandler
+        self.content = content
     }
-    
-    func scaled(size: CGFloat) -> some View {
-        return self.modifier(ScaledFontModifier(size: size))
+
+    init(copying copy: Self, settingErrorHandler errorHandler: @escaping (Error) -> Void) {
+        self.query = copy.query
+        self._controller = .init(wrappedValue: copy.controller)
+        self.content = copy.content
+        self.errorHandler = errorHandler
     }
 }

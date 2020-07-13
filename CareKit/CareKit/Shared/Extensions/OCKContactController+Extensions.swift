@@ -1,3 +1,4 @@
+//
 /*
  Copyright (c) 2020, Apple Inc. All rights reserved.
  
@@ -28,28 +29,41 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Foundation
-import SwiftUI
+import CareKitStore
+import Combine
+import Contacts
 
-extension View {
+extension OCKContactController {
 
-    /// Conditionally apply modifiers to a view.
-    func `if`<TrueContent: View>(_ condition: Bool, trueContent: (Self) -> TrueContent) -> some View {
-        condition ?
-            ViewBuilder.buildEither(first: trueContent(self)) :
-            ViewBuilder.buildEither(second: self)
+    var viewModel: ContactViewModel? { makeViewModel(from: contact) }
+    
+    private func makeViewModel(from contact: OCKAnyContact?) -> ContactViewModel? {
+        guard let contact = contact else { return  nil }
+
+        return .init(title: formatName(contact.name), detail: contact.title, instructions: contact.role, address: formatAddress(contact.address))
     }
 
-    /// Opposite effect of applying a `mask`. This will use the alpha channel of the mask to cut a shape out of the view.
-    func inverseMask<Mask: View>(_ mask: Mask) -> some View {
-        self.mask(mask
-            .foregroundColor(.black)
-            .background(Color.white)
-            .compositingGroup()
-            .luminanceToAlpha())
+    // CODE REVIEW: Why is the formatName parameter optinal?
+    private func formatName(_ name: PersonNameComponents?) -> String {
+        guard let name = name else {
+            return ""
+        }
+        let formatter = PersonNameComponentsFormatter()
+        formatter.style = .medium
+        
+        return formatter.string(from: name)
     }
     
-    func scaled(size: CGFloat) -> some View {
-        return self.modifier(ScaledFontModifier(size: size))
+    // CODE REVIEW: Why is the address parameter optinal?
+    // CODE REVIEW: Why is the return type non-optional?
+    private func formatAddress(_ address: OCKPostalAddress?) -> String {
+        guard let address = address else {
+            return ""
+        }
+        let formatter = CNPostalAddressFormatter()
+        formatter.style = .mailingAddress
+        
+        return formatter.string(from: address)
     }
 }
+

@@ -122,6 +122,19 @@
 		64E1BD4E2309FCF200DFFE52 /* OCKResponsiveLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64E1BD4D2309FCF200DFFE52 /* OCKResponsiveLayout.swift */; };
 		64EEC2382318253B00B1012F /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 64EEC2362318253B00B1012F /* Localizable.strings */; };
 		64EEC23B231825DD00B1012F /* OCKLocalization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64EEC23A231825DD00B1012F /* OCKLocalization.swift */; };
+		B06D959024B520D6004578B6 /* FontModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06D958F24B520D6004578B6 /* FontModifiers.swift */; };
+		B0703E7624AB5C1900250ED7 /* DetailedContactView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0703E7424AB5C1900250ED7 /* DetailedContactView.swift */; };
+		B0703E7724AB5C1900250ED7 /* SimpleContactView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0703E7524AB5C1900250ED7 /* SimpleContactView.swift */; };
+		B09EFD9024AB616700FF5C4F /* CheckmarkButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B09EFD8B24AB616700FF5C4F /* CheckmarkButton.swift */; };
+		B09EFD9124AB616700FF5C4F /* CheckmarkButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B09EFD8B24AB616700FF5C4F /* CheckmarkButton.swift */; };
+		B09EFD9224AB616700FF5C4F /* ChecklistItemButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B09EFD8C24AB616700FF5C4F /* ChecklistItemButton.swift */; };
+		B09EFD9324AB616700FF5C4F /* ChecklistItemButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B09EFD8C24AB616700FF5C4F /* ChecklistItemButton.swift */; };
+		B09EFD9424AB616700FF5C4F /* AnimatedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B09EFD8D24AB616700FF5C4F /* AnimatedButton.swift */; };
+		B09EFD9524AB616700FF5C4F /* AnimatedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B09EFD8D24AB616700FF5C4F /* AnimatedButton.swift */; };
+		B09EFD9624AB616700FF5C4F /* ContactButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B09EFD8E24AB616700FF5C4F /* ContactButton.swift */; };
+		B09EFD9724AB616700FF5C4F /* ContactButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B09EFD8E24AB616700FF5C4F /* ContactButton.swift */; };
+		B09EFD9824AB616700FF5C4F /* AddressButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B09EFD8F24AB616700FF5C4F /* AddressButton.swift */; };
+		B09EFD9924AB616700FF5C4F /* AddressButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B09EFD8F24AB616700FF5C4F /* AddressButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -236,6 +249,14 @@
 		64E1BD4D2309FCF200DFFE52 /* OCKResponsiveLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKResponsiveLayout.swift; sourceTree = "<group>"; };
 		64EEC2372318253B00B1012F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		64EEC23A231825DD00B1012F /* OCKLocalization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKLocalization.swift; sourceTree = "<group>"; };
+		B06D958F24B520D6004578B6 /* FontModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontModifiers.swift; sourceTree = "<group>"; };
+		B0703E7424AB5C1900250ED7 /* DetailedContactView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailedContactView.swift; sourceTree = "<group>"; };
+		B0703E7524AB5C1900250ED7 /* SimpleContactView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleContactView.swift; sourceTree = "<group>"; };
+		B09EFD8B24AB616700FF5C4F /* CheckmarkButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CheckmarkButton.swift; sourceTree = "<group>"; };
+		B09EFD8C24AB616700FF5C4F /* ChecklistItemButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChecklistItemButton.swift; sourceTree = "<group>"; };
+		B09EFD8D24AB616700FF5C4F /* AnimatedButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimatedButton.swift; sourceTree = "<group>"; };
+		B09EFD8E24AB616700FF5C4F /* ContactButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactButton.swift; sourceTree = "<group>"; };
+		B09EFD8F24AB616700FF5C4F /* AddressButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddressButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -296,6 +317,7 @@
 				51B2259A23EDDCFC00A2D11F /* NoHighlightStyle.swift */,
 				516A1C47244F766A00BBF2D3 /* OSValue.swift */,
 				510466F624A2842A00D0FD53 /* Components */,
+				B0703E7324AB5C1900250ED7 /* Contact */,
 				510466EE24A26C1800D0FD53 /* Task */,
 				518F9D7022961BF5009CAA48 /* Style */,
 				510466EF24A278EF00D0FD53 /* Extensions */,
@@ -324,6 +346,7 @@
 		510466EF24A278EF00D0FD53 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				B06D958E24B520BF004578B6 /* Modifiers */,
 				516A1C4E244FA7E500BBF2D3 /* View+Extension.swift */,
 				51EFC75423FCAE6000536266 /* UIColor+Extension.swift */,
 				5103C55122F37B44007A7403 /* Number+Extensions.swift */,
@@ -370,6 +393,7 @@
 		510466F624A2842A00D0FD53 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				B09EFD8A24AB616700FF5C4F /* Controls */,
 				51B2259E23EDDCFC00A2D11F /* CardView.swift */,
 				51B2259F23EDDCFC00A2D11F /* HeaderView.swift */,
 				51173F3D243FE022004CB150 /* RectangularCompletionView.swift */,
@@ -651,6 +675,35 @@
 			path = Localization;
 			sourceTree = "<group>";
 		};
+		B06D958E24B520BF004578B6 /* Modifiers */ = {
+			isa = PBXGroup;
+			children = (
+				B06D958F24B520D6004578B6 /* FontModifiers.swift */,
+			);
+			path = Modifiers;
+			sourceTree = "<group>";
+		};
+		B0703E7324AB5C1900250ED7 /* Contact */ = {
+			isa = PBXGroup;
+			children = (
+				B0703E7424AB5C1900250ED7 /* DetailedContactView.swift */,
+				B0703E7524AB5C1900250ED7 /* SimpleContactView.swift */,
+			);
+			path = Contact;
+			sourceTree = "<group>";
+		};
+		B09EFD8A24AB616700FF5C4F /* Controls */ = {
+			isa = PBXGroup;
+			children = (
+				B09EFD8B24AB616700FF5C4F /* CheckmarkButton.swift */,
+				B09EFD8C24AB616700FF5C4F /* ChecklistItemButton.swift */,
+				B09EFD8D24AB616700FF5C4F /* AnimatedButton.swift */,
+				B09EFD8E24AB616700FF5C4F /* ContactButton.swift */,
+				B09EFD8F24AB616700FF5C4F /* AddressButton.swift */,
+			);
+			path = Controls;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -856,6 +909,7 @@
 				510CC634243B843C008BD6B3 /* OCKLog.swift in Sources */,
 				518F9D8922961BF5009CAA48 /* OCKDetailedContactView.swift in Sources */,
 				518F9D9722961BF5009CAA48 /* OCKGradientPlotView.swift in Sources */,
+				B09EFD9024AB616700FF5C4F /* CheckmarkButton.swift in Sources */,
 				51F12D39229C81E200CA265B /* OCKLabeledCheckmarkButton.swift in Sources */,
 				518F9DAE22961BF6009CAA48 /* OCKColorStyler.swift in Sources */,
 				510D862D23020D410073776E /* OCKStyler.swift in Sources */,
@@ -863,15 +917,19 @@
 				5136794C243BF6EC0026997B /* SafariView.swift in Sources */,
 				51173F3C243FE007004CB150 /* CircularCompletionView.swift in Sources */,
 				516A02BA22F363AE00D55AD7 /* NSLayoutConstraint+Extensions.swift in Sources */,
+				B09EFD9424AB616700FF5C4F /* AnimatedButton.swift in Sources */,
 				51F75B942447DD0B00978C71 /* NumericProgressTaskView.swift in Sources */,
 				518F9D9322961BF5009CAA48 /* OCKButtonLogTaskView.swift in Sources */,
 				518F9DB522961BF6009CAA48 /* OCKWeekCalendarView.swift in Sources */,
 				03089D7F231ED7AF0054EA23 /* Calendar+Extensions.swift in Sources */,
+				B09EFD9824AB616700FF5C4F /* AddressButton.swift in Sources */,
 				51367952243BF7450026997B /* LinkLabel.swift in Sources */,
 				518F9D9822961BF5009CAA48 /* OCKGraphLegendView.swift in Sources */,
+				B06D959024B520D6004578B6 /* FontModifiers.swift in Sources */,
 				518F9DC022961BF6009CAA48 /* OCKStackView.swift in Sources */,
 				51EFC75623FCAE6000536266 /* UIColor+Extension.swift in Sources */,
 				518F9D9922961BF5009CAA48 /* OCKScatterPlotView.swift in Sources */,
+				B0703E7624AB5C1900250ED7 /* DetailedContactView.swift in Sources */,
 				5196B54322D5872C00800706 /* OCKTaskDisplayable.swift in Sources */,
 				518F9DA722961BF6009CAA48 /* OCKCompletionRingView.swift in Sources */,
 				518F9D9122961BF5009CAA48 /* OCKLabeledButton.swift in Sources */,
@@ -892,13 +950,16 @@
 				518F9D8F22961BF5009CAA48 /* OCKChecklistItemButton.swift in Sources */,
 				518F9DB722961BF6009CAA48 /* OCKSeparatorView.swift in Sources */,
 				516A02BC22F363D900D55AD7 /* OCKView.swift in Sources */,
+				B09EFD9624AB616700FF5C4F /* ContactButton.swift in Sources */,
 				518F9DB122961BF6009CAA48 /* OCKAppearanceStyler.swift in Sources */,
 				518F9DA222961BF6009CAA48 /* OCKBarPlotView.swift in Sources */,
 				510A5762234A7B920006C376 /* OCKAnimatedButton.swift in Sources */,
+				B0703E7724AB5C1900250ED7 /* SimpleContactView.swift in Sources */,
 				518F9DAB22961BF6009CAA48 /* UIFont+Extensions.swift in Sources */,
 				5103C55222F37B44007A7403 /* Number+Extensions.swift in Sources */,
 				64E1BD4E2309FCF200DFFE52 /* OCKResponsiveLayout.swift in Sources */,
 				51B225A923EDDCFC00A2D11F /* CardView.swift in Sources */,
+				B09EFD9224AB616700FF5C4F /* ChecklistItemButton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -912,14 +973,23 @@
 				516A1C50244FA7E900BBF2D3 /* View+Extension.swift in Sources */,
 				51F9F13323A9B9F80087C900 /* OCKDimensionStyler.swift in Sources */,
 				516A1C46244F703000BBF2D3 /* Number+Extensions.swift in Sources */,
+				B09EFD9724AB616700FF5C4F /* ContactButton.swift in Sources */,
 				51E76F1D24004F19008B09E7 /* NoHighlightStyle.swift in Sources */,
 				51F9F13423A9B9FF0087C900 /* OCKStyler.swift in Sources */,
 				51F9F13123A9B9F80087C900 /* OCKAnimationStyler.swift in Sources */,
+				B09EFD9324AB616700FF5C4F /* ChecklistItemButton.swift in Sources */,
 				510466F524A283E500D0FD53 /* InstructionsTaskView.swift in Sources */,
 				51E214292444F1520063A121 /* RectangularCompletionView.swift in Sources */,
 				516A1C49244F766A00BBF2D3 /* OSValue.swift in Sources */,
+        
+        
+        
+				B09EFD9124AB616700FF5C4F /* CheckmarkButton.swift in Sources */,
+				B09EFD9924AB616700FF5C4F /* AddressButton.swift in Sources */,
+				51D5C97124A2947A00EC45B5 /* os_log+CareKitUI.swift in Sources */,
 				51D5C97124A2947A00EC45B5 /* OCKLog.swift in Sources */,
 				51F9F13223A9B9F80087C900 /* OCKAppearanceStyler.swift in Sources */,
+				B09EFD9524AB616700FF5C4F /* AnimatedButton.swift in Sources */,
 				51E76F1E24004F1F008B09E7 /* CardView.swift in Sources */,
 				51E76F2024004F25008B09E7 /* SimpleTaskView.swift in Sources */,
 				51EFC75723FCAE6000536266 /* UIColor+Extension.swift in Sources */,

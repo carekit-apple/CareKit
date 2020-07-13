@@ -56,8 +56,9 @@ public struct HeaderView: View {
     public var body: some View {
         HStack(spacing: style.dimension.directionalInsets2.trailing) {
             image?
-                .font(.largeTitle)
-                .foregroundColor(Color(UIColor.lightGray))
+                .scaled(size: style.dimension.imageHeight2)
+                .foregroundColor(Color(style.color.customGray3))
+
             VStack(alignment: .leading, spacing: style.dimension.directionalInsets1.top / 4.0) {
                 title
                     .font(.headline)

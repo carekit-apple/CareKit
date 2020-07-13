@@ -147,6 +147,14 @@
 		64EABE022321B1AF00CFBB9F /* OCKSynchronizedStoreManager+Publishers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64EABDBF2321B1AF00CFBB9F /* OCKSynchronizedStoreManager+Publishers.swift */; };
 		64EABE0B2321B1AF00CFBB9F /* OCKContactUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64EABDCB2321B1AF00CFBB9F /* OCKContactUtility.swift */; };
 		64EABE202321B1AF00CFBB9F /* locversion.plist in Resources */ = {isa = PBXBuildFile; fileRef = 64EABDE72321B1AF00CFBB9F /* locversion.plist */; };
+		B046D07824B3BD630005F316 /* OCKContactController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B046D07724B3BD630005F316 /* OCKContactController+Extensions.swift */; };
+		B046D07924B3BD630005F316 /* OCKContactController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B046D07724B3BD630005F316 /* OCKContactController+Extensions.swift */; };
+		B046D07B24B3D65B0005F316 /* TestSimpleContactView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B046D07A24B3D65B0005F316 /* TestSimpleContactView.swift */; };
+		B046D07D24B3D6670005F316 /* TestDetailedContactView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B046D07C24B3D6670005F316 /* TestDetailedContactView.swift */; };
+		B046D07F24B3DD5B0005F316 /* TestDetailedContactViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B046D07E24B3DD5B0005F316 /* TestDetailedContactViewModel.swift */; };
+		B09EFD9C24AB711500FF5C4F /* SimpleContactView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B09EFD9B24AB711500FF5C4F /* SimpleContactView.swift */; };
+		B0A3840524B0B73100384A64 /* DetailedContactView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A3840424B0B73100384A64 /* DetailedContactView.swift */; };
+		B0B50D3424ABCD4900AC8192 /* SynchronizedContactView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0B50D3324ABCD4900AC8192 /* SynchronizedContactView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -286,6 +294,13 @@
 		64EABDE52321B1AF00CFBB9F /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		64EABDE82321B1AF00CFBB9F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = en; path = en.lproj/locversion.plist; sourceTree = "<group>"; };
 		8605A5BA1C4F04EC00DD65FF /* CareKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CareKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B046D07724B3BD630005F316 /* OCKContactController+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OCKContactController+Extensions.swift"; sourceTree = "<group>"; };
+		B046D07A24B3D65B0005F316 /* TestSimpleContactView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestSimpleContactView.swift; sourceTree = "<group>"; };
+		B046D07C24B3D6670005F316 /* TestDetailedContactView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestDetailedContactView.swift; sourceTree = "<group>"; };
+		B046D07E24B3DD5B0005F316 /* TestDetailedContactViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestDetailedContactViewModel.swift; sourceTree = "<group>"; };
+		B09EFD9B24AB711500FF5C4F /* SimpleContactView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleContactView.swift; sourceTree = "<group>"; };
+		B0A3840424B0B73100384A64 /* DetailedContactView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailedContactView.swift; sourceTree = "<group>"; };
+		B0B50D3324ABCD4900AC8192 /* SynchronizedContactView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynchronizedContactView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -342,6 +357,7 @@
 				0346743D2397026A0074891C /* OCKLog.swift */,
 				64EABDBC2321B1AF00CFBB9F /* Synchronization */,
 				510466FE24A2873A00D0FD53 /* Task */,
+				B09EFD9A24AB6D9700FF5C4F /* Contact */,
 				510466FD24A2871800D0FD53 /* Extensions */,
 				5104670024A28C7600D0FD53 /* Utilities */,
 			);
@@ -351,6 +367,7 @@
 		510466FD24A2871800D0FD53 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				B046D07724B3BD630005F316 /* OCKContactController+Extensions.swift */,
 				515C0A1523BF9D3C009A9774 /* OCKTaskControllerProtocol+Extension.swift */,
 				5125A214248F2E00009C9643 /* OCKTaskEvents+Extension.swift */,
 				032C86EF2326B68D00D0A0EA /* Calendar+Extensions.swift */,
@@ -562,6 +579,9 @@
 				518E153A237265930018541B /* TestSimpleContactViewSynchronizer.swift */,
 				518E153F23726A690018541B /* TestDetailedContactViewSynchronizer.swift */,
 				518E154123726F590018541B /* TestCustomContactViewSynchronizer.swift */,
+				B046D07A24B3D65B0005F316 /* TestSimpleContactView.swift */,
+				B046D07C24B3D6670005F316 /* TestDetailedContactView.swift */,
+				B046D07E24B3DD5B0005F316 /* TestDetailedContactViewModel.swift */,
 			);
 			path = Contact;
 			sourceTree = "<group>";
@@ -828,6 +848,16 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		B09EFD9A24AB6D9700FF5C4F /* Contact */ = {
+			isa = PBXGroup;
+			children = (
+				B0B50D3324ABCD4900AC8192 /* SynchronizedContactView.swift */,
+				B09EFD9B24AB711500FF5C4F /* SimpleContactView.swift */,
+				B0A3840424B0B73100384A64 /* DetailedContactView.swift */,
+			);
+			path = Contact;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -995,6 +1025,8 @@
 				51FF9B8E2373377500BAEDB2 /* TestWeekCalendarViewSynchronizer.swift in Sources */,
 				51757C7B2450CF6E0081F133 /* TestTaskEvents.swift in Sources */,
 				510591232378FF24004EDC84 /* TestGridTaskViewSynchronizer.swift in Sources */,
+				B046D07B24B3D65B0005F316 /* TestSimpleContactView.swift in Sources */,
+				B046D07F24B3DD5B0005F316 /* TestDetailedContactViewModel.swift in Sources */,
 				519990712448B864005CD581 /* TestNumericProgressTaskViewModel.swift in Sources */,
 				517C784A239860C1005B2549 /* TestCustomTaskViewSynchronizer.swift in Sources */,
 				5105912523790D06004EDC84 /* TestMockTaskEvents.swift in Sources */,
@@ -1004,6 +1036,7 @@
 				51168D97246E1EFB0002CC69 /* TestSimpleTaskView.swift in Sources */,
 				51D8E27F24115D7D0026C716 /* TestListView.swift in Sources */,
 				51AF51542498420D005D385F /* TestLabeledValueTaskViewModel.swift in Sources */,
+				B046D07D24B3D6670005F316 /* TestDetailedContactView.swift in Sources */,
 				511372462374DFBD00831191 /* TestSynchronizedContext.swift in Sources */,
 				51168D99246E20B40002CC69 /* TestNumericProgressTaskView.swift in Sources */,
 				51D544932397584D00898683 /* Array+Extension.swift in Sources */,
@@ -1025,6 +1058,7 @@
 				51178E0D23AAAA2A0068BAB1 /* OCKSynchronizationContext.swift in Sources */,
 				515862CA23A9C4D600630AB5 /* InstructionsTaskView.swift in Sources */,
 				51178E0323AA95270068BAB1 /* OCKChecklistTaskController.swift in Sources */,
+				B046D07924B3BD630005F316 /* OCKContactController+Extensions.swift in Sources */,
 				51355EEA2499852D009DE0A4 /* OCKTaskEvents+Extension.swift in Sources */,
 				51178E0123AA95270068BAB1 /* OCKTaskController.swift in Sources */,
 				51178E1023AAAA2A0068BAB1 /* OCKSynchronizedStoreManager+Publishers.swift in Sources */,
@@ -1058,6 +1092,7 @@
 				517F3E4523345872004FE251 /* OCKCartesianChartView+Updatable.swift in Sources */,
 				5112730E235E3B12007B18DF /* OCKDetailedContactViewController.swift in Sources */,
 				51AF514E24983B86005D385F /* LabeledValueTaskView.swift in Sources */,
+				B09EFD9C24AB711500FF5C4F /* SimpleContactView.swift in Sources */,
 				515E17D22351262100637153 /* OCKTaskEvents.swift in Sources */,
 				5167B92F23343A64002BC69C /* OCKHeaderView+Updatable.swift in Sources */,
 				5112731A235E588B007B18DF /* OCKCartesianChartController.swift in Sources */,
@@ -1072,11 +1107,14 @@
 				51127322235E58E8007B18DF /* OCKInstructionsTaskController.swift in Sources */,
 				64EABDF12321B1AF00CFBB9F /* UIViewController+Extensions.swift in Sources */,
 				51108C6523596BBD0029F7A2 /* OCKSynchronizationContext.swift in Sources */,
+				B046D07824B3BD630005F316 /* OCKContactController+Extensions.swift in Sources */,
 				51127320235E58D5007B18DF /* OCKSimpleTaskController.swift in Sources */,
+				B0A3840524B0B73100384A64 /* DetailedContactView.swift in Sources */,
 				51AA2304234E687B00A90DA2 /* OCKSimpleContactViewSynchronizer.swift in Sources */,
 				64EABE002321B1AF00CFBB9F /* OCKStoreNotifications.swift in Sources */,
 				51AF515024983BE8005D385F /* OCKLabeledValueTaskController.swift in Sources */,
 				51AF515824984B6F005D385F /* Number+Extension.swift in Sources */,
+				B0B50D3424ABCD4900AC8192 /* SynchronizedContactView.swift in Sources */,
 				5183EA8C2353BC7600C46113 /* OCKScheduleUtility.swift in Sources */,
 				510A6656236147FF00074275 /* OCKAnyEvent+Extension.swift in Sources */,
 				517F3E4A23345BE9004FE251 /* OCKDetailedContactView+Updatable.swift in Sources */,

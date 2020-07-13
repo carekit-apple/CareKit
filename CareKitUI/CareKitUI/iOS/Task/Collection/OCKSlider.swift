@@ -5,6 +5,7 @@
 //  Created by Dylan Li on 6/22/20.
 //  Copyright © 2020 NetReconLab. All rights reserved.
 //
+#if !os(watchOS)
 
 import SwiftUI
 
@@ -238,3 +239,4 @@ private extension CGFloat {
         return value
     }
 }
+#endif

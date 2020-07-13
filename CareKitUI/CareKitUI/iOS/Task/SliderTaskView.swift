@@ -6,6 +6,8 @@
 //  Copyright © 2020 NetReconLab. All rights reserved.
 //
 
+#if !os(watchOS)
+
 import Foundation
 import SwiftUI
 
@@ -222,3 +224,5 @@ public struct _SliderTaskViewFooter: View {
         }
     }
 }
+
+#endif

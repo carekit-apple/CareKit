@@ -218,7 +218,7 @@ public struct _SliderTaskViewFooter: View {
     public var body: some View {
         VStack {
             OCKSlider(value: self.$value, range: self.range, step: self.step, isComplete: self.isComplete, minimumImage: self.minimumImage, maximumImage: self.maximumImage, sliderHeight: self.sliderHeight, frameHeightMultiplier: self.frameHeightMultiplier, useDefaultSlider: self.useDefaultSlider)
-            DefaultSliderCompletionView(value: self.$value, isComplete: self.isComplete, action: self.action)
+            OCKSliderButton(value: self.$value, isComplete: self.isComplete, action: self.action)
         }
     }
 }

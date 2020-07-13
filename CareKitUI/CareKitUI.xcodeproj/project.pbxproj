@@ -122,8 +122,9 @@
 		64E1BD4E2309FCF200DFFE52 /* OCKResponsiveLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64E1BD4D2309FCF200DFFE52 /* OCKResponsiveLayout.swift */; };
 		64EEC2382318253B00B1012F /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 64EEC2362318253B00B1012F /* Localizable.strings */; };
 		64EEC23B231825DD00B1012F /* OCKLocalization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64EEC23A231825DD00B1012F /* OCKLocalization.swift */; };
+		E836DA0124BCC54900268E59 /* OCKSliderButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E836DA0024BCC54900268E59 /* OCKSliderButton.swift */; };
+		E836DA0324BCC5EE00268E59 /* OCKSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = E836DA0224BCC5EE00268E59 /* OCKSlider.swift */; };
 		E88E003E24B51DB1009A7AC8 /* SliderTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88E003C24B51DB1009A7AC8 /* SliderTaskView.swift */; };
-		E88E003F24B51DB1009A7AC8 /* SliderTaskViewConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88E003D24B51DB1009A7AC8 /* SliderTaskViewConfiguration.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -238,8 +239,9 @@
 		64E1BD4D2309FCF200DFFE52 /* OCKResponsiveLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKResponsiveLayout.swift; sourceTree = "<group>"; };
 		64EEC2372318253B00B1012F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		64EEC23A231825DD00B1012F /* OCKLocalization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKLocalization.swift; sourceTree = "<group>"; };
+		E836DA0024BCC54900268E59 /* OCKSliderButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKSliderButton.swift; sourceTree = "<group>"; };
+		E836DA0224BCC5EE00268E59 /* OCKSlider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKSlider.swift; sourceTree = "<group>"; };
 		E88E003C24B51DB1009A7AC8 /* SliderTaskView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SliderTaskView.swift; sourceTree = "<group>"; };
-		E88E003D24B51DB1009A7AC8 /* SliderTaskViewConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SliderTaskViewConfiguration.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -420,13 +422,6 @@
 			path = Link;
 			sourceTree = "<group>";
 		};
-		5143E39D22F2740C00FE6773 /* Slider */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Slider;
-			sourceTree = "<group>";
-		};
 		515888C62437AED100E65C73 /* Featured Content */ = {
 			isa = PBXGroup;
 			children = (
@@ -485,7 +480,6 @@
 				518F9D4D22961BF5009CAA48 /* OCKSimpleTaskView.swift */,
 				518F9D4F22961BF5009CAA48 /* OCKInstructionsTaskView.swift */,
 				E88E003C24B51DB1009A7AC8 /* SliderTaskView.swift */,
-				E88E003D24B51DB1009A7AC8 /* SliderTaskViewConfiguration.swift */,
 				51637EA222F3A68400BAF65C /* OCKLogTaskView.swift */,
 				518F9D5222961BF5009CAA48 /* OCKButtonLogTaskView.swift */,
 				51F75B932447DD0B00978C71 /* NumericProgressTaskView.swift */,
@@ -567,7 +561,6 @@
 				510A5761234A7B920006C376 /* OCKAnimatedButton.swift */,
 				51656028234AB47500F2A21F /* OCKCheckmarkButton.swift */,
 				518F9D5022961BF5009CAA48 /* OCKLabeledButton.swift */,
-				5143E39D22F2740C00FE6773 /* Slider */,
 			);
 			path = Controls;
 			sourceTree = "<group>";
@@ -587,6 +580,7 @@
 				51F12D38229C81E200CA265B /* OCKLabeledCheckmarkButton.swift */,
 				518F9D5522961BF5009CAA48 /* OCKLogItemButton.swift */,
 				518F9D4E22961BF5009CAA48 /* OCKChecklistItemButton.swift */,
+				E836DA0024BCC54900268E59 /* OCKSliderButton.swift */,
 			);
 			path = Buttons;
 			sourceTree = "<group>";
@@ -597,6 +591,7 @@
 				64699E9822FC7B5000FF624F /* OCKLogButtonCell.swift */,
 				518F9D5122961BF5009CAA48 /* OCKSelfSizingCollectionView.swift */,
 				518F9D5322961BF5009CAA48 /* OCKGridTaskCell.swift */,
+				E836DA0224BCC5EE00268E59 /* OCKSlider.swift */,
 			);
 			path = Collection;
 			sourceTree = "<group>";
@@ -858,7 +853,6 @@
 				518F9DBA22961BF6009CAA48 /* OCKCompletionRingButton.swift in Sources */,
 				518F9D9522961BF5009CAA48 /* OCKGridTaskView.swift in Sources */,
 				51173F3E243FE022004CB150 /* RectangularCompletionView.swift in Sources */,
-				E88E003F24B51DB1009A7AC8 /* SliderTaskViewConfiguration.swift in Sources */,
 				518F9D9B22961BF5009CAA48 /* OCKScatterLayer.swift in Sources */,
 				510CC634243B843C008BD6B3 /* OCKLog.swift in Sources */,
 				518F9D8922961BF5009CAA48 /* OCKDetailedContactView.swift in Sources */,
@@ -874,12 +868,14 @@
 				51F75B942447DD0B00978C71 /* NumericProgressTaskView.swift in Sources */,
 				518F9D9322961BF5009CAA48 /* OCKButtonLogTaskView.swift in Sources */,
 				518F9DB522961BF6009CAA48 /* OCKWeekCalendarView.swift in Sources */,
+				E836DA0324BCC5EE00268E59 /* OCKSlider.swift in Sources */,
 				03089D7F231ED7AF0054EA23 /* Calendar+Extensions.swift in Sources */,
 				51367952243BF7450026997B /* LinkLabel.swift in Sources */,
 				518F9D9822961BF5009CAA48 /* OCKGraphLegendView.swift in Sources */,
 				518F9DC022961BF6009CAA48 /* OCKStackView.swift in Sources */,
 				51EFC75623FCAE6000536266 /* UIColor+Extension.swift in Sources */,
 				518F9D9922961BF5009CAA48 /* OCKScatterPlotView.swift in Sources */,
+				E836DA0124BCC54900268E59 /* OCKSliderButton.swift in Sources */,
 				5196B54322D5872C00800706 /* OCKTaskDisplayable.swift in Sources */,
 				518F9DA722961BF6009CAA48 /* OCKCompletionRingView.swift in Sources */,
 				518F9D9122961BF5009CAA48 /* OCKLabeledButton.swift in Sources */,

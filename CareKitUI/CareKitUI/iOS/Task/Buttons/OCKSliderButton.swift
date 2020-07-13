@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-public struct DefaultSliderCompletionView: View {
+public struct OCKSliderButton: View {
     
     @Environment(\.careKitStyle) private var style
     

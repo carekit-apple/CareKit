@@ -1,6 +1,10 @@
 //
 //  SliderTaskView.swift
+<<<<<<< Updated upstream
 //
+=======
+//  
+>>>>>>> Stashed changes
 //
 //  Created by Dylan Li on 5/26/20.
 //  Copyright © 2020 NetReconLab. All rights reserved.

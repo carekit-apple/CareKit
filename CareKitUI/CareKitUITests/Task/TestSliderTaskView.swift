@@ -1,15 +1,16 @@
 //
-//  TestSliderTaskView.swift
-//  
+//  TestSliderTaskViewModel.swift
+//
 //
 //  Created by Dylan Li on 7/9/20.
+//  Copyright © 2020 NetReconLab. All rights reserved.
 //
-
+/*
 import CareKitUI
 import SwiftUI
 import XCTest
 
-class TestNumericProgressTaskView: XCTestCase {
+class TestSliderTaskView: XCTestCase {
 
     func testDefaultInitializers() {
         _ = NumericProgressTaskView(title: Text(""), detail: Text(""), progress: Text(""), goal: Text(""), instructions: Text(""), isComplete: false)
@@ -22,3 +23,4 @@ class TestNumericProgressTaskView: XCTestCase {
         _ = NumericProgressTaskView(title: Text(""), detail: nil, instructions: nil, content: { EmptyView() })
     }
 }
+*/

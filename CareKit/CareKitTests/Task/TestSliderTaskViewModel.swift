@@ -3,8 +3,9 @@
 //  
 //
 //  Created by Dylan Li on 7/9/20.
+//  Copyright © 2020 NetReconLab. All rights reserved.
 //
-
+/*
 @testable import CareKit
 @testable import CareKitStore
 import CareKitUI
@@ -13,9 +14,9 @@ import Foundation
 import SwiftUI
 import XCTest
 
-class TestNumericProgressTaskViewModel: XCTestCase {
+class TestSliderTaskViewModel: XCTestCase {
 
-    var controller: OCKNumericProgressTaskController!
+    var controller: OCKSliderTaskController!
     var cancellables: Set<AnyCancellable> = []
 
     override func setUp() {
@@ -158,3 +159,4 @@ private extension OCKTaskEvents {
         return taskEvents
     }
 }
+ */

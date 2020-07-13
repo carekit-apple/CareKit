@@ -1,10 +1,11 @@
 //
-//  TestSliderTaskView.swift
-//  
+//  TestSliderTaskViewModel.swift
+//
 //
 //  Created by Dylan Li on 7/9/20.
+//  Copyright © 2020 NetReconLab. All rights reserved.
 //
-
+/*
 import CareKit
 import CareKitStore
 import CareKitUI
@@ -15,7 +16,7 @@ import XCTest
 @available(iOS 14.0, watchOS 7.0, *)
 class TestSliderTaskView: XCTestCase {
 
-    let controller: OCKNumericProgressTaskController = {
+    let controller: OCKSliderTaskController = {
         let store = OCKStore(name: "carekit-store", type: .inMemory)
         return .init(storeManager: .init(wrapping: store))
     }()
@@ -36,3 +37,4 @@ class TestSliderTaskView: XCTestCase {
         _ = CareKit.NumericProgressTaskView(controller: controller) { _ in self.staticView }
     }
 }
+*/

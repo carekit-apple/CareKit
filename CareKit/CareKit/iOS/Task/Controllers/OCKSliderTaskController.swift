@@ -10,6 +10,7 @@
 import CareKitStore
 import Combine
 import Foundation
+import SwiftUI
 
 open class OCKSliderTaskController: OCKTaskController {
     
@@ -31,6 +32,15 @@ open class OCKSliderTaskController: OCKTaskController {
         guard !taskEvents.isEmpty else { return nil }
         
         let event = taskEvents.first?.first
+        var value: CGFloat = 0
+        var isComplete = false
+        
+        if let foundValue = event?.scheduleEvent.element.targetValues.first?.numberValue?.doubleValue {
+            value = CGFloat(foundValue)
+            isComplete = true
+        }
+
+        return .init(title: taskEvents.firstEventTitle, detail: taskEvents.firstEventDetail, instructions: taskEvents.firstTaskInstructions, isComplete: isComplete, action: {}, maximumImage: nil, minimumImage: nil, initialValue: value, range: (value - 5)...(value + 5), step: 1, sliderHeight: 40, frameHeightMultiplier: 1.7, useDefaultSlider: false)
     }
         
 }

@@ -1,16 +1,12 @@
 //
 //  SliderTaskView.swift
-<<<<<<< Updated upstream
-//
-=======
-//  
->>>>>>> Stashed changes
 //
 //  Created by Dylan Li on 5/26/20.
 //  Copyright © 2020 NetReconLab. All rights reserved.
 //
 #if !os(watchOS)
 
+import CareKitStore
 import CareKitUI
 import Foundation
 import SwiftUI
@@ -57,43 +53,95 @@ public struct SliderTaskView<Header: View, SliderView: View>: View {
     private init(taskView: TaskView) {
         self.taskView = taskView
     }
-
-//    private let content: (_ configuration: SliderTaskViewConfiguration) -> CareKitUI.SliderTaskView<Header, SliderView>
-
-    /// Owns the view model that drives the view.
-    @ObservedObject public var controller: OCKSliderTaskController
-
-//    public var body: some View {
-//        content(.init(controller: controller))
-//    }
-
-    /// Create an instance that updates the content view when the observed controller changes.
-    /// - Parameter controller: Owns the view model that drives the view.
-    /// - Parameter content: Return a view to display whenever the controller changes.
-//    public init(controller: OCKSliderTaskController,
-//                content: @escaping (_ configuration: SliderTaskViewConfiguration) ->
-//        CareKitUI.SliderTaskView<Header,Footer>) {
-//        self.controller = controller
-//        self.content = content
-//    }
+    
+    /// Create an instance. The first task and event that match the provided queries will be fetched from the the store and displayed in the view.
+    /// The view will update when changes occur in the store.
+    /// - Parameters:
+    ///     - taskID: The ID of the task to fetch.
+    ///     - eventQuery: A query used to fetch an event in the store.
+    ///     - storeManager: Wraps the store that contains the task and event to fetch.
+    ///     - content: Create a view to display whenever the body is computed.
+    public init(taskID: String, eventQuery: OCKEventQuery, storeManager: OCKSynchronizedStoreManager,
+                content: @escaping (_ controller: OCKSliderTaskController) -> CareKitUI.SliderTaskView<Header, SliderView>) {
+        taskView = .init(controller: .init(storeManager: storeManager),
+                         query: .taskIDs([taskID], eventQuery),
+                         content: content)
+    }
+    
+    /// Create an instance. The first event that matches the provided query will be fetched from the the store and displayed in the view. The view
+    /// will update when changes occur in the store.
+    /// - Parameters:
+    ///     - task: The task associated with the event to fetch.
+    ///     - eventQuery: A query used to fetch an event in the store.
+    ///     - storeManager: Wraps the store that contains the event to fetch.
+    ///     - content: Create a view to display whenever the body is computed.
+    public init(task: OCKAnyTask, eventQuery: OCKEventQuery, storeManager: OCKSynchronizedStoreManager,
+                content: @escaping (_ controller: OCKSliderTaskController) -> CareKitUI.SliderTaskView<Header, SliderView>) {
+        taskView = .init(controller: .init(storeManager: storeManager),
+                         query: .tasks([task], eventQuery),
+                         content: content)
+    }
+    
+    /// Create an instance.
+    /// - Parameters:
+    ///     - controller: Controller that holds a reference to data displayed by the view.
+    ///     - content: Create a view to display whenever the body is computed.
+    public init(controller: OCKSliderTaskController,
+                content: @escaping (_ controller: OCKSliderTaskController) -> CareKitUI.SliderTaskView<Header, SliderView>) {
+        taskView = .init(controller: controller, content: content)
+    }
+    
+    /// Handle any errors that may occur.
+    /// - Parameter handler: Handle the encountered error.
+    public func onError(_ perform: @escaping (Error) -> Void) -> Self {
+        .init(taskView: .init(copying: taskView, settingErrorHandler: perform))
+    }
 }
 
 @available(iOS 14.0, *)
-public extension SliderTaskView where Header == _SliderTaskViewHeader, Footer == _SliderTaskViewFooter {
+public extension SliderTaskView where Header == _SliderTaskViewHeader, SliderView == _SliderTaskViewFooter {
 
-    /// Create an instance that updates the content view when the observed controller changes. The default view will be displayed whenever the
-    /// controller changes.
-    /// - Parameter controller: Owns the view model that drives the view.
+    /// Create an instance that displays the default content. The first task and event that match the provided queries will be fetched from the the
+    /// store and displayed in the view. The view will update when changes occur in the store.
+    /// - Parameters:
+    ///     - taskID: The ID of the task to fetch.
+    ///     - eventQuery: A query used to fetch an event in the store.
+    ///     - storeManager: Wraps the store that contains the task and event to fetch.
+    ///     - content: Create a view to display whenever the body is computed.
+    init(taskID: String, eventQuery: OCKEventQuery, storeManager: OCKSynchronizedStoreManager) {
+        self.init(taskID: taskID, eventQuery: eventQuery, storeManager: storeManager) {
+            .init(viewModel: $0.viewModel)
+        }
+    }
+    
+    /// Create an instance that displays the default content. The first event that matches the provided query will be fetched from the the store and
+    /// displayed in the view. The view will update when changes occur in the store.
+    /// - Parameters:
+    ///     - task: The task associated with the event to fetch.
+    ///     - eventQuery: A query used to fetch an event in the store.
+    ///     - storeManager: Wraps the store that contains the event to fetch.
+    ///     - content: Create a view to display whenever the body is computed.
+    init(task: OCKAnyTask, eventQuery: OCKEventQuery, storeManager: OCKSynchronizedStoreManager) {
+        self.init(task: task, eventQuery: eventQuery, storeManager: storeManager) {
+            .init(viewModel: $0.viewModel)
+        }
+    }
+    
+    /// Create an instance that displays the default content.
+    /// - Parameters:
+    ///     - controller: Controller that holds a reference to data displayed by the view.
     init(controller: OCKSliderTaskController) {
-        self.init(controller: controller, content: { .init(configuration: $0) })
+        taskView = .init(controller: controller) {
+            .init(viewModel: $0.viewModel)
+        }
     }
 }
 
 private extension CareKitUI.SliderTaskView where Header == _SliderTaskViewHeader, SliderView == _SliderTaskViewFooter {
     init(viewModel: SliderTaskViewModel?) {
-        self.init(title: Text(" "), //Text(viewModel?.title ?? ""),
-                  detail: nil, //viewModel?.detail.map { Text($0) },
-                  instructions: nil, //viewModel?.instructions.map{ Text($0) },
+        self.init(title: Text(viewModel?.title ?? ""),
+                  detail: viewModel?.detail.map { Text($0) },
+                  instructions: viewModel?.instructions.map{ Text($0) },
                   isComplete: viewModel?.isComplete ?? false,
                   action: viewModel?.action ?? {},
                   maximumImage: viewModel?.maximumImage,
@@ -101,6 +149,8 @@ private extension CareKitUI.SliderTaskView where Header == _SliderTaskViewHeader
                   initialValue: viewModel?.initialValue ?? 5,
                   range: viewModel?.range ?? 0...10,
                   step: viewModel?.step ?? 1,
+                  sliderHeight: viewModel?.sliderHeight ?? 40,
+                  frameHeightMultiplier: viewModel?.frameHeightMultiplier ?? 1.7,
                   useDefaultSlider: viewModel?.useDefaultSlider ?? false)
     }
 }
@@ -132,7 +182,7 @@ public struct SliderTaskViewModel {
     public let initialValue: CGFloat
     
     /// The range that includes all possible values.
-    public let range: ClosedRange<CGFloat>.Bound
+    public let range: ClosedRange<CGFloat>
     
     /// Value of the increment that the slider takes.
     public let step: CGFloat

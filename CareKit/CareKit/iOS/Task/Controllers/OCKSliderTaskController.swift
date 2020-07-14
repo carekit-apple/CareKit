@@ -32,8 +32,13 @@ open class OCKSliderTaskController: OCKTaskController {
     private func makeViewModel(from taskEvents: OCKTaskEvents) -> SliderTaskViewModel? {
         guard !taskEvents.isEmpty else { return nil }
         
-        let errorHandler: (Error) -> Void = { [weak self] error in
-            self?.error = error
+        let event = taskEvents.first?.first
+        var value: CGFloat = 0
+        var isComplete = false
+        
+        if let foundValue = event?.scheduleEvent.element.targetValues.first?.numberValue?.doubleValue {
+            value = CGFloat(foundValue)
+            isComplete = true
         }
         
         let errorHandler: (Error) -> Void = { [weak self] error in

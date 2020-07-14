@@ -34,11 +34,9 @@ open class OCKSliderTaskController: OCKTaskController {
         
         let event = taskEvents.first?.first
         var value: CGFloat = 0
-        var isComplete = false
         
         if let foundValue = event?.scheduleEvent.element.targetValues.first?.numberValue?.doubleValue {
             value = CGFloat(foundValue)
-            isComplete = true
         }
         
         let errorHandler: (Error) -> Void = { [weak self] error in
@@ -48,7 +46,7 @@ open class OCKSliderTaskController: OCKTaskController {
         return .init(title: taskEvents.firstEventTitle,
                      detail: taskEvents.firstEventDetail,
                      instructions: taskEvents.firstTaskInstructions,
-                     isComplete: isComplete,
+                     isComplete: taskEvents.isFirstEventComplete,
                      action: toggleActionForFirstEvent(errorHandler: errorHandler),
                      minimumImage: nil,
                      maximumImage: nil,

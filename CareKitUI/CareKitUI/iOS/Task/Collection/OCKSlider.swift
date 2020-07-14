@@ -59,7 +59,7 @@ public struct OCKSlider: View {
     private func view(geometry: GeometryProxy) -> some View {
         
         let frameWidth: CGFloat = geometry.size.width
-        let imageWidth: CGFloat = frameWidth / 7
+        let imageWidth: CGFloat = (frameWidth / 8).rounded()
         var sliderWidth: CGFloat { containsImages ? frameWidth - imageWidth * 2 : frameWidth }
         var knobWidth: CGFloat { sliderWidth * 0.1 }
         let drag = self.isComplete ? nil : DragGesture(minimumDistance: 0)

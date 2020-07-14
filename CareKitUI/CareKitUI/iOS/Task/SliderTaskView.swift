@@ -105,8 +105,8 @@ public extension SliderTaskView where SliderView == _SliderTaskViewFooter {
     /// - Parameter instructions: Instructions text to display under the header.
     /// - Parameter isComplete; True if the button under the slider is in the completed.
     /// - Parameter action: Action to perform when the button is tapped.
-    /// - Parameter maximumImage: Image to display to the right of the slider. Default value is nil.
     /// - Parameter minimumImage: Image to display to the left of the slider. Default value is nil.
+    /// - Parameter maximumImage: Image to display to the right of the slider. Default value is nil.
     /// - Parameter initialValue: Value that the slider begins on. Must be within the range.
     /// - Parameter range: The range that includes all possible values.
     /// - Parameter step: Value of the increment that the slider takes.
@@ -116,9 +116,9 @@ public extension SliderTaskView where SliderView == _SliderTaskViewFooter {
                        instructions: Text? = nil,
                        isComplete: Bool,
                        action: @escaping () -> Void = {},
-                       maximumImage: Image? = nil, minimumImage: Image? = nil,
+                       minimumImage: Image? = nil, maximumImage: Image? = nil,
                        initialValue: CGFloat, range: ClosedRange<CGFloat>, step: CGFloat,
-                       sliderHeight: CGFloat=40, frameHeightMultiplier: CGFloat=1.7,
+                       sliderHeight: CGFloat = 40, frameHeightMultiplier: CGFloat = 1.7,
                        useDefaultSlider: Bool) {
         self.init(isHeaderPadded: false, isSliderViewPadded: true, instructions: instructions, header: header, sliderView: {
             _SliderTaskViewFooter(isComplete: isComplete,
@@ -139,8 +139,8 @@ public extension SliderTaskView where Header == _SliderTaskViewHeader, SliderVie
     /// - Parameter instructions: Instructions text to display under the header.
     /// - Parameter isComplete; True if the button under the slider is in the completed.
     /// - Parameter action: Action to perform when the button is tapped.
-    /// - Parameter maximumImage: Image to display to the right of the slider. Default value is nil.
     /// - Parameter minimumImage: Image to display to the left of the slider. Default value is nil.
+    /// - Parameter maximumImage: Image to display to the right of the slider. Default value is nil.
     /// - Parameter initialValue: Value that the slider begins on. Must be within the range.
     /// - Parameter range: The range that includes all possible values.
     /// - Parameter step: Value of the increment that the slider takes.
@@ -150,7 +150,7 @@ public extension SliderTaskView where Header == _SliderTaskViewHeader, SliderVie
          instructions: Text? = nil,
          isComplete: Bool,
          action: @escaping () -> Void = {},
-         maximumImage: Image?=nil, minimumImage: Image?=nil,
+         minimumImage: Image? = nil, maximumImage: Image? = nil,
          initialValue: CGFloat, range: ClosedRange<CGFloat>, step: CGFloat,
          sliderHeight: CGFloat = 40, frameHeightMultiplier: CGFloat = 1.7,
          useDefaultSlider: Bool) {

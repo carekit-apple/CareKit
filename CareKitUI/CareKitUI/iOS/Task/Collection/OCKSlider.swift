@@ -1,11 +1,11 @@
 //
-//  DefaultSlider.swift
+//  OCKSlider.swift
 //  
 //
 //  Created by Dylan Li on 6/22/20.
 //  Copyright © 2020 NetReconLab. All rights reserved.
 //
-
+#if !os(watchOS)
 import SwiftUI
 
 public struct OCKSlider: View {
@@ -238,3 +238,5 @@ private extension CGFloat {
         return value
     }
 }
+
+#endif

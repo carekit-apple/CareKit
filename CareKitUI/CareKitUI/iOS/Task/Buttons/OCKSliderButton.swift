@@ -1,11 +1,11 @@
 //
-//  DefaultSliderCompletionView.swift
+//  OCKSliderButton.swift
 //  
 //
 //  Created by Dylan Li on 6/27/20.
 //  Copyright © 2020 NetReconLab. All rights reserved.
 //
-
+#if !os(watchOS)
 import SwiftUI
 
 public struct OCKSliderButton: View {
@@ -54,3 +54,5 @@ public struct OCKSliderButton: View {
         }.frame(height: diameter).padding(.top)
     }
 }
+
+#endif

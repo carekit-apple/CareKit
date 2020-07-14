@@ -148,6 +148,7 @@
 		64EABE0B2321B1AF00CFBB9F /* OCKContactUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64EABDCB2321B1AF00CFBB9F /* OCKContactUtility.swift */; };
 		64EABE202321B1AF00CFBB9F /* locversion.plist in Resources */ = {isa = PBXBuildFile; fileRef = 64EABDE72321B1AF00CFBB9F /* locversion.plist */; };
 		913B617224BD479000A12785 /* OCKSliderTaskController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 913B617124BD479000A12785 /* OCKSliderTaskController.swift */; };
+		913B617424BDD95600A12785 /* SliderTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 913B617324BDD95600A12785 /* SliderTaskView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -288,6 +289,7 @@
 		64EABDE82321B1AF00CFBB9F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = en; path = en.lproj/locversion.plist; sourceTree = "<group>"; };
 		8605A5BA1C4F04EC00DD65FF /* CareKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CareKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		913B617124BD479000A12785 /* OCKSliderTaskController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKSliderTaskController.swift; sourceTree = "<group>"; };
+		913B617324BDD95600A12785 /* SliderTaskView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SliderTaskView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -377,6 +379,7 @@
 			isa = PBXGroup;
 			children = (
 				5199906A2447E24F005CD581 /* NumericProgressTaskView.swift */,
+				913B617324BDD95600A12785 /* SliderTaskView.swift */,
 				51AF514D24983B86005D385F /* LabeledValueTaskView.swift */,
 				513271ED234FA3170025810A /* View Controllers */,
 				510EA10E234EA3CD005D6793 /* Controllers */,
@@ -1089,6 +1092,7 @@
 				5123901F2355573300BF2674 /* OCKTaskViewSynchronizerProtocol.swift in Sources */,
 				64EABE0B2321B1AF00CFBB9F /* OCKContactUtility.swift in Sources */,
 				51F9F18823A9C2F20087C900 /* SimpleTaskView.swift in Sources */,
+				913B617424BDD95600A12785 /* SliderTaskView.swift in Sources */,
 				515C0A1623BF9D3C009A9774 /* OCKTaskControllerProtocol+Extension.swift in Sources */,
 				51983EBC23563B0000329252 /* OCKCalendarViewController.swift in Sources */,
 				5123901B235551FA00BF2674 /* OCKChartViewSynchronizerProtocol.swift in Sources */,

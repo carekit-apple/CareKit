@@ -57,7 +57,7 @@ extension OCKStoreCoordinator {
     open func updateAnyTasks(_ tasks: [OCKAnyTask], callbackQueue: DispatchQueue = .main,
                              completion: ((Result<[OCKAnyTask], OCKStoreError>) -> Void)? = nil) {
         do {
-            try findStore(forTasks: tasks).addAnyTasks(tasks, callbackQueue: callbackQueue, completion: completion)
+            try findStore(forTasks: tasks).updateAnyTasks(tasks, callbackQueue: callbackQueue, completion: completion)
         } catch {
             callbackQueue.async {
                 completion?(.failure(.updateFailed(

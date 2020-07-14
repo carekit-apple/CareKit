@@ -35,16 +35,20 @@ open class OCKSliderTaskController: OCKTaskController {
         let errorHandler: (Error) -> Void = { [weak self] error in
             self?.error = error
         }
+        
+        let errorHandler: (Error) -> Void = { [weak self] error in
+            self?.error = error
+        }
 
         return .init(title: taskEvents.firstEventTitle,
                      detail: taskEvents.firstEventDetail,
                      instructions: taskEvents.firstTaskInstructions,
-                     isComplete: taskEvents.isFirstEventComplete,
+                     isComplete: isComplete,
                      action: toggleActionForFirstEvent(errorHandler: errorHandler),
-                     maximumImage: nil,
                      minimumImage: nil,
-                     initialValue: 5,
-                     range: 0...10,
+                     maximumImage: nil,
+                     initialValue: value,
+                     range: (value - 5)...(value + 5),
                      step: 1,
                      sliderHeight: 40,
                      frameHeightMultiplier: 1.7,

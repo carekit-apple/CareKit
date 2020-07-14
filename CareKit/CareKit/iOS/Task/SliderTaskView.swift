@@ -144,8 +144,8 @@ private extension CareKitUI.SliderTaskView where Header == _SliderTaskViewHeader
                   instructions: viewModel?.instructions.map{ Text($0) },
                   isComplete: viewModel?.isComplete ?? false,
                   action: viewModel?.action ?? {},
-                  maximumImage: viewModel?.maximumImage,
                   minimumImage: viewModel?.minimumImage,
+                  maximumImage: viewModel?.maximumImage,
                   initialValue: viewModel?.initialValue ?? 5,
                   range: viewModel?.range ?? 0...10,
                   step: viewModel?.step ?? 1,
@@ -172,11 +172,11 @@ public struct SliderTaskViewModel {
     /// Action to perform when the button is tapped.
     public let action: () -> Void
     
-    /// Image to display to the right of the slider. Default value is nil.
-    public let maximumImage: Image?
-    
     /// Image to display to the left of the slider. Default value is nil.
     public let minimumImage: Image?
+    
+    /// Image to display to the right of the slider. Default value is nil.
+    public let maximumImage: Image?
     
     /// Value that the slider begins on. Must be within the range.
     public let initialValue: CGFloat

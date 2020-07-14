@@ -65,7 +65,6 @@ class TestWeekCalendarPageViewController: XCTestCase {
         // Simulate the end of the transition to the next page
         viewController.pageViewController(viewController, didFinishAnimating: true,
                                           previousViewControllers: [previousPage], transitionCompleted: true)
-
         XCTAssertTrue(Calendar.current.isDate(tomorrow, inSameDayAs: viewController.previousSelectedDate))
     }
 }

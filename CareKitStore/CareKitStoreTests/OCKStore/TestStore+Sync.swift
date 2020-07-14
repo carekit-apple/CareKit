@@ -268,9 +268,9 @@ class TestStoreSync: XCTestCase {
     }
     
     func testTombstoningOutcomePushedToRemote() throws {
-        let dummy2 = DummyEndpoint()
-        let testStore = OCKStore(name: "test", type: .inMemory, remote: dummy2)
-        dummy2.automaticallySynchronizes = false
+        let dummy = DummyEndpoint()
+        let testStore = OCKStore(name: "test", type: .inMemory, remote: dummy)
+        dummy.automaticallySynchronizes = false
         
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
         let task = try testStore.addTaskAndWait(OCKTask(id: "A", title: "A", carePlanUUID: nil, schedule: schedule))
@@ -282,7 +282,7 @@ class TestStoreSync: XCTestCase {
         
         try testStore.deleteOutcomeAndWait(outcome)
         XCTAssertNoThrow(try testStore.syncAndWait()) //Sync tombstoned outcome
-        let latestRevisions = dummy2.revisionsPushedInLastSynch
+        let latestRevisions = dummy.revisionsPushedInLastSynch
         XCTAssert(latestRevisions.count == 2)
         
         let tombstonedOutcomes = latestRevisions.compactMap{
@@ -310,9 +310,9 @@ class TestStoreSync: XCTestCase {
     }
     
     func testUpdateTaskVersionPushedToRemote() throws {
-        let dummy2 = DummyEndpoint()
-        let testStore = OCKStore(name: "test", type: .inMemory, remote: dummy2)
-        dummy2.automaticallySynchronizes = false
+        let dummy = DummyEndpoint()
+        let testStore = OCKStore(name: "test", type: .inMemory, remote: dummy)
+        dummy.automaticallySynchronizes = false
         
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
         var task = try testStore.addTaskAndWait(OCKTask(id: "A", title: "A", carePlanUUID: nil, schedule: schedule))
@@ -324,7 +324,7 @@ class TestStoreSync: XCTestCase {
         try testStore.updateTaskAndWait(task)
         XCTAssertNoThrow(try testStore.syncAndWait()) //Sync updated outcome
         
-        let latestRevisions = dummy2.revisionsPushedInLastSynch
+        let latestRevisions = dummy.revisionsPushedInLastSynch
         XCTAssert(latestRevisions.count == 2)
         
         let versionedTasks = latestRevisions.compactMap{
@@ -383,10 +383,11 @@ class DummyEndpoint: OCKRemoteSynchronizable {
                 return
             }
             
-            if self.dummyKnowledgeVector != nil{
-                self.revision = OCKRevisionRecord(entities: [], knowledgeVector: self.dummyKnowledgeVector!)
+            guard let dummyVector = self.dummyKnowledgeVector else {
+                mergeRevision(self.revision, completion)
+                return
             }
-            
+            self.revision = OCKRevisionRecord(entities: [], knowledgeVector: dummyVector)
             mergeRevision(self.revision, completion)
         }
     }

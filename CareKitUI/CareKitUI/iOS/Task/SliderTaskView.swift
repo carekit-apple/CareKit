@@ -184,7 +184,7 @@ public struct _SliderTaskViewHeader: View {
     }
 }
 
-/// The default footer used by an `SliderTaskView`.
+/// The default slider view used by an `SliderTaskView`.
 public struct _SliderTaskViewFooter: View {
     
     @Environment(\.careKitStyle) private var style

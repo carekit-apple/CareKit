@@ -61,13 +61,15 @@ public struct OCKSlider: View {
         
         let frameWidth: CGFloat = geometry.size.width
         let imageWidth: CGFloat = (frameWidth / 8).rounded()
-        var sliderWidth: CGFloat { containsImages ? frameWidth - imageWidth * 2 : frameWidth }
+        var sliderWidth: CGFloat { containsImages ? frameWidth - imageWidth * 2 - imageWidth / 2 : frameWidth }
         var knobWidth: CGFloat { sliderWidth * 0.1 }
         let drag = self.isComplete ? nil : DragGesture(minimumDistance: 0)
         
-        return HStack {
+        return HStack(spacing: 0) {
             self.minimumImage?
                 .sliderImageModifier(width: imageWidth, height: sliderHeight)
+            
+            Spacer(minLength: 0)
             
             if self.useDefaultSlider {
                 Slider(value: self.$value, in: self.range.0...self.range.1)
@@ -80,6 +82,8 @@ public struct OCKSlider: View {
                     self.sliderView(width: sliderWidth, height: sliderHeight, knobWidth: knobWidth)
                 }.frame(width: sliderWidth, height: sliderHeight)
             }
+            
+            Spacer(minLength: 0)
                 
             self.maximumImage?
                 .sliderImageModifier(width: imageWidth, height: sliderHeight)

@@ -1,5 +1,5 @@
 //
-//  DefaultSlider.swift
+//  OCKSlider.swift
 //  
 //
 //  Created by Dylan Li on 6/22/20.
@@ -239,4 +239,5 @@ private extension CGFloat {
         return value
     }
 }
+
 #endif

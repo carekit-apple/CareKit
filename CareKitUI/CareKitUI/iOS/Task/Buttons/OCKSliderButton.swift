@@ -1,5 +1,5 @@
 //
-//  DefaultSliderCompletionView.swift
+//  OCKSliderButton.swift
 //  
 //
 //  Created by Dylan Li on 6/27/20.
@@ -56,4 +56,5 @@ public struct OCKSliderButton: View {
         }.frame(height: diameter).padding(.top)
     }
 }
+
 #endif

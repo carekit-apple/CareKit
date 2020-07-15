@@ -15,7 +15,7 @@ import SwiftUI
 
 open class OCKSliderTaskController: OCKTaskController {
     
-    /// Data used to create a `CareKitUI.NumericProgressTaskTaskView`.
+    /// Data used to create a `CareKitUI.SliderTaskTaskView`.
     @Published public private(set) var viewModel: SliderTaskViewModel? {
         willSet { objectWillChange.send() }
     }
@@ -34,27 +34,27 @@ open class OCKSliderTaskController: OCKTaskController {
         
         let event = taskEvents.first?.first
         var value: CGFloat = 0
+        var isComplete = false
         
         if let foundValue = event?.scheduleEvent.element.targetValues.first?.numberValue?.doubleValue {
             value = CGFloat(foundValue)
+            isComplete = true
         }
         
         let errorHandler: (Error) -> Void = { [weak self] error in
             self?.error = error
         }
-
+        
         return .init(title: taskEvents.firstEventTitle,
                      detail: taskEvents.firstEventDetail,
                      instructions: taskEvents.firstTaskInstructions,
-                     isComplete: taskEvents.isFirstEventComplete,
-                     action: toggleActionForFirstEvent(errorHandler: errorHandler),
-                     minimumImage: nil,
-                     maximumImage: nil,
+                     isComplete: isComplete,
+                     action: isComplete == false ?
+                        saveOutcomesActionForFirstEvent(values: [.init(Double(value))], errorHandler: errorHandler) :
+                        toggleActionForFirstEvent(errorHandler: errorHandler),
                      initialValue: value,
                      range: (value - 5)...(value + 5),
                      step: 1,
-                     sliderHeight: 40,
-                     frameHeightMultiplier: 1.7,
                      useDefaultSlider: false)
     }
         

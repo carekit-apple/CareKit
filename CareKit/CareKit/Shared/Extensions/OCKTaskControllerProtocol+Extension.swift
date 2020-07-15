@@ -34,6 +34,22 @@ import SwiftUI
 
 extension OCKTaskController {
 
+    func saveOutcomesActionForFirstEvent(values: [OCKOutcomeValue], errorHandler: ((Error) -> Void)?) -> () -> Void {
+        { self.saveOutcomesEvent(atIndexPath: .init(row: 0, section: 0), values: values, errorHandler: errorHandler) }
+    }
+    
+    func saveOutcomesActionForEvent(atIndexPath indexPath: IndexPath, values: [OCKOutcomeValue], errorHandler: ((Error) -> Void)?) -> () -> Void {
+        { self.saveOutcomesEvent(atIndexPath: indexPath, values: values, errorHandler: errorHandler) }
+    }
+    
+    func saveOutcomesEvent(atIndexPath indexPath: IndexPath, values: [OCKOutcomeValue], errorHandler: ((Error) -> Void)?) {
+        let isComplete = isEventComplete(atIndexPath: indexPath)
+        setEvent(atIndexPath: indexPath, isComplete: !isComplete, values: values) { result in
+            if case let .failure(error) = result {
+                errorHandler?(error)
+            }
+        }
+    }
 
     func toggleActionForFirstEvent(errorHandler: ((Error) -> Void)?) -> () -> Void {
         { self.toggleFirstEvent(errorHandler: errorHandler) }

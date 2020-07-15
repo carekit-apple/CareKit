@@ -73,6 +73,7 @@ public struct OCKSlider: View {
             
             if self.useDefaultSlider {
                 Slider(value: self.$value, in: self.range.0...self.range.1)
+                    .disabled(isComplete)
                     .gesture(drag.onChanged( { drag in
                         self.onDragChange(drag, sliderWidth: sliderWidth, knobWidth: knobWidth) } ))
                     .frame(width: sliderWidth, height: sliderHeight)
@@ -80,6 +81,7 @@ public struct OCKSlider: View {
                 ZStack {
                     self.addTicks(range: self.range, step: self.step, sliderWidth: sliderWidth, sliderHeight: sliderHeight, knobWidth: knobWidth)
                     self.sliderView(width: sliderWidth, height: sliderHeight, knobWidth: knobWidth)
+                        .disabled(isComplete)
                 }.frame(width: sliderWidth, height: sliderHeight)
             }
             
@@ -91,7 +93,7 @@ public struct OCKSlider: View {
     }
     
     private func sliderView(width: CGFloat, height: CGFloat, knobWidth: CGFloat) -> some View {
-        let drag = isComplete ? nil : DragGesture(minimumDistance: 0)
+        let drag = /*isComplete ? nil : */DragGesture(minimumDistance: 0)
         
         let offsetX = self.getOffsetX(sliderWidth: width, knobWidth: knobWidth)
         let barLeftSize = CGSize(width: CGFloat(offsetX + knobWidth / 2), height: height)

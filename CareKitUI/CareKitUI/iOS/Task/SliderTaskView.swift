@@ -118,6 +118,7 @@ public extension SliderTaskView where SliderView == _SliderTaskViewFooter {
                        isComplete: Bool,
                        action: @escaping () -> Void = {},
                        minimumImage: Image? = nil, maximumImage: Image? = nil,
+                       value: Binding<CGFloat>,
                        initialValue: CGFloat, range: ClosedRange<CGFloat>, step: CGFloat,
                        sliderHeight: CGFloat = 40, frameHeightMultiplier: CGFloat = 1.7,
                        useDefaultSlider: Bool) {
@@ -125,6 +126,7 @@ public extension SliderTaskView where SliderView == _SliderTaskViewFooter {
             _SliderTaskViewFooter(isComplete: isComplete,
                                   action: action,
                                   maximumImage: maximumImage, minimumImage: minimumImage,
+                                  value: value,
                                   initialValue: initialValue, range: range, step: step,
                                   sliderHeight: sliderHeight, frameHeightMultiplier: frameHeightMultiplier,
                                   useDefaultSlider: useDefaultSlider)
@@ -152,6 +154,7 @@ public extension SliderTaskView where Header == _SliderTaskViewHeader, SliderVie
          isComplete: Bool,
          action: @escaping () -> Void = {},
          minimumImage: Image? = nil, maximumImage: Image? = nil,
+         value: Binding<CGFloat>,
          initialValue: CGFloat, range: ClosedRange<CGFloat>, step: CGFloat,
          sliderHeight: CGFloat = 40, frameHeightMultiplier: CGFloat = 1.7,
          useDefaultSlider: Bool) {
@@ -161,6 +164,7 @@ public extension SliderTaskView where Header == _SliderTaskViewHeader, SliderVie
             _SliderTaskViewFooter(isComplete: isComplete,
                                   action: action,
                                   maximumImage: maximumImage, minimumImage: minimumImage,
+                                  value: value,
                                   initialValue: initialValue, range: range, step: step,
                                   sliderHeight: sliderHeight, frameHeightMultiplier: frameHeightMultiplier,
                                   useDefaultSlider: useDefaultSlider)
@@ -198,13 +202,9 @@ public struct _SliderTaskViewFooter: View {
     fileprivate let sliderHeight: CGFloat
     fileprivate let frameHeightMultiplier: CGFloat
     fileprivate let useDefaultSlider: Bool
-    @State var value: CGFloat = 0
+    @Binding var value: CGFloat
     
-    private func initialValueInRange(initialValue: CGFloat, range: ClosedRange<CGFloat>) -> State<CGFloat> {
-        return initialValue > range.upperBound ? State(initialValue: range.upperBound) : (initialValue < range.lowerBound ? State(initialValue: range.lowerBound) : State(initialValue: initialValue))
-    }
-    
-    init(isComplete: Bool, action: @escaping () -> Void, maximumImage: Image?, minimumImage: Image?, initialValue: CGFloat, range: ClosedRange<CGFloat>, step: CGFloat, sliderHeight: CGFloat, frameHeightMultiplier: CGFloat, useDefaultSlider: Bool){
+    init(isComplete: Bool, action: @escaping () -> Void, maximumImage: Image?, minimumImage: Image?, value: Binding<CGFloat>, initialValue: CGFloat, range: ClosedRange<CGFloat>, step: CGFloat, sliderHeight: CGFloat, frameHeightMultiplier: CGFloat, useDefaultSlider: Bool){
         self.isComplete = isComplete
         self.action = action
         self.maximumImage = maximumImage
@@ -214,7 +214,7 @@ public struct _SliderTaskViewFooter: View {
         self.sliderHeight = sliderHeight
         self.frameHeightMultiplier = frameHeightMultiplier
         self.useDefaultSlider = useDefaultSlider
-        _value = initialValueInRange(initialValue: initialValue, range: range)
+        _value = value
     }
     
     public var body: some View {

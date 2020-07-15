@@ -299,6 +299,48 @@ open class OCKTaskController: ObservableObject {
             }
         }
     }
+    
+    /// Set the completion state for an event.
+    /// - Parameters:
+    ///   - indexPath: Index path of the event.
+    ///   - isComplete: True if the event is complete.
+    ///   - values: Array of OCKOutcomeValue
+    ///   - completion: Result after setting the completion for the event.
+    open func setEvent(atIndexPath indexPath: IndexPath, isComplete: Bool, values: [OCKOutcomeValue], completion: ((Result<OCKAnyOutcome, Error>) -> Void)?) {
+        let event: OCKAnyEvent
+        do {
+            _ = try validatedViewModel()
+            event = try validatedEvent(forIndexPath: indexPath)
+        } catch {
+            completion?(.failure(error))
+            return
+        }
+
+        // If the event is complete, create an outcome with a `true` value
+        if isComplete {
+            do {
+                let outcome = try makeOutcomeFor(event: event, withValues: values)
+                storeManager.store.addAnyOutcome(outcome) { result in
+                    switch result {
+                    case .failure(let error): completion?(.failure(error))
+                    case .success(let outcome): completion?(.success(outcome))
+                    }
+                }
+            } catch {
+                completion?(.failure(error))
+            }
+
+        // if the event is incomplete, delete the outcome
+        } else {
+            guard let outcome = event.outcome else { return }
+            storeManager.store.deleteAnyOutcome(outcome) { result in
+                switch result {
+                case .failure(let error): completion?(.failure(error))
+                case .success(let outcome): completion?(.success(outcome))
+                }
+            }
+        }
+    }
 
     /// Append an outcome value to an event's outcome.
     /// - Parameters:

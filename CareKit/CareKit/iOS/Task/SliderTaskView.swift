@@ -180,7 +180,7 @@ public struct SliderTaskViewModel {
     public let maximumImage: Image?
     
     /// Source of truth for value of the slider.
-    @State var value: CGFloat = 0
+    @State public var value: CGFloat = 0
     
     /// Value that the slider begins on. Must be within the range.
     public let initialValue: CGFloat

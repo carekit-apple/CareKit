@@ -49,9 +49,7 @@ open class OCKSliderTaskController: OCKTaskController {
                      detail: taskEvents.firstEventDetail,
                      instructions: taskEvents.firstTaskInstructions,
                      isComplete: isComplete,
-                     action: isComplete == false ?
-                        saveOutcomesActionForFirstEvent(values: [.init(Double(value))], errorHandler: errorHandler) :
-                        toggleActionForFirstEvent(errorHandler: errorHandler),
+                     action: saveOutcomesActionForFirstEvent(values: [.init(Double(value))], errorHandler: errorHandler),
                      initialValue: value,
                      range: (value - 5)...(value + 5),
                      step: 1,

@@ -11,6 +11,7 @@
 		03181064236A158E006D4870 /* OCKCappedSizeLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03181063236A158E006D4870 /* OCKCappedSizeLabel.swift */; };
 		03AD384623625A3500F6E7DC /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 03AD384423625A3500F6E7DC /* Localizable.stringsdict */; };
 		3A04563224BFE47900127998 /* ChecklistTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A04563124BFE47900127998 /* ChecklistTaskView.swift */; };
+		3A04563624C0D78500127998 /* Completable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A04563524C0D78500127998 /* Completable.swift */; };
 		5103C55222F37B44007A7403 /* Number+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5103C55122F37B44007A7403 /* Number+Extensions.swift */; };
 		510466F524A283E500D0FD53 /* InstructionsTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51B225A223EDDCFC00A2D11F /* InstructionsTaskView.swift */; };
 		510466F924A2850700D0FD53 /* OCKContactDisplayable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 510466F824A2850700D0FD53 /* OCKContactDisplayable.swift */; };
@@ -141,6 +142,7 @@
 		03AD384723625A4100F6E7DC /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = en; path = en.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		05A6B74C237F49F7009D7D1F /* CareKitUI.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = CareKitUI.xctestplan; sourceTree = "<group>"; };
 		3A04563124BFE47900127998 /* ChecklistTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChecklistTaskView.swift; sourceTree = "<group>"; };
+		3A04563524C0D78500127998 /* Completable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Completable.swift; sourceTree = "<group>"; };
 		5103C55122F37B44007A7403 /* Number+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Number+Extensions.swift"; sourceTree = "<group>"; };
 		510466F824A2850700D0FD53 /* OCKContactDisplayable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKContactDisplayable.swift; sourceTree = "<group>"; };
 		5105254524462AF5004483D0 /* TestLinkType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestLinkType.swift; sourceTree = "<group>"; };
@@ -297,6 +299,7 @@
 				510CC633243B843C008BD6B3 /* OCKLog.swift */,
 				51B2259A23EDDCFC00A2D11F /* NoHighlightStyle.swift */,
 				516A1C47244F766A00BBF2D3 /* OSValue.swift */,
+				3A04563524C0D78500127998 /* Completable.swift */,
 				510466F624A2842A00D0FD53 /* Components */,
 				510466EE24A26C1800D0FD53 /* Task */,
 				518F9D7022961BF5009CAA48 /* Style */,
@@ -852,6 +855,7 @@
 				51FEF4C624325903003CE34C /* OCKFeaturedContentView.swift in Sources */,
 				51367950243BF7040026997B /* LinkView.swift in Sources */,
 				518F9D9622961BF5009CAA48 /* OCKLogItemButton.swift in Sources */,
+				3A04563624C0D78500127998 /* Completable.swift in Sources */,
 				518F9DBA22961BF6009CAA48 /* OCKCompletionRingButton.swift in Sources */,
 				518F9D9522961BF5009CAA48 /* OCKGridTaskView.swift in Sources */,
 				51173F3E243FE022004CB150 /* RectangularCompletionView.swift in Sources */,

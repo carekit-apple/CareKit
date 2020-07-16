@@ -185,7 +185,7 @@ private extension CareKitUI.ChecklistTaskView where Header == _ChecklistTaskView
 }
 
 /// Data used to create an item for `CareKitUI.ChecklistTaskView`.
-public struct ChecklistItem : ChecklistItemIdentifiable {
+public struct ChecklistItem : Completable {
     /// The stable identity of the entity associated with this instance.
     public var id: Int
     /// The title text to display in the checklist item.

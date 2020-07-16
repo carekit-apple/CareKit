@@ -155,11 +155,12 @@ public extension ChecklistTaskView where Header == _ChecklistTaskViewHeader {
 
 public extension ChecklistTaskView {
     /// Create an instance.
-    /// - Parameter instructions: Instructions text to display under the header.
-    /// - Parameter items: Items to display in the checklist.
-    /// - Parameter action: Action to perform when the button is tapped.
-    /// - Parameter header: Header to inject at the top of the card. Specified content will be stacked vertically.
-    init<Item : ChecklistItemIdentifiable, ChecklistContent : View>(
+    /// - Parameters:
+    ///   - instructions: Instructions text to display under the header.
+    ///   - items: Items to display in the checklist.
+    ///   - action: Action to perform when a checklist item is tapped.
+    ///   - header: Header to inject at the top of the card. Specified content will be stacked vertically.
+    init<Item : Completable, ChecklistContent : View>(
         items: [Item],
         action: @escaping (Item) -> Void = { _ in },
         instructions: Text? = nil,
@@ -180,12 +181,14 @@ public extension ChecklistTaskView {
 
 public extension ChecklistTaskView where Header == _ChecklistTaskViewHeader {
     /// Create an instance.
-    /// - Parameter title: Title text to display in the header.
-    /// - Parameter detail: Detail text to display in the header.
-    /// - Parameter items: Items to display in the checklist.
-    /// - Parameter instructions: Instructions text to display under the header.
-    /// - Parameter action: Action to perform when the button is tapped.
-    init<Item : ChecklistItemIdentifiable, ChecklistContent : View>(
+    /// - Parameters:
+    ///   - title: Title text to display in the header.
+    ///   - detail: Detail text to display in the header.
+    ///   - items: Items to display in the checklist.
+    ///   - action: Action to perform when a checklist item is tapped.
+    ///   - instructions: Instructions text to display under the header.
+    ///   - content: Content to inject in each checklist item.
+    init<Item : Completable, ChecklistContent : View>(
         title: Text,
         detail: Text? = nil,
         items: [Item],
@@ -208,7 +211,6 @@ public extension ChecklistTaskView where Header == _ChecklistTaskViewHeader {
 
 /// The default header used by a `ChecklistTaskView`.
 public struct _ChecklistTaskViewHeader: View {
-
     @Environment(\.careKitStyle) private var style
 
     fileprivate let title: Text
@@ -223,7 +225,7 @@ public struct _ChecklistTaskViewHeader: View {
 }
 
 /// The default content used by an `ChecklistTaskView`.
-public struct _ChecklistTaskViewContent<Item : ChecklistItemIdentifiable, Content : View>: View {
+public struct _ChecklistTaskViewContent<Item : Completable, Content : View>: View {
     @Environment(\.sizeCategory) private var sizeCategory
 
     @OSValue<CGFloat>(values: [.watchOS: 4], defaultValue: 8) private var padding
@@ -248,14 +250,8 @@ public struct _ChecklistTaskViewContent<Item : ChecklistItemIdentifiable, Conten
     }
 }
 
-/// Protocol used to identify items in the checklist.
-public protocol ChecklistItemIdentifiable : Identifiable {
-    /// True if checklist item is complete.
-    var isComplete: Bool { get }
-}
-
 #if DEBUG
-struct ChecklistItem : ChecklistItemIdentifiable {
+struct ChecklistItem : Completable {
     let id: Int
     let title: String
     let isImportant: Bool

@@ -74,7 +74,7 @@ UIPageViewControllerDataSource, UIPageViewControllerDelegate {
     public weak var delegate: OCKDailyPageViewControllerDelegate?
 
     public var selectedDate: Date {
-        return calendarWeekPageViewController.selectedDate
+        return weekCalendarPageViewController.selectedDate
     }
 
     /// The store manager the view controller uses for synchronization
@@ -84,7 +84,7 @@ UIPageViewControllerDataSource, UIPageViewControllerDelegate {
     private let pageViewController = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
 
     /// The calendar view controller in the header.
-    private let calendarWeekPageViewController: OCKWeekCalendarPageViewController
+    private let weekCalendarPageViewController: OCKWeekCalendarPageViewController
 
     // MARK: - Life cycle
 
@@ -95,9 +95,9 @@ UIPageViewControllerDataSource, UIPageViewControllerDelegate {
     /// - Parameter adherenceAggregator: An aggregator that will be used to compute the adherence values shown at the top of the view.
     public init(storeManager: OCKSynchronizedStoreManager, adherenceAggregator: OCKAdherenceAggregator = .compareTargetValues) {
         self.storeManager = storeManager
-        self.calendarWeekPageViewController = .init(storeManager: storeManager, aggregator: adherenceAggregator)
+        self.weekCalendarPageViewController = .init(storeManager: storeManager, aggregator: adherenceAggregator)
         super.init(nibName: nil, bundle: nil)
-        self.calendarWeekPageViewController.dataSource = self
+        self.weekCalendarPageViewController.dataSource = self
         self.pageViewController.dataSource = self
         self.pageViewController.delegate = self
         self.dataSource = self
@@ -112,10 +112,8 @@ UIPageViewControllerDataSource, UIPageViewControllerDelegate {
     // MARK: - Properties
 
     open func selectDate(_ date: Date, animated: Bool) {
-        let previousDate = selectedDate
-        guard !Calendar.current.isDate(previousDate, inSameDayAs: date) else { return }
-        calendarWeekPageViewController.selectDate(date, animated: animated)
-        weekCalendarPageViewController(calendarWeekPageViewController, didSelectDate: date, previousDate: previousDate)
+        guard !Calendar.current.isDate(selectedDate, inSameDayAs: date) else { return }
+        weekCalendarPageViewController.selectDate(date, animated: animated)
     }
 
     override open func viewSafeAreaInsetsDidChange() {
@@ -123,16 +121,16 @@ UIPageViewControllerDataSource, UIPageViewControllerDelegate {
     }
 
     override open func loadView() {
-        [calendarWeekPageViewController, pageViewController].forEach { addChild($0) }
-        view = OCKHeaderBodyView(headerView: calendarWeekPageViewController.view, bodyView: pageViewController.view)
-        [calendarWeekPageViewController, pageViewController].forEach { $0.didMove(toParent: self) }
+        [weekCalendarPageViewController, pageViewController].forEach { addChild($0) }
+        view = OCKHeaderBodyView(headerView: weekCalendarPageViewController.view, bodyView: pageViewController.view)
+        [weekCalendarPageViewController, pageViewController].forEach { $0.didMove(toParent: self) }
     }
 
     override open func viewDidLoad() {
         super.viewDidLoad()
         let now = Date()
-        calendarWeekPageViewController.calendarDelegate = self
-        calendarWeekPageViewController.selectDate(now, animated: false)
+        weekCalendarPageViewController.calendarDelegate = self
+        weekCalendarPageViewController.selectDate(now, animated: false)
         pageViewController.setViewControllers([makePage(date: now)], direction: .forward, animated: false, completion: nil)
         pageViewController.accessibilityHint = loc("THREE_FINGER_SWIPE_DAY")
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: loc("TODAY"), style: .plain, target: self, action: #selector(pressedToday(sender:)))
@@ -174,9 +172,6 @@ UIPageViewControllerDataSource, UIPageViewControllerDelegate {
     // MARK: - OCKCalendarPageViewControllerDelegate
 
     public func weekCalendarPageViewController(_ viewController: OCKWeekCalendarPageViewController, didSelectDate date: Date, previousDate: Date) {
-        let newComponents = Calendar.current.dateComponents([.weekday, .weekOfYear, .year], from: date)
-        let oldComponents = Calendar.current.dateComponents([.weekday, .weekOfYear, .year], from: previousDate)
-        guard newComponents != oldComponents else { return } // do nothing if we have selected a date for the same day of the year
         let moveLeft = date < previousDate
         let listViewController = makePage(date: date)
         pageViewController.setViewControllers([listViewController], direction: moveLeft ? .reverse : .forward, animated: true, completion: nil)
@@ -220,7 +215,7 @@ UIPageViewControllerDataSource, UIPageViewControllerDelegate {
                                  previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
         guard completed else { return }
         guard let listViewController = pageViewController.viewControllers?.first as? OCKDatedListViewController else { fatalError("Unexpected type") }
-        calendarWeekPageViewController.selectDate(listViewController.date, animated: true)
+        weekCalendarPageViewController.selectDate(listViewController.date, animated: true)
     }
 }
 

@@ -29,8 +29,55 @@
  */
 #if !os(watchOS)
 
+import CareKitStore
+import Combine
 import Foundation
 
-public typealias OCKChecklistTaskController = OCKTaskController
+open class OCKChecklistTaskController: OCKTaskController {
 
+    /// Data used to create a `CareKitUI.ChecklistTaskTaskView`.
+    @Published public private(set) var viewModel: ChecklistTaskViewModel? {
+        willSet { objectWillChange.send() }
+    }
+
+    private var cancellable: AnyCancellable?
+
+    public required init(storeManager: OCKSynchronizedStoreManager) {
+        super.init(storeManager: storeManager)
+        cancellable = $taskEvents.sink { [unowned self] taskEvents in
+            self.viewModel = self.makeViewModel(from: taskEvents)
+        }
+    }
+
+    private func makeViewModel(from taskEvents: OCKTaskEvents) -> ChecklistTaskViewModel? {
+        guard !taskEvents.isEmpty else { return nil }
+        
+        let events = taskEvents.first ?? []
+
+        let items = events.enumerated().map { index, event in
+            ChecklistItem(
+                id: index,
+                title: event.scheduleEvent.element.text ?? OCKScheduleUtility.timeLabel(for: event),
+                isComplete: event.outcome != nil
+            )
+        }
+        
+        let errorHandler: (Error) -> Void = { [weak self] error in
+            self?.error = error
+        }
+        
+        let action: (ChecklistItem) -> Void = { [weak self] item in
+            let indexPath = IndexPath(row: item.id, section: 0)
+            self?.toggleActionForEvent(atIndexPath: indexPath, errorHandler: errorHandler)()
+        }
+
+        return .init(
+            title: taskEvents.firstEventTitle,
+             detail: OCKScheduleUtility.scheduleLabel(for: events),
+             items: items,
+             action: action,
+             instructions: taskEvents.firstTaskInstructions
+        )
+    }
+}
 #endif

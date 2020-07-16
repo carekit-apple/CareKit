@@ -58,7 +58,7 @@ public struct OCKEvent<Task: OCKAnyTask, Outcome: OCKAnyOutcome>: Identifiable {
         self.scheduleEvent = scheduleEvent
 
         var hasher = Hasher()
-        hasher.combine(task.stableID)
+        hasher.combine(task.uuid)
         hasher.combine(scheduleEvent.occurrence)
         id = "\(hasher.finalize())"
     }

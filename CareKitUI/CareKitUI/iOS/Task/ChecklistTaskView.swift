@@ -258,26 +258,54 @@ public protocol ChecklistItemIdentifiable : Identifiable {
 struct ChecklistItem : ChecklistItemIdentifiable {
     let id: Int
     let title: String
-    let isComplete: Bool
+    let isImportant: Bool
+    var isComplete: Bool
 }
 
-struct ChecklistTaskView_Previews: PreviewProvider {
-    static var items = [
-        ChecklistItem(id: 0, title: "Item 1", isComplete: false),
-        ChecklistItem(id: 1, title: "Item 2", isComplete: true),
+struct ChecklistTaskViewExample : View {
+    @State
+    var items = [
+        ChecklistItem(id: 0, title: "Item 1", isImportant: false, isComplete: false),
+        ChecklistItem(id: 1, title: "Item 2", isImportant: true, isComplete: false),
+        ChecklistItem(id: 2, title: "Item 3", isImportant: false, isComplete: true),
     ]
-        
-    static var previews: some View {
-        VStack(spacing: 20) {
+    
+    func selected(item selectedItem: ChecklistItem) {
+        items = items.map { item in
+            guard item.id == selectedItem.id else {
+                return item
+            }
+            
+            var item = item
+            item.isComplete.toggle()
+            return item
+        }
+    }
+    
+    var body: some View {
+        VStack {
             ChecklistTaskView(
                 title: Text("Title"),
                 detail: Text("Detail"),
                 items: items,
+                action: selected(item:),
                 instructions: Text("Instructions")
             ) { item in
-                Text(item.title).font(.subheadline)
+                HStack {
+                    Image(systemName: "star.fill")
+                        .foregroundColor(item.isImportant ? .yellow : .clear)
+                    Text(item.title)
+                        .font(.subheadline)
+                }
             }
-        }.padding()
+        }
+        .padding()
+    }
+}
+
+struct ChecklistTaskView_Previews: PreviewProvider {
+    static var previews: some View {
+        ChecklistTaskViewExample()
     }
 }
 #endif

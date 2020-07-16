@@ -113,6 +113,12 @@ UIPageViewControllerDataSource, UIPageViewControllerDelegate {
 
     open func selectDate(_ date: Date, animated: Bool) {
         guard !Calendar.current.isDate(selectedDate, inSameDayAs: date) else { return }
+
+        // Load the page of tasks for the new date. This must be done before selecting the date in the calendar so that
+        // the `selectedDate` is correct.
+        showPage(forDate: date, previousDate: selectedDate, animated: animated)
+
+        // Select the correct ring in the calendar
         weekCalendarPageViewController.selectDate(date, animated: animated)
     }
 
@@ -169,12 +175,17 @@ UIPageViewControllerDataSource, UIPageViewControllerDelegate {
         listView.scrollView.scrollIndicatorInsets = insets
     }
 
+    /// Show the page for a particular date.
+    private func showPage(forDate date: Date, previousDate: Date, animated: Bool) {
+        let moveLeft = date < previousDate
+        let listViewController = makePage(date: date)
+        pageViewController.setViewControllers([listViewController], direction: moveLeft ? .reverse : .forward, animated: animated, completion: nil)
+    }
+
     // MARK: - OCKCalendarPageViewControllerDelegate
 
     public func weekCalendarPageViewController(_ viewController: OCKWeekCalendarPageViewController, didSelectDate date: Date, previousDate: Date) {
-        let moveLeft = date < previousDate
-        let listViewController = makePage(date: date)
-        pageViewController.setViewControllers([listViewController], direction: moveLeft ? .reverse : .forward, animated: true, completion: nil)
+        showPage(forDate: date, previousDate: previousDate, animated: true)
     }
 
     public func weekCalendarPageViewController(_ viewController: OCKWeekCalendarPageViewController, didChangeDateInterval interval: DateInterval) {}

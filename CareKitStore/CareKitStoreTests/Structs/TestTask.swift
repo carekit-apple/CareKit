@@ -158,12 +158,12 @@ class TestTask: XCTestCase {
 
         var task1 = OCKTask(id: "doxylamine", title: "Title1", carePlanUUID: nil, schedule: schedule)
         var task2 = OCKTask(id: "doxylamine", title: "Title2", carePlanUUID: nil, schedule: schedule)
-        XCTAssertEqual(task1.stableID, task2.stableID)
+        XCTAssertEqual(task1.uuid, task2.uuid)
 
         let uuid = UUID()
         task1.uuid = uuid
         task2.uuid = uuid
-        XCTAssertEqual(task1.stableID, task2.stableID)
+        XCTAssertEqual(task1.uuid, task2.uuid)
     }
 
     func testIdentitiesDoNotMatch() {
@@ -173,6 +173,6 @@ class TestTask: XCTestCase {
         var task2 = OCKTask(id: "doxylamine", title: "Title2", carePlanUUID: nil, schedule: schedule)
         task1.uuid = UUID()
         task2.uuid = UUID()
-        XCTAssertNotEqual(task1.stableID, task2.stableID)
+        XCTAssertNotEqual(task1.uuid, task2.uuid)
     }
 }

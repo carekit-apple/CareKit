@@ -45,40 +45,47 @@ class TestWeekCalendarPageViewController: XCTestCase {
         super.setUp()
         let store = OCKStore(name: "test-store", type: .inMemory)
         self.storeManager = .init(wrapping: store)
-        viewController = .init(storeManager: storeManager, aggregator: .outcomeExists, currentViewControllerDate: today)
     }
 
-    func testPreviousSelectedDateStartsAsToday() {
-        XCTAssertTrue(Calendar.current.isDate(viewController.previousSelectedDate, inSameDayAs: today))
+    func testCachedSelectedDateStartsAsToday() {
+        viewController = .init(storeManager: storeManager, aggregator: .outcomeExists, selectedDate: today)
+        XCTAssertTrue(Calendar.current.isDate(viewController.cachedSelectedDate, inSameDayAs: today))
     }
 
-    func testPreviousSelectedDateUpdatesOnManualSelection() {
+    func testCachedSelectedDateUpdatesOnManualSelection() {
+        viewController = .init(storeManager: storeManager, aggregator: .outcomeExists, selectedDate: today)
+
         let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: today)!
         viewController.selectDate(tomorrow, animated: false)
-        XCTAssertTrue(Calendar.current.isDate(today, inSameDayAs: viewController.previousSelectedDate))
+        XCTAssertTrue(Calendar.current.isDate(tomorrow, inSameDayAs: viewController.cachedSelectedDate))
     }
 
     func testPreviousSelectedDateUpdatesOnPageUpdate() {
         let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: today)!
-        let previousPage = OCKWeekCalendarViewController(weekOfDate: tomorrow, aggregator: .outcomeExists, storeManager: storeManager)
+        viewController = .init(storeManager: storeManager, aggregator: .outcomeExists, selectedDate: tomorrow)
 
         // Simulate the end of the transition to the next page
-        viewController.pageViewController(viewController, didFinishAnimating: true,
-                                          previousViewControllers: [previousPage], transitionCompleted: true)
-        XCTAssertTrue(Calendar.current.isDate(tomorrow, inSameDayAs: viewController.previousSelectedDate))
+        viewController.pageViewController(viewController, didFinishAnimating: true, previousViewControllers: [],
+                                          transitionCompleted: true)
+
+        XCTAssertTrue(Calendar.current.isDate(tomorrow, inSameDayAs: viewController.cachedSelectedDate))
     }
 }
 
 private class MockWeekCalendarPageViewController: OCKWeekCalendarPageViewController {
 
-    private let currentViewControllerDate: Date
-
-    init(storeManager: OCKSynchronizedStoreManager, aggregator: OCKAdherenceAggregator, currentViewControllerDate: Date) {
-        self.currentViewControllerDate = currentViewControllerDate
-        super.init(storeManager: storeManager, aggregator: aggregator)
+    override var selectedDate: Date {
+        _selectedDate
     }
 
-    override var currentViewController: OCKWeekCalendarViewController? {
-        .init(weekOfDate: currentViewControllerDate, aggregator: .outcomeExists, storeManager: storeManager)
+    override var dateInterval: DateInterval? {
+        Calendar.current.dateIntervalOfWeek(for: _selectedDate)
+    }
+
+    private let _selectedDate: Date
+
+    init(storeManager: OCKSynchronizedStoreManager, aggregator: OCKAdherenceAggregator, selectedDate: Date) {
+        self._selectedDate = selectedDate
+        super.init(storeManager: storeManager, aggregator: aggregator)
     }
 }

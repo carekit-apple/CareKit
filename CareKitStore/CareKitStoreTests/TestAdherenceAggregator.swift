@@ -32,16 +32,40 @@ import Foundation
 import XCTest
 
 class TestAdherenceAggregators: XCTestCase {
-    func makeEvents(outcomeValues: [OCKOutcomeValueUnderlyingType], targetValues: [OCKOutcomeValueUnderlyingType]) -> [OCKAnyEvent] {
-        let element = OCKScheduleElement(start: Date(), end: nil, interval: DateComponents(day: 1),
-                                         text: nil, targetValues: targetValues.map { OCKOutcomeValue($0) },
-                                         duration: .seconds(100))
-        let task = OCKTask(id: "A", title: "A", carePlanUUID: nil, schedule: OCKSchedule(composing: [element]))
-        let values = outcomeValues.map { OCKOutcomeValue($0) }
-        let outcome = OCKOutcome(taskUUID: UUID(), taskOccurrenceIndex: 0, values: values)
+
+    func makeEvents(
+        outcomeValues: [OCKOutcomeValueUnderlyingType],
+        targetValues: [OCKOutcomeValueUnderlyingType]) -> [OCKAnyEvent] {
+
+        let element = OCKScheduleElement(
+            start: Date(), end: nil,
+            interval: DateComponents(day: 1),
+            text: nil,
+            targetValues: targetValues.map { OCKOutcomeValue($0) },
+            duration: .seconds(100))
+
+        let task = OCKTask(
+            id: "A", title: "A",
+            carePlanUUID: nil,
+            schedule: OCKSchedule(composing: [element]))
+
+        let outcome = OCKOutcome(
+            taskUUID: UUID(),
+            taskOccurrenceIndex: 0,
+            values: outcomeValues.map { OCKOutcomeValue($0) })
+
         let scheduleEvent = task.schedule[0]
-        let event1: OCKStore.Event = OCKEvent(task: task, outcome: outcome, scheduleEvent: scheduleEvent)
-        let event2: OCKStore.Event = OCKEvent(task: task, outcome: nil, scheduleEvent: scheduleEvent)
+
+        let event1: OCKStore.Event = OCKEvent(
+            task: task,
+            outcome: outcome,
+            scheduleEvent: scheduleEvent)
+
+        let event2: OCKStore.Event = OCKEvent(
+            task: task,
+            outcome: nil,
+            scheduleEvent: scheduleEvent)
+
         return [event1.anyEvent, event2.anyEvent]
     }
 
@@ -59,7 +83,7 @@ class TestAdherenceAggregators: XCTestCase {
         XCTAssert(result == .progress(0.25), "Expected 0.25, but got \(result)")
     }
 
-    func testPercentOfOutcomesvaluesThatExistWithNoGoals() {
+    func testPercentOfOutcomesValuesThatExistWithNoGoals() {
         let events = makeEvents(outcomeValues: [0], targetValues: [])
         let aggregator = OCKAdherenceAggregator.percentOfOutcomeValuesThatExist
         let result = aggregator.aggregate(events: events)
@@ -92,6 +116,20 @@ class TestAdherenceAggregators: XCTestCase {
         let aggregator = OCKAdherenceAggregator.compareTargetValues
         let result = aggregator.aggregate(events: events)
         XCTAssert(result == .progress(0.5), "Expected 0.5 but got \(result)")
+    }
+
+    func testCompareTargetValuesWithMismatchedNumeralTypes() {
+        let events = makeEvents(outcomeValues: [12.0], targetValues: [10])
+        let aggregator = OCKAdherenceAggregator.compareTargetValues
+        let result = aggregator.aggregate(events: events)
+        XCTAssert(result == .progress(0.5), "Expected 0.5 but got \(result)")
+    }
+
+    func testCompareTargetValuesWithMismatchedNumeralAndBooleanTypes() {
+        let events = makeEvents(outcomeValues: [false], targetValues: [10])
+        let aggregator = OCKAdherenceAggregator.compareTargetValues
+        let result = aggregator.aggregate(events: events)
+        XCTAssert(result == .progress(0), "Expected 0 but got \(result)")
     }
 
     func testTargetCompletionPercentage() {

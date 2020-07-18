@@ -31,7 +31,6 @@
 
 import CareKitStore
 import CareKitUI
-import os.log
 import UIKit
 
 /// Handles events related to an `OCKWeekCalendarPageViewController`.
@@ -121,8 +120,7 @@ UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelega
         switch result {
         case .failure(let error):
             if calendarDelegate == nil {
-                os_log("A calendar error occurred, but no delegate was set to forward it to! %{public}@",
-                       log: .carekit, type: .error, error.localizedDescription)
+                log(.error, "A calendar error occurred, but no delegate was set to forward it to!", error: error)
             }
             calendarDelegate?.weekCalendarPageViewController(self, didEncounterError: error)
         case .success: break

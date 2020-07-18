@@ -33,7 +33,6 @@ import CareKitStore
 import CareKitUI
 import Combine
 import Foundation
-import os.log
 
 /// Classes that conform to this protocol can receive updates about the state of
 /// the `OCKContactsListViewControllerDelegate`.
@@ -106,8 +105,7 @@ open class OCKContactsListViewController: OCKListViewController {
             switch result {
             case .failure(let error):
                 if self.delegate == nil {
-                    os_log("A contacts error occurred, but no delegate was set to forward it to! %{public}@",
-                           log: .carekit, type: .error, error.localizedDescription)
+                    log(.error, "A contacts error occurred, but no delegate was set to forward it to!", error: error)
                 }
                 self.delegate?.contactsListViewController(self, didEncounterError: error)
             case .success(let contacts):

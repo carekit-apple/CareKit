@@ -47,7 +47,10 @@ extension OCKStoreCoordinator {
         do {
             try findStore(forTasks: tasks).addAnyTasks(tasks, callbackQueue: callbackQueue, completion: completion)
         } catch {
-            callbackQueue.async { completion?(.failure(.addFailed(reason: "Failed to find store accepting tasks. Error: \(error)"))) }
+            callbackQueue.async {
+                completion?(.failure(.addFailed(
+                    reason: "Failed to find store accepting tasks. Error: \(error.localizedDescription)")))
+            }
         }
     }
 
@@ -56,7 +59,10 @@ extension OCKStoreCoordinator {
         do {
             try findStore(forTasks: tasks).addAnyTasks(tasks, callbackQueue: callbackQueue, completion: completion)
         } catch {
-            callbackQueue.async { completion?(.failure(.updateFailed(reason: "Failed to find store accepting tasks. Error: \(error)"))) }
+            callbackQueue.async {
+                completion?(.failure(.updateFailed(
+                    reason: "Failed to find store accepting tasks. Error: \(error.localizedDescription)")))
+            }
         }
     }
 
@@ -65,7 +71,10 @@ extension OCKStoreCoordinator {
         do {
             try findStore(forTasks: tasks).deleteAnyTasks(tasks, callbackQueue: callbackQueue, completion: completion)
         } catch {
-            callbackQueue.async { completion?(.failure(.deleteFailed(reason: "Failed to find store accepting tasks. Error: \(error)"))) }
+            callbackQueue.async {
+                completion?(.failure(.deleteFailed(
+                    reason: "Failed to find store accepting tasks. Error: \(error.localizedDescription)")))
+            }
         }
     }
 

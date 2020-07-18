@@ -30,7 +30,6 @@
 
 import CoreData
 import Foundation
-import os.log
 
 /// The default store used in CareKit. The underlying database used is CoreData.
 open class OCKStore: OCKStoreProtocol, OCKCoreDataStoreProtocol, Equatable {
@@ -147,8 +146,7 @@ open class OCKStore: OCKStoreProtocol, OCKCoreDataStoreProtocol, Equatable {
                 let objects = try context.fetch(fetchRequest)
                 objects.forEach { context.delete($0) }
             } catch {
-                os_log("Failed to delete objects of type %{public}@: %{public}@",
-                       log: .store, type: .error, "\(entity)", error.localizedDescription)
+                log(.error, "Failed to delete objects", error: error)
             }
         }
     }

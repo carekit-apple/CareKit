@@ -78,7 +78,7 @@ extension OCKCoreDataTaskStoreProtocol {
             } catch {
                 self.context.rollback()
                 callbackQueue.async {
-                    let message = "Failed to fetch tasks with query: \(String(describing: query)). "
+                    let message = "Failed to fetch tasks for the given query."
                     completion(.failure(.fetchFailed(reason: message + error.localizedDescription)))
                 }
             }
@@ -99,7 +99,7 @@ extension OCKCoreDataTaskStoreProtocol {
             } catch {
                 self.context.rollback()
                 callbackQueue.async {
-                    completion?(.failure(.addFailed(reason: "Failed to add OCKTasks: [\(tasks)]. \(error.localizedDescription)")))
+                    completion?(.failure(.addFailed(reason: "Failed to add OCKTasks. \(error.localizedDescription)")))
                 }
             }
         }
@@ -144,7 +144,7 @@ extension OCKCoreDataTaskStoreProtocol {
             } catch {
                 self.context.rollback()
                 callbackQueue.async {
-                    completion?(.failure(.deleteFailed(reason: "Failed to delete OCKTasks: [\(tasks)]. \(error.localizedDescription)")))
+                    completion?(.failure(.deleteFailed(reason: "Failed to delete OCKTasks. \(error.localizedDescription)")))
                 }
             }
         }

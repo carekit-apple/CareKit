@@ -32,7 +32,6 @@
 import CoreData
 import Foundation
 import HealthKit
-import os.log
 
 /// A specialized store that transparently manipulates outcomes in HealthKit.
 public final class OCKHealthKitPassthroughStore: OCKEventStore {
@@ -126,8 +125,7 @@ public final class OCKHealthKitPassthroughStore: OCKEventStore {
 
                 group.notify(queue: .main) { [weak self] in
                     if let error = observeError {
-                        os_log("Failed to enable background deliver. %{public}@",
-                               log: .store, type: .error, error.localizedDescription)
+                        log(.error, "Failed to enable background deliver.", error: error)
                         return
                     }
 
@@ -135,16 +133,14 @@ public final class OCKHealthKitPassthroughStore: OCKEventStore {
                 }
             }
         } catch {
-            os_log("Failed to observe HealthKit. %{public}@",
-                   log: .store, type: .error, error.localizedDescription)
+            log(.error, "Failed to observe HealthKit.", error: error)
         }
     }
 
     private func stopObservingAllTasks() {
         store.disableAllBackgroundDelivery { _, error in
             if let error = error {
-                os_log("Failed to stop observing some HealthKit types. %{public}@",
-                       log: .store, type: .error, error.localizedDescription)
+                log(.error, "Failed to stop observing some HealthKit types.", error: error)
             }
         }
     }
@@ -157,8 +153,7 @@ public final class OCKHealthKitPassthroughStore: OCKEventStore {
 
             if let error = error {
                 backgroundCompletionHandler()
-                os_log("Failed to observe HealthKit sample type: %{public}@",
-                       log: .store, type: .error, error.localizedDescription)
+                log(.error, "Failed to observe HealthKit sample type", error: error)
                 return
             }
 
@@ -173,8 +168,7 @@ public final class OCKHealthKitPassthroughStore: OCKEventStore {
 
                 if let error = error {
                     backgroundCompletionHandler()
-                    os_log("Failed to fetch HealthKit sample type: %{public}@. %{public}@",
-                           log: .store, type: .info, "\(sampleType)", error.localizedDescription)
+                    log(.error, "Failed to fetch HealthKit sample type", error: error)
                     return
                 }
 
@@ -210,8 +204,7 @@ public final class OCKHealthKitPassthroughStore: OCKEventStore {
                 self?.handleHealthKitDataCreatedOrUpdated(task: task, samples: samples) { result in
                     switch result {
                     case .failure(let error):
-                        os_log("Failed to handle HealthKit update %{public}@",
-                               log: .store, type: .error, error.localizedDescription)
+                        log(.error, "Failed to handle HealthKit update", error: error)
                     case .success: break
                     }
                     backgroundCompletionHandler()

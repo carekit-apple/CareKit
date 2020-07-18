@@ -32,7 +32,6 @@
 import CareKitStore
 import CareKitUI
 import Combine
-import os.log
 import SwiftUI
 import UIKit
 
@@ -162,8 +161,7 @@ open class OCKDailyTasksPageViewController: OCKDailyPageViewController, OCKDaily
         _ viewController: OCKTaskViewController<C, VS>,
         didEncounterError: Error) where C: OCKTaskController, VS: OCKTaskViewSynchronizerProtocol {
 
-        os_log("An error occurred in the daily tasks controller, but it was no handled!",
-               log: .carekit, type: .error, didEncounterError.localizedDescription)
+        log(.error, "An error occurred in the daily tasks controller, but it was no handled!", error: didEncounterError)
     }
 }
 

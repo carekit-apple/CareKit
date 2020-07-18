@@ -1,4 +1,3 @@
-//
 /*
  Copyright (c) 2020, Apple Inc. All rights reserved.
  
@@ -46,8 +45,18 @@ class TestDetailedContactView: XCTestCase {
 
     let query = OCKContactQuery(id: "lexi-torres")
     let data = OCKContact(id: "lexi-torres", givenName: "Lexi", familyName: "Torres", carePlanUUID: nil)
-    // CODE REVIEW: Let's break this long line down into multiple lines
-    let staticView = CareKitUI.DetailedContactView(title: Text(""), detail: Text(""), instructions: Text(""), image: Image(systemName: "person.crop.circle"), disclosureImage: nil, callButton: ContactButton(title: Text("Call"), image: Image(systemName: "phone"), action: nil), messageButton: ContactButton(title: Text("Message"), image: Image(systemName: "text.bubble"), action: nil), emailButton:  ContactButton(title: Text("E-mail"), image: Image(systemName: "envelope"), action: nil), addressButton: AddressButton(title: Text("Address"), detail: Text(""), image: Image(systemName: "location"), action: nil))
+
+    let staticView = CareKitUI.DetailedContactView(title: Text(""),
+                                                   detail: Text(""),
+                                                   instructions: Text(""),
+                                                   image: Image(systemName: "person.crop.circle"),
+                                                   disclosureImage: nil,
+                                                   callButton: ContactButton(title: Text("Call"),
+                                                                             image: Image(systemName: "phone"),
+                                                                             action: nil),
+                                                   messageButton: ContactButton(title: Text("Message"),
+                                                                                image: Image(systemName: "text.bubble"),
+                                                                                action: nil), emailButton:  ContactButton(title: Text("E-mail"), image: Image(systemName: "envelope"), action: nil), addressButton: AddressButton(title: Text("Address"), detail: Text(""), image: Image(systemName: "location"), action: nil))
 
     func testDefaultContentInitializers() {
         _ = CareKit.DetailedContactView(contact: data, contactQuery: query, storeManager: controller.storeManager)

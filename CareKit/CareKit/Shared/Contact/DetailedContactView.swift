@@ -1,4 +1,3 @@
-//
 /*
  Copyright (c) 2020, Apple Inc. All rights reserved.
  
@@ -33,6 +32,7 @@ import CareKitStore
 import CareKitUI
 import Foundation
 import SwiftUI
+import MessageUI
 
 /// A card that displays information for a contact. The header is an `OCKHeaderView`
 /// The body contains a multi-line istructions label, and four buttons; call, message,
@@ -114,12 +114,26 @@ public extension DetailedContactView where Header == _DetailedContactViewHeader,
     }
 }
 
-// CODE REVIEW: Let's add actions - they are nil right now, see UIKit version
 private extension CareKitUI.DetailedContactView where Header == _DetailedContactViewHeader, Footer == _DetailedContactViewFooter {
     init(viewModel: ContactViewModel?) {
-        self.init(title: Text(viewModel?.title ?? ""), detail: Text(viewModel?.detail ?? ""), instructions: Text(viewModel?.instructions ?? ""), image: Image(systemName: "person.crop.circle"), disclosureImage: nil, callButton: ContactButton(title: Text("Call"), image: Image(systemName: "phone"), action: nil), messageButton: ContactButton(title: Text("Message"), image: Image(systemName: "text.bubble"), action: nil), emailButton:  ContactButton(title: Text("E-mail"), image: Image(systemName: "envelope"), action: nil), addressButton: AddressButton(title: Text("Address"), detail: Text(viewModel?.address ?? ""), image: Image(systemName: "location"), action: nil))
+        self.init(title: Text(viewModel?.title ?? ""),
+                  detail: Text(viewModel?.detail ?? ""),
+                  instructions: Text(viewModel?.instructions ?? ""),
+                  image: Image(systemName: "person.crop.circle"),
+                  disclosureImage: nil,
+                  callButton: ContactButton(title: Text("Call"),
+                                            image: Image(systemName: "phone"), action: viewModel?.callAction),
+                  messageButton: ContactButton(title: Text("Message"),
+                                               image: Image(systemName: "text.bubble"), action: viewModel?.messageAction),
+                  emailButton:  ContactButton(title: Text("E-mail"),
+                                              image: Image(systemName: "envelope"), action: viewModel?.emailAction),
+                  addressButton: AddressButton(title: Text("Address"),
+                                               detail: Text(viewModel?.address ?? ""),
+                                               image: Image(systemName: "location"),
+                                               action: viewModel?.addressAction))
     }
 }
+
 
 /// Data used to create a `CareKitUI.DetailedContactView`.
 public struct ContactViewModel {
@@ -135,4 +149,16 @@ public struct ContactViewModel {
     
     /// The address text to display under the address button.
     public let address: String?
+    
+    /// The action to perform when the call button is tapped.
+    public let callAction: (() -> Void)?
+    
+    /// The action to perform when the message button is tapped.
+    public let messageAction: (() -> Void)?
+    
+    /// The action to perform when the email button is tapped.
+    public let emailAction: (() -> Void)?
+    
+    /// The action to perform when the address button is tapped.
+    public let addressAction: (() -> Void)?
 }

@@ -109,8 +109,24 @@ UIPageViewControllerDataSource, UIPageViewControllerDelegate {
         fatalError("init(coder:) has not been implemented")
     }
 
-    // MARK: - Properties
+    /// The page that is currently being displayed.
+    open var currentPage: OCKListViewController? {
+        pageViewController.viewControllers?.first as? OCKListViewController
+    }
 
+    /// Reload the contents at the currently selected date.
+    open func reload() {
+        guard let current = currentPage else {
+            return
+        }
+        preparePage(current, date: selectedDate)
+    }
+
+    /// Selects the given date, updating both the calendar view and the daily content.
+    ///
+    /// - Parameters:
+    ///   - date: The date to be selected.
+    ///   - animated: A flag that determines if the selection will be animated or not.
     open func selectDate(_ date: Date, animated: Bool) {
         guard !Calendar.current.isDate(selectedDate, inSameDayAs: date) else { return }
 
@@ -144,15 +160,31 @@ UIPageViewControllerDataSource, UIPageViewControllerDelegate {
 
     private func makePage(date: Date) -> OCKDatedListViewController {
         let listViewController = OCKDatedListViewController(date: date)
+
+        let refresher = UIRefreshControl()
+        refresher.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
+        listViewController.listView.scrollView.refreshControl = refresher
+
+        preparePage(listViewController, date: date)
+        return listViewController
+    }
+
+    private func preparePage(_ list: OCKListViewController, date: Date) {
+        list.clear()
+
         let dateLabel = OCKDateLabel(textStyle: .title2, weight: .bold)
         dateLabel.setDate(date)
         dateLabel.accessibilityTraits = .header
+        list.insertView(dateLabel, at: 0, animated: false)
 
-        listViewController.insertView(dateLabel, at: 0, animated: false)
+        setInsets(for: list)
+        dataSource?.dailyPageViewController(self, prepare: list, for: date)
+    }
 
-        setInsets(for: listViewController)
-        dataSource?.dailyPageViewController(self, prepare: listViewController, for: date)
-        return listViewController
+    @objc
+    private func handleRefresh(_ control: UIRefreshControl) {
+        control.endRefreshing()
+        reload()
     }
 
     @objc

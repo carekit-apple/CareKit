@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2020, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -30,27 +30,11 @@
 
 import UIKit
 
-extension Double {
-    var normalized: Double {
-        return max(0, min(self, 1))
-    }
-}
+extension OCKStyler {
 
-extension CGFloat {
-
-    /// Scaled value for the current size category.
-    func scaled() -> CGFloat {
-        UIFontMetrics.default.scaledValue(for: self)
-    }
-
-    /// The value between `self` and `end` with distance of `factor` between 0 and 1.
-    func interpolated(to end: CGFloat, factor: CGFloat) -> CGFloat {
-        precondition(factor >= 0 && factor <= 1, "Factor should be in range [0, 1]")
-        return (self + (factor * (end - self)))
-            .clamped(to: (self...end))
-    }
-
-    func clamped(to range: ClosedRange<CGFloat>) -> CGFloat {
-        return Swift.max(Swift.min(self, range.upperBound), range.lowerBound)
+    /// Scaled border width for the current frame size.
+    func borderWidth(forContainer container: CGSize) -> CGFloat {
+        let currentDimension = min(container.width, container.height)
+        return currentDimension < dimension.buttonHeight3 ? appearance.borderWidth2.scaled() : appearance.borderWidth1.scaled()
     }
 }

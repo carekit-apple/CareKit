@@ -56,7 +56,7 @@ public struct CircularCompletionView<Content: View>: View {
         GeometryReader { geo in
             ZStack {
                 Circle().fill(self.fillColor)
-                Circle().strokeBorder(Color.accentColor, lineWidth: self.lineWidth(for: geo.size))
+                Circle().strokeBorder(Color.accentColor, lineWidth: style.borderWidth(forContainer: geo.size))
             }
             .inverseMask(self.content)
         }
@@ -84,19 +84,6 @@ public struct CircularCompletionView<Content: View>: View {
         self.isComplete = isComplete
         self.content = content()
     }
-
-    // Scaled line width for the current frame size.
-    private func lineWidth(for containerSize: CGSize) -> CGFloat {
-        let border = style.appearance.borderWidth2...style.appearance.borderWidth1
-        let dimension = style.dimension.buttonHeight4...style.dimension.buttonHeight1
-        let currentDimension = min(containerSize.width, containerSize.height)
-
-        // Get the distance factor between the two dimension values.
-        let factor = currentDimension.interpolationFactor(for: dimension)
-
-        // Flip the factor because we want a higher border width for a smaller dimension.
-        return border.lowerBound.interpolated(to: border.upperBound, factor: 1 - factor)
-    }
 }
 
 #if DEBUG
@@ -111,12 +98,14 @@ struct CircularCompletionViewPreviews: PreviewProvider {
                         .frame(height: 90)
                 }
 
-                CircularCompletionView(isComplete: true) {
-                    Text("")
-                        .frame(width: 30, height: 30)
+                CircularCompletionView(isComplete: false) {
+                    Image(systemName: "checkmark")
+                        .resizable()
+                        .padding()
+                        .frame(width: 50, height: 50)
                 }
 
-                CircularCompletionView(isComplete: false) {
+                CircularCompletionView(isComplete: true) {
                     Image(systemName: "checkmark")
                         .resizable()
                         .padding()

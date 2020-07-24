@@ -16,7 +16,7 @@ public struct OCKSliderButton: View {
     
     @Binding var value: CGFloat
     let isComplete: Bool
-    let action: () -> Void
+    let action: (_ value: Double) -> Void
     private let diameter: CGFloat = 60
     private let borderWidth: CGFloat = 2
     private let fontSize: CGFloat = 25
@@ -33,9 +33,14 @@ public struct OCKSliderButton: View {
         isComplete ? Text(loc("DONE")) : nil
     }
     
+    //private let buttonConfig: PrimitiveButtonStyleConfiguration
+    
     public var body: some View {
         GeometryReader { geometry in
-            Button(action: self.action) {
+            Button("Log") {
+                action(Double(value))
+            }
+            /*Button(action: self.action) {
                 ZStack {
                     Circle()
                         .overlay(Circle().stroke(Color.accentColor, lineWidth: self.borderWidth))
@@ -50,7 +55,7 @@ public struct OCKSliderButton: View {
                             .offset(y: self.diameter * 0.3)
                     }.foregroundColor(self.foregroundColor)
                 }
-            }
+            }*/
             .frame(width: geometry.size.width)
             .buttonStyle(NoHighlightStyle())
         }.frame(height: diameter).padding(.top)

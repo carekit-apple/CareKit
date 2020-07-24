@@ -79,7 +79,7 @@ public struct SliderTaskView<Header: View, SliderView: View>: View {
     /// Create an instance.
     /// - Parameter instructions: Instructions text to display under the header.
     /// - Parameter header: Header to inject at the top of the card. Specified content will be stacked vertically.
-    /// - Parameter sliderview: View to inject under the header. Specified content will be stacked vertically.
+    /// - Parameter sliderView: View to inject under the header. Specified content will be stacked vertically.
     public init(instructions: Text? = nil, @ViewBuilder header: () -> Header, @ViewBuilder sliderView: () -> SliderView) {
         self.init(isHeaderPadded: false, isSliderViewPadded: false, instructions: instructions, header: header, sliderView: sliderView)
     }
@@ -91,7 +91,7 @@ public extension SliderTaskView where Header == _SliderTaskViewHeader {
     /// - Parameter title: Title text to display in the header.
     /// - Parameter detail: Detail text to display in the header.
     /// - Parameter instructions: Instructions text to display under the header.
-    /// - Parameter sliderview: View to inject under the header. Specified content will be stacked vertically.
+    /// - Parameter sliderView: View to inject under the header. Specified content will be stacked vertically.
     init(title: Text, detail: Text? = nil, instructions: Text? = nil, @ViewBuilder sliderView: () -> SliderView) {
         self.init(isHeaderPadded: true, isSliderViewPadded: false, instructions: instructions, header: {
             _SliderTaskViewHeader(title: title, detail: detail)
@@ -105,31 +105,26 @@ public extension SliderTaskView where SliderView == _SliderTaskViewFooter {
     /// - Parameter header: Header to inject at the top of the card. Specified content will be stacked vertically.
     /// - Parameter instructions: Instructions text to display under the header.
     /// - Parameter isComplete; True if the button under the slider is in the completed.
-    /// - Parameter action: Action to perform when the button is tapped.
     /// - Parameter minimumImage: Image to display to the left of the slider. Default value is nil.
     /// - Parameter maximumImage: Image to display to the right of the slider. Default value is nil.
-    /// - Parameter initialValue: Value that the slider begins on. Must be within the range.
+    /// - Parameter value: The binded value that the slider will reflect
     /// - Parameter range: The range that includes all possible values.
     /// - Parameter step: Value of the increment that the slider takes.
-    /// - Parameter sliderHeight: Height of the bar of the slider.  Default value is 40.
-    /// - Parameter frameHeightMultiplier: Value to multiply the slider height by to attain the hieght of the frame enclosing the slider. Default value is 1.7.
-    init( @ViewBuilder header: () -> Header,
-                       instructions: Text? = nil,
-                       isComplete: Bool,
-                       action: @escaping () -> Void = {},
-                       minimumImage: Image? = nil, maximumImage: Image? = nil,
-                       value: Binding<CGFloat>,
-                       initialValue: CGFloat, range: ClosedRange<CGFloat>, step: CGFloat,
-                       sliderHeight: CGFloat = 40, frameHeightMultiplier: CGFloat = 1.7,
-                       useDefaultSlider: Bool) {
+    /// - Parameter sliderStyle: The style of the slider, either the SwiftUI system slider or the custom filler slider.
+    /// - Parameter action: Action to perform when the button is tapped.
+    init(@ViewBuilder header: () -> Header,
+                      instructions: Text? = nil,
+                      isComplete: Bool,
+                      value: Binding<CGFloat>, range: ClosedRange<CGFloat>, step: CGFloat,
+                      minimumImage: Image? = nil, maximumImage: Image? = nil,
+                      sliderStyle: SliderStyle = .system,
+                      action: @escaping (Double) -> Void) {
         self.init(isHeaderPadded: false, isSliderViewPadded: true, instructions: instructions, header: header, sliderView: {
             _SliderTaskViewFooter(isComplete: isComplete,
-                                  action: action,
                                   maximumImage: maximumImage, minimumImage: minimumImage,
-                                  value: value,
-                                  initialValue: initialValue, range: range, step: step,
-                                  sliderHeight: sliderHeight, frameHeightMultiplier: frameHeightMultiplier,
-                                  useDefaultSlider: useDefaultSlider)
+                                  value: value, range: range, step: step,
+                                  sliderStyle: sliderStyle,
+                                  action: action)
         })
     }
 }
@@ -141,33 +136,29 @@ public extension SliderTaskView where Header == _SliderTaskViewHeader, SliderVie
     /// - Parameter detail: Detail text to display in the header.
     /// - Parameter instructions: Instructions text to display under the header.
     /// - Parameter isComplete; True if the button under the slider is in the completed.
-    /// - Parameter action: Action to perform when the button is tapped.
     /// - Parameter minimumImage: Image to display to the left of the slider. Default value is nil.
     /// - Parameter maximumImage: Image to display to the right of the slider. Default value is nil.
-    /// - Parameter initialValue: Value that the slider begins on. Must be within the range.
+    /// - Parameter value: The binded value that the slider will reflect
     /// - Parameter range: The range that includes all possible values.
     /// - Parameter step: Value of the increment that the slider takes.
-    /// - Parameter sliderHeight: Height of the bar of the slider.  Default value is 40.
-    /// - Parameter frameHeightMultiplier: Value to multiply the slider height by to attain the hieght of the frame enclosing the slider. Default value is 1.7.
+    /// - Parameter sliderStyle: The style of the slider, either the SwiftUI system slider or the custom filler slider.
+    /// - Parameter action: Action to perform when the button is tapped.
     init(title: Text, detail: Text? = nil,
          instructions: Text? = nil,
          isComplete: Bool,
-         action: @escaping () -> Void = {},
+         value: Binding<CGFloat>, range: ClosedRange<CGFloat>, step: CGFloat,
          minimumImage: Image? = nil, maximumImage: Image? = nil,
-         value: Binding<CGFloat>,
-         initialValue: CGFloat, range: ClosedRange<CGFloat>, step: CGFloat,
-         sliderHeight: CGFloat = 40, frameHeightMultiplier: CGFloat = 1.7,
-         useDefaultSlider: Bool) {
+         sliderStyle: SliderStyle,
+         action: @escaping (Double) -> Void) {
         self.init(isHeaderPadded: true, isSliderViewPadded: true, instructions: instructions, header: {
             _SliderTaskViewHeader(title: title, detail: detail)
         }, sliderView: {
             _SliderTaskViewFooter(isComplete: isComplete,
-                                  action: action,
-                                  maximumImage: maximumImage, minimumImage: minimumImage,
-                                  value: value,
-                                  initialValue: initialValue, range: range, step: step,
-                                  sliderHeight: sliderHeight, frameHeightMultiplier: frameHeightMultiplier,
-                                  useDefaultSlider: useDefaultSlider)
+                                  maximumImage: maximumImage,
+                                  minimumImage: maximumImage,
+                                  value: value, range: range, step: step,
+                                  sliderStyle: sliderStyle,
+                                  action: action)
         })
     }
 }
@@ -194,32 +185,29 @@ public struct _SliderTaskViewFooter: View {
     @Environment(\.careKitStyle) private var style
     
     fileprivate let isComplete: Bool
-    fileprivate let action: () -> Void
+    fileprivate let action: (Double) -> Void
     fileprivate let maximumImage: Image?
     fileprivate let minimumImage: Image?
     fileprivate let range: ClosedRange<CGFloat>
     fileprivate let step: CGFloat
-    fileprivate let sliderHeight: CGFloat
-    fileprivate let frameHeightMultiplier: CGFloat
-    fileprivate let useDefaultSlider: Bool
+    fileprivate let sliderStyle: SliderStyle
     @Binding var value: CGFloat
     
-    init(isComplete: Bool, action: @escaping () -> Void, maximumImage: Image?, minimumImage: Image?, value: Binding<CGFloat>, initialValue: CGFloat, range: ClosedRange<CGFloat>, step: CGFloat, sliderHeight: CGFloat, frameHeightMultiplier: CGFloat, useDefaultSlider: Bool){
+    
+    init(isComplete: Bool, maximumImage: Image?, minimumImage: Image?, value: Binding<CGFloat>, range: ClosedRange<CGFloat>, step: CGFloat, sliderStyle: SliderStyle, action: @escaping (Double) -> Void) {
         self.isComplete = isComplete
         self.action = action
         self.maximumImage = maximumImage
         self.minimumImage = minimumImage
         self.range = range
         self.step = step
-        self.sliderHeight = sliderHeight
-        self.frameHeightMultiplier = frameHeightMultiplier
-        self.useDefaultSlider = useDefaultSlider
+        self.sliderStyle = sliderStyle
         _value = value
     }
     
     public var body: some View {
         VStack {
-            OCKSlider(value: self.$value, range: self.range, step: self.step, isComplete: self.isComplete, minimumImage: self.minimumImage, maximumImage: self.maximumImage, sliderHeight: self.sliderHeight, frameHeightMultiplier: self.frameHeightMultiplier, useDefaultSlider: self.useDefaultSlider)
+            OCKSlider(value: self.$value, range: self.range, step: self.step, isComplete: self.isComplete, minimumImage: self.minimumImage, maximumImage: self.maximumImage, sliderStyle: self.sliderStyle)
             OCKSliderButton(value: self.$value, isComplete: self.isComplete, action: self.action)
         }
     }

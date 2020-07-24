@@ -122,6 +122,7 @@
 		64E1BD4E2309FCF200DFFE52 /* OCKResponsiveLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64E1BD4D2309FCF200DFFE52 /* OCKResponsiveLayout.swift */; };
 		64EEC2382318253B00B1012F /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 64EEC2362318253B00B1012F /* Localizable.strings */; };
 		64EEC23B231825DD00B1012F /* OCKLocalization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64EEC23A231825DD00B1012F /* OCKLocalization.swift */; };
+		E829AC1E24BFBB58001DCB1F /* TestSliderTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E829AC1D24BFBB58001DCB1F /* TestSliderTaskView.swift */; };
 		E836DA0124BCC54900268E59 /* OCKSliderButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E836DA0024BCC54900268E59 /* OCKSliderButton.swift */; };
 		E836DA0324BCC5EE00268E59 /* OCKSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = E836DA0224BCC5EE00268E59 /* OCKSlider.swift */; };
 		E88E003E24B51DB1009A7AC8 /* SliderTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88E003C24B51DB1009A7AC8 /* SliderTaskView.swift */; };
@@ -239,6 +240,7 @@
 		64E1BD4D2309FCF200DFFE52 /* OCKResponsiveLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKResponsiveLayout.swift; sourceTree = "<group>"; };
 		64EEC2372318253B00B1012F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		64EEC23A231825DD00B1012F /* OCKLocalization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKLocalization.swift; sourceTree = "<group>"; };
+		E829AC1D24BFBB58001DCB1F /* TestSliderTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestSliderTaskView.swift; sourceTree = "<group>"; };
 		E836DA0024BCC54900268E59 /* OCKSliderButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKSliderButton.swift; sourceTree = "<group>"; };
 		E836DA0224BCC5EE00268E59 /* OCKSlider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKSlider.swift; sourceTree = "<group>"; };
 		E88E003C24B51DB1009A7AC8 /* SliderTaskView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SliderTaskView.swift; sourceTree = "<group>"; };
@@ -362,6 +364,7 @@
 			children = (
 				51E77382237D1D8000ED70A2 /* TestGridTaskView.swift */,
 				51746F2A2448B90B00B647E1 /* TestNumericProgressTaskView.swift */,
+				E829AC1D24BFBB58001DCB1F /* TestSliderTaskView.swift */,
 			);
 			path = Task;
 			sourceTree = "<group>";
@@ -801,6 +804,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E829AC1E24BFBB58001DCB1F /* TestSliderTaskView.swift in Sources */,
 				51E77383237D1D8000ED70A2 /* TestGridTaskView.swift in Sources */,
 				64E1BD4C2309FCDC00DFFE52 /* OCKResponsiveLayoutTests.swift in Sources */,
 				5105254724462BCE004483D0 /* TestLinkType.swift in Sources */,

@@ -33,14 +33,14 @@ open class OCKSliderTaskController: OCKTaskController {
         guard !taskEvents.isEmpty else { return nil }
         
         let event = taskEvents.first?.first
-        var value: CGFloat = 0
+        //var value: CGFloat = 0
         var isComplete = false
         
-        if let foundValue = event?.scheduleEvent.element.targetValues.first?.numberValue?.doubleValue {
-            value = CGFloat(foundValue)
+        if event?.scheduleEvent.element.targetValues.first?.numberValue?.doubleValue == nil {
+            //value = CGFloat(foundValue)
             isComplete = true
         }
-        
+    
         let errorHandler: (Error) -> Void = { [weak self] error in
             self?.error = error
         }
@@ -49,11 +49,13 @@ open class OCKSliderTaskController: OCKTaskController {
                      detail: taskEvents.firstEventDetail,
                      instructions: taskEvents.firstTaskInstructions,
                      isComplete: isComplete,
-                     action: saveOutcomesActionForFirstEvent(values: [.init(Double(value))], errorHandler: errorHandler),
-                     initialValue: value,
-                     range: (value - 5)...(value + 5),
-                     step: 1,
-                     useDefaultSlider: false)
+                     //value: value,
+                     action: saveSliderValueActionForFirstEvent(errorHandler: errorHandler))
+    }
+    
+    func saveSliderValueActionForFirstEvent(errorHandler: ((Error) -> Void)?) -> (Double) -> Void {
+        { sliderValue in
+            return self.saveOutcomesEvent(atIndexPath: .init(row: 0, section: 0), values: [.init(sliderValue)], errorHandler: errorHandler) }
     }
         
 }

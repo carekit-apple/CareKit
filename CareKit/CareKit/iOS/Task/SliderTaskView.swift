@@ -38,11 +38,11 @@ import SwiftUI
 ///     |                                                       |
 ///     +-------------------------------------------------------+
 /// ```
-
+/*
 @available(iOS 14.0, *)
 public struct SliderTaskView<Header: View, SliderView: View>: View {
     
-    private typealias TaskView = SynchronizedTaskView<OCKSliderTaskController, CareKitUI.SliderTaskView<Header, SliderView>>
+    private typealias TaskView = SynchronizedSliderTaskView<OCKSliderTaskController, CareKitUI.SliderTaskView<Header, SliderView>>
 
     private let taskView: TaskView
     
@@ -52,6 +52,7 @@ public struct SliderTaskView<Header: View, SliderView: View>: View {
 
     private init(taskView: TaskView) {
         self.taskView = taskView
+        
     }
     
     /// Create an instance. The first task and event that match the provided queries will be fetched from the the store and displayed in the view.
@@ -97,7 +98,7 @@ public struct SliderTaskView<Header: View, SliderView: View>: View {
         .init(taskView: .init(copying: taskView, settingErrorHandler: perform))
     }
 }
-
+/*
 @available(iOS 14.0, *)
 public extension SliderTaskView where Header == _SliderTaskViewHeader, SliderView == _SliderTaskViewFooter {
 
@@ -132,29 +133,36 @@ public extension SliderTaskView where Header == _SliderTaskViewHeader, SliderVie
     ///     - controller: Controller that holds a reference to data displayed by the view.
     init(controller: OCKSliderTaskController) {
         taskView = .init(controller: controller) {
-            .init(viewModel: $0.viewModel)
+            .init(viewModel: $0.viewModel, value: <#Binding<CGFloat>#>)
         }
     }
-}
+}*/
 
 private extension CareKitUI.SliderTaskView where Header == _SliderTaskViewHeader, SliderView == _SliderTaskViewFooter {
-    init(viewModel: SliderTaskViewModel?) {
+    init(viewModel: SliderTaskViewModel?,
+         minimumImage: Image? = nil,
+         maximumImage: Image? = nil,
+         value: Binding<CGFloat>,
+         range: ClosedRange<CGFloat> = 0...10,
+         step: CGFloat = 1,
+         sliderStyle: SliderStyle = .system) {
+        
+       // let sliderValue = viewModel?.value ?? CGFloat(0)
+        
         self.init(title: Text(viewModel?.title ?? ""),
                   detail: viewModel?.detail.map { Text($0) },
                   instructions: viewModel?.instructions.map{ Text($0) },
                   isComplete: viewModel?.isComplete ?? false,
-                  action: viewModel?.action ?? {},
-                  minimumImage: viewModel?.minimumImage,
-                  maximumImage: viewModel?.maximumImage,
-                  value: (viewModel?.$value)!,
-                  initialValue: viewModel?.initialValue ?? 5,
-                  range: viewModel?.range ?? 0...10,
-                  step: viewModel?.step ?? 1,
-                  sliderHeight: viewModel?.sliderHeight ?? 40,
-                  frameHeightMultiplier: viewModel?.frameHeightMultiplier ?? 1.7,
-                  useDefaultSlider: viewModel?.useDefaultSlider ?? false)
+                 // value: State(initialValue: sliderValue),
+                  value: value,
+                  range: range,
+                  step: step,
+                  minimumImage: minimumImage,
+                  maximumImage: maximumImage,
+                  sliderStyle: sliderStyle,
+                  action: viewModel?.action ?? { _ in })
     }
-}
+}*/
 
 public struct SliderTaskViewModel {
     
@@ -169,10 +177,11 @@ public struct SliderTaskViewModel {
     
     /// True if the button under the slider is in the completed.
     public let isComplete: Bool
-    
+
     /// Action to perform when the button is tapped.
-    public let action: () -> Void
+    public let action: (Double) -> Void
     
+    /*
     /// Image to display to the left of the slider. Default value is nil.
     public let minimumImage: Image?
     
@@ -180,10 +189,10 @@ public struct SliderTaskViewModel {
     public let maximumImage: Image?
     
     /// Source of truth for value of the slider.
-    @State public var value: CGFloat = 0
+    //@State public var value: CGFloat = 0
     
     /// Value that the slider begins on. Must be within the range.
-    public let initialValue: CGFloat
+    //public let initialValue: CGFloat
     
     /// The range that includes all possible values.
     public let range: ClosedRange<CGFloat>
@@ -204,20 +213,8 @@ public struct SliderTaskViewModel {
             (initialValue < range.lowerBound ? State(initialValue: range.lowerBound) :
                 State(initialValue: initialValue))
     }
-    
-    init(title: String,
-         detail: String? = nil,
-         instructions: String? = nil,
-         isComplete: Bool,
-         action: @escaping () -> Void,
-         minimumImage: Image? = nil,
-         maximumImage: Image? = nil,
-         initialValue: CGFloat,
-         range: ClosedRange<CGFloat>,
-         step: CGFloat,
-         sliderHeight: CGFloat = 40,
-         frameHeightMultiplier: CGFloat = 1.7,
-         useDefaultSlider: Bool) {
+
+    init(title: String, detail: String? = nil, instructions: String? = nil, isComplete: Bool, action: @escaping () -> Void, minimumImage: Image? = nil, maximumImage: Image? = nil, initialValue: CGFloat, range: ClosedRange<CGFloat>, step: CGFloat, sliderHeight: CGFloat = 40, frameHeightMultiplier: CGFloat = 1.7, useDefaultSlider: Bool) {
         self.title = title
         self.detail = detail
         self.instructions = instructions
@@ -225,14 +222,13 @@ public struct SliderTaskViewModel {
         self.action = action
         self.minimumImage = minimumImage
         self.maximumImage = maximumImage
-        self.initialValue = initialValue
         self.range = range
         self.step = step
         self.sliderHeight = sliderHeight
         self.frameHeightMultiplier = frameHeightMultiplier
         self.useDefaultSlider = useDefaultSlider
         _value = initialValueInRange(initialValue: initialValue, range: range)
-    }
+    }*/
 }
 
 #endif

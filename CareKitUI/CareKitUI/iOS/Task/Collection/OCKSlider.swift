@@ -14,18 +14,19 @@ public struct OCKSlider: View {
     @Environment(\.careKitStyle) private var style
     
     @Binding private var value: CGFloat
+    private let isComplete: Bool
     private var range: (CGFloat, CGFloat)
     private let step: CGFloat
+    private let minimumImage: Image?
+    private let maximumImage: Image?
     private let leftBarColor: Color = .accentColor
     private var rightBarColor: Color = Color.white
     private var borderColor: Color = Color.gray
-    private let isComplete: Bool
-    private let minimumImage: Image?
-    private let maximumImage: Image?
-    private var sliderHeight: CGFloat
-    private var frameHeight: CGFloat
     private var borderWidth: CGFloat = 1
-    private let useDefaultSlider: Bool
+    private let sliderHeight: CGFloat?
+    private let frameHeight: CGFloat?
+    private let usesSystemSlider: Bool
+    
     private var containsImages: Bool {
         if minimumImage == nil, maximumImage == nil {
             return false
@@ -34,19 +35,27 @@ public struct OCKSlider: View {
         }
     }
     
-    init(value: Binding<CGFloat>, range: ClosedRange<CGFloat>, step: CGFloat, isComplete: Bool, minimumImage: Image?, maximumImage: Image?, sliderHeight: CGFloat, frameHeightMultiplier: CGFloat, useDefaultSlider: Bool) {
+    init(value: Binding<CGFloat>, range: ClosedRange<CGFloat>, step: CGFloat, isComplete: Bool, minimumImage: Image?, maximumImage: Image?, sliderStyle: SliderStyle) {
         _value = value
         self.range = (range.lowerBound, range.upperBound)
         self.step = step
         self.isComplete = isComplete
         self.minimumImage = minimumImage
         self.maximumImage = maximumImage
-        self.sliderHeight = sliderHeight
-        self.frameHeight = sliderHeight * frameHeightMultiplier
-        self.useDefaultSlider = useDefaultSlider
+        switch sliderStyle {
+        case .filler(let sliderDimensions):
+            self.sliderHeight = sliderDimensions.sliderHeight
+            self.frameHeight = sliderHeight! * sliderDimensions.frameHeightMultiplier
+            self.usesSystemSlider = false
+        case .system:
+            self.sliderHeight = nil
+            self.frameHeight = nil
+            self.usesSystemSlider = true
+        }
+        self.borderWidth = style.appearance.borderWidth2
         self.rightBarColor = Color(style.color.white)
         self.borderColor = Color(style.color.customGray)
-        self.borderWidth = style.appearance.borderWidth2
+        
     }
     
     public var body: some View {
@@ -59,35 +68,35 @@ public struct OCKSlider: View {
     
     private func view(geometry: GeometryProxy) -> some View {
         
-        let frameWidth: CGFloat = geometry.size.width
-        let imageWidth: CGFloat = (frameWidth / 8).rounded()
+        let frameWidth = geometry.size.width
+        let imageWidth = (frameWidth / 8).rounded()
         var sliderWidth: CGFloat { containsImages ? frameWidth - imageWidth * 2 - imageWidth / 2 : frameWidth }
         var knobWidth: CGFloat { sliderWidth * 0.1 }
         let drag = self.isComplete ? nil : DragGesture(minimumDistance: 0)
         
         return HStack(spacing: 0) {
-            self.minimumImage?
-                .sliderImageModifier(width: imageWidth, height: sliderHeight)
+            minimumImage?
+                .sliderImageModifier(width: imageWidth, height: usesSystemSlider ? imageWidth : sliderHeight)
             
             Spacer(minLength: 0)
             
-            if self.useDefaultSlider {
-                Slider(value: self.$value, in: self.range.0...self.range.1)
+            if usesSystemSlider {
+                Slider(value: $value, in: range.0...range.1)
                     .disabled(isComplete)
                     .gesture(drag.onChanged( { drag in
-                        self.onDragChange(drag, sliderWidth: sliderWidth, knobWidth: knobWidth) } ))
+                        onDragChange(drag, sliderWidth: sliderWidth, knobWidth: knobWidth) } ))
                     .frame(width: sliderWidth, height: sliderHeight)
             } else {
                 ZStack {
-                    self.addTicks(range: self.range, step: self.step, sliderWidth: sliderWidth, sliderHeight: sliderHeight, knobWidth: knobWidth)
-                    self.sliderView(width: sliderWidth, height: sliderHeight, knobWidth: knobWidth)
+                    addTicks(range: range, step: step, sliderWidth: sliderWidth, sliderHeight: sliderHeight!, knobWidth: knobWidth)
+                    sliderView(width: sliderWidth, height: sliderHeight!, knobWidth: knobWidth)
                         .disabled(isComplete)
-                }.frame(width: sliderWidth, height: sliderHeight)
+                }.frame(width: sliderWidth, height: usesSystemSlider ? imageWidth : sliderHeight)
             }
             
             Spacer(minLength: 0)
                 
-            self.maximumImage?
+            maximumImage?
                 .sliderImageModifier(width: imageWidth, height: sliderHeight)
         }
     }
@@ -95,7 +104,7 @@ public struct OCKSlider: View {
     private func sliderView(width: CGFloat, height: CGFloat, knobWidth: CGFloat) -> some View {
         let drag = /*isComplete ? nil : */DragGesture(minimumDistance: 0)
         
-        let offsetX = self.getOffsetX(sliderWidth: width, knobWidth: knobWidth)
+        let offsetX = getOffsetX(sliderWidth: width, knobWidth: knobWidth)
         let barLeftSize = CGSize(width: CGFloat(offsetX + knobWidth / 2), height: height)
         let barRightSize = CGSize(width: width - barLeftSize.width, height: height)
         
@@ -106,16 +115,16 @@ public struct OCKSlider: View {
         
         return
             ZStack {
-                self.rightBarColor
+                rightBarColor
                     .modifier(components.barRight)
                     .cornerRadius(style.appearance.cornerRadius1)
-                self.leftBarColor
+                leftBarColor
                     .modifier(components.barLeft)
                     .cornerRadius(style.appearance.cornerRadius1)
                 RoundedRectangle(cornerRadius: style.appearance.cornerRadius1)
                     .stroke(borderColor, lineWidth: borderWidth)
             }.gesture(drag.onChanged( { drag in
-                self.onDragChange(drag, sliderWidth: width, knobWidth: knobWidth) } ))
+                onDragChange(drag, sliderWidth: width, knobWidth: knobWidth) } ))
     }
     
     private func addTicks(range: (CGFloat, CGFloat), step: CGFloat, sliderWidth: CGFloat, sliderHeight: CGFloat, knobWidth: CGFloat) -> some View {
@@ -137,22 +146,40 @@ public struct OCKSlider: View {
     }
     
     private func onDragChange(_ drag: DragGesture.Value, sliderWidth: CGFloat, knobWidth: CGFloat) {
-        let width = (knob: CGFloat(knobWidth), view: CGFloat(sliderWidth))
-        let xrange = (min: CGFloat(0), max: CGFloat(width.view - width.knob))
-        var value = CGFloat(drag.startLocation.x + drag.translation.width)
-        value -= 0.5 * width.knob
-        value = value > xrange.max ? xrange.max : value
-        value = value < xrange.min ? xrange.min : value
-        value = value.convert(fromRange: (xrange.min, xrange.max), toRange: (CGFloat(range.0), CGFloat(range.1)))
-        value = round(value / CGFloat(self.step)) * CGFloat(self.step)
-        self.value = value
+        let width = (knob: knobWidth, view: sliderWidth)
+        let xrange = (min: CGFloat(0), max: width.view - width.knob)
+        var dragValue = drag.startLocation.x + drag.translation.width
+        dragValue -= 0.5 * width.knob
+        dragValue = dragValue > xrange.max ? xrange.max : dragValue
+        dragValue = dragValue < xrange.min ? xrange.min : dragValue
+        dragValue = dragValue.convert(fromRange: (xrange.min, xrange.max), toRange: (range.0, range.1))
+        dragValue = round(dragValue / step) * step
+        self.value = dragValue
     }
     
     private func getOffsetX(sliderWidth: CGFloat, knobWidth: CGFloat) -> CGFloat {
         let width = (knob: knobWidth, view: sliderWidth)
-        let xrange: (CGFloat, CGFloat) = (0, CGFloat(width.view - width.knob))
-        let result = CGFloat(self.value).convert(fromRange: (CGFloat(range.0), CGFloat(range.1)), toRange: xrange)
+        let xrange = (CGFloat(0), width.view - width.knob)
+        let result = self.value.convert(fromRange: (range.0, range.1), toRange: xrange)
         return result
+    }
+}
+
+public enum SliderStyle {
+    case filler(OCKSliderDimensions)
+    case system
+}
+
+public struct OCKSliderDimensions {
+    let sliderHeight: CGFloat
+    let frameHeightMultiplier: CGFloat
+    
+    /// Create the dimensions used to determine appearance of an OCK Slider with a filler style
+    /// - Parameter sliderHeight: Height of the bar of the slider.  Default value is 40.
+    /// - Parameter frameHeightMultiplier: Value to multiply the slider height by to attain the hieght of the frame enclosing the slider. Default value is 1.7.
+    public init(sliderHeight: CGFloat = 40, frameHeightMultiplier: CGFloat = 1.7) {
+        self.sliderHeight = sliderHeight
+        self.frameHeightMultiplier = frameHeightMultiplier
     }
 }
 
@@ -227,7 +254,7 @@ private struct DefaultSliderModifier: ViewModifier {
 }
 
 private extension Image {
-    func sliderImageModifier(width: CGFloat, height: CGFloat) -> some View {
+    func sliderImageModifier(width: CGFloat, height: CGFloat? = 40) -> some View {
         self
             .resizable()
             .aspectRatio(contentMode: .fit)

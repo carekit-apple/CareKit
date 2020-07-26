@@ -38,7 +38,7 @@ import SwiftUI
 ///     |                                                       |
 ///     +-------------------------------------------------------+
 /// ```
-/*
+
 @available(iOS 14.0, *)
 public struct SliderTaskView<Header: View, SliderView: View>: View {
     
@@ -62,10 +62,11 @@ public struct SliderTaskView<Header: View, SliderView: View>: View {
     ///     - eventQuery: A query used to fetch an event in the store.
     ///     - storeManager: Wraps the store that contains the task and event to fetch.
     ///     - content: Create a view to display whenever the body is computed.
-    public init(taskID: String, eventQuery: OCKEventQuery, storeManager: OCKSynchronizedStoreManager,
-                content: @escaping (_ controller: OCKSliderTaskController) -> CareKitUI.SliderTaskView<Header, SliderView>) {
+    public init(taskID: String, eventQuery: OCKEventQuery, storeManager: OCKSynchronizedStoreManager, initialValue: CGFloat,
+                content: @escaping (_ controller: OCKSliderTaskController, _ value: Binding<CGFloat>) -> CareKitUI.SliderTaskView<Header, SliderView>) {
         taskView = .init(controller: .init(storeManager: storeManager),
                          query: .taskIDs([taskID], eventQuery),
+                         initialValue: initialValue,
                          content: content)
     }
     
@@ -76,10 +77,11 @@ public struct SliderTaskView<Header: View, SliderView: View>: View {
     ///     - eventQuery: A query used to fetch an event in the store.
     ///     - storeManager: Wraps the store that contains the event to fetch.
     ///     - content: Create a view to display whenever the body is computed.
-    public init(task: OCKAnyTask, eventQuery: OCKEventQuery, storeManager: OCKSynchronizedStoreManager,
-                content: @escaping (_ controller: OCKSliderTaskController) -> CareKitUI.SliderTaskView<Header, SliderView>) {
+    public init(task: OCKAnyTask, eventQuery: OCKEventQuery, storeManager: OCKSynchronizedStoreManager, initialValue: CGFloat,
+                content: @escaping (_ controller: OCKSliderTaskController, _ value: Binding<CGFloat>) -> CareKitUI.SliderTaskView<Header, SliderView>) {
         taskView = .init(controller: .init(storeManager: storeManager),
                          query: .tasks([task], eventQuery),
+                         initialValue: initialValue,
                          content: content)
     }
     
@@ -87,9 +89,9 @@ public struct SliderTaskView<Header: View, SliderView: View>: View {
     /// - Parameters:
     ///     - controller: Controller that holds a reference to data displayed by the view.
     ///     - content: Create a view to display whenever the body is computed.
-    public init(controller: OCKSliderTaskController,
-                content: @escaping (_ controller: OCKSliderTaskController) -> CareKitUI.SliderTaskView<Header, SliderView>) {
-        taskView = .init(controller: controller, content: content)
+    public init(controller: OCKSliderTaskController, initialValue: CGFloat,
+                content: @escaping (_ controller: OCKSliderTaskController, _ value: Binding<CGFloat>) -> CareKitUI.SliderTaskView<Header, SliderView>) {
+        taskView = .init(controller: controller, initialValue: initialValue, content: content)
     }
     
     /// Handle any errors that may occur.
@@ -98,7 +100,7 @@ public struct SliderTaskView<Header: View, SliderView: View>: View {
         .init(taskView: .init(copying: taskView, settingErrorHandler: perform))
     }
 }
-/*
+
 @available(iOS 14.0, *)
 public extension SliderTaskView where Header == _SliderTaskViewHeader, SliderView == _SliderTaskViewFooter {
 
@@ -109,9 +111,9 @@ public extension SliderTaskView where Header == _SliderTaskViewHeader, SliderVie
     ///     - eventQuery: A query used to fetch an event in the store.
     ///     - storeManager: Wraps the store that contains the task and event to fetch.
     ///     - content: Create a view to display whenever the body is computed.
-    init(taskID: String, eventQuery: OCKEventQuery, storeManager: OCKSynchronizedStoreManager) {
-        self.init(taskID: taskID, eventQuery: eventQuery, storeManager: storeManager) {
-            .init(viewModel: $0.viewModel)
+    init(taskID: String, eventQuery: OCKEventQuery, storeManager: OCKSynchronizedStoreManager, initialValue: CGFloat) {
+        self.init(taskID: taskID, eventQuery: eventQuery, storeManager: storeManager, initialValue: initialValue) {
+            .init(viewModel: $0.viewModel, value: $1)
         }
     }
     
@@ -122,38 +124,29 @@ public extension SliderTaskView where Header == _SliderTaskViewHeader, SliderVie
     ///     - eventQuery: A query used to fetch an event in the store.
     ///     - storeManager: Wraps the store that contains the event to fetch.
     ///     - content: Create a view to display whenever the body is computed.
-    init(task: OCKAnyTask, eventQuery: OCKEventQuery, storeManager: OCKSynchronizedStoreManager) {
-        self.init(task: task, eventQuery: eventQuery, storeManager: storeManager) {
-            .init(viewModel: $0.viewModel)
+    init(task: OCKAnyTask, eventQuery: OCKEventQuery, storeManager: OCKSynchronizedStoreManager, initialValue: CGFloat) {
+        self.init(task: task, eventQuery: eventQuery, storeManager: storeManager, initialValue: initialValue) {
+            .init(viewModel: $0.viewModel, value: $1)
         }
     }
     
     /// Create an instance that displays the default content.
     /// - Parameters:
     ///     - controller: Controller that holds a reference to data displayed by the view.
-    init(controller: OCKSliderTaskController) {
-        taskView = .init(controller: controller) {
-            .init(viewModel: $0.viewModel, value: <#Binding<CGFloat>#>)
+    init(controller: OCKSliderTaskController, initialValue: CGFloat) {
+        taskView = .init(controller: controller, initialValue: initialValue) {
+            .init(viewModel: $0.viewModel, value: $1)
         }
     }
-}*/
+}
 
 private extension CareKitUI.SliderTaskView where Header == _SliderTaskViewHeader, SliderView == _SliderTaskViewFooter {
-    init(viewModel: SliderTaskViewModel?,
-         minimumImage: Image? = nil,
-         maximumImage: Image? = nil,
-         value: Binding<CGFloat>,
-         range: ClosedRange<CGFloat> = 0...10,
-         step: CGFloat = 1,
-         sliderStyle: SliderStyle = .system) {
-        
-       // let sliderValue = viewModel?.value ?? CGFloat(0)
-        
+    init(viewModel: SliderTaskViewModel?, value: Binding<CGFloat>,
+         minimumImage: Image? = nil, maximumImage: Image? = nil, range: ClosedRange<CGFloat> = 0...10, step: CGFloat = 1, sliderStyle: SliderStyle = .system) {
         self.init(title: Text(viewModel?.title ?? ""),
                   detail: viewModel?.detail.map { Text($0) },
                   instructions: viewModel?.instructions.map{ Text($0) },
                   isComplete: viewModel?.isComplete ?? false,
-                 // value: State(initialValue: sliderValue),
                   value: value,
                   range: range,
                   step: step,
@@ -162,7 +155,7 @@ private extension CareKitUI.SliderTaskView where Header == _SliderTaskViewHeader
                   sliderStyle: sliderStyle,
                   action: viewModel?.action ?? { _ in })
     }
-}*/
+}
 
 public struct SliderTaskViewModel {
     

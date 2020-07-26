@@ -120,9 +120,11 @@ public extension SliderTaskView where SliderView == _SliderTaskViewFooter {
                       sliderStyle: SliderStyle = .system,
                       action: @escaping (Double) -> Void) {
         self.init(isHeaderPadded: false, isSliderViewPadded: true, instructions: instructions, header: header, sliderView: {
-            _SliderTaskViewFooter(isComplete: isComplete,
+            _SliderTaskViewFooter(value: value,
+                                  range: range,
+                                  step: step,
+                                  isComplete: isComplete,
                                   maximumImage: maximumImage, minimumImage: minimumImage,
-                                  value: value, range: range, step: step,
                                   sliderStyle: sliderStyle,
                                   action: action)
         })
@@ -153,10 +155,12 @@ public extension SliderTaskView where Header == _SliderTaskViewHeader, SliderVie
         self.init(isHeaderPadded: true, isSliderViewPadded: true, instructions: instructions, header: {
             _SliderTaskViewHeader(title: title, detail: detail)
         }, sliderView: {
-            _SliderTaskViewFooter(isComplete: isComplete,
+            _SliderTaskViewFooter(value: value,
+                                  range: range,
+                                  step: step,
+                                  isComplete: isComplete,
                                   maximumImage: maximumImage,
                                   minimumImage: maximumImage,
-                                  value: value, range: range, step: step,
                                   sliderStyle: sliderStyle,
                                   action: action)
         })
@@ -185,7 +189,7 @@ public struct _SliderTaskViewFooter: View {
     @Environment(\.careKitStyle) private var style
     
     fileprivate let isComplete: Bool
-    fileprivate let action: (Double) -> Void
+    fileprivate let action: (_ value: Double) -> Void
     fileprivate let maximumImage: Image?
     fileprivate let minimumImage: Image?
     fileprivate let range: ClosedRange<CGFloat>
@@ -194,7 +198,9 @@ public struct _SliderTaskViewFooter: View {
     @Binding var value: CGFloat
     
     
-    init(isComplete: Bool, maximumImage: Image?, minimumImage: Image?, value: Binding<CGFloat>, range: ClosedRange<CGFloat>, step: CGFloat, sliderStyle: SliderStyle, action: @escaping (Double) -> Void) {
+    init(value: Binding<CGFloat>, range: ClosedRange<CGFloat>, step: CGFloat,
+         isComplete: Bool, maximumImage: Image?, minimumImage: Image?, sliderStyle: SliderStyle,
+         action: @escaping (_ value: Double) -> Void) {
         self.isComplete = isComplete
         self.action = action
         self.maximumImage = maximumImage
@@ -207,7 +213,8 @@ public struct _SliderTaskViewFooter: View {
     
     public var body: some View {
         VStack {
-            OCKSlider(value: self.$value, range: self.range, step: self.step, isComplete: self.isComplete, minimumImage: self.minimumImage, maximumImage: self.maximumImage, sliderStyle: self.sliderStyle)
+            OCKSlider(value: self.$value, range: self.range, step: self.step,
+                      isComplete: self.isComplete, minimumImage: self.minimumImage, maximumImage: self.maximumImage, sliderStyle: self.sliderStyle)
             OCKSliderButton(value: self.$value, isComplete: self.isComplete, action: self.action)
         }
     }

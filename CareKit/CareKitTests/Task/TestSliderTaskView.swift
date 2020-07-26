@@ -1,11 +1,33 @@
-//
-//  TestSliderTaskViewModel.swift
-//
-//
-//  Created by Dylan Li on 7/9/20.
-//  Copyright © 2020 NetReconLab. All rights reserved.
-//
 /*
+ Copyright (c) 2020, Apple Inc. All rights reserved.
+ 
+ Redistribution and use in source and binary forms, with or without modification,
+ are permitted provided that the following conditions are met:
+ 
+ 1.  Redistributions of source code must retain the above copyright notice, this
+ list of conditions and the following disclaimer.
+ 
+ 2.  Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation and/or
+ other materials provided with the distribution.
+ 
+ 3. Neither the name of the copyright holder(s) nor the names of any contributors
+ may be used to endorse or promote products derived from this software without
+ specific prior written permission. No license is granted to the trademarks of
+ the copyright holders even if such marks are included in this software.
+ 
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
+ FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 import CareKit
 import CareKitStore
 import CareKitUI
@@ -15,26 +37,35 @@ import XCTest
 
 @available(iOS 14.0, watchOS 7.0, *)
 class TestSliderTaskView: XCTestCase {
-
+/*
     let controller: OCKSliderTaskController = {
         let store = OCKStore(name: "carekit-store", type: .inMemory)
         return .init(storeManager: .init(wrapping: store))
     }()
+    
+    @State var value: CGFloat = 6
 
     let eventQuery = OCKEventQuery(for: Date())
     let task = OCKTask(id: "", title: "", carePlanUUID: nil, schedule: .dailyAtTime(hour: 1, minutes: 0, start: Date(), end: nil, text: nil))
-    let staticView = CareKitUI.NumericProgressTaskView(title: Text(""), progress: Text(""), goal: Text(""), isComplete: false)
+    var staticView: CareKitUI.SliderTaskView<_SliderTaskViewHeader, _SliderTaskViewFooter> { CareKitUI.SliderTaskView(title: Text(""), detail: Text(""),
+                                              instructions: Text(""),
+                                              isComplete: false,
+                                              action: {},
+                                              minimumImage: nil, maximumImage: nil,
+                                              value: $value, range: 0...10, step: 2,
+                                              sliderHeight: 50, frameHeightMultiplier: 1.9,
+                                              useDefaultSlider: false)
+    }
 
     func testDefaultContentInitializers() {
-        _ = CareKit.NumericProgressTaskView(task: task, eventQuery: eventQuery, storeManager: controller.storeManager)
-        _ = CareKit.NumericProgressTaskView(taskID: "", eventQuery: eventQuery, storeManager: controller.storeManager)
-        _ = CareKit.NumericProgressTaskView(controller: controller)
+        _ = CareKit.SliderTaskView(task: task, eventQuery: eventQuery, storeManager: controller.storeManager)
+        _ = CareKit.SliderTaskView(taskID: "", eventQuery: eventQuery, storeManager: controller.storeManager)
+        _ = CareKit.SliderTaskView(controller: controller)
     }
 
     func testCustomContentInitializers() {
-        _ = CareKit.NumericProgressTaskView(task: task, eventQuery: eventQuery, storeManager: controller.storeManager) { _ in self.staticView }
-        _ = CareKit.NumericProgressTaskView(taskID: "", eventQuery: eventQuery, storeManager: controller.storeManager) { _ in self.staticView }
-        _ = CareKit.NumericProgressTaskView(controller: controller) { _ in self.staticView }
-    }
+        _ = CareKit.SliderTaskView(task: task, eventQuery: eventQuery, storeManager: controller.storeManager) { _ in self.staticView }
+        _ = CareKit.SliderTaskView(taskID: "", eventQuery: eventQuery, storeManager: controller.storeManager) { _ in self.staticView }
+        _ = CareKit.SliderTaskView(controller: controller) { _ in self.staticView }
+    }*/
 }
-*/

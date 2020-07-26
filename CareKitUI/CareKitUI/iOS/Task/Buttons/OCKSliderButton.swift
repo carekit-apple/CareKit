@@ -33,11 +33,9 @@ public struct OCKSliderButton: View {
         isComplete ? Text(loc("DONE")) : nil
     }
     
-    //private let buttonConfig: PrimitiveButtonStyleConfiguration
-    
     public var body: some View {
         GeometryReader { geometry in
-            Button("Log") {
+            Button("Log Value: " + String(format: "%g", self.value)) {
                 action(Double(value))
             }
             /*Button(action: self.action) {
@@ -58,7 +56,9 @@ public struct OCKSliderButton: View {
             }*/
             .frame(width: geometry.size.width)
             .buttonStyle(NoHighlightStyle())
-        }.frame(height: diameter).padding(.top)
+        }
+        .frame(height: diameter)
+        .padding(.top)
     }
 }
 

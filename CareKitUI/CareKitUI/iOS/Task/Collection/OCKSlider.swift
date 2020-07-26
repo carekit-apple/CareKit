@@ -55,7 +55,6 @@ public struct OCKSlider: View {
         self.borderWidth = style.appearance.borderWidth2
         self.rightBarColor = Color(style.color.white)
         self.borderColor = Color(style.color.customGray)
-        
     }
     
     public var body: some View {
@@ -82,14 +81,16 @@ public struct OCKSlider: View {
             
             if usesSystemSlider {
                 Slider(value: $value, in: range.0...range.1)
+                    .gesture(drag.onChanged({ drag in
+                        onDragChange(drag, sliderWidth: sliderWidth, knobWidth: knobWidth) }))
                     .disabled(isComplete)
-                    .gesture(drag.onChanged( { drag in
-                        onDragChange(drag, sliderWidth: sliderWidth, knobWidth: knobWidth) } ))
                     .frame(width: sliderWidth, height: sliderHeight)
             } else {
                 ZStack {
                     addTicks(range: range, step: step, sliderWidth: sliderWidth, sliderHeight: sliderHeight!, knobWidth: knobWidth)
                     sliderView(width: sliderWidth, height: sliderHeight!, knobWidth: knobWidth)
+                        .gesture(drag.onChanged({ drag in
+                            onDragChange(drag, sliderWidth: sliderWidth, knobWidth: knobWidth) }))
                         .disabled(isComplete)
                 }.frame(width: sliderWidth, height: usesSystemSlider ? imageWidth : sliderHeight)
             }
@@ -97,13 +98,11 @@ public struct OCKSlider: View {
             Spacer(minLength: 0)
                 
             maximumImage?
-                .sliderImageModifier(width: imageWidth, height: sliderHeight)
+                .sliderImageModifier(width: imageWidth, height: usesSystemSlider ? imageWidth : sliderHeight)
         }
     }
     
     private func sliderView(width: CGFloat, height: CGFloat, knobWidth: CGFloat) -> some View {
-        let drag = /*isComplete ? nil : */DragGesture(minimumDistance: 0)
-        
         let offsetX = getOffsetX(sliderWidth: width, knobWidth: knobWidth)
         let barLeftSize = CGSize(width: CGFloat(offsetX + knobWidth / 2), height: height)
         let barRightSize = CGSize(width: width - barLeftSize.width, height: height)
@@ -123,8 +122,7 @@ public struct OCKSlider: View {
                     .cornerRadius(style.appearance.cornerRadius1)
                 RoundedRectangle(cornerRadius: style.appearance.cornerRadius1)
                     .stroke(borderColor, lineWidth: borderWidth)
-            }.gesture(drag.onChanged( { drag in
-                onDragChange(drag, sliderWidth: width, knobWidth: knobWidth) } ))
+            }
     }
     
     private func addTicks(range: (CGFloat, CGFloat), step: CGFloat, sliderWidth: CGFloat, sliderHeight: CGFloat, knobWidth: CGFloat) -> some View {

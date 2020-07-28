@@ -49,11 +49,6 @@ open class OCKCheckmarkButton: OCKAnimatedButton<UIView> {
         self?.invalidateIntrinsicContentSize()
     }
 
-    lazy var lineWidth = OCKAccessibleValue(container: style(), keyPath: \.appearance.borderWidth1) { [weak self] scaledValue in
-        guard let self = self else { return }
-        self.updateLayers(for: self.bounds, borderWidth: scaledValue)
-    }
-
     lazy var imageViewPointSize = OCKAccessibleValue(container: style(), keyPath: \.dimension.symbolPointSize3) { [imageView] scaledValue in
         imageView.preferredSymbolConfiguration = .init(pointSize: scaledValue, weight: .bold)
     }
@@ -75,7 +70,7 @@ open class OCKCheckmarkButton: OCKAnimatedButton<UIView> {
 
     override open func layoutSubviews() {
         super.layoutSubviews()
-        updateLayers(for: bounds, borderWidth: lineWidth.scaledValue)
+        updateLayers(for: bounds, style: style())
     }
 
     // MARK: Methods
@@ -102,7 +97,9 @@ open class OCKCheckmarkButton: OCKAnimatedButton<UIView> {
         ])
     }
 
-    private func updateLayers(for bounds: CGRect, borderWidth: CGFloat) {
+    private func updateLayers(for bounds: CGRect, style: OCKStyler) {
+        let borderWidth = style.borderWidth(forContainer: bounds.size)
+
         // Outer mask to make the view a circle
         let circleMask = UIBezierPath(ovalIn: bounds)
 
@@ -124,7 +121,7 @@ open class OCKCheckmarkButton: OCKAnimatedButton<UIView> {
         super.styleDidChange()
         let style = self.style()
         height.update(withContainer: style)
-        lineWidth.update(withContainer: style)
+        updateLayers(for: bounds, style: style)
         imageViewPointSize.update(withContainer: style)
         if isSelected {
             imageView.tintColor = style.color.customBackground
@@ -139,7 +136,8 @@ open class OCKCheckmarkButton: OCKAnimatedButton<UIView> {
     override open func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         if traitCollection.preferredContentSizeCategory != previousTraitCollection?.preferredContentSizeCategory {
-            [lineWidth, height, imageViewPointSize].forEach { $0.apply() }
+            [height, imageViewPointSize].forEach { $0.apply() }
+            updateLayers(for: bounds, style: style())
         }
     }
 

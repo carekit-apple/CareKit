@@ -67,12 +67,6 @@ public protocol OCKAnyTask {
     func belongs(to plan: OCKAnyCarePlan) -> Bool
 }
 
-extension OCKAnyTask {
-
-    /// The stable identifier that can be used for the `Identifiable` protocol.
-    var stableID: String? { uuid?.uuidString }
-}
-
 internal protocol OCKAnyMutableTask: OCKAnyTask {
     var title: String? { get set }
     var instructions: String? { get set }

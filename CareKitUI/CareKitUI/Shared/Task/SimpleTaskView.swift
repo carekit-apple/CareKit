@@ -176,6 +176,7 @@ struct SimpleTaskView_Previews: PreviewProvider {
             SimpleTaskView(title: Text("Title"), detail: Text("Detail"), isComplete: false, action: {})
             SimpleTaskView(title: Text("Title"), detail: Text("Detail"), isComplete: true, action: {})
         }
+        .padding()
     }
 }
 #endif

@@ -58,14 +58,14 @@ class TestSliderTaskView: XCTestCase {
     }
 
     func testDefaultContentInitializers() {
-        _ = CareKit.SliderTaskView(task: task, eventQuery: eventQuery, storeManager: controller.storeManager)
-        _ = CareKit.SliderTaskView(taskID: "", eventQuery: eventQuery, storeManager: controller.storeManager)
-        _ = CareKit.SliderTaskView(controller: controller)
+        _ = CareKit.SliderTaskView(task: task, eventQuery: eventQuery, storeManager: controller.storeManager, initialValue: 5)
+        _ = CareKit.SliderTaskView(taskID: "", eventQuery: eventQuery, storeManager: controller.storeManager, initialValue: 4)
+        _ = CareKit.SliderTaskView(controller: controller, initialValue: 3)
     }
 
     func testCustomContentInitializers() {
-        _ = CareKit.SliderTaskView(task: task, eventQuery: eventQuery, storeManager: controller.storeManager) { controller, value in self.staticView }
-        _ = CareKit.SliderTaskView(taskID: "", eventQuery: eventQuery, storeManager: controller.storeManager) { controller, value in self.staticView }
-        _ = CareKit.SliderTaskView(controller: controller) { controller, value in self.staticView }
+        _ = CareKit.SliderTaskView(task: task, eventQuery: eventQuery, storeManager: controller.storeManager, initialValue: 2) { controller, value in self.staticView }
+        _ = CareKit.SliderTaskView(taskID: "", eventQuery: eventQuery, storeManager: controller.storeManager, initialValue: 1) { controller, value in self.staticView }
+        _ = CareKit.SliderTaskView(controller: controller, initialValue: 0) { controller, value in self.staticView }
     }
 }

@@ -66,7 +66,6 @@ public struct OCKSlider: View {
     }
     
     private func view(geometry: GeometryProxy) -> some View {
-        
         let frameWidth = geometry.size.width
         let imageWidth = (frameWidth / 8).rounded()
         var sliderWidth: CGFloat { containsImages ? frameWidth - imageWidth * 2 - imageWidth / 2 : frameWidth }

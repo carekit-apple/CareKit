@@ -142,7 +142,7 @@ public extension SliderTaskView where Header == _SliderTaskViewHeader, SliderVie
 
 private extension CareKitUI.SliderTaskView where Header == _SliderTaskViewHeader, SliderView == _SliderTaskViewFooter {
     init(viewModel: SliderTaskViewModel?, value: Binding<CGFloat>,
-         minimumImage: Image? = nil, maximumImage: Image? = nil, range: ClosedRange<CGFloat> = 0...10, step: CGFloat = 1, sliderStyle: SliderStyle = .system) {
+        range: ClosedRange<CGFloat> = 0...10, step: CGFloat = 1, minimumImage: Image? = nil, maximumImage: Image? = nil,  sliderStyle: SliderStyle = .system) {
         self.init(title: Text(viewModel?.title ?? ""),
                   detail: viewModel?.detail.map { Text($0) },
                   instructions: viewModel?.instructions.map{ Text($0) },
@@ -173,55 +173,6 @@ public struct SliderTaskViewModel {
 
     /// Action to perform when the button is tapped.
     public let action: (Double) -> Void
-    
-    /*
-    /// Image to display to the left of the slider. Default value is nil.
-    public let minimumImage: Image?
-    
-    /// Image to display to the right of the slider. Default value is nil.
-    public let maximumImage: Image?
-    
-    /// Source of truth for value of the slider.
-    //@State public var value: CGFloat = 0
-    
-    /// Value that the slider begins on. Must be within the range.
-    //public let initialValue: CGFloat
-    
-    /// The range that includes all possible values.
-    public let range: ClosedRange<CGFloat>
-    
-    /// Value of the increment that the slider takes.
-    public let step: CGFloat
-    
-    /// Height of the bar of the slider. Default value is 40.
-    public let sliderHeight: CGFloat
-    
-    /// Value to multiply the slider height by to attain the hieght of the frame enclosing the slider. Default value is 1.7.
-    public let frameHeightMultiplier: CGFloat
-    
-    public let useDefaultSlider: Bool
-    
-    private func initialValueInRange(initialValue: CGFloat, range: ClosedRange<CGFloat>) -> State<CGFloat> {
-        initialValue > range.upperBound ? State(initialValue: range.upperBound) :
-            (initialValue < range.lowerBound ? State(initialValue: range.lowerBound) :
-                State(initialValue: initialValue))
-    }
-
-    init(title: String, detail: String? = nil, instructions: String? = nil, isComplete: Bool, action: @escaping () -> Void, minimumImage: Image? = nil, maximumImage: Image? = nil, initialValue: CGFloat, range: ClosedRange<CGFloat>, step: CGFloat, sliderHeight: CGFloat = 40, frameHeightMultiplier: CGFloat = 1.7, useDefaultSlider: Bool) {
-        self.title = title
-        self.detail = detail
-        self.instructions = instructions
-        self.isComplete = isComplete
-        self.action = action
-        self.minimumImage = minimumImage
-        self.maximumImage = maximumImage
-        self.range = range
-        self.step = step
-        self.sliderHeight = sliderHeight
-        self.frameHeightMultiplier = frameHeightMultiplier
-        self.useDefaultSlider = useDefaultSlider
-        _value = initialValueInRange(initialValue: initialValue, range: range)
-    }*/
 }
 
 #endif

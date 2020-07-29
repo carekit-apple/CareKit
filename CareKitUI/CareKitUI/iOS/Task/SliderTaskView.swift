@@ -114,16 +114,17 @@ public extension SliderTaskView where SliderView == _SliderTaskViewFooter {
     /// - Parameter action: Action to perform when the button is tapped.
     init(instructions: Text? = nil,
          isComplete: Bool,
-         value: Binding<CGFloat>,
+         initialValue: CGFloat?, value: Binding<CGFloat>,
          range: ClosedRange<CGFloat>, step: CGFloat,
          minimumImage: Image? = nil, maximumImage: Image? = nil,
          sliderStyle: SliderStyle = .system,
          action: @escaping (Double) -> Void,
          @ViewBuilder header: () -> Header) {
         self.init(isHeaderPadded: false, isSliderViewPadded: true, instructions: instructions, header: header, sliderView: {
-            _SliderTaskViewFooter(value: value,
+            _SliderTaskViewFooter(initialValue: initialValue,
+                                  value: value,
                                   range: range,
-                                  step: step,
+                                  step: step, /*initialValue: initialValue,*/
                                   isComplete: isComplete,
                                   maximumImage: maximumImage, minimumImage: minimumImage,
                                   sliderStyle: sliderStyle,
@@ -150,7 +151,7 @@ public extension SliderTaskView where Header == _SliderTaskViewHeader, SliderVie
     init(title: Text, detail: Text? = nil,
          instructions: Text? = nil,
          isComplete: Bool,
-         value: Binding<CGFloat>,
+         initialValue: CGFloat?, value: Binding<CGFloat>,
          range: ClosedRange<CGFloat>, step: CGFloat,
          minimumImage: Image? = nil, maximumImage: Image? = nil,
          sliderStyle: SliderStyle,
@@ -158,7 +159,8 @@ public extension SliderTaskView where Header == _SliderTaskViewHeader, SliderVie
         self.init(isHeaderPadded: true, isSliderViewPadded: true, instructions: instructions, header: {
             _SliderTaskViewHeader(title: title, detail: detail)
         }, sliderView: {
-            _SliderTaskViewFooter(value: value,
+            _SliderTaskViewFooter(initialValue: initialValue,
+                                  value: value,
                                   range: range,
                                   step: step,
                                   isComplete: isComplete,
@@ -191,6 +193,7 @@ public struct _SliderTaskViewFooter: View {
     
     @Environment(\.careKitStyle) private var style
     
+    fileprivate let initialValue: CGFloat
     fileprivate let isComplete: Bool
     fileprivate let action: (_ value: Double) -> Void
     fileprivate let maximumImage: Image?
@@ -200,10 +203,10 @@ public struct _SliderTaskViewFooter: View {
     fileprivate let sliderStyle: SliderStyle
     @Binding var value: CGFloat
     
-    
-    init(value: Binding<CGFloat>, range: ClosedRange<CGFloat>, step: CGFloat,
+    init(initialValue: CGFloat?, value: Binding<CGFloat>, range: ClosedRange<CGFloat>, step: CGFloat,
          isComplete: Bool, maximumImage: Image?, minimumImage: Image?, sliderStyle: SliderStyle,
          action: @escaping (_ value: Double) -> Void) {
+        self.initialValue = initialValue ?? range.lowerBound + round((range.upperBound - range.lowerBound) / (step * 2)) * step
         self.isComplete = isComplete
         self.action = action
         self.maximumImage = maximumImage
@@ -212,14 +215,17 @@ public struct _SliderTaskViewFooter: View {
         self.step = step
         self.sliderStyle = sliderStyle
         _value = value
-        //self.value = initialValue ?? range.lowerBound + round((range.upperBound - range.lowerBound) / (step * 2)) * step
+        
     }
     
     public var body: some View {
         VStack {
-            OCKSlider(value: self.$value, range: self.range, step: self.step,
-                      isComplete: self.isComplete, minimumImage: self.minimumImage, maximumImage: self.maximumImage, sliderStyle: self.sliderStyle)
-            OCKSliderButton(value: self.$value, isComplete: self.isComplete, action: self.action)
+            OCKSlider(value: $value, range: range, step: step,
+                      isComplete: isComplete, minimumImage: minimumImage, maximumImage: maximumImage, sliderStyle: sliderStyle)
+            OCKSliderButton(value: $value, isComplete: isComplete, action: action)
+        }
+        .onAppear {
+            value = initialValue
         }
     }
 }

@@ -32,14 +32,12 @@ open class OCKSliderTaskController: OCKTaskController {
     private func makeViewModel(from taskEvents: OCKTaskEvents) -> SliderTaskViewModel? {
         guard !taskEvents.isEmpty else { return nil }
         
-        //let event = taskEvents.first?.first
-        //var value: CGFloat = 0
-        //var isComplete = false
+        let event = taskEvents.first?.first
+        var value: CGFloat = 0
         
-//        if event?.scheduleEvent.element.targetValues.first?.numberValue?.doubleValue != nil {
-//            value = CGFloat(foundValue)
-//            isComplete = true
-//        }
+        if let foundValue = event?.scheduleEvent.element.targetValues.first?.numberValue?.doubleValue {
+            value = CGFloat(foundValue)
+        }
     
         let errorHandler: (Error) -> Void = { [weak self] error in
             self?.error = error
@@ -49,7 +47,7 @@ open class OCKSliderTaskController: OCKTaskController {
                      detail: taskEvents.firstEventDetail,
                      instructions: taskEvents.firstTaskInstructions,
                      isComplete: taskEvents.isFirstEventComplete,
-                     //value: value,
+                     value: value,
                      action: saveSliderValueActionForFirstEvent(errorHandler: errorHandler))
     }
     

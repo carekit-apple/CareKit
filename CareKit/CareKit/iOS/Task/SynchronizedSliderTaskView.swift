@@ -27,19 +27,23 @@ public struct SynchronizedSliderTaskView<Controller: OCKSliderTaskController, Sl
         content(controller, $value)
             .onAppear {
                 self.query?.perform(using: self.controller)
+                value = self.controller.viewModel?.value ?? 0
             }
             .onReceive(controller.$error.compactMap { $0 }) { error in
                 self.errorHandler?(error)
             }
     }
 
-    init(controller: Controller, query: OCKSynchronizedTaskQuery? = nil, errorHandler: ((Error) -> Void)? = nil, initialValue: CGFloat,
+    init(controller: Controller, query: OCKSynchronizedTaskQuery? = nil, errorHandler: ((Error) -> Void)? = nil, /*initialValue: CGFloat,*/
          content: @escaping (_ viewModel: OCKSliderTaskController, _ value: Binding<CGFloat>) -> SliderTaskView) {
         self.query = query
         self._controller = .init(wrappedValue: controller)
         self.errorHandler = errorHandler
-        self._value = State(initialValue: initialValue)
         self.content = content
+        /*self.content(self._controller, $value){
+            
+        }*/
+        //self._value = State(initialValue: self.content.)
     }
 
     init(copying copy: Self, settingErrorHandler errorHandler: @escaping (Error) -> Void) {

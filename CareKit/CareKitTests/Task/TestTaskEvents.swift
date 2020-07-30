@@ -349,10 +349,6 @@ private extension OCKAnyEvent {
     }
 }
 
-private extension OCKAnyTask {
-    var stableID: String? { uuid?.uuidString }
-}
-
 private extension ArraySlice {
     func array() -> [Element] {
         return Array(self)

@@ -81,7 +81,7 @@ public struct OCKTaskEvents: Collection, Identifiable {
     @discardableResult
     public mutating func append(event: OCKAnyEvent) -> (OCKAnyEvent?, Bool) {
         // The task needs to have a stable identity. Sections are created based on the task's stable identity.
-        guard event.task.stableID != nil else { return (nil, false) }
+        guard event.task.uuid != nil else { return (nil, false) }
 
         // First make sure there is no matching event already stored in the data structure.
         let indexPath = self.indexPath(of: event)
@@ -187,8 +187,6 @@ private extension OCKAnyTask {
 
     /// The matching criteria used to check for uniqueness of two tasks.
     func matches(_ other: OCKAnyTask) -> Bool {
-        stableID == other.stableID
+        uuid == other.uuid
     }
-
-    var stableID: String? { uuid?.uuidString }
 }

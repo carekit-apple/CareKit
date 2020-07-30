@@ -74,12 +74,6 @@ open class OCKNumericProgressTaskController: OCKTaskController {
     }
 }
 
-private extension Double {
-    func test() {
-
-    }
-}
-
 private extension Optional where Wrapped == Double {
     func logIfNil(message: String) -> Self {
         switch self {

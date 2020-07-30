@@ -36,10 +36,8 @@ open class OCKSliderTaskController: OCKTaskController {
     
     private func makeViewModel(from taskEvents: OCKTaskEvents) -> SliderTaskViewModel? {
         guard !taskEvents.isEmpty else { return nil }
-        
-        let event = taskEvents.first?.first
-        
-        if let foundValue = event?.scheduleEvent.element.targetValues.first?.numberValue?.doubleValue {
+
+        if let foundValue = taskEvents.first?.first?.outcome?.values.last?.numberValue?.doubleValue {
             value = CGFloat(foundValue)
         }
     

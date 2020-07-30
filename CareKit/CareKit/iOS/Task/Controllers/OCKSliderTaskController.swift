@@ -20,6 +20,11 @@ open class OCKSliderTaskController: OCKTaskController {
         willSet { objectWillChange.send() }
     }
     
+    /// Data used to create a `CareKitUI.SliderTaskTaskView`.
+    @Published public private(set) var value: CGFloat = 0 {
+        willSet { objectWillChange.send() }
+    }
+    
     private var cancellable: AnyCancellable?
     
     public required init(storeManager: OCKSynchronizedStoreManager) {

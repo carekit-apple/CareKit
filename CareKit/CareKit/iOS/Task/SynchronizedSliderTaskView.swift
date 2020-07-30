@@ -31,6 +31,9 @@ public struct SynchronizedSliderTaskView<Controller: OCKSliderTaskController, Sl
             }
             .onReceive(controller.$error.compactMap { $0 }) { error in
                 self.errorHandler?(error)
+            }.onReceive(self.controller.$value) { _ in
+                print(self.controller.value)
+                value = self.controller.value
             }
     }
 

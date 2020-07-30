@@ -27,12 +27,11 @@ public struct SynchronizedSliderTaskView<Controller: OCKSliderTaskController, Sl
         content(controller, $value)
             .onAppear {
                 self.query?.perform(using: self.controller)
-                value = self.controller.viewModel?.value ?? 0
+                value = self.controller.value
             }
             .onReceive(controller.$error.compactMap { $0 }) { error in
                 self.errorHandler?(error)
             }.onReceive(self.controller.$value) { _ in
-                print(self.controller.value)
                 value = self.controller.value
             }
     }

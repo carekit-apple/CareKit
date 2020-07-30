@@ -169,9 +169,6 @@ public struct SliderTaskViewModel {
     
     /// True if the button under the slider is in the completed.
     public let isComplete: Bool
-    
-    /// Data used to create the slider in the task
-    public let value: CGFloat
 
     /// Action to perform when the button is tapped.
     public let action: (Double) -> Void

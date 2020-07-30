@@ -15,25 +15,14 @@ public struct OCKSlider: View {
     
     @Binding private var value: CGFloat
     private let isComplete: Bool
-    private var range: (CGFloat, CGFloat)
+    private let range: (CGFloat, CGFloat)
     private let step: CGFloat
     private let minimumImage: Image?
     private let maximumImage: Image?
-    private let leftBarColor: Color = .accentColor
-    private var rightBarColor: Color = Color.white
-    private var borderColor: Color = Color.gray
-    private var borderWidth: CGFloat = 1
     private let sliderHeight: CGFloat?
-    private let frameHeight: CGFloat?
+    private let frameHeight: CGFloat
     private let usesSystemSlider: Bool
-    
-    private var containsImages: Bool {
-        if minimumImage == nil, maximumImage == nil {
-            return false
-        } else {
-            return true
-        }
-    }
+    private var containsImages: Bool { (minimumImage == nil && maximumImage == nil) ? false : true }
     
     init(value: Binding<CGFloat>, range: ClosedRange<CGFloat>, step: CGFloat, isComplete: Bool, minimumImage: Image?, maximumImage: Image?, sliderStyle: SliderStyle) {
         _value = value
@@ -49,12 +38,9 @@ public struct OCKSlider: View {
             self.usesSystemSlider = false
         case .system:
             self.sliderHeight = nil
-            self.frameHeight = nil
+            self.frameHeight = 40
             self.usesSystemSlider = true
         }
-        self.borderWidth = style.appearance.borderWidth2
-        self.rightBarColor = Color(style.color.white)
-        self.borderColor = Color(style.color.customGray)
     }
     
     public var body: some View {
@@ -83,7 +69,7 @@ public struct OCKSlider: View {
                     .gesture(drag.onChanged({ drag in
                         onDragChange(drag, sliderWidth: sliderWidth, knobWidth: knobWidth) }))
                     .disabled(isComplete)
-                    .frame(width: sliderWidth, height: sliderHeight)
+                    .frame(width: sliderWidth)
             } else {
                 ZStack {
                     addTicks(range: range, step: step, sliderWidth: sliderWidth, sliderHeight: sliderHeight!, knobWidth: knobWidth)
@@ -91,7 +77,7 @@ public struct OCKSlider: View {
                         .gesture(drag.onChanged({ drag in
                             onDragChange(drag, sliderWidth: sliderWidth, knobWidth: knobWidth) }))
                         .disabled(isComplete)
-                }.frame(width: sliderWidth, height: usesSystemSlider ? imageWidth : sliderHeight)
+                }.frame(width: sliderWidth, height: sliderHeight)
             }
             
             Spacer(minLength: 0)
@@ -113,14 +99,14 @@ public struct OCKSlider: View {
         
         return
             ZStack {
-                rightBarColor
+                Color(style.color.white)
                     .modifier(components.barRight)
                     .cornerRadius(style.appearance.cornerRadius1)
-                leftBarColor
+                Color.accentColor
                     .modifier(components.barLeft)
                     .cornerRadius(style.appearance.cornerRadius1)
                 RoundedRectangle(cornerRadius: style.appearance.cornerRadius1)
-                    .stroke(borderColor, lineWidth: borderWidth)
+                    .stroke(Color(style.color.customGray), lineWidth: style.appearance.borderWidth2)
             }
     }
     
@@ -137,7 +123,7 @@ public struct OCKSlider: View {
         
         return ZStack {
             ForEach(tickLocations, id: \.self) { location in
-                DefaultSliderTickMark(possibleLocations: tickLocations, location: location, sliderHeight: sliderHeight, values: values, color: self.borderColor)
+                DefaultSliderTickMark(possibleLocations: tickLocations, location: location, sliderHeight: sliderHeight, values: values, color: Color(style.color.customGray))
             }
         }.offset(x: knobWidth / 2)
     }

@@ -34,29 +34,26 @@ public struct OCKSliderButton: View {
     }
     
     public var body: some View {
-        GeometryReader { geometry in
-            Button(action: {
-                action(Double(value))
-            }) {
-                ZStack {
-                    Circle()
-                        .overlay(Circle().stroke(Color.accentColor, lineWidth: borderWidth))
-                        .foregroundColor(backgroundColor)
-                    Group {
-                        Text(String(format: "%g", value))
-                            .font(.system(size: fontSize))
-                            .fontWeight(.semibold)
-                        text?
-                            .font(.system(size: diameter * 0.2))
-                            .fontWeight(.semibold)
-                            .offset(y: diameter * 0.3)
-                    }.foregroundColor(foregroundColor)
-                }
+        Button(action: {
+            action(Double(value))
+        }) {
+            ZStack {
+                Circle()
+                    .frame(width: diameter, height: diameter)
+                    .overlay(Circle().stroke(Color.accentColor, lineWidth: borderWidth))
+                    .foregroundColor(backgroundColor)
+                Group {
+                    Text(String(format: "%g", value))
+                        .font(.system(size: fontSize))
+                        .fontWeight(.semibold)
+                    text?
+                        .font(.system(size: diameter * 0.2))
+                        .fontWeight(.semibold)
+                        .offset(y: diameter * 0.3)
+                }.foregroundColor(foregroundColor)
             }
-            .frame(width: geometry.size.width)
-            .buttonStyle(NoHighlightStyle())
         }
-        .frame(height: diameter)
+        .buttonStyle(NoHighlightStyle())
         .padding(.top)
     }
 }

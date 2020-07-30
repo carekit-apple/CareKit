@@ -32,9 +32,13 @@ import SwiftUI
 ///     |                                                       |
 ///     |  <Instructions>                                       |
 ///     |                                                       |
-///     |  +-------------------------------------------------+  |
-///     |  |               <Completion Button>               |  |
-///     |  +-------------------------------------------------+  |
+///     |  <Min Image> –––––––––––––O–––––––––––– <Max Image>   |
+///     |                                                       |
+///     |                       +-------+                       |
+///     |                      /         \                      |
+///     |                     |  <Value>  |                     |
+///     |                      \         /                      |
+///     |                       +-------+                       |
 ///     |                                                       |
 ///     +-------------------------------------------------------+
 /// ```
@@ -62,11 +66,10 @@ public struct SliderTaskView<Header: View, SliderView: View>: View {
     ///     - eventQuery: A query used to fetch an event in the store.
     ///     - storeManager: Wraps the store that contains the task and event to fetch.
     ///     - content: Create a view to display whenever the body is computed.
-    public init(taskID: String, eventQuery: OCKEventQuery, storeManager: OCKSynchronizedStoreManager, /*initialValue: CGFloat,*/
+    public init(taskID: String, eventQuery: OCKEventQuery, storeManager: OCKSynchronizedStoreManager,
                 content: @escaping (_ controller: OCKSliderTaskController, _ value: Binding<CGFloat>) -> CareKitUI.SliderTaskView<Header, SliderView>) {
         taskView = .init(controller: .init(storeManager: storeManager),
                          query: .taskIDs([taskID], eventQuery),
-                         /*initialValue: initialValue,*/
                          content: content)
     }
     
@@ -77,11 +80,10 @@ public struct SliderTaskView<Header: View, SliderView: View>: View {
     ///     - eventQuery: A query used to fetch an event in the store.
     ///     - storeManager: Wraps the store that contains the event to fetch.
     ///     - content: Create a view to display whenever the body is computed.
-    public init(task: OCKAnyTask, eventQuery: OCKEventQuery, storeManager: OCKSynchronizedStoreManager, /*initialValue: CGFloat,*/
+    public init(task: OCKAnyTask, eventQuery: OCKEventQuery, storeManager: OCKSynchronizedStoreManager,
                 content: @escaping (_ controller: OCKSliderTaskController, _ value: Binding<CGFloat>) -> CareKitUI.SliderTaskView<Header, SliderView>) {
         taskView = .init(controller: .init(storeManager: storeManager),
                          query: .tasks([task], eventQuery),
-                         /*initialValue: initialValue,*/
                          content: content)
     }
     
@@ -89,9 +91,9 @@ public struct SliderTaskView<Header: View, SliderView: View>: View {
     /// - Parameters:
     ///     - controller: Controller that holds a reference to data displayed by the view.
     ///     - content: Create a view to display whenever the body is computed.
-    public init(controller: OCKSliderTaskController, initialValue: CGFloat,
+    public init(controller: OCKSliderTaskController,
                 content: @escaping (_ controller: OCKSliderTaskController, _ value: Binding<CGFloat>) -> CareKitUI.SliderTaskView<Header, SliderView>) {
-        taskView = .init(controller: controller/*, initialValue: initialValue*/, content: content)
+        taskView = .init(controller: controller, content: content)
     }
     
     /// Handle any errors that may occur.
@@ -111,8 +113,8 @@ public extension SliderTaskView where Header == _SliderTaskViewHeader, SliderVie
     ///     - eventQuery: A query used to fetch an event in the store.
     ///     - storeManager: Wraps the store that contains the task and event to fetch.
     ///     - content: Create a view to display whenever the body is computed.
-    init(taskID: String, eventQuery: OCKEventQuery, storeManager: OCKSynchronizedStoreManager/*, initialValue: CGFloat*/) {
-        self.init(taskID: taskID, eventQuery: eventQuery, storeManager: storeManager/*, initialValue: initialValue*/) {
+    init(taskID: String, eventQuery: OCKEventQuery, storeManager: OCKSynchronizedStoreManager) {
+        self.init(taskID: taskID, eventQuery: eventQuery, storeManager: storeManager) {
             .init(viewModel: $0.viewModel, value: $1)
         }
     }
@@ -124,8 +126,8 @@ public extension SliderTaskView where Header == _SliderTaskViewHeader, SliderVie
     ///     - eventQuery: A query used to fetch an event in the store.
     ///     - storeManager: Wraps the store that contains the event to fetch.
     ///     - content: Create a view to display whenever the body is computed.
-    init(task: OCKAnyTask, eventQuery: OCKEventQuery, storeManager: OCKSynchronizedStoreManager/*, initialValue: CGFloat*/) {
-        self.init(task: task, eventQuery: eventQuery, storeManager: storeManager/*, initialValue: initialValue*/) {
+    init(task: OCKAnyTask, eventQuery: OCKEventQuery, storeManager: OCKSynchronizedStoreManager) {
+        self.init(task: task, eventQuery: eventQuery, storeManager: storeManager) {
             .init(viewModel: $0.viewModel, value: $1)
         }
     }
@@ -133,8 +135,8 @@ public extension SliderTaskView where Header == _SliderTaskViewHeader, SliderVie
     /// Create an instance that displays the default content.
     /// - Parameters:
     ///     - controller: Controller that holds a reference to data displayed by the view.
-    init(controller: OCKSliderTaskController/*, initialValue: CGFloat*/) {
-        taskView = .init(controller: controller/*, initialValue: initialValue*/) {
+    init(controller: OCKSliderTaskController) {
+        taskView = .init(controller: controller) {
             .init(viewModel: $0.viewModel, value: $1)
         }
     }
@@ -147,7 +149,7 @@ private extension CareKitUI.SliderTaskView where Header == _SliderTaskViewHeader
                   detail: viewModel?.detail.map { Text($0) },
                   instructions: viewModel?.instructions.map{ Text($0) },
                   isComplete: viewModel?.isComplete ?? false,
-                  initialValue: viewModel?.value,
+                  initialValue: nil,
                   value: value,
                   range: range,
                   step: step,

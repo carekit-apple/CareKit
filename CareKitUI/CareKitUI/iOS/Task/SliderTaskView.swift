@@ -28,9 +28,13 @@ import SwiftUI
 ///     |                                                       |
 ///     |  <Instructions>                                       |
 ///     |                                                       |
-///     |  +-------------------------------------------------+  |
-///     |  |               <Completion Button>               |  |
-///     |  +-------------------------------------------------+  |
+///     |  <Min Image> –––––––––––––O–––––––––––– <Max Image>   |
+///     |                                                       |
+///     |                       +-------+                       |
+///     |                      /         \                      |
+///     |                     |  <Value>  |                     |
+///     |                      \         /                      |
+///     |                       +-------+                       |
 ///     |                                                       |
 ///     +-------------------------------------------------------+
 /// ```
@@ -102,19 +106,20 @@ public extension SliderTaskView where Header == _SliderTaskViewHeader {
 public extension SliderTaskView where SliderView == _SliderTaskViewFooter {
     
     /// Create an instance.
-    /// - Parameter header: Header to inject at the top of the card. Specified content will be stacked vertically.
     /// - Parameter instructions: Instructions text to display under the header.
     /// - Parameter isComplete; True if the button under the slider is in the completed.
-    /// - Parameter minimumImage: Image to display to the left of the slider. Default value is nil.
-    /// - Parameter maximumImage: Image to display to the right of the slider. Default value is nil.
+    /// - Parameter initialValue: The initial value the slider begins on. Default value is the midpoint of the range.
     /// - Parameter value: The binded value that the slider will reflect
     /// - Parameter range: The range that includes all possible values.
     /// - Parameter step: Value of the increment that the slider takes.
+    /// - Parameter minimumImage: Image to display to the left of the slider. Default value is nil.
+    /// - Parameter maximumImage: Image to display to the right of the slider. Default value is nil.
     /// - Parameter sliderStyle: The style of the slider, either the SwiftUI system slider or the custom filler slider.
     /// - Parameter action: Action to perform when the button is tapped.
+    /// - Parameter header: Header to inject at the top of the card. Specified content will be stacked vertically.
     init(instructions: Text? = nil,
          isComplete: Bool,
-         initialValue: CGFloat?, value: Binding<CGFloat>,
+         initialValue: CGFloat? = nil, value: Binding<CGFloat>,
          range: ClosedRange<CGFloat>, step: CGFloat,
          minimumImage: Image? = nil, maximumImage: Image? = nil,
          sliderStyle: SliderStyle = .system,
@@ -124,7 +129,7 @@ public extension SliderTaskView where SliderView == _SliderTaskViewFooter {
             _SliderTaskViewFooter(initialValue: initialValue,
                                   value: value,
                                   range: range,
-                                  step: step, /*initialValue: initialValue,*/
+                                  step: step,
                                   isComplete: isComplete,
                                   maximumImage: maximumImage, minimumImage: minimumImage,
                                   sliderStyle: sliderStyle,
@@ -140,8 +145,8 @@ public extension SliderTaskView where Header == _SliderTaskViewHeader, SliderVie
     /// - Parameter detail: Detail text to display in the header.
     /// - Parameter instructions: Instructions text to display under the header.
     /// - Parameter isComplete; True if the button under the slider is in the completed.
-    /// - Parameter value: The binded value that the slider will reflect
     /// - Parameter initialValue: The initial value the slider begins on. Default value is the midpoint of the range.
+    /// - Parameter value: The binded value that the slider will reflect
     /// - Parameter range: The range that includes all possible values.
     /// - Parameter step: Value of the increment that the slider takes.
     /// - Parameter minimumImage: Image to display to the left of the slider. Default value is nil.
@@ -151,7 +156,7 @@ public extension SliderTaskView where Header == _SliderTaskViewHeader, SliderVie
     init(title: Text, detail: Text? = nil,
          instructions: Text? = nil,
          isComplete: Bool,
-         initialValue: CGFloat?, value: Binding<CGFloat>,
+         initialValue: CGFloat? = nil, value: Binding<CGFloat>,
          range: ClosedRange<CGFloat>, step: CGFloat,
          minimumImage: Image? = nil, maximumImage: Image? = nil,
          sliderStyle: SliderStyle,
@@ -225,7 +230,9 @@ public struct _SliderTaskViewFooter: View {
             OCKSliderButton(value: $value, isComplete: isComplete, action: action)
         }
         .onAppear {
-            value = initialValue
+            if !isComplete {
+                value = initialValue
+            }
         }
     }
 }

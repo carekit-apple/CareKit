@@ -38,7 +38,6 @@ open class OCKSliderTaskController: OCKTaskController {
         guard !taskEvents.isEmpty else { return nil }
         
         let event = taskEvents.first?.first
-        var value: CGFloat = 0
         
         if let foundValue = event?.scheduleEvent.element.targetValues.first?.numberValue?.doubleValue {
             value = CGFloat(foundValue)

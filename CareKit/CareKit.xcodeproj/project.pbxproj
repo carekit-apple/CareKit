@@ -82,6 +82,7 @@
 		5167B93223343CE0002BC69C /* OCKChecklistTaskView+Updatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5167B93123343CE0002BC69C /* OCKChecklistTaskView+Updatable.swift */; };
 		51692D9D23564C2C00D03A44 /* OCKDailyPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64EABD9C2321B1AF00CFBB9F /* OCKDailyPageViewController.swift */; };
 		516CD56A2354D370005E2779 /* OCKGridTaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 516CD5692354D370005E2779 /* OCKGridTaskViewController.swift */; };
+		516D85DE24B822FA00489200 /* TestWeekCalendarPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 516D85DD24B822FA00489200 /* TestWeekCalendarPageViewController.swift */; };
 		51757C7B2450CF6E0081F133 /* TestTaskEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51757C792450CF690081F133 /* TestTaskEvents.swift */; };
 		51757C812451136A0081F133 /* OCKLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0346743D2397026A0074891C /* OCKLog.swift */; };
 		517C784A239860C1005B2549 /* TestCustomTaskViewSynchronizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 517C7849239860C1005B2549 /* TestCustomTaskViewSynchronizer.swift */; };
@@ -224,6 +225,7 @@
 		5167B92E23343A64002BC69C /* OCKHeaderView+Updatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OCKHeaderView+Updatable.swift"; sourceTree = "<group>"; };
 		5167B93123343CE0002BC69C /* OCKChecklistTaskView+Updatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OCKChecklistTaskView+Updatable.swift"; sourceTree = "<group>"; };
 		516CD5692354D370005E2779 /* OCKGridTaskViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKGridTaskViewController.swift; sourceTree = "<group>"; };
+		516D85DD24B822FA00489200 /* TestWeekCalendarPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestWeekCalendarPageViewController.swift; sourceTree = "<group>"; };
 		51757C792450CF690081F133 /* TestTaskEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestTaskEvents.swift; sourceTree = "<group>"; };
 		517C7849239860C1005B2549 /* TestCustomTaskViewSynchronizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestCustomTaskViewSynchronizer.swift; sourceTree = "<group>"; };
 		517F3E4423345872004FE251 /* OCKCartesianChartView+Updatable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OCKCartesianChartView+Updatable.swift"; sourceTree = "<group>"; };
@@ -408,6 +410,7 @@
 			children = (
 				51BEAD59237E00C600B32D55 /* TestDailyTasksPageViewController.swift */,
 				51D8E27E24115D7D0026C716 /* TestListView.swift */,
+				516D85DD24B822FA00489200 /* TestWeekCalendarPageViewController.swift */,
 			);
 			path = "Higher Order";
 			sourceTree = "<group>";
@@ -1023,6 +1026,7 @@
 				51AF51542498420D005D385F /* TestLabeledValueTaskViewModel.swift in Sources */,
 				511372462374DFBD00831191 /* TestSynchronizedContext.swift in Sources */,
 				51168D99246E20B40002CC69 /* TestNumericProgressTaskView.swift in Sources */,
+				516D85DE24B822FA00489200 /* TestWeekCalendarPageViewController.swift in Sources */,
 				51D544932397584D00898683 /* Array+Extension.swift in Sources */,
 				51BEAD5A237E00C600B32D55 /* TestDailyTasksPageViewController.swift in Sources */,
 			);

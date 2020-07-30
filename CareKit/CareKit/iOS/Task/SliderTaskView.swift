@@ -143,19 +143,15 @@ public extension SliderTaskView where Header == _SliderTaskViewHeader, SliderVie
 }
 
 private extension CareKitUI.SliderTaskView where Header == _SliderTaskViewHeader, SliderView == _SliderTaskViewFooter {
-    init(viewModel: SliderTaskViewModel?, value: Binding<CGFloat>,
-        range: ClosedRange<CGFloat> = 0...10, step: CGFloat = 1, minimumImage: Image? = nil, maximumImage: Image? = nil,  sliderStyle: SliderStyle = .system) {
+    init(viewModel: SliderTaskViewModel?, value: Binding<CGFloat>) {
         self.init(title: Text(viewModel?.title ?? ""),
                   detail: viewModel?.detail.map { Text($0) },
                   instructions: viewModel?.instructions.map{ Text($0) },
                   isComplete: viewModel?.isComplete ?? false,
-                  initialValue: nil,
                   value: value,
-                  range: range,
-                  step: step,
-                  minimumImage: minimumImage,
-                  maximumImage: maximumImage,
-                  sliderStyle: sliderStyle,
+                  range: 0...10,
+                  step: 1,
+                  sliderStyle: .system,
                   action: viewModel?.action ?? { _ in })
     }
 }
@@ -174,6 +170,7 @@ public struct SliderTaskViewModel {
     /// True if the button under the slider is in the completed.
     public let isComplete: Bool
     
+    /// Data used to create the slider in the task
     public let value: CGFloat
 
     /// Action to perform when the button is tapped.

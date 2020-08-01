@@ -56,7 +56,6 @@ open class OCKSliderTaskController: OCKTaskController {
         { sliderValue in
             return self.saveOutcomesEvent(atIndexPath: .init(row: 0, section: 0), values: [.init(sliderValue)], errorHandler: errorHandler) }
     }
-        
 }
 
 #endif

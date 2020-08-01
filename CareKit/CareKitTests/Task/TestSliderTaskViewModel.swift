@@ -1,3 +1,10 @@
+//
+//  TestSliderTaskViewModel.swift
+//
+//
+//  Created by Dylan Li on 7/27/20.
+//  Copyright © 2020 NetReconLab. All rights reserved.
+//
 
 @testable import CareKit
 @testable import CareKitStore
@@ -10,8 +17,7 @@ import XCTest
 class TestSliderTaskViewModel: XCTestCase {
 
     var controller: OCKSliderTaskController!
-    var cancellables: Set<AnyCancellable> = []
-    @State var value: CGFloat = 3
+    var cancellable: AnyCancellable?
 
     override func setUp() {
         super.setUp()
@@ -21,19 +27,19 @@ class TestSliderTaskViewModel: XCTestCase {
 
     func testViewModelCreation() {
         let taskEvents = OCKTaskEvents.mock(eventsHaveOutcomes: false, occurrences: 1)
+        let event = taskEvents.first?.first
         controller.taskEvents = taskEvents
-        let updated = expectation(description: "updated view model")
+        let updated = expectation(description: "view model updated")
 
-        controller.$viewModel
+        cancellable = controller.$viewModel
             .compactMap { $0 }
             .sink { viewModel in
-                XCTAssertEqual("Doxylamine", viewModel.title)
-                XCTAssertEqual("Take the tablet with a glass of water.", viewModel.instructions)
-                XCTAssertEqual("1", viewModel.detail)
-                XCTAssertEqual(false, viewModel.isComplete)
+                XCTAssertEqual(event?.task.title, viewModel.title)
+                XCTAssertEqual(OCKScheduleUtility.scheduleLabel(for: event), viewModel.detail)
+                XCTAssertEqual(event?.task.instructions, viewModel.instructions)
+                XCTAssertEqual(event?.outcome != nil, viewModel.isComplete)
                 updated.fulfill()
             }
-            .store(in: &cancellables)
 
         wait(for: [updated], timeout: 1)
     }

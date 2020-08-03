@@ -22,10 +22,11 @@ public struct OCKSlider: View {
     private let maximumImage: Image?
     private let sliderHeight: CGFloat?
     private let frameHeight: CGFloat
+    private let borderWidth: CGFloat = 1
     private let usesSystemSlider: Bool
     private var containsImages: Bool { (minimumImage == nil && maximumImage == nil) ? false : true }
     
-    init(value: Binding<CGFloat>, range: ClosedRange<CGFloat>, step: CGFloat, isComplete: Bool, minimumImage: Image?, maximumImage: Image?, sliderStyle: SliderStyle) {
+    init(value: Binding<CGFloat>, range: ClosedRange<CGFloat>, step: CGFloat, isComplete: Bool, minimumImage: Image?, maximumImage: Image?, sliderStyle: OCKSliderStyle) {
         _value = value
         self.range = (range.lowerBound, range.upperBound)
         self.step = step
@@ -46,7 +47,7 @@ public struct OCKSlider: View {
     
     public var body: some View {
         GeometryReader { geometry in
-            self.view(geometry: geometry)
+            view(geometry: geometry)
         }
         .frame(height: frameHeight)
         .padding(.top)
@@ -55,59 +56,54 @@ public struct OCKSlider: View {
     private func view(geometry: GeometryProxy) -> some View {
         let frameWidth = geometry.size.width
         let imageWidth = (frameWidth / 8).rounded()
-        var sliderWidth: CGFloat { containsImages ? frameWidth - imageWidth * 2 - imageWidth / 2 : frameWidth }
-        var knobWidth: CGFloat { sliderWidth * 0.1 }
-        let drag = self.isComplete ? nil : DragGesture(minimumDistance: 0)
-        
-        return HStack(spacing: 0) {
-            minimumImage?
-                .sliderImageModifier(width: imageWidth, height: usesSystemSlider ? imageWidth : sliderHeight)
-            
-            Spacer(minLength: 0)
-            
-            if usesSystemSlider {
-                Slider(value: $value, in: range.0...range.1)
-                    .gesture(drag.onChanged({ drag in
-                        onDragChange(drag, sliderWidth: sliderWidth, knobWidth: knobWidth) }))
-                    .disabled(isComplete)
-                    .frame(width: sliderWidth)
-            } else {
-                ZStack {
-                    addTicks(range: range, step: step, sliderWidth: sliderWidth, sliderHeight: sliderHeight!, knobWidth: knobWidth)
-                    sliderView(width: sliderWidth, height: sliderHeight!, knobWidth: knobWidth)
-                        .gesture(drag.onChanged({ drag in
-                            onDragChange(drag, sliderWidth: sliderWidth, knobWidth: knobWidth) }))
-                        .disabled(isComplete)
-                }.frame(width: sliderWidth, height: sliderHeight)
+        return
+            HStack(spacing: 0) {
+                minimumImage?
+                    .sliderImageModifier(width: imageWidth, height: usesSystemSlider ? imageWidth : sliderHeight!)
+                Spacer(minLength: 0)
+                slider(frameWidth: frameWidth, imageWidth: imageWidth)
+                Spacer(minLength: 0)
+                maximumImage?
+                    .sliderImageModifier(width: imageWidth, height: usesSystemSlider ? imageWidth : sliderHeight!)
             }
-            
-            Spacer(minLength: 0)
-                
-            maximumImage?
-                .sliderImageModifier(width: imageWidth, height: usesSystemSlider ? imageWidth : sliderHeight)
-        }
     }
     
-    private func sliderView(width: CGFloat, height: CGFloat, knobWidth: CGFloat) -> some View {
+    private func slider(frameWidth: CGFloat, imageWidth: CGFloat) -> some View {
+        let sliderWidth: CGFloat = containsImages ? frameWidth - imageWidth * 2 - imageWidth / 2 : frameWidth
+        let knobWidth: CGFloat = sliderWidth * 0.1
+        let drag = isComplete ? nil : DragGesture(minimumDistance: 0)
+        return
+            usesSystemSlider ?
+            ViewBuilder.buildEither(first:
+                                        Slider(value: $value, in: range.0...range.1)
+                                        .disabled(isComplete)
+                                        .gesture(drag.onChanged({ drag in
+                                                                    onDragChange(drag, sliderWidth: sliderWidth, knobWidth: knobWidth) }))
+                                        .frame(width: sliderWidth)) :
+            ViewBuilder.buildEither(second:
+                                        ZStack {
+                                            addTicks(range: range, step: step, sliderWidth: sliderWidth, sliderHeight: sliderHeight!, knobWidth: knobWidth)
+                                            fillerBarView(width: sliderWidth, height: sliderHeight!, knobWidth: knobWidth)
+                                                .gesture(drag.onChanged({ drag in
+                                                                            onDragChange(drag, sliderWidth: sliderWidth, knobWidth: knobWidth) }))
+                                        }.frame(width: sliderWidth, height: sliderHeight)
+            )
+    }
+    
+    private func fillerBarView(width: CGFloat, height: CGFloat, knobWidth: CGFloat) -> some View {
         let offsetX = getOffsetX(sliderWidth: width, knobWidth: knobWidth)
         let barLeftSize = CGSize(width: CGFloat(offsetX + knobWidth / 2), height: height)
-        let barRightSize = CGSize(width: width - barLeftSize.width, height: height)
-        
-        let components = DefaultSliderComponents(
-            barLeft: DefaultSliderModifier(name: .barLeft, size: barLeftSize, offset: 0),
-            barRight: DefaultSliderModifier(name: .barRight, size: barRightSize, offset: barLeftSize.width)
-        )
-        
+        let barRightSize = CGSize(width: width, height: height)
+        let barLeftColor = Color.accentColor
+        let barRightColor = Color(style.color.white)
         return
             ZStack {
-                Color(style.color.white)
-                    .modifier(components.barRight)
-                    .cornerRadius(style.appearance.cornerRadius1)
-                Color.accentColor
-                    .modifier(components.barLeft)
-                    .cornerRadius(style.appearance.cornerRadius1)
+                barRightColor
+                    .modifier(SliderModifier(size: barRightSize, radius: style.appearance.cornerRadius1))
+                barLeftColor
+                    .modifier(SliderModifier(size: barLeftSize, radius: style.appearance.cornerRadius1))
                 RoundedRectangle(cornerRadius: style.appearance.cornerRadius1)
-                    .stroke(Color(style.color.customGray), lineWidth: style.appearance.borderWidth2)
+                    .stroke(Color(style.color.customGray), lineWidth: borderWidth)
             }
     }
     
@@ -121,12 +117,13 @@ public struct OCKSlider: View {
         let tickLocations = values.map {
             CGFloat(values.firstIndex(of: $0)!) * (sliderWidth - knobWidth) / CGFloat(values.count - 1)
         }
-        
-        return ZStack {
-            ForEach(tickLocations, id: \.self) { location in
-                DefaultSliderTickMark(possibleLocations: tickLocations, location: location, sliderHeight: sliderHeight, values: values, color: Color(style.color.customGray))
+        return
+            ZStack {
+                ForEach(tickLocations, id: \.self) { location in
+                    SliderTickMark(possibleLocations: tickLocations, location: location, sliderHeight: sliderHeight, values: values, color: Color(style.color.customGray), width: borderWidth)
+                }
             }
-        }.offset(x: knobWidth / 2)
+            .offset(x: knobWidth / 2)
     }
     
     private func onDragChange(_ drag: DragGesture.Value, sliderWidth: CGFloat, knobWidth: CGFloat) {
@@ -149,25 +146,19 @@ public struct OCKSlider: View {
     }
 }
 
-public enum SliderStyle {
-    case filler(OCKSliderDimensions)
-    case system
-}
-
-public struct OCKSliderDimensions {
-    let sliderHeight: CGFloat
-    let frameHeightMultiplier: CGFloat
+private struct SliderModifier: ViewModifier {
+    let size: CGSize
+    let radius: CGFloat
     
-    /// Create the dimensions used to determine appearance of an OCK Slider with a filler style
-    /// - Parameter sliderHeight: Height of the bar of the slider.  Default value is 40.
-    /// - Parameter frameHeightMultiplier: Value to multiply the slider height by to attain the hieght of the frame enclosing the slider. Default value is 1.7.
-    public init(sliderHeight: CGFloat = 40, frameHeightMultiplier: CGFloat = 1.7) {
-        self.sliderHeight = sliderHeight
-        self.frameHeightMultiplier = frameHeightMultiplier
+    func body(content: Content) -> some View {
+        content
+            .frame(width: size.width)
+            .position(x: size.width * 0.5, y: size.height * 0.5)
+            .cornerRadius(radius)
     }
 }
 
-private struct DefaultSliderTickMark: View {
+private struct SliderTickMark: View {
     private let color: Color
     private let location: CGFloat
     private let value: CGFloat
@@ -177,28 +168,28 @@ private struct DefaultSliderTickMark: View {
     }
     private let position: PositionalHeight
     private let sliderHeight: CGFloat
-    private let width: CGFloat = 1
+    private let width: CGFloat
     private var length: CGFloat { sliderHeight * position.rawValue }
     
-    private init(sliderHeight: CGFloat, location: CGFloat, position: PositionalHeight, value: CGFloat, color: Color) {
+    private init(sliderHeight: CGFloat, location: CGFloat, position: PositionalHeight, value: CGFloat, color: Color, width: CGFloat) {
         self.location = location
         self.value = value
         self.sliderHeight = sliderHeight
         self.position = position
         self.color = color
+        self.width = width
     }
     
-    public init(possibleLocations: [CGFloat], location: CGFloat, sliderHeight: CGFloat, values: [CGFloat], color: Color) {
+    public init(possibleLocations: [CGFloat], location: CGFloat, sliderHeight: CGFloat, values: [CGFloat], color: Color, width: CGFloat) {
         let value = values[possibleLocations.firstIndex(of: location)!]
         if possibleLocations.firstIndex(of: location) != 0, possibleLocations.firstIndex(of: location) != possibleLocations.count - 1 {
-            self.init(sliderHeight: sliderHeight, location: location, position: .middle, value: value, color: color)
+            self.init(sliderHeight: sliderHeight, location: location, position: .middle, value: value, color: color, width: width)
         } else {
-            self.init(sliderHeight: sliderHeight, location: location, position: .end, value: value, color: color)
+            self.init(sliderHeight: sliderHeight, location: location, position: .end, value: value, color: color, width: width)
         }
     }
     
     var body: some View {
-        
         let tickMark = Rectangle()
             .fill(color)
             .frame(width: width, height: length)
@@ -208,37 +199,16 @@ private struct DefaultSliderTickMark: View {
             .foregroundColor(color)
             .position(x: location, y: -sliderHeight / 4 - (length - sliderHeight) / 2)
         
-        return ZStack {
-            label
-            tickMark
-        }
-    }
-}
-
-private struct DefaultSliderComponents {
-    let barLeft: DefaultSliderModifier
-    let barRight: DefaultSliderModifier
-}
-
-private struct DefaultSliderModifier: ViewModifier {
-    enum Name {
-        case barLeft
-        case barRight
-    }
-    let name: Name
-    let size: CGSize
-    let offset: CGFloat
-    
-    func body(content: Content) -> some View {
-        content
-            .frame(width: size.width)
-            .position(x: size.width * 0.5, y: size.height * 0.5)
-            .offset(x: offset)
+        return
+            ZStack {
+                label
+                tickMark
+            }
     }
 }
 
 private extension Image {
-    func sliderImageModifier(width: CGFloat, height: CGFloat? = 40) -> some View {
+    func sliderImageModifier(width: CGFloat, height: CGFloat) -> some View {
         self
             .resizable()
             .aspectRatio(contentMode: .fit)

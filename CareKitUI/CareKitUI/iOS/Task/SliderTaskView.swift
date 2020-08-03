@@ -122,7 +122,7 @@ public extension SliderTaskView where SliderView == _SliderTaskViewFooter {
          initialValue: CGFloat? = nil, value: Binding<CGFloat>,
          range: ClosedRange<CGFloat>, step: CGFloat,
          minimumImage: Image? = nil, maximumImage: Image? = nil,
-         sliderStyle: SliderStyle = .system,
+         sliderStyle: OCKSliderStyle = .system,
          action: @escaping (Double) -> Void,
          @ViewBuilder header: () -> Header) {
         self.init(isHeaderPadded: false, isSliderViewPadded: true, instructions: instructions, header: header, sliderView: {
@@ -159,7 +159,7 @@ public extension SliderTaskView where Header == _SliderTaskViewHeader, SliderVie
          initialValue: CGFloat? = nil, value: Binding<CGFloat>,
          range: ClosedRange<CGFloat>, step: CGFloat,
          minimumImage: Image? = nil, maximumImage: Image? = nil,
-         sliderStyle: SliderStyle,
+         sliderStyle: OCKSliderStyle,
          action: @escaping (Double) -> Void) {
         self.init(isHeaderPadded: true, isSliderViewPadded: true, instructions: instructions, header: {
             _SliderTaskViewHeader(title: title, detail: detail)
@@ -205,11 +205,11 @@ public struct _SliderTaskViewFooter: View {
     fileprivate let minimumImage: Image?
     fileprivate let range: ClosedRange<CGFloat>
     fileprivate let step: CGFloat
-    fileprivate let sliderStyle: SliderStyle
+    fileprivate let sliderStyle: OCKSliderStyle
     @Binding var value: CGFloat
     
     init(initialValue: CGFloat?, value: Binding<CGFloat>, range: ClosedRange<CGFloat>, step: CGFloat,
-         isComplete: Bool, maximumImage: Image?, minimumImage: Image?, sliderStyle: SliderStyle,
+         isComplete: Bool, maximumImage: Image?, minimumImage: Image?, sliderStyle: OCKSliderStyle,
          action: @escaping (_ value: Double) -> Void) {
         self.initialValue = initialValue ?? range.lowerBound + round((range.upperBound - range.lowerBound) / (step * 2)) * step
         self.isComplete = isComplete

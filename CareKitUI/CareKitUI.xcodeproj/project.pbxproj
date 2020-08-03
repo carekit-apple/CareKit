@@ -127,6 +127,7 @@
 		E829AC1E24BFBB58001DCB1F /* TestSliderTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E829AC1D24BFBB58001DCB1F /* TestSliderTaskView.swift */; };
 		E836DA0124BCC54900268E59 /* OCKSliderButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E836DA0024BCC54900268E59 /* OCKSliderButton.swift */; };
 		E836DA0324BCC5EE00268E59 /* OCKSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = E836DA0224BCC5EE00268E59 /* OCKSlider.swift */; };
+		E8853E8524D8B7C30017F813 /* OCKSliderStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8853E8424D8B7C30017F813 /* OCKSliderStyle.swift */; };
 		E88E003E24B51DB1009A7AC8 /* SliderTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88E003C24B51DB1009A7AC8 /* SliderTaskView.swift */; };
 /* End PBXBuildFile section */
 
@@ -246,6 +247,7 @@
 		E829AC1D24BFBB58001DCB1F /* TestSliderTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestSliderTaskView.swift; sourceTree = "<group>"; };
 		E836DA0024BCC54900268E59 /* OCKSliderButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKSliderButton.swift; sourceTree = "<group>"; };
 		E836DA0224BCC5EE00268E59 /* OCKSlider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKSlider.swift; sourceTree = "<group>"; };
+		E8853E8424D8B7C30017F813 /* OCKSliderStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKSliderStyle.swift; sourceTree = "<group>"; };
 		E88E003C24B51DB1009A7AC8 /* SliderTaskView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SliderTaskView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -599,6 +601,7 @@
 				518F9D5122961BF5009CAA48 /* OCKSelfSizingCollectionView.swift */,
 				518F9D5322961BF5009CAA48 /* OCKGridTaskCell.swift */,
 				E836DA0224BCC5EE00268E59 /* OCKSlider.swift */,
+				E8853E8424D8B7C30017F813 /* OCKSliderStyle.swift */,
 			);
 			path = Collection;
 			sourceTree = "<group>";
@@ -910,6 +913,7 @@
 				510A5762234A7B920006C376 /* OCKAnimatedButton.swift in Sources */,
 				518F9DAB22961BF6009CAA48 /* UIFont+Extensions.swift in Sources */,
 				5103C55222F37B44007A7403 /* Number+Extensions.swift in Sources */,
+				E8853E8524D8B7C30017F813 /* OCKSliderStyle.swift in Sources */,
 				64E1BD4E2309FCF200DFFE52 /* OCKResponsiveLayout.swift in Sources */,
 				51B225A923EDDCFC00A2D11F /* CardView.swift in Sources */,
 			);

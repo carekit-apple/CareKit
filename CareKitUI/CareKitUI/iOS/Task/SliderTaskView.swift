@@ -131,7 +131,8 @@ public extension SliderTaskView where SliderView == _SliderTaskViewFooter {
                                   range: range,
                                   step: step,
                                   isComplete: isComplete,
-                                  maximumImage: maximumImage, minimumImage: minimumImage,
+                                  minimumImage: minimumImage,
+                                  maximumImage: maximumImage,
                                   sliderStyle: sliderStyle,
                                   action: action)
         })
@@ -169,8 +170,8 @@ public extension SliderTaskView where Header == _SliderTaskViewHeader, SliderVie
                                   range: range,
                                   step: step,
                                   isComplete: isComplete,
+                                  minimumImage: minimumImage,
                                   maximumImage: maximumImage,
-                                  minimumImage: maximumImage,
                                   sliderStyle: sliderStyle,
                                   action: action)
         })
@@ -196,26 +197,25 @@ public struct _SliderTaskViewHeader: View {
 /// The default slider view used by an `SliderTaskView`.
 public struct _SliderTaskViewFooter: View {
     
-    @Environment(\.careKitStyle) private var style
-    
+    @Binding var value: CGFloat
     fileprivate let initialValue: CGFloat
     fileprivate let isComplete: Bool
-    fileprivate let action: (_ value: Double) -> Void
-    fileprivate let maximumImage: Image?
     fileprivate let minimumImage: Image?
+    fileprivate let maximumImage: Image?
     fileprivate let range: ClosedRange<CGFloat>
     fileprivate let step: CGFloat
     fileprivate let sliderStyle: OCKSliderStyle
-    @Binding var value: CGFloat
+    fileprivate let action: (_ value: Double) -> Void
+    
     
     init(initialValue: CGFloat?, value: Binding<CGFloat>, range: ClosedRange<CGFloat>, step: CGFloat,
-         isComplete: Bool, maximumImage: Image?, minimumImage: Image?, sliderStyle: OCKSliderStyle,
+         isComplete: Bool, minimumImage: Image?, maximumImage: Image?, sliderStyle: OCKSliderStyle,
          action: @escaping (_ value: Double) -> Void) {
         self.initialValue = initialValue ?? range.lowerBound + round((range.upperBound - range.lowerBound) / (step * 2)) * step
         self.isComplete = isComplete
         self.action = action
-        self.maximumImage = maximumImage
         self.minimumImage = minimumImage
+        self.maximumImage = maximumImage
         self.range = range
         self.step = step
         self.sliderStyle = sliderStyle

@@ -119,7 +119,7 @@ public extension SliderTaskView where SliderView == _SliderTaskViewSliderView {
     /// - Parameter header: Header to inject at the top of the card. Specified content will be stacked vertically.
     init(instructions: Text? = nil, isComplete: Bool,
          initialValue: CGFloat? = nil, value: Binding<CGFloat>, range: ClosedRange<CGFloat>, step: CGFloat = 1,
-         minimumImage: Image? = nil, maximumImage: Image? = nil, sliderStyle: OCKSliderStyle = .system,
+         minimumImage: Image? = nil, maximumImage: Image? = nil, sliderStyle: OCKSliderStyle, isSliderTop: Bool = false,
          action: @escaping (Double) -> Void,
          @ViewBuilder header: () -> Header) {
         self.init(isHeaderPadded: false, isSliderViewPadded: true, instructions: instructions, header: header, sliderView: {
@@ -131,6 +131,7 @@ public extension SliderTaskView where SliderView == _SliderTaskViewSliderView {
                                   minimumImage: minimumImage,
                                   maximumImage: maximumImage,
                                   sliderStyle: sliderStyle,
+                                  isSliderTop: isSliderTop,
                                   action: action)
         })
     }
@@ -153,7 +154,7 @@ public extension SliderTaskView where Header == _SliderTaskViewHeader, SliderVie
     /// - Parameter action: Action to perform when the button is tapped.
     init(title: Text, detail: Text? = nil, instructions: Text? = nil, isComplete: Bool,
          initialValue: CGFloat? = nil, value: Binding<CGFloat>, range: ClosedRange<CGFloat>, step: CGFloat = 1,
-         minimumImage: Image? = nil, maximumImage: Image? = nil, sliderStyle: OCKSliderStyle,
+         minimumImage: Image? = nil, maximumImage: Image? = nil, sliderStyle: OCKSliderStyle, isSliderTop: Bool = false,
          action: @escaping (Double) -> Void) {
         self.init(isHeaderPadded: true, isSliderViewPadded: true, instructions: instructions, header: {
             _SliderTaskViewHeader(title: title, detail: detail)
@@ -166,6 +167,7 @@ public extension SliderTaskView where Header == _SliderTaskViewHeader, SliderVie
                                   minimumImage: minimumImage,
                                   maximumImage: maximumImage,
                                   sliderStyle: sliderStyle,
+                                  isSliderTop: isSliderTop,
                                   action: action)
         })
     }
@@ -198,11 +200,12 @@ public struct _SliderTaskViewSliderView: View {
     fileprivate let range: ClosedRange<CGFloat>
     fileprivate let step: CGFloat
     fileprivate let sliderStyle: OCKSliderStyle
+    fileprivate let sliderIsTop: Bool
     fileprivate let action: (_ value: Double) -> Void
     
     
     init(initialValue: CGFloat?, value: Binding<CGFloat>, range: ClosedRange<CGFloat>, step: CGFloat,
-         isComplete: Bool, minimumImage: Image?, maximumImage: Image?, sliderStyle: OCKSliderStyle,
+         isComplete: Bool, minimumImage: Image?, maximumImage: Image?, sliderStyle: OCKSliderStyle, isSliderTop: Bool,
          action: @escaping (_ value: Double) -> Void) {
         self.initialValue = initialValue ?? range.lowerBound + round((range.upperBound - range.lowerBound) / (step * 2)) * step
         self.isComplete = isComplete
@@ -212,15 +215,22 @@ public struct _SliderTaskViewSliderView: View {
         self.range = range
         self.step = step
         self.sliderStyle = sliderStyle
+        self.sliderIsTop = isSliderTop
         _value = value
         
     }
     
     public var body: some View {
         VStack {
-            OCKSlider(value: $value, range: range, step: step,
-                      isComplete: isComplete, minimumImage: minimumImage, maximumImage: maximumImage, sliderStyle: sliderStyle)
+            if sliderIsTop {
+                OCKSlider(value: $value, range: range, step: step,
+                          isComplete: isComplete, minimumImage: minimumImage, maximumImage: maximumImage, sliderStyle: sliderStyle)
+            }
             OCKSliderButton(value: $value, isComplete: isComplete, action: action)
+            if !sliderIsTop {
+                OCKSlider(value: $value, range: range, step: step,
+                          isComplete: isComplete, minimumImage: minimumImage, maximumImage: maximumImage, sliderStyle: sliderStyle)
+            }
         }
         .onAppear {
             if !isComplete {

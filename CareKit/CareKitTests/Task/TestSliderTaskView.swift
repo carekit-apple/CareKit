@@ -24,7 +24,7 @@ class TestSliderTaskView: XCTestCase {
 
     let eventQuery = OCKEventQuery(for: Date())
     let task = OCKTask(id: "", title: "", carePlanUUID: nil, schedule: .dailyAtTime(hour: 1, minutes: 0, start: Date(), end: nil, text: nil))
-    var staticView: CareKitUI.SliderTaskView<_SliderTaskViewHeader, _SliderTaskViewFooter> {
+    var staticView: CareKitUI.SliderTaskView<_SliderTaskViewHeader, _SliderTaskViewSliderView> {
         CareKitUI.SliderTaskView(title: Text(""),
                                  detail: Text(""),
                                  instructions: Text(""),

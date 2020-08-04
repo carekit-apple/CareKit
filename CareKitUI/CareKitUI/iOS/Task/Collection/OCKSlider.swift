@@ -122,8 +122,7 @@ public struct OCKSlider: View {
                 ForEach(tickLocations, id: \.self) { location in
                     SliderTickMark(possibleLocations: tickLocations, location: location, sliderHeight: sliderHeight, values: values, color: Color(style.color.customGray), width: borderWidth)
                 }
-            }
-            .offset(x: knobWidth / 2)
+            }.offset(x: knobWidth / 2)
     }
     
     private func onDragChange(_ drag: DragGesture.Value, sliderWidth: CGFloat, knobWidth: CGFloat) {

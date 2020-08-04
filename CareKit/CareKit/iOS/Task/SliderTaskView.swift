@@ -104,7 +104,7 @@ public struct SliderTaskView<Header: View, SliderView: View>: View {
 }
 
 @available(iOS 14.0, *)
-public extension SliderTaskView where Header == _SliderTaskViewHeader, SliderView == _SliderTaskViewFooter {
+public extension SliderTaskView where Header == _SliderTaskViewHeader, SliderView == _SliderTaskViewSliderView {
 
     /// Create an instance that displays the default content. The first task and event that match the provided queries will be fetched from the the
     /// store and displayed in the view. The view will update when changes occur in the store.
@@ -142,7 +142,7 @@ public extension SliderTaskView where Header == _SliderTaskViewHeader, SliderVie
     }
 }
 
-private extension CareKitUI.SliderTaskView where Header == _SliderTaskViewHeader, SliderView == _SliderTaskViewFooter {
+private extension CareKitUI.SliderTaskView where Header == _SliderTaskViewHeader, SliderView == _SliderTaskViewSliderView {
     init(viewModel: SliderTaskViewModel?, value: Binding<CGFloat>) {
         self.init(title: Text(viewModel?.title ?? ""),
                   detail: viewModel?.detail.map { Text($0) },

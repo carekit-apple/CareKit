@@ -18,7 +18,7 @@ public struct OCKSliderButton: View {
     let isComplete: Bool
     let action: (_ value: Double) -> Void
     private let diameter: CGFloat = 60
-    private let borderWidth: CGFloat = 2
+    private let borderWidth: CGFloat = 3
     private let fontSize: CGFloat = 25
     
     private var foregroundColor: Color {
@@ -40,7 +40,7 @@ public struct OCKSliderButton: View {
             ZStack {
                 Circle()
                     .frame(width: diameter, height: diameter)
-                    .overlay(Circle().stroke(Color.accentColor, lineWidth: borderWidth))
+                    .overlay(Circle().strokeBorder(Color.accentColor, lineWidth: borderWidth))
                     .foregroundColor(backgroundColor)
                 Group {
                     Text(String(format: "%g", value))

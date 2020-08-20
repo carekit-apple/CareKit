@@ -31,15 +31,15 @@ public enum OCKSliderStyle {
 
 /// The dimensions that determine the size and frame of an OCKSlider with a filler style
 public struct OCKSliderDimensions {
-    let sliderHeight: CGFloat
-    let frameHeightMultiplier: CGFloat
+    let height: CGFloat
+    let cornerRadius: CGFloat?
     
     /// Create an instance
     /// - Parameter sliderHeight: Height of the bar of the slider.  Default value is 40.
-    /// - Parameter frameHeightMultiplier: Value to multiply the slider height by to attain the hieght of the frame enclosing the slider. Default value is 1.7.
-    public init(sliderHeight: CGFloat = 40, frameHeightMultiplier: CGFloat = 1.7) {
-        self.sliderHeight = sliderHeight
-        self.frameHeightMultiplier = frameHeightMultiplier
+    /// - Parameter cornerRadius: Radius of the rounded corners of the slider. The default value is determined as a fraction of the slider height.
+    public init(height: CGFloat = 40, cornerRadius: CGFloat? = nil) {
+        self.height = height
+        self.cornerRadius = cornerRadius
     }
 }
 

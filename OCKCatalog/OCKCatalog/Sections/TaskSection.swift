@@ -81,14 +81,14 @@ private struct TaskDestination: View {
 private enum TaskStyle: String, CaseIterable {
 
     case grid, checklist
-    case simple, instructions, labeledValue = "labeled value", numericProgress = "Numeric Progress"
+    case simple, instructions, labeledValue = "labeled value", numericProgress = "Numeric Progress", slider = "slider"
     case buttonLog = "button log"
 
     var supportsSwiftUI: Bool {
         guard #available(iOS 14, *) else { return false }
 
         switch self {
-        case .simple, .instructions, .labeledValue, .numericProgress: return true
+        case .simple, .instructions, .labeledValue, .numericProgress, .slider: return true
         case .grid, .checklist, .buttonLog: return false
         }
     }
@@ -96,7 +96,7 @@ private enum TaskStyle: String, CaseIterable {
     var supportsUIKit: Bool {
         switch self {
         case .simple, .instructions, .grid, .checklist, .buttonLog: return true
-        case .labeledValue, .numericProgress: return false
+        case .labeledValue, .numericProgress, .slider: return false
         }
     }
 }
@@ -163,6 +163,65 @@ private struct TaskView: View {
                                          detail: Text("Anytime"),
                                          state: .incomplete(Text("NO DATA")))
                 }
+            case .slider:
+                VStack(spacing: 16) {
+                    
+                    // System slider style
+                    CareKit.SliderTaskView(taskID: OCKStore.Tasks.distress.rawValue,
+                                           eventQuery: .init(for: Date()), storeManager: storeManager) { controller, value in
+                        CareKitUI.SliderTaskView(title: Text((controller.viewModel?.title ?? "") + " (System Style)"),
+                                                 instructions: controller.viewModel?.instructions.map(Text.init),
+                                                 isComplete: controller.viewModel?.isComplete ?? false,
+                                                 value: value,
+                                                 range: 0...10,
+                                                 step: 1,
+                                                 minimumImage: Image(systemName: "chevron.down"),
+                                                 maximumImage: Image(systemName: "chevron.up"),
+                                                 sliderStyle: .system,
+                                                 action: controller.viewModel?.action ?? { _ in })
+                    }
+                    
+                    CareKit.SliderTaskView(taskID: OCKStore.Tasks.distress.rawValue,
+                                           eventQuery: .init(for: Date()), storeManager: storeManager) { controller, value in
+                        CareKitUI.SliderTaskView(title: Text((controller.viewModel?.title ?? "") + " (System Style)"),
+                                                 instructions: controller.viewModel?.instructions.map(Text.init),
+                                                 isComplete: controller.viewModel?.isComplete ?? false,
+                                                 value: value,
+                                                 range: 0...10,
+                                                 step: 1,
+                                                 sliderStyle: .system,
+                                                 isSliderTop: true,
+                                                 action: controller.viewModel?.action ?? { _ in })
+                    }
+                    
+                    // Filler slider style
+                    CareKit.SliderTaskView(taskID: OCKStore.Tasks.distress.rawValue,
+                                           eventQuery: .init(for: Date()), storeManager: storeManager) { controller, value in
+                        CareKitUI.SliderTaskView(title: Text((controller.viewModel?.title ?? "") + " (Filler Style)"),
+                                                 instructions: controller.viewModel?.instructions.map(Text.init),
+                                                 isComplete: controller.viewModel?.isComplete ?? false,
+                                                 value: value,
+                                                 range: 0...10,
+                                                 step: 1,
+                                                 minimumImage: Image(systemName: "chevron.down"),
+                                                 maximumImage: Image(systemName: "chevron.up"),
+                                                 sliderStyle: .filler(OCKSliderDimensions()),
+                                                 isSliderTop: true,
+                                                 action: controller.viewModel?.action ?? { _ in })
+                    }
+                    
+                    CareKit.SliderTaskView(taskID: OCKStore.Tasks.distress.rawValue,
+                                           eventQuery: .init(for: Date()), storeManager: storeManager) { controller, value in
+                        CareKitUI.SliderTaskView(title: Text((controller.viewModel?.title ?? "") + " (Filler Style)"),
+                                                 instructions: controller.viewModel?.instructions.map(Text.init),
+                                                 isComplete: controller.viewModel?.isComplete ?? false,
+                                                 value: value,
+                                                 range: 0...10,
+                                                 step: 1,
+                                                 sliderStyle: .filler(OCKSliderDimensions()),
+                                                 action: controller.viewModel?.action ?? { _ in })
+                    }
+                }
             default:
                 EmptyView()
             }
@@ -198,7 +257,7 @@ private struct AdaptedTaskView: UIViewControllerRepresentable {
         case .grid:
             taskViewController = OCKGridTaskViewController(taskID: OCKStore.Tasks.doxylamine.rawValue,
                                                            eventQuery: .init(for: Date()), storeManager: storeManager)
-        case .labeledValue, .numericProgress:
+        case .labeledValue, .numericProgress, .slider:
             taskViewController = nil
         }
 

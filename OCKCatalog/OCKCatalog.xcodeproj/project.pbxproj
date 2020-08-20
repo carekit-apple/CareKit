@@ -456,7 +456,6 @@
 			buildPhases = (
 				E7D010F4222498F400C008DE /* Sources */,
 				E7D010F6222498F400C008DE /* Resources */,
-				51936B1B22418DAA00F7B1DD /* ShellScript */,
 				517A900123D167D000B64144 /* Frameworks */,
 				517A900223D167D000B64144 /* Embed Frameworks */,
 			);

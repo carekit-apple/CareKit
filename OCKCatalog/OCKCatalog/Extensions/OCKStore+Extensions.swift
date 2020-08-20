@@ -48,6 +48,7 @@ extension OCKStore {
     enum Tasks: String, CaseIterable {
         case doxylamine
         case nausea
+        case distress
     }
 
     enum Contacts: String, CaseIterable {
@@ -83,8 +84,14 @@ extension OCKStore {
         var task2 = OCKTask(id: Tasks.doxylamine.rawValue, title: "Doxylamine", carePlanUUID: nil,
                             schedule: .mealTimesEachDay(start: start, end: nil))
         task2.instructions = "Take the tablet with a full glass of water."
+        
+        let taskScheduleElement = OCKScheduleElement(start: start, end: nil, interval: .init(day: 1),
+                                                                                 text: nil, targetValues: [], duration: .allDay)
+        var task3 = OCKTask(id: Tasks.distress.rawValue, title: "Distress", carePlanUUID: nil,
+                            schedule: .init(composing: [taskScheduleElement]))
+        task3.instructions = "On a scale of 0-10, how are you feeling today?"
 
-        return [task1, task2]
+        return [task1, task2, task3]
     }
 
     private func makeContacts() -> [OCKContact] {

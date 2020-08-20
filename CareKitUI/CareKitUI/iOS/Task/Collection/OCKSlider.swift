@@ -22,6 +22,7 @@ public struct OCKSlider: View {
     private let maximumImage: Image?
     private let sliderHeight: CGFloat?
     private let frameHeight: CGFloat
+    private let cornerRadius: CGFloat?
     private let borderWidth: CGFloat = 1
     private let usesSystemSlider: Bool
     private var containsImages: Bool { (minimumImage == nil && maximumImage == nil) ? false : true }
@@ -35,12 +36,14 @@ public struct OCKSlider: View {
         self.maximumImage = maximumImage
         switch sliderStyle {
         case .filler(let sliderDimensions):
-            self.sliderHeight = sliderDimensions.sliderHeight
-            self.frameHeight = sliderHeight! * sliderDimensions.frameHeightMultiplier
+            self.sliderHeight = sliderDimensions.height
+            self.frameHeight = sliderDimensions.height * 2
+            self.cornerRadius = sliderDimensions.cornerRadius == nil ? sliderDimensions.height * 0.3 : sliderDimensions.cornerRadius
             self.usesSystemSlider = false
         case .system:
             self.sliderHeight = nil
             self.frameHeight = 40
+            self.cornerRadius = nil
             self.usesSystemSlider = true
         }
     }
@@ -66,11 +69,12 @@ public struct OCKSlider: View {
                 maximumImage?
                     .sliderImageModifier(width: imageWidth, height: usesSystemSlider ? imageWidth : sliderHeight!)
             }
+            .padding(.top, (sliderHeight ?? 0) * 0.65)
     }
     
     private func slider(frameWidth: CGFloat, imageWidth: CGFloat) -> some View {
-        let sliderWidth: CGFloat = containsImages ? frameWidth - imageWidth * 2 - imageWidth / 2 : frameWidth
-        let knobWidth: CGFloat = sliderWidth * 0.1
+        let sliderWidth = containsImages ? frameWidth - imageWidth * 2 - imageWidth / 2 : frameWidth
+        let knobWidth = cornerRadius == nil ? sliderWidth * 0.1 : cornerRadius! * 1.8
         let drag = isComplete ? nil : DragGesture(minimumDistance: 0)
         return
             usesSystemSlider ?
@@ -82,7 +86,7 @@ public struct OCKSlider: View {
                                         .frame(width: sliderWidth)) :
             ViewBuilder.buildEither(second:
                                         ZStack {
-                                            addTicks(range: range, step: step, sliderWidth: sliderWidth, sliderHeight: sliderHeight!, knobWidth: knobWidth)
+                                            addTicks(sliderWidth: sliderWidth, knobWidth: knobWidth)
                                             fillerBarView(width: sliderWidth, height: sliderHeight!, knobWidth: knobWidth)
                                                 .gesture(drag.onChanged({ drag in
                                                                             onDragChange(drag, sliderWidth: sliderWidth, knobWidth: knobWidth) }))
@@ -99,30 +103,29 @@ public struct OCKSlider: View {
         return
             ZStack {
                 barRightColor
-                    .modifier(SliderModifier(size: barRightSize, radius: style.appearance.cornerRadius1))
+                    .modifier(SliderModifier(size: barRightSize, radius: cornerRadius!))
                 barLeftColor
-                    .modifier(SliderModifier(size: barLeftSize, radius: style.appearance.cornerRadius1))
-                RoundedRectangle(cornerRadius: style.appearance.cornerRadius1)
+                    .modifier(SliderModifier(size: barLeftSize, radius: cornerRadius!))
+                RoundedRectangle(cornerRadius: cornerRadius!)
                     .stroke(Color(style.color.customGray), lineWidth: borderWidth)
             }
     }
     
-    private func addTicks(range: (CGFloat, CGFloat), step: CGFloat, sliderWidth: CGFloat, sliderHeight: CGFloat, knobWidth: CGFloat) -> some View {
+    private func addTicks(sliderWidth: CGFloat, knobWidth: CGFloat) -> some View {
         var values = [CGFloat]()
         var possibleValue = range.0
         while possibleValue <= range.1 {
             values.append(possibleValue)
             possibleValue += step
         }
-        let tickLocations = values.map {
-            CGFloat(values.firstIndex(of: $0)!) * (sliderWidth - knobWidth) / CGFloat(values.count - 1)
-        }
+        let spacing = (sliderWidth - knobWidth) / CGFloat(values.count - 1) - borderWidth
         return
-            ZStack {
-                ForEach(tickLocations, id: \.self) { location in
-                    SliderTickMark(possibleLocations: tickLocations, location: location, sliderHeight: sliderHeight, values: values, color: Color(style.color.customGray), width: borderWidth)
+            HStack(spacing: spacing) {
+                ForEach(values, id: \.self) { value in
+                    SliderTickMark(value: value, values: values, sliderHeight: sliderHeight!, width: borderWidth, color: Color(style.color.customGray))
                 }
-            }.offset(x: knobWidth / 2)
+            }
+            .frame(height: sliderHeight!)
     }
     
     private func onDragChange(_ drag: DragGesture.Value, sliderWidth: CGFloat, knobWidth: CGFloat) {
@@ -159,7 +162,6 @@ private struct SliderModifier: ViewModifier {
 
 private struct SliderTickMark: View {
     private let color: Color
-    private let location: CGFloat
     private let value: CGFloat
     private enum PositionalHeight: CGFloat {
         case middle = 1.5
@@ -168,23 +170,24 @@ private struct SliderTickMark: View {
     private let position: PositionalHeight
     private let sliderHeight: CGFloat
     private let width: CGFloat
+    private let fontSize: CGFloat?
     private var length: CGFloat { sliderHeight * position.rawValue }
     
-    private init(sliderHeight: CGFloat, location: CGFloat, position: PositionalHeight, value: CGFloat, color: Color, width: CGFloat) {
-        self.location = location
+    private init(sliderHeight: CGFloat, position: PositionalHeight, value: CGFloat, color: Color, width: CGFloat) {
         self.value = value
         self.sliderHeight = sliderHeight
         self.position = position
         self.color = color
         self.width = width
+        self.fontSize = position == .end ? 15 : nil
     }
     
-    public init(possibleLocations: [CGFloat], location: CGFloat, sliderHeight: CGFloat, values: [CGFloat], color: Color, width: CGFloat) {
-        let value = values[possibleLocations.firstIndex(of: location)!]
-        if possibleLocations.firstIndex(of: location) != 0, possibleLocations.firstIndex(of: location) != possibleLocations.count - 1 {
-            self.init(sliderHeight: sliderHeight, location: location, position: .middle, value: value, color: color, width: width)
+    public init(value: CGFloat, values: [CGFloat], sliderHeight: CGFloat, width: CGFloat, color: Color) {
+        let index = values.firstIndex(of: value)!
+        if index != 0, index != values.count - 1 {
+            self.init(sliderHeight: sliderHeight, position: .middle, value: value, color: color, width: width)
         } else {
-            self.init(sliderHeight: sliderHeight, location: location, position: .end, value: value, color: color, width: width)
+            self.init(sliderHeight: sliderHeight, position: .end, value: value, color: color, width: width)
         }
     }
     
@@ -192,17 +195,20 @@ private struct SliderTickMark: View {
         let tickMark = Rectangle()
             .fill(color)
             .frame(width: width, height: length)
-            .position(x: location, y: sliderHeight / 2)
-        let label = Text(position == .end ? String(format: "%g", value) : "")
-            .font(.footnote)
-            .foregroundColor(color)
-            .position(x: location, y: -sliderHeight / 4 - (length - sliderHeight) / 2)
         
         return
-            ZStack {
-                label
+            VStack(spacing: fontSize) {
+                if position == .end {
+                    Text(String(format: "%g", value))
+                        .font(.system(size: fontSize!))
+                        .frame(width: fontSize! * 3, height: fontSize!)
+                        .foregroundColor(color)
+                }
                 tickMark
+                    
             }
+            .if(position == .end) { $0.offset(y: -fontSize!)}
+            .frame(width: width)
     }
 }
 

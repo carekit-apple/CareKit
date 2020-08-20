@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+
+jobs:
+        
+  test:
+    
+    runs-on: macos-latest
+  
+    strategy:
+      matrix:
+        destination: ['platform=iOS\ Simulator,OS=14.0,name=iPhone\ 11\ Pro\ Max']
+        scheme: ['CareKit\ iOS', 'CareKitStore\ iOS', 'CareKitUI\ iOS', 'CareKitFHIR', 'OCKSample', 'OCKCatalog']
+  
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set Xcode Version
+        run: sudo xcode-select -s /Applications/Xcode_12.app
+      - name: Build
+        run: set -o pipefail && env NSUnbufferedIO=YES xcodebuild -verbose -workspace CKWorkspace.xcworkspace -scheme ${{ matrix.scheme }} -destination ${{ matrix.destination }} build test | xcpretty

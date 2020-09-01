@@ -381,7 +381,7 @@ private func makeManagedObjectModel() -> NSManagedObjectModel {
     noteToTask.destinationEntity = task
     noteToTask.isOptional = true
     noteToTask.minCount = 0
-    noteToTask.maxCount = 0
+    noteToTask.maxCount = 1
     noteToTask.deleteRule = .nullifyDeleteRule
 
     let noteToOutcome = NSRelationshipDescription()

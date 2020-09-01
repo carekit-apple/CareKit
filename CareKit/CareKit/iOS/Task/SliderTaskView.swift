@@ -151,7 +151,7 @@ private extension CareKitUI.SliderTaskView where Header == _SliderTaskViewHeader
                   value: value,
                   range: 0...10,
                   step: 1,
-                  sliderStyle: .system,
+                  sliderStyle: .UISlider,
                   action: viewModel?.action ?? { _ in })
     }
 }

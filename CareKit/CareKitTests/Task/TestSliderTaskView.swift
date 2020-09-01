@@ -32,7 +32,7 @@ class TestSliderTaskView: XCTestCase {
                                  initialValue: 2, value: $value,
                                  range: 0...10, step: 2,
                                  minimumImage: nil, maximumImage: nil,
-                                 sliderStyle: .system,
+                                 sliderStyle: .UISlider,
                                  action: { _ in })
     }
 

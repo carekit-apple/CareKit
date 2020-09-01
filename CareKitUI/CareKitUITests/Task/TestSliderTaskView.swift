@@ -18,11 +18,11 @@ class TestSliderTaskView: XCTestCase {
         var body: some View {
             Group {
                 SliderTaskView(title: Text(""), detail:  Text(""), instructions:  Text(""), isComplete: false,
-                               initialValue: 5, value: $value, range: 0...10, step: 1, minimumImage: nil, maximumImage: nil, sliderStyle: .system, action: { _ in })
+                               initialValue: 5, value: $value, range: 0...10, step: 1, minimumImage: nil, maximumImage: nil, sliderStyle: .UISlider, action: { _ in })
                 SliderTaskView(title: Text(""), isComplete: false,
-                               initialValue: 5, value: $value,  range: 0...10, step: 1, sliderStyle: .filler(OCKSliderDimensions()), action: { _ in })
+                               initialValue: 5, value: $value,  range: 0...10, step: 1, sliderStyle: .CareKitSlider(OCKSliderDimensions()), action: { _ in })
                 SliderTaskView(title: Text(""), isComplete: false,
-                               initialValue: 5, value: $value,  range: 0...10, step: 1, sliderStyle: .filler(OCKSliderDimensions(sliderHeight: 100, frameHeightMultiplier: 2)), action: { _ in })
+                               initialValue: 5, value: $value,  range: 0...10, step: 1, sliderStyle: .CareKitSlider(OCKSliderDimensions(height: 100, cornerRadius: 2)), action: { _ in })
             }
         }
     }
@@ -31,7 +31,7 @@ class TestSliderTaskView: XCTestCase {
         var body: some View {
             Group {
                 SliderTaskView(header: { EmptyView() }, sliderView: { EmptyView() })
-                SliderTaskView(isComplete: true, initialValue: 50, value: $value, range: 10...100, step: 2, sliderStyle: .system, action: { _ in }, header: { EmptyView() })
+                SliderTaskView(isComplete: true, initialValue: 50, value: $value, range: 10...100, step: 2, sliderStyle: .UISlider, action: { _ in }, header: { EmptyView() })
                 SliderTaskView(title: Text(""), sliderView: { EmptyView() })
             }
         }

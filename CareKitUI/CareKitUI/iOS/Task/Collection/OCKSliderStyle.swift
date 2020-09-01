@@ -23,10 +23,10 @@ public enum OCKSliderStyle {
     ///      +––––––––––––––––––––––––––––––––––+
     ///      |      '      '      '      '      |
     /// ```
-    case filler(OCKSliderDimensions)
+    case CareKitSlider(OCKSliderDimensions)
     
     /// An OCK Slider that uses the body of a system slider.
-    case system
+    case UISlider
 }
 
 /// The dimensions that determine the size and frame of an OCKSlider with a filler style

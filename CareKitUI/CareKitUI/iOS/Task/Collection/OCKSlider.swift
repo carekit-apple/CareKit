@@ -35,12 +35,12 @@ public struct OCKSlider: View {
         self.minimumImage = minimumImage
         self.maximumImage = maximumImage
         switch sliderStyle {
-        case .filler(let sliderDimensions):
+        case .CareKitSlider(let sliderDimensions):
             self.sliderHeight = sliderDimensions.height
             self.frameHeight = sliderDimensions.height * 2
             self.cornerRadius = sliderDimensions.cornerRadius == nil ? sliderDimensions.height * 0.3 : sliderDimensions.cornerRadius
             self.usesSystemSlider = false
-        case .system:
+        case .UISlider:
             self.sliderHeight = nil
             self.frameHeight = 40
             self.cornerRadius = nil

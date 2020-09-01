@@ -22,7 +22,7 @@ class TestSliderTaskView: XCTestCase {
                 SliderTaskView(title: Text(""), isComplete: false,
                                initialValue: 5, value: $value,  range: 0...10, step: 1, sliderStyle: .filler(OCKSliderDimensions()), action: { _ in })
                 SliderTaskView(title: Text(""), isComplete: false,
-                               initialValue: 5, value: $value,  range: 0...10, step: 1, sliderStyle: .filler(OCKSliderDimensions(sliderHeight: 100, frameHeightMultiplier: 2)), action: { _ in })
+                               initialValue: 5, value: $value,  range: 0...10, step: 1, sliderStyle: .filler(OCKSliderDimensions(height: 100, cornerRadius: 2)), action: { _ in })
             }
         }
     }

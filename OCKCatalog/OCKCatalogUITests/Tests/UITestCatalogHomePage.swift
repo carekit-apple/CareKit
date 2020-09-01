@@ -53,7 +53,7 @@ class UITestCatalogHomePage: XCTestCase {
         // Verify the expected number of tasks in the list upon launch
         // Task items only appear in cells, so we can count the number of cells as opposed to staticTexts
         // (which would include the section header text elements)
-        let expectedTasksCount = 16
+        let expectedTasksCount = 17
         XCTAssertEqual(catalogHomeScreen.taskTable.cells.count, expectedTasksCount)
 
     }

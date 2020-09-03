@@ -28,29 +28,41 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import CareKit
 import CareKitStore
-import CareKitUI
-import XCTest
+import Foundation
+import SwiftUI
 
-class OCKSampleUITests: XCTestCase {
+@available(iOS 14.0, watchOS 7.0, *)
+struct SynchronizedContactView<Controller: OCKContactController, Content: View>: View {
 
-    override func setUp() {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+    @StateObject private var controller: Controller
 
-        // In UI tests it is usually best to stop immediately when a failure occurs.
-        continueAfterFailure = false
+    private let errorHandler: ((Error) -> Void)?
+    private let content: (_ controller: Controller) -> Content
+    private let query: OCKSynchronizedContactQuery?
+
+    var body: some View {
+        content(controller)
+            .onAppear {
+                self.query?.perform(using: self.controller)
+            }
+            .onReceive(controller.$error.compactMap { $0 }) { error in
+                self.errorHandler?(error)
+            }
     }
 
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+    init(controller: Controller, query: OCKSynchronizedContactQuery? = nil, errorHandler: ((Error) -> Void)? = nil,
+         content: @escaping (_ viewModel: Controller) -> Content) {
+        self.query = query
+        self._controller = .init(wrappedValue: controller)
+        self.errorHandler = errorHandler
+        self.content = content
     }
 
-    func testExample() {
-        // UI tests must launch the application that they test.
-        let app = XCUIApplication()
-        app.launch()
-        // Use recording to get started writing UI tests.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    init(copying copy: Self, settingErrorHandler errorHandler: @escaping (Error) -> Void) {
+        self.query = copy.query
+        self._controller = .init(wrappedValue: copy.controller)
+        self.content = copy.content
+        self.errorHandler = errorHandler
     }
 }

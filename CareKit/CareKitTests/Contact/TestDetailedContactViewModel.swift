@@ -28,29 +28,61 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import CareKit
+@testable import CareKit
 import CareKitStore
 import CareKitUI
+import Combine
+import Foundation
+import SwiftUI
 import XCTest
+import Contacts
 
-class OCKSampleUITests: XCTestCase {
+class TestDetailedContactViewModel: XCTestCase {
+
+    var controller: OCKDetailedContactController!
+    var cancellable: AnyCancellable?
+    var model: ContactViewModel!
 
     override func setUp() {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-
-        // In UI tests it is usually best to stop immediately when a failure occurs.
-        continueAfterFailure = false
+        super.setUp()
+        let data = OCKContact.mock()
+        let store = OCKStore(name: "carekit-store", type: .inMemory)
+        controller = .init(storeManager: .init(wrapping: store))
+        controller.contact = data
+        model = controller.viewModel
     }
 
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+    func testViewModelCreation() {
+        XCTAssertEqual(formatName(controller.contact?.name), model.title)
+        XCTAssertEqual(formatAddress(controller.contact?.address), model.address)
     }
+    
+    private func formatName(_ name: PersonNameComponents?) -> String {
+        guard let name = name else {
+            return ""
+        }
+        let formatter = PersonNameComponentsFormatter()
+        formatter.style = .medium
+        
+        return formatter.string(from: name)
+    }
+    
+    
+    private func formatAddress(_ address: OCKPostalAddress?) -> String {
+        guard let address = address else {
+            return ""
+        }
+        let formatter = CNPostalAddressFormatter()
+        formatter.style = .mailingAddress
+        
+        return formatter.string(from: address)
+    }
+}
 
-    func testExample() {
-        // UI tests must launch the application that they test.
-        let app = XCUIApplication()
-        app.launch()
-        // Use recording to get started writing UI tests.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+private extension OCKContact {
+    static func mock() -> OCKContact {
+        var contact = OCKContact(id: "lexi-torres", givenName: "Lexi", familyName: "Torres", carePlanUUID: nil)
+        contact.title = "Family Practice"
+        return contact
     }
 }

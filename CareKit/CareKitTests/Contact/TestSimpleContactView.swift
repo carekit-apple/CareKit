@@ -31,26 +31,31 @@
 import CareKit
 import CareKitStore
 import CareKitUI
+import Foundation
+import SwiftUI
 import XCTest
 
-class OCKSampleUITests: XCTestCase {
+@available(iOS 14.0, watchOS 7.0, *)
+class TestSimpleContactView: XCTestCase {
 
-    override func setUp() {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+    let controller: OCKSimpleContactController = {
+        let store = OCKStore(name: "carekit-store", type: .onDisk)
+        return .init(storeManager: .init(wrapping: store))
+    }()
 
-        // In UI tests it is usually best to stop immediately when a failure occurs.
-        continueAfterFailure = false
+    let query = OCKContactQuery(id: "lexi-torres")
+    let data = OCKContact(id: "lexi-torres", givenName: "Lexi", familyName: "Torres", carePlanUUID: nil)
+    let staticView = CareKitUI.SimpleContactView(title: Text("Title"), detail: Text("Detail"), image: Image(systemName: "person.crop.circle"))
+
+    func testDefaultContentInitializers() {
+        _ = CareKit.SimpleContactView(contact: data, contactQuery: query, storeManager: controller.storeManager)
+        _ = CareKit.SimpleContactView(contactID: "lexi-torres", storeManager:  controller.storeManager)
+        _ = CareKit.SimpleContactView(controller: controller)
     }
 
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
-
-    func testExample() {
-        // UI tests must launch the application that they test.
-        let app = XCUIApplication()
-        app.launch()
-        // Use recording to get started writing UI tests.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    func testCustomContentInitializers() {
+        _ = CareKit.SimpleContactView(contact: data, contactQuery: query, storeManager: controller.storeManager) { _ in self.staticView }
+        _ = CareKit.SimpleContactView(contactID: "lexi-torres", storeManager: controller.storeManager) { _ in self.staticView }
+        _ = CareKit.SimpleContactView(controller: controller) { _ in self.staticView }
     }
 }

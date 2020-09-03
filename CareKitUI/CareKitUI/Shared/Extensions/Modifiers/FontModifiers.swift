@@ -28,29 +28,17 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import CareKit
-import CareKitStore
-import CareKitUI
-import XCTest
+import SwiftUI
 
-class OCKSampleUITests: XCTestCase {
-
-    override func setUp() {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-
-        // In UI tests it is usually best to stop immediately when a failure occurs.
-        continueAfterFailure = false
-    }
-
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
-
-    func testExample() {
-        // UI tests must launch the application that they test.
-        let app = XCUIApplication()
-        app.launch()
-        // Use recording to get started writing UI tests.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+public struct ScaledFontModifier: ViewModifier {
+    @Environment(\.careKitStyle) private var style
+    @Environment(\.sizeCategory) var sizeCategory
+    var size: CGFloat
+    
+    public func body(content: Content) -> some View {
+        let scaledSize = UIFontMetrics.default.scaledValue(for: size)
+        return content
+                .font(.system(size: scaledSize))
+            
     }
 }

@@ -26,7 +26,7 @@ public enum OCKSliderStyle {
     case CareKitSlider(OCKSliderDimensions)
     
     /// An OCK Slider that uses the body of a system slider.
-    case UISlider
+    case system
 }
 
 /// The dimensions that determine the size and frame of an OCKSlider with a filler style

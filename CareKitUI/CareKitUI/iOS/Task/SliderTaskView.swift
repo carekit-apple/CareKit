@@ -38,7 +38,7 @@ import SwiftUI
 ///     |                                                       |
 ///     +-------------------------------------------------------+
 /// ```
-public struct SliderTaskView<Header: View, SliderView: View>: View {
+public struct SliderLogTaskView<Header: View, Slider: View>: View {
     
     // MARK: - Properties
     

@@ -42,7 +42,7 @@ extension OCKTaskController {
         { self.saveOutcomesEvent(atIndexPath: indexPath, values: values, errorHandler: errorHandler) }
     }
     
-    func saveOutcomesEvent(atIndexPath indexPath: IndexPath, values: [OCKOutcomeValue], errorHandler: ((Error) -> Void)?) {
+    func saveOutcomesForEvent(atIndexPath indexPath: IndexPath, values: [OCKOutcomeValue], errorHandler: ((Error) -> Void)?) {
         let isComplete = isEventComplete(atIndexPath: indexPath)
         setEvent(atIndexPath: indexPath, isComplete: !isComplete, values: values) { result in
             if case let .failure(error) = result {

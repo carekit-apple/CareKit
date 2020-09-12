@@ -10,7 +10,7 @@
 
 import SwiftUI
 
-public struct OCKSliderButton: View {
+struct SliderButton: View {
     
     @Environment(\.careKitStyle) private var style
     

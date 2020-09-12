@@ -23,7 +23,7 @@ public enum OCKSliderStyle {
     ///      +––––––––––––––––––––––––––––––––––+
     ///      |      '      '      '      '      |
     /// ```
-    case CareKitSlider(OCKSliderDimensions)
+    case ticked
     
     /// An OCK Slider that uses the body of a system slider.
     case system

@@ -1,5 +1,5 @@
 //
-//  TestSliderTaskView.swift
+//  TestSliderLogTaskView.swift
 //
 //
 //  Created by Dylan Li on 7/27/20.
@@ -14,37 +14,38 @@ import SwiftUI
 import XCTest
 
 @available(iOS 14.0, watchOS 7.0, *)
-class TestSliderTaskView: XCTestCase {
-    let controller: OCKSliderTaskController = {
+class TestSliderLogTaskView: XCTestCase {
+    let controller: OCKSliderLogTaskController = {
         let store = OCKStore(name: "carekit-store", type: .inMemory)
         return .init(storeManager: .init(wrapping: store))
     }()
     
-    @State var value: CGFloat = 6
+    @State var value: Double = 6
 
     let eventQuery = OCKEventQuery(for: Date())
     let task = OCKTask(id: "", title: "", carePlanUUID: nil, schedule: .dailyAtTime(hour: 1, minutes: 0, start: Date(), end: nil, text: nil))
-    var staticView: CareKitUI.SliderTaskView<_SliderTaskViewHeader, _SliderTaskViewSliderView> {
-        CareKitUI.SliderTaskView(title: Text(""),
+    var staticView: CareKitUI.SliderLogTaskView<_SliderLogTaskViewHeader, _SliderLogTaskViewSlider> {
+        CareKitUI.SliderLogTaskView(title: Text(""),
                                  detail: Text(""),
                                  instructions: Text(""),
-                                 isComplete: false,
-                                 initialValue: 2, value: $value,
-                                 range: 0...10, step: 2,
-                                 minimumImage: nil, maximumImage: nil,
-                                 sliderStyle: .UISlider,
+                                 value: $value,
+                                 range: 0...10,
+                                 step: 2,
+                                 minimumImage: nil,
+                                 maximumImage: nil,
+                                 sliderStyle: .system,
                                  action: { _ in })
     }
 
     func testDefaultContentInitializers() {
-        _ = CareKit.SliderTaskView(task: task, eventQuery: eventQuery, storeManager: controller.storeManager)
-        _ = CareKit.SliderTaskView(taskID: "", eventQuery: eventQuery, storeManager: controller.storeManager)
-        _ = CareKit.SliderTaskView(controller: controller)
+        _ = CareKit.SliderLogTaskView(task: task, eventQuery: eventQuery, storeManager: controller.storeManager)
+        _ = CareKit.SliderLogTaskView(taskID: "", eventQuery: eventQuery, storeManager: controller.storeManager)
+        _ = CareKit.SliderLogTaskView(controller: controller)
     }
 
     func testCustomContentInitializers() {
-        _ = CareKit.SliderTaskView(task: task, eventQuery: eventQuery, storeManager: controller.storeManager) { controller, value in self.staticView }
-        _ = CareKit.SliderTaskView(taskID: "", eventQuery: eventQuery, storeManager: controller.storeManager) { controller, value in self.staticView }
-        _ = CareKit.SliderTaskView(controller: controller) { controller, value in self.staticView }
+        _ = CareKit.SliderLogTaskView(task: task, eventQuery: eventQuery, storeManager: controller.storeManager) { controller, value in self.staticView }
+        _ = CareKit.SliderLogTaskView(taskID: "", eventQuery: eventQuery, storeManager: controller.storeManager) { controller, value in self.staticView }
+        _ = CareKit.SliderLogTaskView(controller: controller) { controller, value in self.staticView }
     }
 }

@@ -1,5 +1,5 @@
 //
-//  OCKSliderTaskController.swift
+//  OCKSliderLogTaskController.swift
 //  
 //
 //  Created by Dylan Li on 5/26/20.
@@ -13,15 +13,15 @@ import Combine
 import Foundation
 import SwiftUI
 
-open class OCKSliderTaskController: OCKTaskController {
+open class OCKSliderLogTaskController: OCKTaskController {
     
     /// Data used to create a `CareKitUI.SliderTaskTaskView`.
-    @Published public private(set) var viewModel: SliderTaskViewModel? {
+    @Published public private(set) var viewModel: SliderLogTaskViewModel? {
         willSet { objectWillChange.send() }
     }
     
     /// Data used to create a `CareKitUI.SliderTaskTaskView`.
-    @Published public private(set) var value: CGFloat = 0 {
+    @Published public private(set) var value: Double = 0 {
         willSet { objectWillChange.send() }
     }
     
@@ -34,11 +34,11 @@ open class OCKSliderTaskController: OCKTaskController {
         }
     }
     
-    private func makeViewModel(from taskEvents: OCKTaskEvents) -> SliderTaskViewModel? {
+    private func makeViewModel(from taskEvents: OCKTaskEvents) -> SliderLogTaskViewModel? {
         guard !taskEvents.isEmpty else { return nil }
 
         if let foundValue = taskEvents.first?.first?.outcome?.values.last?.numberValue?.doubleValue {
-            value = CGFloat(foundValue)
+            value = foundValue
         }
     
         let errorHandler: (Error) -> Void = { [weak self] error in
@@ -48,13 +48,13 @@ open class OCKSliderTaskController: OCKTaskController {
         return .init(title: taskEvents.firstEventTitle,
                      detail: taskEvents.firstEventDetail,
                      instructions: taskEvents.firstTaskInstructions,
-                     isComplete: taskEvents.isFirstEventComplete,
+                     //isComplete: taskEvents.isFirstEventComplete,
                      action: saveSliderValueActionForFirstEvent(errorHandler: errorHandler))
     }
     
     func saveSliderValueActionForFirstEvent(errorHandler: ((Error) -> Void)?) -> (Double) -> Void {
         { sliderValue in
-            return self.saveOutcomesEvent(atIndexPath: .init(row: 0, section: 0), values: [.init(sliderValue)], errorHandler: errorHandler) }
+            return self.saveOutcomesForEvent(atIndexPath: .init(row: 0, section: 0), values: [.init(sliderValue)], errorHandler: errorHandler) }
     }
 }
 

@@ -35,11 +35,11 @@ import SwiftUI
 extension OCKTaskController {
 
     func saveOutcomesActionForFirstEvent(values: [OCKOutcomeValue], errorHandler: ((Error) -> Void)?) -> () -> Void {
-        { self.saveOutcomesEvent(atIndexPath: .init(row: 0, section: 0), values: values, errorHandler: errorHandler) }
+        { self.saveOutcomesForEvent(atIndexPath: .init(row: 0, section: 0), values: values, errorHandler: errorHandler) }
     }
     
     func saveOutcomesActionForEvent(atIndexPath indexPath: IndexPath, values: [OCKOutcomeValue], errorHandler: ((Error) -> Void)?) -> () -> Void {
-        { self.saveOutcomesEvent(atIndexPath: indexPath, values: values, errorHandler: errorHandler) }
+        { self.saveOutcomesForEvent(atIndexPath: indexPath, values: values, errorHandler: errorHandler) }
     }
     
     func saveOutcomesForEvent(atIndexPath indexPath: IndexPath, values: [OCKOutcomeValue], errorHandler: ((Error) -> Void)?) {

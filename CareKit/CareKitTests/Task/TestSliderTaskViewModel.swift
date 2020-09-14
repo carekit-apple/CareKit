@@ -16,7 +16,7 @@ import XCTest
 
 class TestSliderTaskViewModel: XCTestCase {
 
-    var controller: OCKSliderTaskController!
+    var controller: OCKSliderLogTaskController!
     var cancellable: AnyCancellable?
 
     override func setUp() {
@@ -37,7 +37,6 @@ class TestSliderTaskViewModel: XCTestCase {
                 XCTAssertEqual(event?.task.title, viewModel.title)
                 XCTAssertEqual(OCKScheduleUtility.scheduleLabel(for: event), viewModel.detail)
                 XCTAssertEqual(event?.task.instructions, viewModel.instructions)
-                XCTAssertEqual(event?.outcome != nil, viewModel.isComplete)
                 updated.fulfill()
             }
 

@@ -1,5 +1,5 @@
 //
-//  SliderTaskView.swift
+//  SliderLogTaskView.swift
 //
 //  Created by Dylan Li on 5/26/20.
 //  Copyright © 2020 NetReconLab. All rights reserved.
@@ -44,10 +44,10 @@ import SwiftUI
 /// ```
 
 @available(iOS 14.0, *)
-public struct SliderTaskView<Header: View, SliderView: View>: View {
+public struct SliderLogTaskView<Header: View, Slider: View>: View {
     
-    private typealias TaskView = SynchronizedSliderTaskView<OCKSliderTaskController, CareKitUI.SliderTaskView<Header, SliderView>>
-
+    private typealias TaskView = SynchronizedSliderLogTaskView<OCKSliderLogTaskController, CareKitUI.SliderLogTaskView<Header, Slider>>
+    
     private let taskView: TaskView
     
     public var body: some View {
@@ -56,7 +56,6 @@ public struct SliderTaskView<Header: View, SliderView: View>: View {
 
     private init(taskView: TaskView) {
         self.taskView = taskView
-        
     }
     
     /// Create an instance. The first task and event that match the provided queries will be fetched from the the store and displayed in the view.
@@ -67,7 +66,7 @@ public struct SliderTaskView<Header: View, SliderView: View>: View {
     ///     - storeManager: Wraps the store that contains the task and event to fetch.
     ///     - content: Create a view to display whenever the body is computed.
     public init(taskID: String, eventQuery: OCKEventQuery, storeManager: OCKSynchronizedStoreManager,
-                content: @escaping (_ controller: OCKSliderTaskController, _ value: Binding<CGFloat>) -> CareKitUI.SliderTaskView<Header, SliderView>) {
+                content: @escaping (_ controller: OCKSliderLogTaskController, _ value: Binding<Double>) -> CareKitUI.SliderLogTaskView<Header, Slider>) {
         taskView = .init(controller: .init(storeManager: storeManager),
                          query: .taskIDs([taskID], eventQuery),
                          content: content)
@@ -81,7 +80,7 @@ public struct SliderTaskView<Header: View, SliderView: View>: View {
     ///     - storeManager: Wraps the store that contains the event to fetch.
     ///     - content: Create a view to display whenever the body is computed.
     public init(task: OCKAnyTask, eventQuery: OCKEventQuery, storeManager: OCKSynchronizedStoreManager,
-                content: @escaping (_ controller: OCKSliderTaskController, _ value: Binding<CGFloat>) -> CareKitUI.SliderTaskView<Header, SliderView>) {
+                content: @escaping (_ controller: OCKSliderLogTaskController, _ value: Binding<Double>) -> CareKitUI.SliderLogTaskView<Header, Slider>) {
         taskView = .init(controller: .init(storeManager: storeManager),
                          query: .tasks([task], eventQuery),
                          content: content)
@@ -91,8 +90,8 @@ public struct SliderTaskView<Header: View, SliderView: View>: View {
     /// - Parameters:
     ///     - controller: Controller that holds a reference to data displayed by the view.
     ///     - content: Create a view to display whenever the body is computed.
-    public init(controller: OCKSliderTaskController,
-                content: @escaping (_ controller: OCKSliderTaskController, _ value: Binding<CGFloat>) -> CareKitUI.SliderTaskView<Header, SliderView>) {
+    public init(controller: OCKSliderLogTaskController,
+                content: @escaping (_ controller: OCKSliderLogTaskController, _ value: Binding<Double>) -> CareKitUI.SliderLogTaskView<Header, Slider>) {
         taskView = .init(controller: controller, content: content)
     }
     
@@ -104,7 +103,7 @@ public struct SliderTaskView<Header: View, SliderView: View>: View {
 }
 
 @available(iOS 14.0, *)
-public extension SliderTaskView where Header == _SliderTaskViewHeader, SliderView == _SliderTaskViewSliderView {
+public extension SliderLogTaskView where Header == _SliderLogTaskViewHeader, Slider == _SliderLogTaskViewSlider {
 
     /// Create an instance that displays the default content. The first task and event that match the provided queries will be fetched from the the
     /// store and displayed in the view. The view will update when changes occur in the store.
@@ -135,28 +134,27 @@ public extension SliderTaskView where Header == _SliderTaskViewHeader, SliderVie
     /// Create an instance that displays the default content.
     /// - Parameters:
     ///     - controller: Controller that holds a reference to data displayed by the view.
-    init(controller: OCKSliderTaskController) {
+    init(controller: OCKSliderLogTaskController) {
         taskView = .init(controller: controller) {
             .init(viewModel: $0.viewModel, value: $1)
         }
     }
 }
 
-private extension CareKitUI.SliderTaskView where Header == _SliderTaskViewHeader, SliderView == _SliderTaskViewSliderView {
-    init(viewModel: SliderTaskViewModel?, value: Binding<CGFloat>) {
+private extension CareKitUI.SliderLogTaskView where Header == _SliderLogTaskViewHeader, Slider == _SliderLogTaskViewSlider {
+    init(viewModel: SliderLogTaskViewModel?, value: Binding<Double>) {
         self.init(title: Text(viewModel?.title ?? ""),
                   detail: viewModel?.detail.map { Text($0) },
                   instructions: viewModel?.instructions.map{ Text($0) },
-                  isComplete: viewModel?.isComplete ?? false,
                   value: value,
                   range: 0...10,
                   step: 1,
-                  sliderStyle: .UISlider,
+                  sliderStyle: .system,
                   action: viewModel?.action ?? { _ in })
     }
 }
 
-public struct SliderTaskViewModel {
+public struct SliderLogTaskViewModel {
     
     /// The title text to display in the header.
     public let title: String
@@ -166,9 +164,6 @@ public struct SliderTaskViewModel {
     
     /// Instructions text to display under the header.
     public let instructions: String?
-    
-    /// True if the button under the slider is in the completed.
-    public let isComplete: Bool
 
     /// Action to perform when the button is tapped.
     public let action: (Double) -> Void

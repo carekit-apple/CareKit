@@ -1,6 +1,6 @@
 //
-//  OCKSlider.swift
-//  
+//  Slider.swift
+//
 //
 //  Created by Dylan Li on 6/22/20.
 //  Copyright © 2020 NetReconLab. All rights reserved.
@@ -10,14 +10,13 @@
 
 import SwiftUI
 
-public struct Slider: View {
+struct Slider: View {
     
     @Environment(\.careKitStyle) private var style
     
-    @Binding private var value: CGFloat
-    private let isComplete: Bool
-    private let range: (CGFloat, CGFloat)
-    private let step: CGFloat
+    @Binding private var value: Double
+    private let range: (Double, Double)
+    private let step: Double
     private let minimumImage: Image?
     private let maximumImage: Image?
     private let sliderHeight: CGFloat?
@@ -27,20 +26,19 @@ public struct Slider: View {
     private let usesSystemSlider: Bool
     private var containsImages: Bool { (minimumImage == nil && maximumImage == nil) ? false : true }
     
-    init(value: Binding<CGFloat>, range: ClosedRange<CGFloat>, step: CGFloat, isComplete: Bool, minimumImage: Image?, maximumImage: Image?, sliderStyle: OCKSliderStyle) {
+    init(value: Binding<Double>, range: ClosedRange<Double>, step: Double, minimumImage: Image?, maximumImage: Image?, sliderStyle: SliderStyle) {
         _value = value
         self.range = (range.lowerBound, range.upperBound)
         self.step = step
-        self.isComplete = isComplete
         self.minimumImage = minimumImage
         self.maximumImage = maximumImage
         switch sliderStyle {
-        case .CareKitSlider(let sliderDimensions):
-            self.sliderHeight = sliderDimensions.height
-            self.frameHeight = sliderDimensions.height * 2
-            self.cornerRadius = sliderDimensions.cornerRadius == nil ? sliderDimensions.height * 0.3 : sliderDimensions.cornerRadius
+        case .ticked:
+            self.sliderHeight = 40
+            self.frameHeight = 80
+            self.cornerRadius = 15
             self.usesSystemSlider = false
-        case .UISlider:
+        case .system:
             self.sliderHeight = nil
             self.frameHeight = 40
             self.cornerRadius = nil
@@ -63,9 +61,13 @@ public struct Slider: View {
             HStack(spacing: 0) {
                 minimumImage?
                     .sliderImageModifier(width: imageWidth, height: usesSystemSlider ? imageWidth : sliderHeight!)
+                
                 Spacer(minLength: 0)
+                
                 slider(frameWidth: frameWidth, imageWidth: imageWidth)
+                
                 Spacer(minLength: 0)
+                
                 maximumImage?
                     .sliderImageModifier(width: imageWidth, height: usesSystemSlider ? imageWidth : sliderHeight!)
             }
@@ -75,12 +77,11 @@ public struct Slider: View {
     private func slider(frameWidth: CGFloat, imageWidth: CGFloat) -> some View {
         let sliderWidth = containsImages ? frameWidth - imageWidth * 2 - imageWidth / 2 : frameWidth
         let knobWidth = cornerRadius == nil ? sliderWidth * 0.1 : cornerRadius! * 1.8
-        let drag = isComplete ? nil : DragGesture(minimumDistance: 0)
+        let drag = DragGesture(minimumDistance: 0)
         return
             usesSystemSlider ?
             ViewBuilder.buildEither(first:
-                                        Slider(value: $value, in: range.0...range.1)
-                                        .disabled(isComplete)
+                                        SwiftUI.Slider(value: $value, in: range.0...range.1)
                                         .gesture(drag.onChanged({ drag in
                                                                     onDragChange(drag, sliderWidth: sliderWidth, knobWidth: knobWidth) }))
                                         .frame(width: sliderWidth)) :
@@ -112,7 +113,7 @@ public struct Slider: View {
     }
     
     private func addTicks(sliderWidth: CGFloat, knobWidth: CGFloat) -> some View {
-        var values = [CGFloat]()
+        var values = [Double]()
         var possibleValue = range.0
         while possibleValue <= range.1 {
             values.append(possibleValue)
@@ -130,9 +131,9 @@ public struct Slider: View {
     
     private func onDragChange(_ drag: DragGesture.Value, sliderWidth: CGFloat, knobWidth: CGFloat) {
         let width = (knob: knobWidth, view: sliderWidth)
-        let xrange = (min: CGFloat(0), max: width.view - width.knob)
-        var dragValue = drag.startLocation.x + drag.translation.width
-        dragValue -= 0.5 * width.knob
+        let xrange = (min: Double(0), max: Double(width.view - width.knob))
+        var dragValue = Double(drag.startLocation.x + drag.translation.width)
+        dragValue -= 0.5 * Double(width.knob)
         dragValue = dragValue > xrange.max ? xrange.max : dragValue
         dragValue = dragValue < xrange.min ? xrange.min : dragValue
         dragValue = dragValue.convert(fromRange: (xrange.min, xrange.max), toRange: (range.0, range.1))
@@ -142,9 +143,9 @@ public struct Slider: View {
     
     private func getOffsetX(sliderWidth: CGFloat, knobWidth: CGFloat) -> CGFloat {
         let width = (knob: knobWidth, view: sliderWidth)
-        let xrange = (CGFloat(0), width.view - width.knob)
+        let xrange = (Double(0), Double(width.view - width.knob))
         let result = self.value.convert(fromRange: (range.0, range.1), toRange: xrange)
-        return result
+        return CGFloat(result)
     }
 }
 
@@ -162,7 +163,7 @@ private struct SliderModifier: ViewModifier {
 
 private struct SliderTickMark: View {
     private let color: Color
-    private let value: CGFloat
+    private let value: Double
     private enum PositionalHeight: CGFloat {
         case middle = 1.5
         case end = 1.7
@@ -173,7 +174,7 @@ private struct SliderTickMark: View {
     private let fontSize: CGFloat?
     private var length: CGFloat { sliderHeight * position.rawValue }
     
-    private init(sliderHeight: CGFloat, position: PositionalHeight, value: CGFloat, color: Color, width: CGFloat) {
+    private init(sliderHeight: CGFloat, position: PositionalHeight, value: Double, color: Color, width: CGFloat) {
         self.value = value
         self.sliderHeight = sliderHeight
         self.position = position
@@ -182,7 +183,7 @@ private struct SliderTickMark: View {
         self.fontSize = position == .end ? 15 : nil
     }
     
-    public init(value: CGFloat, values: [CGFloat], sliderHeight: CGFloat, width: CGFloat, color: Color) {
+    public init(value: Double, values: [Double], sliderHeight: CGFloat, width: CGFloat, color: Color) {
         let index = values.firstIndex(of: value)!
         if index != 0, index != values.count - 1 {
             self.init(sliderHeight: sliderHeight, position: .middle, value: value, color: color, width: width)
@@ -221,11 +222,11 @@ private extension Image {
     }
 }
 
-private extension CGFloat {
-    func convert(fromRange: (CGFloat, CGFloat), toRange: (CGFloat, CGFloat)) -> CGFloat {
+private extension Double {
+    func convert(fromRange: (Double, Double), toRange: (Double, Double)) -> Double {
         var value = self
         value -= fromRange.0
-        value /= CGFloat(fromRange.1 - fromRange.0)
+        value /= (fromRange.1 - fromRange.0)
         value *= toRange.1 - toRange.0
         value += toRange.0
         return value

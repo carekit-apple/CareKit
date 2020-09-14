@@ -303,7 +303,6 @@ open class OCKTaskController: ObservableObject {
     /// Set the completion state for an event.
     /// - Parameters:
     ///   - indexPath: Index path of the event.
-    ///   - isComplete: True if the event is complete.
     ///   - values: Array of OCKOutcomeValue
     ///   - completion: Result after setting the completion for the event.
     open func setEvent(atIndexPath indexPath: IndexPath, isComplete: Bool, values: [OCKOutcomeValue], completion: ((Result<OCKAnyOutcome, Error>) -> Void)?) {

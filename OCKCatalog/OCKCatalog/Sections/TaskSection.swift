@@ -167,58 +167,52 @@ private struct TaskView: View {
                 VStack(spacing: 16) {
                     
                     // System slider style
-                    CareKit.SliderTaskView(taskID: OCKStore.Tasks.distress.rawValue,
+                    CareKit.SliderLogTaskView(taskID: OCKStore.Tasks.distress.rawValue,
                                            eventQuery: .init(for: Date()), storeManager: storeManager) { controller, value in
-                        CareKitUI.SliderTaskView(title: Text((controller.viewModel?.title ?? "") + " (UISlider Bottom)"),
+                        CareKitUI.SliderLogTaskView(title: Text((controller.viewModel?.title ?? "") + " (System style with images)"),
                                                  instructions: controller.viewModel?.instructions.map(Text.init),
-                                                 isComplete: controller.viewModel?.isComplete ?? false,
                                                  value: value,
                                                  range: 0...10,
                                                  step: 1,
                                                  minimumImage: Image(systemName: "chevron.down"),
                                                  maximumImage: Image(systemName: "chevron.up"),
-                                                 sliderStyle: .UISlider,
+                                                 sliderStyle: .system,
                                                  action: controller.viewModel?.action ?? { _ in })
                     }
                     
-                    CareKit.SliderTaskView(taskID: OCKStore.Tasks.distress.rawValue,
+                    CareKit.SliderLogTaskView(taskID: OCKStore.Tasks.distress.rawValue,
                                            eventQuery: .init(for: Date()), storeManager: storeManager) { controller, value in
-                        CareKitUI.SliderTaskView(title: Text((controller.viewModel?.title ?? "") + " (UISlider Top)"),
+                        CareKitUI.SliderLogTaskView(title: Text((controller.viewModel?.title ?? "") + " (System style)"),
                                                  instructions: controller.viewModel?.instructions.map(Text.init),
-                                                 isComplete: controller.viewModel?.isComplete ?? false,
                                                  value: value,
                                                  range: 0...10,
                                                  step: 1,
-                                                 sliderStyle: .UISlider,
-                                                 isSliderTop: true,
+                                                 sliderStyle: .system,
                                                  action: controller.viewModel?.action ?? { _ in })
                     }
                     
-                    // Filler slider style
-                    CareKit.SliderTaskView(taskID: OCKStore.Tasks.distress.rawValue,
+                    // Ticked slider style
+                    CareKit.SliderLogTaskView(taskID: OCKStore.Tasks.distress.rawValue,
                                            eventQuery: .init(for: Date()), storeManager: storeManager) { controller, value in
-                        CareKitUI.SliderTaskView(title: Text((controller.viewModel?.title ?? "") + " (CareKitSlider Top)"),
+                        CareKitUI.SliderLogTaskView(title: Text((controller.viewModel?.title ?? "") + " (Ticked style with images)"),
                                                  instructions: controller.viewModel?.instructions.map(Text.init),
-                                                 isComplete: controller.viewModel?.isComplete ?? false,
                                                  value: value,
                                                  range: 0...10,
                                                  step: 1,
                                                  minimumImage: Image(systemName: "chevron.down"),
                                                  maximumImage: Image(systemName: "chevron.up"),
-                                                 sliderStyle: .CareKitSlider(OCKSliderDimensions()),
-                                                 isSliderTop: true,
+                                                 sliderStyle: .ticked,
                                                  action: controller.viewModel?.action ?? { _ in })
                     }
                     
-                    CareKit.SliderTaskView(taskID: OCKStore.Tasks.distress.rawValue,
+                    CareKit.SliderLogTaskView(taskID: OCKStore.Tasks.distress.rawValue,
                                            eventQuery: .init(for: Date()), storeManager: storeManager) { controller, value in
-                        CareKitUI.SliderTaskView(title: Text((controller.viewModel?.title ?? "") + " (CareKitSlider Bottom)"),
+                        CareKitUI.SliderLogTaskView(title: Text((controller.viewModel?.title ?? "") + " (Ticked style)"),
                                                  instructions: controller.viewModel?.instructions.map(Text.init),
-                                                 isComplete: controller.viewModel?.isComplete ?? false,
                                                  value: value,
                                                  range: 0...10,
                                                  step: 1,
-                                                 sliderStyle: .CareKitSlider(OCKSliderDimensions()),
+                                                 sliderStyle: .ticked,
                                                  action: controller.viewModel?.action ?? { _ in })
                     }
                 }

@@ -1,5 +1,5 @@
 //
-//  SliderTaskView.swift
+//  SliderLogTaskView.swift
 //  
 //
 //  Created by Dylan Li on 6/2/20.
@@ -46,9 +46,9 @@ public struct SliderLogTaskView<Header: View, Slider: View>: View {
     @Environment(\.isCardEnabled) private var isCardEnabled
 
     private let isHeaderPadded: Bool
-    private let isSliderViewPadded: Bool
+    private let isSliderPadded: Bool
     private let header: Header
-    private let sliderView: SliderView
+    private let slider: Slider
     private let instructions: Text?
     
     public var body: some View {
@@ -63,7 +63,7 @@ public struct SliderLogTaskView<Header: View, Slider: View>: View {
                     .lineLimit(nil)
                     .if(isCardEnabled) { $0.padding([.horizontal]) }
                 
-                VStack { sliderView }
+                VStack { slider }
                     .if(isCardEnabled && isHeaderPadded) { $0.padding([.horizontal, .bottom]) }
             }
         }
@@ -71,39 +71,39 @@ public struct SliderLogTaskView<Header: View, Slider: View>: View {
     
     // MARK: - Init
     
-    private init(isHeaderPadded: Bool, isSliderViewPadded: Bool,
-                 instructions: Text?, @ViewBuilder header: () -> Header, @ViewBuilder sliderView: () -> SliderView) {
+    private init(isHeaderPadded: Bool, isSliderPadded: Bool,
+                 instructions: Text?, @ViewBuilder header: () -> Header, @ViewBuilder slider: () -> Slider) {
         self.isHeaderPadded = isHeaderPadded
-        self.isSliderViewPadded = isSliderViewPadded
+        self.isSliderPadded = isSliderPadded
         self.instructions = instructions
         self.header = header()
-        self.sliderView = sliderView()
+        self.slider = slider()
     }
     
     /// Create an instance.
     /// - Parameter instructions: Instructions text to display under the header.
     /// - Parameter header: Header to inject at the top of the card. Specified content will be stacked vertically.
     /// - Parameter sliderView: View to inject under the header. Specified content will be stacked vertically.
-    public init(instructions: Text? = nil, @ViewBuilder header: () -> Header, @ViewBuilder sliderView: () -> SliderView) {
-        self.init(isHeaderPadded: false, isSliderViewPadded: false, instructions: instructions, header: header, sliderView: sliderView)
+    public init(instructions: Text? = nil, @ViewBuilder header: () -> Header, @ViewBuilder slider: () -> Slider) {
+        self.init(isHeaderPadded: false, isSliderPadded: false, instructions: instructions, header: header, slider: slider)
     }
 }
 
-public extension SliderTaskView where Header == _SliderTaskViewHeader {
+public extension SliderLogTaskView where Header == _SliderLogTaskViewHeader {
     
     /// Create an instance.
     /// - Parameter title: Title text to display in the header.
     /// - Parameter detail: Detail text to display in the header.
     /// - Parameter instructions: Instructions text to display under the header.
     /// - Parameter sliderView: View to inject under the header. Specified content will be stacked vertically.
-    init(title: Text, detail: Text? = nil, instructions: Text? = nil, @ViewBuilder sliderView: () -> SliderView) {
-        self.init(isHeaderPadded: true, isSliderViewPadded: false, instructions: instructions, header: {
-            _SliderTaskViewHeader(title: title, detail: detail)
-        }, sliderView: sliderView)
+    init(title: Text, detail: Text? = nil, instructions: Text? = nil, @ViewBuilder slider: () -> Slider) {
+        self.init(isHeaderPadded: true, isSliderPadded: false, instructions: instructions, header: {
+            _SliderLogTaskViewHeader(title: title, detail: detail)
+        }, slider: slider)
     }
 }
 
-public extension SliderTaskView where SliderView == _SliderTaskViewSliderView {
+public extension SliderLogTaskView where Slider == _SliderLogTaskViewSlider {
     
     /// Create an instance.
     /// - Parameter instructions: Instructions text to display under the header.
@@ -117,27 +117,24 @@ public extension SliderTaskView where SliderView == _SliderTaskViewSliderView {
     /// - Parameter sliderStyle: The style of the slider, either the SwiftUI system slider or the custom filler slider.
     /// - Parameter action: Action to perform when the button is tapped.
     /// - Parameter header: Header to inject at the top of the card. Specified content will be stacked vertically.
-    init(instructions: Text? = nil, isComplete: Bool,
-         initialValue: CGFloat? = nil, value: Binding<CGFloat>, range: ClosedRange<CGFloat>, step: CGFloat = 1,
-         minimumImage: Image? = nil, maximumImage: Image? = nil, sliderStyle: OCKSliderStyle, isSliderTop: Bool = false,
+    init(instructions: Text? = nil,
+         value: Binding<Double>, range: ClosedRange<Double>, step: Double = 1,
+         minimumImage: Image? = nil, maximumImage: Image? = nil, sliderStyle: SliderStyle = .system,
          action: @escaping (Double) -> Void,
          @ViewBuilder header: () -> Header) {
-        self.init(isHeaderPadded: false, isSliderViewPadded: true, instructions: instructions, header: header, sliderView: {
-            _SliderTaskViewSliderView(initialValue: initialValue,
-                                  value: value,
+        self.init(isHeaderPadded: false, isSliderPadded: true, instructions: instructions, header: header, slider: {
+            _SliderLogTaskViewSlider(value: value,
                                   range: range,
                                   step: step,
-                                  isComplete: isComplete,
                                   minimumImage: minimumImage,
                                   maximumImage: maximumImage,
                                   sliderStyle: sliderStyle,
-                                  isSliderTop: isSliderTop,
                                   action: action)
         })
     }
 }
 
-public extension SliderTaskView where Header == _SliderTaskViewHeader, SliderView == _SliderTaskViewSliderView {
+public extension SliderLogTaskView where Header == _SliderLogTaskViewHeader, Slider == _SliderLogTaskViewSlider {
     
     /// Create an instance.
     /// - Parameter title: Title text to display in the header.
@@ -152,29 +149,26 @@ public extension SliderTaskView where Header == _SliderTaskViewHeader, SliderVie
     /// - Parameter maximumImage: Image to display to the right of the slider. Default value is nil.
     /// - Parameter sliderStyle: The style of the slider, either the SwiftUI system slider or the custom filler slider.
     /// - Parameter action: Action to perform when the button is tapped.
-    init(title: Text, detail: Text? = nil, instructions: Text? = nil, isComplete: Bool,
-         initialValue: CGFloat? = nil, value: Binding<CGFloat>, range: ClosedRange<CGFloat>, step: CGFloat = 1,
-         minimumImage: Image? = nil, maximumImage: Image? = nil, sliderStyle: OCKSliderStyle, isSliderTop: Bool = false,
+    init(title: Text, detail: Text? = nil, instructions: Text? = nil,
+         value: Binding<Double>, range: ClosedRange<Double>, step: Double = 1,
+         minimumImage: Image? = nil, maximumImage: Image? = nil, sliderStyle: SliderStyle = .system,
          action: @escaping (Double) -> Void) {
-        self.init(isHeaderPadded: true, isSliderViewPadded: true, instructions: instructions, header: {
-            _SliderTaskViewHeader(title: title, detail: detail)
-        }, sliderView: {
-            _SliderTaskViewSliderView(initialValue: initialValue,
-                                  value: value,
+        self.init(isHeaderPadded: true, isSliderPadded: true, instructions: instructions, header: {
+            _SliderLogTaskViewHeader(title: title, detail: detail)
+        }, slider: {
+            _SliderLogTaskViewSlider(value: value,
                                   range: range,
                                   step: step,
-                                  isComplete: isComplete,
                                   minimumImage: minimumImage,
                                   maximumImage: maximumImage,
                                   sliderStyle: sliderStyle,
-                                  isSliderTop: isSliderTop,
                                   action: action)
         })
     }
 }
 
 /// The default header used by a `SliderTaskView`.
-public struct _SliderTaskViewHeader: View {
+public struct _SliderLogTaskViewHeader: View {
 
     @Environment(\.careKitStyle) private var style
 
@@ -190,52 +184,40 @@ public struct _SliderTaskViewHeader: View {
 }
 
 /// The default slider view used by an `SliderTaskView`.
-public struct _SliderTaskViewSliderView: View {
+public struct _SliderLogTaskViewSlider: View {
     
-    @Binding var value: CGFloat
-    fileprivate let initialValue: CGFloat
-    fileprivate let isComplete: Bool
+    @Binding var value: Double
+    fileprivate let initialValue: Double
     fileprivate let minimumImage: Image?
     fileprivate let maximumImage: Image?
-    fileprivate let range: ClosedRange<CGFloat>
-    fileprivate let step: CGFloat
-    fileprivate let sliderStyle: OCKSliderStyle
-    fileprivate let sliderIsTop: Bool
+    fileprivate let range: ClosedRange<Double>
+    fileprivate let step: Double
+    fileprivate let sliderStyle: SliderStyle
     fileprivate let action: (_ value: Double) -> Void
     
     
-    init(initialValue: CGFloat?, value: Binding<CGFloat>, range: ClosedRange<CGFloat>, step: CGFloat,
-         isComplete: Bool, minimumImage: Image?, maximumImage: Image?, sliderStyle: OCKSliderStyle, isSliderTop: Bool,
+    init(value: Binding<Double>, range: ClosedRange<Double>, step: Double,
+         minimumImage: Image?, maximumImage: Image?, sliderStyle: SliderStyle,
          action: @escaping (_ value: Double) -> Void) {
-        self.initialValue = initialValue ?? range.lowerBound + round((range.upperBound - range.lowerBound) / (step * 2)) * step
-        self.isComplete = isComplete
+        self.initialValue = range.lowerBound + round((range.upperBound - range.lowerBound) / (step * 2)) * step
         self.action = action
         self.minimumImage = minimumImage
         self.maximumImage = maximumImage
         self.range = range
         self.step = step
         self.sliderStyle = sliderStyle
-        self.sliderIsTop = isSliderTop
         _value = value
-        
     }
     
     public var body: some View {
         VStack {
-            if sliderIsTop {
-                OCKSlider(value: $value, range: range, step: step,
-                          isComplete: isComplete, minimumImage: minimumImage, maximumImage: maximumImage, sliderStyle: sliderStyle)
-            }
-            OCKSliderButton(value: $value, isComplete: isComplete, action: action)
-            if !sliderIsTop {
-                OCKSlider(value: $value, range: range, step: step,
-                          isComplete: isComplete, minimumImage: minimumImage, maximumImage: maximumImage, sliderStyle: sliderStyle)
-            }
+            SliderButton(value: $value, action: action)
+            
+            Slider(value: $value, range: range, step: step,
+                   minimumImage: minimumImage, maximumImage: maximumImage, sliderStyle: sliderStyle)
         }
         .onAppear {
-            if !isComplete {
-                value = initialValue
-            }
+            value = initialValue
         }
     }
 }

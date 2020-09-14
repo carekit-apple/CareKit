@@ -14,13 +14,13 @@ import Foundation
 import SwiftUI
 
 @available(iOS 14.0, *)
-public struct SynchronizedSliderTaskView<Controller: OCKSliderTaskController, SliderTaskView: View>: View {
+public struct SynchronizedSliderLogTaskView<Controller: OCKSliderLogTaskController, SliderLogTaskView: View>: View {
 
-    @StateObject private var controller: OCKSliderTaskController
-    @State private var value: CGFloat = 0
+    @StateObject private var controller: OCKSliderLogTaskController
+    @State private var value: Double = 0
 
     private let errorHandler: ((Error) -> Void)?
-    private let content: (_ controller: OCKSliderTaskController, _ value: Binding<CGFloat>) -> SliderTaskView
+    private let content: (_ controller: OCKSliderLogTaskController, _ value: Binding<Double>) -> SliderLogTaskView
     private let query: OCKSynchronizedTaskQuery?
     
     public var body: some View {
@@ -38,7 +38,7 @@ public struct SynchronizedSliderTaskView<Controller: OCKSliderTaskController, Sl
     }
 
     init(controller: Controller, query: OCKSynchronizedTaskQuery? = nil, errorHandler: ((Error) -> Void)? = nil,
-         content: @escaping (_ viewModel: OCKSliderTaskController, _ value: Binding<CGFloat>) -> SliderTaskView) {
+         content: @escaping (_ viewModel: OCKSliderLogTaskController, _ value: Binding<Double>) -> SliderLogTaskView) {
         self.query = query
         self._controller = .init(wrappedValue: controller)
         self.errorHandler = errorHandler

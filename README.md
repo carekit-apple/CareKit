@@ -188,7 +188,7 @@ let viewController = TaskButtonViewController(controller: TaskButtonController(s
 viewController.controller.fetchAndObserveEvents(forTaskID: "Doxylamine", eventQuery: OCKEventQuery(for: Date()))
 ```
 
-### SwiftUI <a name="carekit-swiftui"></a>
+### SwiftUI <a name="swiftui"></a>
 
 A SwiftUI API is currently available for the `InstructionsTaskView`. The API is a starting point to demonstrate the API architecture. We would love to integrate community contributions that follow the API structure!
 

@@ -203,6 +203,17 @@ class TestSchedule: XCTestCase {
         XCTAssert(events.first?.occurrence == 1)
     }
 
+    func testAllDayScheduleWithEndDate() throws {
+        let morning = Calendar.current.startOfDay(for: Date())
+        let end = Calendar.current.date(byAdding: .year, value: 1, to: morning)!
+        let interval = DateComponents(weekOfYear: 1)
+        let element = OCKScheduleElement(start: morning, end: end, interval: interval, duration: .allDay)
+        let schedule = OCKSchedule(composing: [element])
+        let nextWeek = Calendar.current.date(byAdding: .weekOfYear, value: 1, to: morning)!
+        let events = schedule.events(from: morning, to: nextWeek)
+        XCTAssert(events.count == 2, "Expected 2, but got \(events.count)")
+    }
+
     // Measure how long it takes to generate 10 years worth of events for a highly complex schedule with hourly events.
     // Results in the computatin of about 100,000 events.
     func testEventGenerationPerformanceHeavySchedule() {

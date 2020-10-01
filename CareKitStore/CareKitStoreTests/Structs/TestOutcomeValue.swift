@@ -120,7 +120,7 @@ class TestOutcomeValue: XCTestCase {
     func testProperDecodingWhenMissingValues() throws {
         let valueToDecode = "{\"value\": 10,\"timezone\": {\"identifier\": \"America/New_York\"},\"type\": \"\(OCKOutcomeValueType.integer.rawValue)\"}"
 
-        guard let data = valueToDecode.data(using: .utf8) else{
+        guard let data = valueToDecode.data(using: .utf8) else {
             throw OCKStoreError.invalidValue(reason: "Error: Couldn't get data as utf8")
         }
         

@@ -128,7 +128,7 @@ class TestOutcomeValue: XCTestCase {
         
         XCTAssertNil(decoded.asset)
         XCTAssertNil(decoded.notes)
-        XCTAssertEqual(decoded.timezone, TimeZone.current)
+        XCTAssertEqual(decoded.timezone, TimeZone(identifier: "America/New_York"))
         if let decodedUnderValue = decoded.value as? Int {
             XCTAssertEqual(decodedUnderValue, 10)
         } else {

@@ -58,41 +58,41 @@ public struct OCKOutcomeValue: Codable, Equatable, OCKObjectCompatible, CustomSt
         case
         kind, units, uuid, value, type, index,
         createdDate, updatedDate, schemaVersion, tags,
-        group, remoteID, userInfo, source, timezone
+            groupIdentifier, remoteID, userInfo, source, timezone
     }
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let valueType = try container.decode(OCKOutcomeValueType.self, forKey: CodingKeys.type)
+        let valueType = try container.decode(OCKOutcomeValueType.self, forKey: .type)
 
         switch valueType {
         case .integer:
-            value = try container.decode(Int.self, forKey: CodingKeys.value)
+            value = try container.decode(Int.self, forKey: .value)
         case .double:
-            value = try container.decode(Double.self, forKey: CodingKeys.value)
+            value = try container.decode(Double.self, forKey: .value)
         case .boolean:
-            value = try container.decode(Bool.self, forKey: CodingKeys.value)
+            value = try container.decode(Bool.self, forKey: .value)
         case .text:
-            value = try container.decode(String.self, forKey: CodingKeys.value)
+            value = try container.decode(String.self, forKey: .value)
         case .binary:
-            value = try container.decode(Data.self, forKey: CodingKeys.value)
+            value = try container.decode(Data.self, forKey: .value)
         case .date:
-            value = try container.decode(Date.self, forKey: CodingKeys.value)
+            value = try container.decode(Date.self, forKey: .value)
         }
 
-        kind = try container.decode(String?.self, forKey: CodingKeys.kind)
-        units = try container.decode(String?.self, forKey: CodingKeys.units)
-        index = try container.decode(Int?.self, forKey: CodingKeys.index)
-        uuid = try container.decode(UUID?.self, forKey: CodingKeys.uuid)
-        createdDate = try container.decode(Date?.self, forKey: CodingKeys.createdDate)
-        updatedDate = try container.decode(Date?.self, forKey: CodingKeys.updatedDate)
-        schemaVersion = try container.decode(OCKSemanticVersion?.self, forKey: CodingKeys.schemaVersion)
-        groupIdentifier = try container.decode(String?.self, forKey: CodingKeys.group)
-        tags = try container.decode([String]?.self, forKey: CodingKeys.tags)
-        remoteID = try container.decode(String?.self, forKey: CodingKeys.remoteID)
-        source = try container.decode(String?.self, forKey: CodingKeys.source)
-        userInfo = try container.decode([String: String]?.self, forKey: CodingKeys.userInfo)
-        timezone = try container.decode(TimeZone.self, forKey: CodingKeys.timezone)
+        kind = try container.decode(String?.self, forKey: .kind)
+        units = try container.decode(String?.self, forKey: .units)
+        index = try container.decode(Int?.self, forKey: .index)
+        uuid = try container.decode(UUID?.self, forKey: .uuid)
+        createdDate = try container.decode(Date?.self, forKey: .createdDate)
+        updatedDate = try container.decode(Date?.self, forKey: .updatedDate)
+        schemaVersion = try container.decode(OCKSemanticVersion?.self, forKey: .schemaVersion)
+        groupIdentifier = try container.decode(String?.self, forKey: .groupIdentifier)
+        tags = try container.decode([String]?.self, forKey: .tags)
+        remoteID = try container.decode(String?.self, forKey: .remoteID)
+        source = try container.decode(String?.self, forKey: .source)
+        userInfo = try container.decode([String: String]?.self, forKey: .userInfo)
+        timezone = try container.decode(TimeZone.self, forKey: .timezone)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -120,7 +120,7 @@ public struct OCKOutcomeValue: Codable, Equatable, OCKObjectCompatible, CustomSt
         try container.encode(updatedDate, forKey: .updatedDate)
         try container.encode(createdDate, forKey: .createdDate)
         try container.encode(schemaVersion, forKey: .schemaVersion)
-        try container.encode(groupIdentifier, forKey: .group)
+        try container.encode(groupIdentifier, forKey: .groupIdentifier)
         try container.encode(tags, forKey: .tags)
         try container.encode(remoteID, forKey: .remoteID)
         try container.encode(source, forKey: .source)

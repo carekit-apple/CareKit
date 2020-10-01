@@ -58,7 +58,7 @@ public struct OCKOutcomeValue: Codable, Equatable, OCKObjectCompatible, CustomSt
         case
         kind, units, uuid, value, type, index,
         createdDate, updatedDate, schemaVersion, tags,
-        groupIdentifier, remoteID, userInfo, source, timezone
+        groupIdentifier, remoteID, userInfo, source, timezone, asset, notes
     }
 
     public init(from decoder: Decoder) throws {
@@ -93,6 +93,8 @@ public struct OCKOutcomeValue: Codable, Equatable, OCKObjectCompatible, CustomSt
         source = try container.decodeIfPresent(String.self, forKey: .source)
         userInfo = try container.decodeIfPresent([String: String].self, forKey: .userInfo)
         timezone = try container.decode(TimeZone.self, forKey: .timezone)
+        asset = try container.decodeIfPresent(String.self, forKey: .asset)
+        notes = try container.decodeIfPresent([OCKNote].self, forKey: .notes)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -125,6 +127,8 @@ public struct OCKOutcomeValue: Codable, Equatable, OCKObjectCompatible, CustomSt
         try container.encodeIfPresent(remoteID, forKey: .remoteID)
         try container.encodeIfPresent(source, forKey: .source)
         try container.encodeIfPresent(userInfo, forKey: .userInfo)
+        try container.encodeIfPresent(asset, forKey: .asset)
+        try container.encodeIfPresent(notes, forKey: .notes)
         try container.encode(timezone, forKey: .timezone)
     }
 

@@ -100,7 +100,7 @@ public struct OCKOutcomeValue: Codable, Equatable, OCKObjectCompatible, CustomSt
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
-        try container.encodeIfPresent(type, forKey: .type)
+        try container.encode(type, forKey: .type)
         try container.encodeIfPresent(kind, forKey: .kind)
         try container.encodeIfPresent(units, forKey: .units)
         try container.encodeIfPresent(index, forKey: .index)

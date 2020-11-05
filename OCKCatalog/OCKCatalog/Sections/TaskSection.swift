@@ -88,8 +88,8 @@ private enum TaskStyle: String, CaseIterable {
         guard #available(iOS 14, *) else { return false }
 
         switch self {
-        case .simple, .instructions, .labeledValue, .numericProgress: return true
-        case .grid, .checklist, .buttonLog: return false
+        case .simple, .instructions, .labeledValue, .numericProgress, .checklist: return true
+        case .grid, .buttonLog: return false
         }
     }
 
@@ -163,6 +163,9 @@ private struct TaskView: View {
                                          detail: Text("Anytime"),
                                          state: .incomplete(Text("NO DATA")))
                 }
+            case .checklist:
+                ChecklistTaskView(taskID: OCKStore.Tasks.doxylamine.rawValue,
+                                     eventQuery: .init(for: Date()), storeManager: storeManager)
             default:
                 EmptyView()
             }

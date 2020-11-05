@@ -10,6 +10,7 @@
 		032C86F02326B68D00D0A0EA /* Calendar+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 032C86EF2326B68D00D0A0EA /* Calendar+Extensions.swift */; };
 		0346743E2397026A0074891C /* OCKLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0346743D2397026A0074891C /* OCKLog.swift */; };
 		03530202248AC32E0073579D /* TestScheduleUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03530201248AC32E0073579D /* TestScheduleUtility.swift */; };
+		3A04563424BFEA4000127998 /* ChecklistTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A04563324BFEA4000127998 /* ChecklistTaskView.swift */; };
 		5101E6CB23733F3B0023B8A6 /* TestCustomCalendarViewSynchronizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5101E6CA23733F3B0023B8A6 /* TestCustomCalendarViewSynchronizer.swift */; };
 		510591232378FF24004EDC84 /* TestGridTaskViewSynchronizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 510591222378FF24004EDC84 /* TestGridTaskViewSynchronizer.swift */; };
 		5105912523790D06004EDC84 /* TestMockTaskEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5105912423790D06004EDC84 /* TestMockTaskEvents.swift */; };
@@ -165,6 +166,7 @@
 		0346743D2397026A0074891C /* OCKLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKLog.swift; sourceTree = "<group>"; };
 		03530201248AC32E0073579D /* TestScheduleUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestScheduleUtility.swift; sourceTree = "<group>"; };
 		05A6B74A237F43D2009D7D1F /* CareKit.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = CareKit.xctestplan; path = ../../CareKit.xctestplan; sourceTree = "<group>"; };
+		3A04563324BFEA4000127998 /* ChecklistTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChecklistTaskView.swift; sourceTree = "<group>"; };
 		5101E6CA23733F3B0023B8A6 /* TestCustomCalendarViewSynchronizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestCustomCalendarViewSynchronizer.swift; sourceTree = "<group>"; };
 		510591222378FF24004EDC84 /* TestGridTaskViewSynchronizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestGridTaskViewSynchronizer.swift; sourceTree = "<group>"; };
 		5105912423790D06004EDC84 /* TestMockTaskEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestMockTaskEvents.swift; sourceTree = "<group>"; };
@@ -378,6 +380,7 @@
 			children = (
 				5199906A2447E24F005CD581 /* NumericProgressTaskView.swift */,
 				51AF514D24983B86005D385F /* LabeledValueTaskView.swift */,
+				3A04563324BFEA4000127998 /* ChecklistTaskView.swift */,
 				513271ED234FA3170025810A /* View Controllers */,
 				510EA10E234EA3CD005D6793 /* Controllers */,
 				510EA109234EA207005D6793 /* Synchronizers */,
@@ -1123,6 +1126,7 @@
 				51355EDF24997212009DE0A4 /* OCKSynchronizedTaskQuery.swift in Sources */,
 				516210112355505300B7D012 /* OCKContactViewSynchronizerProtocol.swift in Sources */,
 				51A52A05235669230056150D /* OCKWeekCalendarPageViewController.swift in Sources */,
+				3A04563424BFEA4000127998 /* ChecklistTaskView.swift in Sources */,
 				5161BEC22334530E001F03FC /* OCKGridTaskView+Updatable.swift in Sources */,
 				51692D9D23564C2C00D03A44 /* OCKDailyPageViewController.swift in Sources */,
 				51127326235E5928007B18DF /* OCKChecklistTaskViewController.swift in Sources */,

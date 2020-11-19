@@ -185,19 +185,17 @@ open class OCKDetailView: OCKView, UIScrollViewDelegate {
         NSLayoutConstraint.activate(constraints)
     }
 
+    // Note: This should always be called on the main thread
     private func updateBody(with html: StyledHTML?) {
-        // Note: Attributed text needs to be created on the main thread.
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-            self.bodyLabel.attributedText = html?.attributedText(labelWidth: self.bodyLabel.frame.width,
-                                                                 interfaceStyle: self.traitCollection.userInterfaceStyle)
-        }
+        bodyLabel.attributedText = html?.attributedText(
+            labelWidth: bodyLabel.frame.width,
+            interfaceStyle: traitCollection.userInterfaceStyle
+        )
     }
 
     override open func layoutSubviews() {
         super.layoutSubviews()
         bodyLabel.preferredMaxLayoutWidth = frame.inset(by: layoutMargins).size.width
-        updateBody(with: html) // Reload the html when the label's bounds have changed
     }
 
     override open func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {

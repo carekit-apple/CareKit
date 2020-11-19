@@ -58,51 +58,53 @@ public struct OCKOutcomeValue: Codable, Equatable, OCKObjectCompatible, CustomSt
         case
         kind, units, uuid, value, type, index,
         createdDate, updatedDate, schemaVersion, tags,
-        group, remoteID, userInfo, source, timezone
+        groupIdentifier, remoteID, userInfo, source, timezone, asset, notes
     }
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let valueType = try container.decode(OCKOutcomeValueType.self, forKey: CodingKeys.type)
+        let valueType = try container.decode(OCKOutcomeValueType.self, forKey: .type)
 
         switch valueType {
         case .integer:
-            value = try container.decode(Int.self, forKey: CodingKeys.value)
+            value = try container.decode(Int.self, forKey: .value)
         case .double:
-            value = try container.decode(Double.self, forKey: CodingKeys.value)
+            value = try container.decode(Double.self, forKey: .value)
         case .boolean:
-            value = try container.decode(Bool.self, forKey: CodingKeys.value)
+            value = try container.decode(Bool.self, forKey: .value)
         case .text:
-            value = try container.decode(String.self, forKey: CodingKeys.value)
+            value = try container.decode(String.self, forKey: .value)
         case .binary:
-            value = try container.decode(Data.self, forKey: CodingKeys.value)
+            value = try container.decode(Data.self, forKey: .value)
         case .date:
-            value = try container.decode(Date.self, forKey: CodingKeys.value)
+            value = try container.decode(Date.self, forKey: .value)
         }
 
-        kind = try container.decode(String?.self, forKey: CodingKeys.kind)
-        units = try container.decode(String?.self, forKey: CodingKeys.units)
-        index = try container.decode(Int?.self, forKey: CodingKeys.index)
-        uuid = try container.decode(UUID?.self, forKey: CodingKeys.uuid)
-        createdDate = try container.decode(Date?.self, forKey: CodingKeys.createdDate)
-        updatedDate = try container.decode(Date?.self, forKey: CodingKeys.updatedDate)
-        schemaVersion = try container.decode(OCKSemanticVersion?.self, forKey: CodingKeys.schemaVersion)
-        groupIdentifier = try container.decode(String?.self, forKey: CodingKeys.group)
-        tags = try container.decode([String]?.self, forKey: CodingKeys.tags)
-        remoteID = try container.decode(String?.self, forKey: CodingKeys.remoteID)
-        source = try container.decode(String?.self, forKey: CodingKeys.source)
-        userInfo = try container.decode([String: String]?.self, forKey: CodingKeys.userInfo)
-        timezone = try container.decode(TimeZone.self, forKey: CodingKeys.timezone)
+        kind = try container.decodeIfPresent(String.self, forKey: .kind)
+        units = try container.decodeIfPresent(String.self, forKey: .units)
+        index = try container.decodeIfPresent(Int.self, forKey: .index)
+        uuid = try container.decodeIfPresent(UUID.self, forKey: .uuid)
+        createdDate = try container.decodeIfPresent(Date.self, forKey: .createdDate)
+        updatedDate = try container.decodeIfPresent(Date.self, forKey: .updatedDate)
+        schemaVersion = try container.decodeIfPresent(OCKSemanticVersion.self, forKey: .schemaVersion)
+        groupIdentifier = try container.decodeIfPresent(String.self, forKey: .groupIdentifier)
+        tags = try container.decodeIfPresent([String].self, forKey: .tags)
+        remoteID = try container.decodeIfPresent(String.self, forKey: .remoteID)
+        source = try container.decodeIfPresent(String.self, forKey: .source)
+        userInfo = try container.decodeIfPresent([String: String].self, forKey: .userInfo)
+        timezone = try container.decode(TimeZone.self, forKey: .timezone)
+        asset = try container.decodeIfPresent(String.self, forKey: .asset)
+        notes = try container.decodeIfPresent([OCKNote].self, forKey: .notes)
     }
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
         try container.encode(type, forKey: .type)
-        try container.encode(kind, forKey: .kind)
-        try container.encode(units, forKey: .units)
-        try container.encode(index, forKey: .index)
-        try container.encode(uuid, forKey: .uuid)
+        try container.encodeIfPresent(kind, forKey: .kind)
+        try container.encodeIfPresent(units, forKey: .units)
+        try container.encodeIfPresent(index, forKey: .index)
+        try container.encodeIfPresent(uuid, forKey: .uuid)
 
         var encodedValue = false
         if let value = integerValue { try container.encode(value, forKey: .value); encodedValue = true } else
@@ -117,14 +119,16 @@ public struct OCKOutcomeValue: Codable, Equatable, OCKObjectCompatible, CustomSt
             throw EncodingError.invalidValue(value, EncodingError.Context(codingPath: [CodingKeys.value], debugDescription: message))
         }
 
-        try container.encode(updatedDate, forKey: .updatedDate)
-        try container.encode(createdDate, forKey: .createdDate)
-        try container.encode(schemaVersion, forKey: .schemaVersion)
-        try container.encode(groupIdentifier, forKey: .group)
-        try container.encode(tags, forKey: .tags)
-        try container.encode(remoteID, forKey: .remoteID)
-        try container.encode(source, forKey: .source)
-        try container.encode(userInfo, forKey: .userInfo)
+        try container.encodeIfPresent(updatedDate, forKey: .updatedDate)
+        try container.encodeIfPresent(createdDate, forKey: .createdDate)
+        try container.encodeIfPresent(schemaVersion, forKey: .schemaVersion)
+        try container.encodeIfPresent(groupIdentifier, forKey: .groupIdentifier)
+        try container.encodeIfPresent(tags, forKey: .tags)
+        try container.encodeIfPresent(remoteID, forKey: .remoteID)
+        try container.encodeIfPresent(source, forKey: .source)
+        try container.encodeIfPresent(userInfo, forKey: .userInfo)
+        try container.encodeIfPresent(asset, forKey: .asset)
+        try container.encodeIfPresent(notes, forKey: .notes)
         try container.encode(timezone, forKey: .timezone)
     }
 

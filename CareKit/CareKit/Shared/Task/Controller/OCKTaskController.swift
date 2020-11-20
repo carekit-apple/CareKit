@@ -257,6 +257,8 @@ open class OCKTaskController: ObservableObject {
         taskCancellables = [:]
     }
     
+    // MARK: - Utilities
+    
     /// Set the completion state for an event.
     /// - Parameters:
     ///   - indexPath: Index path of the event.

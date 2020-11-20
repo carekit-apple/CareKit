@@ -21,9 +21,7 @@ open class OCKSliderLogTaskController: OCKTaskController {
     }
     
     /// Data used to create a `CareKitUI.SliderTaskTaskView`.
-    @Published public private(set) var value: Double = 0 {
-        willSet { objectWillChange.send() }
-    }
+    @Published public private(set) var value: Double = 0
     
     private var cancellable: AnyCancellable?
     

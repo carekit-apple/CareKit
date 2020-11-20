@@ -37,7 +37,7 @@ open class OCKSliderLogTaskController: OCKTaskController {
     private func makeViewModel(from taskEvents: OCKTaskEvents) -> SliderLogTaskViewModel? {
         guard !taskEvents.isEmpty else { return nil }
 
-        if let foundValue = taskEvents.first?.last?.outcome?.values.last?.numberValue?.doubleValue {
+        if let foundValue = taskEvents.first?.first?.outcome?.values.last?.numberValue?.doubleValue {
             value = foundValue
         }
     
@@ -47,14 +47,17 @@ open class OCKSliderLogTaskController: OCKTaskController {
         
         return .init(title: taskEvents.firstEventTitle,
                      detail: taskEvents.firstEventDetail,
-                     instructions: taskEvents.firstTaskInstructions,
-                     //isComplete: taskEvents.isFirstEventComplete,
-                     action: saveSliderValueActionForFirstEvent(errorHandler: errorHandler))
-    }
-    
-    func saveSliderValueActionForFirstEvent(errorHandler: ((Error) -> Void)?) -> (Double) -> Void {
-        { sliderValue in
-            return self.saveOutcomesForEvent(atIndexPath: .init(row: 0, section: 0), values: [.init(sliderValue)], errorHandler: errorHandler) }
+                     instructions: taskEvents.firstTaskInstructions) { sliderValue in
+                        if self.taskEvents.first?.first?.outcome?.values != nil {
+                            self.appendOutcomeValue(value: sliderValue, at: .init(row: 0, section: 0)) { result in
+                                if case let .failure(error) = result {
+                                    errorHandler(error)
+                                }
+                            }
+                        } else {
+                            self.saveOutcomesForEvent(atIndexPath: .init(row: 0, section: 0), values: [.init(sliderValue)], errorHandler: errorHandler)
+                        }
+                     }
     }
 }
 

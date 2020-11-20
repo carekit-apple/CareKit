@@ -43,8 +43,7 @@ extension OCKTaskController {
     }
     
     func saveOutcomesForEvent(atIndexPath indexPath: IndexPath, values: [OCKOutcomeValue], errorHandler: ((Error) -> Void)?) {
-        let isComplete = isEventComplete(atIndexPath: indexPath)
-        setEvent(atIndexPath: indexPath, isComplete: !isComplete, values: values) { result in
+        setEvent(atIndexPath: indexPath, values: values) { result in
             if case let .failure(error) = result {
                 errorHandler?(error)
             }
@@ -65,10 +64,20 @@ extension OCKTaskController {
     }
 
     private func toggleEvent(atIndexPath indexPath: IndexPath, errorHandler: ((Error) -> Void)?) {
+        
         let isComplete = isEventComplete(atIndexPath: indexPath)
-        setEvent(atIndexPath: indexPath, isComplete: !isComplete) { result in
-            if case let .failure(error) = result {
-                errorHandler?(error)
+        
+        if !isComplete {
+            setEvent(atIndexPath: indexPath, values: [.init(true)]) { result in
+                if case let .failure(error) = result {
+                    errorHandler?(error)
+                }
+            }
+        } else {
+            setEvent(atIndexPath: indexPath, values: .init()) { result in
+                if case let .failure(error) = result {
+                    errorHandler?(error)
+                }
             }
         }
     }

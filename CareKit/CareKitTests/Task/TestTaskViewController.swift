@@ -62,8 +62,8 @@ class CustomTaskController: OCKTaskController {
 
     var setEventHook: () -> Void = {}
 
-    override func setEvent(atIndexPath indexPath: IndexPath, isComplete: Bool, completion: ((Result<OCKAnyOutcome, Error>) -> Void)?) {
+    override func setEvent(atIndexPath indexPath: IndexPath, values: [OCKOutcomeValue], completion: ((Result<OCKAnyOutcome, Error>) -> Void)?) {
         setEventHook()
-        super.setEvent(atIndexPath: indexPath, isComplete: isComplete, completion: completion)
+        super.setEvent(atIndexPath: indexPath, values: values, completion: completion)
     }
 }

@@ -181,7 +181,11 @@ UIViewController, OCKTaskViewDelegate {
     // MARK: - OCKTaskViewDelegate
 
     open func taskView(_ taskView: UIView & OCKTaskDisplayable, didCompleteEvent isComplete: Bool, at indexPath: IndexPath, sender: Any?) {
-        controller.setEvent(atIndexPath: indexPath, isComplete: isComplete, completion: notifyDelegateAndResetViewOnError)
+        if isComplete {
+            controller.setEvent(atIndexPath: indexPath, values: [.init(true)], completion: notifyDelegateAndResetViewOnError)
+        } else {
+            controller.setEvent(atIndexPath: indexPath, values: .init(), completion: notifyDelegateAndResetViewOnError)
+        }
     }
 
     open func taskView(_ taskView: UIView & OCKTaskDisplayable, didSelectOutcomeValueAt index: Int, eventIndexPath: IndexPath, sender: Any?) {

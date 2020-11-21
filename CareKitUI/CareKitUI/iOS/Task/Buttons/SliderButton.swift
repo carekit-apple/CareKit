@@ -15,17 +15,30 @@ struct SliderButton: View {
     @Environment(\.careKitStyle) private var style
     
     @Binding var value: Double
+    @State private var isPressed: Bool = false
     let action: (_ value: Double) -> Void
     private let diameter: CGFloat = 60
     private let borderWidth: CGFloat = 3
     private let fontSize: CGFloat = 25
-    private let foregroundColor: Color = .accentColor
-    private let text = Text(loc("LOG"))
-    private var backgroundColor: Color { Color(style.color.white) }
+    private var foregroundColor: Color {
+        isPressed ? Color(style.color.white) : .accentColor
+    }
+    private var buttonText: String {
+        isPressed ? loc("LOGGED") : loc("LOG")
+    }
+    private var backgroundColor: Color {
+        isPressed ? .accentColor : Color(style.color.white)
+    }
     
     public var body: some View {
         Button(action: {
-            action(value)
+            if !isPressed {
+                action(value)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+                    isPressed = false
+                }
+                isPressed = true
+            }
         }) {
             ZStack {
                 Circle()
@@ -36,7 +49,7 @@ struct SliderButton: View {
                     Text(String(format: "%g", value))
                         .font(.system(size: fontSize))
                         .fontWeight(.semibold)
-                    text
+                    Text(buttonText)
                         .font(.system(size: diameter * 0.2))
                         .fontWeight(.semibold)
                         .offset(y: diameter * 0.3)

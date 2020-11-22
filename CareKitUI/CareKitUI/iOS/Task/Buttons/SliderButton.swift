@@ -23,11 +23,15 @@ struct SliderButton: View {
     private var foregroundColor: Color {
         isPressed ? Color(style.color.white) : .accentColor
     }
-    private var buttonText: String {
-        isPressed ? loc("LOGGED") : loc("LOG")
+    private var buttonLogText: String {
+        isPressed ? "" : loc("LOG")
     }
     private var backgroundColor: Color {
         isPressed ? .accentColor : Color(style.color.white)
+    }
+    private var checkmark: Image {
+        Image(systemName: "checkmark")
+            .resizable()
     }
     
     public var body: some View {
@@ -45,11 +49,19 @@ struct SliderButton: View {
                     .frame(width: diameter, height: diameter)
                     .overlay(Circle().strokeBorder(Color.accentColor, lineWidth: borderWidth))
                     .foregroundColor(backgroundColor)
+                
+                checkmark
+                    .frame(width: diameter * 0.4, height: diameter * 0.4)
+                    .foregroundColor(foregroundColor)
+                    .opacity(isPressed ? 1 : 0)
+                
                 Group {
                     Text(String(format: "%g", value))
                         .font(.system(size: fontSize))
                         .fontWeight(.semibold)
-                    Text(buttonText)
+                        .opacity(isPressed ? 0 : 1)
+                    
+                    Text(buttonLogText)
                         .font(.system(size: diameter * 0.2))
                         .fontWeight(.semibold)
                         .offset(y: diameter * 0.3)

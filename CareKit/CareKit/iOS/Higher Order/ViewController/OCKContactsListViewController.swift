@@ -100,7 +100,7 @@ open class OCKContactsListViewController: OCKListViewController {
     /// `fetchContacts` asynchronously retrieves an array of contacts stored in a `Result`
     /// and makes corresponding `OCKDetailedContactViewController`s.
     private func fetchContacts() {
-        storeManager.store.fetchAnyContacts(query: OCKContactQuery(), callbackQueue: .main) { [weak self] result in
+        storeManager.store.fetchAnyContacts(query: OCKContactQuery(for: Date()), callbackQueue: .main) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .failure(let error):

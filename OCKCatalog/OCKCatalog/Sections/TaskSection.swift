@@ -166,53 +166,67 @@ private struct TaskView: View {
             case .slider:
                 VStack(spacing: 16) {
                     
-                    // System slider style
+                    // System slider style, with images
                     CareKit.SliderLogTaskView(taskID: OCKStore.Tasks.distress.rawValue,
-                                           eventQuery: .init(for: Date()), storeManager: storeManager) { controller, value in
+                                           eventQuery: .init(for: Date()), storeManager: storeManager) { controller, value, valuesArray in
                         CareKitUI.SliderLogTaskView(title: Text((controller.viewModel?.title ?? "") + " (System style with images)"),
                                                  instructions: controller.viewModel?.instructions.map(Text.init),
+                                                 valuesArray: valuesArray,
                                                  value: value,
                                                  range: 0...10,
                                                  step: 1,
                                                  minimumImage: Image(systemName: "chevron.down"),
                                                  maximumImage: Image(systemName: "chevron.up"),
+                                                 minimumDescription: "None",
+                                                 maximumDescription: "A Lot",
                                                  sliderStyle: .system,
                                                  action: controller.viewModel?.action ?? { _ in })
                     }
                     
+                    // System slider style, no images
                     CareKit.SliderLogTaskView(taskID: OCKStore.Tasks.distress.rawValue,
-                                           eventQuery: .init(for: Date()), storeManager: storeManager) { controller, value in
+                                           eventQuery: .init(for: Date()), storeManager: storeManager) { controller, value, valuesArray in
                         CareKitUI.SliderLogTaskView(title: Text((controller.viewModel?.title ?? "") + " (System style)"),
                                                  instructions: controller.viewModel?.instructions.map(Text.init),
+                                                 valuesArray: valuesArray,
                                                  value: value,
                                                  range: 0...10,
                                                  step: 1,
+                                                 minimumDescription: "None",
+                                                 maximumDescription: "A Lot",
                                                  sliderStyle: .system,
                                                  action: controller.viewModel?.action ?? { _ in })
                     }
                     
-                    // Ticked slider style
+                    // Bar slider style, with images
                     CareKit.SliderLogTaskView(taskID: OCKStore.Tasks.distress.rawValue,
-                                           eventQuery: .init(for: Date()), storeManager: storeManager) { controller, value in
-                        CareKitUI.SliderLogTaskView(title: Text((controller.viewModel?.title ?? "") + " (Ticked style with images)"),
+                                           eventQuery: .init(for: Date()), storeManager: storeManager) { controller, value, valuesArray in
+                        CareKitUI.SliderLogTaskView(title: Text((controller.viewModel?.title ?? "") + " (Bar style with images)"),
                                                  instructions: controller.viewModel?.instructions.map(Text.init),
+                                                 valuesArray: valuesArray,
                                                  value: value,
                                                  range: 0...10,
                                                  step: 1,
                                                  minimumImage: Image(systemName: "chevron.down"),
                                                  maximumImage: Image(systemName: "chevron.up"),
-                                                 sliderStyle: .ticked,
+                                                 minimumDescription: "None",
+                                                 maximumDescription: "A Lot",
+                                                 sliderStyle: .bar,
                                                  action: controller.viewModel?.action ?? { _ in })
                     }
                     
+                    // Bar slider style, with images
                     CareKit.SliderLogTaskView(taskID: OCKStore.Tasks.distress.rawValue,
-                                           eventQuery: .init(for: Date()), storeManager: storeManager) { controller, value in
-                        CareKitUI.SliderLogTaskView(title: Text((controller.viewModel?.title ?? "") + " (Ticked style)"),
+                                           eventQuery: .init(for: Date()), storeManager: storeManager) { controller, value, valuesArray in
+                        CareKitUI.SliderLogTaskView(title: Text((controller.viewModel?.title ?? "") + " (Bar style)"),
                                                  instructions: controller.viewModel?.instructions.map(Text.init),
+                                                 valuesArray: valuesArray,
                                                  value: value,
                                                  range: 0...10,
                                                  step: 1,
-                                                 sliderStyle: .ticked,
+                                                 minimumDescription: "None",
+                                                 maximumDescription: "A Lot",
+                                                 sliderStyle: .bar,
                                                  action: controller.viewModel?.action ?? { _ in })
                     }
                 }

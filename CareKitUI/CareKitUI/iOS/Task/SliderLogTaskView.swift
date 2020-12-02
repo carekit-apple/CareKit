@@ -29,12 +29,13 @@ import SwiftUI
 ///     |  <Instructions>                                       |
 ///     |                                                       |
 ///     |  <Min Image> –––––––––––––O–––––––––––– <Max Image>   |
+///     |             <Min Desc>        <Max Desc>              |
 ///     |                                                       |
-///     |                       +-------+                       |
-///     |                      /         \                      |
-///     |                     |  <Value>  |                     |
-///     |                      \         /                      |
-///     |                       +-------+                       |
+///     |  +-------------------------------------------------+  |
+///     |  |                      <Log>                      |  |
+///     |  +-------------------------------------------------+  |
+///     |                                                       |
+///     |                   <Latest Value: >                    |
 ///     |                                                       |
 ///     +-------------------------------------------------------+
 /// ```
@@ -107,29 +108,35 @@ public extension SliderLogTaskView where Slider == _SliderLogTaskViewSlider {
     
     /// Create an instance.
     /// - Parameter instructions: Instructions text to display under the header.
-    /// - Parameter isComplete; True if the button under the slider is in the completed.
-    /// - Parameter initialValue: The initial value the slider begins on. Default value is the midpoint of the range.
+    /// - Parameter valuesArray: The binded array of all outcome values
     /// - Parameter value: The binded value that the slider will reflect
     /// - Parameter range: The range that includes all possible values.
     /// - Parameter step: Value of the increment that the slider takes. Default value is 1
     /// - Parameter minimumImage: Image to display to the left of the slider. Default value is nil.
     /// - Parameter maximumImage: Image to display to the right of the slider. Default value is nil.
-    /// - Parameter sliderStyle: The style of the slider, either the SwiftUI system slider or the custom filler slider.
+    /// - Parameter minimumDescription: Description to display next to lower bound value. Default value is nil.
+    /// - Parameter maximumDescription: Description to display next to upper bound value. Default value is nil.
+    /// - Parameter sliderStyle: The style of the slider, either the SwiftUI system slider or the custom bar slider.
     /// - Parameter action: Action to perform when the button is tapped.
     /// - Parameter header: Header to inject at the top of the card. Specified content will be stacked vertically.
     init(instructions: Text? = nil,
-         value: Binding<Double>, range: ClosedRange<Double>, step: Double = 1,
-         minimumImage: Image? = nil, maximumImage: Image? = nil, sliderStyle: SliderStyle = .system,
+         valuesArray: Binding<[Double]>, value: Binding<Double>, range: ClosedRange<Double>, step: Double = 1,
+         minimumImage: Image? = nil, maximumImage: Image? = nil,
+         minimumDescription: String? = nil, maximumDescription: String? = nil,
+         sliderStyle: SliderStyle = .system,
          action: @escaping (Double) -> Void,
          @ViewBuilder header: () -> Header) {
         self.init(isHeaderPadded: false, isSliderPadded: true, instructions: instructions, header: header, slider: {
-            _SliderLogTaskViewSlider(value: value,
-                                  range: range,
-                                  step: step,
-                                  minimumImage: minimumImage,
-                                  maximumImage: maximumImage,
-                                  sliderStyle: sliderStyle,
-                                  action: action)
+            _SliderLogTaskViewSlider(valuesArray: valuesArray,
+                                     value: value,
+                                     range: range,
+                                     step: step,
+                                     minimumImage: minimumImage,
+                                     maximumImage: maximumImage,
+                                     minimumDescription: minimumDescription,
+                                     maximumDescription: maximumDescription,
+                                     sliderStyle: sliderStyle,
+                                     action: action)
         })
     }
 }
@@ -140,29 +147,35 @@ public extension SliderLogTaskView where Header == _SliderLogTaskViewHeader, Sli
     /// - Parameter title: Title text to display in the header.
     /// - Parameter detail: Detail text to display in the header.
     /// - Parameter instructions: Instructions text to display under the header.
-    /// - Parameter isComplete; True if the button under the slider is in the completed.
-    /// - Parameter initialValue: The initial value the slider begins on. Default value is the midpoint of the range.
+    /// - Parameter valuesArray: The binded array of all outcome values
     /// - Parameter value: The binded value that the slider will reflect
     /// - Parameter range: The range that includes all possible values.
     /// - Parameter step: Value of the increment that the slider takes. Default value is 1
     /// - Parameter minimumImage: Image to display to the left of the slider. Default value is nil.
     /// - Parameter maximumImage: Image to display to the right of the slider. Default value is nil.
-    /// - Parameter sliderStyle: The style of the slider, either the SwiftUI system slider or the custom filler slider.
+    /// - Parameter minimumDescription: Description to display next to lower bound value. Default value is nil.
+    /// - Parameter maximumDescription: Description to display next to upper bound value. Default value is nil.
+    /// - Parameter sliderStyle: The style of the slider, either the SwiftUI system slider or the custom bar slider.
     /// - Parameter action: Action to perform when the button is tapped.
     init(title: Text, detail: Text? = nil, instructions: Text? = nil,
-         value: Binding<Double>, range: ClosedRange<Double>, step: Double = 1,
-         minimumImage: Image? = nil, maximumImage: Image? = nil, sliderStyle: SliderStyle = .system,
+         valuesArray: Binding<[Double]>, value: Binding<Double>, range: ClosedRange<Double>, step: Double = 1,
+         minimumImage: Image? = nil, maximumImage: Image? = nil,
+         minimumDescription: String? = nil, maximumDescription: String? = nil,
+         sliderStyle: SliderStyle = .system,
          action: @escaping (Double) -> Void) {
         self.init(isHeaderPadded: true, isSliderPadded: true, instructions: instructions, header: {
             _SliderLogTaskViewHeader(title: title, detail: detail)
         }, slider: {
-            _SliderLogTaskViewSlider(value: value,
-                                  range: range,
-                                  step: step,
-                                  minimumImage: minimumImage,
-                                  maximumImage: maximumImage,
-                                  sliderStyle: sliderStyle,
-                                  action: action)
+            _SliderLogTaskViewSlider(valuesArray: valuesArray,
+                                     value: value,
+                                     range: range,
+                                     step: step,
+                                     minimumImage: minimumImage,
+                                     maximumImage: maximumImage,
+                                     minimumDescription: minimumDescription,
+                                     maximumDescription: maximumDescription,
+                                     sliderStyle: sliderStyle,
+                                     action: action)
         })
     }
 }
@@ -186,35 +199,46 @@ public struct _SliderLogTaskViewHeader: View {
 /// The default slider view used by an `SliderTaskView`.
 public struct _SliderLogTaskViewSlider: View {
     
+    @State var isActive: Bool = false
     @Binding var value: Double
+    @Binding var valuesArray: [Double]
     fileprivate let initialValue: Double
     fileprivate let minimumImage: Image?
     fileprivate let maximumImage: Image?
+    fileprivate let minimumDescription: String?
+    fileprivate let maximumDescription: String?
     fileprivate let range: ClosedRange<Double>
     fileprivate let step: Double
     fileprivate let sliderStyle: SliderStyle
     fileprivate let action: (_ value: Double) -> Void
     
     
-    init(value: Binding<Double>, range: ClosedRange<Double>, step: Double,
-         minimumImage: Image?, maximumImage: Image?, sliderStyle: SliderStyle,
+    init(valuesArray: Binding<[Double]>, value: Binding<Double>, range: ClosedRange<Double>, step: Double,
+         minimumImage: Image?, maximumImage: Image?,
+         minimumDescription: String?, maximumDescription: String?,
+         sliderStyle: SliderStyle,
          action: @escaping (_ value: Double) -> Void) {
         self.initialValue = range.lowerBound + round((range.upperBound - range.lowerBound) / (step * 2)) * step
         self.action = action
         self.minimumImage = minimumImage
         self.maximumImage = maximumImage
+        self.minimumDescription = minimumDescription
+        self.maximumDescription = maximumDescription
         self.range = range
         self.step = step
         self.sliderStyle = sliderStyle
         _value = value
+        _valuesArray = valuesArray
     }
     
     public var body: some View {
         VStack {
-            SliderButton(value: $value, action: action)
+            Slider(value: $value, isActive: $isActive, range: range, step: step,
+                   minimumImage: minimumImage, maximumImage: maximumImage,
+                   minimumDescription: minimumDescription, maximumDescription: maximumDescription,
+                   sliderStyle: sliderStyle)
             
-            Slider(value: $value, range: range, step: step,
-                   minimumImage: minimumImage, maximumImage: maximumImage, sliderStyle: sliderStyle)
+            SliderLogButton(isActive: $isActive, valuesArray: $valuesArray, value: $value, action: action)
         }
         .onAppear {
             value = initialValue

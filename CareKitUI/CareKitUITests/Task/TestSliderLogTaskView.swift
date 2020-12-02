@@ -10,7 +10,7 @@ import CareKitUI
 import SwiftUI
 import XCTest
 
-class TestSliderTaskView: XCTestCase {
+class TestSliderLogTaskView: XCTestCase {
 
     func testInitializers() {
         var body: some View {
@@ -22,17 +22,18 @@ class TestSliderTaskView: XCTestCase {
 struct MockSliderView: View {
     
     let value: Double = 0
+    let valuesArray: [Double] = []
     
     var body: some View {
         // Default initializers
-        SliderLogTaskView(title: Text(""), detail:  Text(""), instructions:  Text(""), value: .constant(value), range: 0...10, step: 1, sliderStyle: .ticked, action: { _ in })
+        SliderLogTaskView(title: Text(""), detail:  Text(""), instructions:  Text(""), valuesArray: .constant(valuesArray), value: .constant(value), range: 0...10, step: 1, sliderStyle: .bar, action: { _ in })
         
-        SliderLogTaskView(title: Text(""), value: .constant(value), range: 0...10, minimumImage: Image(systemName: "chevron.down"), maximumImage: Image(systemName: "chevron.up"), action: { _ in })
+        SliderLogTaskView(title: Text(""), valuesArray: .constant(valuesArray), value: .constant(value), range: 0...10, minimumImage: Image(systemName: "chevron.down"), maximumImage: Image(systemName: "chevron.up"), minimumDescription: "", maximumDescription: "", action: { _ in })
         
         // Custom initializers
         SliderLogTaskView(header: { EmptyView() }, slider: { EmptyView() })
         
-        SliderLogTaskView(value: .constant(value), range: 10...100, step: 2, sliderStyle: .system, action: { _ in }, header: { EmptyView() })
+        SliderLogTaskView(valuesArray: .constant(valuesArray), value: .constant(value), range: 10...100, step: 2, sliderStyle: .system, action: { _ in }, header: { EmptyView() })
         
         SliderLogTaskView(title: Text(""), slider: { EmptyView() })
     }

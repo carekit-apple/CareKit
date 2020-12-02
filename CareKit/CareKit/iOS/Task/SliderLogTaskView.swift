@@ -33,12 +33,13 @@ import SwiftUI
 ///     |  <Instructions>                                       |
 ///     |                                                       |
 ///     |  <Min Image> –––––––––––––O–––––––––––– <Max Image>   |
+///     |             <Min Desc>        <Max Desc>              |
 ///     |                                                       |
-///     |                       +-------+                       |
-///     |                      /         \                      |
-///     |                     |  <Value>  |                     |
-///     |                      \         /                      |
-///     |                       +-------+                       |
+///     |  +-------------------------------------------------+  |
+///     |  |                      <Log>                      |  |
+///     |  +-------------------------------------------------+  |
+///     |                                                       |
+///     |                   <Latest Value: >                    |
 ///     |                                                       |
 ///     +-------------------------------------------------------+
 /// ```
@@ -66,7 +67,7 @@ public struct SliderLogTaskView<Header: View, Slider: View>: View {
     ///     - storeManager: Wraps the store that contains the task and event to fetch.
     ///     - content: Create a view to display whenever the body is computed.
     public init(taskID: String, eventQuery: OCKEventQuery, storeManager: OCKSynchronizedStoreManager,
-                content: @escaping (_ controller: OCKSliderLogTaskController, _ value: Binding<Double>) -> CareKitUI.SliderLogTaskView<Header, Slider>) {
+                content: @escaping (_ controller: OCKSliderLogTaskController, _ value: Binding<Double>, _ valuesArray: Binding<[Double]>) -> CareKitUI.SliderLogTaskView<Header, Slider>) {
         taskView = .init(controller: .init(storeManager: storeManager),
                          query: .taskIDs([taskID], eventQuery),
                          content: content)
@@ -80,7 +81,7 @@ public struct SliderLogTaskView<Header: View, Slider: View>: View {
     ///     - storeManager: Wraps the store that contains the event to fetch.
     ///     - content: Create a view to display whenever the body is computed.
     public init(task: OCKAnyTask, eventQuery: OCKEventQuery, storeManager: OCKSynchronizedStoreManager,
-                content: @escaping (_ controller: OCKSliderLogTaskController, _ value: Binding<Double>) -> CareKitUI.SliderLogTaskView<Header, Slider>) {
+                content: @escaping (_ controller: OCKSliderLogTaskController, _ value: Binding<Double>, _ valuesArray: Binding<[Double]>) -> CareKitUI.SliderLogTaskView<Header, Slider>) {
         taskView = .init(controller: .init(storeManager: storeManager),
                          query: .tasks([task], eventQuery),
                          content: content)
@@ -91,7 +92,7 @@ public struct SliderLogTaskView<Header: View, Slider: View>: View {
     ///     - controller: Controller that holds a reference to data displayed by the view.
     ///     - content: Create a view to display whenever the body is computed.
     public init(controller: OCKSliderLogTaskController,
-                content: @escaping (_ controller: OCKSliderLogTaskController, _ value: Binding<Double>) -> CareKitUI.SliderLogTaskView<Header, Slider>) {
+                content: @escaping (_ controller: OCKSliderLogTaskController, _ value: Binding<Double>, _ valuesArray: Binding<[Double]>) -> CareKitUI.SliderLogTaskView<Header, Slider>) {
         taskView = .init(controller: controller, content: content)
     }
     
@@ -114,7 +115,7 @@ public extension SliderLogTaskView where Header == _SliderLogTaskViewHeader, Sli
     ///     - content: Create a view to display whenever the body is computed.
     init(taskID: String, eventQuery: OCKEventQuery, storeManager: OCKSynchronizedStoreManager) {
         self.init(taskID: taskID, eventQuery: eventQuery, storeManager: storeManager) {
-            .init(viewModel: $0.viewModel, value: $1)
+            .init(viewModel: $0.viewModel, value: $1, valuesArray: $2)
         }
     }
     
@@ -127,7 +128,7 @@ public extension SliderLogTaskView where Header == _SliderLogTaskViewHeader, Sli
     ///     - content: Create a view to display whenever the body is computed.
     init(task: OCKAnyTask, eventQuery: OCKEventQuery, storeManager: OCKSynchronizedStoreManager) {
         self.init(task: task, eventQuery: eventQuery, storeManager: storeManager) {
-            .init(viewModel: $0.viewModel, value: $1)
+            .init(viewModel: $0.viewModel, value: $1, valuesArray: $2)
         }
     }
     
@@ -136,16 +137,17 @@ public extension SliderLogTaskView where Header == _SliderLogTaskViewHeader, Sli
     ///     - controller: Controller that holds a reference to data displayed by the view.
     init(controller: OCKSliderLogTaskController) {
         taskView = .init(controller: controller) {
-            .init(viewModel: $0.viewModel, value: $1)
+            .init(viewModel: $0.viewModel, value: $1, valuesArray: $2)
         }
     }
 }
 
 private extension CareKitUI.SliderLogTaskView where Header == _SliderLogTaskViewHeader, Slider == _SliderLogTaskViewSlider {
-    init(viewModel: SliderLogTaskViewModel?, value: Binding<Double>) {
+    init(viewModel: SliderLogTaskViewModel?, value: Binding<Double>, valuesArray: Binding<[Double]>) {
         self.init(title: Text(viewModel?.title ?? ""),
                   detail: viewModel?.detail.map { Text($0) },
                   instructions: viewModel?.instructions.map{ Text($0) },
+                  valuesArray: valuesArray,
                   value: value,
                   range: 0...10,
                   step: 1,

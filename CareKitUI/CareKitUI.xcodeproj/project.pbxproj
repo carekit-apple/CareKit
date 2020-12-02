@@ -125,8 +125,9 @@
 		64EEC2382318253B00B1012F /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 64EEC2362318253B00B1012F /* Localizable.strings */; };
 		64EEC23B231825DD00B1012F /* OCKLocalization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64EEC23A231825DD00B1012F /* OCKLocalization.swift */; };
 		E829AC1E24BFBB58001DCB1F /* TestSliderLogTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E829AC1D24BFBB58001DCB1F /* TestSliderLogTaskView.swift */; };
-		E836DA0124BCC54900268E59 /* SliderButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E836DA0024BCC54900268E59 /* SliderButton.swift */; };
+		E836DA0124BCC54900268E59 /* SliderLogButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E836DA0024BCC54900268E59 /* SliderLogButton.swift */; };
 		E836DA0324BCC5EE00268E59 /* Slider.swift in Sources */ = {isa = PBXBuildFile; fileRef = E836DA0224BCC5EE00268E59 /* Slider.swift */; };
+		E85CE9BE2578258000447489 /* Buttons in Resources */ = {isa = PBXBuildFile; fileRef = E85CE9BD2578258000447489 /* Buttons */; };
 		E8853E8524D8B7C30017F813 /* SliderStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8853E8424D8B7C30017F813 /* SliderStyle.swift */; };
 		E88E003E24B51DB1009A7AC8 /* SliderLogTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88E003C24B51DB1009A7AC8 /* SliderLogTaskView.swift */; };
 /* End PBXBuildFile section */
@@ -245,8 +246,9 @@
 		64EEC2372318253B00B1012F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		64EEC23A231825DD00B1012F /* OCKLocalization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKLocalization.swift; sourceTree = "<group>"; };
 		E829AC1D24BFBB58001DCB1F /* TestSliderLogTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestSliderLogTaskView.swift; sourceTree = "<group>"; };
-		E836DA0024BCC54900268E59 /* SliderButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SliderButton.swift; sourceTree = "<group>"; };
+		E836DA0024BCC54900268E59 /* SliderLogButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SliderLogButton.swift; sourceTree = "<group>"; };
 		E836DA0224BCC5EE00268E59 /* Slider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Slider.swift; sourceTree = "<group>"; };
+		E85CE9BD2578258000447489 /* Buttons */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Buttons; sourceTree = "<group>"; };
 		E8853E8424D8B7C30017F813 /* SliderStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderStyle.swift; sourceTree = "<group>"; };
 		E88E003C24B51DB1009A7AC8 /* SliderLogTaskView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SliderLogTaskView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -589,7 +591,8 @@
 				51F12D38229C81E200CA265B /* OCKLabeledCheckmarkButton.swift */,
 				518F9D5522961BF5009CAA48 /* OCKLogItemButton.swift */,
 				518F9D4E22961BF5009CAA48 /* OCKChecklistItemButton.swift */,
-				E836DA0024BCC54900268E59 /* SliderButton.swift */,
+				E836DA0024BCC54900268E59 /* SliderLogButton.swift */,
+				E85CE9BD2578258000447489 /* Buttons */,
 			);
 			path = Buttons;
 			sourceTree = "<group>";
@@ -790,6 +793,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E85CE9BE2578258000447489 /* Buttons in Resources */,
 				64EEC2382318253B00B1012F /* Localizable.strings in Resources */,
 				03AD384623625A3500F6E7DC /* Localizable.stringsdict in Resources */,
 			);
@@ -886,7 +890,7 @@
 				518F9DC022961BF6009CAA48 /* OCKStackView.swift in Sources */,
 				51EFC75623FCAE6000536266 /* UIColor+Extension.swift in Sources */,
 				518F9D9922961BF5009CAA48 /* OCKScatterPlotView.swift in Sources */,
-				E836DA0124BCC54900268E59 /* SliderButton.swift in Sources */,
+				E836DA0124BCC54900268E59 /* SliderLogButton.swift in Sources */,
 				5196B54322D5872C00800706 /* OCKTaskDisplayable.swift in Sources */,
 				518F9DA722961BF6009CAA48 /* OCKCompletionRingView.swift in Sources */,
 				518F9D9122961BF5009CAA48 /* OCKLabeledButton.swift in Sources */,

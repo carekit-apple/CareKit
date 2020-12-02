@@ -18,19 +18,21 @@ public struct SynchronizedSliderLogTaskView<Controller: OCKSliderLogTaskControll
 
     @StateObject private var controller: OCKSliderLogTaskController
     @State private var value: Double = 0
+    @State private var valuesArray: [Double] = []
 
     private let errorHandler: ((Error) -> Void)?
-    private let content: (_ controller: OCKSliderLogTaskController, _ value: Binding<Double>) -> SliderLogTaskView
+    private let content: (_ controller: OCKSliderLogTaskController, _ value: Binding<Double>, _ valuesArray: Binding<[Double]>) -> SliderLogTaskView
     private let query: OCKSynchronizedTaskQuery?
     
     public var body: some View {
-        content(controller, $value)
+        content(controller, $value, $valuesArray)
             .onAppear {
                 query?.perform(using: controller)
                 value = controller.value
             }
             .onReceive(controller.$value) { updatedValue in
                 value = updatedValue
+                valuesArray.append(updatedValue)
             }
             .onReceive(controller.$error.compactMap { $0 }) { error in
                 self.errorHandler?(error)
@@ -38,7 +40,7 @@ public struct SynchronizedSliderLogTaskView<Controller: OCKSliderLogTaskControll
     }
 
     init(controller: Controller, query: OCKSynchronizedTaskQuery? = nil, errorHandler: ((Error) -> Void)? = nil,
-         content: @escaping (_ viewModel: OCKSliderLogTaskController, _ value: Binding<Double>) -> SliderLogTaskView) {
+         content: @escaping (_ viewModel: OCKSliderLogTaskController, _ value: Binding<Double>, _ valuesArray: Binding<[Double]>) -> SliderLogTaskView) {
         self.query = query
         self._controller = .init(wrappedValue: controller)
         self.errorHandler = errorHandler

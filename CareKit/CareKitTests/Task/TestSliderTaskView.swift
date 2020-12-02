@@ -21,6 +21,7 @@ class TestSliderLogTaskView: XCTestCase {
     }()
     
     @State var value: Double = 6
+    @State var valuesArray: [Double] = []
 
     let eventQuery = OCKEventQuery(for: Date())
     let task = OCKTask(id: "", title: "", carePlanUUID: nil, schedule: .dailyAtTime(hour: 1, minutes: 0, start: Date(), end: nil, text: nil))
@@ -28,6 +29,7 @@ class TestSliderLogTaskView: XCTestCase {
         CareKitUI.SliderLogTaskView(title: Text(""),
                                  detail: Text(""),
                                  instructions: Text(""),
+                                 valuesArray: $valuesArray,
                                  value: $value,
                                  range: 0...10,
                                  step: 2,
@@ -44,8 +46,8 @@ class TestSliderLogTaskView: XCTestCase {
     }
 
     func testCustomContentInitializers() {
-        _ = CareKit.SliderLogTaskView(task: task, eventQuery: eventQuery, storeManager: controller.storeManager) { controller, value in self.staticView }
-        _ = CareKit.SliderLogTaskView(taskID: "", eventQuery: eventQuery, storeManager: controller.storeManager) { controller, value in self.staticView }
-        _ = CareKit.SliderLogTaskView(controller: controller) { controller, value in self.staticView }
+        _ = CareKit.SliderLogTaskView(task: task, eventQuery: eventQuery, storeManager: controller.storeManager) { controller, value, valuesArray in self.staticView }
+        _ = CareKit.SliderLogTaskView(taskID: "", eventQuery: eventQuery, storeManager: controller.storeManager) { controller, value, valuesArray  in self.staticView }
+        _ = CareKit.SliderLogTaskView(controller: controller) { controller, value, valuesArray  in self.staticView }
     }
 }

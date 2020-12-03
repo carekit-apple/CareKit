@@ -166,10 +166,10 @@ private struct TaskView: View {
             case .slider:
                 VStack(spacing: 16) {
                     
-                    // System slider style, with images
+                    // System slider style, with images, with color gradient
                     CareKit.SliderLogTaskView(taskID: OCKStore.Tasks.distress.rawValue,
                                            eventQuery: .init(for: Date()), storeManager: storeManager) { controller, value, valuesArray in
-                        CareKitUI.SliderLogTaskView(title: Text((controller.viewModel?.title ?? "") + " (System style with images)"),
+                        CareKitUI.SliderLogTaskView(title: Text((controller.viewModel?.title ?? "") + " (System style, images, gradient)"),
                                                  instructions: controller.viewModel?.instructions.map(Text.init),
                                                  valuesArray: valuesArray,
                                                  value: value,
@@ -180,6 +180,7 @@ private struct TaskView: View {
                                                  minimumDescription: "None",
                                                  maximumDescription: "A Lot",
                                                  sliderStyle: .system,
+                                                 gradientColors: [.red, .yellow, .green],
                                                  action: controller.viewModel?.action ?? { _ in })
                     }
                     
@@ -198,10 +199,10 @@ private struct TaskView: View {
                                                  action: controller.viewModel?.action ?? { _ in })
                     }
                     
-                    // Bar slider style, with images
+                    // Ticked slider style, with images, with color gradient
                     CareKit.SliderLogTaskView(taskID: OCKStore.Tasks.distress.rawValue,
                                            eventQuery: .init(for: Date()), storeManager: storeManager) { controller, value, valuesArray in
-                        CareKitUI.SliderLogTaskView(title: Text((controller.viewModel?.title ?? "") + " (Bar style with images)"),
+                        CareKitUI.SliderLogTaskView(title: Text((controller.viewModel?.title ?? "") + " (Ticked style, images, gradient)"),
                                                  instructions: controller.viewModel?.instructions.map(Text.init),
                                                  valuesArray: valuesArray,
                                                  value: value,
@@ -211,14 +212,15 @@ private struct TaskView: View {
                                                  maximumImage: Image(systemName: "chevron.up"),
                                                  minimumDescription: "None",
                                                  maximumDescription: "A Lot",
-                                                 sliderStyle: .bar,
+                                                 sliderStyle: .ticked,
+                                                 gradientColors: [.red, .yellow, .green],
                                                  action: controller.viewModel?.action ?? { _ in })
                     }
                     
-                    // Bar slider style, with images
+                    // Ticked slider style, with images
                     CareKit.SliderLogTaskView(taskID: OCKStore.Tasks.distress.rawValue,
                                            eventQuery: .init(for: Date()), storeManager: storeManager) { controller, value, valuesArray in
-                        CareKitUI.SliderLogTaskView(title: Text((controller.viewModel?.title ?? "") + " (Bar style)"),
+                        CareKitUI.SliderLogTaskView(title: Text((controller.viewModel?.title ?? "") + " (Ticked style)"),
                                                  instructions: controller.viewModel?.instructions.map(Text.init),
                                                  valuesArray: valuesArray,
                                                  value: value,
@@ -226,7 +228,7 @@ private struct TaskView: View {
                                                  step: 1,
                                                  minimumDescription: "None",
                                                  maximumDescription: "A Lot",
-                                                 sliderStyle: .bar,
+                                                 sliderStyle: .ticked,
                                                  action: controller.viewModel?.action ?? { _ in })
                     }
                 }

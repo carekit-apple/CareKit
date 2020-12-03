@@ -25,6 +25,7 @@ struct Slider: View {
     private let sliderHeight: CGFloat?
     private let frameHeight: CGFloat
     private let cornerRadius: CGFloat?
+    private let gradientColors: [Color]?
     private let borderWidth: CGFloat = 1
     private let valueFontSize: CGFloat = 25
     private let boundsFontSize: CGFloat = 10
@@ -32,7 +33,7 @@ struct Slider: View {
     private var containsImages: Bool { (minimumImage == nil && maximumImage == nil) ? false : true }
     
     init(value: Binding<Double>, isActive: Binding<Bool>, range: ClosedRange<Double>, step: Double,
-         minimumImage: Image?, maximumImage: Image?, minimumDescription: String?, maximumDescription: String?, sliderStyle: SliderStyle) {
+         minimumImage: Image?, maximumImage: Image?, minimumDescription: String?, maximumDescription: String?, sliderStyle: SliderStyle, gradientColors: [Color]? = nil) {
         _value = value
         _isActive = isActive
         self.range = (range.lowerBound, range.upperBound)
@@ -41,8 +42,9 @@ struct Slider: View {
         self.maximumImage = maximumImage
         self.minimumDescription = minimumDescription
         self.maximumDescription = maximumDescription
+        self.gradientColors = gradientColors
         switch sliderStyle {
-        case .bar:
+        case .ticked:
             self.sliderHeight = 40
             self.frameHeight = 100
             self.cornerRadius = 15
@@ -125,8 +127,7 @@ struct Slider: View {
         return
             usesSystemSlider ?
             ViewBuilder.buildEither(first:
-                                        SwiftUI.Slider(value: $value, in: range.0...range.1)
-                                        .accentColor(isActive ? .accentColor : Color(style.color.customGray))
+                                        systemSliderView()
                                         .gesture(drag.onChanged({ drag in
                                                                     onDragChange(drag, sliderWidth: sliderWidth) }))
                                         .frame(width: sliderWidth, height: imageWidth)) :
@@ -135,25 +136,70 @@ struct Slider: View {
                                             fillerBarView(width: sliderWidth, height: sliderHeight!)
                                                 .gesture(drag.onChanged({ drag in
                                                                             onDragChange(drag, sliderWidth: sliderWidth) }))
-                                        }.frame(width: sliderWidth, height: sliderHeight)
+                                            addTicks(sliderWidth: sliderWidth)
+                                                .if(!isActive) { $0.accentColor(Color(style.color.customGray))}
+                                        }
+                                        .frame(width: sliderWidth, height: sliderHeight)
             )
+    }
+    
+    private func systemSliderView() -> some View {
+        ZStack {
+            if gradientColors != nil {
+                Rectangle()
+                    .foregroundColor(.clear)
+                    .background(isActive ?
+                                    LinearGradient(gradient: Gradient(colors: gradientColors ?? []), startPoint: .leading, endPoint: .trailing) :
+                                    LinearGradient(gradient: Gradient(colors: [Color(style.color.customGray)]), startPoint: .leading, endPoint: .trailing))
+                    .mask(SwiftUI.Slider(value: $value, in: range.0...range.1))
+            }
+        
+            SwiftUI.Slider(value: $value, in: range.0...range.1)
+                .if(gradientColors == nil) { $0.accentColor(isActive ? .accentColor : Color(style.color.customGray)) }
+                .if(gradientColors != nil) { $0.accentColor(.clear) }
+        }
     }
     
     private func fillerBarView(width: CGFloat, height: CGFloat) -> some View {
         let offsetX = getOffsetX(sliderWidth: width)
-        let barLeftSize = CGSize(width: CGFloat(offsetX), height: height)
-        let barRightSize = CGSize(width: width, height: height)
-        let barLeftColor = isActive ? Color.accentColor : Color(style.color.customGray)
-        let barRightColor = Color(style.color.white)
+        let barLeftSize = CGSize(width: width, height: height)
+        let barRightSize = CGSize(width: CGFloat(offsetX), height: height)
+        let barLeft = Rectangle()
+            .if(gradientColors == nil) { $0.foregroundColor(isActive ? .accentColor : Color(style.color.customGray)) }
+            .if(gradientColors != nil) {
+                $0
+                    .foregroundColor(.clear)
+                    .background(isActive ?
+                                    LinearGradient(gradient: Gradient(colors: gradientColors ?? []), startPoint: .leading, endPoint: .trailing) :
+                                LinearGradient(gradient: Gradient(colors: [Color(style.color.customGray)]), startPoint: .leading, endPoint: .trailing))
+            }
+        let barRight = Color(style.color.white)
         return
             ZStack {
-                barRightColor
-                    .modifier(SliderModifier(size: barRightSize, radius: cornerRadius!))
-                barLeftColor
-                    .modifier(SliderModifier(size: barLeftSize, radius: cornerRadius!))
+                barLeft
+                    .modifier(SliderModifier(sliderWidth: width, size: barLeftSize, radius: cornerRadius!))
+                barRight
+                    .modifier(SliderModifier(sliderWidth: width, size: barRightSize, radius: cornerRadius!))
                 RoundedRectangle(cornerRadius: cornerRadius!)
                     .stroke(Color(style.color.customGray), lineWidth: borderWidth)
             }
+    }
+    
+    private func addTicks(sliderWidth: CGFloat) -> some View {
+        var values = [Double]()
+        var possibleValue = range.0 + step
+        while possibleValue < range.1 {
+            values.append(possibleValue)
+            possibleValue += step
+        }
+        let spacing = (sliderWidth * 0.8) / CGFloat(values.count - 1) - borderWidth
+        return
+            HStack(spacing: spacing) {
+                ForEach(values, id: \.self) { value in
+                    SliderTickMark(sliderValue: _value, value: value, values: values, sliderHeight: sliderHeight!, width: borderWidth)
+                }
+            }
+            .frame(height: sliderHeight!)
     }
     
     private func onDragChange(_ drag: DragGesture.Value, sliderWidth: CGFloat) {
@@ -169,19 +215,44 @@ struct Slider: View {
     
     private func getOffsetX(sliderWidth: CGFloat) -> CGFloat {
         let xrange = (Double(0), Double(sliderWidth))
-        let result = self.value.convert(fromRange: (range.0, range.1), toRange: xrange)
+        var result = self.value.convert(fromRange: (range.0, range.1), toRange: xrange)
+        result = Double(sliderWidth) - result
         return CGFloat(result)
     }
 }
 
+private struct SliderTickMark: View {
+    
+    @Environment(\.careKitStyle) private var style
+    @Binding var sliderValue: Double
+    private let value: Double
+    private let sliderHeight: CGFloat
+    private let width: CGFloat
+    private var color: Color { value > sliderValue ? Color(style.color.customGray) : value == sliderValue ? .clear : Color(style.color.white) }
+
+    public init(sliderValue: Binding<Double>, value: Double, values: [Double], sliderHeight: CGFloat, width: CGFloat) {
+        _sliderValue = sliderValue
+        self.value = value
+        self.sliderHeight = sliderHeight
+        self.width = width
+    }
+
+    var body: some View {
+        Rectangle()
+            .fill(color)
+            .frame(width: width, height: sliderHeight)
+    }
+}
+
 private struct SliderModifier: ViewModifier {
+    let sliderWidth: CGFloat
     let size: CGSize
     let radius: CGFloat
     
     func body(content: Content) -> some View {
         content
             .frame(width: size.width)
-            .position(x: size.width * 0.5, y: size.height * 0.5)
+            .position(x: sliderWidth - size.width * 0.5, y: size.height * 0.5)
             .cornerRadius(radius)
     }
 }

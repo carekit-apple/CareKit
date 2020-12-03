@@ -16,12 +16,12 @@ public enum SliderStyle {
     /// An OCKSlider style with a bar shaped body. The dimensions of the slider  are determined by an instance of OCKSliderDimensions.
     ///
     /// ```
-    ///      +––––––––––––––––––––––––––––––––––+
-    ///     |                                    |
-    ///     |                                    |
-    ///      +––––––––––––––––––––––––––––––––––+
+    ///      +–––––––––––––––––––––––––––––––+
+    ///     |   |    |    |    |    |    |    |
+    ///     |   |    |    |    |    |    |    |
+    ///      +–––––––––––––––––––––––––––––––+
     /// ```
-    case bar
+    case ticked
     
     /// A CareKit Slider that uses the body of a system slider.
     case system

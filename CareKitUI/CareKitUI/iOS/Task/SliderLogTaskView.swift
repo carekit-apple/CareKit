@@ -117,13 +117,14 @@ public extension SliderLogTaskView where Slider == _SliderLogTaskViewSlider {
     /// - Parameter minimumDescription: Description to display next to lower bound value. Default value is nil.
     /// - Parameter maximumDescription: Description to display next to upper bound value. Default value is nil.
     /// - Parameter sliderStyle: The style of the slider, either the SwiftUI system slider or the custom bar slider.
+    /// - Parameter gradientColors:  The colors to use when drawing a color gradient inside the slider. Colors are drawn such that lower indexes correspond to the minimum side of the scale, while colors at higher indexes in the array correspond to the maximum side of the scale. Setting this value to nil results in no gradient being drawn. Defaults to nil. An example usage would set an array of red and green to visually indicate a scale from bad to good.
     /// - Parameter action: Action to perform when the button is tapped.
     /// - Parameter header: Header to inject at the top of the card. Specified content will be stacked vertically.
     init(instructions: Text? = nil,
          valuesArray: Binding<[Double]>, value: Binding<Double>, range: ClosedRange<Double>, step: Double = 1,
          minimumImage: Image? = nil, maximumImage: Image? = nil,
          minimumDescription: String? = nil, maximumDescription: String? = nil,
-         sliderStyle: SliderStyle = .system,
+         sliderStyle: SliderStyle = .system, gradientColors: [Color]? = nil,
          action: @escaping (Double) -> Void,
          @ViewBuilder header: () -> Header) {
         self.init(isHeaderPadded: false, isSliderPadded: true, instructions: instructions, header: header, slider: {
@@ -136,6 +137,7 @@ public extension SliderLogTaskView where Slider == _SliderLogTaskViewSlider {
                                      minimumDescription: minimumDescription,
                                      maximumDescription: maximumDescription,
                                      sliderStyle: sliderStyle,
+                                     gradientColors: gradientColors,
                                      action: action)
         })
     }
@@ -156,12 +158,13 @@ public extension SliderLogTaskView where Header == _SliderLogTaskViewHeader, Sli
     /// - Parameter minimumDescription: Description to display next to lower bound value. Default value is nil.
     /// - Parameter maximumDescription: Description to display next to upper bound value. Default value is nil.
     /// - Parameter sliderStyle: The style of the slider, either the SwiftUI system slider or the custom bar slider.
+    /// - Parameter gradientColors:  The colors to use when drawing a color gradient inside the slider. Colors are drawn such that lower indexes correspond to the minimum side of the scale, while colors at higher indexes in the array correspond to the maximum side of the scale. Setting this value to nil results in no gradient being drawn. Defaults to nil. An example usage would set an array of red and green to visually indicate a scale from bad to good.
     /// - Parameter action: Action to perform when the button is tapped.
     init(title: Text, detail: Text? = nil, instructions: Text? = nil,
          valuesArray: Binding<[Double]>, value: Binding<Double>, range: ClosedRange<Double>, step: Double = 1,
          minimumImage: Image? = nil, maximumImage: Image? = nil,
          minimumDescription: String? = nil, maximumDescription: String? = nil,
-         sliderStyle: SliderStyle = .system,
+         sliderStyle: SliderStyle = .system, gradientColors: [Color]? = nil,
          action: @escaping (Double) -> Void) {
         self.init(isHeaderPadded: true, isSliderPadded: true, instructions: instructions, header: {
             _SliderLogTaskViewHeader(title: title, detail: detail)
@@ -175,6 +178,7 @@ public extension SliderLogTaskView where Header == _SliderLogTaskViewHeader, Sli
                                      minimumDescription: minimumDescription,
                                      maximumDescription: maximumDescription,
                                      sliderStyle: sliderStyle,
+                                     gradientColors: gradientColors,
                                      action: action)
         })
     }
@@ -210,6 +214,7 @@ public struct _SliderLogTaskViewSlider: View {
     fileprivate let range: ClosedRange<Double>
     fileprivate let step: Double
     fileprivate let sliderStyle: SliderStyle
+    fileprivate let gradientColors: [Color]?
     fileprivate let action: (_ value: Double) -> Void
     
     
@@ -217,6 +222,7 @@ public struct _SliderLogTaskViewSlider: View {
          minimumImage: Image?, maximumImage: Image?,
          minimumDescription: String?, maximumDescription: String?,
          sliderStyle: SliderStyle,
+         gradientColors: [Color]?,
          action: @escaping (_ value: Double) -> Void) {
         self.initialValue = range.lowerBound + round((range.upperBound - range.lowerBound) / (step * 2)) * step
         self.action = action
@@ -227,6 +233,7 @@ public struct _SliderLogTaskViewSlider: View {
         self.range = range
         self.step = step
         self.sliderStyle = sliderStyle
+        self.gradientColors = gradientColors
         _value = value
         _valuesArray = valuesArray
     }
@@ -236,7 +243,7 @@ public struct _SliderLogTaskViewSlider: View {
             Slider(value: $value, isActive: $isActive, range: range, step: step,
                    minimumImage: minimumImage, maximumImage: maximumImage,
                    minimumDescription: minimumDescription, maximumDescription: maximumDescription,
-                   sliderStyle: sliderStyle)
+                   sliderStyle: sliderStyle, gradientColors: gradientColors)
             
             SliderLogButton(isActive: $isActive, valuesArray: $valuesArray, value: $value, action: action)
         }

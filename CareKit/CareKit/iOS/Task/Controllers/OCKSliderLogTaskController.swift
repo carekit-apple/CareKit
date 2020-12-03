@@ -23,6 +23,7 @@ open class OCKSliderLogTaskController: OCKTaskController {
     /// Data used to create a `CareKitUI.SliderTaskTaskView`.
     @Published public private(set) var value: Double = 0
     
+    /// Data used to create a `CareKitUI.SliderTaskTaskView`
     @Published public private(set) var valuesArray: [Double] = []
     
     private var cancellable: AnyCancellable?

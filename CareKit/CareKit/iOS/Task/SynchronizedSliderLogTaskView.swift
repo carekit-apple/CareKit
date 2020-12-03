@@ -32,7 +32,9 @@ public struct SynchronizedSliderLogTaskView<Controller: OCKSliderLogTaskControll
             }
             .onReceive(controller.$value) { updatedValue in
                 value = updatedValue
-                valuesArray.append(updatedValue)
+            }
+            .onReceive(controller.$valuesArray) { updatedArray in
+                valuesArray = updatedArray
             }
             .onReceive(controller.$error.compactMap { $0 }) { error in
                 self.errorHandler?(error)

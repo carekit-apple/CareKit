@@ -29,7 +29,7 @@ struct SliderLogButton: View {
     }
     
     var valueText: String {
-        valuesArray.endIndex < 2 ? "No Values Logged" : ("Latest Value: " + String(format: "%g", valuesArray[valuesArray.endIndex - 1]))
+        valuesArray.count == 0 ? loc("NO_VALUES_LOGGED") : (loc("LATEST_VALUE") + ": " + String(format: "%g", valuesArray[0]))
     }
 
     public var body: some View {
@@ -52,16 +52,17 @@ struct SliderLogButton: View {
                 .font(Font.subheadline.weight(.medium))
                 .foregroundColor(.accentColor)
             }
+            .disabled(!isActive)
             .padding(.bottom)
             
-            Button(action: {}) {
+            Button(action: {print(valuesArray.count)}) {
                 Text(valueText)
                     .foregroundColor(.accentColor)
                     .font(Font.subheadline.weight(.medium))
             }
+            .disabled(valuesArray.count == 0)
         }
         .buttonStyle(NoHighlightStyle())
-        .disabled(!isActive)
     }
 }
 

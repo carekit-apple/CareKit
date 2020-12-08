@@ -124,6 +124,11 @@
 		64E1BD4E2309FCF200DFFE52 /* OCKResponsiveLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64E1BD4D2309FCF200DFFE52 /* OCKResponsiveLayout.swift */; };
 		64EEC2382318253B00B1012F /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 64EEC2362318253B00B1012F /* Localizable.strings */; };
 		64EEC23B231825DD00B1012F /* OCKLocalization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64EEC23A231825DD00B1012F /* OCKLocalization.swift */; };
+		E8612564257E899B00DCAABF /* SliderLogButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8612563257E899B00DCAABF /* SliderLogButton.swift */; };
+		E861256A257E89B300DCAABF /* Slider.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8612568257E89B300DCAABF /* Slider.swift */; };
+		E861256B257E89B300DCAABF /* SliderStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8612569257E89B300DCAABF /* SliderStyle.swift */; };
+		E8612570257E89CA00DCAABF /* SliderLogTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E861256F257E89CA00DCAABF /* SliderLogTaskView.swift */; };
+		E861258C257F12A300DCAABF /* TestSliderLogTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E861258B257F12A200DCAABF /* TestSliderLogTaskView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -239,6 +244,11 @@
 		64E1BD4D2309FCF200DFFE52 /* OCKResponsiveLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKResponsiveLayout.swift; sourceTree = "<group>"; };
 		64EEC2372318253B00B1012F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		64EEC23A231825DD00B1012F /* OCKLocalization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKLocalization.swift; sourceTree = "<group>"; };
+		E8612563257E899B00DCAABF /* SliderLogButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SliderLogButton.swift; sourceTree = "<group>"; };
+		E8612568257E89B300DCAABF /* Slider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Slider.swift; sourceTree = "<group>"; };
+		E8612569257E89B300DCAABF /* SliderStyle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SliderStyle.swift; sourceTree = "<group>"; };
+		E861256F257E89CA00DCAABF /* SliderLogTaskView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SliderLogTaskView.swift; sourceTree = "<group>"; };
+		E861258B257F12A200DCAABF /* TestSliderLogTaskView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestSliderLogTaskView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -360,6 +370,7 @@
 			children = (
 				51E77382237D1D8000ED70A2 /* TestGridTaskView.swift */,
 				51746F2A2448B90B00B647E1 /* TestNumericProgressTaskView.swift */,
+				E861258B257F12A200DCAABF /* TestSliderLogTaskView.swift */,
 			);
 			path = Task;
 			sourceTree = "<group>";
@@ -488,6 +499,7 @@
 				518F9D5222961BF5009CAA48 /* OCKButtonLogTaskView.swift */,
 				51F75B932447DD0B00978C71 /* NumericProgressTaskView.swift */,
 				513FE9FC24803AE10016FCE6 /* LabeledValueTaskView.swift */,
+				E861256F257E89CA00DCAABF /* SliderLogTaskView.swift */,
 				51F12D43229CA99400CA265B /* Buttons */,
 				51F12D44229CA9CF00CA265B /* Collection */,
 			);
@@ -582,6 +594,7 @@
 		51F12D43229CA99400CA265B /* Buttons */ = {
 			isa = PBXGroup;
 			children = (
+				E8612563257E899B00DCAABF /* SliderLogButton.swift */,
 				51F12D38229C81E200CA265B /* OCKLabeledCheckmarkButton.swift */,
 				518F9D5522961BF5009CAA48 /* OCKLogItemButton.swift */,
 				518F9D4E22961BF5009CAA48 /* OCKChecklistItemButton.swift */,
@@ -592,6 +605,8 @@
 		51F12D44229CA9CF00CA265B /* Collection */ = {
 			isa = PBXGroup;
 			children = (
+				E8612568257E89B300DCAABF /* Slider.swift */,
+				E8612569257E89B300DCAABF /* SliderStyle.swift */,
 				64699E9822FC7B5000FF624F /* OCKLogButtonCell.swift */,
 				518F9D5122961BF5009CAA48 /* OCKSelfSizingCollectionView.swift */,
 				518F9D5322961BF5009CAA48 /* OCKGridTaskCell.swift */,
@@ -805,6 +820,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				51E77383237D1D8000ED70A2 /* TestGridTaskView.swift in Sources */,
+				E861258C257F12A300DCAABF /* TestSliderLogTaskView.swift in Sources */,
 				64E1BD4C2309FCDC00DFFE52 /* OCKResponsiveLayoutTests.swift in Sources */,
 				5105254724462BCE004483D0 /* TestLinkType.swift in Sources */,
 				51052549244639B3004483D0 /* TestLinkView.swift in Sources */,
@@ -871,9 +887,11 @@
 				518F9D9322961BF5009CAA48 /* OCKButtonLogTaskView.swift in Sources */,
 				518F9DB522961BF6009CAA48 /* OCKWeekCalendarView.swift in Sources */,
 				03089D7F231ED7AF0054EA23 /* Calendar+Extensions.swift in Sources */,
+				E861256A257E89B300DCAABF /* Slider.swift in Sources */,
 				51367952243BF7450026997B /* LinkLabel.swift in Sources */,
 				518F9D9822961BF5009CAA48 /* OCKGraphLegendView.swift in Sources */,
 				518F9DC022961BF6009CAA48 /* OCKStackView.swift in Sources */,
+				E861256B257E89B300DCAABF /* SliderStyle.swift in Sources */,
 				51EFC75623FCAE6000536266 /* UIColor+Extension.swift in Sources */,
 				518F9D9922961BF5009CAA48 /* OCKScatterPlotView.swift in Sources */,
 				5196B54322D5872C00800706 /* OCKTaskDisplayable.swift in Sources */,
@@ -890,8 +908,10 @@
 				518F9DB422961BF6009CAA48 /* OCKHeaderView.swift in Sources */,
 				518F9D9222961BF5009CAA48 /* OCKSelfSizingCollectionView.swift in Sources */,
 				51B225AD23EDDCFC00A2D11F /* SimpleTaskView.swift in Sources */,
+				E8612564257E899B00DCAABF /* SliderLogButton.swift in Sources */,
 				518F9D8E22961BF5009CAA48 /* OCKSimpleTaskView.swift in Sources */,
 				51637EA322F3A68400BAF65C /* OCKLogTaskView.swift in Sources */,
+				E8612570257E89CA00DCAABF /* SliderLogTaskView.swift in Sources */,
 				516A1C48244F766A00BBF2D3 /* OSValue.swift in Sources */,
 				5178FBDA22E253FC00794353 /* OCKChartDisplayable.swift in Sources */,
 				518F9D8F22961BF5009CAA48 /* OCKChecklistItemButton.swift in Sources */,

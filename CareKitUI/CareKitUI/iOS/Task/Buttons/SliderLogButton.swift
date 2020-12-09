@@ -55,7 +55,7 @@ struct SliderLogButton: View {
             .disabled(!isActive)
             .padding(.bottom)
             
-            Button(action: {print(valuesArray.count)}) {
+            Button(action: {}) {
                 Text(valueText)
                     .foregroundColor(.accentColor)
                     .font(Font.subheadline.weight(.medium))

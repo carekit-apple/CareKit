@@ -47,6 +47,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 "GOAL" = "Goal";
 "HIGH" = "High";
 "INCOMPLETE" = "Incomplete";
+"LATEST_VALUE" = "Latest Value";
 "LOG" = "Log";
 "LOG_ENTRY" = "Log Entry";
 "LOGGING" = "Logging";
@@ -56,6 +57,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 "NO_DATA" = "No Data";
 "NO_TASKS" = "No Tasks";
 "NO_EVENTS" = "No Events";
+"NO_VALUES_LOGGED" = "No Values Logged";
 "PROGRESS" = "Progress";
 "SEARCH" = "Search";
 "SELECTED" = "Selected";

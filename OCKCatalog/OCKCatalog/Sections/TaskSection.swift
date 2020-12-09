@@ -81,14 +81,14 @@ private struct TaskDestination: View {
 private enum TaskStyle: String, CaseIterable {
 
     case grid, checklist
-    case simple, instructions, labeledValue = "labeled value", numericProgress = "Numeric Progress"
+    case simple, instructions, labeledValue = "labeled value", numericProgress = "Numeric Progress", slider
     case buttonLog = "button log"
 
     var supportsSwiftUI: Bool {
         guard #available(iOS 14, *) else { return false }
 
         switch self {
-        case .simple, .instructions, .labeledValue, .numericProgress: return true
+        case .simple, .instructions, .labeledValue, .numericProgress, .slider: return true
         case .grid, .checklist, .buttonLog: return false
         }
     }
@@ -96,7 +96,7 @@ private enum TaskStyle: String, CaseIterable {
     var supportsUIKit: Bool {
         switch self {
         case .simple, .instructions, .grid, .checklist, .buttonLog: return true
-        case .labeledValue, .numericProgress: return false
+        case .labeledValue, .numericProgress, .slider: return false
         }
     }
 }
@@ -107,6 +107,10 @@ private struct TaskView: View {
     @Environment(\.storeManager) private var storeManager
 
     let style: TaskStyle
+    @State private var value1: Double = 0
+    @State private var value2: Double = 0
+    @State private var value3: Double = 0
+    @State private var value4: Double = 0
 
     var body: some View {
         CardBackground {
@@ -163,6 +167,45 @@ private struct TaskView: View {
                                          detail: Text("Anytime"),
                                          state: .incomplete(Text("NO DATA")))
                 }
+            case .slider:
+                VStack(spacing: 16) {
+                    
+                    // System slider style, with images, with color gradient
+                    SliderLogTaskView<_SliderLogTaskViewHeader, _SliderLogTaskViewSlider>(title: Text("Distress (Static)"),
+                                                                                          instructions: Text("On a scale of 0-10, how are you feeling today?"),
+                                                                                          valuesArray: .constant([8.0]), value: $value1, range: 0...10, step: 1,
+                                                                                          minimumImage: Image(systemName: "chevron.down"), maximumImage: Image(systemName: "chevron.up"),
+                                                                                          minimumDescription: "None", maximumDescription: "A Lot",
+                                                                                          sliderStyle: .system,
+                                                                                          gradientColors: [.red, .yellow, .green],
+                                                                                          action: {_ in})
+                    
+                    // System slider style, no images
+                    SliderLogTaskView<_SliderLogTaskViewHeader, _SliderLogTaskViewSlider>(title: Text("Distress (Static)"),
+                                                                                          instructions: Text("On a scale of 0-10, how are you feeling today?"),
+                                                                                          valuesArray: .constant([]), value: $value2, range: 0...10, step: 1,
+                                                                                          minimumDescription: "None", maximumDescription: "A Lot",
+                                                                                          sliderStyle: .system,
+                                                                                          action: {_ in})
+                    
+                    // Ticked slider style, with images, with color gradient
+                    SliderLogTaskView<_SliderLogTaskViewHeader, _SliderLogTaskViewSlider>(title: Text("Distress (Static)"),
+                                                                                          instructions: Text("On a scale of 0-10, how are you feeling today?"),
+                                                                                          valuesArray: .constant([9.0]), value: $value3, range: 0...10, step: 1,
+                                                                                          minimumImage: Image(systemName: "chevron.down"), maximumImage: Image(systemName: "chevron.up"),
+                                                                                          minimumDescription: "None", maximumDescription: "A Lot",
+                                                                                          sliderStyle: .ticked,
+                                                                                          gradientColors: [.red, .yellow, .green],
+                                                                                          action: {_ in})
+                    
+                    // Ticked slider style, with images
+                    SliderLogTaskView<_SliderLogTaskViewHeader, _SliderLogTaskViewSlider>(title: Text("Distress (Static)"),
+                                                                                          instructions: Text("On a scale of 0-10, how are you feeling today?"),
+                                                                                          valuesArray: .constant([]), value: $value4, range: 0...10, step: 1,
+                                                                                          minimumDescription: "None", maximumDescription: "A Lot",
+                                                                                          sliderStyle: .ticked,
+                                                                                          action: {_ in})
+                }
             default:
                 EmptyView()
             }
@@ -198,7 +241,7 @@ private struct AdaptedTaskView: UIViewControllerRepresentable {
         case .grid:
             taskViewController = OCKGridTaskViewController(taskID: OCKStore.Tasks.doxylamine.rawValue,
                                                            eventQuery: .init(for: Date()), storeManager: storeManager)
-        case .labeledValue, .numericProgress:
+        case .labeledValue, .numericProgress, .slider:
             taskViewController = nil
         }
 

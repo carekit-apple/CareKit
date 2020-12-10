@@ -149,9 +149,8 @@
 		64EABE0B2321B1AF00CFBB9F /* OCKContactUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64EABDCB2321B1AF00CFBB9F /* OCKContactUtility.swift */; };
 		64EABE202321B1AF00CFBB9F /* locversion.plist in Resources */ = {isa = PBXBuildFile; fileRef = 64EABDE72321B1AF00CFBB9F /* locversion.plist */; };
 		913B617224BD479000A12785 /* OCKSliderLogTaskController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 913B617124BD479000A12785 /* OCKSliderLogTaskController.swift */; };
-		913B617424BDD95600A12785 /* SliderLogTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 913B617324BDD95600A12785 /* SliderLogTaskView.swift */; };
-		E829AC1A24BFBB27001DCB1F /* TestSliderTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E829AC1924BFBB27001DCB1F /* TestSliderTaskView.swift */; };
 		E829AC1C24BFBB40001DCB1F /* TestSliderTaskViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E829AC1B24BFBB40001DCB1F /* TestSliderTaskViewModel.swift */; };
+		E86125B22581B7E700DCAABF /* SliderLogTaskViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86125B12581B7E700DCAABF /* SliderLogTaskViewModel.swift */; };
 		E8A404C224C7953B0045F7B9 /* SynchronizedSliderLogTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8A404C124C7953B0045F7B9 /* SynchronizedSliderLogTaskView.swift */; };
 /* End PBXBuildFile section */
 
@@ -294,9 +293,8 @@
 		64EABDE82321B1AF00CFBB9F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = en; path = en.lproj/locversion.plist; sourceTree = "<group>"; };
 		8605A5BA1C4F04EC00DD65FF /* CareKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CareKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		913B617124BD479000A12785 /* OCKSliderLogTaskController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKSliderLogTaskController.swift; sourceTree = "<group>"; };
-		913B617324BDD95600A12785 /* SliderLogTaskView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SliderLogTaskView.swift; sourceTree = "<group>"; };
-		E829AC1924BFBB27001DCB1F /* TestSliderTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestSliderTaskView.swift; sourceTree = "<group>"; };
 		E829AC1B24BFBB40001DCB1F /* TestSliderTaskViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestSliderTaskViewModel.swift; sourceTree = "<group>"; };
+		E86125B12581B7E700DCAABF /* SliderLogTaskViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SliderLogTaskViewModel.swift; sourceTree = "<group>"; };
 		E8A404C124C7953B0045F7B9 /* SynchronizedSliderLogTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynchronizedSliderLogTaskView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -387,9 +385,9 @@
 			isa = PBXGroup;
 			children = (
 				5199906A2447E24F005CD581 /* NumericProgressTaskView.swift */,
-				913B617324BDD95600A12785 /* SliderLogTaskView.swift */,
 				E8A404C124C7953B0045F7B9 /* SynchronizedSliderLogTaskView.swift */,
 				51AF514D24983B86005D385F /* LabeledValueTaskView.swift */,
+				E86125B12581B7E700DCAABF /* SliderLogTaskViewModel.swift */,
 				513271ED234FA3170025810A /* View Controllers */,
 				510EA10E234EA3CD005D6793 /* Controllers */,
 				510EA109234EA207005D6793 /* Synchronizers */,
@@ -437,7 +435,6 @@
 				5106616B2473590000C93CAB /* TestTaskViewController.swift */,
 				51168D95246E1DBF0002CC69 /* TestSimpleTaskView.swift */,
 				51168D98246E20B40002CC69 /* TestNumericProgressTaskView.swift */,
-				E829AC1924BFBB27001DCB1F /* TestSliderTaskView.swift */,
 				E829AC1B24BFBB40001DCB1F /* TestSliderTaskViewModel.swift */,
 				51168D9A246E211B0002CC69 /* TestInstructionsTaskView.swift */,
 				51AF515124984163005D385F /* TestLabeledValueTaskView.swift */,
@@ -1005,7 +1002,6 @@
 				518E154223726F590018541B /* TestCustomContactViewSynchronizer.swift in Sources */,
 				518E154023726A690018541B /* TestDetailedContactViewSynchronizer.swift in Sources */,
 				5101E6CB23733F3B0023B8A6 /* TestCustomCalendarViewSynchronizer.swift in Sources */,
-				E829AC1A24BFBB27001DCB1F /* TestSliderTaskView.swift in Sources */,
 				51D5449523975DCD00898683 /* TestSimpleTaskViewSynchronizer.swift in Sources */,
 				03530202248AC32E0073579D /* TestScheduleUtility.swift in Sources */,
 				511372442374CA2B00831191 /* TestCustomChartViewController.swift in Sources */,
@@ -1099,6 +1095,7 @@
 				51AF515024983BE8005D385F /* OCKLabeledValueTaskController.swift in Sources */,
 				51AF515824984B6F005D385F /* Number+Extension.swift in Sources */,
 				5183EA8C2353BC7600C46113 /* OCKScheduleUtility.swift in Sources */,
+				E86125B22581B7E700DCAABF /* SliderLogTaskViewModel.swift in Sources */,
 				510A6656236147FF00074275 /* OCKAnyEvent+Extension.swift in Sources */,
 				517F3E4A23345BE9004FE251 /* OCKDetailedContactView+Updatable.swift in Sources */,
 				5112731C235E58B2007B18DF /* OCKGridTaskController.swift in Sources */,
@@ -1107,7 +1104,6 @@
 				5123901F2355573300BF2674 /* OCKTaskViewSynchronizerProtocol.swift in Sources */,
 				64EABE0B2321B1AF00CFBB9F /* OCKContactUtility.swift in Sources */,
 				51F9F18823A9C2F20087C900 /* SimpleTaskView.swift in Sources */,
-				913B617424BDD95600A12785 /* SliderLogTaskView.swift in Sources */,
 				515C0A1623BF9D3C009A9774 /* OCKTaskControllerProtocol+Extension.swift in Sources */,
 				51983EBC23563B0000329252 /* OCKCalendarViewController.swift in Sources */,
 				5123901B235551FA00BF2674 /* OCKChartViewSynchronizerProtocol.swift in Sources */,

@@ -81,14 +81,14 @@ private struct TaskDestination: View {
 private enum TaskStyle: String, CaseIterable {
 
     case grid, checklist
-    case simple, instructions, labeledValue = "labeled value", numericProgress = "Numeric Progress", slider = "slider"
+    case simple, instructions, labeledValue = "labeled value", numericProgress = "Numeric Progress"
     case buttonLog = "button log"
 
     var supportsSwiftUI: Bool {
         guard #available(iOS 14, *) else { return false }
 
         switch self {
-        case .simple, .instructions, .labeledValue, .numericProgress, .slider: return true
+        case .simple, .instructions, .labeledValue, .numericProgress: return true
         case .grid, .checklist, .buttonLog: return false
         }
     }
@@ -96,7 +96,7 @@ private enum TaskStyle: String, CaseIterable {
     var supportsUIKit: Bool {
         switch self {
         case .simple, .instructions, .grid, .checklist, .buttonLog: return true
-        case .labeledValue, .numericProgress, .slider: return false
+        case .labeledValue, .numericProgress: return false
         }
     }
 }
@@ -198,7 +198,7 @@ private struct AdaptedTaskView: UIViewControllerRepresentable {
         case .grid:
             taskViewController = OCKGridTaskViewController(taskID: OCKStore.Tasks.doxylamine.rawValue,
                                                            eventQuery: .init(for: Date()), storeManager: storeManager)
-        case .labeledValue, .numericProgress, .slider:
+        case .labeledValue, .numericProgress:
             taskViewController = nil
         }
 

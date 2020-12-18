@@ -323,7 +323,6 @@
 		510466FA24A286C400D0FD53 /* iOS */ = {
 			isa = PBXGroup;
 			children = (
-				64EABDE02321B1AF00CFBB9F /* Authentication */,
 				64EABD9A2321B1AF00CFBB9F /* Higher Order */,
 				64EABDA42321B1AF00CFBB9F /* Details */,
 				510466FF24A2874600D0FD53 /* Task */,
@@ -792,13 +791,6 @@
 				64EABDCB2321B1AF00CFBB9F /* OCKContactUtility.swift */,
 			);
 			path = Utilities;
-			sourceTree = "<group>";
-		};
-		64EABDE02321B1AF00CFBB9F /* Authentication */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Authentication;
 			sourceTree = "<group>";
 		};
 		64EABDE62321B1AF00CFBB9F /* Localization */ = {

@@ -48,8 +48,4 @@ extension View {
             .compositingGroup()
             .luminanceToAlpha())
     }
-    
-    func scaled(size: CGFloat) -> some View {
-        return self.modifier(ScaledFontModifier(size: size))
-    }
 }

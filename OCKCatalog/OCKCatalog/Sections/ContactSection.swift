@@ -30,7 +30,6 @@
 
 import CareKit
 import CareKitStore
-import CareKitUI
 import Foundation
 import SwiftUI
 
@@ -55,15 +54,7 @@ private struct ContactDestination: View {
         ZStack {
             Color(UIColor.systemGroupedBackground)
                 .edgesIgnoringSafeArea(.all)
-            
-            PlatformPicker {
-                AdaptedContactView(style: style, storeManager: storeManager)
-            } swiftUIView: {
-                if #available(iOS 14, *) {
-                    ContactView(style: style, controller: OCKContactController(storeManager: storeManager))
-                }
-            }
-            
+            AdaptedTaskView(style: style, storeManager: storeManager)
         }
         .navigationBarTitle(Text(style.rawValue.capitalized), displayMode: .inline)
     }
@@ -73,7 +64,7 @@ private enum ContactStyle: String, CaseIterable {
     case simple, detailed
 }
 
-private struct AdaptedContactView: UIViewControllerRepresentable {
+private struct AdaptedTaskView: UIViewControllerRepresentable {
 
     let style: ContactStyle
     let storeManager: OCKSynchronizedStoreManager
@@ -97,24 +88,4 @@ private struct AdaptedContactView: UIViewControllerRepresentable {
     }
 
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
-}
-
-@available(iOS 14.0, *)
-private struct ContactView: View {
-    @Environment(\.storeManager) private var storeManager
-
-    let style: ContactStyle
-    let controller: OCKContactController
-    
-    var body: some View {
-        CardBackground {
-            switch style {
-            case .simple:
-                SimpleContactView(contactID: OCKStore.Contacts.matthew.rawValue, storeManager: storeManager)
-            case .detailed:
-                DetailedContactView(contactID: OCKStore.Contacts.matthew.rawValue, storeManager: storeManager)
-            }
-            
-        }
-    }
 }

@@ -33,7 +33,7 @@ import Foundation
 /// An `OCKTask` represents some task or action that a patient is supposed to perform. Tasks are optionally associable with an `OCKCarePlan`
 /// and must have a unique id and schedule. The schedule determines when and how often the task should be performed, and the
 /// `impactsAdherence` flag may be used to specify whether or not the patients adherence to this task will affect their daily completion rings.
-public struct OCKTask: Codable, Equatable, OCKAnyVersionableTask, OCKAnyMutableTask, OCKVersionedObjectCompatible {
+public struct OCKTask: Codable, Equatable, OCKAnyVersionableTask, OCKAnyMutableTask, OCKVersionedObjectCompatible, Identifiable {
 
     /// The UUID of the care plan to which this task belongs.
     public var carePlanUUID: UUID?

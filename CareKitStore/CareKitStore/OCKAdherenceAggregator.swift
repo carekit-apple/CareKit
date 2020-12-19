@@ -97,9 +97,11 @@ public enum OCKAdherenceAggregator {
         guard let outcome = event.outcome else { return 0 }
         let targetValues = event.scheduleEvent.element.targetValues
         guard targetValues.count <= outcome.values.count else { return 0 }
-        let indiciesToCheck = Array(0..<targetValues.count)
-        for index in indiciesToCheck {
-            if !outcomeFulfillsTarget(outcomeValue: outcome.values[index], target: targetValues[index]) { return 0 }
+        let indicesToCheck = Array(0..<targetValues.count)
+        for index in indicesToCheck {
+            if !outcomeFulfillsTarget(outcomeValue: outcome.values[index], target: targetValues[index]) {
+                return 0
+            }
         }
         return 1
     }
@@ -120,31 +122,29 @@ public enum OCKAdherenceAggregator {
         return Double(numberComplete) / Double(totalTargets)
     }
 
-    private func outcomeFulfillsTarget(outcomeValue value: OCKOutcomeValue, target: OCKOutcomeValue) -> Bool {
+    private func outcomeFulfillsTarget(
+        outcomeValue value: OCKOutcomeValue,
+        target: OCKOutcomeValue) -> Bool {
+
+        // Comparing two numerals (int, double, bool)
+        if let number = value.numberValue, let targetNumber = target.numberValue {
+            let comparison = number.compare(targetNumber)
+            return comparison == .orderedDescending || comparison == .orderedSame
+        }
+
+        // Comparing non-numerals (date, text, binary)
         assert(value.type == target.type, "Actual outcome value and target value should not have different types!")
-        guard value.type == target.type else { return false }
+        guard value.type == target.type else {
+            return false
+        }
 
         switch value.type {
-        case .binary: return checkEquality(lhs: value, rhs: target, keyPath: \.dateValue)
-        case .boolean: return checkEquality(lhs: value, rhs: target, keyPath: \.booleanValue)
-        case .text: return checkEquality(lhs: value, rhs: target, keyPath: \.stringValue)
-        case .double: return compare(lhs: value, greaterThanOrEqualTo: target, keyPath: \.doubleValue)
-        case .date: return compare(lhs: value, greaterThanOrEqualTo: target, keyPath: \.dateValue)
-        case .integer: return compare(lhs: value, greaterThanOrEqualTo: target, keyPath: \.integerValue)
+        case .binary: return true
+        case .text: return true
+        case .date: return value.dateValue! >= target.dateValue!
+        default:
+            assertionFailure("Unexpected value type: \(value.type)")
+            return false
         }
-    }
-
-    private func checkEquality<T: Equatable>(lhs: OCKOutcomeValue,
-                                             rhs: OCKOutcomeValue,
-                                             keyPath: KeyPath<OCKOutcomeValue, T?>) -> Bool {
-        guard let lhsValue = lhs[keyPath: keyPath], let rhsValue = rhs[keyPath: keyPath] else { return false }
-        return lhsValue == rhsValue
-    }
-
-    private func compare<T: Comparable>(lhs: OCKOutcomeValue,
-                                        greaterThanOrEqualTo rhs: OCKOutcomeValue,
-                                        keyPath: KeyPath<OCKOutcomeValue, T?>) -> Bool {
-        guard let lhsValue = lhs[keyPath: keyPath], let rhsValue = rhs[keyPath: keyPath] else { return false }
-        return lhsValue >= rhsValue
     }
 }

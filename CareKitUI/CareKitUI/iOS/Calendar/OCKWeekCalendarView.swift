@@ -46,7 +46,7 @@ open class OCKWeekCalendarView: OCKView, OCKCalendarDisplayable {
     // MARK: Properties
 
     /// The currently selected date in the calendar.
-    public private (set) var selectedDate = Date()
+    public private (set) var selectedDate: Date
 
     /// Handles events related to an `OCKCalendarDisplayable` object.
     public weak var delegate: OCKCalendarViewDelegate?
@@ -88,12 +88,15 @@ open class OCKWeekCalendarView: OCKView, OCKCalendarDisplayable {
     ///   - date: Will display the week of the provided date.
     public init(weekOfDate date: Date) {
         self.dateInterval = Calendar.current.dateIntervalOfWeek(for: date)
-        selectedDate = date
+        self.selectedDate = dateInterval.start
         super.init()
+
+        selectDate(selectedDate, shouldValidateDay: false)
     }
 
+    @available(*, unavailable)
     public required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
+        fatalError("Initializer not supported")
     }
 
     // MARK: - Methods
@@ -113,6 +116,35 @@ open class OCKWeekCalendarView: OCKView, OCKCalendarDisplayable {
         updateRingLabels()
     }
 
+    /// If a date is valid, select it
+    /// - Parameters:
+    ///   - date: The date to select.
+    ///   - shouldValidateDay: True if the date should be validated before selecting.
+    /// - Returns: True if the date was selected.
+    @discardableResult
+    private func selectDate(_ date: Date, shouldValidateDay: Bool) -> Bool {
+
+        // Do not allow re-selection of the current selected date
+        guard !shouldValidateDay || !Calendar.current.isDate(date, inSameDayAs: selectedDate) else {
+            return false
+        }
+
+        selectValidatedDate(date)
+        return true
+    }
+
+    /// Select a date that has been validated.
+    private func selectValidatedDate(_ date: Date) {
+        completionRingButtons.first(where: { $0.isSelected })?.isSelected = false
+        if let ring = completionRingFor(date: date) {
+            ring.isSelected = true
+            selectedDate = date
+        } else {
+            showDate(date)
+            selectDate(date)
+        }
+    }
+
     private func updateRingLabels() {
         let numberOfDays = Calendar.current.dateComponents([.day], from: dateInterval.start, to: dateInterval.end).day!
         for index in 0...numberOfDays {
@@ -127,26 +159,18 @@ open class OCKWeekCalendarView: OCKView, OCKCalendarDisplayable {
 
     @objc
     private func handleSelection(sender: UIControl) {
-        for ring in completionRingButtons where ring != sender {
-            ring.isSelected = false
-        }
-        sender.isSelected = true
         guard let ringIndex = (completionRingButtons as [UIControl]).firstIndex(of: sender) else { fatalError("Unexpected button") }
-        selectedDate = dateAt(index: ringIndex)
-        delegate?.calendarView(self, didSelectDate: selectedDate, at: ringIndex, sender: sender)
+        let dateToSelect = dateAt(index: ringIndex)
+
+        if selectDate(dateToSelect, shouldValidateDay: true) {
+            self.delegate?.calendarView(self, didSelectDate: dateToSelect, at: ringIndex, sender: sender)
+        }
     }
 
     /// Select the completion ring that corresponds to the given date.
     /// - Parameter date: The date of the ring to select.
     public func selectDate(_ date: Date) {
-        completionRingButtons.first(where: { $0.isSelected })?.isSelected = false
-        if let ring = completionRingFor(date: date) {
-            ring.isSelected = true
-            selectedDate = date
-        } else {
-            showDate(date)
-            selectDate(date)
-        }
+        selectDate(date, shouldValidateDay: true)
     }
 
     /// Get the completion ring that corresponds to a particular date.
@@ -163,6 +187,7 @@ open class OCKWeekCalendarView: OCKView, OCKCalendarDisplayable {
     public func showDate(_ date: Date) {
         dateInterval = Calendar.current.dateIntervalOfWeek(for: date)
         updateRingLabels()
+        selectDate(date)
     }
 
     override open func styleDidChange() {

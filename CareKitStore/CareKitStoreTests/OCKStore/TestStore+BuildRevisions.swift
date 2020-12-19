@@ -94,7 +94,7 @@ class TestStoreBuildRevisions: XCTestCase {
         try store.deleteTasksAndWait([taskA2])
         let revision = store.computeRevision(since: store.context.clockTime)
 
-        XCTAssert(revision.entities.count == 1)
+        XCTAssert(revision.entities.count == 2)
         XCTAssert(revision.entities.first?.deletedDate != nil)
     }
 

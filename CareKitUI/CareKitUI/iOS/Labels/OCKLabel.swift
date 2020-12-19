@@ -107,6 +107,8 @@ open class OCKLabel: UILabel, OCKStylable {
     private func setup() {
         preservesSuperviewLayoutMargins = true
         adjustsFontForContentSizeCategory = false
+        lineBreakMode = .byCharWrapping
+        clipsToBounds = false
         styleDidChange()
     }
 

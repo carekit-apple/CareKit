@@ -81,6 +81,7 @@ open class OCKHeaderView: OCKView {
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
         label.animatesTextChanges = true
+        label.adjustsFontSizeToFitWidth = true
         return label
     }()
 
@@ -90,6 +91,7 @@ open class OCKHeaderView: OCKView {
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
         label.animatesTextChanges = true
+        label.adjustsFontSizeToFitWidth = true
         return label
     }()
 

@@ -66,13 +66,13 @@ public extension OCKHealthKitPassthroughStore {
                     else { throw OCKStoreError.addFailed(reason: "Cannot persist an OCKHealthKitOutcome that is not owned by this app!") }
                 guard outcome.values.count == 1
                     else { throw OCKStoreError.addFailed(reason: "OCKHealthKitOutcomes must have exactly 1 value, but got \(outcome.values.count).") }
-                guard let value = outcome.values.first?.doubleValue
+                guard let valueString = outcome.values.first?.doubleValue
                     else { throw OCKStoreError.addFailed(reason: "OCKHealthKitOutcome's value must be of type Double, but was not.") }
                 guard let task = tasks.first(where: { $0.uuid == outcome.taskUUID })
                     else { throw OCKStoreError.addFailed(reason: "No task could be for outcome") }
 
                 let unit = HKUnit(from: task.healthKitLinkage.unitString)
-                let quantity = HKQuantity(unit: unit, doubleValue: value)
+                let quantity = HKQuantity(unit: unit, doubleValue: valueString)
                 let type = HKObjectType.quantityType(forIdentifier: task.healthKitLinkage.quantityIdentifier)!
                 let event = task.schedule.event(forOccurrenceIndex: outcome.taskOccurrenceIndex)!
                 let eventInterval = DateInterval(start: event.start, end: event.end)
@@ -93,8 +93,8 @@ public extension OCKHealthKitPassthroughStore {
 
                 // Copy the newly assigned HealthKit UUID from the HKSample objects to the saves outcomes.
                 var saved = outcomes
-                samples.enumerated().forEach { index, value in
-                    saved[index].healthKitUUIDs = Set([value.uuid])
+                samples.enumerated().forEach { index, valueString in
+                    saved[index].healthKitUUIDs = Set([valueString.uuid])
                 }
 
                 callbackQueue.async {

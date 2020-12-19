@@ -50,14 +50,6 @@ extension CGFloat {
             .clamped(to: (self...end))
     }
 
-    /// Get the interpolation distance factor between 0 and 1 of this value in the given range.
-    func interpolationFactor(for range: ClosedRange<CGFloat>) -> CGFloat {
-        let denominator = range.upperBound - self
-        guard denominator > 0 else { return 1 }
-        return ((self - range.lowerBound) / denominator)
-            .clamped(to: 0...1)
-    }
-
     func clamped(to range: ClosedRange<CGFloat>) -> CGFloat {
         return Swift.max(Swift.min(self, range.upperBound), range.lowerBound)
     }

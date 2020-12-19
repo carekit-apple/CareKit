@@ -102,7 +102,9 @@ open class OCKSimpleTaskView: OCKView, OCKTaskDisplayable {
     private func constrainSubviews() {
         [contentView, backgroundButton, horizontalContentStackView].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
         completionButton.setContentHuggingPriority(.required, for: .horizontal)
-        completionButton.setContentCompressionResistancePriority(.required, for: .horizontal)
+        completionButton.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        completionButton.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
+        headerView.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         NSLayoutConstraint.activate(
             contentView.constraints(equalTo: self) +
             backgroundButton.constraints(equalTo: contentView) +

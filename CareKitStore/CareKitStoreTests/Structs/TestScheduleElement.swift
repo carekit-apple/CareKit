@@ -73,6 +73,16 @@ class TestScheduleElement: XCTestCase {
         XCTAssert(events.isEmpty)
     }
 
+    func testNoEventsBeforeStartDateForAllDayEvents() {
+        let thisMorning = Calendar.current.startOfDay(for: Date())
+        let tonight = Calendar.current.date(byAdding: DateComponents(day: 1, second: -1), to: thisMorning)!
+        let aWeekAgo = Calendar.current.date(byAdding: .weekOfYear, value: -1, to: thisMorning)!
+        let element = OCKScheduleElement(start: aWeekAgo, end: nil, interval: DateComponents(day: 1),
+                                         text: nil, targetValues: [], duration: .allDay)
+        let events = element.events(from: thisMorning, to: tonight)
+        XCTAssert(events.count == 1)
+    }
+
     func testEventOccursExactlyOnStartDate() {
         let justAfter = Calendar.current.date(byAdding: .second, value: 1, to: element.start)!
         let events = element.events(from: date, to: justAfter)

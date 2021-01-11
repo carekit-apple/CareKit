@@ -191,7 +191,9 @@ public struct OCKScheduleElement: Codable, Equatable {
         }
         let events = dates.enumerated().map { index, date in makeScheduleEvent(on: date, for: index) }
         return events.filter { event in
-            if duration == .allDay { return true }
+            if duration == .allDay {
+                return event.end > start
+            }
             return event.start + duration.seconds >= start
         }
     }

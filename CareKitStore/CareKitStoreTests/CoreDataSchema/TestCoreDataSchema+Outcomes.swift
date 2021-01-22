@@ -39,49 +39,50 @@ class TestCoreDataSchemaWithOutcomes: XCTestCase {
         store = OCKStore(name: "test", type: .inMemory)
     }
 
-    func testCanSaveOutcomeWithvalues() {
-        let scheduleElement = OCKCDScheduleElement(context: store.context)
+    func testCanSaveOutcomeWithValues() throws {
+        let scheduleElement = OCKCDScheduleElement(context: try store.context())
         scheduleElement.startDate = Date()
         scheduleElement.daysInterval = 1
         scheduleElement.duration = .seconds(42)
 
-        let task1 = OCKCDTask(context: store.context)
+        let task1 = OCKCDTask(context: try store.context())
         task1.id = "task_1"
         task1.uuid = UUID()
         task1.effectiveDate = Date()
         task1.allowsMissingRelationships = true
         task1.scheduleElements = Set([scheduleElement])
 
-        let value1 = OCKCDOutcomeValue(context: store.context)
+        let value1 = OCKCDOutcomeValue(context: try store.context())
         value1.kind = "sleep-time"
         value1.dateValue = Date()
         value1.type = .date
 
-        let value2 = OCKCDOutcomeValue(context: store.context)
+        let value2 = OCKCDOutcomeValue(context: try store.context())
         value2.kind = "circumference-diameter-ratio"
         value2.doubleValue = 3.14
         value2.type = .double
 
-        let value3 = OCKCDOutcomeValue(context: store.context)
+        let value3 = OCKCDOutcomeValue(context: try store.context())
         value3.kind = "favorite-japanese-food"
         value3.integerValue = 8_929
         value3.type = .integer
 
-        let outcome = OCKCDOutcome(context: store.context)
+        let outcome = OCKCDOutcome(context: try store.context())
         outcome.taskOccurrenceIndex = 0
         outcome.values = Set([value1, value2, value3])
         outcome.task = task1
-        outcome.date = Date()
+        outcome.startDate = Date()
+        outcome.endDate = Date()
 
-        XCTAssertNoThrow(try store.context.save())
+        XCTAssertNoThrow(try store.context().save())
         XCTAssert(outcome.values.count == 3)
     }
 
-    func testCannotSaveOutcomeWithoutAssociatingItWithATask() {
-        let outcome = OCKCDOutcome(context: store.context)
+    func testCannotSaveOutcomeWithoutAssociatingItWithATask() throws {
+        let outcome = OCKCDOutcome(context: try store.context())
         outcome.taskOccurrenceIndex = 0
         outcome.values = Set([])
 
-        XCTAssertThrowsError(try store.context.save())
+        XCTAssertThrowsError(try store.context().save())
     }
 }

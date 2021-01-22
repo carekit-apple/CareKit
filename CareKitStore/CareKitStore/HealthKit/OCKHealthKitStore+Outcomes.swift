@@ -71,7 +71,7 @@ public extension OCKHealthKitPassthroughStore {
                 guard let task = tasks.first(where: { $0.uuid == outcome.taskUUID })
                     else { throw OCKStoreError.addFailed(reason: "No task could be for outcome") }
 
-                let unit = HKUnit(from: task.healthKitLinkage.unitString)
+                let unit = task.healthKitLinkage.unit
                 let quantity = HKQuantity(unit: unit, doubleValue: value)
                 let type = HKObjectType.quantityType(forIdentifier: task.healthKitLinkage.quantityIdentifier)!
                 let event = task.schedule.event(forOccurrenceIndex: outcome.taskOccurrenceIndex)!
@@ -161,7 +161,7 @@ public extension OCKHealthKitPassthroughStore {
         let events = task.schedule.events(from: dateRange.start, to: dateRange.end)
         let eventIntervals = events.map { DateInterval(start: $0.start, end: $0.end) }
 
-        proxy.queryValue(identifier: task.healthKitLinkage.quantityIdentifier, unit: HKUnit(from: task.healthKitLinkage.unitString),
+        proxy.queryValue(identifier: task.healthKitLinkage.quantityIdentifier, unit: task.healthKitLinkage.unit,
                          queryType: task.healthKitLinkage.quantityType, in: eventIntervals) { result in
             switch result {
             case let .failure(error): completion(.failure(.fetchFailed(reason: "HealthKit fetch failed. Error: \(error.localizedDescription)")))
@@ -169,7 +169,7 @@ public extension OCKHealthKitPassthroughStore {
                 assert(samples.count == eventIntervals.count, "The number of outcome values and events should match!. Please file a bug.")
                 let outcomes = samples.enumerated().compactMap { index, sample -> OCKHealthKitOutcome? in
                     guard !sample.values.isEmpty else { return nil } // Don't return an outcome for events where no HealthKit values exist.
-                    let outcomeValues = sample.values.map { OCKOutcomeValue($0, units: task.healthKitLinkage.unitString) }
+                    let outcomeValues = sample.values.map { OCKOutcomeValue($0, units: task.healthKitLinkage.unit.unitString) }
                     let correspondingEvent = events[index]
                     let isOwnedByApp = !sample.samples.isEmpty && sample.samples.allSatisfy({ $0.sourceRevision.source == HKSource.default() })
                     return OCKHealthKitOutcome(taskUUID: taskUUID,

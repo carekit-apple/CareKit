@@ -31,7 +31,7 @@
 import Foundation
 
 /// Any store from which types conforming to `OCKAnyPatient` can be queried is considered `OCKAnyReadOnlyPatientStore`.
-public protocol OCKAnyReadOnlyPatientStore: AnyObject {
+public protocol OCKAnyReadOnlyPatientStore: OCKAnyResettableStore {
 
     /// The delegate receives callbacks when the contents of the patient store are modified.
     /// In `CareKit` apps, the delegate will be set automatically, and it should not be modified.

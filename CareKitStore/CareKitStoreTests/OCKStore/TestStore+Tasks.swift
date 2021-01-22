@@ -158,6 +158,21 @@ class TestStoreTasks: XCTestCase {
         XCTAssert(tasks.first?.id == task1.id)
     }
 
+    func testTaskQueryForNilGroupIdentifier() throws {
+        let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
+        var task1 = OCKTask(id: "squats", title: "Front Squats", carePlanUUID: nil, schedule: schedule)
+        let task2 = OCKTask(id: "lunges", title: "Forward Lunges", carePlanUUID: nil, schedule: schedule)
+        task1.groupIdentifier = "group1"
+        try store.addTasksAndWait([task1, task2])
+
+        let interval = DateInterval(start: Date(), end: Calendar.current.date(byAdding: .day, value: 2, to: Date())!)
+        var query = OCKTaskQuery(dateInterval: interval)
+        query.groupIdentifiers = [nil]
+        let tasks = try store.fetchTasksAndWait(query: query)
+        XCTAssert(tasks.count == 1)
+        XCTAssert(tasks.first?.id == task2.id)
+    }
+
     func testTaskQueryOrdered() throws {
         let today = Calendar.current.startOfDay(for: Date())
         let schedule1 = OCKSchedule.mealTimesEachDay(start: today, end: nil)
@@ -207,7 +222,8 @@ class TestStoreTasks: XCTestCase {
         query.tags = ["B"]
         query.extendedSortDescriptors = [.title(ascending: true)]
         let fetched = try store.fetchTasksAndWait(query: query)
-        XCTAssert(fetched.map { $0.title } == ["b", "c"])
+        let titles = fetched.map { $0.title }
+        XCTAssert(titles == ["b", "c"], "Expected [b, c], but got \(titles)")
     }
 
     func testTaskQueryWithNilQueryReturnsAllTasks() throws {

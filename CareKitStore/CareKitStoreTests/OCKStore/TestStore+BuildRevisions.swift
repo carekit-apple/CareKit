@@ -52,8 +52,8 @@ class TestStoreBuildRevisions: XCTestCase {
         store = nil
     }
 
-    func testEmptyStoreProducesEmptyRevision() {
-        let revision = store.computeRevision(since: store.context.clockTime)
+    func testEmptyStoreProducesEmptyRevision() throws {
+        let revision = try store.computeRevision(since: try store.context().clockTime)
         XCTAssert(revision.entities.isEmpty)
     }
 
@@ -64,7 +64,7 @@ class TestStoreBuildRevisions: XCTestCase {
         let task = OCKTask(id: "a", title: nil, carePlanUUID: nil, schedule: schedule)
         try store.addTaskAndWait(task)
 
-        let revision = store.computeRevision(since: 0)
+        let revision = try store.computeRevision(since: 0)
         XCTAssert(revision.entities.count == 1)
         XCTAssert(revision.entities.first?.entityType == .task)
     }
@@ -78,7 +78,7 @@ class TestStoreBuildRevisions: XCTestCase {
         task.title = "Updated"
         try store.updateTaskAndWait(task)
 
-        let revision = store.computeRevision(since: 0)
+        let revision = try store.computeRevision(since: 0)
         XCTAssert(revision.entities.count == 2)
         XCTAssert(revision.entities.first?.entityType == .task)
     }
@@ -90,9 +90,9 @@ class TestStoreBuildRevisions: XCTestCase {
 
         let taskA2 = OCKTask(id: "A", title: "A2", carePlanUUID: nil, schedule: schedule)
         try store.updateTaskAndWait(taskA2)
-        store.context.knowledgeVector.increment(clockFor: store.context.clockID)
+        try store.context().knowledgeVector.increment(clockFor: try store.context().clockID)
         try store.deleteTasksAndWait([taskA2])
-        let revision = store.computeRevision(since: store.context.clockTime)
+        let revision = try store.computeRevision(since: try store.context().clockTime)
 
         XCTAssert(revision.entities.count == 2)
         XCTAssert(revision.entities.first?.deletedDate != nil)
@@ -108,7 +108,7 @@ class TestStoreBuildRevisions: XCTestCase {
         let outcome = OCKOutcome(taskUUID: try task.getUUID(), taskOccurrenceIndex: 0, values: [])
         try store.addOutcomeAndWait(outcome)
 
-        let revision = store.computeRevision(since: 0)
+        let revision = try store.computeRevision(since: 0)
         XCTAssert(revision.entities.count == 2)
         XCTAssert(revision.entities.last?.entityType == .outcome)
     }
@@ -121,7 +121,7 @@ class TestStoreBuildRevisions: XCTestCase {
         let outcome = OCKOutcome(taskUUID: try task.getUUID(), taskOccurrenceIndex: 0, values: [])
         try store.addOutcomeAndWait(outcome)
         try store.deleteOutcomeAndWait(outcome)
-        let revision = store.computeRevision(since: 0)
+        let revision = try store.computeRevision(since: 0)
 
         // Tombstones are sorted first in the revision record, which is
         // why we expect the first entity to be the deleted outcome.
@@ -135,7 +135,7 @@ class TestStoreBuildRevisions: XCTestCase {
         let patient = OCKPatient(id: "id1", givenName: "Amy", familyName: "Frost")
         try store.addPatientAndWait(patient)
 
-        let revision = store.computeRevision(since: 0)
+        let revision = try store.computeRevision(since: 0)
         XCTAssert(revision.entities.count == 1)
         XCTAssert(revision.entities.first?.entityType == .patient)
     }
@@ -147,7 +147,7 @@ class TestStoreBuildRevisions: XCTestCase {
         patient.asset = "Updated"
         try store.updatePatientAndWait(patient)
 
-        let revision = store.computeRevision(since: 0)
+        let revision = try store.computeRevision(since: 0)
         XCTAssert(revision.entities.count == 2)
         XCTAssert(revision.entities.first?.entityType == .patient)
     }
@@ -157,7 +157,7 @@ class TestStoreBuildRevisions: XCTestCase {
         try store.addPatientAndWait(patient)
 
         try store.deletePatientsAndWait([patient])
-        let revision = store.computeRevision(since: 0)
+        let revision = try store.computeRevision(since: 0)
 
         XCTAssert(revision.entities.count == 2)
         XCTAssert(revision.entities.first?.deletedDate != nil)
@@ -169,7 +169,7 @@ class TestStoreBuildRevisions: XCTestCase {
         let plan = OCKCarePlan(id: "diabetes_type_1", title: "Diabetes Care Plan", patientUUID: nil)
         try store.addCarePlanAndWait(plan)
 
-        let revision = store.computeRevision(since: 0)
+        let revision = try store.computeRevision(since: 0)
         XCTAssert(revision.entities.count == 1)
         XCTAssert(revision.entities.first?.entityType == .carePlan)
     }
@@ -181,7 +181,7 @@ class TestStoreBuildRevisions: XCTestCase {
         plan.title = "Updated"
         try store.updateCarePlanAndWait(plan)
 
-        let revision = store.computeRevision(since: 0)
+        let revision = try store.computeRevision(since: 0)
         XCTAssert(revision.entities.count == 2)
         XCTAssert(revision.entities.first?.entityType == .carePlan)
     }
@@ -191,7 +191,7 @@ class TestStoreBuildRevisions: XCTestCase {
         try store.addCarePlanAndWait(plan)
 
         try store.deleteCarePlansAndWait([plan])
-        let revision = store.computeRevision(since: 0)
+        let revision = try store.computeRevision(since: 0)
 
         XCTAssert(revision.entities.count == 2)
         XCTAssert(revision.entities.first?.deletedDate != nil)
@@ -203,7 +203,7 @@ class TestStoreBuildRevisions: XCTestCase {
         let contact = OCKContact(id: "contact", givenName: "Amy", familyName: "Frost", carePlanUUID: nil)
         try store.addContactAndWait(contact)
 
-        let revision = store.computeRevision(since: 0)
+        let revision = try store.computeRevision(since: 0)
         XCTAssert(revision.entities.count == 1)
         XCTAssert(revision.entities.first?.entityType == .contact)
     }
@@ -215,7 +215,7 @@ class TestStoreBuildRevisions: XCTestCase {
         contact.organization = "Updated"
         try store.updateContactAndWait(contact)
 
-        let revision = store.computeRevision(since: 0)
+        let revision = try store.computeRevision(since: 0)
         XCTAssert(revision.entities.count == 2)
         XCTAssert(revision.entities.first?.entityType == .contact)
     }
@@ -225,7 +225,7 @@ class TestStoreBuildRevisions: XCTestCase {
         try store.addContactAndWait(contact)
 
         try store.deleteContactsAndWait([contact])
-        let revision = store.computeRevision(since: 0)
+        let revision = try store.computeRevision(since: 0)
 
         XCTAssert(revision.entities.count == 2)
         XCTAssert(revision.entities.first?.deletedDate != nil)

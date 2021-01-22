@@ -45,7 +45,7 @@ public struct OCKNote: Codable, Equatable, OCKObjectCompatible {
     public var content: String?
 
     // MARK: OCKObjectCompatible
-    internal var uuid: UUID?
+    public internal(set) var uuid: UUID?
     public internal(set) var createdDate: Date?
     public internal(set) var updatedDate: Date?
     public internal(set) var schemaVersion: OCKSemanticVersion?

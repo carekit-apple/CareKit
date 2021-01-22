@@ -34,85 +34,112 @@ extension OCKStore {
 
     open func fetchContacts(query: OCKContactQuery = OCKContactQuery(), callbackQueue: DispatchQueue = .main,
                             completion: @escaping (Result<[OCKContact], OCKStoreError>) -> Void) {
-        context.perform {
-            do {
-                let predicate = try self.buildPredicate(for: query)
-                let persistedContacts = self.fetchFromStore(OCKCDContact.self, where: predicate) { fetchRequest in
-                    fetchRequest.fetchLimit = query.limit ?? 0
-                    fetchRequest.fetchOffset = query.offset
-                    fetchRequest.sortDescriptors = self.buildSortDescriptors(for: query)
+        do {
+            let context = try self.context()
+            context.perform {
+                do {
+                    let predicate = try self.buildPredicate(for: query)
+                    let persistedContacts = try self.fetchFromStore(OCKCDContact.self, where: predicate) { fetchRequest in
+                        fetchRequest.fetchLimit = query.limit ?? 0
+                        fetchRequest.fetchOffset = query.offset
+                        fetchRequest.sortDescriptors = self.buildSortDescriptors(for: query)
+                    }
+
+                    let contacts = persistedContacts.map(self.makeContact)
+                    callbackQueue.async { completion(.success(contacts)) }
+                } catch {
+                    callbackQueue.async { completion(.failure(.fetchFailed(
+                        reason: "Failed to fetch contacts. Error: \(error.localizedDescription)")))
+                    }
                 }
-
-                let contacts = persistedContacts
-                    .map(self.makeContact)
-                    .filter({ $0.matches(tags: query.tags) })
-
-                callbackQueue.async { completion(.success(contacts)) }
-            } catch {
-                callbackQueue.async { completion(.failure(.fetchFailed(reason: "Failed to fetch contacts. Error: \(error.localizedDescription)"))) }
+            }
+        } catch {
+            callbackQueue.async {
+                completion(.failure(.fetchFailed(reason: error.localizedDescription)))
             }
         }
     }
 
     open func addContacts(_ contacts: [OCKContact], callbackQueue: DispatchQueue = .main,
                           completion: ((Result<[OCKContact], OCKStoreError>) -> Void)? = nil) {
-        context.perform {
-            do {
-                let addedContacts = try self.createContactsWithoutCommitting(contacts)
-                try self.context.save()
-                callbackQueue.async {
-                    self.contactDelegate?.contactStore(self, didAddContacts: addedContacts)
-                    self.autoSynchronizeIfRequired()
-                    completion?(.success(addedContacts))
+        do {
+            let context = try self.context()
+            context.perform {
+                do {
+                    let addedContacts = try self.createContactsWithoutCommitting(contacts)
+                    try context.save()
+                    callbackQueue.async {
+                        self.contactDelegate?.contactStore(self, didAddContacts: addedContacts)
+                        self.autoSynchronizeIfRequired()
+                        completion?(.success(addedContacts))
+                    }
+                } catch {
+                    context.rollback()
+                    callbackQueue.async {
+                        completion?(.failure(.addFailed(reason: "Failed to insert contacts. \(error.localizedDescription)")))
+                    }
                 }
-            } catch {
-                self.context.rollback()
-                callbackQueue.async {
-                    completion?(.failure(.addFailed(reason: "Failed to insert contacts. \(error.localizedDescription)")))
-                }
+            }
+        } catch {
+            callbackQueue.async {
+                completion?(.failure(.addFailed(reason: error.localizedDescription)))
             }
         }
     }
 
     open func updateContacts(_ contacts: [OCKContact], callbackQueue: DispatchQueue = .main, completion: OCKResultClosure<[OCKContact]>? = nil) {
-        context.perform {
-            do {
-                let updated = try self.updateContactsWithoutCommitting(contacts, copyUUIDs: false)
-                try self.context.save()
-                callbackQueue.async {
-                    self.contactDelegate?.contactStore(self, didUpdateContacts: updated)
-                    self.autoSynchronizeIfRequired()
-                    completion?(.success(updated))
+        do {
+            let context = try self.context()
+            context.perform {
+                do {
+                    let updated = try self.updateContactsWithoutCommitting(contacts, copyUUIDs: false)
+                    try context.save()
+                    callbackQueue.async {
+                        self.contactDelegate?.contactStore(self, didUpdateContacts: updated)
+                        self.autoSynchronizeIfRequired()
+                        completion?(.success(updated))
+                    }
+                } catch {
+                    context.rollback()
+                    callbackQueue.async {
+                        completion?(.failure(.updateFailed(reason: "Failed to update contacts. \(error.localizedDescription)")))
+                    }
                 }
-            } catch {
-                self.context.rollback()
-                callbackQueue.async {
-                    completion?(.failure(.updateFailed(reason: "Failed to update contacts. \(error.localizedDescription)")))
-                }
+            }
+        } catch {
+            callbackQueue.async {
+                completion?(.failure(.updateFailed(reason: error.localizedDescription)))
             }
         }
     }
 
     open func deleteContacts(_ contacts: [OCKContact], callbackQueue: DispatchQueue = .main,
                              completion: ((Result<[OCKContact], OCKStoreError>) -> Void)? = nil) {
-        context.perform {
-            do {
-                let markedDeleted: [OCKCDContact] = try self.performDeletion(
-                    values: contacts,
-                    addNewVersion: self.createContact)
+        do {
+            let context = try self.context()
+            context.perform {
+                do {
+                    let markedDeleted: [OCKCDContact] = try self.performDeletion(
+                        values: contacts,
+                        addNewVersion: self.createContact)
 
-                try self.context.save()
-                let deletedContacts = markedDeleted.map(self.makeContact)
-                callbackQueue.async {
-                    self.contactDelegate?.contactStore(self, didDeleteContacts: deletedContacts)
-                    self.autoSynchronizeIfRequired()
-                    completion?(.success(deletedContacts))
+                    try context.save()
+                    let deletedContacts = markedDeleted.map(self.makeContact)
+                    callbackQueue.async {
+                        self.contactDelegate?.contactStore(self, didDeleteContacts: deletedContacts)
+                        self.autoSynchronizeIfRequired()
+                        completion?(.success(deletedContacts))
+                    }
+                } catch {
+                    context.rollback()
+                    callbackQueue.async {
+                        completion?(.failure(.deleteFailed(reason: "Failed to delete contacts. \(error.localizedDescription)")))
+                    }
                 }
-            } catch {
-                self.context.rollback()
-                callbackQueue.async {
-                    completion?(.failure(.deleteFailed(reason: "Failed to delete contacts. \(error.localizedDescription)")))
-                }
+            }
+        } catch {
+            callbackQueue.async {
+                completion?(.failure(.deleteFailed(reason: error.localizedDescription)))
             }
         }
     }
@@ -123,7 +150,7 @@ extension OCKStore {
 
     func createContactsWithoutCommitting(_ contacts: [Contact]) throws -> [Contact] {
         try self.validateNew(OCKCDContact.self, contacts)
-        let persistableContacts = contacts.map(self.createContact)
+        let persistableContacts = try contacts.map(self.createContact)
         let addedContacts = persistableContacts.map(self.makeContact)
         return addedContacts
     }
@@ -147,9 +174,9 @@ extension OCKStore {
         return updated
     }
 
-    private func createContact(from contact: OCKContact) -> OCKCDContact {
-        let persistableContact = OCKCDContact(context: context)
-        persistableContact.name = OCKCDPersonName(context: context)
+    private func createContact(from contact: OCKContact) throws -> OCKCDContact {
+        let persistableContact = OCKCDContact(context: try context())
+        persistableContact.name = OCKCDPersonName(context: try context())
         persistableContact.copyVersionInfo(from: contact)
         persistableContact.allowsMissingRelationships = configuration.allowsEntitiesWithMissingRelationships
         persistableContact.name.copyPersonNameComponents(contact.name)
@@ -167,7 +194,7 @@ extension OCKStore {
             if let postalAddress = persistableContact.address {
                 copyPostalAddress(address, to: postalAddress)
             } else {
-                persistableContact.address = createPostalAddress(from: address)
+                persistableContact.address = try createPostalAddress(from: address)
             }
         } else {
             persistableContact.address = nil
@@ -175,8 +202,8 @@ extension OCKStore {
         return persistableContact
     }
 
-    private func createPostalAddress(from address: OCKPostalAddress) -> OCKCDPostalAddress {
-        let persistableAddress = OCKCDPostalAddress(context: context)
+    private func createPostalAddress(from address: OCKPostalAddress) throws -> OCKCDPostalAddress {
+        let persistableAddress = OCKCDPostalAddress(context: try context())
         copyPostalAddress(address, to: persistableAddress)
         return persistableAddress
     }
@@ -261,6 +288,11 @@ extension OCKStore {
             predicate = predicate.including(
                 query.groupIdentifiers,
                 for: #keyPath(OCKCDObject.groupIdentifier))
+        }
+
+        if !query.tags.isEmpty {
+            let tagPredicate = NSPredicate(format: "ANY %K IN %@", #keyPath(OCKCDObject.tags), query.tags)
+            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, tagPredicate])
         }
 
         return predicate

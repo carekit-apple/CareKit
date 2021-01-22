@@ -41,27 +41,27 @@ class TestCoreDataSchemaWithVersioning: XCTestCase {
         store = OCKStore(name: "test", type: .inMemory)
     }
 
-    func testVersioning() {
-        let patient1 = OCKCDPatient(context: store.context)
+    func testVersioning() throws {
+        let patient1 = OCKCDPatient(context: try store.context())
         patient1.id = "my_id"
         patient1.uuid = UUID()
-        patient1.name = OCKCDPersonName(context: store.context)
+        patient1.name = OCKCDPersonName(context: try store.context())
         patient1.name.familyName = "Frost1"
         patient1.name.givenName = "Amy"
         patient1.effectiveDate = Date()
 
-        let patient2 = OCKCDPatient(context: store.context)
+        let patient2 = OCKCDPatient(context: try store.context())
         patient2.id = "my_id"
         patient2.uuid = UUID()
-        patient2.name = OCKCDPersonName(context: store.context)
+        patient2.name = OCKCDPersonName(context: try store.context())
         patient2.name.familyName = "Foss2"
         patient2.name.givenName = "Christopher"
         patient2.effectiveDate = Date()
 
-        let patient3 = OCKCDPatient(context: store.context)
+        let patient3 = OCKCDPatient(context: try store.context())
         patient3.id = "my_id"
         patient3.uuid = UUID()
-        patient3.name = OCKCDPersonName(context: store.context)
+        patient3.name = OCKCDPersonName(context: try store.context())
         patient3.name.familyName = "Gosler3"
         patient3.name.givenName = "Jared"
         patient3.effectiveDate = Date()
@@ -77,9 +77,9 @@ class TestCoreDataSchemaWithVersioning: XCTestCase {
 
         patient3.previous = patient2
         patient2.previous = patient1
-        XCTAssertNoThrow(try store.context.save())
+        XCTAssertNoThrow(try store.context().save())
 
-        let head = store.fetchHeads(OCKCDPatient.self, ids: ["my_id"]).first
+        let head = try store.fetchHeads(OCKCDPatient.self, ids: ["my_id"]).first
         XCTAssert(head == patient3)
         XCTAssert(head?.next == nil)
         XCTAssert(head?.previous == patient2)
@@ -104,38 +104,38 @@ class TestCoreDataSchemaWithVersioning: XCTestCase {
     }
 
     func testSavingUserInfo() throws {
-        let patient = OCKCDPatient(context: store.context)
+        let patient = OCKCDPatient(context: try store.context())
         patient.id = "my_id"
         patient.uuid = UUID()
-        patient.name = OCKCDPersonName(context: store.context)
+        patient.name = OCKCDPersonName(context: try store.context())
         patient.name.nickname = "Wiggle Bogey"
         patient.userInfo = ["name": "Wiggle Bogey"]
         patient.effectiveDate = Date()
-        XCTAssertNoThrow(try store.context.save())
+        XCTAssertNoThrow(try store.context().save())
 
-        guard let fetchedPatient = try store.context.existingObject(with: patient.objectID) as? OCKCDPatient else { XCTFail("Bad type"); return }
+        guard let fetchedPatient = try store.context().existingObject(with: patient.objectID) as? OCKCDPatient else { XCTFail("Bad type"); return }
         XCTAssert(fetchedPatient.userInfo?["name"] == "Wiggle Bogey")
     }
 
-    func testSchemaVersionIsAutomaticallyAttached() {
-        let patient = OCKCDPatient(context: store.context)
+    func testSchemaVersionIsAutomaticallyAttached() throws {
+        let patient = OCKCDPatient(context: try store.context())
         patient.id = "my_id"
         patient.uuid = UUID()
-        patient.name = OCKCDPersonName(context: store.context)
+        patient.name = OCKCDPersonName(context: try store.context())
         patient.name.familyName = "Frost1"
         patient.name.givenName = "Amy"
         patient.effectiveDate = Date()
 
-        XCTAssertNoThrow(try store.context.save())
+        XCTAssertNoThrow(try store.context().save())
         XCTAssertNotNil(patient.schemaVersion)
     }
 
-    func testLogicalClockIsAttachedToNewObjects() {
-        store.context.knowledgeVector.increment(clockFor: store.context.clockID)
-        store.context.knowledgeVector.increment(clockFor: store.context.clockID)
-        store.context.knowledgeVector.increment(clockFor: store.context.clockID)
+    func testLogicalClockIsAttachedToNewObjects() throws {
+        try store.context().knowledgeVector.increment(clockFor: try store.context().clockID)
+        try store.context().knowledgeVector.increment(clockFor: try store.context().clockID)
+        try store.context().knowledgeVector.increment(clockFor: try store.context().clockID)
 
-        let patient = OCKCDPatient(context: store.context)
+        let patient = OCKCDPatient(context: try store.context())
         XCTAssert(patient.logicalClock == 3)
     }
 }

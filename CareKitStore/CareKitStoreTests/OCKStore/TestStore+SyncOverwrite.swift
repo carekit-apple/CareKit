@@ -70,9 +70,9 @@ class TestStoreSyncOverwrite: XCTestCase {
     func testOverwriteDeviceUpdatesKnowledgeVector() {
         let remote = DummyEndpoint()
         let store = OCKStore(name: "test", type: .inMemory, remote: remote)
-        XCTAssert(store.context.clockTime == 0)
+        XCTAssert(try store.context().clockTime == 0)
         XCTAssertNoThrow(try store.syncAndWait(mode: .overwriteDeviceRecordsWithRemote))
-        XCTAssert(store.context.clockTime == 1)
+        XCTAssert(try store.context().clockTime == 1)
     }
 
     func testOverwriteDeviceCannotBeRunIfAlreadySyncing() {
@@ -86,10 +86,10 @@ class TestStoreSyncOverwrite: XCTestCase {
     func testOverwriteDeviceSyncUpdatesKnowledgeVector() throws {
         let remote = DummyEndpoint()
         let store = OCKStore(name: "test", type: .inMemory, remote: remote)
-        XCTAssert(store.context.clockTime == 0)
+        XCTAssert(try store.context().clockTime == 0)
 
         XCTAssertNoThrow(try store.syncAndWait(mode: .overwriteDeviceRecordsWithRemote))
-        XCTAssert(store.context.clockTime == 1)
+        XCTAssert(try store.context().clockTime == 1)
     }
 
     // MARK: Overwrite Remote with Device

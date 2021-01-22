@@ -39,8 +39,8 @@ class TestCoreDataSchemaWithNotes: XCTestCase {
         store = OCKStore(name: "test", type: .inMemory)
     }
 
-    func testCanSaveNote() {
-        let note = OCKCDNote(context: store.context)
+    func testCanSaveNote() throws {
+        let note = OCKCDNote(context: try store.context())
         note.author = "Katie Ball"
         note.title = "Patient"
         note.content = """
@@ -49,6 +49,6 @@ class TestCoreDataSchemaWithNotes: XCTestCase {
         birds nesting in our front yard!
         """
 
-        XCTAssertNoThrow(try store.context.save())
+        XCTAssertNoThrow(try store.context().save())
     }
 }

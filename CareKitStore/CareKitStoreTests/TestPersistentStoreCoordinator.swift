@@ -35,6 +35,11 @@ class MockPatientStore: OCKAnyPatientStore {
     var patients = [OCKAnyPatient]()
 
     weak var patientDelegate: OCKPatientStoreDelegate?
+    weak var resetDelegate: OCKResetDelegate?
+
+    func reset() throws {
+        patients = []
+    }
 
     func fetchAnyPatients(query: OCKAnyPatientQuery, callbackQueue: DispatchQueue,
                           completion: @escaping OCKResultClosure<[OCKAnyPatient]>) {

@@ -119,11 +119,6 @@ extension OCKObjectCompatible {
             return note
         }
     }
-
-    func matches(tags: [String]) -> Bool {
-        if tags.isEmpty { return true }
-        return !Set(self.tags ?? []).isDisjoint(with: tags)
-    }
 }
 
 extension OCKVersionedObjectCompatible {

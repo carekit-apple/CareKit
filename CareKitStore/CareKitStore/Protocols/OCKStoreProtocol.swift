@@ -43,3 +43,13 @@ import Foundation
 /// the store to the state it was in prior to the transaction.
 public typealias OCKStoreProtocol = OCKPatientStore & OCKCarePlanStore & OCKContactStore & OCKEventStore
 public typealias OCKAnyStoreProtocol = OCKAnyPatientStore & OCKAnyCarePlanStore & OCKAnyContactStore & OCKAnyEventStore
+
+public protocol OCKAnyResettableStore: AnyObject {
+    var resetDelegate: OCKResetDelegate? { get set }
+
+    func reset() throws
+}
+
+public protocol OCKResetDelegate: AnyObject {
+    func storeDidReset(_ store: OCKAnyResettableStore)
+}

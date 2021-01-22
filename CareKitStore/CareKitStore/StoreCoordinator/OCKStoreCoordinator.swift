@@ -42,7 +42,7 @@ import Foundation
 ///
 /// - Note: The order in which stores are registered on an `OCKStoreCoordinator` is important. If two or more stores are
 ///  capable of writing an object, the one that was registered first will be given precedence.
-open class OCKStoreCoordinator: OCKAnyStoreProtocol {
+open class OCKStoreCoordinator: OCKAnyStoreProtocol, OCKResetDelegate {
 
     private (set) var readOnlyPatientStores = [OCKAnyReadOnlyPatientStore]()
     private (set) var readOnlyPlanStores = [OCKAnyReadOnlyCarePlanStore]()
@@ -59,8 +59,21 @@ open class OCKStoreCoordinator: OCKAnyStoreProtocol {
     public weak var contactDelegate: OCKContactStoreDelegate?
     public weak var taskDelegate: OCKTaskStoreDelegate?
     public weak var outcomeDelegate: OCKOutcomeStoreDelegate?
+    public weak var resetDelegate: OCKResetDelegate?
 
     public init() {}
+
+    public func reset() throws {
+        try readOnlyPatientStores.forEach { try $0.reset() }
+        try readOnlyPlanStores.forEach { try $0.reset() }
+        try readOnlyContactStores.forEach { try $0.reset() }
+        try readOnlyEventStores.forEach { try $0.reset() }
+
+        try patientStores.forEach { try $0.reset() }
+        try planStores.forEach { try $0.reset() }
+        try contactStores.forEach { try $0.reset() }
+        try eventStores.forEach { try $0.reset() }
+    }
 
     /// Attaches a new store. The new store must be capable of handling reading and writing to all object types.
     ///
@@ -81,6 +94,7 @@ open class OCKStoreCoordinator: OCKAnyStoreProtocol {
     /// - SeeAlso: `OCKStoreCoordinator`
     open func attach(patientStore: OCKAnyPatientStore) {
         patientStore.patientDelegate = self
+        patientStore.resetDelegate = self
         patientStores.append(patientStore)
     }
 
@@ -90,6 +104,7 @@ open class OCKStoreCoordinator: OCKAnyStoreProtocol {
     /// - SeeAlso: `OCKStoreCoordinator`
     open func attach(planStore: OCKAnyCarePlanStore) {
         planStore.carePlanDelegate = self
+        planStore.resetDelegate = self
         planStores.append(planStore)
     }
 
@@ -99,6 +114,7 @@ open class OCKStoreCoordinator: OCKAnyStoreProtocol {
     /// - SeeAlso: `OCKStoreCoordinator`
     open func attach(contactStore: OCKAnyContactStore) {
         contactStore.contactDelegate = self
+        contactStore.resetDelegate = self
         contactStores.append(contactStore)
     }
 
@@ -109,6 +125,7 @@ open class OCKStoreCoordinator: OCKAnyStoreProtocol {
     open func attach(eventStore: OCKAnyEventStore) {
         eventStore.taskDelegate = self
         eventStore.outcomeDelegate = self
+        eventStore.resetDelegate = self
         eventStores.append(eventStore)
     }
 
@@ -119,6 +136,7 @@ open class OCKStoreCoordinator: OCKAnyStoreProtocol {
     /// - SeeAlso: `OCKStoreCoordinator`
     open func attachReadOnly(patientStore: OCKAnyReadOnlyPatientStore) {
         patientStore.patientDelegate = self
+        patientStore.resetDelegate = self
         readOnlyPatientStores.append(patientStore)
     }
 
@@ -129,6 +147,7 @@ open class OCKStoreCoordinator: OCKAnyStoreProtocol {
     /// - SeeAlso: `OCKStoreCoordinator`
     open func attachReadOnly(carePlanStore: OCKAnyReadOnlyCarePlanStore) {
         carePlanStore.carePlanDelegate = self
+        carePlanStore.resetDelegate = self
         readOnlyPlanStores.append(carePlanStore)
     }
 
@@ -139,6 +158,7 @@ open class OCKStoreCoordinator: OCKAnyStoreProtocol {
     /// - SeeAlso: `OCKStoreCoordinator`
     open func attachReadOnly(contactStore: OCKAnyReadOnlyContactStore) {
         contactStore.contactDelegate = self
+        contactStore.resetDelegate = self
         readOnlyContactStores.append(contactStore)
     }
 
@@ -150,6 +170,7 @@ open class OCKStoreCoordinator: OCKAnyStoreProtocol {
     open func attachReadOnly(eventStore: OCKAnyReadOnlyEventStore) {
         eventStore.taskDelegate = self
         eventStore.outcomeDelegate = self
+        eventStore.resetDelegate = self
         readOnlyEventStores.append(eventStore)
     }
 
@@ -264,10 +285,17 @@ open class OCKStoreCoordinator: OCKAnyStoreProtocol {
     ///   - outcome: The outcome that needs to be written.
     open func outcomeStore(_ store: OCKAnyReadOnlyOutcomeStore, shouldHandleWritingOutcome outcome: OCKAnyOutcome) -> Bool {
         #if os(iOS)
-        if store is OCKHealthKitPassthroughStore {
-            return outcome is OCKHealthKitOutcome
+        // Only the HK passthrough store should handle HK outcomes
+        if outcome is OCKHealthKitOutcome {
+            return store is OCKHealthKitPassthroughStore
         }
         #endif
         return true
+    }
+
+    // MARK: OCKResetDelegate
+
+    open func storeDidReset(_ store: OCKAnyResettableStore) {
+        resetDelegate?.storeDidReset(store)
     }
 }

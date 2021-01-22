@@ -45,87 +45,113 @@ extension OCKStore {
 
     open func fetchCarePlans(query: OCKCarePlanQuery = OCKCarePlanQuery(),
                              callbackQueue: DispatchQueue = .main, completion: @escaping (Result<[OCKCarePlan], OCKStoreError>) -> Void) {
-        context.perform {
-            do {
-                let predicate = try self.buildPredicate(for: query)
-                let persistedPlans = self.fetchFromStore(OCKCDCarePlan.self, where: predicate) { fetchRequest in
-                    fetchRequest.fetchLimit = query.limit ?? 0
-                    fetchRequest.fetchOffset = query.offset
-                    fetchRequest.sortDescriptors = self.buildSortDescriptors(from: query)
+        do {
+            let context = try self.context()
+            context.perform {
+                do {
+                    let predicate = try self.buildPredicate(for: query)
+                    let persistedPlans = try self.fetchFromStore(OCKCDCarePlan.self, where: predicate) { fetchRequest in
+                        fetchRequest.fetchLimit = query.limit ?? 0
+                        fetchRequest.fetchOffset = query.offset
+                        fetchRequest.sortDescriptors = self.buildSortDescriptors(from: query)
+                    }
+
+                    let plans = persistedPlans.map(self.makePlan)
+
+                    callbackQueue.async { completion(.success(plans)) }
+                } catch {
+                    context.rollback()
+                    callbackQueue.async { completion(.failure(.fetchFailed(reason: "Building predicate failed: \(error.localizedDescription)"))) }
                 }
-
-                let plans = persistedPlans
-                    .map(self.makePlan)
-                    .filter({ $0.matches(tags: query.tags) })
-
-                callbackQueue.async { completion(.success(plans)) }
-            } catch {
-                self.context.rollback()
-                callbackQueue.async { completion(.failure(.fetchFailed(reason: "Building predicate failed: \(error.localizedDescription)"))) }
+            }
+        } catch {
+            callbackQueue.async {
+                completion(.failure(.fetchFailed(reason: error.localizedDescription)))
             }
         }
     }
 
     open func addCarePlans(_ plans: [OCKCarePlan], callbackQueue: DispatchQueue = .main,
                            completion: ((Result<[OCKCarePlan], OCKStoreError>) -> Void)? = nil) {
-        context.perform {
-            do {
-                let addedPlans = try self.createCarePlansWithoutCommitting(plans)
-                try self.context.save()
-                callbackQueue.async {
-                    self.carePlanDelegate?.carePlanStore(self, didAddCarePlans: addedPlans)
-                    self.autoSynchronizeIfRequired()
-                    completion?(.success(addedPlans))
+        do {
+            let context = try self.context()
+            context.perform {
+                do {
+                    let addedPlans = try self.createCarePlansWithoutCommitting(plans)
+                    try context.save()
+                    callbackQueue.async {
+                        self.carePlanDelegate?.carePlanStore(self, didAddCarePlans: addedPlans)
+                        self.autoSynchronizeIfRequired()
+                        completion?(.success(addedPlans))
+                    }
+                } catch {
+                    context.rollback()
+                    callbackQueue.async {
+                        completion?(.failure(.addFailed(reason: "Failed to add OCKCarePlans. \(error.localizedDescription)")))
+                    }
                 }
-            } catch {
-                self.context.rollback()
-                callbackQueue.async {
-                    completion?(.failure(.addFailed(reason: "Failed to add OCKCarePlans. \(error.localizedDescription)")))
-                }
+            }
+        } catch {
+            callbackQueue.async {
+                completion?(.failure(.addFailed(reason: error.localizedDescription)))
             }
         }
     }
 
     open func updateCarePlans(_ plans: [OCKCarePlan], callbackQueue: DispatchQueue = .main,
                               completion: ((Result<[OCKCarePlan], OCKStoreError>) -> Void)? = nil) {
-        context.perform {
-            do {
-                let updated = try self.updateCarePlansWithoutCommitting(plans, copyUUIDs: false)
-                try self.context.save()
-                callbackQueue.async {
-                    self.carePlanDelegate?.carePlanStore(self, didUpdateCarePlans: updated)
-                    self.autoSynchronizeIfRequired()
-                    completion?(.success(updated))
+        do {
+            let context = try self.context()
+            context.perform {
+                do {
+                    let updated = try self.updateCarePlansWithoutCommitting(plans, copyUUIDs: false)
+                    try context.save()
+                    callbackQueue.async {
+                        self.carePlanDelegate?.carePlanStore(self, didUpdateCarePlans: updated)
+                        self.autoSynchronizeIfRequired()
+                        completion?(.success(updated))
+                    }
+                } catch {
+                    context.rollback()
+                    callbackQueue.async {
+                        completion?(.failure(.updateFailed(reason: "Failed to update OCKCarePlans. \(error.localizedDescription)")))
+                    }
                 }
-            } catch {
-                self.context.rollback()
-                callbackQueue.async {
-                    completion?(.failure(.updateFailed(reason: "Failed to update OCKCarePlans. \(error.localizedDescription)")))
-                }
+            }
+        } catch {
+            callbackQueue.async {
+                completion?(.failure(.updateFailed(reason: error.localizedDescription)))
             }
         }
     }
 
     open func deleteCarePlans(_ plans: [OCKCarePlan], callbackQueue: DispatchQueue = .main,
                               completion: ((Result<[OCKCarePlan], OCKStoreError>) -> Void)? = nil) {
-        context.perform {
-            do {
-                let markedPlans: [OCKCDCarePlan] = try self.performDeletion(
-                    values: plans,
-                    addNewVersion: self.createCarePlan)
+        do {
+            let context = try self.context()
+            context.perform {
+                do {
+                    let markedPlans: [OCKCDCarePlan] = try self.performDeletion(
+                        values: plans,
+                        addNewVersion: self.createCarePlan)
 
-                try self.context.save()
-                let deletedPlans = markedPlans.map(self.makePlan)
-                callbackQueue.async {
-                    self.carePlanDelegate?.carePlanStore(self, didDeleteCarePlans: deletedPlans)
-                    self.autoSynchronizeIfRequired()
-                    completion?(.success(deletedPlans))
+                    try context.save()
+                    let deletedPlans = markedPlans.map(self.makePlan)
+                    callbackQueue.async {
+                        self.carePlanDelegate?.carePlanStore(self, didDeleteCarePlans: deletedPlans)
+                        self.autoSynchronizeIfRequired()
+                        completion?(.success(deletedPlans))
+                    }
+                } catch {
+                    context.rollback()
+                    callbackQueue.async {
+                        completion?(.failure(.deleteFailed(reason: "Failed to update OCKCarePlans. \(error.localizedDescription)")))
+                    }
                 }
-            } catch {
-                self.context.rollback()
-                callbackQueue.async {
-                    completion?(.failure(.deleteFailed(reason: "Failed to update OCKCarePlans. \(error.localizedDescription)")))
-                }
+            }
+        } catch {
+            callbackQueue.async {
+                completion?(.failure(.deleteFailed(reason: error.localizedDescription)))
             }
         }
     }
@@ -136,7 +162,7 @@ extension OCKStore {
 
     func createCarePlansWithoutCommitting(_ plans: [Plan]) throws -> [Plan] {
         try self.validateNew(OCKCDCarePlan.self, plans)
-        let persistablePlans = plans.map(self.createCarePlan)
+        let persistablePlans = try plans.map(self.createCarePlan)
         let addedPlans = persistablePlans.map(self.makePlan)
         return addedPlans
     }
@@ -165,8 +191,8 @@ extension OCKStore {
     /// - Remark: This does not commit the transaction. After calling this function one or more times, you must call `context.save()` in order to
     /// persist the changes to disk. This is an optimization to allow batching.
     /// - Remark: You should verify that the object does not already exist in the database and validate its values before calling this method.
-    private func createCarePlan(from plan: OCKCarePlan) -> OCKCDCarePlan {
-        let persistablePlan = OCKCDCarePlan(context: context)
+    private func createCarePlan(from plan: OCKCarePlan) throws -> OCKCDCarePlan {
+        let persistablePlan = OCKCDCarePlan(context: try context())
         persistablePlan.copyVersionInfo(from: plan)
         persistablePlan.allowsMissingRelationships = configuration.allowsEntitiesWithMissingRelationships
         persistablePlan.title = plan.title
@@ -223,6 +249,11 @@ extension OCKStore {
             predicate = predicate.including(
                 query.groupIdentifiers,
                 for: #keyPath(OCKCDObject.groupIdentifier))
+        }
+
+        if !query.tags.isEmpty {
+            let tagPredicate = NSPredicate(format: "ANY %K IN %@", #keyPath(OCKCDObject.tags), query.tags)
+            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, tagPredicate])
         }
 
         return predicate

@@ -36,7 +36,8 @@ class OCKCDOutcome: OCKCDObject {
     @NSManaged var taskOccurrenceIndex: Int64
     @NSManaged var task: OCKCDTask
     @NSManaged var values: Set<OCKCDOutcomeValue>
-    @NSManaged var date: Date
+    @NSManaged var startDate: Date
+    @NSManaged var endDate: Date
     @NSManaged var deletedDate: Date?
 
     static var defaultSortDescriptors: [NSSortDescriptor] {

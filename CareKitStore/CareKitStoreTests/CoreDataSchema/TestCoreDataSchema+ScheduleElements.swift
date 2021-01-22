@@ -39,34 +39,34 @@ class TestCoreDataSchemaWithScheduleElements: XCTestCase {
         store = OCKStore(name: "test", type: .inMemory)
     }
 
-    func testCannotSaveScheduleElementsAllZeroIntervals() {
-        let element = OCKCDScheduleElement(context: store.context)
+    func testCannotSaveScheduleElementsAllZeroIntervals() throws {
+        let element = OCKCDScheduleElement(context: try store.context())
         element.startDate = Date()
         element.text = "Every day starting now"
-        XCTAssertThrowsError(try store.context.save())
+        XCTAssertThrowsError(try store.context().save())
     }
 
-    func testCanSaveTargetValuesOnScheduleElement() {
-        let value = OCKCDOutcomeValue(context: store.context)
+    func testCanSaveTargetValuesOnScheduleElement() throws {
+        let value = OCKCDOutcomeValue(context: try store.context())
         value.type = .boolean
         value.booleanValue = true
         value.units = nil
 
-        let element = OCKCDScheduleElement(context: store.context)
+        let element = OCKCDScheduleElement(context: try store.context())
         element.startDate = Date()
         element.interval = DateComponents(day: 1)
         element.duration = .hours(1)
         element.targetValues = Set([value])
 
-        XCTAssertNoThrow(try store.context.save())
+        XCTAssertNoThrow(try store.context().save())
     }
 
-    func testCannotSaveScheduleElementsWithoutAnAssociatedTaskOrScheduleElement() {
-        let element = OCKCDScheduleElement(context: store.context)
+    func testCannotSaveScheduleElementsWithoutAnAssociatedTaskOrScheduleElement() throws {
+        let element = OCKCDScheduleElement(context: try store.context())
         element.startDate = Date()
         element.interval = DateComponents(day: 1)
         element.duration = .hours(1)
 
-        XCTAssertThrowsError(try store.context.save())
+        XCTAssertThrowsError(try store.context().save())
     }
 }

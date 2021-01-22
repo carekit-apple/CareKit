@@ -30,7 +30,7 @@
 
 import Foundation
 
-public protocol OCKAnyReadOnlyOutcomeStore: AnyObject {
+public protocol OCKAnyReadOnlyOutcomeStore: OCKAnyResettableStore {
 
     /// The delegate receives callbacks when the contents of the care plan store are modified.
     /// In `CareKit` apps, the delegate will be set automatically, and it should not be modified.

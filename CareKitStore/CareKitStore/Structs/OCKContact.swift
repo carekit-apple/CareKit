@@ -53,15 +53,15 @@ public struct OCKContact: Codable, Equatable, Identifiable, OCKAnyContact, OCKVe
 
     // MARK: OCKVersionable
     public var effectiveDate: Date
-    public internal(set) var deletedDate: Date?
-    public internal(set) var uuid: UUID?
-    public internal(set) var nextVersionUUID: UUID?
-    public internal(set) var previousVersionUUID: UUID?
+    public var deletedDate: Date?
+    public var uuid: UUID?
+    public var nextVersionUUID: UUID?
+    public var previousVersionUUID: UUID?
 
     // MARK: OCKObjectCompatible
-    public internal(set) var createdDate: Date?
-    public internal(set) var updatedDate: Date?
-    public internal(set) var schemaVersion: OCKSemanticVersion?
+    public var createdDate: Date?
+    public var updatedDate: Date?
+    public var schemaVersion: OCKSemanticVersion?
     public var groupIdentifier: String?
     public var tags: [String]?
     public var remoteID: String?

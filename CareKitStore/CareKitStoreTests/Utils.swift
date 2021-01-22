@@ -72,10 +72,9 @@ extension OCKVersionedObjectCompatible {
         guard let uuid = previousVersionUUID else { throw OCKStoreError.invalidValue(reason: "Missing previousVersionUUID") }
         return uuid
     }
-    
+
     func getNextVersionUUID() throws -> UUID {
         guard let uuid = nextVersionUUID else { throw OCKStoreError.invalidValue(reason: "Missing nextVersionUUID") }
         return uuid
     }
 }
-

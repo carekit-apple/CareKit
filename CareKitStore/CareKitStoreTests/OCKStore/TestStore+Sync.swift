@@ -73,11 +73,11 @@ class TestStoreSync: XCTestCase {
         XCTAssert(dummy.timesPushWasCalled == 0)
      }
 
-    func testSuccessfulSynchronizationIncrementsKnowledgeVector() {
+    func testSuccessfulSynchronizationIncrementsKnowledgeVector() throws {
         store = OCKStore(name: "test", type: .inMemory, remote: dummy)
-        XCTAssert(store.context.clockTime == 0)
+        XCTAssert(try store.context().clockTime == 0)
         XCTAssertNoThrow(try store.syncAndWait())
-        XCTAssert(store.context.clockTime == 1)
+        XCTAssert(try store.context().clockTime == 1)
     }
 
     func testSyncCannotBeStartedIfSyncIsAlreadyRunning() {
@@ -278,10 +278,10 @@ class TestStoreSync: XCTestCase {
 
         let outcome = try testStore.addOutcomeAndWait(OCKOutcome(taskUUID: taskUUID, taskOccurrenceIndex: 0, values: [OCKOutcomeValue("test")]))
         let outcomeUUID = try outcome.getUUID()
-        XCTAssertNoThrow(try testStore.syncAndWait()) //Sync original outcome
+        XCTAssertNoThrow(try testStore.syncAndWait()) // Sync original outcome
 
         try testStore.deleteOutcomeAndWait(outcome)
-        XCTAssertNoThrow(try testStore.syncAndWait()) //Sync tombstoned outcome
+        XCTAssertNoThrow(try testStore.syncAndWait()) // Sync tombstoned outcome
         let latestRevisions = dummy.revisionsPushedInLastSynch
         XCTAssert(latestRevisions.count == 2)
 
@@ -317,11 +317,11 @@ class TestStoreSync: XCTestCase {
         var task = try testStore.addTaskAndWait(OCKTask(id: "A", title: "A", carePlanUUID: nil, schedule: schedule))
         let taskUUID = try task.getUUID()
 
-        XCTAssertNoThrow(try testStore.syncAndWait()) //Sync original outcome
+        XCTAssertNoThrow(try testStore.syncAndWait()) // Sync original outcome
 
         task.instructions = "Updated instructions"
         try testStore.updateTaskAndWait(task)
-        XCTAssertNoThrow(try testStore.syncAndWait()) //Sync updated outcome
+        XCTAssertNoThrow(try testStore.syncAndWait()) // Sync updated outcome
 
         let latestRevisions = dummy.revisionsPushedInLastSynch
         XCTAssert(latestRevisions.count == 2)
@@ -398,11 +398,11 @@ class DummyEndpoint: OCKRemoteSynchronizable {
         timesPushWasCalled += 1
         timesForcePushed += overwriteRemote ? 1 : 0
 
-        //Save latest revisions
+        // Save latest revisions
         revisionsPushedInLastSynch.removeAll()
         revisionsPushedInLastSynch.append(contentsOf: deviceRevision.entities)
 
-        //Update KnowledgeVector
+        // Update KnowledgeVector
         if dummyKnowledgeVector == nil {
             dummyKnowledgeVector = .init([uuid: 0])
         }
@@ -476,9 +476,14 @@ final class OCKLocalPeer: OCKRemoteSynchronizable {
         mergeRevision: @escaping (OCKRevisionRecord, @escaping (Error?) -> Void) -> Void,
         completion: @escaping (Error?) -> Void) {
 
-        let clock = knowledgeVector.clock(for: peerStore.context.clockID)
-        let revision = peerStore.computeRevision(since: clock)
-        mergeRevision(revision, completion)
+        do {
+            let clock = knowledgeVector.clock(for: try peerStore.context().clockID)
+            let revision = try peerStore.computeRevision(since: clock)
+            mergeRevision(revision, completion)
+        } catch {
+            completion(error)
+        }
+
     }
 
     func pushRevisions(

@@ -45,13 +45,17 @@ public struct OCKHealthKitLinkage: Equatable, Codable {
     }
 
     /// A HealthKitQuantityIdentifier that describes the outcome's data type.
-    internal let quantityIdentifier: HKQuantityTypeIdentifier
+    public var quantityIdentifier: HKQuantityTypeIdentifier
 
     /// Determines what kind of query will be used to fetch data from HealthKit.
-    internal let quantityType: QuantityType
+    public var quantityType: QuantityType
 
     /// A HealthKit unit that will be associated with outcomes saved to and fetched from HealthKit.
-    internal let unitString: String // Should map to an HKUnit
+    public var unit: HKUnit {
+        get { HKUnit(from: unitString) }
+        set { unitString = newValue.unitString }
+    }
+    private var unitString: String
 
     /// Initialize by specifying HealthKit types.
     ///

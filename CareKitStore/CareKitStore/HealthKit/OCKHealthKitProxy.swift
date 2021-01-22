@@ -83,7 +83,7 @@ class OCKHealthKitProxy {
             let query = HKStatisticsCollectionQuery(quantityType: quantity, quantitySamplePredicate: predicate,
                                                     options: options, anchorDate: event.start, intervalComponents: interval)
             var outerTimesCalled = 0
-            query.initialResultsHandler = { query, results, error in
+            query.initialResultsHandler = { _, results, error in
                 outerTimesCalled += 1
                 assert(outerTimesCalled <= 1, "This handler should never be called more than once. Check the query interval. This is a bug!")
                 defer { group.leave() }

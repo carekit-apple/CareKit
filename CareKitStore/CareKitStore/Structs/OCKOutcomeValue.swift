@@ -175,9 +175,9 @@ public struct OCKOutcomeValue: Codable, Equatable, OCKObjectCompatible, CustomSt
 
     // MARK: OCKObjectCompatible
     internal var uuid: UUID?
-    public internal(set) var createdDate: Date?
-    public internal(set) var updatedDate: Date?
-    public internal(set) var schemaVersion: OCKSemanticVersion?
+    public var createdDate: Date?
+    public var updatedDate: Date?
+    public var schemaVersion: OCKSemanticVersion?
     public var groupIdentifier: String?
     public var tags: [String]?
     public var remoteID: String?

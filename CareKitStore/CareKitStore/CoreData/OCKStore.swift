@@ -54,6 +54,10 @@ open class OCKStore: OCKStoreProtocol, OCKCoreDataStoreProtocol, Equatable {
     /// In `CareKit` apps, the delegate will be set automatically, and it should not be modified.
     public weak var outcomeDelegate: OCKOutcomeStoreDelegate?
 
+    /// The delegate receives callbacks when the contents of the store are reset.
+    /// In `CareKit` apps, the delegate will be set automatically, and it should not be modified.
+    public weak var resetDelegate: OCKResetDelegate?
+
     /// The configuration can be modified to enable or disable versioning of database entities.
     public var configuration = OCKStoreConfiguration()
 
@@ -64,6 +68,9 @@ open class OCKStore: OCKStoreProtocol, OCKCoreDataStoreProtocol, Equatable {
 
     /// The name of the store. When the store type is `onDisk`, this name will be used for the SQLite filename.
     public let name: String
+
+    /// App group identifier for a sandboxed app that shares files with other apps from the same developer.
+    public let securityApplicationGroupIdentifier: String?
 
     /// The store type determines where data is stored. Generally `onDisk` should be chosen in order to persist data, but `inMemory` may be useful
     /// for development and testing purposes.
@@ -80,11 +87,21 @@ open class OCKStore: OCKStoreProtocol, OCKCoreDataStoreProtocol, Equatable {
     ///
     /// - Parameters:
     ///   - name: A unique name for the store. It will be used for the filename if stored on disk.
+    ///   - securityApplicationGroupIdentifier: App group identifier for a sandboxed app that shares files with other apps
+    ///                                         from the same developer. See [Adding an App To an App Group](1).
     ///   - type: The type of store to be used. `.onDisk` is used by default.
-    ///   - synchronizer: A store synchronization endpoint.
-    public init(name: String, type: OCKCoreDataStoreType = .onDisk, remote: OCKRemoteSynchronizable? = nil) {
+    ///   - remote: A store synchronization endpoint.
+    ///
+    /// [1]: https://developer.apple.com/library/archive/documentation/Miscellaneous/Reference/EntitlementKeyReference/Chapters/EnablingAppSandbox.html#//apple_ref/doc/uid/TP40011195-CH4-SW19
+    public init(
+        name: String,
+        securityApplicationGroupIdentifier: String? = nil,
+        type: OCKCoreDataStoreType = .onDisk(),
+        remote: OCKRemoteSynchronizable? = nil
+    ) {
         self.storeType = type
         self.name = name
+        self.securityApplicationGroupIdentifier = securityApplicationGroupIdentifier
         self.remote = remote
         self.isSynchronizing = false
     }
@@ -94,7 +111,7 @@ open class OCKStore: OCKStoreProtocol, OCKCoreDataStoreProtocol, Equatable {
     /// You should not attempt to call any other methods an instance of `OCKStore`
     /// after it has been deleted.
     public func delete() throws {
-        try persistentContainer
+        try persistentContainer()
             .persistentStoreCoordinator
             .destroyPersistentStore(at: storeURL, ofType: storeType.stringValue, options: nil)
 
@@ -103,53 +120,14 @@ open class OCKStore: OCKStoreProtocol, OCKCoreDataStoreProtocol, Equatable {
         try FileManager.default.removeItem(at: walFileURL)
     }
 
+    /// Deletes the contents of the store, resetting it to its initial state.
+    public func reset() throws {
+        try deleteAllContents()
+    }
+
     // MARK: Internal
-
-    internal func deleteAllContent() throws {
-
-        var saveError: Error?
-
-        context.performAndWait {
-            do {
-                OCKEntity
-                    .EntityType
-                    .allCases
-                    .map(\.coreDataType)
-                    .forEach(deleteAll)
-
-                try context.save()
-            } catch {
-                saveError = error
-            }
-        }
-
-        if let error = saveError {
-            throw error
-        }
-    }
-
-    internal lazy var persistentContainer: NSPersistentContainer = {
-        makePersistentContainer()
-    }()
-
-    internal lazy var context: NSManagedObjectContext = {
-        persistentContainer.newBackgroundContext()
-    }()
-
-    private func deleteAll<T: NSManagedObject>(entity: T.Type) {
-        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: String(describing: entity))
-        fetchRequest.includesPropertyValues = false
-        fetchRequest.includesSubentities = false
-
-        context.performAndWait {
-            do {
-                let objects = try context.fetch(fetchRequest)
-                objects.forEach { context.delete($0) }
-            } catch {
-                log(.error, "Failed to delete objects", error: error)
-            }
-        }
-    }
+    var _context: NSManagedObjectContext?
+    var _container: NSPersistentContainer?
 }
 
 internal extension NSPredicate {
@@ -160,17 +138,5 @@ internal extension NSPredicate {
         let andNilPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [self, nilPredicate])
         let orNilPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: [predicate, andNilPredicate])
         return identifiers.contains(nil) ? orNilPredicate : predicate
-    }
-}
-
-private extension OCKEntity.EntityType {
-    var coreDataType: NSManagedObject.Type {
-        switch self {
-        case .patient: return OCKCDPatient.self
-        case .carePlan: return OCKCDCarePlan.self
-        case .contact: return OCKCDContact.self
-        case .task: return OCKCDTask.self
-        case .outcome: return OCKCDOutcome.self
-        }
     }
 }

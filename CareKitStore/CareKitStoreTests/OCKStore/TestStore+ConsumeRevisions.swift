@@ -67,7 +67,7 @@ class TestStoreConsumeRevisions: XCTestCase {
             knowledgeVector: .init())
 
         try store.mergeRevisionAndWait(revision)
-        try store.context.save()
+        try store.context().save()
 
         let tasks = try store.fetchTasksAndWait()
 
@@ -90,7 +90,7 @@ class TestStoreConsumeRevisions: XCTestCase {
             knowledgeVector: .init())
 
         try store.mergeRevisionAndWait(revision)
-        try store.context.save()
+        try store.context().save()
 
         let tasks = try store.fetchTasksAndWait(query: OCKTaskQuery(for: taskB.effectiveDate))
 
@@ -117,7 +117,7 @@ class TestStoreConsumeRevisions: XCTestCase {
         remote?.conflictPolicy = .keepRemote
 
         try store.mergeRevisionAndWait(revision)
-        try store.context.save()
+        try store.context().save()
 
         let tasks = try store.fetchTasksAndWait()
 
@@ -145,7 +145,7 @@ class TestStoreConsumeRevisions: XCTestCase {
         remote?.conflictPolicy = .keepDevice
 
         try store.mergeRevisionAndWait(revision)
-        try store.context.save()
+        try store.context().save()
 
         let tasks = try store.fetchTasksAndWait()
 
@@ -225,7 +225,7 @@ class TestStoreConsumeRevisions: XCTestCase {
             knowledgeVector: .init())
 
         try store.mergeRevisionAndWait(revision)
-        try store.context.save()
+        try store.context().save()
 
         let outcomes = try store.fetchOutcomesAndWait()
         XCTAssert(outcomes.count == 1)
@@ -248,7 +248,7 @@ class TestStoreConsumeRevisions: XCTestCase {
             knowledgeVector: .init())
 
         try store.mergeRevisionAndWait(revision)
-        try store.context.save()
+        try store.context().save()
 
         let outcomes = try store.fetchOutcomesAndWait()
         XCTAssert(outcomes.isEmpty)
@@ -287,7 +287,7 @@ class TestStoreConsumeRevisions: XCTestCase {
             knowledgeVector: .init())
 
         XCTAssertNoThrow(try store.mergeRevisionAndWait(revision))
-        XCTAssertNoThrow(try store.context.save())
+        XCTAssertNoThrow(try store.context().save())
 
         let outcomes = try store.fetchOutcomesAndWait()
         XCTAssert(outcomes.count == 1)
@@ -312,7 +312,7 @@ class TestStoreConsumeRevisions: XCTestCase {
 
         remote.conflictPolicy = .keepDevice
         XCTAssertNoThrow(try store.mergeRevisionAndWait(revision))
-        XCTAssertNoThrow(try store.context.save())
+        XCTAssertNoThrow(try store.context().save())
 
         let outcomes = try store.fetchOutcomesAndWait()
         XCTAssert(outcomes.count == 1)
@@ -336,7 +336,7 @@ class TestStoreConsumeRevisions: XCTestCase {
             knowledgeVector: .init())
 
         XCTAssertNoThrow(try store.mergeRevisionAndWait(revision))
-        XCTAssertNoThrow(try store.context.save())
+        XCTAssertNoThrow(try store.context().save())
 
         let outcomes = try store.fetchOutcomesAndWait()
         XCTAssert(outcomes.isEmpty)
@@ -381,9 +381,9 @@ class TestStoreConsumeRevisions: XCTestCase {
         let outcomes = try store.fetchOutcomesAndWait()
         XCTAssert(outcomes.isEmpty)
 
-        store.context.performAndWait {
+        try store.context().performAndWait {
             let request = NSFetchRequest<OCKCDOutcome>(entityName: "OCKCDOutcome")
-            let outcome = try! self.store.context.fetch(request).first
+            let outcome = try! self.store.context().fetch(request).first
             XCTAssert(outcome?.createdDate == tombstone.createdDate)
             XCTAssert(outcome?.deletedDate == tombstone.createdDate)
             XCTAssert(outcome?.uuid == tombstone.uuid)
@@ -421,7 +421,7 @@ class TestStoreConsumeRevisions: XCTestCase {
             knowledgeVector: .init())
 
         try store.mergeRevisionAndWait(revision)
-        try store.context.save()
+        try store.context().save()
 
         let patients = try store.fetchPatientsAndWait()
 
@@ -443,7 +443,7 @@ class TestStoreConsumeRevisions: XCTestCase {
             knowledgeVector: .init())
 
         try store.mergeRevisionAndWait(revision)
-        try store.context.save()
+        try store.context().save()
 
         let patients = try store.fetchPatientsAndWait(query: OCKPatientQuery(for: patientB.effectiveDate))
 
@@ -469,7 +469,7 @@ class TestStoreConsumeRevisions: XCTestCase {
         remote?.conflictPolicy = .keepRemote
 
         try store.mergeRevisionAndWait(revision)
-        try store.context.save()
+        try store.context().save()
 
         let patients = try store.fetchPatientsAndWait()
 
@@ -496,7 +496,7 @@ class TestStoreConsumeRevisions: XCTestCase {
         remote?.conflictPolicy = .keepDevice
 
         try store.mergeRevisionAndWait(revision)
-        try store.context.save()
+        try store.context().save()
 
         let patients = try store.fetchPatientsAndWait()
 
@@ -549,7 +549,7 @@ class TestStoreConsumeRevisions: XCTestCase {
             knowledgeVector: .init())
 
         try store.mergeRevisionAndWait(revision)
-        try store.context.save()
+        try store.context().save()
 
         let carePlans = try store.fetchCarePlansAndWait()
 
@@ -571,7 +571,7 @@ class TestStoreConsumeRevisions: XCTestCase {
             knowledgeVector: .init())
 
         try store.mergeRevisionAndWait(revision)
-        try store.context.save()
+        try store.context().save()
 
         let carePlans = try store.fetchCarePlansAndWait(query: OCKCarePlanQuery(for: carePlanB.effectiveDate))
 
@@ -597,7 +597,7 @@ class TestStoreConsumeRevisions: XCTestCase {
         remote?.conflictPolicy = .keepRemote
 
         try store.mergeRevisionAndWait(revision)
-        try store.context.save()
+        try store.context().save()
 
         let carePlans = try store.fetchCarePlansAndWait()
 
@@ -624,7 +624,7 @@ class TestStoreConsumeRevisions: XCTestCase {
         remote?.conflictPolicy = .keepDevice
 
         try store.mergeRevisionAndWait(revision)
-        try store.context.save()
+        try store.context().save()
 
         let carePlans = try store.fetchCarePlansAndWait()
 
@@ -677,7 +677,7 @@ class TestStoreConsumeRevisions: XCTestCase {
             knowledgeVector: .init())
 
         try store.mergeRevisionAndWait(revision)
-        try store.context.save()
+        try store.context().save()
 
         let contacts = try store.fetchContactsAndWait()
 
@@ -699,7 +699,7 @@ class TestStoreConsumeRevisions: XCTestCase {
             knowledgeVector: .init())
 
         try store.mergeRevisionAndWait(revision)
-        try store.context.save()
+        try store.context().save()
 
         let contacts = try store.fetchContactsAndWait(query: OCKContactQuery(for: contactB.effectiveDate))
 
@@ -725,7 +725,7 @@ class TestStoreConsumeRevisions: XCTestCase {
         remote?.conflictPolicy = .keepRemote
 
         try store.mergeRevisionAndWait(revision)
-        try store.context.save()
+        try store.context().save()
 
         let contacts = try store.fetchContactsAndWait()
 
@@ -752,7 +752,7 @@ class TestStoreConsumeRevisions: XCTestCase {
         remote?.conflictPolicy = .keepDevice
 
         try store.mergeRevisionAndWait(revision)
-        try store.context.save()
+        try store.context().save()
 
         let contacts = try store.fetchContactsAndWait()
 

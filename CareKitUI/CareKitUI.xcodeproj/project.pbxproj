@@ -276,13 +276,10 @@
 				510466F724A2848800D0FD53 /* Views */,
 				51F12D3E229CA8DE00CA265B /* Controls */,
 				51F12D41229CA92400CA265B /* Labels */,
-				51E7643A22C2ED7300160C22 /* Authentication */,
 				518F9D4422961BF5009CAA48 /* Contact */,
 				518F9D5622961BF5009CAA48 /* Charts */,
-				51B225E223EE263F00A2D11F /* Calendar Events */,
 				518F9D4A22961BF5009CAA48 /* Task */,
 				51F12D4A229CAB7C00CA265B /* Detail View */,
-				640B6A1923D90979009490D6 /* Picker */,
 				51F12D49229CAB3600CA265B /* Calendar */,
 				515888C62437AED100E65C73 /* Featured Content */,
 				51367939243BF69D0026997B /* Link */,
@@ -420,13 +417,6 @@
 			path = Link;
 			sourceTree = "<group>";
 		};
-		5143E39D22F2740C00FE6773 /* Slider */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Slider;
-			sourceTree = "<group>";
-		};
 		515888C62437AED100E65C73 /* Featured Content */ = {
 			isa = PBXGroup;
 			children = (
@@ -545,27 +535,12 @@
 			path = Style;
 			sourceTree = "<group>";
 		};
-		51B225E223EE263F00A2D11F /* Calendar Events */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "Calendar Events";
-			sourceTree = "<group>";
-		};
-		51E7643A22C2ED7300160C22 /* Authentication */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Authentication;
-			sourceTree = "<group>";
-		};
 		51F12D3E229CA8DE00CA265B /* Controls */ = {
 			isa = PBXGroup;
 			children = (
 				510A5761234A7B920006C376 /* OCKAnimatedButton.swift */,
 				51656028234AB47500F2A21F /* OCKCheckmarkButton.swift */,
 				518F9D5022961BF5009CAA48 /* OCKLabeledButton.swift */,
-				5143E39D22F2740C00FE6773 /* Slider */,
 			);
 			path = Controls;
 			sourceTree = "<group>";
@@ -636,13 +611,6 @@
 				512EE8FF22975F850052F37C /* OCKDetailView.swift */,
 			);
 			path = "Detail View";
-			sourceTree = "<group>";
-		};
-		640B6A1923D90979009490D6 /* Picker */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Picker;
 			sourceTree = "<group>";
 		};
 		64EEC2352318252B00B1012F /* Localization */ = {

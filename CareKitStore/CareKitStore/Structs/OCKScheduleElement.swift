@@ -191,7 +191,9 @@ public struct OCKScheduleElement: Codable, Equatable {
         }
         let events = dates.enumerated().map { index, date in makeScheduleEvent(on: date, for: index) }
         return events.filter { event in
-            if duration == .allDay { return true }
+            if duration == .allDay {
+                return event.end > start
+            }
             return event.start + duration.seconds >= start
         }
     }
@@ -210,15 +212,15 @@ public struct OCKScheduleElement: Codable, Equatable {
 
     /// Determines the last date at which an event could possibly occur
     private func determineStopDate(onOrBefore date: Date) -> Date {
-        if duration == .allDay {
-          let stopDay = end ?? date
-          let morningOfStopDay = Calendar.current.startOfDay(for: stopDay)
-          let endOfStopDay = Calendar.current.date(byAdding: .init(day: 1, second: -1), to: morningOfStopDay)!
-          return endOfStopDay
+        let stopDay = min(date, end ?? date)
+
+        guard duration == .allDay else {
+            return stopDay
         }
 
-        guard let endDate = end else { return date }
-        return min(endDate, date)
+        let morningOfStopDay = Calendar.current.startOfDay(for: stopDay)
+        let endOfStopDay = Calendar.current.date(byAdding: .init(day: 1, second: -1), to: morningOfStopDay)!
+        return endOfStopDay
     }
 
     private func makeScheduleEvent(on date: Date, for occurrence: Int) -> OCKScheduleEvent {

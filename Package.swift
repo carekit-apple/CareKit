@@ -1,8 +1,9 @@
-// swift-tools-version:5.1
+// swift-tools-version:5.3
 import PackageDescription
 
 let package = Package(
     name: "CareKit",
+    defaultLocalization: "en",
     platforms: [.iOS(.v13), .watchOS(.v6)],
     products: [
         .library(
@@ -36,11 +37,12 @@ let package = Package(
 
         .target(
             name: "CareKitStore",
-            path: "CareKitStore/CareKitStore"),
+            path: "CareKitStore/CareKitStore",
+            resources: [.copy("CoreData/CareKitStore.xcdatamodel")]),
 
         .target(
             name: "CareKitFHIR",
-            dependencies: ["CareKitStore", "ModelsR4", "ModelsDSTU2"],
+            dependencies: ["CareKitStore", .product(name: "ModelsR4", package: "FHIRModels"), .product(name: "ModelsDSTU2", package: "FHIRModels")],
             path: "CareKitFHIR/CareKitFHIR"),
 
         .testTarget(

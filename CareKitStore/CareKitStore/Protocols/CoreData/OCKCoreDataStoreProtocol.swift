@@ -74,11 +74,11 @@ internal protocol OCKCoreDataStoreProtocol: AnyObject {
 // per app invocation, so we load it here and reuse
 // the shared MoM each time a store is instantiated.
 let sharedManagedObjectModel: NSManagedObjectModel = {
-    #if SWIFT_PACKAGE
-    let bundle = Bundle.module // Use the SPM package's module
-    #else
+    //#if SWIFT_PACKAGE
+    //let bundle = Bundle.module // Use the SPM package's module
+    //#else
     let bundle = Bundle(for: OCKStore.self)
-    #endif
+    //#endif
     let modelUrl = bundle.url(forResource: "CareKitStore", withExtension: "momd")!
     let mom = NSManagedObjectModel(contentsOf: modelUrl)!
     return mom

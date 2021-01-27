@@ -37,8 +37,7 @@ let package = Package(
 
         .target(
             name: "CareKitStore",
-            path: "CareKitStore/CareKitStore",
-            resources: [.process("CoreData/CareKitStore.xcdatamodel")]),
+            path: "CareKitStore/CareKitStore"),
 
         .target(
             name: "CareKitFHIR",

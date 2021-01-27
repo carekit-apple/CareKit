@@ -39,49 +39,50 @@ class TestCoreDataSchemaIntegration: XCTestCase {
         store = OCKStore(name: "test", type: .inMemory)
     }
 
-    func testAllEntitiesCanBeChainedAndSavedInABatch() {
-        let patient = OCKCDPatient(context: store.context)
+    func testAllEntitiesCanBeChainedAndSavedInABatch() throws {
+        let patient = OCKCDPatient(context: try store.context())
         patient.id = "my_id"
         patient.uuid = UUID()
-        patient.name = OCKCDPersonName(context: store.context)
+        patient.name = OCKCDPersonName(context: try store.context())
         patient.name.familyName = "Amy"
         patient.name.givenName = "Frost"
         patient.effectiveDate = Date()
 
-        let plan = OCKCDCarePlan(context: store.context)
+        let plan = OCKCDCarePlan(context: try store.context())
         plan.title = "Post Operation Care Plan"
         plan.id = "post-op-plan"
         plan.uuid = UUID()
         plan.patient = patient
         plan.effectiveDate = Date()
 
-        let task = OCKCDTask(context: store.context)
+        let task = OCKCDTask(context: try store.context())
         task.id = "measure-pulse"
         task.uuid = UUID()
         task.instructions = "Take your pulse for a 60s and record in BPM"
         task.carePlan = plan
         task.effectiveDate = Date()
 
-        let schedule = OCKCDScheduleElement(context: store.context)
+        let schedule = OCKCDScheduleElement(context: try store.context())
         schedule.text = "Once each day"
         schedule.startDate = Date()
         schedule.daysInterval = 1
         schedule.duration = .hours(1)
         schedule.task = task
 
-        let outcome = OCKCDOutcome(context: store.context)
+        let outcome = OCKCDOutcome(context: try store.context())
         outcome.taskOccurrenceIndex = 0
         outcome.task = task
-        outcome.date = Date()
+        outcome.startDate = Date()
+        outcome.endDate = Date()
 
-        let value = OCKCDOutcomeValue(context: store.context)
+        let value = OCKCDOutcomeValue(context: try store.context())
         value.kind = "pulse"
         value.units = "BPM"
         value.integerValue = 80
         value.type = .integer
         value.outcome = outcome
 
-        XCTAssertNoThrow(try store.context.save())
+        XCTAssertNoThrow(try store.context().save())
         XCTAssert(patient.carePlans.first == plan)
         XCTAssert(task.scheduleElements.first == schedule)
         XCTAssert(task.outcomes.first == outcome)

@@ -39,13 +39,13 @@ class TestCoreDataSchemaWithCarePlan: XCTestCase {
         store = OCKStore(name: "test", type: .inMemory)
     }
 
-    func testCanSaveCarePlan() {
-        let plan1 = OCKCDCarePlan(context: store.context)
+    func testCanSaveCarePlan() throws {
+        let plan1 = OCKCDCarePlan(context: try store.context())
         plan1.title = "Plan 1"
         plan1.id = "plan_1"
         plan1.uuid = UUID()
         plan1.effectiveDate = Date()
         plan1.allowsMissingRelationships = true
-        XCTAssertNoThrow(try store.context.save())
+        XCTAssertNoThrow(try store.context().save())
     }
 }

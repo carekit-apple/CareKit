@@ -39,19 +39,19 @@ class TestCoreDataSchemaWithPatient: XCTestCase {
         store = OCKStore(name: "test", type: .inMemory)
     }
 
-    func testCanSavePatient() {
-        let patient = OCKCDPatient(context: store.context)
+    func testCanSavePatient() throws {
+        let patient = OCKCDPatient(context: try store.context())
         patient.id = "my_id"
         patient.uuid = UUID()
         patient.effectiveDate = Date()
-        patient.name = OCKCDPersonName(context: store.context)
+        patient.name = OCKCDPersonName(context: try store.context())
         patient.name.givenName = "Amy"
         patient.name.familyName = "Frost"
         patient.sex = "female"
         patient.birthday = Date()
         patient.allergies = ["latex"]
 
-        XCTAssertNoThrow(try store.context.save())
+        XCTAssertNoThrow(try store.context().save())
         XCTAssert(patient.name.givenName == "Amy")
         XCTAssert(patient.name.familyName == "Frost")
     }

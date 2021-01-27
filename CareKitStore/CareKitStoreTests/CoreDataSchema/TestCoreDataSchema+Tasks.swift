@@ -39,13 +39,13 @@ class TestCoreDataSchemaWithTasks: XCTestCase {
         store = OCKStore(name: "test", type: .inMemory)
     }
 
-    func makeMockTask() -> OCKCDTask {
-        let scheduleElement = OCKCDScheduleElement(context: store.context)
+    func makeMockTask() throws -> OCKCDTask {
+        let scheduleElement = OCKCDScheduleElement(context: try store.context())
         scheduleElement.startDate = Date()
         scheduleElement.daysInterval = 1
         scheduleElement.duration = .seconds(42)
 
-        let task = OCKCDTask(context: store.context)
+        let task = OCKCDTask(context: try store.context())
         task.id = "task"
         task.uuid = UUID()
         task.effectiveDate = Date()
@@ -55,14 +55,14 @@ class TestCoreDataSchemaWithTasks: XCTestCase {
         return task
     }
 
-    func testCanSaveTask() {
-        _ = makeMockTask()
-        XCTAssertNoThrow(try store.context.save())
+    func testCanSaveTask() throws {
+        _ = try makeMockTask()
+        XCTAssertNoThrow(try store.context().save())
     }
 
-    func testCannotSaveTaskWithoutSchedule() {
-        let task = makeMockTask()
+    func testCannotSaveTaskWithoutSchedule() throws {
+        let task = try makeMockTask()
         task.scheduleElements = Set()
-        XCTAssertThrowsError(try store.context.save())
+        XCTAssertThrowsError(try store.context().save())
     }
 }

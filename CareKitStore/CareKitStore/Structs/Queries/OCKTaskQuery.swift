@@ -121,33 +121,14 @@ public struct OCKTaskQuery: OCKAnyTaskQuery, Equatable {
 }
 
 internal extension Array where Element: OCKCDTaskCompatible {
-    func filtered(against query: OCKTaskQuery) -> [Element] {
 
-        var remaining = self
+    func filtered(dateInterval: DateInterval?, excludeTasksWithNoEvents: Bool) -> [Element] {
 
-        if let dateInterval = query.dateInterval {
-            remaining = filter(against: dateInterval, excludeTasksWithNoEvents: query.excludesTasksWithNoEvents)
+        guard let dateInterval = dateInterval else {
+            return self
         }
 
-        return remaining.filter { task -> Bool in
-
-            if !query.tags.isEmpty {
-                let taskTags = task.tags ?? []
-                let matchesExist = taskTags.map { query.tags.contains($0) }.contains(true)
-                if !matchesExist { return false }
-            }
-
-            if !query.groupIdentifiers.isEmpty {
-                guard let taskGroupIdentifier = task.groupIdentifier else { return false }
-                if !query.groupIdentifiers.contains(taskGroupIdentifier) { return false }
-            }
-
-            return true
-        }
-    }
-
-    func filter(against dateInterval: DateInterval, excludeTasksWithNoEvents: Bool) -> [Element] {
-        filter { task -> Bool in
+        return filter { task -> Bool in
             let events = task.schedule.events(from: dateInterval.start, to: dateInterval.end)
 
             if excludeTasksWithNoEvents && events.isEmpty { return false }

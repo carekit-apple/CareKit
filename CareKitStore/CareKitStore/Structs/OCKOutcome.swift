@@ -44,11 +44,11 @@ public struct OCKOutcome: Codable, Equatable, Identifiable, OCKAnyOutcome, OCKOb
     public var values: [OCKOutcomeValue]
 
     // MARK: OCKObjectCompatible
-    public internal(set) var uuid: UUID?
-    public internal(set) var createdDate: Date?
-    public internal(set) var updatedDate: Date?
-    public internal(set) var deletedDate: Date?
-    public internal(set) var schemaVersion: OCKSemanticVersion?
+    public var uuid: UUID?
+    public var createdDate: Date?
+    public var updatedDate: Date?
+    public var deletedDate: Date?
+    public var schemaVersion: OCKSemanticVersion?
     public var remoteID: String?
     public var groupIdentifier: String?
     public var tags: [String]?

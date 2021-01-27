@@ -34,89 +34,114 @@ extension OCKStore {
 
     open func fetchPatients(query: OCKPatientQuery = OCKPatientQuery(), callbackQueue: DispatchQueue = .main,
                             completion: @escaping (Result<[OCKPatient], OCKStoreError>) -> Void) {
-        context.perform {
-            do {
-                let predicate = try self.buildPredicate(for: query)
-                let patientsObjects = self.fetchFromStore(OCKCDPatient.self, where: predicate) { fetchRequest in
-                    fetchRequest.fetchLimit = query.limit ?? 0
-                    fetchRequest.fetchOffset = query.offset
-                    fetchRequest.sortDescriptors = self.buildSortDescriptors(from: query)
+        do {
+            let context = try self.context()
+            context.perform {
+                do {
+                    let predicate = try self.buildPredicate(for: query)
+                    let patientsObjects = try self.fetchFromStore(OCKCDPatient.self, where: predicate) { fetchRequest in
+                        fetchRequest.fetchLimit = query.limit ?? 0
+                        fetchRequest.fetchOffset = query.offset
+                        fetchRequest.sortDescriptors = self.buildSortDescriptors(from: query)
+                    }
+
+                    let patients = patientsObjects.map(self.makePatient)
+                    callbackQueue.async { completion(.success(patients)) }
+                } catch {
+                    context.rollback()
+                    let message = "Failed to fetch patients for query. \(error.localizedDescription)"
+                    callbackQueue.async { completion(.failure(.fetchFailed(reason: message))) }
                 }
-
-                let patients = patientsObjects
-                    .map(self.makePatient)
-                    .filter({ $0.matches(tags: query.tags) })
-
-                callbackQueue.async { completion(.success(patients)) }
-            } catch {
-                self.context.rollback()
-                let message = "Failed to fetch patients for query. \(error.localizedDescription)"
-                callbackQueue.async { completion(.failure(.fetchFailed(reason: message))) }
+            }
+        } catch {
+            callbackQueue.async {
+                completion(.failure(.fetchFailed(reason: error.localizedDescription)))
             }
         }
     }
 
     open func addPatients(_ patients: [OCKPatient], callbackQueue: DispatchQueue = .main,
                           completion: ((Result<[OCKPatient], OCKStoreError>) -> Void)? = nil) {
-        context.perform {
-            do {
-                try self.validateNumberOfPatients()
-                let addedPatients = try self.createPatientsWithoutCommitting(patients)
-                try self.context.save()
-                callbackQueue.async {
-                    self.patientDelegate?.patientStore(self, didAddPatients: addedPatients)
-                    self.autoSynchronizeIfRequired()
-                    completion?(.success(addedPatients))
+        do {
+            let context = try self.context()
+            context.perform {
+                do {
+                    try self.validateNumberOfPatients()
+                    let addedPatients = try self.createPatientsWithoutCommitting(patients)
+                    try context.save()
+                    callbackQueue.async {
+                        self.patientDelegate?.patientStore(self, didAddPatients: addedPatients)
+                        self.autoSynchronizeIfRequired()
+                        completion?(.success(addedPatients))
+                    }
+                } catch {
+                    context.rollback()
+                    callbackQueue.async {
+                        completion?(.failure(.addFailed(reason: "Failed to insert OCKPatients. \(error.localizedDescription)")))
+                    }
                 }
-            } catch {
-                self.context.rollback()
-                callbackQueue.async {
-                    completion?(.failure(.addFailed(reason: "Failed to insert OCKPatients. \(error.localizedDescription)")))
-                }
+            }
+        } catch {
+            callbackQueue.async {
+                completion?(.failure(.addFailed(reason: error.localizedDescription)))
             }
         }
     }
 
     open func updatePatients(_ patients: [OCKPatient], callbackQueue: DispatchQueue = .main,
                              completion: ((Result<[OCKPatient], OCKStoreError>) -> Void)? = nil) {
-        context.perform {
-            do {
-                let updated = try self.updatePatientsWithoutCommitting(patients, copyUUIDs: false)
-                try self.context.save()
-                callbackQueue.async {
-                    self.patientDelegate?.patientStore(self, didUpdatePatients: updated)
-                    self.autoSynchronizeIfRequired()
-                    completion?(.success(updated))
+        do {
+            let context = try self.context()
+            context.perform {
+                do {
+                    let updated = try self.updatePatientsWithoutCommitting(patients, copyUUIDs: false)
+                    try context.save()
+                    callbackQueue.async {
+                        self.patientDelegate?.patientStore(self, didUpdatePatients: updated)
+                        self.autoSynchronizeIfRequired()
+                        completion?(.success(updated))
+                    }
+                } catch {
+                    context.rollback()
+                    callbackQueue.async {
+                        completion?(.failure(.updateFailed(reason: "Failed to update OCKPatients. \(error.localizedDescription)")))
+                    }
                 }
-            } catch {
-                self.context.rollback()
-                callbackQueue.async {
-                    completion?(.failure(.updateFailed(reason: "Failed to update OCKPatients. \(error.localizedDescription)")))
-                }
+            }
+        } catch {
+            callbackQueue.async {
+                completion?(.failure(.updateFailed(reason: error.localizedDescription)))
             }
         }
     }
 
     open func deletePatients(_ patients: [OCKPatient], callbackQueue: DispatchQueue = .main,
                              completion: ((Result<[OCKPatient], OCKStoreError>) -> Void)? = nil) {
-        context.perform {
-            do {
-                let markedDeleted: [OCKCDPatient] = try self.performDeletion(
-                    values: patients,
-                    addNewVersion: self.createPatient)
+        do {
+            let context = try self.context()
+            context.perform {
+                do {
+                    let markedDeleted: [OCKCDPatient] = try self.performDeletion(
+                        values: patients,
+                        addNewVersion: self.createPatient)
 
-                try self.context.save()
-                let deletedPatients = markedDeleted.map(self.makePatient)
-                callbackQueue.async {
-                    self.patientDelegate?.patientStore(self, didDeletePatients: deletedPatients)
-                    self.autoSynchronizeIfRequired()
-                    completion?(.success(deletedPatients))
+                    try context.save()
+                    let deletedPatients = markedDeleted.map(self.makePatient)
+                    callbackQueue.async {
+                        self.patientDelegate?.patientStore(self, didDeletePatients: deletedPatients)
+                        self.autoSynchronizeIfRequired()
+                        completion?(.success(deletedPatients))
+                    }
+                } catch {
+                    context.rollback()
+                    callbackQueue.async {
+                        completion?(.failure(.deleteFailed(reason: "Failed to delete OCKPatients. \(error.localizedDescription)")))
+                    }
                 }
-            } catch {
-                self.context.rollback()
-                callbackQueue.async {
-                    completion?(.failure(.deleteFailed(reason: "Failed to delete OCKPatients. \(error.localizedDescription)")))
-                }
+            }
+        } catch {
+            callbackQueue.async {
+                completion?(.failure(.deleteFailed(reason: error.localizedDescription)))
             }
         }
     }
@@ -127,7 +152,7 @@ extension OCKStore {
 
     func createPatientsWithoutCommitting(_ patients: [Patient]) throws -> [Patient] {
         try self.validateNew(OCKCDPatient.self, patients)
-        let persistablePatients = patients.map(self.createPatient)
+        let persistablePatients = try patients.map(self.createPatient)
         let addedPatients = persistablePatients.map(self.makePatient)
         return addedPatients
     }
@@ -156,9 +181,9 @@ extension OCKStore {
     /// - Remark: This does not commit the transaction. After calling this function one or more times, you must call `context.save()` in order to
     /// persist the changes to disk. This is an optimization to allow batching.
     /// - Remark: You should verify that the object does not already exist in the database and validate its values before calling this method.
-    private func createPatient(from patient: OCKPatient) -> OCKCDPatient {
-        let persistablePatient = OCKCDPatient(context: context)
-        persistablePatient.name = OCKCDPersonName(context: context)
+    private func createPatient(from patient: OCKPatient) throws -> OCKCDPatient {
+        let persistablePatient = OCKCDPatient(context: try context())
+        persistablePatient.name = OCKCDPersonName(context: try context())
         persistablePatient.copyVersionInfo(from: patient)
         persistablePatient.allowsMissingRelationships = configuration.allowsEntitiesWithMissingRelationships
         persistablePatient.name.copyPersonNameComponents(patient.name)
@@ -207,6 +232,11 @@ extension OCKStore {
                 for: #keyPath(OCKCDObject.groupIdentifier))
         }
 
+        if !query.tags.isEmpty {
+            let tagPredicate = NSPredicate(format: "ANY %K IN %@", #keyPath(OCKCDObject.tags), query.tags)
+            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, tagPredicate])
+        }
+
         return predicate
     }
 
@@ -224,7 +254,7 @@ extension OCKStore {
 
     private func validateNumberOfPatients() throws {
         let fetchRequest = OCKCDPatient.fetchRequest()
-        let numberOfPatients = try context.count(for: fetchRequest)
+        let numberOfPatients = try context().count(for: fetchRequest)
         if numberOfPatients > 0 {
             let explanation = """
             OCKStore` only supports one patient per store.

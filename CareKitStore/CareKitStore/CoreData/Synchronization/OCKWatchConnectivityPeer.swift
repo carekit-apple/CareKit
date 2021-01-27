@@ -63,30 +63,34 @@ open class OCKWatchConnectivityPeer: OCKRemoteSynchronizable {
         store: OCKStore,
         sendReply: @escaping(_ message: [String: Any]) -> Void) {
 
-        // If the peer requested the latest revision, compute and return it.
-        if let data = peerMessage[revisionRequestKey] as? Data {
-            let vector = try! JSONDecoder().decode(OCKRevisionRecord.KnowledgeVector.self, from: data)
-            let clock = vector.clock(for: store.context.clockID)
-            let revision = store.computeRevision(since: clock)
-            let revisionData = try! JSONEncoder().encode(revision)
-            sendReply([revisionReplyKey: revisionData])
-            return
-        }
-
-        // If the peer just pushed a revision, attempt to merge.
-        // If unsuccessful, send back an error.
-        if let data = peerMessage[revisionPushKey] as? Data {
-            let revision = try! JSONDecoder().decode(OCKRevisionRecord.self, from: data)
-            store.mergeRevision(revision) { error in
-                if let error = error {
-                    sendReply([revisionErrorKey: error.localizedDescription])
-                } else {
-                    sendReply([:])
-                }
+        do {
+            // If the peer requested the latest revision, compute and return it.
+            if let data = peerMessage[revisionRequestKey] as? Data {
+                let vector = try JSONDecoder().decode(OCKRevisionRecord.KnowledgeVector.self, from: data)
+                let clock = vector.clock(for: try store.context().clockID)
+                let revision = try store.computeRevision(since: clock)
+                let revisionData = try JSONEncoder().encode(revision)
+                sendReply([revisionReplyKey: revisionData])
+                return
             }
-            return
+
+            // If the peer just pushed a revision, attempt to merge.
+            // If unsuccessful, send back an error.
+            if let data = peerMessage[revisionPushKey] as? Data {
+                let revision = try JSONDecoder().decode(OCKRevisionRecord.self, from: data)
+                store.mergeRevision(revision) { error in
+                    if let error = error {
+                        sendReply([revisionErrorKey: error.localizedDescription])
+                    } else {
+                        sendReply([:])
+                    }
+                }
+                return
+            }
+            sendReply([:])
+        } catch {
+            sendReply([revisionErrorKey: error.localizedDescription])
         }
-        sendReply([:])
     }
 
     // MARK: OCKRemoteSynchronizable

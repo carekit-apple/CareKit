@@ -40,18 +40,18 @@ class TestCoreDataSchemaWithContacts: XCTestCase {
         store = OCKStore(name: "test", type: .inMemory)
     }
 
-    func testCanSaveContactWithAddressAndContactInfo() {
-        let contact = OCKCDContact(context: store.context)
+    func testCanSaveContactWithAddressAndContactInfo() throws {
+        let contact = OCKCDContact(context: try store.context())
         contact.allowsMissingRelationships = true
         contact.id = "Katie Abeles"
         contact.uuid = UUID()
         contact.title = "Dr. Abeles"
         contact.effectiveDate = Date()
-        contact.name = OCKCDPersonName(context: store.context)
+        contact.name = OCKCDPersonName(context: try store.context())
         contact.name.givenName = "Katie"
         contact.name.familyName = "Abeles"
 
-        let address = OCKCDPostalAddress(context: store.context)
+        let address = OCKCDPostalAddress(context: try store.context())
         address.country = "US"
         address.city = "IN"
         address.street = "311 Sharon Lane"
@@ -65,22 +65,22 @@ class TestCoreDataSchemaWithContacts: XCTestCase {
         contact.role = "Doctor"
         contact.category = "Health Industry"
 
-        XCTAssertNoThrow(try store.context.save())
+        XCTAssertNoThrow(try store.context().save())
         XCTAssert(contact.name.givenName == "Katie")
         XCTAssert(contact.name.familyName == "Abeles")
     }
 
-    func testCannotSaveWithoutCarePlan() {
-        let contact = OCKCDContact(context: store.context)
+    func testCannotSaveWithoutCarePlan() throws {
+        let contact = OCKCDContact(context: try store.context())
         contact.allowsMissingRelationships = false
         contact.id = "Katie Abeles"
         contact.uuid = UUID()
         contact.title = "Dr. Abeles"
         contact.effectiveDate = Date()
-        contact.name = OCKCDPersonName(context: store.context)
+        contact.name = OCKCDPersonName(context: try store.context())
         contact.name.givenName = "Katie"
         contact.name.familyName = "Abeles"
 
-        XCTAssertThrowsError(try store.context.save())
+        XCTAssertThrowsError(try store.context().save())
     }
 }

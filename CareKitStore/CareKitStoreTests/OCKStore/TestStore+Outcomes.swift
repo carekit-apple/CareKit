@@ -163,6 +163,29 @@ class TestStoreOutcomes: XCTestCase {
         XCTAssertFalse(outcomes.contains(outcome2))
     }
 
+    func testQueryIncludesEventsThatStartBeforeAndEndDuringOrAfterDateRange() throws {
+        let eventStart = Calendar.current.startOfDay(for: Date())
+        let queryStart = Calendar.current.date(byAdding: .day, value: 2, to: eventStart)!
+
+        let element = OCKScheduleElement(
+            start: eventStart, end: nil,
+            interval: DateComponents(month: 3), text: nil,
+            targetValues: [], duration: .hours(100))
+        let schedule = OCKSchedule(composing: [element])
+        var task = OCKTask(id: "a", title: "A", carePlanUUID: nil, schedule: schedule)
+        task = try store.addTaskAndWait(task)
+
+        let outcome = OCKOutcome(
+            taskUUID: try task.getUUID(),
+            taskOccurrenceIndex: 0,
+            values: [])
+        try store.addOutcomeAndWait(outcome)
+
+        let query = OCKOutcomeQuery(for: queryStart)
+        let fetched = try store.fetchOutcomesAndWait(query: query)
+        XCTAssert(fetched.count == 1)
+    }
+
     func testOutcomeQueryLimit() throws {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
         let task = try store.addTaskAndWait(OCKTask(id: "A", title: "A", carePlanUUID: nil, schedule: schedule))

@@ -31,36 +31,74 @@
 import CoreData
 
 /// An enumerator specifying the type of stores that may be chosen.
-public enum OCKCoreDataStoreType {
+public enum OCKCoreDataStoreType: Equatable {
 
     /// An in memory store runs in RAM. It is fast and is not persisted between app launches.
     /// Its primary use case is for testing.
     case inMemory
 
     /// A store that persists data to disk. This option should be used in almost all cases.
-    case onDisk
+    case onDisk(protection: FileProtectionType = .complete)
 
-    internal var stringValue: String {
+    var stringValue: String {
         switch self {
-        case .inMemory: return NSInMemoryStoreType
-        case .onDisk:   return NSSQLiteStoreType
+        case .inMemory:
+            return NSInMemoryStoreType
+        case .onDisk:
+            return NSSQLiteStoreType
+        }
+    }
+
+    var securityClass: FileProtectionType {
+        switch self {
+        case .inMemory:
+            return .none
+        case let .onDisk(protection):
+            return protection
         }
     }
 }
 
 internal protocol OCKCoreDataStoreProtocol: AnyObject {
     var name: String { get }
+    var securityApplicationGroupIdentifier: String? { get }
     var storeType: OCKCoreDataStoreType { get }
-    var context: NSManagedObjectContext { get }
+    var _context: NSManagedObjectContext? { get set }
+    var _container: NSPersistentContainer? { get set }
     var configuration: OCKStoreConfiguration { get }
 
     func autoSynchronizeIfRequired()
 }
 
+// The managed object model can only be loaded once
+// per app invocation, so we load it here and reuse
+// the shared MoM each time a store is instantiated.
+let sharedManagedObjectModel: NSManagedObjectModel = {
+    #if SWIFT_PACKAGE
+    let bundle = Bundle.module // Use the SPM package's module
+    #else
+    let bundle = Bundle(for: OCKStore.self)
+    #endif
+    let modelUrl = bundle.url(forResource: "CareKitStore", withExtension: "momd")!
+    let mom = NSManagedObjectModel(contentsOf: modelUrl)!
+    return mom
+}()
+
 extension OCKCoreDataStoreProtocol {
 
     var storeDirectory: URL {
-        NSPersistentContainer.defaultDirectoryURL()
+        guard let identifier = securityApplicationGroupIdentifier else {
+            return NSPersistentContainer.defaultDirectoryURL()
+        }
+
+        // A security group allows a sandboxed app to share files across apps and app extensions
+        if let securityGroup = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: identifier) {
+            return securityGroup
+        }
+
+        fatalError(
+            "Could not find a container for the specified app group identifier: \(identifier)"
+        )
     }
 
     var storeURL: URL {
@@ -75,27 +113,75 @@ extension OCKCoreDataStoreProtocol {
         storeDirectory.appendingPathComponent(name + ".sqlite-shm")
     }
 
-    func makePersistentContainer() -> NSPersistentContainer {
+    func context() throws -> NSManagedObjectContext {
+        _context = try _context ?? persistentContainer().newBackgroundContext()
+        return _context!
+    }
+
+    func persistentContainer() throws -> NSPersistentContainer {
+        _container = try _container ?? makePersistentContainer()
+        return _container!
+    }
+
+    func performWithContextAndWait<T>(_ closure: (NSManagedObjectContext) throws -> T) throws -> T {
+
+        let context = try self.context()
+
+        var value: T!
+        var thrownError: Error?
+
+        context.performAndWait {
+            do {
+                value = try closure(context)
+            } catch {
+                thrownError = error
+            }
+        }
+
+        if let error = thrownError {
+            throw error
+        }
+
+        return value
+    }
+
+    private func makePersistentContainer() throws -> NSPersistentContainer {
+        var loadError: Error?
+
         let container = NSPersistentContainer(name: self.name, managedObjectModel: sharedManagedObjectModel)
         let descriptor = NSPersistentStoreDescription()
         descriptor.url = storeURL
         descriptor.type = storeType.stringValue
         descriptor.shouldAddStoreAsynchronously = false
-        descriptor.setOption(FileProtectionType.complete as NSObject, forKey: NSPersistentStoreFileProtectionKey)
+        descriptor.setOption(storeType.securityClass as NSObject, forKey: NSPersistentStoreFileProtectionKey)
         container.persistentStoreDescriptions = [descriptor]
+
+        // This closure runs synchronously because of the settings above
         container.loadPersistentStores(completionHandler: { _, error in
-            if let error = error as NSError? { fatalError("Unresolved error \(error), \(error.userInfo)") }
-            if self.storeType == .onDisk {
+            if let error = error as NSError? {
+                loadError = error
+                return
+            }
+
+            if case .onDisk = self.storeType {
                 do {
-                    guard var storeUrl = descriptor.url else { throw OCKStoreError.invalidValue(reason: "Bad URL") }
+                    guard var storeUrl = descriptor.url else {
+                        loadError = OCKStoreError.invalidValue(reason: "Bad URL")
+                        return
+                    }
                     var resourceValues = URLResourceValues()
                     resourceValues.isExcludedFromBackup = true
                     try storeUrl.setResourceValues(resourceValues)
                 } catch {
-                    fatalError("Failed to setup security for the care store. \(error)")
+                    loadError = error
                 }
             }
         })
+
+        if let error = loadError {
+            throw error
+        }
+
         return container
     }
 
@@ -103,7 +189,7 @@ extension OCKCoreDataStoreProtocol {
         let request = NSFetchRequest<T>(entityName: String(describing: T.self))
         request.fetchLimit = 1
         request.predicate = NSPredicate(format: "%K == %@", #keyPath(OCKCDObject.uuid), uuid as CVarArg)
-        guard let object = try context.fetch(request).first else {
+        guard let object = try context().fetch(request).first else {
             throw OCKStoreError.fetchFailed(reason: "No object \(T.self) for UUID \(uuid)")
         }
         return object
@@ -112,7 +198,7 @@ extension OCKCoreDataStoreProtocol {
     func fetchFromStore<T: OCKCDVersionedObject>(
         _ type: T.Type,
         where predicate: NSPredicate,
-        configureFetchRequest: ((NSFetchRequest<T>) -> Void) = { _ in }) -> [T] {
+        configureFetchRequest: ((NSFetchRequest<T>) -> Void) = { _ in }) throws -> [T] {
 
         let request = NSFetchRequest<T>(entityName: String(describing: T.self))
         request.sortDescriptors = [NSSortDescriptor(keyPath: \OCKCDVersionedObject.effectiveDate, ascending: false)]
@@ -120,25 +206,26 @@ extension OCKCoreDataStoreProtocol {
 
         configureFetchRequest(request)
 
-        guard let results = try? context.fetch(request) else { fatalError("This should never fail") }
+        let results = try context().fetch(request)
+
         return results
     }
 
-    func fetchHeads<T: OCKCDVersionedObject>(_ type: T.Type, ids: [String]) -> [T] {
-        return fetchFromStore(type, where: OCKCDVersionedObject.headerPredicate(for: ids)) { request in
+    func fetchHeads<T: OCKCDVersionedObject>(_ type: T.Type, ids: [String]) throws -> [T] {
+        return try fetchFromStore(type, where: OCKCDVersionedObject.headerPredicate(for: ids)) { request in
             request.fetchLimit = ids.count
             request.returnsObjectsAsFaults = false
         }
     }
 
-    func entityExists<T: OCKCDObject>(_ type: T.Type, uuid: UUID) -> Bool {
+    func entityExists<T: OCKCDObject>(_ type: T.Type, uuid: UUID) throws -> Bool {
         let request = NSFetchRequest<T>(entityName: String(describing: type))
         request.predicate = NSPredicate(format: "%K == %@",
                                         #keyPath(OCKCDObject.uuid),
                                         uuid as CVarArg)
         request.fetchLimit = 1
 
-        return try! context.count(for: request) > 0
+        return try context().count(for: request) > 0
     }
 
     func validateNew<T: OCKCDVersionedObject, U: OCKVersionedObjectCompatible>(_ type: T.Type, _ objects: [U]) throws {
@@ -154,7 +241,7 @@ extension OCKCoreDataStoreProtocol {
                                             #keyPath(OCKCDVersionedObject.uuid), uuids,
                                             #keyPath(OCKCDVersionedObject.deletedDate))
 
-        let existingIDs = fetchFromStore(T.self, where: existingPredicate, configureFetchRequest: { request in
+        let existingIDs = try fetchFromStore(T.self, where: existingPredicate, configureFetchRequest: { request in
             request.propertiesToFetch = [#keyPath(OCKCDVersionedObject.id)]
         }).map { $0.id }
 
@@ -170,31 +257,31 @@ extension OCKCoreDataStoreProtocol {
         }
     }
 
-    func performVersionedUpdate<Value, Object>(values: [Value], addNewVersion: (Value) -> Object) throws -> [Object]
+    func performVersionedUpdate<Value, Object>(values: [Value], addNewVersion: (Value) throws -> Object) throws -> [Object]
         where Value: OCKVersionedObjectCompatible, Object: OCKCDVersionedObject {
 
-        let currentVersions = fetchHeads(Object.self, ids: values.map { $0.id })
+        let currentVersions = try fetchHeads(Object.self, ids: values.map { $0.id })
         return try values.map { value -> Object in
             guard let current = currentVersions.first(where: { $0.id == value.id }) else {
                 throw OCKStoreError.invalidValue(reason: "No matching object could be found for id: \(value.id)")
             }
-            current.logicalClock = Int64(context.clockTime)
-            let newVersion = addNewVersion(value)
+            current.logicalClock = Int64(try context().clockTime)
+            let newVersion = try addNewVersion(value)
             newVersion.previous = current
             newVersion.uuid = UUID()
             return newVersion
         }
     }
 
-    func performDeletion<Value, Object>(values: [Value], addNewVersion: (Value) -> Object) throws -> [Object]
+    func performDeletion<Value, Object>(values: [Value], addNewVersion: (Value) throws -> Object) throws -> [Object]
         where Value: OCKVersionedObjectCompatible, Object: OCKCDVersionedObject {
         let newVersions = try performVersionedUpdate(values: values, addNewVersion: addNewVersion)
         newVersions.forEach { $0.deletedDate = Date() }
         return newVersions
     }
 
-    func tombstone(versionedObject: OCKCDVersionedObject) {
-        versionedObject.next.map(context.delete)
+    func tombstone(versionedObject: OCKCDVersionedObject) throws {
+        versionedObject.next.map(try context().delete)
         versionedObject.previous = nil
         versionedObject.deletedDate = Date()
         versionedObject.updatedDate = Date()
@@ -202,5 +289,44 @@ extension OCKCoreDataStoreProtocol {
 
     func defaultSortDescritors() -> [NSSortDescriptor] {
         [NSSortDescriptor(keyPath: \OCKCDObject.createdDate, ascending: false)]
+    }
+}
+
+extension OCKCoreDataStoreProtocol where Self: OCKAnyResettableStore {
+
+    func deleteAllContents() throws {
+        try performWithContextAndWait { context -> Void in
+            try OCKEntity
+                .EntityType.allCases
+                .map(\.coreDataType)
+                .forEach(deleteAll)
+            try context.save()
+        }
+
+        resetDelegate?.storeDidReset(self)
+    }
+
+    private func deleteAll<T: NSManagedObject>(entity: T.Type) throws {
+        try performWithContextAndWait { context -> Void in
+
+            let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: String(describing: entity))
+            fetchRequest.includesPropertyValues = false
+            fetchRequest.includesSubentities = false
+
+            let objects = try context.fetch(fetchRequest)
+            objects.forEach { context.delete($0) }
+        }
+    }
+}
+
+private extension OCKEntity.EntityType {
+    var coreDataType: NSManagedObject.Type {
+        switch self {
+        case .patient: return OCKCDPatient.self
+        case .carePlan: return OCKCDCarePlan.self
+        case .contact: return OCKCDContact.self
+        case .task: return OCKCDTask.self
+        case .outcome: return OCKCDOutcome.self
+        }
     }
 }

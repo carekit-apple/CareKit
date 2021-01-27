@@ -31,7 +31,7 @@
 import Foundation
 
 /// Any store from which types conforming to `OCKAnyTask` can be queried is considered `OCKAnyReadOnlyTaskStore`.
-public protocol OCKAnyReadOnlyTaskStore: AnyObject {
+public protocol OCKAnyReadOnlyTaskStore: OCKAnyResettableStore {
 
     /// The delegate receives callbacks when the contents of the care plan store are modified.
     /// In `CareKit` apps, the delegate will be set automatically, and it should not be modified.

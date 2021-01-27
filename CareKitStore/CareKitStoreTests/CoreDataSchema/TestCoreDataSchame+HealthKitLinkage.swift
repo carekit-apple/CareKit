@@ -39,35 +39,26 @@ class TestCoreDataSchemaWithHealthKitLinkage: XCTestCase {
         store = OCKStore(name: "test", type: .inMemory)
     }
 
-    func testCanSaveHealthKitLinkage() {
-        let scheduleElement = OCKCDScheduleElement(context: store.context)
+    func testCanSaveHealthKitLinkage() throws {
+        let scheduleElement = OCKCDScheduleElement(context: try store.context())
         scheduleElement.startDate = Date()
         scheduleElement.daysInterval = 1
         scheduleElement.duration = .seconds(42)
 
-        let task1 = OCKCDTask(context: store.context)
+        let task1 = OCKCDTask(context: try store.context())
         task1.id = "task_1"
         task1.uuid = UUID()
         task1.effectiveDate = Date()
         task1.allowsMissingRelationships = true
         task1.scheduleElements = Set([scheduleElement])
 
-        let linkage = OCKCDHealthKitLinkage(context: store.context)
+        let linkage = OCKCDHealthKitLinkage(context: try store.context())
         linkage.quantityIdentifier = "steps"
         linkage.quantityType = "cumulative"
         linkage.unitString = "count"
 
         task1.healthKitLinkage = linkage
 
-        XCTAssertNoThrow(try store.context.save())
-    }
-
-    func testCannotSaveHealthKitLinkageThatIsNotAssociatedWithATask() {
-        let linkage = OCKCDHealthKitLinkage(context: store.context)
-        linkage.quantityIdentifier = "steps"
-        linkage.quantityType = "cumulative"
-        linkage.unitString = "count"
-
-        XCTAssertThrowsError(try store.context.save())
+        XCTAssertNoThrow(try store.context().save())
     }
 }

@@ -314,7 +314,7 @@ extension OCKStore {
 private func performSynchronously<T>(
     _ closure: @escaping (@escaping (Result<T, OCKStoreError>) -> Void) -> Void) throws -> T {
 
-    let timeout: TimeInterval = 30.0
+    let timeout: TimeInterval = 10.0
     let dispatchGroup = DispatchGroup()
     var closureResult: Result<T, OCKStoreError> = .failure(.timedOut(
         reason: "Timed out after \(timeout) seconds."))

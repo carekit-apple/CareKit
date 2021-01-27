@@ -55,6 +55,7 @@ class OCKCDObject: NSManagedObject {
         notes = Set()
         timezoneIdentifier = TimeZone.current.identifier
         logicalClock = Int64(managedObjectContext!.clockTime)
+        schemaVersion = "2.1.0"
     }
 
     func copyValues(from other: OCKObjectCompatible) {

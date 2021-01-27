@@ -30,6 +30,7 @@
 
 import CoreData
 import Foundation
+import os.log
 
 extension NSManagedObjectContext {
 
@@ -111,7 +112,8 @@ extension OCKStore {
         if remote?.automaticallySynchronizes == true {
             pullThenPush { error in
                 if let error = error {
-                    log(.error, "Failed to automatically synchronize.", error: error)
+                    os_log("Failed to automatically synchronize. %{private}@",
+                           log: .store, type: .error, error.localizedDescription)
                 }
             }
         }
@@ -119,160 +121,184 @@ extension OCKStore {
 
     /// Deletes the contents of this store and clones the remotes data in as ground truth.
     private func deleteAndClone(completion: @escaping (Error?) -> Void) {
-        self.context.perform {
-            // 1. Make sure a remote is setup
-            guard let remote = self.remote else {
-                completion(OCKStoreError.remoteSynchronizationFailed(
-                    reason: "No remote setup for OCKStore."))
-                return
+        do {
+            let context = try self.context()
+            context.perform {
+                // 1. Make sure a remote is setup
+                guard let remote = self.remote else {
+                    completion(OCKStoreError.remoteSynchronizationFailed(
+                        reason: "No remote setup for OCKStore."))
+                    return
+                }
+
+                // 2. Make sure a sync is not already in progress
+                guard !self.isSynchronizing else {
+                    completion(OCKStoreError.remoteSynchronizationFailed(
+                        reason: "Sync already in progress!"))
+                    return
+                }
+
+                // 3. Start the sync
+                self.isSynchronizing = true
+
+                // 4. Delete everything in the local store
+                do {
+                    try self.deleteAllContents()
+                    context.knowledgeVector = .init()
+                } catch {
+                    self.isSynchronizing = false
+                    context.rollback()
+                    completion(OCKStoreError.remoteSynchronizationFailed(
+                        reason: "Failed to delete some store contents. \(error.localizedDescription)"))
+                    return
+                }
+
+                // 5. Pull in everything from remote
+                remote.pullRevisions(
+                    since: context.knowledgeVector,
+                    mergeRevision: self.mergeRevision) { error in
+
+                    self.isSynchronizing = false
+                    completion(error)
+                }
             }
-
-            // 2. Make sure a sync is not already in progress
-            guard !self.isSynchronizing else {
-                completion(OCKStoreError.remoteSynchronizationFailed(
-                    reason: "Sync already in progress!"))
-                return
-            }
-
-            // 3. Start the sync
-            self.isSynchronizing = true
-
-            // 4. Delete everything in the local store
-            do {
-                try self.deleteAllContent()
-                self.context.knowledgeVector = .init()
-            } catch {
-                self.isSynchronizing = false
-                self.context.rollback()
-                completion(OCKStoreError.remoteSynchronizationFailed(
-                    reason: "Failed to delete some store contents. \(error.localizedDescription)"))
-                return
-            }
-
-            // 5. Pull in everything from remote
-            remote.pullRevisions(
-                since: self.context.knowledgeVector,
-                mergeRevision: self.mergeRevision) { error in
-
-                self.isSynchronizing = false
-                completion(error)
-            }
+        } catch {
+            completion(error)
         }
     }
 
     /// Pushes the contents of this store to the remote, completely overwriting its present state
     private func forcePush(completion: @escaping (Error?) -> Void) {
-        self.context.perform {
-            // 1. Make sure a remote is setup
-            guard let remote = self.remote else {
-                completion(OCKStoreError.remoteSynchronizationFailed(
-                    reason: "No remote setup for OCKStore."))
-                return
+        do {
+            let context = try self.context()
+            context.perform {
+                // 1. Make sure a remote is setup
+                guard let remote = self.remote else {
+                    completion(OCKStoreError.remoteSynchronizationFailed(
+                        reason: "No remote setup for OCKStore."))
+                    return
+                }
+
+                // 2. Make sure a sync is not already in progress
+                guard !self.isSynchronizing else {
+                    completion(OCKStoreError.remoteSynchronizationFailed(
+                        reason: "Sync already in progress!"))
+                    return
+                }
+
+                // 3. Start synchronizing
+                self.isSynchronizing = true
+
+                do {
+                    // 4. Create a revision capturing the entire store
+                    let revision = try self.computeRevision(since: 0)
+
+                    // 5. Send it to the remote with a force push
+                    remote.pushRevisions(
+                        deviceRevision: revision,
+                        overwriteRemote: true) { error in
+
+                        self.isSynchronizing = false
+                        completion(error)
+                    }
+                } catch {
+                    completion(error)
+                }
             }
-
-            // 2. Make sure a sync is not already in progress
-            guard !self.isSynchronizing else {
-                completion(OCKStoreError.remoteSynchronizationFailed(
-                    reason: "Sync already in progress!"))
-                return
-            }
-
-            // 3. Start synchronizing
-            self.isSynchronizing = true
-
-            // 4. Create a revision capturing the entire store
-            let revision = self.computeRevision(since: 0)
-
-            // 5. Send it to the remote with a force push
-            remote.pushRevisions(
-                deviceRevision: revision,
-                overwriteRemote: true) { error in
-
-                self.isSynchronizing = false
-                completion(error)
-            }
+        } catch {
+            completion(error)
         }
     }
 
     /// Synchronize the contents of this instance of `OCKStore` against another store. Only changes
     /// that have been made since the last successful synchronization will be sent to the remote.
     private func pullThenPush(completion: @escaping (Error?) -> Void) {
-        context.perform {
+        do {
+            let context = try self.context()
+            context.perform {
 
-            // 1. Make sure a remote is setup
-            guard let remote = self.remote else {
-                completion(OCKStoreError.remoteSynchronizationFailed(
-                    reason: "No remote set on OCKStore!"))
-                return
-            }
-
-            // 2. Make sure a sync is not already in progress
-            guard !self.isSynchronizing else {
-                completion(OCKStoreError.remoteSynchronizationFailed(
-                    reason: "Already busy synchronizing!"))
-                return
-            }
-
-            // 3. Start synchronizing
-            self.isSynchronizing = true
-
-            // 4. Pull and merge revisions
-            // The function wraps and augments `mergeRevision(:completion:)`
-            // to ensure the developer calls it serially.
-            var isMerging = false
-            var latestClock = 0
-
-            func performMerge(
-                _ revision: OCKRevisionRecord,
-                _ completion: @escaping(Error?) -> Void) {
-
-                self.context.perform {
-                    assert(!isMerging,
-                           """
-                           Do not call merge in parallel. You must wait until it the first \
-                           merge completes before attempting to call merge a second time.
-                           """)
-
-                    isMerging = true
-                    latestClock = revision.knowledgeVector.clock(for: self.context.clockID)
-
-                    self.mergeRevision(revision, completion: { error in
-                        self.context.perform {
-                            isMerging = false
-                            completion(error)
-                        }
-                    })
+                // 1. Make sure a remote is setup
+                guard let remote = self.remote else {
+                    completion(OCKStoreError.remoteSynchronizationFailed(
+                        reason: "No remote set on OCKStore!"))
+                    return
                 }
-            }
 
-            remote.pullRevisions(
-                since: self.context.knowledgeVector,
-                mergeRevision: performMerge) { error in
+                // 2. Make sure a sync is not already in progress
+                guard !self.isSynchronizing else {
+                    completion(OCKStoreError.remoteSynchronizationFailed(
+                        reason: "Already busy synchronizing!"))
+                    return
+                }
 
-                self.context.perform {
-                    if let error = error {
-                        self.isSynchronizing = false
-                        completion(error)
-                        return
+                // 3. Start synchronizing
+                self.isSynchronizing = true
+
+                // 4. Pull and merge revisions
+                // The function wraps and augments `mergeRevision(:completion:)`
+                // to ensure the developer calls it serially.
+                var isMerging = false
+                var latestClock = 0
+
+                func performMerge(
+                    _ revision: OCKRevisionRecord,
+                    _ completion: @escaping(Error?) -> Void) {
+
+                    context.perform {
+                        assert(!isMerging,
+                               """
+                               Do not call merge in parallel. You must wait until it the first \
+                               merge completes before attempting to call merge a second time.
+                               """)
+
+                        isMerging = true
+                        latestClock = revision.knowledgeVector.clock(for: context.clockID)
+
+                        self.mergeRevision(revision, completion: { error in
+                            context.perform {
+                                isMerging = false
+                                completion(error)
+                            }
+                        })
                     }
-                    // Local revisions will now include the changes
-                    // just ingested. It's important that the server
-                    // merge routine is idempotent to prevent duplication.
-                    let localRevision = self.computeRevision(since: latestClock)
+                }
 
-                    // 5. Push conflict resolutions + local changes to remote
-                    remote.pushRevisions(
-                        deviceRevision: localRevision,
-                        overwriteRemote: false) { error in
+                remote.pullRevisions(
+                    since: context.knowledgeVector,
+                    mergeRevision: performMerge) { error in
 
-                        self.context.perform {
+                    context.perform {
+                        if let error = error {
                             self.isSynchronizing = false
                             completion(error)
                             return
                         }
+
+                        do {
+                            // Local revisions will now include the changes
+                            // just ingested. It's important that the server
+                            // merge routine is idempotent to prevent duplication.
+                            let localRevision = try self.computeRevision(since: latestClock)
+
+                            // 5. Push conflict resolutions + local changes to remote
+                            remote.pushRevisions(
+                                deviceRevision: localRevision,
+                                overwriteRemote: false) { error in
+
+                                context.perform {
+                                    self.isSynchronizing = false
+                                    completion(error)
+                                    return
+                                }
+                            }
+                        } catch {
+                            completion(error)
+                        }
                     }
                 }
             }
+        } catch {
+            completion(error)
         }
     }
 
@@ -284,28 +310,37 @@ extension OCKStore {
     /// There are also cases where we performed unversioned updates to versioned objects that violate
     /// the append only nature of the store. In those cases, the `updatedDate` reflects when these
     /// changes were made and can be used to include the entity in revisions.
-    func computeRevision(since clock: Int) -> OCKRevisionRecord {
+    func computeRevision(since clock: Int) throws -> OCKRevisionRecord {
 
         var localRevisions = [OCKEntity]()
+        var fetchError: Error?
 
-        context.performAndWait {
-            changedQuery(OCKCDPatient.self, since: clock).forEach { patient in
-                localRevisions.append(.patient(makePatient(from: patient)))
-            }
-            changedQuery(OCKCDCarePlan.self, since: clock).forEach { carePlan in
-                localRevisions.append(.carePlan(makePlan(from: carePlan)))
-            }
-            changedQuery(OCKCDContact.self, since: clock).forEach { contact in
-                localRevisions.append(.contact(makeContact(from: contact)))
-            }
-            changedQuery(OCKCDTask.self, since: clock).forEach { task in
-                localRevisions.append(.task(makeTask(from: task)))
-            }
-            changedQuery(OCKCDOutcome.self, since: clock).forEach { outcome in
-                localRevisions.append(.outcome(self.makeOutcome(from: outcome)))
+        try context().performAndWait {
+            do {
+                try changedQuery(OCKCDPatient.self, since: clock).forEach { patient in
+                    localRevisions.append(.patient(makePatient(from: patient)))
+                }
+                try changedQuery(OCKCDCarePlan.self, since: clock).forEach { carePlan in
+                    localRevisions.append(.carePlan(makePlan(from: carePlan)))
+                }
+                try changedQuery(OCKCDContact.self, since: clock).forEach { contact in
+                    localRevisions.append(.contact(makeContact(from: contact)))
+                }
+                try changedQuery(OCKCDTask.self, since: clock).forEach { task in
+                    localRevisions.append(.task(makeTask(from: task)))
+                }
+                try changedQuery(OCKCDOutcome.self, since: clock).forEach { outcome in
+                    localRevisions.append(.outcome(self.makeOutcome(from: outcome)))
+                }
+            } catch {
+                fetchError = error
             }
         }
 
+        if let error = fetchError {
+            throw error
+        }
+        
         // We need to sort the revision so that conflict resolutions are applied
         // before updates from this device's store. conflict resolutions result
         // in the creation of tombstones, we need to shuffle them to the front.
@@ -316,35 +351,41 @@ extension OCKStore {
 
         let record = OCKRevisionRecord(
             entities: sortedRevisions,
-            knowledgeVector: context.knowledgeVector)
+            knowledgeVector: try context().knowledgeVector)
 
         return record
     }
 
     /// Attempts to resolve the changes from a remote store.
-    /// Commits the transaction if successful, rollsback otherwise.
+    /// Commits the transaction if successful, rolls back otherwise.
     func mergeRevision(
         _ revision: OCKRevisionRecord,
         completion: @escaping (Error?) -> Void) {
 
-        context.perform {
-            self.recursiveMerge(revision: revision) { error in
-                do {
-                    if let error = error {
-                        throw error
+        do {
+            let context = try self.context()
+
+            context.perform {
+                self.recursiveMerge(revision: revision) { error in
+                    do {
+                        if let error = error {
+                            throw error
+                        }
+
+                        context.knowledgeVector.merge(with: revision.knowledgeVector)
+                        context.knowledgeVector.increment(clockFor: context.clockID)
+
+                        try context.save()
+                        completion(nil)
+
+                    } catch {
+                        context.rollback()
+                        completion(error)
                     }
-
-                    self.context.knowledgeVector.merge(with: revision.knowledgeVector)
-                    self.context.knowledgeVector.increment(clockFor: self.context.clockID)
-
-                    try self.context.save()
-                    completion(nil)
-
-                } catch {
-                    self.context.rollback()
-                    completion(error)
                 }
             }
+        } catch {
+            completion(error)
         }
     }
 
@@ -410,7 +451,7 @@ extension OCKStore {
     ///
     /// Fetches objects that have been created or modified since the given date. These are the objects that need
     /// to be pushed to the server as part of a sync operation.
-    private func changedQuery<T: OCKCDObject>(_ type: T.Type, since clock: Int) -> [T] {
+    private func changedQuery<T: OCKCDObject>(_ type: T.Type, since clock: Int) throws -> [T] {
         let request = NSFetchRequest<T>(entityName: String(describing: type))
 
         request.predicate = NSPredicate(
@@ -420,7 +461,7 @@ extension OCKStore {
             NSSortDescriptor(keyPath: \OCKCDObject.updatedDate, ascending: false)
         ]
 
-        let results = try! context.fetch(request)
+        let results = try context().fetch(request)
         return results
     }
 
@@ -432,7 +473,7 @@ extension OCKStore {
         do {
             // If the patient exists on disk already, it means that another device
             // ruled to overwrite this value as part of a conflict resolution.
-            if entityExists(OCKCDPatient.self, uuid: patient.uuid!) {
+            if try entityExists(OCKCDPatient.self, uuid: patient.uuid!) {
                 completion(nil)
                 return
             }
@@ -444,7 +485,7 @@ extension OCKStore {
             // Make sure there are no conflicts locally. If the device's knowledge
             // vector is strictly less than the remotes, we can guarantee there is no
             // conflict. Otherwise we need to check.
-            let localPatientRevisions = computeRevision(since: vector.clock(for: self.context.clockID))
+            let localPatientRevisions = try computeRevision(since: vector.clock(for: self.context().clockID))
                 .entities
                 .compactMap { $0.value as? OCKPatient }
 
@@ -473,7 +514,7 @@ extension OCKStore {
                             // version to the new version from the remote.
                             if let previousUUD = patient.previousVersionUUID {
                                 let previous: OCKCDPatient = try self.fetchObject(uuid: previousUUD)
-                                previous.next.map(self.context.delete)
+                                previous.next.map(try self.context().delete)
 
                                 let updated = try self.updatePatientsWithoutCommitting([patient], copyUUIDs: true)
                                 self.patientDelegate?.patientStore(self, didUpdatePatients: updated)
@@ -485,7 +526,7 @@ extension OCKStore {
                             // A new patient with the same id was created on both the server
                             // and the local device. Delete the local one and keep the remote.
                             let localPatient: OCKCDPatient = try self.fetchObject(uuid: local.uuid!)
-                            self.context.delete(localPatient)
+                            try self.context().delete(localPatient)
                             let added = try self.createPatientsWithoutCommitting([patient])
                             self.patientDelegate?.patientStore(self, didAddPatients: added)
                             completion(nil)
@@ -515,7 +556,7 @@ extension OCKStore {
             // one node processes a conflict resolution performed on a different node.
             } else {
                 let current: OCKCDPatient = try self.fetchObject(uuid: patient.previousVersionUUID!)
-                current.next.map(self.context.delete)
+                current.next.map(try self.context().delete)
                 let updated = try updatePatientsWithoutCommitting([patient], copyUUIDs: true)
                 for update in updated {
                     update.deletedDate == nil ?
@@ -539,7 +580,7 @@ extension OCKStore {
         do {
             // If the carePlan exists on disk already, it means that another device
             // ruled to overwrite this value as part of a conflict resolution.
-            if entityExists(OCKCDCarePlan.self, uuid: carePlan.uuid!) {
+            if try entityExists(OCKCDCarePlan.self, uuid: carePlan.uuid!) {
                 completion(nil)
                 return
             }
@@ -551,7 +592,7 @@ extension OCKStore {
             // Make sure there are no conflicts locally. If the device's knowledge
             // vector is strictly less than the remotes, we can guarantee there is no
             // conflict. Otherwise we need to check.
-            let localCarePlanRevisions = computeRevision(since: vector.clock(for: self.context.clockID))
+            let localCarePlanRevisions = try computeRevision(since: vector.clock(for: try context().clockID))
                 .entities
                 .compactMap { $0.value as? OCKCarePlan }
 
@@ -580,7 +621,7 @@ extension OCKStore {
                             // version to the new version from the remote.
                             if let previousUUD = carePlan.previousVersionUUID {
                                 let previous: OCKCDCarePlan = try self.fetchObject(uuid: previousUUD)
-                                previous.next.map(self.context.delete)
+                                previous.next.map(try self.context().delete)
 
                                 let updated = try self.updateCarePlansWithoutCommitting([carePlan], copyUUIDs: true)
                                 self.carePlanDelegate?.carePlanStore(self, didUpdateCarePlans: updated)
@@ -592,7 +633,7 @@ extension OCKStore {
                             // A new carePlan with the same id was created on both the server
                             // and the local device. Delete the local one and keep the remote.
                             let localCarePlan: OCKCDCarePlan = try self.fetchObject(uuid: local.uuid!)
-                            self.context.delete(localCarePlan)
+                            try self.context().delete(localCarePlan)
                             let added = try self.createCarePlansWithoutCommitting([carePlan])
                             self.carePlanDelegate?.carePlanStore(self, didAddCarePlans: added)
                             completion(nil)
@@ -622,7 +663,7 @@ extension OCKStore {
             // one node processes a conflict resolution performed on a different node.
             } else {
                 let current: OCKCDCarePlan = try self.fetchObject(uuid: carePlan.previousVersionUUID!)
-                current.next.map(self.context.delete)
+                current.next.map(try self.context().delete)
                 let updated = try updateCarePlansWithoutCommitting([carePlan], copyUUIDs: true)
                 for update in updated {
                     update.deletedDate == nil ?
@@ -646,7 +687,7 @@ extension OCKStore {
         do {
             // If the contact exists on disk already, it means that another device
             // ruled to overwrite this value as part of a conflict resolution.
-            if entityExists(OCKCDContact.self, uuid: contact.uuid!) {
+            if try entityExists(OCKCDContact.self, uuid: contact.uuid!) {
                 completion(nil)
                 return
             }
@@ -658,7 +699,7 @@ extension OCKStore {
             // Make sure there are no conflicts locally. If the device's knowledge
             // vector is strictly less than the remotes, we can guarantee there is no
             // conflict. Otherwise we need to check.
-            let localContactRevisions = computeRevision(since: vector.clock(for: self.context.clockID))
+            let localContactRevisions = try computeRevision(since: vector.clock(for: try context().clockID))
                 .entities
                 .compactMap { $0.value as? OCKContact }
 
@@ -687,7 +728,7 @@ extension OCKStore {
                             // version to the new version from the remote.
                             if let previousUUD = contact.previousVersionUUID {
                                 let previous: OCKCDContact = try self.fetchObject(uuid: previousUUD)
-                                previous.next.map(self.context.delete)
+                                previous.next.map(try self.context().delete)
 
                                 let updated = try self.updateContactsWithoutCommitting([contact], copyUUIDs: true)
                                 self.contactDelegate?.contactStore(self, didUpdateContacts: updated)
@@ -699,8 +740,8 @@ extension OCKStore {
                             // A new contact with the same id was created on both the server
                             // and the local device. Delete the local one and keep the remote.
                             let localContact: OCKCDContact = try self.fetchObject(uuid: local.uuid!)
-                            self.context.delete(localContact.name)
-                            self.context.delete(localContact)
+                            try self.context().delete(localContact.name)
+                            try self.context().delete(localContact)
                             let added = try self.createContactsWithoutCommitting([contact])
                             self.contactDelegate?.contactStore(self, didAddContacts: added)
                             completion(nil)
@@ -730,8 +771,8 @@ extension OCKStore {
             // one node processes a conflict resolution performed on a different node.
             } else {
                 let current: OCKCDContact = try self.fetchObject(uuid: contact.previousVersionUUID!)
-                current.next.map { self.context.delete(($0 as! OCKCDContact).name) }
-                current.next.map(self.context.delete)
+                try current.next.map { try self.context().delete(($0 as! OCKCDContact).name) }
+                current.next.map(try self.context().delete)
                 let updated = try updateContactsWithoutCommitting([contact], copyUUIDs: true)
                 for update in updated {
                     update.deletedDate == nil ?
@@ -753,9 +794,11 @@ extension OCKStore {
         vector: OCKRevisionRecord.KnowledgeVector,
         completion: @escaping (Error?) -> Void) {
         do {
+
+            let context = try self.context()
             // If the task exists on disk already, it means that another device
             // ruled to overwrite this value as part of a conflict resolution.
-            if entityExists(OCKCDTask.self, uuid: task.uuid!) {
+            if try entityExists(OCKCDTask.self, uuid: task.uuid!) {
                 completion(nil)
                 return
             }
@@ -767,7 +810,7 @@ extension OCKStore {
             // Make sure there are no conflicts locally. If the device's knowledge
             // vector is strictly less than the remotes, we can guarantee there is no
             // conflict. Otherwise we need to check.
-            let localTaskRevisions = computeRevision(since: vector.clock(for: self.context.clockID))
+            let localTaskRevisions = try computeRevision(since: vector.clock(for: context.clockID))
                 .entities
                 .compactMap { $0.value as? OCKTask }
 
@@ -796,7 +839,7 @@ extension OCKStore {
                             // version to the new version from the remote.
                             if let previousUUD = task.previousVersionUUID {
                                 let previous: OCKCDTask = try self.fetchObject(uuid: previousUUD)
-                                previous.next.map(self.context.delete)
+                                previous.next.map(try self.context().delete)
 
                                 let updated = try self.updateTasksWithoutCommitting([task], copyUUIDs: true)
                                 self.taskDelegate?.taskStore(self, didUpdateTasks: updated)
@@ -808,7 +851,7 @@ extension OCKStore {
                             // A new task with the same id was created on both the server
                             // and the local device. Delete the local one and keep the remote.
                             let localTask: OCKCDTask = try self.fetchObject(uuid: local.uuid!)
-                            self.context.delete(localTask)
+                            try self.context().delete(localTask)
                             let added = try self.createTasksWithoutCommitting([task])
                             self.taskDelegate?.taskStore(self, didAddTasks: added)
                             completion(nil)
@@ -838,7 +881,7 @@ extension OCKStore {
             // one node processes a conflict resolution performed on a different node.
             } else {
                 let current: OCKCDTask = try self.fetchObject(uuid: task.previousVersionUUID!)
-                current.next.map(self.context.delete)
+                current.next.map(try self.context().delete)
                 let updated = try updateTasksWithoutCommitting([task], copyUUIDs: true)
                 for update in updated {
                     update.deletedDate == nil ?
@@ -860,16 +903,19 @@ extension OCKStore {
         vector: OCKRevisionRecord.KnowledgeVector,
         completion: @escaping(Error?) -> Void) {
         do {
+
+            let context = try self.context()
+
             // If the outcome exists on disk already, it means that another device
             // ruled to overwrite this value as part of a conflict resolution.
-            if entityExists(OCKCDOutcome.self, uuid: outcome.uuid!) {
+            if try entityExists(OCKCDOutcome.self, uuid: outcome.uuid!) {
                 completion(nil)
                 return
             }
 
             // Check if there are any local changes since the last sync
             // that conflict with the revision from the server.
-            let localRevision = computeRevision(since: vector.clock(for: self.context.clockID))
+            let localRevision = try computeRevision(since: vector.clock(for: context.clockID))
                 .entities
                 .compactMap { $0.value as? OCKOutcome }
 
@@ -881,7 +927,7 @@ extension OCKStore {
                         remoteVersion: outcome))
 
                 remote!.chooseConflictResolutionPolicy(conflict) { strategy in
-                    self.context.perform {
+                    context.perform {
                         switch strategy {
                         case .abortMerge:
                             completion(OCKStoreError.remoteSynchronizationFailed(
@@ -889,13 +935,12 @@ extension OCKStore {
 
                         case .keepRemote:
                             // We need to delete the local version and add the new remote version.
-                            // It's fine to just delete the local version becaues it will never
+                            // It's fine to just delete the local version because it will never
                             // need to be synchronized. (Assuming there is only one remote endpoint!)
-                            self.fetchMatchingOutcomes([outcome]).forEach { object in
-                                self.context.delete(object)
-                            }
-
                             do {
+                                try self.fetchMatchingOutcomes([outcome]).forEach { object in
+                                    context.delete(object)
+                                }
                                 let updated = try self.createOutcomesWithoutCommitting([outcome])
                                 self.outcomeDelegate?.outcomeStore(self, didUpdateOutcomes: updated)
                                 completion(nil)
@@ -917,9 +962,9 @@ extension OCKStore {
             // It's possible this outcome is for a version of a task that
             // was overwritten when resolving a merge conflict, so we may
             // not need to do anything.
-            if entityExists(OCKCDTask.self, uuid: outcome.taskUUID) {
+            if try entityExists(OCKCDTask.self, uuid: outcome.taskUUID) {
 
-                let existing = fetchMatchingOutcomes([outcome])
+                let existing = try fetchMatchingOutcomes([outcome])
                 existing.forEach { $0.deletedDate = outcome.createdDate! }
 
                 let updated = existing.map(makeOutcome)

@@ -116,16 +116,16 @@ class TestOutcomeValue: XCTestCase {
             testEqualityOfEncodings(outcome1: value1, outcome2: value2)
         }
     }
-    
+
     func testProperDecodingWhenMissingValues() throws {
         let valueToDecode = "{\"value\": 10,\"timezone\": {\"identifier\": \"America/New_York\"},\"type\": \"\(OCKOutcomeValueType.integer.rawValue)\"}"
 
         guard let data = valueToDecode.data(using: .utf8) else {
             throw OCKStoreError.invalidValue(reason: "Error: Couldn't get data as utf8")
         }
-        
+
         let decoded = try JSONDecoder().decode(OCKOutcomeValue.self, from: data)
-        
+
         XCTAssertNil(decoded.asset)
         XCTAssertNil(decoded.notes)
         XCTAssertEqual(decoded.timezone, TimeZone(identifier: "America/New_York"))
@@ -135,17 +135,17 @@ class TestOutcomeValue: XCTestCase {
             XCTFail("Should have underlying value")
         }
     }
-    
+
     func testCodingAllEntries() throws {
         var value = OCKOutcomeValue(10)
         let valueNote = OCKNote(author: "myId", title: "hello", content: "world")
-        
-        //Value
+
+        // Value
         value.index = 0
         value.kind = "whale"
         value.units = "m/s"
-        
-        //OCKObjectCompatible
+
+        // OCKObjectCompatible
         value.uuid = UUID()
         value.createdDate = Date().addingTimeInterval(-200)
         value.updatedDate = Date().addingTimeInterval(-99)
@@ -158,7 +158,7 @@ class TestOutcomeValue: XCTestCase {
         value.source = "yo"
         value.asset = "pic"
         value.notes = [valueNote]
-        
+
         let encoded = try JSONEncoder().encode(value)
         let decoded = try JSONDecoder().decode(OCKOutcomeValue.self, from: encoded)
 
@@ -171,7 +171,7 @@ class TestOutcomeValue: XCTestCase {
         } else {
             XCTFail("Should have underlying value")
         }
-        
+
         XCTAssertEqual(decoded.uuid, value.uuid)
         XCTAssertEqual(decoded.createdDate, value.createdDate)
         XCTAssertEqual(decoded.updatedDate, value.updatedDate)

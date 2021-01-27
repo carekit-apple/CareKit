@@ -66,22 +66,22 @@ public struct OCKRevisionRecord: Equatable, Codable {
     /// require resolution.
     public struct KnowledgeVector: Codable, Equatable, Comparable {
 
-        private(set) var processes: [UUID: Int]
-
-        // Test seam
-        init(_ processes: [UUID: Int]) {
-            self.processes = processes
-        }
+        public var processes: [UUID: Int]
 
         /// Create a new `KnowledgeVector` in which only the entry for the current
         /// process is non-zero.
-        public init() {
-            processes = [:]
+        public init(_ processes: [UUID: Int] = [:]) {
+            self.processes = processes
         }
 
         /// Returns the clock value for the current process.
         public func clock(for uuid: UUID) -> Int {
             processes[uuid] ?? 0
+        }
+
+        /// Returns all of the UUIDs registered in this vector.
+        public var uuids: [UUID] {
+            Array(processes.keys)
         }
 
         /// Increment the vector entry for the current process.

@@ -36,29 +36,37 @@ class OCKHealthKitTaskStore: OCKCoreDataTaskStoreProtocol {
     typealias TaskQuery = OCKTaskQuery
 
     let name: String
+    let securityApplicationGroupIdentifier: String?
     let storeType: OCKCoreDataStoreType
     var configuration = OCKStoreConfiguration()
     var allowsEntitiesWithMissingRelationships = true
 
     weak var taskDelegate: OCKTaskStoreDelegate?
+    weak var resetDelegate: OCKResetDelegate?
 
     /// Initialize a new store by specifying its name and store type. Store's with conflicting names and types must not be created.
     ///
     /// - Parameters:
     ///   - name: A unique name for the store. It will be used for the filename if stored on disk.
-    ///   - type: The type of store to be used.
-    init(name: String, type: OCKCoreDataStoreType = .onDisk) {
+    ///   - securityApplicationGroupIdentifier: App group identifier for a sandboxed app that shares files with other apps
+    ///                                         from the same developer. See [Adding an App To an App Group](1).
+    ///   - type: The type of store to be used. `.onDisk` is used by default.
+    ///   - synchronizer: A store synchronization endpoint.
+    ///
+    /// [1]: https://developer.apple.com/library/archive/documentation/Miscellaneous/Reference/EntitlementKeyReference/Chapters/EnablingAppSandbox.html#//apple_ref/doc/uid/TP40011195-CH4-SW19
+    init(
+        name: String,
+        securityApplicationGroupIdentifier: String? = nil,
+        type: OCKCoreDataStoreType = .onDisk()
+    ) {
         self.storeType = type
         self.name = name
+        self.securityApplicationGroupIdentifier = securityApplicationGroupIdentifier
     }
 
-    lazy var context: NSManagedObjectContext = {
-        return self.persistentContainer.newBackgroundContext()
-    }()
-
-    lazy var persistentContainer: NSPersistentContainer = {
-        makePersistentContainer()
-    }()
+    func reset() throws {
+        try deleteAllContents()
+    }
 
     func makeTask(from task: OCKCDTask) -> OCKHealthKitTask {
         assert(task.healthKitLinkage != nil, "Programmer error. Only tasks with non-nil HealthKit linkages should be considered HealthKitTasks.")
@@ -69,30 +77,30 @@ class OCKHealthKitTaskStore: OCKCoreDataTaskStoreProtocol {
         return copyTaskValues(from: task, to: healthKitTask)
     }
 
+    var _container: NSPersistentContainer?
+    var _context: NSManagedObjectContext?
+
     func autoSynchronizeIfRequired() {
         // Intentionally empty implementation.
     }
 
     // MARK: Internal Synchronous Methods
 
-    internal func fetchTask(for outcome: OCKOutcome) -> OCKHealthKitTask? {
-        var task: OCKHealthKitTask?
-        context.performAndWait {
-            if let persistedTask: OCKCDTask = try? fetchObject(uuid: outcome.taskUUID) {
-                task = self.makeTask(from: persistedTask)
-            }
+    internal func fetchTask(for outcome: OCKOutcome) throws -> OCKHealthKitTask {
+        try performWithContextAndWait { _ in
+            let persistedTask: OCKCDTask = try fetchObject(uuid: outcome.taskUUID)
+            let task = makeTask(from: persistedTask)
+            return task
         }
-        return task
     }
 
     internal func fetchTasks(query: OCKTaskQuery) throws -> [OCKHealthKitTask] {
-        let predicate = try buildPredicate(for: query)
-        var tasks = [OCKHealthKitTask]()
-        context.performAndWait {
-            let persistedTasks = self.fetchFromStore(OCKCDTask.self, where: predicate)
-            tasks = persistedTasks.map(self.makeTask)
+        try performWithContextAndWait { _ in
+            let predicate = try buildPredicate(for: query)
+            let persistedTasks = try self.fetchFromStore(OCKCDTask.self, where: predicate)
+            let tasks = persistedTasks.map(self.makeTask)
+            return tasks
         }
-        return tasks
     }
 }
 #endif

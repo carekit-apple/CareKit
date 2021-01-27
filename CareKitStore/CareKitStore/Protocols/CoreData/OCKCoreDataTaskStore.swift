@@ -61,91 +61,119 @@ protocol OCKCoreDataTaskStoreProtocol: OCKCoreDataStoreProtocol, OCKTaskStore wh
 extension OCKCoreDataTaskStoreProtocol {
     public func fetchTasks(query: OCKTaskQuery = OCKTaskQuery(), callbackQueue: DispatchQueue = .main,
                            completion: @escaping (Result<[Task], OCKStoreError>) -> Void) {
-        context.perform {
-            do {
-                let predicate = try self.buildPredicate(for: query)
-                let tasks = self.fetchFromStore(OCKCDTask.self, where: predicate) { fetchRequest in
-                    fetchRequest.fetchLimit = query.limit ?? 0
-                    fetchRequest.fetchOffset = query.offset
-                    fetchRequest.sortDescriptors = self.buildSortDescriptors(for: query)
-                }
-                .map(self.makeTask)
-                .filtered(against: query)
+        do {
+            let context = try self.context()
+            context.perform {
+                do {
+                    let predicate = try self.buildPredicate(for: query)
+                    let tasks = try self.fetchFromStore(OCKCDTask.self, where: predicate) { fetchRequest in
+                        fetchRequest.fetchLimit = query.limit ?? 0
+                        fetchRequest.fetchOffset = query.offset
+                        fetchRequest.sortDescriptors = self.buildSortDescriptors(for: query)
+                    }
+                    .map(self.makeTask)
+                    .filtered(dateInterval: query.dateInterval, excludeTasksWithNoEvents: query.excludesTasksWithNoEvents)
 
-                callbackQueue.async {
-                    completion(.success(tasks))
+                    callbackQueue.async {
+                        completion(.success(tasks))
+                    }
+                } catch {
+                    context.rollback()
+                    callbackQueue.async {
+                        let message = "Failed to fetch tasks for the given query."
+                        completion(.failure(.fetchFailed(reason: message + error.localizedDescription)))
+                    }
                 }
-            } catch {
-                self.context.rollback()
-                callbackQueue.async {
-                    let message = "Failed to fetch tasks for the given query."
-                    completion(.failure(.fetchFailed(reason: message + error.localizedDescription)))
-                }
+            }
+        } catch {
+            callbackQueue.async {
+                completion(.failure(.fetchFailed(reason: error.localizedDescription)))
             }
         }
     }
 
     public func addTasks(_ tasks: [Task], callbackQueue: DispatchQueue = .main,
                          completion: ((Result<[Task], OCKStoreError>) -> Void)? = nil) {
-        context.perform {
-            do {
-                let addedTasks = try self.createTasksWithoutCommitting(tasks)
-                try self.context.save()
-                callbackQueue.async {
-                    self.taskDelegate?.taskStore(self, didAddTasks: addedTasks)
-                    self.autoSynchronizeIfRequired()
-                    completion?(.success(addedTasks))
+        do {
+            let context = try self.context()
+            context.perform {
+                do {
+                    let addedTasks = try self.createTasksWithoutCommitting(tasks)
+                    try context.save()
+                    callbackQueue.async {
+                        self.taskDelegate?.taskStore(self, didAddTasks: addedTasks)
+                        self.autoSynchronizeIfRequired()
+                        completion?(.success(addedTasks))
+                    }
+                } catch {
+                    context.rollback()
+                    callbackQueue.async {
+                        completion?(.failure(.addFailed(reason: "Failed to add OCKTasks. \(error.localizedDescription)")))
+                    }
                 }
-            } catch {
-                self.context.rollback()
-                callbackQueue.async {
-                    completion?(.failure(.addFailed(reason: "Failed to add OCKTasks. \(error.localizedDescription)")))
-                }
+            }
+        } catch {
+            callbackQueue.async {
+                completion?(.failure(.addFailed(reason: error.localizedDescription)))
             }
         }
     }
 
     public func updateTasks(_ tasks: [Task], callbackQueue: DispatchQueue = .main,
                             completion: ((Result<[Task], OCKStoreError>) -> Void)? = nil) {
-        context.perform {
-            do {
-                let updated = try self.updateTasksWithoutCommitting(tasks, copyUUIDs: false)
-                try self.context.save()
-                callbackQueue.async {
-                    self.taskDelegate?.taskStore(self, didUpdateTasks: updated)
-                    self.autoSynchronizeIfRequired()
-                    completion?(.success(updated))
+        do {
+            let context = try self.context()
+            context.perform {
+                do {
+                    let updated = try self.updateTasksWithoutCommitting(tasks, copyUUIDs: false)
+                    try context.save()
+                    callbackQueue.async {
+                        self.taskDelegate?.taskStore(self, didUpdateTasks: updated)
+                        self.autoSynchronizeIfRequired()
+                        completion?(.success(updated))
+                    }
+                } catch {
+                    context.rollback()
+                    callbackQueue.async {
+                        completion?(.failure(.updateFailed(reason: "\(error.localizedDescription)")))
+                    }
                 }
-            } catch {
-                self.context.rollback()
-                callbackQueue.async {
-                    completion?(.failure(.updateFailed(reason: "\(error.localizedDescription)")))
-                }
+            }
+        } catch {
+            callbackQueue.async {
+                completion?(.failure(.updateFailed(reason: error.localizedDescription)))
             }
         }
     }
 
     public func deleteTasks(_ tasks: [Task], callbackQueue: DispatchQueue = .main,
                             completion: ((Result<[Task], OCKStoreError>) -> Void)? = nil) {
-        context.perform {
-            do {
-                try self.validateUpdateIdentifiers(tasks.map { $0.id })
-                let markedTasks: [OCKCDTask] = try self.performDeletion(
-                    values: tasks,
-                    addNewVersion: self.createTask)
+        do {
+            let context = try self.context()
+            context.perform {
+                do {
+                    try self.validateUpdateIdentifiers(tasks.map { $0.id })
+                    let markedTasks: [OCKCDTask] = try self.performDeletion(
+                        values: tasks,
+                        addNewVersion: self.createTask)
 
-                try self.context.save()
-                let deletedTasks = markedTasks.map(self.makeTask)
-                callbackQueue.async {
-                    self.taskDelegate?.taskStore(self, didDeleteTasks: deletedTasks)
-                    self.autoSynchronizeIfRequired()
-                    completion?(.success(deletedTasks))
+                    try context.save()
+                    let deletedTasks = markedTasks.map(self.makeTask)
+                    callbackQueue.async {
+                        self.taskDelegate?.taskStore(self, didDeleteTasks: deletedTasks)
+                        self.autoSynchronizeIfRequired()
+                        completion?(.success(deletedTasks))
+                    }
+                } catch {
+                    context.rollback()
+                    callbackQueue.async {
+                        completion?(.failure(.deleteFailed(reason: "Failed to delete OCKTasks. \(error.localizedDescription)")))
+                    }
                 }
-            } catch {
-                self.context.rollback()
-                callbackQueue.async {
-                    completion?(.failure(.deleteFailed(reason: "Failed to delete OCKTasks. \(error.localizedDescription)")))
-                }
+            }
+        } catch {
+            callbackQueue.async {
+                completion?(.failure(.deleteFailed(reason: error.localizedDescription)))
             }
         }
     }
@@ -153,35 +181,42 @@ extension OCKCoreDataTaskStoreProtocol {
     public func addUpdateOrDeleteTasks(addOrUpdate tasks: [Task], delete deleteTasks: [Task],
                                        callbackQueue: DispatchQueue = .main,
                                        completion: ((Result<([Task], [Task], [Task]), OCKStoreError>) -> Void)? = nil) {
-        context.perform {
-            do {
-                let existingTaskIDs = self.fetchHeads(OCKCDTask.self, ids: tasks.map { $0.id }).map { $0.id }
-                let addTasks = tasks.filter { !existingTaskIDs.contains($0.id) }
-                let updateTasks = tasks.filter { existingTaskIDs.contains($0.id) }
-                try self.confirmUpdateWillNotCauseDataLoss(tasks: updateTasks)
+        do {
+            let context = try self.context()
+            context.perform {
+                do {
+                    let existingTaskIDs = try self.fetchHeads(OCKCDTask.self, ids: tasks.map { $0.id }).map { $0.id }
+                    let addTasks = tasks.filter { !existingTaskIDs.contains($0.id) }
+                    let updateTasks = tasks.filter { existingTaskIDs.contains($0.id) }
+                    try self.confirmUpdateWillNotCauseDataLoss(tasks: updateTasks)
 
-                let inserted = addTasks.map(self.createTask)
-                let updated = try self.performVersionedUpdate(values: updateTasks, addNewVersion: self.createTask)
-                let deleted: [OCKCDTask] = try self.performDeletion(values: deleteTasks, addNewVersion: self.createTask)
+                    let inserted = try addTasks.map(self.createTask)
+                    let updated = try self.performVersionedUpdate(values: updateTasks, addNewVersion: self.createTask)
+                    let deleted: [OCKCDTask] = try self.performDeletion(values: deleteTasks, addNewVersion: self.createTask)
 
-                try self.context.save()
+                    try context.save()
 
-                let addedTasks = inserted.map(self.makeTask)
-                let updatedTasks = updated.map(self.makeTask)
-                let deletedTasks = deleted.map(self.makeTask)
+                    let addedTasks = inserted.map(self.makeTask)
+                    let updatedTasks = updated.map(self.makeTask)
+                    let deletedTasks = deleted.map(self.makeTask)
 
-                callbackQueue.async {
-                    self.taskDelegate?.taskStore(self, didAddTasks: addedTasks)
-                    self.taskDelegate?.taskStore(self, didUpdateTasks: updatedTasks)
-                    self.taskDelegate?.taskStore(self, didDeleteTasks: deleteTasks)
-                    completion?(.success((addedTasks, updateTasks, deletedTasks)))
+                    callbackQueue.async {
+                        self.taskDelegate?.taskStore(self, didAddTasks: addedTasks)
+                        self.taskDelegate?.taskStore(self, didUpdateTasks: updatedTasks)
+                        self.taskDelegate?.taskStore(self, didDeleteTasks: deleteTasks)
+                        completion?(.success((addedTasks, updateTasks, deletedTasks)))
+                    }
+
+                } catch {
+                    context.rollback()
+                    callbackQueue.async {
+                        completion?(.failure(.updateFailed(reason: "\(error.localizedDescription)")))
+                    }
                 }
-
-            } catch {
-                self.context.rollback()
-                callbackQueue.async {
-                    completion?(.failure(.updateFailed(reason: "\(error.localizedDescription)")))
-                }
+            }
+        } catch {
+            callbackQueue.async {
+                completion?(.failure(.updateFailed(reason: error.localizedDescription)))
             }
         }
     }
@@ -192,7 +227,7 @@ extension OCKCoreDataTaskStoreProtocol {
 
     func createTasksWithoutCommitting(_ tasks: [Task]) throws -> [Task] {
         try self.validateNew(OCKCDTask.self, tasks)
-        let persistableTasks = tasks.map(self.createTask)
+        let persistableTasks = try tasks.map(self.createTask)
         let addedTasks = persistableTasks.map(self.makeTask)
         return addedTasks
     }
@@ -217,22 +252,22 @@ extension OCKCoreDataTaskStoreProtocol {
         return updated
     }
 
-    func createTask(from task: Task) -> OCKCDTask {
-        let persistableTask = OCKCDTask(context: context)
-        copyTask(task, to: persistableTask)
+    func createTask(from task: Task) throws -> OCKCDTask {
+        let persistableTask = OCKCDTask(context: try self.context())
+        try copyTask(task, to: persistableTask)
         return persistableTask
     }
 
-    func copyTask(_ task: Task, to persistableTask: OCKCDTask) {
+    func copyTask(_ task: Task, to persistableTask: OCKCDTask) throws {
         persistableTask.copyVersionInfo(from: task)
         persistableTask.allowsMissingRelationships = configuration.allowsEntitiesWithMissingRelationships
         persistableTask.title = task.title
         persistableTask.instructions = task.instructions
         persistableTask.impactsAdherence = task.impactsAdherence
-        persistableTask.scheduleElements.forEach { context.delete($0) }
-        persistableTask.scheduleElements = Set(createScheduleElements(from: task.schedule))
+        try persistableTask.scheduleElements.forEach { try context().delete($0) }
+        try persistableTask.scheduleElements = Set(createScheduleElements(from: task.schedule))
         persistableTask.healthKitLinkage = task.optionalHealthKitLinkage == nil ?
-            nil : createHealthKitLinkage(from: task.optionalHealthKitLinkage!)
+            nil : try createHealthKitLinkage(from: task.optionalHealthKitLinkage!)
         if let planUUID = task.carePlanUUID { persistableTask.carePlan = try? fetchObject(uuid: planUUID) }
     }
 
@@ -248,31 +283,31 @@ extension OCKCoreDataTaskStoreProtocol {
         return mutable
     }
 
-    private func createScheduleElements(from schedule: OCKSchedule) -> [OCKCDScheduleElement] {
-        return schedule.elements.map { element -> OCKCDScheduleElement in
-            let scheduleElement = OCKCDScheduleElement(context: context)
+    private func createScheduleElements(from schedule: OCKSchedule) throws -> [OCKCDScheduleElement] {
+        return try schedule.elements.map { element -> OCKCDScheduleElement in
+            let scheduleElement = OCKCDScheduleElement(context: try context())
             scheduleElement.interval = element.interval
             scheduleElement.startDate = element.start
             scheduleElement.endDate = element.end
             scheduleElement.duration = element.duration
             scheduleElement.interval = element.interval
             scheduleElement.text = element.text
-            scheduleElement.targetValues = Set(element.targetValues.map(createValue))
+            scheduleElement.targetValues = try Set(element.targetValues.map(createValue))
             return scheduleElement
         }
     }
 
-    private func createHealthKitLinkage(from link: OCKHealthKitLinkage?) -> OCKCDHealthKitLinkage? {
+    private func createHealthKitLinkage(from link: OCKHealthKitLinkage?) throws -> OCKCDHealthKitLinkage? {
         guard let link = link else { return nil }
-        let linkage = OCKCDHealthKitLinkage(context: context)
+        let linkage = OCKCDHealthKitLinkage(context: try context())
         linkage.quantityIdentifier = link.quantityIdentifier.rawValue
         linkage.quantityType = link.quantityType.rawValue
-        linkage.unitString = link.unitString
+        linkage.unitString = link.unit.unitString
         return linkage
     }
 
-    internal func createValue(from value: OCKOutcomeValue) -> OCKCDOutcomeValue {
-        let object = OCKCDOutcomeValue(context: context)
+    internal func createValue(from value: OCKOutcomeValue) throws -> OCKCDOutcomeValue {
+        let object = OCKCDOutcomeValue(context: try context())
         object.copyValues(from: value)
         object.value = value.value
         object.kind = value.kind
@@ -318,7 +353,7 @@ extension OCKCoreDataTaskStoreProtocol {
     // Throws an error when updating to V3 from V2 if V2 has any outcomes.
     // Does not throw when updating to V3 from V2 if V1 has outcomes before `x`.
     func confirmUpdateWillNotCauseDataLoss(tasks: [Task]) throws {
-        let heads = fetchHeads(OCKCDTask.self, ids: tasks.map { $0.id })
+        let heads = try fetchHeads(OCKCDTask.self, ids: tasks.map { $0.id })
         for task in heads {
 
             // For each task, gather all outcomes
@@ -331,7 +366,7 @@ extension OCKCoreDataTaskStoreProtocol {
 
             // Get the date highest date on which an outcome exists.
             // If there are no outcomes, then any update is safe.
-            guard let latestDate = allOutcomes.map({ $0.date }).max()
+            guard let latestDate = allOutcomes.map({ $0.startDate }).max()
                 else { continue }
 
             guard let proposedUpdate = tasks.first(where: { $0.id == task.id })
@@ -369,6 +404,15 @@ extension OCKCoreDataTaskStoreProtocol {
 
         if !query.remoteIDs.isEmpty {
             predicate = predicate.including(query.remoteIDs, for: #keyPath(OCKCDObject.remoteID))
+        }
+
+        if !query.groupIdentifiers.isEmpty {
+            predicate = predicate.including(query.groupIdentifiers, for: #keyPath(OCKCDObject.groupIdentifier))
+        }
+
+        if !query.tags.isEmpty {
+            let tagPredicate = NSPredicate(format: "ANY %K IN %@", #keyPath(OCKCDObject.tags), query.tags)
+            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, tagPredicate])
         }
 
         if !query.carePlanIDs.isEmpty {

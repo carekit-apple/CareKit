@@ -44,11 +44,15 @@ class MockPeer: OCKWatchConnectivityPeer {
         mergeRevision: @escaping (OCKRevisionRecord, @escaping (Error?) -> Void) -> Void,
         completion: @escaping (Error?) -> Void) {
 
-        let time = knowledgeVector.clock(for: peersStore.context.clockID)
-        let revision = peersStore.computeRevision(since: time)
+        do {
+            let time = knowledgeVector.clock(for: try peersStore.context().clockID)
+            let revision = try peersStore.computeRevision(since: time)
 
-        lastRevisionReceivedFromPeer = revision
-        mergeRevision(revision, completion)
+            lastRevisionReceivedFromPeer = revision
+            mergeRevision(revision, completion)
+        } catch {
+            completion(error)
+        }
     }
 
     override func pushRevisions(

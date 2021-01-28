@@ -175,4 +175,12 @@ class TestPersistentStoreCoordinator: XCTestCase {
 
         XCTAssertThrowsError(try coordinator.addAnyTaskAndWait(task))
     }
+    
+    func testStoreCoordinatorDoesNotSendNormalOutcomesToHealthKit() {
+        let coordinator = OCKStoreCoordinator()
+        let passthrough = OCKHealthKitPassthroughStore(name: "test", type: .inMemory)
+        let outcome = OCKOutcome(taskUUID: UUID(), taskOccurrenceIndex: 0, values: [])
+        let willHandle = coordinator.outcomeStore(passthrough, shouldHandleWritingOutcome: outcome)
+        XCTAssertFalse(willHandle)
+    }
 }

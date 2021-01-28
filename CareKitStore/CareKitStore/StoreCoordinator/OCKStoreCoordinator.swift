@@ -286,8 +286,8 @@ open class OCKStoreCoordinator: OCKAnyStoreProtocol, OCKResetDelegate {
     open func outcomeStore(_ store: OCKAnyReadOnlyOutcomeStore, shouldHandleWritingOutcome outcome: OCKAnyOutcome) -> Bool {
         #if os(iOS)
         // Only the HK passthrough store should handle HK outcomes
-        if outcome is OCKHealthKitOutcome {
-            return store is OCKHealthKitPassthroughStore
+        if outcome is OCKHealthKitOutcome || store is OCKHealthKitPassthroughStore {
+            return store is OCKHealthKitPassthroughStore && outcome is OCKHealthKitOutcome
         }
         #endif
         return true

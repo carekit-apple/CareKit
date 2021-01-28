@@ -29,34 +29,52 @@ let package = Package(
         .target(
             name: "CareKit",
             dependencies: ["CareKitUI", "CareKitStore"],
-            path: "CareKit/CareKit"),
+            path: "CareKit/CareKit",
+            exclude: ["Info.plist"]),
 
         .target(
             name: "CareKitUI",
-            path: "CareKitUI/CareKitUI"),
+            path: "CareKitUI/CareKitUI",
+            exclude: ["Info.plist"]),
 
         .target(
             name: "CareKitStore",
-            path: "CareKitStore/CareKitStore"),
+            path: "CareKitStore/CareKitStore",
+            exclude: ["Info.plist"],
+            resources: [
+                .process("CoreData/Migrations/2.0_to_2.1/2.0_2.1_Mapping.xcmappingmodel")
+            ]),
 
         .target(
             name: "CareKitFHIR",
-            dependencies: ["CareKitStore", .product(name: "ModelsR4", package: "FHIRModels"), .product(name: "ModelsDSTU2", package: "FHIRModels")],
-            path: "CareKitFHIR/CareKitFHIR"),
+            dependencies: [
+                "CareKitStore",
+                .product(name: "ModelsR4", package: "FHIRModels"),
+                .product(name: "ModelsDSTU2", package: "FHIRModels")
+            ],
+            path: "CareKitFHIR/CareKitFHIR",
+            exclude: ["Info.plist"]),
 
         .testTarget(
             name: "CareKitStoreTests",
             dependencies: ["CareKitStore"],
-            path: "CareKitStore/CareKitStoreTests"),
+            path: "CareKitStore/CareKitStoreTests",
+            exclude: ["Info.plist", "CareKitStore.xctestplan"],
+            resources: [
+                .process("CoreDataSchema/Migrations")
+            ]),
 
         .testTarget(
             name: "CareKitFHIRTests",
             dependencies: ["CareKitFHIR"],
-            path: "CareKitFHIR/CareKitFHIRTests"),
+            path: "CareKitFHIR/CareKitFHIRTests",
+            exclude: ["Info.plist", "CareKitFHIR.xctestplan"]),
 
         .testTarget(
             name: "CareKitTests",
             dependencies: ["CareKit"],
-            path: "CareKit/CareKitTests")
+            path: "CareKit/CareKitTests",
+            exclude: ["Info.plist"])
     ]
 )
+

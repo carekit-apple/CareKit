@@ -242,7 +242,7 @@ class TestHealthKitStoreTasks: XCTestCase {
         let dateA = Date().addingTimeInterval(-100)
         var taskA = OCKHealthKitTask(id: "A", title: "a", carePlanUUID: nil, schedule: schedule, healthKitLinkage: link)
         taskA.effectiveDate = dateA
-        taskA = try store.addTaskAndWait(OCKHealthKitTask(id: "A", title: "a", carePlanUUID: nil, schedule: schedule, healthKitLinkage: link))
+        taskA = try store.addTaskAndWait(taskA)
 
         let dateB = dateA.addingTimeInterval(100)
         var taskB = OCKHealthKitTask(id: "A", title: "b", carePlanUUID: nil, schedule: schedule, healthKitLinkage: link)

@@ -347,7 +347,7 @@ class TestStoreTasks: XCTestCase {
         let dateA = Date().addingTimeInterval(-100)
         var taskA = OCKTask(id: "A", title: "a", carePlanUUID: nil, schedule: schedule)
         taskA.effectiveDate = dateA
-        taskA = try store.addTaskAndWait(OCKTask(id: "A", title: "a", carePlanUUID: nil, schedule: schedule))
+        taskA = try store.addTaskAndWait(taskA)
 
         let dateB = dateA.addingTimeInterval(100)
         var taskB = OCKTask(id: "A", title: "b", carePlanUUID: nil, schedule: schedule)

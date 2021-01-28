@@ -183,4 +183,12 @@ class TestPersistentStoreCoordinator: XCTestCase {
         let willHandle = coordinator.outcomeStore(passthrough, shouldHandleWritingOutcome: outcome)
         XCTAssertFalse(willHandle)
     }
+    
+    func testStoreCoordinatorDoesNotSendHealthKitOutcomesToOCKStore() {
+        let coordinator = OCKStoreCoordinator()
+        let store = OCKStore(name: "test", type: .inMemory)
+        let outcome = OCKHealthKitOutcome(taskUUID: UUID(), taskOccurrenceIndex: 0, values: [])
+        let willHandle = coordinator.outcomeStore(store, shouldHandleWritingOutcome: outcome)
+        XCTAssertFalse(willHandle)
+    }
 }

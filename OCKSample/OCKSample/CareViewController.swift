@@ -64,7 +64,7 @@ class CareViewController: OCKDailyPageViewController {
     override func dailyPageViewController(_ dailyPageViewController: OCKDailyPageViewController,
                                           prepare listViewController: OCKListViewController, for date: Date) {
 
-        let identifiers = ["doxylamine", "nausea", "kegels", "steps", "heartRate"]
+        let identifiers = ["asprin", "doxylamine", "nausea", "kegels", "steps", "heartRate"]
         var query = OCKTaskQuery(for: date)
         query.ids = identifiers
         query.excludesTasksWithNoEvents = true
@@ -73,6 +73,17 @@ class CareViewController: OCKDailyPageViewController {
             switch result {
             case .failure(let error): print("Error: \(error)")
             case .success(let tasks):
+
+                // Create a card for the doxylamine task if there are events for it on this day.
+                if let asprinTask = tasks.first(where: { $0.id == "asprin" }) {
+                    
+                    let asprinCard = OCKChecklistTaskViewController(
+                        task: asprinTask,
+                        eventQuery: .init(for: date),
+                        storeManager: self.storeManager)
+                    
+                    listViewController.appendViewController(asprinCard, animated: false)
+                }
 
                 // Add a non-CareKit view into the list
                 let tipTitle = "Benefits of exercising"

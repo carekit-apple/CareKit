@@ -72,6 +72,9 @@ private extension OCKStore {
         let aFewDaysAgo = Calendar.current.date(byAdding: .day, value: -4, to: thisMorning)!
         let beforeBreakfast = Calendar.current.date(byAdding: .hour, value: 8, to: aFewDaysAgo)!
         let afterLunch = Calendar.current.date(byAdding: .hour, value: 14, to: aFewDaysAgo)!
+        let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: thisMorning)!
+        let tomorrowBeforeBreakfast = Calendar.current.date(byAdding: .hour, value: 8, to: tomorrow)!
+        let tomorrowAfterLunch = Calendar.current.date(byAdding: .hour, value: 14, to: tomorrow)!
 
         let schedule = OCKSchedule(composing: [
             OCKScheduleElement(start: beforeBreakfast, end: nil,
@@ -85,6 +88,18 @@ private extension OCKStore {
                                  carePlanUUID: nil, schedule: schedule)
         doxylamine.instructions = "Take 25mg of doxylamine when you experience nausea."
 
+        let asprinSchedule = OCKSchedule(composing: [
+            OCKScheduleElement(start: tomorrowBeforeBreakfast, end: nil,
+                               interval: DateComponents(day: 1)),
+            
+            OCKScheduleElement(start: tomorrowAfterLunch, end: nil,
+                               interval: DateComponents(day: 2))
+        ])
+        
+        var asprin = OCKTask(id: "asprin", title: "Take Baby Asprin",
+                                 carePlanUUID: nil, schedule: asprinSchedule)
+        asprin.instructions = "Take 25mg of baby asprin twice a day."
+        
         let nauseaSchedule = OCKSchedule(composing: [
             OCKScheduleElement(start: beforeBreakfast, end: nil, interval: DateComponents(day: 1),
                                text: "Anytime throughout the day", targetValues: [], duration: .allDay)
@@ -101,7 +116,7 @@ private extension OCKStore {
         kegels.impactsAdherence = true
         kegels.instructions = "Perform kegel exercies"
 
-        addTasks([nausea, doxylamine, kegels], callbackQueue: .main, completion: nil)
+        addTasks([asprin, nausea, doxylamine, kegels], callbackQueue: .main, completion: nil)
 
         var contact1 = OCKContact(id: "jane", givenName: "Jane",
                                   familyName: "Daniels", carePlanUUID: nil)

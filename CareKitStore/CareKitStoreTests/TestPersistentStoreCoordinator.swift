@@ -191,4 +191,66 @@ class TestPersistentStoreCoordinator: XCTestCase {
         let willHandle = coordinator.outcomeStore(store, shouldHandleWritingOutcome: outcome)
         XCTAssertFalse(willHandle)
     }
+    
+    func testStoreCoordinatorFetchAnyEventsByTodayQuery() throws {
+        let coordinator = OCKStoreCoordinator()
+        let store = OCKStore(name: "test", type: .inMemory)
+        coordinator.attach(store: store)
+        
+        let today = Calendar.current.startOfDay(for: Date())
+        let todaySchedule = OCKSchedule.dailyAtTime(hour: 9, minutes: 0, start: today, end: nil, text: nil)
+        try store.addTaskAndWait(OCKTask(id: "todayStart", title: "todayStart", carePlanUUID: nil, schedule: todaySchedule))
+        
+        let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: today)!
+        let tomorrowSchedule = OCKSchedule.dailyAtTime(hour: 9, minutes: 0, start: tomorrow, end: nil, text: nil)
+        try store.addTaskAndWait(OCKTask(id: "tomorrowStart", title: "tomorrowStart", carePlanUUID: nil, schedule: tomorrowSchedule))
+
+        let eventQuery = OCKEventQuery(for: today)
+        
+        let expectationA = self.expectation(description: "Today Task")
+        coordinator.fetchAnyEvents(taskID: "todayStart", query: eventQuery, callbackQueue: .main) { (result) in
+            let events = try? result.get()
+            XCTAssert(events?.count == 1)
+            expectationA.fulfill()
+        }
+        
+        let expectationB = self.expectation(description: "Tomorrow Task")
+        coordinator.fetchAnyEvents(taskID: "tomorrowStart", query: eventQuery, callbackQueue: .main) { (result) in
+            let events = try? result.get()
+            XCTAssert(events == nil || events?.count == 0) // either empty array or nil should be OK
+            expectationB.fulfill()
+        }
+        waitForExpectations(timeout: 0.1, handler: nil)
+    }
+
+    func testStoreCoordinatorFetchAnyEventsByTomorrowQuery() throws {
+        let coordinator = OCKStoreCoordinator()
+        let store = OCKStore(name: "test", type: .inMemory)
+        coordinator.attach(store: store)
+        
+        let today = Calendar.current.startOfDay(for: Date())
+        let todaySchedule = OCKSchedule.dailyAtTime(hour: 9, minutes: 0, start: today, end: nil, text: nil)
+        try store.addTaskAndWait(OCKTask(id: "todayStart", title: "todayStart", carePlanUUID: nil, schedule: todaySchedule))
+        
+        let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: today)!
+        let tomorrowSchedule = OCKSchedule.dailyAtTime(hour: 9, minutes: 0, start: tomorrow, end: nil, text: nil)
+        try store.addTaskAndWait(OCKTask(id: "tomorrowStart", title: "tomorrowStart", carePlanUUID: nil, schedule: tomorrowSchedule))
+        
+        let eventQuery = OCKEventQuery(for: tomorrow)
+        
+        let expectationA = self.expectation(description: "Today Task")
+        coordinator.fetchAnyEvents(taskID: "todayStart", query: eventQuery, callbackQueue: .main) { (result) in
+            let events = try? result.get()
+            XCTAssert(events?.count == 1)
+            expectationA.fulfill()
+        }
+        
+        let expectationB = self.expectation(description: "Tomorrow Task")
+        coordinator.fetchAnyEvents(taskID: "tomorrowStart", query: eventQuery, callbackQueue: .main) { (result) in
+            let events = try? result.get()
+            XCTAssert(events?.count == 1)
+            expectationB.fulfill()
+        }
+        waitForExpectations(timeout: 0.1, handler: nil)
+    }
 }

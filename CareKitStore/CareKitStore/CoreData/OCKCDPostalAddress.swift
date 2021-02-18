@@ -40,4 +40,29 @@ class OCKCDPostalAddress: NSManagedObject {
     @NSManaged var postalCode: String
     @NSManaged var country: String
     @NSManaged var isoCountryCode: String
+    
+    init(address: OCKPostalAddress, context: NSManagedObjectContext) {
+        super.init(entity: Self.entity(), insertInto: context)
+        street = address.street
+        subLocality = address.subLocality
+        city = address.city
+        subAdministrativeArea = address.subAdministrativeArea
+        state = address.state
+        postalCode = address.postalCode
+        country = address.country
+        isoCountryCode = address.isoCountryCode
+    }
+
+    func makeValue() -> OCKPostalAddress {
+        let address = OCKPostalAddress()
+        address.street = street
+        address.subLocality = subLocality
+        address.city = city
+        address.subAdministrativeArea = subAdministrativeArea
+        address.state = state
+        address.postalCode = postalCode
+        address.country = country
+        address.isoCountryCode = isoCountryCode
+        return address
+    }
 }

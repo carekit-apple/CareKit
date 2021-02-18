@@ -35,7 +35,7 @@ private let backgroundQueue = DispatchQueue(label: "CareKit", qos: .background)
 // WARNING: These extensions are intended for use exclusively in unit tests.
 
 extension OCKAnyReadOnlyPatientStore {
-    func fetchAnyPatientsAndWait(query: OCKAnyPatientQuery) throws -> [OCKAnyPatient] {
+    func fetchAnyPatientsAndWait(query: OCKPatientQuery) throws -> [OCKAnyPatient] {
         try performSynchronously { self.fetchAnyPatients(query: query, callbackQueue: backgroundQueue, completion: $0) }
     }
 }
@@ -54,7 +54,7 @@ extension OCKAnyPatientStore {
 }
 
 extension OCKReadablePatientStore {
-    func fetchPatientsAndWait(query: PatientQuery = PatientQuery()) throws -> [Patient] {
+    func fetchPatientsAndWait(query: OCKPatientQuery = OCKPatientQuery()) throws -> [Patient] {
         try performSynchronously { self.fetchPatients(query: query, callbackQueue: backgroundQueue, completion: $0) }
     }
 
@@ -97,7 +97,7 @@ extension OCKPatientStore {
 }
 
 extension OCKReadableCarePlanStore {
-    func fetchCarePlansAndWait(query: PlanQuery = PlanQuery()) throws -> [Plan] {
+    func fetchCarePlansAndWait(query: OCKCarePlanQuery = OCKCarePlanQuery()) throws -> [Plan] {
         try performSynchronously { self.fetchCarePlans(query: query, callbackQueue: backgroundQueue, completion: $0) }
     }
 
@@ -107,6 +107,12 @@ extension OCKReadableCarePlanStore {
     }
 }
 
+extension OCKAnyCarePlanStore {
+    @discardableResult
+    func addAnyCarePlanAndWait(_ plan: OCKAnyCarePlan) throws -> OCKAnyCarePlan {
+        try performSynchronously { self.addAnyCarePlan(plan, callbackQueue: backgroundQueue, completion: $0) }
+    }
+}
 extension OCKCarePlanStore {
     @discardableResult
     func addCarePlansAndWait(_ plans: [Plan]) throws -> [Plan] {
@@ -144,7 +150,7 @@ extension OCKReadableContactStore {
         try performSynchronously { self.fetchContact(withID: id, callbackQueue: backgroundQueue, completion: $0) }
     }
 
-    func fetchContactsAndWait(query: ContactQuery = ContactQuery()) throws -> [Contact] {
+    func fetchContactsAndWait(query: OCKContactQuery = OCKContactQuery()) throws -> [Contact] {
         try performSynchronously { self.fetchContacts(query: query, callbackQueue: backgroundQueue, completion: $0) }
     }
 }
@@ -182,7 +188,7 @@ extension OCKContactStore {
 }
 
 extension OCKReadableTaskStore {
-    func fetchTasksAndWait(query: TaskQuery = TaskQuery()) throws -> [Task] {
+    func fetchTasksAndWait(query: OCKTaskQuery = OCKTaskQuery()) throws -> [Task] {
         try performSynchronously { self.fetchTasks(query: query, callbackQueue: backgroundQueue, completion: $0) }
     }
 }
@@ -217,21 +223,10 @@ extension OCKTaskStore {
     func deleteTaskAndWait(_ task: Task) throws -> Task {
         try performSynchronously { self.deleteTask(task, callbackQueue: backgroundQueue, completion: $0) }
     }
-
-    @discardableResult
-    func addUpdateOrDeleteTasksAndWait(addOrUpdate tasksToAddOrUpdate: [Task],
-                                       delete tasksToDelete: [Task]) throws -> ([Task], [Task], [Task]) {
-        try performSynchronously {
-            self.addUpdateOrDeleteTasks(
-                addOrUpdate: tasksToAddOrUpdate,
-                delete: tasksToDelete,
-                callbackQueue: backgroundQueue, completion: $0)
-        }
-    }
 }
 
 extension OCKReadableOutcomeStore {
-    func fetchOutcomesAndWait(query: OutcomeQuery = OutcomeQuery()) throws -> [Outcome] {
+    func fetchOutcomesAndWait(query: OCKOutcomeQuery = OCKOutcomeQuery()) throws -> [Outcome] {
         try performSynchronously { self.fetchOutcomes(query: query, callbackQueue: backgroundQueue, completion: $0) }
     }
 }
@@ -290,23 +285,29 @@ extension OCKReadOnlyEventStore {
     }
 }
 
+extension OCKAnyReadOnlyTaskStore {
+    func fetchAnyTasksAndWait(query: OCKTaskQuery) throws -> [OCKAnyTask] {
+        try performSynchronously { self.fetchAnyTasks(query: query, callbackQueue: backgroundQueue, completion: $0) }
+    }
+}
+
 extension OCKAnyTaskStore {
+    @discardableResult
     func addAnyTaskAndWait(_ task: OCKAnyTask) throws -> OCKAnyTask {
         try performSynchronously { self.addAnyTask(task, callbackQueue: backgroundQueue, completion: $0) }
     }
 }
 
 extension OCKStore {
-
-    func mergeRevisionAndWait(_ revision: OCKRevisionRecord) throws {
+    func syncAndWait() throws {
         try performSynchronously {
-            self.mergeRevision(revision, completion: $0)
+            self.synchronize(completion: $0)
         }
     }
 
-    func syncAndWait(mode: OCKStore.SynchronizationPolicy = .mergeDeviceRecordsWithRemote) throws {
+    func resolveConflictsAndWait() throws {
         try performSynchronously {
-            self.synchronize(policy: mode, completion: $0)
+            self.resolveConflicts(completion: $0)
         }
     }
 }
@@ -315,16 +316,18 @@ private func performSynchronously<T>(
     _ closure: @escaping (@escaping (Result<T, OCKStoreError>) -> Void) -> Void) throws -> T {
 
     let timeout: TimeInterval = 10.0
+
     let dispatchGroup = DispatchGroup()
+    dispatchGroup.enter()
+
     var closureResult: Result<T, OCKStoreError> = .failure(.timedOut(
         reason: "Timed out after \(timeout) seconds."))
-    dispatchGroup.enter()
-    DispatchQueue.global(qos: .background).async {
-        closure { result in
-            closureResult = result
-            dispatchGroup.leave()
-        }
+
+    closure { result in
+        closureResult = result
+        dispatchGroup.leave()
     }
+
     _ = dispatchGroup.wait(timeout: .now() + timeout)
     return try closureResult.get()
 }
@@ -337,11 +340,9 @@ private func performSynchronously(
 
     var syncError: Error?
 
-    DispatchQueue.global(qos: .background).async {
-        closure({ error in
-            syncError = error
-            group.leave()
-        })
+    closure { error in
+        syncError = error
+        group.leave()
     }
 
     group.wait()

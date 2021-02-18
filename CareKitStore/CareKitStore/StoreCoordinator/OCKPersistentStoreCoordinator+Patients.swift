@@ -31,7 +31,7 @@ import Foundation
 
 extension OCKStoreCoordinator {
 
-    open func fetchAnyPatients(query: OCKAnyPatientQuery, callbackQueue: DispatchQueue = .main,
+    open func fetchAnyPatients(query: OCKPatientQuery, callbackQueue: DispatchQueue = .main,
                                completion: @escaping OCKResultClosure<[OCKAnyPatient]>) {
         let readableStores = readOnlyPatientStores + patientStores
         let respondingStores = readableStores.filter { patientStore($0, shouldHandleQuery: query) }

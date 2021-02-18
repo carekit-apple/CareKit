@@ -67,10 +67,10 @@ open class OCKWatchConnectivityPeer: OCKRemoteSynchronizable {
             // If the peer requested the latest revision, compute and return it.
             if let data = peerMessage[revisionRequestKey] as? Data {
                 let vector = try JSONDecoder().decode(OCKRevisionRecord.KnowledgeVector.self, from: data)
-                let clock = vector.clock(for: try store.context().clockID)
-                let revision = try store.computeRevision(since: clock)
+                let revision = try store.computeRevision(since: vector)
                 let revisionData = try JSONEncoder().encode(revision)
                 sendReply([revisionReplyKey: revisionData])
+                store.context.knowledgeVector.increment(clockFor: store.context.clockID)
                 return
             }
 
@@ -78,16 +78,10 @@ open class OCKWatchConnectivityPeer: OCKRemoteSynchronizable {
             // If unsuccessful, send back an error.
             if let data = peerMessage[revisionPushKey] as? Data {
                 let revision = try JSONDecoder().decode(OCKRevisionRecord.self, from: data)
-                store.mergeRevision(revision) { error in
-                    if let error = error {
-                        sendReply([revisionErrorKey: error.localizedDescription])
-                    } else {
-                        sendReply([:])
-                    }
-                }
-                return
+                store.mergeRevision(revision)
+                sendReply([:])
             }
-            sendReply([:])
+
         } catch {
             sendReply([revisionErrorKey: error.localizedDescription])
         }
@@ -101,9 +95,7 @@ open class OCKWatchConnectivityPeer: OCKRemoteSynchronizable {
 
     public func pullRevisions(
         since knowledgeVector: OCKRevisionRecord.KnowledgeVector,
-        mergeRevision: @escaping (
-            OCKRevisionRecord,
-            @escaping (Error?) -> Void) -> Void,
+        mergeRevision: @escaping (OCKRevisionRecord) -> Void,
         completion: @escaping (Error?) -> Void) {
 
         do {
@@ -117,9 +109,13 @@ open class OCKWatchConnectivityPeer: OCKRemoteSynchronizable {
 
                     let data = response[revisionReplyKey] as! Data
 
-                    let revision = try! JSONDecoder().decode(OCKRevisionRecord.self, from: data)
-                    mergeRevision(revision, completion)
-
+                    do {
+                        let revision = try JSONDecoder().decode(OCKRevisionRecord.self, from: data)
+                        mergeRevision(revision)
+                        completion(nil)
+                    } catch {
+                        completion(error)
+                    }
                 },
                 errorHandler: completion)
 
@@ -130,12 +126,7 @@ open class OCKWatchConnectivityPeer: OCKRemoteSynchronizable {
 
     public func pushRevisions(
         deviceRevision: OCKRevisionRecord,
-        overwriteRemote: Bool,
         completion: @escaping (Error?) -> Void) {
-
-        if overwriteRemote {
-            fatalError("Force push not implemented yet!")
-        }
 
         do {
 
@@ -145,6 +136,7 @@ open class OCKWatchConnectivityPeer: OCKRemoteSynchronizable {
             session.sendMessage(
                 [revisionPushKey: data],
                 replyHandler: { message in
+
                     if let problem = message[revisionErrorKey] as? String {
                         let error = OCKStoreError.remoteSynchronizationFailed(reason: problem)
                         completion(error)
@@ -159,16 +151,14 @@ open class OCKWatchConnectivityPeer: OCKRemoteSynchronizable {
         }
     }
 
-    // iOS is considered the source of truth if conflicts arise.
-    open func chooseConflictResolutionPolicy(
-        _ conflict: OCKMergeConflictDescription,
-        completion: @escaping (OCKMergeConflictResolutionPolicy) -> Void) {
+    public func chooseConflictResolution(
+        conflicts: [OCKEntity], completion: @escaping OCKResultClosure<OCKEntity>) {
 
-        #if os(iOS)
-        completion(.keepDevice)
-        #elseif os(watchOS)
-        completion(.keepRemote)
-        #endif
+        // Last write wins
+        let lastWrite = conflicts
+            .max(by: { $0.value.createdDate! > $1.value.createdDate! })!
+
+        completion(.success(lastWrite))
     }
 
     // MARK: Internal
@@ -225,4 +215,3 @@ open class OCKWatchConnectivityPeer: OCKRemoteSynchronizable {
         #endif
     }
 }
-

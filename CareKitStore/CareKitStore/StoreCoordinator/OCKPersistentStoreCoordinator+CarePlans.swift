@@ -32,7 +32,7 @@ import Foundation
 
 extension OCKStoreCoordinator {
 
-    open func fetchAnyCarePlans(query: OCKAnyCarePlanQuery, callbackQueue: DispatchQueue = .main,
+    open func fetchAnyCarePlans(query: OCKCarePlanQuery, callbackQueue: DispatchQueue = .main,
                                 completion: @escaping (Result<[OCKAnyCarePlan], OCKStoreError>) -> Void) {
         let readableStores = readOnlyPlanStores + planStores
         let respondingStores = readableStores.filter { carePlanStore($0, shouldHandleQuery: query) }

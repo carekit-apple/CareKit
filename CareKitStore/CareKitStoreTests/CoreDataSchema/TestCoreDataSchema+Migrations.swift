@@ -40,6 +40,7 @@ private let testsBundle = Bundle(for: TestCoreDataSchemaMigrations.self)
 
 class TestCoreDataSchemaMigrations: XCTestCase {
 
+
     /// The `SampleStore2.0` database was created using the `OCKSample` app checked out
     /// at release tag 2.0.1. The database model version is `CareKitStore2.0`.
     ///
@@ -49,7 +50,7 @@ class TestCoreDataSchemaMigrations: XCTestCase {
     ///   Outcomes: 3
     ///   OutcomeValues: 3
     func testMigrationFrom2_0to2_1() throws {
-
+        
         // 1. Copy the sample store files to a temporary directory
         // The temporary directory and it's contents will be deleted automatically.
 
@@ -90,14 +91,18 @@ class TestCoreDataSchemaMigrations: XCTestCase {
 
         // 4. Query the contents of the store and ensure all the relationships
         // were setup correctly.
-        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "OCKCDTask")
-        let tasks = try container.viewContext.fetch(fetchRequest)
-        XCTAssert(tasks.count == 3)
+        let ckRequest = NSFetchRequest<NSManagedObject>(entityName: "OCKCDTask")
+        let ckTasks = try container.viewContext.fetch(ckRequest)
+        XCTAssert(ckTasks.count == 3)
 
-        let ckTask = tasks.first(where: { $0.value(forKey: "healthKitLinkage") == nil })
+        let ckTask = ckTasks.first
         let ckSchedule = ckTask?.value(forKey: "scheduleElements")
+        let ckKnowledge = ckTask?.value(forKey: "knowledge") as? Set<NSManagedObject>
+        let ckSchema = ckTask?.value(forKey: "schemaVersion") as? String
         XCTAssertNotNil(ckTask)
         XCTAssertNotNil(ckSchedule)
+        XCTAssertTrue(ckKnowledge?.count == 1)
+        XCTAssertTrue(ckSchema == "2.1.0")
 
         let outcomes = ckTask?.value(forKey: "outcomes") as? Set<NSManagedObject>
         let values = outcomes?.map { $0.value(forKey: "values") as? Set<NSManagedObject> }

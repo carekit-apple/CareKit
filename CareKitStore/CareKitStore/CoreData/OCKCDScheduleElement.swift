@@ -52,6 +52,30 @@ class OCKCDScheduleElement: NSManagedObject {
     @NSManaged private var durationInSeconds: Double
     @NSManaged private var isAllDay: Bool
 
+    convenience init(element: OCKScheduleElement, context: NSManagedObjectContext) {
+        self.init(entity: Self.entity(), insertInto: context)
+        self.interval = element.interval
+        self.startDate = element.start
+        self.endDate = element.end
+        self.duration = element.duration
+        self.interval = element.interval
+        self.text = element.text
+        self.targetValues = Set(element.targetValues.map {
+            OCKCDOutcomeValue(value: $0, context: context)
+        })
+    }
+
+    func makeValue() -> OCKScheduleElement {
+        OCKScheduleElement(
+            start: startDate,
+            end: endDate,
+            interval: interval,
+            text: text,
+            targetValues: targetValues.map { $0.makeValue() },
+            duration: duration
+        )
+    }
+
     var duration: OCKScheduleElement.Duration {
         get { isAllDay ? .allDay : .seconds(durationInSeconds) }
         set {

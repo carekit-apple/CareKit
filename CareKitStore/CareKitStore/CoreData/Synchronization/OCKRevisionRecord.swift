@@ -47,14 +47,7 @@ public struct OCKRevisionRecord: Equatable, Codable {
     /// - Parameters:
     ///   - operation: The operation that was performed (add, update, or delete)
     ///   - entity: The entity that was modified
-    ///
-    /// - Note: CareKit expects that all entities be previously persisted to disk, which means
-    /// that they have been assigned a permanent `uuid` as well as a `createdDate` and
-    /// an `updatedDate`. Passing an entity that has not been persisted yet is considered a
-    /// developer error and trigger an assert in debug builds.
     public init(entities: [OCKEntity], knowledgeVector: KnowledgeVector) {
-        assert(entities.allSatisfy({ $0.uuid != nil }), "The entities' UUIDs must not be nil")
-        assert(entities.allSatisfy({ $0.value.updatedDate != nil }), "The entities' createdDates must not be nil")
         self.entities = entities
         self.knowledgeVector = knowledgeVector
     }

@@ -38,12 +38,7 @@ class TestStoreProtocolExtensions: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        store = OCKStore(name: "TestDatabase", type: .inMemory)
-    }
-
-    override func tearDown() {
-        super.tearDown()
-        store = nil
+        store = OCKStore(name: UUID().uuidString, type: .inMemory)
     }
 
     // MARK: - fetchEvents
@@ -101,7 +96,7 @@ class TestStoreProtocolExtensions: XCTestCase {
         let schedule = OCKSchedule.dailyAtTime(hour: 12, minutes: 0, start: date1, end: nil, text: nil)
         var task = OCKTask(id: "task", title: "Medication", carePlanUUID: nil, schedule: schedule)
         task = try store.addTaskAndWait(task)
-        let outcome = OCKOutcome(taskUUID: try task.getUUID(), taskOccurrenceIndex: 3, values: [])
+        let outcome = OCKOutcome(taskUUID: task.uuid, taskOccurrenceIndex: 3, values: [])
         try store.addOutcomeAndWait(outcome)
 
         let query = OCKEventQuery(dateInterval: DateInterval(start: date2, end: date3))
@@ -118,7 +113,7 @@ class TestStoreProtocolExtensions: XCTestCase {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
         var task = OCKTask(id: "exercise", title: "Push Ups", carePlanUUID: nil, schedule: schedule)
         task = try store.addTaskAndWait(task)
-        let taskID = try task.getUUID()
+        let taskID = task.uuid
         var outcome = OCKOutcome(taskUUID: taskID, taskOccurrenceIndex: 5, values: [])
         outcome = try store.addOutcomeAndWait(outcome)
         let event = try store.fetchEventAndWait(forTask: task, occurrence: 5)
@@ -263,7 +258,7 @@ class TestStoreProtocolExtensions: XCTestCase {
         let task1 = OCKTask(id: "meditate", title: "Medidate", carePlanUUID: nil, schedule: schedule)
         let task2 = OCKTask(id: "sleep", title: "Nap", carePlanUUID: nil, schedule: schedule)
         let task = try store.addTasksAndWait([task1, task2]).first!
-        let taskID = try task.getUUID()
+        let taskID = task.uuid
         let value = OCKOutcomeValue(20.0, units: "minutes")
         let outcome = OCKOutcome(taskUUID: taskID, taskOccurrenceIndex: 0, values: [value])
         try store.addOutcomeAndWait(outcome)

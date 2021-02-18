@@ -27,14 +27,14 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
+import CoreData
 import Foundation
 
 @objc(OCKCDOutcomeValue)
-class OCKCDOutcomeValue: OCKCDObject {
+class OCKCDOutcomeValue: NSManagedObject {
     @NSManaged var kind: String? // blood sugar, body weight, etc.
     @NSManaged var units: String?
-    @NSManaged var index: NSNumber?
+    @NSManaged var createdDate: Date
     @NSManaged var outcome: OCKCDOutcome?
 
     @NSManaged private var typeString: String
@@ -49,6 +49,21 @@ class OCKCDOutcomeValue: OCKCDObject {
     @NSManaged var integerValue: Int64
     @NSManaged var doubleValue: Double
     @NSManaged var dateValue: Date?
+
+    convenience init(value: OCKOutcomeValue, context: NSManagedObjectContext) {
+        self.init(entity: Self.entity(), insertInto: context)
+        self.value = value.value
+        self.units = value.units
+        self.kind = value.kind
+        self.createdDate = value.createdDate
+    }
+
+    func makeValue() -> OCKOutcomeValue {
+        var value = OCKOutcomeValue(self.value, units: units)
+        value.createdDate = createdDate
+        value.kind = kind
+        return value
+    }
 
     var value: OCKOutcomeValueUnderlyingType {
         get {
@@ -106,6 +121,5 @@ class OCKCDOutcomeValue: OCKCDObject {
         integerValue = 0
         doubleValue = 0
         dateValue = nil
-        index = nil
     }
 }

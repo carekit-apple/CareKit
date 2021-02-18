@@ -28,13 +28,14 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import CoreData
 import Foundation
 
 /// An `OCKCarePlan` represents a set of tasks, including both interventions and assesments, that a patient is supposed to complete as part of his
 /// or her treatment for a specific condition. For example, a care plan for obesity may include tasks requiring the patient to exercise, record their
 /// weight, and log meals. As the care plan evolves with the patient's progress, the care provider may modify the exercises and include notes each
 /// time about why the changes were made.
-public struct OCKCarePlan: Codable, Equatable, Identifiable, OCKAnyCarePlan, OCKVersionedObjectCompatible {
+public struct OCKCarePlan: Codable, Equatable, Identifiable, OCKAnyCarePlan {
 
     /// The UUID of the patient to whom this care plan belongs.
     public var patientUUID: UUID?
@@ -46,9 +47,9 @@ public struct OCKCarePlan: Codable, Equatable, Identifiable, OCKAnyCarePlan, OCK
     // MARK: OCKVersionable
     public var effectiveDate: Date
     public var deletedDate: Date?
-    public var uuid: UUID?
-    public var nextVersionUUID: UUID?
-    public var previousVersionUUID: UUID?
+    public var uuid = UUID()
+    public var nextVersionUUIDs: [UUID] = []
+    public var previousVersionUUIDs: [UUID] = []
 
     // MARK: OCKObjectCompatible
     public var createdDate: Date?
@@ -78,7 +79,22 @@ public struct OCKCarePlan: Codable, Equatable, Identifiable, OCKAnyCarePlan, OCK
     }
 
     public func belongs(to patient: OCKAnyPatient) -> Bool {
-        guard let other = patient as? OCKPatient, let otherUUID = other.uuid else { return false }
-        return patientUUID == otherUUID
+        guard let other = patient as? OCKPatient else { return false }
+        return patientUUID == other.uuid
+    }
+}
+
+extension OCKCarePlan: OCKVersionedObjectCompatible {
+
+    static func entity() -> NSEntityDescription {
+        OCKCDCarePlan.entity()
+    }
+
+    func entity() -> OCKEntity {
+        .carePlan(self)
+    }
+    
+    func insert(context: NSManagedObjectContext) -> OCKCDVersionedObject {
+        OCKCDCarePlan(plan: self, context: context)
     }
 }

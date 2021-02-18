@@ -170,22 +170,6 @@ class TestTaskEvents: XCTestCase {
         }
     }
 
-    func testAppendForEventWithNoTaskIdentity() {
-        let events: [OCKAnyEvent] = [OCKAnyEvent.mock(taskUUID: nil, occurrence: 0)]
-        var taskEvents = OCKTaskEvents()
-        let results = events.map { taskEvents.append(event: $0) }
-
-        // Test the underlying data
-        XCTAssertTrue(taskEvents.isEmpty)
-
-        // Test the data returned from the function call
-        XCTAssertEqual(results.count, 1)
-        if let result = results.first {
-            XCTAssertNil(result.0?.id)
-            XCTAssertFalse(result.1)
-        }
-    }
-
     func testRemoveSucceeds() {
         let doxylamineUUID = UUID()
         let nauseauUUID = UUID()
@@ -249,15 +233,6 @@ class TestTaskEvents: XCTestCase {
 
         XCTAssertNotNil(taskEvents.first?.first?.outcome)
         XCTAssertNotNil(updatedEvent?.outcome)
-    }
-
-    func testUpdateFailsForEventWithNoTaskIdentity() {
-        let doxylamineUUID = UUID()
-        let event = OCKAnyEvent.mock(taskUUID: doxylamineUUID, occurrence: 0)
-        let newEvent = OCKAnyEvent.mock(taskUUID: nil, occurrence: 0)
-        var taskEvents = OCKTaskEvents(events: [event])
-        let updatedEvent = taskEvents.update(event: newEvent)
-        XCTAssertNil(updatedEvent)
     }
 
     func testEventsForTaskReturnsEvents() {
@@ -334,14 +309,14 @@ class TestTaskEvents: XCTestCase {
 
 private extension OCKAnyEvent {
 
-    static func mock(taskUUID: UUID?, occurrence: Int, hasOutcome: Bool = false) -> Self {
+    static func mock(taskUUID: UUID, occurrence: Int, hasOutcome: Bool = false) -> Self {
         let startOfDay = Calendar.current.startOfDay(for: Date())
         let schedule = OCKSchedule.dailyAtTime(hour: 1, minutes: 0, start: startOfDay, end: nil, text: nil)
-        var task = OCKTask(id: taskUUID?.uuidString ?? "", title: nil, carePlanUUID: nil, schedule: schedule)
+        var task = OCKTask(id: taskUUID.uuidString, title: nil, carePlanUUID: nil, schedule: schedule)
         task.uuid = taskUUID
 
         let outcome = hasOutcome ?
-            OCKOutcome(taskUUID: task.uuid!, taskOccurrenceIndex: occurrence, values: []) :
+            OCKOutcome(taskUUID: task.uuid, taskOccurrenceIndex: occurrence, values: []) :
             nil
 
         let event = OCKAnyEvent(task: task, outcome: outcome, scheduleEvent: schedule.event(forOccurrenceIndex: occurrence)!)

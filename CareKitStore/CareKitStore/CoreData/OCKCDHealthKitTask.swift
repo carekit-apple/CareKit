@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2021, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -28,27 +28,49 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-@testable import CareKitStore
-import XCTest
+import CoreData
+import Foundation
 
-class TestCoreDataSchemaWithNotes: XCTestCase {
-    var store: OCKStore!
+@objc(OCKCDHealthKitTask)
+class OCKCDHealthKitTask: OCKCDTaskBase {
 
-    override func setUp() {
-        super.setUp()
-        store = OCKStore(name: "test", type: .inMemory)
+    @NSManaged var healthKitLinkage: OCKCDHealthKitLinkage
+
+    init(task: OCKHealthKitTask, context: NSManagedObjectContext) {
+        super.init(entity: Self.entity(), insertInto: context)
+        self.copyVersionedValue(value: task, context: context)
+        self.title = task.title
+        self.instructions = task.instructions
+        self.impactsAdherence = task.impactsAdherence
+        self.healthKitLinkage = OCKCDHealthKitLinkage(link: task.healthKitLinkage, context: context)
+        
+        self.scheduleElements = Set(task.schedule.elements.map { element in
+            OCKCDScheduleElement(element: element, context: context)
+        })
+
+        if let planUUID = task.carePlanUUID {
+            self.carePlan = try? context.fetchObject(uuid: planUUID)
+        }
     }
 
-    func testCanSaveNote() throws {
-        let note = OCKCDNote(context: try store.context())
-        note.author = "Katie Ball"
-        note.title = "Patient"
-        note.content = """
-        I plan on doing a 30 minute run this evening.
-        If I'm lucky, I might see the mother of the swift \
-        birds nesting in our front yard!
-        """
+    override func makeValue() -> OCKVersionedObjectCompatible {
+        makeTask()
+    }
+    
+    func makeTask() -> OCKHealthKitTask {
 
-        XCTAssertNoThrow(try store.context().save())
+        var task = OCKHealthKitTask(
+            id: id,
+            title: title,
+            carePlanUUID: carePlan?.uuid,
+            schedule: OCKSchedule(composing: scheduleElements.map { $0.makeValue() }),
+            healthKitLinkage: healthKitLinkage.makeValue()
+        )
+
+        task.copyVersionedValues(from: self)
+        task.instructions = instructions
+        task.impactsAdherence = impactsAdherence
+
+        return task
     }
 }

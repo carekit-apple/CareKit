@@ -35,14 +35,11 @@ import Foundation
 /// default implementations for `OCKReadOnlyEventStore` methods.
 public protocol OCKAnyVersionableTask: OCKAnyTask {
 
-    /// An identifier that uniquely identifies a specific version of the task in a database.
-    var uuid: UUID? { get }
-
     /// An identifier that uniquely identifies the previous version of the task in a database.
-    var previousVersionUUID: UUID? { get }
+    var previousVersionUUIDs: [UUID] { get }
 
     /// An identifier that uniquely identifies the next version of the task in a database.
-    var nextVersionUUID: UUID? { get }
+    var nextVersionUUIDs: [UUID] { get }
 
     /// A date specifying when this version of the task begins taking effect.
     var effectiveDate: Date { get }

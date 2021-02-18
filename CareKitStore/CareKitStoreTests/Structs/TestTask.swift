@@ -168,14 +168,14 @@ class TestTask: XCTestCase {
 
     func testIdentitiesMatch() {
         let schedule = OCKSchedule.dailyAtTime(hour: 7, minutes: 0, start: Date(), end: nil, text: nil)
+        let uuid = UUID()
 
         var task1 = OCKTask(id: "doxylamine", title: "Title1", carePlanUUID: nil, schedule: schedule)
-        var task2 = OCKTask(id: "doxylamine", title: "Title2", carePlanUUID: nil, schedule: schedule)
-        XCTAssertEqual(task1.uuid, task2.uuid)
-
-        let uuid = UUID()
         task1.uuid = uuid
+
+        var task2 = OCKTask(id: "doxylamine", title: "Title2", carePlanUUID: nil, schedule: schedule)
         task2.uuid = uuid
+
         XCTAssertEqual(task1.uuid, task2.uuid)
     }
 

@@ -35,22 +35,10 @@ import XCTest
 class TestStoreConsumeRevisions: XCTestCase {
 
     private var store: OCKStore!
-    private var remote: DummyEndpoint!
 
     override func setUp() {
         super.setUp()
-        remote = DummyEndpoint()
-        remote.automaticallySynchronizes = false
-
-        store = OCKStore(
-            name: "TestDatabase",
-            type: .inMemory,
-            remote: remote)
-    }
-
-    override func tearDown() {
-        super.tearDown()
-        store = nil
+        store = OCKStore(name: UUID().uuidString, type: .inMemory)
     }
 
     // MARK: Tasks
@@ -66,8 +54,7 @@ class TestStoreConsumeRevisions: XCTestCase {
             entities: [.task(task)],
             knowledgeVector: .init())
 
-        try store.mergeRevisionAndWait(revision)
-        try store.context().save()
+        store.mergeRevision(revision)
 
         let tasks = try store.fetchTasksAndWait()
 
@@ -84,97 +71,19 @@ class TestStoreConsumeRevisions: XCTestCase {
         taskB.createdDate = taskA.createdDate!.addingTimeInterval(10.0)
         taskB.updatedDate = taskB.createdDate
         taskB.effectiveDate = taskB.createdDate!
+        taskB.previousVersionUUIDs = [taskA.uuid]
 
         let revision = OCKRevisionRecord(
             entities: [.task(taskB)],
             knowledgeVector: .init())
 
-        try store.mergeRevisionAndWait(revision)
-        try store.context().save()
+        store.mergeRevision(revision)
 
         let tasks = try store.fetchTasksAndWait(query: OCKTaskQuery(for: taskB.effectiveDate))
 
         XCTAssert(tasks.count == 1)
         XCTAssert(tasks.first?.id == "abc123")
         XCTAssert(tasks.first?.title == "B")
-    }
-
-    func testKeepingRemoteVersionOfTaskConflict() throws {
-        let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
-        let taskA = try store.addTaskAndWait(OCKTask(id: "abc123", title: "A", carePlanUUID: nil, schedule: schedule))
-
-        var taskB = OCKTask(id: "abc123", title: "B", carePlanUUID: nil, schedule: schedule)
-        taskB.uuid = UUID()
-        taskB.createdDate = taskA.createdDate!.addingTimeInterval(-10.0)
-        taskB.updatedDate = taskB.createdDate
-        taskB.effectiveDate = taskB.createdDate!
-
-        let revision = OCKRevisionRecord(
-            entities: [.task(taskB)],
-            knowledgeVector: .init())
-
-        let remote = store.remote as? DummyEndpoint
-        remote?.conflictPolicy = .keepRemote
-
-        try store.mergeRevisionAndWait(revision)
-        try store.context().save()
-
-        let tasks = try store.fetchTasksAndWait()
-
-        XCTAssert(tasks.count == 1)
-        XCTAssert(tasks.first?.id == "abc123")
-        XCTAssert(tasks.first?.title == "B")
-        XCTAssert(tasks.first?.previousVersionUUID == nil)
-    }
-
-    func testKeepingLocalVersionOfTaskConflict() throws {
-        let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
-        let taskA = try store.addTaskAndWait(OCKTask(id: "abc123", title: "A", carePlanUUID: nil, schedule: schedule))
-
-        var taskB = OCKTask(id: "abc123", title: "B", carePlanUUID: nil, schedule: schedule)
-        taskB.uuid = UUID()
-        taskB.createdDate = taskA.createdDate!.addingTimeInterval(-10.0)
-        taskB.updatedDate = taskB.createdDate
-        taskB.effectiveDate = taskB.createdDate!
-
-        let revision = OCKRevisionRecord(
-            entities: [.task(taskB)],
-            knowledgeVector: .init())
-
-        let remote = store.remote as? DummyEndpoint
-        remote?.conflictPolicy = .keepDevice
-
-        try store.mergeRevisionAndWait(revision)
-        try store.context().save()
-
-        let tasks = try store.fetchTasksAndWait()
-
-        XCTAssert(tasks.count == 1)
-        XCTAssert(tasks.first?.id == "abc123")
-        XCTAssert(tasks.first?.title == "A")
-        XCTAssert(tasks.first?.previousVersionUUID == nil)
-    }
-
-    func testUpdatingTaskViaRevisionRecordWhenItWouldOverwriteOutcomes() throws {
-        let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
-        let taskA = try store.addTaskAndWait(OCKTask(id: "abc123", title: "A", carePlanUUID: nil, schedule: schedule))
-        let outcome = OCKOutcome(taskUUID: try taskA.getUUID(), taskOccurrenceIndex: 1, values: [])
-        try store.addOutcomeAndWait(outcome)
-
-        var taskB = OCKTask(id: "abc123", title: "B", carePlanUUID: nil, schedule: schedule)
-        taskB.uuid = UUID()
-        taskB.createdDate = taskA.createdDate!.addingTimeInterval(10.0)
-        taskB.updatedDate = taskB.createdDate
-        taskB.effectiveDate = taskB.createdDate!
-
-        let revision = OCKRevisionRecord(
-            entities: [.task(taskB)],
-            knowledgeVector: .init())
-
-        XCTAssertNoThrow(try store.mergeRevisionAndWait(revision))
-
-        let outcomes = try store.fetchOutcomesAndWait()
-        XCTAssert(outcomes.isEmpty)
     }
 
     func testTasksAddedViaRevisionRecordHaveSameCreatedDateAsRevisionRecord() throws {
@@ -189,24 +98,10 @@ class TestStoreConsumeRevisions: XCTestCase {
             entities: [.task(task)],
             knowledgeVector: .init())
 
-        XCTAssertNoThrow(try store.mergeRevisionAndWait(revision))
+        store.mergeRevision(revision)
 
         let tasks = try store.fetchTasksAndWait()
         XCTAssert(tasks.first?.createdDate == date)
-    }
-
-    func testTaskRevisionsAreIdempotent() throws {
-        let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
-        let task = try store.addTaskAndWait(OCKTask(id: "abc123", title: "A", carePlanUUID: nil, schedule: schedule))
-
-        let revision = OCKRevisionRecord(
-            entities: [.task(task)],
-            knowledgeVector: .init())
-
-        for _ in 0..<3 {
-            XCTAssertNoThrow(try store.mergeRevisionAndWait(revision))
-            XCTAssert(try store.fetchTasksAndWait() == [task])
-        }
     }
 
     // MARK: Outcomes
@@ -215,7 +110,7 @@ class TestStoreConsumeRevisions: XCTestCase {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
         let task = try store.addTaskAndWait(OCKTask(id: "abc123", title: "A", carePlanUUID: nil, schedule: schedule))
 
-        var outcome = OCKOutcome(taskUUID: try task.getUUID(), taskOccurrenceIndex: 0, values: [])
+        var outcome = OCKOutcome(taskUUID: task.uuid, taskOccurrenceIndex: 0, values: [])
         outcome.uuid = UUID()
         outcome.createdDate = Date()
         outcome.updatedDate = outcome.createdDate
@@ -224,8 +119,7 @@ class TestStoreConsumeRevisions: XCTestCase {
             entities: [.outcome(outcome)],
             knowledgeVector: .init())
 
-        try store.mergeRevisionAndWait(revision)
-        try store.context().save()
+        store.mergeRevision(revision)
 
         let outcomes = try store.fetchOutcomesAndWait()
         XCTAssert(outcomes.count == 1)
@@ -235,20 +129,20 @@ class TestStoreConsumeRevisions: XCTestCase {
     func testDeleteExistingOutcomeViaRevisionRecord() throws {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
         let task = try store.addTaskAndWait(OCKTask(id: "abc123", title: "A", carePlanUUID: nil, schedule: schedule))
-        try store.addOutcomeAndWait(OCKOutcome(taskUUID: try task.getUUID(), taskOccurrenceIndex: 0, values: []))
+        let original = try store.addOutcomeAndWait(OCKOutcome(taskUUID: task.uuid, taskOccurrenceIndex: 0, values: []))
 
-        var outcome = OCKOutcome(taskUUID: try task.getUUID(), taskOccurrenceIndex: 0, values: [])
+        var outcome = OCKOutcome(taskUUID: task.uuid, taskOccurrenceIndex: 0, values: [])
         outcome.uuid = UUID()
         outcome.createdDate = Date().advanced(by: 10)
         outcome.updatedDate = outcome.createdDate
         outcome.deletedDate = outcome.createdDate
+        outcome.previousVersionUUIDs = [original.uuid]
 
         let revision = OCKRevisionRecord(
             entities: [.outcome(outcome)],
             knowledgeVector: .init())
 
-        try store.mergeRevisionAndWait(revision)
-        try store.context().save()
+        store.mergeRevision(revision)
 
         let outcomes = try store.fetchOutcomesAndWait()
         XCTAssert(outcomes.isEmpty)
@@ -258,7 +152,7 @@ class TestStoreConsumeRevisions: XCTestCase {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
         let task = try store.addTaskAndWait(OCKTask(id: "abc123", title: "A", carePlanUUID: nil, schedule: schedule))
 
-        var outcome = OCKOutcome(taskUUID: try task.getUUID(), taskOccurrenceIndex: 0, values: [])
+        var outcome = OCKOutcome(taskUUID: task.uuid, taskOccurrenceIndex: 0, values: [])
         outcome.uuid = UUID()
         outcome.createdDate = Date()
         outcome.updatedDate = outcome.createdDate
@@ -268,78 +162,7 @@ class TestStoreConsumeRevisions: XCTestCase {
             entities: [.outcome(outcome)],
             knowledgeVector: .init())
 
-        XCTAssertNoThrow(try store.mergeRevisionAndWait(revision))
-    }
-
-    func testAddingLaterDuplicateOutcomeViaRevisionRecord() throws {
-        let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
-        let task = try store.addTaskAndWait(OCKTask(id: "abc123", title: "A", carePlanUUID: nil, schedule: schedule))
-        let localOutcome = OCKOutcome(taskUUID: try task.getUUID(), taskOccurrenceIndex: 0, values: [])
-        try store.addOutcomeAndWait(localOutcome)
-
-        var remoteOutcome = OCKOutcome(taskUUID: try task.getUUID(), taskOccurrenceIndex: 0, values: [])
-        remoteOutcome.uuid = UUID()
-        remoteOutcome.createdDate = Date().addingTimeInterval(100)
-        remoteOutcome.updatedDate = remoteOutcome.createdDate
-
-        let revision = OCKRevisionRecord(
-            entities: [.outcome(remoteOutcome)],
-            knowledgeVector: .init())
-
-        XCTAssertNoThrow(try store.mergeRevisionAndWait(revision))
-        XCTAssertNoThrow(try store.context().save())
-
-        let outcomes = try store.fetchOutcomesAndWait()
-        XCTAssert(outcomes.count == 1)
-        XCTAssert(outcomes.first?.createdDate == remoteOutcome.createdDate)
-    }
-
-    func testOutcomeDeletedAtEarlierDateOnRemoteDoesntDeleteLocalOutcomeCreatedAtLaterDate() throws {
-        let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
-        let task = try store.addTaskAndWait(OCKTask(id: "abc123", title: "A", carePlanUUID: nil, schedule: schedule))
-        var localOutcome = OCKOutcome(taskUUID: try task.getUUID(), taskOccurrenceIndex: 0, values: [OCKOutcomeValue(6)])
-        localOutcome = try store.addOutcomeAndWait(localOutcome)
-
-        var remoteOutcome = OCKOutcome(taskUUID: try task.getUUID(), taskOccurrenceIndex: 0, values: [])
-        remoteOutcome.uuid = UUID()
-        remoteOutcome.createdDate = localOutcome.createdDate?.addingTimeInterval(-100)
-        remoteOutcome.updatedDate = localOutcome.updatedDate?.addingTimeInterval(-100)
-        remoteOutcome.deletedDate = remoteOutcome.createdDate
-
-        let revision = OCKRevisionRecord(
-            entities: [.outcome(remoteOutcome)],
-            knowledgeVector: .init())
-
-        remote.conflictPolicy = .keepDevice
-        XCTAssertNoThrow(try store.mergeRevisionAndWait(revision))
-        XCTAssertNoThrow(try store.context().save())
-
-        let outcomes = try store.fetchOutcomesAndWait()
-        XCTAssert(outcomes.count == 1)
-        XCTAssert(outcomes.first?.values.first?.integerValue == 6)
-    }
-
-    func testOutcomeDeletedAtLaterDateOnRemoteDoesDeleteLocalOutcomeCreatedAtEarlierDate() throws {
-        let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
-        let task = try store.addTaskAndWait(OCKTask(id: "abc123", title: "A", carePlanUUID: nil, schedule: schedule))
-        var localOutcome = OCKOutcome(taskUUID: try task.getUUID(), taskOccurrenceIndex: 0, values: [])
-        localOutcome = try store.addOutcomeAndWait(localOutcome)
-
-        var remoteOutcome = OCKOutcome(taskUUID: try task.getUUID(), taskOccurrenceIndex: 0, values: [])
-        remoteOutcome.uuid = UUID()
-        remoteOutcome.createdDate = Date().addingTimeInterval(100)
-        remoteOutcome.updatedDate = remoteOutcome.createdDate
-        remoteOutcome.deletedDate = remoteOutcome.createdDate!
-
-        let revision = OCKRevisionRecord(
-            entities: [.outcome(remoteOutcome)],
-            knowledgeVector: .init())
-
-        XCTAssertNoThrow(try store.mergeRevisionAndWait(revision))
-        XCTAssertNoThrow(try store.context().save())
-
-        let outcomes = try store.fetchOutcomesAndWait()
-        XCTAssert(outcomes.isEmpty)
+        store.mergeRevision(revision)
     }
 
     func testOutcomesAddedViaRevisionRecordedHaveSameCreatedDateAsRevisionRecord() throws {
@@ -347,7 +170,7 @@ class TestStoreConsumeRevisions: XCTestCase {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
         let task = try store.addTaskAndWait(OCKTask(id: "abc123", title: "A", carePlanUUID: nil, schedule: schedule))
 
-        var outcome = OCKOutcome(taskUUID: try task.getUUID(), taskOccurrenceIndex: 0, values: [])
+        var outcome = OCKOutcome(taskUUID: task.uuid, taskOccurrenceIndex: 0, values: [])
         outcome.uuid = UUID()
         outcome.createdDate = date
         outcome.updatedDate = date
@@ -356,7 +179,7 @@ class TestStoreConsumeRevisions: XCTestCase {
             entities: [.outcome(outcome)],
             knowledgeVector: .init())
 
-        XCTAssertNoThrow(try store.mergeRevisionAndWait(revision))
+        store.mergeRevision(revision)
 
         let outcomes = try store.fetchOutcomesAndWait()
         XCTAssert(outcomes.first?.createdDate == date)
@@ -366,45 +189,27 @@ class TestStoreConsumeRevisions: XCTestCase {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
         let task = try store.addTaskAndWait(OCKTask(id: "abc123", title: "A", carePlanUUID: nil, schedule: schedule))
 
-        var tombstone = OCKOutcome(taskUUID: try task.getUUID(), taskOccurrenceIndex: 0, values: [])
+        var tombstone = OCKOutcome(taskUUID: task.uuid, taskOccurrenceIndex: 0, values: [])
         tombstone.uuid = UUID()
         tombstone.createdDate = Date().addingTimeInterval(100)
         tombstone.updatedDate = tombstone.createdDate
-        tombstone.deletedDate = tombstone.createdDate!
+        tombstone.deletedDate = tombstone.createdDate
 
         let revision = OCKRevisionRecord(
             entities: [.outcome(tombstone)],
             knowledgeVector: .init())
 
-        XCTAssertNoThrow(try store.mergeRevisionAndWait(revision))
+        store.mergeRevision(revision)
 
         let outcomes = try store.fetchOutcomesAndWait()
         XCTAssert(outcomes.isEmpty)
 
-        try store.context().performAndWait {
+        expect(with: store.context) {
             let request = NSFetchRequest<OCKCDOutcome>(entityName: "OCKCDOutcome")
-            let outcome = try! self.store.context().fetch(request).first
+            let outcome = try self.store.context.fetch(request).first
             XCTAssert(outcome?.createdDate == tombstone.createdDate)
             XCTAssert(outcome?.deletedDate == tombstone.createdDate)
             XCTAssert(outcome?.uuid == tombstone.uuid)
-        }
-    }
-
-    func testOutcomeRevisionsAreIdempotent() throws {
-        let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
-        let task = try store.addTaskAndWait(OCKTask(id: "abc123", title: "A", carePlanUUID: nil, schedule: schedule))
-        let outcome = try store.addOutcomeAndWait(OCKOutcome(
-            taskUUID: try task.getUUID(),
-            taskOccurrenceIndex: 0,
-            values: []))
-
-        let revision = OCKRevisionRecord(
-            entities: [.outcome(outcome)],
-            knowledgeVector: .init())
-
-        for _ in 0..<3 {
-            XCTAssertNoThrow(try store.mergeRevisionAndWait(revision))
-            XCTAssert(try store.fetchOutcomesAndWait() == [outcome])
         }
     }
 
@@ -420,8 +225,7 @@ class TestStoreConsumeRevisions: XCTestCase {
             entities: [.patient(patient)],
             knowledgeVector: .init())
 
-        try store.mergeRevisionAndWait(revision)
-        try store.context().save()
+        store.mergeRevision(revision)
 
         let patients = try store.fetchPatientsAndWait()
 
@@ -437,73 +241,19 @@ class TestStoreConsumeRevisions: XCTestCase {
         patientB.createdDate = patientA.createdDate!.addingTimeInterval(10.0)
         patientB.updatedDate = patientB.createdDate
         patientB.effectiveDate = patientB.createdDate!
+        patientB.previousVersionUUIDs = [patientA.uuid]
 
         let revision = OCKRevisionRecord(
             entities: [.patient(patientB)],
             knowledgeVector: .init())
 
-        try store.mergeRevisionAndWait(revision)
-        try store.context().save()
+        store.mergeRevision(revision)
 
         let patients = try store.fetchPatientsAndWait(query: OCKPatientQuery(for: patientB.effectiveDate))
 
         XCTAssert(patients.count == 1)
         XCTAssert(patients.first?.id == "id1")
         XCTAssert(patients.first?.name.familyName == "Frosty")
-    }
-
-    func testKeepingRemoteVersionOfPatientConflict() throws {
-        let patientA = try store.addPatientAndWait(OCKPatient(id: "id1", givenName: "Amy", familyName: "Frost"))
-
-        var patientB = OCKPatient(id: "id1", givenName: "Amy", familyName: "Frosty")
-        patientB.uuid = UUID()
-        patientB.createdDate = patientA.createdDate!.addingTimeInterval(-10.0)
-        patientB.updatedDate = patientB.createdDate
-        patientB.effectiveDate = patientB.createdDate!
-
-        let revision = OCKRevisionRecord(
-            entities: [.patient(patientB)],
-            knowledgeVector: .init())
-
-        let remote = store.remote as? DummyEndpoint
-        remote?.conflictPolicy = .keepRemote
-
-        try store.mergeRevisionAndWait(revision)
-        try store.context().save()
-
-        let patients = try store.fetchPatientsAndWait()
-
-        XCTAssert(patients.count == 1)
-        XCTAssert(patients.first?.id == "id1")
-        XCTAssert(patients.first?.name.familyName == "Frosty")
-        XCTAssert(patients.first?.previousVersionUUID == nil)
-    }
-
-    func testKeepingLocalVersionOfPatientConflict() throws {
-        let patientA = try store.addPatientAndWait(OCKPatient(id: "id1", givenName: "Amy", familyName: "Frost"))
-
-        var patientB = OCKPatient(id: "id1", givenName: "Amy", familyName: "Frosty")
-        patientB.uuid = UUID()
-        patientB.createdDate = patientA.createdDate!.addingTimeInterval(-10.0)
-        patientB.updatedDate = patientB.createdDate
-        patientB.effectiveDate = patientB.createdDate!
-
-        let revision = OCKRevisionRecord(
-            entities: [.patient(patientB)],
-            knowledgeVector: .init())
-
-        let remote = store.remote as? DummyEndpoint
-        remote?.conflictPolicy = .keepDevice
-
-        try store.mergeRevisionAndWait(revision)
-        try store.context().save()
-
-        let patients = try store.fetchPatientsAndWait()
-
-        XCTAssert(patients.count == 1)
-        XCTAssert(patients.first?.id == "id1")
-        XCTAssert(patients.first?.name.familyName == "Frost")
-        XCTAssert(patients.first?.previousVersionUUID == nil)
     }
 
     func testPatientsAddedViaRevisionRecordHaveSameCreatedDateAsRevisionRecord() throws {
@@ -517,23 +267,10 @@ class TestStoreConsumeRevisions: XCTestCase {
             entities: [.patient(patient)],
             knowledgeVector: .init())
 
-        XCTAssertNoThrow(try store.mergeRevisionAndWait(revision))
+        store.mergeRevision(revision)
 
         let patients = try store.fetchPatientsAndWait()
         XCTAssert(patients.first?.createdDate == date)
-    }
-
-    func testPatientRevisionsAreIdempotent() throws {
-        let patient = try store.addPatientAndWait(OCKPatient(id: "id1", givenName: "Amy", familyName: "Frost"))
-
-        let revision = OCKRevisionRecord(
-            entities: [.patient(patient)],
-            knowledgeVector: .init())
-
-        for _ in 0..<3 {
-            XCTAssertNoThrow(try store.mergeRevisionAndWait(revision))
-            XCTAssert(try store.fetchPatientsAndWait() == [patient])
-        }
     }
 
     // MARK: CarePlans
@@ -548,8 +285,7 @@ class TestStoreConsumeRevisions: XCTestCase {
             entities: [.carePlan(carePlan)],
             knowledgeVector: .init())
 
-        try store.mergeRevisionAndWait(revision)
-        try store.context().save()
+        store.mergeRevision(revision)
 
         let carePlans = try store.fetchCarePlansAndWait()
 
@@ -565,73 +301,19 @@ class TestStoreConsumeRevisions: XCTestCase {
         carePlanB.createdDate = carePlanA.createdDate!.addingTimeInterval(10.0)
         carePlanB.updatedDate = carePlanB.createdDate
         carePlanB.effectiveDate = carePlanB.createdDate!
+        carePlanB.previousVersionUUIDs = [carePlanA.uuid]
 
         let revision = OCKRevisionRecord(
             entities: [.carePlan(carePlanB)],
             knowledgeVector: .init())
 
-        try store.mergeRevisionAndWait(revision)
-        try store.context().save()
+        store.mergeRevision(revision)
 
         let carePlans = try store.fetchCarePlansAndWait(query: OCKCarePlanQuery(for: carePlanB.effectiveDate))
 
         XCTAssert(carePlans.count == 1)
         XCTAssert(carePlans.first?.id == "diabetes_type_1")
         XCTAssert(carePlans.first?.title == "Diabetes Type II Care Plan")
-    }
-
-    func testKeepingRemoteVersionOfCarePlanConflict() throws {
-        let carePlanA = try store.addCarePlanAndWait(OCKCarePlan(id: "diabetes_type_1", title: "Diabetes Care Plan", patientUUID: nil))
-
-        var carePlanB = OCKCarePlan(id: "diabetes_type_1", title: "Diabetes Type II Care Plan", patientUUID: nil)
-        carePlanB.uuid = UUID()
-        carePlanB.createdDate = carePlanA.createdDate!.addingTimeInterval(-10.0)
-        carePlanB.updatedDate = carePlanB.createdDate
-        carePlanB.effectiveDate = carePlanB.createdDate!
-
-        let revision = OCKRevisionRecord(
-            entities: [.carePlan(carePlanB)],
-            knowledgeVector: .init())
-
-        let remote = store.remote as? DummyEndpoint
-        remote?.conflictPolicy = .keepRemote
-
-        try store.mergeRevisionAndWait(revision)
-        try store.context().save()
-
-        let carePlans = try store.fetchCarePlansAndWait()
-
-        XCTAssert(carePlans.count == 1)
-        XCTAssert(carePlans.first?.id == "diabetes_type_1")
-        XCTAssert(carePlans.first?.title == "Diabetes Type II Care Plan")
-        XCTAssert(carePlans.first?.previousVersionUUID == nil)
-    }
-
-    func testKeepingLocalVersionOfCarePlanConflict() throws {
-        let carePlanA = try store.addCarePlanAndWait(OCKCarePlan(id: "diabetes_type_1", title: "Diabetes Care Plan", patientUUID: nil))
-
-        var carePlanB = OCKCarePlan(id: "diabetes_type_1", title: "Diabetes Type II Care Plan", patientUUID: nil)
-        carePlanB.uuid = UUID()
-        carePlanB.createdDate = carePlanA.createdDate!.addingTimeInterval(-10.0)
-        carePlanB.updatedDate = carePlanB.createdDate
-        carePlanB.effectiveDate = carePlanB.createdDate!
-
-        let revision = OCKRevisionRecord(
-            entities: [.carePlan(carePlanB)],
-            knowledgeVector: .init())
-
-        let remote = store.remote as? DummyEndpoint
-        remote?.conflictPolicy = .keepDevice
-
-        try store.mergeRevisionAndWait(revision)
-        try store.context().save()
-
-        let carePlans = try store.fetchCarePlansAndWait()
-
-        XCTAssert(carePlans.count == 1)
-        XCTAssert(carePlans.first?.id == "diabetes_type_1")
-        XCTAssert(carePlans.first?.title == "Diabetes Care Plan")
-        XCTAssert(carePlans.first?.previousVersionUUID == nil)
     }
 
     func testCarePlansAddedViaRevisionRecordHaveSameCreatedDateAsRevisionRecord() throws {
@@ -645,23 +327,10 @@ class TestStoreConsumeRevisions: XCTestCase {
             entities: [.carePlan(carePlan)],
             knowledgeVector: .init())
 
-        XCTAssertNoThrow(try store.mergeRevisionAndWait(revision))
+        store.mergeRevision(revision)
 
         let carePlans = try store.fetchCarePlansAndWait()
         XCTAssert(carePlans.first?.createdDate == date)
-    }
-
-    func testCarePlanRevisionsAreIdempotent() throws {
-        let carePlan = try store.addCarePlanAndWait(OCKCarePlan(id: "diabetes_type_1", title: "Diabetes Care Plan", patientUUID: nil))
-
-        let revision = OCKRevisionRecord(
-            entities: [.carePlan(carePlan)],
-            knowledgeVector: .init())
-
-        for _ in 0..<3 {
-            XCTAssertNoThrow(try store.mergeRevisionAndWait(revision))
-            XCTAssert(try store.fetchCarePlansAndWait() == [carePlan])
-        }
     }
 
     // MARK: Contacts
@@ -676,8 +345,7 @@ class TestStoreConsumeRevisions: XCTestCase {
             entities: [.contact(contact)],
             knowledgeVector: .init())
 
-        try store.mergeRevisionAndWait(revision)
-        try store.context().save()
+        store.mergeRevision(revision)
 
         let contacts = try store.fetchContactsAndWait()
 
@@ -693,73 +361,19 @@ class TestStoreConsumeRevisions: XCTestCase {
         contactB.createdDate = contactA.createdDate!.addingTimeInterval(10.0)
         contactB.updatedDate = contactB.createdDate
         contactB.effectiveDate = contactB.createdDate!
+        contactB.previousVersionUUIDs = [contactA.uuid]
 
         let revision = OCKRevisionRecord(
             entities: [.contact(contactB)],
             knowledgeVector: .init())
 
-        try store.mergeRevisionAndWait(revision)
-        try store.context().save()
+        store.mergeRevision(revision)
 
         let contacts = try store.fetchContactsAndWait(query: OCKContactQuery(for: contactB.effectiveDate))
 
         XCTAssert(contacts.count == 1)
         XCTAssert(contacts.first?.id == "contact")
         XCTAssert(contacts.first?.name.familyName == "Frosty")
-    }
-
-    func testKeepingRemoteVersionOfContactConflict() throws {
-        let contactA = try store.addContactAndWait(OCKContact(id: "contact", givenName: "Amy", familyName: "Frost", carePlanUUID: nil))
-
-        var contactB = OCKContact(id: "contact", givenName: "Amy", familyName: "Frosty", carePlanUUID: nil)
-        contactB.uuid = UUID()
-        contactB.createdDate = contactA.createdDate!.addingTimeInterval(-10.0)
-        contactB.updatedDate = contactB.createdDate
-        contactB.effectiveDate = contactB.createdDate!
-
-        let revision = OCKRevisionRecord(
-            entities: [.contact(contactB)],
-            knowledgeVector: .init())
-
-        let remote = store.remote as? DummyEndpoint
-        remote?.conflictPolicy = .keepRemote
-
-        try store.mergeRevisionAndWait(revision)
-        try store.context().save()
-
-        let contacts = try store.fetchContactsAndWait()
-
-        XCTAssert(contacts.count == 1)
-        XCTAssert(contacts.first?.id == "contact")
-        XCTAssert(contacts.first?.name.familyName == "Frosty")
-        XCTAssert(contacts.first?.previousVersionUUID == nil)
-    }
-
-    func testKeepingLocalVersionOfContactConflict() throws {
-        let contactA = try store.addContactAndWait(OCKContact(id: "contact", givenName: "Amy", familyName: "Frost", carePlanUUID: nil))
-
-        var contactB = OCKContact(id: "contact", givenName: "Amy", familyName: "Frosty", carePlanUUID: nil)
-        contactB.uuid = UUID()
-        contactB.createdDate = contactA.createdDate!.addingTimeInterval(-10.0)
-        contactB.updatedDate = contactB.createdDate
-        contactB.effectiveDate = contactB.createdDate!
-
-        let revision = OCKRevisionRecord(
-            entities: [.contact(contactB)],
-            knowledgeVector: .init())
-
-        let remote = store.remote as? DummyEndpoint
-        remote?.conflictPolicy = .keepDevice
-
-        try store.mergeRevisionAndWait(revision)
-        try store.context().save()
-
-        let contacts = try store.fetchContactsAndWait()
-
-        XCTAssert(contacts.count == 1)
-        XCTAssert(contacts.first?.id == "contact")
-        XCTAssert(contacts.first?.name.familyName == "Frost")
-        XCTAssert(contacts.first?.previousVersionUUID == nil)
     }
 
     func testContactsAddedViaRevisionRecordHaveSameCreatedDateAsRevisionRecord() throws {
@@ -773,23 +387,9 @@ class TestStoreConsumeRevisions: XCTestCase {
             entities: [.contact(contact)],
             knowledgeVector: .init())
 
-        XCTAssertNoThrow(try store.mergeRevisionAndWait(revision))
+        store.mergeRevision(revision)
 
         let contacts = try store.fetchContactsAndWait()
         XCTAssert(contacts.first?.createdDate == date)
     }
-
-    func testContactRevisionsAreIdempotent() throws {
-        let contact = try store.addContactAndWait(OCKContact(id: "contact", givenName: "Amy", familyName: "Frost", carePlanUUID: nil))
-
-        let revision = OCKRevisionRecord(
-            entities: [.contact(contact)],
-            knowledgeVector: .init())
-
-        for _ in 0..<3 {
-            XCTAssertNoThrow(try store.mergeRevisionAndWait(revision))
-            XCTAssert(try store.fetchContactsAndWait() == [contact])
-        }
-    }
-
 }

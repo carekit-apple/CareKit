@@ -28,12 +28,13 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import CoreData
 import Foundation
 
 /// An `OCKHealthKitTask` represents some task or action that a patient is supposed to perform. Tasks are optionally associable with an `OCKCarePlan`
 /// and must have a unique id and schedule. The schedule determines when and how often the task should be performed, and the
 /// `impactsAdherence` flag may be used to specify whether or not the patients adherence to this task will affect their daily completion rings.
-public struct OCKHealthKitTask: Codable, Equatable, OCKAnyVersionableTask, OCKAnyMutableTask, OCKVersionedObjectCompatible {
+public struct OCKHealthKitTask: Codable, Equatable, OCKAnyVersionableTask, OCKAnyMutableTask {
 
     /// The UUID of the care plan to which this task belongs.
     public var carePlanUUID: UUID?
@@ -53,9 +54,9 @@ public struct OCKHealthKitTask: Codable, Equatable, OCKAnyVersionableTask, OCKAn
     // MARK: OCKVersionable
     public var effectiveDate: Date
     public internal(set) var deletedDate: Date?
-    public internal(set) var uuid: UUID?
-    public internal(set) var nextVersionUUID: UUID?
-    public internal(set) var previousVersionUUID: UUID?
+    public internal(set) var uuid = UUID()
+    public internal(set) var nextVersionUUIDs: [UUID] = []
+    public internal(set) var previousVersionUUIDs: [UUID] = []
 
     // MARK: OCKObjectCompatible
     public internal(set) var createdDate: Date?
@@ -87,7 +88,22 @@ public struct OCKHealthKitTask: Codable, Equatable, OCKAnyVersionableTask, OCKAn
     }
 
     public func belongs(to plan: OCKAnyCarePlan) -> Bool {
-        guard let plan = plan as? OCKCarePlan, let planUUID = plan.uuid else { return false }
-        return carePlanUUID == planUUID
+        guard let plan = plan as? OCKCarePlan else { return false }
+        return carePlanUUID == plan.uuid
+    }
+}
+
+extension OCKHealthKitTask: OCKVersionedObjectCompatible {
+
+    static func entity() -> NSEntityDescription {
+        OCKCDHealthKitTask.entity()
+    }
+
+    func entity() -> OCKEntity {
+        .healthKitTask(self)
+    }
+    
+    func insert(context: NSManagedObjectContext) -> OCKCDVersionedObject {
+        OCKCDHealthKitTask(task: self, context: context)
     }
 }

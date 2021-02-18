@@ -47,7 +47,7 @@ private extension OCKLogTaskView {
             clearItems(animated: animated)
         } else {
             for (index, outcomeValue) in outcomeValues.enumerated() {
-                guard let date = outcomeValue.updatedDate ?? outcomeValue.createdDate else { continue }
+                let date = outcomeValue.createdDate
                 let dateString = OCKLogTaskView.timeFormatter.string(from: date).description
 
                 _ = index < items.count ?

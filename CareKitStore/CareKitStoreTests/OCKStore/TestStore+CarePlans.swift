@@ -35,25 +35,7 @@ class TestStoreCarePlans: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        store = OCKStore(name: "TestDatabase", type: .inMemory)
-    }
-
-    override func tearDown() {
-        super.tearDown()
-        store = nil
-    }
-
-    // MARK: Relationship Validation
-
-    func testStorePreventsMissingPatientRelationshipOnCarePlans() {
-        let plan = OCKCarePlan(id: "diabetes_type_1", title: "Diabetes Care Plan", patientUUID: nil)
-        store.configuration.allowsEntitiesWithMissingRelationships = false
-        XCTAssertThrowsError(try store.addCarePlanAndWait(plan))
-    }
-
-    func testStoreAllowsMissingPatientRelationshipOnCarePlans() {
-        let plan = OCKCarePlan(id: "diabetes_type_1", title: "Diabetes Care Plan", patientUUID: nil)
-        XCTAssertNoThrow(try store.addCarePlanAndWait(plan))
+        store = OCKStore(name: UUID().uuidString, type: .inMemory)
     }
 
     // MARK: Insertion
@@ -75,7 +57,7 @@ class TestStoreCarePlans: XCTestCase {
 
     func testCarePlaneQueryByPatientID() throws {
         let patient = try store.addPatientAndWait(.init(id: "A", givenName: "B", familyName: "C"))
-        let plan = try store.addCarePlanAndWait(.init(id: "F", title: "G", patientUUID: try patient.getUUID()))
+        let plan = try store.addCarePlanAndWait(.init(id: "F", title: "G", patientUUID: patient.uuid))
 
         var query = OCKCarePlanQuery()
         query.patientIDs = [patient.id]
@@ -134,7 +116,7 @@ class TestStoreCarePlans: XCTestCase {
         let plan3 = OCKCarePlan(id: "C", title: "C", patientUUID: nil)
         try store.addCarePlansAndWait([plan1, plan2, plan3])
         var query = OCKCarePlanQuery(for: Date())
-        query.extendedSortDescriptors = [.title(ascending: true)]
+        query.sortDescriptors = [.title(ascending: true)]
         query.offset = 2
         let fetched = try store.fetchCarePlansAndWait(query: query)
         XCTAssert(fetched.count == 1)
@@ -164,7 +146,7 @@ class TestStoreCarePlans: XCTestCase {
 
         var query = OCKCarePlanQuery(for: Date())
         query.tags = ["2"]
-        query.extendedSortDescriptors = [.title(ascending: true)]
+        query.sortDescriptors = [.title(ascending: true)]
 
         let fetched = try store.fetchCarePlansAndWait(query: query)
         XCTAssert(fetched.map { $0.title } == ["A", "B"])
@@ -206,10 +188,10 @@ class TestStoreCarePlans: XCTestCase {
 
     func testCarePlaneQueryByPatientUUID() throws {
         let patient = try store.addPatientAndWait(.init(id: "A", givenName: "B", familyName: "C"))
-        let plan = try store.addCarePlanAndWait(.init(id: "F", title: "G", patientUUID: try patient.getUUID()))
+        let plan = try store.addCarePlanAndWait(.init(id: "F", title: "G", patientUUID: patient.uuid))
 
         var query = OCKCarePlanQuery()
-        query.patientUUIDs = [try patient.getUUID()]
+        query.patientUUIDs = [patient.uuid]
 
         let fetched = try store.fetchCarePlansAndWait(query: query)
         XCTAssert(fetched == [plan])
@@ -221,7 +203,7 @@ class TestStoreCarePlans: XCTestCase {
         let plan = try store.addCarePlanAndWait(OCKCarePlan(id: "bronchitis", title: "Bronchitis", patientUUID: nil))
         let updatedPlan = try store.updateCarePlanAndWait(OCKCarePlan(id: "bronchitis", title: "Bronchitis Treatment", patientUUID: nil))
         XCTAssert(updatedPlan.title == "Bronchitis Treatment")
-        XCTAssert(updatedPlan.previousVersionUUID == plan.uuid)
+        XCTAssert(updatedPlan.previousVersionUUIDs.first == plan.uuid)
     }
 
     func testUpdateFailsForUnsavedCarePlans() {
@@ -234,7 +216,7 @@ class TestStoreCarePlans: XCTestCase {
         let versionB = try store.updateCarePlanAndWait(OCKCarePlan(id: "A", title: "Jared", patientUUID: nil))
         let fetched = try store.fetchCarePlanAndWait(id: versionA.id)
         XCTAssert(fetched?.id == versionB.id)
-        XCTAssert(fetched?.previousVersionUUID == versionA.uuid)
+        XCTAssert(fetched?.previousVersionUUIDs.first == versionA.uuid)
     }
 
     func testCarePlanQueryOnPastDateReturnsPastVersionOfACarePlan() throws {

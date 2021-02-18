@@ -37,12 +37,7 @@ class TestStorePatients: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        store = OCKStore(name: "TestDatabase", type: .inMemory)
-    }
-
-    override func tearDown() {
-        super.tearDown()
-        store = nil
+        store = OCKStore(name: UUID().uuidString, type: .inMemory)
     }
 
     // MARK: Relationship Validation
@@ -163,7 +158,7 @@ class TestStorePatients: XCTestCase {
         let patient = try store.addPatientAndWait(OCKPatient(id: "myID", givenName: "Chris", familyName: "Saari"))
         let updatedPatient = try store.updatePatientAndWait(OCKPatient(id: "myID", givenName: "Chris", familyName: "Sillers"))
         XCTAssert(updatedPatient.name.familyName == "Sillers")
-        XCTAssert(updatedPatient.previousVersionUUID == patient.uuid)
+        XCTAssert(updatedPatient.previousVersionUUIDs.first == patient.uuid)
     }
 
     func testUpdateFailsForUnsavedPatient() {

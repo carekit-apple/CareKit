@@ -43,7 +43,7 @@ class TestTaskController: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        store = OCKStore(name: "ockstore", type: .inMemory)
+        store = OCKStore(name: UUID().uuidString, type: .inMemory)
         manager = OCKSynchronizedStoreManager(wrapping: store)
         cancellables = []
     }
@@ -537,7 +537,7 @@ private extension OCKAnyEvent {
         task.uuid = taskUUID
 
         let outcome = hasOutcome ?
-            OCKOutcome(taskUUID: task.uuid!, taskOccurrenceIndex: occurrence, values: []) :
+            OCKOutcome(taskUUID: task.uuid, taskOccurrenceIndex: occurrence, values: []) :
             nil
 
         let event = OCKAnyEvent(task: task, outcome: outcome, scheduleEvent: schedule.event(forOccurrenceIndex: occurrence)!)
@@ -548,7 +548,7 @@ private extension OCKAnyEvent {
 private extension OCKEvent where Task == OCKTask, Outcome == OCKOutcome {
     func updatedWithOutcome() -> Self {
         var newEvent = self
-        newEvent.outcome = OCKOutcome(taskUUID: newEvent.task.uuid!, taskOccurrenceIndex: newEvent.scheduleEvent.occurrence, values: [])
+        newEvent.outcome = OCKOutcome(taskUUID: newEvent.task.uuid, taskOccurrenceIndex: newEvent.scheduleEvent.occurrence, values: [])
         return newEvent
     }
 }

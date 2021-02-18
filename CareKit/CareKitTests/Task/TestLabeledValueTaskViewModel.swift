@@ -121,7 +121,7 @@ private extension OCKTaskEvents {
         let outcome = underlyingValue.map { underlyingValue -> OCKOutcome in
             var outcomeValue = OCKOutcomeValue(underlyingValue)
             outcomeValue.units = units
-            return OCKOutcome(taskUUID: task.uuid!, taskOccurrenceIndex: 0, values: [outcomeValue])
+            return OCKOutcome(taskUUID: task.uuid, taskOccurrenceIndex: 0, values: [outcomeValue])
         }
 
         let scheduleEvent = task.schedule.event(forOccurrenceIndex: 0)!

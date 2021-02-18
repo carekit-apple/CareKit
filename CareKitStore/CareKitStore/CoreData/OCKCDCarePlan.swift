@@ -36,16 +36,26 @@ class OCKCDCarePlan: OCKCDVersionedObject {
     @NSManaged var tasks: Set<OCKCDTask>
     @NSManaged var title: String
 
-    override func validateRelationships() throws {
-        if !allowsMissingRelationships && patient == nil {
-            throw OCKStoreError.invalidValue(reason: "An OCKCDCarePlan's patient relationship may not be empty")
+    convenience init(plan: OCKCarePlan, context: NSManagedObjectContext) {
+        self.init(entity: Self.entity(), insertInto: context)
+        self.copyVersionedValue(value: plan, context: context)
+        self.title = plan.title
+
+        if let patientUUID = plan.patientUUID {
+            self.patient = try? context.fetchObject(uuid: patientUUID)
         }
     }
-}
 
-extension OCKCDCarePlan {
-    override func awakeFromInsert() {
-        super.awakeFromInsert()
-        tasks = Set()
+    override func makeValue() -> OCKVersionedObjectCompatible {
+        makePlan()
+    }
+    
+    func makePlan() -> OCKCarePlan {
+
+        var plan = OCKCarePlan(id: id, title: title, patientUUID: patient?.uuid)
+
+        plan.copyVersionedValues(from: self)
+
+        return plan
     }
 }

@@ -53,13 +53,15 @@ public protocol OCKAnyTask {
     var groupIdentifier: String? { get }
 
     /// An universally unique identifier for this task.
-    var uuid: UUID? { get }
+    var uuid: UUID { get }
 
     /// An identifier for this task in a remote store.
     var remoteID: String? { get }
 
     /// Any array of notes associated with this object.
     var notes: [OCKNote]? { get }
+
+    var effectiveDate: Date { get }
 
     /// Determines if this task belongs to the given care plan.
     ///

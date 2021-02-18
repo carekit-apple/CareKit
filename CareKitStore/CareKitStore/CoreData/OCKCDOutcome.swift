@@ -32,42 +32,48 @@ import CoreData
 import Foundation
 
 @objc(OCKCDOutcome)
-class OCKCDOutcome: OCKCDObject {
+class OCKCDOutcome: OCKCDVersionedObject {
     @NSManaged var taskOccurrenceIndex: Int64
     @NSManaged var task: OCKCDTask
     @NSManaged var values: Set<OCKCDOutcomeValue>
     @NSManaged var startDate: Date
     @NSManaged var endDate: Date
-    @NSManaged var deletedDate: Date?
 
     static var defaultSortDescriptors: [NSSortDescriptor] {
         return [NSSortDescriptor(keyPath: \OCKCDOutcome.createdDate, ascending: false)]
     }
+    
+    convenience init(outcome: OCKOutcome, context: NSManagedObjectContext) {
+        self.init(entity: Self.entity(), insertInto: context)
+        self.copyVersionedValue(value: outcome, context: context)
 
-    override func validateForInsert() throws {
-        try super.validateForInsert()
-        try validateNoDuplicates()
+        let task: OCKCDTask = try! context.fetchObject(uuid: outcome.taskUUID)
+        let schedule = OCKSchedule(composing: task.scheduleElements.map { $0.makeValue() })
+        let event = schedule[outcome.taskOccurrenceIndex]
+
+        self.task = task
+        self.taskOccurrenceIndex = Int64(outcome.taskOccurrenceIndex)
+        self.startDate = event.start
+        self.endDate = event.end
+        self.values = Set(outcome.values.map {
+            OCKCDOutcomeValue(value: $0, context: context)
+        })
     }
 
-    private func validateNoDuplicates() throws {
-        guard let context = managedObjectContext else { throw OCKStoreError.invalidValue(reason: "Context was nil!") }
-        let predicate = NSPredicate(format: "%K == %@ AND %K == %lld AND %K == nil AND self != %@",
-                                    #keyPath(OCKCDOutcome.task), task,
-                                    #keyPath(OCKCDOutcome.taskOccurrenceIndex), Int64(taskOccurrenceIndex),
-                                    #keyPath(OCKCDOutcome.deletedDate),
-                                    self)
-        let request = NSFetchRequest<OCKCDOutcome>(entityName: String(describing: OCKCDOutcome.self))
-        request.predicate = predicate
-        let numberOfDuplicates = try context.count(for: request)
-        if numberOfDuplicates > 0 {
-            throw OCKStoreError.invalidValue(reason: "Duplicate outcome!")
-        }
+    override func makeValue() -> OCKVersionedObjectCompatible {
+        makeOutcome()
     }
-}
+    
+    func makeOutcome() -> OCKOutcome {
 
-extension OCKCDOutcome {
-    override func awakeFromInsert() {
-        super.awakeFromInsert()
-        values = Set()
+        var outcome = OCKOutcome(
+            taskUUID: task.uuid,
+            taskOccurrenceIndex: Int(taskOccurrenceIndex),
+            values: values.map { $0.makeValue() }
+        )
+
+        outcome.copyVersionedValues(from: self)
+        
+        return outcome
     }
 }

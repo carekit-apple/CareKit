@@ -174,7 +174,7 @@ private extension OCKTaskEvents {
         task.instructions = "instructions"
 
         let scheduleEvent = task.schedule.event(forOccurrenceIndex: 0)!
-        let outcome = OCKOutcome(taskUUID: task.uuid!, taskOccurrenceIndex: 0, values: [.init(outcomeValue)])
+        let outcome = OCKOutcome(taskUUID: task.uuid, taskOccurrenceIndex: 0, values: [.init(outcomeValue)])
         let event = OCKAnyEvent(task: task, outcome: outcome, scheduleEvent: scheduleEvent)
         var taskEvents = OCKTaskEvents()
         taskEvents.append(event: event)

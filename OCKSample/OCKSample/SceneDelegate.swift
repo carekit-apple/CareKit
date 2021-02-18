@@ -40,7 +40,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                options connectionOptions: UIScene.ConnectionOptions) {
 
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        let manager = appDelegate.synchronizedStoreManager!
+        let manager = appDelegate.synchronizedStoreManager
         let careViewController = UINavigationController(rootViewController: CareViewController(storeManager: manager))
 
         let permissionViewController = UIViewController()

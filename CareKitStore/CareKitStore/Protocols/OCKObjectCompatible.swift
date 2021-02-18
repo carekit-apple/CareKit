@@ -28,12 +28,22 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import CoreData
 import Foundation
 
-internal protocol OCKObjectCompatible {
+protocol OCKVersionedObjectCompatible {
+
+    /// A human readable unique identifier. It is used strictly by the developer and will never be shown to a user.
+    var id: String { get }
 
     /// A universally unique identifier for this object.
-    var uuid: UUID? { get set }
+    var uuid: UUID { get set }
+
+    /// The UUID of the previous version of this object, or nil if there is no previous version.
+    var previousVersionUUIDs: [UUID] { get set }
+
+    /// The database UUID of the next version of this object, or nil if there is no next version.
+    var nextVersionUUIDs: [UUID] { get set }
 
     /// The date at which the object was first persisted to the database.
     /// It will be nil for unpersisted values and objects.
@@ -42,6 +52,14 @@ internal protocol OCKObjectCompatible {
     /// The last date at which the object was updated.
     /// It will be nil for unpersisted values and objects.
     var updatedDate: Date? { get set }
+
+    /// The date on which this object was marked deleted. Note that objects are never actually deleted,
+    /// but rather they are marked deleted and will no longer be returned from queries.
+    var deletedDate: Date? { get set }
+
+    /// The date that this version of the object begins to take precedence over the previous version.
+    /// Often this will be the same as the `createdDate`, but is not required to be.
+    var effectiveDate: Date { get set }
 
     /// A user-defined group identifier that can be used both for querying and sorting results.
     /// Examples may include: "medications", "exercises", "family", "males", "diabetics", etc.
@@ -76,59 +94,34 @@ internal protocol OCKObjectCompatible {
 
     /// The timezone this record was created in.
     var timezone: TimeZone { get set }
-}
 
-internal protocol OCKVersionedObjectCompatible: OCKObjectCompatible {
-    /// A human readable unique identifier. It is used strictly by the developer and will never be shown to a user.
-    var id: String { get }
+    static func entity() -> NSEntityDescription
 
-    /// A universally unique identifier for this object.
-    var uuid: UUID? { get set }
-
-    /// The UUID of the previous version of this object, or nil if there is no previous version.
-    var previousVersionUUID: UUID? { get set }
-
-    /// The database UUID of the next version of this object, or nil if there is no next version.
-    var nextVersionUUID: UUID? { get set }
-
-    /// The date that this version of the object begins to take precedence over the previous version.
-    /// Often this will be the same as the `createdDate`, but is not required to be.
-    var effectiveDate: Date { get set }
-
-    /// The date on which this object was marked deleted. Note that objects are never actually deleted,
-    /// but rather they are marked deleted and will no longer be returned from queries.
-    var deletedDate: Date? { get set }
-}
-
-extension OCKObjectCompatible {
-    mutating func copyCommonValues(from other: OCKCDObject) {
-        uuid = other.uuid
-        createdDate = other.createdDate
-        updatedDate = other.updatedDate
-        schemaVersion = OCKSemanticVersion(other.schemaVersion)
-        groupIdentifier = other.groupIdentifier
-        tags = other.tags
-        source = other.source
-        remoteID = other.remoteID
-        userInfo = other.userInfo
-        asset = other.asset
-        timezone = TimeZone(identifier: other.timezoneIdentifier)!
-        notes = other.notes?.map {
-            var note = OCKNote(author: $0.author, title: $0.title, content: $0.content)
-            note.copyCommonValues(from: $0)
-            return note
-        }
-    }
+    func entity() -> OCKEntity
+    
+    func insert(context: NSManagedObjectContext) -> OCKCDVersionedObject
 }
 
 extension OCKVersionedObjectCompatible {
     mutating func copyVersionedValues(from other: OCKCDVersionedObject) {
         uuid = other.uuid
+        nextVersionUUIDs = other.next.map(\.uuid)
+        previousVersionUUIDs = other.previous.map(\.uuid)
+        createdDate = other.createdDate
+        updatedDate = other.updatedDate
         deletedDate = other.deletedDate
         effectiveDate = other.effectiveDate
-        uuid = other.uuid
-        nextVersionUUID = other.next?.uuid
-        previousVersionUUID = other.previous?.uuid
-        copyCommonValues(from: other)
+        groupIdentifier = other.groupIdentifier
+        tags = other.tags?.map(\.title)
+        source = other.source
+        remoteID = other.remoteID
+        userInfo = other.userInfo
+        asset = other.asset
+        schemaVersion = OCKSemanticVersion(other.schemaVersion)
+        timezone = TimeZone(identifier: other.timezoneIdentifier)!
+
+        notes = other.notes?.map {
+            OCKNote(author: $0.author, title: $0.title, content: $0.content)
+        }
     }
 }

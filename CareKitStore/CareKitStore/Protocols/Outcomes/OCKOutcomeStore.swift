@@ -32,7 +32,6 @@ import Foundation
 /// Any store from which a single type conforming to `OCKAnyTask` can be queried is considered a `OCKReadableOutcomeStore`.
 public protocol OCKReadableOutcomeStore: OCKAnyReadOnlyOutcomeStore {
     associatedtype Outcome: OCKAnyOutcome & Equatable & Identifiable
-    associatedtype OutcomeQuery: OCKAnyOutcomeQuery
 
     /// `fetchOutcomes` asynchronously retrieves an array of outcomes from the store.
     ///
@@ -40,7 +39,7 @@ public protocol OCKReadableOutcomeStore: OCKAnyReadOnlyOutcomeStore {
     ///   - query: A query used to constrain the values that will be fetched.
     ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on the provided callback queue.
-    func fetchOutcomes(query: OutcomeQuery, callbackQueue: DispatchQueue,
+    func fetchOutcomes(query: OCKOutcomeQuery, callbackQueue: DispatchQueue,
                        completion: @escaping OCKResultClosure<[Outcome]>)
 
     /// `fetchOutcome` asynchronously retrieves a single outcome from the store. If more than one outcome matches the query, only the first
@@ -50,7 +49,7 @@ public protocol OCKReadableOutcomeStore: OCKAnyReadOnlyOutcomeStore {
     ///   - query: A query used to constrain the values that will be fetched.
     ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on the provided callback queue.
-    func fetchOutcome(query: OutcomeQuery, callbackQueue: DispatchQueue,
+    func fetchOutcome(query: OCKOutcomeQuery, callbackQueue: DispatchQueue,
                       completion: @escaping OCKResultClosure<Outcome>)
 }
 
@@ -110,7 +109,7 @@ public protocol OCKOutcomeStore: OCKAnyOutcomeStore & OCKReadableOutcomeStore {
 // MARK: Singular Methods for OCKReadableOutcomeStore
 
 public extension OCKReadableOutcomeStore {
-    func fetchOutcome(query: OutcomeQuery, callbackQueue: DispatchQueue = .main,
+    func fetchOutcome(query: OCKOutcomeQuery, callbackQueue: DispatchQueue = .main,
                       completion: @escaping OCKResultClosure<Outcome>) {
         fetchOutcomes(query: query, callbackQueue: callbackQueue, completion:
             chooseFirst(then: completion, replacementError: .fetchFailed(reason: "No matching outcome found")))
@@ -139,10 +138,9 @@ public extension OCKOutcomeStore {
 // MARK: OCKAnyReadOnlyStore conformance for OCKReadableOutcomeStore
 
 public extension OCKReadableOutcomeStore {
-    func fetchAnyOutcomes(query: OCKAnyOutcomeQuery, callbackQueue: DispatchQueue,
+    func fetchAnyOutcomes(query: OCKOutcomeQuery, callbackQueue: DispatchQueue,
                           completion: @escaping OCKResultClosure<[OCKAnyOutcome]>) {
-        let outcomeQuery = OutcomeQuery(query)
-        fetchOutcomes(query: outcomeQuery, callbackQueue: callbackQueue) { completion($0.map { $0.map { $0 as OCKAnyOutcome } }) }
+        fetchOutcomes(query: query, callbackQueue: callbackQueue) { completion($0.map { $0.map { $0 as OCKAnyOutcome } }) }
     }
 }
 

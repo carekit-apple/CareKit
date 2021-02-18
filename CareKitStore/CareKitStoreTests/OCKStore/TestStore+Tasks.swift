@@ -33,31 +33,12 @@ import HealthKit
 import XCTest
 
 class TestStoreTasks: XCTestCase {
+
     var store: OCKStore!
 
     override func setUp() {
         super.setUp()
-        store = OCKStore(name: "TestDatabase", type: .inMemory)
-    }
-
-    override func tearDown() {
-        super.tearDown()
-        store = nil
-    }
-
-    // MARK: Relationship Validation
-
-    func testStorePreventsMissingPlanRelationshipOnTasks() {
-        let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
-        let task = OCKTask(id: "medicine", title: "Advil", carePlanUUID: nil, schedule: schedule)
-        store.configuration.allowsEntitiesWithMissingRelationships = false
-        XCTAssertThrowsError(try store.addTaskAndWait(task))
-    }
-
-    func testStoreAllowsMissingPlanRelationshipOnTasks() {
-        let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
-        let task = OCKTask(id: "medicine", title: "Advil", carePlanUUID: nil, schedule: schedule)
-        XCTAssertNoThrow(try store.addTaskAndWait(task))
+        store = OCKStore(name: UUID().uuidString, type: .inMemory)
     }
 
     // MARK: Insertion
@@ -93,23 +74,6 @@ class TestStoreTasks: XCTestCase {
         XCTAssertTrue(fetchedElement.duration == .allDay)
     }
 
-    func testAddUpdateOrDelete() throws {
-        let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
-        let taskC = OCKTask(id: "C", title: "OriginalC", carePlanUUID: nil, schedule: schedule)
-        try store.addTaskAndWait(OCKTask(id: "A", title: "OriginalA", carePlanUUID: nil, schedule: schedule))
-        try store.addTaskAndWait(taskC)
-
-        let taskA = OCKTask(id: "A", title: "UpdatedA", carePlanUUID: nil, schedule: schedule)
-        let taskB = OCKTask(id: "B", title: "OriginalB", carePlanUUID: nil, schedule: schedule)
-        try store.addUpdateOrDeleteTasksAndWait(addOrUpdate: [taskA, taskB], delete: [taskC])
-
-        let tasks = try store.fetchTasksAndWait(query: .init(for: Date()))
-        let titles = tasks.map { $0.title }
-        XCTAssert(tasks.count == 2)
-        XCTAssert(titles.contains("UpdatedA"))
-        XCTAssert(titles.contains("OriginalB"))
-    }
-
     // MARK: Querying
 
     func testQueryTaskByIdentifier() throws {
@@ -134,11 +98,10 @@ class TestStoreTasks: XCTestCase {
 
     func testQueryTaskByCarePlanVersionID() throws {
         let carePlan = try store.addCarePlanAndWait(OCKCarePlan(id: "plan", title: "Plan", patientUUID: nil))
-        guard let versionID = carePlan.uuid else { XCTFail("Missing versionID"); return }
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
         let task = try store.addTaskAndWait(OCKTask(id: "A", title: "Task", carePlanUUID: carePlan.uuid, schedule: schedule))
         var query = OCKTaskQuery()
-        query.carePlanUUIDs = [versionID]
+        query.carePlanUUIDs = [carePlan.uuid]
         let fetched = try store.fetchTasksAndWait(query: query)
         XCTAssert(fetched == [task])
     }
@@ -184,7 +147,7 @@ class TestStoreTasks: XCTestCase {
 
         let interval = DateInterval(start: Date(), end: Calendar.current.date(byAdding: .day, value: 10, to: today)!)
         var query = OCKTaskQuery(dateInterval: interval)
-        query.extendedSortDescriptors = [.title(ascending: true)]
+        query.sortDescriptors = [.title(ascending: true)]
         let fetched = try store.fetchTasksAndWait(query: query)
         XCTAssert(fetched.map { $0.title } == [nil, "aa", "bb"])
     }
@@ -198,13 +161,11 @@ class TestStoreTasks: XCTestCase {
 
         let interval = DateInterval(start: Date(), end: Calendar.current.date(byAdding: .day, value: 2, to: Date())!)
         var query = OCKTaskQuery(dateInterval: interval)
-        query.extendedSortDescriptors = [.title(ascending: true)]
-        query.limit = 1
-        query.offset = 2
+        query.sortDescriptors = [.title(ascending: true)]
+        query.limit = 2
 
         let tasks = try store.fetchTasksAndWait(query: query)
-        XCTAssert(tasks.count == 1)
-        XCTAssert(tasks.first?.id == task3.id)
+        XCTAssert(tasks.map { $0.id } == ["a", "b"])
     }
 
     func testTaskQueryTags() throws {
@@ -220,7 +181,7 @@ class TestStoreTasks: XCTestCase {
         let interval = DateInterval(start: Date(), end: Calendar.current.date(byAdding: .day, value: 2, to: Date())!)
         var query = OCKTaskQuery(dateInterval: interval)
         query.tags = ["B"]
-        query.extendedSortDescriptors = [.title(ascending: true)]
+        query.sortDescriptors = [.title(ascending: true)]
         let fetched = try store.fetchTasksAndWait(query: query)
         let titles = fetched.map { $0.title }
         XCTAssert(titles == ["b", "c"], "Expected [b, c], but got \(titles)")
@@ -267,7 +228,7 @@ class TestStoreTasks: XCTestCase {
         let task = try store.addTaskAndWait(OCKTask(id: "meds", title: "Medication", carePlanUUID: nil, schedule: schedule))
         let updatedTask = try store.updateTaskAndWait(OCKTask(id: "meds", title: "New Medication", carePlanUUID: nil, schedule: schedule))
         XCTAssert(updatedTask.title == "New Medication")
-        XCTAssert(updatedTask.previousVersionUUID == task.uuid)
+        XCTAssert(updatedTask.previousVersionUUIDs.first == task.uuid)
     }
 
     func testCanFetchEventsWhenCurrentTaskVersionStartsAtSameTimeOrEarlierThanThePreviousVersion() throws {
@@ -304,7 +265,7 @@ class TestStoreTasks: XCTestCase {
     func testCannotUpdateTaskIfItResultsInImplicitDataLoss() throws {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
         let task = try store.addTaskAndWait(OCKTask(id: "meds", title: "Medication", carePlanUUID: nil, schedule: schedule))
-        let outcome = OCKOutcome(taskUUID: try task.getUUID(), taskOccurrenceIndex: 5, values: [OCKOutcomeValue(1)])
+        let outcome = OCKOutcome(taskUUID: task.uuid, taskOccurrenceIndex: 5, values: [OCKOutcomeValue(1)])
         try store.addOutcomesAndWait([outcome])
         XCTAssertThrowsError(try store.updateTaskAndWait(task))
     }
@@ -312,7 +273,7 @@ class TestStoreTasks: XCTestCase {
     func testCanUpdateTaskWithOutcomesIfDoesNotCauseDataLoss() throws {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
         var task = try store.addTaskAndWait(OCKTask(id: "meds", title: "Medication", carePlanUUID: nil, schedule: schedule))
-        let outcome = OCKOutcome(taskUUID: try task.getUUID(), taskOccurrenceIndex: 0, values: [OCKOutcomeValue(1)])
+        let outcome = OCKOutcome(taskUUID: task.uuid, taskOccurrenceIndex: 0, values: [OCKOutcomeValue(1)])
         try store.addOutcomesAndWait([outcome])
         task.effectiveDate = task.schedule[5].start
         XCTAssertNoThrow(try store.updateTaskAndWait(task))

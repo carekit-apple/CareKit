@@ -31,25 +31,100 @@
 @testable import CareKitStore
 import XCTest
 
-class MockPeer: OCKWatchConnectivityPeer {
+class TestWatchConnectivityPeer: XCTestCase {
+
+    private var storeA: OCKStore!
+    private var peerA: MockPeer!
+
+    private var storeB: OCKStore!
+    private var peerB: MockPeer!
+
+    override func setUp() {
+        super.setUp()
+
+        peerA = MockPeer(name: "A")
+        peerB = MockPeer(name: "B")
+
+        storeA = OCKStore(name: UUID().uuidString, type: .inMemory, remote: peerA)
+        storeB = OCKStore(name: UUID().uuidString, type: .inMemory, remote: peerB)
+
+        peerA.peersStore = storeB
+        peerA.automaticallySynchronizes = false
+
+        peerB.peersStore = storeA
+        peerB.automaticallySynchronizes = false
+    }
+
+    func testWatchConnectivityPeers() throws {
+        let uuidA = storeA.context.clockID
+        let uuidB = storeB.context.clockID
+
+        // 1. Sync a task to from A to B, at B's request.
+        let schedule = OCKSchedule.dailyAtTime(hour: 0, minutes: 0, start: Date(), end: nil, text: nil)
+        var taskA = OCKTask(id: "A", title: "A1", carePlanUUID: nil, schedule: schedule)
+        try storeA.addTaskAndWait(taskA)
+
+        try storeB.syncAndWait()
+
+        let stateA1 = OCKRevisionRecord.KnowledgeVector([uuidA: 3, uuidB: 2])
+        let stateB1 = OCKRevisionRecord.KnowledgeVector([uuidA: 1, uuidB: 3])
+
+        let tasksA1 = try storeA.fetchTasksAndWait()
+        let tasksB1 = try storeA.fetchTasksAndWait()
+
+        XCTAssert(tasksA1.count == 1)
+        XCTAssert(tasksB1.count == 1)
+        XCTAssert(storeA.context.knowledgeVector == stateA1)
+        XCTAssert(storeB.context.knowledgeVector == stateB1)
+
+        // 2. Create conflicting updates on A and B, then sync again.
+        //    A goes first, resolves the conflict, and sends the patch to B.
+        //
+        //    Both store should end with the original version, both conflicted
+        //    versions, and the final non-conflicted version, totally 4 tasks.
+        taskA.title = "A2"
+        try storeA.updateTaskAndWait(taskA)
+
+        taskA.title = "B2"
+        try storeB.updateTaskAndWait(taskA)
+
+        try storeA.syncAndWait()
+
+        let stateA2 = OCKRevisionRecord.KnowledgeVector([uuidA: 5, uuidB: 3])
+        let stateB2 = OCKRevisionRecord.KnowledgeVector([uuidA: 4, uuidB: 5])
+
+        let tasksA2 = try storeA.fetchTasksAndWait()
+        let tasksB2 = try storeB.fetchTasksAndWait()
+
+        XCTAssert(tasksA2.count == 4)
+        XCTAssert(tasksB2.count == 4)
+        XCTAssert(storeA.context.knowledgeVector == stateA2)
+        XCTAssert(storeB.context.knowledgeVector == stateB2)
+    }
+}
+
+private final class MockPeer: OCKWatchConnectivityPeer {
+
     weak var peersStore: OCKStore!
 
-    var overrideConflictPolicy: OCKMergeConflictResolutionPolicy!
+    let name: String
 
-    var lastRevisionReceivedFromPeer: OCKRevisionRecord?
-    var lastRevisionPushedToPeer: OCKRevisionRecord?
+    init(name: String) {
+        self.name = name
+    }
 
     override func pullRevisions(
         since knowledgeVector: OCKRevisionRecord.KnowledgeVector,
-        mergeRevision: @escaping (OCKRevisionRecord, @escaping (Error?) -> Void) -> Void,
+        mergeRevision: @escaping (OCKRevisionRecord) throws -> Void,
         completion: @escaping (Error?) -> Void) {
 
         do {
-            let time = knowledgeVector.clock(for: try peersStore.context().clockID)
-            let revision = try peersStore.computeRevision(since: time)
+            let revision = try peersStore.computeRevision(since: knowledgeVector)
+            peersStore.context.knowledgeVector.increment(clockFor: peersStore.context.clockID)
 
-            lastRevisionReceivedFromPeer = revision
-            mergeRevision(revision, completion)
+            try mergeRevision(revision)
+            completion(nil)
+
         } catch {
             completion(error)
         }
@@ -57,217 +132,10 @@ class MockPeer: OCKWatchConnectivityPeer {
 
     override func pushRevisions(
         deviceRevision: OCKRevisionRecord,
-        overwriteRemote: Bool,
         completion: @escaping (Error?) -> Void) {
 
-        lastRevisionPushedToPeer = deviceRevision
-        peersStore.mergeRevision(deviceRevision, completion: completion)
-    }
-
-    override func chooseConflictResolutionPolicy(
-        _ conflict: OCKMergeConflictDescription,
-        completion: @escaping (OCKMergeConflictResolutionPolicy) -> Void) {
-        completion(overrideConflictPolicy)
-    }
-}
-
-class TestWatchConnectivityPeer: XCTestCase {
-
-    var storeA: OCKStore!
-    var peerA: MockPeer!
-
-    var storeB: OCKStore!
-    var peerB: MockPeer!
-
-    override func setUp() {
-        super.setUp()
-
-        peerA = MockPeer()
-        peerB = MockPeer()
-
-        storeA = OCKStore(name: "A", type: .inMemory, remote: peerA)
-        storeB = OCKStore(name: "B", type: .inMemory, remote: peerB)
-
-        peerA.peersStore = storeB
-        peerA.automaticallySynchronizes = false
-        peerA.overrideConflictPolicy = .keepDevice
-
-        peerB.peersStore = storeA
-        peerB.automaticallySynchronizes = false
-        peerB.overrideConflictPolicy = .keepRemote
-    }
-
-    override func tearDown() {
-        super.tearDown()
-        storeA = nil
-        peerA = nil
-
-        storeB = nil
-        peerB = nil
-    }
-
-    func testPushToEmptyPeer() throws {
-        let schedule = OCKSchedule.dailyAtTime(hour: 12, minutes: 0, start: Date(), end: nil, text: nil)
-        var task = OCKTask(id: "A", title: nil, carePlanUUID: nil, schedule: schedule)
-        task = try storeA.addTaskAndWait(task)
-
-        var outcome = OCKOutcome(taskUUID: try task.getUUID(), taskOccurrenceIndex: 0, values: [])
-        outcome = try storeA.addOutcomeAndWait(outcome)
-
-        try storeA.syncAndWait()
-        XCTAssert(peerA.lastRevisionReceivedFromPeer?.entities.isEmpty == true)
-        XCTAssert(peerA.lastRevisionPushedToPeer?.entities.count == 2)
-
-        let tasks = try storeB.fetchTasksAndWait()
-        let outcomes = try storeB.fetchOutcomesAndWait()
-
-        XCTAssert(tasks.count == 1)
-        XCTAssert(tasks.first == task)
-        XCTAssert(outcomes.count == 1)
-        XCTAssert(outcomes.first == outcome)
-    }
-
-    func testPullFromPeerIntoEmptyStore() throws {
-        let schedule = OCKSchedule.dailyAtTime(hour: 12, minutes: 0, start: Date(), end: nil, text: nil)
-        var task = OCKTask(id: "A", title: nil, carePlanUUID: nil, schedule: schedule)
-        task = try storeA.addTaskAndWait(task)
-
-        var outcome = OCKOutcome(taskUUID: try task.getUUID(), taskOccurrenceIndex: 0, values: [])
-        outcome = try storeA.addOutcomeAndWait(outcome)
-
-        try storeB.syncAndWait()
-        XCTAssert(peerB.lastRevisionReceivedFromPeer?.entities.count == 2)
-
-        let tasks = try storeB.fetchTasksAndWait()
-        let outcomes = try storeB.fetchOutcomesAndWait()
-
-        XCTAssert(tasks.count == 1)
-        XCTAssert(tasks.first == task)
-        XCTAssert(outcomes.count == 1)
-        XCTAssert(outcomes.first == outcome)
-    }
-
-    func testResolveConflict() throws {
-        let schedule = OCKSchedule.dailyAtTime(hour: 12, minutes: 0, start: Date(), end: nil, text: nil)
-
-        var taskA = OCKTask(id: "A", title: nil, carePlanUUID: nil, schedule: schedule)
-        taskA = try storeA.addTaskAndWait(taskA)
-
-        var taskB = OCKTask(id: "B", title: nil, carePlanUUID: nil, schedule: schedule)
-        taskB = try storeB.addTaskAndWait(taskB)
-
-        try storeA.syncAndWait()
-
-        let tasksA = try storeA.fetchTasksAndWait()
-        let tasksB = try storeB.fetchTasksAndWait()
-        XCTAssert(tasksA == tasksB)
-    }
-
-    func testSyncOneSidedOutcomeAdditionThenDeletion() throws {
-        let schedule = OCKSchedule.dailyAtTime(hour: 12, minutes: 0, start: Date(), end: nil, text: nil)
-        var taskA = OCKTask(id: "A", title: nil, carePlanUUID: nil, schedule: schedule)
-        taskA = try storeA.addTaskAndWait(taskA)
-
-        try storeA.syncAndWait()
-
-        let outcomeA = OCKOutcome(taskUUID: try taskA.getUUID(), taskOccurrenceIndex: 0, values: [])
-
-        try storeA.addOutcomeAndWait(outcomeA)
-        try storeA.syncAndWait()
-        try storeA.deleteOutcomeAndWait(outcomeA)
-        try storeA.syncAndWait()
-        XCTAssert(peerA.lastRevisionPushedToPeer?.entities.count == 2)
-
-        let tasksA = try storeA.fetchTasksAndWait()
-        let tasksB = try storeB.fetchTasksAndWait()
-        XCTAssert(tasksA == tasksB)
-
-        let outcomesA = try storeA.fetchOutcomesAndWait()
-        let outcomesB = try storeB.fetchOutcomesAndWait()
-        XCTAssert(outcomesA == outcomesB)
-        XCTAssert(outcomesA.isEmpty)
-    }
-
-    func testSyncTwoSidedOutcomeAdditionThenDeletion() throws {
-        let schedule = OCKSchedule.dailyAtTime(hour: 12, minutes: 0, start: Date(), end: nil, text: nil)
-        var taskA = OCKTask(id: "A", title: nil, carePlanUUID: nil, schedule: schedule)
-        taskA = try storeA.addTaskAndWait(taskA)
-
-        try storeA.syncAndWait()
-
-        let outcomeA = OCKOutcome(taskUUID: try taskA.getUUID(), taskOccurrenceIndex: 0, values: [])
-
-        try storeA.addOutcomeAndWait(outcomeA)
-        try storeA.syncAndWait()
-
-        try storeB.deleteOutcomeAndWait(outcomeA)
-        try storeB.syncAndWait()
-
-        let tasksA = try storeA.fetchTasksAndWait()
-        let tasksB = try storeB.fetchTasksAndWait()
-        XCTAssert(tasksA == tasksB)
-
-        let outcomesA = try storeA.fetchOutcomesAndWait()
-        let outcomesB = try storeB.fetchOutcomesAndWait()
-        XCTAssert(outcomesA == outcomesB)
-    }
-
-    func testResolveLongConflictBranchKeepingLongBranch() throws {
-        let schedule = OCKSchedule.dailyAtTime(hour: 12, minutes: 0, start: Date(), end: nil, text: nil)
-        var taskA = OCKTask(id: "A", title: nil, carePlanUUID: nil, schedule: schedule)
-        taskA = try storeA.addTaskAndWait(taskA)
-        try storeA.syncAndWait()
-
-        let outcome = OCKOutcome(taskUUID: try taskA.getUUID(), taskOccurrenceIndex: 0, values: [])
-        for _ in 0..<5 {
-            try storeA.addOutcomeAndWait(outcome)
-            try storeA.deleteOutcomeAndWait(outcome)
-        }
-        try storeB.addOutcomeAndWait(outcome)
-
-        try storeA.syncAndWait()
-        let outcomesA = try storeA.fetchOutcomesAndWait()
-        let outcomesB = try storeB.fetchOutcomesAndWait()
-        XCTAssert(outcomesA == outcomesB)
-        XCTAssert(outcomesA.isEmpty)
-    }
-
-    func testResolveLongConflictBranchKeepingShortBranch() throws {
-        let schedule = OCKSchedule.dailyAtTime(hour: 12, minutes: 0, start: Date(), end: nil, text: nil)
-        var taskA = OCKTask(id: "A", title: nil, carePlanUUID: nil, schedule: schedule)
-        taskA = try storeA.addTaskAndWait(taskA)
-        try storeA.syncAndWait()
-
-        let outcome = OCKOutcome(taskUUID: try taskA.getUUID(), taskOccurrenceIndex: 0, values: [])
-        for _ in 0..<5 {
-            try storeB.addOutcomeAndWait(outcome)
-            try storeB.deleteOutcomeAndWait(outcome)
-        }
-        try storeA.addOutcomeAndWait(outcome)
-
-        try storeA.syncAndWait()
-        let outcomesA = try storeA.fetchOutcomesAndWait()
-        let outcomesB = try storeB.fetchOutcomesAndWait()
-        XCTAssert(outcomesA == outcomesB)
-        XCTAssert(outcomesA.count == 1)
-    }
-
-    func testDeletingTask() throws {
-        let schedule = OCKSchedule.dailyAtTime(hour: 12, minutes: 0, start: Date(), end: nil, text: nil)
-
-        let taskA1 = OCKTask(id: "A", title: "A1", carePlanUUID: nil, schedule: schedule)
-        try storeA.addTaskAndWait(taskA1)
-
-        let taskA2 = OCKTask(id: "A", title: "A2", carePlanUUID: nil, schedule: schedule)
-        try storeA.updateTaskAndWait(taskA2)
-
-        try storeA.syncAndWait()
-        try storeA.deleteTasksAndWait([taskA2])
-        try storeA.syncAndWait()
-
-        let tasksA = try storeA.fetchTasksAndWait()
-        let tasksB = try storeB.fetchTasksAndWait()
-
-        XCTAssert(tasksA == tasksB)
+        peersStore.mergeRevision(deviceRevision)
+        peersStore.context.knowledgeVector.increment(clockFor: peersStore.context.clockID)
+        self.peersStore.resolveConflicts(completion: completion)
     }
 }

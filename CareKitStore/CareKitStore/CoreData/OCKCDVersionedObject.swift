@@ -33,72 +33,165 @@ import Foundation
 
 class OCKCDVersionedObject: OCKCDObject {
     @NSManaged var id: String
-    @NSManaged var isDirty: Bool
-    @NSManaged var previous: OCKCDVersionedObject?
-    @NSManaged var allowsMissingRelationships: Bool
     @NSManaged var effectiveDate: Date
     @NSManaged var deletedDate: Date?
-    @NSManaged private(set) weak var next: OCKCDVersionedObject?
+    @NSManaged var next: Set<OCKCDVersionedObject>
+    @NSManaged var previous: Set<OCKCDVersionedObject>
 
-    var nextVersionUUID: UUID? {
-        return next?.uuid
+    var nextVersionUUIDs: [UUID] {
+        return next.map(\.uuid)
     }
 
-    var previousVersionUUID: UUID? {
-        return previous?.uuid
+    var previousVersionUUIDs: [UUID] {
+        return previous.map(\.uuid)
     }
 
-    func validateRelationships() throws {
+    func copyVersionedValue(value: OCKVersionedObjectCompatible, context: NSManagedObjectContext) {
+        id = value.id
+        uuid = value.uuid
+        deletedDate = value.deletedDate
+        effectiveDate = value.effectiveDate
+        createdDate = value.createdDate ?? createdDate
+        updatedDate = value.updatedDate ?? updatedDate
+        groupIdentifier = value.groupIdentifier
+        tags = value.tags.map { Set($0.map { OCKCDTag.findOrCreate(title: $0, in: context) }) }
+        source = value.source
+        remoteID = value.remoteID
+        userInfo = value.userInfo
+        asset = value.asset
+        timezoneIdentifier = value.timezone.identifier
+
+        next = Set(value.nextVersionUUIDs.compactMap { uuid -> OCKCDVersionedObject? in
+            let next: Self? = try? context.fetchObject(uuid: uuid)
+            return next
+        })
+
+        previous = Set(value.previousVersionUUIDs.compactMap { uuid -> OCKCDVersionedObject? in
+            let prev: Self? = try? context.fetchObject(uuid: uuid)
+            return prev
+        })
+
+        notes = {
+            guard let valueNotes = value.notes else { return nil }
+            return Set(valueNotes.map {
+                        OCKCDNote(note: $0, context: context)
+            })
+        }()
     }
 
-    static var notDeletedPredicate: NSPredicate {
-        NSPredicate(format: "%K == nil", #keyPath(OCKCDVersionedObject.deletedDate))
+    func makeValue() -> OCKVersionedObjectCompatible {
+        fatalError("Must be implemented in subclasses!")
     }
 
-    static func headerPredicate(for ids: [String]) -> NSPredicate {
-        return NSCompoundPredicate(andPredicateWithSubpredicates: [
-            NSPredicate(format: "%K IN %@", #keyPath(OCKCDVersionedObject.id), ids),
-            headerPredicate()
-        ])
-    }
-
-    static func headerPredicate() -> NSPredicate {
-        return NSCompoundPredicate(andPredicateWithSubpredicates: [
-            notDeletedPredicate,
-            NSPredicate(format: "%K == nil", #keyPath(OCKCDVersionedObject.next))
-        ])
+    static func headerPredicate(_ values: [OCKVersionedObjectCompatible]) -> NSPredicate {
+        NSPredicate(
+            format: "%K.@count == 0 AND %K IN %@",
+            #keyPath(OCKCDVersionedObject.next),
+            #keyPath(OCKCDVersionedObject.id),
+            values.map(\.id)
+        )
     }
 
     static func newestVersionPredicate(in interval: DateInterval) -> NSPredicate {
-        let startsBeforeEndOfQuery = NSPredicate(format: "%K < %@",
-                                                 #keyPath(OCKCDVersionedObject.effectiveDate),
-                                                 interval.end as NSDate)
+        let startsBeforeEndOfQuery = NSPredicate(
+            format: "%K < %@",
+            #keyPath(OCKCDVersionedObject.effectiveDate),
+            interval.end as NSDate
+        )
 
-        let noNextVersion = NSPredicate(format: "%K == nil OR %K.effectiveDate >= %@",
-                                        #keyPath(OCKCDVersionedObject.next),
-                                        #keyPath(OCKCDVersionedObject.next),
-                                        interval.end as NSDate)
+        let noNextVersion = NSPredicate(
+            format: "%K.@count == 0 OR SUBQUERY(%K, $version, $version.effectiveDate >= %@).@count > 0",
+            #keyPath(OCKCDVersionedObject.next),
+            #keyPath(OCKCDVersionedObject.next),
+            interval.end as NSDate
+        )
 
         return NSCompoundPredicate(andPredicateWithSubpredicates: [
             startsBeforeEndOfQuery,
             noNextVersion
         ])
     }
+}
 
-    override func validateForInsert() throws {
-        try super.validateForInsert()
-        try validateRelationships()
+// MARK: Version Graph
+
+extension OCKCDVersionedObject {
+
+    /// Determines if this chain of versions should be considered deleted (not returned by queries).
+    /// We find the most recent version of the object that has no conflicts, and check if its `deletedDate`
+    /// is set or not. If it is set, then all previous versions of the object are considered deleted as well.
+    ///
+    /// A versioned object can be "undeleted" by appending a new version with a nil `deletedDate`.
+    func newestVersionIsTombstone() -> Bool {
+        let resolved = nonConflictedVersions()
+        let last = resolved.last
+        let isTombstone = last?.deletedDate != nil
+        return isTombstone
     }
 
-    override func validateForUpdate() throws {
-        try super.validateForUpdate()
-        try validateRelationships()
+    /// Finds all nodes in the version graph where the `next` property is empty.
+    /// This requires visiting every node in the entire version graph.
+    func tips() -> Set<OCKCDVersionedObject> {
+        let first = firstVersion()
+        let allTips = tips(after: first)
+        return allTips
     }
 
-    func copyVersionInfo(from other: OCKVersionedObjectCompatible) {
-        id = other.id
-        deletedDate = other.deletedDate
-        effectiveDate = other.effectiveDate
-        copyValues(from: other)
+    /// Finds nodes in the version graph where the `next` property is empty.
+    /// Only nodes newer than the provided version will be checked, which may result in some nodes being
+    /// missed if the version passed in is not the very first version.
+    private func tips(
+        after version: OCKCDVersionedObject) -> Set<OCKCDVersionedObject> {
+
+        if version.next.isEmpty {
+            return Set([version])
+        }
+
+        let nextTips = version.next.map { $0.tips(after: $0) }
+        let empty = Set<OCKCDVersionedObject>()
+        let joined = nextTips.reduce(empty, { $0.union($1) })
+        return joined
+    }
+
+    /// Find the first version of this object via a depth-first-search for a node with no previous nodes.
+    private func firstVersion() -> OCKCDVersionedObject {
+
+        guard let prev = previous.first else {
+            return self
+        }
+
+        let first = prev.firstVersion()
+        return first
+    }
+
+    /// Returns ordered array of versions of this object that do not have any conflicts.
+    ///
+    /// This is determined by doing a depth first walk from the first version to any tip.
+    /// By counting the number of incoming and outgoing edges at each node, we can determine
+    /// where there are conflicts.
+    ///
+    /// Any and all paths through the graph must pass through all non-conflicted nodes.
+    /// Non-conflicted nodes are those at which the total number or accumulated incoming
+    /// and outgoing edges sum up to 0.
+    private func nonConflictedVersions() -> [OCKCDVersionedObject] {
+        var current = firstVersion()
+        var balance = 0
+        var versions = [current]
+
+        while let next = current.next.first {
+
+            let incoming = next.previous.count
+            let outgoing = next.next.count
+            balance = outgoing - incoming
+
+            // Include less than zero because the last node has no outgoing edge
+            if balance <= 0 {
+                versions.append(next)
+            }
+
+            current = next
+        }
+
+        return versions
     }
 }

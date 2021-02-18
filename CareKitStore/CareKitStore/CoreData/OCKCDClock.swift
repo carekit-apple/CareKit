@@ -33,17 +33,21 @@ import Foundation
 
 @objc(OCKCDClock)
 class OCKCDClock: NSManagedObject {
-    @NSManaged private(set) var uuid: UUID
+    @NSManaged var uuid: UUID
     @NSManaged private var vectorClock: [UUID: Int64]
 
     override func awakeFromInsert() {
         super.awakeFromInsert()
         uuid = UUID()
-        vectorClock = [uuid: 0]
+        vectorClock = [uuid: 1]
     }
 
     var vector: OCKRevisionRecord.KnowledgeVector {
-        get { .init(vectorClock.mapValues(Int.init)) }
+        get {
+            let processes = vectorClock.mapValues(Int.init)
+            let vector = OCKRevisionRecord.KnowledgeVector(processes)
+            return vector
+        }
         set { vectorClock = newValue.processes.mapValues(Int64.init) }
     }
 

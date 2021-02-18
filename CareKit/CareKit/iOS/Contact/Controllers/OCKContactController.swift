@@ -83,7 +83,7 @@ open class OCKContactController: ObservableObject {
     ///   - query: Any contact query describing the contact to be fetched.
     ///
     /// - Note: If the query matches multiple contacts, the first one returned will be used.
-    open func fetchAndObserveContact(forQuery query: OCKAnyContactQuery) {
+    open func fetchAndObserveContact(forQuery query: OCKContactQuery) {
 
         // Fetch the contact to set as the view model value
         storeManager.store.fetchAnyContacts(query: query, callbackQueue: .main) { [weak self] result in

@@ -36,12 +36,7 @@ class TestStoreNotes: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        store = OCKStore(name: "TestDatabase", type: .inMemory)
-    }
-
-    override func tearDown() {
-        super.tearDown()
-        store = nil
+        store = OCKStore(name: UUID().uuidString, type: .inMemory)
     }
 
     func testCanAttachNotesToPatient() throws {
@@ -69,40 +64,9 @@ class TestStoreNotes: XCTestCase {
     func testCanAttachNotesToOutcome() throws {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
         let task = try store.addTaskAndWait(OCKTask(id: "A", title: "A", carePlanUUID: nil, schedule: schedule))
-        var outcome = OCKOutcome(taskUUID: try task.getUUID(), taskOccurrenceIndex: 0, values: [])
+        var outcome = OCKOutcome(taskUUID: task.uuid, taskOccurrenceIndex: 0, values: [])
         outcome.notes = [OCKNote(author: "Jared", title: "My Recipe", content: "Bacon, eggs, and cheese")]
         let savedOutcome = try store.addOutcomeAndWait(outcome)
         XCTAssert(savedOutcome.notes?.count == 1)
-    }
-
-    func testCanAttachNotesToOutcomeValues() throws {
-        var task = OCKTask(id: "A", title: "A", carePlanUUID: nil, schedule: .mealTimesEachDay(start: Date(), end: nil))
-        task = try store.addTaskAndWait(task)
-
-        var value = OCKOutcomeValue(10.0)
-        value.notes = [OCKNote(author: "Amy", title: "High Temperature",
-                               content: "Stopped taking medication because it gave me a fever")]
-        let outcome = OCKOutcome(taskUUID: try task.getUUID(), taskOccurrenceIndex: 0, values: [value])
-        let savedOutcome = try store.addOutcomeAndWait(outcome)
-        XCTAssertNotNil(savedOutcome.values.first?.notes?.first)
-    }
-
-    func testCanSaveNotesOnNotes() throws {
-        var note = OCKNote(author: "Mr. A", title: "Title A", content: "Content A")
-        note.notes = [OCKNote(author: "Mr. B", title: "Title B", content: "Content B")]
-        var patient = OCKPatient(id: "johnny", givenName: "John", familyName: "Appleseed")
-        patient.notes = [note]
-        let savedPatient = try store.addPatientAndWait(patient)
-        XCTAssertNotNil(savedPatient.notes?.first?.notes?.first)
-    }
-
-    func testPersistedNotesHaveTimeZones() throws {
-        let note = OCKNote(author: "Mr. A", title: "Title A", content: "Content A")
-        var patient = OCKPatient(id: "johnny", givenName: "John", familyName: "Appleseed")
-        patient.notes = [note]
-
-        let savedPatient = try store.addPatientAndWait(patient)
-        XCTAssert(savedPatient.timezone == TimeZone.current)
-        XCTAssert(savedPatient.notes?.first?.timezone == TimeZone.current)
     }
 }

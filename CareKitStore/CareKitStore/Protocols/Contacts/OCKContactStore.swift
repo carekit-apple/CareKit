@@ -32,7 +32,6 @@ import Foundation
 /// Any store from which a single type conforming to `OCKAnyContact` can be queried is considered `OCKAReadableCarePlanStore`.
 public protocol OCKReadableContactStore: OCKAnyReadOnlyContactStore {
     associatedtype Contact: OCKAnyContact & Equatable & Identifiable
-    associatedtype ContactQuery: OCKAnyContactQuery
 
     /// `fetchContacts` asynchronously retrieves an array of contacts from the store.
     ///
@@ -40,7 +39,7 @@ public protocol OCKReadableContactStore: OCKAnyReadOnlyContactStore {
     ///   - query: A query used to constrain the values that will be fetched.
     ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on the provided callback queue.
-    func fetchContacts(query: ContactQuery, callbackQueue: DispatchQueue, completion: @escaping OCKResultClosure<[Contact]>)
+    func fetchContacts(query: OCKContactQuery, callbackQueue: DispatchQueue, completion: @escaping OCKResultClosure<[Contact]>)
 
     // MARK: Implementation Provided
 
@@ -115,9 +114,9 @@ public extension OCKReadableContactStore {
         var query = OCKContactQuery(for: Date())
         query.limit = 1
         query.ids = [id]
-        query.extendedSortDescriptors = [.effectiveDate(ascending: true)]
+        query.sortDescriptors = [.effectiveDate(ascending: true)]
 
-        fetchContacts(query: ContactQuery(query), callbackQueue: callbackQueue, completion:
+        fetchContacts(query: query, callbackQueue: callbackQueue, completion:
             chooseFirst(then: completion, replacementError: .fetchFailed(reason: "No contact with matching ID")))
     }
 }
@@ -144,10 +143,9 @@ public extension OCKContactStore {
 // MARK: OCKAnyReadbaleContactStore conformance for OCKReadableContactStore
 
 public extension OCKReadableContactStore {
-    func fetchAnyContacts(query: OCKAnyContactQuery, callbackQueue: DispatchQueue,
+    func fetchAnyContacts(query: OCKContactQuery, callbackQueue: DispatchQueue,
                           completion: @escaping OCKResultClosure<[OCKAnyContact]>) {
-        let contactQuery = ContactQuery(query)
-        fetchContacts(query: contactQuery, callbackQueue: callbackQueue) { completion($0.map { $0.map { $0 as OCKAnyContact } }) }
+        fetchContacts(query: query, callbackQueue: callbackQueue) { completion($0.map { $0.map { $0 as OCKAnyContact } }) }
     }
 }
 

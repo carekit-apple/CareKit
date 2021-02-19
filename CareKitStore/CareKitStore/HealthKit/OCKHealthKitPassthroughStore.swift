@@ -36,54 +36,36 @@ import os.log
 
 /// A specialized store that transparently manipulates outcomes in HealthKit.
 public final class OCKHealthKitPassthroughStore: OCKEventStore {
-
     public typealias Task = OCKHealthKitTask
-    public typealias TaskQuery = OCKTaskQuery
-
     public typealias Outcome = OCKHealthKitOutcome
-    public typealias OutcomeQuery = OCKOutcomeQuery
 
     public weak var outcomeDelegate: OCKOutcomeStoreDelegate?
 
     public var taskDelegate: OCKTaskStoreDelegate? {
-        get { taskStore.taskDelegate }
-        set { taskStore.taskDelegate = newValue }
+        get { store.taskDelegate }
+        set { store.taskDelegate = newValue }
     }
 
     public var resetDelegate: OCKResetDelegate? {
-        get { taskStore.resetDelegate }
-        set { taskStore.resetDelegate = newValue }
+        get { store.resetDelegate }
+        set { store.resetDelegate = newValue }
     }
 
-    internal let taskStore: OCKHealthKitTaskStore
-    internal let proxy: OCKHealthKitProxy
+    let store: OCKStore
 
-    /// Initialize a new store by specifying its name and store type. Store's with conflicting names and types must not be created.
-    ///
-    /// - Parameters:
-    ///   - name: A unique name for the store. It will be used for the filename if stored on disk.
-    ///   - securityApplicationGroupIdentifier: App group identifier for a sandboxed app that shares files with other apps
-    ///                                         from the same developer. See [Adding an App To an App Group](1).
-    ///   - type: The type of store to be used. `.onDisk` is used by default.
-    ///
-    /// [1]: https://developer.apple.com/library/archive/documentation/Miscellaneous/Reference/EntitlementKeyReference/Chapters/EnablingAppSandbox.html#//apple_ref/doc/uid/TP40011195-CH4-SW19
-    public init(
-        name: String,
-        securityApplicationGroupIdentifier: String? = nil,
-        type: OCKCoreDataStoreType
-    ) {
-        taskStore = OCKHealthKitTaskStore(
-            name: name,
-            securityApplicationGroupIdentifier: securityApplicationGroupIdentifier,
-            type: type
-        )
-        proxy = OCKHealthKitProxy()
+    let healthStore = HKHealthStore()
+
+    let proxy: OCKHealthKitProxy
+
+    public init(store: OCKStore) {
+        self.store = store
+        self.proxy = OCKHealthKitProxy()
         beginObservingAllTasks()
     }
 
     /// Deletes the contents of the store, resetting it to its initial state.
     public func reset() throws {
-        try taskStore.reset()
+        try store.reset()
     }
 
     /// Presents a standard HealthKit permission sheet prompting the user to grant permission for
@@ -91,7 +73,7 @@ public final class OCKHealthKitPassthroughStore: OCKEventStore {
     /// - Parameter completion:
     public func requestHealthKitPermissionsForAllTasksInStore(completion: @escaping (Error?) -> Void = { _ in }) {
         do {
-            let tasks = try taskStore.fetchTasks(query: OCKTaskQuery())
+            let tasks = try store.fetchHealthKitTasks(query: OCKTaskQuery())
             let quantities = tasks.map { HKQuantityType.quantityType(forIdentifier: $0.healthKitLinkage.quantityIdentifier)! }
             proxy.requestPermissionIfNecessary(writeTypes: Set(quantities)) { error in
                 completion(error)
@@ -108,7 +90,6 @@ public final class OCKHealthKitPassthroughStore: OCKEventStore {
 
     // MARK: Observing
     private var activeObserverQueries: [HKSampleType: HKObserverQuery] = [:]
-    internal let store = HKHealthStore()
 
     internal func startObservingHealthKit(task: OCKHealthKitTask) {
         let sampleType = HKSampleType.quantityType(forIdentifier: task.healthKitLinkage.quantityIdentifier)!
@@ -120,7 +101,7 @@ public final class OCKHealthKitPassthroughStore: OCKEventStore {
         let query = HKObserverQuery(sampleType: sampleType, predicate: predicate, updateHandler: updateHandler)
 
         activeObserverQueries[sampleType] = query
-        store.execute(query)
+        healthStore.execute(query)
     }
 
     internal func stopObservingHealthKit(task: OCKHealthKitTask) {
@@ -130,20 +111,20 @@ public final class OCKHealthKitPassthroughStore: OCKEventStore {
         else { // No query was running to begin with
             return
         }
-        store.stop(query)
+        healthStore.stop(query)
         activeObserverQueries[sampleType] = nil
     }
 
     private func beginObservingAllTasks() {
         do {
-            let allTasks = try taskStore.fetchTasks(query: OCKTaskQuery())
+            let allTasks = try store.fetchHealthKitTasks(query: OCKTaskQuery())
             let group = DispatchGroup()
             var observeError: Error?
 
             for task in allTasks {
                 group.enter()
                 let sampleType = HKSampleType.quantityType(forIdentifier: task.healthKitLinkage.quantityIdentifier)!
-                store.enableBackgroundDelivery(for: sampleType, frequency: .immediate) { _, error in
+                healthStore.enableBackgroundDelivery(for: sampleType, frequency: .immediate) { _, error in
                     if let error = error {
                         observeError = error
                     }
@@ -167,7 +148,7 @@ public final class OCKHealthKitPassthroughStore: OCKEventStore {
     }
 
     private func stopObservingAllTasks() {
-        store.disableAllBackgroundDelivery { _, error in
+        healthStore.disableAllBackgroundDelivery { _, error in
             if let error = error {
                 os_log("Failed to stop observing some HealthKit types. %{private}@",
                        log: .store, type: .error, error.localizedDescription)
@@ -243,7 +224,7 @@ public final class OCKHealthKitPassthroughStore: OCKEventStore {
                     backgroundCompletionHandler()
                 }
             }
-            self?.store.execute(anchorQuery)
+            self?.healthStore.execute(anchorQuery)
         }
     }
 

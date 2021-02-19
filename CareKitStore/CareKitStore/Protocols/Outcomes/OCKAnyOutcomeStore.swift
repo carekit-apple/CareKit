@@ -42,7 +42,7 @@ public protocol OCKAnyReadOnlyOutcomeStore: OCKAnyResettableStore {
     ///   - query: A query used to constrain the values that will be fetched.
     ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on the provided callback queue.
-    func fetchAnyOutcomes(query: OCKAnyOutcomeQuery, callbackQueue: DispatchQueue,
+    func fetchAnyOutcomes(query: OCKOutcomeQuery, callbackQueue: DispatchQueue,
                           completion: @escaping OCKResultClosure<[OCKAnyOutcome]>)
 
     // MARK: Singular Methods - Implementation Provided
@@ -54,7 +54,7 @@ public protocol OCKAnyReadOnlyOutcomeStore: OCKAnyResettableStore {
     ///   - query: A query used to constrain the values that will be fetched.
     ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on the provided callback queue.
-    func fetchAnyOutcome(query: OCKAnyOutcomeQuery, callbackQueue: DispatchQueue,
+    func fetchAnyOutcome(query: OCKOutcomeQuery, callbackQueue: DispatchQueue,
                          completion: @escaping OCKResultClosure<OCKAnyOutcome>)
 }
 
@@ -114,7 +114,7 @@ public protocol OCKAnyOutcomeStore: OCKAnyReadOnlyOutcomeStore {
 // MARK: Singular Methods for OCKAnyReadOnlyOutcomeStore
 
 public extension OCKAnyReadOnlyOutcomeStore {
-    func fetchAnyOutcome(query: OCKAnyOutcomeQuery, callbackQueue: DispatchQueue = .main,
+    func fetchAnyOutcome(query: OCKOutcomeQuery, callbackQueue: DispatchQueue = .main,
                          completion: @escaping OCKResultClosure<OCKAnyOutcome>) {
         fetchAnyOutcomes(query: query, callbackQueue: callbackQueue, completion:
             chooseFirst(then: completion, replacementError: .fetchFailed(reason: "No matching outcome found")))

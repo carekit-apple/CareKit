@@ -62,7 +62,7 @@ extension OCKTaskEvents {
             if eventsHaveOutcomes {
                 var outcomeValue = OCKOutcomeValue(true)
                 outcomeValue.createdDate = Date()
-                outcome = OCKOutcome(taskUUID: task.uuid!, taskOccurrenceIndex: $0, values: [outcomeValue])
+                outcome = OCKOutcome(taskUUID: task.uuid, taskOccurrenceIndex: $0, values: [outcomeValue])
             }
             let event = OCKAnyEvent(task: task, outcome: outcome, scheduleEvent: $1.event(forOccurrenceIndex: $0)!)
             taskEvents.append(event: event)

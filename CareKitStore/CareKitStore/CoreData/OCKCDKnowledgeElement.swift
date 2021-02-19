@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2021, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -28,24 +28,11 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-@testable import CareKitStore
-import XCTest
+import CoreData
+import Foundation
 
-class TestCoreDataSchemaWithCarePlan: XCTestCase {
-    var store: OCKStore!
-
-    override func setUp() {
-        super.setUp()
-        store = OCKStore(name: "test", type: .inMemory)
-    }
-
-    func testCanSaveCarePlan() throws {
-        let plan1 = OCKCDCarePlan(context: try store.context())
-        plan1.title = "Plan 1"
-        plan1.id = "plan_1"
-        plan1.uuid = UUID()
-        plan1.effectiveDate = Date()
-        plan1.allowsMissingRelationships = true
-        XCTAssertNoThrow(try store.context().save())
-    }
+@objc(OCKCDKnowledgeElement)
+final class OCKCDKnowledgeElement: NSManagedObject {
+    @NSManaged var uuid: UUID
+    @NSManaged var time: Int64
 }

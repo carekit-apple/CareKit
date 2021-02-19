@@ -34,15 +34,33 @@ import Foundation
 @objc(OCKCDPatient)
 class OCKCDPatient: OCKCDVersionedObject {
     @NSManaged var name: OCKCDPersonName
-    @NSManaged var sex: String?
-    @NSManaged var birthday: Date?
-    @NSManaged var allergies: [String]?
-    @NSManaged var carePlans: Set<OCKCDCarePlan>
-}
+    @NSManaged private var sex: String?
+    @NSManaged private var birthday: Date?
+    @NSManaged private var allergies: [String]?
+    @NSManaged private var carePlans: Set<OCKCDCarePlan>
 
-extension OCKCDPatient {
-    override func awakeFromInsert() {
-        super.awakeFromInsert()
-        carePlans = Set()
+    convenience init(patient: OCKPatient, context: NSManagedObjectContext) {
+        self.init(entity: Self.entity(), insertInto: context)
+        self.copyVersionedValue(value: patient, context: context)
+        self.name = OCKCDPersonName(name: patient.name, context: context)
+        self.sex = patient.sex?.rawValue
+        self.birthday = patient.birthday
+        self.allergies = patient.allergies
+    }
+
+    override func makeValue() -> OCKVersionedObjectCompatible {
+        makePatient()
+    }
+    
+    func makePatient() -> OCKPatient {
+
+        var patient = OCKPatient(id: id, name: name.makeValue())
+
+        patient.copyVersionedValues(from: self)
+        patient.sex = sex.map { OCKBiologicalSex(rawValue: $0)! }
+        patient.birthday = birthday
+        patient.allergies = allergies
+
+        return patient
     }
 }

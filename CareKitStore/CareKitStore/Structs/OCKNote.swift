@@ -33,7 +33,7 @@ import Foundation
 /// `OCKNote` can be attached to all other CareKit objects and values. Use cases may include a physician leaving a note on a task when it is modified
 /// to explain why a medication dose was changed, or a note left from a patient to a care provider explaining why they weren't able to complete a
 /// task on a certain occasion.
-public struct OCKNote: Codable, Equatable, OCKObjectCompatible {
+public struct OCKNote: Codable, Equatable {
 
     /// The person who created this note.
     public var author: String?
@@ -43,20 +43,6 @@ public struct OCKNote: Codable, Equatable, OCKObjectCompatible {
 
     /// The note content.
     public var content: String?
-
-    // MARK: OCKObjectCompatible
-    public internal(set) var uuid: UUID?
-    public internal(set) var createdDate: Date?
-    public internal(set) var updatedDate: Date?
-    public internal(set) var schemaVersion: OCKSemanticVersion?
-    public var groupIdentifier: String?
-    public var tags: [String]?
-    public var remoteID: String?
-    public var userInfo: [String: String]?
-    public var source: String?
-    public var asset: String?
-    public var notes: [OCKNote]?
-    public var timezone: TimeZone
 
     /// Initialize a new note with an optional author, title, and content.
     ///
@@ -68,6 +54,5 @@ public struct OCKNote: Codable, Equatable, OCKObjectCompatible {
         self.author = author
         self.title = title
         self.content = content
-        self.timezone = TimeZone.current
     }
 }

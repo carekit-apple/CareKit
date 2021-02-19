@@ -30,57 +30,17 @@
 
 import Foundation
 
-/// A protocol that all care plan queries are expected to conform to.
-public protocol OCKAnyCarePlanQuery: OCKEntityQuery {
-
-    /// The identifiers of patients for which care plans should match.
-    var patientIDs: [String] { get set }
-
-    /// The order in which the results will be sorted when returned from the query.
-    var sortDescriptors: [OCKCarePlanSortDescriptor] { get set }
-}
-
-public extension OCKAnyCarePlanQuery {
-    init(_ query: OCKAnyCarePlanQuery) {
-        if let other = query as? Self {
-            self = other
-            return
-        }
-        self = Self(query as OCKEntityQuery)
-        self.patientIDs = query.patientIDs
-        self.sortDescriptors = query.sortDescriptors
-    }
-}
-
-/// Describes the order in which care plans can be sorted when queried.
-public enum OCKCarePlanSortDescriptor: Equatable {
-    case title(ascending: Bool)
-
-    fileprivate var customVersion: OCKCarePlanQuery.SortDescriptor {
-        switch self {
-        case .title(let ascending): return .title(ascending: ascending)
-        }
-    }
-}
-
 /// A query that limits which care plans will be returned when fetching.
-public struct OCKCarePlanQuery: OCKAnyCarePlanQuery, Equatable {
+public struct OCKCarePlanQuery: Equatable, OCKQueryProtocol {
 
     /// Specifies the order in which query results will be sorted.
-    enum SortDescriptor: Equatable {
+    public enum SortDescriptor: Equatable {
         case title(ascending: Bool)
         case effectiveDate(ascending: Bool)
-
-        fileprivate var basicVersion: OCKCarePlanSortDescriptor? {
-            switch self {
-            case .title(let ascending): return .title(ascending: ascending)
-            case .effectiveDate: return nil
-            }
-        }
     }
 
-    /// Specific versions to be included in the query results.
-    public var uuids: [UUID] = []
+    /// An array of patient identifiers to match against.
+    public var patientIDs: [String] = []
 
     /// The UUID the patients for which care plans should match.
     public var patientUUIDs: [UUID] = []
@@ -89,28 +49,32 @@ public struct OCKCarePlanQuery: OCKAnyCarePlanQuery, Equatable {
     public var patientRemoteIDs: [String] = []
 
     /// The order in which the results will be sorted when returned from the query.
-    public var sortDescriptors: [OCKCarePlanSortDescriptor] {
-        get { extendedSortDescriptors.compactMap { $0.basicVersion } }
-        set { extendedSortDescriptors = newValue.map { $0.customVersion } }
+    public var sortDescriptors: [SortDescriptor] = []
+
+    // MARK: OCKQuery
+    public var ids: [String] = []
+    public var uuids: [UUID] = []
+    public var groupIdentifiers: [String?] = []
+    public var tags: [String] = []
+    public var remoteIDs: [String?] = []
+    public var dateInterval: DateInterval?
+    public var limit: Int?
+    public var offset: Int = 0
+
+    public init() {}
+    
+    public init(dateInterval: DateInterval? = nil) {
+        self.dateInterval = dateInterval
     }
 
-    /// The order in which the results will be sorted when returned from the query. This property supports
-    /// additional sort descriptors unique to `OCKStore`.
-    internal var extendedSortDescriptors: [SortDescriptor] = []
+    /// Create a query with that spans the entire day on the date given.
+    public init(for date: Date) {
+        let startOfDay = Calendar.current.startOfDay(for: date)
+        let endOfDay = Calendar.current.date(byAdding: DateComponents(day: 1, second: -1), to: startOfDay)!
+        self = Self(dateInterval: DateInterval(start: startOfDay, end: endOfDay))
+    }
 
-    /// An array of group identifiers to match against.
-    public var groupIdentifiers: [String?] = []
-
-    /// An array of tags to match against. If an object's tags contains one or more of entries, it will match the query.
-    public var tags: [String] = []
-
-    // MARK: OCKAnyCarePlanQuery
-    public var patientIDs: [String] = []
-    public var dateInterval: DateInterval?
-    public var ids: [String] = []
-    public var remoteIDs: [String?] = []
-    public var offset: Int = 0
-    public var limit: Int?
-
-    public init() { }
+    public init(id: String) {
+        self.ids = [id]
+    }
 }

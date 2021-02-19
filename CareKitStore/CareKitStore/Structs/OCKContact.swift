@@ -28,12 +28,12 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Contacts
+import CoreData
 import Foundation
 
 /// An `OCKContact` represents a contact that a user may want to get in touch with. A contact may be a care provider, a friend, or a family
 /// member. Contacts must have at least a name, and may optionally have numerous other addresses at which to be contacted.
-public struct OCKContact: Codable, Equatable, Identifiable, OCKAnyContact, OCKVersionedObjectCompatible {
+public struct OCKContact: Codable, Equatable, Identifiable, OCKAnyContact {
 
     /// The version id in the local database for the care plan associated with this contact.
     public var carePlanUUID: UUID?
@@ -54,9 +54,9 @@ public struct OCKContact: Codable, Equatable, Identifiable, OCKAnyContact, OCKVe
     // MARK: OCKVersionable
     public var effectiveDate: Date
     public var deletedDate: Date?
-    public var uuid: UUID?
-    public var nextVersionUUID: UUID?
-    public var previousVersionUUID: UUID?
+    public var uuid = UUID()
+    public var nextVersionUUIDs: [UUID] = []
+    public var previousVersionUUIDs: [UUID] = []
 
     // MARK: OCKObjectCompatible
     public var createdDate: Date?
@@ -104,7 +104,22 @@ public struct OCKContact: Codable, Equatable, Identifiable, OCKAnyContact, OCKVe
     }
 
     public func belongs(to plan: OCKAnyCarePlan) -> Bool {
-        guard let plan = plan as? OCKCarePlan, let planUUID = plan.uuid else { return false }
-        return carePlanUUID == planUUID
+        guard let plan = plan as? OCKCarePlan else { return false }
+        return carePlanUUID == plan.uuid
+    }
+}
+
+extension OCKContact: OCKVersionedObjectCompatible {
+
+    static func entity() -> NSEntityDescription {
+        OCKCDContact.entity()
+    }
+
+    func entity() -> OCKEntity {
+        .contact(self)
+    }
+    
+    func insert(context: NSManagedObjectContext) -> OCKCDVersionedObject {
+        OCKCDContact(contact: self, context: context)
     }
 }

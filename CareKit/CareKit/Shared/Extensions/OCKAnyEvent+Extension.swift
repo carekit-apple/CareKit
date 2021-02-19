@@ -40,10 +40,7 @@ extension OCKAnyEvent {
             !newOutcome.values.isEmpty else { return self }
 
         let sortedValues = newOutcome.values.sorted {
-            guard
-                let date1 = $0.updatedDate ?? $0.createdDate,
-                let date2 = $1.updatedDate ?? $0.createdDate else { return false }
-            return date1 > date2
+            $0.createdDate > $1.createdDate
         }
 
         newOutcome.values = sortedValues

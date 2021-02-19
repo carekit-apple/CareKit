@@ -41,28 +41,28 @@ class OCKCDPersonName: NSManagedObject {
     @NSManaged var nickname: String?
     @NSManaged var phoneticRepresentation: OCKCDPersonName?
 
-    func copyPersonNameComponents(_ components: PersonNameComponents) {
-        namePrefix = components.namePrefix
-        givenName = components.givenName
-        middleName = components.middleName
-        familyName = components.familyName
-        nameSuffix = components.nameSuffix
-        nickname = components.nickname
+    convenience init(name: PersonNameComponents, context: NSManagedObjectContext) {
+        self.init(entity: Self.entity(), insertInto: context)
+        self.namePrefix = name.namePrefix
+        self.givenName = name.givenName
+        self.middleName = name.middleName
+        self.familyName = name.familyName
+        self.nameSuffix = name.nameSuffix
+        self.nickname = name.nickname
 
-        if let phonetic = components.phoneticRepresentation, let context = managedObjectContext {
-            phoneticRepresentation = OCKCDPersonName(context: context)
-            phoneticRepresentation?.copyPersonNameComponents(phonetic)
+        if let phonetic = name.phoneticRepresentation {
+            phoneticRepresentation = OCKCDPersonName(name: phonetic, context: context)
         }
     }
 
-    func makeComponents() -> PersonNameComponents {
+    func makeValue() -> PersonNameComponents {
         var components = PersonNameComponents()
         components.namePrefix = namePrefix
         components.givenName = givenName
         components.familyName = familyName
         components.nameSuffix = nameSuffix
         components.nickname = nickname
-        components.phoneticRepresentation = phoneticRepresentation?.makeComponents()
+        components.phoneticRepresentation = phoneticRepresentation?.makeValue()
         return components
     }
 }

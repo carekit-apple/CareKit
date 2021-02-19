@@ -31,473 +31,220 @@
 @testable import CareKitStore
 import XCTest
 
-class TestStoreSync: XCTestCase {
+final class TestStoreSynchronization: XCTestCase {
 
-    var dummy: DummyEndpoint!
-    var peer: OCKLocalPeer!
-    var remoteStore: OCKStore!
-    var store: OCKStore!
+    func testMergeConflictResolution() throws {
 
-    override func setUp() {
-        super.setUp()
-        let remoteDummy = DummyEndpoint()
-        remoteDummy.automaticallySynchronizes = false
+        // 1. Setup the a server with two sync'd stores
+        let server = SimulatedServer()
 
-        dummy = DummyEndpoint()
-        remoteStore = OCKStore(name: "peer", type: .inMemory, remote: remoteDummy)
-        peer = OCKLocalPeer(peerStore: remoteStore)
-        store = OCKStore(name: "store", type: .inMemory, remote: peer)
-    }
+        let remoteA = SimulatedRemote(name: "A", server: server)
+        let remoteB = SimulatedRemote(name: "B", server: server)
 
-    override func tearDown() {
-        super.tearDown()
+        let storeA = OCKStore(name: "A", type: .inMemory, remote: remoteA)
+        let storeB = OCKStore(name: "B", type: .inMemory, remote: remoteB)
 
-        dummy = nil
-        peer = nil
-        remoteStore = nil
-        store = nil
-    }
+        let uuidA = storeA.context.clockID
+        let uuidB = storeB.context.clockID
 
-    func testStoreSynchronizationSucceeds() {
-        store = OCKStore(name: "test", type: .inMemory, remote: dummy)
-        XCTAssertNoThrow(try store.syncAndWait())
-        XCTAssert(dummy.timesPullWasCalled == 1)
-        XCTAssert(dummy.timesPushWasCalled == 1)
-    }
+        let startKnowledgeA = OCKRevisionRecord.KnowledgeVector([uuidA: 1])
+        let startKnowledgeB = OCKRevisionRecord.KnowledgeVector([uuidB: 1])
 
-    func testStoreSynchronizationFails() {
-        dummy.shouldSucceed = false
-        store = OCKStore(name: "test", type: .inMemory, remote: dummy)
-        XCTAssertThrowsError(try store.syncAndWait())
-        XCTAssert(dummy.timesPullWasCalled == 1)
-        XCTAssert(dummy.timesPushWasCalled == 0)
-     }
+        XCTAssert(startKnowledgeA == storeA.context.knowledgeVector)
+        XCTAssert(startKnowledgeB == storeB.context.knowledgeVector)
+        XCTAssert(server.revisions.isEmpty)
 
-    func testSuccessfulSynchronizationIncrementsKnowledgeVector() throws {
-        store = OCKStore(name: "test", type: .inMemory, remote: dummy)
-        XCTAssert(try store.context().clockTime == 0)
-        XCTAssertNoThrow(try store.syncAndWait())
-        XCTAssert(try store.context().clockTime == 1)
-    }
-
-    func testSyncCannotBeStartedIfSyncIsAlreadyRunning() {
-        dummy.delay = 5.0
-        let store = OCKStore(name: "test", type: .inMemory, remote: dummy)
-        store.synchronize(completion: { _ in })
-        XCTAssertThrowsError(try store.syncAndWait())
-    }
-
-    func testSyncCanBeStartedIfPreviousSyncHasCompleted() {
-        let store = OCKStore(name: "test", type: .inMemory, remote: dummy)
-        XCTAssertNoThrow(try store.syncAndWait())
-        XCTAssertNoThrow(try store.syncAndWait())
-    }
-
-    func testNonConflictingSyncAcrossStores() throws {
-        peer.automaticallySynchronizes = false
-
-        let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
-        var taskA = OCKTask(id: "A", title: "A", carePlanUUID: nil, schedule: schedule)
-        var taskB = OCKTask(id: "B", title: "B", carePlanUUID: nil, schedule: schedule)
-        taskA = try remoteStore.addTaskAndWait(taskA)
-        taskB = try store.addTaskAndWait(taskB)
-
-        let outcomeA = OCKOutcome(taskUUID: try taskA.getUUID(), taskOccurrenceIndex: 0, values: [])
-        let outcomeB = OCKOutcome(taskUUID: try taskB.getUUID(), taskOccurrenceIndex: 0, values: [])
-        try remoteStore.addOutcomeAndWait(outcomeA)
-        try store.addOutcomeAndWait(outcomeB)
-
-        XCTAssertNoThrow(try store.syncAndWait())
-
-        let localTasks = try store.fetchTasksAndWait()
-        let localOutcomes = try store.fetchOutcomesAndWait()
-        let remoteTasks = try remoteStore.fetchTasksAndWait()
-        let remoteOutcomes = try remoteStore.fetchOutcomesAndWait()
-
-        XCTAssert(localTasks == remoteTasks)
-        XCTAssert(localOutcomes == remoteOutcomes)
-        XCTAssert(localTasks.count == 2)
-        XCTAssert(localOutcomes.count == 2)
-    }
-
-    func testKeepRemoteTaskWithFirstVersionOfTasks() throws {
-        peer.automaticallySynchronizes = false
-        peer.conflictPolicy = .keepRemote
-
-        let morning = Calendar.current.startOfDay(for: Date())
-        let schedule = OCKSchedule.mealTimesEachDay(start: morning, end: nil)
-
-        var taskA = OCKTask(id: "abc", title: "A", carePlanUUID: nil, schedule: schedule)
-        taskA = try remoteStore.addTaskAndWait(taskA)
-
-        var taskB = OCKTask(id: "abc", title: "B", carePlanUUID: nil, schedule: schedule)
-        taskB = try store.addTaskAndWait(taskB)
-
-        let outcomeA = OCKOutcome(taskUUID: try taskA.getUUID(), taskOccurrenceIndex: 0, values: [])
-        let outcomeB = OCKOutcome(taskUUID: try taskB.getUUID(), taskOccurrenceIndex: 0, values: [])
-        try remoteStore.addOutcomeAndWait(outcomeA)
-        try store.addOutcomeAndWait(outcomeB)
-
-        XCTAssertNoThrow(try store.syncAndWait())
-
-        let localTasks = try store.fetchTasksAndWait()
-        let localOutcomes = try store.fetchOutcomesAndWait()
-        let remoteTasks = try remoteStore.fetchTasksAndWait()
-        let remoteOutcomes = try remoteStore.fetchOutcomesAndWait()
-
-        XCTAssert(localTasks == remoteTasks)
-        XCTAssert(localOutcomes == remoteOutcomes)
-        XCTAssert(localOutcomes.count == 1)
-    }
-
-    func testKeepRemoteTaskReplacingEntireLocalVersionChain() throws {
-        peer.automaticallySynchronizes = false
-        peer.conflictPolicy = .keepRemote
-
-        let morning = Calendar.current.startOfDay(for: Date())
-        let schedule = OCKSchedule.mealTimesEachDay(start: morning, end: nil)
-
-        var taskA = OCKTask(id: "abc", title: "A", carePlanUUID: nil, schedule: schedule)
-        taskA = try remoteStore.addTaskAndWait(taskA)
-
-        var taskB = OCKTask(id: "abc", title: "B", carePlanUUID: nil, schedule: schedule)
-        taskB = try store.addTaskAndWait(taskB)
-        let taskC = OCKTask(id: "abc", title: "C", carePlanUUID: nil, schedule: schedule.offset(by: .init(day: 2)))
-        try store.updateTaskAndWait(taskC)
-
-        let outcomeA = OCKOutcome(taskUUID: try taskA.getUUID(), taskOccurrenceIndex: 0, values: [])
-        let outcomeB = OCKOutcome(taskUUID: try taskB.getUUID(), taskOccurrenceIndex: 0, values: [])
-        try remoteStore.addOutcomeAndWait(outcomeA)
-        try store.addOutcomeAndWait(outcomeB)
-
-        XCTAssertNoThrow(try store.syncAndWait())
-
-        let localTasks = try store.fetchTasksAndWait()
-        let localOutcomes = try store.fetchOutcomesAndWait()
-        let remoteTasks = try remoteStore.fetchTasksAndWait()
-        let remoteOutcomes = try remoteStore.fetchOutcomesAndWait()
-
-        XCTAssert(localTasks == remoteTasks)
-        XCTAssert(localTasks.count == 1)
-        XCTAssert(localTasks.first?.title == "A")
-        XCTAssert(localOutcomes == remoteOutcomes)
-        XCTAssert(localOutcomes.count == 1)
-    }
-
-    // device ---B---C (keep)
-    // remote ---A
-    func testKeepEntireLocalTaskVersionChain() throws {
-        peer.automaticallySynchronizes = false
-        peer.conflictPolicy = .keepDevice
-
-        let morning = Calendar.current.startOfDay(for: Date())
-        let schedule = OCKSchedule.mealTimesEachDay(start: morning, end: nil)
-
-        var taskA = OCKTask(id: "abc", title: "A", carePlanUUID: nil, schedule: schedule)
-        taskA = try remoteStore.addTaskAndWait(taskA)
-
-        var taskB = OCKTask(id: "abc", title: "B", carePlanUUID: nil, schedule: schedule)
-        taskB = try store.addTaskAndWait(taskB)
-        var taskC = OCKTask(id: "abc", title: "C", carePlanUUID: nil, schedule: schedule.offset(by: .init(day: 2)))
-        taskC = try store.updateTaskAndWait(taskC)
-
-        let outcomeA = OCKOutcome(taskUUID: try taskA.getUUID(), taskOccurrenceIndex: 0, values: [])
-        let outcomeB = OCKOutcome(taskUUID: try taskB.getUUID(), taskOccurrenceIndex: 0, values: [])
-        try remoteStore.addOutcomeAndWait(outcomeA)
-        try store.addOutcomeAndWait(outcomeB)
-
-        try store.syncAndWait()
-
-        let localTasks = try store.fetchTasksAndWait()
-        let localOutcomes = try store.fetchOutcomesAndWait()
-        let remoteTasks = try remoteStore.fetchTasksAndWait()
-        let remoteOutcomes = try remoteStore.fetchOutcomesAndWait()
-
-        XCTAssert(localTasks == remoteTasks)
-        XCTAssert(localTasks.count == 2)
-        XCTAssert(Set(localTasks.map { $0.title }) == Set(["B", "C"]))
-        XCTAssert(localOutcomes == remoteOutcomes)
-        XCTAssert(localOutcomes.count == 1)
-    }
-
-    //    /--B--C (Keep Remote)
-    // A--
-    //    \__D (Overwrite Local)
-    func testOverwritePartialLocalTaskVersionChain() throws {
-        peer.automaticallySynchronizes = false
-        peer.conflictPolicy = .keepRemote
-
-        let morning = Calendar.current.startOfDay(for: Date())
-        let schedule = OCKSchedule.mealTimesEachDay(start: morning, end: nil)
-
-        var taskA = OCKTask(id: "abc", title: "A", carePlanUUID: nil, schedule: schedule)
-        taskA = try remoteStore.addTaskAndWait(taskA)
-
-        let outcomeA = OCKOutcome(taskUUID: try taskA.getUUID(), taskOccurrenceIndex: 0, values: [])
-        try remoteStore.addOutcomeAndWait(outcomeA)
-
-        try store.syncAndWait()
-        var localTasks = try store.fetchTasksAndWait()
-        var localOutcomes = try store.fetchOutcomesAndWait()
-        var remoteTasks = try remoteStore.fetchTasksAndWait()
-        var remoteOutcomes = try remoteStore.fetchOutcomesAndWait()
-        XCTAssert(localTasks == remoteTasks)
-        XCTAssert(localOutcomes == remoteOutcomes)
-
-        var taskB = OCKTask(id: "abc", title: "B", carePlanUUID: nil, schedule: schedule.offset(by: .init(day: 1)))
-        taskB = try remoteStore.updateTaskAndWait(taskB)
-        var taskC = OCKTask(id: "abc", title: "C", carePlanUUID: nil, schedule: schedule.offset(by: .init(day: 2)))
-        taskC = try remoteStore.updateTaskAndWait(taskC)
-
-        var taskD = OCKTask(id: "abc", title: "D", carePlanUUID: nil, schedule: schedule.offset(by: .init(day: 1)))
-        taskD = try store.updateTaskAndWait(taskD)
-        let outcomeD = OCKOutcome(taskUUID: try taskD.getUUID(), taskOccurrenceIndex: 1, values: [])
-        try store.addOutcomeAndWait(outcomeD)
-
-        try store.syncAndWait()
-        localTasks = try store.fetchTasksAndWait()
-        localOutcomes = try store.fetchOutcomesAndWait()
-        remoteTasks = try remoteStore.fetchTasksAndWait()
-        remoteOutcomes = try remoteStore.fetchOutcomesAndWait()
-
-        XCTAssert(localTasks == remoteTasks)
-        XCTAssert(localTasks.count == 3)
-        XCTAssert(Set(localTasks.map { $0.title }) == Set(["A", "B", "C"]))
-        XCTAssert(localOutcomes == remoteOutcomes)
-        XCTAssert(localOutcomes.count == 1)
-    }
-
-    func testTombstoningOutcomePushedToRemote() throws {
-        let dummy = DummyEndpoint()
-        let testStore = OCKStore(name: "test", type: .inMemory, remote: dummy)
-        dummy.automaticallySynchronizes = false
-
-        let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
-        let task = try testStore.addTaskAndWait(OCKTask(id: "A", title: "A", carePlanUUID: nil, schedule: schedule))
-        let taskUUID = try task.getUUID()
-
-        let outcome = try testStore.addOutcomeAndWait(OCKOutcome(taskUUID: taskUUID, taskOccurrenceIndex: 0, values: [OCKOutcomeValue("test")]))
-        let outcomeUUID = try outcome.getUUID()
-        XCTAssertNoThrow(try testStore.syncAndWait()) // Sync original outcome
-
-        try testStore.deleteOutcomeAndWait(outcome)
-        XCTAssertNoThrow(try testStore.syncAndWait()) // Sync tombstoned outcome
-        let latestRevisions = dummy.revisionsPushedInLastSynch
-        XCTAssert(latestRevisions.count == 2)
-
-        let tombstonedOutcomes = latestRevisions.compactMap { entity -> OCKOutcome? in
-            switch entity {
-            case .outcome(let outcome):
-                return outcome
-            default:
-                return nil
-            }
-        }
-        XCTAssert(tombstonedOutcomes.count == 2)
-
-        guard let tombstonedWithSameUUID = try tombstonedOutcomes.first(where: { try $0.getUUID() == outcomeUUID }) else {
-            throw OCKStoreError.invalidValue(reason: "Filter doesn't contain UUID")
-        }
-        XCTAssert(tombstonedWithSameUUID.values.isEmpty)
-        XCTAssert(tombstonedWithSameUUID.deletedDate != nil)
-
-        guard let tombstonedWithDifferentUUID = try tombstonedOutcomes.first(where: { try $0.getUUID() != outcomeUUID }) else {
-            throw OCKStoreError.invalidValue(reason: "Filter doesn't contain UUID")
-        }
-        XCTAssert(tombstonedWithDifferentUUID.values.count == 1)
-        XCTAssert(tombstonedWithDifferentUUID.deletedDate != nil)
-    }
-
-    func testUpdateTaskVersionPushedToRemote() throws {
-        let dummy = DummyEndpoint()
-        let testStore = OCKStore(name: "test", type: .inMemory, remote: dummy)
-        dummy.automaticallySynchronizes = false
-
-        let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
-        var task = try testStore.addTaskAndWait(OCKTask(id: "A", title: "A", carePlanUUID: nil, schedule: schedule))
-        let taskUUID = try task.getUUID()
-
-        XCTAssertNoThrow(try testStore.syncAndWait()) // Sync original outcome
-
-        task.instructions = "Updated instructions"
-        try testStore.updateTaskAndWait(task)
-        XCTAssertNoThrow(try testStore.syncAndWait()) // Sync updated outcome
-
-        let latestRevisions = dummy.revisionsPushedInLastSynch
-        XCTAssert(latestRevisions.count == 2)
-
-        let versionedTasks = latestRevisions.compactMap { entity -> OCKTask? in
-            switch entity {
-            case .task(let task):
-                return task
-            default:
-                return nil
-            }
-        }
-        XCTAssert(versionedTasks.count == 2)
-
-        guard let previousVersionTask = try versionedTasks.first(where: { try $0.getUUID() == taskUUID }) else {
-            throw OCKStoreError.invalidValue(reason: "Filter doesn't contain UUID")
-        }
-
-        guard let currentVersionTask = try versionedTasks.first(where: { try $0.getUUID() != taskUUID }) else {
-            throw OCKStoreError.invalidValue(reason: "Filter doesn't contain UUID")
-        }
-        XCTAssert(previousVersionTask.instructions == nil)
-        XCTAssert(try previousVersionTask.getNextVersionUUID() == currentVersionTask.getUUID())
-
-        XCTAssert(currentVersionTask.instructions != nil)
-        XCTAssert(try currentVersionTask.getPreviousVersionUUID() == taskUUID)
-        XCTAssertThrowsError(try currentVersionTask.getNextVersionUUID())
-    }
-}
-
-class DummyEndpoint: OCKRemoteSynchronizable {
-
-    var automaticallySynchronizes = true
-    var shouldSucceed = true
-    var delay: TimeInterval = 0.0
-    weak var delegate: OCKRemoteSynchronizationDelegate?
-
-    private(set) var timesPullWasCalled = 0
-    private(set) var timesPushWasCalled = 0
-    private(set) var timesForcePushed = 0
-    private(set) var uuid = UUID()
-    private(set) var dummyKnowledgeVector: OCKRevisionRecord.KnowledgeVector?
-    var revisionsPushedInLastSynch = [OCKEntity]()
-
-    var conflictPolicy = OCKMergeConflictResolutionPolicy.keepRemote
-    var revision = OCKRevisionRecord(entities: [], knowledgeVector: .init())
-
-    func pullRevisions(
-        since knowledgeVector: OCKRevisionRecord.KnowledgeVector,
-        mergeRevision: @escaping (OCKRevisionRecord, @escaping (Error?) -> Void) -> Void,
-        completion: @escaping (Error?) -> Void) {
-
-        timesPullWasCalled += 1
-        DispatchQueue.global(qos: .userInteractive).asyncAfter(deadline: .now() + delay) {
-            if !self.shouldSucceed {
-                completion(OCKStoreError.remoteSynchronizationFailed(reason: "Failed on purpose"))
-                return
-            }
-
-            guard let dummyVector = self.dummyKnowledgeVector else {
-                mergeRevision(self.revision, completion)
-                return
-            }
-            self.revision = OCKRevisionRecord(entities: [], knowledgeVector: dummyVector)
-            mergeRevision(self.revision, completion)
-        }
-    }
-
-    func pushRevisions(
-        deviceRevision: OCKRevisionRecord,
-        overwriteRemote: Bool,
-        completion: @escaping (Error?) -> Void) {
-
-        timesPushWasCalled += 1
-        timesForcePushed += overwriteRemote ? 1 : 0
-
-        // Save latest revisions
-        revisionsPushedInLastSynch.removeAll()
-        revisionsPushedInLastSynch.append(contentsOf: deviceRevision.entities)
-
-        // Update KnowledgeVector
-        if dummyKnowledgeVector == nil {
-            dummyKnowledgeVector = .init([uuid: 0])
-        }
-        dummyKnowledgeVector?.increment(clockFor: uuid)
-        dummyKnowledgeVector?.merge(with: deviceRevision.knowledgeVector)
-
-        completion(nil)
-    }
-
-    func chooseConflictResolutionPolicy(
-        _ conflict: OCKMergeConflictDescription,
-        completion: @escaping (OCKMergeConflictResolutionPolicy) -> Void) {
-        completion(conflictPolicy)
-    }
-
-    func dummyRevision() -> OCKRevisionRecord {
-
-        var patient = OCKPatient(id: "id1", givenName: "Amy", familyName: "Frost")
-        patient.uuid = UUID()
-        patient.createdDate = Date()
-        patient.updatedDate = patient.createdDate
-
-        var carePlan = OCKCarePlan(id: "diabetes_type_1", title: "Diabetes Care Plan", patientUUID: nil)
-        carePlan.uuid = UUID()
-        carePlan.createdDate = Date()
-        carePlan.updatedDate = carePlan.createdDate
-
-        var contact = OCKContact(id: "contact", givenName: "Amy", familyName: "Frost", carePlanUUID: nil)
-        contact.uuid = UUID()
-        contact.createdDate = Date()
-        contact.updatedDate = contact.createdDate
-
-        let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
+        // 2. Sync the first version of a task from A to B.
+        let schedule = OCKSchedule.dailyAtTime(hour: 0, minutes: 0, start: Date(), end: nil, text: nil)
         var task = OCKTask(id: "a", title: "A", carePlanUUID: nil, schedule: schedule)
-        task.uuid = UUID()
-        task.createdDate = Date()
-        task.updatedDate = task.createdDate
+        task = try storeA.addTasksAndWait([task]).first!
 
-        var outcome = OCKOutcome(taskUUID: task.uuid!, taskOccurrenceIndex: 0, values: [])
-        outcome.uuid = UUID()
-        outcome.createdDate = Date()
-        outcome.updatedDate = outcome.createdDate
+        try storeA.syncAndWait()
+        try storeB.syncAndWait()
 
-        let entities: [OCKEntity] = [
-            .patient(patient),
-            .carePlan(carePlan),
-            .contact(contact),
-            .task(task),
-            .outcome(outcome)
-        ]
+        let firstTasksA = try storeA.fetchTasksAndWait()
+        let firstTasksB = try storeB.fetchTasksAndWait()
 
-        let revision = OCKRevisionRecord(entities: entities, knowledgeVector: .init())
-        return revision
+        let firstKnowledgeA = OCKRevisionRecord.KnowledgeVector([
+            uuidA: 3 // +1 post pull, +1 post push
+        ])
+
+        let firstKnowledgeB = OCKRevisionRecord.KnowledgeVector([
+            uuidA: 2, // latest value on server from A
+            uuidB: 3  // +1 post pull, +1 post push
+        ])
+
+        let firstRevisionStamp = OCKRevisionRecord.KnowledgeVector([
+            uuidA: 2  // Latest value on server
+        ])
+
+        XCTAssert(firstTasksA.count == 1, "Expected 1, got \(firstTasksA.count)")
+        XCTAssert(firstTasksB.count == 1, "Expected 1, got \(firstTasksB.count)")
+        XCTAssert(firstKnowledgeA == storeA.context.knowledgeVector)
+        XCTAssert(firstKnowledgeB == storeB.context.knowledgeVector)
+        XCTAssert(firstRevisionStamp == server.revisions.last?.stamp)
+        XCTAssert(server.revisions.count == 1)
+
+        // 2. Create conflicting updates in both stores.
+        //    Neither store will have a conflict yet.
+        var taskA = try storeA.fetchTasksAndWait().first!
+        taskA.title = "A2"
+        try storeA.updateTasksAndWait([taskA])
+
+        var taskB = try storeB.fetchTasksAndWait().first!
+        taskB.title = "B2"
+        try storeB.updateTasksAndWait([taskB])
+
+        // 3. Sync storeA: Put the new version on the server
+        //    Sync storeB: Resolve the conflict locally and push to server
+        try storeA.syncAndWait()
+        try storeB.syncAndWait()
+
+        // 4. Check that A has only it's two local versions
+        //    Check that B has the original, both conflicts, and the resolution
+        let midTasksA = try storeA.fetchTasksAndWait()
+        let midTasksB = try storeB.fetchTasksAndWait()
+
+        let midKnowledgeA = OCKRevisionRecord.KnowledgeVector([
+            uuidA: 5, // +1 post pull, +1 post push
+            uuidB: 2  // latest value on server from B
+        ])
+
+        let midKnowledgeB = OCKRevisionRecord.KnowledgeVector([
+            uuidA: 4, // latest value on server from A
+            uuidB: 5  // +1 post pull, +1 post push
+        ])
+
+        let midRevisionStamp = OCKRevisionRecord.KnowledgeVector([
+            uuidA: 4,  // B's knowledge of A when it pushed
+            uuidB: 4   // B's clock when it pushed
+        ])
+
+        XCTAssert(midTasksA.count == 2, "Expected 2, but got \(midTasksA.count)")
+        XCTAssert(midTasksB.count == 4, "Expected 4, but got \(midTasksB.count)")
+        XCTAssert(midKnowledgeA == storeA.context.knowledgeVector)
+        XCTAssert(midKnowledgeB == storeB.context.knowledgeVector)
+        XCTAssert(midRevisionStamp == server.revisions.last?.stamp)
+        XCTAssert(server.revisions.count == 3)
+
+        // 5. Sync storeA: Pull updates from the server (conflict + resolution)
+        //    Sync storeB: Already up to date, no observable change
+        try storeA.syncAndWait()
+        try storeB.syncAndWait()
+
+        let finalTasksA = try storeA.fetchTasksAndWait()
+        let finalTasksB = try storeB.fetchTasksAndWait()
+
+        let finalKnowledgeA = OCKRevisionRecord.KnowledgeVector([
+            uuidA: 7, // +1 post pull, +1 post push
+            uuidB: 4  // latest value on server from B
+        ])
+
+        let finalKnowledgeB = OCKRevisionRecord.KnowledgeVector([
+            uuidA: 6, // latest value on server from A
+            uuidB: 7  // +1 post pull, +1 post push
+        ])
+
+        let finalRevisionStamp = midRevisionStamp // No changes pushed
+
+        XCTAssert(finalTasksA.count == 4, "Expected 4, but got \(finalTasksA.count)")
+        XCTAssert(finalTasksB.count == 4, "Expected 4, but got \(finalTasksB.count)")
+        XCTAssert(finalKnowledgeA == storeA.context.knowledgeVector)
+        XCTAssert(finalKnowledgeB == storeB.context.knowledgeVector)
+        XCTAssert(finalRevisionStamp == server.revisions.last?.stamp)
+        XCTAssert(server.revisions.count == 3)
     }
 }
 
-final class OCKLocalPeer: OCKRemoteSynchronizable {
+private final class SimulatedServer {
 
-    weak var delegate: OCKRemoteSynchronizationDelegate?
-    let peerStore: OCKStore
+    private(set) var revisions = [(stamp: OCKRevisionRecord.KnowledgeVector, data: Data)]()
 
-    init(peerStore: OCKStore) {
-        self.peerStore = peerStore
+    private var knowledge = OCKRevisionRecord.KnowledgeVector()
+
+    func upload(
+        data: Data?,
+        deviceKnowledge: OCKRevisionRecord.KnowledgeVector,
+        from remote: SimulatedRemote) throws {
+
+        if let latest = revisions.last?.stamp, latest >= deviceKnowledge {
+            let problem = "New knowledge on server. Pull first then try again"
+            throw OCKStoreError.remoteSynchronizationFailed(reason: problem)
+        }
+
+        knowledge.merge(with: deviceKnowledge)
+
+        if let data = data {
+            revisions.append((stamp: deviceKnowledge, data: data))
+        }
     }
 
-    var conflictPolicy: OCKMergeConflictResolutionPolicy = .keepDevice
-    var automaticallySynchronizes: Bool = true
+    func updates(
+        for deviceKnowledge: OCKRevisionRecord.KnowledgeVector,
+        from remote: SimulatedRemote) -> (stamp: OCKRevisionRecord.KnowledgeVector, data: [Data]) {
+
+        let newToRemote = revisions.filter { $0.stamp >= deviceKnowledge }
+        let newData = newToRemote.map(\.data)
+
+        return (stamp: knowledge, newData)
+    }
+}
+
+private final class SimulatedRemote: OCKRemoteSynchronizable {
+
+    let name: String
+
+    let server: SimulatedServer
+
+    weak var delegate: OCKRemoteSynchronizationDelegate?
+
+    var automaticallySynchronizes: Bool = false
+
+    init(name: String, server: SimulatedServer) {
+        self.name = name
+        self.server = server
+    }
 
     func pullRevisions(
         since knowledgeVector: OCKRevisionRecord.KnowledgeVector,
-        mergeRevision: @escaping (OCKRevisionRecord, @escaping (Error?) -> Void) -> Void,
+        mergeRevision: @escaping (OCKRevisionRecord) -> Void,
         completion: @escaping (Error?) -> Void) {
 
         do {
-            let clock = knowledgeVector.clock(for: try peerStore.context().clockID)
-            let revision = try peerStore.computeRevision(since: clock)
-            mergeRevision(revision, completion)
+            let response = server.updates(for: knowledgeVector, from: self)
+            let decoder = JSONDecoder()
+            let entities = try response.data.flatMap { try decoder.decode([OCKEntity].self, from: $0) }
+            let revision = OCKRevisionRecord(entities: entities, knowledgeVector: response.stamp)
+            mergeRevision(revision)
+            completion(nil)
         } catch {
             completion(error)
         }
-
     }
 
     func pushRevisions(
         deviceRevision: OCKRevisionRecord,
-        overwriteRemote: Bool,
         completion: @escaping (Error?) -> Void) {
 
-        peerStore.mergeRevision(deviceRevision, completion: completion)
+        do {
+            let data = deviceRevision.entities.isEmpty ?
+                nil : try! JSONEncoder().encode(deviceRevision.entities)
+
+            let knowledge = deviceRevision.knowledgeVector
+
+            try server.upload(data: data, deviceKnowledge: knowledge, from: self)
+
+            completion(nil)
+
+        } catch {
+            completion(error)
+        }
     }
 
-    func chooseConflictResolutionPolicy(
-        _ conflict: OCKMergeConflictDescription,
-        completion: @escaping (OCKMergeConflictResolutionPolicy) -> Void) {
+    func chooseConflictResolution(
+        conflicts: [OCKEntity], completion: @escaping OCKResultClosure<OCKEntity>) {
 
-        completion(conflictPolicy)
+        let keep = conflicts.max(by: { $0.value.createdDate! > $1.value.createdDate! })!
+        completion(.success(keep))
     }
 }

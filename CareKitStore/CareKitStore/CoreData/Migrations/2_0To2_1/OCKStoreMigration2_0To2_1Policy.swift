@@ -39,7 +39,6 @@ class OCKStoreMigration2_0To2_1Policy: NSEntityMigrationPolicy {
         in mapping: NSEntityMapping,
         manager: NSMigrationManager) throws {
 
-        // Create a new instance in the destination context
         let dInstance = NSEntityDescription.insertNewObject(
             forEntityName: sInstance.entity.name!,
             into: manager.destinationContext
@@ -59,6 +58,54 @@ class OCKStoreMigration2_0To2_1Policy: NSEntityMigrationPolicy {
         // not capture any relationships - we have to tackle that separately.
         for key in sInstance.entity.attributesByName.keys {
 
+            // `allowsMissingRelationships` was removed from all types
+            if key == "allowsMissingRelationships" {
+                continue
+            }
+
+            // Tags were changed from a Transformable array of strings to a set
+            // of OCKCDTags.
+            if key == "tags" {
+                guard let tagsValue = sInstance.value(forKey: key) else {
+                    continue
+                }
+
+                var tagObjects = Set<NSManagedObject>()
+
+                for tag in tagsValue as! [String] {
+
+                    let request = NSFetchRequest<NSManagedObject>(entityName: "OCKCDTag")
+                    request.predicate = NSPredicate(format: "title == %@", tag)
+                    request.fetchLimit = 1
+
+                    let fetched = try manager.destinationContext.fetch(request)
+
+                    if let existing = fetched.first {
+
+                        tagObjects.insert(existing)
+
+                    } else {
+
+                        let object = NSEntityDescription.insertNewObject(
+                            forEntityName: "OCKCDTag",
+                            into: manager.destinationContext
+                        )
+
+                        object.setValue(tag, forKey: "title")
+
+                        tagObjects.insert(object)
+                    }
+                }
+
+                dInstance.setValue(tagObjects, forKey: "tags")
+            }
+
+            // Update the schema version to 2.1
+            if key == "schemaVersion" {
+                dInstance.setValue("2.1.0", forKey: key)
+                continue
+            }
+
             // OCKCDOutcome's `date` was renamed to `startDate`, and new
             // `endDate` and `deletedDate` attributes were added. The start
             // and end dates must be retrieved from the event associated with
@@ -68,17 +115,18 @@ class OCKStoreMigration2_0To2_1Policy: NSEntityMigrationPolicy {
                 let task = sInstance.value(forKey: "task") as! NSManagedObject
                 let elements = task.value(forKey: "scheduleElements") as! Set<NSManagedObject>
                 let schedule = OCKSchedule(composing: elements.map(element))
-                let occurrence = sInstance.primitiveValue(forKey: "taskOccurrenceIndex") as! Int64
+                let occurrence = sInstance.value(forKey: "taskOccurrenceIndex") as! Int64
                 let event = schedule[Int(occurrence)]
 
-                dInstance.setPrimitiveValue(event.start, forKey: "startDate")
-                dInstance.setPrimitiveValue(event.end, forKey: "endDate")
-                dInstance.setPrimitiveValue(nil, forKey: "deletedDate")
+                dInstance.setValue(event.start, forKey: "startDate")
+                dInstance.setValue(event.start, forKey: "effectiveDate")
+                dInstance.setValue(event.end, forKey: "endDate")
+                dInstance.setValue(nil, forKey: "deletedDate")
 
             } else {
 
-                let value = sInstance.primitiveValue(forKey: key)
-                dInstance.setPrimitiveValue(value, forKey: key)
+                let value = sInstance.value(forKey: key)
+                dInstance.setValue(value, forKey: key)
             }
         }
 
@@ -86,13 +134,13 @@ class OCKStoreMigration2_0To2_1Policy: NSEntityMigrationPolicy {
         // For migration purposes, we set `logicalClock` to 0 to indicate
         // that they were the first items added to the database.
         if dInstance.entity.attributesByName.keys.contains("logicalClock") {
-            dInstance.setPrimitiveValue(0, forKey: "logicalClock")
+            dInstance.setValue(0, forKey: "logicalClock")
         }
 
         // A `uuid` attribute was added to many of the objects.
         // For migration purposes, we set `uuid` to a random value.
         if dInstance.entity.attributesByName.keys.contains("uuid") {
-            dInstance.setPrimitiveValue(UUID(), forKey: "uuid")
+            dInstance.setValue(UUID(), forKey: "uuid")
         }
     }
 
@@ -110,6 +158,28 @@ class OCKStoreMigration2_0To2_1Policy: NSEntityMigrationPolicy {
             destinationInstances: [dInstance]
         ).first!
 
+        // Add a set of knowledge elements to each entity
+        let clock: NSManagedObject
+        let request = NSFetchRequest<NSManagedObject>(entityName: "OCKCDClock")
+        if let fetched = try manager.destinationContext.fetch(request).first {
+            clock = fetched
+        } else {
+            let uuid = UUID()
+            clock = NSEntityDescription.insertNewObject(
+                forEntityName: "OCKCDClock",
+                into: manager.destinationContext)
+            clock.setValue([uuid: 1], forKey: "vectorClock")
+            clock.setValue(uuid, forKey: "uuid")
+        }
+        let uuid = clock.value(forKey: "uuid") as! UUID
+        let element = NSEntityDescription.insertNewObject(
+            forEntityName: "OCKCDKnowledgeElement",
+            into: manager.destinationContext)
+        element.setValue(1, forKey: "time")
+        element.setValue(uuid, forKey: "uuid")
+
+        dInstance.setValue(Set([element]), forKey: "knowledge")
+
         for (key, relationship) in sInstance.entity.relationshipsByName {
 
             guard let sValue = sInstance.value(forKey: key) else {
@@ -118,6 +188,17 @@ class OCKStoreMigration2_0To2_1Policy: NSEntityMigrationPolicy {
 
             let relationEntity = "\(relationship.destinationEntity!.name!)"
             let relationMapping = "\(relationEntity)To\(relationEntity)"
+
+            // Previous and next were upgraded from 1-to-1 to many-to-many.
+            if key == "next" || key == "previous" {
+                let sRelation = sValue as! NSManagedObject
+                let dRelation = manager.destinationInstances(
+                    forEntityMappingName: relationMapping,
+                    sourceInstances: [sRelation]
+                )
+                dInstance.setValue(Set(dRelation), forKey: key)
+                continue
+            }
 
             if relationship.isToMany {
                 let sRelations = sValue as! Set<NSManagedObject>
@@ -134,6 +215,15 @@ class OCKStoreMigration2_0To2_1Policy: NSEntityMigrationPolicy {
                 ).first!
                 dInstance.setValue(dRelation, forKey: key)
             }
+        }
+
+        // An `id` property was added on to OCKCDOutcome
+        if dInstance.entity.name == "OCKCDOutcome" {
+            let task = dInstance.value(forKey: "task") as! NSManagedObject
+            let taskUUID = task.value(forKey: "uuid") as! UUID
+            let index = dInstance.value(forKey: "taskOccurrenceIndex") as! Int64
+            let id = taskUUID.uuidString + "_\(index)"
+            dInstance.setValue(id, forKey: "id")
         }
     }
 

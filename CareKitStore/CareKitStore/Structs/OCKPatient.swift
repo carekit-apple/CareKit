@@ -28,10 +28,11 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import CoreData
 import Foundation
 
 /// Represents a patient
-public struct OCKPatient: Codable, Equatable, Identifiable, OCKAnyPatient, OCKVersionedObjectCompatible {
+public struct OCKPatient: Codable, Equatable, Identifiable, OCKAnyPatient {
 
     // MARK: OCKAnyPatient
     public let id: String
@@ -43,9 +44,9 @@ public struct OCKPatient: Codable, Equatable, Identifiable, OCKAnyPatient, OCKVe
     // MARK: OCKVersionedObjectCompatible
     public var effectiveDate: Date
     public var deletedDate: Date?
-    public var uuid: UUID?
-    public var nextVersionUUID: UUID?
-    public var previousVersionUUID: UUID?
+    public var uuid = UUID()
+    public var nextVersionUUIDs: [UUID] = []
+    public var previousVersionUUIDs: [UUID] = []
 
     // MARK: OCKObjectCompatible
     public var createdDate: Date?
@@ -92,5 +93,20 @@ public struct OCKPatient: Codable, Equatable, Identifiable, OCKAnyPatient, OCKVe
     public var age: Int? {
         guard let birthday = birthday else { return nil }
         return Calendar.current.dateComponents(Set([.year]), from: birthday, to: Date()).year
+    }
+}
+
+extension OCKPatient: OCKVersionedObjectCompatible {
+
+    static func entity() -> NSEntityDescription {
+        OCKCDPatient.entity()
+    }
+
+    func entity() -> OCKEntity {
+        .patient(self)
+    }
+    
+    func insert(context: NSManagedObjectContext) -> OCKCDVersionedObject {
+        OCKCDPatient(patient: self, context: context)
     }
 }

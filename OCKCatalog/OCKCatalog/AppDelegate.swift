@@ -39,7 +39,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private(set) lazy var peer = OCKWatchConnectivityPeer()
     private(set) lazy var cdStore = OCKStore(name: "carekit-catalog-cd", type: .inMemory, remote: peer)
-    private(set) lazy var hkStore = OCKHealthKitPassthroughStore(name: "carekit-catalog-hk", type: .inMemory)
+    private(set) lazy var hkStore = OCKHealthKitPassthroughStore(store: cdStore)
 
     private lazy var sessionManager: SessionManager = {
         let sessionManager = SessionManager()

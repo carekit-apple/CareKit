@@ -34,8 +34,8 @@ import XCTest
 class TestStore: XCTestCase {
 
     func testDeleteStore() {
-        let store = OCKStore(name: "test", type: .onDisk())
-        _ = try? store.context() // Storage is created lazily. Access context to force file creation.
+        let store = OCKStore(name: UUID().uuidString, type: .onDisk())
+        _ = store.context // Storage is created lazily. Access context to force file creation.
 
         XCTAssertTrue(FileManager.default.fileExists(atPath: store.storeURL.path))
         XCTAssertTrue(FileManager.default.fileExists(atPath: store.walFileURL.path))
@@ -48,19 +48,33 @@ class TestStore: XCTestCase {
         XCTAssertFalse(FileManager.default.fileExists(atPath: store.shmFileURL.path))
     }
 
+    func testDeleteInMemoryStore() {
+        let store = OCKStore(name: UUID().uuidString, type: .inMemory)
+        _ = store.context // Storage is created lazily. Access context to force file creation.
+
+        XCTAssertFalse(FileManager.default.fileExists(atPath: store.storeURL.path))
+        XCTAssertFalse(FileManager.default.fileExists(atPath: store.walFileURL.path))
+        XCTAssertFalse(FileManager.default.fileExists(atPath: store.shmFileURL.path))
+
+        XCTAssertNoThrow(try store.delete())
+    }
+
     func testRollingBackContextRollsBackKnowledgeVector() throws {
-        let store = OCKStore(name: "test", type: .inMemory)
-        XCTAssert(try store.context().clockTime == 0)
+        let store = OCKStore(name: UUID().uuidString, type: .inMemory)
+        
+        expect(with: store.context) {
+            XCTAssert(store.context.clockTime == 1)
 
-        try store.context().knowledgeVector.increment(clockFor: try store.context().clockID)
-        XCTAssertNoThrow(try store.context().save())
-        XCTAssert(try store.context().clockTime == 1)
+            store.context.knowledgeVector.increment(clockFor: store.context.clockID)
+            try store.context.save()
+            XCTAssert(store.context.clockTime == 2)
 
-        try store.context().knowledgeVector.increment(clockFor: try store.context().clockID)
-        XCTAssert(try store.context().clockTime == 2)
+            store.context.knowledgeVector.increment(clockFor: store.context.clockID)
+            XCTAssert(store.context.clockTime == 3)
 
-        try store.context().knowledgeVector.increment(clockFor: try store.context().clockID)
-        try store.context().rollback()
-        XCTAssert(try store.context().clockTime == 1)
+            store.context.knowledgeVector.increment(clockFor: store.context.clockID)
+            store.context.rollback()
+            XCTAssert(store.context.clockTime == 2)
+        }
     }
 }

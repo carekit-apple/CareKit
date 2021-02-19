@@ -34,16 +34,16 @@ import Foundation
 @objc(OCKCDObject)
 class OCKCDObject: NSManagedObject {
     @NSManaged var uuid: UUID
-    @NSManaged var logicalClock: Int64
     @NSManaged var createdDate: Date
     @NSManaged var updatedDate: Date
+    @NSManaged var knowledge: Set<OCKCDKnowledgeElement>
     @NSManaged var remoteID: String?
     @NSManaged var userInfo: [String: String]?
     @NSManaged var groupIdentifier: String?
-    @NSManaged var tags: [String]?
     @NSManaged var source: String?
     @NSManaged var asset: String?
     @NSManaged var notes: Set<OCKCDNote>?
+    @NSManaged var tags: Set<OCKCDTag>?
     @NSManaged var schemaVersion: String
     @NSManaged var timezoneIdentifier: String
 
@@ -54,32 +54,18 @@ class OCKCDObject: NSManagedObject {
         updatedDate = Date()
         notes = Set()
         timezoneIdentifier = TimeZone.current.identifier
-        logicalClock = Int64(managedObjectContext!.clockTime)
         schemaVersion = "2.1.0"
+        set(knowledge: managedObjectContext!.knowledgeVector)
     }
 
-    func copyValues(from other: OCKObjectCompatible) {
-        guard let context = managedObjectContext else { fatalError("Managed object context should never be nil!") }
-        uuid = other.uuid ?? uuid
-        createdDate = other.createdDate ?? createdDate
-        updatedDate = other.updatedDate ?? updatedDate
-        groupIdentifier = other.groupIdentifier
-        tags = other.tags
-        source = other.source
-        remoteID = other.remoteID
-        userInfo = other.userInfo
-        asset = other.asset
-        timezoneIdentifier = other.timezone.identifier
-        notes = {
-            guard let otherNotes = other.notes else { return nil }
-            return Set(otherNotes.map {
-                let note = OCKCDNote(context: context)
-                note.author = $0.author
-                note.title = $0.title
-                note.content = $0.content
-                note.copyValues(from: $0)
-                return note
-            })
-        }()
+    func set(knowledge vector: OCKRevisionRecord.KnowledgeVector) {
+        guard let moc = managedObjectContext else { return }
+        knowledge.forEach { moc.delete($0) }
+        knowledge = Set(vector.processes.map { uuid, time in
+            let element = OCKCDKnowledgeElement(context: moc)
+            element.uuid = uuid
+            element.time = Int64(time)
+            return element
+        })
     }
 }

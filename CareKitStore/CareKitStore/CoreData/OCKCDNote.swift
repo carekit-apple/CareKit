@@ -31,7 +31,7 @@
 import CoreData
 
 @objc(OCKCDNote)
-class OCKCDNote: OCKCDObject {
+class OCKCDNote: NSManagedObject {
     @NSManaged var author: String?
     @NSManaged var title: String?
     @NSManaged var content: String?
@@ -39,4 +39,15 @@ class OCKCDNote: OCKCDObject {
     @NSManaged var patient: OCKCDPatient?
     @NSManaged var plan: OCKCDCarePlan?
     @NSManaged var task: OCKCDTask?
+
+    convenience init(note: OCKNote, context: NSManagedObjectContext) {
+        self.init(entity: Self.entity(), insertInto: context)
+        author = note.author
+        title = note.title
+        content = note.content
+    }
+
+    func makeValue() -> OCKNote {
+        OCKNote(author: author, title: title, content: content)
+    }
 }

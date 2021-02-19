@@ -32,7 +32,6 @@ import Foundation
 /// Any store from which a single type conforming to `OCKAnyTask` can be queried is considered a `OCKReadableTaskStore`.
 public protocol OCKReadableTaskStore: OCKAnyReadOnlyTaskStore {
     associatedtype Task: OCKAnyTask & Equatable
-    associatedtype TaskQuery: OCKAnyTaskQuery
 
     /// `fetchTasks` asynchronously retrieves an array of tasks from the store.
     ///
@@ -40,7 +39,7 @@ public protocol OCKReadableTaskStore: OCKAnyReadOnlyTaskStore {
     ///   - query: A query used to constrain the values that will be fetched.
     ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on the provided callback queue.
-    func fetchTasks(query: TaskQuery, callbackQueue: DispatchQueue, completion: @escaping OCKResultClosure<[Task]>)
+    func fetchTasks(query: OCKTaskQuery, callbackQueue: DispatchQueue, completion: @escaping OCKResultClosure<[Task]>)
 
     // MARK: Singular Methods - Implementation Provided
 
@@ -106,16 +105,6 @@ public protocol OCKTaskStore: OCKReadableTaskStore, OCKAnyTaskStore {
     ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on the provided callback queue.
     func deleteTask(_ task: Task, callbackQueue: DispatchQueue, completion: OCKResultClosure<Task>?)
-
-    /// Adds, updates, and deletes tasks in a single atomic transaction
-    /// - Parameter tasks: Tasks that should be either added or updated, depending on whether or not they already exist.
-    /// - Parameter deleteTasks: Tasks that should be deleted from the store.
-    /// - Parameter callbackQueue: The queue that the callback will be performed on
-    /// - Parameter completion: A result closure that takes arrays of added, updated, and deleted tasks.
-    func addUpdateOrDeleteTasks(addOrUpdate tasks: [Task],
-                                delete deleteTasks: [Task],
-                                callbackQueue: DispatchQueue,
-                                completion: ((Result<([Task], [Task], [Task]), OCKStoreError>) -> Void)?)
 }
 
 // MARK: Singular Methods for OCKReadableTaskStore
@@ -123,11 +112,11 @@ public protocol OCKTaskStore: OCKReadableTaskStore, OCKAnyTaskStore {
 public extension OCKReadableTaskStore {
     func fetchTask(withID id: String, callbackQueue: DispatchQueue = .main, completion: @escaping OCKResultClosure<Task>) {
         var query = OCKTaskQuery(for: Date())
-        query.extendedSortDescriptors = [.effectiveDate(ascending: true)]
+        query.sortDescriptors = [.effectiveDate(ascending: true)]
         query.ids = [id]
         query.limit = 1
 
-        fetchTasks(query: TaskQuery(query), callbackQueue: callbackQueue, completion:
+        fetchTasks(query: query, callbackQueue: callbackQueue, completion:
             chooseFirst(then: completion, replacementError: .fetchFailed(reason: "No task with matching ID")))
     }
 }
@@ -154,10 +143,9 @@ public extension OCKTaskStore {
 // MARK: OCKAnyReadOnlyStore conformance for OCKReadableStore
 
 public extension OCKReadableTaskStore {
-    func fetchAnyTasks(query: OCKAnyTaskQuery, callbackQueue: DispatchQueue,
+    func fetchAnyTasks(query: OCKTaskQuery, callbackQueue: DispatchQueue,
                        completion: @escaping OCKResultClosure<[OCKAnyTask]>) {
-        let taskQuery = TaskQuery(query)
-        fetchTasks(query: taskQuery, callbackQueue: callbackQueue) { completion($0.map { $0.map { $0 as OCKAnyTask } }) }
+        fetchTasks(query: query, callbackQueue: callbackQueue) { completion($0.map { $0.map { $0 as OCKAnyTask } }) }
     }
 }
 

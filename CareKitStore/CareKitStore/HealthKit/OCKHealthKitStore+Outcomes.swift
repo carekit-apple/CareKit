@@ -49,7 +49,7 @@ public extension OCKHealthKitPassthroughStore {
         taskQuery.uuids = query.taskUUIDs
 
         do {
-            let tasks = try taskStore.fetchTasks(query: taskQuery)
+            let tasks = try store.fetchHealthKitTasks(query: taskQuery)
             let closures = tasks.map { task in { done in self.fetchOutcomes(task: task, dateRange: range, completion: done) } }
             aggregate(closures, callbackQueue: callbackQueue, completion: completion)
         } catch {
@@ -82,7 +82,7 @@ public extension OCKHealthKitPassthroughStore {
                 return sample
             }
 
-            store.save(samples) { _, error in
+            healthStore.save(samples) { _, error in
                 if let error = error {
                     callbackQueue.async {
                         completion?(.failure(.addFailed(
@@ -133,7 +133,7 @@ public extension OCKHealthKitPassthroughStore {
                 throw OCKStoreError.deleteFailed(reason: "Not all outcomes are outcomes previously retrieved from HealthKit!")
             }
             let predicate = HKQuery.predicateForObjects(with: Set(outcomes.compactMap({ $0.healthKitUUIDs }).flatMap({ $0 })))
-            store.deleteObjects(of: objectType, predicate: predicate) { _, _, error in
+            healthStore.deleteObjects(of: objectType, predicate: predicate) { _, _, error in
                 if let error = error {
                     callbackQueue.async {
                         completion?(.failure(.deleteFailed(
@@ -157,7 +157,6 @@ public extension OCKHealthKitPassthroughStore {
     // Make sure to call `prepTasks(_:)` before this.
     private func fetchOutcomes(task: OCKHealthKitTask, dateRange: DateInterval,
                                completion: @escaping (Result<[OCKHealthKitOutcome], OCKStoreError>) -> Void) {
-        guard let taskUUID = task.uuid else { completion(.failure(.fetchFailed(reason: "Task has not been persisted yet."))); return }
         let events = task.schedule.events(from: dateRange.start, to: dateRange.end)
         let eventIntervals = events.map { DateInterval(start: $0.start, end: $0.end) }
 
@@ -172,7 +171,7 @@ public extension OCKHealthKitPassthroughStore {
                     let outcomeValues = sample.values.map { OCKOutcomeValue($0, units: task.healthKitLinkage.unit.unitString) }
                     let correspondingEvent = events[index]
                     let isOwnedByApp = !sample.samples.isEmpty && sample.samples.allSatisfy({ $0.sourceRevision.source == HKSource.default() })
-                    return OCKHealthKitOutcome(taskUUID: taskUUID,
+                    return OCKHealthKitOutcome(taskUUID: task.uuid,
                                                taskOccurrenceIndex: correspondingEvent.occurrence,
                                                values: outcomeValues,
                                                isOwnedByApp: isOwnedByApp,

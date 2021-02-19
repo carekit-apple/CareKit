@@ -32,7 +32,6 @@ import Foundation
 /// Any store from which a single type conforming to `OCKAnyPatient` can be queried is considered `OCKAnyReadOnlyPatientStore`.
 public protocol OCKReadablePatientStore: OCKAnyReadOnlyPatientStore {
     associatedtype Patient: OCKAnyPatient & Equatable & Identifiable
-    associatedtype PatientQuery: OCKAnyPatientQuery
 
     /// `fetchPatients` asynchronously retrieves an array of patients from the store.
     ///
@@ -40,7 +39,7 @@ public protocol OCKReadablePatientStore: OCKAnyReadOnlyPatientStore {
     ///   - query: A query used to constrain the values that will be fetched.
     ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on the provided callback queue.
-    func fetchPatients(query: PatientQuery, callbackQueue: DispatchQueue,
+    func fetchPatients(query: OCKPatientQuery, callbackQueue: DispatchQueue,
                        completion: @escaping OCKResultClosure<[Patient]>)
 
     // MARK: Implementation Provided
@@ -117,9 +116,9 @@ public extension OCKReadablePatientStore {
         var query = OCKPatientQuery(for: Date())
         query.limit = 1
         query.ids = [id]
-        query.extendedSortDescriptors = [.effectiveDate(ascending: true)]
+        query.sortDescriptors = [.effectiveDate(ascending: true)]
 
-        fetchPatients(query: PatientQuery(query), callbackQueue: callbackQueue, completion:
+        fetchPatients(query: query, callbackQueue: callbackQueue, completion:
             chooseFirst(then: completion, replacementError: .fetchFailed(reason: "No patient with matching ID")))
     }
 }
@@ -147,10 +146,9 @@ public extension OCKPatientStore {
 // MARK: OCKAnyReadOnlyPatientStore implementations for OCKReadablePatientStore
 
 public extension OCKReadablePatientStore {
-    func fetchAnyPatients(query: OCKAnyPatientQuery, callbackQueue: DispatchQueue,
+    func fetchAnyPatients(query: OCKPatientQuery, callbackQueue: DispatchQueue,
                           completion: @escaping OCKResultClosure<[OCKAnyPatient]>) {
-        let patientQuery = PatientQuery(query)
-        fetchPatients(query: patientQuery, callbackQueue: callbackQueue) { completion($0.map { $0.map { $0 as OCKAnyPatient } }) }
+        fetchPatients(query: query, callbackQueue: callbackQueue) { completion($0.map { $0.map { $0 as OCKAnyPatient } }) }
     }
 }
 

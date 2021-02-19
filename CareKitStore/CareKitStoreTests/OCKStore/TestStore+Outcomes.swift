@@ -36,12 +36,7 @@ class TestStoreOutcomes: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        store = OCKStore(name: "TestDatabase", type: .inMemory)
-    }
-
-    override func tearDown() {
-        super.tearDown()
-        store = nil
+        store = OCKStore(name: UUID().uuidString, type: .inMemory)
     }
 
     // MARK: Insertion
@@ -49,7 +44,7 @@ class TestStoreOutcomes: XCTestCase {
     func testAddAndFetchOutcomes() throws {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
         let task = try store.addTaskAndWait(OCKTask(id: "A", title: "A", carePlanUUID: nil, schedule: schedule))
-        let taskUUID = try task.getUUID()
+        let taskUUID = task.uuid
 
         var value = OCKOutcomeValue(42)
         value.kind = "number"
@@ -64,33 +59,20 @@ class TestStoreOutcomes: XCTestCase {
         XCTAssertNotNil(outcomes.first?.schemaVersion)
     }
 
-    func testTestOutcomeValueIndexIsPersisted() throws {
-        let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
-        let task = try store.addTaskAndWait(OCKTask(id: "A", title: "A", carePlanUUID: nil, schedule: schedule))
-        let taskUUID = try task.getUUID()
-
-        var value = OCKOutcomeValue(42)
-        value.index = 2
-        var outcome = OCKOutcome(taskUUID: taskUUID, taskOccurrenceIndex: 0, values: [value])
-        outcome = try store.addOutcomeAndWait(outcome)
-        let outcomes = try store.fetchOutcomesAndWait()
-        XCTAssert(outcomes.first?.values.first?.index == 2)
-    }
-
     func testAddOutcomeToTask() throws {
         var task = OCKTask(id: "task", title: "My Task", carePlanUUID: nil, schedule: .mealTimesEachDay(start: Date(), end: nil))
         task = try store.addTaskAndWait(task)
-        let taskUUID = try task.getUUID()
+        let taskUUID = task.uuid
 
         var outcome = OCKOutcome(taskUUID: taskUUID, taskOccurrenceIndex: 2, values: [])
         outcome = try store.addOutcomeAndWait(outcome)
         XCTAssert(outcome.taskUUID == taskUUID)
     }
 
-    func testTwoOutcomesWithoutSametaskUUIDAndOccurrenceIndexCannotBeAdded() throws {
+    func testTwoOutcomesWithoutSameTaskUUIDAndOccurrenceIndexCannotBeAdded() throws {
         var task = OCKTask(id: "task", title: "My Task", carePlanUUID: nil, schedule: .mealTimesEachDay(start: Date(), end: nil))
         task = try store.addTaskAndWait(task)
-        let taskUUID = try task.getUUID()
+        let taskUUID = task.uuid
 
         let outcome = OCKOutcome(taskUUID: taskUUID, taskOccurrenceIndex: 2, values: [])
         XCTAssertThrowsError(try store.addOutcomesAndWait([outcome, outcome]))
@@ -103,8 +85,8 @@ class TestStoreOutcomes: XCTestCase {
         let taskV1 = try store.addTaskAndWait(task)
         let taskV2 = try store.updateTaskAndWait(task)
         let value = OCKOutcomeValue(123)
-        let outcome = OCKOutcome(taskUUID: try taskV1.getUUID(), taskOccurrenceIndex: 1, values: [value])
-        XCTAssert(taskV2.previousVersionUUID == taskV1.uuid)
+        let outcome = OCKOutcome(taskUUID: taskV1.uuid, taskOccurrenceIndex: 1, values: [value])
+        XCTAssert(taskV2.previousVersionUUIDs.first == taskV1.uuid)
         XCTAssertThrowsError(try store.addOutcomeAndWait(outcome))
     }
 
@@ -120,7 +102,7 @@ class TestStoreOutcomes: XCTestCase {
         try store.updateTaskAndWait(task)
 
         let value = OCKOutcomeValue(123)
-        var outcome = OCKOutcome(taskUUID: try taskV1.getUUID(), taskOccurrenceIndex: 0, values: [value])
+        var outcome = OCKOutcome(taskUUID: taskV1.uuid, taskOccurrenceIndex: 0, values: [value])
         outcome = try store.addOutcomeAndWait(outcome)
         outcome.taskOccurrenceIndex = 8
         XCTAssertThrowsError(try store.updateOutcomeAndWait(outcome))
@@ -132,9 +114,9 @@ class TestStoreOutcomes: XCTestCase {
         var task = OCKTask(id: "abc", title: "ABC", carePlanUUID: nil, schedule: .mealTimesEachDay(start: Date(), end: nil))
         task = try store.addTaskAndWait(task)
         let value = OCKOutcomeValue(42)
-        var outcomeA = OCKOutcome(taskUUID: try task.getUUID(), taskOccurrenceIndex: 0, values: [value])
+        var outcomeA = OCKOutcome(taskUUID: task.uuid, taskOccurrenceIndex: 0, values: [value])
         outcomeA.groupIdentifier = "A"
-        var outcomeB = OCKOutcome(taskUUID: try task.getUUID(), taskOccurrenceIndex: 1, values: [value])
+        var outcomeB = OCKOutcome(taskUUID: task.uuid, taskOccurrenceIndex: 1, values: [value])
         outcomeB.groupIdentifier = "B"
         try store.addOutcomesAndWait([outcomeA, outcomeB])
         var query = OCKOutcomeQuery(for: Date())
@@ -148,7 +130,7 @@ class TestStoreOutcomes: XCTestCase {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
         var task = OCKTask(id: "exercise", title: "Push Ups", carePlanUUID: nil, schedule: schedule)
         task = try store.addTaskAndWait(task)
-        let taskUUID = try task.getUUID()
+        let taskUUID = task.uuid
 
         let date1 = task.schedule[0].start.addingTimeInterval(-10)
         let date2 = task.schedule[1].start.addingTimeInterval(-10)
@@ -176,7 +158,7 @@ class TestStoreOutcomes: XCTestCase {
         task = try store.addTaskAndWait(task)
 
         let outcome = OCKOutcome(
-            taskUUID: try task.getUUID(),
+            taskUUID: task.uuid,
             taskOccurrenceIndex: 0,
             values: [])
         try store.addOutcomeAndWait(outcome)
@@ -189,7 +171,7 @@ class TestStoreOutcomes: XCTestCase {
     func testOutcomeQueryLimit() throws {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
         let task = try store.addTaskAndWait(OCKTask(id: "A", title: "A", carePlanUUID: nil, schedule: schedule))
-        let taskUUID = try task.getUUID()
+        let taskUUID = task.uuid
 
         let outcomeA = OCKOutcome(taskUUID: taskUUID, taskOccurrenceIndex: 0, values: [OCKOutcomeValue(10)])
         let outcomeB = OCKOutcome(taskUUID: taskUUID, taskOccurrenceIndex: 1, values: [OCKOutcomeValue(20)])
@@ -203,7 +185,7 @@ class TestStoreOutcomes: XCTestCase {
     func testQueryOutcomesByRemoteID() throws {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
         let task = try store.addTaskAndWait(OCKTask(id: "A", title: "A", carePlanUUID: nil, schedule: schedule))
-        let taskUUID = try task.getUUID()
+        let taskUUID = task.uuid
 
         var outcome = OCKOutcome(taskUUID: taskUUID, taskOccurrenceIndex: 0, values: [])
         outcome.remoteID = "abc"
@@ -221,7 +203,7 @@ class TestStoreOutcomes: XCTestCase {
         task.remoteID = "abc"
         task = try store.addTaskAndWait(task)
 
-        var outcome = OCKOutcome(taskUUID: try task.getUUID(), taskOccurrenceIndex: 0, values: [])
+        var outcome = OCKOutcome(taskUUID: task.uuid, taskOccurrenceIndex: 0, values: [])
         outcome = try store.addOutcomeAndWait(outcome)
 
         var query = OCKOutcomeQuery(for: Date())
@@ -234,7 +216,7 @@ class TestStoreOutcomes: XCTestCase {
         var task = OCKTask(id: "A", title: nil, carePlanUUID: nil, schedule: .mealTimesEachDay(start: Date(), end: nil))
         task = try store.addTaskAndWait(task)
 
-        var outcome = OCKOutcome(taskUUID: try task.getUUID(), taskOccurrenceIndex: 0, values: [])
+        var outcome = OCKOutcome(taskUUID: task.uuid, taskOccurrenceIndex: 0, values: [])
         outcome.tags = ["123"]
         outcome = try store.addOutcomeAndWait(outcome)
 
@@ -249,11 +231,11 @@ class TestStoreOutcomes: XCTestCase {
         var task = OCKTask(id: "A", title: nil, carePlanUUID: nil, schedule: .mealTimesEachDay(start: Date(), end: nil))
         task = try store.addTaskAndWait(task)
 
-        var outcome = OCKOutcome(taskUUID: try task.getUUID(), taskOccurrenceIndex: 0, values: [])
+        var outcome = OCKOutcome(taskUUID: task.uuid, taskOccurrenceIndex: 0, values: [])
         outcome = try store.addOutcomeAndWait(outcome)
 
         var query = OCKOutcomeQuery(for: Date())
-        query.uuids = [try outcome.getUUID()]
+        query.uuids = [outcome.uuid]
 
         let fetched = try store.fetchOutcomesAndWait(query: query).first
         XCTAssert(fetched == outcome)
@@ -264,7 +246,7 @@ class TestStoreOutcomes: XCTestCase {
     func testUpdateOutcomes() throws {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
         let task = try store.addTaskAndWait(OCKTask(id: "A", title: "A", carePlanUUID: nil, schedule: schedule))
-        let taskUUID = try task.getUUID()
+        let taskUUID = task.uuid
 
         let outcomeA = try store.addOutcomeAndWait(OCKOutcome(taskUUID: taskUUID, taskOccurrenceIndex: 0, values: []))
         let outcomeB = try store.updateOutcomeAndWait(outcomeA)
@@ -274,7 +256,7 @@ class TestStoreOutcomes: XCTestCase {
     func testUpdateFailsForUnsavedOutcomes() throws {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
         let task = try store.addTaskAndWait(OCKTask(id: "A", title: "A", carePlanUUID: nil, schedule: schedule))
-        let taskUUID = try task.getUUID()
+        let taskUUID = task.uuid
 
         let outcome = OCKOutcome(taskUUID: taskUUID, taskOccurrenceIndex: 0, values: [])
         XCTAssertThrowsError(try store.updateOutcomeAndWait(outcome))
@@ -285,7 +267,7 @@ class TestStoreOutcomes: XCTestCase {
     func testDeleteOutcome() throws {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
         let task = try store.addTaskAndWait(OCKTask(id: "A", title: "A", carePlanUUID: nil, schedule: schedule))
-        let taskUUID = try task.getUUID()
+        let taskUUID = task.uuid
 
         let outcome = try store.addOutcomeAndWait(OCKOutcome(taskUUID: taskUUID, taskOccurrenceIndex: 0, values: []))
         try store.deleteOutcomeAndWait(outcome)
@@ -296,7 +278,7 @@ class TestStoreOutcomes: XCTestCase {
     func testDeleteOutcomeFailsIfOutcomeDoesntExist() throws {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
         let task = try store.addTaskAndWait(OCKTask(id: "A", title: "A", carePlanUUID: nil, schedule: schedule))
-        let outcome = OCKOutcome(taskUUID: try task.getUUID(), taskOccurrenceIndex: 0, values: [])
+        let outcome = OCKOutcome(taskUUID: task.uuid, taskOccurrenceIndex: 0, values: [])
         XCTAssertThrowsError(try store.deleteOutcomeAndWait(outcome))
     }
 }

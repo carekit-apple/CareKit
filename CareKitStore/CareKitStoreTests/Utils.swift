@@ -29,7 +29,9 @@
  */
 
 @testable import CareKitStore
+import CoreData
 import Foundation
+import XCTest
 
 extension Result {
     var value: Success? {
@@ -60,21 +62,28 @@ extension OCKSchedule {
     }
 }
 
-extension OCKObjectCompatible {
-    func getUUID() throws -> UUID {
-        guard let uuid = uuid else { throw OCKStoreError.invalidValue(reason: "Missing UUID") }
-        return uuid
-    }
-}
+extension XCTestCase {
 
-extension OCKVersionedObjectCompatible {
-    func getPreviousVersionUUID() throws -> UUID {
-        guard let uuid = previousVersionUUID else { throw OCKStoreError.invalidValue(reason: "Missing previousVersionUUID") }
-        return uuid
-    }
+    func expect(
+        with context: NSManagedObjectContext,
+        shouldThrow: Bool = false,
+        _ work: @escaping() throws -> Void) {
 
-    func getNextVersionUUID() throws -> UUID {
-        guard let uuid = nextVersionUUID else { throw OCKStoreError.invalidValue(reason: "Missing nextVersionUUID") }
-        return uuid
+        let expect = expectation(description: "work completes")
+
+        context.perform {
+            do {
+                try work()
+                if !shouldThrow {
+                    expect.fulfill()
+                }
+            } catch {
+                if shouldThrow {
+                    expect.fulfill()
+                }
+            }
+        }
+
+        waitForExpectations(timeout: 10.0, handler: nil)
     }
 }

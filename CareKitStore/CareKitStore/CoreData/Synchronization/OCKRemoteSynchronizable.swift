@@ -64,14 +64,9 @@ public protocol OCKRemoteSynchronizable: AnyObject {
     ///   - knowledgeVector: Revisions newer than those encoded by this vector will be pulled.
     ///   - mergeRevision: A closure that can be called multiple times to merge revisions.
     ///   - completion: A closure that should be called with the results of the pull.
-    ///
-    /// - Warning: The `mergeRevision` closure should never be called in parallel.
-    /// Wait until one merge has completed before starting another.
     func pullRevisions(
         since knowledgeVector: OCKRevisionRecord.KnowledgeVector,
-        mergeRevision: @escaping (
-            _ revision: OCKRevisionRecord,
-            _ completion: @escaping (Error?) -> Void) -> Void,
+        mergeRevision: @escaping (OCKRevisionRecord) -> Void,
         completion: @escaping (Error?) -> Void)
 
     /// Push a revision from a device up to the server.
@@ -82,114 +77,19 @@ public protocol OCKRemoteSynchronizable: AnyObject {
     ///   - completion: A closure that should be called once the push completes.
     func pushRevisions(
         deviceRevision: OCKRevisionRecord,
-        overwriteRemote: Bool,
         completion: @escaping (Error?) -> Void)
 
     /// This method will be called when CareKit detects a conflict between changes made to an entity in
-    /// the device's local store and the changes made to the same entity on the server's store. Inspect the
-    /// conflict and determine which version of the entity to keep, then call the completion closure with your
-    /// chosen conflict resolution strategy.
+    /// the device's local store and the changes made to the same entity in other device's stores. Inspect the
+    /// conflicted and determine which version of the entity to keep, then call the completion closure with the
+    /// chosen version.
     ///
     /// - Note: It is permissible to decide for the user, or to prompt the user to make a selection manually.
     ///
     /// - Parameters:
-    ///   - conflict: A description of the conflict, including the entities that are in conflict.
-    ///   - completion: A closure that should be called with the chosen resolution strategy.
-    func chooseConflictResolutionPolicy(
-        _ conflict: OCKMergeConflictDescription,
-        completion: @escaping (OCKMergeConflictResolutionPolicy) -> Void)
-}
-
-/// Captures all possible conflict resolution policies that can be used when synchronizing the
-/// contents of `OCKStore`.
-public enum OCKMergeConflictResolutionPolicy: String, Equatable, Codable, CaseIterable {
-
-    /// Keep the entity presently available locally, deleting the remote entity in conflict.
-    case keepDevice
-
-    /// Keep the entity added remotely, deleting the local conflicting entity.
-    case keepRemote
-
-    /// Causes the merge operation to fail and throw an error.
-    case abortMerge
-}
-
-/// Describes a merge conflict between local and remote entities, including possible resolutions.
-public struct OCKMergeConflictDescription: Equatable, Codable {
-
-    /// The entities that are in conflict.
-    public let entities: EntityPair
-
-    /// Describes a pair of entities that are in conflict.
-    public enum EntityPair: Equatable, Codable {
-        case outcomes(deviceVersion: OCKOutcome, remoteVersion: OCKOutcome)
-        case tasks(deviceVersion: OCKTask, remoteVersion: OCKTask)
-        case carePlans(deviceVersion: OCKCarePlan, remoteVersion: OCKCarePlan)
-        case contacts(deviceVersion: OCKContact, remoteVersion: OCKContact)
-        case patients(deviceVersion: OCKPatient, remoteVersion: OCKPatient)
-
-        private enum Keys: CodingKey {
-            case device
-            case remote
-            case entity
-        }
-
-        private var entityType: OCKEntity.EntityType {
-            switch self {
-            case .outcomes: return .outcome
-            case .tasks: return .task
-            case .carePlans: return .carePlan
-            case .contacts: return .contact
-            case .patients: return .patient
-            }
-        }
-
-        public init(from decoder: Decoder) throws {
-            let container = try decoder.container(keyedBy: Keys.self)
-            switch try container.decode(OCKEntity.EntityType.self, forKey: .entity) {
-            case .outcome:
-                self = .outcomes(
-                    deviceVersion: try container.decode(OCKOutcome.self, forKey: .device),
-                    remoteVersion: try container.decode(OCKOutcome.self, forKey: .remote))
-            case .task:
-                self = .tasks(
-                    deviceVersion: try container.decode(OCKTask.self, forKey: .device),
-                    remoteVersion: try container.decode(OCKTask.self, forKey: .remote))
-            case .carePlan:
-                self = .carePlans(
-                    deviceVersion: try container.decode(OCKCarePlan.self, forKey: .device),
-                    remoteVersion: try container.decode(OCKCarePlan.self, forKey: .remote))
-            case .contact:
-                self = .contacts(
-                    deviceVersion: try container.decode(OCKContact.self, forKey: .device),
-                    remoteVersion: try container.decode(OCKContact.self, forKey: .remote))
-            case .patient:
-                self = .patients(
-                    deviceVersion: try container.decode(OCKPatient.self, forKey: .device),
-                    remoteVersion: try container.decode(OCKPatient.self, forKey: .remote))
-            }
-        }
-
-        public func encode(to encoder: Encoder) throws {
-            var container = encoder.container(keyedBy: Keys.self)
-            try container.encode(entityType, forKey: .entity)
-            switch self {
-            case let .outcomes(deviceVersion, remoteVersion):
-                try container.encode(deviceVersion, forKey: .device)
-                try container.encode(remoteVersion, forKey: .remote)
-            case let .tasks(deviceVersion, remoteVersion):
-                try container.encode(deviceVersion, forKey: .device)
-                try container.encode(remoteVersion, forKey: .remote)
-            case let .carePlans(deviceVersion, remoteVersion):
-                try container.encode(deviceVersion, forKey: .device)
-                try container.encode(remoteVersion, forKey: .remote)
-            case let .contacts(deviceVersion, remoteVersion):
-                try container.encode(deviceVersion, forKey: .device)
-                try container.encode(remoteVersion, forKey: .remote)
-            case let .patients(deviceVersion, remoteVersion):
-                try container.encode(deviceVersion, forKey: .device)
-                try container.encode(remoteVersion, forKey: .remote)
-            }
-        }
-    }
+    ///   - conflicts: An array of the entities that are in conflict.
+    ///   - completion: A closure that should be called with the version to keep.
+    func chooseConflictResolution(
+        conflicts: [OCKEntity],
+        completion: @escaping OCKResultClosure<OCKEntity>)
 }

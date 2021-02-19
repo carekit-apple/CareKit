@@ -182,7 +182,7 @@ open class OCKStoreCoordinator: OCKAnyStoreProtocol, OCKResetDelegate {
     ///
     /// - Parameter store: A candidate store that should or should not handle the query.
     /// - Parameter query: The query that is about to be executed.
-    open func patientStore(_ store: OCKAnyReadOnlyPatientStore, shouldHandleQuery query: OCKAnyPatientQuery) -> Bool {
+    open func patientStore(_ store: OCKAnyReadOnlyPatientStore, shouldHandleQuery query: OCKPatientQuery) -> Bool {
         true
     }
 
@@ -202,7 +202,7 @@ open class OCKStoreCoordinator: OCKAnyStoreProtocol, OCKResetDelegate {
     ///
     /// - Parameter store: A candidate store that should or should not handle the query.
     /// - Parameter query: The query that is about to be executed.
-    open func carePlanStore(_ store: OCKAnyReadOnlyCarePlanStore, shouldHandleQuery query: OCKAnyCarePlanQuery) -> Bool {
+    open func carePlanStore(_ store: OCKAnyReadOnlyCarePlanStore, shouldHandleQuery query: OCKCarePlanQuery) -> Bool {
         true
     }
 
@@ -222,7 +222,7 @@ open class OCKStoreCoordinator: OCKAnyStoreProtocol, OCKResetDelegate {
     ///
     /// - Parameter store: A candidate store that should or should not handle the query.
     /// - Parameter query: The query that is about to be executed.
-    open func contactStore(_ store: OCKAnyReadOnlyContactStore, shouldHandleQuery query: OCKAnyContactQuery) -> Bool {
+    open func contactStore(_ store: OCKAnyReadOnlyContactStore, shouldHandleQuery query: OCKContactQuery) -> Bool {
         true
     }
 
@@ -242,7 +242,7 @@ open class OCKStoreCoordinator: OCKAnyStoreProtocol, OCKResetDelegate {
     ///
     /// - Parameter store: A candidate store that should or should not handle the query.
     /// - Parameter query: The query that is about to be executed.
-    open func taskStore(_ store: OCKAnyReadOnlyTaskStore, shouldHandleQuery query: OCKAnyTaskQuery) -> Bool {
+    open func taskStore(_ store: OCKAnyReadOnlyTaskStore, shouldHandleQuery query: OCKTaskQuery) -> Bool {
         true
     }
 
@@ -273,7 +273,7 @@ open class OCKStoreCoordinator: OCKAnyStoreProtocol, OCKResetDelegate {
     ///
     /// - Parameter store: A candidate store that should or should not handle the query.
     /// - Parameter query: The query that is about to be executed.
-    open func outcomeStore(_ store: OCKAnyReadOnlyOutcomeStore, shouldHandleQuery query: OCKAnyOutcomeQuery) -> Bool {
+    open func outcomeStore(_ store: OCKAnyReadOnlyOutcomeStore, shouldHandleQuery query: OCKOutcomeQuery) -> Bool {
         true
     }
 

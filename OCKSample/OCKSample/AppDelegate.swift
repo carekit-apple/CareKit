@@ -37,21 +37,22 @@ import HealthKit
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-    let coreDataStore = OCKStore(name: "SampleAppStore", type: .inMemory)
-    let healthKitStore = OCKHealthKitPassthroughStore(name: "SampleAppHealthKitPassthroughStore", type: .inMemory)
-    private(set) var synchronizedStoreManager: OCKSynchronizedStoreManager!
+    lazy private(set) var coreDataStore = OCKStore(name: "SampleAppStore", type: .inMemory)
+
+    lazy private(set) var healthKitStore = OCKHealthKitPassthroughStore(store: coreDataStore)
+
+    lazy private(set) var synchronizedStoreManager: OCKSynchronizedStoreManager = {
+        let coordinator = OCKStoreCoordinator()
+        coordinator.attach(eventStore: healthKitStore)
+        coordinator.attach(store: coreDataStore)
+        return OCKSynchronizedStoreManager(wrapping: coordinator)
+    }()
 
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
         coreDataStore.populateSampleData()
         healthKitStore.populateSampleData()
-
-        let coordinator = OCKStoreCoordinator()
-        coordinator.attach(eventStore: healthKitStore)
-        coordinator.attach(store: coreDataStore)
-
-        synchronizedStoreManager = OCKSynchronizedStoreManager(wrapping: coordinator)
 
         return true
     }

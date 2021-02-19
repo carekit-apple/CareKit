@@ -37,12 +37,8 @@ class TestHealthKitStoreTasks: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        store = OCKHealthKitPassthroughStore(name: "TestDatabase", type: .inMemory)
-    }
-
-    override func tearDown() {
-        super.tearDown()
-        store = nil
+        let inMemory = OCKStore(name: UUID().uuidString, type: .inMemory)
+        store = OCKHealthKitPassthroughStore(store: inMemory)
     }
 
     // MARK: Relationship Validation
@@ -135,7 +131,7 @@ class TestHealthKitStoreTasks: XCTestCase {
 
         let interval = DateInterval(start: Date(), end: Calendar.current.date(byAdding: .day, value: 10, to: today)!)
         var query = OCKTaskQuery(dateInterval: interval)
-        query.extendedSortDescriptors = [.title(ascending: true)]
+        query.sortDescriptors = [.title(ascending: true)]
 
         let fetched = try store.fetchTasksAndWait(query: query)
         XCTAssert(fetched.map { $0.title } == [nil, "aa", "bb"])
@@ -150,13 +146,11 @@ class TestHealthKitStoreTasks: XCTestCase {
 
         let interval = DateInterval(start: Date(), end: Calendar.current.date(byAdding: .day, value: 2, to: Date())!)
         var query = OCKTaskQuery(dateInterval: interval)
-        query.extendedSortDescriptors = [.title(ascending: true)]
-        query.limit = 1
-        query.offset = 2
+        query.sortDescriptors = [.title(ascending: true)]
+        query.limit = 2
 
         let tasks = try store.fetchTasksAndWait(query: query)
-        XCTAssert(tasks.count == 1)
-        XCTAssert(tasks.first?.id == task3.id)
+        XCTAssert(tasks.count == 2)
     }
 
     func testTaskQueryTags() throws {
@@ -172,7 +166,7 @@ class TestHealthKitStoreTasks: XCTestCase {
         let interval = DateInterval(start: Date(), end: Calendar.current.date(byAdding: .day, value: 2, to: Date())!)
         var query = OCKTaskQuery(dateInterval: interval)
         query.tags = ["B"]
-        query.extendedSortDescriptors = [.title(ascending: true)]
+        query.sortDescriptors = [.title(ascending: true)]
 
         let fetched = try store.fetchTasksAndWait(query: query)
         XCTAssert(fetched.map { $0.title } == ["b", "c"])
@@ -210,7 +204,7 @@ class TestHealthKitStoreTasks: XCTestCase {
         let version2 = OCKHealthKitTask(id: "meds", title: "New Medication", carePlanUUID: nil, schedule: schedule, healthKitLinkage: link)
         let updatedTask = try store.updateTaskAndWait(version2)
         XCTAssert(updatedTask.title == "New Medication")
-        XCTAssert(updatedTask.previousVersionUUID == task.uuid)
+        XCTAssert(updatedTask.previousVersionUUIDs.first == task.uuid)
     }
 
     func testUpdateFailsForUnsavedTasks() {

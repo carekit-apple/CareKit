@@ -1,29 +1,28 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17709" systemVersion="20A5354i" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="OCKCDCarePlan" representedClassName="OCKCDCarePlan" syncable="YES">
-        <attribute name="allowsMissingRelationships" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
         <attribute name="asset" optional="YES" attributeType="String"/>
         <attribute name="createdDate" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="deletedDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="effectiveDate" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="groupIdentifier" optional="YES" attributeType="String"/>
         <attribute name="id" attributeType="String"/>
-        <attribute name="logicalClock" attributeType="Integer 64" usesScalarValueType="YES"/>
         <attribute name="remoteID" optional="YES" attributeType="String"/>
         <attribute name="schemaVersion" attributeType="String"/>
         <attribute name="source" optional="YES" attributeType="String"/>
-        <attribute name="tags" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
         <attribute name="timezoneIdentifier" attributeType="String"/>
         <attribute name="title" optional="YES" attributeType="String"/>
         <attribute name="updatedDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="userInfo" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
         <attribute name="uuid" attributeType="UUID" usesScalarValueType="NO"/>
-        <relationship name="contacts" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OCKCDContact" inverseName="carePlan" inverseEntity="OCKCDContact"/>
-        <relationship name="next" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="OCKCDCarePlan" inverseName="previous" inverseEntity="OCKCDCarePlan"/>
-        <relationship name="notes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OCKCDNote" inverseName="plan" inverseEntity="OCKCDNote"/>
+        <relationship name="contacts" toMany="YES" deletionRule="Cascade" destinationEntity="OCKCDContact" inverseName="carePlan" inverseEntity="OCKCDContact"/>
+        <relationship name="knowledge" toMany="YES" deletionRule="Cascade" destinationEntity="OCKCDKnowledgeElement" inverseName="carePlan" inverseEntity="OCKCDKnowledgeElement"/>
+        <relationship name="next" toMany="YES" deletionRule="Cascade" destinationEntity="OCKCDCarePlan" inverseName="previous" inverseEntity="OCKCDCarePlan"/>
+        <relationship name="notes" toMany="YES" deletionRule="Cascade" destinationEntity="OCKCDNote" inverseName="plan" inverseEntity="OCKCDNote"/>
         <relationship name="patient" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDPatient" inverseName="carePlans" inverseEntity="OCKCDPatient"/>
-        <relationship name="previous" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDCarePlan" inverseName="next" inverseEntity="OCKCDCarePlan"/>
-        <relationship name="tasks" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OCKCDTask" inverseName="carePlan" inverseEntity="OCKCDTask"/>
+        <relationship name="previous" toMany="YES" deletionRule="Nullify" destinationEntity="OCKCDCarePlan" inverseName="next" inverseEntity="OCKCDCarePlan"/>
+        <relationship name="tags" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="OCKCDTag" inverseName="carePlans" inverseEntity="OCKCDTag"/>
+        <relationship name="tasks" toMany="YES" deletionRule="Cascade" destinationEntity="OCKCDTaskBase" inverseName="carePlan" inverseEntity="OCKCDTaskBase"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="uuid"/>
@@ -35,7 +34,6 @@
         <attribute name="vectorClock" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
     </entity>
     <entity name="OCKCDContact" representedClassName="OCKCDContact" syncable="YES">
-        <attribute name="allowsMissingRelationships" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
         <attribute name="asset" optional="YES" attributeType="String"/>
         <attribute name="category" optional="YES" attributeType="String"/>
         <attribute name="createdDate" attributeType="Date" usesScalarValueType="NO"/>
@@ -44,7 +42,6 @@
         <attribute name="emailAddressesDictionary" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
         <attribute name="groupIdentifier" optional="YES" attributeType="String"/>
         <attribute name="id" attributeType="String"/>
-        <attribute name="logicalClock" attributeType="Integer 64" usesScalarValueType="YES"/>
         <attribute name="messagingNumbersDictionary" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
         <attribute name="organization" optional="YES" attributeType="String"/>
         <attribute name="otherContactInfoDictionary" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
@@ -53,18 +50,19 @@
         <attribute name="role" optional="YES" attributeType="String"/>
         <attribute name="schemaVersion" attributeType="String"/>
         <attribute name="source" optional="YES" attributeType="String"/>
-        <attribute name="tags" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
         <attribute name="timezoneIdentifier" attributeType="String"/>
         <attribute name="title" optional="YES" attributeType="String"/>
         <attribute name="updatedDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="userInfo" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
         <attribute name="uuid" attributeType="UUID" usesScalarValueType="NO"/>
-        <relationship name="address" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDPostalAddress" inverseName="contact" inverseEntity="OCKCDPostalAddress"/>
+        <relationship name="address" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="OCKCDPostalAddress" inverseName="contact" inverseEntity="OCKCDPostalAddress"/>
         <relationship name="carePlan" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDCarePlan" inverseName="contacts" inverseEntity="OCKCDCarePlan"/>
+        <relationship name="knowledge" toMany="YES" deletionRule="Cascade" destinationEntity="OCKCDKnowledgeElement" inverseName="contact" inverseEntity="OCKCDKnowledgeElement"/>
         <relationship name="name" maxCount="1" deletionRule="Cascade" destinationEntity="OCKCDPersonName" inverseName="contact" inverseEntity="OCKCDPersonName"/>
-        <relationship name="next" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="OCKCDContact" inverseName="previous" inverseEntity="OCKCDContact"/>
-        <relationship name="notes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OCKCDNote" inverseName="contact" inverseEntity="OCKCDNote"/>
-        <relationship name="previous" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDContact" inverseName="next" inverseEntity="OCKCDContact"/>
+        <relationship name="next" toMany="YES" deletionRule="Cascade" destinationEntity="OCKCDContact" inverseName="previous" inverseEntity="OCKCDContact"/>
+        <relationship name="notes" toMany="YES" deletionRule="Cascade" destinationEntity="OCKCDNote" inverseName="contact" inverseEntity="OCKCDNote"/>
+        <relationship name="previous" toMany="YES" deletionRule="Nullify" destinationEntity="OCKCDContact" inverseName="next" inverseEntity="OCKCDContact"/>
+        <relationship name="tags" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="OCKCDTag" inverseName="contacts" inverseEntity="OCKCDTag"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="uuid"/>
@@ -75,56 +73,55 @@
         <attribute name="quantityIdentifier" attributeType="String"/>
         <attribute name="quantityType" attributeType="String"/>
         <attribute name="unitString" attributeType="String"/>
-        <relationship name="task" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDTask" inverseName="healthKitLinkage" inverseEntity="OCKCDTask"/>
+        <relationship name="task" maxCount="1" deletionRule="Deny" destinationEntity="OCKCDHealthKitTask" inverseName="healthKitLinkage" inverseEntity="OCKCDHealthKitTask"/>
+    </entity>
+    <entity name="OCKCDHealthKitTask" representedClassName="OCKCDHealthKitTask" parentEntity="OCKCDTaskBase" syncable="YES">
+        <relationship name="healthKitLinkage" maxCount="1" deletionRule="Cascade" destinationEntity="OCKCDHealthKitLinkage" inverseName="task" inverseEntity="OCKCDHealthKitLinkage"/>
+    </entity>
+    <entity name="OCKCDKnowledgeElement" representedClassName="OCKCDKnowledgeElement" syncable="YES">
+        <attribute name="time" attributeType="Integer 64" usesScalarValueType="YES"/>
+        <attribute name="uuid" attributeType="UUID" usesScalarValueType="NO"/>
+        <relationship name="carePlan" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDCarePlan" inverseName="knowledge" inverseEntity="OCKCDCarePlan"/>
+        <relationship name="contact" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDContact" inverseName="knowledge" inverseEntity="OCKCDContact"/>
+        <relationship name="outcome" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDOutcome" inverseName="knowledge" inverseEntity="OCKCDOutcome"/>
+        <relationship name="patient" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDPatient" inverseName="knowledge" inverseEntity="OCKCDPatient"/>
+        <relationship name="task" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDTaskBase" inverseName="knowledge" inverseEntity="OCKCDTaskBase"/>
     </entity>
     <entity name="OCKCDNote" representedClassName="OCKCDNote" syncable="YES">
-        <attribute name="allowsMissingRelationships" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
-        <attribute name="asset" optional="YES" attributeType="String"/>
         <attribute name="author" optional="YES" attributeType="String"/>
         <attribute name="content" optional="YES" attributeType="String"/>
-        <attribute name="createdDate" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="groupIdentifier" optional="YES" attributeType="String"/>
-        <attribute name="logicalClock" attributeType="Integer 64" usesScalarValueType="YES"/>
-        <attribute name="remoteID" optional="YES" attributeType="String"/>
-        <attribute name="schemaVersion" attributeType="String"/>
-        <attribute name="source" optional="YES" attributeType="String"/>
-        <attribute name="tags" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
-        <attribute name="timezoneIdentifier" attributeType="String"/>
         <attribute name="title" optional="YES" attributeType="String"/>
-        <attribute name="updatedDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="userInfo" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
-        <attribute name="uuid" attributeType="UUID" usesScalarValueType="NO"/>
         <relationship name="contact" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDContact" inverseName="notes" inverseEntity="OCKCDContact"/>
-        <relationship name="notes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OCKCDNote" inverseName="parentNote" inverseEntity="OCKCDNote"/>
         <relationship name="outcome" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDOutcome" inverseName="notes" inverseEntity="OCKCDOutcome"/>
-        <relationship name="parentNote" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDNote" inverseName="notes" inverseEntity="OCKCDNote"/>
         <relationship name="patient" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDPatient" inverseName="notes" inverseEntity="OCKCDPatient"/>
         <relationship name="plan" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDCarePlan" inverseName="notes" inverseEntity="OCKCDCarePlan"/>
-        <relationship name="response" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDOutcomeValue" inverseName="notes" inverseEntity="OCKCDOutcomeValue"/>
         <relationship name="scheduleElement" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDScheduleElement" inverseName="notes" inverseEntity="OCKCDScheduleElement"/>
-        <relationship name="task" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDTask" inverseName="notes" inverseEntity="OCKCDTask"/>
+        <relationship name="task" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDTaskBase" inverseName="notes" inverseEntity="OCKCDTaskBase"/>
     </entity>
     <entity name="OCKCDOutcome" representedClassName="OCKCDOutcome" syncable="YES">
-        <attribute name="allowsMissingRelationships" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
         <attribute name="asset" optional="YES" attributeType="String"/>
         <attribute name="createdDate" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="deletedDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="effectiveDate" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="endDate" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="groupIdentifier" optional="YES" attributeType="String"/>
-        <attribute name="logicalClock" attributeType="Integer 64" usesScalarValueType="YES"/>
+        <attribute name="id" attributeType="String"/>
         <attribute name="remoteID" optional="YES" attributeType="String"/>
         <attribute name="schemaVersion" attributeType="String"/>
         <attribute name="source" optional="YES" attributeType="String"/>
         <attribute name="startDate" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="tags" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
         <attribute name="taskOccurrenceIndex" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="timezoneIdentifier" attributeType="String"/>
         <attribute name="updatedDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="userInfo" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
         <attribute name="uuid" attributeType="UUID" usesScalarValueType="NO"/>
-        <relationship name="notes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OCKCDNote" inverseName="outcome" inverseEntity="OCKCDNote"/>
-        <relationship name="task" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDTask" inverseName="outcomes" inverseEntity="OCKCDTask"/>
-        <relationship name="values" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OCKCDOutcomeValue" inverseName="outcome" inverseEntity="OCKCDOutcomeValue"/>
+        <relationship name="knowledge" toMany="YES" deletionRule="Cascade" destinationEntity="OCKCDKnowledgeElement" inverseName="outcome" inverseEntity="OCKCDKnowledgeElement"/>
+        <relationship name="next" toMany="YES" deletionRule="Cascade" destinationEntity="OCKCDOutcome" inverseName="previous" inverseEntity="OCKCDOutcome"/>
+        <relationship name="notes" toMany="YES" deletionRule="Cascade" destinationEntity="OCKCDNote" inverseName="outcome" inverseEntity="OCKCDNote"/>
+        <relationship name="previous" toMany="YES" deletionRule="Nullify" destinationEntity="OCKCDOutcome" inverseName="next" inverseEntity="OCKCDOutcome"/>
+        <relationship name="tags" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="OCKCDTag" inverseName="outcomes" inverseEntity="OCKCDTag"/>
+        <relationship name="task" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDTaskBase" inverseName="outcomes" inverseEntity="OCKCDTaskBase"/>
+        <relationship name="values" toMany="YES" deletionRule="Cascade" destinationEntity="OCKCDOutcomeValue" inverseName="outcome" inverseEntity="OCKCDOutcomeValue"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="uuid"/>
@@ -132,36 +129,21 @@
         </uniquenessConstraints>
     </entity>
     <entity name="OCKCDOutcomeValue" representedClassName="OCKCDOutcomeValue" syncable="YES">
-        <attribute name="allowsMissingRelationships" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
-        <attribute name="asset" optional="YES" attributeType="String"/>
         <attribute name="binaryValue" optional="YES" attributeType="Binary"/>
         <attribute name="booleanValue" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="createdDate" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="dateValue" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="doubleValue" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
-        <attribute name="groupIdentifier" optional="YES" attributeType="String"/>
-        <attribute name="index" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="integerValue" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="kind" optional="YES" attributeType="String"/>
-        <attribute name="logicalClock" attributeType="Integer 64" usesScalarValueType="YES"/>
-        <attribute name="remoteID" optional="YES" attributeType="String"/>
-        <attribute name="schemaVersion" attributeType="String"/>
-        <attribute name="source" optional="YES" attributeType="String"/>
-        <attribute name="tags" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
         <attribute name="textValue" optional="YES" attributeType="String"/>
-        <attribute name="timezoneIdentifier" attributeType="String"/>
         <attribute name="typeString" attributeType="String"/>
         <attribute name="units" optional="YES" attributeType="String"/>
-        <attribute name="updatedDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="userInfo" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
-        <attribute name="uuid" attributeType="UUID" usesScalarValueType="NO"/>
-        <relationship name="notes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OCKCDNote" inverseName="response" inverseEntity="OCKCDNote"/>
         <relationship name="outcome" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDOutcome" inverseName="values" inverseEntity="OCKCDOutcome"/>
         <relationship name="scheduleElement" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDScheduleElement" inverseName="targetValues" inverseEntity="OCKCDScheduleElement"/>
     </entity>
     <entity name="OCKCDPatient" representedClassName="OCKCDPatient" syncable="YES">
         <attribute name="allergies" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
-        <attribute name="allowsMissingRelationships" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
         <attribute name="asset" optional="YES" attributeType="String"/>
         <attribute name="birthday" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="createdDate" attributeType="Date" usesScalarValueType="NO"/>
@@ -169,21 +151,21 @@
         <attribute name="effectiveDate" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="groupIdentifier" optional="YES" attributeType="String"/>
         <attribute name="id" attributeType="String"/>
-        <attribute name="logicalClock" attributeType="Integer 64" usesScalarValueType="YES"/>
         <attribute name="remoteID" optional="YES" attributeType="String"/>
         <attribute name="schemaVersion" attributeType="String"/>
         <attribute name="sex" optional="YES" attributeType="String"/>
         <attribute name="source" optional="YES" attributeType="String"/>
-        <attribute name="tags" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
         <attribute name="timezoneIdentifier" attributeType="String"/>
         <attribute name="updatedDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="userInfo" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
         <attribute name="uuid" attributeType="UUID" usesScalarValueType="NO"/>
-        <relationship name="carePlans" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OCKCDCarePlan" inverseName="patient" inverseEntity="OCKCDCarePlan"/>
+        <relationship name="carePlans" toMany="YES" deletionRule="Cascade" destinationEntity="OCKCDCarePlan" inverseName="patient" inverseEntity="OCKCDCarePlan"/>
+        <relationship name="knowledge" toMany="YES" deletionRule="Cascade" destinationEntity="OCKCDKnowledgeElement" inverseName="patient" inverseEntity="OCKCDKnowledgeElement"/>
         <relationship name="name" maxCount="1" deletionRule="Cascade" destinationEntity="OCKCDPersonName" inverseName="patient" inverseEntity="OCKCDPersonName"/>
-        <relationship name="next" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="OCKCDPatient" inverseName="previous" inverseEntity="OCKCDPatient"/>
-        <relationship name="notes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OCKCDNote" inverseName="patient" inverseEntity="OCKCDNote"/>
-        <relationship name="previous" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDPatient" inverseName="next" inverseEntity="OCKCDPatient"/>
+        <relationship name="next" toMany="YES" deletionRule="Cascade" destinationEntity="OCKCDPatient" inverseName="previous" inverseEntity="OCKCDPatient"/>
+        <relationship name="notes" toMany="YES" deletionRule="Cascade" destinationEntity="OCKCDNote" inverseName="patient" inverseEntity="OCKCDNote"/>
+        <relationship name="previous" toMany="YES" deletionRule="Nullify" destinationEntity="OCKCDPatient" inverseName="next" inverseEntity="OCKCDPatient"/>
+        <relationship name="tags" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="OCKCDTag" inverseName="patients" inverseEntity="OCKCDTag"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="uuid"/>
@@ -228,10 +210,23 @@
         <attribute name="yearsInterval" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="notes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OCKCDNote" inverseName="scheduleElement" inverseEntity="OCKCDNote"/>
         <relationship name="targetValues" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OCKCDOutcomeValue" inverseName="scheduleElement" inverseEntity="OCKCDOutcomeValue"/>
-        <relationship name="task" optional="YES" maxCount="1" deletionRule="Deny" destinationEntity="OCKCDTask" inverseName="scheduleElements" inverseEntity="OCKCDTask"/>
+        <relationship name="task" optional="YES" maxCount="1" deletionRule="Deny" destinationEntity="OCKCDTaskBase" inverseName="scheduleElements" inverseEntity="OCKCDTaskBase"/>
     </entity>
-    <entity name="OCKCDTask" representedClassName="OCKCDTask" syncable="YES">
-        <attribute name="allowsMissingRelationships" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
+    <entity name="OCKCDTag" representedClassName="OCKCDTag" syncable="YES">
+        <attribute name="title" attributeType="String"/>
+        <relationship name="carePlans" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="OCKCDCarePlan" inverseName="tags" inverseEntity="OCKCDCarePlan"/>
+        <relationship name="contacts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="OCKCDContact" inverseName="tags" inverseEntity="OCKCDContact"/>
+        <relationship name="outcomes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="OCKCDOutcome" inverseName="tags" inverseEntity="OCKCDOutcome"/>
+        <relationship name="patients" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="OCKCDPatient" inverseName="tags" inverseEntity="OCKCDPatient"/>
+        <relationship name="tasks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="OCKCDTaskBase" inverseName="tags" inverseEntity="OCKCDTaskBase"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="title"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="OCKCDTask" representedClassName="OCKCDTask" parentEntity="OCKCDTaskBase" syncable="YES"/>
+    <entity name="OCKCDTaskBase" representedClassName="OCKCDTaskBase" syncable="YES">
         <attribute name="asset" optional="YES" attributeType="String"/>
         <attribute name="createdDate" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="deletedDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
@@ -240,23 +235,22 @@
         <attribute name="id" attributeType="String"/>
         <attribute name="impactsAdherence" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
         <attribute name="instructions" optional="YES" attributeType="String"/>
-        <attribute name="logicalClock" attributeType="Integer 64" usesScalarValueType="YES"/>
         <attribute name="remoteID" optional="YES" attributeType="String"/>
         <attribute name="schemaVersion" attributeType="String"/>
         <attribute name="source" optional="YES" attributeType="String"/>
-        <attribute name="tags" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
         <attribute name="timezoneIdentifier" attributeType="String"/>
         <attribute name="title" optional="YES" attributeType="String"/>
         <attribute name="updatedDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="userInfo" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
         <attribute name="uuid" attributeType="UUID" usesScalarValueType="NO"/>
         <relationship name="carePlan" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDCarePlan" inverseName="tasks" inverseEntity="OCKCDCarePlan"/>
-        <relationship name="healthKitLinkage" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="OCKCDHealthKitLinkage" inverseName="task" inverseEntity="OCKCDHealthKitLinkage"/>
-        <relationship name="next" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="OCKCDTask" inverseName="previous" inverseEntity="OCKCDTask"/>
-        <relationship name="notes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OCKCDNote" inverseName="task" inverseEntity="OCKCDNote"/>
-        <relationship name="outcomes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OCKCDOutcome" inverseName="task" inverseEntity="OCKCDOutcome"/>
-        <relationship name="previous" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OCKCDTask" inverseName="next" inverseEntity="OCKCDTask"/>
+        <relationship name="knowledge" toMany="YES" deletionRule="Cascade" destinationEntity="OCKCDKnowledgeElement" inverseName="task" inverseEntity="OCKCDKnowledgeElement"/>
+        <relationship name="next" toMany="YES" deletionRule="Cascade" destinationEntity="OCKCDTaskBase" inverseName="previous" inverseEntity="OCKCDTaskBase"/>
+        <relationship name="notes" toMany="YES" deletionRule="Cascade" destinationEntity="OCKCDNote" inverseName="task" inverseEntity="OCKCDNote"/>
+        <relationship name="outcomes" toMany="YES" deletionRule="Cascade" destinationEntity="OCKCDOutcome" inverseName="task" inverseEntity="OCKCDOutcome"/>
+        <relationship name="previous" toMany="YES" deletionRule="Nullify" destinationEntity="OCKCDTaskBase" inverseName="next" inverseEntity="OCKCDTaskBase"/>
         <relationship name="scheduleElements" toMany="YES" minCount="1" deletionRule="Cascade" destinationEntity="OCKCDScheduleElement" inverseName="task" inverseEntity="OCKCDScheduleElement"/>
+        <relationship name="tags" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="OCKCDTag" inverseName="tasks" inverseEntity="OCKCDTag"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="uuid"/>
@@ -264,17 +258,21 @@
         </uniquenessConstraints>
     </entity>
     <elements>
-        <element name="OCKCDCarePlan" positionX="27" positionY="81" width="128" height="374"/>
+        <element name="OCKCDCarePlan" positionX="27" positionY="81" width="128" height="359"/>
         <element name="OCKCDClock" positionX="45" positionY="216" width="128" height="59"/>
-        <element name="OCKCDContact" positionX="-9" positionY="45" width="128" height="479"/>
+        <element name="OCKCDContact" positionX="-9" positionY="45" width="128" height="464"/>
         <element name="OCKCDHealthKitLinkage" positionX="-9" positionY="153" width="128" height="89"/>
-        <element name="OCKCDNote" positionX="18" positionY="189" width="128" height="404"/>
-        <element name="OCKCDOutcome" positionX="0" positionY="162" width="128" height="329"/>
-        <element name="OCKCDOutcomeValue" positionX="9" positionY="171" width="128" height="419"/>
-        <element name="OCKCDPatient" positionX="9" positionY="63" width="128" height="389"/>
+        <element name="OCKCDHealthKitTask" positionX="18" positionY="189" width="128" height="44"/>
+        <element name="OCKCDKnowledgeElement" positionX="27" positionY="198" width="128" height="134"/>
+        <element name="OCKCDNote" positionX="18" positionY="189" width="128" height="164"/>
+        <element name="OCKCDOutcome" positionX="0" positionY="162" width="128" height="374"/>
+        <element name="OCKCDOutcomeValue" positionX="9" positionY="171" width="128" height="224"/>
+        <element name="OCKCDPatient" positionX="9" positionY="63" width="128" height="374"/>
         <element name="OCKCDPersonName" positionX="27" positionY="198" width="128" height="179"/>
         <element name="OCKCDPostalAddress" positionX="36" positionY="207" width="128" height="164"/>
         <element name="OCKCDScheduleElement" positionX="-18" positionY="27" width="128" height="254"/>
-        <element name="OCKCDTask" positionX="0" positionY="54" width="128" height="419"/>
+        <element name="OCKCDTask" positionX="27" positionY="198" width="128" height="29"/>
+        <element name="OCKCDTaskBase" positionX="0" positionY="54" width="128" height="389"/>
+        <element name="OCKCDTag" positionX="18" positionY="189" width="128" height="119"/>
     </elements>
 </model>

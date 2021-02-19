@@ -32,7 +32,7 @@ import Foundation
 
 extension OCKStoreCoordinator {
 
-    open func fetchAnyContacts(query: OCKAnyContactQuery, callbackQueue: DispatchQueue = .main,
+    open func fetchAnyContacts(query: OCKContactQuery, callbackQueue: DispatchQueue = .main,
                                completion: @escaping (Result<[OCKAnyContact], OCKStoreError>) -> Void) {
         let readableStores = readOnlyContactStores + contactStores
         let respondingStores = readableStores.filter { contactStore($0, shouldHandleQuery: query) }

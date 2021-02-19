@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2021, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -28,40 +28,34 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-@testable import CareKitStore
-import XCTest
+import CoreData
+import Foundation
 
-class TestCoreDataSchemaWithPostalAddress: XCTestCase {
-    var store: OCKStore!
+@objc(OCKCDTag)
+class OCKCDTag: NSManagedObject {
 
-    override func setUp() {
-        super.setUp()
-        store = OCKStore(name: "test", type: .inMemory)
+    @NSManaged var title: String
+
+    private convenience init(title: String, context: NSManagedObjectContext) {
+        self.init(entity: OCKCDTag.entity(), insertInto: context)
+        self.title = title
     }
 
-    func testCanSaveAddress() throws {
-        let contact = OCKCDContact(context: try store.context())
-        contact.allowsMissingRelationships = true
-        contact.id = "Katie Abeles"
-        contact.uuid = UUID()
-        contact.title = "Dr. Abeles"
-        contact.effectiveDate = Date()
-        contact.name = OCKCDPersonName(context: try store.context())
-        contact.name.givenName = "Katie"
-        contact.name.familyName = "Abeles"
+    static func findOrCreate(
+        title: String, in context: NSManagedObjectContext) -> OCKCDTag {
 
-        let address = OCKCDPostalAddress(context: try store.context())
-        address.street = "A"
-        address.subLocality = "B"
-        address.city = "C"
-        address.subAdministrativeArea = "D"
-        address.state = "E"
-        address.postalCode = "F"
-        address.country = "G"
-        address.isoCountryCode = "H"
+        let request = OCKCDTag.fetchRequest()
 
-        contact.address = address
+        request.predicate = NSPredicate(
+            format: "%K == %@", #keyPath(OCKCDTag.title), title)
 
-        XCTAssertNoThrow(try store.context().save())
+        request.fetchLimit = 1
+
+        if let fetched = try? context.fetch(request).first as? OCKCDTag {
+            return fetched
+        }
+
+        let created = OCKCDTag(title: title, context: context)
+        return created
     }
 }

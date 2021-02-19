@@ -30,58 +30,18 @@
 
 import Foundation
 
-/// A protocol that all task queries are expected to conform to.
-public protocol OCKAnyTaskQuery: OCKEntityQuery {
-
-    /// The IDs of care plans for which tasks should match.
-    var carePlanIDs: [String] { get set }
-
-    /// The order in which the results will be sorted when returned from the query.
-    var sortDescriptors: [OCKTaskSortDescriptor] { get set }
-}
-
-public extension OCKAnyTaskQuery {
-    init(_ query: OCKAnyTaskQuery) {
-        if let other = query as? Self {
-            self = other
-            return
-        }
-        self = Self(query as OCKEntityQuery)
-        self.carePlanIDs = query.carePlanIDs
-        self.sortDescriptors = query.sortDescriptors
-    }
-}
-
-/// Describes the order in which tasks can be sorted when queried.
-public enum OCKTaskSortDescriptor: Equatable {
-    case groupIdentifier(ascending: Bool)
-    case title(ascending: Bool)
-
-    fileprivate var extendedVersion: OCKTaskQuery.SortDescriptor {
-        switch self {
-        case .groupIdentifier(let ascending): return .groupIdentifier(ascending: ascending)
-        case .title(let ascending): return .title(ascending: ascending)
-        }
-    }
-}
-
 /// A query that limits which tasks will be returned when fetching.
-public struct OCKTaskQuery: OCKAnyTaskQuery, Equatable {
+public struct OCKTaskQuery: Equatable, OCKQueryProtocol {
 
     /// Specifies the order in which query results will be sorted.
-    enum SortDescriptor: Equatable {
+    public enum SortDescriptor: Equatable {
         case effectiveDate(ascending: Bool)
         case groupIdentifier(ascending: Bool)
         case title(ascending: Bool)
-
-        fileprivate var basicVersion: OCKTaskSortDescriptor? {
-            switch self {
-            case .groupIdentifier(let ascending): return .groupIdentifier(ascending: ascending)
-            case .title(let ascending): return .title(ascending: ascending)
-            case .effectiveDate: return nil
-            }
-        }
     }
+
+    /// An array of care plan identifiers to match against.
+    public var carePlanIDs: [String] = []
 
     /// The version of the care plans for which tasks should match.
     public var carePlanUUIDs: [UUID] = []
@@ -93,34 +53,37 @@ public struct OCKTaskQuery: OCKAnyTaskQuery, Equatable {
     public var excludesTasksWithNoEvents: Bool = false
 
     /// The order in which the results will be sorted when returned from the query.
-    public var sortDescriptors: [OCKTaskSortDescriptor] {
-        get { extendedSortDescriptors.compactMap { $0.basicVersion } }
-        set { extendedSortDescriptors = newValue.map { $0.extendedVersion } }
-    }
+    public var sortDescriptors: [SortDescriptor] = []
 
-    /// The order in which the results will be sorted when returned from the query. This property supports
-    /// additional sort descriptors unique to `OCKStore`.
-    internal var extendedSortDescriptors: [SortDescriptor] = []
-
-    /// An array of group identifiers to match against.
-    public var groupIdentifiers: [String?] = []
-
-    /// An array of tags to match against. If an object's tags contains one or more of entries, it will match the query.
-    public var tags: [String] = []
-
-    // MARK: OCKAnyTaskQuery
+    // MARK: OCKQuery
     public var ids: [String] = []
     public var uuids: [UUID] = []
+    public var groupIdentifiers: [String?] = []
+    public var tags: [String] = []
     public var remoteIDs: [String?] = []
-    public var carePlanIDs: [String] = []
     public var dateInterval: DateInterval?
     public var limit: Int?
     public var offset: Int = 0
 
     public init() {}
+    
+    public init(dateInterval: DateInterval? = nil) {
+        self.dateInterval = dateInterval
+    }
+
+    /// Create a query with that spans the entire day on the date given.
+    public init(for date: Date) {
+        let startOfDay = Calendar.current.startOfDay(for: date)
+        let endOfDay = Calendar.current.date(byAdding: DateComponents(day: 1, second: -1), to: startOfDay)!
+        self = Self(dateInterval: DateInterval(start: startOfDay, end: endOfDay))
+    }
+
+    public init(id: String) {
+        self.ids = [id]
+    }
 }
 
-internal extension Array where Element: OCKCDTaskCompatible {
+internal extension Array where Element: OCKAnyTask {
 
     func filtered(dateInterval: DateInterval?, excludeTasksWithNoEvents: Bool) -> [Element] {
 

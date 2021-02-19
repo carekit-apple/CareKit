@@ -32,7 +32,7 @@ import Foundation
 
 extension OCKStoreCoordinator {
 
-    open func fetchAnyTasks(query: OCKAnyTaskQuery, callbackQueue: DispatchQueue = .main,
+    open func fetchAnyTasks(query: OCKTaskQuery, callbackQueue: DispatchQueue = .main,
                             completion: @escaping (Result<[OCKAnyTask], OCKStoreError>) -> Void) {
         let readableStores = readOnlyEventStores + eventStores
         let respondingStores = readableStores.filter { taskStore($0, shouldHandleQuery: query) }

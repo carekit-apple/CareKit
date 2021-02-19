@@ -363,10 +363,10 @@ open class OCKTaskController: ObservableObject {
     ///   - event: The event for which to create the outcome.
     ///   - values: The outcome values to attach to the outcome.
     open func makeOutcomeFor(event: OCKAnyEvent, withValues values: [OCKOutcomeValue]) throws -> OCKAnyOutcome {
-        guard
-            let task = event.task as? OCKAnyVersionableTask,
-            let taskID = task.uuid else { throw OCKTaskControllerError.cannotMakeOutcomeFor(event) }
-        return OCKOutcome(taskUUID: taskID, taskOccurrenceIndex: event.scheduleEvent.occurrence, values: values)
+        guard let task = event.task as? OCKAnyVersionableTask else {
+            throw OCKTaskControllerError.cannotMakeOutcomeFor(event)
+        }
+        return OCKOutcome(taskUUID: task.uuid, taskOccurrenceIndex: event.scheduleEvent.occurrence, values: values)
     }
 
     /// Return an event for a particular index path. Customize this method to define the index path behavior used by other functions in this class.
@@ -452,7 +452,7 @@ open class OCKTaskController: ObservableObject {
 
 private extension OCKSynchronizedStoreManager {
 
-    func fetchAnyTasksPublisher(query: OCKAnyTaskQuery) -> AnyPublisher<[OCKAnyTask], OCKStoreError> {
+    func fetchAnyTasksPublisher(query: OCKTaskQuery) -> AnyPublisher<[OCKAnyTask], OCKStoreError> {
         Future { [unowned self] completion in
             self.store.fetchAnyTasks(query: query, callbackQueue: .main, completion: completion)
         }

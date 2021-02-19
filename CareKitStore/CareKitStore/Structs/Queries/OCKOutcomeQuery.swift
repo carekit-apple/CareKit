@@ -30,52 +30,16 @@
 
 import Foundation
 
-/// A protocol that all outcome queries are expected to conform to.
-public protocol OCKAnyOutcomeQuery: OCKEntityQuery {
-
-    /// Any array of local database IDs of tasks for which outcomes should be returned.
-    var taskIDs: [String] { get set }
-
-    /// The order in which the results will be sorted when returned from the query.
-    var sortDescriptors: [OCKOutcomeSortDescriptor] { get set }
-}
-
-public extension OCKAnyOutcomeQuery {
-    init(_ query: OCKAnyOutcomeQuery) {
-        if let other = query as? Self {
-            self = other
-            return
-        }
-        self = Self(query as OCKEntityQuery)
-        self.taskIDs = query.taskIDs
-        self.sortDescriptors = query.sortDescriptors
-    }
-}
-
-/// Describes the order in which tasks can be sorted when queried.
-public enum OCKOutcomeSortDescriptor: Equatable {
-    case date(ascending: Bool)
-
-    fileprivate var extendedVersion: OCKOutcomeQuery.SortDescriptor {
-        switch self {
-        case .date(let ascending): return .date(ascending: ascending)
-        }
-    }
-}
-
 /// A query that limits which outcomes will be returned when fetching.
-public struct OCKOutcomeQuery: OCKAnyOutcomeQuery, Equatable {
+public struct OCKOutcomeQuery: Equatable, OCKQueryProtocol {
 
     /// Specifies the order in which query results will be sorted.
-    enum SortDescriptor: Equatable {
+    public enum SortDescriptor: Equatable {
         case date(ascending: Bool)
-
-        fileprivate var basicVersion: OCKOutcomeSortDescriptor? {
-            switch self {
-            case .date(let ascending): return .date(ascending: ascending)
-            }
-        }
     }
+
+    /// An array of task identifiers to match against.
+    public var taskIDs: [String] = []
 
     /// An array of universally unique identifiers of tasks for which outcomes should be returned.
     public var taskUUIDs: [UUID] = []
@@ -83,30 +47,29 @@ public struct OCKOutcomeQuery: OCKAnyOutcomeQuery, Equatable {
     /// An array of remote IDs of tasks for which outcomes should be returned.
     public var taskRemoteIDs: [String] = []
 
-    /// An array of group identifiers to match against.
-    public var groupIdentifiers: [String?] = []
-
     /// The order in which the results will be sorted when returned from the query.
-    public var sortDescriptors: [OCKOutcomeSortDescriptor] {
-        get { extendedSortDescriptors.compactMap { $0.basicVersion } }
-        set { extendedSortDescriptors = newValue.map { $0.extendedVersion } }
-    }
+    public var sortDescriptors: [SortDescriptor] = []
 
-    /// The order in which the results will be sorted when returned from the query. This property supports
-    /// additional sort descriptors unique to `OCKStore`.
-    internal var extendedSortDescriptors: [SortDescriptor] = []
-
-    /// An array of tags to match against. If an object's tags contains one or more of entries, it will match the query.
-    public var tags: [String] = []
-
-    // MARK: OCKAnyOutcomeQuery
+    // MARK: OCKQuery
     public var ids: [String] = []
     public var uuids: [UUID] = []
+    public var groupIdentifiers: [String?] = []
+    public var tags: [String] = []
     public var remoteIDs: [String?] = []
-    public var taskIDs: [String] = []
     public var dateInterval: DateInterval?
     public var limit: Int?
     public var offset: Int = 0
 
     public init() {}
+
+    public init(dateInterval: DateInterval? = nil) {
+        self.dateInterval = dateInterval
+    }
+
+    /// Create a query with that spans the entire day on the date given.
+    public init(for date: Date) {
+        let startOfDay = Calendar.current.startOfDay(for: date)
+        let endOfDay = Calendar.current.date(byAdding: DateComponents(day: 1, second: -1), to: startOfDay)!
+        self = Self(dateInterval: DateInterval(start: startOfDay, end: endOfDay))
+    }
 }

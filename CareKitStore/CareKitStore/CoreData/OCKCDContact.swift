@@ -28,7 +28,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Contacts
+import CoreData
 import Foundation
 
 @objc(OCKCDContact)
@@ -65,12 +65,49 @@ class OCKCDContact: OCKCDVersionedObject {
         get { otherContactInfoDictionary?.asLabeledValues() }
         set { otherContactInfoDictionary = newValue?.asDictionary() }
     }
+    
+    convenience init(contact: OCKContact, context: NSManagedObjectContext) {
+        self.init(entity: Self.entity(), insertInto: context)
+        self.copyVersionedValue(value: contact, context: context)
+        self.name = OCKCDPersonName(name: contact.name, context: context)
+        self.emailAddresses = contact.emailAddresses
+        self.messagingNumbers = contact.messagingNumbers
+        self.phoneNumbers = contact.phoneNumbers
+        self.otherContactInfo = contact.otherContactInfo
+        self.organization = contact.organization
+        self.title = contact.title
+        self.role = contact.role
+        self.category = contact.category?.rawValue
+        self.address = contact.address.map { OCKCDPostalAddress(address: $0, context: context) }
 
-    override func validateRelationships() throws {
-        try super.validateRelationships()
-        if !allowsMissingRelationships && carePlan == nil {
-            throw OCKStoreError.invalidValue(reason: "Care Plan relationship may not be nil!")
+        if let carePlanUUID = contact.carePlanUUID {
+            self.carePlan = try? context.fetchObject(uuid: carePlanUUID)
         }
+    }
+
+    override func makeValue() -> OCKVersionedObjectCompatible {
+        makeContact()
+    }
+
+    func makeContact() -> OCKContact {
+
+        var contact = OCKContact(
+            id: id,
+            name: name.makeValue(),
+            carePlanUUID: carePlan?.uuid
+        )
+
+        contact.copyVersionedValues(from: self)
+        contact.emailAddresses = emailAddresses
+        contact.messagingNumbers = messagingNumbers
+        contact.phoneNumbers = phoneNumbers
+        contact.otherContactInfo = otherContactInfo
+        contact.organization = organization
+        contact.title = title
+        contact.role = role
+        contact.category = category.map { OCKContactCategory(rawValue: $0)! }
+        contact.address = address?.makeValue()
+        return contact
     }
 }
 

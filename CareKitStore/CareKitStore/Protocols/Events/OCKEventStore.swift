@@ -91,7 +91,7 @@ public extension OCKReadOnlyEventStore where Task: OCKAnyVersionableTask {
         taskQuery.limit = 1
         taskQuery.ids = [taskID]
 
-        fetchTasks(query: TaskQuery(taskQuery), callbackQueue: callbackQueue, completion: chooseFirst(then: { result in
+        fetchTasks(query: taskQuery, callbackQueue: callbackQueue, completion: chooseFirst(then: { result in
             switch result {
             case .failure(let error):
                 completion(.failure(error))
@@ -102,14 +102,7 @@ public extension OCKReadOnlyEventStore where Task: OCKAnyVersionableTask {
     }
 
     func fetchEvent(forTask task: Task, occurrence: Int, callbackQueue: DispatchQueue = .main, completion: @escaping OCKResultClosure<Event>) {
-        guard let taskUUID = task.uuid else {
-            callbackQueue.async {
-                let message = "Cannot fetch events for a task that hasn't been persisted yet!"
-                completion(.failure(.fetchFailed(reason: message)))
-            }
-            return
-        }
-        fetchEvent(withTaskVersion: taskUUID, occurrenceIndex: occurrence, callbackQueue: callbackQueue, completion: completion)
+        fetchEvent(withTaskVersion: task.uuid, occurrenceIndex: occurrence, callbackQueue: callbackQueue, completion: completion)
     }
 
     private func fetchEvent(withTaskVersion taskVersionUUID: UUID, occurrenceIndex: Int,
@@ -126,7 +119,7 @@ public extension OCKReadOnlyEventStore where Task: OCKAnyVersionableTask {
                 let late = scheduleEvent.end.addingTimeInterval(1)
                 var query = OCKOutcomeQuery(dateInterval: DateInterval(start: early, end: late))
                 query.taskUUIDs = [taskVersionUUID]
-                self.fetchOutcomes(query: OutcomeQuery(query), callbackQueue: callbackQueue, completion: { result in
+                self.fetchOutcomes(query: query, callbackQueue: callbackQueue, completion: { result in
                     switch result {
                     case .failure(let error): completion(.failure(.fetchFailed(reason: "Couldn't find outcome. \(error.localizedDescription)")))
                     case .success(let outcomes):
@@ -142,14 +135,13 @@ public extension OCKReadOnlyEventStore where Task: OCKAnyVersionableTask {
     // This is a recursive async function that gets all events within a query for a given task, examining all past versions of the task
     private func fetchEvents(task: Task, query: OCKEventQuery, previousEvents: [Event],
                              callbackQueue: DispatchQueue = .main, completion: @escaping (Result<[Event], OCKStoreError>) -> Void) {
-        guard let versionUUID = task.uuid else { completion(.failure(.fetchFailed(reason: "Task didn't have a versionID"))); return }
         let start = max(task.effectiveDate, query.dateInterval.start)
         let scheduledEndDate = task.schedule.endDate()
         let end = scheduledEndDate == nil ? query.dateInterval.end : min(scheduledEndDate!, query.dateInterval.end)
         let scheduleEvents = task.schedule.events(from: start, to: end)
         var outcomeQuery = OCKOutcomeQuery(dateInterval: DateInterval(start: start, end: end))
-        outcomeQuery.taskUUIDs = [versionUUID]
-        self.fetchOutcomes(query: OutcomeQuery(outcomeQuery), callbackQueue: callbackQueue, completion: { result in
+        outcomeQuery.taskUUIDs = [task.uuid]
+        self.fetchOutcomes(query: outcomeQuery, callbackQueue: callbackQueue, completion: { result in
             switch result {
             case .failure(let error): completion(.failure(error))
             case .success(let outcomes):
@@ -189,7 +181,7 @@ public extension OCKReadOnlyEventStore where Task: OCKAnyVersionableTask {
 
     private func fetchNextValidPreviousVersion(for task: Task, callbackQueue: DispatchQueue, completion: @escaping OCKResultClosure<Task?>) {
 
-        guard let versionID = task.previousVersionUUID else {
+        guard let versionID = task.previousVersionUUIDs.first else {
             completion(.success(nil))
             return
         }
@@ -213,7 +205,7 @@ public extension OCKReadOnlyEventStore where Task: OCKAnyVersionableTask {
     private func fetchTask(withVersion uuid: UUID, callbackQueue: DispatchQueue, completion: @escaping OCKResultClosure<Task>) {
         var query = OCKTaskQuery()
         query.uuids = [uuid]
-        fetchTasks(query: TaskQuery(query), callbackQueue: callbackQueue, completion:
+        fetchTasks(query: query, callbackQueue: callbackQueue, completion:
             chooseFirst(then: completion, replacementError: .fetchFailed(reason: "No task with UUID: \(uuid)")))
     }
 

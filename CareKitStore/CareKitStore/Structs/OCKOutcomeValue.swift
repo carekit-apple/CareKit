@@ -52,13 +52,101 @@ public enum OCKOutcomeValueType: String, Codable {
 
 /// An `OCKOutcomeValue` is a representation of any response of measurement that a user gives in response to a task. The underlying type could be
 /// any of a number of types including integers, booleans, dates, text, and binary data, among others.
-public struct OCKOutcomeValue: Codable, Equatable, OCKObjectCompatible, CustomStringConvertible {
-    // MARK: Codable
-    enum CodingKeys: CodingKey, CaseIterable {
-        case
-        kind, units, uuid, value, type, index,
-        createdDate, updatedDate, schemaVersion, tags,
-        groupIdentifier, remoteID, userInfo, source, timezone, asset, notes
+public struct OCKOutcomeValue: Codable, Equatable, CustomStringConvertible {
+
+    public static func == (lhs: OCKOutcomeValue, rhs: OCKOutcomeValue) -> Bool {
+        lhs.hasSameValueAs(rhs) &&
+        lhs.type == rhs.type &&
+        lhs.kind == rhs.kind
+    }
+
+    /// An optional property that can be used to specify what kind of value this is (e.g. blood pressure, qualitative stress, weight)
+    public var kind: String?
+
+    /// The units for this measurement.
+    public var units: String?
+
+    /// The date that this value was created.
+    public var createdDate = Date()
+
+    /// The underlying value.
+    public var value: OCKOutcomeValueUnderlyingType
+
+    /// The underlying value as an integer.
+    public var integerValue: Int? { return value as? Int }
+
+    /// The underlying value as a floating point number.
+    public var doubleValue: Double? { return value as? Double }
+
+    /// The underlying value as a boolean.
+    public var booleanValue: Bool? { return value as? Bool }
+
+    /// The underlying value as text.
+    public var stringValue: String? { return value as? String }
+
+    /// The underlying value as binary data.
+    public var dataValue: Data? { return value as? Data }
+
+    /// The underlying value as a date.
+    public var dateValue: Date? { return value as? Date }
+
+    /// Holds information about the type of this value.
+    public var type: OCKOutcomeValueType {
+        if value is Int { return .integer }
+        if value is Double { return .double }
+        if value is Bool { return .boolean }
+        if value is String { return .text }
+        if value is Data { return .binary }
+        if value is Date { return .date }
+        fatalError("Unknown type!")
+    }
+
+    public var description: String {
+        switch type {
+        case .integer: return "\(value as! Int)"
+        case .double: return "\(value as! Double)"
+        case .boolean: return "\(value as! Bool)"
+        case .text: return "\(value as! String)"
+        case .binary: return "\(value as! Data)"
+        case .date: return "\(value as! Date)"
+        }
+    }
+
+    /// Initialize by specifying a value and an optional unit
+    public init(_ value: OCKOutcomeValueUnderlyingType, units: String? = nil) {
+        self.value = value
+        self.units = units
+    }
+
+    /// Checks if two `OCKOutcomeValue`s have equal value properties, without checking their other properties.
+    private func hasSameValueAs(_ other: OCKOutcomeValue) -> Bool {
+        switch type {
+        case .binary: return dataValue == other.dataValue
+        case .boolean: return booleanValue == other.booleanValue
+        case .date: return dateValue == other.dateValue
+        case .double: return doubleValue == other.doubleValue
+        case .integer: return integerValue == other.integerValue
+        case .text: return stringValue == other.stringValue
+        }
+    }
+
+    // The value as an `NSNumber`. This property can be useful when comparing outcome values with an underlying
+    // type of Bool, Double, or Int against one another.
+    public var numberValue: NSNumber? {
+        switch type {
+        case .boolean: return NSNumber(value: booleanValue!)
+        case .double: return NSNumber(value: doubleValue!)
+        case .integer: return NSNumber(value: integerValue!)
+        default: return nil
+        }
+    }
+
+    private enum CodingKeys: CodingKey, CaseIterable {
+        case kind
+        case units
+        case value
+        case type
+        case createdDate
     }
 
     public init(from decoder: Decoder) throws {
@@ -82,29 +170,16 @@ public struct OCKOutcomeValue: Codable, Equatable, OCKObjectCompatible, CustomSt
 
         kind = try container.decodeIfPresent(String.self, forKey: .kind)
         units = try container.decodeIfPresent(String.self, forKey: .units)
-        index = try container.decodeIfPresent(Int.self, forKey: .index)
-        uuid = try container.decodeIfPresent(UUID.self, forKey: .uuid)
-        createdDate = try container.decodeIfPresent(Date.self, forKey: .createdDate)
-        updatedDate = try container.decodeIfPresent(Date.self, forKey: .updatedDate)
-        schemaVersion = try container.decodeIfPresent(OCKSemanticVersion.self, forKey: .schemaVersion)
-        groupIdentifier = try container.decodeIfPresent(String.self, forKey: .groupIdentifier)
-        tags = try container.decodeIfPresent([String].self, forKey: .tags)
-        remoteID = try container.decodeIfPresent(String.self, forKey: .remoteID)
-        source = try container.decodeIfPresent(String.self, forKey: .source)
-        userInfo = try container.decodeIfPresent([String: String].self, forKey: .userInfo)
-        timezone = try container.decode(TimeZone.self, forKey: .timezone)
-        asset = try container.decodeIfPresent(String.self, forKey: .asset)
-        notes = try container.decodeIfPresent([OCKNote].self, forKey: .notes)
+        createdDate = try container.decode(Date.self, forKey: .createdDate)
     }
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
         try container.encode(type, forKey: .type)
+        try container.encode(createdDate, forKey: .createdDate)
         try container.encodeIfPresent(kind, forKey: .kind)
         try container.encodeIfPresent(units, forKey: .units)
-        try container.encodeIfPresent(index, forKey: .index)
-        try container.encodeIfPresent(uuid, forKey: .uuid)
 
         var encodedValue = false
         if let value = integerValue { try container.encode(value, forKey: .value); encodedValue = true } else
@@ -117,130 +192,6 @@ public struct OCKOutcomeValue: Codable, Equatable, OCKObjectCompatible, CustomSt
         guard encodedValue else {
             let message = "Value could not be converted to a concrete type."
             throw EncodingError.invalidValue(value, EncodingError.Context(codingPath: [CodingKeys.value], debugDescription: message))
-        }
-
-        try container.encodeIfPresent(updatedDate, forKey: .updatedDate)
-        try container.encodeIfPresent(createdDate, forKey: .createdDate)
-        try container.encodeIfPresent(schemaVersion, forKey: .schemaVersion)
-        try container.encodeIfPresent(groupIdentifier, forKey: .groupIdentifier)
-        try container.encodeIfPresent(tags, forKey: .tags)
-        try container.encodeIfPresent(remoteID, forKey: .remoteID)
-        try container.encodeIfPresent(source, forKey: .source)
-        try container.encodeIfPresent(userInfo, forKey: .userInfo)
-        try container.encodeIfPresent(asset, forKey: .asset)
-        try container.encodeIfPresent(notes, forKey: .notes)
-        try container.encode(timezone, forKey: .timezone)
-    }
-
-    public var description: String {
-        switch type {
-        case .integer: return "\(value as! Int)"
-        case .double: return "\(value as! Double)"
-        case .boolean: return "\(value as! Bool)"
-        case .text: return "\(value as! String)"
-        case .binary: return "\(value as! Data)"
-        case .date: return "\(value as! Date)"
-        }
-    }
-
-    /// An optional property that can be used to specify what kind of value this is (e.g. blood pressure, qualitative stress, weight)
-    public var kind: String?
-
-    /// The units for this measurement.
-    public var units: String?
-
-    /// The underlying value.
-    public var value: OCKOutcomeValueUnderlyingType
-
-    /// The underlying value as an integer.
-    public var integerValue: Int? { return value as? Int }
-
-    /// The underlying value as a floating point number.
-    public var doubleValue: Double? { return value as? Double }
-
-    /// The underlying value as a boolean.
-    public var booleanValue: Bool? { return value as? Bool }
-
-    /// The underlying value as text.
-    public var stringValue: String? { return value as? String }
-
-    /// The underlying value as binary data.
-    public var dataValue: Data? { return value as? Data }
-
-    /// The underlying value as a date.
-    public var dateValue: Date? { return value as? Date }
-
-    /// The index can be used to track the order or arrangement of outcomes values, when relevant.
-    public var index: Int?
-
-    // MARK: OCKObjectCompatible
-    internal var uuid: UUID?
-    public var createdDate: Date?
-    public var updatedDate: Date?
-    public var schemaVersion: OCKSemanticVersion?
-    public var groupIdentifier: String?
-    public var tags: [String]?
-    public var remoteID: String?
-    public var source: String?
-    public var userInfo: [String: String]?
-    public var asset: String?
-    public var notes: [OCKNote]?
-    public var timezone: TimeZone
-
-    /// Holds information about the type of this value.
-    public var type: OCKOutcomeValueType {
-        if value is Int { return .integer }
-        if value is Double { return .double }
-        if value is Bool { return .boolean }
-        if value is String { return .text }
-        if value is Data { return .binary }
-        if value is Date { return .date }
-        fatalError("Unknown type!")
-    }
-
-    /// Initialize by specifying a value and an optional unit
-    public init(_ value: OCKOutcomeValueUnderlyingType, units: String? = nil) {
-        self.value = value
-        self.units = units
-        self.timezone = TimeZone.current
-    }
-
-    public static func == (lhs: OCKOutcomeValue, rhs: OCKOutcomeValue) -> Bool {
-        lhs.hasSameValueAs(rhs) &&
-        lhs.type == rhs.type &&
-        lhs.uuid == rhs.uuid &&
-        lhs.remoteID == rhs.remoteID &&
-        lhs.userInfo == rhs.userInfo &&
-        lhs.asset == rhs.asset &&
-        lhs.kind == rhs.kind &&
-        lhs.index == rhs.index &&
-        lhs.timezone == rhs.timezone &&
-        lhs.notes == rhs.notes &&
-        lhs.groupIdentifier == rhs.groupIdentifier &&
-        lhs.tags == rhs.tags &&
-        lhs.source == rhs.source
-    }
-
-    /// Checks if two `OCKOutcomeValue`s have equal value properties, without checking their other properties.
-    private func hasSameValueAs(_ other: OCKOutcomeValue) -> Bool {
-        switch type {
-        case .binary: return dataValue == other.dataValue
-        case .boolean: return booleanValue == other.booleanValue
-        case .date: return dateValue == other.dateValue
-        case .double: return doubleValue == other.doubleValue
-        case .integer: return integerValue == other.integerValue
-        case .text: return stringValue == other.stringValue
-        }
-    }
-
-    // The value as an `NSNumber`. This property can be useful when comparing outcome values with an underlying
-    // type of Bool, Double, or Int against one another.
-    public var numberValue: NSNumber? {
-        switch type {
-        case .boolean: return NSNumber(value: booleanValue!)
-        case .double: return NSNumber(value: doubleValue!)
-        case .integer: return NSNumber(value: integerValue!)
-        default: return nil
         }
     }
 }

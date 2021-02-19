@@ -36,27 +36,9 @@ class TestStoreContacts: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        store = OCKStore(name: "TestDatabase", type: .inMemory)
+        store = OCKStore(name: UUID().uuidString, type: .inMemory)
     }
-
-    override func tearDown() {
-        super.tearDown()
-        store = nil
-    }
-
-    // MARK: Relationship Validation
-
-    func testStoreAllowsMissingCarePlanRelationshipOnContacts() {
-        let contact = OCKContact(id: "contact", givenName: "Amy", familyName: "Frost", carePlanUUID: nil)
-        XCTAssertNoThrow(try store.addContactAndWait(contact))
-    }
-
-    func testStorePreventsMissingCarePlanRelationshipOnContacts() {
-        let contact = OCKContact(id: "contact", givenName: "Amy", familyName: "Frost", carePlanUUID: nil)
-        store.configuration.allowsEntitiesWithMissingRelationships = false
-        XCTAssertThrowsError(try store.addContactAndWait(contact))
-    }
-
+    
     // MARK: Insertion
 
     func testAddContact() throws {
@@ -110,7 +92,7 @@ class TestStoreContacts: XCTestCase {
     func testQueryContactsByCarePlanID() throws {
         let carePlan = try store.addCarePlanAndWait(OCKCarePlan(id: "B", title: "Care Plan A", patientUUID: nil))
         try store.addContactAndWait(OCKContact(id: "care plan 1", givenName: "Mark", familyName: "Brown", carePlanUUID: nil))
-        var contact = OCKContact(id: "care plan 2", givenName: "Amy", familyName: "Frost", carePlanUUID: try carePlan.getUUID())
+        var contact = OCKContact(id: "care plan 2", givenName: "Amy", familyName: "Frost", carePlanUUID: carePlan.uuid)
         contact = try store.addContactAndWait(contact)
         var query = OCKContactQuery()
         query.carePlanIDs = [carePlan.id]
@@ -212,10 +194,9 @@ class TestStoreContacts: XCTestCase {
 
     func testQueryContactByCarePlanVersionID() throws {
         let plan = try store.addCarePlanAndWait(OCKCarePlan(id: "A", title: "B", patientUUID: nil))
-        let planID = try plan.getUUID()
-        let contact = try store.addContactAndWait(OCKContact(id: "C", givenName: "D", familyName: "E", carePlanUUID: planID))
+        let contact = try store.addContactAndWait(OCKContact(id: "C", givenName: "D", familyName: "E", carePlanUUID: plan.uuid))
         var query = OCKContactQuery(for: Date())
-        query.carePlanUUIDs = [planID]
+        query.carePlanUUIDs = [plan.uuid]
         let fetched = try store.fetchContactsAndWait(query: query).first
         XCTAssert(fetched == contact)
     }
@@ -224,7 +205,7 @@ class TestStoreContacts: XCTestCase {
         var contact = OCKContact(id: "A", givenName: "B", familyName: "C", carePlanUUID: nil)
         contact = try store.addContactAndWait(contact)
         var query = OCKContactQuery()
-        query.uuids = [try contact.getUUID()]
+        query.uuids = [contact.uuid]
         let fetched = try store.fetchContactsAndWait(query: query).first
         XCTAssert(fetched == contact)
     }
@@ -236,7 +217,7 @@ class TestStoreContacts: XCTestCase {
         let updated = try store.updateContactAndWait(OCKContact(id: "contact", givenName: "Jane", familyName: "Appleseed", carePlanUUID: nil))
         XCTAssert(updated.name.givenName == "Jane")
         XCTAssert(updated.uuid != contact.uuid)
-        XCTAssert(updated.previousVersionUUID == contact.uuid)
+        XCTAssert(updated.previousVersionUUIDs.first == contact.uuid)
     }
 
     func testUpdateFailsForUnsavedContacts() {

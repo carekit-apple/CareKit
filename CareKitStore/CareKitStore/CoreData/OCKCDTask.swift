@@ -31,25 +31,52 @@
 import CoreData
 import Foundation
 
-@objc(OCKCDTask)
-class OCKCDTask: OCKCDVersionedObject {
+@objc(OCKCDTaskBase)
+class OCKCDTaskBase: OCKCDVersionedObject {
     @NSManaged var title: String?
     @NSManaged var instructions: String?
     @NSManaged var impactsAdherence: Bool
     @NSManaged var carePlan: OCKCDCarePlan?
     @NSManaged var scheduleElements: Set<OCKCDScheduleElement>
     @NSManaged var outcomes: Set<OCKCDOutcome>
-    @NSManaged var healthKitLinkage: OCKCDHealthKitLinkage?
+}
 
-    override func validateRelationships() throws {
-        if !allowsMissingRelationships && carePlan == nil {
-            throw OCKStoreError.invalidValue(reason: "An OCKCDTask's carePlan relationship may not be nil")
+@objc(OCKCDTask)
+class OCKCDTask: OCKCDTaskBase {
+
+    convenience init(task: OCKTask, context: NSManagedObjectContext) {
+        self.init(entity: Self.entity(), insertInto: context)
+        self.copyVersionedValue(value: task, context: context)
+        self.title = task.title
+        self.instructions = task.instructions
+        self.impactsAdherence = task.impactsAdherence
+        
+        self.scheduleElements = Set(task.schedule.elements.map { element in
+            OCKCDScheduleElement(element: element, context: context)
+        })
+
+        if let planUUID = task.carePlanUUID {
+            self.carePlan = try? context.fetchObject(uuid: planUUID)
         }
     }
 
-    override func awakeFromInsert() {
-        super.awakeFromInsert()
-        scheduleElements = Set()
-        outcomes = Set()
+    override func makeValue() -> OCKVersionedObjectCompatible {
+        makeTask()
+    }
+    
+    func makeTask() -> OCKTask {
+
+        var task = OCKTask(
+            id: id,
+            title: title,
+            carePlanUUID: carePlan?.uuid,
+            schedule: OCKSchedule(composing: scheduleElements.map { $0.makeValue() })
+        )
+
+        task.copyVersionedValues(from: self)
+        task.instructions = instructions
+        task.impactsAdherence = impactsAdherence
+        
+        return task
     }
 }

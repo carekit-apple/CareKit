@@ -36,12 +36,23 @@ public extension OCKHealthKitPassthroughStore {
 
     func fetchTasks(query: OCKTaskQuery, callbackQueue: DispatchQueue = .main,
                     completion: @escaping (Result<[OCKHealthKitTask], OCKStoreError>) -> Void) {
-        taskStore.fetchTasks(query: query, callbackQueue: callbackQueue, completion: completion)
+        store.context.perform {
+            do {
+                let tasks = try self.store.fetchHealthKitTasks(query: query)
+                callbackQueue.async {
+                    completion(.success(tasks))
+                }
+            } catch {
+                callbackQueue.async {
+                    completion(.failure(.fetchFailed(reason: error.localizedDescription)))
+                }
+            }
+        }
     }
 
     func addTasks(_ tasks: [OCKHealthKitTask], callbackQueue: DispatchQueue = .main,
                   completion: ((Result<[OCKHealthKitTask], OCKStoreError>) -> Void)? = nil) {
-        taskStore.addTasks(tasks, callbackQueue: callbackQueue) { [weak self] result in
+        store.addHealthKitTasks(tasks, callbackQueue: callbackQueue) { [weak self] result in
             if case let .success(tasks) = result {
                 tasks.forEach { self?.startObservingHealthKit(task: $0) }
             }
@@ -51,36 +62,23 @@ public extension OCKHealthKitPassthroughStore {
 
     func updateTasks(_ tasks: [OCKHealthKitTask], callbackQueue: DispatchQueue = .main,
                      completion: ((Result<[OCKHealthKitTask], OCKStoreError>) -> Void)? = nil) {
-        taskStore.updateTasks(tasks, callbackQueue: callbackQueue) { [weak self] result in
+        store.updateHealthKitTasks(tasks, callbackQueue: callbackQueue, completion: completion)
+    }
+
+    func deleteTasks(_ tasks: [OCKHealthKitTask], callbackQueue: DispatchQueue = .main,
+                     completion: ((Result<[OCKHealthKitTask], OCKStoreError>) -> Void)? = nil) {
+        store.deleteHealthKitTasks(tasks, callbackQueue: callbackQueue) { result in
             if case let .success(tasks) = result {
-                tasks.forEach { self?.stopObservingHealthKit(task: $0) }
+                tasks.forEach(self.stopObservingHealthKit)
             }
             completion?(result)
         }
     }
 
-    func deleteTasks(_ tasks: [OCKHealthKitTask], callbackQueue: DispatchQueue = .main,
-                     completion: ((Result<[OCKHealthKitTask], OCKStoreError>) -> Void)? = nil) {
-        taskStore.deleteTasks(tasks, callbackQueue: callbackQueue, completion: completion)
-    }
-
-    func addUpdateOrDeleteTasks(
-        addOrUpdate tasks: [OCKHealthKitTask],
-        delete deleteTasks: [OCKHealthKitTask],
-        callbackQueue: DispatchQueue = .main,
-        completion: ((Result<([OCKHealthKitTask], [OCKHealthKitTask], [OCKHealthKitTask]), OCKStoreError>) -> Void)? = nil) {
-
-        taskStore.addUpdateOrDeleteTasks(
-            addOrUpdate: tasks,
-            delete: deleteTasks,
-            callbackQueue: callbackQueue,
-            completion: completion)
-    }
-
-    internal func fetchTasks(for outcomes: [OCKHealthKitOutcome]) throws -> [OCKHealthKitTask] {
+    func fetchTasks(for outcomes: [OCKHealthKitOutcome]) throws -> [OCKHealthKitTask] {
         var query = OCKTaskQuery()
         query.uuids = outcomes.map { $0.taskUUID }
-        let tasks = try taskStore.fetchTasks(query: query)
+        let tasks = try store.fetchHealthKitTasks(query: query)
         return tasks
     }
 }

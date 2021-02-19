@@ -28,12 +28,13 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import CoreData
 import Foundation
 
 /// An `OCKOutcome` represents the outcome of an event corresponding to a task. An outcome may have 0 or more values associated with it.
 /// For example, a task that asks a patient to measure their temperature will have events whose outcome will contain a single value representing
 /// the patient's temperature.
-public struct OCKOutcome: Codable, Equatable, Identifiable, OCKAnyOutcome, OCKObjectCompatible {
+public struct OCKOutcome: Codable, Equatable, Identifiable, OCKAnyOutcome {
 
     /// The version ID of the task to which this outcomes belongs.
     public var taskUUID: UUID
@@ -43,11 +44,16 @@ public struct OCKOutcome: Codable, Equatable, Identifiable, OCKAnyOutcome, OCKOb
     public var taskOccurrenceIndex: Int
     public var values: [OCKOutcomeValue]
 
+    // MARK: OCKVersionable
+    public var effectiveDate: Date
+    public var deletedDate: Date?
+    public var uuid = UUID()
+    public var nextVersionUUIDs: [UUID] = []
+    public var previousVersionUUIDs: [UUID] = []
+    
     // MARK: OCKObjectCompatible
-    public var uuid: UUID?
     public var createdDate: Date?
     public var updatedDate: Date?
-    public var deletedDate: Date?
     public var schemaVersion: OCKSemanticVersion?
     public var remoteID: String?
     public var groupIdentifier: String?
@@ -68,11 +74,27 @@ public struct OCKOutcome: Codable, Equatable, Identifiable, OCKAnyOutcome, OCKOb
         self.taskUUID = taskUUID
         self.taskOccurrenceIndex = taskOccurrenceIndex
         self.values = values
+        self.effectiveDate = Date()
         self.timezone = TimeZone.current
     }
 
     public func belongs(to task: OCKAnyTask) -> Bool {
         guard let task = task as? OCKTask else { return false }
         return task.uuid == taskUUID
+    }
+}
+
+extension OCKOutcome: OCKVersionedObjectCompatible {
+
+    static func entity() -> NSEntityDescription {
+        OCKCDOutcome.entity()
+    }
+
+    func entity() -> OCKEntity {
+        .outcome(self)
+    }
+    
+    func insert(context: NSManagedObjectContext) -> OCKCDVersionedObject {
+        OCKCDOutcome(outcome: self, context: context)
     }
 }

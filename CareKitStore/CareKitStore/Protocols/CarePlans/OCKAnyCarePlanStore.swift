@@ -43,7 +43,7 @@ public protocol OCKAnyReadOnlyCarePlanStore: OCKAnyResettableStore {
     ///   - query: A query used to constrain the values that will be fetched.
     ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on the provided callback queue.
-    func fetchAnyCarePlans(query: OCKAnyCarePlanQuery, callbackQueue: DispatchQueue,
+    func fetchAnyCarePlans(query: OCKCarePlanQuery, callbackQueue: DispatchQueue,
                            completion: @escaping OCKResultClosure<[OCKAnyCarePlan]>)
 
     // MARK: Singular Methods - Implementation Provided
@@ -119,7 +119,7 @@ public extension OCKAnyReadOnlyCarePlanStore {
                           completion: @escaping OCKResultClosure<OCKAnyCarePlan>) {
         var query = OCKCarePlanQuery(for: Date())
         query.limit = 1
-        query.extendedSortDescriptors = [.effectiveDate(ascending: true)]
+        query.sortDescriptors = [.effectiveDate(ascending: true)]
         query.ids = [id]
 
         fetchAnyCarePlans(query: query, callbackQueue: callbackQueue, completion:

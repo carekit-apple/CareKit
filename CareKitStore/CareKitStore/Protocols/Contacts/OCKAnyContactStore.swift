@@ -43,7 +43,7 @@ public protocol OCKAnyReadOnlyContactStore: OCKAnyResettableStore {
     ///   - query: A query used to constrain the values that will be fetched.
     ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on the provided callback queue.
-    func fetchAnyContacts(query: OCKAnyContactQuery, callbackQueue: DispatchQueue, completion: @escaping OCKResultClosure<[OCKAnyContact]>)
+    func fetchAnyContacts(query: OCKContactQuery, callbackQueue: DispatchQueue, completion: @escaping OCKResultClosure<[OCKAnyContact]>)
 
     // MARK: Singular Methods - Implementation Provided
 
@@ -118,7 +118,7 @@ public extension OCKAnyReadOnlyContactStore {
                          completion: @escaping OCKResultClosure<OCKAnyContact>) {
         var query = OCKContactQuery(for: Date())
         query.limit = 1
-        query.extendedSortDescriptors = [.effectiveDate(ascending: true)]
+        query.sortDescriptors = [.effectiveDate(ascending: true)]
         query.ids = [id]
 
         fetchAnyContacts(query: query, callbackQueue: callbackQueue, completion:

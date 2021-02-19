@@ -28,12 +28,13 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import CoreData
 import Foundation
 
 /// An `OCKTask` represents some task or action that a patient is supposed to perform. Tasks are optionally associable with an `OCKCarePlan`
 /// and must have a unique id and schedule. The schedule determines when and how often the task should be performed, and the
 /// `impactsAdherence` flag may be used to specify whether or not the patients adherence to this task will affect their daily completion rings.
-public struct OCKTask: Codable, Equatable, OCKAnyVersionableTask, OCKAnyMutableTask, OCKVersionedObjectCompatible {
+public struct OCKTask: Codable, Equatable, OCKAnyVersionableTask, OCKAnyMutableTask {
 
     /// The UUID of the care plan to which this task belongs.
     public var carePlanUUID: UUID?
@@ -50,9 +51,9 @@ public struct OCKTask: Codable, Equatable, OCKAnyVersionableTask, OCKAnyMutableT
     // MARK: OCKVersionable
     public var effectiveDate: Date
     public var deletedDate: Date?
-    public var uuid: UUID?
-    public var nextVersionUUID: UUID?
-    public var previousVersionUUID: UUID?
+    public var uuid = UUID()
+    public var nextVersionUUIDs: [UUID] = []
+    public var previousVersionUUIDs: [UUID] = []
 
     // MARK: OCKObjectCompatible
     public var createdDate: Date?
@@ -83,7 +84,22 @@ public struct OCKTask: Codable, Equatable, OCKAnyVersionableTask, OCKAnyMutableT
     }
 
     public func belongs(to plan: OCKAnyCarePlan) -> Bool {
-        guard let plan = plan as? OCKCarePlan, let planUUID = plan.uuid else { return false }
-        return carePlanUUID == planUUID
+        guard let plan = plan as? OCKCarePlan else { return false }
+        return carePlanUUID == plan.uuid
+    }
+}
+
+extension OCKTask: OCKVersionedObjectCompatible {
+
+    static func entity() -> NSEntityDescription {
+        OCKCDTask.entity()
+    }
+
+    func entity() -> OCKEntity {
+        .task(self)
+    }
+    
+    func insert(context: NSManagedObjectContext) -> OCKCDVersionedObject {
+        OCKCDTask(task: self, context: context)
     }
 }

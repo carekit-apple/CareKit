@@ -32,7 +32,6 @@ import Foundation
 /// Any store from which a single type conforming to `OCKAnyCarePlan` can be queried is considered `OCKAnyReadOnlyCarePlanStore`.
 public protocol OCKReadableCarePlanStore: OCKAnyReadOnlyCarePlanStore {
     associatedtype Plan: OCKAnyCarePlan & Equatable & Identifiable
-    associatedtype PlanQuery: OCKAnyCarePlanQuery
 
     /// `fetchCarePlans` asynchronously retrieves an array of care plans from the store.
     ///
@@ -40,7 +39,7 @@ public protocol OCKReadableCarePlanStore: OCKAnyReadOnlyCarePlanStore {
     ///   - query: A query used to constrain the values that will be fetched.
     ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on the provided callback queue.
-    func fetchCarePlans(query: PlanQuery, callbackQueue: DispatchQueue, completion: @escaping OCKResultClosure<[Plan]>)
+    func fetchCarePlans(query: OCKCarePlanQuery, callbackQueue: DispatchQueue, completion: @escaping OCKResultClosure<[Plan]>)
 
     // MARK: Implementation Provided
 
@@ -114,10 +113,10 @@ public extension OCKReadableCarePlanStore {
     func fetchCarePlan(withID id: String, callbackQueue: DispatchQueue = .main, completion: @escaping OCKResultClosure<Plan>) {
         var query = OCKCarePlanQuery(for: Date())
         query.limit = 1
-        query.extendedSortDescriptors = [.effectiveDate(ascending: true)]
+        query.sortDescriptors = [.effectiveDate(ascending: true)]
         query.ids = [id]
 
-        fetchCarePlans(query: PlanQuery(query), callbackQueue: callbackQueue, completion:
+        fetchCarePlans(query: query, callbackQueue: callbackQueue, completion:
             chooseFirst(then: completion, replacementError: .fetchFailed(reason: "No care plan with matching ID")))
     }
 }
@@ -145,10 +144,9 @@ public extension OCKCarePlanStore {
 // MARK: OCKAnyReadOnlyCarePlanStore conformance for OCKReadableCarePlanStore
 
 public extension OCKReadableCarePlanStore {
-    func fetchAnyCarePlans(query: OCKAnyCarePlanQuery, callbackQueue: DispatchQueue,
+    func fetchAnyCarePlans(query: OCKCarePlanQuery, callbackQueue: DispatchQueue,
                            completion: @escaping OCKResultClosure<[OCKAnyCarePlan]>) {
-        let planQuery = PlanQuery(query)
-        fetchCarePlans(query: planQuery, callbackQueue: callbackQueue) { completion($0.map { $0.map { $0 as OCKAnyCarePlan } }) }
+        fetchCarePlans(query: query, callbackQueue: callbackQueue) { completion($0.map { $0.map { $0 as OCKAnyCarePlan } }) }
     }
 }
 

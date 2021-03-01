@@ -118,7 +118,7 @@ public protocol OCKAnyTaskStore: OCKAnyReadOnlyTaskStore {
 public extension OCKAnyReadOnlyTaskStore {
     func fetchAnyTask(withID id: String, callbackQueue: DispatchQueue = .main, completion: @escaping OCKResultClosure<OCKAnyTask>) {
         var query = OCKTaskQuery(id: id)
-        query.extendedSortDescriptors = [.effectiveDate(ascending: false)]
+        query.sortDescriptors = [.effectiveDate(ascending: false)]
         query.limit = 1
         fetchAnyTasks(query: query, callbackQueue: callbackQueue, completion:
             chooseFirst(then: completion, replacementError: .fetchFailed(reason: "No task with matching ID")))

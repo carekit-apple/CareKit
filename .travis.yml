@@ -2,4 +2,4 @@ language: swift
 osx_image: xcode11.4
 xcode_workspace: CKWorkspace.xcworkspace
 xcode_scheme: CareKit
-xcode_destination: platform=iOS Simulator,OS=13.4,name=iPhone 11 Pro Max
+xcode_destination: platform=iOS Simulator,OS=13.4.1,name=iPhone 11 Pro Max

@@ -281,4 +281,24 @@ class TestStoreOutcomes: XCTestCase {
         let outcome = OCKOutcome(taskUUID: task.uuid, taskOccurrenceIndex: 0, values: [])
         XCTAssertThrowsError(try store.deleteOutcomeAndWait(outcome))
     }
+
+    // MARK: - Versioning
+
+    func testDeleteThenAddOutcomeFetchesLatestVersion() throws {
+        let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
+        let task = try store.addTaskAndWait(OCKTask(id: "A", title: "A", carePlanUUID: nil, schedule: schedule))
+        let taskUUID = task.uuid
+
+        let outcomeA = try store.addOutcomeAndWait(OCKOutcome(taskUUID: taskUUID, taskOccurrenceIndex: 0, values: []))
+        try store.deleteOutcomeAndWait(outcomeA)
+        let outcomeB = try store.addOutcomeAndWait(OCKOutcome(taskUUID: taskUUID, taskOccurrenceIndex: 0, values: []))
+        let fetched = try store.fetchOutcomesAndWait()
+
+        // Make sure the latest version is fetched
+        XCTAssertEqual(fetched.count, 1)
+
+        // IDs should all match
+        XCTAssertEqual(outcomeA.id, outcomeB.id)
+        XCTAssertEqual(outcomeB.id, fetched.first?.id)
+    }
 }

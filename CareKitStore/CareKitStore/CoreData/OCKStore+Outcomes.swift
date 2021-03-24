@@ -58,9 +58,8 @@ extension OCKStore {
                           completion: ((Result<[OCKOutcome], OCKStoreError>) -> Void)? = nil) {
         transaction(
             inserts: outcomes, updates: [], deletes: [],
-            preInsertValidate: { try self.confirmOutcomesAreInValidRegionOfTaskVersionChain(outcomes) },
-            preSaveValidate: { try self.assertNoMatchingOutcomes(outcomes) }) { result in
-
+            preInsertValidate: { try self.confirmOutcomesAreInValidRegionOfTaskVersionChain(outcomes) }
+        ) { result in
             callbackQueue.async {
                 completion?(result.map(\.inserts))
             }
@@ -86,25 +85,6 @@ extension OCKStore {
     }
 
     // MARK: Private
-
-    /// - WARNING: Must be called from context's thread.
-    /// - Note: This is intended to be called after inserting objects, but before calling save.
-    private func assertNoMatchingOutcomes(_ outcomes: [OCKOutcome]) throws {
-
-        let request = NSFetchRequest<OCKCDOutcome>(entityName: String(describing: OCKCDOutcome.self))
-        request.predicate = NSCompoundPredicate(orPredicateWithSubpredicates: outcomes.map { outcome in
-            NSPredicate(format: "%K == %@ AND %K == %lld AND %K == nil",
-                        #keyPath(OCKCDOutcome.task.uuid), outcome.taskUUID as CVarArg,
-                        #keyPath(OCKCDOutcome.taskOccurrenceIndex), Int64(outcome.taskOccurrenceIndex),
-                        #keyPath(OCKCDOutcome.deletedDate))
-        })
-
-        let results = try context.count(for: request)
-
-        if results > Set(outcomes.map(\.id)).count {
-            throw OCKStoreError.addFailed(reason: "Adding duplicate outcomes not allowed.")
-        }
-    }
 
     // Confirms that outcomes cannot be added to past versions of a task in regions covered by a newer version.
     //

@@ -140,11 +140,11 @@ class TestScheduleElement: XCTestCase {
         let element = OCKScheduleElement(start: start, end: end, interval: interval, text: nil, targetValues: [])
         let events = element.events(betweenOccurrenceIndex: 2, and: 10)
         for index in 0..<8 {
-            if index <= 2 {
+            if index <= 3 {
                 XCTAssert(events[index] != nil)
                 XCTAssert(events[index]?.occurrence == index + 2)
             }
-            if index > 2 {
+            if index > 3 {
                 XCTAssert(events[index] == nil)
             }
         }

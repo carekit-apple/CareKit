@@ -173,7 +173,7 @@ public struct OCKScheduleElement: Codable, Equatable {
 
         // Calculate the event at each index in between start and top indices
         for index in 0..<numberOfEvents {
-            if let endDate = end, currentDate > endDate { continue }
+            if let endDate = end, currentDate >= endDate { continue }
             events[index] = makeScheduleEvent(on: currentDate, for: currentOccurrence)
             currentDate = Calendar.current.date(byAdding: interval, to: currentDate)!
             currentOccurrence += 1

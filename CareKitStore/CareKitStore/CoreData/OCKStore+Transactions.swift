@@ -161,10 +161,11 @@ extension OCKStore {
             throw OCKStoreError.invalidValue(reason: "Identifiers contains duplicate values! \(ids)")
         }
 
-        let existingPredicate = NSPredicate(format: "(%K IN %@ OR %K IN %@) AND (%K == nil)",
+        let existingPredicate = NSPredicate(format: "(%K IN %@ OR %K IN %@) AND (%K == nil) AND (%K.@count == 0)",
                                             #keyPath(OCKCDVersionedObject.id), ids,
                                             #keyPath(OCKCDVersionedObject.uuid), uuids,
-                                            #keyPath(OCKCDVersionedObject.deletedDate))
+                                            #keyPath(OCKCDVersionedObject.deletedDate),
+                                            #keyPath(OCKCDVersionedObject.next))
 
         let request = NSFetchRequest<OCKCDVersionedObject>(entityName: T.entity().name!)
         request.predicate = existingPredicate

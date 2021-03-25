@@ -221,7 +221,28 @@ class TestStoreTasks: XCTestCase {
         let fetched = try store.fetchTasksAndWait(query: query).first
         XCTAssert(fetched == task)
     }
+
     // MARK: Versioning
+
+    func testDeleteThenAddTaskFetchesLatestVersion() throws {
+        let makeTask: () -> OCKTask = {
+            let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
+            return OCKTask(id: "A", title: "A", carePlanUUID: nil, schedule: schedule)
+        }
+
+        let taskA = try store.addTaskAndWait(makeTask())
+        try store.deleteTaskAndWait(taskA)
+        let taskB = try store.addTaskAndWait(makeTask())
+
+        let fetched = try store.fetchTasksAndWait(query: OCKTaskQuery(for: Date()))
+
+        // Make sure the latest version is fetched
+        XCTAssertEqual(fetched.count, 1)
+
+        // IDs should all match
+        XCTAssertEqual(taskA.id, taskB.id)
+        XCTAssertEqual(taskB.id, fetched.first?.id)
+    }
 
     func testUpdateTaskCreateNewVersion() throws {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)

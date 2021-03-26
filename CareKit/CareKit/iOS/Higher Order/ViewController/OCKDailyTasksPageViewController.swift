@@ -50,20 +50,14 @@ public protocol OCKDailyTasksPageViewControllerDelegate: OCKTaskViewControllerDe
 
 /// Displays a calendar page view controller in the header, and a collection of tasks
 /// in the body. The tasks are automatically queried based on the selection in the calendar.
-open class OCKDailyTasksPageViewController: OCKDailyPageViewController, OCKDailyTasksPageViewControllerDelegate {
+open class OCKDailyTasksPageViewController: OCKDailyPageViewController {
+
     private let emptyLabelMargin: CGFloat = 4
 
     // MARK: Properties
 
     /// If set, the delegate will receive callbacks when important events happen at the task view controller level.
     public weak var tasksDelegate: OCKDailyTasksPageViewControllerDelegate?
-
-    // MARK: - Life Cycle
-
-    override open func viewDidLoad() {
-        super.viewDidLoad()
-        tasksDelegate = self
-    }
 
     // MARK: - Methods
 
@@ -103,8 +97,11 @@ open class OCKDailyTasksPageViewController: OCKDailyPageViewController, OCKDaily
     }
 
     // Fetch events and return a view controller to display the data
-    private func viewController(forTask task: OCKAnyTask, fromQuery query: OCKTaskQuery,
-                                result: @escaping (UIViewController?) -> Void) {
+    private func viewController(
+        forTask task: OCKAnyTask,
+        fromQuery query: OCKTaskQuery,
+        result: @escaping (UIViewController?) -> Void) {
+
         guard let dateInterval = query.dateInterval else { fatalError("Task query should have a set date") }
         let eventQuery = OCKEventQuery(dateInterval: dateInterval)
         self.storeManager.store.fetchAnyEvents(taskID: task.id, query: eventQuery, callbackQueue: .main) { [weak self] fetchResult in
@@ -120,15 +117,21 @@ open class OCKDailyTasksPageViewController: OCKDailyPageViewController, OCKDaily
         }
     }
 
-    override open func dailyPageViewController(_ dailyPageViewController: OCKDailyPageViewController,
-                                               prepare listViewController: OCKListViewController, for date: Date) {
+    override open func dailyPageViewController(
+        _ dailyPageViewController: OCKDailyPageViewController,
+        prepare listViewController: OCKListViewController,
+        for date: Date) {
+
         fetchTasks(for: date, andPopulateIn: listViewController)
     }
 
     // MARK: - OCKDailyTasksPageViewControllerDelegate
 
-    open func dailyTasksPageViewController(_ viewController: OCKDailyTasksPageViewController, viewControllerForTask task: OCKAnyTask,
-                                           events: [OCKAnyEvent], eventQuery: OCKEventQuery) -> UIViewController? {
+    open func dailyTasksPageViewController(
+        _ viewController: OCKDailyTasksPageViewController,
+        viewControllerForTask task: OCKAnyTask,
+        events: [OCKAnyEvent],
+        eventQuery: OCKEventQuery) -> UIViewController? {
 
         // If the task is linked to HealthKit, show a view geared towards displaying HealthKit data
         if #available(iOS 14, *), task is OCKHealthKitTask {
@@ -155,13 +158,6 @@ open class OCKDailyTasksPageViewController: OCKDailyPageViewController, OCKDaily
             taskViewController.controller.setViewModelAndObserve(events: events, query: eventQuery)
             return taskViewController
         }
-    }
-
-    open func taskViewController<C, VS>(
-        _ viewController: OCKTaskViewController<C, VS>,
-        didEncounterError: Error) where C: OCKTaskController, VS: OCKTaskViewSynchronizerProtocol {
-
-        log(.error, "An error occurred in the daily tasks controller, but it was no handled!", error: didEncounterError)
     }
 }
 

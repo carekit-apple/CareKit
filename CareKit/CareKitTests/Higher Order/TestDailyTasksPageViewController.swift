@@ -63,11 +63,6 @@ class TestDailyTasksPageViewController: XCTestCase {
         viewController = .init(storeManager: .init(wrapping: store))
     }
 
-    func testDelegate() {
-        viewController.loadViewIfNeeded()
-        XCTAssertTrue(viewController.tasksDelegate === viewController)
-    }
-
     func testViewControllerForTask() {
         // Expecting a grid filled with the correct data
         var (task, events) = OCKTask.mockWithEvents(forDate: Date(), impactsAdherence: true, eventCount: 2)

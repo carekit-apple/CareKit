@@ -39,10 +39,6 @@ class OCKCDOutcome: OCKCDVersionedObject {
     @NSManaged var startDate: Date
     @NSManaged var endDate: Date
 
-    static var defaultSortDescriptors: [NSSortDescriptor] {
-        return [NSSortDescriptor(keyPath: \OCKCDOutcome.createdDate, ascending: false)]
-    }
-    
     convenience init(outcome: OCKOutcome, context: NSManagedObjectContext) {
         self.init(entity: Self.entity(), insertInto: context)
         self.copyVersionedValue(value: outcome, context: context)

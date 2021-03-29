@@ -391,6 +391,29 @@ class TestStoreTasks: XCTestCase {
         XCTAssert(fetched.first?.title == taskB.title, "Expected title to be \(taskB.title ?? "nil"), but got \(fetched.first?.title ?? "nil")")
     }
 
+    func testFetchTaskByIdConvenienceMethodReturnsNewestVersionOfTask() throws {
+        let coordinator = OCKStoreCoordinator()
+        let store = OCKStore(name: "test", type: .inMemory)
+        coordinator.attach(store: store)
+
+        let schedule = OCKSchedule.dailyAtTime(hour: 0, minutes: 0, start: Date(), end: nil, text: nil)
+        var taskV1 = OCKTask(id: "task", title: "V1", carePlanUUID: nil, schedule: schedule)
+        taskV1 = try store.addTaskAndWait(taskV1)
+
+        var taskV2 = taskV1
+        taskV2.title = "V2"
+        taskV2.effectiveDate = Calendar.current.date(byAdding: .year, value: 1, to: Date())!
+        taskV2 = try store.updateTaskAndWait(taskV2)
+
+        let expect = expectation(description: "Fetches V2")
+        store.fetchAnyTask(withID: "task") { result in
+            let task = try? result.get()
+            XCTAssert(task?.title == "V2")
+            expect.fulfill()
+        }
+        waitForExpectations(timeout: 0.1, handler: nil)
+    }
+
     // MARK: Deletion
 
     func testDeleteTask() throws {

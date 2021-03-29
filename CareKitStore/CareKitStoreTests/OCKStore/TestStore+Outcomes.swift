@@ -301,4 +301,24 @@ class TestStoreOutcomes: XCTestCase {
         XCTAssertEqual(outcomeA.id, outcomeB.id)
         XCTAssertEqual(outcomeB.id, fetched.first?.id)
     }
+
+    func testFetchingLatestVersion() throws {
+        let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
+        let task = OCKTask(id: "A", title: "A", carePlanUUID: nil, schedule: schedule)
+        try store.addTaskAndWait(task)
+
+        let value = OCKOutcomeValue(0)
+        var outcome = OCKOutcome(taskUUID: task.uuid, taskOccurrenceIndex: 0, values: [value])
+        try store.addOutcomeAndWait(outcome)
+
+        for i in 1...5 {
+            outcome.values = [OCKOutcomeValue(i)]
+            outcome = try store.updateOutcomeAndWait(outcome)
+        }
+
+        let query = OCKOutcomeQuery(for: Date())
+        let fetched = try store.fetchOutcomesAndWait(query: query)
+        XCTAssert(fetched.count == 1)
+        XCTAssert(fetched.first?.values.first?.integerValue == 5)
+    }
 }

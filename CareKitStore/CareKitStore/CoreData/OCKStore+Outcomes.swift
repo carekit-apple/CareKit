@@ -117,9 +117,29 @@ extension OCKStore {
         var predicate = query.basicPredicate(enforceDateInterval: false)
         
         if let interval = query.dateInterval {
-            let beforePredicate = NSPredicate(format: "%K < %@", #keyPath(OCKCDOutcome.startDate), interval.end as NSDate)
-            let afterPredicate = NSPredicate(format: "%K >= %@", #keyPath(OCKCDOutcome.endDate), interval.start as NSDate)
-            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, beforePredicate, afterPredicate])
+
+            let beforePredicate = NSPredicate(
+                format: "%K < %@",
+                #keyPath(OCKCDOutcome.startDate),
+                interval.end as NSDate
+            )
+
+            let afterPredicate = NSPredicate(
+                format: "%K >= %@",
+                #keyPath(OCKCDOutcome.endDate),
+                interval.start as NSDate
+            )
+
+            let nextPredicate = NSPredicate(
+                format: "%K.@count == 0 OR %K.@min > %@",
+                #keyPath(OCKCDOutcome.next),
+                #keyPath(OCKCDOutcome.next.effectiveDate),
+                interval.end as NSDate
+            )
+            
+            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [
+                predicate, beforePredicate, afterPredicate, nextPredicate
+            ])
         }
 
         if !query.taskIDs.isEmpty {

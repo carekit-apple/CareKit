@@ -86,11 +86,17 @@ public class OCKLocalization {
 /// - Parameter arguments: The `CVarArg` arguments to use in the formatted string
 /// This is a free function for developer convenience.
 public func loc(_ key: String, _ comment: String = "", arguments: [CVarArg] = []) -> String {
+    let bundle: Bundle?
+    #if SWIFT_PACKAGE
+    bundle = Bundle.module
+    #else
+    bundle = nil
+    #endif
 
    let localizedString = OCKLocalization.localized(
        key,
        tableName: nil,
-       bundle: nil,
+       bundle: bundle,
        value: "",
        comment: comment
    )

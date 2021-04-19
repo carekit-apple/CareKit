@@ -253,6 +253,7 @@ extension OCKCoreDataTaskStoreProtocol {
         assert(persistableValue.localDatabaseID != nil, "You shouldn't be calling this method with an object that hasn't been saved yet!")
         var value = OCKOutcomeValue(persistableValue.value, units: persistableValue.units)
         value.index = persistableValue.index?.intValue
+        value.kind = persistableValue.kind
         value.copyCommonValues(from: persistableValue)
         return value
     }

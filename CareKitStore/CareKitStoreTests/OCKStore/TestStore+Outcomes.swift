@@ -51,12 +51,16 @@ class TestStoreOutcomes: XCTestCase {
         let task = try store.addTaskAndWait(OCKTask(id: "A", title: "A", carePlanID: nil, schedule: schedule))
         let taskID = try task.getLocalID()
 
-        let value = OCKOutcomeValue(42)
-        var outcome = OCKOutcome(taskID: taskID, taskOccurrenceIndex: 0, values: [value])
+        var value = OCKOutcomeValue(42)
+        value.kind = "number"
+
+        var outcome = OCKOutcome(taskUUID: taskUUID, taskOccurrenceIndex: 0, values: [value])
         outcome = try store.addOutcomeAndWait(outcome)
+
         let outcomes = try store.fetchOutcomesAndWait()
         XCTAssert(outcomes == [outcome])
-        XCTAssertNotNil(outcomes.first?.localDatabaseID)
+        XCTAssert(outcomes.first?.values.first?.kind == "number")
+        XCTAssertNotNil(outcomes.first?.taskUUID)
         XCTAssertNotNil(outcomes.first?.schemaVersion)
     }
 

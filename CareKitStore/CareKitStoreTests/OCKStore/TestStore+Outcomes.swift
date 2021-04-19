@@ -54,13 +54,13 @@ class TestStoreOutcomes: XCTestCase {
         var value = OCKOutcomeValue(42)
         value.kind = "number"
 
-        var outcome = OCKOutcome(taskUUID: taskUUID, taskOccurrenceIndex: 0, values: [value])
+        var outcome = OCKOutcome(taskID: taskID, taskOccurrenceIndex: 0, values: [value])
         outcome = try store.addOutcomeAndWait(outcome)
 
         let outcomes = try store.fetchOutcomesAndWait()
         XCTAssert(outcomes == [outcome])
         XCTAssert(outcomes.first?.values.first?.kind == "number")
-        XCTAssertNotNil(outcomes.first?.taskUUID)
+        XCTAssertNotNil(outcomes.first?.taskID)
         XCTAssertNotNil(outcomes.first?.schemaVersion)
     }
 

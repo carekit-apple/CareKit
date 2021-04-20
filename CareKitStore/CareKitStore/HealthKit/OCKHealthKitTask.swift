@@ -69,10 +69,10 @@ public struct OCKHealthKitTask: Codable, Equatable, OCKAnyVersionableTask, OCKAn
     public var notes: [OCKNote]?
     public var timezone: TimeZone
 
-    /// Instantiate a new `OCKCarePlan`
+    /// Instantiate a new `OCKHealthKitTask`
     ///
     /// - Parameters:
-    ///   - id: A unique id for this care plan chosen by the developer.
+    ///   - id: A unique id for this health kit task chosen by the developer.
     ///   - title: A title that will be used to represent this care plan to the patient.
     ///   - carePlanUUID: The UUID of the care plan that this task belongs to.
     ///   - schedule: A schedule specifying when this task is to be completed.

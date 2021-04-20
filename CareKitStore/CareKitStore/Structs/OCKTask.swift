@@ -69,11 +69,10 @@ public struct OCKTask: Codable, Equatable, OCKAnyVersionableTask, OCKAnyMutableT
     /// Instantiate a new `OCKTask`
     ///
     /// - Parameters:
-    ///   - id: A unique id for this care plan chosen by the developer.
-    ///   - title: A title that will be used to represent this care plan to the patient.
-    ///   - carePlanUUID: The UUID of the care plan that this task belongs to.
+    ///   - id: A unique id for this care task chosen by the developer.
+    ///   - title: A title that will be used to represent this care task to the patient.
+    ///   - carePlanUUID: The UUID of the task plan that this task belongs to.
     ///   - schedule: A schedule specifying when this task is to be completed.
-    ///   - healthKitLinkage: A structure specifying how this task is linked with HealthKit.
     public init(id: String, title: String?, carePlanUUID: UUID?, schedule: OCKSchedule) {
         self.id = id
         self.title = title

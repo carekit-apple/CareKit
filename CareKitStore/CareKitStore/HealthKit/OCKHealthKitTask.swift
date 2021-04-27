@@ -73,7 +73,7 @@ public struct OCKHealthKitTask: Codable, Equatable, OCKAnyVersionableTask, OCKAn
     ///
     /// - Parameters:
     ///   - id: A unique id for this health kit task chosen by the developer.
-    ///   - title: A title that will be used to represent this care plan to the patient.
+    ///   - title: A title that will be used to represent this health kit task to the patient.
     ///   - carePlanUUID: The UUID of the care plan that this task belongs to.
     ///   - schedule: A schedule specifying when this task is to be completed.
     ///   - healthKitLinkage: A structure specifying how this task is linked with HealthKit.

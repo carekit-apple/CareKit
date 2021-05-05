@@ -55,16 +55,5 @@ struct OCKContactUtility {
         guard let components = components else { return nil }
         return nameFormatter.string(from: components)
     }
-/*
-    static func image(from asset: String?) -> UIImage? {
-        guard let asset = asset else { return nil }
-
-        // We can't be sure if the image they provide is in the assets folder, in the bundle, or in a directory.
-        // We can check all 3 possibilities and then choose whichever is non-nil.
-        let symbol = UIImage(systemName: asset)
-        let appAssetsImage = UIImage(named: asset)
-        let otherUrlImage = UIImage(contentsOfFile: asset)
-        return otherUrlImage ?? appAssetsImage ?? symbol
-    }*/
 }
 #endif

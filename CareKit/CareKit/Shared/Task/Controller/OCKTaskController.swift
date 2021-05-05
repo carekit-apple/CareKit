@@ -444,7 +444,7 @@ open class OCKTaskController: ObservableObject {
         let detailViewController = OCKDetailViewController(showsCloseButton: true)
         detailViewController.detailView.titleLabel.text = task.title
         detailViewController.detailView.bodyLabel.text = task.instructions
-        detailViewController.detailView.imageView.image = task.asset != nil ? UIImage(named: task.asset!) : nil
+        detailViewController.detailView.imageView.image = UIImage(named: task.asset ?? "")
         return detailViewController
     }
 

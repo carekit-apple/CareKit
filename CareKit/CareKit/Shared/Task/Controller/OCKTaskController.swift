@@ -444,13 +444,7 @@ open class OCKTaskController: ObservableObject {
         let detailViewController = OCKDetailViewController(showsCloseButton: true)
         detailViewController.detailView.titleLabel.text = task.title
         detailViewController.detailView.bodyLabel.text = task.instructions
-        // We can't be sure if the image they provide is in the assets folder, in the bundle, or in a directory.
-        guard let asset = task.asset else { return detailViewController }
-        // We can check all 3 possibilities and then choose whichever is non-nil.
-        let symbol = UIImage(systemName: asset)
-        let appAssetsImage = UIImage(named: asset)
-        let otherUrlImage = UIImage(contentsOfFile: asset)
-        detailViewController.detailView.imageView.image = otherUrlImage ?? appAssetsImage ?? symbol
+        detailViewController.detailView.imageView.image = UIImage.asset(task.asset)
         return detailViewController
     }
 

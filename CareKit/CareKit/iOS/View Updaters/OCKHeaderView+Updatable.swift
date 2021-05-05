@@ -64,7 +64,7 @@ extension OCKHeaderView: OCKEventUpdatable, OCKTaskUpdatable, OCKContactUpdatabl
 
         titleLabel.text = OCKContactUtility.string(from: contact.name)
         detailLabel.text = contact.title
-        iconImageView?.image = OCKContactUtility.image(from: contact.asset) ?? UIImage(systemName: "person.crop.circle")
+        iconImageView?.image = UIImage.asset(contact.asset) ?? UIImage(systemName: "person.crop.circle")
         updateAccessibilityLabel()
     }
 

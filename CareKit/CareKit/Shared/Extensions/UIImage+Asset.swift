@@ -1,5 +1,6 @@
+//
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2021, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -27,44 +28,18 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#if canImport(UIKit)
 
-import Contacts
-import MapKit
+import Foundation
 import UIKit
 
-struct OCKContactUtility {
-    private static let addressFormatter: CNPostalAddressFormatter = {
-        let formatter = CNPostalAddressFormatter()
-        formatter.style = .mailingAddress
-        return formatter
-    }()
-
-    private static let nameFormatter: PersonNameComponentsFormatter = {
-        let nameFormatter = PersonNameComponentsFormatter()
-        nameFormatter.style = .long
-        return nameFormatter
-    }()
-
-    static func string(from location: CNPostalAddress?) -> String? {
-        guard let location = location else { return nil }
-        return addressFormatter.string(from: location)
-    }
-
-    static func string(from components: PersonNameComponents?) -> String? {
-        guard let components = components else { return nil }
-        return nameFormatter.string(from: components)
-    }
-/*
-    static func image(from asset: String?) -> UIImage? {
-        guard let asset = asset else { return nil }
-
+extension UIImage {
+    static func asset(_ name: String?) -> UIImage?{
         // We can't be sure if the image they provide is in the assets folder, in the bundle, or in a directory.
+        guard let asset = name else { return nil }
         // We can check all 3 possibilities and then choose whichever is non-nil.
         let symbol = UIImage(systemName: asset)
         let appAssetsImage = UIImage(named: asset)
         let otherUrlImage = UIImage(contentsOfFile: asset)
         return otherUrlImage ?? appAssetsImage ?? symbol
-    }*/
+    }
 }
-#endif

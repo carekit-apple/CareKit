@@ -83,7 +83,7 @@ extension OCKStore {
         var task2 = OCKTask(id: Tasks.doxylamine.rawValue, title: "Doxylamine", carePlanUUID: nil,
                             schedule: .mealTimesEachDay(start: start, end: nil))
         task2.instructions = "Take the tablet with a full glass of water."
-
+        task2.asset = "pills"
         return [task1, task2]
     }
 

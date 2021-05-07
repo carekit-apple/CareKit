@@ -148,6 +148,8 @@
 		64EABE022321B1AF00CFBB9F /* OCKSynchronizedStoreManager+Publishers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64EABDBF2321B1AF00CFBB9F /* OCKSynchronizedStoreManager+Publishers.swift */; };
 		64EABE0B2321B1AF00CFBB9F /* OCKContactUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64EABDCB2321B1AF00CFBB9F /* OCKContactUtility.swift */; };
 		64EABE202321B1AF00CFBB9F /* locversion.plist in Resources */ = {isa = PBXBuildFile; fileRef = 64EABDE72321B1AF00CFBB9F /* locversion.plist */; };
+		70F79B5526434F4A00731C46 /* UIImage+Asset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70F79B5426434F4A00731C46 /* UIImage+Asset.swift */; };
+		70F79B5626434F4A00731C46 /* UIImage+Asset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70F79B5426434F4A00731C46 /* UIImage+Asset.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -287,6 +289,7 @@
 		64EABDCB2321B1AF00CFBB9F /* OCKContactUtility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKContactUtility.swift; sourceTree = "<group>"; };
 		64EABDE52321B1AF00CFBB9F /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		64EABDE82321B1AF00CFBB9F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = en; path = en.lproj/locversion.plist; sourceTree = "<group>"; };
+		70F79B5426434F4A00731C46 /* UIImage+Asset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Asset.swift"; sourceTree = "<group>"; };
 		8605A5BA1C4F04EC00DD65FF /* CareKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CareKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -356,6 +359,7 @@
 				5125A214248F2E00009C9643 /* OCKTaskEvents+Extension.swift */,
 				032C86EF2326B68D00D0A0EA /* Calendar+Extensions.swift */,
 				510A6655236147FF00074275 /* OCKAnyEvent+Extension.swift */,
+				70F79B5426434F4A00731C46 /* UIImage+Asset.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1021,6 +1025,7 @@
 				51178E0D23AAAA2A0068BAB1 /* OCKSynchronizationContext.swift in Sources */,
 				515862CA23A9C4D600630AB5 /* InstructionsTaskView.swift in Sources */,
 				51178E0323AA95270068BAB1 /* OCKChecklistTaskController.swift in Sources */,
+				70F79B5626434F4A00731C46 /* UIImage+Asset.swift in Sources */,
 				51355EEA2499852D009DE0A4 /* OCKTaskEvents+Extension.swift in Sources */,
 				51178E0123AA95270068BAB1 /* OCKTaskController.swift in Sources */,
 				51178E1023AAAA2A0068BAB1 /* OCKSynchronizedStoreManager+Publishers.swift in Sources */,
@@ -1101,6 +1106,7 @@
 				513271EF234FA33D0025810A /* OCKTaskViewController.swift in Sources */,
 				51676C0223556B34002C97E7 /* OCKCalendarViewSynchronizerProtocol.swift in Sources */,
 				5112732A235E59AA007B18DF /* OCKButtonLogViewController.swift in Sources */,
+				70F79B5526434F4A00731C46 /* UIImage+Asset.swift in Sources */,
 				64EABDED2321B1AF00CFBB9F /* OCKListView.swift in Sources */,
 				51EF7E4A234FABA800B28C0A /* OCKButtonLogTaskViewSynchronizer.swift in Sources */,
 				64EABDEE2321B1AF00CFBB9F /* OCKHeaderBodyView.swift in Sources */,

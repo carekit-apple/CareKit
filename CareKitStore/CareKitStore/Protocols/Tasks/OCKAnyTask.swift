@@ -55,6 +55,9 @@ public protocol OCKAnyTask {
     /// An universally unique identifier for this task.
     var uuid: UUID { get }
 
+    /// A string representation of an asset.
+    var asset: String? { get }
+
     /// An identifier for this task in a remote store.
     var remoteID: String? { get }
 

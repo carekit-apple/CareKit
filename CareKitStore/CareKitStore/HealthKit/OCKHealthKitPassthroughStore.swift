@@ -38,8 +38,10 @@ import os.log
 public final class OCKHealthKitPassthroughStore: OCKEventStore {
     public typealias Task = OCKHealthKitTask
     public typealias Outcome = OCKHealthKitOutcome
+    public typealias SamplesToOutcomesValueMapper = (_ samples: [HKSample], _ task: Task) -> [OCKOutcomeValue]
 
     public weak var outcomeDelegate: OCKOutcomeStoreDelegate?
+    public var samplesToOutcomesValueMapper: SamplesToOutcomesValueMapper?
 
     public var taskDelegate: OCKTaskStoreDelegate? {
         get { store.taskDelegate }

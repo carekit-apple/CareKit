@@ -161,14 +161,20 @@ public extension OCKHealthKitPassthroughStore {
         let eventIntervals = events.map { DateInterval(start: $0.start, end: $0.end) }
 
         proxy.queryValue(identifier: task.healthKitLinkage.quantityIdentifier, unit: task.healthKitLinkage.unit,
-                         queryType: task.healthKitLinkage.quantityType, in: eventIntervals) { result in
+                         queryType: task.healthKitLinkage.quantityType, in: eventIntervals) { [weak self] result in
             switch result {
             case let .failure(error): completion(.failure(.fetchFailed(reason: "HealthKit fetch failed. Error: \(error.localizedDescription)")))
             case let .success(samples):
                 assert(samples.count == eventIntervals.count, "The number of outcome values and events should match!. Please file a bug.")
                 let outcomes = samples.enumerated().compactMap { index, sample -> OCKHealthKitOutcome? in
                     guard !sample.values.isEmpty else { return nil } // Don't return an outcome for events where no HealthKit values exist.
-                    let outcomeValues = sample.values.map { OCKOutcomeValue($0, units: task.healthKitLinkage.unit.unitString) }
+                    var outcomeValues: [OCKOutcomeValue] = []
+                    if let mapper = self?.samplesToOutcomesValueMapper {
+                        outcomeValues.append(contentsOf: mapper(sample.samples, task))
+                    } else {
+                        outcomeValues = sample.values.map { OCKOutcomeValue($0, units: task.healthKitLinkage.unit.unitString) }
+                    }
+                    guard !outcomeValues.isEmpty else { return nil }
                     let correspondingEvent = events[index]
                     let isOwnedByApp = !sample.samples.isEmpty && sample.samples.allSatisfy({ $0.sourceRevision.source == HKSource.default() })
                     return OCKHealthKitOutcome(taskUUID: task.uuid,

@@ -79,7 +79,7 @@ public protocol OCKAnyEventStore: OCKAnyReadOnlyEventStore, OCKAnyTaskStore, OCK
 
 // MARK: Adherence and Insights Methods for OCKAnyReadOnlyEventStore
 
-public extension OCKAnyReadOnlyEventStore where Self: OCKAnyReadOnlyTaskStore, Self: OCKAnyReadOnlyOutcomeStore {
+public extension OCKAnyReadOnlyEventStore {
 
     func fetchAdherence(query: OCKAdherenceQuery, callbackQueue: DispatchQueue = .main,
                         completion: @escaping OCKResultClosure<[OCKAdherence]>) {

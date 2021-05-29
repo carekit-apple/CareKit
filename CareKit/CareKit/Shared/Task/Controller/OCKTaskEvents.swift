@@ -80,8 +80,6 @@ public struct OCKTaskEvents: Collection, Identifiable {
     ///            (nil, false) If the provided event's task has a nil stable identity.
     @discardableResult
     public mutating func append(event: OCKAnyEvent) -> (OCKAnyEvent?, Bool) {
-        // The task needs to have a stable identity. Sections are created based on the task's stable identity.
-        guard event.task.uuid != nil else { return (nil, false) }
 
         // First make sure there is no matching event already stored in the data structure.
         let indexPath = self.indexPath(of: event)

@@ -55,7 +55,7 @@ To add localized strings to your project, add the strings file to your project: 
 
 ### Installation (Option Two): Embedded Framework
 
-Download the project source code and drag in CareKit.xcodeproj, CareKitUI.xcodeproj, and CareKistStore.xcodeproj as needed. Then, embed the framework as a dynamic framework in your app, by adding it to the Embedded Binaries section of the General pane for your target as shown in the figure below.
+Download the project source code and drag in CareKit.xcodeproj, CareKitUI.xcodeproj, and CareKitStore.xcodeproj as needed. Then, embed the framework as a dynamic framework in your app, by adding it to the Embedded Binaries section of the General pane for your target as shown in the figure below.
 
 <img width="1000" alt="embedded-framework" src="https://user-images.githubusercontent.com/51756298/69107216-7fa7ea00-0a25-11ea-89ef-9b8724728e54.png">
 

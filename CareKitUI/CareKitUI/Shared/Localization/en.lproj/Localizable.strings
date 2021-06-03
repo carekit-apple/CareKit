@@ -30,6 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 "ADDRESS" = "Address";
 "ANNOUNCE_EVENT_DELETED" = "Logged event was deleted";
+"BEGIN" = "Begin";
 "CANCEL" = "Cancel";
 "CALL" = "Call";
 "CLOSE" = "Close";

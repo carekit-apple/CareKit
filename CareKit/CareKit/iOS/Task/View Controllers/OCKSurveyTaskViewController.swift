@@ -72,7 +72,7 @@ open class OCKSurveyTaskViewController: OCKTaskViewController<OCKTaskController,
 
     public weak var surveyDelegate: OCKSurveyTaskViewControllerDelegate?
 
-    convenience init(
+    public convenience init(
         task: OCKAnyTask,
         eventQuery: OCKEventQuery,
         storeManager: OCKSynchronizedStoreManager,

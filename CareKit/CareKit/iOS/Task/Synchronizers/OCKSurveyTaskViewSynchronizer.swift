@@ -36,7 +36,7 @@ open class OCKSurveyTaskViewSynchronizer: OCKInstructionsTaskViewSynchronizer {
     override open func makeView() -> OCKInstructionsTaskView {
         let view = super.makeView()
         view.completionButton.handlesSelection = false
-        view.completionButton.label.text = OCKLocalization.localized("BEGIN")
+        view.completionButton.label.text = loc("BEGIN")
         return view
     }
 
@@ -52,7 +52,7 @@ open class OCKSurveyTaskViewSynchronizer: OCKInstructionsTaskViewSynchronizer {
 
         let isComplete = event.outcome != nil
 
-        view.completionButton.label.text = isComplete ? OCKLocalization.localized("COMPLETED") : OCKLocalization.localized("BEGIN")
+        view.completionButton.label.text = loc(isComplete ? "COMPLETED" : "BEGIN")
     }
 }
 

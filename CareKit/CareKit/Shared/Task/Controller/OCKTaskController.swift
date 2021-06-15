@@ -230,7 +230,10 @@ open class OCKTaskController: ObservableObject {
             let viewModelUpdates = OCKTaskEvents(events: modifiedEvents)
             modifiedEvents.forEach { currentViewModel.append(event: $0) }
             self.taskEvents = currentViewModel
-            self.subscribeTo(tasks: viewModelUpdates.tasks, query: eventQuery)
+            let tasks = viewModelUpdates.tasks
+            if !tasks.isEmpty {
+                self.subscribeTo(tasks: viewModelUpdates.tasks, query: eventQuery)
+            }
         }
         .store(in: &cancellables)
     }

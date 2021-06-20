@@ -29,7 +29,9 @@
  */
 
 import Foundation
+#if (CARE && HEALTH) || HEALTH
 import HealthKit
+#endif
 
 public struct OCKHealthKitOutcome: Codable, Equatable, Identifiable, OCKAnyOutcome {
 
@@ -72,7 +74,11 @@ public struct OCKHealthKitOutcome: Codable, Equatable, Identifiable, OCKAnyOutco
     }
 
     public func belongs(to task: OCKAnyTask) -> Bool {
+        #if (CARE && HEALTH) || HEALTH
         guard let task = task as? OCKHealthKitTask else { return false }
         return task.uuid == taskUUID
+        #else
+        return false
+        #endif
     }
 }

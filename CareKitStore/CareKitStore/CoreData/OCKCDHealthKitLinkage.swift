@@ -30,6 +30,7 @@
 
 import CoreData
 import Foundation
+#if (CARE && HEALTH) || HEALTH
 import HealthKit
 
 @objc(OCKCDHealthKitLinkage)
@@ -53,3 +54,4 @@ class OCKCDHealthKitLinkage: NSManagedObject {
         )
     }
 }
+#endif

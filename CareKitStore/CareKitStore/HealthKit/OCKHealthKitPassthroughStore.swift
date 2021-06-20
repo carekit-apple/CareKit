@@ -31,12 +31,18 @@
 
 import CoreData
 import Foundation
-import HealthKit
 import os.log
+#if HEALTH || (CARE && HEALTH)
+import HealthKit
+
+extension OCKHealthKitPassthroughStore: OCKEventStore { }
+#endif
 
 /// A specialized store that transparently manipulates outcomes in HealthKit.
-public final class OCKHealthKitPassthroughStore: OCKEventStore {
+public final class OCKHealthKitPassthroughStore {
+    #if (CARE && HEALTH) || HEALTH
     public typealias Task = OCKHealthKitTask
+    #endif
     public typealias Outcome = OCKHealthKitOutcome
 
     public weak var outcomeDelegate: OCKOutcomeStoreDelegate?
@@ -53,7 +59,9 @@ public final class OCKHealthKitPassthroughStore: OCKEventStore {
 
     let store: OCKStore
 
+    #if (CARE && HEALTH) || HEALTH
     let healthStore = HKHealthStore()
+    #endif
 
     let proxy: OCKHealthKitProxy
 
@@ -72,6 +80,7 @@ public final class OCKHealthKitPassthroughStore: OCKEventStore {
     /// all data types required to read and write outcomes for the tasks in this store.
     /// - Parameter completion:
     public func requestHealthKitPermissionsForAllTasksInStore(completion: @escaping (Error?) -> Void = { _ in }) {
+        #if (CARE && HEALTH) || HEALTH
         do {
             let tasks = try store.fetchHealthKitTasks(query: OCKTaskQuery())
             let quantities = tasks.map { HKQuantityType.quantityType(forIdentifier: $0.healthKitLinkage.quantityIdentifier)! }
@@ -82,15 +91,21 @@ public final class OCKHealthKitPassthroughStore: OCKEventStore {
             completion(OCKStoreError.invalidValue(
                 reason: "Failed HealthKit permission check: Error: \(error.localizedDescription)"))
         }
+        #endif
     }
 
     deinit {
+        #if (CARE && HEALTH) || HEALTH
         stopObservingAllTasks()
+        #endif
     }
 
+    #if (CARE && HEALTH) || HEALTH
     // MARK: Observing
     private var activeObserverQueries: [HKSampleType: HKObserverQuery] = [:]
+    #endif
 
+    #if (CARE && HEALTH) || HEALTH
     internal func startObservingHealthKit(task: OCKHealthKitTask) {
         let sampleType = HKSampleType.quantityType(forIdentifier: task.healthKitLinkage.quantityIdentifier)!
         guard !activeObserverQueries.keys.contains(sampleType) else { return }
@@ -114,9 +129,11 @@ public final class OCKHealthKitPassthroughStore: OCKEventStore {
         healthStore.stop(query)
         activeObserverQueries[sampleType] = nil
     }
+    #endif
 
     private func beginObservingAllTasks() {
         do {
+            #if (CARE && HEALTH) || HEALTH
             let allTasks = try store.fetchHealthKitTasks(query: OCKTaskQuery())
             let group = DispatchGroup()
             var observeError: Error?
@@ -141,12 +158,14 @@ public final class OCKHealthKitPassthroughStore: OCKEventStore {
                     allTasks.forEach { self?.startObservingHealthKit(task: $0) }
                 }
             }
+            #endif
         } catch {
             os_log("Failed to observe HealthKit. %{private}@",
                    log: .store, type: .error, error.localizedDescription)
         }
     }
 
+    #if (CARE && HEALTH) || HEALTH
     private func stopObservingAllTasks() {
         healthStore.disableAllBackgroundDelivery { _, error in
             if let error = error {
@@ -283,5 +302,6 @@ public final class OCKHealthKitPassthroughStore: OCKEventStore {
             completion(.success(()))
         }
     }
+    #endif
 }
 #endif

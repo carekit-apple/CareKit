@@ -30,6 +30,7 @@
 #if os(iOS)
 
 import Foundation
+#if (CARE && HEALTH) || HEALTH
 import HealthKit
 
 public extension OCKHealthKitPassthroughStore {
@@ -82,4 +83,6 @@ public extension OCKHealthKitPassthroughStore {
         return tasks
     }
 }
+#endif
+
 #endif

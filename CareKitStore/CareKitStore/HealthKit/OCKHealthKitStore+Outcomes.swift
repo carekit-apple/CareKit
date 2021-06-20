@@ -30,12 +30,15 @@
 #if os(iOS)
 
 import Foundation
+#if (CARE && HEALTH) || HEALTH
 import HealthKit
+#endif
 
 public extension OCKHealthKitPassthroughStore {
 
     func fetchOutcomes(query: OCKOutcomeQuery, callbackQueue: DispatchQueue = .main,
                        completion: @escaping (Result<[OCKHealthKitOutcome], OCKStoreError>) -> Void) {
+        #if (CARE && HEALTH) || HEALTH
         guard let range = query.dateInterval else {
             let problem = "OCKHealthKitPassthroughStore requires that outcome queries have valid date interval"
             let error = OCKStoreError.fetchFailed(reason: problem)
@@ -55,10 +58,12 @@ public extension OCKHealthKitPassthroughStore {
         } catch {
             callbackQueue.async { completion(.failure(.fetchFailed(reason: "Failed to fetch tasks with error: \(error.localizedDescription)"))) }
         }
+        #endif
     }
 
     func addOutcomes(_ outcomes: [OCKHealthKitOutcome], callbackQueue: DispatchQueue = .main,
                      completion: ((Result<[OCKHealthKitOutcome], OCKStoreError>) -> Void)? = nil) {
+        #if (CARE && HEALTH) || HEALTH
         do {
             let tasks = try fetchTasks(for: outcomes)
             let samples = try outcomes.map { outcome throws -> HKObject in
@@ -109,6 +114,7 @@ public extension OCKHealthKitPassthroughStore {
                     reason: "Failed to add outcomes to HealthKit. Error: \(error.localizedDescription)")))
             }
         }
+        #endif
     }
 
     func updateOutcomes(_ outcomes: [OCKHealthKitOutcome], callbackQueue: DispatchQueue = .main,
@@ -120,6 +126,7 @@ public extension OCKHealthKitPassthroughStore {
 
     func deleteOutcomes(_ outcomes: [OCKHealthKitOutcome], callbackQueue: DispatchQueue = .main,
                         completion: ((Result<[OCKHealthKitOutcome], OCKStoreError>) -> Void)? = nil) {
+        #if (CARE && HEALTH) || HEALTH
         do {
             let tasks = try fetchTasks(for: outcomes)
             let objectTypes = Set(tasks.map { HKObjectType.quantityType(forIdentifier: $0.healthKitLinkage.quantityIdentifier)! })
@@ -152,8 +159,10 @@ public extension OCKHealthKitPassthroughStore {
                     reason: "Failed to delete HealthKit samples. Error: \(error.localizedDescription)")))
             }
         }
+        #endif
     }
 
+    #if (CARE && HEALTH) || HEALTH
     // Make sure to call `prepTasks(_:)` before this.
     private func fetchOutcomes(task: OCKHealthKitTask, dateRange: DateInterval,
                                completion: @escaping (Result<[OCKHealthKitOutcome], OCKStoreError>) -> Void) {
@@ -181,5 +190,6 @@ public extension OCKHealthKitPassthroughStore {
             }
         }
     }
+    #endif
 }
 #endif

@@ -143,6 +143,7 @@ class TestPersistentStoreCoordinator: XCTestCase {
         XCTAssert(store2.patients.isEmpty)
     }
 
+    #if (CARE && HEALTH) || HEALTH
     func testFetchCanResultInAnArrayPopulatedWithDifferentTypes() throws {
         let coordinator = OCKStoreCoordinator()
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
@@ -184,6 +185,7 @@ class TestPersistentStoreCoordinator: XCTestCase {
         let willHandle = coordinator.outcomeStore(passthrough, shouldHandleWritingOutcome: outcome)
         XCTAssertFalse(willHandle)
     }
+    #endif
 
     func testStoreCoordinatorDoesNotSendHealthKitOutcomesToOCKStore() {
         let coordinator = OCKStoreCoordinator()
@@ -193,6 +195,7 @@ class TestPersistentStoreCoordinator: XCTestCase {
         XCTAssertFalse(willHandle)
     }
 
+    #if (CARE && HEALTH) || HEALTH
     func testCanAssociateHealthKitTaskWithCarePlan() throws {
         let store = OCKStore(name: UUID().uuidString, type: .inMemory)
         let passthrough = OCKHealthKitPassthroughStore(store: store)
@@ -212,4 +215,5 @@ class TestPersistentStoreCoordinator: XCTestCase {
         let fetched = try coordinator.fetchAnyTasksAndWait(query: query)
         XCTAssert(fetched.first?.belongs(to: plan) == true)
     }
+    #endif
 }

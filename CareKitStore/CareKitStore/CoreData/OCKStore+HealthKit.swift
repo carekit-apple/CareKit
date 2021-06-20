@@ -28,6 +28,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#if (CARE && HEALTH) || HEALTH
 import CoreData
 import Foundation
 import HealthKit
@@ -95,3 +96,4 @@ extension OCKStore {
         }
     }
 }
+#endif

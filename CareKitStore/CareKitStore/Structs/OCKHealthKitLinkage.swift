@@ -29,6 +29,7 @@
  */
 
 import Foundation
+#if (CARE && HEALTH) || HEALTH
 import HealthKit
 
 extension HKQuantityTypeIdentifier: Codable {}
@@ -68,3 +69,4 @@ public struct OCKHealthKitLinkage: Equatable, Codable {
         self.unitString = unit.unitString
     }
 }
+#endif

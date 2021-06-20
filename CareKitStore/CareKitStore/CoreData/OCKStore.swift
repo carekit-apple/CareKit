@@ -70,6 +70,7 @@ let sharedManagedObjectModel: NSManagedObjectModel = {
 open class OCKStore: OCKStoreProtocol, Equatable {
 
     /// A list of all the types that `OCKStore` supports.
+    #if (CARE && HEALTH) || HEALTH
     let supportedTypes: [OCKVersionedObjectCompatible.Type] = [
         OCKPatient.self,
         OCKCarePlan.self,
@@ -78,6 +79,15 @@ open class OCKStore: OCKStoreProtocol, Equatable {
         OCKHealthKitTask.self,
         OCKOutcome.self
     ]
+    #else
+    let supportedTypes: [OCKVersionedObjectCompatible.Type] = [
+        OCKPatient.self,
+        OCKCarePlan.self,
+        OCKContact.self,
+        OCKTask.self,
+        OCKOutcome.self
+    ]
+    #endif
     
     /// The delegate receives callbacks when the contents of the patient store are modified.
     /// In `CareKit` apps, the delegate will be set automatically, and it should not be modified.

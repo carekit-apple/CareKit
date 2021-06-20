@@ -27,7 +27,7 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
+#if (CARE && HEALTH) || HEALTH
 import CareKitStore
 import HealthKit
 import XCTest
@@ -46,3 +46,4 @@ class TestHealthKitLinkage: XCTestCase {
         XCTAssert(linkage.unit == unit)
     }
 }
+#endif

@@ -29,9 +29,12 @@
  */
 
 import Foundation
+#if (CARE && HEALTH) || HEALTH
 import HealthKit
+#endif
 
 class OCKHealthKitProxy {
+    #if (CARE && HEALTH) || HEALTH
     private let store = HKHealthStore()
 
     func requestPermissionIfNecessary(writeTypes: Set<HKSampleType>, completion: @escaping (Error?) -> Void) {
@@ -150,4 +153,5 @@ class OCKHealthKitProxy {
             completion(.success(values))
         }
     }
+    #endif
 }

@@ -31,6 +31,7 @@
 import CoreData
 import Foundation
 
+#if (CARE && HEALTH) || HEALTH
 @objc(OCKCDHealthKitTask)
 class OCKCDHealthKitTask: OCKCDTaskBase {
 
@@ -56,7 +57,7 @@ class OCKCDHealthKitTask: OCKCDTaskBase {
     override func makeValue() -> OCKVersionedObjectCompatible {
         makeTask()
     }
-    
+
     func makeTask() -> OCKHealthKitTask {
 
         var task = OCKHealthKitTask(
@@ -74,3 +75,4 @@ class OCKCDHealthKitTask: OCKCDTaskBase {
         return task
     }
 }
+#endif

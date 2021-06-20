@@ -54,8 +54,10 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <RemoteRunnable
+         runnableDebuggingMode = "2"
+         BundleIdentifier = "com.apple.Carousel"
+         RemotePath = "/OCKCatalog">
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "515327EA2447951800EEB862"
@@ -63,7 +65,7 @@
             BlueprintName = "OCKWatchCatalog"
             ReferencedContainer = "container:OCKCatalog.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </RemoteRunnable>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -71,8 +73,10 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <RemoteRunnable
+         runnableDebuggingMode = "2"
+         BundleIdentifier = "com.apple.Carousel"
+         RemotePath = "/OCKCatalog">
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "515327EA2447951800EEB862"
@@ -80,7 +84,16 @@
             BlueprintName = "OCKWatchCatalog"
             ReferencedContainer = "container:OCKCatalog.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </RemoteRunnable>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "515327EA2447951800EEB862"
+            BuildableName = "OCKWatchCatalog.app"
+            BlueprintName = "OCKWatchCatalog"
+            ReferencedContainer = "container:OCKCatalog.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

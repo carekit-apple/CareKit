@@ -31,6 +31,7 @@
 @testable import CareKitStore
 import XCTest
 
+#if (CARE && HEALTH) || HEALTH
 class TestHealthKitStoreTasks: XCTestCase {
     var store: OCKHealthKitPassthroughStore!
     let link = OCKHealthKitLinkage(quantityIdentifier: .stepCount, quantityType: .cumulative, unit: .count())
@@ -287,3 +288,4 @@ class TestHealthKitStoreTasks: XCTestCase {
         XCTAssertThrowsError(try store.deleteTaskAndWait(task))
     }
 }
+#endif

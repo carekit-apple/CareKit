@@ -230,16 +230,10 @@ open class OCKTaskController: ObservableObject {
             let viewModelUpdates = OCKTaskEvents(events: modifiedEvents)
             modifiedEvents.forEach { currentViewModel.append(event: $0) }
             self.taskEvents = currentViewModel
-            let tasks = viewModelUpdates.tasks.compactMap { task -> OCKAnyTask? in
-                if let ockTask = task as? OCKTask, let deletedDate = ockTask.deletedDate, deletedDate <= Date() {
-                    return nil
-                } else if let hkTask = task as? OCKHealthKitTask, let deletedDate = hkTask.deletedDate, deletedDate <= Date() {
-                    return nil
-                } else {
-                    return task
-                }
+            let tasks = viewModelUpdates.tasks
+            if !tasks.isEmpty {
+                self.subscribeTo(tasks: viewModelUpdates.tasks, query: eventQuery)
             }
-            self.subscribeTo(tasks: tasks, query: eventQuery)
         }
         .store(in: &cancellables)
     }

@@ -16,7 +16,7 @@ jobs:
     strategy:
       matrix:
         destination: ['platform=iOS\ Simulator,OS=14.0,name=iPhone\ 11\ Pro\ Max']
-        scheme: ['CareKit\ iOS', 'CareKitStore\ iOS', 'CareKitUI\ iOS', 'CareKitFHIR', 'OCKSample', 'OCKCatalog']
+        scheme: ['CareKit\ iOS', 'CareKitStore\ iOS', 'CareKitUI\ iOS', 'CareKitFHIR']
   
     steps:
       - uses: actions/checkout@v2

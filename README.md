@@ -15,6 +15,8 @@ CareKit™ is an open source software framework for creating apps that help peop
 # Table of Contents
 * [Requirements](#requirements)
 * [Getting Started](#getting-started)
+    * [OCKCatalog App](#ockcatalog-app)
+    * [OCKSample App](#ocksample-app)
 * [CareKit](#carekit)
     * [List View Controllers](#list-view-controllers)
     * [Synchronized View Controllers](#synchronized-view-controllers)
@@ -56,6 +58,19 @@ To add localized strings to your project, add the strings file to your project: 
 Download the project source code and drag in CareKit.xcodeproj, CareKitUI.xcodeproj, and CareKitStore.xcodeproj as needed. Then, embed the framework as a dynamic framework in your app, by adding it to the Embedded Binaries section of the General pane for your target as shown in the figure below.
 
 <img width="1000" alt="embedded-framework" src="https://user-images.githubusercontent.com/51756298/69107216-7fa7ea00-0a25-11ea-89ef-9b8724728e54.png">
+
+### OCKCatalog App <a name="ockcatalog-app"></a>
+
+The included catalog app demonstrates the different modules that are available in CareKit: [OCKCatalog](OCKCatalog)
+
+![ockcatalog](https://user-images.githubusercontent.com/51756298/69096972-66de0b00-0a0a-11ea-96f0-4605d04ab396.gif)
+
+
+### OCKSampleApp <a name="ocksample-app"></a>
+
+The included sample app demonstrates a fully constructed CareKit app: [OCKSample](OCKSample)
+
+![ocksample](https://user-images.githubusercontent.com/51756298/69107801-7586eb00-0a27-11ea-8aa2-eca687602c76.gif)
 
 # CareKit <a name="carekit"></a>
 

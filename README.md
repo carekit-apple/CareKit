@@ -61,14 +61,14 @@ Download the project source code and drag in CareKit.xcodeproj, CareKitUI.xcodep
 
 ### OCKCatalog App <a name="ockcatalog-app"></a>
 
-The included catalog app demonstrates the different modules that are available in CareKit: [OCKCatalog](OCKCatalog)
+The included catalog app demonstrates the different modules that are available in CareKit: [OCKCatalog](https://github.com/carekit-apple/CareKitCatalog)
 
 ![ockcatalog](https://user-images.githubusercontent.com/51756298/69096972-66de0b00-0a0a-11ea-96f0-4605d04ab396.gif)
 
 
 ### OCKSampleApp <a name="ocksample-app"></a>
 
-The included sample app demonstrates a fully constructed CareKit app: [OCKSample](OCKSample)
+The included sample app demonstrates a fully constructed CareKit app: [OCKSample](https://github.com/carekit-apple/CareKitSample)
 
 ![ocksample](https://user-images.githubusercontent.com/51756298/69107801-7586eb00-0a27-11ea-8aa2-eca687602c76.gif)
 

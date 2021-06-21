@@ -11,12 +11,6 @@
       location = "group:CareKitStore/CareKitStore.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:OCKSample/OCKSample.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:OCKCatalog/OCKCatalog.xcodeproj">
-   </FileRef>
-   <FileRef
       location = "group:CareKitFHIR/CareKitFHIR.xcodeproj">
    </FileRef>
 </Workspace>

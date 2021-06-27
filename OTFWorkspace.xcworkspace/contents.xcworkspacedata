@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "group:OTFCareKitFHIR/OTFCareKitFHIR.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:OTFCareKitUI/OTFCareKitUI.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:OTFCareKitStore/OTFCareKitStore.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:OTFCareKit/OTFCareKit.xcodeproj">
+   </FileRef>
+</Workspace>

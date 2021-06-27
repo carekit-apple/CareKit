@@ -2,6 +2,12 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:/Users/imranmalik/Dropbox/Imran/TheraForge/Theraforge_Pods/OTFCareKit/CareKit/OTFCareKit.xcodeproj">
+      location = "group:../../OTFCareKitUI/OTFCareKitUI.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:../../OTFCareKitStore/OTFCareKitStore.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "self:">
    </FileRef>
 </Workspace>

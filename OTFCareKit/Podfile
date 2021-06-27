@@ -1,0 +1,42 @@
+# Uncomment the next line to define a global platform for your project
+# platform :ios, '9.0'
+
+source 'https://github.com/HippocratesTech/OTFCocoapodSpecs'
+source 'https://github.com/CocoaPods/Specs.git'
+
+target 'OTFCareKit iOS' do
+  # Comment the next line if you don't want to use dynamic frameworks
+  use_frameworks!
+  pod 'OTFCareKitStore/CareHealth', :path => '../'
+  pod 'OTFCareKitUI', :path => '../'
+  # Pods for OTFCareKit iOS
+
+end
+
+target 'OTFCareKit Watch' do
+  # Comment the next line if you don't want to use dynamic frameworks
+  use_frameworks!
+  pod 'OTFCareKitStore/CareHealth', :path => '../'
+  pod 'OTFCareKitUI', :path => '../'
+  # Pods for OTFCareKit Watch
+
+end
+
+target 'OTFCareKitTests iOS' do
+  # Comment the next line if you don't want to use dynamic frameworks
+  use_frameworks!
+  pod 'OTFCareKitStore/CareHealth', :path => '../'
+  pod 'OTFCareKitUI', :path => '../'
+  # Pods for OTFCareKit Watch
+
+end
+
+post_install do |installer|
+    installer.pods_project.targets.each do |target|
+        target.build_configurations.each do |config|
+            if config.name == 'Health_Debug' || config.name == 'HealthCare_Debug' || config.name == 'Cloudant_Debug' || config.name == 'Care_Debug'
+                config.build_settings['ENABLE_TESTABILITY'] = 'YES'
+            end
+        end
+    end
+end

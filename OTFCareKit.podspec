@@ -14,25 +14,29 @@ Pod::Spec.new do |s|
   s.swift_versions = '5.0'
   s.source                = { :git => 'https://github.com/HippocratesTech/otfcarekit.git', :branch => 'main' }
 
-  s.source_files          = 'CareKit/CareKit/**/*'
-  s.exclude_files         = [ 'CareKit/CareKit/**/*.plist', 'OCKCatalog', 'OCKSample', 'DerivedData' ]
+  s.source_files          = 'OTFCareKit/OTFCareKit/**/*'
+  s.exclude_files         = [ 'OTFCareKit/OTFCareKit/**/*.plist', 'OCKCatalog', 'OCKSample', 'DerivedData' ]
   s.xcconfig              = { 'LIBRARY_SEARCH_PATHS' => "$(SRCROOT)/Pods/**" }
-  #sp.module_map            = 'CareKit/CareKit.modulemap'
   s.requires_arc          = true
-  s.frameworks            = 'CareKitUI', 'CareKitStore'
-  s.dependency 'CareKitStore', '1.0'
-  s.dependency 'CareKitUI', '1.0'
+  s.frameworks            = 'OTFCareKitUI', 'OTFCareKitStore'
+  
+  s.default_subspec = 'Default'
+  s.dependency 'OTFCareKitUI', '1.0'
 
-#  s.subspec 'CareKitUI' do |cku|
-#    		cku.source_files 		= 'CareKitUI/CareKitUI/**/*.swift'
-#		cku.exclude_files		= 'CareKitUI/CareKitUI/**/*.plist', 'CareKitUI/CareKitUITests'
+  s.subspec 'Default' do |ss|
+    ss.dependency 'OTFCareKitStore', '1.0'
+  end
 
-#  end
+  s.subspec 'Care' do |ss|
+    ss.dependency 'OTFCareKitStore/Care', '1.0'
+  end
 
+  s.subspec 'Health' do |ss|
+    ss.dependency 'OTFCareKitStore/Health', '1.0'
+  end
 
-#  s.subspec 'CareKitStore' do |cks| 
-#	cks.source_files 	= 'CareKitStore/CareKitStore/**/*.swift'
-#	cks.exclude_files	= 'CareKitStore/CareKitStore/**/*.plist'
-#  end
-
+  s.subspec 'CareHealth' do |ss|
+    ss.dependency 'OTFCareKitStore/CareHealth', '1.0'
+  end
+   
 end

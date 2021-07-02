@@ -34,9 +34,7 @@ import Foundation
 open class OCKInstructionsTaskController: OCKTaskController {
 
     /// Data used to create a `CareKitUI.InstructionsTaskView`.
-    @Published public private(set) var viewModel: InstructionsTaskViewModel? {
-        willSet { objectWillChange.send() }
-    }
+    @Published public private(set) var viewModel: InstructionsTaskViewModel?
 
     private var cancellable: AnyCancellable?
 

@@ -34,9 +34,7 @@ import Foundation
 open class OCKSimpleTaskController: OCKTaskController {
 
     /// Data used to create a `CareKitUI.SimpleTaskView`.
-    @Published public private(set) var viewModel: SimpleTaskViewModel? {
-        willSet { objectWillChange.send() }
-    }
+    @Published public private(set) var viewModel: SimpleTaskViewModel?
 
     private var cancellable: AnyCancellable?
 

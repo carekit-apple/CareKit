@@ -43,7 +43,7 @@ open class OCKTaskController: ObservableObject {
     @Published public final var taskEvents = OCKTaskEvents()
 
     /// The error encountered by the controller.
-    @Published public internal(set) var error: Error?
+    @Published public var error: Error?
 
     /// The store manager against which the task will be synchronized.
     public let storeManager: OCKSynchronizedStoreManager
@@ -497,14 +497,14 @@ private extension AnyCancellable {
     }
 }
 
-enum OCKTaskControllerError: Error, LocalizedError {
+public enum OCKTaskControllerError: Error, LocalizedError {
 
     case emptyTaskEvents
     case invalidIndexPath(_ indexPath: IndexPath)
     case noOutcomeValueForEvent(_ event: OCKAnyEvent, _ index: Int)
     case cannotMakeOutcomeFor(_ event: OCKAnyEvent)
 
-    var errorDescription: String? {
+    public var errorDescription: String? {
         switch self {
         case .emptyTaskEvents: return "Task events is empty"
         case let .noOutcomeValueForEvent(event, index): return "Event has no outcome value at index \(index): \(event)"

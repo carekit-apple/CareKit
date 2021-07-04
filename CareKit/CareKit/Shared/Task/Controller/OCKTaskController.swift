@@ -375,14 +375,14 @@ open class OCKTaskController: ObservableObject {
         return taskEvents[indexPath.section][indexPath.row]
     }
 
-    func validatedViewModel() throws -> OCKTaskEvents {
+    public func validatedViewModel() throws -> OCKTaskEvents {
         guard !taskEvents.isEmpty else {
             throw OCKTaskControllerError.emptyTaskEvents
         }
         return taskEvents
     }
 
-    func validatedEvent(forIndexPath indexPath: IndexPath) throws -> OCKAnyEvent {
+    public func validatedEvent(forIndexPath indexPath: IndexPath) throws -> OCKAnyEvent {
         guard let event = eventFor(indexPath: indexPath) else {
             throw OCKTaskControllerError.invalidIndexPath(indexPath)
         }

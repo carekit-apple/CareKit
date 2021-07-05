@@ -13,8 +13,6 @@ Pod::Spec.new do |s|
   s.watchos.deployment_target = '6.0'
   s.swift_versions = '5.0'
   s.source                = { :git => 'https://github.com/HippocratesTech/otfcarekit.git', :branch => 'main' }
-
-  s.source_files          = 'OTFCareKit/OTFCareKit/**/*'
   s.exclude_files         = [ 'OTFCareKit/OTFCareKit/**/*.plist', 'OCKCatalog', 'OCKSample', 'DerivedData' ]
   s.xcconfig              = { 'LIBRARY_SEARCH_PATHS' => "$(SRCROOT)/Pods/**" }
   s.requires_arc          = true
@@ -24,18 +22,22 @@ Pod::Spec.new do |s|
   s.dependency 'OTFCareKitUI', '1.0'
 
   s.subspec 'Default' do |ss|
+    ss.source_files          = 'OTFCareKit/OTFCareKit/**/*.{h,m,swift}'
     ss.dependency 'OTFCareKitStore', '1.0'
   end
 
   s.subspec 'Care' do |ss|
+    ss.source_files          = 'OTFCareKit/OTFCareKit/**/*.{h,m,swift}'
     ss.dependency 'OTFCareKitStore/Care', '1.0'
   end
 
   s.subspec 'Health' do |ss|
+    ss.source_files          = 'OTFCareKit/OTFCareKit/**/*.{h,m,swift}'
     ss.dependency 'OTFCareKitStore/Health', '1.0'
   end
 
   s.subspec 'CareHealth' do |ss|
+    ss.source_files          = 'OTFCareKit/OTFCareKit/**/*.{h,m,swift}'
     ss.dependency 'OTFCareKitStore/CareHealth', '1.0'
   end
    

@@ -80,7 +80,7 @@ struct OCKScheduleUtility {
                 return "\(timeFormatter.string(from: start)) to \(timeFormatter.string(from: end))"
             }
         @unknown default:
-            fatalError("Unkown case \(event.scheduleEvent.element.duration), Please implement it in \(#function)")
+            fatalError("Unknown case \(event.scheduleEvent.element.duration), Please implement it.")
         }
         let label = timeFormatter.string(from: event.scheduleEvent.start).description
         return label

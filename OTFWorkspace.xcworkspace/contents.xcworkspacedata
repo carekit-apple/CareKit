@@ -2,6 +2,12 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:OTFCatalog/OTFCatalog.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:OTFSample/OTFSample.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:OTFCareKitFHIR/OTFCareKitFHIR.xcodeproj">
    </FileRef>
    <FileRef

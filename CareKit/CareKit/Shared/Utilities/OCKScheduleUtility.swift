@@ -42,7 +42,7 @@ struct OCKScheduleUtility {
 
     private static let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
-        formatter.dateFormat = "M/d"
+        formatter.dateStyle = .short
         return formatter
     }()
 
@@ -77,7 +77,7 @@ struct OCKScheduleUtility {
             if includesEnd && event.scheduleEvent.start != event.scheduleEvent.end {
                 let start = event.scheduleEvent.start
                 let end = event.scheduleEvent.end
-                return "\(timeFormatter.string(from: start)) to \(timeFormatter.string(from: end))"
+                return "\(timeFormatter.string(from: start)) " + loc("TO") + " \(timeFormatter.string(from: end))"
             }
         }
         let label = timeFormatter.string(from: event.scheduleEvent.start).description
@@ -111,9 +111,9 @@ struct OCKScheduleUtility {
         let datesAreInSameDay = Calendar.current.isDate(start, inSameDayAs: end)
         if datesAreInSameDay {
             let datesAreToday = Calendar.current.isDateInToday(start)
-            return !datesAreToday ? "on \(label(for: start))" : nil
+            return !datesAreToday ? loc("ON") + " " + "\(label(for: start))" : nil
         }
-        return "from \(label(for: start)) to \(label(for: end))"
+        return loc("FROM") + " \(label(for: start))"  + loc("TO") + " \(label(for: end))"
     }
 
     private static func label(for date: Date) -> String {

@@ -62,10 +62,14 @@ extension OCKWeekCalendarView: OCKCompletionStatesUpdatable {
 
     private func makeAccessibilityValue(for state: OCKCompletionState) -> String {
         switch state {
-        case .dimmed: return loc("NO_TASKS")
-        case .empty: return loc("NO_EVENTS")
-        case .zero: return "0"
-        case .progress(let percent): return "\(Int(percent * 100))%"
+        case .dimmed:
+            return loc("NO_TASKS")
+        case .empty:
+            return loc("NO_EVENTS")
+        case .zero:
+            return "0"
+        case .progress(let percent):
+            return "\(Int(percent * 100))%"
         @unknown default:
             fatalError("Unkown case \(state), Please implement it in \(#function)")
         }

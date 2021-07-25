@@ -300,7 +300,7 @@ extension OCKStore: OCKRemoteSynchronizationDelegate {
         let values = objects.map { $0.makeValue() }
         return values
     }
-
+    // swiftlint:disable trailing_closure
     private func findFirstConflict(entity: NSEntityDescription) throws -> [OCKEntity]? {
         let request = NSFetchRequest<OCKCDVersionedObject>(entityName: entity.name!)
         request.predicate = NSPredicate(format: "%K.@count == 0", #keyPath(OCKCDVersionedObject.next))

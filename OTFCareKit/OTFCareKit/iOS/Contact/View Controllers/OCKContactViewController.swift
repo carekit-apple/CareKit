@@ -135,7 +135,7 @@ UIViewController, OCKContactViewDelegate, MFMessageComposeViewControllerDelegate
     }
 
     // MARK: - Methods
-
+    // swiftlint:disable trailing_closure
     // Create a subscription that updates the view when the view model is updated.
     private func startObservingViewModel() {
         controller.$contact
@@ -160,7 +160,8 @@ UIViewController, OCKContactViewDelegate, MFMessageComposeViewControllerDelegate
                 log(.error, "A contact error occurred, but no delegate was set to forward it to!", error: error)
             }
             delegate?.contactViewController(self, didEncounterError: error)
-        case .success(let value): successCompletion(value)
+        case .success(let value):
+            successCompletion(value)
         }
     }
 

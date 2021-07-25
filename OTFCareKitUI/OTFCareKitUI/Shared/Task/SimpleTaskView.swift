@@ -109,6 +109,7 @@ public extension SimpleTaskView where Header == _SimpleTaskViewHeader {
     }
 }
 
+// swiftlint:disable all
 public extension SimpleTaskView where DetailDisclosure == _SimpleTaskViewDetailDisclosure {
 
     /// Create an instance.

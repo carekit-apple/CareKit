@@ -98,6 +98,7 @@ struct LinkButton<Label: View>: View {
     }
 }
 
+// swiftlint:disable trailing_closure
 @available(iOS 14, *)
 extension LinkButton where Label == LinkLabel {
 

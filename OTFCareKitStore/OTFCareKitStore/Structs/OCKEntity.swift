@@ -56,27 +56,39 @@ public enum OCKEntity: Equatable, Codable {
     /// The type of the contained entity.
     public var entityType: EntityType {
         switch self {
-        case .patient: return .patient
-        case .carePlan: return .carePlan
-        case .contact: return .contact
-        case .task: return .task
+        case .patient:
+            return .patient
+        case .carePlan:
+            return .carePlan
+        case .contact:
+            return .contact
+        case .task:
+            return .task
         #if (CARE && HEALTH) || HEALTH
-        case .healthKitTask: return .healthKitTask
+        case .healthKitTask:
+            return .healthKitTask
         #endif
-        case .outcome: return .outcome
+        case .outcome:
+            return .outcome
         }
     }
 
     var value: OCKVersionedObjectCompatible {
         switch self {
-        case let .patient(patient): return patient
-        case let .carePlan(plan): return plan
-        case let .contact(contact): return contact
-        case let .task(task): return task
+        case let .patient(patient):
+            return patient
+        case let .carePlan(plan):
+            return plan
+        case let .contact(contact):
+            return contact
+        case let .task(task):
+            return task
         #if (CARE && HEALTH) || HEALTH
-        case let .healthKitTask(task): return task
+        case let .healthKitTask(task):
+            return task
         #endif
-        case let .outcome(outcome): return outcome
+        case let .outcome(outcome):
+            return outcome
         }
     }
 
@@ -88,14 +100,20 @@ public enum OCKEntity: Equatable, Codable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: Keys.self)
         switch try container.decode(EntityType.self, forKey: .type) {
-        case .patient: self = .patient(try container.decode(OCKPatient.self, forKey: .object))
-        case .carePlan: self = .carePlan(try container.decode(OCKCarePlan.self, forKey: .object))
-        case .contact: self = .contact(try container.decode(OCKContact.self, forKey: .object))
-        case .task: self = .task(try container.decode(OCKTask.self, forKey: .object))
+        case .patient:
+            self = .patient(try container.decode(OCKPatient.self, forKey: .object))
+        case .carePlan:
+            self = .carePlan(try container.decode(OCKCarePlan.self, forKey: .object))
+        case .contact:
+            self = .contact(try container.decode(OCKContact.self, forKey: .object))
+        case .task:
+            self = .task(try container.decode(OCKTask.self, forKey: .object))
         #if (CARE && HEALTH) || HEALTH
-        case .healthKitTask:self = .healthKitTask(try container.decode(OCKHealthKitTask.self, forKey: .object))
+        case .healthKitTask:
+            self = .healthKitTask(try container.decode(OCKHealthKitTask.self, forKey: .object))
         #endif
-        case .outcome: self = .outcome(try container.decode(OCKOutcome.self, forKey: .object))
+        case .outcome:
+            self = .outcome(try container.decode(OCKOutcome.self, forKey: .object))
         }
     }
 
@@ -103,14 +121,20 @@ public enum OCKEntity: Equatable, Codable {
         var container = encoder.container(keyedBy: Keys.self)
         try container.encode(entityType, forKey: .type)
         switch self {
-        case let .patient(patient): try container.encode(patient, forKey: .object)
-        case let .carePlan(plan): try container.encode(plan, forKey: .object)
-        case let .contact(contact): try container.encode(contact, forKey: .object)
-        case let .task(task): try container.encode(task, forKey: .object)
+        case let .patient(patient):
+            try container.encode(patient, forKey: .object)
+        case let .carePlan(plan):
+            try container.encode(plan, forKey: .object)
+        case let .contact(contact):
+            try container.encode(contact, forKey: .object)
+        case let .task(task):
+            try container.encode(task, forKey: .object)
         #if (CARE && HEALTH) || HEALTH
-        case let .healthKitTask(task): try container.encode(task, forKey: .object)
+        case let .healthKitTask(task):
+            try container.encode(task, forKey: .object)
         #endif
-        case let .outcome(outcome): try container.encode(outcome, forKey: .object)
+        case let .outcome(outcome):
+            try container.encode(outcome, forKey: .object)
         }
     }
 
@@ -129,8 +153,8 @@ public enum OCKEntity: Equatable, Codable {
         /// The task entity type.
         case task
 
-        /// The HealthKit task type.
         #if (CARE && HEALTH) || HEALTH
+        /// The HealthKit task type.
         case healthKitTask
         #endif
 

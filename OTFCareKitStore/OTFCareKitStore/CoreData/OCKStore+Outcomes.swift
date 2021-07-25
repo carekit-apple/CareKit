@@ -54,6 +54,7 @@ extension OCKStore {
         }
     }
 
+    // swiftlint:disable multiple_closures_with_trailing_closure
     open func addOutcomes(_ outcomes: [OCKOutcome], callbackQueue: DispatchQueue = .main,
                           completion: ((Result<[OCKOutcome], OCKStoreError>) -> Void)? = nil) {
         transaction(
@@ -163,7 +164,8 @@ extension OCKStore {
     private func buildSortDescriptors(for query: OCKOutcomeQuery) -> [NSSortDescriptor] {
         query.sortDescriptors.map { order -> NSSortDescriptor in
             switch order {
-            case .date(let ascending): return NSSortDescriptor(keyPath: \OCKCDOutcome.startDate, ascending: ascending)
+            case .date(let ascending):
+                return NSSortDescriptor(keyPath: \OCKCDOutcome.startDate, ascending: ascending)
             }
         } + query.defaultSortDescriptors()
     }

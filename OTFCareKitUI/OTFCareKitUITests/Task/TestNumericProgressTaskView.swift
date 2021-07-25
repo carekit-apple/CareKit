@@ -39,6 +39,7 @@ class TestNumericProgressTaskView: XCTestCase {
         _ = NumericProgressTaskView( title: Text(""), detail: nil, progress: Text(""), goal: Text(""), instructions: nil, isComplete: false)
     }
 
+    // swiftlint:disable trailing_closure
     func testCustomInitializers() {
         _ = NumericProgressTaskView(instructions: nil, header: { EmptyView() }, content: { EmptyView() })
         _ = NumericProgressTaskView(progress: Text(""), goal: Text(""), instructions: nil, isComplete: false, header: { EmptyView() })

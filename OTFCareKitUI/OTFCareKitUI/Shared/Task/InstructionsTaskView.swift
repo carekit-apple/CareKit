@@ -53,6 +53,8 @@ import SwiftUI
 ///     |                                                       |
 ///     +-------------------------------------------------------+
 /// ```
+
+// swiftlint:disable all
 public struct InstructionsTaskView<Header: View, Footer: View>: View {
 
     // MARK: - Properties

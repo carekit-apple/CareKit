@@ -173,11 +173,16 @@ open class OCKDetailedContactView: OCKView, OCKContactDisplayable {
     private func didTapButton(_ sender: UIControl) {
         sender.isSelected = false // Immediately deselect since these buttons aren't intended to be toggle-able
         switch sender {
-        case messageButton: delegate?.contactView(self, senderDidInitiateMessage: sender)
-        case callButton: delegate?.contactView(self, senderDidInitiateCall: sender)
-        case addressButton: delegate?.contactView(self, senderDidInitiateAddressLookup: sender)
-        case emailButton: delegate?.contactView(self, senderDidInitiateEmail: sender)
-        default: fatalError("Target not set up properly")
+        case messageButton:
+            delegate?.contactView(self, senderDidInitiateMessage: sender)
+        case callButton:
+            delegate?.contactView(self, senderDidInitiateCall: sender)
+        case addressButton:
+            delegate?.contactView(self, senderDidInitiateAddressLookup: sender)
+        case emailButton:
+            delegate?.contactView(self, senderDidInitiateEmail: sender)
+        default:
+            fatalError("Target not set up properly")
         }
     }
 

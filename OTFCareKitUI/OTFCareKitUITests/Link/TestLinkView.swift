@@ -44,6 +44,7 @@ class TestLinkView: XCTestCase {
         _ = LinkView(title: Text(""), detail: nil, instructions: nil, links: links)
     }
 
+    // swiftlint:disable trailing_closure
     func testCustomInitializers() {
         _ = LinkView(instructions: nil, header: { EmptyView() }, footer: { EmptyView() })
         _ = LinkView(title: Text(""), detail: nil, instructions: nil, footer: { EmptyView() })

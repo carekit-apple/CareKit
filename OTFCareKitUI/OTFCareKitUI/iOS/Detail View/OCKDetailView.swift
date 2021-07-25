@@ -92,9 +92,12 @@ open class OCKDetailView: OCKView, UIScrollViewDelegate {
         let button = UIButton()
 
         switch detailedImageView.overlayStyle {
-        case .dark: button.tintColor = .black
-        case .light, .unspecified: button.tintColor = .white
-        @unknown default: button.tintColor = .white
+        case .dark:
+            button.tintColor = .black
+        case .light, .unspecified:
+            button.tintColor = .white
+        @unknown default:
+            button.tintColor = .white
         }
 
         button.setImage(UIImage(systemName: "xmark.circle.fill"), for: .normal)
@@ -280,7 +283,6 @@ public extension OCKDetailView {
             return htmlAttributedString
         }
 
-
         /// Apply custom css on top of a default stylesheet that mirrors dynamic type.
         /// Use the following classes to style content.
         /// - Parameter contentWidth: The width of the content area for text. This is necessary for image sizing.
@@ -305,6 +307,7 @@ public extension OCKDetailView {
         ///     "caption-2"   Regular    11    13
         ///
         /// h1, h2, h3, h4, h5 and p tags map to these sequentially.
+        // swiftlint:disable function_body_length
         func defaultCSS(appending customCSS: String?, contentWidth: CGFloat, interfaceStyle: UIUserInterfaceStyle) -> String {
 
             let largeTitleFontSize = UIFont.preferredFont(forTextStyle: .largeTitle).pointSize

@@ -43,7 +43,7 @@ extension OCKStoreCoordinator {
             }
         }
     }
-
+    // swiftlint:disable trailing_closure
     open func fetchAnyEvent(forTask task: OCKAnyTask, occurrence: Int, callbackQueue: DispatchQueue,
                             completion: @escaping OCKResultClosure<OCKAnyEvent>) {
         let closures = eventStores.map({ store in { done in

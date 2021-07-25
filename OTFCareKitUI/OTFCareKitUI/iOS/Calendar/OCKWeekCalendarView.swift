@@ -132,7 +132,7 @@ open class OCKWeekCalendarView: OCKView, OCKCalendarDisplayable {
         selectValidatedDate(date)
         return true
     }
-
+    // swiftlint:disable trailing_closure
     /// Select a date that has been validated.
     private func selectValidatedDate(_ date: Date) {
         completionRingButtons.first(where: { $0.isSelected })?.isSelected = false

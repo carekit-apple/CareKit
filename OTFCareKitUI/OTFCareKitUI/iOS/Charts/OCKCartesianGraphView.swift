@@ -141,9 +141,12 @@ open class OCKCartesianGraphView: OCKView, OCKMultiPlotable {
         self.axisView = OCKGraphAxisView()
         self.plotView = {
             switch type {
-            case .line: return OCKLinePlotView()
-            case .scatter: return OCKScatterPlotView()
-            case .bar: return OCKBarPlotView()
+            case .line:
+                return OCKLinePlotView()
+            case .scatter:
+                return OCKScatterPlotView()
+            case .bar:
+                return OCKBarPlotView()
             }
         }()
         super.init()

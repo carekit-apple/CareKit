@@ -249,7 +249,8 @@ open class OCKStackView: UIStackView, OCKStylable {
     /// Batch view plus any needed separators
     private func makeSeparators(withView view: UIView) -> [UIView] {
         switch style {
-        case .plain: return [view]
+        case .plain:
+            return [view]
         case .separated:
             var views: [UIView] = []
             if super.arrangedSubviews.isEmpty && showsOuterSeparators {

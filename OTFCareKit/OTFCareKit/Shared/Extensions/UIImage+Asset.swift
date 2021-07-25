@@ -32,7 +32,7 @@ import Foundation
 import UIKit
 
 extension UIImage {
-    static func asset(_ name: String?) -> UIImage?{
+    static func asset(_ name: String?) -> UIImage? {
         // We can't be sure if the image they provide is in the assets folder, in the bundle, or in a directory.
         guard let name = name else { return nil }
         // We can check all 3 possibilities and then choose whichever is non-nil.

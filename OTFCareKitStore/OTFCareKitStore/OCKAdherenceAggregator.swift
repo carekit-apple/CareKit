@@ -60,11 +60,16 @@ public enum OCKAdherenceAggregator {
     ///   - events: An array of events
     public func aggregate(events: [OCKAnyEvent]) -> OCKAdherence {
         switch self {
-        case .outcomeExists: return computeAverageCompletion(for: events, usingMetric: computeOutcomeExistsCompletion)
-        case .percentOfOutcomeValuesThatExist:  return computeAverageCompletion(for: events, usingMetric: computePercentOfExpectedValuesThatExist)
-        case .compareTargetValues: return computeAverageCompletion(for: events, usingMetric: computeTargetValueBinaryCompletion)
-        case .percentOfTargetValuesMet: return computeAverageCompletion(for: events, usingMetric: computePercentOfTargetsMet)
-        case .custom(let closure): return closure(events)
+        case .outcomeExists:
+            return computeAverageCompletion(for: events, usingMetric: computeOutcomeExistsCompletion)
+        case .percentOfOutcomeValuesThatExist:
+            return computeAverageCompletion(for: events, usingMetric: computePercentOfExpectedValuesThatExist)
+        case .compareTargetValues:
+            return computeAverageCompletion(for: events, usingMetric: computeTargetValueBinaryCompletion)
+        case .percentOfTargetValuesMet:
+            return computeAverageCompletion(for: events, usingMetric: computePercentOfTargetsMet)
+        case .custom(let closure):
+            return closure(events)
         }
     }
 
@@ -139,9 +144,12 @@ public enum OCKAdherenceAggregator {
         }
 
         switch value.type {
-        case .binary: return true
-        case .text: return true
-        case .date: return value.dateValue! >= target.dateValue!
+        case .binary:
+            return true
+        case .text:
+            return true
+        case .date:
+            return value.dateValue! >= target.dateValue!
         default:
             assertionFailure("Unexpected value type: \(value.type)")
             return false

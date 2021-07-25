@@ -115,6 +115,7 @@ public extension NumericProgressTaskView where Header == _NumericProgressTaskVie
     }
 }
 
+// swiftlint:disable all
 public extension NumericProgressTaskView where Content == _NumericProgressTaskViewContent {
 
     /// Create an instance.

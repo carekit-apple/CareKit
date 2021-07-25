@@ -157,6 +157,7 @@ public struct OCKResponsiveLayout<LayoutOption> {
             }
         }
 
+        // swiftlint:disable all
         func layoutOptionForLayoutRuleSet(set: SizeClassRuleSet<LayoutOption>) -> LayoutOption {
             let sorted = set.rules.sorted(by: { $0.contentSizeCategory < $1.contentSizeCategory })
 

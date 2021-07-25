@@ -33,7 +33,7 @@ import Foundation
 
 open class OCKSimpleTaskController: OCKTaskController {
 
-    /// Data used to create a `CareKitUI.SimpleTaskView`.
+    /// Data used to create a `OTFCareKitUI.SimpleTaskView`.
     @Published public private(set) var viewModel: SimpleTaskViewModel? {
         willSet { objectWillChange.send() }
     }

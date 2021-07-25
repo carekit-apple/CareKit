@@ -77,8 +77,10 @@ open class OCKNumericProgressTaskController: OCKTaskController {
 private extension Optional where Wrapped == Double {
     func logIfNil(message: String) -> Self {
         switch self {
-        case .none: log(.debug, "Encountered nil value in OCKNumericProgressTaskController")
-        case .some: break
+        case .none:
+            log(.debug, "Encountered nil value in OCKNumericProgressTaskController")
+        case .some:
+            break
         }
         return self
     }

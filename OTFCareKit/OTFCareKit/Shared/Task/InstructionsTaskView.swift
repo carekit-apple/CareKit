@@ -169,7 +169,7 @@ private extension OTFCareKitUI.InstructionsTaskView where Header == _Instruction
     }
 }
 
-/// Data used to create a `CareKitUI.InstructionsTaskView`.
+/// Data used to create a `OTFCareKitUI.InstructionsTaskView`.
 public struct InstructionsTaskViewModel {
 
     /// The title text to display in the header.

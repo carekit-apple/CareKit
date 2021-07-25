@@ -250,6 +250,7 @@ open class OCKStore: OCKStoreProtocol, Equatable {
         resetDelegate?.storeDidReset(self)
     }
 
+    // swiftlint:disable trailing_closure
     private func loadStore(into container: NSPersistentContainer) -> Bool {
 
         let descriptor = NSPersistentStoreDescription()
@@ -292,6 +293,7 @@ open class OCKStore: OCKStoreProtocol, Equatable {
         return true
     }
 
+    // swiftlint:disable all
     @objc
     private func contextDidSave(_ notification: Notification) {
         guard let inserts = notification.userInfo?[NSInsertedObjectsKey] as? Set<NSManagedObject> else {

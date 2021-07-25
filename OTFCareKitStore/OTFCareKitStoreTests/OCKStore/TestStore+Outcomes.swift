@@ -302,6 +302,7 @@ class TestStoreOutcomes: XCTestCase {
         XCTAssertEqual(outcomeB.id, fetched.first?.id)
     }
 
+    // swiftlint:disable identifier_name
     func testFetchingLatestVersion() throws {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
         let task = OCKTask(id: "A", title: "A", carePlanUUID: nil, schedule: schedule)

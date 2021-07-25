@@ -77,44 +77,67 @@ public enum LinkItem: Hashable {
 
     var alertTitle: String {
         switch self {
-        case .url: return loc("OPEN_URL")
-        case .website: return loc("OPEN_SAFARI")
-        case .location: return loc("OPEN_MAPS")
-        case .call: return loc("OPEN_PHONE")
-        case .message: return loc("OPEN_MESSAGES")
-        case .appStore: return loc("OPEN_APP_STORE")
-        case .email: return loc("OPEN_MAIL")
+        case .url:
+            return loc("OPEN_URL")
+        case .website:
+            return loc("OPEN_SAFARI")
+        case .location:
+            return loc("OPEN_MAPS")
+        case .call:
+            return loc("OPEN_PHONE")
+        case .message:
+            return loc("OPEN_MESSAGES")
+        case .appStore:
+            return loc("OPEN_APP_STORE")
+        case .email:
+            return loc("OPEN_MAIL")
         }
     }
 
     var title: String {
         switch self {
-        case let .url(_, title, _): return title
-        case let .website(_, title): return title
-        case let .location(_, _, title): return title
-        case let .call(_, title): return title
-        case let .message(_, title): return title
-        case let .appStore(_, title): return title
-        case let .email(_, title): return title
+        case let .url(_, title, _):
+            return title
+        case let .website(_, title):
+            return title
+        case let .location(_, _, title):
+            return title
+        case let .call(_, title):
+            return title
+        case let .message(_, title):
+            return title
+        case let .appStore(_, title):
+            return title
+        case let .email(_, title):
+            return title
         }
     }
 
     var symbol: String {
         switch self {
-        case let .url(_, _, symbol): return symbol
-        case .website: return Symbols.website
-        case .location: return Symbols.address
-        case .call: return Symbols.call
-        case .message: return Symbols.message
-        case .appStore: return Symbols.appStore
-        case .email: return Symbols.email
+        case let .url(_, _, symbol):
+            return symbol
+        case .website:
+            return Symbols.website
+        case .location:
+            return Symbols.address
+        case .call:
+            return Symbols.call
+        case .message:
+            return Symbols.message
+        case .appStore:
+            return Symbols.appStore
+        case .email:
+            return Symbols.email
         }
     }
 
     var presentsInApp: Bool {
         switch self {
-        case .url, .location, .call, .message, .email, .appStore: return false
-        case .website: return true
+        case .url, .location, .call, .message, .email, .appStore:
+            return false
+        case .website:
+            return true
         }
     }
 

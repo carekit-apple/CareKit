@@ -65,7 +65,7 @@ open class OCKCalendarController: ObservableObject {
     }
 
     // MARK: - Methods
-
+    // swiftlint:disable trailing_closure
     /// Begin observing adherence in the calendar's date interval.
     ///
     /// - Parameters:
@@ -111,8 +111,10 @@ open class OCKCalendarController: ObservableObject {
         return zip(query.dateInterval.dates(), adherence).map { date, adherence in
             let isInFuture = date > Date() && !Calendar.current.isDateInToday(date)
             switch adherence {
-            case .noTasks: return .dimmed
-            case .noEvents: return .empty
+            case .noTasks:
+                return .dimmed
+            case .noEvents:
+                return .empty
             case .progress(let value):
                 if value > 0 { return .progress(CGFloat(value)) }
                 return isInFuture ? .empty : .zero
@@ -128,7 +130,8 @@ open class OCKCalendarController: ObservableObject {
         storeManager.store.fetchAdherence(query: query) { [weak self] result in
             guard let self = self else { return }
             switch result {
-            case .failure(let error): completion?(.failure(error))
+            case .failure(let error):
+                completion?(.failure(error))
             case .success(let adherence):
                 let states = self.convertAdherenceToCompletionRingState(adherence: adherence, query: query)
                 self.completionStates = states

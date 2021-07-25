@@ -56,13 +56,20 @@ public enum OCKStoreError: LocalizedError {
 
     public var errorDescription: String? {
         switch self {
-        case .fetchFailed(let reason): return "Failed to fetch: \(reason)"
-        case .addFailed(let reason): return "Failed to add: \(reason)"
-        case .updateFailed(let reason): return "Failed to update: \(reason)"
-        case .deleteFailed(let reason): return "Failed to delete: \(reason)"
-        case .remoteSynchronizationFailed(let reason): return "Sync failed: \(reason)"
-        case .timedOut(let reason): return "Timed out: \(reason)"
-        case .invalidValue(let reason): return "Invalid value: \(reason)"
+        case .fetchFailed(let reason):
+            return "Failed to fetch: \(reason)"
+        case .addFailed(let reason):
+            return "Failed to add: \(reason)"
+        case .updateFailed(let reason):
+            return "Failed to update: \(reason)"
+        case .deleteFailed(let reason):
+            return "Failed to delete: \(reason)"
+        case .remoteSynchronizationFailed(let reason):
+            return "Sync failed: \(reason)"
+        case .timedOut(let reason):
+            return "Timed out: \(reason)"
+        case .invalidValue(let reason):
+            return "Invalid value: \(reason)"
         }
     }
 }

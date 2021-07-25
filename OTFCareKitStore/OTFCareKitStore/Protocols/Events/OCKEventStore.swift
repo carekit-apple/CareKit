@@ -105,6 +105,7 @@ public extension OCKReadOnlyEventStore where Task: OCKAnyVersionableTask {
         fetchEvent(withTaskVersion: task.uuid, occurrenceIndex: occurrence, callbackQueue: callbackQueue, completion: completion)
     }
 
+    // swiftlint:disable all
     private func fetchEvent(withTaskVersion taskVersionUUID: UUID, occurrenceIndex: Int,
                             callbackQueue: DispatchQueue, completion: @escaping OCKResultClosure<OCKEvent<Task, Outcome>>) {
         fetchTask(withVersion: taskVersionUUID, callbackQueue: callbackQueue, completion: { (result: Result<Task, OCKStoreError>) in

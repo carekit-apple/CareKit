@@ -42,7 +42,8 @@ private extension OCKPostalAddress {
     func toCNLabeledValue() -> CNLabeledValue<CNPostalAddress> { CNLabeledValue(label: "", value: self) }
 }
 
-
+// swiftlint:disable cyclomatic_complexity
+// swiftlint:disable opening_brace
 extension CNMutableContact {
     convenience init(from contact: OCKAnyContact) {
         self.init()
@@ -66,6 +67,4 @@ extension CNMutableContact {
         if let value = contact.name.phoneticRepresentation?.middleName       { phoneticMiddleName = value }
     }
 }
-
-
 #endif

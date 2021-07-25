@@ -32,7 +32,7 @@
 import XCTest
 
 final class TestStoreSynchronization: XCTestCase {
-
+    // swiftlint:disable function_body_length
     func testMergeConflictResolution() throws {
 
         // 1. Setup the a server with two sync'd stores
@@ -222,6 +222,7 @@ private final class SimulatedRemote: OCKRemoteSynchronizable {
         }
     }
 
+    // swiftlint:disable force_try
     func pushRevisions(
         deviceRevision: OCKRevisionRecord,
         completion: @escaping (Error?) -> Void) {
@@ -243,7 +244,7 @@ private final class SimulatedRemote: OCKRemoteSynchronizable {
 
     func chooseConflictResolution(
         conflicts: [OCKEntity], completion: @escaping OCKResultClosure<OCKEntity>) {
-
+        // swiftlint:disable trailing_closure
         let keep = conflicts.max(by: { $0.value.createdDate! > $1.value.createdDate! })!
         completion(.success(keep))
     }

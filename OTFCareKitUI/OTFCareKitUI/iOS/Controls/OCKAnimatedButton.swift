@@ -69,33 +69,42 @@ open class OCKAnimatedButton<Content: UIView>: UIControl, OCKStylable {
         public func hash(into hasher: inout Hasher) {
             // Hash self without taking into account the associated values.
             switch self {
-            case .overlay: hasher.combine(2)
-            case .fade: hasher.combine(3)
-            case .delayOnSelect: hasher.combine(4)
+            case .overlay:
+                hasher.combine(2)
+            case .fade:
+                hasher.combine(3)
+            case .delayOnSelect:
+                hasher.combine(4)
             }
         }
 
         // Check if self is `.overlay` and ignore the associated value.
         var isOverlay: Bool {
             switch self {
-            case .overlay: return true
-            default: return false
+            case .overlay:
+                return true
+            default:
+                return false
             }
         }
 
         // Check if self is `.delayOnSelect` and ignore the associated value.
         var isDelayOnSelect: Bool {
             switch self {
-            case .delayOnSelect: return true
-            default: return false
+            case .delayOnSelect:
+                return true
+            default:
+                return false
             }
         }
 
         // Check if self is `.fade` and ignore the associated value.
         var isFade: Bool {
             switch self {
-            case .fade: return true
-            default: return false
+            case .fade:
+                return true
+            default:
+                return false
             }
         }
     }

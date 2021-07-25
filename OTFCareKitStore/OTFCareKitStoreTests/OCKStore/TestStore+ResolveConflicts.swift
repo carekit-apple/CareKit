@@ -60,6 +60,7 @@ class TestStoreResolveConflicts: XCTestCase {
         XCTAssert(timesCalled == 2)
     }
 
+    // swiftlint:disable identifier_name
     func testResolveConflictCanBeCalledWithMoreThanTwoConflicts() throws {
         let remote = MockRemote()
         let store = OCKStore(name: UUID().uuidString, type: .inMemory, remote: remote)

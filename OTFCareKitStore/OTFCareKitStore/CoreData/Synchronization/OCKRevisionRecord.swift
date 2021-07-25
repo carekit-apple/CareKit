@@ -142,7 +142,7 @@ public struct OCKRevisionRecord: Equatable, Codable {
         // is not easily compatible with certain JSON parsers, so we provide an
         // alternate implementation that encodes the processes dictionary as an
         // array of objects.
-
+        // swiftlint:disable nesting
         private enum Keys: CodingKey {
             case processes
         }

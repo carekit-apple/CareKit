@@ -31,7 +31,7 @@
 import Foundation
 
 extension OCKStoreCoordinator {
-
+    // swiftlint:disable trailing_closure
     open func fetchAnyTasks(query: OCKTaskQuery, callbackQueue: DispatchQueue = .main,
                             completion: @escaping (Result<[OCKAnyTask], OCKStoreError>) -> Void) {
         let readableStores = readOnlyEventStores + eventStores
@@ -77,7 +77,7 @@ extension OCKStoreCoordinator {
             }
         }
     }
-
+    // swiftlint:disable trailing_closure
     private func findStore(forTasks tasks: [OCKAnyTask]) throws -> OCKAnyTaskStore {
         let matchingStores = tasks.compactMap { task in eventStores.first(where: { taskStore($0, shouldHandleWritingTask: task) }) }
         guard matchingStores.count == tasks.count else { throw OCKStoreError.invalidValue(reason: "No store could be found for some tasks.") }

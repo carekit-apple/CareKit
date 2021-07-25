@@ -103,12 +103,18 @@ public struct OCKOutcomeValue: Codable, Equatable, CustomStringConvertible {
 
     public var description: String {
         switch type {
-        case .integer: return "\(value as! Int)"
-        case .double: return "\(value as! Double)"
-        case .boolean: return "\(value as! Bool)"
-        case .text: return "\(value as! String)"
-        case .binary: return "\(value as! Data)"
-        case .date: return "\(value as! Date)"
+        case .integer:
+            return "\(value as! Int)"
+        case .double:
+            return "\(value as! Double)"
+        case .boolean:
+            return "\(value as! Bool)"
+        case .text:
+            return "\(value as! String)"
+        case .binary:
+            return "\(value as! Data)"
+        case .date:
+            return "\(value as! Date)"
         }
     }
 
@@ -121,12 +127,18 @@ public struct OCKOutcomeValue: Codable, Equatable, CustomStringConvertible {
     /// Checks if two `OCKOutcomeValue`s have equal value properties, without checking their other properties.
     private func hasSameValueAs(_ other: OCKOutcomeValue) -> Bool {
         switch type {
-        case .binary: return dataValue == other.dataValue
-        case .boolean: return booleanValue == other.booleanValue
-        case .date: return dateValue == other.dateValue
-        case .double: return doubleValue == other.doubleValue
-        case .integer: return integerValue == other.integerValue
-        case .text: return stringValue == other.stringValue
+        case .binary:
+            return dataValue == other.dataValue
+        case .boolean:
+            return booleanValue == other.booleanValue
+        case .date:
+            return dateValue == other.dateValue
+        case .double:
+            return doubleValue == other.doubleValue
+        case .integer:
+            return integerValue == other.integerValue
+        case .text:
+            return stringValue == other.stringValue
         }
     }
 
@@ -134,10 +146,14 @@ public struct OCKOutcomeValue: Codable, Equatable, CustomStringConvertible {
     // type of Bool, Double, or Int against one another.
     public var numberValue: NSNumber? {
         switch type {
-        case .boolean: return NSNumber(value: booleanValue!)
-        case .double: return NSNumber(value: doubleValue!)
-        case .integer: return NSNumber(value: integerValue!)
-        default: return nil
+        case .boolean:
+            return NSNumber(value: booleanValue!)
+        case .double:
+            return NSNumber(value: doubleValue!)
+        case .integer:
+            return NSNumber(value: integerValue!)
+        default:
+            return nil
         }
     }
 

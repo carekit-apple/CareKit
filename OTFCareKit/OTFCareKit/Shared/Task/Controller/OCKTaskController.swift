@@ -34,6 +34,7 @@ import Combine
 import Foundation
 import UIKit
 
+// swiftlint:disable file_length
 /// A basic controller capable of watching and updating tasks.
 open class OCKTaskController: ObservableObject {
 
@@ -280,8 +281,10 @@ open class OCKTaskController: ObservableObject {
                 let outcome = try makeOutcomeFor(event: event, withValues: [.init(true)])
                 storeManager.store.addAnyOutcome(outcome) { result in
                     switch result {
-                    case .failure(let error): completion?(.failure(error))
-                    case .success(let outcome): completion?(.success(outcome))
+                    case .failure(let error):
+                        completion?(.failure(error))
+                    case .success(let outcome):
+                        completion?(.success(outcome))
                     }
                 }
             } catch {
@@ -293,8 +296,10 @@ open class OCKTaskController: ObservableObject {
             guard let outcome = event.outcome else { return }
             storeManager.store.deleteAnyOutcome(outcome) { result in
                 switch result {
-                case .failure(let error): completion?(.failure(error))
-                case .success(let outcome): completion?(.success(outcome))
+                case .failure(let error):
+                    completion?(.failure(error))
+                case .success(let outcome):
+                    completion?(.success(outcome))
                 }
             }
         }
@@ -506,10 +511,14 @@ enum OCKTaskControllerError: Error, LocalizedError {
 
     var errorDescription: String? {
         switch self {
-        case .emptyTaskEvents: return "Task events is empty"
-        case let .noOutcomeValueForEvent(event, index): return "Event has no outcome value at index \(index): \(event)"
-        case .invalidIndexPath(let indexPath): return "Invalid index path \(indexPath)"
-        case .cannotMakeOutcomeFor(let event): return "Cannot make outcome for event: \(event)"
+        case .emptyTaskEvents:
+            return "Task events is empty"
+        case let .noOutcomeValueForEvent(event, index):
+            return "Event has no outcome value at index \(index): \(event)"
+        case .invalidIndexPath(let indexPath):
+            return "Invalid index path \(indexPath)"
+        case .cannotMakeOutcomeFor(let event):
+            return "Cannot make outcome for event: \(event)"
         }
     }
 }

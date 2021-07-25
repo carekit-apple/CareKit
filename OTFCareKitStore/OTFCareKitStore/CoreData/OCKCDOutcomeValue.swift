@@ -68,12 +68,18 @@ class OCKCDOutcomeValue: NSManagedObject {
     var value: OCKOutcomeValueUnderlyingType {
         get {
             switch type {
-            case .integer: return Int(integerValue)
-            case .double: return doubleValue
-            case .boolean: return booleanValue
-            case .text: return textValue!
-            case .binary: return binaryValue!
-            case .date: return dateValue!
+            case .integer:
+                return Int(integerValue)
+            case .double:
+                return doubleValue
+            case .boolean:
+                return booleanValue
+            case .text:
+                return textValue!
+            case .binary:
+                return binaryValue!
+            case .date:
+                return dateValue!
             }
         }
 
@@ -109,7 +115,8 @@ class OCKCDOutcomeValue: NSManagedObject {
                 dateValue = date
                 type = .date
 
-            default: fatalError("Unexpected type!")
+            default:
+                fatalError("Unexpected type!")
             }
         }
     }

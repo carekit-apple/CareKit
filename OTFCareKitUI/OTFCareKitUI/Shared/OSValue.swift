@@ -29,7 +29,7 @@
  */
 
 import Foundation
-
+// swiftlint:disable type_name
 enum OS: String {
     case iOS, watchOS
 }

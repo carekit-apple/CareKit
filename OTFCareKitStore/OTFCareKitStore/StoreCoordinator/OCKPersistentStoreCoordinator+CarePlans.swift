@@ -31,7 +31,7 @@
 import Foundation
 
 extension OCKStoreCoordinator {
-
+    // swiftlint:disable trailing_closure
     open func fetchAnyCarePlans(query: OCKCarePlanQuery, callbackQueue: DispatchQueue = .main,
                                 completion: @escaping (Result<[OCKAnyCarePlan], OCKStoreError>) -> Void) {
         let readableStores = readOnlyPlanStores + planStores

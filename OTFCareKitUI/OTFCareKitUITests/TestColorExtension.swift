@@ -32,7 +32,6 @@
 import Foundation
 import XCTest
 
-
 class TestColorExtension: XCTestCase {
 
     func testLightenEqualChannels() {
@@ -61,4 +60,3 @@ class TestColorExtension: XCTestCase {
           XCTAssertEqual(lightened, UIColor(red: 1, green: 1, blue: 1, alpha: 1))
       }
 }
-

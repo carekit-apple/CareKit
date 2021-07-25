@@ -33,7 +33,6 @@ import UIKit
 
 private let accessibilityElementBoundingBoxSize = CGSize(width: 10, height: 10)
 
-
 /// This is an abstract base class for plots that use a gradient mask.
 class OCKGradientPlotView<LayerType: OCKCartesianCoordinatesLayer>: UIView, OCKGradientPlotable, OCKMultiPlotable {
 

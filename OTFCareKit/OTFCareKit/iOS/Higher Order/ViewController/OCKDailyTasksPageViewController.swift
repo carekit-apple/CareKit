@@ -66,7 +66,8 @@ open class OCKDailyTasksPageViewController: OCKDailyPageViewController {
         storeManager.store.fetchAnyTasks(query: taskQuery, callbackQueue: .main) { [weak self] result in
             guard let self = self else { return }
             switch result {
-            case .failure(let error): self.delegate?.dailyPageViewController(self, didFailWithError: error)
+            case .failure(let error):
+                self.delegate?.dailyPageViewController(self, didFailWithError: error)
             case .success(let tasks):
 
                 // Show an empty label if there are no tasks
@@ -107,7 +108,8 @@ open class OCKDailyTasksPageViewController: OCKDailyPageViewController {
         self.storeManager.store.fetchAnyEvents(taskID: task.id, query: eventQuery, callbackQueue: .main) { [weak self] fetchResult in
             guard let self = self else { return }
             switch fetchResult {
-            case .failure(let error): self.delegate?.dailyPageViewController(self, didFailWithError: error)
+            case .failure(let error):
+                self.delegate?.dailyPageViewController(self, didFailWithError: error)
             case .success(let events):
                 let viewController =
                     self.tasksDelegate?.dailyTasksPageViewController(self, viewControllerForTask: task, events: events, eventQuery: eventQuery) ??

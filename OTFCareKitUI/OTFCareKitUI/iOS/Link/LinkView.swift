@@ -107,6 +107,7 @@ public extension LinkView where Header == _LinkViewHeader {
     }
 }
 
+// swiftlint:disable all
 @available(iOS 14, *)
 public extension LinkView where Footer == _LinkViewFooter {
 

@@ -68,7 +68,7 @@ public struct OCKDSTU2CarePlanActivityCoder: OCKTaskConverterTraits {
         activity.detail?.description_fhir?.value?.string
     }
 
-    public var getCareKitInstructions: (CarePlanActivity) throws -> String? = { activity in
+    public var getCareKitInstructions: (CarePlanActivity) throws -> String? = { _ in
         nil
     }
 
@@ -91,7 +91,7 @@ public struct OCKDSTU2CarePlanActivityCoder: OCKTaskConverterTraits {
         activity.detail?.scheduled = .timing(try OCKDSTU2ScheduleCoder().convert(entity: schedule))
     }
 
-    public var setFHIRInstructions: (String?, CarePlanActivity) throws -> Void = { instructions, activity in
+    public var setFHIRInstructions: (String?, CarePlanActivity) throws -> Void = { _, _ in
         // no-op
     }
 }

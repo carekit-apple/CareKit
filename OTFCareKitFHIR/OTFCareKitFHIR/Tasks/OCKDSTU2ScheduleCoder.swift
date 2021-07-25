@@ -121,13 +121,20 @@ struct OCKDSTU2ScheduleCoder: OCKFHIRResourceCoder {
 
     private func makeInterval(units: FHIRString, count: Int) throws -> DateComponents {
         switch units {
-        case Calendar.Component.second.dstu2FHIRUnitString.value: return DateComponents(second: count)
-        case Calendar.Component.minute.dstu2FHIRUnitString.value: return DateComponents(minute: count)
-        case Calendar.Component.hour.dstu2FHIRUnitString.value: return DateComponents(hour: count)
-        case Calendar.Component.day.dstu2FHIRUnitString.value: return DateComponents(day: count)
-        case Calendar.Component.weekOfYear.dstu2FHIRUnitString.value: return DateComponents(weekOfYear: count)
-        case Calendar.Component.month.dstu2FHIRUnitString.value: return DateComponents(month: count)
-        default: throw OCKFHIRCodingError.corruptData("Unrecognized time units: \(units.string)")
+        case Calendar.Component.second.dstu2FHIRUnitString.value:
+            return DateComponents(second: count)
+        case Calendar.Component.minute.dstu2FHIRUnitString.value:
+            return DateComponents(minute: count)
+        case Calendar.Component.hour.dstu2FHIRUnitString.value:
+            return DateComponents(hour: count)
+        case Calendar.Component.day.dstu2FHIRUnitString.value:
+            return DateComponents(day: count)
+        case Calendar.Component.weekOfYear.dstu2FHIRUnitString.value:
+            return DateComponents(weekOfYear: count)
+        case Calendar.Component.month.dstu2FHIRUnitString.value:
+            return DateComponents(month: count)
+        default:
+            throw OCKFHIRCodingError.corruptData("Unrecognized time units: \(units.string)")
         }
     }
 
@@ -141,10 +148,14 @@ struct OCKDSTU2ScheduleCoder: OCKFHIRResourceCoder {
         }
 
         switch units {
-        case Calendar.Component.second.dstu2FHIRUnitString.value: return .seconds(doubleValue)
-        case Calendar.Component.minute.dstu2FHIRUnitString.value: return .minutes(doubleValue)
-        case Calendar.Component.hour.dstu2FHIRUnitString.value: return .hours(doubleValue)
-        default: throw OCKFHIRCodingError.corruptData("Unrecognized time unitss: \(units.string)")
+        case Calendar.Component.second.dstu2FHIRUnitString.value:
+            return .seconds(doubleValue)
+        case Calendar.Component.minute.dstu2FHIRUnitString.value:
+            return .minutes(doubleValue)
+        case Calendar.Component.hour.dstu2FHIRUnitString.value:
+            return .hours(doubleValue)
+        default:
+            throw OCKFHIRCodingError.corruptData("Unrecognized time unitss: \(units.string)")
         }
     }
 }
@@ -161,6 +172,8 @@ private extension TimingRepeat {
         case .seconds(let secs):
             durationUnits = Calendar.Component.second.dstu2FHIRUnitString
             duration = FHIRPrimitive(FHIRDecimal(Decimal(secs)))
+        @unknown default:
+            fatalError("Case not implemented \(element.duration)")
         }
 
         if let seconds = element.interval.second {

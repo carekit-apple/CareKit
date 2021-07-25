@@ -51,6 +51,7 @@ class TestStoreCRDTMergeProperties: XCTestCase {
         XCTAssert(patients.count == 1)
     }
 
+    // swiftlint:disable identifier_name
     func testMergeIsCommutative() throws {
         let store = OCKStore(name: "commutative", type: .inMemory)
         let revisions = makeRevisions(count: 10).shuffled()
@@ -92,6 +93,7 @@ class TestStoreCRDTMergeProperties: XCTestCase {
         XCTAssert(fetchedA.map(\.nextVersionUUIDs) == fetchedB.map(\.nextVersionUUIDs))
     }
 
+    // swiftlint:disable identifier_name
     private func makeRevisions(count: Int) -> [OCKRevisionRecord] {
 
         var revisions = [OCKRevisionRecord]()

@@ -69,6 +69,6 @@ internal func log(_ level: OSLogType = .info,
 private extension OSLog {
 
     private static var subsystem = Bundle.main.bundleIdentifier!
-
+    // swiftlint:disable identifier_name
     static let ui = OSLog(subsystem: subsystem, category: "CareKitUI")
 }

@@ -127,7 +127,7 @@ UIViewController, OCKChartViewDelegate {
     }
 
     // MARK: - Methods
-
+    // swiftlint:disable trailing_closure
     // Create a subscription that updates the view when the view model is updated.
     private func startObservingViewModel() {
         controller.$dataSeries

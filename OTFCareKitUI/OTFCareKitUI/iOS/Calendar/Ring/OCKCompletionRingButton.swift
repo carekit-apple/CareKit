@@ -95,10 +95,14 @@ open class OCKCompletionRingButton: OCKAnimatedButton<OCKStackView> {
     public func setState(_ state: OCKCompletionState, animated: Bool) {
         completionState = state
         switch state {
-        case .dimmed: ring.setProgress(0, animated: animated)
-        case .empty: ring.setProgress(0, animated: animated)
-        case .zero: ring.setProgress(0.001, animated: animated)
-        case .progress(let value): ring.setProgress(value, animated: animated)
+        case .dimmed:
+            ring.setProgress(0, animated: animated)
+        case .empty:
+            ring.setProgress(0, animated: animated)
+        case .zero:
+            ring.setProgress(0.001, animated: animated)
+        case .progress(let value):
+            ring.setProgress(value, animated: animated)
         }
         updateRingColors()
     }

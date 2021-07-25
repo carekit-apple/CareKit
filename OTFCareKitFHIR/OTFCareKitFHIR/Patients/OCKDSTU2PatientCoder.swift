@@ -72,11 +72,16 @@ public struct OCKDSTU2PatientCoder: OCKPatientConverterTraits {
 
     public var getCareKitSex: (Patient) throws -> OCKBiologicalSex? = {
         switch $0.gender?.value {
-        case .male: return .male
-        case .female: return .female
-        case .other: return .other("other")
-        case .unknown: return nil
-        case .none: return nil
+        case .male:
+            return .male
+        case .female:
+            return .female
+        case .other:
+            return .other("other")
+        case .unknown:
+            return nil
+        case .none:
+            return nil
         }
     }
 
@@ -123,7 +128,7 @@ public struct OCKDSTU2PatientCoder: OCKPatientConverterTraits {
         patient.birthDate = FHIRPrimitive(birthday.dstu2FHIRDateTime.date)
     }
 
-    public var setFHIRAllergies: ([String], Patient) throws -> Void = { allergies, patient in
+    public var setFHIRAllergies: ([String], Patient) throws -> Void = { _, _ in
         // No-op
     }
 
@@ -135,14 +140,18 @@ public struct OCKDSTU2PatientCoder: OCKPatientConverterTraits {
 private extension OCKBiologicalSex {
     var administrativeGender: FHIRPrimitive<AdministrativeGender> {
         switch self {
-        case .female: return FHIRPrimitive(.female)
-        case .male: return FHIRPrimitive(.male)
+        case .female:
+            return FHIRPrimitive(.female)
+        case .male:
+            return FHIRPrimitive(.male)
         case let .other(value):
             if value == AdministrativeGender.unknown.rawValue {
                 return FHIRPrimitive(.unknown)
             } else {
                 return FHIRPrimitive(.other)
             }
+        @unknown default:
+            fatalError("Case not implemented \(self)")
         }
     }
 }

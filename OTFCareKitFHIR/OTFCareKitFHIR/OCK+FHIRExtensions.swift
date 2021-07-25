@@ -39,13 +39,20 @@ extension String {
 extension Calendar.Component {
     var dstu2FHIRUnitString: ModelsDSTU2.FHIRPrimitive<ModelsDSTU2.FHIRString> {
         switch self {
-        case .second: return "s"
-        case .minute: return "min"
-        case .hour: return "h"
-        case .day: return "d"
-        case .weekOfYear: return "wk"
-        case .month: return "mo"
-        default: fatalError("Calendar component \(self) is not supported by FHIR.")
+        case .second:
+            return "s"
+        case .minute:
+            return "min"
+        case .hour:
+            return "h"
+        case .day:
+            return "d"
+        case .weekOfYear:
+            return "wk"
+        case .month:
+            return "mo"
+        default:
+            fatalError("Calendar component \(self) is not supported by FHIR.")
         }
     }
 }

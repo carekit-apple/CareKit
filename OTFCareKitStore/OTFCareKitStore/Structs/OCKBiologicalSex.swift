@@ -41,17 +41,23 @@ public enum OCKBiologicalSex: RawRepresentable, Codable, Equatable {
 
     public var rawValue: String {
         switch self {
-        case .male: return maleStringRepresentation
-        case .female: return femaleStringRepresentation
-        case .other(let value): return value
+        case .male:
+            return maleStringRepresentation
+        case .female:
+            return femaleStringRepresentation
+        case .other(let value):
+            return value
         }
     }
 
     public init?(rawValue: String) {
         switch rawValue {
-        case maleStringRepresentation: self = .male
-        case femaleStringRepresentation: self = .female
-        default: self = .other(rawValue)
+        case maleStringRepresentation:
+            self = .male
+        case femaleStringRepresentation:
+            self = .female
+        default:
+            self = .other(rawValue)
         }
     }
 

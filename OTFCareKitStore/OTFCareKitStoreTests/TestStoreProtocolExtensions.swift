@@ -226,6 +226,7 @@ class TestStoreProtocolExtensions: XCTestCase {
         XCTAssert(events.first?.task.title == "B")
     }
 
+    // swiftlint:disable identifier_name
     func testFetchEventsReturnsAnEventForEachVersionOfATaskWhenEventsAreAllDayDuration() throws {
         let midnight = Calendar.current.startOfDay(for: Date())
         let schedule = OCKSchedule.dailyAtTime(hour: 0, minutes: 0, start: midnight, end: nil, text: nil, duration: .allDay, targetValues: [])
@@ -267,6 +268,7 @@ class TestStoreProtocolExtensions: XCTestCase {
         XCTAssert(adherence == [.noTasks, .noTasks, .progress(0.5), .noEvents])
     }
 
+    // swiftlint:disable trailing_closure
     func testFetchAdherenceWithCustomAggregator() throws {
         let start = Calendar.current.startOfDay(for: Date())
         let twoDaysEarly = Calendar.current.date(byAdding: .day, value: -2, to: start)!

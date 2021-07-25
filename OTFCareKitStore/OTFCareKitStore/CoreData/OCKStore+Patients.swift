@@ -81,10 +81,14 @@ extension OCKStore {
     private func buildSortDescriptors(from query: OCKPatientQuery) -> [NSSortDescriptor] {
         query.sortDescriptors.map { order -> NSSortDescriptor in
             switch order {
-            case .effectiveDate(let ascending): return NSSortDescriptor(keyPath: \OCKCDPatient.effectiveDate, ascending: ascending)
-            case .givenName(let ascending): return NSSortDescriptor(keyPath: \OCKCDPatient.name.givenName, ascending: ascending)
-            case .familyName(let ascending): return NSSortDescriptor(keyPath: \OCKCDPatient.name.familyName, ascending: ascending)
-            case .groupIdentifier(let ascending): return NSSortDescriptor(keyPath: \OCKCDPatient.groupIdentifier, ascending: ascending)
+            case .effectiveDate(let ascending):
+                return NSSortDescriptor(keyPath: \OCKCDPatient.effectiveDate, ascending: ascending)
+            case .givenName(let ascending):
+                return NSSortDescriptor(keyPath: \OCKCDPatient.name.givenName, ascending: ascending)
+            case .familyName(let ascending):
+                return NSSortDescriptor(keyPath: \OCKCDPatient.name.familyName, ascending: ascending)
+            case .groupIdentifier(let ascending):
+                return NSSortDescriptor(keyPath: \OCKCDPatient.groupIdentifier, ascending: ascending)
             }
         } + query.defaultSortDescriptors()
     }

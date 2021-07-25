@@ -123,7 +123,7 @@ public extension OCKHealthKitPassthroughStore {
             completion?(.failure(.updateFailed(reason: "Data in HealthKit can only be added and deleted. Updates are not allowed.")))
         }
     }
-
+    // swiftlint:disable trailing_closure
     func deleteOutcomes(_ outcomes: [OCKHealthKitOutcome], callbackQueue: DispatchQueue = .main,
                         completion: ((Result<[OCKHealthKitOutcome], OCKStoreError>) -> Void)? = nil) {
         #if (CARE && HEALTH) || HEALTH
@@ -172,7 +172,8 @@ public extension OCKHealthKitPassthroughStore {
         proxy.queryValue(identifier: task.healthKitLinkage.quantityIdentifier, unit: task.healthKitLinkage.unit,
                          queryType: task.healthKitLinkage.quantityType, in: eventIntervals) { result in
             switch result {
-            case let .failure(error): completion(.failure(.fetchFailed(reason: "HealthKit fetch failed. Error: \(error.localizedDescription)")))
+            case let .failure(error):
+                completion(.failure(.fetchFailed(reason: "HealthKit fetch failed. Error: \(error.localizedDescription)")))
             case let .success(samples):
                 assert(samples.count == eventIntervals.count, "The number of outcome values and events should match!. Please file a bug.")
                 let outcomes = samples.enumerated().compactMap { index, sample -> OCKHealthKitOutcome? in

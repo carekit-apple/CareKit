@@ -32,6 +32,7 @@ import OTFCareKitStore
 import Combine
 import Foundation
 
+// swiftlint:disable trailing_closure
 extension OCKSynchronizedStoreManager {
 
     // MARK: Patients

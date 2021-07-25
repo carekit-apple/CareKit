@@ -58,7 +58,6 @@ class OCKHealthKitProxy {
     }
 
     // MARK: Queries
-
     func queryValue(identifier: HKQuantityTypeIdentifier, unit: HKUnit, queryType: OCKHealthKitLinkage.QuantityType, in dateRanges: [DateInterval],
                     completion: @escaping (Result<[QueryResult], Error>) -> Void) {
         guard let quantity = HKQuantityType.quantityType(forIdentifier: identifier) else { fatalError("\(identifier) is not a valid quantity!") }
@@ -124,7 +123,7 @@ class OCKHealthKitProxy {
             completion(.success(values))
         }
     }
-
+    // swiftlint:disable trailing_closure
     func discreteQuery(quantity: HKQuantityType, unit: HKUnit, in dateRanges: [DateInterval],
                        completion: @escaping (Result<[QueryResult], Error>) -> Void) {
         let group = DispatchGroup()

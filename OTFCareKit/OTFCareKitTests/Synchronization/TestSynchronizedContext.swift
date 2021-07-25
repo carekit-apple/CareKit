@@ -41,7 +41,8 @@ class TestSynchronizedContext: XCTestCase {
         super.setUp()
         subject = CurrentValueSubject<Int?, Never>(nil)
     }
-
+    
+    // swiftlint:disable trailing_closure
     // Old value should be nil, current value should be nil
     func testInitialState() {
         let initialState = XCTestExpectation(description: "Initial state is valid")

@@ -49,9 +49,12 @@ open class OCKContactButton: OCKAnimatedButton<OCKStackView> {
         var image: UIImage? {
             let image: UIImage?
             switch self {
-            case .call: image = UIImage(systemName: "phone")
-            case .message: image = UIImage(systemName: "text.bubble")
-            case .email: image = UIImage(systemName: "envelope")
+            case .call:
+                image = UIImage(systemName: "phone")
+            case .message:
+                image = UIImage(systemName: "text.bubble")
+            case .email:
+                image = UIImage(systemName: "envelope")
             }
             return image
         }
@@ -114,9 +117,12 @@ open class OCKContactButton: OCKAnimatedButton<OCKStackView> {
         label.text = type.rawValue
 
         switch type {
-        case .call: accessibilityLabel = loc("CALL")
-        case .email: accessibilityLabel = loc("EMAIL")
-        case .message: accessibilityLabel = loc("MESSAGE")
+        case .call:
+            accessibilityLabel = loc("CALL")
+        case .email:
+            accessibilityLabel = loc("EMAIL")
+        case .message:
+            accessibilityLabel = loc("MESSAGE")
         }
 
         applyTintColor()

@@ -102,7 +102,7 @@ public extension LabeledValueTaskView where Header == _LabeledValueTaskViewHeade
         }, detailDisclosure: detailDisclosure)
     }
 }
-
+// swiftlint:disable trailing_closure
 public extension LabeledValueTaskView where DetailDisclosure == _LabeledValueTaskViewDetailDisclosure {
 
     /// Create an instance with the default detail disclosure.
@@ -143,6 +143,7 @@ public enum LabeledValueTaskViewState {
 }
 
 /// The default detail disclosure used by a `LabeledValueTaskView`.
+// swiftlint:disable all
 public struct _LabeledValueTaskViewDetailDisclosure: View {
 
     fileprivate let state: LabeledValueTaskViewState

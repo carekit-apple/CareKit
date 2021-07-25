@@ -33,7 +33,7 @@ import Foundation
 
 open class OCKInstructionsTaskController: OCKTaskController {
 
-    /// Data used to create a `CareKitUI.InstructionsTaskView`.
+    /// Data used to create a `OTFCareKitUI.InstructionsTaskView`.
     @Published public private(set) var viewModel: InstructionsTaskViewModel? {
         willSet { objectWillChange.send() }
     }

@@ -42,6 +42,7 @@ func chooseFirst<T>(then singularResultClosure: OCKResultClosure<T>?, replacemen
     }
 }
 
+// swiftlint:disable trailing_closure
 // Performs an array of operations and completes with the aggregated results or an an error, if any any occurs.
 func aggregate<U>(_ closures: [(@escaping OCKResultClosure<[U]>) -> Void], callbackQueue: DispatchQueue,
                   completion: @escaping OCKResultClosure<[U]>) {
@@ -53,8 +54,10 @@ func aggregate<U>(_ closures: [(@escaping OCKResultClosure<[U]>) -> Void], callb
         group.enter()
         closure({ result in
             switch result {
-            case .failure(let storeError): error = storeError
-            case .success(let storeValues): values.append(contentsOf: storeValues)
+            case .failure(let storeError):
+                error = storeError
+            case .success(let storeValues):
+                values.append(contentsOf: storeValues)
             }
             group.leave()
         })
@@ -76,7 +79,8 @@ func getFirstValidResult<T>(_ closures: [(@escaping OCKResultClosure<T>) -> Void
         group.enter()
         closure({ result in
             switch result {
-            case .failure: break
+            case .failure:
+                break
             case .success(let fetchedValue):
                 values.append(fetchedValue)
             }

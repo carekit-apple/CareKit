@@ -40,7 +40,6 @@ private let testsBundle = Bundle(for: TestCoreDataSchemaMigrations.self)
 
 class TestCoreDataSchemaMigrations: XCTestCase {
 
-
     /// The `SampleStore2.0` database was created using the `OCKSample` app checked out
     /// at release tag 2.0.1. The database model version is `CareKitStore2.0`.
     ///
@@ -52,10 +51,8 @@ class TestCoreDataSchemaMigrations: XCTestCase {
     func testMigrationFrom2_0to2_1() throws {
         // 1. Copy the sample store files to a temporary directory
         // The temporary directory and it's contents will be deleted automatically.
-
         let tempDir = NSTemporaryDirectory()
-        let folder = UUID().uuidString
-        let dir = URL(fileURLWithPath: tempDir).appendingPathComponent(folder, isDirectory: true)
+        let dir = URL(fileURLWithPath: tempDir).appendingPathComponent(UUID().uuidString, isDirectory: true)
         try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true, attributes: [:])
 
         try FileManager.default.copyItem(

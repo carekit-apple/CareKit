@@ -160,7 +160,7 @@ private extension OTFCareKitUI.SimpleTaskView where Header == _SimpleTaskViewHea
     }
 }
 
-/// Data used to create a `CareKitUI.SimpleTaskView`.
+/// Data used to create a `OTFCareKitUI.SimpleTaskView`.
 public struct SimpleTaskViewModel {
 
     /// The title text to display in the header.

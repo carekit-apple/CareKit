@@ -162,6 +162,7 @@ public struct OCKTaskEvents: Collection, Identifiable {
     public var endIndex: Index { events.endIndex }
 
     public func makeIterator() -> Iterator { events.makeIterator() }
+    // swiftlint:disable identifier_name
     public func index(after i: Index) -> Index { events.index(after: i) }
     public subscript(index: Index) -> Iterator.Element { events[index] }
 

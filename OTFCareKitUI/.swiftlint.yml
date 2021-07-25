@@ -1,0 +1,46 @@
+# exclude any external files (e.g. external SDK)
+excluded:
+   - Pods
+
+# structure limits
+cyclomatic_complexity: 10  # max 10 conditions per method
+function_parameter_count: 5  # don't pass too many parameters to methods, use objects/structs instead
+line_length: 200 # limit line length, line wrap or use variables to simplify code
+type_body_length: 300  # don't use long types, use extensions if needed
+identifier_name: # don't use short variable names, don't use abbreviations
+  allowed_symbols: "_"
+  excluded:
+    - id
+  min_length:
+    error: 2
+    warning: 3
+
+disabled_rules:
+  - unused_capture_list # It is standard swift compiler warning
+  - trailing_whitespace
+  - force_cast
+# optional linting rules
+opt_in_rules:
+  - closure_spacing # spaces around closure body
+  - contains_over_first_not_nil # `use contains` instead of `filter { }.first`
+  - explicit_init # don't call Type.init() explicitly
+  - joined_default_parameter # use `joined()` instead of `joined(separator: "")`
+  - number_separator # use _ to increase readability in long constants
+  - operator_usage_whitespace # one space around binary operators
+  - overridden_super_call # call super from viewDidAppear and similar methods
+  - private_action # don't access IBActions from other files
+  - private_outlet # don't access outlets from other files
+  - redundant_nil_coalescing # don't use `?? nil`
+  - sorted_first_last # prefer min/max over sorted { }.first
+  - switch_case_on_newline # start `case` body on a new line
+  - trailing_closure # prefer trailing closures
+  - yoda_condition # `x != nil` instead of `nil != x`
+
+# Optional indentation rules, enable for strict indentation/line wrapping
+#  - closure_end_indentation
+#  - literal_expression_end_indentation
+#  - multiline_arguments
+#  - multiline_parameters
+#  - vertical_parameter_alignment_on_call
+
+# other custom rules

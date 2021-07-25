@@ -50,21 +50,31 @@ public enum OCKFHIRCodingError: Error, Equatable {
 
     func prependMessage(_ message: String) -> OCKFHIRCodingError {
         switch self {
-        case .corruptData: return .corruptData(message + " \(localizedDescription)")
-        case .missingRequiredField: return .missingRequiredField(message + " \(localizedDescription)")
-        case .unsupportedEncoding: return .unsupportedEncoding(message + " \(localizedDescription)")
-        case .unrepresentableContent: return .unrepresentableContent(message + " \(localizedDescription)")
-        case .unknownError: return .unknownError(message + " \(localizedDescription)")
+        case .corruptData:
+            return .corruptData(message + " \(localizedDescription)")
+        case .missingRequiredField:
+            return .missingRequiredField(message + " \(localizedDescription)")
+        case .unsupportedEncoding:
+            return .unsupportedEncoding(message + " \(localizedDescription)")
+        case .unrepresentableContent:
+            return .unrepresentableContent(message + " \(localizedDescription)")
+        case .unknownError:
+            return .unknownError(message + " \(localizedDescription)")
         }
     }
 
     public var localizedDescription: String {
         switch self {
-        case .corruptData(let problem): return "Corrupt Data: \(problem)"
-        case .missingRequiredField(let field): return "Missing required field: \(field)"
-        case .unsupportedEncoding(let problem): return "Unsupported encoding: \(problem)"
-        case .unrepresentableContent(let problem): return "Unrepresentable content: \(problem)"
-        case .unknownError(let problem): return "Uknown error: \(problem)"
+        case .corruptData(let problem):
+            return "Corrupt Data: \(problem)"
+        case .missingRequiredField(let field):
+            return "Missing required field: \(field)"
+        case .unsupportedEncoding(let problem):
+            return "Unsupported encoding: \(problem)"
+        case .unrepresentableContent(let problem):
+            return "Unrepresentable content: \(problem)"
+        case .unknownError(let problem):
+            return "Uknown error: \(problem)"
         }
     }
 }

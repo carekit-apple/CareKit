@@ -33,7 +33,6 @@
 import Foundation
 import XCTest
 
-
 class TestTaskEvents: XCTestCase {
 
     func testInitWithNoEvents() {
@@ -329,4 +328,3 @@ private extension ArraySlice {
         return Array(self)
     }
 }
-

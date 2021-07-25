@@ -54,6 +54,7 @@ public struct OCKScheduleElement: Codable, Equatable {
             .seconds(60 * minutes)
         }
 
+        // swiftlint:disable nesting
         private enum CodingKeys: CodingKey {
             case isAllDay
             case seconds
@@ -61,8 +62,10 @@ public struct OCKScheduleElement: Codable, Equatable {
 
         var seconds: TimeInterval {
             switch self {
-            case .allDay: return 0
-            case .seconds(let seconds): return seconds
+            case .allDay:
+                return 0
+            case .seconds(let seconds):
+                return seconds
             }
         }
 

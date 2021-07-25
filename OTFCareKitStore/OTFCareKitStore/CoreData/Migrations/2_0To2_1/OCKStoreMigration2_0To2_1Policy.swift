@@ -31,6 +31,7 @@
 import CoreData
 import Foundation
 
+// swiftlint:disable all
 class OCKStoreMigration2_0To2_1Policy: NSEntityMigrationPolicy {
 
     override func createDestinationInstances(

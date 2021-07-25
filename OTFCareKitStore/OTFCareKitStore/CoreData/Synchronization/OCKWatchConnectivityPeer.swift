@@ -150,7 +150,7 @@ open class OCKWatchConnectivityPeer: OCKRemoteSynchronizable {
             completion(error)
         }
     }
-
+    // swiftlint:disable trailing_closure
     public func chooseConflictResolution(
         conflicts: [OCKEntity], completion: @escaping OCKResultClosure<OCKEntity>) {
 

@@ -51,6 +51,7 @@ class OCKCDClock: NSManagedObject {
         set { vectorClock = newValue.processes.mapValues(Int64.init) }
     }
 
+    // swiftlint:disable force_try
     static func fetch(context: NSManagedObjectContext) -> OCKCDClock {
         let request = NSFetchRequest<OCKCDClock>(entityName: String(describing: OCKCDClock.self))
         request.fetchLimit = 1

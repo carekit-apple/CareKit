@@ -56,6 +56,7 @@ class TestEventAggregators: XCTestCase {
         XCTAssert(result == 2)
     }
 
+    // swiftlint:disable trailing_closure
     func testCustomAggregator() {
         let aggregator = OCKEventAggregator.custom({ events in Double(events.count) })
         let result = aggregator.aggregate(events: makeEvents())

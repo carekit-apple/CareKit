@@ -153,6 +153,7 @@ class TestAdherenceAggregators: XCTestCase {
         XCTAssert(result == .progress(0.5), "Expected 0.5 but got \(result)")
     }
 
+    // swiftlint:disable trailing_closure
     func testCustomAggregator() {
         let events = makeEvents(outcomeValues: [], targetValues: [])
         let aggregator = OCKAdherenceAggregator.custom({ _ in .noTasks })

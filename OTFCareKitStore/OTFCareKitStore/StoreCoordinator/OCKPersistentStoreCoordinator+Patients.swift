@@ -30,7 +30,7 @@
 import Foundation
 
 extension OCKStoreCoordinator {
-
+    // swiftlint:disable trailing_closure
     open func fetchAnyPatients(query: OCKPatientQuery, callbackQueue: DispatchQueue = .main,
                                completion: @escaping OCKResultClosure<[OCKAnyPatient]>) {
         let readableStores = readOnlyPatientStores + patientStores
@@ -77,6 +77,7 @@ extension OCKStoreCoordinator {
         }
     }
 
+    // swiftlint:disable trailing_closure
     private func findStore(forPatients patients: [OCKAnyPatient]) throws -> OCKAnyPatientStore {
         let matchingStores = patients.compactMap { patient in patientStores.first(where: { patientStore($0, shouldHandleWritingPatient: patient) }) }
         guard matchingStores.count == patients.count else { throw OCKStoreError.invalidValue(reason: "No store could be found for some patients.") }

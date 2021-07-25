@@ -32,6 +32,7 @@
 import HealthKit
 import XCTest
 
+// swiftlint:disable all
 class TestStoreTasks: XCTestCase {
 
     var store: OCKStore!

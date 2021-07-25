@@ -129,7 +129,8 @@ UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelega
                 log(.error, "A calendar error occurred, but no delegate was set to forward it to!", error: error)
             }
             calendarDelegate?.weekCalendarPageViewController(self, didEncounterError: error)
-        case .success: break
+        case .success:
+            break
         }
     }
 

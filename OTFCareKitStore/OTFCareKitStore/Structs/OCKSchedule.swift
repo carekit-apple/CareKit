@@ -37,6 +37,7 @@ import Foundation
 /// - Note: A variety of initializers are provided to quickly create commonly used schedules. Used in
 ///         combination with the offset method, building up complex schedules can be performed quite
 ///         efficiently.
+// swiftlint:disable all
 public struct OCKSchedule: Codable, Equatable {
 
     /// The constituent components this schedule was built from.
@@ -121,6 +122,7 @@ public struct OCKSchedule: Codable, Equatable {
         return OCKSchedule(composing: [element])
     }
 
+    // swiftlint:disable function_parameter_count
     /// Create a schedule that happens once per week, every week, at a fixed time.
     public static func weeklyAtTime(weekday: Int, hours: Int, minutes: Int, start: Date, end: Date?, targetValues: [OCKOutcomeValue],
                                     text: String?, duration: OCKScheduleElement.Duration = .hours(1)) -> OCKSchedule {

@@ -238,7 +238,8 @@ public final class OCKHealthKitPassthroughStore {
                     case .failure(let error):
                         os_log("Failed to handle HealthKit update. %{private}@",
                                log: .store, type: .error, error.localizedDescription)
-                    case .success: break
+                    case .success:
+                        break
                     }
                     backgroundCompletionHandler()
                 }

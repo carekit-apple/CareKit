@@ -192,6 +192,7 @@ UIPageViewControllerDataSource, UIPageViewControllerDelegate {
         selectDate(Date(), animated: true)
     }
 
+    // swiftlint:disable trailing_closure
     private func updateScrollViewInsets() {
         pageViewController.viewControllers?.forEach({ child in
             guard let listVC = child as? OCKListViewController else { fatalError("Unexpected type") }

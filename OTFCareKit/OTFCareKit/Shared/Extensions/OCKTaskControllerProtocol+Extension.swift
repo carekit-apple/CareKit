@@ -34,7 +34,6 @@ import SwiftUI
 
 extension OCKTaskController {
 
-
     func toggleActionForFirstEvent(errorHandler: ((Error) -> Void)?) -> () -> Void {
         { self.toggleFirstEvent(errorHandler: errorHandler) }
     }
@@ -42,7 +41,6 @@ extension OCKTaskController {
     func toggleActionForEvent(atIndexPath indexPath: IndexPath, errorHandler: ((Error) -> Void)?) -> () -> Void {
         { self.toggleEvent(atIndexPath: indexPath, errorHandler: errorHandler) }
     }
-
 
     private func toggleFirstEvent(errorHandler: ((Error) -> Void)?) {
         toggleEvent(atIndexPath: .init(row: 0, section: 0), errorHandler: errorHandler)

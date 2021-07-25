@@ -145,6 +145,7 @@ class OCKCartesianCoordinatesLayer: CALayer, OCKSinglePlotable {
     ///
     /// - Parameter location: The coordinate in screen space.
     /// - Returns: The closest coordinate in graph space, and the correspoing screen coordinate.
+    // swiftlint:disable identifier_name
     func closestDataPoint(toViewCoordinates location: CGPoint) -> (viewCoordinates: CGPoint, graphCoordinates: CGPoint)? {
         guard !orderedDataPoints.isEmpty else { return nil }
         let graphCoords = graphCoordinates(at: location)

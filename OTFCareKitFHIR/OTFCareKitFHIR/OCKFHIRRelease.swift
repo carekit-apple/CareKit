@@ -29,6 +29,6 @@
  */
 
 public protocol OCKFHIRRelease {}
-
+// swiftlint:disable type_name
 public struct DSTU2: OCKFHIRRelease {}
 public struct R4: OCKFHIRRelease {}

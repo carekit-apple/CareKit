@@ -270,13 +270,20 @@ private enum OCKContactControllerError: Error, LocalizedError {
 
     var errorDescription: String? {
         switch self {
-        case .nilContact: return "Contact view model is nil"
-        case .invalidAddress(let address): return "Invalid address: \(String(describing: address))"
-        case .invalidPhoneNumber(let phoneNumber): return "Invalid phone number: \(String(describing: phoneNumber))"
-        case .invalidMessageNumber(let messageNumber): return "Invalid message number: \(String(describing: messageNumber))"
-        case .invalidEmail(let email): return "Invalid email: \(String(describing: email))"
-        case .cannotSendMail: return "Cannot send mail"
-        case .cannotSendMessages: return "Cannot send messages"
+        case .nilContact:
+            return "Contact view model is nil"
+        case .invalidAddress(let address):
+            return "Invalid address: \(String(describing: address))"
+        case .invalidPhoneNumber(let phoneNumber):
+            return "Invalid phone number: \(String(describing: phoneNumber))"
+        case .invalidMessageNumber(let messageNumber):
+            return "Invalid message number: \(String(describing: messageNumber))"
+        case .invalidEmail(let email):
+            return "Invalid email: \(String(describing: email))"
+        case .cannotSendMail:
+            return "Cannot send mail"
+        case .cannotSendMessages:
+            return "Cannot send messages"
         }
     }
 }

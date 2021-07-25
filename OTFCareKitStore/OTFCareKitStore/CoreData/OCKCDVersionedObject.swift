@@ -140,6 +140,7 @@ extension OCKCDVersionedObject {
     /// Finds nodes in the version graph where the `next` property is empty.
     /// Only nodes newer than the provided version will be checked, which may result in some nodes being
     /// missed if the version passed in is not the very first version.
+    // swiftlint:disable trailing_closure
     private func tips(
         after version: OCKCDVersionedObject) -> Set<OCKCDVersionedObject> {
 

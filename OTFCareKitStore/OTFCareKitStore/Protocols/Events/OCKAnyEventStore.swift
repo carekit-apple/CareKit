@@ -88,7 +88,8 @@ public extension OCKAnyReadOnlyEventStore {
 
         fetchAnyTasks(query: taskQuery, callbackQueue: callbackQueue) { result in
             switch result {
-            case .failure(let error): completion(.failure(.fetchFailed(reason: "Failed to fetch adherence. \(error.localizedDescription)")))
+            case .failure(let error):
+                completion(.failure(.fetchFailed(reason: "Failed to fetch adherence. \(error.localizedDescription)")))
             case .success(let tasks):
                 let tasks = tasks.filter { $0.impactsAdherence }
                 guard !tasks.isEmpty else {
@@ -134,7 +135,8 @@ public extension OCKAnyReadOnlyEventStore {
         let eventQuery = OCKEventQuery(dateInterval: query.dateInterval)
         fetchAnyEvents(taskID: query.taskID, query: eventQuery, callbackQueue: callbackQueue) { result in
             switch result {
-            case .failure(let error): completion(.failure(.fetchFailed(reason: "Failed to fetch insights. \(error.localizedDescription)")))
+            case .failure(let error):
+                completion(.failure(.fetchFailed(reason: "Failed to fetch insights. \(error.localizedDescription)")))
             case .success(let events):
                 let eventsByDay = self.groupEventsByDate(events: events, after: query.dateInterval.start, before: query.dateInterval.end)
                 let valuesByDay = eventsByDay.map(query.aggregator.aggregate)

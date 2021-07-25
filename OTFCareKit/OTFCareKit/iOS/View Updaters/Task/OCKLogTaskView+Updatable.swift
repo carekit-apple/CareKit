@@ -71,8 +71,10 @@ private extension OCKLogTaskView {
 private extension OCKOutcomeValue {
     var stringValue: String {
         switch type {
-        case .boolean: return booleanValue! ? loc("COMPLETED") : loc("INCOMPLETE")
-        default: return String(describing: value).capitalized
+        case .boolean:
+            return booleanValue! ? loc("COMPLETED") : loc("INCOMPLETE")
+        default:
+            return String(describing: value).capitalized
         }
     }
 }

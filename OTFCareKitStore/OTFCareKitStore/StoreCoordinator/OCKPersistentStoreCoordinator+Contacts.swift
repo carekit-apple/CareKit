@@ -31,7 +31,7 @@
 import Foundation
 
 extension OCKStoreCoordinator {
-
+    // swiftlint:disable trailing_closure
     open func fetchAnyContacts(query: OCKContactQuery, callbackQueue: DispatchQueue = .main,
                                completion: @escaping (Result<[OCKAnyContact], OCKStoreError>) -> Void) {
         let readableStores = readOnlyContactStores + contactStores
@@ -78,6 +78,7 @@ extension OCKStoreCoordinator {
         }
     }
 
+    // swiftlint:disable trailing_closure
     private func findStore(forContacts contacts: [OCKAnyContact]) throws -> OCKAnyContactStore {
         let matchingStores = contacts.compactMap { contact in contactStores.first(where: { contactStore($0, shouldHandleWritingContact: contact) }) }
         guard matchingStores.count == contacts.count else { throw OCKStoreError.invalidValue(reason: "No store could be found for some contacts.") }

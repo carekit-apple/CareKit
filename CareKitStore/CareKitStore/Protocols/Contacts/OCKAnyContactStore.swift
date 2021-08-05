@@ -144,7 +144,6 @@ public extension OCKAnyContactStore {
     }
 }
 
-// MARK: JW
 // MARK: Async methods for OCKAnyReadOnlyContactStore
 
 @available(iOS 15.0, *)
@@ -173,7 +172,6 @@ public extension OCKAnyReadOnlyContactStore {
     }
 }
 
-// MARK: JW
 // MARK: Async methods for OCKAnyContactStore
 
 @available(iOS 15.0, *)

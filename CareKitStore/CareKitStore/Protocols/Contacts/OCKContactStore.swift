@@ -180,7 +180,6 @@ public extension OCKContactStore {
     }
 }
 
-// MARK: JW
 // MARK: Async methods for OCKReadableContactStore
 
 @available(iOS 15.0, *)
@@ -210,7 +209,6 @@ public extension OCKReadableContactStore {
     }
 }
 
-// MARK: JW
 // MARK: Async methods for OCKContactStore
 
 @available(iOS 15.0, *)

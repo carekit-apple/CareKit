@@ -106,7 +106,7 @@ public protocol OCKAnyCarePlanStore: OCKAnyReadOnlyCarePlanStore {
     /// `deleteAnyCarePlan` asynchronously deletes a single care plan from the store.
     ///
     /// - Parameters:
-    ///   - plans: n single care plan to be deleted. The care plans must exist in the store.
+    ///   - plans: A single care plan to be deleted. The care plans must exist in the store.
     ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on the provided callback queue.
     func deleteAnyCarePlan(_ plan: OCKAnyCarePlan, callbackQueue: DispatchQueue, completion: OCKResultClosure<OCKAnyCarePlan>?)
@@ -146,7 +146,6 @@ public extension OCKAnyCarePlanStore {
     }
 }
 
-// MARK: JW
 // MARK: Async methods for OCKAnyReadOnlyCarePlanStore
 
 @available(iOS 15.0, *)
@@ -175,7 +174,6 @@ public extension OCKAnyReadOnlyCarePlanStore {
     }
 }
 
-// MARK: JW
 // MARK: Async methods for OCKAnyCarePlanStore
 
 @available(iOS 15.0, *)

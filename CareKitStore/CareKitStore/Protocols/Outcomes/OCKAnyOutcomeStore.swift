@@ -141,7 +141,6 @@ public extension OCKAnyOutcomeStore {
     }
 }
 
-// MARK: JW
 // MARK: Async methods for OCKAnyReadOnlyOutcomeStore
 
 @available(iOS 15.0, *)
@@ -171,7 +170,6 @@ public extension OCKAnyReadOnlyOutcomeStore {
     }
 }
 
-// MARK: JW
 // MARK: Async methods for OCKAnyOutcomeStore
 
 @available(iOS 15.0, *)

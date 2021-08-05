@@ -164,7 +164,6 @@ public extension OCKAnyReadOnlyEventStore {
     }
 }
 
-// MARK: JW
 // MARK: Async methods for OCKAnyReadOnlyEventStore
 
 @available(iOS 15.0, *)

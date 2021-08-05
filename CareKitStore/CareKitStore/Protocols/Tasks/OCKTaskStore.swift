@@ -180,7 +180,6 @@ public extension OCKTaskStore {
     }
 }
 
-// MARK: JW
 // MARK: Async methods for OCKReadableTaskStore
 
 @available(iOS 15.0, *)
@@ -210,7 +209,6 @@ public extension OCKReadableTaskStore {
     }
 }
 
-// MARK: JW
 // MARK: Async methods for OCKTaskStore
 
 @available(iOS 15.0, *)

@@ -144,7 +144,6 @@ public extension OCKAnyTaskStore {
     }
 }
 
-// MARK: JW
 // MARK: Async methods for OCKAnyReadOnlyTaskStore
 
 @available(iOS 15.0, *)
@@ -174,7 +173,6 @@ public extension OCKAnyReadOnlyTaskStore {
     }
 }
 
-// MARK: JW
 // MARK: Async methods for OCKAnyTaskStore
 
 @available(iOS 15.0, *)

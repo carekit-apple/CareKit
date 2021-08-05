@@ -220,7 +220,6 @@ public extension OCKReadOnlyEventStore where Task: OCKAnyVersionableTask {
     }
 }
 
-// MARK: JW
 // MARK: Async methods for OCKReadOnlyEventStore
 
 @available(iOS 15.0, *)

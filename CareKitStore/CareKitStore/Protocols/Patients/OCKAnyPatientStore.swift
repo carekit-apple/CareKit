@@ -145,7 +145,6 @@ public extension OCKAnyPatientStore {
     }
 }
 
-// MARK: JW
 // MARK: Async methods for OCKAnyReadOnlyPatientStore
 
 @available(iOS 15.0, *)
@@ -174,7 +173,6 @@ public extension OCKAnyReadOnlyPatientStore {
     }
 }
 
-// MARK: JW
 // MARK: Async methods for OCKAnyPatientStore
 
 @available(iOS 15.0, *)

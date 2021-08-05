@@ -175,7 +175,6 @@ public extension OCKOutcomeStore {
     }
 }
 
-// MARK: JW
 // MARK: Async methods for OCKReadableOutcomeStore
 
 @available(iOS 15.0, *)
@@ -203,7 +202,6 @@ public extension OCKReadableOutcomeStore {
     }
 }
 
-// MARK: JW
 // MARK: Async methods for OCKOutcomeStore
 
 @available(iOS 15.0, *)

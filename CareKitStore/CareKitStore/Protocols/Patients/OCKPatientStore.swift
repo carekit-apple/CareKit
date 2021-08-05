@@ -184,7 +184,6 @@ public extension OCKPatientStore {
     }
 }
 
-// MARK: JW
 // MARK: Async methods for OCKReadablePatientStore
 
 @available(iOS 15.0, *)
@@ -214,7 +213,6 @@ public extension OCKReadablePatientStore {
     }
 }
 
-// MARK: JW
 // MARK: Async methods for OCKPatientStore
 
 @available(iOS 15.0, *)

@@ -183,7 +183,8 @@ public extension OCKCarePlanStore {
 
 // MARK: Async methods for OCKReadableCarePlanStore
 
-@available(iOS 15.0, *)
+#if swift(>=5.5)
+@available(iOS 15.0, watchOS 9.0, *)
 public extension OCKReadableCarePlanStore {
 
     /// `fetchCarePlans` asynchronously retrieves an array of care plans from the store.
@@ -209,10 +210,12 @@ public extension OCKReadableCarePlanStore {
         }
     }
 }
+#endif
 
 // MARK: Async methods for OCKCarePlanStore
 
-@available(iOS 15.0, *)
+#if swift(>=5.5)
+@available(iOS 15.0, watchOS 9.0, *)
 public extension OCKCarePlanStore {
 
     /// `addCarePlans` asynchronously adds an array of care plans to the store.
@@ -279,3 +282,4 @@ public extension OCKCarePlanStore {
         }
     }
 }
+#endif

@@ -143,7 +143,8 @@ public extension OCKAnyOutcomeStore {
 
 // MARK: Async methods for OCKAnyReadOnlyOutcomeStore
 
-@available(iOS 15.0, *)
+#if swift(>=5.5)
+@available(iOS 15.0, watchOS 9.0, *)
 public extension OCKAnyReadOnlyOutcomeStore {
 
     /// `fetchAnyOutcomes` asynchronously retrieves an array of outcomes from the store.
@@ -169,10 +170,12 @@ public extension OCKAnyReadOnlyOutcomeStore {
         }
     }
 }
+#endif
 
 // MARK: Async methods for OCKAnyOutcomeStore
 
-@available(iOS 15.0, *)
+#if swift(>=5.5)
+@available(iOS 15.0, watchOS 9.0, *)
 public extension OCKAnyOutcomeStore {
 
     /// `addAnyOutcomes` asynchronously adds an array of outcomes to the store.
@@ -237,3 +240,4 @@ public extension OCKAnyOutcomeStore {
         }
     }
 }
+#endif

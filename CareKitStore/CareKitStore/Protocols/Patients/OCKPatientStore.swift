@@ -186,7 +186,8 @@ public extension OCKPatientStore {
 
 // MARK: Async methods for OCKReadablePatientStore
 
-@available(iOS 15.0, *)
+#if swift(>=5.5)
+@available(iOS 15.0, watchOS 9.0, *)
 public extension OCKReadablePatientStore {
 
     /// `fetchPatients` asynchronously retrieves an array of patients from the store.
@@ -212,10 +213,12 @@ public extension OCKReadablePatientStore {
         }
     }
 }
+#endif
 
 // MARK: Async methods for OCKPatientStore
 
-@available(iOS 15.0, *)
+#if swift(>=5.5)
+@available(iOS 15.0, watchOS 9.0, *)
 public extension OCKPatientStore {
 
     /// `addPatients` asynchronously adds an array of patients to the store.
@@ -280,3 +283,4 @@ public extension OCKPatientStore {
         }
     }
 }
+#endif

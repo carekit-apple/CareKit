@@ -166,7 +166,8 @@ public extension OCKAnyReadOnlyEventStore {
 
 // MARK: Async methods for OCKAnyReadOnlyEventStore
 
-@available(iOS 15.0, *)
+#if swift(>=5.5)
+@available(iOS 15.0, watchOS 9.0, *)
 public extension OCKAnyReadOnlyEventStore {
 
     /// `fetchAnyEvents` retrieves all the occurrences of the specified task in the interval specified by the provided query.
@@ -214,3 +215,4 @@ public extension OCKAnyReadOnlyEventStore {
         }
     }
 }
+#endif

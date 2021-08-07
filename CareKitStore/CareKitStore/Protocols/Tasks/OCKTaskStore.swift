@@ -182,7 +182,8 @@ public extension OCKTaskStore {
 
 // MARK: Async methods for OCKReadableTaskStore
 
-@available(iOS 15.0, *)
+#if swift(>=5.5)
+@available(iOS 15.0, watchOS 9.0, *)
 public extension OCKReadableTaskStore {
 
     /// `fetchTasks` asynchronously retrieves an array of tasks from the store.
@@ -208,10 +209,12 @@ public extension OCKReadableTaskStore {
         }
     }
 }
+#endif
 
 // MARK: Async methods for OCKTaskStore
 
-@available(iOS 15.0, *)
+#if swift(>=5.5)
+@available(iOS 15.0, watchOS 9.0, *)
 public extension OCKTaskStore {
 
     /// `addTasks` asynchronously adds an array of tasks to the store.
@@ -276,3 +279,4 @@ public extension OCKTaskStore {
         }
     }
 }
+#endif

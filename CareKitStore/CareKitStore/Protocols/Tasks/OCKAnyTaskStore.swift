@@ -146,7 +146,8 @@ public extension OCKAnyTaskStore {
 
 // MARK: Async methods for OCKAnyReadOnlyTaskStore
 
-@available(iOS 15.0, *)
+#if swift(>=5.5)
+@available(iOS 15.0, watchOS 9.0, *)
 public extension OCKAnyReadOnlyTaskStore {
 
     /// `fetchAnyTasks` asynchronously retrieves an array of tasks from the store.
@@ -172,10 +173,12 @@ public extension OCKAnyReadOnlyTaskStore {
         }
     }
 }
+#endif
 
 // MARK: Async methods for OCKAnyTaskStore
 
-@available(iOS 15.0, *)
+#if swift(>=5.5)
+@available(iOS 15.0, watchOS 9.0, *)
 public extension OCKAnyTaskStore {
 
     /// `addAnyTasks` asynchronously adds an array of tasks to the store.
@@ -240,3 +243,4 @@ public extension OCKAnyTaskStore {
         }
     }
 }
+#endif

@@ -52,7 +52,6 @@ public protocol OCKAnyReadOnlyPatientStore: OCKAnyResettableStore {
     ///
     /// - Parameters:
     ///   - id: The identifier of the item to be fetched.
-    ///   - query: A query used to constrain the values that will be fetched.
     ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on the provided callback queue.
     func fetchAnyPatient(withID id: String, callbackQueue: DispatchQueue, completion: @escaping OCKResultClosure<OCKAnyPatient>)
@@ -64,7 +63,7 @@ public protocol OCKAnyPatientStore: OCKAnyReadOnlyPatientStore {
     /// `addAnyPatients` asynchronously adds an array of patients to the store.
     ///
     /// - Parameters:
-    ///   - patients: A array of patients to be added to the store.
+    ///   - patients: An array of patients to be added to the store.
     ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on the provided callback queue.
     func addAnyPatients(_ patients: [OCKAnyPatient], callbackQueue: DispatchQueue, completion: OCKResultClosure<[OCKAnyPatient]>?)
@@ -98,7 +97,7 @@ public protocol OCKAnyPatientStore: OCKAnyReadOnlyPatientStore {
     /// `updateAnyPatient` asynchronously updates a single patient in the store.
     ///
     /// - Parameters:
-    ///   - patient: An single patient to be updated. The patients must already exist in the store.
+    ///   - patient: A single patient to be updated. The patients must already exist in the store.
     ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on the provided callback queue.
     func updateAnyPatient(_ patient: OCKAnyPatient, callbackQueue: DispatchQueue, completion: OCKResultClosure<OCKAnyPatient>?)
@@ -106,7 +105,7 @@ public protocol OCKAnyPatientStore: OCKAnyReadOnlyPatientStore {
     /// `deleteAnyPatient` asynchronously deletes a single patient from the store.
     ///
     /// - Parameters:
-    ///   - patients: A single patient to be deleted. The patients must exist in the store.
+    ///   - patient: A single patient to be deleted. The patients must exist in the store.
     ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on the provided callback queue.
     func deleteAnyPatient(_ patient: OCKAnyPatient, callbackQueue: DispatchQueue, completion: OCKResultClosure<OCKAnyPatient>?)
@@ -145,3 +144,107 @@ public extension OCKAnyPatientStore {
             chooseFirst(then: completion, replacementError: .deleteFailed(reason: "Failed to delete patient")))
     }
 }
+
+// MARK: Async methods for OCKAnyReadOnlyPatientStore
+
+// Remove this once Xcode 13 is available on GitHub actions
+// https://github.com/carekit-apple/CareKit/issues/619
+#if swift(>=5.5)
+@available(iOS 15.0, watchOS 9.0, *)
+public extension OCKAnyReadOnlyPatientStore {
+
+    /// `fetchAnyPatients` asynchronously retrieves an array of patients from the store.
+    ///
+    /// - Parameters:
+    ///   - query: A query used to constrain the values that will be fetched.
+    func fetchAnyPatients(query: OCKPatientQuery) async throws -> [OCKAnyPatient] {
+        try await withCheckedThrowingContinuation { continuation in
+            fetchAnyPatients(query: query, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    // MARK: Singular Methods - Implementation Provided
+
+    /// `fetchAnyPatient` asynchronously retrieves a single patient from the store.
+    ///
+    /// - Parameters:
+    ///   - id: The identifier of the item to be fetched.
+    func fetchAnyPatient(withID id: String) async throws -> OCKAnyPatient {
+        try await withCheckedThrowingContinuation { continuation in
+            fetchAnyPatient(withID: id, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+}
+#endif
+
+// MARK: Async methods for OCKAnyPatientStore
+
+// Remove this once Xcode 13 is available on GitHub actions
+// https://github.com/carekit-apple/CareKit/issues/619
+#if swift(>=5.5)
+@available(iOS 15.0, watchOS 9.0, *)
+public extension OCKAnyPatientStore {
+
+    /// `addAnyPatients` asynchronously adds an array of patients to the store.
+    ///
+    /// - Parameters:
+    ///   - patients: An array of patients to be added to the store.
+    func addAnyPatients(_ patients: [OCKAnyPatient]) async throws -> [OCKAnyPatient] {
+        try await withCheckedThrowingContinuation { continuation in
+            addAnyPatients(patients, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    /// `updateAnyPatients` asynchronously updates an array of patients in the store.
+    ///
+    /// - Parameters:
+    ///   - patients: An array of patients to be updated. The patients must already exist in the store.
+    func updateAnyPatients(_ patients: [OCKAnyPatient]) async throws -> [OCKAnyPatient] {
+        try await withCheckedThrowingContinuation { continuation in
+            updateAnyPatients(patients, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    /// `deleteAnyPatients` asynchronously deletes an array of patients from the store.
+    ///
+    /// - Parameters:
+    ///   - patients: An array of patients to be deleted. The patients must exist in the store.
+    func deleteAnyPatients(_ patients: [OCKAnyPatient]) async throws -> [OCKAnyPatient] {
+        try await withCheckedThrowingContinuation { continuation in
+            deleteAnyPatients(patients, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    // MARK: Singular Methods - Implementation Provided
+
+    /// `addAnyPatient` asynchronously adds a single patient to the store.
+    ///
+    /// - Parameters:
+    ///   - patient: A single patient to be added to the store.
+    func addAnyPatient(_ patient: OCKAnyPatient) async throws -> OCKAnyPatient {
+        try await withCheckedThrowingContinuation { continuation in
+            addAnyPatient(patient, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    /// `updateAnyPatient` asynchronously updates a single patient in the store.
+    ///
+    /// - Parameters:
+    ///   - patient: A single patient to be updated. The patients must already exist in the store.
+    func updateAnyPatient(_ patient: OCKAnyPatient) async throws -> OCKAnyPatient {
+        try await withCheckedThrowingContinuation { continuation in
+            updateAnyPatient(patient, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    /// `deleteAnyPatient` asynchronously deletes a single patient from the store.
+    ///
+    /// - Parameters:
+    ///   - patient: A single patient to be deleted. The patients must exist in the store.
+    func deleteAnyPatient(_ patient: OCKAnyPatient) async throws -> OCKAnyPatient {
+        try await withCheckedThrowingContinuation { continuation in
+            deleteAnyPatient(patient, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+}
+#endif

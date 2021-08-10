@@ -51,7 +51,6 @@ public protocol OCKAnyReadOnlyContactStore: OCKAnyResettableStore {
     ///
     /// - Parameters:
     ///   - id: The identifier of the item to be fetched.
-    ///   - query: A query used to constrain the values that will be fetched.
     ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on the provided callback queue.
     func fetchAnyContact(withID id: String, callbackQueue: DispatchQueue, completion: @escaping OCKResultClosure<OCKAnyContact>)
@@ -84,7 +83,7 @@ public protocol OCKAnyContactStore: OCKAnyReadOnlyContactStore {
     ///   - completion: A callback that will fire on the provided callback queue.
     func deleteAnyContacts(_ contacts: [OCKAnyContact], callbackQueue: DispatchQueue, completion: OCKResultClosure<[OCKAnyContact]>?)
 
-    // MARK: Singular Methods - Implementation Privided
+    // MARK: Singular Methods - Implementation Provided
 
     /// `addAnyContact` asynchronously adds a single contact to the store.
     ///
@@ -105,7 +104,7 @@ public protocol OCKAnyContactStore: OCKAnyReadOnlyContactStore {
     /// `deleteAnyContact` asynchronously deletes a single contact from the store.
     ///
     /// - Parameters:
-    ///   - contact: An single contact to be deleted. The contact must exist in the store.
+    ///   - contact: A single contact to be deleted. The contact must exist in the store.
     ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on the provided callback queue.
     func deleteAnyContact(_ contact: OCKAnyContact, callbackQueue: DispatchQueue, completion: OCKResultClosure<OCKAnyContact>?)
@@ -144,3 +143,107 @@ public extension OCKAnyContactStore {
             chooseFirst(then: completion, replacementError: .deleteFailed(reason: "Failed to delete contact")))
     }
 }
+
+// MARK: Async methods for OCKAnyReadOnlyContactStore
+
+// Remove this once Xcode 13 is available on GitHub actions
+// https://github.com/carekit-apple/CareKit/issues/619
+#if swift(>=5.5)
+@available(iOS 15.0, watchOS 9.0, *)
+public extension OCKAnyReadOnlyContactStore {
+
+    /// `fetchAnyContacts` asynchronously retrieves an array of contacts from the store.
+    ///
+    /// - Parameters:
+    ///   - query: A query used to constrain the values that will be fetched.
+    func fetchAnyContacts(query: OCKContactQuery) async throws -> [OCKAnyContact] {
+        try await withCheckedThrowingContinuation { continuation in
+            fetchAnyContacts(query: query, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    // MARK: Singular Methods - Implementation Provided
+
+    /// `fetchAnyContact` asynchronously retrieves a single contact from the store.
+    ///
+    /// - Parameters:
+    ///   - id: The identifier of the item to be fetched.
+    func fetchAnyContact(withID id: String) async throws -> OCKAnyContact {
+        try await withCheckedThrowingContinuation { continuation in
+            fetchAnyContact(withID: id, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+}
+#endif
+
+// MARK: Async methods for OCKAnyContactStore
+
+// Remove this once Xcode 13 is available on GitHub actions
+// https://github.com/carekit-apple/CareKit/issues/619
+#if swift(>=5.5)
+@available(iOS 15.0, watchOS 9.0, *)
+public extension OCKAnyContactStore {
+
+    /// `addAnyContacts` asynchronously adds an array of contacts to the store.
+    ///
+    /// - Parameters:
+    ///   - contacts: An array of contacts to be added to the store.
+    func addAnyContacts(_ contacts: [OCKAnyContact]) async throws -> [OCKAnyContact] {
+        try await withCheckedThrowingContinuation { continuation in
+            addAnyContacts(contacts, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    /// `updateAnyContacts` asynchronously updates an array of contacts in the store.
+    ///
+    /// - Parameters:
+    ///   - contacts: An array of contacts to be updated. The contacts must already exist in the store.
+    func updateAnyContacts(_ contacts: [OCKAnyContact]) async throws -> [OCKAnyContact] {
+        try await withCheckedThrowingContinuation { continuation in
+            updateAnyContacts(contacts, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    /// `deleteAnyContacts` asynchronously deletes an array of contacts from the store.
+    ///
+    /// - Parameters:
+    ///   - contacts: An array of contacts to be deleted. The contacts must exist in the store.
+    func deleteAnyContacts(_ contacts: [OCKAnyContact]) async throws -> [OCKAnyContact] {
+        try await withCheckedThrowingContinuation { continuation in
+            deleteAnyContacts(contacts, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    // MARK: Singular Methods - Implementation Provided
+
+    /// `addAnyContact` asynchronously adds a single contact to the store.
+    ///
+    /// - Parameters:
+    ///   - contact: A single contact to be added to the store.
+    func addAnyContact(_ contact: OCKAnyContact) async throws -> OCKAnyContact {
+        try await withCheckedThrowingContinuation { continuation in
+            addAnyContact(contact, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    /// `updateAnyContact` asynchronously update a single contact in the store.
+    ///
+    /// - Parameters:
+    ///   - contact: A single contact to be updated. The contact must already exist in the store.
+    func updateAnyContact(_ contact: OCKAnyContact) async throws -> OCKAnyContact {
+        try await withCheckedThrowingContinuation { continuation in
+            updateAnyContact(contact, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    /// `deleteAnyContact` asynchronously deletes a single contact from the store.
+    ///
+    /// - Parameters:
+    ///   - contact: A single contact to be deleted. The contact must exist in the store.
+    func deleteAnyContact(_ contact: OCKAnyContact) async throws -> OCKAnyContact {
+        try await withCheckedThrowingContinuation { continuation in
+            deleteAnyContact(contact, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+}
+#endif

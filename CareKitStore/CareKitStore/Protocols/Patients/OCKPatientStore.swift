@@ -183,3 +183,108 @@ public extension OCKPatientStore {
         deletePatients(patients, callbackQueue: callbackQueue) { completion?($0.map { $0.map { $0 as OCKAnyPatient } }) }
     }
 }
+
+// MARK: Async methods for OCKReadablePatientStore
+
+// Remove this once Xcode 13 is available on GitHub actions
+// https://github.com/carekit-apple/CareKit/issues/619
+#if swift(>=5.5)
+@available(iOS 15.0, watchOS 9.0, *)
+public extension OCKReadablePatientStore {
+
+    /// `fetchPatients` asynchronously retrieves an array of patients from the store.
+    ///
+    /// - Parameters:
+    ///   - query: A query used to constrain the values that will be fetched.
+    func fetchPatients(query: OCKPatientQuery) async throws -> [Patient] {
+        try await withCheckedThrowingContinuation { continuation in
+            fetchPatients(query: query, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    // MARK: Singular Methods - Implementation Provided
+
+    /// `fetchPatient` asynchronously fetches a single patient from the store using its user-defined identifier. If a patient with the specified
+    /// identifier does not exist, the completion handler will be called with an error.
+    ///
+    /// - Parameters:
+    ///   - id: The identifier of the item to be fetched.
+    func fetchPatient(withID id: String) async throws -> Patient {
+        try await withCheckedThrowingContinuation { continuation in
+            fetchPatient(withID: id, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+}
+#endif
+
+// MARK: Async methods for OCKPatientStore
+
+// Remove this once Xcode 13 is available on GitHub actions
+// https://github.com/carekit-apple/CareKit/issues/619
+#if swift(>=5.5)
+@available(iOS 15.0, watchOS 9.0, *)
+public extension OCKPatientStore {
+
+    /// `addPatients` asynchronously adds an array of patients to the store.
+    ///
+    /// - Parameters:
+    ///   - patients: An array of patients to be added to the store.
+    func addPatients(_ patients: [Patient]) async throws -> [Patient] {
+        try await withCheckedThrowingContinuation { continuation in
+            addPatients(patients, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    /// `updatePatients` asynchronously updates an array of patients in the store.
+    ///
+    /// - Parameters:
+    ///   - patients: An array of patients to be updated. The patients must already exist in the store.
+    func updatePatients(_ patients: [Patient]) async throws -> [Patient] {
+        try await withCheckedThrowingContinuation { continuation in
+            updatePatients(patients, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    /// `deletePatients` asynchronously deletes an array of patients from the store.
+    ///
+    /// - Parameters:
+    ///   - patients: An array of patients to be deleted. The patients must exist in the store.
+    func deletePatients(_ patients: [Patient]) async throws -> [Patient] {
+        try await withCheckedThrowingContinuation { continuation in
+            deletePatients(patients, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    // MARK: Singular Methods - Implementation Provided
+
+    /// `addPatient` asynchronously adds a patient to the store.
+    ///
+    /// - Parameters:
+    ///   - patient: A patient to be added to the store.
+    func addPatient(_ patient: Patient) async throws -> Patient {
+        try await withCheckedThrowingContinuation { continuation in
+            addPatient(patient, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    /// `updatePatient` asynchronously updates a patient in the store.
+    ///
+    /// - Parameters:
+    ///   - patient: A patient to be updated. The patient must already exist in the store.
+    func updatePatient(_ patient: Patient) async throws -> Patient {
+        try await withCheckedThrowingContinuation { continuation in
+            updatePatient(patient, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    /// `deletePatient` asynchronously deletes a patient from the store.
+    ///
+    /// - Parameters:
+    ///   - patient: A patient to be deleted. The patient must exist in the store.
+    func deletePatient(_ patient: Patient) async throws -> Patient {
+        try await withCheckedThrowingContinuation { continuation in
+            deletePatient(patient, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+}
+#endif

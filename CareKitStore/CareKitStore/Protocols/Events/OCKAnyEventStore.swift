@@ -51,7 +51,7 @@ public protocol OCKAnyReadOnlyEventStore: OCKAnyReadOnlyTaskStore, OCKAnyReadOnl
     /// - Parameter completion: A callback that will fire on the specified queue.
     func fetchAnyEvent(forTask task: OCKAnyTask, occurrence: Int, callbackQueue: DispatchQueue, completion: @escaping OCKResultClosure<OCKAnyEvent>)
 
-    /// `fetchAnyAdherence` retrieves all the events and calculates the percent of tasks completed for every day between two dates.
+    /// `fetchAdherence` retrieves all the events and calculates the percent of tasks completed for every day between two dates.
     ///
     /// The way completion is computed depends on how many `expectedValues` a task has. If it has no expected values,
     /// then having an outcome with at least one value will count as complete. If a task has expected values, completion
@@ -163,3 +163,58 @@ public extension OCKAnyReadOnlyEventStore {
         query.dates().map { date in tasks.map { $0.schedule.exists(onDay: date) }.contains(true) }
     }
 }
+
+// MARK: Async methods for OCKAnyReadOnlyEventStore
+
+// Remove this once Xcode 13 is available on GitHub actions
+// https://github.com/carekit-apple/CareKit/issues/619
+#if swift(>=5.5)
+@available(iOS 15.0, watchOS 9.0, *)
+public extension OCKAnyReadOnlyEventStore {
+
+    /// `fetchAnyEvents` retrieves all the occurrences of the specified task in the interval specified by the provided query.
+    ///
+    /// - Parameters:
+    ///   - taskID: A user-defined unique identifier for the task.
+    ///   - query: A query used to constrain the values that will be fetched.
+    func fetchAnyEvents(taskID: String, query: OCKEventQuery) async throws -> [OCKAnyEvent] {
+        try await withCheckedThrowingContinuation { continuation in
+            fetchAnyEvents(taskID: taskID, query: query, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    /// `fetchAnyEvent` retrieves a single occurrence of the specified task.
+    ///
+    /// - Parameter task: The task for which to retrieve an event.
+    /// - Parameter occurrence: The occurrence index of the desired event.
+    func fetchAnyEvent(forTask task: OCKAnyTask, occurrence: Int) async throws -> OCKAnyEvent {
+        try await withCheckedThrowingContinuation { continuation in
+            fetchAnyEvent(forTask: task, occurrence: occurrence, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    /// `fetchAdherence` retrieves all the events and calculates the percent of tasks completed for every day between two dates.
+    ///
+    /// The way completion is computed depends on how many `expectedValues` a task has. If it has no expected values,
+    /// then having an outcome with at least one value will count as complete. If a task has expected values, completion
+    /// will be computed as ratio of the number of outcome values to the number of expected values.
+    ///
+    /// - Parameters:
+    ///   - query: A query used to constrain the values that will be fetched.
+    func fetchAdherence(query: OCKAdherenceQuery) async throws -> [OCKAdherence] {
+        try await withCheckedThrowingContinuation { continuation in
+            fetchAdherence(query: query, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    /// `fetchInsights` computes a metric for a given task between two dates using the provided closure.
+    ///
+    /// - Parameters:
+    ///   - query: A query used to constrain the values that will be fetched.
+    func fetchInsights(query: OCKInsightQuery) async throws -> [Double] {
+        try await withCheckedThrowingContinuation { continuation in
+            fetchInsights(query: query, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+}
+#endif

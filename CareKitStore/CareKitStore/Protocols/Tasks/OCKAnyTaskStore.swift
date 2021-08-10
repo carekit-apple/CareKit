@@ -52,7 +52,7 @@ public protocol OCKAnyReadOnlyTaskStore: OCKAnyResettableStore {
     /// specified identifier is not found, the completion handler will be called with an error.
     ///
     /// - Parameters:
-    ///   - id: A unique user-defined identifier
+    ///   - id: The identifier of the item to be fetched.
     ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on the provided callback queue.
     func fetchAnyTask(withID id: String, callbackQueue: DispatchQueue,
@@ -99,7 +99,7 @@ public protocol OCKAnyTaskStore: OCKAnyReadOnlyTaskStore {
     /// `updateAnyTask` asynchronously updates a task in the store.
     ///
     /// - Parameters:
-    ///   - contact: A task to be updated. The task must already exist in the store.
+    ///   - task: A task to be updated. The task must already exist in the store.
     ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on the provided callback queue.
     func updateAnyTask(_ task: OCKAnyTask, callbackQueue: DispatchQueue, completion: ((Result<OCKAnyTask, OCKStoreError>) -> Void)?)
@@ -143,3 +143,108 @@ public extension OCKAnyTaskStore {
             chooseFirst(then: completion, replacementError: .deleteFailed(reason: "Failed to delete task")))
     }
 }
+
+// MARK: Async methods for OCKAnyReadOnlyTaskStore
+
+// Remove this once Xcode 13 is available on GitHub actions
+// https://github.com/carekit-apple/CareKit/issues/619
+#if swift(>=5.5)
+@available(iOS 15.0, watchOS 9.0, *)
+public extension OCKAnyReadOnlyTaskStore {
+
+    /// `fetchAnyTasks` asynchronously retrieves an array of tasks from the store.
+    ///
+    /// - Parameters:
+    ///   - query: A query used to constrain the values that will be fetched.
+    func fetchAnyTasks(query: OCKTaskQuery) async throws -> [OCKAnyTask] {
+        try await withCheckedThrowingContinuation { continuation in
+            fetchAnyTasks(query: query, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    // MARK: Singular Methods - Implementation Provided
+
+    /// `fetchAnyTask` asynchronously retrieves an array of tasks from the store using its user-defined unique identifier. If a task with the
+    /// specified identifier is not found, the completion handler will be called with an error.
+    ///
+    /// - Parameters:
+    ///   - id: The identifier of the item to be fetched.
+    func fetchAnyTask(withID id: String) async throws -> OCKAnyTask {
+        try await withCheckedThrowingContinuation { continuation in
+            fetchAnyTask(withID: id, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+}
+#endif
+
+// MARK: Async methods for OCKAnyTaskStore
+
+// Remove this once Xcode 13 is available on GitHub actions
+// https://github.com/carekit-apple/CareKit/issues/619
+#if swift(>=5.5)
+@available(iOS 15.0, watchOS 9.0, *)
+public extension OCKAnyTaskStore {
+
+    /// `addAnyTasks` asynchronously adds an array of tasks to the store.
+    ///
+    /// - Parameters:
+    ///   - tasks: An array of tasks to be added to the store.
+    func addAnyTasks(_ tasks: [OCKAnyTask]) async throws -> [OCKAnyTask] {
+        try await withCheckedThrowingContinuation { continuation in
+            addAnyTasks(tasks, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    /// `updateAnyTasks` asynchronously updates an array of tasks in the store.
+    ///
+    /// - Parameters:
+    ///   - tasks: An array of tasks to be updated. The tasks must already exist in the store.
+    func updateAnyTasks(_ tasks: [OCKAnyTask]) async throws -> [OCKAnyTask] {
+        try await withCheckedThrowingContinuation { continuation in
+            updateAnyTasks(tasks, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    /// `deleteAnyTasks` asynchronously deletes an array of tasks from the store.
+    ///
+    /// - Parameters:
+    ///   - tasks: An array of tasks to be deleted. The tasks must exist in the store.
+    func deleteAnyTasks(_ tasks: [OCKAnyTask]) async throws -> [OCKAnyTask] {
+        try await withCheckedThrowingContinuation { continuation in
+            deleteAnyTasks(tasks, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    // MARK: Singular Methods - Implementation Provided
+
+    /// `addAnyTask` asynchronously adds a task to the store.
+    ///
+    /// - Parameters:
+    ///   - task: A task to be added to the store.
+    func addAnyTask(_ task: OCKAnyTask) async throws -> OCKAnyTask {
+        try await withCheckedThrowingContinuation { continuation in
+            addAnyTask(task, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    /// `updateAnyTask` asynchronously updates a task in the store.
+    ///
+    /// - Parameters:
+    ///   - task: A task to be updated. The task must already exist in the store.
+    func updateAnyTask(_ task: OCKAnyTask) async throws -> OCKAnyTask {
+        try await withCheckedThrowingContinuation { continuation in
+            updateAnyTask(task, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    /// `deleteTask` asynchronously deletes a task from the store.
+    ///
+    /// - Parameters:
+    ///   - task: A task to be deleted. The task must exist in the store.
+    func deleteAnyTask(_ task: OCKAnyTask) async throws -> OCKAnyTask {
+        try await withCheckedThrowingContinuation { continuation in
+            deleteAnyTask(task, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+}
+#endif

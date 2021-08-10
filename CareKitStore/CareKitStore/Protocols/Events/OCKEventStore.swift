@@ -219,3 +219,36 @@ public extension OCKReadOnlyEventStore where Task: OCKAnyVersionableTask {
         return events
     }
 }
+
+// MARK: Async methods for OCKReadOnlyEventStore
+
+// Remove this once Xcode 13 is available on GitHub actions
+// https://github.com/carekit-apple/CareKit/issues/619
+#if swift(>=5.5)
+@available(iOS 15.0, watchOS 9.0, *)
+public extension OCKReadOnlyEventStore {
+
+    /// `fetchEvents` retrieves all the occurrences of the specified task in the interval specified by the provided query.
+    ///
+    /// - Parameters:
+    ///   - taskID: A user-defined unique identifier for the task.
+    ///   - query: A query used to constrain the values that will be fetched.
+    func fetchEvents(taskID id: String, query: OCKEventQuery) async throws -> [Event] {
+        try await withCheckedThrowingContinuation { continuation in
+            fetchEvents(taskID: id, query: query, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    // MARK: Singular Methods - Implementation Provided
+
+    /// `fetchEvent` retrieves a single occurrence of the specified task.
+    ///
+    /// - Parameter task: The task for which to retrieve an event.
+    /// - Parameter occurrence: The occurrence index of the desired event.
+    func fetchEvent(forTask task: Task, occurrence: Int) async throws -> Event {
+        try await withCheckedThrowingContinuation { continuation in
+            fetchEvent(forTask: task, occurrence: occurrence, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+}
+#endif

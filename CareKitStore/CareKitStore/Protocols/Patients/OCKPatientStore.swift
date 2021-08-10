@@ -186,6 +186,8 @@ public extension OCKPatientStore {
 
 // MARK: Async methods for OCKReadablePatientStore
 
+// Remove this once Xcode 13 is available on GitHub actions
+// https://github.com/carekit-apple/CareKit/issues/619
 #if swift(>=5.5)
 @available(iOS 15.0, watchOS 9.0, *)
 public extension OCKReadablePatientStore {
@@ -217,6 +219,8 @@ public extension OCKReadablePatientStore {
 
 // MARK: Async methods for OCKPatientStore
 
+// Remove this once Xcode 13 is available on GitHub actions
+// https://github.com/carekit-apple/CareKit/issues/619
 #if swift(>=5.5)
 @available(iOS 15.0, watchOS 9.0, *)
 public extension OCKPatientStore {

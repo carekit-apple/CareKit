@@ -166,9 +166,6 @@ public extension OCKAnyReadOnlyEventStore {
 
 // MARK: Async methods for OCKAnyReadOnlyEventStore
 
-// Remove this once Xcode 13 is available on GitHub actions
-// https://github.com/carekit-apple/CareKit/issues/619
-#if swift(>=5.5)
 @available(iOS 15.0, watchOS 9.0, *)
 public extension OCKAnyReadOnlyEventStore {
 
@@ -217,4 +214,3 @@ public extension OCKAnyReadOnlyEventStore {
         }
     }
 }
-#endif

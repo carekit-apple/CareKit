@@ -11,16 +11,16 @@ jobs:
         
   test:
     
-    runs-on: macos-latest
+    runs-on: macos-11
   
     strategy:
       matrix:
-        destination: ['platform=iOS\ Simulator,OS=14.4,name=iPhone\ 11\ Pro\ Max']
+        destination: ['platform=iOS\ Simulator,OS=15.0,name=iPhone\ 11\ Pro\ Max']
         scheme: ['CareKit\ iOS', 'CareKitStore\ iOS', 'CareKitUI\ iOS', 'CareKitFHIR']
   
     steps:
       - uses: actions/checkout@v2
       - name: Set Xcode Version
-        run: sudo xcode-select -s /Applications/Xcode_12.4.app
+        run: sudo xcode-select -s /Applications/Xcode_13.0.app
       - name: Build
         run: set -o pipefail && env NSUnbufferedIO=YES xcodebuild -verbose -workspace CKWorkspace.xcworkspace -scheme ${{ matrix.scheme }} -destination ${{ matrix.destination }} build test | xcpretty

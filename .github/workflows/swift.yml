@@ -15,7 +15,7 @@ jobs:
   
     strategy:
       matrix:
-        destination: ['platform=iOS\ Simulator,OS=14.4,name=iPhone\ 11\ Pro\ Max']
+        destination: ['platform=iOS\ Simulator,OS=15.0,name=iPhone\ 11\ Pro\ Max']
         scheme: ['CareKit\ iOS', 'CareKitStore\ iOS', 'CareKitUI\ iOS', 'CareKitFHIR']
   
     steps:

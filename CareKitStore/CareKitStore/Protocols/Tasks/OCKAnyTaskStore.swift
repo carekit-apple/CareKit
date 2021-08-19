@@ -146,9 +146,6 @@ public extension OCKAnyTaskStore {
 
 // MARK: Async methods for OCKAnyReadOnlyTaskStore
 
-// Remove this once Xcode 13 is available on GitHub actions
-// https://github.com/carekit-apple/CareKit/issues/619
-#if swift(>=5.5)
 @available(iOS 15.0, watchOS 9.0, *)
 public extension OCKAnyReadOnlyTaskStore {
 
@@ -175,13 +172,9 @@ public extension OCKAnyReadOnlyTaskStore {
         }
     }
 }
-#endif
 
 // MARK: Async methods for OCKAnyTaskStore
 
-// Remove this once Xcode 13 is available on GitHub actions
-// https://github.com/carekit-apple/CareKit/issues/619
-#if swift(>=5.5)
 @available(iOS 15.0, watchOS 9.0, *)
 public extension OCKAnyTaskStore {
 
@@ -247,4 +240,3 @@ public extension OCKAnyTaskStore {
         }
     }
 }
-#endif

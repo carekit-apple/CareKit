@@ -147,9 +147,6 @@ public extension OCKAnyPatientStore {
 
 // MARK: Async methods for OCKAnyReadOnlyPatientStore
 
-// Remove this once Xcode 13 is available on GitHub actions
-// https://github.com/carekit-apple/CareKit/issues/619
-#if swift(>=5.5)
 @available(iOS 15.0, watchOS 9.0, *)
 public extension OCKAnyReadOnlyPatientStore {
 
@@ -175,13 +172,9 @@ public extension OCKAnyReadOnlyPatientStore {
         }
     }
 }
-#endif
 
 // MARK: Async methods for OCKAnyPatientStore
 
-// Remove this once Xcode 13 is available on GitHub actions
-// https://github.com/carekit-apple/CareKit/issues/619
-#if swift(>=5.5)
 @available(iOS 15.0, watchOS 9.0, *)
 public extension OCKAnyPatientStore {
 
@@ -247,4 +240,3 @@ public extension OCKAnyPatientStore {
         }
     }
 }
-#endif

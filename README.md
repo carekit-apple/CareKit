@@ -49,26 +49,26 @@ The primary CareKit framework codebase supports iOS and requires Xcode 12.0 or n
 
 ### Installation (Option One): SPM
 
-CareKit can be installed via SPM. Create a new Xcode project and navigate to `File > Swift Packages > Add Package Dependency`. Enter the url `https://github.com/carekit-apple/CareKit` and tap `Next`. Choose the master branch, and on the next screen, check off the packages as needed.
+CareKit can be installed via SPM. Create a new Xcode project and navigate to `File > Swift Packages > Add Package Dependency`. Enter the url `https://github.com/carekit-apple/CareKit` and tap `Next`. Choose the `main` branch, and on the next screen, check off the packages as needed.
 
 To add localized strings to your project, add the strings file to your project: [English Strings](CareKitUI/CareKitUI/Supporting%20Files/Localization/en.lproj)
 
 ### Installation (Option Two): Embedded Framework
 
-Download the project source code and drag in CareKit.xcodeproj, CareKitUI.xcodeproj, and CareKistStore.xcodeproj as needed. Then, embed the framework as a dynamic framework in your app, by adding it to the Embedded Binaries section of the General pane for your target as shown in the figure below.
+Download the project source code and drag in CareKit.xcodeproj, CareKitUI.xcodeproj, and CareKitStore.xcodeproj as needed. Then, embed the framework as a dynamic framework in your app, by adding it to the Embedded Binaries section of the General pane for your target as shown in the figure below.
 
 <img width="1000" alt="embedded-framework" src="https://user-images.githubusercontent.com/51756298/69107216-7fa7ea00-0a25-11ea-89ef-9b8724728e54.png">
 
 ### OCKCatalog App <a name="ockcatalog-app"></a>
 
-The included catalog app demonstrates the different modules that are available in CareKit: [OCKCatalog](OCKCatalog)
+The included catalog app demonstrates the different modules that are available in CareKit: [OCKCatalog](https://github.com/carekit-apple/CareKitCatalog)
 
 ![ockcatalog](https://user-images.githubusercontent.com/51756298/69096972-66de0b00-0a0a-11ea-96f0-4605d04ab396.gif)
 
 
 ### OCKSampleApp <a name="ocksample-app"></a>
 
-The included sample app demonstrates a fully constructed CareKit app: [OCKSample](OCKSample)
+The included sample app demonstrates a fully constructed CareKit app: [OCKSample](https://github.com/carekit-apple/CareKitSample)
 
 ![ocksample](https://user-images.githubusercontent.com/51756298/69107801-7586eb00-0a27-11ea-8aa2-eca687602c76.gif)
 

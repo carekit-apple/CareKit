@@ -52,7 +52,6 @@ public protocol OCKAnyReadOnlyPatientStore: OCKAnyResettableStore {
     ///
     /// - Parameters:
     ///   - id: The identifier of the item to be fetched.
-    ///   - query: A query used to constrain the values that will be fetched.
     ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on the provided callback queue.
     func fetchAnyPatient(withID id: String, callbackQueue: DispatchQueue, completion: @escaping OCKResultClosure<OCKAnyPatient>)
@@ -64,7 +63,7 @@ public protocol OCKAnyPatientStore: OCKAnyReadOnlyPatientStore {
     /// `addAnyPatients` asynchronously adds an array of patients to the store.
     ///
     /// - Parameters:
-    ///   - patients: A array of patients to be added to the store.
+    ///   - patients: An array of patients to be added to the store.
     ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on the provided callback queue.
     func addAnyPatients(_ patients: [OCKAnyPatient], callbackQueue: DispatchQueue, completion: OCKResultClosure<[OCKAnyPatient]>?)
@@ -98,7 +97,7 @@ public protocol OCKAnyPatientStore: OCKAnyReadOnlyPatientStore {
     /// `updateAnyPatient` asynchronously updates a single patient in the store.
     ///
     /// - Parameters:
-    ///   - patient: An single patient to be updated. The patients must already exist in the store.
+    ///   - patient: A single patient to be updated. The patients must already exist in the store.
     ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on the provided callback queue.
     func updateAnyPatient(_ patient: OCKAnyPatient, callbackQueue: DispatchQueue, completion: OCKResultClosure<OCKAnyPatient>?)
@@ -106,7 +105,7 @@ public protocol OCKAnyPatientStore: OCKAnyReadOnlyPatientStore {
     /// `deleteAnyPatient` asynchronously deletes a single patient from the store.
     ///
     /// - Parameters:
-    ///   - patients: A single patient to be deleted. The patients must exist in the store.
+    ///   - patient: A single patient to be deleted. The patients must exist in the store.
     ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on the provided callback queue.
     func deleteAnyPatient(_ patient: OCKAnyPatient, callbackQueue: DispatchQueue, completion: OCKResultClosure<OCKAnyPatient>?)

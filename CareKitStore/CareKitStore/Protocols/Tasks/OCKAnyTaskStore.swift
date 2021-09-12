@@ -52,7 +52,7 @@ public protocol OCKAnyReadOnlyTaskStore: OCKAnyResettableStore {
     /// specified identifier is not found, the completion handler will be called with an error.
     ///
     /// - Parameters:
-    ///   - id: A unique user-defined identifier
+    ///   - id: The identifier of the item to be fetched.
     ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on the provided callback queue.
     func fetchAnyTask(withID id: String, callbackQueue: DispatchQueue,
@@ -99,7 +99,7 @@ public protocol OCKAnyTaskStore: OCKAnyReadOnlyTaskStore {
     /// `updateAnyTask` asynchronously updates a task in the store.
     ///
     /// - Parameters:
-    ///   - contact: A task to be updated. The task must already exist in the store.
+    ///   - task: A task to be updated. The task must already exist in the store.
     ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on the provided callback queue.
     func updateAnyTask(_ task: OCKAnyTask, callbackQueue: DispatchQueue, completion: ((Result<OCKAnyTask, OCKStoreError>) -> Void)?)

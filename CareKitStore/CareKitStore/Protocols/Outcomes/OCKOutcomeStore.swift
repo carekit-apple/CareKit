@@ -66,7 +66,7 @@ public protocol OCKOutcomeStore: OCKAnyOutcomeStore & OCKReadableOutcomeStore {
     /// `updateOutcomes` asynchronously updates an array of outcomes in the store.
     ///
     /// - Parameters:
-    ///   - contacts: An array of outcomes to be updated. The outcomes must already exist in the store.
+    ///   - outcomes: An array of outcomes to be updated. The outcomes must already exist in the store.
     ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on the provided callback queue.
     func updateOutcomes(_ outcomes: [Outcome], callbackQueue: DispatchQueue, completion: OCKResultClosure<[Outcome]>?)

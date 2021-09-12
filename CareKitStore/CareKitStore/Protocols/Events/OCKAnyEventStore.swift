@@ -51,7 +51,7 @@ public protocol OCKAnyReadOnlyEventStore: OCKAnyReadOnlyTaskStore, OCKAnyReadOnl
     /// - Parameter completion: A callback that will fire on the specified queue.
     func fetchAnyEvent(forTask task: OCKAnyTask, occurrence: Int, callbackQueue: DispatchQueue, completion: @escaping OCKResultClosure<OCKAnyEvent>)
 
-    /// `fetchAnyAdherence` retrieves all the events and calculates the percent of tasks completed for every day between two dates.
+    /// `fetchAdherence` retrieves all the events and calculates the percent of tasks completed for every day between two dates.
     ///
     /// The way completion is computed depends on how many `expectedValues` a task has. If it has no expected values,
     /// then having an outcome with at least one value will count as complete. If a task has expected values, completion
@@ -79,7 +79,7 @@ public protocol OCKAnyEventStore: OCKAnyReadOnlyEventStore, OCKAnyTaskStore, OCK
 
 // MARK: Adherence and Insights Methods for OCKAnyReadOnlyEventStore
 
-public extension OCKAnyReadOnlyEventStore where Self: OCKAnyReadOnlyTaskStore, Self: OCKAnyReadOnlyOutcomeStore {
+public extension OCKAnyReadOnlyEventStore {
 
     func fetchAdherence(query: OCKAdherenceQuery, callbackQueue: DispatchQueue = .main,
                         completion: @escaping OCKResultClosure<[OCKAdherence]>) {

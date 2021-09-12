@@ -60,7 +60,7 @@ public protocol OCKAnyReadOnlyOutcomeStore: OCKAnyResettableStore {
 
 public protocol OCKAnyOutcomeStore: OCKAnyReadOnlyOutcomeStore {
 
-    /// `addOutcomes` asynchronously adds an array of outcomes to the store.
+    /// `addAnyOutcomes` asynchronously adds an array of outcomes to the store.
     ///
     /// - Parameters:
     ///   - outcomes: An array of outcomes to be added to the store.
@@ -68,7 +68,7 @@ public protocol OCKAnyOutcomeStore: OCKAnyReadOnlyOutcomeStore {
     ///   - completion: A callback that will fire on the provided callback queue.
     func addAnyOutcomes(_ outcomes: [OCKAnyOutcome], callbackQueue: DispatchQueue, completion: OCKResultClosure<[OCKAnyOutcome]>?)
 
-    /// `updateOutcomes` asynchronously updates an array of outcomes in the store.
+    /// `updateAnyOutcomes` asynchronously updates an array of outcomes in the store.
     ///
     /// - Parameters:
     ///   - contacts: An array of outcomes to be updated. The outcomes must already exist in the store.
@@ -76,7 +76,7 @@ public protocol OCKAnyOutcomeStore: OCKAnyReadOnlyOutcomeStore {
     ///   - completion: A callback that will fire on the provided callback queue.
     func updateAnyOutcomes(_ outcomes: [OCKAnyOutcome], callbackQueue: DispatchQueue, completion: OCKResultClosure<[OCKAnyOutcome]>?)
 
-    /// `deleteOutcomes` asynchronously deletes an array of outcomes from the store.
+    /// `deleteAnyOutcomes` asynchronously deletes an array of outcomes from the store.
     ///
     /// - Parameters:
     ///   - outcomes: An array of outcomes to be deleted. The outcomes must exist in the store.
@@ -86,7 +86,7 @@ public protocol OCKAnyOutcomeStore: OCKAnyReadOnlyOutcomeStore {
 
     // MARK: Singular Methods - Implementation Provided
 
-    /// `addOutcome` asynchronously adds an outcome to the store.
+    /// `addAnyOutcome` asynchronously adds an outcome to the store.
     ///
     /// - Parameters:
     ///   - outcome: An outcome to be added to the store.
@@ -94,7 +94,7 @@ public protocol OCKAnyOutcomeStore: OCKAnyReadOnlyOutcomeStore {
     ///   - completion: A callback that will fire on the provided callback queue.
     func addAnyOutcome(_ outcome: OCKAnyOutcome, callbackQueue: DispatchQueue, completion: OCKResultClosure<OCKAnyOutcome>?)
 
-    /// `updateOutcome` asynchronously updates an outcome in the store.
+    /// `updateAnyOutcome` asynchronously updates an outcome in the store.
     ///
     /// - Parameters:
     ///   - outcome: An outcome to be updated. The outcome must already exist in the store.
@@ -102,7 +102,7 @@ public protocol OCKAnyOutcomeStore: OCKAnyReadOnlyOutcomeStore {
     ///   - completion: A callback that will fire on the provided callback queue.
     func updateAnyOutcome(_ outcome: OCKAnyOutcome, callbackQueue: DispatchQueue, completion: OCKResultClosure<OCKAnyOutcome>?)
 
-    /// `deleteOutcome` asynchronously deletes an outcome from the store.
+    /// `deleteAnyOutcome` asynchronously deletes an outcome from the store.
     ///
     /// - Parameters:
     ///   - outcome: An outcome to be deleted. The outcome must exist in the store.

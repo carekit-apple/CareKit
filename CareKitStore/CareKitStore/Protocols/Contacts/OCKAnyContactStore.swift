@@ -51,7 +51,6 @@ public protocol OCKAnyReadOnlyContactStore: OCKAnyResettableStore {
     ///
     /// - Parameters:
     ///   - id: The identifier of the item to be fetched.
-    ///   - query: A query used to constrain the values that will be fetched.
     ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on the provided callback queue.
     func fetchAnyContact(withID id: String, callbackQueue: DispatchQueue, completion: @escaping OCKResultClosure<OCKAnyContact>)
@@ -84,7 +83,7 @@ public protocol OCKAnyContactStore: OCKAnyReadOnlyContactStore {
     ///   - completion: A callback that will fire on the provided callback queue.
     func deleteAnyContacts(_ contacts: [OCKAnyContact], callbackQueue: DispatchQueue, completion: OCKResultClosure<[OCKAnyContact]>?)
 
-    // MARK: Singular Methods - Implementation Privided
+    // MARK: Singular Methods - Implementation Provided
 
     /// `addAnyContact` asynchronously adds a single contact to the store.
     ///
@@ -105,7 +104,7 @@ public protocol OCKAnyContactStore: OCKAnyReadOnlyContactStore {
     /// `deleteAnyContact` asynchronously deletes a single contact from the store.
     ///
     /// - Parameters:
-    ///   - contact: An single contact to be deleted. The contact must exist in the store.
+    ///   - contact: A single contact to be deleted. The contact must exist in the store.
     ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on the provided callback queue.
     func deleteAnyContact(_ contact: OCKAnyContact, callbackQueue: DispatchQueue, completion: OCKResultClosure<OCKAnyContact>?)

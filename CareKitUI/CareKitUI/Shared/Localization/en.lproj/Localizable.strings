@@ -30,6 +30,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 "ADDRESS" = "Address";
 "ANNOUNCE_EVENT_DELETED" = "Logged event was deleted";
+"ANYTIME" = "Anytime";
+"BEGIN" = "Begin";
 "CANCEL" = "Cancel";
 "CALL" = "Call";
 "CLOSE" = "Close";
@@ -44,6 +46,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 "DOUBLE_TAP_TO_REMOVE_EVENT" = "Double-tap to removed logged event";
 "EMAIL" = "E-mail";
 "EVENT" = "Event";
+"FROM" = "from";
 "GOAL" = "Goal";
 "HIGH" = "High";
 "INCOMPLETE" = "Incomplete";
@@ -56,12 +59,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 "NO_DATA" = "No Data";
 "NO_TASKS" = "No Tasks";
 "NO_EVENTS" = "No Events";
+"ON" = "on";
 "PROGRESS" = "Progress";
 "SEARCH" = "Search";
 "SELECTED" = "Selected";
 "TASKS" = "Tasks";
 "THREE_FINGER_SWIPE_DAY" = "Three-finger swipe to go to next or previous day";
 "THREE_FINGER_SWIPE_WEEK" = "Three-finger swipe to go to next or previous week";
+"TO" = "to";
 "TODAY" = "Today";
 
 

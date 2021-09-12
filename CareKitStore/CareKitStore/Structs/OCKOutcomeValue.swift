@@ -60,6 +60,9 @@ public struct OCKOutcomeValue: Codable, Equatable, CustomStringConvertible {
         lhs.kind == rhs.kind
     }
 
+    /// The value was entered by user
+    public var wasUserEntered: Bool = false
+    
     /// An optional property that can be used to specify what kind of value this is (e.g. blood pressure, qualitative stress, weight)
     public var kind: String?
 

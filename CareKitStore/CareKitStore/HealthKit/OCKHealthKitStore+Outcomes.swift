@@ -169,7 +169,7 @@ public extension OCKHealthKitPassthroughStore {
                 let outcomes = samples.enumerated().compactMap { index, sample -> OCKHealthKitOutcome? in
                     guard !sample.values.isEmpty else { return nil } // Don't return an outcome for events where no HealthKit values exist.
                     var outcomeValues: [OCKOutcomeValue] = []
-                    if let mapper = self?.samplesToOutcomesValueMapper {
+                    if let mapper = self?.samplesToOutcomesValueMapper, !sample.samples.isEmpty {
                         outcomeValues.append(contentsOf: mapper(sample.samples, task))
                     } else {
                         outcomeValues = sample.values.map { OCKOutcomeValue($0, units: task.healthKitLinkage.unit.unitString) }

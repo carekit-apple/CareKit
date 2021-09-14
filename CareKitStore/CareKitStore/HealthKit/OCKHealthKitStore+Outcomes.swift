@@ -172,7 +172,11 @@ public extension OCKHealthKitPassthroughStore {
                     if let mapper = self?.samplesToOutcomesValueMapper, !sample.samples.isEmpty {
                         outcomeValues.append(contentsOf: mapper(sample.samples, task))
                     } else {
-                        outcomeValues = sample.values.map { OCKOutcomeValue($0, units: task.healthKitLinkage.unit.unitString) }
+                        outcomeValues = sample.values.map {
+                            task.healthKitLinkage.quantityIdentifier == .stepCount
+                                ? OCKOutcomeValue(Int($0), units: task.healthKitLinkage.unit.unitString)
+                                : OCKOutcomeValue($0, units: task.healthKitLinkage.unit.unitString)
+                        }
                     }
                     guard !outcomeValues.isEmpty else { return nil }
                     let correspondingEvent = events[index]

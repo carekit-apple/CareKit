@@ -180,3 +180,102 @@ public extension OCKCarePlanStore {
         deleteCarePlans(plans, callbackQueue: callbackQueue) { completion?($0.map { $0.map { $0 as OCKAnyCarePlan } }) }
     }
 }
+
+// MARK: Async methods for OCKReadableCarePlanStore
+
+@available(iOS 15.0, watchOS 9.0, *)
+public extension OCKReadableCarePlanStore {
+
+    /// `fetchCarePlans` asynchronously retrieves an array of care plans from the store.
+    ///
+    /// - Parameters:
+    ///   - query: A query used to constrain the values that will be fetched.
+    func fetchCarePlans(query: OCKCarePlanQuery) async throws -> [Plan] {
+        try await withCheckedThrowingContinuation { continuation in
+            fetchCarePlans(query: query, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    // MARK: Singular Methods - Implementation Provided
+
+    /// `fetchCarePlan` asynchronously retrieves a care plan from the store using its user-defined unique identifier. If a care plan with the
+    /// specified identifier is not found, the completion handler will be called with an error.
+    ///
+    /// - Parameters:
+    ///   - id: The identifier of the item to be fetched.
+    func fetchCarePlan(withID id: String) async throws -> Plan {
+        try await withCheckedThrowingContinuation { continuation in
+            fetchCarePlan(withID: id, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+}
+
+// MARK: Async methods for OCKCarePlanStore
+
+@available(iOS 15.0, watchOS 9.0, *)
+public extension OCKCarePlanStore {
+
+    /// `addCarePlans` asynchronously adds an array of care plans to the store.
+    ///
+    /// - Parameters:
+    ///   - plans: An array of plans to be added to the store.
+    func addCarePlans(_ plans: [Plan]) async throws -> [Plan] {
+        try await withCheckedThrowingContinuation { continuation in
+            addCarePlans(plans, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    /// `updateCarePlans` asynchronously updates an array of care plans in the store.
+    ///
+    /// - Parameters:
+    ///   - plans: An array of care plans to be updated. The care plans must already exist in the store.
+    func updateCarePlans(_ plans: [Plan]) async throws -> [Plan] {
+        try await withCheckedThrowingContinuation { continuation in
+            updateCarePlans(plans, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    /// `deleteCarePlans` asynchronously deletes an array of care plans from the store.
+    ///
+    /// - Parameters:
+    ///   - plans: An array of care plans to be deleted. The care plans must exist in the store.
+    func deleteCarePlans(_ plans: [Plan]) async throws -> [Plan] {
+        try await withCheckedThrowingContinuation { continuation in
+            deleteCarePlans(plans, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    // MARK: Singular Methods - Implementation Provided
+
+    /// `addCarePlan` asynchronously adds a care plans to the store.
+    ///
+    /// - Parameters:
+    ///   - plan: A care plan to be added to the store.
+    func addCarePlan(_ plan: Plan) async throws -> Plan {
+        try await withCheckedThrowingContinuation { continuation in
+            addCarePlan(plan, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    /// `updateCarePlan` asynchronously updates a care plan in the store.
+    ///
+    /// - Parameters:
+    ///   - plan: A care plan to be updated. The care plan must already exist in the store.
+    ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
+    ///   - completion: A callback that will fire on the provided callback queue.
+    func updateCarePlan(_ plan: Plan) async throws -> Plan {
+        try await withCheckedThrowingContinuation { continuation in
+            updateCarePlan(plan, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    /// `deleteCarePlan` asynchronously deletes a care plan from the store.
+    ///
+    /// - Parameters:
+    ///   - plan: A care plan to be deleted. The care plan must exist in the store.
+    func deleteCarePlan(_ plan: Plan) async throws -> Plan {
+        try await withCheckedThrowingContinuation { continuation in
+            deleteCarePlan(plan, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+}

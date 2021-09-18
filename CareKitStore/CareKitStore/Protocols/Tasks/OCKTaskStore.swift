@@ -179,3 +179,100 @@ public extension OCKTaskStore {
         deleteTasks(tasks, callbackQueue: callbackQueue) { completion?($0.map { $0.map { $0 as OCKAnyTask } }) }
     }
 }
+
+// MARK: Async methods for OCKReadableTaskStore
+
+@available(iOS 15.0, watchOS 9.0, *)
+public extension OCKReadableTaskStore {
+
+    /// `fetchTasks` asynchronously retrieves an array of tasks from the store.
+    ///
+    /// - Parameters:
+    ///   - query: A query used to constrain the values that will be fetched.
+    func fetchTasks(query: OCKTaskQuery) async throws -> [Task] {
+        try await withCheckedThrowingContinuation { continuation in
+            fetchTasks(query: query, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    // MARK: Singular Methods - Implementation Provided
+
+    /// `fetchTask` asynchronously retrieves an array of tasks from the store using its user-defined unique identifier. If a task with the
+    /// specified identifier is not found, the completion handler will be called with an error.
+    ///
+    /// - Parameters:
+    ///   - id: The identifier of the item to be fetched.
+    func fetchTask(withID id: String) async throws -> Task {
+        try await withCheckedThrowingContinuation { continuation in
+            fetchTask(withID: id, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+}
+
+// MARK: Async methods for OCKTaskStore
+
+@available(iOS 15.0, watchOS 9.0, *)
+public extension OCKTaskStore {
+
+    /// `addTasks` asynchronously adds an array of tasks to the store.
+    ///
+    /// - Parameters:
+    ///   - tasks: An array of tasks to be added to the store.
+    func addTasks(_ tasks: [Task]) async throws -> [Task] {
+        try await withCheckedThrowingContinuation { continuation in
+            addTasks(tasks, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    /// `updateTasks` asynchronously updates an array of tasks in the store.
+    ///
+    /// - Parameters:
+    ///   - tasks: An array of tasks to be updated. The tasks must already exist in the store.
+    func updateTasks(_ tasks: [Task]) async throws -> [Task] {
+        try await withCheckedThrowingContinuation { continuation in
+            updateTasks(tasks, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    /// `deleteTasks` asynchronously deletes an array of tasks from the store.
+    ///
+    /// - Parameters:
+    ///   - tasks: An array of tasks to be deleted. The tasks must exist in the store.
+    func deleteTasks(_ tasks: [Task]) async throws -> [Task] {
+        try await withCheckedThrowingContinuation { continuation in
+            deleteTasks(tasks, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    // MARK: Singular Methods - Implementation Provided
+
+    /// `addTask` asynchronously adds a task to the store.
+    ///
+    /// - Parameters:
+    ///   - task: A task to be added to the store.
+    func addTask(_ task: Task) async throws -> Task {
+        try await withCheckedThrowingContinuation { continuation in
+            addTask(task, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    /// `updateTask` asynchronously updates a task in the store.
+    ///
+    /// - Parameters:
+    ///   - task: A task to be updated. The task must already exist in the store.
+    func updateTask(_ task: Task) async throws -> Task {
+        try await withCheckedThrowingContinuation { continuation in
+            updateTask(task, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    /// `deleteTask` asynchronously deletes a task from the store.
+    ///
+    /// - Parameters:
+    ///   - task: A task to be deleted. The task must exist in the store.
+    func deleteTask(_ task: Task) async throws -> Task {
+        try await withCheckedThrowingContinuation { continuation in
+            deleteTask(task, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+}

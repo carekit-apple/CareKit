@@ -127,6 +127,7 @@ class OCKHealthKitProxy {
         let group = DispatchGroup()
         var values = dateRanges.map({ QueryResult(dateRange: $0, values: [], samples: []) })
         var fetchError: Error?
+
         for (index, range) in dateRanges.enumerated() {
             let predicate = HKQuery.predicateForSamples(withStart: range.start, end: range.end, options: [.strictStartDate])
             let sorting = NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: false)

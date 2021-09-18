@@ -145,3 +145,99 @@ public extension OCKAnyCarePlanStore {
             chooseFirst(then: completion, replacementError: .deleteFailed(reason: "Failed to delete care plan")))
     }
 }
+
+// MARK: Async methods for OCKAnyReadOnlyCarePlanStore
+
+@available(iOS 15.0, watchOS 9.0, *)
+public extension OCKAnyReadOnlyCarePlanStore {
+
+    /// `fetchAnyCarePlans` asynchronously retrieves an array of care plans from the store.
+    ///
+    /// - Parameters:
+    ///   - query: A query used to constrain the values that will be fetched.
+    func fetchAnyCarePlans(query: OCKCarePlanQuery) async throws -> [OCKAnyCarePlan] {
+        try await withCheckedThrowingContinuation { continuation in
+            fetchAnyCarePlans(query: query, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    // MARK: Singular Methods - Implementation Provided
+
+    /// `fetchAnyCarePlan` asynchronously retrieves a single care plans from the store.
+    ///
+    /// - Parameters:
+    ///   - id: The identifier of the item to be fetched.
+    func fetchAnyCarePlan(withID id: String) async throws -> OCKAnyCarePlan {
+        try await withCheckedThrowingContinuation { continuation in
+            fetchAnyCarePlan(withID: id, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+}
+
+// MARK: Async methods for OCKAnyCarePlanStore
+
+@available(iOS 15.0, watchOS 9.0, *)
+public extension OCKAnyCarePlanStore {
+
+    /// `addAnyCarePlans` asynchronously adds an array of care plans to the store.
+    ///
+    /// - Parameters:
+    ///   - plans: An array of plans to be added to the store.
+    func addAnyCarePlans(_ plans: [OCKAnyCarePlan]) async throws -> [OCKAnyCarePlan] {
+        try await withCheckedThrowingContinuation { continuation in
+            addAnyCarePlans(plans, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    /// `updateAnyCarePlans` asynchronously updates an array of care plans in the store.
+    ///
+    /// - Parameters:
+    ///   - plans: An array of care plans to be updated. The care plans must already exist in the store.
+    func updateAnyCarePlans(_ plans: [OCKAnyCarePlan]) async throws -> [OCKAnyCarePlan] {
+        try await withCheckedThrowingContinuation { continuation in
+            updateAnyCarePlans(plans, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    /// `deleteAnyCarePlans` asynchronously deletes an array of care plans from the store.
+    ///
+    /// - Parameters:
+    ///   - plans: An array of care plans to be deleted. The care plans must exist in the store.
+    func deleteAnyCarePlans(_ plans: [OCKAnyCarePlan]) async throws -> [OCKAnyCarePlan] {
+        try await withCheckedThrowingContinuation { continuation in
+            deleteAnyCarePlans(plans, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    // MARK: Singular Methods - Implementation Provided
+
+    /// `addAnyCarePlan` asynchronously adds a single care plan to the store.
+    ///
+    /// - Parameters:
+    ///   - plan: A single plan to be added to the store.
+    func addAnyCarePlan(_ plan: OCKAnyCarePlan) async throws -> OCKAnyCarePlan {
+        try await withCheckedThrowingContinuation { continuation in
+            addAnyCarePlan(plan, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    /// `updateAnyCarePlan` asynchronously updates a single care plan in the store.
+    ///
+    /// - Parameters:
+    ///   - plan: A single care plan to be updated. The care plans must already exist in the store.
+    func updateAnyCarePlan(_ plan: OCKAnyCarePlan) async throws -> OCKAnyCarePlan {
+        try await withCheckedThrowingContinuation { continuation in
+            updateAnyCarePlan(plan, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    /// `deleteAnyCarePlan` asynchronously deletes a single care plan from the store.
+    ///
+    /// - Parameters:
+    ///   - plan: A single care plan to be deleted. The care plans must exist in the store.
+    func deleteAnyCarePlan(_ plan: OCKAnyCarePlan) async throws -> OCKAnyCarePlan {
+        try await withCheckedThrowingContinuation { continuation in
+            deleteAnyCarePlan(plan, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+}

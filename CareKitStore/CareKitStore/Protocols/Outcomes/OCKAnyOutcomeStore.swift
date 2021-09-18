@@ -140,3 +140,100 @@ public extension OCKAnyOutcomeStore {
             chooseFirst(then: completion, replacementError: .deleteFailed(reason: "Failed to delete outcome")))
     }
 }
+
+// MARK: Async methods for OCKAnyReadOnlyOutcomeStore
+
+@available(iOS 15.0, watchOS 9.0, *)
+public extension OCKAnyReadOnlyOutcomeStore {
+
+    /// `fetchAnyOutcomes` asynchronously retrieves an array of outcomes from the store.
+    ///
+    /// - Parameters:
+    ///   - query: A query used to constrain the values that will be fetched.
+    func fetchAnyOutcomes(query: OCKOutcomeQuery) async throws -> [OCKAnyOutcome] {
+        try await withCheckedThrowingContinuation { continuation in
+            fetchAnyOutcomes(query: query, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    // MARK: Singular Methods - Implementation Provided
+
+    /// `fetchAnyOutcome` asynchronously retrieves a single outcome from the store. If more than one outcome matches the query, only the first
+    /// will be returned. If no matching outcomes exist, the completion handler will be called with an error.
+    ///
+    /// - Parameters:
+    ///   - query: A query used to constrain the values that will be fetched.
+    func fetchAnyOutcome(query: OCKOutcomeQuery) async throws -> OCKAnyOutcome {
+        try await withCheckedThrowingContinuation { continuation in
+            fetchAnyOutcome(query: query, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+}
+
+// MARK: Async methods for OCKAnyOutcomeStore
+
+@available(iOS 15.0, watchOS 9.0, *)
+public extension OCKAnyOutcomeStore {
+
+    /// `addAnyOutcomes` asynchronously adds an array of outcomes to the store.
+    ///
+    /// - Parameters:
+    ///   - outcomes: An array of outcomes to be added to the store.
+    func addAnyOutcomes(_ outcomes: [OCKAnyOutcome]) async throws -> [OCKAnyOutcome] {
+        try await withCheckedThrowingContinuation { continuation in
+            addAnyOutcomes(outcomes, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    /// `updateAnyOutcomes` asynchronously updates an array of outcomes in the store.
+    ///
+    /// - Parameters:
+    ///   - contacts: An array of outcomes to be updated. The outcomes must already exist in the store.
+    func updateAnyOutcomes(_ outcomes: [OCKAnyOutcome]) async throws -> [OCKAnyOutcome] {
+        try await withCheckedThrowingContinuation { continuation in
+            updateAnyOutcomes(outcomes, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    /// `deleteAnyOutcomes` asynchronously deletes an array of outcomes from the store.
+    ///
+    /// - Parameters:
+    ///   - outcomes: An array of outcomes to be deleted. The outcomes must exist in the store.
+    func deleteAnyOutcomes(_ outcomes: [OCKAnyOutcome]) async throws -> [OCKAnyOutcome] {
+        try await withCheckedThrowingContinuation { continuation in
+            deleteAnyOutcomes(outcomes, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    // MARK: Singular Methods - Implementation Provided
+
+    /// `addAnyOutcome` asynchronously adds an outcome to the store.
+    ///
+    /// - Parameters:
+    ///   - outcome: An outcome to be added to the store.
+    func addAnyOutcome(_ outcome: OCKAnyOutcome) async throws -> OCKAnyOutcome {
+        try await withCheckedThrowingContinuation { continuation in
+            addAnyOutcome(outcome, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    /// `updateAnyOutcome` asynchronously updates an outcome in the store.
+    ///
+    /// - Parameters:
+    ///   - outcome: An outcome to be updated. The outcome must already exist in the store.
+    func updateAnyOutcome(_ outcome: OCKAnyOutcome) async throws -> OCKAnyOutcome {
+        try await withCheckedThrowingContinuation { continuation in
+            updateAnyOutcome(outcome, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+
+    /// `deleteAnyOutcome` asynchronously deletes an outcome from the store.
+    ///
+    /// - Parameters:
+    ///   - outcome: An outcome to be deleted. The outcome must exist in the store.
+    func deleteAnyOutcome(_ outcome: OCKAnyOutcome) async throws -> OCKAnyOutcome {
+        try await withCheckedThrowingContinuation { continuation in
+            deleteAnyOutcome(outcome, callbackQueue: .main, completion: continuation.resume)
+        }
+    }
+}

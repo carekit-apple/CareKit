@@ -146,7 +146,6 @@ public extension OCKAnyPatientStore {
 }
 
 // MARK: Async methods for OCKAnyReadOnlyPatientStore
-
 @available(iOS 15.0, watchOS 9.0, *)
 public extension OCKAnyReadOnlyPatientStore {
 

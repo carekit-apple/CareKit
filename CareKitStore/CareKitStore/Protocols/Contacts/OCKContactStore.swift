@@ -181,7 +181,6 @@ public extension OCKContactStore {
 }
 
 // MARK: Async methods for OCKReadableContactStore
-
 @available(iOS 15.0, watchOS 9.0, *)
 public extension OCKReadableContactStore {
 

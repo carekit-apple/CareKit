@@ -142,7 +142,6 @@ public extension OCKAnyOutcomeStore {
 }
 
 // MARK: Async methods for OCKAnyReadOnlyOutcomeStore
-
 @available(iOS 15.0, watchOS 9.0, *)
 public extension OCKAnyReadOnlyOutcomeStore {
 

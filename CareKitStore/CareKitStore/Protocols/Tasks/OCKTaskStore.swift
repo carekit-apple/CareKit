@@ -181,7 +181,6 @@ public extension OCKTaskStore {
 }
 
 // MARK: Async methods for OCKReadableTaskStore
-
 @available(iOS 15.0, watchOS 9.0, *)
 public extension OCKReadableTaskStore {
 

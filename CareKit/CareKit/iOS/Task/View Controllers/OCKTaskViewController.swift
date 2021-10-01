@@ -203,7 +203,7 @@ UIViewController, OCKTaskViewDelegate {
     }
 
     open func taskView(_ taskView: UIView & OCKTaskDisplayable, didCreateOutcomeValueAt index: Int, eventIndexPath: IndexPath, sender: Any?) {
-        controller.appendOutcomeValue(value: true, at: eventIndexPath, completion: notifyDelegateAndResetViewOnError)
+        //controller.appendOutcomeValue(value: true, at: eventIndexPath, completion: notifyDelegateAndResetViewOnError)
     }
 
     open func didSelectTaskView(_ taskView: UIView & OCKTaskDisplayable, eventIndexPath: IndexPath) {

@@ -63,6 +63,12 @@ public struct OCKOutcomeValue: Codable, Equatable, CustomStringConvertible {
     /// The value was entered by user
     public var wasUserEntered: Bool = false
     
+    /// UUID unique id of the object in healthKtt
+    public var healthKitUUID: UUID? = nil
+    
+    /// A HealthKitQuantityIdentifier that describes the outcome's data type.
+    public var quantityIdentifier: String?
+
     /// An optional property that can be used to specify what kind of value this is (e.g. blood pressure, qualitative stress, weight)
     public var kind: String?
 
@@ -183,7 +189,7 @@ public struct OCKOutcomeValue: Codable, Equatable, CustomStringConvertible {
         try container.encode(createdDate, forKey: .createdDate)
         try container.encodeIfPresent(kind, forKey: .kind)
         try container.encodeIfPresent(units, forKey: .units)
-
+        
         var encodedValue = false
         if let value = integerValue { try container.encode(value, forKey: .value); encodedValue = true } else
         if let value = doubleValue { try container.encode(value, forKey: .value); encodedValue = true } else

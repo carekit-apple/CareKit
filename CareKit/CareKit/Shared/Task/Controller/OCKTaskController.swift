@@ -378,21 +378,21 @@ open class OCKTaskController: ObservableObject {
         return taskEvents[indexPath.section][indexPath.row]
     }
 
-    func validatedViewModel() throws -> OCKTaskEvents {
+    open func validatedViewModel() throws -> OCKTaskEvents {
         guard !taskEvents.isEmpty else {
             throw OCKTaskControllerError.emptyTaskEvents
         }
         return taskEvents
     }
 
-    func validatedEvent(forIndexPath indexPath: IndexPath) throws -> OCKAnyEvent {
+    open func validatedEvent(forIndexPath indexPath: IndexPath) throws -> OCKAnyEvent {
         guard let event = eventFor(indexPath: indexPath) else {
             throw OCKTaskControllerError.invalidIndexPath(indexPath)
         }
         return event
     }
 
-    private func deleteOutcomeValue(at index: Int, for outcome: OCKAnyOutcome, completion: ((Result<OCKAnyOutcome, Error>) -> Void)?) {
+    open func deleteOutcomeValue(at index: Int, for outcome: OCKAnyOutcome, completion: ((Result<OCKAnyOutcome, Error>) -> Void)?) {
         // delete the whole outcome if there is only one outcome value remaining
         guard outcome.values.count > 1 else {
             storeManager.store.deleteAnyOutcome(outcome, callbackQueue: .main) { result in

@@ -184,6 +184,7 @@ public extension OCKPatientStore {
     }
 }
 
+/*
 // MARK: Async methods for OCKReadablePatientStore
 @available(iOS 15.0, watchOS 9.0, *)
 public extension OCKReadablePatientStore {
@@ -279,3 +280,4 @@ public extension OCKPatientStore {
         }
     }
 }
+*/

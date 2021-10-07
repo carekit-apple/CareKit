@@ -144,6 +144,7 @@ public extension OCKAnyContactStore {
     }
 }
 
+/*
 // MARK: Async methods for OCKAnyReadOnlyContactStore
 @available(iOS 15.0, watchOS 9.0, *)
 public extension OCKAnyReadOnlyContactStore {
@@ -238,3 +239,4 @@ public extension OCKAnyContactStore {
         }
     }
 }
+*/

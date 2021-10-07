@@ -216,7 +216,7 @@ UIPageViewControllerDataSource, UIPageViewControllerDelegate {
 
     // MARK: - OCKCalendarPageViewControllerDelegate
 
-    public func weekCalendarPageViewController(_ viewController: OCKWeekCalendarPageViewController, didSelectDate date: Date, previousDate: Date) {
+    open func weekCalendarPageViewController(_ viewController: OCKWeekCalendarPageViewController, didSelectDate date: Date, previousDate: Date) {
         showPage(forDate: date, previousDate: previousDate, animated: true)
     }
 

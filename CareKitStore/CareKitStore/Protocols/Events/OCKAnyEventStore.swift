@@ -165,7 +165,7 @@ public extension OCKAnyReadOnlyEventStore {
 }
 
 // MARK: Async methods for OCKAnyReadOnlyEventStore
-
+/*
 @available(iOS 15.0, watchOS 9.0, *)
 public extension OCKAnyReadOnlyEventStore {
 
@@ -214,3 +214,5 @@ public extension OCKAnyReadOnlyEventStore {
         }
     }
 }
+*/
+

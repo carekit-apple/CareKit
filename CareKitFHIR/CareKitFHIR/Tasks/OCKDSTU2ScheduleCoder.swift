@@ -112,6 +112,7 @@ struct OCKDSTU2ScheduleCoder: OCKFHIRResourceCoder {
         let end = FHIRPrimitive(entity.endDate()?.dstu2FHIRDateTime)
         repetition.bounds = .period(Period(end: end, start: start))
         repetition.frequency = FHIRPrimitive(1)
+        repetition.when = FHIRPrimitive(element.text?)
 
         let timing = Timing()
         timing.repeat = repetition

@@ -72,7 +72,8 @@ UIPageViewControllerDataSource, UIPageViewControllerDelegate {
 
     public weak var dataSource: OCKDailyPageViewControllerDataSource?
     public weak var delegate: OCKDailyPageViewControllerDelegate?
-
+    public var disableFutureTasks: Bool = false
+    
     public var selectedDate: Date {
         return weekCalendarPageViewController.selectedDate
     }
@@ -217,7 +218,11 @@ UIPageViewControllerDataSource, UIPageViewControllerDelegate {
     // MARK: - OCKCalendarPageViewControllerDelegate
 
     open func weekCalendarPageViewController(_ viewController: OCKWeekCalendarPageViewController, didSelectDate date: Date, previousDate: Date) {
-        showPage(forDate: date, previousDate: previousDate, animated: true)
+        if disableFutureTasks, date > Date() {
+            selectDate(Date(), animated: false)
+        } else {
+            showPage(forDate: date, previousDate: previousDate, animated: true)
+        }
     }
 
     public func weekCalendarPageViewController(_ viewController: OCKWeekCalendarPageViewController, didChangeDateInterval interval: DateInterval) {}
@@ -249,7 +254,7 @@ UIPageViewControllerDataSource, UIPageViewControllerDelegate {
                                  viewControllerAfter viewController: UIViewController) -> UIViewController? {
         guard let currentViewController = viewController as? OCKDatedListViewController else { fatalError("Unexpected type") }
         let targetDate = Calendar.current.date(byAdding: .day, value: 1, to: currentViewController.date)!
-        return makePage(date: targetDate)
+        return (disableFutureTasks && targetDate > Date()) ? nil : makePage(date: targetDate)
     }
 
     // MARK: - UIPageViewControllerDataSource

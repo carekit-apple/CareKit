@@ -88,4 +88,24 @@ class DSTU2MedicationOrderConverterTest: XCTestCase {
         XCTAssert(period.start?.value?.foundationDate == startDate)
         XCTAssert(period.end?.value?.foundationDate == endDate)
     }
+    
+    func testOCKScheduleWithDateComponentsNilToTiming() throws {
+        let start = Date()
+        let interval = DateComponents(year: nil, month: nil, day: 1, hour: nil, minute: nil, second: nil)
+        let element = OCKScheduleElement(start: start, end: nil, interval: interval)
+        let schedule = OCKSchedule(composing: [element])
+        
+        let timing = try OCKDSTU2ScheduleCoder().convert(entity: schedule)
+        XCTAssert(timing.repeat != nil)
+    }
+    
+    func testOCKScheduleWithDateComponentsZeroToTiming() throws {
+        let start = Date()
+        let interval = DateComponents(year: 0, month: 0, day: 1, hour: 0, minute: 0, second: 0)
+        let element = OCKScheduleElement(start: start, end: nil, interval: interval)
+        let schedule = OCKSchedule(composing: [element])
+        
+        let timing = try OCKDSTU2ScheduleCoder().convert(entity: schedule)
+        XCTAssert(timing.repeat != nil)
+    }
 }

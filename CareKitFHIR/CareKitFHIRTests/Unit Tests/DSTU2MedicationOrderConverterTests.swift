@@ -96,7 +96,7 @@ class DSTU2MedicationOrderConverterTest: XCTestCase {
         let schedule = OCKSchedule(composing: [element])
         
         let timing = try OCKDSTU2ScheduleCoder().convert(entity: schedule)
-        XCTAssert(timing.repeat != nil)
+        XCTAssertNotNil(timing.repeat)
     }
     
     func testOCKScheduleWithDateComponentsZeroToTiming() throws {
@@ -106,6 +106,6 @@ class DSTU2MedicationOrderConverterTest: XCTestCase {
         let schedule = OCKSchedule(composing: [element])
         
         let timing = try OCKDSTU2ScheduleCoder().convert(entity: schedule)
-        XCTAssert(timing.repeat != nil)
+        XCTAssertNotNil(timing.repeat)
     }
 }

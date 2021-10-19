@@ -220,8 +220,8 @@ public extension OCKReadOnlyEventStore where Task: OCKAnyVersionableTask {
     }
 }
 
-/*
 // MARK: Async methods for OCKReadOnlyEventStore
+
 @available(iOS 15.0, watchOS 9.0, *)
 public extension OCKReadOnlyEventStore {
 
@@ -248,4 +248,3 @@ public extension OCKReadOnlyEventStore {
         }
     }
 }
-*/

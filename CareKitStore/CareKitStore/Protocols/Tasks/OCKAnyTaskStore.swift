@@ -144,8 +144,8 @@ public extension OCKAnyTaskStore {
     }
 }
 
-/*
 // MARK: Async methods for OCKAnyReadOnlyTaskStore
+
 @available(iOS 15.0, watchOS 9.0, *)
 public extension OCKAnyReadOnlyTaskStore {
 
@@ -240,4 +240,3 @@ public extension OCKAnyTaskStore {
         }
     }
 }
-*/

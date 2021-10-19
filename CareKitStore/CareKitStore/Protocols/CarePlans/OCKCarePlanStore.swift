@@ -183,7 +183,6 @@ public extension OCKCarePlanStore {
 
 // MARK: Async methods for OCKReadableCarePlanStore
 
-/*
 @available(iOS 15.0, watchOS 9.0, *)
 public extension OCKReadableCarePlanStore {
 
@@ -280,4 +279,3 @@ public extension OCKCarePlanStore {
         }
     }
 }
-*/

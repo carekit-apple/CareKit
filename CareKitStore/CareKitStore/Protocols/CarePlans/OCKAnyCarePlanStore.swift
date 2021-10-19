@@ -146,8 +146,8 @@ public extension OCKAnyCarePlanStore {
     }
 }
 
-/*
 // MARK: Async methods for OCKAnyReadOnlyCarePlanStore
+
 @available(iOS 15.0, watchOS 9.0, *)
 public extension OCKAnyReadOnlyCarePlanStore {
 
@@ -241,4 +241,3 @@ public extension OCKAnyCarePlanStore {
         }
     }
 }
-*/

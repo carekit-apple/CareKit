@@ -90,7 +90,7 @@ struct OCKDSTU2ScheduleCoder: OCKFHIRResourceCoder {
         var nonZeroComponentCount = 0
         let keypaths: [KeyPath<DateComponents, Int?>] = [\.second, \.minute, \.hour, \.day, \.weekOfYear, \.month, \.year]
         for path in keypaths {
-            if element.interval[keyPath: path] != nil {
+            if element.interval[keyPath: path] != nil && element.interval[keyPath: path] != 0 {
                 nonZeroComponentCount += 1
             }
         }
@@ -102,7 +102,7 @@ struct OCKDSTU2ScheduleCoder: OCKFHIRResourceCoder {
         }
 
         // Reject components not support by FHIR.
-        if element.interval.year != nil {
+        if element.interval.year != nil && element.interval.year != 0 {
             throw OCKFHIRCodingError.unrepresentableContent("OCKScheduleElements with an interval in units of years are not supported in FHIR.")
         }
 

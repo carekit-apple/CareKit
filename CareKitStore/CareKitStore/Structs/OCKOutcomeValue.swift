@@ -53,7 +53,7 @@ public enum OCKOutcomeValueType: String, Codable {
 /// An `OCKOutcomeValue` is a representation of any response of measurement that a user gives in response to a task. The underlying type could be
 /// any of a number of types including integers, booleans, dates, text, and binary data, among others.
 public struct OCKOutcomeValue: Codable, Equatable, CustomStringConvertible {
-    
+
     public static func == (lhs: OCKOutcomeValue, rhs: OCKOutcomeValue) -> Bool {
         lhs.hasSameValueAs(rhs) &&
         lhs.type == rhs.type &&
@@ -189,7 +189,7 @@ public struct OCKOutcomeValue: Codable, Equatable, CustomStringConvertible {
         try container.encode(createdDate, forKey: .createdDate)
         try container.encodeIfPresent(kind, forKey: .kind)
         try container.encodeIfPresent(units, forKey: .units)
-        
+
         var encodedValue = false
         if let value = integerValue { try container.encode(value, forKey: .value); encodedValue = true } else
         if let value = doubleValue { try container.encode(value, forKey: .value); encodedValue = true } else

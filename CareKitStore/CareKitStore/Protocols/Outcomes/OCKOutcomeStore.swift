@@ -175,8 +175,8 @@ public extension OCKOutcomeStore {
     }
 }
 
-/*
 // MARK: Async methods for OCKReadableOutcomeStore
+
 @available(iOS 15.0, watchOS 9.0, *)
 public extension OCKReadableOutcomeStore {
 
@@ -269,4 +269,3 @@ public extension OCKOutcomeStore {
         }
     }
 }
-*/

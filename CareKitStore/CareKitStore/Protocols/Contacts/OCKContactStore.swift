@@ -182,7 +182,7 @@ public extension OCKContactStore {
 
 // MARK: Async methods for OCKReadableContactStore
 
-@available(iOS 15.0, watchOS 9.0, *)
+@available(iOS 15.0, watchOS 8.0, *)
 public extension OCKReadableContactStore {
 
     /// `fetchContacts` asynchronously retrieves an array of contacts from the store.
@@ -211,7 +211,7 @@ public extension OCKReadableContactStore {
 
 // MARK: Async methods for OCKContactStore
 
-@available(iOS 15.0, watchOS 9.0, *)
+@available(iOS 15.0, watchOS 8.0, *)
 public extension OCKContactStore {
 
     /// `addContacts` asynchronously adds an array of contacts to the store.

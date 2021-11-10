@@ -150,7 +150,7 @@ public struct OCKSchedule: Codable, Equatable {
         return globalEvent
     }
 
-    func exists(onDay date: Date) -> Bool {
+    public func exists(onDay date: Date) -> Bool {
         let firstMomentOfTheDay = Calendar.current.startOfDay(for: date)
         let lastMomentOfTheDay = Calendar.current.date(byAdding: DateComponents(day: 1, second: -1), to: firstMomentOfTheDay)!
 

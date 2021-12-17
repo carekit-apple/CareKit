@@ -46,7 +46,7 @@ public struct OCKHealthKitLinkage: Equatable, Codable {
 
     /// A HealthKitQuantityIdentifier that describes the outcome's data type.
     public var quantityIdentifier: HKQuantityTypeIdentifier
-
+    
     /// Determines what kind of query will be used to fetch data from HealthKit.
     public var quantityType: QuantityType
 

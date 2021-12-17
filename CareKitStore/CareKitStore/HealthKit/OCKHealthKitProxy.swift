@@ -59,11 +59,16 @@ class OCKHealthKitProxy {
     func queryValue(identifier: HKQuantityTypeIdentifier, unit: HKUnit, queryType: OCKHealthKitLinkage.QuantityType, in dateRanges: [DateInterval],
                     completion: @escaping (Result<[QueryResult], Error>) -> Void) {
         guard let quantity = HKQuantityType.quantityType(forIdentifier: identifier) else { fatalError("\(identifier) is not a valid quantity!") }
-        switch queryType {
-        case .cumulative:
-            cumulativeQuery(quantity: quantity, unit: unit, in: dateRanges, completion: completion)
-        case .discrete:
-            discreteQuery(quantity: quantity, unit: unit, in: dateRanges, completion: completion)
+        
+        if identifier == .bloodPressureSystolic || identifier == .bloodPressureDiastolic {
+            bloodPressureQuery(quantity: quantity, dateRanges: dateRanges, completion: completion)
+        } else {
+            switch queryType {
+            case .cumulative:
+                cumulativeQuery(quantity: quantity, unit: unit, in: dateRanges, completion: completion)
+            case .discrete:
+                discreteQuery(quantity: quantity, unit: unit, in: dateRanges, completion: completion)
+            }
         }
     }
 
@@ -149,5 +154,60 @@ class OCKHealthKitProxy {
             if let error = fetchError { completion(.failure(error)); return }
             completion(.success(values))
         }
+    }
+    
+    func bloodPressureQuery(quantity: HKQuantityType, dateRanges: [DateInterval], completion: @escaping (Result<[QueryResult], Error>) -> Void) {
+        guard let bloodPressure = HKQuantityType.correlationType(forIdentifier: .bloodPressure) else {
+            completion(.failure(OCKStoreError.fetchFailed(reason: "HealthKit query failed!")))
+            return
+        }
+
+        let group = DispatchGroup()
+        var values = dateRanges.map({ QueryResult(dateRange: $0, values: [], samples: []) })
+        var fetchError: Error?
+
+        for (index, range) in dateRanges.enumerated() {
+            let predicate = HKQuery.predicateForSamples(withStart: range.start, end: range.end, options: [.strictStartDate])
+            let sorting = NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: false)
+            let query = HKSampleQuery(sampleType: bloodPressure, predicate: predicate, limit: 999, sortDescriptors: [sorting]) { _, correlations, error in
+                defer { group.leave() }
+                if let error = error { fetchError = error; return }
+                guard let correlations = correlations else { fetchError = OCKStoreError.fetchFailed(reason: "HealthKit query failed!"); return }
+                let quantitySamples = correlations.compactMap { sample -> HKQuantitySample? in
+                    guard let correlationSample = sample as? HKCorrelation else {
+                        return  nil
+                    }
+                    return correlationSample.bloodPressureSample(quantityType: quantity, dateRange: range)
+                }
+                assert(quantitySamples.count == correlations.count, "Not all samples were HKQuantity samples! Only HKQuantitySamples are supported!")
+                let doubleValues = quantitySamples.map { $0.quantity.doubleValue(for: .millimeterOfMercury()) }
+                values[index] = QueryResult(dateRange: range, values: doubleValues, samples: quantitySamples)
+            }
+            group.enter()
+            store.execute(query)
+        }
+        
+        group.notify(queue: .main) {
+            if let error = fetchError { completion(.failure(error)); return }
+            completion(.success(values))
+        }
+    }
+}
+
+extension HKCorrelation {
+    func bloodPressureSample(quantityType: HKQuantityType, dateRange: DateInterval) -> HKQuantitySample? {
+        guard let systolicType = HKQuantityType.quantityType(forIdentifier: .bloodPressureSystolic), let diastolicType = HKQuantityType.quantityType(forIdentifier: .bloodPressureDiastolic) else {
+            return nil
+        }
+        guard let systolicSample = self.objects(for: systolicType).first as? HKQuantitySample, let diastolicSample = self.objects(for: diastolicType).first as? HKQuantitySample else {
+            return nil
+        }
+        let systolicQuantity = systolicSample.quantity
+        let diastolicQuantity = diastolicSample.quantity
+        let systolicValue = systolicQuantity.doubleValue(for: .millimeterOfMercury())
+        let diastolicValue = diastolicQuantity.doubleValue(for: .millimeterOfMercury())
+        let metadata: [String: Any] = ["systolicValue": systolicValue, "diastolicValue": diastolicValue]
+        let sample = HKQuantitySample(type: quantityType, quantity: systolicQuantity, start: dateRange.start, end: dateRange.end, metadata: metadata)
+        return sample
     }
 }

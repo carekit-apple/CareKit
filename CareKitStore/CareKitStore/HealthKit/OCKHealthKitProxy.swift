@@ -195,7 +195,7 @@ class OCKHealthKitProxy {
 }
 
 extension HKCorrelation {
-    func bloodPressureSample(quantityType: HKQuantityType, dateRange: DateInterval) -> HKQuantitySample? {
+    func bloodPressureSample(quantityType: HKQuantityType) -> HKQuantitySample? {
         guard let systolicType = HKQuantityType.quantityType(forIdentifier: .bloodPressureSystolic), let diastolicType = HKQuantityType.quantityType(forIdentifier: .bloodPressureDiastolic) else {
             return nil
         }
@@ -207,7 +207,7 @@ extension HKCorrelation {
         let systolicValue = systolicQuantity.doubleValue(for: .millimeterOfMercury())
         let diastolicValue = diastolicQuantity.doubleValue(for: .millimeterOfMercury())
         let metadata: [String: Any] = ["systolicValue": systolicValue, "diastolicValue": diastolicValue]
-        let sample = HKQuantitySample(type: quantityType, quantity: systolicQuantity, start: dateRange.start, end: dateRange.end, metadata: metadata)
+        let sample = HKQuantitySample(type: quantityType, quantity: systolicQuantity, start: self.start, end: self.end, metadata: metadata)
         return sample
     }
 }

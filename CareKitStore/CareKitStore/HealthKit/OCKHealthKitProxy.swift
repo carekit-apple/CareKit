@@ -177,7 +177,7 @@ class OCKHealthKitProxy {
                     guard let correlationSample = sample as? HKCorrelation else {
                         return  nil
                     }
-                    return correlationSample.bloodPressureSample(quantityType: quantity, dateRange: range)
+                    return correlationSample.bloodPressureSample(quantityType: quantity)
                 }
                 assert(quantitySamples.count == correlations.count, "Not all samples were HKQuantity samples! Only HKQuantitySamples are supported!")
                 let doubleValues = quantitySamples.map { $0.quantity.doubleValue(for: .millimeterOfMercury()) }
@@ -207,7 +207,7 @@ extension HKCorrelation {
         let systolicValue = systolicQuantity.doubleValue(for: .millimeterOfMercury())
         let diastolicValue = diastolicQuantity.doubleValue(for: .millimeterOfMercury())
         let metadata: [String: Any] = ["systolicValue": systolicValue, "diastolicValue": diastolicValue]
-        let sample = HKQuantitySample(type: quantityType, quantity: systolicQuantity, start: self.start, end: self.end, metadata: metadata)
+        let sample = HKQuantitySample(type: quantityType, quantity: systolicQuantity, start: self.startDate, end: self.endDate, metadata: metadata)
         return sample
     }
 }

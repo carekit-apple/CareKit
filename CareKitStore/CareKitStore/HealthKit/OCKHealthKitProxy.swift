@@ -177,7 +177,7 @@ class OCKHealthKitProxy {
                     guard let correlationSample = sample as? HKCorrelation else {
                         return  nil
                     }
-                    return correlationSample.bloodPressureSample(quantityType: quantity, dateRange: range)
+                    return correlationSample.bloodPressureSample(quantityType: quantity)
                 }
                 assert(quantitySamples.count == correlations.count, "Not all samples were HKQuantity samples! Only HKQuantitySamples are supported!")
                 let doubleValues = quantitySamples.map { $0.quantity.doubleValue(for: .millimeterOfMercury()) }
@@ -195,7 +195,7 @@ class OCKHealthKitProxy {
 }
 
 extension HKCorrelation {
-    func bloodPressureSample(quantityType: HKQuantityType, dateRange: DateInterval) -> HKQuantitySample? {
+    func bloodPressureSample(quantityType: HKQuantityType) -> HKQuantitySample? {
         guard let systolicType = HKQuantityType.quantityType(forIdentifier: .bloodPressureSystolic), let diastolicType = HKQuantityType.quantityType(forIdentifier: .bloodPressureDiastolic) else {
             return nil
         }
@@ -207,12 +207,8 @@ extension HKCorrelation {
         let systolicValue = systolicQuantity.doubleValue(for: .millimeterOfMercury())
         let diastolicValue = diastolicQuantity.doubleValue(for: .millimeterOfMercury())
 
-        let metadata: [String: Any] = ["systolicValue": systolicValue,
-                                       "diastolicValue": diastolicValue,
-                                       "startDate": self.startDate.timeIntervalSince1970,
-                                       "endDate": self.endDate.timeIntervalSince1970
-        ]
-        let sample = HKQuantitySample(type: quantityType, quantity: systolicQuantity, start: dateRange.start, end: dateRange.end, metadata: metadata)
+        let metadata: [String: Any] = ["systolicValue": systolicValue, "diastolicValue": diastolicValue]
+        let sample = HKQuantitySample(type: quantityType, quantity: systolicQuantity, start: self.startDate, end: self.endDate, metadata: metadata)
         return sample
     }
 }

@@ -206,6 +206,7 @@ extension HKCorrelation {
         let diastolicQuantity = diastolicSample.quantity
         let systolicValue = systolicQuantity.doubleValue(for: .millimeterOfMercury())
         let diastolicValue = diastolicQuantity.doubleValue(for: .millimeterOfMercury())
+
         let metadata: [String: Any] = ["systolicValue": systolicValue, "diastolicValue": diastolicValue]
         let sample = HKQuantitySample(type: quantityType, quantity: systolicQuantity, start: self.startDate, end: self.endDate, metadata: metadata)
         return sample

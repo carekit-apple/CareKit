@@ -179,7 +179,10 @@ class OCKHealthKitProxy {
                     }
                     return correlationSample.bloodPressureSample(quantityType: quantity, dateRange: range, correlationSampleUuid: correlationSample.uuid)
                 }
-                assert(quantitySamples.count == correlations.count, "Not all samples were HKQuantity samples! Only HKQuantitySamples are supported!")
+                guard quantitySamples.count == correlations.count else {
+                    fetchError = OCKStoreError.fetchFailed(reason: "Not all samples were HKQuantity samples! Only HKQuantitySamples are supported!")
+                    return
+                }
                 let doubleValues = quantitySamples.map { $0.quantity.doubleValue(for: .millimeterOfMercury()) }
                 values[index] = QueryResult(dateRange: range, values: doubleValues, samples: quantitySamples)
             }
@@ -207,7 +210,7 @@ extension HKCorrelation {
         let systolicValue = systolicQuantity.doubleValue(for: .millimeterOfMercury())
         let diastolicValue = diastolicQuantity.doubleValue(for: .millimeterOfMercury())
 
-        var metadata: [String: Any] = ["systolicValue": systolicValue,
+        let metadata: [String: Any] = ["systolicValue": systolicValue,
                                        "diastolicValue": diastolicValue,
                                        "startDate": self.startDate.timeIntervalSince1970,
                                        "endDate": self.endDate.timeIntervalSince1970,

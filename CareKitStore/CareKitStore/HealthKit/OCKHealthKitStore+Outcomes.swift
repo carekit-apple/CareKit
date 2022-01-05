@@ -181,11 +181,12 @@ public extension OCKHealthKitPassthroughStore {
                     guard !outcomeValues.isEmpty else { return nil }
                     let correspondingEvent = events[index]
                     let isOwnedByApp = !sample.samples.isEmpty && sample.samples.allSatisfy({ $0.sourceRevision.source == HKSource.default() })
-                    return OCKHealthKitOutcome(taskUUID: task.uuid,
+                    let outcome = OCKHealthKitOutcome(taskUUID: task.uuid,
                                                taskOccurrenceIndex: correspondingEvent.occurrence,
                                                values: outcomeValues,
                                                isOwnedByApp: isOwnedByApp,
                                                healthKitUUIDs: Set(sample.samples.map { $0.uuid }))
+                    return outcome
                 }
                 completion(.success(outcomes))
             }

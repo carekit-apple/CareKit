@@ -177,7 +177,7 @@ public extension OCKOutcomeStore {
 
 // MARK: Async methods for OCKReadableOutcomeStore
 
-@available(iOS 15.0, watchOS 8.0, *)
+@available(iOS 13.0, watchOS 6.0, *)
 public extension OCKReadableOutcomeStore {
 
     /// `fetchOutcomes` asynchronously retrieves an array of outcomes from the store.
@@ -204,7 +204,7 @@ public extension OCKReadableOutcomeStore {
 
 // MARK: Async methods for OCKOutcomeStore
 
-@available(iOS 15.0, watchOS 8.0, *)
+@available(iOS 13.0, watchOS 6.0, *)
 public extension OCKOutcomeStore {
 
     /// `addOutcomes` asynchronously adds an array of outcomes to the store.

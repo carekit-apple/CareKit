@@ -148,7 +148,7 @@ public extension OCKAnyCarePlanStore {
 
 // MARK: Async methods for OCKAnyReadOnlyCarePlanStore
 
-@available(iOS 15.0, watchOS 8.0, *)
+@available(iOS 13.0, watchOS 6.0, *)
 public extension OCKAnyReadOnlyCarePlanStore {
 
     /// `fetchAnyCarePlans` asynchronously retrieves an array of care plans from the store.
@@ -176,7 +176,7 @@ public extension OCKAnyReadOnlyCarePlanStore {
 
 // MARK: Async methods for OCKAnyCarePlanStore
 
-@available(iOS 15.0, watchOS 8.0, *)
+@available(iOS 13.0, watchOS 6.0, *)
 public extension OCKAnyCarePlanStore {
 
     /// `addAnyCarePlans` asynchronously adds an array of care plans to the store.

@@ -146,7 +146,7 @@ public extension OCKAnyContactStore {
 
 // MARK: Async methods for OCKAnyReadOnlyContactStore
 
-@available(iOS 15.0, watchOS 8.0, *)
+@available(iOS 13.0, watchOS 6.0, *)
 public extension OCKAnyReadOnlyContactStore {
 
     /// `fetchAnyContacts` asynchronously retrieves an array of contacts from the store.
@@ -174,7 +174,7 @@ public extension OCKAnyReadOnlyContactStore {
 
 // MARK: Async methods for OCKAnyContactStore
 
-@available(iOS 15.0, watchOS 8.0, *)
+@available(iOS 13.0, watchOS 6.0, *)
 public extension OCKAnyContactStore {
 
     /// `addAnyContacts` asynchronously adds an array of contacts to the store.

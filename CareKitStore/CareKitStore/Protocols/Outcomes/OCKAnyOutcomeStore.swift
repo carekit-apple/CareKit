@@ -143,7 +143,7 @@ public extension OCKAnyOutcomeStore {
 
 // MARK: Async methods for OCKAnyReadOnlyOutcomeStore
 
-@available(iOS 15.0, watchOS 8.0, *)
+@available(iOS 13.0, watchOS 6.0, *)
 public extension OCKAnyReadOnlyOutcomeStore {
 
     /// `fetchAnyOutcomes` asynchronously retrieves an array of outcomes from the store.
@@ -172,7 +172,7 @@ public extension OCKAnyReadOnlyOutcomeStore {
 
 // MARK: Async methods for OCKAnyOutcomeStore
 
-@available(iOS 15.0, watchOS 8.0, *)
+@available(iOS 13.0, watchOS 6.0, *)
 public extension OCKAnyOutcomeStore {
 
     /// `addAnyOutcomes` asynchronously adds an array of outcomes to the store.

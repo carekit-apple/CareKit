@@ -182,7 +182,6 @@ public extension OCKTaskStore {
 
 // MARK: Async methods for OCKReadableTaskStore
 
-@available(iOS 13.0, watchOS 6.0, *)
 public extension OCKReadableTaskStore {
 
     /// `fetchTasks` asynchronously retrieves an array of tasks from the store.
@@ -211,7 +210,6 @@ public extension OCKReadableTaskStore {
 
 // MARK: Async methods for OCKTaskStore
 
-@available(iOS 13.0, watchOS 6.0, *)
 public extension OCKTaskStore {
 
     /// `addTasks` asynchronously adds an array of tasks to the store.

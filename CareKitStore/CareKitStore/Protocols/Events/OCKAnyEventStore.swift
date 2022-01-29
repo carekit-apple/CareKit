@@ -166,7 +166,6 @@ public extension OCKAnyReadOnlyEventStore {
 
 // MARK: Async methods for OCKAnyReadOnlyEventStore
 
-@available(iOS 13.0, watchOS 6.0, *)
 public extension OCKAnyReadOnlyEventStore {
 
     /// `fetchAnyEvents` retrieves all the occurrences of the specified task in the interval specified by the provided query.

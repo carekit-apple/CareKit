@@ -15,7 +15,7 @@ jobs:
   
     strategy:
       matrix:
-        destination: ['platform=iOS\ Simulator,OS=15.2,name=iPhone\ 11\ Pro\ Max test', 'platform=watchOS Simulator,OS=8.3,name=Apple\ Watch\ Series 5\ -\ 40mm']
+        destination: ['platform=iOS\ Simulator,OS=15.2,name=iPhone\ 11\ Pro\ Max test', 'platform=watchOS Simulator,OS=8.3,name=Apple\ Watch\ Series\ 5\ -\ 40mm']
         scheme: ['CareKit\ iOS', 'CareKitStore\ iOS', 'CareKitUI\ iOS', 'CareKitFHIR', 'CareKit\ Watch', 'CareKitStore\ Watch', 'CareKitUI\ Watch']
         exclude:
         - destination: 'platform=iOS\ Simulator,OS=15.2,name=iPhone\ 11\ Pro\ Max test'
@@ -24,13 +24,13 @@ jobs:
           scheme: 'CareKitStore\ Watch'
         - destination: 'platform=iOS\ Simulator,OS=15.2,name=iPhone\ 11\ Pro\ Max test'
           scheme: 'CareKitUI\ Watch'
-        - destination: 'platform=watchOS Simulator,OS=8.3,name=Apple\ Watch\ Series 5\ -\ 40mm'
+        - destination: 'platform=watchOS Simulator,OS=8.3,name=Apple\ Watch\ Series\ 5\ -\ 40mm'
           scheme: 'CareKit\ iOS'
-        - destination: 'platform=watchOS Simulator,OS=8.3,name=Apple\ Watch\ Series 5\ -\ 40mm'
+        - destination: 'platform=watchOS Simulator,OS=8.3,name=Apple\ Watch\ Series\ 5\ -\ 40mm'
           scheme: 'CareKitStore\ iOS'
-        - destination: 'platform=watchOS Simulator,OS=8.3,name=Apple\ Watch\ Series 5\ -\ 40mm'
+        - destination: 'platform=watchOS Simulator,OS=8.3,name=Apple\ Watch\ Series\ 5\ -\ 40mm'
           scheme: 'CareKitUI\ iOS'
-        - destination: 'platform=watchOS Simulator,OS=8.3,name=Apple\ Watch\ Series 5\ -\ 40mm'
+        - destination: 'platform=watchOS Simulator,OS=8.3,name=Apple\ Watch\ Series\ 5\ -\ 40mm'
           scheme: 'CareKitFHIR'
     steps:
       - uses: actions/checkout@v2

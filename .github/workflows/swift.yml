@@ -18,11 +18,11 @@ jobs:
         destination: ['platform=iOS\ Simulator,OS=15.2,name=iPhone\ 11\ Pro\ Max test', 'platform=watchOS Simulator,OS=8.3,name=Apple\ Watch\ Series 5\ -\ 40mm']
         scheme: ['CareKit\ iOS', 'CareKitStore\ iOS', 'CareKitUI\ iOS', 'CareKitFHIR', 'CareKit\ Watch', 'CareKitStore\ Watch', 'CareKitUI\ Watch']
         exclude:
-        - destination: 'platform\=iOS\ Simulator,name\=iPhone\ 13\ Pro\ Max test'
+        - destination: 'platform=iOS\ Simulator,OS=15.2,name=iPhone\ 11\ Pro\ Max test'
           scheme: 'CareKit\ Watch'
-        - destination: 'platform\=iOS\ Simulator,name\=iPhone\ 13\ Pro\ Max test'
+        - destination: 'platform=iOS\ Simulator,OS=15.2,name=iPhone\ 11\ Pro\ Max test'
           scheme: 'CareKitStore\ Watch'
-        - destination: 'platform\=iOS\ Simulator,name\=iPhone\ 13\ Pro\ Max test'
+        - destination: 'platform=iOS\ Simulator,OS=15.2,name=iPhone\ 11\ Pro\ Max test'
           scheme: 'CareKitUI\ Watch'
         - destination: 'platform=watchOS Simulator,OS=8.3,name=Apple\ Watch\ Series 5\ -\ 40mm'
           scheme: 'CareKit\ iOS'

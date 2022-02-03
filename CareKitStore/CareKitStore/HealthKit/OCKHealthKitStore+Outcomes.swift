@@ -69,7 +69,7 @@ public extension OCKHealthKitPassthroughStore {
                 guard let value = outcome.values.first?.doubleValue
                     else { throw OCKStoreError.addFailed(reason: "OCKHealthKitOutcome's value must be of type Double, but was not.") }
                 guard let task = tasks.first(where: { $0.uuid == outcome.taskUUID })
-                    else { throw OCKStoreError.addFailed(reason: "No task could be for outcome") }
+                    else { throw OCKStoreError.addFailed(reason: "No task could be found for this outcome") }
 
                 let unit = task.healthKitLinkage.unit
                 let quantity = HKQuantity(unit: unit, doubleValue: value)

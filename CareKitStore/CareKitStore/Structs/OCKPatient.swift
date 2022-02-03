@@ -47,8 +47,6 @@ public struct OCKPatient: Codable, Equatable, Identifiable, OCKAnyPatient {
     public internal(set) var uuid = UUID()
     public internal(set) var nextVersionUUIDs: [UUID] = []
     public internal(set) var previousVersionUUIDs: [UUID] = []
-
-    // MARK: OCKObjectCompatible
     public internal(set) var createdDate: Date?
     public internal(set) var updatedDate: Date?
     public internal(set) var schemaVersion: OCKSemanticVersion?

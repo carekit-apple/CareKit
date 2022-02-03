@@ -51,7 +51,7 @@ public struct OCKContact: Codable, Equatable, Identifiable, OCKAnyContact {
     public var role: String?
     public var category: OCKContactCategory?
 
-    // MARK: OCKVersionable
+    // MARK: OCKVersionedObjectCompatible
     public var effectiveDate: Date
     public internal(set) var deletedDate: Date?
     public internal(set) var uuid = UUID()

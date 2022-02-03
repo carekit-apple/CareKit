@@ -28,6 +28,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import CoreData
 import Foundation
 import HealthKit
 
@@ -47,7 +48,7 @@ public struct OCKHealthKitOutcome: Codable, Equatable, Identifiable, OCKAnyOutco
     public var groupIdentifier: String?
     public var notes: [OCKNote]?
 
-    // MARK: OCKVersionable
+    // MARK: OCKVersionedObjectCompatible
     public var effectiveDate: Date
     public internal(set) var deletedDate: Date?
     public internal(set) var uuid = UUID()
@@ -95,5 +96,20 @@ public struct OCKHealthKitOutcome: Codable, Equatable, Identifiable, OCKAnyOutco
     public func belongs(to task: OCKAnyTask) -> Bool {
         guard let task = task as? OCKHealthKitTask else { return false }
         return task.uuid == taskUUID
+    }
+}
+
+extension OCKHealthKitOutcome: OCKVersionedObjectCompatible {
+
+    static func entity() -> NSEntityDescription {
+        OCKCDHealthKitOutcome.entity()
+    }
+
+    func entity() -> OCKEntity {
+        .healthKitOutcome(self)
+    }
+    
+    func insert(context: NSManagedObjectContext) -> OCKCDVersionedObject {
+        OCKCDHealthKitOutcome(outcome: self, context: context)
     }
 }

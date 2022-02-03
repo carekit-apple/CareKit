@@ -44,7 +44,7 @@ public struct OCKCarePlan: Codable, Equatable, Identifiable, OCKAnyCarePlan {
     public let id: String
     public var title: String
 
-    // MARK: OCKVersionable
+    // MARK: OCKVersionedObjectCompatible
     public var effectiveDate: Date
     public internal(set) var deletedDate: Date?
     public internal(set) var uuid = UUID()

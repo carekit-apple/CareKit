@@ -48,7 +48,7 @@ public struct OCKTask: Codable, Equatable, OCKAnyVersionableTask, OCKAnyMutableT
     public var groupIdentifier: String?
     public var tags: [String]?
 
-    // MARK: OCKVersionable
+    // MARK: OCKVersionedObjectCompatible
     public var effectiveDate: Date
     public internal(set) var deletedDate: Date?
     public internal(set) var uuid = UUID()

@@ -44,7 +44,7 @@ public struct OCKOutcome: Codable, Equatable, Identifiable, OCKAnyOutcome {
     public var taskOccurrenceIndex: Int
     public var values: [OCKOutcomeValue]
 
-    // MARK: OCKVersionable
+    // MARK: OCKVersionedObjectCompatible
     public var effectiveDate: Date
     public internal(set) var deletedDate: Date?
     public internal(set) var uuid = UUID()

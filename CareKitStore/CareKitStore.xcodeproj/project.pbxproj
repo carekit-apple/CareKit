@@ -188,6 +188,7 @@
 		5121407D240043E200B035F6 /* TestEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5121407C240043E200B035F6 /* TestEvent.swift */; };
 		9137A8F727AC7FBF0064DC00 /* OCKCDHealthKitOutcome.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9137A8F627AC7FBF0064DC00 /* OCKCDHealthKitOutcome.swift */; };
 		9137A8F827AC7FBF0064DC00 /* OCKCDHealthKitOutcome.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9137A8F627AC7FBF0064DC00 /* OCKCDHealthKitOutcome.swift */; };
+		9137A8F927AC85EB0064DC00 /* OCKHealthKitOutcome.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E76D1F23D22110003BF691 /* OCKHealthKitOutcome.swift */; };
 		E7131DC12241FAA80001861B /* OCKTaskQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7131DC02241FAA80001861B /* OCKTaskQuery.swift */; };
 		E7131DC5224200640001861B /* OCKOutcomeQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7131DC4224200640001861B /* OCKOutcomeQuery.swift */; };
 		E7131DCB22420A520001861B /* OCKPatientQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7131DCA22420A520001861B /* OCKPatientQuery.swift */; };
@@ -1006,6 +1007,7 @@
 				51178DF023AA94DA0068BAB1 /* OCKAdherenceAggregator.swift in Sources */,
 				51178DA423AA94AB0068BAB1 /* OCKStore+Tasks.swift in Sources */,
 				51178DA223AA94AB0068BAB1 /* OCKStore+CarePlans.swift in Sources */,
+				9137A8F927AC85EB0064DC00 /* OCKHealthKitOutcome.swift in Sources */,
 				51178DB023AA94AB0068BAB1 /* OCKCDPersonName.swift in Sources */,
 				51178DE323AA94D10068BAB1 /* OCKAnyOutcomeStore.swift in Sources */,
 				039782A52410403C00D4F905 /* OCKHealthKitLinkage.swift in Sources */,

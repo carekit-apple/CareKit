@@ -6,13 +6,9 @@ on:
   pull_request:
     branches: [ main ]
 
-
 jobs:
-        
   test:
-    
     runs-on: macos-latest
-  
     strategy:
       matrix:
         destination: ['platform=iOS\ Simulator,OS=15.2,name=iPhone\ 11\ Pro\ Max test', 'platform=watchOS\ Simulator,OS=8.3,name=Apple\ Watch\ Series\ 5\ -\ 40mm']

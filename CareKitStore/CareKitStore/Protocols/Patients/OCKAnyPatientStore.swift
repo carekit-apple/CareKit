@@ -147,6 +147,7 @@ public extension OCKAnyPatientStore {
 
 // MARK: Async methods for OCKAnyReadOnlyPatientStore
 
+@available(iOS 15.0, watchOS 8.0, *)
 public extension OCKAnyReadOnlyPatientStore {
 
     /// `fetchAnyPatients` asynchronously retrieves an array of patients from the store.
@@ -174,6 +175,7 @@ public extension OCKAnyReadOnlyPatientStore {
 
 // MARK: Async methods for OCKAnyPatientStore
 
+@available(iOS 15.0, watchOS 8.0, *)
 public extension OCKAnyPatientStore {
 
     /// `addAnyPatients` asynchronously adds an array of patients to the store.

@@ -6,31 +6,22 @@ on:
   pull_request:
     branches: [ main ]
 
+
 jobs:
+        
   test:
-    runs-on: macos-latest
+    
+    runs-on: macos-11
+  
     strategy:
       matrix:
-        destination: ['platform=iOS\ Simulator,OS=15.2,name=iPhone\ 11\ Pro\ Max test', 'platform=watchOS\ Simulator,OS=8.3,name=Apple\ Watch\ Series\ 5\ -\ 40mm']
-        scheme: ['CareKit\ iOS', 'CareKitStore\ iOS', 'CareKitUI\ iOS', 'CareKitFHIR', 'CareKit\ Watch', 'CareKitStore\ Watch', 'CareKitUI\ Watch']
-        exclude:
-        - destination: 'platform=iOS\ Simulator,OS=15.2,name=iPhone\ 11\ Pro\ Max test'
-          scheme: 'CareKit\ Watch'
-        - destination: 'platform=iOS\ Simulator,OS=15.2,name=iPhone\ 11\ Pro\ Max test'
-          scheme: 'CareKitStore\ Watch'
-        - destination: 'platform=iOS\ Simulator,OS=15.2,name=iPhone\ 11\ Pro\ Max test'
-          scheme: 'CareKitUI\ Watch'
-        - destination: 'platform=watchOS\ Simulator,OS=8.3,name=Apple\ Watch\ Series\ 5\ -\ 40mm'
-          scheme: 'CareKit\ iOS'
-        - destination: 'platform=watchOS\ Simulator,OS=8.3,name=Apple\ Watch\ Series\ 5\ -\ 40mm'
-          scheme: 'CareKitStore\ iOS'
-        - destination: 'platform=watchOS\ Simulator,OS=8.3,name=Apple\ Watch\ Series\ 5\ -\ 40mm'
-          scheme: 'CareKitUI\ iOS'
-        - destination: 'platform=watchOS\ Simulator,OS=8.3,name=Apple\ Watch\ Series\ 5\ -\ 40mm'
-          scheme: 'CareKitFHIR'
+        destination: ['platform=iOS\ Simulator,OS=15.0,name=iPhone\ 11\ Pro\ Max']
+        scheme: ['CareKit\ iOS', 'CareKitStore\ iOS', 'CareKitUI\ iOS', 'CareKitFHIR']
+  
     steps:
       - uses: actions/checkout@v2
       - name: Set Xcode Version
-        run: sudo xcode-select -s /Applications/Xcode_13.2.1.app
+        run: sudo xcode-select -s /Applications/Xcode_13.0.app
       - name: Build
-        run: set -o pipefail && env NSUnbufferedIO=YES xcodebuild -verbose -workspace CKWorkspace.xcworkspace -scheme ${{ matrix.scheme }} -destination ${{ matrix.destination }} | xcpretty
+        run: set -o pipefail && env NSUnbufferedIO=YES xcodebuild -verbose -workspace CKWorkspace.xcworkspace -scheme ${{ matrix.scheme }} -destination ${{ matrix.destination }} build test | xcpretty
+

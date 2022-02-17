@@ -15,8 +15,6 @@
 		031B45692474A1100063E717 /* OCKFHIRContentType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031B45682474A1100063E717 /* OCKFHIRContentType.swift */; };
 		031B456B2474A1380063E717 /* OCKFHIRResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031B456A2474A1380063E717 /* OCKFHIRResource.swift */; };
 		031D4B662374E1D900199EFC /* FHIRModels+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031D4B652374E1D900199EFC /* FHIRModels+Extensions.swift */; };
-		033FF82024B51A2600070941 /* ModelsR4 in Frameworks */ = {isa = PBXBuildFile; productRef = 033FF81F24B51A2600070941 /* ModelsR4 */; };
-		033FF82224B51A2600070941 /* ModelsDSTU2 in Frameworks */ = {isa = PBXBuildFile; productRef = 033FF82124B51A2600070941 /* ModelsDSTU2 */; };
 		0364BB6423C421E30047F952 /* CareKitStore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0364BB6323C421E30047F952 /* CareKitStore.framework */; };
 		0396EF40233D187800C28FC0 /* CareKitFHIR.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0396EF36233D187800C28FC0 /* CareKitFHIR.framework */; };
 		03AFA92B233E697C0091DD45 /* OCKFHIRCodingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03AFA92A233E697C0091DD45 /* OCKFHIRCodingError.swift */; };
@@ -494,6 +492,7 @@
 				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
 				INFOPLIST_FILE = CareKitFHIR/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -523,6 +522,7 @@
 				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
 				INFOPLIST_FILE = CareKitFHIR/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

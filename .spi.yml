@@ -1,0 +1,8 @@
+version: 1
+builder:
+  configs:
+  - platform: ios
+    scheme: "CareKit iOS"
+  - platform: watchos
+    scheme: "CareKit Watch"
+

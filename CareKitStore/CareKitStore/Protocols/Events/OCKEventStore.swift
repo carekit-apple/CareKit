@@ -222,7 +222,6 @@ public extension OCKReadOnlyEventStore where Task: OCKAnyVersionableTask {
 
 // MARK: Async methods for OCKReadOnlyEventStore
 
-@available(iOS 15.0, watchOS 8.0, *)
 public extension OCKReadOnlyEventStore {
 
     /// `fetchEvents` retrieves all the occurrences of the specified task in the interval specified by the provided query.

@@ -6,11 +6,11 @@
 
 CareKit™ is an open source software framework for creating apps that help people better understand and manage their health. The framework provides modules that can be used out of the box, or extended and customized for more targeted use cases. It is composed of three SPM packages which can each be imported separately.
 
-* **CareKit:** This is the best place to start building your app. CareKit provides view controllers that tie CareKitUI and CareKitStore together. The view controllers leverage Combine to provide synchronization between the store and the views.
+* **CareKit:** This is the best place to start building your app. CareKit provides view controllers that tie CareKitUI and CareKitStore together. The view controllers leverage Combine to provide synchronization between the store and the views
 
-* **CareKitUI:** Provides the views used across the framework. The views are subclasses of UIView that are open and extensible. Properties within the views are public allowing for full control over the content.
+* **CareKitUI:** Provides the views used across the framework. The views are subclasses of UIView that are open and extensible. Properties within the views are public allowing for full control over the content
 
-* **CareKitStore:** Provides a Core Data solution for storing patient data. It also provides the ability to use a custom store, such as a third party database or API.
+* **CareKitStore:** Provides a Core Data solution for storing patient data. It also provides the ability to use a custom store, such as a third party database or API
 
 # Table of Contents
 * [Requirements](#requirements)
@@ -80,9 +80,9 @@ CareKit is the overarching package that provides view controllers to tie CareKit
 
 CareKit offers full screen view controllers for convenience. The view controllers query for and display data from a store, and stay synchronized with the data.
 
-* `OCKDailyTasksPageViewController`: Displays tasks for each day with a calendar to page through dates.
+* `OCKDailyTasksPageViewController`: Displays tasks for each day with a calendar to page through dates
 
-* `OCKContactsListViewController`: Displays a list of contacts in the store.
+* `OCKContactsListViewController`: Displays a list of contacts in the store
 
 ### Synchronized View Controllers <a name="synchronized-view-controllers"></a>
 
@@ -462,21 +462,21 @@ CareKitStore defines six high level entities as illustrated in this diagram:
 
 ![Schema](https://user-images.githubusercontent.com/51756298/69107431-32784800-0a26-11ea-83fc-8987d7ef2e15.png)
 
-* **Patient:** A patient represents the user of the app.
+* **Patient:** A patient represents the user of the app
 
-* **Care Plan**: A patient may have zero or more care plans. A care plan organizes the contacts and tasks associated with a specific treatment. For example, a patient may have one care plan for heart disease and a second for obesity.
+* **Care Plan**: A patient may have zero or more care plans. A care plan organizes the contacts and tasks associated with a specific treatment. For example, a patient may have one care plan for heart disease and a second for obesity
 
-* **Contact:** A care plan may have zero or more associated contacts. Contacts might include doctors, nurses, insurance providers, or family.
+* **Contact:** A care plan may have zero or more associated contacts. Contacts might include doctors, nurses, insurance providers, or family
 
-* **Task:** A care plan may have zero or more tasks. A task represents some activity that the patient is supposed to perform. Examples may include taking a medication, exercising, journaling, or checking in with their doctor.
+* **Task:** A care plan may have zero or more tasks. A task represents some activity that the patient is supposed to perform. Examples may include taking a medication, exercising, journaling, or checking in with their doctor
 
-* **Schedule:** Each task must have a schedule. The schedule defines occurrences of a task, and may optionally specify target or goal values, such as how much of a medication to take.
+* **Schedule:** Each task must have a schedule. The schedule defines occurrences of a task, and may optionally specify target or goal values, such as how much of a medication to take
 
-* **Outcome:** Each occurrence of a task may or may not have an associated outcome. The absence of an outcome indicates no progress was made on that occurrence of the task.
+* **Outcome:** Each occurrence of a task may or may not have an associated outcome. The absence of an outcome indicates no progress was made on that occurrence of the task
 
-* **Outcome Value:** Each outcome may have zero or more values associated with it. A value might represent how much medication was taken, or a plurality of outcome values could represent the answers to a survey.
+* **Outcome Value:** Each outcome may have zero or more values associated with it. A value might represent how much medication was taken, or a plurality of outcome values could represent the answers to a survey
 
-It is important to note that tasks, contacts, and care plans can exist *without* a parent entity. Many CareKit apps are targeted to well defined use cases, and it can often be expedient to simply create tasks and contacts without defining a patient or care plan.
+It is important to note that tasks, contacts, and care plans can exist *without* a parent entity. Many CareKit apps are targeted to well defined use cases, and it can often be expedient to simply create tasks and contacts without defining a patient or care plan
 
 ### Scheduling <a name="scheduling"></a>
 
@@ -516,11 +516,11 @@ let element = OCKScheduleElement(
 )
 ```
 
-* `text`: By default, CareKit view controllers will prompt users to perform tasks using clock time (e.g. "8:00PM"). If you provide a `text` property, then the text will be used to prompt the user instead ("Before bed").
+* `text`: By default, CareKit view controllers will prompt users to perform tasks using clock time (e.g. "8:00PM"). If you provide a `text` property, then the text will be used to prompt the user instead ("Before bed")
 
-* `duration`: If you provide a duration, CareKit will prompt the user to perform the scheduled task within a window (e.g. "8:00 - 10:00 PM"). The duration can also be set to `.allDay` if you do not wish to specify any time in particular.
+* `duration`: If you provide a duration, CareKit will prompt the user to perform the scheduled task within a window (e.g. "8:00 - 10:00 PM"). The duration can also be set to `.allDay` if you do not wish to specify any time in particular
 
-* `targetValues`: Target values are used by CareKit to determine if a user has completed a specific task or not. See `OCKAdherenceAggregator` for more details.
+* `targetValues`: Target values are used by CareKit to determine if a user has completed a specific task or not. See `OCKAdherenceAggregator` for more details
 
 
 ### Custom Stores and Types <a name="custom-store-and-types"></a>

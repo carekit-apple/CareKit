@@ -124,6 +124,7 @@
 		64E1BD4E2309FCF200DFFE52 /* OCKResponsiveLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64E1BD4D2309FCF200DFFE52 /* OCKResponsiveLayout.swift */; };
 		64EEC2382318253B00B1012F /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 64EEC2362318253B00B1012F /* Localizable.strings */; };
 		64EEC23B231825DD00B1012F /* OCKLocalization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64EEC23A231825DD00B1012F /* OCKLocalization.swift */; };
+		7079CFAD27C3DE9700BFAEB5 /* OCKCompletionState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51178E1423AAAB2F0068BAB1 /* OCKCompletionState.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -890,6 +891,7 @@
 				51F9F13423A9B9FF0087C900 /* OCKStyler.swift in Sources */,
 				51F9F13123A9B9F80087C900 /* OCKAnimationStyler.swift in Sources */,
 				510466F524A283E500D0FD53 /* InstructionsTaskView.swift in Sources */,
+				7079CFAD27C3DE9700BFAEB5 /* OCKCompletionState.swift in Sources */,
 				51E214292444F1520063A121 /* RectangularCompletionView.swift in Sources */,
 				516A1C49244F766A00BBF2D3 /* OSValue.swift in Sources */,
 				51D5C97124A2947A00EC45B5 /* OCKLog.swift in Sources */,

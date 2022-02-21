@@ -150,6 +150,8 @@
 		64EABE022321B1AF00CFBB9F /* OCKSynchronizedStoreManager+Publishers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64EABDBF2321B1AF00CFBB9F /* OCKSynchronizedStoreManager+Publishers.swift */; };
 		64EABE0B2321B1AF00CFBB9F /* OCKContactUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64EABDCB2321B1AF00CFBB9F /* OCKContactUtility.swift */; };
 		64EABE202321B1AF00CFBB9F /* locversion.plist in Resources */ = {isa = PBXBuildFile; fileRef = 64EABDE72321B1AF00CFBB9F /* locversion.plist */; };
+		7079CFAE27C3DEA200BFAEB5 /* OCKCalendarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 514FDE382356362B0044E3B8 /* OCKCalendarController.swift */; };
+		7079CFAF27C3DEB600BFAEB5 /* OCKWeekCalendarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51127315235E5728007B18DF /* OCKWeekCalendarController.swift */; };
 		70F79B5526434F4A00731C46 /* UIImage+Asset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70F79B5426434F4A00731C46 /* UIImage+Asset.swift */; };
 		70F79B5626434F4A00731C46 /* UIImage+Asset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70F79B5426434F4A00731C46 /* UIImage+Asset.swift */; };
 /* End PBXBuildFile section */
@@ -1033,6 +1035,7 @@
 				51178E0323AA95270068BAB1 /* OCKChecklistTaskController.swift in Sources */,
 				70F79B5626434F4A00731C46 /* UIImage+Asset.swift in Sources */,
 				51355EEA2499852D009DE0A4 /* OCKTaskEvents+Extension.swift in Sources */,
+				7079CFAE27C3DEA200BFAEB5 /* OCKCalendarController.swift in Sources */,
 				51178E0123AA95270068BAB1 /* OCKTaskController.swift in Sources */,
 				51178E1023AAAA2A0068BAB1 /* OCKSynchronizedStoreManager+Publishers.swift in Sources */,
 				515C0A1723BF9D46009A9774 /* OCKTaskControllerProtocol+Extension.swift in Sources */,
@@ -1041,6 +1044,7 @@
 				51178E0423AA95270068BAB1 /* OCKSimpleTaskController.swift in Sources */,
 				51E76F2224004FA1008B09E7 /* OCKScheduleUtility.swift in Sources */,
 				51178E0023AA95270068BAB1 /* OCKTaskEvents.swift in Sources */,
+				7079CFAF27C3DEB600BFAEB5 /* OCKWeekCalendarController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

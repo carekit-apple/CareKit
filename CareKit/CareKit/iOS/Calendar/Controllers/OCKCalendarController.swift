@@ -29,6 +29,7 @@
  */
 
 import CareKitStore
+import CareKitUI
 import Combine
 import CoreGraphics
 import Foundation

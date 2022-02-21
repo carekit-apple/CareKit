@@ -27,13 +27,11 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#if canImport(UIKit) && !os(watchOS)
 
 import CareKitStore
-import CareKitUI
 import Combine
+import CoreGraphics
 import Foundation
-import UIKit
 
 /// A basic controller capable of updating a calendar.
 open class OCKCalendarController: ObservableObject {
@@ -147,4 +145,3 @@ private extension DateInterval {
         return dates
     }
 }
-#endif

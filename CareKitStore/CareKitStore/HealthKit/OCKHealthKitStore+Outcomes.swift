@@ -65,7 +65,7 @@ public extension OCKHealthKitPassthroughStore {
                 guard outcome.isOwnedByApp
                     else { throw OCKStoreError.addFailed(reason: "Cannot persist an OCKHealthKitOutcome that is not owned by this app!") }
                 guard outcome.values.count == 1
-                    else { throw OCKStoreError.addFailed(reason: "OCKHealthKitOutcomes must have exactly 1 value, but got \(outcome.values.count).") }
+                    else { throw OCKStoreError.addFailed(reason: "OCKHealthKitOutcomes must have exactly 1 value, but attempting to add \(outcome.values.count).") }
                 guard let value = outcome.values.first?.doubleValue
                     else { throw OCKStoreError.addFailed(reason: "OCKHealthKitOutcome's value must be of type Double, but was not.") }
                 guard let task = tasks.first(where: { $0.uuid == outcome.taskUUID })

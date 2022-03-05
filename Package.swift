@@ -4,7 +4,7 @@ import PackageDescription
 let package = Package(
     name: "CareKit",
     defaultLocalization: "en",
-    platforms: [.iOS(.v15), .watchOS(.v6)],
+    platforms: [.iOS(.v13), .watchOS(.v6)],
     products: [
         .library(
             name: "CareKit",

@@ -1,0 +1,1074 @@
+{
+  "abstract" : [
+    {
+      "text" : "A view that displays a horizontal row of seven, selectable completion rings with",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "labels.",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKit",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/calendar-interfaces"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKWeekCalendarView"
+  },
+  "kind" : "symbol",
+  "metadata" : {
+    "externalID" : "c:@M@CareKitUI@objc(cs)OCKWeekCalendarView",
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "class"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "OCKWeekCalendarView"
+      }
+    ],
+    "modules" : [
+      {
+        "name" : "CareKitUI"
+      }
+    ],
+    "navigatorTitle" : [
+      {
+        "kind" : "identifier",
+        "text" : "OCKWeekCalendarView"
+      }
+    ],
+    "role" : "symbol",
+    "roleHeading" : "Class",
+    "symbolKind" : "class",
+    "title" : "OCKWeekCalendarView"
+  },
+  "primaryContentSections" : [
+    {
+      "declarations" : [
+        {
+          "languages" : [
+            "swift"
+          ],
+          "platforms" : [
+            "iOS"
+          ],
+          "tokens" : [
+            {
+              "kind" : "keyword",
+              "text" : "class"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "identifier",
+              "text" : "OCKWeekCalendarView"
+            }
+          ]
+        }
+      ],
+      "kind" : "declarations"
+    }
+  ],
+  "relationshipsSections" : [
+    {
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKView"
+      ],
+      "kind" : "relationships",
+      "title" : "Inherits From",
+      "type" : "inheritsFrom"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/objc(pl)NSCoding",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKCalendarDisplayable",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStylable",
+        "doc:\/\/com.apple.CareKit\/objc(pl)NSObject",
+        "doc:\/\/com.apple.CareKit\/objc(pl)CALayerDelegate",
+        "doc:\/\/com.apple.CareKit\/s7CVarArgP",
+        "doc:\/\/com.apple.CareKit\/s28CustomDebugStringConvertibleP",
+        "doc:\/\/com.apple.CareKit\/s23CustomStringConvertibleP",
+        "doc:\/\/com.apple.CareKit\/SQ",
+        "doc:\/\/com.apple.CareKit\/SH",
+        "doc:\/\/com.apple.CareKit\/s8SendableP",
+        "doc:\/\/com.apple.CareKit\/objc(pl)UIAccessibilityIdentification",
+        "doc:\/\/com.apple.CareKit\/objc(pl)UIActivityItemsConfigurationProviding",
+        "doc:\/\/com.apple.CareKit\/objc(pl)UIAppearance",
+        "doc:\/\/com.apple.CareKit\/objc(pl)UIAppearanceContainer",
+        "doc:\/\/com.apple.CareKit\/objc(pl)UICoordinateSpace",
+        "doc:\/\/com.apple.CareKit\/objc(pl)UIDynamicItem",
+        "doc:\/\/com.apple.CareKit\/objc(pl)UIFocusEnvironment",
+        "doc:\/\/com.apple.CareKit\/objc(pl)UIFocusItem",
+        "doc:\/\/com.apple.CareKit\/objc(pl)UIFocusItemContainer",
+        "doc:\/\/com.apple.CareKit\/objc(pl)UILargeContentViewerItem",
+        "doc:\/\/com.apple.CareKit\/objc(pl)UIPasteConfigurationSupporting",
+        "doc:\/\/com.apple.CareKit\/objc(pl)UIResponderStandardEditActions",
+        "doc:\/\/com.apple.CareKit\/objc(pl)UITraitEnvironment",
+        "doc:\/\/com.apple.CareKit\/objc(pl)UIUserActivityRestoring"
+      ],
+      "kind" : "relationships",
+      "title" : "Conforms To",
+      "type" : "conformsTo"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 2,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "seeAlsoSections" : [
+    {
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/OCKWeekCalendarPageViewController",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/OCKWeekCalendarController",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/OCKCalendarViewController",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/OCKCalendarController"
+      ],
+      "title" : "Calendar Views and Controllers"
+    }
+  ],
+  "topicSections" : [
+    {
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKWeekCalendarView\/init(weekOfDate:)"
+      ],
+      "title" : "Creating Week Calendar Views"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKWeekCalendarView\/delegate"
+      ],
+      "title" : "Handling Calendar View Changes"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKWeekCalendarView\/completionRingButtons",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKWeekCalendarView\/completionRingFor(date:)"
+      ],
+      "title" : "Managing Completion Rings"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKWeekCalendarView\/selectedDate",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKWeekCalendarView\/dateInterval",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKWeekCalendarView\/selectDate(_:)",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKWeekCalendarView\/showDate(_:)"
+      ],
+      "title" : "Configuring Calendar Dates"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKWeekCalendarView\/init()",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKWeekCalendarView\/init(coder:)"
+      ],
+      "title" : "Initializers"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKWeekCalendarView\/styleDidChange()"
+      ],
+      "title" : "Instance Methods"
+    }
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/carekitui\/ockweekcalendarview"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://com.apple.CareKit/SH": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/SH",
+  "title" : "Swift.Hashable",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/SQ": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/SQ",
+  "title" : "Swift.Equatable",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/documentation/CareKit": {
+  "abstract" : [
+    {
+      "text" : "Create apps that help people better understand and manage their health.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKit",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "CareKit",
+  "type" : "topic",
+  "url" : "\/documentation\/carekit"
+},
+"doc://com.apple.CareKit/documentation/CareKit/OCKCalendarController": {
+  "abstract" : [
+    {
+      "text" : "A controller object that handles updating a calendar.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKCalendarController"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/OCKCalendarController",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKCalendarController"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKCalendarController",
+  "type" : "topic",
+  "url" : "\/documentation\/carekit\/ockcalendarcontroller"
+},
+"doc://com.apple.CareKit/documentation/CareKit/OCKCalendarViewController": {
+  "abstract" : [
+    {
+      "text" : "A view controller that displays a calendar view and synchronizes with a store.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKCalendarViewController"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/OCKCalendarViewController",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKCalendarViewController"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKCalendarViewController",
+  "type" : "topic",
+  "url" : "\/documentation\/carekit\/ockcalendarviewcontroller"
+},
+"doc://com.apple.CareKit/documentation/CareKit/OCKWeekCalendarController": {
+  "abstract" : [
+    {
+      "text" : "A calendar controller that handles a calendar that shows a single week.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKWeekCalendarController"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/OCKWeekCalendarController",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKWeekCalendarController"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKWeekCalendarController",
+  "type" : "topic",
+  "url" : "\/documentation\/carekit\/ockweekcalendarcontroller"
+},
+"doc://com.apple.CareKit/documentation/CareKit/OCKWeekCalendarPageViewController": {
+  "abstract" : [
+    {
+      "text" : "A view controller that allows the user to page through adjacent weeks of task adherence",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "content.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKWeekCalendarPageViewController"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/OCKWeekCalendarPageViewController",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKWeekCalendarPageViewController"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKWeekCalendarPageViewController",
+  "type" : "topic",
+  "url" : "\/documentation\/carekit\/ockweekcalendarpageviewcontroller"
+},
+"doc://com.apple.CareKit/documentation/CareKit/calendar-interfaces": {
+  "abstract" : [
+    {
+      "text" : "Display calendars to users.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/calendar-interfaces",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Calendar Interfaces",
+  "type" : "topic",
+  "url" : "\/documentation\/carekit\/calendar-interfaces"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKCalendarDisplayable": {
+  "abstract" : [
+    {
+      "text" : "Any object that displays and handles interactions with a calendar.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "protocol"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKCalendarDisplayable"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKCalendarDisplayable",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKCalendarDisplayable"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKCalendarDisplayable",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockcalendardisplayable"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKStylable": {
+  "abstract" : [
+    {
+      "text" : "An object that to which you can apply style.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "protocol"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKStylable"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStylable",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKStylable"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKStylable",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockstylable"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKView": {
+  "abstract" : [
+    {
+      "text" : "A view without any children, that adheres and responds to styling.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKView"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKView",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKView"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKView",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockview"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKWeekCalendarView": {
+  "abstract" : [
+    {
+      "text" : "A view that displays a horizontal row of seven, selectable completion rings with",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "labels.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKWeekCalendarView"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKWeekCalendarView",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKWeekCalendarView"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKWeekCalendarView",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockweekcalendarview"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKWeekCalendarView/completionRingButtons": {
+  "abstract" : [
+    {
+      "text" : "The completion ring buttons in the view.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "completionRingButtons"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:9CareKitUI23OCKCompletionRingButtonC",
+      "text" : "OCKCompletionRingButton"
+    },
+    {
+      "kind" : "text",
+      "text" : "]"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKWeekCalendarView\/completionRingButtons",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "completionRingButtons",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockweekcalendarview\/completionringbuttons"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKWeekCalendarView/completionRingFor(date:)": {
+  "abstract" : [
+    {
+      "text" : "Returns the completion ring that corresponds to a specific date.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "completionRingFor"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "date"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:10Foundation4DateV",
+      "text" : "Date"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:9CareKitUI23OCKCompletionRingButtonC",
+      "text" : "OCKCompletionRingButton"
+    },
+    {
+      "kind" : "text",
+      "text" : "?"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKWeekCalendarView\/completionRingFor(date:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "completionRingFor(date:)",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockweekcalendarview\/completionringfor(date:)"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKWeekCalendarView/dateInterval": {
+  "abstract" : [
+    {
+      "text" : "The date interval for the week the calendar is displaying.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "dateInterval"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:10Foundation12DateIntervalV",
+      "text" : "DateInterval"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKWeekCalendarView\/dateInterval",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "dateInterval",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockweekcalendarview\/dateinterval"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKWeekCalendarView/delegate": {
+  "abstract" : [
+    {
+      "text" : "An object that receives callbacks for changes in a calendar view.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "delegate"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:9CareKitUI23OCKCalendarViewDelegateP",
+      "text" : "OCKCalendarViewDelegate"
+    },
+    {
+      "kind" : "text",
+      "text" : "?"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKWeekCalendarView\/delegate",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "delegate",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockweekcalendarview\/delegate"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKWeekCalendarView/init()": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "identifier",
+      "text" : "init"
+    },
+    {
+      "kind" : "text",
+      "text" : "()"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKWeekCalendarView\/init()",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "init()",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockweekcalendarview\/init()"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKWeekCalendarView/init(coder:)": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "identifier",
+      "text" : "init"
+    },
+    {
+      "kind" : "text",
+      "text" : "?("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "coder"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "c:objc(cs)NSCoder",
+      "text" : "NSCoder"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKWeekCalendarView\/init(coder:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "init(coder:)",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockweekcalendarview\/init(coder:)"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKWeekCalendarView/init(weekOfDate:)": {
+  "abstract" : [
+    {
+      "text" : "Creates a view with seven, interactive completion rings, each corresponding to a",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "day of the week.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "identifier",
+      "text" : "init"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "weekOfDate"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:10Foundation4DateV",
+      "text" : "Date"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKWeekCalendarView\/init(weekOfDate:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "init(weekOfDate:)",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockweekcalendarview\/init(weekofdate:)"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKWeekCalendarView/selectDate(_:)": {
+  "abstract" : [
+    {
+      "text" : "Selects the completion ring that corresponds to the given date.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "selectDate"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:10Foundation4DateV",
+      "text" : "Date"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKWeekCalendarView\/selectDate(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "selectDate(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockweekcalendarview\/selectdate(_:)"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKWeekCalendarView/selectedDate": {
+  "abstract" : [
+    {
+      "text" : "The date currently selected in the calendar.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "selectedDate"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:10Foundation4DateV",
+      "text" : "Date"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKWeekCalendarView\/selectedDate",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "selectedDate",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockweekcalendarview\/selecteddate"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKWeekCalendarView/showDate(_:)": {
+  "abstract" : [
+    {
+      "text" : "Displays the week for a specific date.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "showDate"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:10Foundation4DateV",
+      "text" : "Date"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKWeekCalendarView\/showDate(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "showDate(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockweekcalendarview\/showdate(_:)"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKWeekCalendarView/styleDidChange()": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "styleDidChange"
+    },
+    {
+      "kind" : "text",
+      "text" : "()"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKWeekCalendarView\/styleDidChange()",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "styleDidChange()",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockweekcalendarview\/styledidchange()"
+},
+"doc://com.apple.CareKit/objc(pl)CALayerDelegate": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)CALayerDelegate",
+  "title" : "QuartzCore.CALayerDelegate",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/objc(pl)NSCoding": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)NSCoding",
+  "title" : "Foundation.NSCoding",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/objc(pl)NSObject": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)NSObject",
+  "title" : "ObjectiveC.NSObjectProtocol",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/objc(pl)UIAccessibilityIdentification": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)UIAccessibilityIdentification",
+  "title" : "UIKit.UIAccessibilityIdentification",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/objc(pl)UIActivityItemsConfigurationProviding": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)UIActivityItemsConfigurationProviding",
+  "title" : "UIKit.UIActivityItemsConfigurationProviding",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/objc(pl)UIAppearance": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)UIAppearance",
+  "title" : "UIKit.UIAppearance",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/objc(pl)UIAppearanceContainer": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)UIAppearanceContainer",
+  "title" : "UIKit.UIAppearanceContainer",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/objc(pl)UICoordinateSpace": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)UICoordinateSpace",
+  "title" : "UIKit.UICoordinateSpace",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/objc(pl)UIDynamicItem": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)UIDynamicItem",
+  "title" : "UIKit.UIDynamicItem",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/objc(pl)UIFocusEnvironment": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)UIFocusEnvironment",
+  "title" : "UIKit.UIFocusEnvironment",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/objc(pl)UIFocusItem": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)UIFocusItem",
+  "title" : "UIKit.UIFocusItem",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/objc(pl)UIFocusItemContainer": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)UIFocusItemContainer",
+  "title" : "UIKit.UIFocusItemContainer",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/objc(pl)UILargeContentViewerItem": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)UILargeContentViewerItem",
+  "title" : "UIKit.UILargeContentViewerItem",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/objc(pl)UIPasteConfigurationSupporting": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)UIPasteConfigurationSupporting",
+  "title" : "UIKit.UIPasteConfigurationSupporting",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/objc(pl)UIResponderStandardEditActions": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)UIResponderStandardEditActions",
+  "title" : "UIKit.UIResponderStandardEditActions",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/objc(pl)UITraitEnvironment": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)UITraitEnvironment",
+  "title" : "UIKit.UITraitEnvironment",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/objc(pl)UIUserActivityRestoring": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)UIUserActivityRestoring",
+  "title" : "UIKit.UIUserActivityRestoring",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/s23CustomStringConvertibleP": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/s23CustomStringConvertibleP",
+  "title" : "Swift.CustomStringConvertible",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/s28CustomDebugStringConvertibleP": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/s28CustomDebugStringConvertibleP",
+  "title" : "Swift.CustomDebugStringConvertible",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/s7CVarArgP": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/s7CVarArgP",
+  "title" : "Swift.CVarArg",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/s8SendableP": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/s8SendableP",
+  "title" : "Swift.Sendable",
+  "type" : "unresolvable"
+}
+}
+}

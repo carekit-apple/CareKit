@@ -1,0 +1,1413 @@
+{
+  "abstract" : [
+    {
+      "text" : "A stack view that supports animating the showing and hiding of arranged subviews,",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "and optionally creating separators dynamically.",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKit",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/components"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStackView"
+  },
+  "kind" : "symbol",
+  "metadata" : {
+    "externalID" : "c:@M@CareKitUI@objc(cs)OCKStackView",
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "class"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "OCKStackView"
+      }
+    ],
+    "modules" : [
+      {
+        "name" : "CareKitUI"
+      }
+    ],
+    "navigatorTitle" : [
+      {
+        "kind" : "identifier",
+        "text" : "OCKStackView"
+      }
+    ],
+    "role" : "symbol",
+    "roleHeading" : "Class",
+    "symbolKind" : "class",
+    "title" : "OCKStackView"
+  },
+  "primaryContentSections" : [
+    {
+      "declarations" : [
+        {
+          "languages" : [
+            "swift"
+          ],
+          "platforms" : [
+            "iOS"
+          ],
+          "tokens" : [
+            {
+              "kind" : "keyword",
+              "text" : "class"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "identifier",
+              "text" : "OCKStackView"
+            }
+          ]
+        }
+      ],
+      "kind" : "declarations"
+    }
+  ],
+  "relationshipsSections" : [
+    {
+      "identifiers" : [
+
+      ],
+      "kind" : "relationships",
+      "title" : "Inherits From",
+      "type" : "inheritsFrom"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/objc(pl)NSCoding",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStylable",
+        "doc:\/\/com.apple.CareKit\/objc(pl)NSObject",
+        "doc:\/\/com.apple.CareKit\/objc(pl)CALayerDelegate",
+        "doc:\/\/com.apple.CareKit\/s7CVarArgP",
+        "doc:\/\/com.apple.CareKit\/s28CustomDebugStringConvertibleP",
+        "doc:\/\/com.apple.CareKit\/s23CustomStringConvertibleP",
+        "doc:\/\/com.apple.CareKit\/SQ",
+        "doc:\/\/com.apple.CareKit\/SH",
+        "doc:\/\/com.apple.CareKit\/s8SendableP",
+        "doc:\/\/com.apple.CareKit\/objc(pl)UIAccessibilityIdentification",
+        "doc:\/\/com.apple.CareKit\/objc(pl)UIActivityItemsConfigurationProviding",
+        "doc:\/\/com.apple.CareKit\/objc(pl)UIAppearance",
+        "doc:\/\/com.apple.CareKit\/objc(pl)UIAppearanceContainer",
+        "doc:\/\/com.apple.CareKit\/objc(pl)UICoordinateSpace",
+        "doc:\/\/com.apple.CareKit\/objc(pl)UIDynamicItem",
+        "doc:\/\/com.apple.CareKit\/objc(pl)UIFocusEnvironment",
+        "doc:\/\/com.apple.CareKit\/objc(pl)UIFocusItem",
+        "doc:\/\/com.apple.CareKit\/objc(pl)UIFocusItemContainer",
+        "doc:\/\/com.apple.CareKit\/objc(pl)UILargeContentViewerItem",
+        "doc:\/\/com.apple.CareKit\/objc(pl)UIPasteConfigurationSupporting",
+        "doc:\/\/com.apple.CareKit\/objc(pl)UIResponderStandardEditActions",
+        "doc:\/\/com.apple.CareKit\/objc(pl)UITraitEnvironment",
+        "doc:\/\/com.apple.CareKit\/objc(pl)UIUserActivityRestoring"
+      ],
+      "kind" : "relationships",
+      "title" : "Conforms To",
+      "type" : "conformsTo"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 2,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "seeAlsoSections" : [
+    {
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKHeaderView",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/OCKDetailViewController",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKDetailView",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKSeparatorView",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKView"
+      ],
+      "title" : "Views"
+    }
+  ],
+  "topicSections" : [
+    {
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStackView\/init(style:)"
+      ],
+      "title" : "Creating Stack Views"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStackView\/arrangedSubviews",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStackView\/showsOuterSeparators",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStackView\/style-swift.property",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStackView\/customStyle",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStackView\/Style-swift.enum"
+      ],
+      "title" : "Customizing Stack Views"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStackView\/addArrangedSubview(_:)",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStackView\/addArrangedSubview(_:animated:)",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStackView\/insertArrangedSubview(_:at:)",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStackView\/insertArrangedSubview(_:at:animated:)",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStackView\/removeArrangedSubview(_:)",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStackView\/removeArrangedSubview(_:animated:)",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStackView\/clear(animated:)"
+      ],
+      "title" : "Modifying Subview Members"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStackView\/init(coder:)",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStackView\/init(frame:)"
+      ],
+      "title" : "Initializers"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStackView\/didMoveToSuperview()",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStackView\/removeFromSuperview()",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStackView\/styleDidChange()"
+      ],
+      "title" : "Instance Methods"
+    },
+    {
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStackView\/OCKStylable-Implementations"
+      ],
+      "title" : "Default Implementations"
+    }
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/carekitui\/ockstackview"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://com.apple.CareKit/SH": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/SH",
+  "title" : "Swift.Hashable",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/SQ": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/SQ",
+  "title" : "Swift.Equatable",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/documentation/CareKit": {
+  "abstract" : [
+    {
+      "text" : "Create apps that help people better understand and manage their health.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKit",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "CareKit",
+  "type" : "topic",
+  "url" : "\/documentation\/carekit"
+},
+"doc://com.apple.CareKit/documentation/CareKit/OCKDetailViewController": {
+  "abstract" : [
+    {
+      "text" : "A view controller that displays the details of another view.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKDetailViewController"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/OCKDetailViewController",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKDetailViewController"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKDetailViewController",
+  "type" : "topic",
+  "url" : "\/documentation\/carekit\/ockdetailviewcontroller"
+},
+"doc://com.apple.CareKit/documentation/CareKit/components": {
+  "abstract" : [
+    {
+      "text" : "Create and customize controls, labels, and views.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/components",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Components",
+  "type" : "topic",
+  "url" : "\/documentation\/carekit\/components"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKDetailView": {
+  "abstract" : [
+    {
+      "text" : "The view that displays fine-grain details.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKDetailView"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKDetailView",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKDetailView"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKDetailView",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockdetailview"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKHeaderView": {
+  "abstract" : [
+    {
+      "text" : "A view with a title and detail label.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKHeaderView"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKHeaderView",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKHeaderView"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKHeaderView",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockheaderview"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKSeparatorView": {
+  "abstract" : [
+    {
+      "text" : "A horizontal separator view.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKSeparatorView"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKSeparatorView",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKSeparatorView"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKSeparatorView",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockseparatorview"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKStackView": {
+  "abstract" : [
+    {
+      "text" : "A stack view that supports animating the showing and hiding of arranged subviews,",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "and optionally creating separators dynamically.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKStackView"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStackView",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKStackView"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKStackView",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockstackview"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKStackView/OCKStylable-Implementations": {
+  "abstract" : [
+
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStackView\/OCKStylable-Implementations",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "OCKStylable Implementations",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockstackview\/ockstylable-implementations"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKStackView/Style-swift.enum": {
+  "abstract" : [
+    {
+      "text" : "The styles that determine the appearnce of children in the stack view.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "enum"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Style"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStackView\/Style-swift.enum",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Style"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKStackView.Style",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockstackview\/style-swift.enum"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKStackView/addArrangedSubview(_:)": {
+  "abstract" : [
+    {
+      "text" : "Adds a subview to the end of the stack view.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "addArrangedSubview"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "c:objc(cs)UIView",
+      "text" : "UIView"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStackView\/addArrangedSubview(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "addArrangedSubview(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockstackview\/addarrangedsubview(_:)"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKStackView/addArrangedSubview(_:animated:)": {
+  "abstract" : [
+    {
+      "text" : "Adds a subview to the end of the stack view, with an option to animate the change.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "addArrangedSubview"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "c:objc(cs)UIView",
+      "text" : "UIView"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "animated"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStackView\/addArrangedSubview(_:animated:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "addArrangedSubview(_:animated:)",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockstackview\/addarrangedsubview(_:animated:)"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKStackView/arrangedSubviews": {
+  "abstract" : [
+    {
+      "text" : "An ordered array of the subviews.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "arrangedSubviews"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "c:objc(cs)UIView",
+      "text" : "UIView"
+    },
+    {
+      "kind" : "text",
+      "text" : "]"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStackView\/arrangedSubviews",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "arrangedSubviews",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockstackview\/arrangedsubviews"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKStackView/clear(animated:)": {
+  "abstract" : [
+    {
+      "text" : "Clears the views in the stack view.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "clear"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "animated"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStackView\/clear(animated:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "clear(animated:)",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockstackview\/clear(animated:)"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKStackView/customStyle": {
+  "abstract" : [
+    {
+      "text" : "An object that contains constants for styling the view.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "customStyle"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:9CareKitUI9OCKStylerP",
+      "text" : "OCKStyler"
+    },
+    {
+      "kind" : "text",
+      "text" : "?"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStackView\/customStyle",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "customStyle",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockstackview\/customstyle"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKStackView/didMoveToSuperview()": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "didMoveToSuperview"
+    },
+    {
+      "kind" : "text",
+      "text" : "()"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStackView\/didMoveToSuperview()",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "didMoveToSuperview()",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockstackview\/didmovetosuperview()"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKStackView/init(coder:)": {
+  "abstract" : [
+
+  ],
+  "deprecated" : true,
+  "fragments" : [
+    {
+      "kind" : "identifier",
+      "text" : "init"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "coder"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "c:objc(cs)NSCoder",
+      "text" : "NSCoder"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStackView\/init(coder:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "init(coder:)",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockstackview\/init(coder:)"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKStackView/init(frame:)": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "identifier",
+      "text" : "init"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "frame"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "c:@S@CGRect",
+      "text" : "CGRect"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStackView\/init(frame:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "init(frame:)",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockstackview\/init(frame:)"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKStackView/init(style:)": {
+  "abstract" : [
+    {
+      "text" : "Creates a stack view with a style.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "identifier",
+      "text" : "init"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "style"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:9CareKitUI12OCKStackViewC5StyleO",
+      "text" : "Style"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStackView\/init(style:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "init(style:)",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockstackview\/init(style:)"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKStackView/insertArrangedSubview(_:at:)": {
+  "abstract" : [
+    {
+      "text" : "Inserts an arranged subview at a specific index in the stack view.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "insertArrangedSubview"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "c:objc(cs)UIView",
+      "text" : "UIView"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "at"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStackView\/insertArrangedSubview(_:at:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "insertArrangedSubview(_:at:)",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockstackview\/insertarrangedsubview(_:at:)"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKStackView/insertArrangedSubview(_:at:animated:)": {
+  "abstract" : [
+    {
+      "text" : "Inserts an arranged subview at a specific index in the stack view, with an option",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "to animate the change.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "insertArrangedSubview"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "c:objc(cs)UIView",
+      "text" : "UIView"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "at"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "animated"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStackView\/insertArrangedSubview(_:at:animated:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "insertArrangedSubview(_:at:animated:)",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockstackview\/insertarrangedsubview(_:at:animated:)"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKStackView/removeArrangedSubview(_:)": {
+  "abstract" : [
+    {
+      "text" : "Removes an arranged subview from the stack view.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "removeArrangedSubview"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "c:objc(cs)UIView",
+      "text" : "UIView"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStackView\/removeArrangedSubview(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "removeArrangedSubview(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockstackview\/removearrangedsubview(_:)"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKStackView/removeArrangedSubview(_:animated:)": {
+  "abstract" : [
+    {
+      "text" : "Removes an arranged subview from the stack view, with an option to animate the change.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "removeArrangedSubview"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "c:objc(cs)UIView",
+      "text" : "UIView"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "animated"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStackView\/removeArrangedSubview(_:animated:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "removeArrangedSubview(_:animated:)",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockstackview\/removearrangedsubview(_:animated:)"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKStackView/removeFromSuperview()": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "removeFromSuperview"
+    },
+    {
+      "kind" : "text",
+      "text" : "()"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStackView\/removeFromSuperview()",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "removeFromSuperview()",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockstackview\/removefromsuperview()"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKStackView/showsOuterSeparators": {
+  "abstract" : [
+    {
+      "text" : "A Boolean value that determines if the top and bottom separators are shown when the",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "stack view has a separated style.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "showsOuterSeparators"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStackView\/showsOuterSeparators",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "showsOuterSeparators",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockstackview\/showsouterseparators"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKStackView/style-swift.property": {
+  "abstract" : [
+    {
+      "text" : "The style of the stack view.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "style"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:9CareKitUI12OCKStackViewC5StyleO",
+      "text" : "Style"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStackView\/style-swift.property",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "style",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockstackview\/style-swift.property"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKStackView/styleDidChange()": {
+  "abstract" : [
+    {
+      "text" : "Called when the style changes.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "styleDidChange"
+    },
+    {
+      "kind" : "text",
+      "text" : "()"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStackView\/styleDidChange()",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "styleDidChange()",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockstackview\/styledidchange()"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKStylable": {
+  "abstract" : [
+    {
+      "text" : "An object that to which you can apply style.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "protocol"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKStylable"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStylable",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKStylable"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKStylable",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockstylable"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKView": {
+  "abstract" : [
+    {
+      "text" : "A view without any children, that adheres and responds to styling.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKView"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKView",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKView"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKView",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockview"
+},
+"doc://com.apple.CareKit/objc(pl)CALayerDelegate": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)CALayerDelegate",
+  "title" : "QuartzCore.CALayerDelegate",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/objc(pl)NSCoding": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)NSCoding",
+  "title" : "Foundation.NSCoding",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/objc(pl)NSObject": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)NSObject",
+  "title" : "ObjectiveC.NSObjectProtocol",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/objc(pl)UIAccessibilityIdentification": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)UIAccessibilityIdentification",
+  "title" : "UIKit.UIAccessibilityIdentification",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/objc(pl)UIActivityItemsConfigurationProviding": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)UIActivityItemsConfigurationProviding",
+  "title" : "UIKit.UIActivityItemsConfigurationProviding",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/objc(pl)UIAppearance": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)UIAppearance",
+  "title" : "UIKit.UIAppearance",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/objc(pl)UIAppearanceContainer": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)UIAppearanceContainer",
+  "title" : "UIKit.UIAppearanceContainer",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/objc(pl)UICoordinateSpace": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)UICoordinateSpace",
+  "title" : "UIKit.UICoordinateSpace",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/objc(pl)UIDynamicItem": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)UIDynamicItem",
+  "title" : "UIKit.UIDynamicItem",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/objc(pl)UIFocusEnvironment": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)UIFocusEnvironment",
+  "title" : "UIKit.UIFocusEnvironment",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/objc(pl)UIFocusItem": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)UIFocusItem",
+  "title" : "UIKit.UIFocusItem",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/objc(pl)UIFocusItemContainer": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)UIFocusItemContainer",
+  "title" : "UIKit.UIFocusItemContainer",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/objc(pl)UILargeContentViewerItem": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)UILargeContentViewerItem",
+  "title" : "UIKit.UILargeContentViewerItem",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/objc(pl)UIPasteConfigurationSupporting": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)UIPasteConfigurationSupporting",
+  "title" : "UIKit.UIPasteConfigurationSupporting",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/objc(pl)UIResponderStandardEditActions": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)UIResponderStandardEditActions",
+  "title" : "UIKit.UIResponderStandardEditActions",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/objc(pl)UITraitEnvironment": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)UITraitEnvironment",
+  "title" : "UIKit.UITraitEnvironment",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/objc(pl)UIUserActivityRestoring": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)UIUserActivityRestoring",
+  "title" : "UIKit.UIUserActivityRestoring",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/s23CustomStringConvertibleP": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/s23CustomStringConvertibleP",
+  "title" : "Swift.CustomStringConvertible",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/s28CustomDebugStringConvertibleP": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/s28CustomDebugStringConvertibleP",
+  "title" : "Swift.CustomDebugStringConvertible",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/s7CVarArgP": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/s7CVarArgP",
+  "title" : "Swift.CVarArg",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/s8SendableP": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/s8SendableP",
+  "title" : "Swift.Sendable",
+  "type" : "unresolvable"
+}
+}
+}

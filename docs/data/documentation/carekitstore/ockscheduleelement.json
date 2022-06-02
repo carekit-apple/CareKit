@@ -1,0 +1,1835 @@
+{
+  "abstract" : [
+    {
+      "text" : "An object that represents a single event that repeats at fixed intervals.",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKit"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement"
+  },
+  "kind" : "symbol",
+  "metadata" : {
+    "externalID" : "s:12CareKitStore18OCKScheduleElementV",
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "struct"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "OCKScheduleElement"
+      }
+    ],
+    "modules" : [
+      {
+        "name" : "CareKitStore"
+      }
+    ],
+    "navigatorTitle" : [
+      {
+        "kind" : "identifier",
+        "text" : "OCKScheduleElement"
+      }
+    ],
+    "role" : "symbol",
+    "roleHeading" : "Structure",
+    "symbolKind" : "struct",
+    "title" : "OCKScheduleElement"
+  },
+  "primaryContentSections" : [
+    {
+      "declarations" : [
+        {
+          "languages" : [
+            "swift"
+          ],
+          "platforms" : [
+            "iOS"
+          ],
+          "tokens" : [
+            {
+              "kind" : "keyword",
+              "text" : "struct"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "identifier",
+              "text" : "OCKScheduleElement"
+            }
+          ]
+        }
+      ],
+      "kind" : "declarations"
+    },
+    {
+      "content" : [
+        {
+          "anchor" : "Overview",
+          "level" : 2,
+          "text" : "Overview",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "The schedule element may have a fixed duration or repeat indefinitely.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        }
+      ],
+      "kind" : "content"
+    }
+  ],
+  "relationshipsSections" : [
+    {
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/Se",
+        "doc:\/\/com.apple.CareKit\/SE",
+        "doc:\/\/com.apple.CareKit\/SQ"
+      ],
+      "kind" : "relationships",
+      "title" : "Conforms To",
+      "type" : "conformsTo"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 2,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "seeAlsoSections" : [
+    {
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/creating-and-displaying-tasks-for-a-patient",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/creating-schedules-for-tasks",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKTask",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKSchedule",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleEvent",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKEvent",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKOutcome",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKOutcomeValue"
+      ],
+      "title" : "Tasks and Outcomes"
+    }
+  ],
+  "topicSections" : [
+    {
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/init(start:end:interval:text:targetValues:duration:)",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/offset(by:)"
+      ],
+      "title" : "Creating Schedule Elements"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/events(from:to:)"
+      ],
+      "title" : "Getting Events from a Schedule Element"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/duration-swift.property",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/text",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/start",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/end",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/interval",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/targetValues",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/elements",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/createdDate",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/updatedDate",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/groupIdentifier",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/tags",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/remoteID",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/userInfo",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/source",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/asset",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/notes",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/schemaVersion",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/timezone",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/versionID"
+      ],
+      "title" : "Customizing a Schedule Element"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/date(ofOccurrence:)"
+      ],
+      "title" : "Getting Dates of Occurrences"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/events(betweenOccurrenceIndex:and:)",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/subscript(_:)"
+      ],
+      "title" : "Getting Events"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/Duration-swift.enum"
+      ],
+      "title" : "Defining Event Durations"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/init(from:)"
+      ],
+      "title" : "Initializers"
+    },
+    {
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/Equatable-Implementations"
+      ],
+      "title" : "Default Implementations"
+    }
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/carekitstore\/ockscheduleelement"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://com.apple.CareKit/SE": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/SE",
+  "title" : "Swift.Encodable",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/SQ": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/SQ",
+  "title" : "Swift.Equatable",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/Se": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/Se",
+  "title" : "Swift.Decodable",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/documentation/CareKit": {
+  "abstract" : [
+    {
+      "text" : "Create apps that help people better understand and manage their health.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKit",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "CareKit",
+  "type" : "topic",
+  "url" : "\/documentation\/carekit"
+},
+"doc://com.apple.CareKit/documentation/CareKit/creating-and-displaying-tasks-for-a-patient": {
+  "abstract" : [
+    {
+      "text" : "Create tasks and schedules for patients and display them using a synchronized view",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "controller.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/creating-and-displaying-tasks-for-a-patient",
+  "kind" : "article",
+  "role" : "article",
+  "title" : "Creating and Displaying Tasks for a Patient",
+  "type" : "topic",
+  "url" : "\/documentation\/carekit\/creating-and-displaying-tasks-for-a-patient"
+},
+"doc://com.apple.CareKit/documentation/CareKit/creating-schedules-for-tasks": {
+  "abstract" : [
+    {
+      "text" : "Create schedules for tasks using multiple schedule elements.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/creating-schedules-for-tasks",
+  "kind" : "article",
+  "role" : "article",
+  "title" : "Creating Schedules for Tasks",
+  "type" : "topic",
+  "url" : "\/documentation\/carekit\/creating-schedules-for-tasks"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKEvent": {
+  "abstract" : [
+    {
+      "text" : "An object that represents a single occasion on which a task is scheduled to occur.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKEvent"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKEvent",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKEvent"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKEvent",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockevent"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKOutcome": {
+  "abstract" : [
+    {
+      "text" : "The result of an event that corresonds to a task.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKOutcome"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKOutcome",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKOutcome"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKOutcome",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockoutcome"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKOutcomeValue": {
+  "abstract" : [
+    {
+      "text" : "An object that represents a measurement that a user gives in response to a task.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKOutcomeValue"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKOutcomeValue",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKOutcomeValue"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKOutcomeValue",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockoutcomevalue"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKSchedule": {
+  "abstract" : [
+    {
+      "text" : "A compositon of any number of other schedulable objects.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKSchedule"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKSchedule",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKSchedule"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKSchedule",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockschedule"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKScheduleElement": {
+  "abstract" : [
+    {
+      "text" : "An object that represents a single event that repeats at fixed intervals.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKScheduleElement"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKScheduleElement"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKScheduleElement",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockscheduleelement"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKScheduleElement/Duration-swift.enum": {
+  "abstract" : [
+    {
+      "text" : "The amount of time the event takes.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "enum"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "Duration"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/Duration-swift.enum",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "Duration"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKScheduleElement.Duration",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockscheduleelement\/duration-swift.enum"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKScheduleElement/Equatable-Implementations": {
+  "abstract" : [
+
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/Equatable-Implementations",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Equatable Implementations",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockscheduleelement\/equatable-implementations"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKScheduleElement/asset": {
+  "abstract" : [
+    {
+      "text" : "A string that specifies the location of some asset associated with this object.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "asset"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    },
+    {
+      "kind" : "text",
+      "text" : "?"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/asset",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "asset",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockscheduleelement\/asset"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKScheduleElement/createdDate": {
+  "abstract" : [
+    {
+      "text" : "The date the database first persisted the object.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "createdDate"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:10Foundation4DateV",
+      "text" : "Date"
+    },
+    {
+      "kind" : "text",
+      "text" : "?"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/createdDate",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "createdDate",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockscheduleelement\/createddate"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKScheduleElement/date(ofOccurrence:)": {
+  "abstract" : [
+    {
+      "text" : "Returns the date of the Nth occurrence of a schedule element.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "date"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "ofOccurrence"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:10Foundation4DateV",
+      "text" : "Date"
+    },
+    {
+      "kind" : "text",
+      "text" : "?"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/date(ofOccurrence:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "date(ofOccurrence:)",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockscheduleelement\/date(ofoccurrence:)"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKScheduleElement/duration-swift.property": {
+  "abstract" : [
+    {
+      "text" : "The amount of time the event should take, in seconds.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "duration"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12CareKitStore18OCKScheduleElementV8DurationO",
+      "text" : "Duration"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/duration-swift.property",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "duration",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockscheduleelement\/duration-swift.property"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKScheduleElement/elements": {
+  "abstract" : [
+    {
+      "text" : "The components that make up the schedule.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "elements"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12CareKitStore18OCKScheduleElementV",
+      "text" : "OCKScheduleElement"
+    },
+    {
+      "kind" : "text",
+      "text" : "]"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/elements",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "elements",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockscheduleelement\/elements"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKScheduleElement/end": {
+  "abstract" : [
+    {
+      "text" : "The latest possible time for an event to occur.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "end"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:10Foundation4DateV",
+      "text" : "Date"
+    },
+    {
+      "kind" : "text",
+      "text" : "?"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/end",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "end",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockscheduleelement\/end"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKScheduleElement/events(betweenOccurrenceIndex:and:)": {
+  "abstract" : [
+    {
+      "text" : "Returns an array of events that occur between specific start and stop indexes.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "events"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "betweenOccurrenceIndex"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "and"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12CareKitStore16OCKScheduleEventV",
+      "text" : "OCKScheduleEvent"
+    },
+    {
+      "kind" : "text",
+      "text" : "?]"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/events(betweenOccurrenceIndex:and:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "events(betweenOccurrenceIndex:and:)",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockscheduleelement\/events(betweenoccurrenceindex:and:)"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKScheduleElement/events(from:to:)": {
+  "abstract" : [
+    {
+      "text" : "Returns an array of events that occur between the start and end dates provided.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "events"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "from"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:10Foundation4DateV",
+      "text" : "Date"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "to"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:10Foundation4DateV",
+      "text" : "Date"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12CareKitStore16OCKScheduleEventV",
+      "text" : "OCKScheduleEvent"
+    },
+    {
+      "kind" : "text",
+      "text" : "]"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/events(from:to:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "events(from:to:)",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockscheduleelement\/events(from:to:)"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKScheduleElement/groupIdentifier": {
+  "abstract" : [
+    {
+      "text" : "A user-defined group identifier that can be used both for querying and sorting results.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "groupIdentifier"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    },
+    {
+      "kind" : "text",
+      "text" : "?"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/groupIdentifier",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "groupIdentifier",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockscheduleelement\/groupidentifier"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKScheduleElement/init(from:)": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "identifier",
+      "text" : "init"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "from"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:s7DecoderP",
+      "text" : "Decoder"
+    },
+    {
+      "kind" : "text",
+      "text" : ") "
+    },
+    {
+      "kind" : "keyword",
+      "text" : "throws"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/init(from:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "init(from:)",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockscheduleelement\/init(from:)"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKScheduleElement/init(start:end:interval:text:targetValues:duration:)": {
+  "abstract" : [
+    {
+      "text" : "Creates a schedule element by specifying the start date, end date, interval, title,",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "target values, and duration.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "identifier",
+      "text" : "init"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "start"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:10Foundation4DateV",
+      "text" : "Date"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "end"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:10Foundation4DateV",
+      "text" : "Date"
+    },
+    {
+      "kind" : "text",
+      "text" : "?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "interval"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:10Foundation14DateComponentsV",
+      "text" : "DateComponents"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "text"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    },
+    {
+      "kind" : "text",
+      "text" : "?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "targetValues"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12CareKitStore15OCKOutcomeValueV",
+      "text" : "OCKOutcomeValue"
+    },
+    {
+      "kind" : "text",
+      "text" : "], "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "duration"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12CareKitStore18OCKScheduleElementV8DurationO",
+      "text" : "Duration"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/init(start:end:interval:text:targetValues:duration:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "init(start:end:interval:text:targetValues:duration:)",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockscheduleelement\/init(start:end:interval:text:targetvalues:duration:)"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKScheduleElement/interval": {
+  "abstract" : [
+    {
+      "text" : "The amount of time between events.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "interval"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:10Foundation14DateComponentsV",
+      "text" : "DateComponents"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/interval",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "interval",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockscheduleelement\/interval"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKScheduleElement/notes": {
+  "abstract" : [
+    {
+      "text" : "An array of notes associated with this object.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "notes"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12CareKitStore7OCKNoteV",
+      "text" : "OCKNote"
+    },
+    {
+      "kind" : "text",
+      "text" : "]?"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/notes",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "notes",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockscheduleelement\/notes"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKScheduleElement/offset(by:)": {
+  "abstract" : [
+    {
+      "text" : "Returns a new schedule element, with all event times offset by the given value.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "offset"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "by"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:10Foundation14DateComponentsV",
+      "text" : "DateComponents"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12CareKitStore18OCKScheduleElementV",
+      "text" : "OCKScheduleElement"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/offset(by:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "offset(by:)",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockscheduleelement\/offset(by:)"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKScheduleElement/remoteID": {
+  "abstract" : [
+    {
+      "text" : "A string value that represents a unique identifier, which a remote database uses",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "optionally.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "remoteID"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    },
+    {
+      "kind" : "text",
+      "text" : "?"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/remoteID",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "remoteID",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockscheduleelement\/remoteid"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKScheduleElement/schemaVersion": {
+  "abstract" : [
+    {
+      "text" : "The semantic version of the database schema when you create this object.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "schemaVersion"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12CareKitStore18OCKSemanticVersionV",
+      "text" : "OCKSemanticVersion"
+    },
+    {
+      "kind" : "text",
+      "text" : "?"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/schemaVersion",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "schemaVersion",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockscheduleelement\/schemaversion"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKScheduleElement/source": {
+  "abstract" : [
+    {
+      "text" : "A string that specifies from where this object originated.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "source"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    },
+    {
+      "kind" : "text",
+      "text" : "?"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/source",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "source",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockscheduleelement\/source"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKScheduleElement/start": {
+  "abstract" : [
+    {
+      "text" : "The date and time the first event occurs.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "start"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:10Foundation4DateV",
+      "text" : "Date"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/start",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "start",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockscheduleelement\/start"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKScheduleElement/subscript(_:)": {
+  "abstract" : [
+    {
+      "text" : "Returns the Nth event of this schedule.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "subscript"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Si",
+      "text" : "Int"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12CareKitStore16OCKScheduleEventV",
+      "text" : "OCKScheduleEvent"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/subscript(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "subscript(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockscheduleelement\/subscript(_:)"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKScheduleElement/tags": {
+  "abstract" : [
+    {
+      "text" : "An array of user-defined tags that can be used to sort or classify objects or values.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "tags"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    },
+    {
+      "kind" : "text",
+      "text" : "]?"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/tags",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "tags",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockscheduleelement\/tags"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKScheduleElement/targetValues": {
+  "abstract" : [
+    {
+      "text" : "An array of values that specify what values the user will record.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "targetValues"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12CareKitStore15OCKOutcomeValueV",
+      "text" : "OCKOutcomeValue"
+    },
+    {
+      "kind" : "text",
+      "text" : "]"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/targetValues",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "targetValues",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockscheduleelement\/targetvalues"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKScheduleElement/text": {
+  "abstract" : [
+    {
+      "text" : "A description of the time the element represents.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "text"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    },
+    {
+      "kind" : "text",
+      "text" : "?"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/text",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "text",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockscheduleelement\/text"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKScheduleElement/timezone": {
+  "abstract" : [
+    {
+      "text" : "The time zone in which this record was created in.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "timezone"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:10Foundation8TimeZoneV",
+      "text" : "TimeZone"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/timezone",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "timezone",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockscheduleelement\/timezone"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKScheduleElement/updatedDate": {
+  "abstract" : [
+    {
+      "text" : "The most recent date when the store updated the object.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "updatedDate"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:10Foundation4DateV",
+      "text" : "Date"
+    },
+    {
+      "kind" : "text",
+      "text" : "?"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/updatedDate",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "updatedDate",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockscheduleelement\/updateddate"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKScheduleElement/userInfo": {
+  "abstract" : [
+    {
+      "text" : "A dictionary of information that can be provided by developers to support their own",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "unique use cases.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "userInfo"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    },
+    {
+      "kind" : "text",
+      "text" : " : "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    },
+    {
+      "kind" : "text",
+      "text" : "]?"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/userInfo",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "userInfo",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockscheduleelement\/userinfo"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKScheduleElement/versionID": {
+  "abstract" : [
+    {
+      "text" : "A unique identifier used by the local database.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "versionID"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12CareKitStore17OCKLocalVersionIDV",
+      "text" : "OCKLocalVersionID"
+    },
+    {
+      "kind" : "text",
+      "text" : "?"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleElement\/versionID",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "versionID",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockscheduleelement\/versionid"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKScheduleEvent": {
+  "abstract" : [
+    {
+      "text" : "The schedule event for the task occurrence.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKScheduleEvent"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKScheduleEvent",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKScheduleEvent"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKScheduleEvent",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockscheduleevent"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKTask": {
+  "abstract" : [
+    {
+      "text" : "An object that represents some task or action a patient needs to perform.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKTask"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKTask",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKTask"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKTask",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ocktask"
+}
+}
+}

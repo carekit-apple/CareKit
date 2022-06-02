@@ -1,0 +1,363 @@
+{
+  "abstract" : [
+    {
+      "text" : "The case for a Boolean value.",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKit",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKOutcomeValue",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKOutcomeValueType"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKOutcomeValueType\/boolean"
+  },
+  "kind" : "symbol",
+  "metadata" : {
+    "externalID" : "s:12CareKitStore19OCKOutcomeValueTypeO7booleanyA2CmF",
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "case"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "boolean"
+      }
+    ],
+    "modules" : [
+      {
+        "name" : "CareKitStore"
+      }
+    ],
+    "role" : "symbol",
+    "roleHeading" : "Case",
+    "symbolKind" : "case",
+    "title" : "OCKOutcomeValueType.boolean"
+  },
+  "primaryContentSections" : [
+    {
+      "declarations" : [
+        {
+          "languages" : [
+            "swift"
+          ],
+          "platforms" : [
+            "iOS"
+          ],
+          "tokens" : [
+            {
+              "kind" : "keyword",
+              "text" : "case"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "identifier",
+              "text" : "boolean"
+            }
+          ]
+        }
+      ],
+      "kind" : "declarations"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 2,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "seeAlsoSections" : [
+    {
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKOutcomeValueType\/binary",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKOutcomeValueType\/date",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKOutcomeValueType\/double",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKOutcomeValueType\/integer",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKOutcomeValueType\/text"
+      ],
+      "title" : "Specifying Value Types"
+    }
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/carekitstore\/ockoutcomevaluetype\/boolean"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://com.apple.CareKit/documentation/CareKit": {
+  "abstract" : [
+    {
+      "text" : "Create apps that help people better understand and manage their health.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKit",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "CareKit",
+  "type" : "topic",
+  "url" : "\/documentation\/carekit"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKOutcomeValue": {
+  "abstract" : [
+    {
+      "text" : "An object that represents a measurement that a user gives in response to a task.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKOutcomeValue"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKOutcomeValue",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKOutcomeValue"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKOutcomeValue",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockoutcomevalue"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKOutcomeValueType": {
+  "abstract" : [
+    {
+      "text" : "The types of values that can be saved to the store.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "enum"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKOutcomeValueType"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKOutcomeValueType",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKOutcomeValueType"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKOutcomeValueType",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockoutcomevaluetype"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKOutcomeValueType/binary": {
+  "abstract" : [
+    {
+      "text" : "The case for a binary value.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "case"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "binary"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKOutcomeValueType\/binary",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "OCKOutcomeValueType.binary",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockoutcomevaluetype\/binary"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKOutcomeValueType/boolean": {
+  "abstract" : [
+    {
+      "text" : "The case for a Boolean value.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "case"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "boolean"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKOutcomeValueType\/boolean",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "OCKOutcomeValueType.boolean",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockoutcomevaluetype\/boolean"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKOutcomeValueType/date": {
+  "abstract" : [
+    {
+      "text" : "The case for a date value.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "case"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "date"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKOutcomeValueType\/date",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "OCKOutcomeValueType.date",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockoutcomevaluetype\/date"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKOutcomeValueType/double": {
+  "abstract" : [
+    {
+      "text" : "The case for a double value.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "case"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "double"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKOutcomeValueType\/double",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "OCKOutcomeValueType.double",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockoutcomevaluetype\/double"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKOutcomeValueType/integer": {
+  "abstract" : [
+    {
+      "text" : "The case for an integer value.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "case"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "integer"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKOutcomeValueType\/integer",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "OCKOutcomeValueType.integer",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockoutcomevaluetype\/integer"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKOutcomeValueType/text": {
+  "abstract" : [
+    {
+      "text" : "The case for a text value.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "case"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKOutcomeValueType\/text",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "OCKOutcomeValueType.text",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockoutcomevaluetype\/text"
+}
+}
+}

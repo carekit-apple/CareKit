@@ -1,0 +1,1082 @@
+{
+  "abstract" : [
+    {
+      "text" : "A button with an icon and title label.",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKit",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/components"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKChecklistItemButton"
+  },
+  "kind" : "symbol",
+  "metadata" : {
+    "externalID" : "s:9CareKitUI22OCKChecklistItemButtonC",
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "class"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "OCKChecklistItemButton"
+      }
+    ],
+    "modules" : [
+      {
+        "name" : "CareKitUI"
+      }
+    ],
+    "navigatorTitle" : [
+      {
+        "kind" : "identifier",
+        "text" : "OCKChecklistItemButton"
+      }
+    ],
+    "role" : "symbol",
+    "roleHeading" : "Class",
+    "symbolKind" : "class",
+    "title" : "OCKChecklistItemButton"
+  },
+  "primaryContentSections" : [
+    {
+      "declarations" : [
+        {
+          "languages" : [
+            "swift"
+          ],
+          "platforms" : [
+            "iOS"
+          ],
+          "tokens" : [
+            {
+              "kind" : "keyword",
+              "text" : "class"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "identifier",
+              "text" : "OCKChecklistItemButton"
+            }
+          ]
+        }
+      ],
+      "kind" : "declarations"
+    }
+  ],
+  "relationshipsSections" : [
+    {
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKAnimatedButton"
+      ],
+      "kind" : "relationships",
+      "title" : "Inherits From",
+      "type" : "inheritsFrom"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/objc(pl)NSCoding",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStylable",
+        "doc:\/\/com.apple.CareKit\/objc(pl)NSObject",
+        "doc:\/\/com.apple.CareKit\/objc(pl)CALayerDelegate",
+        "doc:\/\/com.apple.CareKit\/s7CVarArgP",
+        "doc:\/\/com.apple.CareKit\/s28CustomDebugStringConvertibleP",
+        "doc:\/\/com.apple.CareKit\/s23CustomStringConvertibleP",
+        "doc:\/\/com.apple.CareKit\/SQ",
+        "doc:\/\/com.apple.CareKit\/SH",
+        "doc:\/\/com.apple.CareKit\/s8SendableP",
+        "doc:\/\/com.apple.CareKit\/objc(pl)UIAccessibilityIdentification",
+        "doc:\/\/com.apple.CareKit\/objc(pl)UIActivityItemsConfigurationProviding",
+        "doc:\/\/com.apple.CareKit\/objc(pl)UIAppearance",
+        "doc:\/\/com.apple.CareKit\/objc(pl)UIAppearanceContainer",
+        "doc:\/\/com.apple.CareKit\/objc(pl)UIContextMenuInteractionDelegate",
+        "doc:\/\/com.apple.CareKit\/objc(pl)UICoordinateSpace",
+        "doc:\/\/com.apple.CareKit\/objc(pl)UIDynamicItem",
+        "doc:\/\/com.apple.CareKit\/objc(pl)UIFocusEnvironment",
+        "doc:\/\/com.apple.CareKit\/objc(pl)UIFocusItem",
+        "doc:\/\/com.apple.CareKit\/objc(pl)UIFocusItemContainer",
+        "doc:\/\/com.apple.CareKit\/objc(pl)UILargeContentViewerItem",
+        "doc:\/\/com.apple.CareKit\/objc(pl)UIPasteConfigurationSupporting",
+        "doc:\/\/com.apple.CareKit\/objc(pl)UIResponderStandardEditActions",
+        "doc:\/\/com.apple.CareKit\/objc(pl)UITraitEnvironment",
+        "doc:\/\/com.apple.CareKit\/objc(pl)UIUserActivityRestoring"
+      ],
+      "kind" : "relationships",
+      "title" : "Conforms To",
+      "type" : "conformsTo"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 2,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "seeAlsoSections" : [
+    {
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKLogItemButton",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKLabeledCheckmarkButton",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKCheckmarkButton",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKContactButton",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKAddressButton",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKAnimatedButton",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKLabeledButton"
+      ],
+      "title" : "Controls"
+    }
+  ],
+  "topicSections" : [
+    {
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKChecklistItemButton\/init()",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKChecklistItemButton\/init(contentView:highlightOptions:handlesSelection:)",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKChecklistItemButton\/init(coder:)"
+      ],
+      "title" : "Creating Checklist Item Buttons"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKChecklistItemButton\/contentStackView",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKChecklistItemButton\/label",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKChecklistItemButton\/checkmarkButton"
+      ],
+      "title" : "Configuring Checklist Item Buttons"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKChecklistItemButton\/setSelected(_:animated:)",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKChecklistItemButton\/setStyleForSelectedState(_:)"
+      ],
+      "title" : "Configuring Selected State"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKChecklistItemButton\/styleDidChange()"
+      ],
+      "title" : "Monitoring Styles"
+    }
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/carekitui\/ockchecklistitembutton"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://com.apple.CareKit/SH": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/SH",
+  "title" : "Swift.Hashable",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/SQ": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/SQ",
+  "title" : "Swift.Equatable",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/documentation/CareKit": {
+  "abstract" : [
+    {
+      "text" : "Create apps that help people better understand and manage their health.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKit",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "CareKit",
+  "type" : "topic",
+  "url" : "\/documentation\/carekit"
+},
+"doc://com.apple.CareKit/documentation/CareKit/components": {
+  "abstract" : [
+    {
+      "text" : "Create and customize controls, labels, and views.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/components",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Components",
+  "type" : "topic",
+  "url" : "\/documentation\/carekit\/components"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKAddressButton": {
+  "abstract" : [
+    {
+      "text" : "A button with a location image, title, and detail labels.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKAddressButton"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKAddressButton",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKAddressButton"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKAddressButton",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockaddressbutton"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKAnimatedButton": {
+  "abstract" : [
+    {
+      "text" : "A button that has animated state changes, and responds to highlight and selection",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "states.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKAnimatedButton"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKAnimatedButton",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKAnimatedButton"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKAnimatedButton",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockanimatedbutton"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKChecklistItemButton": {
+  "abstract" : [
+    {
+      "text" : "A button with an icon and title label.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKChecklistItemButton"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKChecklistItemButton",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKChecklistItemButton"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKChecklistItemButton",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockchecklistitembutton"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKChecklistItemButton/checkmarkButton": {
+  "abstract" : [
+    {
+      "text" : "The checkmark-style button on the trailing end of the view.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "checkmarkButton"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:9CareKitUI18OCKCheckmarkButtonC",
+      "text" : "OCKCheckmarkButton"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKChecklistItemButton\/checkmarkButton",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "checkmarkButton",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockchecklistitembutton\/checkmarkbutton"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKChecklistItemButton/contentStackView": {
+  "abstract" : [
+    {
+      "text" : "A view that contains the button’s content, and arranges its children horizontally.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "contentStackView"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "c:@M@CareKitUI@objc(cs)OCKStackView",
+      "text" : "OCKStackView"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKChecklistItemButton\/contentStackView",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "contentStackView",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockchecklistitembutton\/contentstackview"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKChecklistItemButton/init()": {
+  "abstract" : [
+    {
+      "text" : "Creates a new checklist item button.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "identifier",
+      "text" : "init"
+    },
+    {
+      "kind" : "text",
+      "text" : "()"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKChecklistItemButton\/init()",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "init()",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockchecklistitembutton\/init()"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKChecklistItemButton/init(coder:)": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "identifier",
+      "text" : "init"
+    },
+    {
+      "kind" : "text",
+      "text" : "?("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "coder"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "c:objc(cs)NSCoder",
+      "text" : "NSCoder"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKChecklistItemButton\/init(coder:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "init(coder:)",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockchecklistitembutton\/init(coder:)"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKChecklistItemButton/init(contentView:highlightOptions:handlesSelection:)": {
+  "abstract" : [
+    {
+      "text" : "Creat an animated button with injected content. The content will automatically be constrained to the button’s ",
+      "type" : "text"
+    },
+    {
+      "code" : "layoutMarginGuide",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : ".",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "identifier",
+      "text" : "init"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "contentView"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "c:@M@CareKitUI@objc(cs)OCKStackView",
+      "text" : "OCKStackView"
+    },
+    {
+      "kind" : "text",
+      "text" : "?, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "highlightOptions"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sh",
+      "text" : "Set"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:9CareKitUI17OCKAnimatedButtonC",
+      "text" : "OCKAnimatedButton"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "c:@M@CareKitUI@objc(cs)OCKStackView",
+      "text" : "OCKStackView"
+    },
+    {
+      "kind" : "text",
+      "text" : ">."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:9CareKitUI17OCKAnimatedButtonC15HighlightOptionO",
+      "text" : "HighlightOption"
+    },
+    {
+      "kind" : "text",
+      "text" : ">, "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "handlesSelection"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKChecklistItemButton\/init(contentView:highlightOptions:handlesSelection:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "init(contentView:highlightOptions:handlesSelection:)",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockchecklistitembutton\/init(contentview:highlightoptions:handlesselection:)"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKChecklistItemButton/label": {
+  "abstract" : [
+    {
+      "text" : "The label on the leading side of the button.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "label"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "c:@M@CareKitUI@objc(cs)OCKLabel",
+      "text" : "OCKLabel"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKChecklistItemButton\/label",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "label",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockchecklistitembutton\/label"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKChecklistItemButton/setSelected(_:animated:)": {
+  "abstract" : [
+    {
+      "text" : "Sets the button’s selected state, and optionally animates the change.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "setSelected"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "animated"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKChecklistItemButton\/setSelected(_:animated:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "setSelected(_:animated:)",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockchecklistitembutton\/setselected(_:animated:)"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKChecklistItemButton/setStyleForSelectedState(_:)": {
+  "abstract" : [
+    {
+      "text" : "Sets the style for the button’s selected state.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "setStyleForSelectedState"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKChecklistItemButton\/setStyleForSelectedState(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "setStyleForSelectedState(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockchecklistitembutton\/setstyleforselectedstate(_:)"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKChecklistItemButton/styleDidChange()": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "styleDidChange"
+    },
+    {
+      "kind" : "text",
+      "text" : "()"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKChecklistItemButton\/styleDidChange()",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "styleDidChange()",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockchecklistitembutton\/styledidchange()"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKCheckmarkButton": {
+  "abstract" : [
+    {
+      "text" : "A button that shows a checkmark in its selected state and an empty ring in its deselected",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "state.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKCheckmarkButton"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKCheckmarkButton",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKCheckmarkButton"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKCheckmarkButton",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockcheckmarkbutton"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKContactButton": {
+  "abstract" : [
+    {
+      "text" : "A button that initiates contact, which displays a label and image.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKContactButton"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKContactButton",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKContactButton"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKContactButton",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockcontactbutton"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKLabeledButton": {
+  "abstract" : [
+    {
+      "text" : "A button with a title label and filled background color.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKLabeledButton"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKLabeledButton",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKLabeledButton"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKLabeledButton",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ocklabeledbutton"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKLabeledCheckmarkButton": {
+  "abstract" : [
+    {
+      "text" : "A button that has a label, shows a checkmark in its selected state, and an empty",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "ring in its deselected state.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKLabeledCheckmarkButton"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKLabeledCheckmarkButton",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKLabeledCheckmarkButton"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKLabeledCheckmarkButton",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ocklabeledcheckmarkbutton"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKLogItemButton": {
+  "abstract" : [
+    {
+      "text" : "A button that logs a single event.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKLogItemButton"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKLogItemButton",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKLogItemButton"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKLogItemButton",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ocklogitembutton"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKStylable": {
+  "abstract" : [
+    {
+      "text" : "An object that to which you can apply style.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "protocol"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKStylable"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStylable",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKStylable"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKStylable",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockstylable"
+},
+"doc://com.apple.CareKit/objc(pl)CALayerDelegate": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)CALayerDelegate",
+  "title" : "QuartzCore.CALayerDelegate",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/objc(pl)NSCoding": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)NSCoding",
+  "title" : "Foundation.NSCoding",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/objc(pl)NSObject": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)NSObject",
+  "title" : "ObjectiveC.NSObjectProtocol",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/objc(pl)UIAccessibilityIdentification": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)UIAccessibilityIdentification",
+  "title" : "UIKit.UIAccessibilityIdentification",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/objc(pl)UIActivityItemsConfigurationProviding": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)UIActivityItemsConfigurationProviding",
+  "title" : "UIKit.UIActivityItemsConfigurationProviding",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/objc(pl)UIAppearance": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)UIAppearance",
+  "title" : "UIKit.UIAppearance",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/objc(pl)UIAppearanceContainer": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)UIAppearanceContainer",
+  "title" : "UIKit.UIAppearanceContainer",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/objc(pl)UIContextMenuInteractionDelegate": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)UIContextMenuInteractionDelegate",
+  "title" : "UIKit.UIContextMenuInteractionDelegate",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/objc(pl)UICoordinateSpace": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)UICoordinateSpace",
+  "title" : "UIKit.UICoordinateSpace",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/objc(pl)UIDynamicItem": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)UIDynamicItem",
+  "title" : "UIKit.UIDynamicItem",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/objc(pl)UIFocusEnvironment": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)UIFocusEnvironment",
+  "title" : "UIKit.UIFocusEnvironment",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/objc(pl)UIFocusItem": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)UIFocusItem",
+  "title" : "UIKit.UIFocusItem",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/objc(pl)UIFocusItemContainer": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)UIFocusItemContainer",
+  "title" : "UIKit.UIFocusItemContainer",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/objc(pl)UILargeContentViewerItem": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)UILargeContentViewerItem",
+  "title" : "UIKit.UILargeContentViewerItem",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/objc(pl)UIPasteConfigurationSupporting": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)UIPasteConfigurationSupporting",
+  "title" : "UIKit.UIPasteConfigurationSupporting",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/objc(pl)UIResponderStandardEditActions": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)UIResponderStandardEditActions",
+  "title" : "UIKit.UIResponderStandardEditActions",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/objc(pl)UITraitEnvironment": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)UITraitEnvironment",
+  "title" : "UIKit.UITraitEnvironment",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/objc(pl)UIUserActivityRestoring": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/objc(pl)UIUserActivityRestoring",
+  "title" : "UIKit.UIUserActivityRestoring",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/s23CustomStringConvertibleP": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/s23CustomStringConvertibleP",
+  "title" : "Swift.CustomStringConvertible",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/s28CustomDebugStringConvertibleP": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/s28CustomDebugStringConvertibleP",
+  "title" : "Swift.CustomDebugStringConvertible",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/s7CVarArgP": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/s7CVarArgP",
+  "title" : "Swift.CVarArg",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/s8SendableP": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/s8SendableP",
+  "title" : "Swift.Sendable",
+  "type" : "unresolvable"
+}
+}
+}

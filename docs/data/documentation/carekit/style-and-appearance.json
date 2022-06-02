@@ -1,0 +1,931 @@
+{
+  "abstract" : [
+    {
+      "text" : "Customize the style and appearance of user interface elements.",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKit"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/style-and-appearance"
+  },
+  "kind" : "article",
+  "metadata" : {
+    "modules" : [
+      {
+        "name" : "CareKit"
+      }
+    ],
+    "role" : "collectionGroup",
+    "title" : "Style and Appearance"
+  },
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 2,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "seeAlsoSections" : [
+    {
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/OCKDailyPageViewController",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/OCKDailyPageViewControllerDataSource",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/OCKDailyPageViewControllerDelegate",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/OCKDailyTasksPageViewController",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/OCKListViewController",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/OCKSynchronizationContext",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/task-interfaces",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/chart-interfaces",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/contacts-interfaces",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/calendar-interfaces",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/components"
+      ],
+      "title" : "User Interface"
+    }
+  ],
+  "topicSections" : [
+    {
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyler"
+      ],
+      "title" : "Colors"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKAnimationStyle",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKAnimationStyler"
+      ],
+      "title" : "Animations"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKAppearanceStyle",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKAppearanceStyler"
+      ],
+      "title" : "Appearance"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKDimensionStyle",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKDimensionStyler"
+      ],
+      "title" : "Dimensions"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKCardable"
+      ],
+      "title" : "Card Style"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStylable",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStyler",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStyle"
+      ],
+      "title" : "Style Constants"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKLocalization"
+      ],
+      "title" : "Localizations"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKResponsiveLayout"
+      ],
+      "title" : "Layout Changes"
+    }
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/carekit\/style-and-appearance"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://com.apple.CareKit/documentation/CareKit": {
+  "abstract" : [
+    {
+      "text" : "Create apps that help people better understand and manage their health.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKit",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "CareKit",
+  "type" : "topic",
+  "url" : "\/documentation\/carekit"
+},
+"doc://com.apple.CareKit/documentation/CareKit/OCKDailyPageViewController": {
+  "abstract" : [
+    {
+      "text" : "A view controller that displays a calendar in the header, and a page view controller",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "in the body.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKDailyPageViewController"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/OCKDailyPageViewController",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKDailyPageViewController"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKDailyPageViewController",
+  "type" : "topic",
+  "url" : "\/documentation\/carekit\/ockdailypageviewcontroller"
+},
+"doc://com.apple.CareKit/documentation/CareKit/OCKDailyPageViewControllerDataSource": {
+  "abstract" : [
+    {
+      "text" : "A protocol that manages data changes in a view controller, that handles daily tasks,",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "and has a synchronized calendar.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "protocol"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKDailyPageViewControllerDataSource"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/OCKDailyPageViewControllerDataSource",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKDailyPageViewControllerDataSource"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKDailyPageViewControllerDataSource",
+  "type" : "topic",
+  "url" : "\/documentation\/carekit\/ockdailypageviewcontrollerdatasource"
+},
+"doc://com.apple.CareKit/documentation/CareKit/OCKDailyPageViewControllerDelegate": {
+  "abstract" : [
+    {
+      "text" : "The object that handles callbacks when important events occur in a daily page view",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "controller.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "protocol"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKDailyPageViewControllerDelegate"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/OCKDailyPageViewControllerDelegate",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKDailyPageViewControllerDelegate"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKDailyPageViewControllerDelegate",
+  "type" : "topic",
+  "url" : "\/documentation\/carekit\/ockdailypageviewcontrollerdelegate"
+},
+"doc://com.apple.CareKit/documentation/CareKit/OCKDailyTasksPageViewController": {
+  "abstract" : [
+    {
+      "text" : "A view controller that displays a calendar page view controller in the header, and",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "a collection of tasks in the body.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKDailyTasksPageViewController"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/OCKDailyTasksPageViewController",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKDailyTasksPageViewController"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKDailyTasksPageViewController",
+  "type" : "topic",
+  "url" : "\/documentation\/carekit\/ockdailytaskspageviewcontroller"
+},
+"doc://com.apple.CareKit/documentation/CareKit/OCKListViewController": {
+  "abstract" : [
+    {
+      "text" : "A view controller that displays views in a list view.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKListViewController"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/OCKListViewController",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKListViewController"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKListViewController",
+  "type" : "topic",
+  "url" : "\/documentation\/carekit\/ocklistviewcontroller"
+},
+"doc://com.apple.CareKit/documentation/CareKit/OCKSynchronizationContext": {
+  "abstract" : [
+    {
+      "text" : "An object that provides context for a view model value.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKSynchronizationContext"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/OCKSynchronizationContext",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKSynchronizationContext"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKSynchronizationContext",
+  "type" : "topic",
+  "url" : "\/documentation\/carekit\/ocksynchronizationcontext"
+},
+"doc://com.apple.CareKit/documentation/CareKit/calendar-interfaces": {
+  "abstract" : [
+    {
+      "text" : "Display calendars to users.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/calendar-interfaces",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Calendar Interfaces",
+  "type" : "topic",
+  "url" : "\/documentation\/carekit\/calendar-interfaces"
+},
+"doc://com.apple.CareKit/documentation/CareKit/chart-interfaces": {
+  "abstract" : [
+    {
+      "text" : "Display charts to users.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/chart-interfaces",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Chart Interfaces",
+  "type" : "topic",
+  "url" : "\/documentation\/carekit\/chart-interfaces"
+},
+"doc://com.apple.CareKit/documentation/CareKit/components": {
+  "abstract" : [
+    {
+      "text" : "Create and customize controls, labels, and views.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/components",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Components",
+  "type" : "topic",
+  "url" : "\/documentation\/carekit\/components"
+},
+"doc://com.apple.CareKit/documentation/CareKit/contacts-interfaces": {
+  "abstract" : [
+    {
+      "text" : "Display contacts to users.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/contacts-interfaces",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Contacts Interfaces",
+  "type" : "topic",
+  "url" : "\/documentation\/carekit\/contacts-interfaces"
+},
+"doc://com.apple.CareKit/documentation/CareKit/task-interfaces": {
+  "abstract" : [
+    {
+      "text" : "Display tasks to users.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/task-interfaces",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Task Interfaces",
+  "type" : "topic",
+  "url" : "\/documentation\/carekit\/task-interfaces"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKAnimationStyle": {
+  "abstract" : [
+    {
+      "text" : "A concrete object that controls animation constants.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKAnimationStyle"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKAnimationStyle",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKAnimationStyle"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKAnimationStyle",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockanimationstyle"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKAnimationStyler": {
+  "abstract" : [
+    {
+      "text" : "A protocol that defines constants for values your app uses during animations.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "protocol"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKAnimationStyler"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKAnimationStyler",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKAnimationStyler"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKAnimationStyler",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockanimationstyler"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKAppearanceStyle": {
+  "abstract" : [
+    {
+      "text" : "A concrete object that controls appearance constants.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKAppearanceStyle"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKAppearanceStyle",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKAppearanceStyle"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKAppearanceStyle",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockappearancestyle"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKAppearanceStyler": {
+  "abstract" : [
+    {
+      "text" : "A protocol that defines constants for view appearance styling.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "protocol"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKAppearanceStyler"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKAppearanceStyler",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKAppearanceStyler"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKAppearanceStyler",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockappearancestyler"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKCardable": {
+  "abstract" : [
+    {
+      "text" : "A protocol that displays a view as a card, with a specific corner radius and shadow.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "protocol"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKCardable"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKCardable",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKCardable"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKCardable",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockcardable"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKColorStyle": {
+  "abstract" : [
+    {
+      "text" : "A concrete object that controls color constants.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKColorStyle"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKColorStyle"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKColorStyle",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockcolorstyle"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKColorStyler": {
+  "abstract" : [
+    {
+      "text" : "A protocol that defines color constants.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "protocol"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKColorStyler"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyler",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKColorStyler"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKColorStyler",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockcolorstyler"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKDimensionStyle": {
+  "abstract" : [
+    {
+      "text" : "A concrete object that controls dimension constants.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKDimensionStyle"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKDimensionStyle",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKDimensionStyle"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKDimensionStyle",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockdimensionstyle"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKDimensionStyler": {
+  "abstract" : [
+    {
+      "text" : "A protocol that defines constants for view sizes.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "protocol"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKDimensionStyler"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKDimensionStyler",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKDimensionStyler"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKDimensionStyler",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockdimensionstyler"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKLocalization": {
+  "abstract" : [
+    {
+      "text" : "An object that gives you access to the framework bundle for localizations.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKLocalization"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKLocalization",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKLocalization"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKLocalization",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ocklocalization"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKResponsiveLayout": {
+  "abstract" : [
+    {
+      "text" : "A configuration object for views, which contains layout information for different",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "combinations of size class and content size categories.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKResponsiveLayout"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKResponsiveLayout",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKResponsiveLayout"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKResponsiveLayout",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockresponsivelayout"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKStylable": {
+  "abstract" : [
+    {
+      "text" : "An object that to which you can apply style.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "protocol"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKStylable"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStylable",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKStylable"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKStylable",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockstylable"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKStyle": {
+  "abstract" : [
+    {
+      "text" : "A set of constants you use to style views across the framework.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKStyle"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStyle",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKStyle"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKStyle",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockstyle"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKStyler": {
+  "abstract" : [
+    {
+      "text" : "A protocol that defines styling constants.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "protocol"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKStyler"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKStyler",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKStyler"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKStyler",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockstyler"
+}
+}
+}

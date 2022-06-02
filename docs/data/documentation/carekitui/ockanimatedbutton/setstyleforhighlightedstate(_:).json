@@ -1,0 +1,463 @@
+{
+  "abstract" : [
+    {
+      "text" : "Sets the style for the button’s highlighted state.",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKit",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/components",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKAnimatedButton"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKAnimatedButton\/setStyleForHighlightedState(_:)"
+  },
+  "kind" : "symbol",
+  "metadata" : {
+    "externalID" : "s:9CareKitUI17OCKAnimatedButtonC27setStyleForHighlightedStateyySbF",
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "func"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "setStyleForHighlightedState"
+      },
+      {
+        "kind" : "text",
+        "text" : "("
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:Sb",
+        "text" : "Bool"
+      },
+      {
+        "kind" : "text",
+        "text" : ")"
+      }
+    ],
+    "modules" : [
+      {
+        "name" : "CareKitUI"
+      }
+    ],
+    "role" : "symbol",
+    "roleHeading" : "Instance Method",
+    "symbolKind" : "method",
+    "title" : "setStyleForHighlightedState(_:)"
+  },
+  "primaryContentSections" : [
+    {
+      "declarations" : [
+        {
+          "languages" : [
+            "swift"
+          ],
+          "platforms" : [
+            "iOS"
+          ],
+          "tokens" : [
+            {
+              "kind" : "keyword",
+              "text" : "func"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "identifier",
+              "text" : "setStyleForHighlightedState"
+            },
+            {
+              "kind" : "text",
+              "text" : "("
+            },
+            {
+              "kind" : "externalParam",
+              "text" : "_"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "internalParam",
+              "text" : "isHighlighted"
+            },
+            {
+              "kind" : "text",
+              "text" : ": "
+            },
+            {
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:Sb",
+              "text" : "Bool"
+            },
+            {
+              "kind" : "text",
+              "text" : ")"
+            }
+          ]
+        }
+      ],
+      "kind" : "declarations"
+    },
+    {
+      "kind" : "parameters",
+      "parameters" : [
+        {
+          "content" : [
+            {
+              "inlineContent" : [
+                {
+                  "text" : "A Boolean value that indicates whether the button’s state is highlighted.",
+                  "type" : "text"
+                }
+              ],
+              "type" : "paragraph"
+            }
+          ],
+          "name" : "isHighlighted  "
+        }
+      ]
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 2,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "seeAlsoSections" : [
+    {
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKAnimatedButton\/HighlightOption",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKAnimatedButton\/isHighlighted",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKAnimatedButton\/highlightOptions",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKAnimatedButton\/setHighlighted(_:animated:)"
+      ],
+      "title" : "Configuring Highlight"
+    }
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/carekitui\/ockanimatedbutton\/setstyleforhighlightedstate(_:)"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://com.apple.CareKit/documentation/CareKit": {
+  "abstract" : [
+    {
+      "text" : "Create apps that help people better understand and manage their health.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKit",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "CareKit",
+  "type" : "topic",
+  "url" : "\/documentation\/carekit"
+},
+"doc://com.apple.CareKit/documentation/CareKit/components": {
+  "abstract" : [
+    {
+      "text" : "Create and customize controls, labels, and views.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/components",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Components",
+  "type" : "topic",
+  "url" : "\/documentation\/carekit\/components"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKAnimatedButton": {
+  "abstract" : [
+    {
+      "text" : "A button that has animated state changes, and responds to highlight and selection",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "states.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKAnimatedButton"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKAnimatedButton",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKAnimatedButton"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKAnimatedButton",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockanimatedbutton"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKAnimatedButton/HighlightOption": {
+  "abstract" : [
+    {
+      "text" : "A set of display options for the highlighted state of an animated button.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "enum"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "HighlightOption"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKAnimatedButton\/HighlightOption",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "HighlightOption"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKAnimatedButton.HighlightOption",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockanimatedbutton\/highlightoption"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKAnimatedButton/highlightOptions": {
+  "abstract" : [
+    {
+      "text" : "The options that define the appearance of the button’s highlight state.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "highlightOptions"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sh",
+      "text" : "Set"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:9CareKitUI17OCKAnimatedButtonC15HighlightOptionO",
+      "text" : "HighlightOption"
+    },
+    {
+      "kind" : "text",
+      "text" : ">"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKAnimatedButton\/highlightOptions",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "highlightOptions",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockanimatedbutton\/highlightoptions"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKAnimatedButton/isHighlighted": {
+  "abstract" : [
+    {
+      "text" : "A Boolean value that indicates whether the button is in a highlighted state.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "isHighlighted"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKAnimatedButton\/isHighlighted",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "isHighlighted",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockanimatedbutton\/ishighlighted"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKAnimatedButton/setHighlighted(_:animated:)": {
+  "abstract" : [
+    {
+      "text" : "Sets the button’s highlighted state, and optionally animates the change.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "setHighlighted"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ", "
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "animated"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKAnimatedButton\/setHighlighted(_:animated:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "setHighlighted(_:animated:)",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockanimatedbutton\/sethighlighted(_:animated:)"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKAnimatedButton/setStyleForHighlightedState(_:)": {
+  "abstract" : [
+    {
+      "text" : "Sets the style for the button’s highlighted state.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "setStyleForHighlightedState"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKAnimatedButton\/setStyleForHighlightedState(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "setStyleForHighlightedState(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockanimatedbutton\/setstyleforhighlightedstate(_:)"
+}
+}
+}

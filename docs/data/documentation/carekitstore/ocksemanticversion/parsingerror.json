@@ -1,0 +1,402 @@
+{
+  "abstract" : [
+    {
+      "text" : "The errors that can occur while you atttempt to parse a string into a semantic version.",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKit",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKSemanticVersion"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKSemanticVersion\/ParsingError"
+  },
+  "kind" : "symbol",
+  "metadata" : {
+    "externalID" : "s:12CareKitStore18OCKSemanticVersionV12ParsingErrorO",
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "enum"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "ParsingError"
+      }
+    ],
+    "modules" : [
+      {
+        "name" : "CareKitStore"
+      }
+    ],
+    "navigatorTitle" : [
+      {
+        "kind" : "identifier",
+        "text" : "ParsingError"
+      }
+    ],
+    "role" : "symbol",
+    "roleHeading" : "Enumeration",
+    "symbolKind" : "enum",
+    "title" : "OCKSemanticVersion.ParsingError"
+  },
+  "primaryContentSections" : [
+    {
+      "declarations" : [
+        {
+          "languages" : [
+            "swift"
+          ],
+          "platforms" : [
+            "iOS"
+          ],
+          "tokens" : [
+            {
+              "kind" : "keyword",
+              "text" : "enum"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "identifier",
+              "text" : "ParsingError"
+            }
+          ]
+        }
+      ],
+      "kind" : "declarations"
+    }
+  ],
+  "relationshipsSections" : [
+    {
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/SQ",
+        "doc:\/\/com.apple.CareKit\/s5ErrorP",
+        "doc:\/\/com.apple.CareKit\/SH",
+        "doc:\/\/com.apple.CareKit\/s8SendableP"
+      ],
+      "kind" : "relationships",
+      "title" : "Conforms To",
+      "type" : "conformsTo"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 2,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "topicSections" : [
+    {
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKSemanticVersion\/ParsingError\/invalidMajorVersion",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKSemanticVersion\/ParsingError\/invalidMinorVersion",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKSemanticVersion\/ParsingError\/invalidPatchVersion",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKSemanticVersion\/ParsingError\/emptyString",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKSemanticVersion\/ParsingError\/tooManySeparators"
+      ],
+      "title" : "Describing Parsing Errors"
+    },
+    {
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKSemanticVersion\/ParsingError\/Equatable-Implementations",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKSemanticVersion\/ParsingError\/Error-Implementations"
+      ],
+      "title" : "Default Implementations"
+    }
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/carekitstore\/ocksemanticversion\/parsingerror"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://com.apple.CareKit/SH": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/SH",
+  "title" : "Swift.Hashable",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/SQ": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/SQ",
+  "title" : "Swift.Equatable",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/documentation/CareKit": {
+  "abstract" : [
+    {
+      "text" : "Create apps that help people better understand and manage their health.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKit",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "CareKit",
+  "type" : "topic",
+  "url" : "\/documentation\/carekit"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKSemanticVersion": {
+  "abstract" : [
+    {
+      "text" : "A three-component number format for specifying version numbers.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKSemanticVersion"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKSemanticVersion",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKSemanticVersion"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKSemanticVersion",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ocksemanticversion"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKSemanticVersion/ParsingError": {
+  "abstract" : [
+    {
+      "text" : "The errors that can occur while you atttempt to parse a string into a semantic version.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "enum"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "ParsingError"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKSemanticVersion\/ParsingError",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "ParsingError"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKSemanticVersion.ParsingError",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ocksemanticversion\/parsingerror"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKSemanticVersion/ParsingError/Equatable-Implementations": {
+  "abstract" : [
+
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKSemanticVersion\/ParsingError\/Equatable-Implementations",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Equatable Implementations",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ocksemanticversion\/parsingerror\/equatable-implementations"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKSemanticVersion/ParsingError/Error-Implementations": {
+  "abstract" : [
+
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKSemanticVersion\/ParsingError\/Error-Implementations",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Error Implementations",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ocksemanticversion\/parsingerror\/error-implementations"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKSemanticVersion/ParsingError/emptyString": {
+  "abstract" : [
+    {
+      "text" : "A case that indicates string to parse is empty.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "case"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "emptyString"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKSemanticVersion\/ParsingError\/emptyString",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "OCKSemanticVersion.ParsingError.emptyString",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ocksemanticversion\/parsingerror\/emptystring"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKSemanticVersion/ParsingError/invalidMajorVersion": {
+  "abstract" : [
+    {
+      "text" : "A case that indicates the major version is invalid.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "case"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "invalidMajorVersion"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKSemanticVersion\/ParsingError\/invalidMajorVersion",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "OCKSemanticVersion.ParsingError.invalidMajorVersion",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ocksemanticversion\/parsingerror\/invalidmajorversion"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKSemanticVersion/ParsingError/invalidMinorVersion": {
+  "abstract" : [
+    {
+      "text" : "A case that indicates the minor version is invalid.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "case"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "invalidMinorVersion"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKSemanticVersion\/ParsingError\/invalidMinorVersion",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "OCKSemanticVersion.ParsingError.invalidMinorVersion",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ocksemanticversion\/parsingerror\/invalidminorversion"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKSemanticVersion/ParsingError/invalidPatchVersion": {
+  "abstract" : [
+    {
+      "text" : "A case that indicates the patch version is invalid.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "case"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "invalidPatchVersion"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKSemanticVersion\/ParsingError\/invalidPatchVersion",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "OCKSemanticVersion.ParsingError.invalidPatchVersion",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ocksemanticversion\/parsingerror\/invalidpatchversion"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKSemanticVersion/ParsingError/tooManySeparators": {
+  "abstract" : [
+    {
+      "text" : "A case that indicates the string contains more than two separators.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "case"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "tooManySeparators"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKSemanticVersion\/ParsingError\/tooManySeparators",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "OCKSemanticVersion.ParsingError.tooManySeparators",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ocksemanticversion\/parsingerror\/toomanyseparators"
+},
+"doc://com.apple.CareKit/s5ErrorP": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/s5ErrorP",
+  "title" : "Swift.Error",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/s8SendableP": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/s8SendableP",
+  "title" : "Swift.Sendable",
+  "type" : "unresolvable"
+}
+}
+}

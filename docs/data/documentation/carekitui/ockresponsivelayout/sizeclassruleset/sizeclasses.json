@@ -1,0 +1,400 @@
+{
+  "abstract" : [
+    {
+      "text" : "The valid size class combinations for this set of rules.",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKit",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/style-and-appearance",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKResponsiveLayout",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKResponsiveLayout\/SizeClassRuleSet"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKResponsiveLayout\/SizeClassRuleSet\/sizeClasses"
+  },
+  "kind" : "symbol",
+  "metadata" : {
+    "externalID" : "s:9CareKitUI19OCKResponsiveLayoutV16SizeClassRuleSetV11sizeClassesSaySo015UIUserInterfacefG0V10horizontal_AH8verticaltGvp",
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "let"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "sizeClasses"
+      },
+      {
+        "kind" : "text",
+        "text" : ": ["
+      },
+      {
+        "kind" : "typeIdentifier",
+        "preciseIdentifier" : "s:9CareKitUI19OCKResponsiveLayoutV9SizeClassa",
+        "text" : "SizeClass"
+      },
+      {
+        "kind" : "text",
+        "text" : "]"
+      }
+    ],
+    "modules" : [
+      {
+        "name" : "CareKitUI"
+      }
+    ],
+    "role" : "symbol",
+    "roleHeading" : "Instance Property",
+    "symbolKind" : "property",
+    "title" : "sizeClasses"
+  },
+  "primaryContentSections" : [
+    {
+      "declarations" : [
+        {
+          "languages" : [
+            "swift"
+          ],
+          "platforms" : [
+            "iOS"
+          ],
+          "tokens" : [
+            {
+              "kind" : "keyword",
+              "text" : "let"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "identifier",
+              "text" : "sizeClasses"
+            },
+            {
+              "kind" : "text",
+              "text" : ": ["
+            },
+            {
+              "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKResponsiveLayout\/SizeClass",
+              "kind" : "typeIdentifier",
+              "preciseIdentifier" : "s:9CareKitUI19OCKResponsiveLayoutV9SizeClassa",
+              "text" : "SizeClass"
+            },
+            {
+              "kind" : "text",
+              "text" : "]"
+            }
+          ]
+        }
+      ],
+      "kind" : "declarations"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 2,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "seeAlsoSections" : [
+    {
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKResponsiveLayout\/SizeClassRuleSet\/rules"
+      ],
+      "title" : "Customizing Size Class Rules"
+    }
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/carekitui\/ockresponsivelayout\/sizeclassruleset\/sizeclasses"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://com.apple.CareKit/documentation/CareKit": {
+  "abstract" : [
+    {
+      "text" : "Create apps that help people better understand and manage their health.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKit",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "CareKit",
+  "type" : "topic",
+  "url" : "\/documentation\/carekit"
+},
+"doc://com.apple.CareKit/documentation/CareKit/style-and-appearance": {
+  "abstract" : [
+    {
+      "text" : "Customize the style and appearance of user interface elements.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/style-and-appearance",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Style and Appearance",
+  "type" : "topic",
+  "url" : "\/documentation\/carekit\/style-and-appearance"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKResponsiveLayout": {
+  "abstract" : [
+    {
+      "text" : "A configuration object for views, which contains layout information for different",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "combinations of size class and content size categories.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKResponsiveLayout"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKResponsiveLayout",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKResponsiveLayout"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKResponsiveLayout",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockresponsivelayout"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKResponsiveLayout/SizeClass": {
+  "abstract" : [
+    {
+      "text" : "A lightweight typealias for a horizontal and vertical ",
+      "type" : "text"
+    },
+    {
+      "code" : "UIUserInterfaceSizeClass",
+      "type" : "codeVoice"
+    },
+    {
+      "text" : " definition.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "typealias"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "SizeClass"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKResponsiveLayout\/SizeClass",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "SizeClass"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKResponsiveLayout.SizeClass",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockresponsivelayout\/sizeclass"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKResponsiveLayout/SizeClassRuleSet": {
+  "abstract" : [
+    {
+      "text" : "A set of rules for a given size class.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "SizeClassRuleSet"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKResponsiveLayout\/SizeClassRuleSet",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "SizeClassRuleSet"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKResponsiveLayout.SizeClassRuleSet",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockresponsivelayout\/sizeclassruleset"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKResponsiveLayout/SizeClassRuleSet/rules": {
+  "abstract" : [
+    {
+      "text" : "A set of combinations of UIUserInterFaceSizeClass combinations, and user-defined",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "layouts.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "rules"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:9CareKitUI19OCKResponsiveLayoutV",
+      "text" : "OCKResponsiveLayout"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:9CareKitUI19OCKResponsiveLayoutV16SizeClassRuleSetV0E6Optionqd__mfp",
+      "text" : "LayoutOption"
+    },
+    {
+      "kind" : "text",
+      "text" : ">."
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:9CareKitUI19OCKResponsiveLayoutV4RuleV",
+      "text" : "Rule"
+    },
+    {
+      "kind" : "text",
+      "text" : "<"
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:9CareKitUI19OCKResponsiveLayoutV16SizeClassRuleSetV0E6Optionqd__mfp",
+      "text" : "LayoutOption"
+    },
+    {
+      "kind" : "text",
+      "text" : ">]"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKResponsiveLayout\/SizeClassRuleSet\/rules",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "rules",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockresponsivelayout\/sizeclassruleset\/rules"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKResponsiveLayout/SizeClassRuleSet/sizeClasses": {
+  "abstract" : [
+    {
+      "text" : "The valid size class combinations for this set of rules.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "let"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "sizeClasses"
+    },
+    {
+      "kind" : "text",
+      "text" : ": ["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:9CareKitUI19OCKResponsiveLayoutV9SizeClassa",
+      "text" : "SizeClass"
+    },
+    {
+      "kind" : "text",
+      "text" : "]"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKResponsiveLayout\/SizeClassRuleSet\/sizeClasses",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "sizeClasses",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockresponsivelayout\/sizeclassruleset\/sizeclasses"
+}
+}
+}

@@ -1,0 +1,806 @@
+{
+  "abstract" : [
+    {
+      "text" : "No overview available.",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKit",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/style-and-appearance",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKDimensionStyle"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKDimensionStyle\/OCKDimensionStyler-Implementations"
+  },
+  "kind" : "article",
+  "metadata" : {
+    "modules" : [
+      {
+        "name" : "CareKit"
+      }
+    ],
+    "role" : "collectionGroup",
+    "title" : "OCKDimensionStyler Implementations"
+  },
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 2,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "topicSections" : [
+    {
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKDimensionStyle\/buttonHeight1",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKDimensionStyle\/buttonHeight2",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKDimensionStyle\/buttonHeight3",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKDimensionStyle\/directionalInsets1",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKDimensionStyle\/directionalInsets2",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKDimensionStyle\/imageHeight1",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKDimensionStyle\/imageHeight2",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKDimensionStyle\/lineWidth1",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKDimensionStyle\/pointSize1",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKDimensionStyle\/pointSize2",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKDimensionStyle\/pointSize3",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKDimensionStyle\/separatorHeight",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKDimensionStyle\/stackSpacing1",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKDimensionStyle\/symbolPointSize1",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKDimensionStyle\/symbolPointSize2",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKDimensionStyle\/symbolPointSize3",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKDimensionStyle\/symbolPointSize4",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKDimensionStyle\/symbolPointSize5"
+      ],
+      "title" : "Instance Properties"
+    }
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/carekitui\/ockdimensionstyle\/ockdimensionstyler-implementations"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://com.apple.CareKit/documentation/CareKit": {
+  "abstract" : [
+    {
+      "text" : "Create apps that help people better understand and manage their health.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKit",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "CareKit",
+  "type" : "topic",
+  "url" : "\/documentation\/carekit"
+},
+"doc://com.apple.CareKit/documentation/CareKit/style-and-appearance": {
+  "abstract" : [
+    {
+      "text" : "Customize the style and appearance of user interface elements.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/style-and-appearance",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Style and Appearance",
+  "type" : "topic",
+  "url" : "\/documentation\/carekit\/style-and-appearance"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKDimensionStyle": {
+  "abstract" : [
+    {
+      "text" : "A concrete object that controls dimension constants.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKDimensionStyle"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKDimensionStyle",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKDimensionStyle"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKDimensionStyle",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockdimensionstyle"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKDimensionStyle/buttonHeight1": {
+  "abstract" : [
+    {
+      "text" : "A button height of 60.0 points, by default.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "buttonHeight1"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12CoreGraphics7CGFloatV",
+      "text" : "CGFloat"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKDimensionStyle\/buttonHeight1",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "buttonHeight1",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockdimensionstyle\/buttonheight1"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKDimensionStyle/buttonHeight2": {
+  "abstract" : [
+    {
+      "text" : "A button height of 40.0 points, by default.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "buttonHeight2"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12CoreGraphics7CGFloatV",
+      "text" : "CGFloat"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKDimensionStyle\/buttonHeight2",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "buttonHeight2",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockdimensionstyle\/buttonheight2"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKDimensionStyle/buttonHeight3": {
+  "abstract" : [
+    {
+      "text" : "A button height of 20.0 points, by default.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "buttonHeight3"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12CoreGraphics7CGFloatV",
+      "text" : "CGFloat"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKDimensionStyle\/buttonHeight3",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "buttonHeight3",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockdimensionstyle\/buttonheight3"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKDimensionStyle/directionalInsets1": {
+  "abstract" : [
+    {
+      "text" : "A set of values that specifies interface layout direction, which is 16.0 from the",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "top, leading, bottom, and trailing.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "directionalInsets1"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "c:@S@NSDirectionalEdgeInsets",
+      "text" : "NSDirectionalEdgeInsets"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKDimensionStyle\/directionalInsets1",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "directionalInsets1",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockdimensionstyle\/directionalinsets1"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKDimensionStyle/directionalInsets2": {
+  "abstract" : [
+    {
+      "text" : "A set of values that specifies interface layout direction, which is 8.0 from the",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "top, bottom, and trailing, and 9.0 leading.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "directionalInsets2"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "c:@S@NSDirectionalEdgeInsets",
+      "text" : "NSDirectionalEdgeInsets"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKDimensionStyle\/directionalInsets2",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "directionalInsets2",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockdimensionstyle\/directionalinsets2"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKDimensionStyle/imageHeight1": {
+  "abstract" : [
+    {
+      "text" : "An image height of 150.0 points, by default.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "imageHeight1"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12CoreGraphics7CGFloatV",
+      "text" : "CGFloat"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKDimensionStyle\/imageHeight1",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "imageHeight1",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockdimensionstyle\/imageheight1"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKDimensionStyle/imageHeight2": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "imageHeight2"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12CoreGraphics7CGFloatV",
+      "text" : "CGFloat"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKDimensionStyle\/imageHeight2",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "imageHeight2",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockdimensionstyle\/imageheight2"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKDimensionStyle/lineWidth1": {
+  "abstract" : [
+    {
+      "text" : "The width of stroked path lines.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "lineWidth1"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12CoreGraphics7CGFloatV",
+      "text" : "CGFloat"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKDimensionStyle\/lineWidth1",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "lineWidth1",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockdimensionstyle\/linewidth1"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKDimensionStyle/pointSize1": {
+  "abstract" : [
+    {
+      "text" : "A large font of 17.0 points, by default.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "pointSize1"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12CoreGraphics7CGFloatV",
+      "text" : "CGFloat"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKDimensionStyle\/pointSize1",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "pointSize1",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockdimensionstyle\/pointsize1"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKDimensionStyle/pointSize2": {
+  "abstract" : [
+    {
+      "text" : "A medium font of 14.0 points, by default.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "pointSize2"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12CoreGraphics7CGFloatV",
+      "text" : "CGFloat"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKDimensionStyle\/pointSize2",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "pointSize2",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockdimensionstyle\/pointsize2"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKDimensionStyle/pointSize3": {
+  "abstract" : [
+    {
+      "text" : "A small font of 11.0 points, by default.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "pointSize3"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12CoreGraphics7CGFloatV",
+      "text" : "CGFloat"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKDimensionStyle\/pointSize3",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "pointSize3",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockdimensionstyle\/pointsize3"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKDimensionStyle/separatorHeight": {
+  "abstract" : [
+    {
+      "text" : "The height for all separators.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "separatorHeight"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12CoreGraphics7CGFloatV",
+      "text" : "CGFloat"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKDimensionStyle\/separatorHeight",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "separatorHeight",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockdimensionstyle\/separatorheight"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKDimensionStyle/stackSpacing1": {
+  "abstract" : [
+    {
+      "text" : "A float value that determines the amount of space in a stack.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "stackSpacing1"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12CoreGraphics7CGFloatV",
+      "text" : "CGFloat"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKDimensionStyle\/stackSpacing1",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "stackSpacing1",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockdimensionstyle\/stackspacing1"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKDimensionStyle/symbolPointSize1": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "symbolPointSize1"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12CoreGraphics7CGFloatV",
+      "text" : "CGFloat"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKDimensionStyle\/symbolPointSize1",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "symbolPointSize1",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockdimensionstyle\/symbolpointsize1"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKDimensionStyle/symbolPointSize2": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "symbolPointSize2"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12CoreGraphics7CGFloatV",
+      "text" : "CGFloat"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKDimensionStyle\/symbolPointSize2",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "symbolPointSize2",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockdimensionstyle\/symbolpointsize2"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKDimensionStyle/symbolPointSize3": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "symbolPointSize3"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12CoreGraphics7CGFloatV",
+      "text" : "CGFloat"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKDimensionStyle\/symbolPointSize3",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "symbolPointSize3",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockdimensionstyle\/symbolpointsize3"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKDimensionStyle/symbolPointSize4": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "symbolPointSize4"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12CoreGraphics7CGFloatV",
+      "text" : "CGFloat"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKDimensionStyle\/symbolPointSize4",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "symbolPointSize4",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockdimensionstyle\/symbolpointsize4"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKDimensionStyle/symbolPointSize5": {
+  "abstract" : [
+
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "symbolPointSize5"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12CoreGraphics7CGFloatV",
+      "text" : "CGFloat"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKDimensionStyle\/symbolPointSize5",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "symbolPointSize5",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockdimensionstyle\/symbolpointsize5"
+}
+}
+}

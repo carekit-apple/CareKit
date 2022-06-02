@@ -1,0 +1,1182 @@
+{
+  "abstract" : [
+    {
+      "text" : "The errors the store emits when there is problem during a transaction.",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKit",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKStore"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKStoreError"
+  },
+  "kind" : "symbol",
+  "metadata" : {
+    "externalID" : "s:12CareKitStore13OCKStoreErrorO",
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "enum"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "OCKStoreError"
+      }
+    ],
+    "modules" : [
+      {
+        "name" : "CareKitStore"
+      }
+    ],
+    "navigatorTitle" : [
+      {
+        "kind" : "identifier",
+        "text" : "OCKStoreError"
+      }
+    ],
+    "role" : "symbol",
+    "roleHeading" : "Enumeration",
+    "symbolKind" : "enum",
+    "title" : "OCKStoreError"
+  },
+  "primaryContentSections" : [
+    {
+      "declarations" : [
+        {
+          "languages" : [
+            "swift"
+          ],
+          "platforms" : [
+            "iOS"
+          ],
+          "tokens" : [
+            {
+              "kind" : "keyword",
+              "text" : "enum"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "identifier",
+              "text" : "OCKStoreError"
+            }
+          ]
+        }
+      ],
+      "kind" : "declarations"
+    },
+    {
+      "content" : [
+        {
+          "anchor" : "Overview",
+          "level" : 2,
+          "text" : "Overview",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "An ",
+              "type" : "text"
+            },
+            {
+              "code" : "OCKStoreError",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " will be emitted from ",
+              "type" : "text"
+            },
+            {
+              "code" : "OCKStoreProtocol",
+              "type" : "codeVoice"
+            },
+            {
+              "text" : " conformers if there is",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "problem during a transaction.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        }
+      ],
+      "kind" : "content"
+    }
+  ],
+  "relationshipsSections" : [
+    {
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/10Foundation14LocalizedErrorP",
+        "doc:\/\/com.apple.CareKit\/s5ErrorP",
+        "doc:\/\/com.apple.CareKit\/s8SendableP"
+      ],
+      "kind" : "relationships",
+      "title" : "Conforms To",
+      "type" : "conformsTo"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 2,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "seeAlsoSections" : [
+    {
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKStore\/taskDelegate",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKStore\/outcomeDelegate",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKStore\/patientDelegate",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKStore\/carePlanDelegate",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKStore\/contactDelegate",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKStore\/shouldHandleCarePlan(_:)",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKStore\/shouldHandleCarePlanQuery(query:)"
+      ],
+      "title" : "Handling Store Changes"
+    }
+  ],
+  "topicSections" : [
+    {
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKStoreError\/fetchFailed(reason:)",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKStoreError\/addFailed(reason:)",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKStoreError\/updateFailed(reason:)",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKStoreError\/deleteFailed(reason:)",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKStoreError\/invalidValue(reason:)",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKStoreError\/timedOut(reason:)"
+      ],
+      "title" : "Describing Failures"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKStoreError\/errorDescription-4ygi8",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKStoreError\/failureReason",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKStoreError\/helpAnchor",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKStoreError\/localizedDescription",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKStoreError\/recoverySuggestion"
+      ],
+      "title" : "Providing Localized Error Messages"
+    },
+    {
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKStoreError\/Error-Implementations",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKStoreError\/LocalizedError-Implementations"
+      ],
+      "title" : "Default Implementations"
+    }
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/carekitstore\/ockstoreerror"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://com.apple.CareKit/10Foundation14LocalizedErrorP": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/10Foundation14LocalizedErrorP",
+  "title" : "Foundation.LocalizedError",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/documentation/CareKit": {
+  "abstract" : [
+    {
+      "text" : "Create apps that help people better understand and manage their health.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKit",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "CareKit",
+  "type" : "topic",
+  "url" : "\/documentation\/carekit"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKStore": {
+  "abstract" : [
+    {
+      "text" : "The database where you store all CareKit data.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "class"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKStore"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKStore",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKStore"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKStore",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockstore"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKStore/carePlanDelegate": {
+  "abstract" : [
+    {
+      "text" : "The object that handles callbacks from a care plan store when the contents of the",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "care plan store change.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "carePlanDelegate"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12CareKitStore011OCKCarePlanC8DelegateP",
+      "text" : "OCKCarePlanStoreDelegate"
+    },
+    {
+      "kind" : "text",
+      "text" : "?"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKStore\/carePlanDelegate",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "carePlanDelegate",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockstore\/careplandelegate"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKStore/contactDelegate": {
+  "abstract" : [
+    {
+      "text" : "The object that handles callbacks from a contact store when the contents of the contact",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "store change.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "contactDelegate"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12CareKitStore010OCKContactC8DelegateP",
+      "text" : "OCKContactStoreDelegate"
+    },
+    {
+      "kind" : "text",
+      "text" : "?"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKStore\/contactDelegate",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "contactDelegate",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockstore\/contactdelegate"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKStore/outcomeDelegate": {
+  "abstract" : [
+    {
+      "text" : "The object that handles callbacks from an outcome store when the contents of the",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "outcome store change.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "outcomeDelegate"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12CareKitStore010OCKOutcomeC8DelegateP",
+      "text" : "OCKOutcomeStoreDelegate"
+    },
+    {
+      "kind" : "text",
+      "text" : "?"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKStore\/outcomeDelegate",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "outcomeDelegate",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockstore\/outcomedelegate"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKStore/patientDelegate": {
+  "abstract" : [
+    {
+      "text" : "The object that handles callbacks from a patient store when the contents of the patient",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "store change.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "patientDelegate"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12CareKitStore010OCKPatientC8DelegateP",
+      "text" : "OCKPatientStoreDelegate"
+    },
+    {
+      "kind" : "text",
+      "text" : "?"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKStore\/patientDelegate",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "patientDelegate",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockstore\/patientdelegate"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKStore/shouldHandleCarePlan(_:)": {
+  "abstract" : [
+    {
+      "text" : "Returns a Boolean value to indicate whether the store can handle adding, updating,",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "and deleting a specific care plan.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "shouldHandleCarePlan"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12CareKitStore06OCKAnyA4PlanP",
+      "text" : "OCKAnyCarePlan"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKStore\/shouldHandleCarePlan(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "shouldHandleCarePlan(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockstore\/shouldhandlecareplan(_:)"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKStore/shouldHandleCarePlanQuery(query:)": {
+  "abstract" : [
+    {
+      "text" : "Returns a Boolean value to indicate whether the store can handle fetching for a certain",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "query.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "func"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "shouldHandleCarePlanQuery"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "query"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12CareKitStore06OCKAnyA9PlanQueryP",
+      "text" : "OCKAnyCarePlanQuery"
+    },
+    {
+      "kind" : "text",
+      "text" : ") -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:Sb",
+      "text" : "Bool"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKStore\/shouldHandleCarePlanQuery(query:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "shouldHandleCarePlanQuery(query:)",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockstore\/shouldhandlecareplanquery(query:)"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKStore/taskDelegate": {
+  "abstract" : [
+    {
+      "text" : "The object that handles callbacks from a task store when the contents of the task",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "store change.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "taskDelegate"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12CareKitStore07OCKTaskC8DelegateP",
+      "text" : "OCKTaskStoreDelegate"
+    },
+    {
+      "kind" : "text",
+      "text" : "?"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKStore\/taskDelegate",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "taskDelegate",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockstore\/taskdelegate"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKStoreError": {
+  "abstract" : [
+    {
+      "text" : "The errors the store emits when there is problem during a transaction.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "enum"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKStoreError"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKStoreError",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKStoreError"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKStoreError",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockstoreerror"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKStoreError/Error-Implementations": {
+  "abstract" : [
+
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKStoreError\/Error-Implementations",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Error Implementations",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockstoreerror\/error-implementations"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKStoreError/LocalizedError-Implementations": {
+  "abstract" : [
+
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKStoreError\/LocalizedError-Implementations",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "LocalizedError Implementations",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockstoreerror\/localizederror-implementations"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKStoreError/addFailed(reason:)": {
+  "abstract" : [
+    {
+      "text" : "A case that occurs when adding an entity fails.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "case"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "addFailed"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "reason"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKStoreError\/addFailed(reason:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "OCKStoreError.addFailed(reason:)",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockstoreerror\/addfailed(reason:)"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKStoreError/deleteFailed(reason:)": {
+  "abstract" : [
+    {
+      "text" : "A case that occurs when deleting an existing entity fails.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "case"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "deleteFailed"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "reason"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKStoreError\/deleteFailed(reason:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "OCKStoreError.deleteFailed(reason:)",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockstoreerror\/deletefailed(reason:)"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKStoreError/errorDescription-4ygi8": {
+  "abstract" : [
+    {
+      "text" : "A localized message that describes the error that occurred.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "errorDescription"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    },
+    {
+      "kind" : "text",
+      "text" : "?"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKStoreError\/errorDescription-4ygi8",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "errorDescription",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockstoreerror\/errordescription-4ygi8"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKStoreError/failureReason": {
+  "abstract" : [
+    {
+      "text" : "A localized message that describes the reason for the failure.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "failureReason"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    },
+    {
+      "kind" : "text",
+      "text" : "?"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKStoreError\/failureReason",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "failureReason",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockstoreerror\/failurereason"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKStoreError/fetchFailed(reason:)": {
+  "abstract" : [
+    {
+      "text" : "A case that occurs when a fetch fails.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "case"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "fetchFailed"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "reason"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKStoreError\/fetchFailed(reason:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "OCKStoreError.fetchFailed(reason:)",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockstoreerror\/fetchfailed(reason:)"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKStoreError/helpAnchor": {
+  "abstract" : [
+    {
+      "text" : "A localized message that provides “help” text if the user requests help.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "helpAnchor"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    },
+    {
+      "kind" : "text",
+      "text" : "?"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKStoreError\/helpAnchor",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "helpAnchor",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockstoreerror\/helpanchor"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKStoreError/invalidValue(reason:)": {
+  "abstract" : [
+    {
+      "text" : "A case that occurs when you provide an invalid value.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "case"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "invalidValue"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "reason"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKStoreError\/invalidValue(reason:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "OCKStoreError.invalidValue(reason:)",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockstoreerror\/invalidvalue(reason:)"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKStoreError/localizedDescription": {
+  "abstract" : [
+    {
+      "text" : "A localized message that describes the failure.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "localizedDescription"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKStoreError\/localizedDescription",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "localizedDescription",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockstoreerror\/localizeddescription"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKStoreError/recoverySuggestion": {
+  "abstract" : [
+    {
+      "text" : "A localized message that describes how your app might recover from the failure.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "recoverySuggestion"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    },
+    {
+      "kind" : "text",
+      "text" : "?"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKStoreError\/recoverySuggestion",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "recoverySuggestion",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockstoreerror\/recoverysuggestion"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKStoreError/timedOut(reason:)": {
+  "abstract" : [
+    {
+      "text" : "A case that occurs when an asynchronous action takes too long.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "case"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "timedOut"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "reason"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKStoreError\/timedOut(reason:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "OCKStoreError.timedOut(reason:)",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockstoreerror\/timedout(reason:)"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKStoreError/updateFailed(reason:)": {
+  "abstract" : [
+    {
+      "text" : "A case that occurs when an update to an existing entity fails.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "case"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "updateFailed"
+    },
+    {
+      "kind" : "text",
+      "text" : "("
+    },
+    {
+      "kind" : "externalParam",
+      "text" : "reason"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:SS",
+      "text" : "String"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKStoreError\/updateFailed(reason:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "OCKStoreError.updateFailed(reason:)",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockstoreerror\/updatefailed(reason:)"
+},
+"doc://com.apple.CareKit/s5ErrorP": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/s5ErrorP",
+  "title" : "Swift.Error",
+  "type" : "unresolvable"
+},
+"doc://com.apple.CareKit/s8SendableP": {
+  "identifier" : "doc:\/\/com.apple.CareKit\/s8SendableP",
+  "title" : "Swift.Sendable",
+  "type" : "unresolvable"
+}
+}
+}

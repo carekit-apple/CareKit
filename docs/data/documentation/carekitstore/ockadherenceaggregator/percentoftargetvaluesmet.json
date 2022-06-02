@@ -1,0 +1,433 @@
+{
+  "abstract" : [
+    {
+      "text" : "A case that returns an average completion value, based on how many target values",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "have been met.",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKit",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKTask",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKAdherenceAggregator"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKAdherenceAggregator\/percentOfTargetValuesMet"
+  },
+  "kind" : "symbol",
+  "metadata" : {
+    "externalID" : "s:12CareKitStore22OCKAdherenceAggregatorO24percentOfTargetValuesMetyA2CmF",
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "case"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "percentOfTargetValuesMet"
+      }
+    ],
+    "modules" : [
+      {
+        "name" : "CareKitStore"
+      }
+    ],
+    "role" : "symbol",
+    "roleHeading" : "Case",
+    "symbolKind" : "case",
+    "title" : "OCKAdherenceAggregator.percentOfTargetValuesMet"
+  },
+  "primaryContentSections" : [
+    {
+      "declarations" : [
+        {
+          "languages" : [
+            "swift"
+          ],
+          "platforms" : [
+            "iOS"
+          ],
+          "tokens" : [
+            {
+              "kind" : "keyword",
+              "text" : "case"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "identifier",
+              "text" : "percentOfTargetValuesMet"
+            }
+          ]
+        }
+      ],
+      "kind" : "declarations"
+    },
+    {
+      "content" : [
+        {
+          "anchor" : "Overview",
+          "level" : 2,
+          "text" : "Overview",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "This case computes an analog percentage for each event as the number of target values",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "met, divided by the total number of target goals.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "The average completion accross all events will be returned.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        }
+      ],
+      "kind" : "content"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 2,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "seeAlsoSections" : [
+    {
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKAdherenceAggregator\/outcomeExists",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKAdherenceAggregator\/percentOfOutcomeValuesThatExist",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKAdherenceAggregator\/compareTargetValues",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKAdherenceAggregator\/custom(_:)"
+      ],
+      "title" : "Aggregating Task Outcomes"
+    }
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/carekitstore\/ockadherenceaggregator\/percentoftargetvaluesmet"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://com.apple.CareKit/documentation/CareKit": {
+  "abstract" : [
+    {
+      "text" : "Create apps that help people better understand and manage their health.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKit",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "CareKit",
+  "type" : "topic",
+  "url" : "\/documentation\/carekit"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKAdherenceAggregator": {
+  "abstract" : [
+    {
+      "text" : "Methods that compute an adherence value, given an array of events.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "enum"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKAdherenceAggregator"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKAdherenceAggregator",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKAdherenceAggregator"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKAdherenceAggregator",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockadherenceaggregator"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKAdherenceAggregator/compareTargetValues": {
+  "abstract" : [
+    {
+      "text" : "A case that returns an average completion value, based on whether or not all target",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "values have been met.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "case"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "compareTargetValues"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKAdherenceAggregator\/compareTargetValues",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "OCKAdherenceAggregator.compareTargetValues",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockadherenceaggregator\/comparetargetvalues"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKAdherenceAggregator/custom(_:)": {
+  "abstract" : [
+    {
+      "text" : "A case that returns an average completion value, based on a closure you provide.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "case"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "custom"
+    },
+    {
+      "kind" : "text",
+      "text" : "((["
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12CareKitStore11OCKAnyEventV",
+      "text" : "OCKAnyEvent"
+    },
+    {
+      "kind" : "text",
+      "text" : "]) -> "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "s:12CareKitStore12OCKAdherenceO",
+      "text" : "OCKAdherence"
+    },
+    {
+      "kind" : "text",
+      "text" : ")"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKAdherenceAggregator\/custom(_:)",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "OCKAdherenceAggregator.custom(_:)",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockadherenceaggregator\/custom(_:)"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKAdherenceAggregator/outcomeExists": {
+  "abstract" : [
+    {
+      "text" : "A case that returns an average completion value, based on whether an outcome for",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "each event exists.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "case"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "outcomeExists"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKAdherenceAggregator\/outcomeExists",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "OCKAdherenceAggregator.outcomeExists",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockadherenceaggregator\/outcomeexists"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKAdherenceAggregator/percentOfOutcomeValuesThatExist": {
+  "abstract" : [
+    {
+      "text" : "A case that returns an average completion value, based on the percentage for each",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "event, divided by the number of outcomes values.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "case"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "percentOfOutcomeValuesThatExist"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKAdherenceAggregator\/percentOfOutcomeValuesThatExist",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "OCKAdherenceAggregator.percentOfOutcomeValuesThatExist",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockadherenceaggregator\/percentofoutcomevaluesthatexist"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKAdherenceAggregator/percentOfTargetValuesMet": {
+  "abstract" : [
+    {
+      "text" : "A case that returns an average completion value, based on how many target values",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "have been met.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "case"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "percentOfTargetValuesMet"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKAdherenceAggregator\/percentOfTargetValuesMet",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "OCKAdherenceAggregator.percentOfTargetValuesMet",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ockadherenceaggregator\/percentoftargetvaluesmet"
+},
+"doc://com.apple.CareKit/documentation/CareKitStore/OCKTask": {
+  "abstract" : [
+    {
+      "text" : "An object that represents some task or action a patient needs to perform.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKTask"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitStore\/OCKTask",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKTask"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKTask",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitstore\/ocktask"
+}
+}
+}

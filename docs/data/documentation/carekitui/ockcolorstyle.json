@@ -1,0 +1,1147 @@
+{
+  "abstract" : [
+    {
+      "text" : "A concrete object that controls color constants.",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKit",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/style-and-appearance"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle"
+  },
+  "kind" : "symbol",
+  "metadata" : {
+    "externalID" : "s:9CareKitUI13OCKColorStyleV",
+    "fragments" : [
+      {
+        "kind" : "keyword",
+        "text" : "struct"
+      },
+      {
+        "kind" : "text",
+        "text" : " "
+      },
+      {
+        "kind" : "identifier",
+        "text" : "OCKColorStyle"
+      }
+    ],
+    "modules" : [
+      {
+        "name" : "CareKitUI"
+      }
+    ],
+    "navigatorTitle" : [
+      {
+        "kind" : "identifier",
+        "text" : "OCKColorStyle"
+      }
+    ],
+    "role" : "symbol",
+    "roleHeading" : "Structure",
+    "symbolKind" : "struct",
+    "title" : "OCKColorStyle"
+  },
+  "primaryContentSections" : [
+    {
+      "declarations" : [
+        {
+          "languages" : [
+            "swift"
+          ],
+          "platforms" : [
+            "iOS"
+          ],
+          "tokens" : [
+            {
+              "kind" : "keyword",
+              "text" : "struct"
+            },
+            {
+              "kind" : "text",
+              "text" : " "
+            },
+            {
+              "kind" : "identifier",
+              "text" : "OCKColorStyle"
+            }
+          ]
+        }
+      ],
+      "kind" : "declarations"
+    }
+  ],
+  "relationshipsSections" : [
+    {
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyler"
+      ],
+      "kind" : "relationships",
+      "title" : "Conforms To",
+      "type" : "conformsTo"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 2,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "seeAlsoSections" : [
+    {
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyler"
+      ],
+      "title" : "Colors"
+    }
+  ],
+  "topicSections" : [
+    {
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle\/init()"
+      ],
+      "title" : "Creating Color Styles"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle\/black",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle\/clear",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle\/white",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle\/customGray",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle\/customGray2",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle\/customGray3",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle\/customGray4",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle\/customGray5",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle\/customBlue"
+      ],
+      "title" : "Accessing System Colors"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle\/label",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle\/secondaryLabel",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle\/tertiaryLabel"
+      ],
+      "title" : "Accessing Colors for Labels"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle\/customFill",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle\/secondaryCustomFill",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle\/tertiaryCustomFill",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle\/quaternaryCustomFill"
+      ],
+      "title" : "Accessing Fill Colors"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle\/customBackground",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle\/secondaryCustomBackground",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle\/customGroupedBackground",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle\/secondaryCustomGroupedBackground",
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle\/tertiaryCustomGroupedBackground"
+      ],
+      "title" : "Accessing Background Colors"
+    },
+    {
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle\/separator"
+      ],
+      "title" : "Accessing Separator Colors"
+    },
+    {
+      "generated" : true,
+      "identifiers" : [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle\/OCKColorStyler-Implementations"
+      ],
+      "title" : "Default Implementations"
+    }
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/carekitui\/ockcolorstyle"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://com.apple.CareKit/documentation/CareKit": {
+  "abstract" : [
+    {
+      "text" : "Create apps that help people better understand and manage their health.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKit",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "CareKit",
+  "type" : "topic",
+  "url" : "\/documentation\/carekit"
+},
+"doc://com.apple.CareKit/documentation/CareKit/style-and-appearance": {
+  "abstract" : [
+    {
+      "text" : "Customize the style and appearance of user interface elements.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/style-and-appearance",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "Style and Appearance",
+  "type" : "topic",
+  "url" : "\/documentation\/carekit\/style-and-appearance"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKColorStyle": {
+  "abstract" : [
+    {
+      "text" : "A concrete object that controls color constants.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "struct"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKColorStyle"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKColorStyle"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKColorStyle",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockcolorstyle"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKColorStyle/OCKColorStyler-Implementations": {
+  "abstract" : [
+
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle\/OCKColorStyler-Implementations",
+  "kind" : "article",
+  "role" : "collectionGroup",
+  "title" : "OCKColorStyler Implementations",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockcolorstyle\/ockcolorstyler-implementations"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKColorStyle/black": {
+  "abstract" : [
+    {
+      "text" : "A black color the system provides, with 0.0 white.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "black"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "c:objc(cs)UIColor",
+      "text" : "UIColor"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle\/black",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "black",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockcolorstyle\/black"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKColorStyle/clear": {
+  "abstract" : [
+    {
+      "text" : "A clear color the system provides, with 0.0 white and 0.0 alpha.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "clear"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "c:objc(cs)UIColor",
+      "text" : "UIColor"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle\/clear",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "clear",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockcolorstyle\/clear"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKColorStyle/customBackground": {
+  "abstract" : [
+    {
+      "text" : "A color the system provides for the backmost layer of the UI.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "customBackground"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "c:objc(cs)UIColor",
+      "text" : "UIColor"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle\/customBackground",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "customBackground",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockcolorstyle\/custombackground"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKColorStyle/customBlue": {
+  "abstract" : [
+    {
+      "text" : "A blue color the system provides.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "customBlue"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "c:objc(cs)UIColor",
+      "text" : "UIColor"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle\/customBlue",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "customBlue",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockcolorstyle\/customblue"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKColorStyle/customFill": {
+  "abstract" : [
+    {
+      "text" : "A color the system provides for filling thin and small shapes.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "customFill"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "c:objc(cs)UIColor",
+      "text" : "UIColor"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle\/customFill",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "customFill",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockcolorstyle\/customfill"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKColorStyle/customGray": {
+  "abstract" : [
+    {
+      "text" : "A gray color the system provides.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "customGray"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "c:objc(cs)UIColor",
+      "text" : "UIColor"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle\/customGray",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "customGray",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockcolorstyle\/customgray"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKColorStyle/customGray2": {
+  "abstract" : [
+    {
+      "text" : "A shade of gray color the system provides.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "customGray2"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "c:objc(cs)UIColor",
+      "text" : "UIColor"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle\/customGray2",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "customGray2",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockcolorstyle\/customgray2"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKColorStyle/customGray3": {
+  "abstract" : [
+    {
+      "text" : "A shade of gray color the system provides.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "customGray3"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "c:objc(cs)UIColor",
+      "text" : "UIColor"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle\/customGray3",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "customGray3",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockcolorstyle\/customgray3"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKColorStyle/customGray4": {
+  "abstract" : [
+    {
+      "text" : "A shade of gray color the system provides.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "customGray4"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "c:objc(cs)UIColor",
+      "text" : "UIColor"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle\/customGray4",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "customGray4",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockcolorstyle\/customgray4"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKColorStyle/customGray5": {
+  "abstract" : [
+    {
+      "text" : "A shade of gray color the system provides.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "customGray5"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "c:objc(cs)UIColor",
+      "text" : "UIColor"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle\/customGray5",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "customGray5",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockcolorstyle\/customgray5"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKColorStyle/customGroupedBackground": {
+  "abstract" : [
+    {
+      "text" : "A color the system provides for grouped UI content, for the backmost layer.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "customGroupedBackground"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "c:objc(cs)UIColor",
+      "text" : "UIColor"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle\/customGroupedBackground",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "customGroupedBackground",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockcolorstyle\/customgroupedbackground"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKColorStyle/init()": {
+  "abstract" : [
+    {
+      "text" : "Creates a new color style with default values.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "identifier",
+      "text" : "init"
+    },
+    {
+      "kind" : "text",
+      "text" : "()"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle\/init()",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "init()",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockcolorstyle\/init()"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKColorStyle/label": {
+  "abstract" : [
+    {
+      "text" : "A color the system provides for the forground of first-level static text, in a label.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "label"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "c:objc(cs)UIColor",
+      "text" : "UIColor"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle\/label",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "label",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockcolorstyle\/label"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKColorStyle/quaternaryCustomFill": {
+  "abstract" : [
+    {
+      "text" : "A color the system provides for filling large areas that contain complex content.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "quaternaryCustomFill"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "c:objc(cs)UIColor",
+      "text" : "UIColor"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle\/quaternaryCustomFill",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "quaternaryCustomFill",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockcolorstyle\/quaternarycustomfill"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKColorStyle/secondaryCustomBackground": {
+  "abstract" : [
+    {
+      "text" : "A color the system provides for the UI, one layer above the background layer.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "secondaryCustomBackground"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "c:objc(cs)UIColor",
+      "text" : "UIColor"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle\/secondaryCustomBackground",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "secondaryCustomBackground",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockcolorstyle\/secondarycustombackground"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKColorStyle/secondaryCustomFill": {
+  "abstract" : [
+    {
+      "text" : "A color the system provides for filling medium-size shapes.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "secondaryCustomFill"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "c:objc(cs)UIColor",
+      "text" : "UIColor"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle\/secondaryCustomFill",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "secondaryCustomFill",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockcolorstyle\/secondarycustomfill"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKColorStyle/secondaryCustomGroupedBackground": {
+  "abstract" : [
+    {
+      "text" : "A color the system provides for grouped UI content, one layer above the background",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "layer.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "secondaryCustomGroupedBackground"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "c:objc(cs)UIColor",
+      "text" : "UIColor"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle\/secondaryCustomGroupedBackground",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "secondaryCustomGroupedBackground",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockcolorstyle\/secondarycustomgroupedbackground"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKColorStyle/secondaryLabel": {
+  "abstract" : [
+    {
+      "text" : "A color the system provides for the forground of second-level static text, in a label.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "secondaryLabel"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "c:objc(cs)UIColor",
+      "text" : "UIColor"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle\/secondaryLabel",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "secondaryLabel",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockcolorstyle\/secondarylabel"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKColorStyle/separator": {
+  "abstract" : [
+    {
+      "text" : "The color the system provides for foreground colors of thin border or divider lines.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "separator"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "c:objc(cs)UIColor",
+      "text" : "UIColor"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle\/separator",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "separator",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockcolorstyle\/separator"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKColorStyle/tertiaryCustomFill": {
+  "abstract" : [
+    {
+      "text" : "A color the system provides for filling large shapes.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "tertiaryCustomFill"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "c:objc(cs)UIColor",
+      "text" : "UIColor"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle\/tertiaryCustomFill",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "tertiaryCustomFill",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockcolorstyle\/tertiarycustomfill"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKColorStyle/tertiaryCustomGroupedBackground": {
+  "abstract" : [
+    {
+      "text" : "A color the system provides for grouped UI content, one layer above the secondary",
+      "type" : "text"
+    },
+    {
+      "text" : " ",
+      "type" : "text"
+    },
+    {
+      "text" : "background layer.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "tertiaryCustomGroupedBackground"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "c:objc(cs)UIColor",
+      "text" : "UIColor"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle\/tertiaryCustomGroupedBackground",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "tertiaryCustomGroupedBackground",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockcolorstyle\/tertiarycustomgroupedbackground"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKColorStyle/tertiaryLabel": {
+  "abstract" : [
+    {
+      "text" : "A color the system provides for the forground of third-level static text, in a label.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "tertiaryLabel"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "c:objc(cs)UIColor",
+      "text" : "UIColor"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle\/tertiaryLabel",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "tertiaryLabel",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockcolorstyle\/tertiarylabel"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKColorStyle/white": {
+  "abstract" : [
+    {
+      "text" : "A white color the system provides, with 1.0 white.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "var"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "white"
+    },
+    {
+      "kind" : "text",
+      "text" : ": "
+    },
+    {
+      "kind" : "typeIdentifier",
+      "preciseIdentifier" : "c:objc(cs)UIColor",
+      "text" : "UIColor"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyle\/white",
+  "kind" : "symbol",
+  "role" : "symbol",
+  "title" : "white",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockcolorstyle\/white"
+},
+"doc://com.apple.CareKit/documentation/CareKitUI/OCKColorStyler": {
+  "abstract" : [
+    {
+      "text" : "A protocol that defines color constants.",
+      "type" : "text"
+    }
+  ],
+  "fragments" : [
+    {
+      "kind" : "keyword",
+      "text" : "protocol"
+    },
+    {
+      "kind" : "text",
+      "text" : " "
+    },
+    {
+      "kind" : "identifier",
+      "text" : "OCKColorStyler"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKitUI\/OCKColorStyler",
+  "kind" : "symbol",
+  "navigatorTitle" : [
+    {
+      "kind" : "identifier",
+      "text" : "OCKColorStyler"
+    }
+  ],
+  "role" : "symbol",
+  "title" : "OCKColorStyler",
+  "type" : "topic",
+  "url" : "\/documentation\/carekitui\/ockcolorstyler"
+}
+}
+}

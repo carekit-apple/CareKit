@@ -1,0 +1,648 @@
+{
+  "abstract" : [
+    {
+      "text" : "Add and update CareKit in your project using Swift Package Manger.",
+      "type" : "text"
+    }
+  ],
+  "hierarchy" : {
+    "paths" : [
+      [
+        "doc:\/\/com.apple.CareKit\/documentation\/CareKit"
+      ]
+    ]
+  },
+  "identifier" : {
+    "interfaceLanguage" : "swift",
+    "url" : "doc:\/\/com.apple.CareKit\/documentation\/CareKit\/setting-up-your-project-to-use-carekit"
+  },
+  "kind" : "article",
+  "metadata" : {
+    "modules" : [
+      {
+        "name" : "CareKit"
+      }
+    ],
+    "role" : "article",
+    "roleHeading" : "Article",
+    "title" : "Setting up Your Project to Use CareKit"
+  },
+  "primaryContentSections" : [
+    {
+      "content" : [
+        {
+          "anchor" : "Overview",
+          "level" : 2,
+          "text" : "Overview",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "CareKit is an open-source framework, so it’s not provided with the developer tools",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "supplied in Xcode. To use it, you need to add it to your project as a dependency.",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "The framework can be added using the Swift Package Manager in Xcode, which allows",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "you to easily keep it up to date.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "You can find CareKit as a repository on GitHub: ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "https:\/\/github.com\/carekit-apple\/CareKit",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : ".",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "anchor" : "Add-CareKit-as-a-Package-Dependency",
+          "level" : 3,
+          "text" : "Add CareKit as a Package Dependency",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Add a package dependency to your Xcode project by selecting File > Swift Packages",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "> Add Package Dependency. Next, you need to provide the URL of the repository:",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "https:\/\/github.com\/carekit-apple\/CareKit",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "anchor" : "Choose-Package-Options",
+          "level" : 3,
+          "text" : "Choose Package Options",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "With the package repository specified, choose which version, branch, or commit from",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "which to pull. Unless there’s a specific commit from which you want to pull, choose",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "the main branch. For more information on specifying versions, branches, and commits,",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "see ",
+              "type" : "text"
+            },
+            {
+              "identifier" : "https:\/\/developer.apple.com\/documentation\/swift_packages\/adding_package_dependencies_to_your_app\/",
+              "isActive" : true,
+              "type" : "reference"
+            },
+            {
+              "text" : ".",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "anchor" : "Select-Parts-of-CareKit-You-Want-to-Use",
+          "level" : 3,
+          "text" : "Select Parts of CareKit You Want to Use",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "CareKit is built to be modular, and this includes being able to use only the parts",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "relevant to your needs. The framework includes a complete set of libraries, pre-built",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "view controllers, the data store, and the component views. It also uses Combine to",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "synchronize events between the UI and data layers.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "CareKit includes CareKitUI and CareKitStore. If you only want to use the customizable",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "views, choose to just include CareKitUI, or if you only need access to the data-persistence",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "library, choose to just include CareKitStore.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "In the ‘Choose package products and targets’ dialogue, select which part or parts",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "you want, and the targets to which they should be added:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "identifier" : "setting-up-your-project-to-use-carekit-1",
+              "type" : "image"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "anchor" : "Verify-the-Dependency",
+          "level" : 3,
+          "text" : "Verify the Dependency",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "To check whether the dependency has been successfully included in your project, select",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "your project in the Navigator, select the target, and under General scroll down to",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "Frameworks, Libraries, and Embedded Content. You should see CareKit listed there:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "identifier" : "setting-up-your-project-to-use-carekit-2",
+              "type" : "image"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "If you’d like to remove CareKit from your target, select it in the list and then",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "press the removal button, which is the minus (-) sign.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Once you’ve added CareKit to your target, use it in any of your classes by importing",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "it:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "code" : [
+            "import CareKit"
+          ],
+          "syntax" : "swift",
+          "type" : "codeListing"
+        },
+        {
+          "anchor" : "Update-CareKit",
+          "level" : 3,
+          "text" : "Update CareKit",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Swift Package Manager makes it easy to keep your dependencies up to date. Every time",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "you open a Xcode project that has CareKit included as a dependency and you have an",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "active internet connection, the Swift Package Manager checks for updates that match",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "your specified rules for version, branch, or commit.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "You can also manually check for an update in Xcode by selecting File > Swift Packages",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "> Update to Latest Package Versions:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "identifier" : "setting-up-your-project-to-use-carekit-3",
+              "type" : "image"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "anchor" : "Add-Localizations-from-CareKit",
+          "level" : 3,
+          "text" : "Add Localizations from CareKit",
+          "type" : "heading"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "The Swift Package Manger currently doesn’t support including resources, so you’ll",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "need to add the localization files from the CareKit framework to your project manually.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "To do this, in the project navigator pane, find the ‘Swift Package Dependencies’",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "section and click the disclosure triangle to expand the contents. Navigate to the",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "‘Localization’ folder, and right-click it. In the menu, select ‘Show in Finder’ to",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "reveal the localizations folder in the file system:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "identifier" : "setting-up-your-project-to-use-carekit-4",
+              "type" : "image"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "Next, drag the Localization folder from Finder into your project inside Xcode. In",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "the ‘Choose options’ dialogue, tick the ‘Copy items if needed’ option, then click",
+              "type" : "text"
+            },
+            {
+              "text" : " ",
+              "type" : "text"
+            },
+            {
+              "text" : "finish:",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "identifier" : "setting-up-your-project-to-use-carekit-5",
+              "type" : "image"
+            }
+          ],
+          "type" : "paragraph"
+        },
+        {
+          "inlineContent" : [
+            {
+              "text" : "After you click Finish, your project contains the Localization folder and its contents.",
+              "type" : "text"
+            }
+          ],
+          "type" : "paragraph"
+        }
+      ],
+      "kind" : "content"
+    }
+  ],
+  "schemaVersion" : {
+    "major" : 0,
+    "minor" : 2,
+    "patch" : 0
+  },
+  "sections" : [
+
+  ],
+  "variants" : [
+    {
+      "paths" : [
+        "\/documentation\/carekit\/setting-up-your-project-to-use-carekit"
+      ],
+      "traits" : [
+        {
+          "interfaceLanguage" : "swift"
+        }
+      ]
+    }
+  ]
+, 
+"references": {
+"doc://com.apple.CareKit/documentation/CareKit": {
+  "abstract" : [
+    {
+      "text" : "Create apps that help people better understand and manage their health.",
+      "type" : "text"
+    }
+  ],
+  "identifier" : "doc:\/\/com.apple.CareKit\/documentation\/CareKit",
+  "kind" : "symbol",
+  "role" : "collection",
+  "title" : "CareKit",
+  "type" : "topic",
+  "url" : "\/documentation\/carekit"
+},
+"https://developer.apple.com/documentation/swift_packages/adding_package_dependencies_to_your_app/": {
+  "identifier" : "https:\/\/developer.apple.com\/documentation\/swift_packages\/adding_package_dependencies_to_your_app\/",
+  "title" : "Adding Package Dependencies to Your App",
+  "titleInlineContent" : [
+    {
+      "text" : "Adding Package Dependencies to Your App",
+      "type" : "text"
+    }
+  ],
+  "type" : "link",
+  "url" : "https:\/\/developer.apple.com\/documentation\/swift_packages\/adding_package_dependencies_to_your_app\/"
+},
+"https://github.com/carekit-apple/CareKit": {
+  "identifier" : "https:\/\/github.com\/carekit-apple\/CareKit",
+  "title" : "CareKit on GitHub",
+  "titleInlineContent" : [
+    {
+      "text" : "CareKit on GitHub",
+      "type" : "text"
+    }
+  ],
+  "type" : "link",
+  "url" : "https:\/\/github.com\/carekit-apple\/CareKit"
+},
+"setting-up-your-project-to-use-carekit-1": {
+  "alt" : "The Choose package products and targets dialogue, showing the CareKit Package Product selected.",
+  "identifier" : "setting-up-your-project-to-use-carekit-1",
+  "type" : "image",
+  "variants" : [
+    {
+      "traits" : [
+        "2x",
+        "light"
+      ],
+      "url" : "\/images\/setting-up-your-project-to-use-carekit-1@2x.png"
+    }
+  ]
+},
+"setting-up-your-project-to-use-carekit-2": {
+  "alt" : "A screenshot of Xcode showing CareKit listed in the Framesworks, Libraries, and Embedded Content section in the General tab within the My Care target.",
+  "identifier" : "setting-up-your-project-to-use-carekit-2",
+  "type" : "image",
+  "variants" : [
+    {
+      "traits" : [
+        "2x",
+        "light"
+      ],
+      "url" : "\/images\/setting-up-your-project-to-use-carekit-2@2x.png"
+    }
+  ]
+},
+"setting-up-your-project-to-use-carekit-3": {
+  "alt" : "A screenshot from Xcode showing how to update a package by choosing File, then Swift Packages, then Update to Latest Package Versions.",
+  "identifier" : "setting-up-your-project-to-use-carekit-3",
+  "type" : "image",
+  "variants" : [
+    {
+      "traits" : [
+        "2x",
+        "light"
+      ],
+      "url" : "\/images\/setting-up-your-project-to-use-carekit-3@2x.png"
+    }
+  ]
+},
+"setting-up-your-project-to-use-carekit-4": {
+  "alt" : "A screenshot from Xcode that shows how to show a selected item in finder.",
+  "identifier" : "setting-up-your-project-to-use-carekit-4",
+  "type" : "image",
+  "variants" : [
+    {
+      "traits" : [
+        "2x",
+        "light"
+      ],
+      "url" : "\/images\/setting-up-your-project-to-use-carekit-4@2x.png"
+    }
+  ]
+},
+"setting-up-your-project-to-use-carekit-5": {
+  "alt" : "The choose options for adding these files dialogue, with copy items if needed selected, create folder references selected, and the My Care target selected in the add to targets list.",
+  "identifier" : "setting-up-your-project-to-use-carekit-5",
+  "type" : "image",
+  "variants" : [
+    {
+      "traits" : [
+        "2x",
+        "light"
+      ],
+      "url" : "\/images\/setting-up-your-project-to-use-carekit-5@2x.png"
+    }
+  ]
+}
+}
+}

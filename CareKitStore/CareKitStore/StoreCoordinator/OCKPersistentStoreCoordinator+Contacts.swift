@@ -32,7 +32,7 @@ import Foundation
 
 extension OCKStoreCoordinator {
 
-    open func fetchAnyContacts(query: OCKContactQuery, callbackQueue: DispatchQueue = .main,
+    public func fetchAnyContacts(query: OCKContactQuery, callbackQueue: DispatchQueue = .main,
                                completion: @escaping (Result<[OCKAnyContact], OCKStoreError>) -> Void) {
         let readableStores = readOnlyContactStores + contactStores
         let respondingStores = readableStores.filter { contactStore($0, shouldHandleQuery: query) }
@@ -42,7 +42,7 @@ extension OCKStoreCoordinator {
         aggregate(closures, callbackQueue: callbackQueue, completion: completion)
     }
 
-    open func addAnyContacts(_ contacts: [OCKAnyContact], callbackQueue: DispatchQueue = .main,
+    public func addAnyContacts(_ contacts: [OCKAnyContact], callbackQueue: DispatchQueue = .main,
                              completion: ((Result<[OCKAnyContact], OCKStoreError>) -> Void)? = nil) {
         do {
             try findStore(forContacts: contacts).addAnyContacts(contacts, callbackQueue: callbackQueue, completion: completion)
@@ -54,7 +54,7 @@ extension OCKStoreCoordinator {
         }
     }
 
-    open func updateAnyContacts(_ contacts: [OCKAnyContact], callbackQueue: DispatchQueue = .main,
+    public func updateAnyContacts(_ contacts: [OCKAnyContact], callbackQueue: DispatchQueue = .main,
                                 completion: ((Result<[OCKAnyContact], OCKStoreError>) -> Void)? = nil) {
         do {
             try findStore(forContacts: contacts).updateAnyContacts(contacts, callbackQueue: callbackQueue, completion: completion)
@@ -66,7 +66,7 @@ extension OCKStoreCoordinator {
         }
     }
 
-    open func deleteAnyContacts(_ contacts: [OCKAnyContact], callbackQueue: DispatchQueue = .main,
+    public func deleteAnyContacts(_ contacts: [OCKAnyContact], callbackQueue: DispatchQueue = .main,
                                 completion: ((Result<[OCKAnyContact], OCKStoreError>) -> Void)? = nil) {
         do {
             try findStore(forContacts: contacts).deleteAnyContacts(contacts, callbackQueue: callbackQueue, completion: completion)
@@ -88,15 +88,15 @@ extension OCKStoreCoordinator {
 }
 
 extension OCKStoreCoordinator: OCKContactStoreDelegate {
-    open func contactStore(_ store: OCKAnyReadOnlyContactStore, didAddContacts contacts: [OCKAnyContact]) {
+    public func contactStore(_ store: OCKAnyReadOnlyContactStore, didAddContacts contacts: [OCKAnyContact]) {
         contactDelegate?.contactStore(self, didAddContacts: contacts)
     }
 
-    open func contactStore(_ store: OCKAnyReadOnlyContactStore, didUpdateContacts contacts: [OCKAnyContact]) {
+    public func contactStore(_ store: OCKAnyReadOnlyContactStore, didUpdateContacts contacts: [OCKAnyContact]) {
         contactDelegate?.contactStore(self, didUpdateContacts: contacts)
     }
 
-    open func contactStore(_ store: OCKAnyReadOnlyContactStore, didDeleteContacts contacts: [OCKAnyContact]) {
+    public func contactStore(_ store: OCKAnyReadOnlyContactStore, didDeleteContacts contacts: [OCKAnyContact]) {
         contactDelegate?.contactStore(self, didDeleteContacts: contacts)
     }
 }

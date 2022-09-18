@@ -32,7 +32,7 @@ import Foundation
 
 extension OCKStore {
 
-    open func fetchPatients(query: OCKPatientQuery = OCKPatientQuery(), callbackQueue: DispatchQueue = .main,
+    public func fetchPatients(query: OCKPatientQuery = OCKPatientQuery(), callbackQueue: DispatchQueue = .main,
                             completion: @escaping (Result<[OCKPatient], OCKStoreError>) -> Void) {
         fetchValues(
             predicate: query.basicPredicate(enforceDateInterval: true),
@@ -46,7 +46,7 @@ extension OCKStore {
         }
     }
 
-    open func addPatients(_ patients: [OCKPatient], callbackQueue: DispatchQueue = .main,
+    public func addPatients(_ patients: [OCKPatient], callbackQueue: DispatchQueue = .main,
                           completion: ((Result<[OCKPatient], OCKStoreError>) -> Void)? = nil) {
         transaction(
             inserts: patients, updates: [], deletes: [],
@@ -58,7 +58,7 @@ extension OCKStore {
         }
     }
 
-    open func updatePatients(_ patients: [OCKPatient], callbackQueue: DispatchQueue = .main,
+    public func updatePatients(_ patients: [OCKPatient], callbackQueue: DispatchQueue = .main,
                              completion: ((Result<[OCKPatient], OCKStoreError>) -> Void)? = nil) {
         transaction(inserts: [], updates: patients, deletes: []) { result in
             callbackQueue.async {
@@ -67,7 +67,7 @@ extension OCKStore {
         }
     }
 
-    open func deletePatients(_ patients: [OCKPatient], callbackQueue: DispatchQueue = .main,
+    public func deletePatients(_ patients: [OCKPatient], callbackQueue: DispatchQueue = .main,
                              completion: ((Result<[OCKPatient], OCKStoreError>) -> Void)? = nil) {
         transaction(inserts: [], updates: [], deletes: patients) { result in
             callbackQueue.async {

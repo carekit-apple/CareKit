@@ -32,7 +32,7 @@ import Foundation
 
 extension OCKStoreCoordinator {
 
-    open func fetchAnyEvents(taskID: String, query: OCKEventQuery, callbackQueue: DispatchQueue,
+    public func fetchAnyEvents(taskID: String, query: OCKEventQuery, callbackQueue: DispatchQueue,
                              completion: @escaping OCKResultClosure<[OCKAnyEvent]>) {
         findStore(taskID: taskID) { result in
             switch result {
@@ -44,7 +44,7 @@ extension OCKStoreCoordinator {
         }
     }
 
-    open func fetchAnyEvent(forTask task: OCKAnyTask, occurrence: Int, callbackQueue: DispatchQueue,
+    public func fetchAnyEvent(forTask task: OCKAnyTask, occurrence: Int, callbackQueue: DispatchQueue,
                             completion: @escaping OCKResultClosure<OCKAnyEvent>) {
         let closures = eventStores.map({ store in { done in
             store.fetchAnyEvent(forTask: task, occurrence: occurrence, callbackQueue: callbackQueue, completion: done)

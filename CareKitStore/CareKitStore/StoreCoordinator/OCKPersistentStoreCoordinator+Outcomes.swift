@@ -32,7 +32,7 @@ import Foundation
 
 extension OCKStoreCoordinator {
 
-    open func fetchAnyOutcomes(query: OCKOutcomeQuery, callbackQueue: DispatchQueue = .main,
+    public func fetchAnyOutcomes(query: OCKOutcomeQuery, callbackQueue: DispatchQueue = .main,
                                completion: @escaping (Result<[OCKAnyOutcome], OCKStoreError>) -> Void) {
         let readableStores = readOnlyEventStores + eventStores
         let respondingStores = readableStores.filter { outcomeStore($0, shouldHandleQuery: query) }
@@ -42,7 +42,7 @@ extension OCKStoreCoordinator {
         aggregate(closures, callbackQueue: callbackQueue, completion: completion)
     }
 
-    open func addAnyOutcomes(_ outcomes: [OCKAnyOutcome], callbackQueue: DispatchQueue = .main,
+    public func addAnyOutcomes(_ outcomes: [OCKAnyOutcome], callbackQueue: DispatchQueue = .main,
                              completion: ((Result<[OCKAnyOutcome], OCKStoreError>) -> Void)? = nil) {
         do {
             try findStore(forOutcomes: outcomes).addAnyOutcomes(outcomes, callbackQueue: callbackQueue, completion: completion)
@@ -54,7 +54,7 @@ extension OCKStoreCoordinator {
         }
     }
 
-    open func updateAnyOutcomes(_ outcomes: [OCKAnyOutcome], callbackQueue: DispatchQueue = .main,
+    public func updateAnyOutcomes(_ outcomes: [OCKAnyOutcome], callbackQueue: DispatchQueue = .main,
                                 completion: ((Result<[OCKAnyOutcome], OCKStoreError>) -> Void)? = nil) {
         do {
             try findStore(forOutcomes: outcomes).updateAnyOutcomes(outcomes, callbackQueue: callbackQueue, completion: completion)
@@ -66,7 +66,7 @@ extension OCKStoreCoordinator {
         }
     }
 
-    open func deleteAnyOutcomes(_ outcomes: [OCKAnyOutcome], callbackQueue: DispatchQueue = .main,
+    public func deleteAnyOutcomes(_ outcomes: [OCKAnyOutcome], callbackQueue: DispatchQueue = .main,
                                 completion: ((Result<[OCKAnyOutcome], OCKStoreError>) -> Void)? = nil) {
         do {
             try findStore(forOutcomes: outcomes).deleteAnyOutcomes(outcomes, callbackQueue: callbackQueue, completion: completion)
@@ -88,15 +88,15 @@ extension OCKStoreCoordinator {
 }
 
 extension OCKStoreCoordinator: OCKOutcomeStoreDelegate {
-    open func outcomeStore(_ store: OCKAnyReadOnlyOutcomeStore, didAddOutcomes outcomes: [OCKAnyOutcome]) {
+    public func outcomeStore(_ store: OCKAnyReadOnlyOutcomeStore, didAddOutcomes outcomes: [OCKAnyOutcome]) {
         outcomeDelegate?.outcomeStore(self, didAddOutcomes: outcomes)
     }
 
-    open func outcomeStore(_ store: OCKAnyReadOnlyOutcomeStore, didUpdateOutcomes outcomes: [OCKAnyOutcome]) {
+    public func outcomeStore(_ store: OCKAnyReadOnlyOutcomeStore, didUpdateOutcomes outcomes: [OCKAnyOutcome]) {
         outcomeDelegate?.outcomeStore(self, didUpdateOutcomes: outcomes)
     }
 
-    open func outcomeStore(_ store: OCKAnyReadOnlyOutcomeStore, didDeleteOutcomes outcomes: [OCKAnyOutcome]) {
+    public func outcomeStore(_ store: OCKAnyReadOnlyOutcomeStore, didDeleteOutcomes outcomes: [OCKAnyOutcome]) {
         outcomeDelegate?.outcomeStore(self, didDeleteOutcomes: outcomes)
     }
 

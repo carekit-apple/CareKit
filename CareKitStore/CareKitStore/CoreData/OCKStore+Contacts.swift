@@ -32,7 +32,7 @@ import CoreData
 
 extension OCKStore {
 
-    open func fetchContacts(query: OCKContactQuery = OCKContactQuery(), callbackQueue: DispatchQueue = .main,
+    public func fetchContacts(query: OCKContactQuery = OCKContactQuery(), callbackQueue: DispatchQueue = .main,
                             completion: @escaping (Result<[OCKContact], OCKStoreError>) -> Void) {
         fetchValues(
             predicate: buildPredicate(for: query),
@@ -46,7 +46,7 @@ extension OCKStore {
         }
     }
 
-    open func addContacts(_ contacts: [OCKContact], callbackQueue: DispatchQueue = .main,
+    public func addContacts(_ contacts: [OCKContact], callbackQueue: DispatchQueue = .main,
                           completion: ((Result<[OCKContact], OCKStoreError>) -> Void)? = nil) {
         transaction(inserts: contacts, updates: [], deletes: []) { result in
             callbackQueue.async {
@@ -55,7 +55,7 @@ extension OCKStore {
         }
     }
 
-    open func updateContacts(_ contacts: [OCKContact], callbackQueue: DispatchQueue = .main,
+    public func updateContacts(_ contacts: [OCKContact], callbackQueue: DispatchQueue = .main,
                              completion: OCKResultClosure<[OCKContact]>? = nil) {
         transaction(inserts: [], updates: contacts, deletes: []) { result in
             callbackQueue.async {
@@ -64,7 +64,7 @@ extension OCKStore {
         }
     }
 
-    open func deleteContacts(_ contacts: [OCKContact], callbackQueue: DispatchQueue = .main,
+    public func deleteContacts(_ contacts: [OCKContact], callbackQueue: DispatchQueue = .main,
                              completion: ((Result<[OCKContact], OCKStoreError>) -> Void)? = nil) {
         transaction(inserts: [], updates: [], deletes: contacts) { result in
             callbackQueue.async {

@@ -32,7 +32,7 @@ import Foundation
 
 extension OCKStoreCoordinator {
 
-    open func fetchAnyCarePlans(query: OCKCarePlanQuery, callbackQueue: DispatchQueue = .main,
+    public func fetchAnyCarePlans(query: OCKCarePlanQuery, callbackQueue: DispatchQueue = .main,
                                 completion: @escaping (Result<[OCKAnyCarePlan], OCKStoreError>) -> Void) {
         let readableStores = readOnlyPlanStores + planStores
         let respondingStores = readableStores.filter { carePlanStore($0, shouldHandleQuery: query) }
@@ -42,7 +42,7 @@ extension OCKStoreCoordinator {
         aggregate(closures, callbackQueue: callbackQueue, completion: completion)
     }
 
-    open func addAnyCarePlans(_ plans: [OCKAnyCarePlan], callbackQueue: DispatchQueue = .main,
+    public func addAnyCarePlans(_ plans: [OCKAnyCarePlan], callbackQueue: DispatchQueue = .main,
                               completion: ((Result<[OCKAnyCarePlan], OCKStoreError>) -> Void)? = nil) {
         do {
             try findStore(forCarePlans: plans).addAnyCarePlans(plans, callbackQueue: callbackQueue, completion: completion)
@@ -54,7 +54,7 @@ extension OCKStoreCoordinator {
         }
     }
 
-    open func updateAnyCarePlans(_ plans: [OCKAnyCarePlan], callbackQueue: DispatchQueue = .main,
+    public func updateAnyCarePlans(_ plans: [OCKAnyCarePlan], callbackQueue: DispatchQueue = .main,
                                  completion: ((Result<[OCKAnyCarePlan], OCKStoreError>) -> Void)? = nil) {
         do {
             try findStore(forCarePlans: plans).updateAnyCarePlans(plans, callbackQueue: callbackQueue, completion: completion)
@@ -66,7 +66,7 @@ extension OCKStoreCoordinator {
         }
     }
 
-    open func deleteAnyCarePlans(_ plans: [OCKAnyCarePlan], callbackQueue: DispatchQueue = .main,
+    public func deleteAnyCarePlans(_ plans: [OCKAnyCarePlan], callbackQueue: DispatchQueue = .main,
                                  completion: ((Result<[OCKAnyCarePlan], OCKStoreError>) -> Void)? = nil) {
         do {
             try findStore(forCarePlans: plans).deleteAnyCarePlans(plans, callbackQueue: callbackQueue, completion: completion)
@@ -88,13 +88,13 @@ extension OCKStoreCoordinator {
 }
 
 extension OCKStoreCoordinator: OCKCarePlanStoreDelegate {
-    open func carePlanStore(_ store: OCKAnyReadOnlyCarePlanStore, didAddCarePlans carePlans: [OCKAnyCarePlan]) {
+    public func carePlanStore(_ store: OCKAnyReadOnlyCarePlanStore, didAddCarePlans carePlans: [OCKAnyCarePlan]) {
         carePlanDelegate?.carePlanStore(self, didAddCarePlans: carePlans)
     }
-    open func carePlanStore(_ store: OCKAnyReadOnlyCarePlanStore, didUpdateCarePlans carePlans: [OCKAnyCarePlan]) {
+    public func carePlanStore(_ store: OCKAnyReadOnlyCarePlanStore, didUpdateCarePlans carePlans: [OCKAnyCarePlan]) {
         carePlanDelegate?.carePlanStore(self, didUpdateCarePlans: carePlans)
     }
-    open func carePlanStore(_ store: OCKAnyReadOnlyCarePlanStore, didDeleteCarePlans carePlans: [OCKAnyCarePlan]) {
+    public func carePlanStore(_ store: OCKAnyReadOnlyCarePlanStore, didDeleteCarePlans carePlans: [OCKAnyCarePlan]) {
         carePlanDelegate?.carePlanStore(self, didDeleteCarePlans: carePlans)
     }
 }

@@ -32,7 +32,7 @@ import Foundation
 
 extension OCKStoreCoordinator {
 
-    open func fetchAnyTasks(query: OCKTaskQuery, callbackQueue: DispatchQueue = .main,
+    public func fetchAnyTasks(query: OCKTaskQuery, callbackQueue: DispatchQueue = .main,
                             completion: @escaping (Result<[OCKAnyTask], OCKStoreError>) -> Void) {
         let readableStores = readOnlyEventStores + eventStores
         let respondingStores = readableStores.filter { taskStore($0, shouldHandleQuery: query) }
@@ -42,7 +42,7 @@ extension OCKStoreCoordinator {
         aggregate(closures, callbackQueue: callbackQueue, completion: completion)
     }
 
-    open func addAnyTasks(_ tasks: [OCKAnyTask], callbackQueue: DispatchQueue = .main,
+    public func addAnyTasks(_ tasks: [OCKAnyTask], callbackQueue: DispatchQueue = .main,
                           completion: ((Result<[OCKAnyTask], OCKStoreError>) -> Void)? = nil) {
         do {
             try findStore(forTasks: tasks).addAnyTasks(tasks, callbackQueue: callbackQueue, completion: completion)
@@ -54,7 +54,7 @@ extension OCKStoreCoordinator {
         }
     }
 
-    open func updateAnyTasks(_ tasks: [OCKAnyTask], callbackQueue: DispatchQueue = .main,
+    public func updateAnyTasks(_ tasks: [OCKAnyTask], callbackQueue: DispatchQueue = .main,
                              completion: ((Result<[OCKAnyTask], OCKStoreError>) -> Void)? = nil) {
         do {
             try findStore(forTasks: tasks).updateAnyTasks(tasks, callbackQueue: callbackQueue, completion: completion)
@@ -66,7 +66,7 @@ extension OCKStoreCoordinator {
         }
     }
 
-    open func deleteAnyTasks(_ tasks: [OCKAnyTask], callbackQueue: DispatchQueue = .main,
+    public func deleteAnyTasks(_ tasks: [OCKAnyTask], callbackQueue: DispatchQueue = .main,
                              completion: ((Result<[OCKAnyTask], OCKStoreError>) -> Void)? = nil) {
         do {
             try findStore(forTasks: tasks).deleteAnyTasks(tasks, callbackQueue: callbackQueue, completion: completion)
@@ -88,15 +88,15 @@ extension OCKStoreCoordinator {
 }
 
 extension OCKStoreCoordinator: OCKTaskStoreDelegate {
-    open func taskStore(_ store: OCKAnyReadOnlyTaskStore, didAddTasks tasks: [OCKAnyTask]) {
+    public func taskStore(_ store: OCKAnyReadOnlyTaskStore, didAddTasks tasks: [OCKAnyTask]) {
         taskDelegate?.taskStore(self, didAddTasks: tasks)
     }
 
-    open func taskStore(_ store: OCKAnyReadOnlyTaskStore, didUpdateTasks tasks: [OCKAnyTask]) {
+    public func taskStore(_ store: OCKAnyReadOnlyTaskStore, didUpdateTasks tasks: [OCKAnyTask]) {
         taskDelegate?.taskStore(self, didUpdateTasks: tasks)
     }
 
-    open func taskStore(_ store: OCKAnyReadOnlyTaskStore, didDeleteTasks tasks: [OCKAnyTask]) {
+    public func taskStore(_ store: OCKAnyReadOnlyTaskStore, didDeleteTasks tasks: [OCKAnyTask]) {
         taskDelegate?.taskStore(self, didDeleteTasks: tasks)
     }
 }

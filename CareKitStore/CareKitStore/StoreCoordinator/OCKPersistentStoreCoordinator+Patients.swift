@@ -31,7 +31,7 @@ import Foundation
 
 extension OCKStoreCoordinator {
 
-    open func fetchAnyPatients(query: OCKPatientQuery, callbackQueue: DispatchQueue = .main,
+    public func fetchAnyPatients(query: OCKPatientQuery, callbackQueue: DispatchQueue = .main,
                                completion: @escaping OCKResultClosure<[OCKAnyPatient]>) {
         let readableStores = readOnlyPatientStores + patientStores
         let respondingStores = readableStores.filter { patientStore($0, shouldHandleQuery: query) }
@@ -41,7 +41,7 @@ extension OCKStoreCoordinator {
         aggregate(closures, callbackQueue: callbackQueue, completion: completion)
     }
 
-    open func addAnyPatients(_ patients: [OCKAnyPatient], callbackQueue: DispatchQueue = .main,
+    public func addAnyPatients(_ patients: [OCKAnyPatient], callbackQueue: DispatchQueue = .main,
                              completion: ((Result<[OCKAnyPatient], OCKStoreError>) -> Void)? = nil) {
         do {
             try findStore(forPatients: patients).addAnyPatients(patients, callbackQueue: callbackQueue, completion: completion)
@@ -53,7 +53,7 @@ extension OCKStoreCoordinator {
         }
     }
 
-    open func updateAnyPatients(_ patients: [OCKAnyPatient], callbackQueue: DispatchQueue = .main,
+    public func updateAnyPatients(_ patients: [OCKAnyPatient], callbackQueue: DispatchQueue = .main,
                                 completion: ((Result<[OCKAnyPatient], OCKStoreError>) -> Void)? = nil) {
         do {
             try findStore(forPatients: patients).updateAnyPatients(patients, callbackQueue: callbackQueue, completion: completion)
@@ -65,7 +65,7 @@ extension OCKStoreCoordinator {
         }
     }
 
-    open func deleteAnyPatients(_ patients: [OCKAnyPatient], callbackQueue: DispatchQueue = .main,
+    public func deleteAnyPatients(_ patients: [OCKAnyPatient], callbackQueue: DispatchQueue = .main,
                                 completion: ((Result<[OCKAnyPatient], OCKStoreError>) -> Void)? = nil) {
         do {
             try findStore(forPatients: patients).deleteAnyPatients(patients, callbackQueue: callbackQueue, completion: completion)
@@ -87,15 +87,15 @@ extension OCKStoreCoordinator {
 }
 
 extension OCKStoreCoordinator: OCKPatientStoreDelegate {
-    open func patientStore(_ store: OCKAnyReadOnlyPatientStore, didAddPatients patients: [OCKAnyPatient]) {
+    public func patientStore(_ store: OCKAnyReadOnlyPatientStore, didAddPatients patients: [OCKAnyPatient]) {
         patientDelegate?.patientStore(self, didAddPatients: patients)
     }
 
-    open func patientStore(_ store: OCKAnyReadOnlyPatientStore, didUpdatePatients patients: [OCKAnyPatient]) {
+    public func patientStore(_ store: OCKAnyReadOnlyPatientStore, didUpdatePatients patients: [OCKAnyPatient]) {
         patientDelegate?.patientStore(self, didUpdatePatients: patients)
     }
 
-    open func patientStore(_ store: OCKAnyReadOnlyPatientStore, didDeletePatients patients: [OCKAnyPatient]) {
+    public func patientStore(_ store: OCKAnyReadOnlyPatientStore, didDeletePatients patients: [OCKAnyPatient]) {
         patientDelegate?.patientStore(self, didDeletePatients: patients)
     }
 }

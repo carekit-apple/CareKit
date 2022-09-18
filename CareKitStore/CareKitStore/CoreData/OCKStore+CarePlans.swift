@@ -33,7 +33,7 @@ import Foundation
 
 extension OCKStore {
 
-    open func fetchCarePlans(query: OCKCarePlanQuery = OCKCarePlanQuery(),
+    public func fetchCarePlans(query: OCKCarePlanQuery = OCKCarePlanQuery(),
                              callbackQueue: DispatchQueue = .main, completion: @escaping (Result<[OCKCarePlan], OCKStoreError>) -> Void) {
         fetchValues(
             predicate: buildPredicate(for: query),
@@ -47,7 +47,7 @@ extension OCKStore {
         }
     }
 
-    open func addCarePlans(_ plans: [OCKCarePlan], callbackQueue: DispatchQueue = .main,
+    public func addCarePlans(_ plans: [OCKCarePlan], callbackQueue: DispatchQueue = .main,
                            completion: ((Result<[OCKCarePlan], OCKStoreError>) -> Void)? = nil) {
         transaction(inserts: plans, updates: [], deletes: []) { result in
             callbackQueue.async {
@@ -56,7 +56,7 @@ extension OCKStore {
         }
     }
 
-    open func updateCarePlans(_ plans: [OCKCarePlan], callbackQueue: DispatchQueue = .main,
+    public func updateCarePlans(_ plans: [OCKCarePlan], callbackQueue: DispatchQueue = .main,
                               completion: ((Result<[OCKCarePlan], OCKStoreError>) -> Void)? = nil) {
         transaction(inserts: [], updates: plans, deletes: []) { result in
             callbackQueue.async {
@@ -65,7 +65,7 @@ extension OCKStore {
         }
     }
 
-    open func deleteCarePlans(_ plans: [OCKCarePlan], callbackQueue: DispatchQueue = .main,
+    public func deleteCarePlans(_ plans: [OCKCarePlan], callbackQueue: DispatchQueue = .main,
                               completion: ((Result<[OCKCarePlan], OCKStoreError>) -> Void)? = nil) {
         transaction(inserts: [], updates: [], deletes: plans) { result in
             callbackQueue.async {

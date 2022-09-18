@@ -32,7 +32,7 @@ import Foundation
 
 extension OCKStore {
 
-    open func fetchOutcomes(query: OCKOutcomeQuery = OCKOutcomeQuery(), callbackQueue: DispatchQueue = .main,
+    public func fetchOutcomes(query: OCKOutcomeQuery = OCKOutcomeQuery(), callbackQueue: DispatchQueue = .main,
                             completion: @escaping (Result<[OCKOutcome], OCKStoreError>) -> Void) {
         context.perform {
             do {
@@ -54,7 +54,7 @@ extension OCKStore {
         }
     }
 
-    open func addOutcomes(_ outcomes: [OCKOutcome], callbackQueue: DispatchQueue = .main,
+    public func addOutcomes(_ outcomes: [OCKOutcome], callbackQueue: DispatchQueue = .main,
                           completion: ((Result<[OCKOutcome], OCKStoreError>) -> Void)? = nil) {
         transaction(
             inserts: outcomes, updates: [], deletes: [],
@@ -66,7 +66,7 @@ extension OCKStore {
         }
     }
 
-    open func updateOutcomes(_ outcomes: [OCKOutcome], callbackQueue: DispatchQueue = .main,
+    public func updateOutcomes(_ outcomes: [OCKOutcome], callbackQueue: DispatchQueue = .main,
                              completion: ((Result<[OCKOutcome], OCKStoreError>) -> Void)? = nil) {
         transaction(inserts: [], updates: outcomes, deletes: []) { result in
             callbackQueue.async {
@@ -75,7 +75,7 @@ extension OCKStore {
         }
     }
 
-    open func deleteOutcomes(_ outcomes: [OCKOutcome], callbackQueue: DispatchQueue = .main,
+    public func deleteOutcomes(_ outcomes: [OCKOutcome], callbackQueue: DispatchQueue = .main,
                              completion: ((Result<[OCKOutcome], OCKStoreError>) -> Void)? = nil) {
         transaction(inserts: [], updates: [], deletes: outcomes) { result in
             callbackQueue.async {

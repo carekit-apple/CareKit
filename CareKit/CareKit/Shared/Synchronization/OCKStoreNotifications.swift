@@ -56,7 +56,7 @@ public struct OCKContactNotification: OCKStoreNotification {
     public let category: OCKStoreNotificationCategory
     public let storeManager: OCKSynchronizedStoreManager
 }
-
+// sample change
 public struct OCKTaskNotification: OCKStoreNotification {
     public let task: OCKAnyTask
     public let category: OCKStoreNotificationCategory

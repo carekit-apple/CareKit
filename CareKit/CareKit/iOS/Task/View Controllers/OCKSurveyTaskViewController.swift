@@ -153,6 +153,9 @@ open class OCKSurveyTaskViewController: OCKTaskViewController<OCKTaskController,
 
             warningAlert.addAction(cancelAction)
             warningAlert.addAction(confirmAction)
+            if self.view.window?.tintColor == nil {
+                warningAlert.view.tintColor = view.tintColor
+            }
             present(warningAlert, animated: true, completion: nil)
 
             return

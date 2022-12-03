@@ -225,10 +225,9 @@ UIViewController, OCKContactViewDelegate, MFMessageComposeViewControllerDelegate
             contactViewController.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self,
                                                                                       action: #selector(dismissViewController))
             let navigationController = UINavigationController(rootViewController: contactViewController)
-            if contactView.window?.tintColor == nil {
-                contactViewController.view.tintColor = view.tintColor
-                navigationController.navigationBar.tintColor = view.tintColor
-            }
+            let tintColor = determineTintColor(from: view)
+            contactViewController.view.tintColor = tintColor
+            navigationController.navigationBar.tintColor = tintColor
             present(navigationController, animated: true, completion: nil)
         }
     }

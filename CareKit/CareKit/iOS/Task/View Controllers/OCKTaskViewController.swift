@@ -193,9 +193,7 @@ UIViewController, OCKTaskViewDelegate {
                 alert.popoverPresentationController?.sourceView = anchor
                 alert.popoverPresentationController?.permittedArrowDirections = .any
             }
-            if self.view.window?.tintColor == nil {
-                alert.view.tintColor = view.tintColor
-            }
+            alert.view.tintColor = determineTintColor(from: view)
             present(alert, animated: true, completion: nil)
         } catch {
             if delegate == nil {
@@ -212,9 +210,7 @@ UIViewController, OCKTaskViewDelegate {
     open func didSelectTaskView(_ taskView: UIView & OCKTaskDisplayable, eventIndexPath: IndexPath) {
         do {
             let detailsViewController = try controller.initiateDetailsViewController(forIndexPath: eventIndexPath)
-            if self.view.window?.tintColor == nil {
-                detailsViewController.view.tintColor = view.tintColor
-            }
+            detailsViewController.view.tintColor = determineTintColor(from: view)
             present(detailsViewController, animated: true)
         } catch {
             if delegate == nil {

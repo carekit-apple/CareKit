@@ -153,9 +153,7 @@ open class OCKSurveyTaskViewController: OCKTaskViewController<OCKTaskController,
 
             warningAlert.addAction(cancelAction)
             warningAlert.addAction(confirmAction)
-            if self.view.window?.tintColor == nil {
-                warningAlert.view.tintColor = view.tintColor
-            }
+            warningAlert.view.tintColor = determineTintColor(from: view)
             present(warningAlert, animated: true, completion: nil)
 
             return
@@ -172,9 +170,7 @@ open class OCKSurveyTaskViewController: OCKTaskViewController<OCKTaskController,
         ).last!.appendingPathComponent("ResearchKit", isDirectory: true)
 
         surveyViewController.outputDirectory = directory
-        if self.view.window?.tintColor == nil {
-            surveyViewController.view.tintColor = view.tintColor
-        }
+        surveyViewController.view.tintColor = determineTintColor(from: view)
         surveyViewController.delegate = self
 
         present(surveyViewController, animated: true, completion: nil)

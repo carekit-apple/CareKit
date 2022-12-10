@@ -153,6 +153,12 @@ open class OCKSurveyTaskViewController: OCKTaskViewController<OCKTaskController,
 
             warningAlert.addAction(cancelAction)
             warningAlert.addAction(confirmAction)
+            /*
+             TODO: Remove in the future. Explicitly setting the tint color here to support
+             current developers that have a SwiftUI lifecycle app and wrap this view
+             controller in a `UIViewControllerRepresentable` implementation...Tint color
+             is not propagated...etc.
+             */
             warningAlert.view.tintColor = determineTintColor(from: view)
             present(warningAlert, animated: true, completion: nil)
 
@@ -170,6 +176,12 @@ open class OCKSurveyTaskViewController: OCKTaskViewController<OCKTaskController,
         ).last!.appendingPathComponent("ResearchKit", isDirectory: true)
 
         surveyViewController.outputDirectory = directory
+        /*
+         TODO: Remove in the future. Explicitly setting the tint color here to support
+         current developers that have a SwiftUI lifecycle app and wrap this view
+         controller in a `UIViewControllerRepresentable` implementation...Tint color
+         is not propagated...etc.
+         */
         surveyViewController.view.tintColor = determineTintColor(from: view)
         surveyViewController.delegate = self
 

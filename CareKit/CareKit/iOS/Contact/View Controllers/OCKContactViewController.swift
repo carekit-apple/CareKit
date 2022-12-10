@@ -222,6 +222,12 @@ UIViewController, OCKContactViewDelegate, MFMessageComposeViewControllerDelegate
 
     open func didSelectContactView(_ contactView: UIView & OCKContactDisplayable) {
         handleThrowable(method: controller.initiateSystemContactLookup) { [weak self] contactViewController in
+            /*
+             TODO: Remove in the future. Explicitly setting the tint color here to support
+             current developers that have a SwiftUI lifecycle app and wrap this view
+             controller in a `UIViewControllerRepresentable` implementation...Tint color
+             is not propagated...etc.
+             */
             let tintColor = determineTintColor(from: view)
             contactViewController.view.tintColor = tintColor
             contactViewController.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self,

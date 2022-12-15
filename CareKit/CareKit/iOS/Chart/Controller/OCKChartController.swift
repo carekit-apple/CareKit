@@ -49,7 +49,7 @@ open class OCKChartController: ObservableObject {
     /// The store manager against which the chart will be synchronized.
     public let storeManager: OCKSynchronizedStoreManager
 
-    private let eventQuery: OCKEventQuery
+    public let eventQuery: OCKEventQuery
     private var cancellables: Set<AnyCancellable> = Set()
 
     // MARK: - Life Cycle
@@ -59,6 +59,11 @@ open class OCKChartController: ObservableObject {
     /// - Parameter storeManager: Wraps the store that contains the insight data.
     public required init(weekOfDate: Date, storeManager: OCKSynchronizedStoreManager) {
         self.eventQuery = OCKEventQuery(dateInterval: Calendar.current.dateIntervalOfWeek(for: weekOfDate))
+        self.storeManager = storeManager
+    }
+ 
+    public init(storeManager: OCKSynchronizedStoreManager, eventQuery: OCKEventQuery) {
+        self.eventQuery = eventQuery
         self.storeManager = storeManager
     }
 

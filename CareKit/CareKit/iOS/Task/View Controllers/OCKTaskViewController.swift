@@ -193,6 +193,13 @@ UIViewController, OCKTaskViewDelegate {
                 alert.popoverPresentationController?.sourceView = anchor
                 alert.popoverPresentationController?.permittedArrowDirections = .any
             }
+            /*
+             TODO: Remove in the future. Explicitly setting the tint color here to support
+             current developers that have a SwiftUI lifecycle app and wrap this view
+             controller in a `UIViewControllerRepresentable` implementation...Tint color
+             is not propagated...etc.
+             */
+            alert.view.tintColor = determineTintColor(from: view)
             present(alert, animated: true, completion: nil)
         } catch {
             if delegate == nil {
@@ -209,6 +216,13 @@ UIViewController, OCKTaskViewDelegate {
     open func didSelectTaskView(_ taskView: UIView & OCKTaskDisplayable, eventIndexPath: IndexPath) {
         do {
             let detailsViewController = try controller.initiateDetailsViewController(forIndexPath: eventIndexPath)
+            /*
+             TODO: Remove in the future. Explicitly setting the tint color here to support
+             current developers that have a SwiftUI lifecycle app and wrap this view
+             controller in a `UIViewControllerRepresentable` implementation...Tint color
+             is not propagated...etc.
+             */
+            detailsViewController.view.tintColor = determineTintColor(from: view)
             present(detailsViewController, animated: true)
         } catch {
             if delegate == nil {

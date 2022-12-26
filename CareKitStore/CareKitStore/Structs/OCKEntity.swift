@@ -51,6 +51,9 @@ public enum OCKEntity: Equatable, Codable {
     /// An outcome entity.
     case outcome(OCKOutcome)
 
+    /// A HealthKit outcome entity.
+    case healthKitOutcome(OCKHealthKitOutcome)
+
     /// The type of the contained entity.
     public var entityType: EntityType {
         switch self {
@@ -60,6 +63,7 @@ public enum OCKEntity: Equatable, Codable {
         case .task: return .task
         case .healthKitTask: return .healthKitTask
         case .outcome: return .outcome
+        case .healthKitOutcome: return .healthKitOutcome
         }
     }
 
@@ -71,6 +75,7 @@ public enum OCKEntity: Equatable, Codable {
         case let .task(task): return task
         case let .healthKitTask(task): return task
         case let .outcome(outcome): return outcome
+        case let .healthKitOutcome(outcome): return outcome
         }
     }
 
@@ -88,6 +93,7 @@ public enum OCKEntity: Equatable, Codable {
         case .task: self = .task(try container.decode(OCKTask.self, forKey: .object))
         case .healthKitTask: self = .healthKitTask(try container.decode(OCKHealthKitTask.self, forKey: .object))
         case .outcome: self = .outcome(try container.decode(OCKOutcome.self, forKey: .object))
+        case .healthKitOutcome: self = .healthKitOutcome(try container.decode(OCKHealthKitOutcome.self, forKey: .object))
         }
     }
 
@@ -101,6 +107,7 @@ public enum OCKEntity: Equatable, Codable {
         case let .task(task): try container.encode(task, forKey: .object)
         case let .healthKitTask(task): try container.encode(task, forKey: .object)
         case let .outcome(outcome): try container.encode(outcome, forKey: .object)
+        case let .healthKitOutcome(outcome): try container.encode(outcome, forKey: .object)
         }
     }
 
@@ -124,5 +131,8 @@ public enum OCKEntity: Equatable, Codable {
 
         /// The outcome entity type.
         case outcome
+
+        /// The HealthKit outcome entity type.
+        case healthKitOutcome
     }
 }

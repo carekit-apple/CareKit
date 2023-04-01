@@ -46,6 +46,11 @@ private let revisionErrorKey = "OCKPeerRevisionErrorKey"
 /// reachable state.
 open class OCKWatchConnectivityPeer: OCKRemoteSynchronizable {
 
+    struct Payload: Codable {
+        let knowledgeVector: OCKRevisionRecord.KnowledgeVector
+        let revisions: [OCKRevisionRecord]
+    }
+
     public init() {}
 
     /// You should call this method anytime you receive a message from the companion app.
@@ -67,9 +72,10 @@ open class OCKWatchConnectivityPeer: OCKRemoteSynchronizable {
             // If the peer requested the latest revision, compute and return it.
             if let data = peerMessage[revisionRequestKey] as? Data {
                 let vector = try JSONDecoder().decode(OCKRevisionRecord.KnowledgeVector.self, from: data)
-                let revision = try store.computeRevision(since: vector)
-                let revisionData = try JSONEncoder().encode(revision)
-                sendReply([revisionReplyKey: revisionData])
+                let revisions = try store.computeRevisions(since: vector)
+                let payload = Payload(knowledgeVector: store.context.knowledgeVector, revisions: revisions)
+                let data = try JSONEncoder().encode(payload)
+                sendReply([revisionReplyKey: data])
                 store.context.knowledgeVector.increment(clockFor: store.context.clockID)
                 return
             }
@@ -77,8 +83,18 @@ open class OCKWatchConnectivityPeer: OCKRemoteSynchronizable {
             // If the peer just pushed a revision, attempt to merge.
             // If unsuccessful, send back an error.
             if let data = peerMessage[revisionPushKey] as? Data {
-                let revision = try JSONDecoder().decode(OCKRevisionRecord.self, from: data)
-                store.mergeRevision(revision)
+
+                let payload = try JSONDecoder().decode(Payload.self, from: data)
+
+                payload.revisions.forEach(store.mergeRevision)
+
+                store.mergeRevision(
+                    OCKRevisionRecord(
+                        entities: [],
+                        knowledgeVector: payload.knowledgeVector
+                    )
+                )
+
                 sendReply([:])
             }
 
@@ -89,7 +105,7 @@ open class OCKWatchConnectivityPeer: OCKRemoteSynchronizable {
 
     // MARK: OCKRemoteSynchronizable
 
-    public var automaticallySynchronizes: Bool = true
+    public var automaticallySynchronizes = true
 
     public weak var delegate: OCKRemoteSynchronizationDelegate?
 
@@ -110,8 +126,15 @@ open class OCKWatchConnectivityPeer: OCKRemoteSynchronizable {
                     let data = response[revisionReplyKey] as! Data
 
                     do {
-                        let revision = try JSONDecoder().decode(OCKRevisionRecord.self, from: data)
-                        mergeRevision(revision)
+                        let payload = try JSONDecoder().decode(Payload.self, from: data)
+                        payload.revisions.forEach(mergeRevision)
+
+                        let catchUp = OCKRevisionRecord(
+                            entities: [],
+                            knowledgeVector: payload.knowledgeVector
+                        )
+
+                        mergeRevision(catchUp)
                         completion(nil)
                     } catch {
                         completion(error)
@@ -125,13 +148,20 @@ open class OCKWatchConnectivityPeer: OCKRemoteSynchronizable {
     }
 
     public func pushRevisions(
-        deviceRevision: OCKRevisionRecord,
+        deviceRevisions: [OCKRevisionRecord],
+        deviceKnowledge: OCKRevisionRecord.KnowledgeVector,
         completion: @escaping (Error?) -> Void) {
 
         do {
 
             try validateSession()
-            let data = try JSONEncoder().encode(deviceRevision)
+
+            let payload = Payload(
+                knowledgeVector: deviceKnowledge,
+                revisions: deviceRevisions
+            )
+
+            let data = try JSONEncoder().encode(payload)
 
             session.sendMessage(
                 [revisionPushKey: data],

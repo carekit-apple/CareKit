@@ -27,22 +27,53 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 import Foundation
 
 extension OCKStoreCoordinator {
 
-    open func fetchAnyPatients(query: OCKPatientQuery, callbackQueue: DispatchQueue = .main,
-                               completion: @escaping OCKResultClosure<[OCKAnyPatient]>) {
+    public func anyPatients(matching query: OCKPatientQuery) -> CareStoreQueryResults<OCKAnyPatient> {
+
+        let stores = readOnlyPatientStores + patientStores
+
+        let relevantStores = stores.filter {
+            patientStore($0, shouldHandleQuery: query)
+        }
+
+        let patientsStreams = relevantStores.map {
+            $0.anyPatients(matching: query)
+        }
+
+        let sortDescriptors = query
+            .sortDescriptors
+            .map(\.nsSortDescriptor)
+
+        let patients = combineMany(
+            sequences: patientsStreams,
+            sortingElementsUsing: sortDescriptors
+        )
+
+        return patients
+    }
+
+    public func fetchAnyPatients(
+        query: OCKPatientQuery,
+        callbackQueue: DispatchQueue = .main,
+        completion: @escaping OCKResultClosure<[OCKAnyPatient]>
+    ) {
         let readableStores = readOnlyPatientStores + patientStores
         let respondingStores = readableStores.filter { patientStore($0, shouldHandleQuery: query) }
         let closures = respondingStores.map({ store in { done in
             store.fetchAnyPatients(query: query, callbackQueue: callbackQueue, completion: done) }
         })
-        aggregate(closures, callbackQueue: callbackQueue, completion: completion)
+        aggregateAndFlatten(closures, callbackQueue: callbackQueue, completion: completion)
     }
 
-    open func addAnyPatients(_ patients: [OCKAnyPatient], callbackQueue: DispatchQueue = .main,
-                             completion: ((Result<[OCKAnyPatient], OCKStoreError>) -> Void)? = nil) {
+    public func addAnyPatients(
+        _ patients: [OCKAnyPatient],
+        callbackQueue: DispatchQueue = .main,
+        completion: ((Result<[OCKAnyPatient], OCKStoreError>) -> Void)? = nil
+    ) {
         do {
             try findStore(forPatients: patients).addAnyPatients(patients, callbackQueue: callbackQueue, completion: completion)
         } catch {
@@ -53,8 +84,11 @@ extension OCKStoreCoordinator {
         }
     }
 
-    open func updateAnyPatients(_ patients: [OCKAnyPatient], callbackQueue: DispatchQueue = .main,
-                                completion: ((Result<[OCKAnyPatient], OCKStoreError>) -> Void)? = nil) {
+    public func updateAnyPatients(
+        _ patients: [OCKAnyPatient],
+        callbackQueue: DispatchQueue = .main,
+        completion: ((Result<[OCKAnyPatient], OCKStoreError>) -> Void)? = nil
+    ) {
         do {
             try findStore(forPatients: patients).updateAnyPatients(patients, callbackQueue: callbackQueue, completion: completion)
         } catch {
@@ -65,8 +99,11 @@ extension OCKStoreCoordinator {
         }
     }
 
-    open func deleteAnyPatients(_ patients: [OCKAnyPatient], callbackQueue: DispatchQueue = .main,
-                                completion: ((Result<[OCKAnyPatient], OCKStoreError>) -> Void)? = nil) {
+    public func deleteAnyPatients(
+        _ patients: [OCKAnyPatient],
+        callbackQueue: DispatchQueue = .main,
+        completion: ((Result<[OCKAnyPatient], OCKStoreError>) -> Void)? = nil
+    ) {
         do {
             try findStore(forPatients: patients).deleteAnyPatients(patients, callbackQueue: callbackQueue, completion: completion)
         } catch {
@@ -83,19 +120,5 @@ extension OCKStoreCoordinator {
         guard let store = matchingStores.first else { throw OCKStoreError.invalidValue(reason: "No store could be found for any patients.") }
         guard matchingStores.allSatisfy({ $0 === store }) else { throw OCKStoreError.invalidValue(reason: "Not all patients belong to same store.") }
         return store
-    }
-}
-
-extension OCKStoreCoordinator: OCKPatientStoreDelegate {
-    open func patientStore(_ store: OCKAnyReadOnlyPatientStore, didAddPatients patients: [OCKAnyPatient]) {
-        patientDelegate?.patientStore(self, didAddPatients: patients)
-    }
-
-    open func patientStore(_ store: OCKAnyReadOnlyPatientStore, didUpdatePatients patients: [OCKAnyPatient]) {
-        patientDelegate?.patientStore(self, didUpdatePatients: patients)
-    }
-
-    open func patientStore(_ store: OCKAnyReadOnlyPatientStore, didDeletePatients patients: [OCKAnyPatient]) {
-        patientDelegate?.patientStore(self, didDeletePatients: patients)
     }
 }

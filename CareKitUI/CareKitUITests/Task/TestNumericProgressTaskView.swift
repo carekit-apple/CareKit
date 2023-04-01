@@ -34,14 +34,15 @@ import XCTest
 
 class TestNumericProgressTaskView: XCTestCase {
 
+    private let text = Text("Hello World")
+
     func testDefaultInitializers() {
-        _ = NumericProgressTaskView(title: Text(""), detail: Text(""), progress: Text(""), goal: Text(""), instructions: Text(""), isComplete: false)
-        _ = NumericProgressTaskView( title: Text(""), detail: nil, progress: Text(""), goal: Text(""), instructions: nil, isComplete: false)
+        _ = NumericProgressTaskView(title: text, detail: text, progress: text, goal: text, instructions: text, isComplete: false)
+        _ = NumericProgressTaskView(title: text, progress: text, goal: text, isComplete: false)
     }
 
     func testCustomInitializers() {
-        _ = NumericProgressTaskView(instructions: nil, header: { EmptyView() }, content: { EmptyView() })
-        _ = NumericProgressTaskView(progress: Text(""), goal: Text(""), instructions: nil, isComplete: false, header: { EmptyView() })
-        _ = NumericProgressTaskView(title: Text(""), detail: nil, instructions: nil, content: { EmptyView() })
+        _ = NumericProgressTaskView(progress: text, goal: text, instructions: text, isComplete: true, header: { })
+        _ = NumericProgressTaskView(progress: text, goal: text, isComplete: true, header: { })
     }
 }

@@ -50,9 +50,5 @@ internal extension UIViewController {
         stackView.insertArrangedSubview(view, at: index, animated: animated)
         didMove(toParent: containerViewController)
     }
-    
-    func determineTintColor(from view: UIView) -> UIColor {
-        self.view.window?.tintColor ?? view.tintColor
-    }
 }
 #endif

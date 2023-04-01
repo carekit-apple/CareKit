@@ -32,32 +32,45 @@
 import CareKitStore
 import Foundation
 
-open class OCKSimpleContactViewController: OCKContactViewController<OCKSimpleContactController, OCKSimpleContactViewSynchronizer> {
+open class OCKSimpleContactViewController: OCKContactViewController<OCKSimpleContactViewSynchronizer> {
 
-    override public init(controller: OCKSimpleContactController, viewSynchronizer: OCKSimpleContactViewSynchronizer) {
-        super.init(controller: controller, viewSynchronizer: viewSynchronizer)
+    @available(*, unavailable, renamed: "init(query:store:viewSynchronizer:)")
+    public init(
+        controller: OCKSimpleContactController,
+        viewSynchronizer: OCKSimpleContactViewSynchronizer
+    ) {
+        fatalError("Unavailable")
     }
 
-    override public init(viewSynchronizer: OCKSimpleContactViewSynchronizer, contact: OCKAnyContact, storeManager: OCKSynchronizedStoreManager) {
-        super.init(viewSynchronizer: viewSynchronizer, contact: contact, storeManager: storeManager)
+    @available(*, unavailable, renamed: "init(query:store:viewSynchronizer:)")
+    public convenience init(
+        viewSynchronizer: OCKSimpleContactViewSynchronizer = OCKSimpleContactViewSynchronizer(),
+        contact: OCKAnyContact,
+        storeManager: OCKSynchronizedStoreManager
+    ) {
+        fatalError("Unavailable")
     }
 
-    override public init(viewSynchronizer: OCKSimpleContactViewSynchronizer, contactID: String, storeManager: OCKSynchronizedStoreManager) {
-        super.init(viewSynchronizer: viewSynchronizer, contactID: contactID, storeManager: storeManager)
+    @available(*, unavailable, renamed: "init(query:store:viewSynchronizer:)")
+    public convenience init(
+        viewSynchronizer: OCKSimpleContactViewSynchronizer = OCKSimpleContactViewSynchronizer(),
+        contactID: String,
+        storeManager: OCKSynchronizedStoreManager
+    ) {
+        fatalError("Unavailable")
     }
 
-    /// Initialize a view controller that displays a contact in the store. Stays synchronized with the provided contact.
-    /// - Parameter contact: The contact to display.
-    /// - Parameter storeManager: Wraps the store that contains the contact to fetch.
-    public init(contact: OCKAnyContact, storeManager: OCKSynchronizedStoreManager) {
-        super.init(viewSynchronizer: .init(), contact: contact, storeManager: storeManager)
-    }
-
-    /// Initialize a view controller that displays a contact. Fetches and stays synchronized with the contact.
-    /// - Parameter contactID: The user-defined unique identifier for the contact to fetch.
-    /// - Parameter storeManager: Wraps the store that contains the contact to fetch.
-    public init(contactID: String, storeManager: OCKSynchronizedStoreManager) {
-        super.init(viewSynchronizer: .init(), contactID: contactID, storeManager: storeManager)
+    /// A view controller that displays a contact view and keeps it synchronized with a store.
+    /// - Parameters:
+    ///   - query: Used to fetch the contact data that will be displayed.
+    ///   - store: Contains the contact data that will be displayed.
+    ///   - viewSynchronizer: Capable of creating and updating the view using the contact data.
+    override public init(
+        query: OCKContactQuery,
+        store: OCKAnyStoreProtocol,
+        viewSynchronizer: OCKSimpleContactViewSynchronizer = OCKSimpleContactViewSynchronizer()
+    ) {
+        super.init(query: query, store: store, viewSynchronizer: viewSynchronizer)
     }
 }
 

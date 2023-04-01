@@ -39,7 +39,7 @@ public struct OCKContact: Codable, Equatable, Identifiable, OCKAnyContact {
     public var carePlanUUID: UUID?
 
     // MARK: OCKAnyContact
-    public let id: String
+    public var id: String
     public var name: PersonNameComponents
     public var address: OCKPostalAddress?
     public var emailAddresses: [OCKLabeledValue]?
@@ -106,6 +106,10 @@ public struct OCKContact: Codable, Equatable, Identifiable, OCKAnyContact {
     public func belongs(to plan: OCKAnyCarePlan) -> Bool {
         guard let plan = plan as? OCKCarePlan else { return false }
         return carePlanUUID == plan.uuid
+    }
+
+    public func isEqual(to other: OCKAnyContact) -> Bool {
+        return self == other as? OCKContact
     }
 }
 

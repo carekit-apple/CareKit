@@ -95,5 +95,4 @@ extension OCKButtonLogTaskView: OCKEventUpdatable {
         clearItems(animated: animated)
     }
 }
-
 #endif

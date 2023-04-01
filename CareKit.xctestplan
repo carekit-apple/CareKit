@@ -99,7 +99,6 @@
     }
   ],
   "defaultOptions" : {
-    "codeCoverage" : false,
     "targetForVariableExpansion" : {
       "containerPath" : "container:CareKit.xcodeproj",
       "identifier" : "8605A5B91C4F04EC00DD65FF",
@@ -111,7 +110,7 @@
       "target" : {
         "containerPath" : "container:CareKit.xcodeproj",
         "identifier" : "5196C7F8226F8F8F00F1C2A2",
-        "name" : "CareKitTests iOS"
+        "name" : "CareKitTests"
       }
     }
   ],

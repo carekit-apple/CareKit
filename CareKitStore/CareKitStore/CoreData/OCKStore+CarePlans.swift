@@ -30,11 +30,47 @@
 
 import CoreData
 import Foundation
+import os.log
 
 extension OCKStore {
 
-    open func fetchCarePlans(query: OCKCarePlanQuery = OCKCarePlanQuery(),
-                             callbackQueue: DispatchQueue = .main, completion: @escaping (Result<[OCKCarePlan], OCKStoreError>) -> Void) {
+    public func carePlans(matching query: OCKCarePlanQuery) -> CareStoreQueryResults<OCKCarePlan> {
+
+        // Setup a live query
+
+        let predicate = buildPredicate(for: query)
+        let sortDescriptors = buildSortDescriptors(from: query)
+
+        let monitor = CoreDataQueryMonitor(
+            OCKCDCarePlan.self,
+            predicate: predicate,
+            sortDescriptors: sortDescriptors,
+            context: context
+        )
+
+        // Wrap the live query in an async stream
+
+        let coreDataCarePlans = monitor.results()
+
+        // Convert Core Data results to DTOs
+
+        let carePlans = coreDataCarePlans
+            .map { carePlans in
+                carePlans.map { $0.makePlan() }
+            }
+
+        // Wrap the final transformed stream to hide all implementation details from
+        // the public API
+
+        let wrappedCarePlans = CareStoreQueryResults(wrapping: carePlans)
+        return wrappedCarePlans
+    }
+
+    public func fetchCarePlans(
+        query: OCKCarePlanQuery = OCKCarePlanQuery(),
+        callbackQueue: DispatchQueue = .main,
+        completion: @escaping (Result<[OCKCarePlan], OCKStoreError>) -> Void
+    ) {
         fetchValues(
             predicate: buildPredicate(for: query),
             sortDescriptors: buildSortDescriptors(from: query),
@@ -47,8 +83,11 @@ extension OCKStore {
         }
     }
 
-    open func addCarePlans(_ plans: [OCKCarePlan], callbackQueue: DispatchQueue = .main,
-                           completion: ((Result<[OCKCarePlan], OCKStoreError>) -> Void)? = nil) {
+    public func addCarePlans(
+        _ plans: [OCKCarePlan],
+        callbackQueue: DispatchQueue = .main,
+        completion: ((Result<[OCKCarePlan], OCKStoreError>) -> Void)? = nil
+    ) {
         transaction(inserts: plans, updates: [], deletes: []) { result in
             callbackQueue.async {
                 completion?(result.map(\.inserts))
@@ -56,8 +95,11 @@ extension OCKStore {
         }
     }
 
-    open func updateCarePlans(_ plans: [OCKCarePlan], callbackQueue: DispatchQueue = .main,
-                              completion: ((Result<[OCKCarePlan], OCKStoreError>) -> Void)? = nil) {
+    public func updateCarePlans(
+        _ plans: [OCKCarePlan],
+        callbackQueue: DispatchQueue = .main,
+        completion: ((Result<[OCKCarePlan], OCKStoreError>) -> Void)? = nil
+    ) {
         transaction(inserts: [], updates: plans, deletes: []) { result in
             callbackQueue.async {
                 completion?(result.map(\.updates))
@@ -65,8 +107,10 @@ extension OCKStore {
         }
     }
 
-    open func deleteCarePlans(_ plans: [OCKCarePlan], callbackQueue: DispatchQueue = .main,
-                              completion: ((Result<[OCKCarePlan], OCKStoreError>) -> Void)? = nil) {
+    public func deleteCarePlans(
+        _ plans: [OCKCarePlan], callbackQueue: DispatchQueue = .main,
+        completion: ((Result<[OCKCarePlan], OCKStoreError>) -> Void)? = nil
+    ) {
         transaction(inserts: [], updates: [], deletes: plans) { result in
             callbackQueue.async {
                 completion?(result.map(\.deletes))

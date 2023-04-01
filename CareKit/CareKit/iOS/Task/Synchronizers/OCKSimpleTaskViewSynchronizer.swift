@@ -34,7 +34,7 @@ import CareKitUI
 import Foundation
 
 /// A synchronizer specialized for the `OCKSimpleTaskView`
-open class OCKSimpleTaskViewSynchronizer: OCKTaskViewSynchronizerProtocol {
+open class OCKSimpleTaskViewSynchronizer: ViewSynchronizing {
     public init() {}
 
     open func makeView() -> OCKSimpleTaskView {

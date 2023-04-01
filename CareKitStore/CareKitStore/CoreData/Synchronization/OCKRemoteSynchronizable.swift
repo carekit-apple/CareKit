@@ -72,11 +72,12 @@ public protocol OCKRemoteSynchronizable: AnyObject {
     /// Push a revision from a device up to the server.
     ///
     /// - Parameters:
-    ///   - deviceRevision: Revision from the device to be pushed to the remote.
-    ///   - overwriteRemote: If true, the contents of the remote should be completely overwritten.
+    ///   - deviceRevisions: Revisions from the device to be pushed to the remote.
+    ///   - deviceKnowledge: The knowledge vector at the time of pushing the revisions.
     ///   - completion: A closure that should be called once the push completes.
     func pushRevisions(
-        deviceRevision: OCKRevisionRecord,
+        deviceRevisions: [OCKRevisionRecord],
+        deviceKnowledge: OCKRevisionRecord.KnowledgeVector,
         completion: @escaping (Error?) -> Void)
 
     /// This method will be called when CareKit detects a conflict between changes made to an entity in

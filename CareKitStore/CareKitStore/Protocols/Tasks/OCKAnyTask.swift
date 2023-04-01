@@ -64,6 +64,7 @@ public protocol OCKAnyTask {
     /// Any array of notes associated with this object.
     var notes: [OCKNote]? { get }
 
+    /// A date specifying when this version of the task begins taking effect.
     var effectiveDate: Date { get }
 
     /// Determines if this task belongs to the given care plan.

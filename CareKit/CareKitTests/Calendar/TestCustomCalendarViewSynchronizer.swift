@@ -49,7 +49,7 @@ private class MockCalendarView: UILabel, OCKCalendarDisplayable {
     var completionStates: [OCKCompletionState] = []
 }
 
-private class CustomCalendarViewSynchronizer: OCKCalendarViewSynchronizerProtocol {
+private class CustomCalendarViewSynchronizer: ViewSynchronizing {
     func makeView() -> MockCalendarView {
         return .init()
     }

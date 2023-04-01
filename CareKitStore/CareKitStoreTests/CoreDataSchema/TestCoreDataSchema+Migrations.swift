@@ -40,7 +40,6 @@ private let testsBundle = Bundle(for: TestCoreDataSchemaMigrations.self)
 
 class TestCoreDataSchemaMigrations: XCTestCase {
 
-
     /// The `SampleStore2.0` database was created using the `OCKSample` app checked out
     /// at release tag 2.0.1. The database model version is `CareKitStore2.0`.
     ///

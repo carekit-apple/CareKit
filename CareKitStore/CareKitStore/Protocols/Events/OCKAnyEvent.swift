@@ -30,35 +30,41 @@
 
 import Foundation
 
-/// An event represents a single occassion on which a task was scheduled to occur. It contains a copy of the task itself as well as the
-/// schedule event and an outcome that will be non-nil if progress was made on the task.
+/// A representation of a single occassion which a task was scheduled to occur on.
+///
+/// The event contains a copy of the task itself, as well as the
+/// schedule event and an outcome that is non-`nil` if progress occurred on the task.
 public struct OCKAnyEvent {
 
     /// The stable identifier that can be used for the `Identifiable` protocol.
     public let id: String
 
-    /// The task that this event is associated with
+    /// The task that this event is associated with.
     public let task: OCKAnyTask
 
-    /// The outcome for this event. If the outcome is empty, that means that no actions were recorded.
+    /// The outcome for this event.
     ///
-    /// - Note: The outcome may be non-nil even if if the task was not completed, so simply checking the presence of an outcome is not sufficient
-    /// to determing whether or not the task was completed. Examples of times when the outcome is non-nil but the task was not completed could
-    /// include, among others
-    ///     1. The user created a note specifying why they weren't able to complete the task.
-    ///     2. The user completed the task, but then deleted all the values they recorded.
-    ///     3. The user only partially completed the task.
+    /// If the outcome is empty, no actions were recorded.
+    ///
+    /// - Note: The outcome may be non-`nil` even if the task didn't complete. Checking the presence of an outcome isn't sufficient
+    /// to determine whether or not the task completed. Here are some examples of times when the outcome is non-`nil` but the task didn't complete:
+    ///    - The user created a note specifying why they weren't able to complete the task.
+    ///    - The user completed the task, but then deleted all the values they recorded.
+    ///    - The user only partially completed the task.
     public let outcome: OCKAnyOutcome?
 
-    /// The schedule event for this task occurrence. It contains information about the start, duration, occurrence number, and schedule element that
+    /// The schedule event for this task occurrence.
+    ///
+    /// The event contains information about the start, duration, occurrence number, and schedule element that
     /// resulted in this event.
     public let scheduleEvent: OCKScheduleEvent
 
-    /// Initialize by specifying a task, schedule event, and optional outcome.
+    /// Creates an event with a task, schedule event, and optional outcome.
     ///
-    /// - Parameter task: The task associated with this event.
-    /// - Parameter outcome: The outcome associated with this event, or nil if no outcome exists yet.
-    /// - Parameter scheduleEvent: The schedule event that resulted in this event.
+    /// - Parameters
+    ///     - task: The task associated with this event.
+    ///     - outcome: The outcome associated with this event, or `nil` if the outcome doesn't exists yet.
+    ///     - scheduleEvent: The schedule event that resulted in this event.
     public init(task: OCKAnyTask, outcome: OCKAnyOutcome?, scheduleEvent: OCKScheduleEvent) {
         self.task = task
         self.outcome = outcome
@@ -68,5 +74,21 @@ public struct OCKAnyEvent {
         hasher.combine(task.uuid)
         hasher.combine(scheduleEvent.occurrence)
         id = "\(hasher.finalize())"
+    }
+
+    /// Compute the progress for an event.
+    ///
+    /// The function computes progress according to the `strategy`. See ``CareTaskProgressStrategy`` for a list of
+    /// the available strategies.
+    ///
+    /// Compute progress across multiple events using ``AggregatedCareTaskProgress``.
+    ///
+    /// - Parameter strategy: The strategy that the function uses to compute progress for the event.
+    public func computeProgress<Progress>(
+        by strategy: CareTaskProgressStrategy<Progress> = .checkingOutcomeExists
+    ) -> Progress {
+
+        let progress = strategy.computeProgress(self)
+        return progress
     }
 }

@@ -30,11 +30,13 @@
 
 import Foundation
 
-/// An `OCKEvent` represents a single occasion on which a task was scheduled to occur. It contains a copy of the task itself as well as the
-/// schedule event and an outcome that will be non-nil if progress was made on the task.
-public struct OCKEvent<Task: OCKAnyTask, Outcome: OCKAnyOutcome>: Identifiable {
+/// An event that represents a single occasion that a task was scheduled to occur.
+///
+/// The event contains a copy of the task itself, the
+/// schedule event, and an outcome that's non-`nil` if progress is made on the task.
+public struct OCKEvent<Task: OCKAnyTask & Equatable, Outcome: OCKAnyOutcome & Equatable>: Identifiable, Equatable {
 
-    /// The stable identifier that can be used for the `Identifiable` protocol.
+    /// The stable identifier to use.
     public let id: String
 
     /// A fully typed version of the task associated with this event.
@@ -46,7 +48,7 @@ public struct OCKEvent<Task: OCKAnyTask, Outcome: OCKAnyOutcome>: Identifiable {
     /// A value containing scheduling information for this event.
     public let scheduleEvent: OCKScheduleEvent
 
-    /// Initialize an `OCKEvent` with a task, optional outcome, and schedule event.
+    /// Initialize an event with a task, optional outcome, and schedule event.
     ///
     /// - Parameters:
     ///   - task: The task associated with this event.
@@ -63,8 +65,24 @@ public struct OCKEvent<Task: OCKAnyTask, Outcome: OCKAnyOutcome>: Identifiable {
         id = "\(hasher.finalize())"
     }
 
-    /// Creates an `OCKAnyEvent` from this event.
+    /// A property that creates an event from this event.
     var anyEvent: OCKAnyEvent {
         OCKAnyEvent(task: task, outcome: outcome, scheduleEvent: scheduleEvent)
+    }
+
+    /// Compute the progress for an event.
+    ///
+    /// Progress is computed according to the `strategy`. See ``CareTaskProgressStrategy`` for a list of
+    /// the different strategies.
+    ///
+    /// Compute progress across multiple events using ``AggregatedCareTaskProgress``.
+    ///
+    /// - Parameter strategy: The strategy that computes progress for the event.
+    public func computeProgress<Progress>(
+        by strategy: CareTaskProgressStrategy<Progress> = .checkingOutcomeExists
+    ) -> Progress {
+
+        let progress = strategy.computeProgress(anyEvent)
+        return progress
     }
 }

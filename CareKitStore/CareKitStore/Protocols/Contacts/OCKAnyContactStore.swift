@@ -30,12 +30,21 @@
 
 import Foundation
 
-/// Any store from which types conforming to `OCKAnyContact` can be queried is considered `OCKAnyReadOnlyContactStore`.
+/// A store that allows for reading contacts.
 public protocol OCKAnyReadOnlyContactStore: OCKAnyResettableStore {
 
-    /// The delegate receives callbacks when the contents of the care plan store are modified.
-    /// In `CareKit` apps, the delegate will be set automatically, and it should not be modified.
-    var contactDelegate: OCKContactStoreDelegate? { get set }
+    /// A continuous stream of contacts that exist in the store.
+    ///
+    /// The stream yields a new value whenever the result changes and yields an error if there's an issue
+    /// accessing the store or fetching results.
+    ///
+    /// Supply a query that'll be used to match contacts in the store. If the query doesn't contain a date
+    /// interval, the result will contain every version of a contact. Multiple versions of the same contact will
+    /// have the same ``OCKAnyContact/id`` but a different UUID. If the query does contain a date
+    /// interval, the result will contain the newest version of a contact that exists in the interval.
+    ///
+    /// - Parameter query: Used to match contacts in the store.
+    func anyContacts(matching query: OCKContactQuery) -> CareStoreQueryResults<OCKAnyContact>
 
     /// `fetchAnyContacts` asynchronously retrieves an array of contacts from the store.
     ///
@@ -146,7 +155,6 @@ public extension OCKAnyContactStore {
 
 // MARK: Async methods for OCKAnyReadOnlyContactStore
 
-@available(iOS 15.0, watchOS 8.0, *)
 public extension OCKAnyReadOnlyContactStore {
 
     /// `fetchAnyContacts` asynchronously retrieves an array of contacts from the store.
@@ -174,7 +182,6 @@ public extension OCKAnyReadOnlyContactStore {
 
 // MARK: Async methods for OCKAnyContactStore
 
-@available(iOS 15.0, watchOS 8.0, *)
 public extension OCKAnyContactStore {
 
     /// `addAnyContacts` asynchronously adds an array of contacts to the store.

@@ -78,7 +78,10 @@ UIPageViewControllerDataSource, UIPageViewControllerDelegate {
     }
 
     /// The store manager the view controller uses for synchronization
-    public let storeManager: OCKSynchronizedStoreManager
+    @available(*, unavailable, renamed: "store")
+    public var storeManager: OCKSynchronizedStoreManager!
+
+    let store: OCKAnyStoreProtocol
 
     /// Page view managing ListViewControllers.
     private let pageViewController = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
@@ -93,10 +96,34 @@ UIPageViewControllerDataSource, UIPageViewControllerDelegate {
     ///
     /// - Parameter storeManager: The store from which to query the tasks.
     /// - Parameter adherenceAggregator: An aggregator that will be used to compute the adherence values shown at the top of the view.
-    public init(storeManager: OCKSynchronizedStoreManager, adherenceAggregator: OCKAdherenceAggregator = .compareTargetValues) {
-        self.storeManager = storeManager
-        self.weekCalendarPageViewController = .init(storeManager: storeManager, aggregator: adherenceAggregator)
+    @available(*, unavailable, renamed: "init(store:computeProgress:)")
+    public convenience init(
+        storeManager: OCKSynchronizedStoreManager,
+        adherenceAggregator: OCKAdherenceAggregator = .compareTargetValues
+    ) {
+        fatalError("Unavailable")
+    }
+
+    /// Create an instance of the view controller. Will hook up the calendar to the tasks collection,
+    /// and query and display the tasks.
+    ///
+    /// - Parameter store: The store from which to query the tasks.
+    /// - Parameter computeProgress: Used to compute the combined progress for a series of CareKit events.
+    public init(
+        store: OCKAnyStoreProtocol,
+        computeProgress: @escaping (OCKAnyEvent) -> CareTaskProgress = { event in
+            event.computeProgress(by: .checkingOutcomeExists)
+        }
+    ) {
+        self.store = store
+
+        self.weekCalendarPageViewController = OCKWeekCalendarPageViewController(
+            store: store,
+            computeProgress: computeProgress
+        )
+
         super.init(nibName: nil, bundle: nil)
+
         self.weekCalendarPageViewController.dataSource = self
         self.pageViewController.dataSource = self
         self.pageViewController.delegate = self

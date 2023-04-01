@@ -60,7 +60,7 @@ private class MockContactLabel: UILabel, OCKContactDisplayable {
     weak var delegate: OCKContactViewDelegate?
 }
 
-private class CustomContactViewSynchronizer: OCKContactViewSynchronizerProtocol {
+private class CustomContactViewSynchronizer: ViewSynchronizing {
     func makeView() -> MockContactLabel {
         return .init()
     }

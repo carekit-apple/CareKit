@@ -32,6 +32,7 @@
 import HealthKit
 import XCTest
 
+
 class TestStoreTasks: XCTestCase {
 
     var store: OCKStore!
@@ -224,26 +225,6 @@ class TestStoreTasks: XCTestCase {
 
     // MARK: Versioning
 
-    func testDeleteThenAddTaskFetchesLatestVersion() throws {
-        let makeTask: () -> OCKTask = {
-            let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
-            return OCKTask(id: "A", title: "A", carePlanUUID: nil, schedule: schedule)
-        }
-
-        let taskA = try store.addTaskAndWait(makeTask())
-        try store.deleteTaskAndWait(taskA)
-        let taskB = try store.addTaskAndWait(makeTask())
-
-        let fetched = try store.fetchTasksAndWait(query: OCKTaskQuery(for: Date()))
-
-        // Make sure the latest version is fetched
-        XCTAssertEqual(fetched.count, 1)
-
-        // IDs should all match
-        XCTAssertEqual(taskA.id, taskB.id)
-        XCTAssertEqual(taskB.id, fetched.first?.id)
-    }
-
     func testUpdateTaskCreateNewVersion() throws {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
         let task = try store.addTaskAndWait(OCKTask(id: "meds", title: "Medication", carePlanUUID: nil, schedule: schedule))
@@ -276,8 +257,10 @@ class TestStoreTasks: XCTestCase {
         let v3 = try store.updateTaskAndWait(nausea)
         XCTAssert(v3.effectiveDate == scheduleV3.startDate())
 
-        let query = OCKEventQuery(dateInterval: DateInterval(start: manyDaysAgo, end: thisMorning))
-        let events = try store.fetchEventsAndWait(taskID: "nausea", query: query)
+        var query = OCKEventQuery(dateInterval: DateInterval(start: manyDaysAgo, end: thisMorning))
+        query.taskIDs = ["nausea"]
+
+        let events = try store.fetchEventsAndWait(query: query)
         XCTAssert(events.count == 10, "Expected 10, but got \(events.count)")
         XCTAssert(events.first?.task.title == "V1")
         XCTAssert(events.last?.task.title == "V3")
@@ -308,8 +291,11 @@ class TestStoreTasks: XCTestCase {
         updated.effectiveDate = schedule[5].start // 5:30PM tomorrow
         updated.title = "Updated"
         updated = try store.updateTaskAndWait(updated)
-        let query = OCKEventQuery(for: schedule[5].start) // 0:00AM - 23:59.99PM tomorrow
-        let events = try store.fetchEventsAndWait(taskID: "meds", query: query)
+
+        var query = OCKEventQuery(for: schedule[5].start) // 0:00AM - 23:59.99PM tomorrow
+        query.taskIDs = ["meds"]
+
+        let events = try store.fetchEventsAndWait(query: query)
 
         XCTAssert(events.count == 3)
         XCTAssert(events[0].task.uuid == original.uuid)
@@ -359,6 +345,29 @@ class TestStoreTasks: XCTestCase {
         XCTAssert(fetched.first?.title == taskA.title)
     }
 
+    func testFetchTaskByIdConvenienceMethodReturnsNewestVersionOfTask() throws {
+        let coordinator = OCKStoreCoordinator()
+        let store = OCKStore(name: "test", type: .inMemory)
+        coordinator.attach(store: store)
+
+        let schedule = OCKSchedule.dailyAtTime(hour: 0, minutes: 0, start: Date(), end: nil, text: nil)
+        var taskV1 = OCKTask(id: "task", title: "V1", carePlanUUID: nil, schedule: schedule)
+        taskV1 = try store.addTaskAndWait(taskV1)
+
+        var taskV2 = taskV1
+        taskV2.title = "V2"
+        taskV2.effectiveDate = Calendar.current.date(byAdding: .year, value: 1, to: Date())!
+        taskV2 = try store.updateTaskAndWait(taskV2)
+
+        let expect = expectation(description: "Fetches V2")
+        store.fetchAnyTask(withID: "task") { result in
+            let task = try? result.get()
+            XCTAssert(task?.title == "V2")
+            expect.fulfill()
+        }
+        waitForExpectations(timeout: 0.1, handler: nil)
+    }
+
     func testTaskQueryStartingExactlyOnEffectiveDateOfNewVersion() throws {
         let schedule = OCKSchedule.dailyAtTime(hour: 0, minutes: 0, start: Date(), end: nil, text: nil)
         let query = OCKTaskQuery(dateInterval: DateInterval(start: schedule[5].start, end: schedule[5].end))
@@ -391,29 +400,6 @@ class TestStoreTasks: XCTestCase {
         XCTAssert(fetched.first?.title == taskB.title, "Expected title to be \(taskB.title ?? "nil"), but got \(fetched.first?.title ?? "nil")")
     }
 
-    func testFetchTaskByIdConvenienceMethodReturnsNewestVersionOfTask() throws {
-        let coordinator = OCKStoreCoordinator()
-        let store = OCKStore(name: "test", type: .inMemory)
-        coordinator.attach(store: store)
-
-        let schedule = OCKSchedule.dailyAtTime(hour: 0, minutes: 0, start: Date(), end: nil, text: nil)
-        var taskV1 = OCKTask(id: "task", title: "V1", carePlanUUID: nil, schedule: schedule)
-        taskV1 = try store.addTaskAndWait(taskV1)
-
-        var taskV2 = taskV1
-        taskV2.title = "V2"
-        taskV2.effectiveDate = Calendar.current.date(byAdding: .year, value: 1, to: Date())!
-        taskV2 = try store.updateTaskAndWait(taskV2)
-
-        let expect = expectation(description: "Fetches V2")
-        store.fetchAnyTask(withID: "task") { result in
-            let task = try? result.get()
-            XCTAssert(task?.title == "V2")
-            expect.fulfill()
-        }
-        waitForExpectations(timeout: 0.1, handler: nil)
-    }
-
     // MARK: Deletion
 
     func testDeleteTask() throws {
@@ -430,3 +416,4 @@ class TestStoreTasks: XCTestCase {
         XCTAssertThrowsError(try store.deleteTaskAndWait(task))
     }
 }
+

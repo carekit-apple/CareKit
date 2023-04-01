@@ -35,8 +35,18 @@ public struct OCKCarePlanQuery: Equatable, OCKQueryProtocol {
 
     /// Specifies the order in which query results will be sorted.
     public enum SortDescriptor: Equatable {
+
         case title(ascending: Bool)
         case effectiveDate(ascending: Bool)
+
+        var nsSortDescriptor: NSSortDescriptor {
+            switch self {
+            case let .effectiveDate(ascending):
+                return NSSortDescriptor(keyPath: \OCKAnyCarePlan.effectiveDate, ascending: ascending)
+            case let .title(ascending):
+                return NSSortDescriptor(keyPath: \OCKAnyCarePlan.title, ascending: ascending)
+            }
+        }
     }
 
     /// An array of patient identifiers to match against.

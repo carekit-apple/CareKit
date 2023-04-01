@@ -34,7 +34,7 @@ import CareKitUI
 import Foundation
 
 /// A view synchronizer that creates and updates an `OCKGridTaskView`.
-open class OCKGridTaskViewSynchronizer: OCKTaskViewSynchronizerProtocol {
+open class OCKGridTaskViewSynchronizer: ViewSynchronizing {
     public init() {}
 
     open func updateView(_ view: OCKGridTaskView, context: OCKSynchronizationContext<OCKTaskEvents>) {

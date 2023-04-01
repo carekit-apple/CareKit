@@ -32,23 +32,50 @@ import Foundation
 
 extension OCKStoreCoordinator {
 
-    open func fetchAnyEvents(taskID: String, query: OCKEventQuery, callbackQueue: DispatchQueue,
-                             completion: @escaping OCKResultClosure<[OCKAnyEvent]>) {
-        findStore(taskID: taskID) { result in
-            switch result {
-            case .failure(let error):
-                callbackQueue.async { completion(.failure(error)) }
-            case .success(let store):
-                store.fetchAnyEvents(taskID: taskID, query: query, callbackQueue: callbackQueue, completion: completion)
-            }
+    public func anyEvents(matching query: OCKEventQuery) -> CareStoreQueryResults<OCKAnyEvent> {
+
+        let stores = readOnlyEventStores + eventStores
+
+        let eventsStreams = stores.map {
+            $0.anyEvents(matching: query)
         }
+
+        let events = combineMany(
+            sequences: eventsStreams,
+            sort: { combinedResult in
+                return combinedResult.sorted { $0.scheduleEvent.start < $1.scheduleEvent.start }
+            }
+        )
+
+        return events
     }
 
-    open func fetchAnyEvent(forTask task: OCKAnyTask, occurrence: Int, callbackQueue: DispatchQueue,
-                            completion: @escaping OCKResultClosure<OCKAnyEvent>) {
-        let closures = eventStores.map({ store in { done in
-            store.fetchAnyEvent(forTask: task, occurrence: occurrence, callbackQueue: callbackQueue, completion: done)
-        } })
+    public func fetchAnyEvents(
+        query: OCKEventQuery,
+        callbackQueue: DispatchQueue,
+        completion: @escaping OCKResultClosure<[OCKAnyEvent]>) {
+
+        let stores: [OCKAnyReadOnlyEventStore] = readOnlyEventStores + eventStores
+
+        let closures = stores.map({ store in { done in
+            store.fetchAnyEvents(query: query, callbackQueue: callbackQueue, completion: done) }
+        })
+
+        aggregateAndFlatten(closures, callbackQueue: callbackQueue, completion: completion)
+    }
+
+    public func fetchAnyEvent(
+        forTask task: OCKAnyTask,
+        occurrence: Int,
+        callbackQueue: DispatchQueue,
+        completion: @escaping OCKResultClosure<OCKAnyEvent>) {
+
+        let stores: [OCKAnyReadOnlyEventStore] = readOnlyEventStores + eventStores
+
+        let closures = stores.map({ store in { done in
+            store.fetchAnyEvent(forTask: task, occurrence: occurrence, callbackQueue: callbackQueue, completion: done) }
+        })
+
         getFirstValidResult(closures, callbackQueue: callbackQueue, completion: completion)
     }
 

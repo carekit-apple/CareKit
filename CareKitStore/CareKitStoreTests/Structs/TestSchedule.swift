@@ -28,10 +28,20 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import CareKitStore
+@testable import CareKitStore
+
 import XCTest
 
 class TestSchedule: XCTestCase {
+
+    private let calendar = Calendar.current
+
+    private lazy var beginningOfYear: Date = {
+        let components = DateComponents(year: 2_023, month: 1, day: 1)
+        let date = calendar.date(from: components)!
+        return date
+    }()
+
     func testScheduleCreatedFromElementsIsEqualToThatSchedulesElements() {
         let spacing = DateComponents(day: 1)
         let element = OCKScheduleElement(start: Date(), end: nil, interval: spacing, text: nil, targetValues: [])
@@ -135,7 +145,7 @@ class TestSchedule: XCTestCase {
         XCTAssert(offsetSchedule == expectedSchedule)
     }
 
-    func testScheduleEventsAreSortedByDate() {
+    func testScheduleEventsAreSortedByStartDate() {
         let startDate = Date()
         let endDate = Calendar.current.date(byAdding: .day, value: 10, to: startDate)!
 
@@ -145,7 +155,7 @@ class TestSchedule: XCTestCase {
 
         let events = schedule.events(from: startDate, to: endDate)
         for index in 0..<events.count - 1 {
-            XCTAssert(events[index] <= events[index + 1])
+            XCTAssert(events[index].start <= events[index + 1].start)
         }
     }
 
@@ -204,13 +214,12 @@ class TestSchedule: XCTestCase {
     }
 
     func testAllDayScheduleWithEndDate() throws {
-        let morning = Calendar.current.startOfDay(for: Date())
-        let end = Calendar.current.date(byAdding: .year, value: 1, to: morning)!
+        let end = Calendar.current.date(byAdding: .year, value: 1, to: beginningOfYear)!
         let interval = DateComponents(weekOfYear: 1)
-        let element = OCKScheduleElement(start: morning, end: end, interval: interval, duration: .allDay)
+        let element = OCKScheduleElement(start: beginningOfYear, end: end, interval: interval, duration: .allDay)
         let schedule = OCKSchedule(composing: [element])
-        let nextWeek = Calendar.current.date(byAdding: .weekOfYear, value: 1, to: morning)!
-        let events = schedule.events(from: morning, to: nextWeek)
+        let nextWeek = Calendar.current.date(byAdding: DateComponents(second: 1, weekOfYear: 1), to: beginningOfYear)!
+        let events = schedule.events(from: beginningOfYear, to: nextWeek)
         XCTAssert(events.count == 2, "Expected 2, but got \(events.count)")
     }
 
@@ -241,5 +250,35 @@ class TestSchedule: XCTestCase {
         measure {
             _ = schedule.events(from: now, to: farFuture)
         }
+    }
+
+    func testOccurrencesAreAdjustedProperlyWhenScheduleElementsAreCombined() {
+
+        let morning = calendar.date(bySettingHour: 8, minute: 0, second: 0, of: beginningOfYear)!
+        let afternoon = calendar.date(bySettingHour: 12, minute: 0, second: 0, of: beginningOfYear)!
+        let evening = calendar.date(bySettingHour: 18, minute: 0, second: 0, of: beginningOfYear)!
+
+        let everyDay = DateComponents(day: 1)
+
+        let morningElement = OCKScheduleElement(start: morning, end: nil, interval: everyDay)
+        let afternoonElement = OCKScheduleElement(start: afternoon, end: nil, interval: everyDay)
+        let eveningElement = OCKScheduleElement(start: evening, end: nil, interval: everyDay)
+
+        let schedule = OCKSchedule(composing: [morningElement, afternoonElement, eveningElement])
+
+        let start = eveningElement[1].start
+        let end = eveningElement[2].start
+
+        let events = schedule.events(from: start, to: end)
+
+        // Make sure events are sorted by start date
+        let sortedEvents = events.sorted { $0.start < $1.start }
+        XCTAssertEqual(sortedEvents, events)
+
+        // Make sure the occurrences go from 5 to 7
+        // (evening day 2, morning and afternoon day 3)
+        let expectedOccurrences = Array(5...7)
+        let observedOccurrences = events.map { $0.occurrence }
+        XCTAssertEqual(expectedOccurrences, observedOccurrences)
     }
 }

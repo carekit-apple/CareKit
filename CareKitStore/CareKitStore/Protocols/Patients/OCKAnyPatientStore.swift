@@ -30,12 +30,21 @@
 
 import Foundation
 
-/// Any store from which types conforming to `OCKAnyPatient` can be queried is considered `OCKAnyReadOnlyPatientStore`.
+/// A store that allows for reading patients.
 public protocol OCKAnyReadOnlyPatientStore: OCKAnyResettableStore {
 
-    /// The delegate receives callbacks when the contents of the patient store are modified.
-    /// In `CareKit` apps, the delegate will be set automatically, and it should not be modified.
-    var patientDelegate: OCKPatientStoreDelegate? { get set }
+    /// A continuous stream of patients that exist in the store.
+    ///
+    /// The stream yields a new value whenever the result changes and yields an error if there's an
+    /// issue accessing the store or fetching results.
+    ///
+    /// Supply a query that'll be used to match patients in the store. If the query doesn't contain a date
+    /// interval, the result will contain every version of a patient. Multiple versions of the same patient will
+    /// have the same ``OCKAnyPatient/id`` but a different UUID. If the query does contain a date
+    /// interval, the result will contain the newest version of a patient that exists in the interval.
+    ///
+    /// - Parameter query: Used to match patients in the store.
+    func anyPatients(matching query: OCKPatientQuery) -> CareStoreQueryResults<OCKAnyPatient>
 
     /// `fetchAnyPatients` asynchronously retrieves an array of patients from the store.
     ///
@@ -147,7 +156,6 @@ public extension OCKAnyPatientStore {
 
 // MARK: Async methods for OCKAnyReadOnlyPatientStore
 
-@available(iOS 15.0, watchOS 8.0, *)
 public extension OCKAnyReadOnlyPatientStore {
 
     /// `fetchAnyPatients` asynchronously retrieves an array of patients from the store.
@@ -175,7 +183,6 @@ public extension OCKAnyReadOnlyPatientStore {
 
 // MARK: Async methods for OCKAnyPatientStore
 
-@available(iOS 15.0, watchOS 8.0, *)
 public extension OCKAnyPatientStore {
 
     /// `addAnyPatients` asynchronously adds an array of patients to the store.

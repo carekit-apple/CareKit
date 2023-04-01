@@ -31,7 +31,7 @@
 
 import CareKitUI
 
-open class OCKSurveyTaskViewSynchronizer: OCKInstructionsTaskViewSynchronizer {
+open class OCKSurveyTaskViewSynchronizer: ViewSynchronizing {
 
     override open func makeView() -> OCKInstructionsTaskView {
         let view = super.makeView()
@@ -52,7 +52,7 @@ open class OCKSurveyTaskViewSynchronizer: OCKInstructionsTaskViewSynchronizer {
 
         let isComplete = event.outcome != nil
 
-        view.completionButton.label.text = loc(isComplete ? "COMPLETED" : "BEGIN")
+            view.completionButton.label.text = loc(isComplete ? "COMPLETED" : "BEGIN")
     }
 }
 

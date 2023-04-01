@@ -41,8 +41,8 @@ class OCKCDPostalAddress: NSManagedObject {
     @NSManaged var country: String
     @NSManaged var isoCountryCode: String
     
-    convenience init(address: OCKPostalAddress, context: NSManagedObjectContext) {
-        self.init(entity: Self.entity(), insertInto: context)
+    init(address: OCKPostalAddress, context: NSManagedObjectContext) {
+        super.init(entity: Self.entity(), insertInto: context)
         street = address.street
         subLocality = address.subLocality
         city = address.city

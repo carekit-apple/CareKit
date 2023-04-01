@@ -56,4 +56,7 @@ public protocol OCKAnyPatient {
 
     /// Any array of notes associated with this object.
     var notes: [OCKNote]? { get }
+
+    /// A date specifying when this version of the patient begins taking effect.
+    var effectiveDate: Date { get }
 }

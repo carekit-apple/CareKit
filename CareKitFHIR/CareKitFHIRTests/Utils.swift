@@ -32,7 +32,7 @@ import Foundation
 import XCTest
 
 func XCTAssertThrowsError<T, E: Error>(_ expression: @autoclosure () throws -> T, matching expectedError: E,
-                                       file: StaticString = #file, line: UInt = #line) where E: Equatable {
+                                       file: StaticString = #filePath, line: UInt = #line) where E: Equatable {
     do {
         _ = try expression()
         XCTFail("Expected to throw error, but did not!", file: file, line: line)

@@ -40,7 +40,7 @@ public struct OCKTask: Codable, Equatable, OCKAnyVersionableTask, OCKAnyMutableT
     public var carePlanUUID: UUID?
 
     // MARK: OCKAnyTask
-    public let id: String
+    public var id: String
     public var title: String?
     public var instructions: String?
     public var impactsAdherence = true
@@ -69,8 +69,8 @@ public struct OCKTask: Codable, Equatable, OCKAnyVersionableTask, OCKAnyMutableT
     /// Instantiate a new `OCKTask`
     ///
     /// - Parameters:
-    ///   - id: A unique id for this care task chosen by the developer.
-    ///   - title: A title that will be used to represent this care task to the patient.
+    ///   - id: A unique id for this task chosen by the developer.
+    ///   - title: A title that will be used to represent this task to the user.
     ///   - carePlanUUID: The UUID of the care plan that this task belongs to.
     ///   - schedule: A schedule specifying when this task is to be completed.
     public init(id: String, title: String?, carePlanUUID: UUID?, schedule: OCKSchedule) {

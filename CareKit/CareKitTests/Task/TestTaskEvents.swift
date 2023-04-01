@@ -33,7 +33,6 @@
 import Foundation
 import XCTest
 
-
 class TestTaskEvents: XCTestCase {
 
     func testInitWithNoEvents() {
@@ -309,10 +308,15 @@ class TestTaskEvents: XCTestCase {
 
 private extension OCKAnyEvent {
 
-    static func mock(taskUUID: UUID, occurrence: Int, hasOutcome: Bool = false) -> Self {
+    static func mock(
+        taskUUID: UUID,
+        occurrence: Int,
+        taskTitle: String? = nil,
+        hasOutcome: Bool = false
+    ) -> Self {
         let startOfDay = Calendar.current.startOfDay(for: Date())
         let schedule = OCKSchedule.dailyAtTime(hour: 1, minutes: 0, start: startOfDay, end: nil, text: nil)
-        var task = OCKTask(id: taskUUID.uuidString, title: nil, carePlanUUID: nil, schedule: schedule)
+        var task = OCKTask(id: taskUUID.uuidString, title: taskTitle, carePlanUUID: nil, schedule: schedule)
         task.uuid = taskUUID
 
         let outcome = hasOutcome ?
@@ -329,4 +333,3 @@ private extension ArraySlice {
         return Array(self)
     }
 }
-

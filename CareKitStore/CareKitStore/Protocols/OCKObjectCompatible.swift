@@ -34,7 +34,7 @@ import Foundation
 protocol OCKVersionedObjectCompatible {
 
     /// A human readable unique identifier. It is used strictly by the developer and will never be shown to a user.
-    var id: String { get }
+    var id: String { get set }
 
     /// A universally unique identifier for this object.
     var uuid: UUID { get set }
@@ -104,6 +104,7 @@ protocol OCKVersionedObjectCompatible {
 
 extension OCKVersionedObjectCompatible {
     mutating func copyVersionedValues(from other: OCKCDVersionedObject) {
+        id = other.id
         uuid = other.uuid
         nextVersionUUIDs = other.next.map(\.uuid)
         previousVersionUUIDs = other.previous.map(\.uuid)

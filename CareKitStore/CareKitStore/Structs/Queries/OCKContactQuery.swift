@@ -35,9 +35,21 @@ public struct OCKContactQuery: Equatable, OCKQueryProtocol {
 
     /// Specifies the order in which query results will be sorted.
     public enum SortDescriptor: Equatable {
+
         case givenName(ascending: Bool)
         case familyName(ascending: Bool)
         case effectiveDate(ascending: Bool)
+
+        var nsSortDescriptor: NSSortDescriptor {
+            switch self {
+            case let .effectiveDate(ascending):
+                return NSSortDescriptor(keyPath: \OCKAnyContact.effectiveDate, ascending: ascending)
+            case let .givenName(ascending):
+                return NSSortDescriptor(keyPath: \OCKAnyContact.name.givenName, ascending: ascending)
+            case let .familyName(ascending):
+                return NSSortDescriptor(keyPath: \OCKAnyContact.name.familyName, ascending: ascending)
+            }
+        }
     }
 
     /// The identifiers of care plans to match against.

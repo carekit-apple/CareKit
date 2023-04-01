@@ -30,24 +30,16 @@
 
 import Foundation
 
-public struct OCKScheduleEvent: Equatable, Comparable {
-    public let start: Date
-    public let end: Date
-    public let element: OCKScheduleElement
-    public let occurrence: Int
-
-    public static func < (lhs: OCKScheduleEvent, rhs: OCKScheduleEvent) -> Bool {
-        return lhs.start < rhs.start
-    }
+public struct OCKScheduleEvent: Equatable {
+    public var start: Date
+    public var end: Date
+    public var element: OCKScheduleElement
+    public var occurrence: Int
 
     internal init(start: Date, end: Date, element: OCKScheduleElement, occurrence: Int) {
         self.start = start
         self.end = end
         self.element = element
         self.occurrence = occurrence
-    }
-
-    internal func changing(occurrenceIndex index: Int) -> OCKScheduleEvent {
-        return OCKScheduleEvent(start: start, end: end, element: element, occurrence: index)
     }
 }

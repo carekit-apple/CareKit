@@ -53,50 +53,99 @@ import SwiftUI
 ///     |                                                       |
 ///     +-------------------------------------------------------+
 /// ```
-public struct NumericProgressTaskView<Header: View, Content: View>: View {
+public struct NumericProgressTaskView<Header: View>: View {
 
-    @Environment(\.careKitStyle) private var style
-    @Environment(\.isCardEnabled) private var isCardEnabled
+    @Environment(\.careKitStyle)
+    private var style
 
-    private let isHeaderPadded: Bool
-    private let isContentPadded: Bool
+    @Environment(\.isCardEnabled)
+    private var isCardEnabled
+
     private let header: Header
-    private let content: Content
     private let instructions: Text?
+    private let progress: Text
+    private let goal: Text
+    private let isComplete: Bool
+
+    private var completionImage: Image? {
+        guard isComplete else { return nil }
+        return Image(systemName: "checkmark.circle.fill")
+    }
+
+    @ViewBuilder
+    private var progressIndicator: some View {
+        AccessibleStack(
+            alignment: Alignment(horizontal: .leading, vertical: .center),
+            spacing: style.dimension.directionalInsets2.trailing
+        ) { isHorizontal in
+
+            Group {
+                // Progress
+                LabeledValue(
+                    value: progress,
+                    label: Text(loc("PROGRESS").uppercased()),
+                    valueImage: completionImage,
+                    alignment: isHorizontal ? .center : .leading
+                )
+                .foregroundColor(.accentColor)
+                .accessibility(value: Text(loc(isComplete ? "COMPLETED" : "INCOMPLETE")))
+                // Ensures both labeled values have equal widths
+                .frame(maxWidth: isHorizontal ? .infinity : nil)
+                // Goal
+                LabeledValue(
+                    value: goal,
+                    label: Text(loc("GOAL").uppercased()),
+                    valueImage: nil,
+                    alignment: isHorizontal ? .center : .leading
+                )
+                .foregroundColor(.secondary)
+                // Ensures both labeled values have equal widths
+                .frame(maxWidth: isHorizontal ? .infinity : nil)
+            }
+            .multilineTextAlignment(isHorizontal ? .center : .leading)
+            .padding(isHorizontal ? .horizontal : [])
+        }
+    }
 
     public var body: some View {
         CardView {
-            VStack(alignment: .leading, spacing: style.dimension.directionalInsets1.top) {
+            VStack(
+                alignment: .leading,
+                spacing: style.dimension.directionalInsets1.top
+            ) {
                 VStack { header }
-                    .if(isCardEnabled && isHeaderPadded) { $0.padding([.top, .horizontal]) }
-                VStack { content }
-                    .if(isCardEnabled && isContentPadded) { $0.padding([.horizontal]) }
-                    // If this is the last view in the VStack, add padding to the bottom.
-                    .if(instructions == nil && isCardEnabled && isContentPadded) { $0.padding([.bottom]) }
+                progressIndicator
+                    // Allows multiline text to wrap
+                    .fixedSize(horizontal: false, vertical: true)
                 instructions?
                     .font(.caption)
                     .foregroundColor(.secondary)
-                    .if(isCardEnabled) { $0.padding([.horizontal, .bottom]) }
+                    // Allows multiline text to wrap
+                    .fixedSize(horizontal: false, vertical: true)
             }
+            .padding(isCardEnabled ? [.all] : [])
         }
     }
 
     /// Create an instance.
     /// - Parameters:
-    ///   - instructions: Instructions text.
-    ///   - header: View to inject at the top of the card. Specified content will be stacked vertically.
-    ///   - content: View to inject under the header. Specified content will be stacked vertically.
-    public init(instructions: Text? = nil, @ViewBuilder header: () -> Header, @ViewBuilder content: () -> Content) {
-        self.init(isHeaderPadded: false, isContentPadded: false, instructions: instructions, header: header, content: content)
-    }
-
-    private init(isHeaderPadded: Bool, isContentPadded: Bool, instructions: Text? = nil,
-                 @ViewBuilder header: () -> Header, @ViewBuilder content: () -> Content) {
-        self.isHeaderPadded = isHeaderPadded
-        self.isContentPadded = isContentPadded
+    ///   - progress: Progress towards a `goal`.
+    ///   - goal: The desired goal.
+    ///   - instructions: Longer text displayed in the content of the view.
+    ///   - isComplete: True if the view denotes the completed state.
+    ///   - header: Injected at the top of the view.
+    public init(
+        progress: Text,
+        goal: Text,
+        instructions: Text? = nil,
+        isComplete: Bool,
+        @ViewBuilder header: () -> Header
+    ) {
+        self.progress = progress
+        self.goal = goal
         self.instructions = instructions
+        self.isComplete = isComplete
         self.header = header()
-        self.content = content()
     }
 }
 
@@ -104,119 +153,67 @@ public extension NumericProgressTaskView where Header == _NumericProgressTaskVie
 
     /// Create an instance.
     /// - Parameters:
-    ///   - title: Title text to display in the header.
-    ///   - detail: Detail text to display in the header.
-    ///   - instructions: Instructions text.
-    ///   - content: View to inject under the header. Specified content will be stacked vertically.
-    init(title: Text, detail: Text? = nil, instructions: Text? = nil, @ViewBuilder content: () -> Content) {
-        self.init(isHeaderPadded: true, isContentPadded: false, instructions: instructions, header: {
-            _NumericProgressTaskViewHeader(title: title, detail: detail)
-        }, content: content)
-    }
-}
-
-public extension NumericProgressTaskView where Content == _NumericProgressTaskViewContent {
-
-    /// Create an instance.
-    /// - Parameters:
-    ///   - progress: Progress text to display in the sub-header.
-    ///   - goal: Goal text to display in the sub-header.
-    ///   - instructions: Instructions text.
-    ///   - isComplete: True if the goal has been reached.
-    ///   - header: View to inject at the top of the card. Specified content will be stacked vertically.
-    init(progress: Text, goal: Text, instructions: Text? = nil, isComplete: Bool, @ViewBuilder header: () -> Header) {
-        self.init(isHeaderPadded: false, isContentPadded: true, instructions: instructions, header: header, content: {
-            _NumericProgressTaskViewContent(progress: progress, goal: goal, isComplete: isComplete)
-        })
-    }
-}
-
-public extension NumericProgressTaskView where Header == _NumericProgressTaskViewHeader, Content == _NumericProgressTaskViewContent {
-
-    /// Create an instance.
-    /// - Parameters:
-    ///   - title: Title text to display in the header.
-    ///   - detail: Detail text to display in the header.
-    ///   - progress: Progress text to display in the sub-header.
-    ///   - goal: Goal text to display in the sub-header.
-    ///   - instructions: Instructions text.
-    ///   - isComplete: True if the goal has been reached.
-    init(title: Text, detail: Text? = nil, progress: Text, goal: Text, instructions: Text? = nil, isComplete: Bool) {
-        self.init(isHeaderPadded: true, isContentPadded: true, instructions: instructions, header: {
-            _NumericProgressTaskViewHeader(title: title, detail: detail)
-        }, content: {
-            _NumericProgressTaskViewContent(progress: progress, goal: goal, isComplete: isComplete)
-        })
+    ///   - title: Title to display in the header.
+    ///   - detail: Detail to display in the header.
+    ///   - progress: Progress towards a `goal`.
+    ///   - goal: The desired goal.
+    ///   - instructions: Longer text displayed in the content of the view.
+    ///   - isComplete: True if the view denotes the completed state.
+    init(
+        title: Text,
+        detail: Text? = nil,
+        progress: Text,
+        goal: Text,
+        instructions: Text? = nil,
+        isComplete: Bool
+    ) {
+        self.progress = progress
+        self.goal = goal
+        self.instructions = instructions
+        self.isComplete = isComplete
+        self.header = _NumericProgressTaskViewHeader(title: title, detail: detail)
     }
 }
 
 /// The default header used by a `NumericProgressTaskView`.
 public struct _NumericProgressTaskViewHeader: View {
 
-    @Environment(\.careKitStyle) private var style
+    @Environment(\.careKitStyle)
+    private var style
 
     fileprivate let title: Text
     fileprivate let detail: Text?
 
     public var body: some View {
-        VStack(alignment: .leading, spacing: style.dimension.directionalInsets1.top) {
+        VStack(
+            alignment: .leading,
+            spacing: style.dimension.directionalInsets1.top
+        ) {
             HeaderView(title: title, detail: detail)
             Divider()
         }
     }
 }
 
-/// The default content used by a `NumericProgressTaskView`.
-public struct _NumericProgressTaskViewContent: View {
-
-    fileprivate let progress: Text
-    fileprivate let goal: Text
-    fileprivate let isComplete: Bool
-
-    private var valueImage: Image? {
-        guard isComplete else { return nil }
-        return Image(systemName: "checkmark.circle.fill")
-    }
-
-    public var body: some View {
-        HStack {
-            Spacer()
-            NumericProgressIndicator(value: progress, label: Text(loc("PROGRESS").uppercased()), valueImage: valueImage)
-                .foregroundColor(.accentColor)
-                .if(isComplete) {
-                    $0.accessibility(value: Text(loc("COMPLETED")))
-                }
-            Spacer()
-            NumericProgressIndicator(value: goal, label: Text(loc("GOAL").uppercased()), valueImage: nil)
-                .foregroundColor(.secondary)
-            Spacer()
-        }
-    }
-}
-
-/// A view that displays a labeled value. This is the default view used by the `_NumericProgressTaskViewSubHeader`.
-private struct NumericProgressIndicator: View {
-
-    @Environment(\.sizeCategory) private var sizeCategory
-    @Environment(\.careKitStyle) private var style
+private struct LabeledValue: View {
 
     let value: Text
     let label: Text
     let valueImage: Image?
+    let alignment: HorizontalAlignment
 
     var body: some View {
-        VStack(alignment: .center, spacing: 0) {
+        VStack(alignment: alignment, spacing: 0) {
             HStack {
                 value
                     .font(Font.title.weight(.bold))
-                valueImage
-                    .font(.system(size: style.dimension.symbolPointSize2.scaled(), weight: .bold))
+                valueImage?
+                    .font(Font.headline.weight(.bold))
             }
 
             label
                 .font(Font.subheadline.weight(.medium))
         }
-        .multilineTextAlignment(.center)
         .accessibilityElement(children: .combine)
         .accessibility(label: label + Text(",") + value)    // Combine the inner elements into one label
         .accessibility(removeTraits: .isImage)              // Remove the trait inherited from the `labelImage`
@@ -226,36 +223,100 @@ private struct NumericProgressIndicator: View {
 #if DEBUG
 
 struct NumericProgressTaskView_Previews: PreviewProvider {
+
+    private static let title = Text("Exercise Minutes")
+    private static let detail = Text("All Day")
+
     static var previews: some View {
-        VStack(spacing: 16) {
+        ScrollView {
+            VStack {
 
-            NumericProgressTaskView(
-                title: Text("Exercise Minutes"),
-                detail: Text("Anytime"),
-                progress: Text("22"),
-                goal: Text("30"),
-                instructions: Text(
-                    """
-                        Take time out of your day to get some exercise. Venture outside and turn play \
-                        into high energy activity.
-                    """
-                ),
-                isComplete: false)
-
+                // Default - Completed
                 NumericProgressTaskView(
-                    title: Text("Exercise Minutes"),
-                    detail: Text("Anytime"),
-                    progress: Text("22"),
+                    title: title,
+                    detail: detail,
+                    progress: Text("40"),
                     goal: Text("30"),
-                    instructions: Text(
-                        """
-                            Take time out of your day to get some exercise. Venture outside and turn play \
-                            into high energy activity.
-                        """
-                    ),
-                    isComplete: false)
+                    instructions: .loremIpsum,
+                    isComplete: true
+                )
 
-        }.padding()
+                // Default - Incomplete
+                NumericProgressTaskView(
+                    title: title,
+                    detail: detail,
+                    progress: Text("12"),
+                    goal: Text("30"),
+                    instructions: .loremIpsum,
+                    isComplete: false
+                )
+
+                // No instructions
+                NumericProgressTaskView(
+                    title: title,
+                    detail: detail,
+                    progress: Text("12"),
+                    goal: Text("30"),
+                    isComplete: false
+                )
+
+                // Long progress
+                NumericProgressTaskView(
+                    title: title,
+                    detail: detail,
+                    progress: Text("10000000"),
+                    goal: Text("30"),
+                    isComplete: false
+                )
+
+                // Long goal
+                NumericProgressTaskView(
+                    title: title,
+                    detail: detail,
+                    progress: Text("10"),
+                    goal: Text("30000000000"),
+                    isComplete: false
+                )
+
+                // Custom Header
+                NumericProgressTaskView(
+                    progress: Text("10"),
+                    goal: Text("30"),
+                    instructions: .loremIpsum,
+                    isComplete: false
+                ) {
+                    HStack(spacing: 8) {
+                        RoundedRectangle(cornerRadius: 10, style: .continuous)
+                            .fill(Color.accentColor)
+                            .frame(width: 4)
+                        Text("Custom Header").font(.headline)
+                    }
+                }
+
+                // Larger AX size
+                NumericProgressTaskView(
+                    title: title,
+                    detail: detail,
+                    progress: Text("4000000000"),
+                    goal: Text("30"),
+                    instructions: .loremIpsum,
+                    isComplete: true
+                )
+                .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
+
+                // Dark mode
+                NumericProgressTaskView(
+                    title: title,
+                    detail: detail,
+                    progress: Text("40"),
+                    goal: Text("30"),
+                    instructions: .loremIpsum,
+                    isComplete: true
+                )
+                .environment(\.colorScheme, .dark)
+            }
+            .padding()
+        }
     }
 }
 

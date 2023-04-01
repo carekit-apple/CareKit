@@ -27,35 +27,13 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#if os(iOS)
 
 import Foundation
 import HealthKit
+import os.log
 
+@available(iOS 15, watchOS 8, *)
 public extension OCKHealthKitPassthroughStore {
-
-    func fetchOutcomes(query: OCKOutcomeQuery, callbackQueue: DispatchQueue = .main,
-                       completion: @escaping (Result<[OCKHealthKitOutcome], OCKStoreError>) -> Void) {
-        guard let range = query.dateInterval else {
-            let problem = "OCKHealthKitPassthroughStore requires that outcome queries have valid date interval"
-            let error = OCKStoreError.fetchFailed(reason: problem)
-            callbackQueue.async { completion(.failure(error)) }
-            return
-        }
-
-        var taskQuery = OCKTaskQuery(dateInterval: range)
-        taskQuery.ids = query.taskIDs
-        taskQuery.remoteIDs = query.taskRemoteIDs
-        taskQuery.uuids = query.taskUUIDs
-
-        do {
-            let tasks = try store.fetchHealthKitTasks(query: taskQuery)
-            let closures = tasks.map { task in { done in self.fetchOutcomes(task: task, dateRange: range, completion: done) } }
-            aggregate(closures, callbackQueue: callbackQueue, completion: completion)
-        } catch {
-            callbackQueue.async { completion(.failure(.fetchFailed(reason: "Failed to fetch tasks with error: \(error.localizedDescription)"))) }
-        }
-    }
 
     func addOutcomes(_ outcomes: [OCKHealthKitOutcome], callbackQueue: DispatchQueue = .main,
                      completion: ((Result<[OCKHealthKitOutcome], OCKStoreError>) -> Void)? = nil) {
@@ -94,12 +72,7 @@ public extension OCKHealthKitPassthroughStore {
                 // Copy the newly assigned HealthKit UUID from the HKSample objects to the saves outcomes.
                 var saved = outcomes
                 samples.enumerated().forEach { index, value in
-                    saved[index].healthKitUUIDs = Set([value.uuid])
-                }
-
-                callbackQueue.async {
-                    self.outcomeDelegate?.outcomeStore(self, didAddOutcomes: saved)
-                    completion?(.success(saved))
+                    saved[index].healthKitUUIDs = [[value.uuid]]
                 }
             }
 
@@ -120,30 +93,46 @@ public extension OCKHealthKitPassthroughStore {
 
     func deleteOutcomes(_ outcomes: [OCKHealthKitOutcome], callbackQueue: DispatchQueue = .main,
                         completion: ((Result<[OCKHealthKitOutcome], OCKStoreError>) -> Void)? = nil) {
+
         do {
+
+            // All outcomes should refer to the same HealthKit object type
+
             let tasks = try fetchTasks(for: outcomes)
-            let objectTypes = Set(tasks.map { HKObjectType.quantityType(forIdentifier: $0.healthKitLinkage.quantityIdentifier)! })
-            guard let objectType = objectTypes.first, objectTypes.count == 1 else {
-                throw OCKStoreError.deleteFailed(reason: "Cannot batch delete samples with different underlying HealthKit sample types!")
+
+            let objectTypes = tasks.map {
+                HKObjectType.quantityType(forIdentifier: $0.healthKitLinkage.quantityIdentifier)!
             }
-            guard outcomes.allSatisfy({ $0.isOwnedByApp }) else {
-                throw OCKStoreError.deleteFailed(reason: "Cannot delete samples in HealthKit not owned by this app!")
+
+            let uniqueObjectTypes = Set(objectTypes)
+
+            guard
+                let objectTypeToDelete = uniqueObjectTypes.first,
+                uniqueObjectTypes.count == 1
+            else {
+                let message = "Cannot batch delete samples with different underlying HealthKit sample types."
+                throw OCKStoreError.deleteFailed(reason: message)
             }
-            guard outcomes.allSatisfy({ $0.healthKitUUIDs != nil }) else {
-                throw OCKStoreError.deleteFailed(reason: "Not all outcomes are outcomes previously retrieved from HealthKit!")
-            }
-            let predicate = HKQuery.predicateForObjects(with: Set(outcomes.compactMap({ $0.healthKitUUIDs }).flatMap({ $0 })))
-            healthStore.deleteObjects(of: objectType, predicate: predicate) { _, _, error in
+
+            // Make sure the outcomes can be deleted
+
+            try checkAbilityToDelete(outcomes: outcomes)
+
+            // Delete the outcomes from HealthKit
+
+            let allHealthKitUUIDs = outcomes
+                .flatMap(\.healthKitUUIDs)
+                .flatMap { $0 }
+
+            let predicate = HKQuery.predicateForObjects(with: Set(allHealthKitUUIDs))
+
+            healthStore.deleteObjects(of: objectTypeToDelete, predicate: predicate) { _, _, error in
                 if let error = error {
                     callbackQueue.async {
                         completion?(.failure(.deleteFailed(
                             reason: "Failed to delete HealthKit samples. Error: \(error.localizedDescription)")))
                     }
                     return
-                }
-                callbackQueue.async {
-                    self.outcomeDelegate?.outcomeStore(self, didDeleteOutcomes: outcomes)
-                    completion?(.success(outcomes))
                 }
             }
         } catch {
@@ -154,32 +143,43 @@ public extension OCKHealthKitPassthroughStore {
         }
     }
 
-    // Make sure to call `prepTasks(_:)` before this.
-    private func fetchOutcomes(task: OCKHealthKitTask, dateRange: DateInterval,
-                               completion: @escaping (Result<[OCKHealthKitOutcome], OCKStoreError>) -> Void) {
-        let events = task.schedule.events(from: dateRange.start, to: dateRange.end)
-        let eventIntervals = events.map { DateInterval(start: $0.start, end: $0.end) }
+    func checkAbilityToDelete(outcomes: [OCKHealthKitOutcome]) throws {
 
-        proxy.queryValue(identifier: task.healthKitLinkage.quantityIdentifier, unit: task.healthKitLinkage.unit,
-                         queryType: task.healthKitLinkage.quantityType, in: eventIntervals) { result in
-            switch result {
-            case let .failure(error): completion(.failure(.fetchFailed(reason: "HealthKit fetch failed. Error: \(error.localizedDescription)")))
-            case let .success(samples):
-                assert(samples.count == eventIntervals.count, "The number of outcome values and events should match!. Please file a bug.")
-                let outcomes = samples.enumerated().compactMap { index, sample -> OCKHealthKitOutcome? in
-                    guard !sample.values.isEmpty else { return nil } // Don't return an outcome for events where no HealthKit values exist.
-                    let outcomeValues = sample.values.map { OCKOutcomeValue($0, units: task.healthKitLinkage.unit.unitString) }
-                    let correspondingEvent = events[index]
-                    let isOwnedByApp = !sample.samples.isEmpty && sample.samples.allSatisfy({ $0.sourceRevision.source == HKSource.default() })
-                    return OCKHealthKitOutcome(taskUUID: task.uuid,
-                                               taskOccurrenceIndex: correspondingEvent.occurrence,
-                                               values: outcomeValues,
-                                               isOwnedByApp: isOwnedByApp,
-                                               healthKitUUIDs: Set(sample.samples.map { $0.uuid }))
-                }
-                completion(.success(outcomes))
-            }
+        // All outcomes should be owned by this app
+
+        let areOutcomesOwnedByApp = outcomes.allSatisfy { $0.isOwnedByApp }
+
+        guard areOutcomesOwnedByApp else {
+            let message = "Cannot delete samples in HealthKit not owned by this app."
+            throw OCKStoreError.deleteFailed(reason: message)
+        }
+
+        // All outcomes need to have been retrieved from HealthKit
+
+        let areOutcomesFromHealthKit = outcomes.allSatisfy { outcome in
+            isOutcomeFromHealthKit(outcome)
+        }
+
+        guard areOutcomesFromHealthKit else {
+            let message = "Not all outcomes have been retrieved from HealthKit."
+            throw OCKStoreError.deleteFailed(reason: message)
         }
     }
+
+    private func isOutcomeFromHealthKit(_ outcome: Outcome) -> Bool {
+
+        let healthKitUUIDs = outcome.healthKitUUIDs
+        let numberOfOutcomeValues = outcome.values.count
+        let numberOfHealthKitUUIDs = healthKitUUIDs.count
+
+        guard numberOfOutcomeValues == numberOfHealthKitUUIDs else {
+            return false
+        }
+
+        let allHealthKitUUIDsExist = healthKitUUIDs.allSatisfy { healthKitUUIDs in
+            healthKitUUIDs.isEmpty == false
+        }
+
+        return allHealthKitUUIDsExist
+    }
 }
-#endif

@@ -1,5 +1,129 @@
 # CareKit Release Notes
 
+## CareKit 3.0 Release Notes
+
+*CareKit 3.0* supports *iOS* and *watchOS* and requires *Xcode 14.0* or later. The minimum supported *Base SDK* is *13.0* for *iOS* and *6.0* for *watchOS*.
+
+*CareKit 3.0* includes the following new features and enhancements by Apple Inc. (https://github.com/carekit-apple)
+
+### Major API Changes
+
+The following types have been deprecated:
+
+**Aggregators**
+
+- `OCKAdherenceAggregator`
+- `OCKEventAggregator`
+
+**View Synchronizers**
+
+- `OCKCalendarViewSynchronizerProtocol`
+- `OCKChartViewSynchronizerProtocol`
+- `OCKAnyContactViewSynchronizerProtocol`
+- `OCKContactViewSynchronizerProtocol`
+- `OCKAnyTaskViewSynchronizerProtocol`
+- `OCKTaskViewSynchronizerProtocol`
+
+The following types are now unavailable:
+
+**Controllers**
+    
+- `OCKTaskController`
+- `OCKInstructionsTaskController`
+- `OCKSimpleTaskController`
+- `OCKCalendarController`
+- `OCKContactController`
+- `OCKChartController`
+- `OCKCartesianChartController`
+- `OCKDetailedContactController`
+- `OCKSimpleContactController`
+- `OCKNumericProgressTaskController`
+- `OCKButtonLogTaskController`
+- `OCKChecklistTaskController`
+- `OCKGridTaskController`
+- `OCKLabeledValueTaskController`
+- `OCKWeekCalendarController`
+
+**Notifications**
+
+- `OCKStoreNotification`
+- `OCKStoreNotificationCategory`
+- `OCKPatientNotification`
+- `OCKCarePlanNotification`
+- `OCKContactNotification`
+- `OCKTaskNotification`
+- `OCKOutcomeNotification`
+- `OCKUnknownChangeNotification`
+- `OCKSynchronizedStoreManager`
+- `OCKCarePlanStoreDelegate`
+- `OCKContactStoreDelegate`
+- `OCKOutcomeStoreDelegate`
+- `OCKPatientStoreDelegate`
+- `OCKTaskStoreDelegate`
+
+### SwiftUI Support
+
+- Adds a SwiftUI state property that retrieves and stays synchronized with data in a care store (`CareStoreFetchRequest`).
+
+- Adds the ability to pass a care store through the SwiftUI environment. Accessing the store in the environment without first setting it will trigger a runtime crash.
+
+- Adds new types for results fetched from a care store (`CareStoreFetchedResults`, `CareStoreFetchedResult`).
+
+- Adds convenience initializers for CareKitUI views using data fetched from a care store (`InstructionsTaskView`, `SimpleTaskView`, `LabeledValueTaskView`, `NumericProgressTaskView`) 
+
+### UIKit View Controllers
+
+- Initializers that previously required a synchronized store manager now require a store that conforms to `OCKAnyStoreProtocol` instead.
+
+- Removes the concept of a controller from the view controllers that display care data. The responsibilities previously handled by the controller are now handled by the view controllers and the streams outputting live data from the care store. 
+
+- Adds initialization parameters to a few view controllers that allow for specifying a task progress computation strategy for a particular task (EX: `OCKWeekCalendarPageViewController`).  
+
+- Individual view synchronizers have been replaced with a single protocol (`OCKViewSynchronizing`) with requirements for synchronizing a UIKit view with data fetched from the care store. 
+ 
+- Initializers that previously accepted an adherence aggregator now require a closure that's used to compute task progress instead. 
+
+- View controllers that display data from a care store now subclass `SynchronizedViewController`. This class can be subclassed to create a custom view controller that is synchronized with data in a care store. 
+
+### Store
+
+- Adds the ability to stream data from a care store using Swift Concurrency (`CareStoreQueryResults`). Data can either be streamed from Core Data (`OCKStore`) or HealthKit (`OCKHealthKitPassthroughStore`).
+
+- Removes the `OCKSynchronizedStoreManager` as mechanism for synchronizing with data in the care store. Changes can now be observed using async streams available on a store directly (EX: `store.tasks(query:)`).
+
+- Adds a new type `CareTaskProgress` that can be used for computing task progress. The new type replaces the adherence and event aggregators. See `OCKAnyEvent.computeProgress(strategy:)` for more info.
+
+- Adds a new type `AggregatedCareTaskProgress` that can be used for aggregating task progress. The new type is especially useful for populating progress bars.
+
+- Improvements to storing outcomes in the `OCKStore`.  
+
+- Improvement to fetching events from the `OCKStore`
+
+- When previously fetching events from the `OCKStore`, events were returned if they were fully contained in the query interval. That is, if they started after the start of the interval and ended before the end of the interval. Now events are returned if they occur at any point in the query interval.
+
+- When previously fetching events and outcomes, an outcome was returned if it was the newest version in the query interval. Now the most recent version of an outcome whose event occurs in the query interval is returned.
+
+- Adds new requirements to protocols such as `OCKAnyCarePlan`, `OCKAnyContact`, `OCKAnyOutcome`, `OCKAnyPatient`, and the individual store protocols.
+
+- `OCKEvent` now conforms to `Equatable`.
+
+- The `OCKEventQuery` now has additional properties useful for filtering tasks (`taskIDs`, `taskGroupIdentifiers`, `taskTags`).
+
+- The default duration for an `OCKScheduleElement` has been changed from zero seconds to one hour.
+
+### UI
+
+- Only the headers for each view are generic and customizable.
+- Minor bug fixes and accessibility improvements. 
+
+### Project
+
+- Removes SPM support for MacOS.
+
+- There is now a single multi-platform target for each framework, instead of a unique target for each platform.
+
+- Adds a configuration (.xcconfig) file that is shared across framework targets.
+
 ## CareKit 2.1 Release Notes
 
 *CareKit 2.1* supports *iOS* and *watchOS* and requires *Xcode 12.0* or later. The minimum supported *Base SDK* is *13.0* for *iOS* and *7.0* for *watchOS*.

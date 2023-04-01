@@ -38,7 +38,7 @@ class OCKCDOutcome: OCKCDVersionedObject {
     @NSManaged var values: Set<OCKCDOutcomeValue>
     @NSManaged var startDate: Date
     @NSManaged var endDate: Date
-
+    
     convenience init(outcome: OCKOutcome, context: NSManagedObjectContext) {
         self.init(entity: Self.entity(), insertInto: context)
         self.copyVersionedValue(value: outcome, context: context)
@@ -71,5 +71,32 @@ class OCKCDOutcome: OCKCDVersionedObject {
         outcome.copyVersionedValues(from: self)
         
         return outcome
+    }
+
+    // Assure that any other outcomes with the same task and occurrence
+    // have been deleted already.
+    override func validateForInsert() throws {
+        try super.validateForInsert()
+
+        guard let context = managedObjectContext else {
+            return
+        }
+
+        let request = NSFetchRequest<OCKCDObject>(entityName: entity.name!)
+
+        request.predicate = NSPredicate(
+            format: "SELF != %@ AND %K == %@ AND %K == %lld AND %K.@count == 0 AND %K == nil",
+            self,
+            #keyPath(OCKCDOutcome.task), task,
+            #keyPath(OCKCDOutcome.taskOccurrenceIndex), taskOccurrenceIndex,
+            #keyPath(OCKCDOutcome.next),
+            #keyPath(OCKCDOutcome.deletedDate)
+        )
+
+        let duplicates = try context.count(for: request)
+
+        if duplicates > 0 {
+            throw OCKStoreError.addFailed(reason: "A duplicate outcome exists")
+        }
     }
 }

@@ -57,8 +57,11 @@ public struct OCKRevisionRecord: Equatable, Codable {
     /// vector is less than another, it means that the first event happened before the second. If
     /// one cannot be shown to be less than the other, it means the events are concurrent and
     /// require resolution.
-    public struct KnowledgeVector: Codable, Equatable, Comparable {
+    public struct KnowledgeVector: Codable, Hashable, Comparable {
 
+        /// Each store involved in synchronization is termed a process and given a unique UUID. The corresponding
+        /// integer for a process is an indication of time. If two processes have the same integer value, they both
+        /// have the same knowledge of the current data representation.
         public var processes: [UUID: Int]
 
         /// Create a new `KnowledgeVector` in which only the entry for the current

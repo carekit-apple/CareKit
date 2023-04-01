@@ -34,7 +34,7 @@ import CareKitUI
 import Foundation
 
 /// A synchronizer specialized for the `OCKInstructionsTaskView`
-open class OCKInstructionsTaskViewSynchronizer: OCKTaskViewSynchronizerProtocol {
+open class OCKInstructionsTaskViewSynchronizer: ViewSynchronizing {
     public init() {}
 
     open func updateView(_ view: OCKInstructionsTaskView, context: OCKSynchronizationContext<OCKTaskEvents>) {

@@ -29,11 +29,47 @@
  */
 
 import CoreData
+import os.log
 
 extension OCKStore {
 
-    open func fetchContacts(query: OCKContactQuery = OCKContactQuery(), callbackQueue: DispatchQueue = .main,
-                            completion: @escaping (Result<[OCKContact], OCKStoreError>) -> Void) {
+    public func contacts(matching query: OCKContactQuery) -> CareStoreQueryResults<OCKContact> {
+
+        // Setup a live query
+
+        let predicate = buildPredicate(for: query)
+        let sortDescriptors = buildSortDescriptors(for: query)
+
+        let monitor = CoreDataQueryMonitor(
+            OCKCDContact.self,
+            predicate: predicate,
+            sortDescriptors: sortDescriptors,
+            context: context
+        )
+
+        // Wrap the live query in an async stream
+
+        let coreDataContacts = monitor.results()
+
+        // Convert Core Data results to DTOs
+
+        let contacts = coreDataContacts
+            .map { contacts in
+                contacts.map { $0.makeContact() }
+            }
+
+        // Wrap the final transformed stream to hide all implementation details from
+        // the public API
+
+        let wrappedContacts = CareStoreQueryResults(wrapping: contacts)
+        return wrappedContacts
+    }
+
+    public func fetchContacts(
+        query: OCKContactQuery = OCKContactQuery(),
+        callbackQueue: DispatchQueue = .main,
+        completion: @escaping (Result<[OCKContact], OCKStoreError>) -> Void
+    ) {
         fetchValues(
             predicate: buildPredicate(for: query),
             sortDescriptors: buildSortDescriptors(for: query),
@@ -46,8 +82,11 @@ extension OCKStore {
         }
     }
 
-    open func addContacts(_ contacts: [OCKContact], callbackQueue: DispatchQueue = .main,
-                          completion: ((Result<[OCKContact], OCKStoreError>) -> Void)? = nil) {
+    public func addContacts(
+        _ contacts: [OCKContact],
+        callbackQueue: DispatchQueue = .main,
+        completion: ((Result<[OCKContact], OCKStoreError>) -> Void)? = nil
+    ) {
         transaction(inserts: contacts, updates: [], deletes: []) { result in
             callbackQueue.async {
                 completion?(result.map(\.inserts))
@@ -55,8 +94,11 @@ extension OCKStore {
         }
     }
 
-    open func updateContacts(_ contacts: [OCKContact], callbackQueue: DispatchQueue = .main,
-                             completion: OCKResultClosure<[OCKContact]>? = nil) {
+    public func updateContacts(
+        _ contacts: [OCKContact],
+        callbackQueue: DispatchQueue = .main,
+        completion: OCKResultClosure<[OCKContact]>? = nil
+    ) {
         transaction(inserts: [], updates: contacts, deletes: []) { result in
             callbackQueue.async {
                 completion?(result.map(\.updates))
@@ -64,8 +106,11 @@ extension OCKStore {
         }
     }
 
-    open func deleteContacts(_ contacts: [OCKContact], callbackQueue: DispatchQueue = .main,
-                             completion: ((Result<[OCKContact], OCKStoreError>) -> Void)? = nil) {
+    public func deleteContacts(
+        _ contacts: [OCKContact],
+        callbackQueue: DispatchQueue = .main,
+        completion: ((Result<[OCKContact], OCKStoreError>) -> Void)? = nil
+    ) {
         transaction(inserts: [], updates: [], deletes: contacts) { result in
             callbackQueue.async {
                 completion?(result.map(\.deletes))

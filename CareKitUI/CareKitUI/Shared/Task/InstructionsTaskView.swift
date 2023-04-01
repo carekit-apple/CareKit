@@ -30,6 +30,12 @@
 import Foundation
 import SwiftUI
 
+#if os(iOS)
+private let completionButtonTextPadding: CGFloat = 14
+#elseif os(watchOS)
+private let completionButtonTextPadding: CGFloat = 8
+#endif
+
 /// A card that displays a header view, multi-line label, and a completion button.
 ///
 /// In CareKit, this view is intended to display a particular event for a task. The state of the button indicates the completion state of the event.
@@ -53,162 +59,185 @@ import SwiftUI
 ///     |                                                       |
 ///     +-------------------------------------------------------+
 /// ```
-public struct InstructionsTaskView<Header: View, Footer: View>: View {
+public struct InstructionsTaskView<Header: View>: View {
 
-    // MARK: - Properties
+    @Environment(\.careKitStyle)
+    private var style
 
-    @Environment(\.careKitStyle) private var style
-    @Environment(\.isCardEnabled) private var isCardEnabled
+    @Environment(\.isCardEnabled)
+    private var isCardEnabled
 
-    private let isHeaderPadded: Bool
-    private let isFooterPadded: Bool
     private let header: Header
-    private let footer: Footer
     private let instructions: Text?
+    private let isComplete: Bool
+    private let action: () -> Void
 
-    public var body: some View {
-        CardView {
-            VStack(alignment: .leading, spacing: style.dimension.directionalInsets1.top) {
-                VStack { header }
-                    .if(isCardEnabled && isHeaderPadded) { $0.padding([.horizontal, .top]) }
+    private var completionButton: some View {
+        Button(action: action) {
+            RectangularCompletionView(isComplete: isComplete) {
+                completionButtonLabel
+                    // Allows multiline text to wrap to the next line
+                    .fixedSize(horizontal: false, vertical: true)
+                    .multilineTextAlignment(.center)
+                    .padding(completionButtonTextPadding)
+                    .frame(maxWidth: .infinity)
+            }
+        }
+        .buttonStyle(NoHighlightStyle())
+    }
 
-                instructions?
-                    .font(.subheadline)
-                    .fontWeight(.medium)
-                    .lineLimit(nil)
-                    .if(isCardEnabled) { $0.padding([.horizontal]) }
-
-                VStack { footer }
-                    .if(isCardEnabled && isFooterPadded) { $0.padding([.horizontal, .bottom]) }
+    @ViewBuilder
+    private var completionButtonLabel: some View {
+        HStack {
+            Text(loc(isComplete ? "COMPLETED" : "MARK_COMPLETE"))
+            if isComplete {
+                Image(systemName: "checkmark")
             }
         }
     }
 
-    // MARK: - Init
-
-    /// Create an instance.
-    /// - Parameter instructions: Instructions text to display under the header.
-    /// - Parameter header: Header to inject at the top of the card. Specified content will be stacked vertically.
-    /// - Parameter footer: View to inject under the instructions. Specified content will be stacked vertically.
-    public init(instructions: Text? = nil, @ViewBuilder header: () -> Header, @ViewBuilder footer: () -> Footer) {
-        self.init(isHeaderPadded: false, isFooterPadded: false, instructions: instructions, header: header, footer: footer)
+    public var body: some View {
+        CardView {
+            VStack(
+                alignment: .leading,
+                spacing: style.dimension.directionalInsets1.top
+            ) {
+                VStack { header }
+                instructions?
+                    .font(.subheadline)
+                    .fontWeight(.medium)
+                    // Allows multiline text to wrap to the next line
+                    .fixedSize(horizontal: false, vertical: true)
+                completionButton
+            }
+            .padding(isCardEnabled ? [.all] : [])
+        }
     }
 
-    init(isHeaderPadded: Bool, isFooterPadded: Bool, instructions: Text? = nil,
-         @ViewBuilder header: () -> Header, @ViewBuilder footer: () -> Footer) {
-        self.isHeaderPadded = isHeaderPadded
-        self.isFooterPadded = isFooterPadded
+    /// Create an instance.
+    /// - Parameters:
+    ///   - instructions: Instructions text
+    ///   - isComplete: True if the view denotes the completed state.
+    ///   - action: Action to perform when the completion button is tapped.
+    ///   - header: Injected at the top of the view.
+    public init(
+        instructions: Text? = nil,
+        isComplete: Bool,
+        action: @escaping () -> Void,
+        @ViewBuilder header: () -> Header
+    ) {
         self.instructions = instructions
+        self.isComplete = isComplete
+        self.action = action
         self.header = header()
-        self.footer = footer()
     }
 }
 
 public extension InstructionsTaskView where Header == _InstructionsTaskViewHeader {
 
     /// Create an instance.
-    /// - Parameter title: Title text to display in the header.
-    /// - Parameter detail: Detail text to display in the header.
-    /// - Parameter instructions: Instructions text to display under the header.
-    /// - Parameter footer: View to inject under the instructions. Specified content will be stacked vertically.
-    init(title: Text, detail: Text? = nil, instructions: Text? = nil, @ViewBuilder footer: () -> Footer) {
-        self.init(isHeaderPadded: true, isFooterPadded: false, instructions: instructions, header: {
-            _InstructionsTaskViewHeader(title: title, detail: detail)
-        }, footer: footer)
-    }
-}
-
-public extension InstructionsTaskView where Footer == _InstructionsTaskViewFooter {
-
-    /// Create an instance.
-    /// - Parameter instructions: Instructions text to display under the header.
-    /// - Parameter isComplete: True if the button under the instructions is in the completed.
-    /// - Parameter action: Action to perform when the button is tapped.
-    /// - Parameter header: Header to inject at the top of the card. Specified content will be stacked vertically.
-    init(instructions: Text? = nil, isComplete: Bool, action: @escaping () -> Void = {}, @ViewBuilder header: () -> Header) {
-        self.init(isHeaderPadded: false, isFooterPadded: true, instructions: instructions, header: header, footer: {
-            _InstructionsTaskViewFooter(isComplete: isComplete, action: action)
-        })
-    }
-}
-
-public extension InstructionsTaskView where Header == _InstructionsTaskViewHeader, Footer == _InstructionsTaskViewFooter {
-
-    /// Create an instance.
-    /// - Parameter title: Title text to display in the header.
-    /// - Parameter detail: Detail text to display in the header.
-    /// - Parameter instructions: Instructions text to display under the header.
-    /// - Parameter isComplete: True if the button under the instructions is in the completed state.
-    /// - Parameter action: Action to perform when the button is tapped.
-    init(title: Text, detail: Text? = nil, instructions: Text? = nil, isComplete: Bool, action: @escaping () -> Void = {}) {
-        self.init(isHeaderPadded: true, isFooterPadded: true, instructions: instructions, header: {
-            _InstructionsTaskViewHeader(title: title, detail: detail)
-        }, footer: {
-            _InstructionsTaskViewFooter(isComplete: isComplete, action: action)
-        })
+    /// - Parameters:
+    ///   - title: Title to display in the header.
+    ///   - detail: Detail to display in the header.
+    ///   - instructions: Longer text displayed in the content of the view.
+    ///   - isComplete: True if the view denotes the completed state.
+    ///   - action: Action to perform when the completion button is tapped.
+    init(
+        title: Text,
+        detail: Text? = nil,
+        instructions: Text? = nil,
+        isComplete: Bool,
+        action: @escaping () -> Void
+    ) {
+        self.instructions = instructions
+        self.isComplete = isComplete
+        self.action = action
+        self.header = _InstructionsTaskViewHeader(title: title, detail: detail)
     }
 }
 
 /// The default header used by a `InstructionsTaskView`.
 public struct _InstructionsTaskViewHeader: View {
 
-    @Environment(\.careKitStyle) private var style
+    @Environment(\.careKitStyle)
+    private var style
 
     fileprivate let title: Text
     fileprivate let detail: Text?
 
     public var body: some View {
-        VStack(alignment: .leading, spacing: style.dimension.directionalInsets1.top) {
+        VStack(
+            alignment: .leading,
+            spacing: style.dimension.directionalInsets1.top
+        ) {
             HeaderView(title: title, detail: detail)
             Divider()
         }
     }
 }
 
-/// The default footer used by an `InstructionsTaskView`.
-public struct _InstructionsTaskViewFooter: View {
-
-    @Environment(\.sizeCategory) private var sizeCategory
-
-    @OSValue<CGFloat>(values: [.watchOS: 8], defaultValue: 14) private var padding
-
-    private var content: some View {
-        Group {
-            if isComplete {
-                HStack {
-                    Text(loc("COMPLETED"))
-                    Image(systemName: "checkmark")
-                }
-            } else {
-                Text(loc("MARK_COMPLETE"))
-            }
-        }
-        .multilineTextAlignment(.center)
-    }
-
-    fileprivate let isComplete: Bool
-    fileprivate let action: () -> Void
-
-    public var body: some View {
-        Button(action: action) {
-            RectangularCompletionView(isComplete: isComplete) {
-                HStack {
-                    Spacer()
-                    content
-                    Spacer()
-                }.padding(padding.scaled())
-            }
-        }.buttonStyle(NoHighlightStyle())
-    }
-}
-
 #if DEBUG
 struct InstructionsTaskView_Previews: PreviewProvider {
+
     static var previews: some View {
-        VStack(spacing: 20) {
-            InstructionsTaskView(title: Text("Title"), detail: Text("Detail"), instructions: Text("Instructions"), isComplete: false)
-            InstructionsTaskView(title: Text("Title"), detail: Text("Detail"), instructions: Text("Instructions"), isComplete: true)
-        }.padding()
+        ScrollView {
+            VStack {
+
+                // Default - Completed
+                InstructionsTaskView(
+                    title: Text("Title"),
+                    detail: Text("Detail"),
+                    instructions: .loremIpsum,
+                    isComplete: false,
+                    action: {}
+                )
+
+                // Default - Incomplete
+                InstructionsTaskView(
+                    title: Text("Title"),
+                    detail: Text("Detail"),
+                    instructions: .loremIpsum,
+                    isComplete: true,
+                    action: {}
+                )
+
+                // Custom Header
+                InstructionsTaskView(
+                    instructions: .loremIpsum,
+                    isComplete: true,
+                    action: {}
+                ) {
+                    HStack(spacing: 8) {
+                        RoundedRectangle(cornerRadius: 10, style: .continuous)
+                            .fill(Color.accentColor)
+                            .frame(width: 4)
+                        Text("Custom Header").font(.headline)
+                    }
+                }
+
+                // Larger AX size
+                InstructionsTaskView(
+                    title: Text("A Longer Title"),
+                    detail: Text("Detail"),
+                    instructions: .loremIpsum,
+                    isComplete: true,
+                    action: {}
+                )
+                .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
+
+                // Dark mode
+                InstructionsTaskView(
+                    title: Text("Title"),
+                    detail: Text("Detail"),
+                    instructions: .loremIpsum,
+                    isComplete: true,
+                    action: {}
+                )
+                .environment(\.colorScheme, .dark)
+
+            }
+            .padding()
+        }
     }
 }
 #endif

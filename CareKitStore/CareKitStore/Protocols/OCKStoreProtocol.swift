@@ -45,11 +45,11 @@ public typealias OCKStoreProtocol = OCKPatientStore & OCKCarePlanStore & OCKCont
 public typealias OCKAnyStoreProtocol = OCKAnyPatientStore & OCKAnyCarePlanStore & OCKAnyContactStore & OCKAnyEventStore
 
 public protocol OCKAnyResettableStore: AnyObject {
-    var resetDelegate: OCKResetDelegate? { get set }
 
     func reset() throws
 }
 
+@available(*, unavailable, message: "OCKSynchronizedStoreManager and its related types are no longer available as a mechanism to synchronize with the CareKit store. As a replacement, see the asynchronous streams available directly on a CareKit store. For example, to monitor changes to tasks, see `OCKStore.tasks(query:)`.")
 public protocol OCKResetDelegate: AnyObject {
     func storeDidReset(_ store: OCKAnyResettableStore)
 }

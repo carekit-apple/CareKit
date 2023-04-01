@@ -66,7 +66,9 @@ protocol OCKTaskConverterTraits: OCKFHIRResourceCoder where Entity == OCKTask {
     func newResource() -> Resource
 }
 
+
 extension OCKTaskConverterTraits {
+
 
     public func convert(resource: Resource) throws -> OCKTask {
 

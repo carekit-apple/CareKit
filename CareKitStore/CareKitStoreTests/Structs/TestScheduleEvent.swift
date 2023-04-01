@@ -32,18 +32,21 @@
 import XCTest
 
 class TestScheduleEvent: XCTestCase {
-    func testComparisonOperator() {
-        let element = OCKScheduleElement(start: Date(), end: nil, interval: DateComponents(year: 1),
-                                         text: nil, targetValues: [])
-        XCTAssert(element[0] < element[1])
-    }
-
+   
     func testStartDateEndDateForEventWithNoDuration() {
         let startDate = Date()
         let endDate = Calendar.current.date(byAdding: .day, value: 7, to: startDate)!
         let interval = DateComponents(day: 1)
-        let element = OCKScheduleElement(start: startDate, end: endDate, interval: interval,
-                                         text: nil, targetValues: [])
+
+        let element = OCKScheduleElement(
+            start: startDate,
+            end: endDate,
+            interval: interval,
+            text: nil,
+            targetValues: [],
+            duration: .seconds(0)
+        )
+
         let event = element[0]
         XCTAssert(event.start == event.end)
     }

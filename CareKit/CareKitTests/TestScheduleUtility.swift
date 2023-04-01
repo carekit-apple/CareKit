@@ -59,6 +59,6 @@ class TestScheduleUtility: XCTestCase {
 
         let text = OCKScheduleUtility.scheduleLabel(for: event)
 
-        XCTAssert(text == element.text)
+        XCTAssertEqual(text, element.text)
     }
 }

@@ -65,9 +65,9 @@ class TestChecklistTaskViewSynchronizer: XCTestCase {
         viewSynchronizer.updateView(view, context: .init(viewModel: taskEvents, oldViewModel: .init(), animated: false))
 
         XCTAssertEqual(view.items.count, 3)
-        XCTAssertEqual(view.items.element(at: 0)?.label.text, "1")
-        XCTAssertEqual(view.items.element(at: 1)?.label.text, "2")
-        XCTAssertEqual(view.items.element(at: 2)?.label.text, "3")
+        XCTAssertEqual(view.items[safe: 0]?.label.text, "1")
+        XCTAssertEqual(view.items[safe: 1]?.label.text, "2")
+        XCTAssertEqual(view.items[safe: 2]?.label.text, "3")
         view.items.forEach { XCTAssertFalse($0.isSelected) }
     }
 
@@ -76,9 +76,9 @@ class TestChecklistTaskViewSynchronizer: XCTestCase {
         viewSynchronizer.updateView(view, context: .init(viewModel: taskEvents, oldViewModel: .init(), animated: false))
 
         XCTAssertEqual(view.items.count, 3)
-        XCTAssertEqual(view.items.element(at: 0)?.label.text, "1")
-        XCTAssertEqual(view.items.element(at: 1)?.label.text, "2")
-        XCTAssertEqual(view.items.element(at: 2)?.label.text, "3")
+        XCTAssertEqual(view.items[safe: 0]?.label.text, "1")
+        XCTAssertEqual(view.items[safe: 1]?.label.text, "2")
+        XCTAssertEqual(view.items[safe: 2]?.label.text, "3")
         view.items.forEach { XCTAssertTrue($0.isSelected) }
     }
 

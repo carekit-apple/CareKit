@@ -32,6 +32,23 @@ import CareKitStore
 import XCTest
 
 class TestScheduleElement: XCTestCase {
+
+    private let calendar = Calendar.current
+
+    private lazy var beginningOfYear: Date = {
+        let components = DateComponents(year: 2_023, month: 1, day: 1)
+        let date = calendar.date(from: components)!
+        return date
+    }()
+
+    private var everySecond: DateComponents {
+        DateComponents(second: 1)
+    }
+
+    private var daily: DateComponents {
+        DateComponents(day: 1)
+    }
+    
     var date: Date {
         var components = DateComponents()
         components.year = 2_019
@@ -52,10 +69,30 @@ class TestScheduleElement: XCTestCase {
         return OCKScheduleElement(start: date, end: nil, interval: interval, text: "Wedding Anniversary", targetValues: [])
     }
 
-    func testSubscript() {
-        let event = element[0]
-        assert(event.start == element.start)
+    // MARK: - Subscript
+
+    func testSubscriptReturnsFirstEvent() {
+        let dailySchedule = OCKScheduleElement(start: beginningOfYear, end: nil, interval: everySecond, duration: .seconds(1))
+        let event = dailySchedule[0]
+        XCTAssertEqual(event.start, beginningOfYear)
+        XCTAssertEqual(event.end, beginningOfYear + 1)
     }
+
+    func testSubscriptReturnsSecondEvent() {
+        let dailySchedule = OCKScheduleElement(start: beginningOfYear, end: nil, interval: everySecond, duration: .seconds(1))
+        let event = dailySchedule[1]
+        XCTAssertEqual(event.start, beginningOfYear + 1)
+        XCTAssertEqual(event.end, beginningOfYear + 2)
+    }
+
+    func testSubscriptReturnsTenthEvent() {
+        let dailySchedule = OCKScheduleElement(start: beginningOfYear, end: nil, interval: everySecond, duration: .seconds(1))
+        let event = dailySchedule[9]
+        XCTAssertEqual(event.start, beginningOfYear + 9)
+        XCTAssertEqual(event.end, beginningOfYear + 10)
+    }
+
+    // MARK: - Offset
 
     func testOffset() {
         let offset = DateComponents(year: 1)
@@ -66,12 +103,35 @@ class TestScheduleElement: XCTestCase {
         XCTAssert(offsetElement.start == expectedStartDate)
     }
 
-    func testNoEventsBeforeStartDate() {
-        let wayBefore = Calendar.current.date(byAdding: .year, value: -1, to: element.start)!
-        let justBefore = Calendar.current.date(byAdding: .second, value: -1, to: element.start)!
-        let events = element.events(from: wayBefore, to: justBefore)
-        XCTAssert(events.isEmpty)
+    // MARK: - Date of occurrence
+
+    func testDateOfFirstOccurrence() {
+        let dailySchedule = OCKScheduleElement(start: beginningOfYear, end: nil, interval: daily, duration: .seconds(1))
+        let start = dailySchedule.date(ofOccurrence: 0)
+        XCTAssertEqual(dailySchedule[0].start, start)
     }
+
+    func testDateOfTenthOccurrence() {
+        let dailySchedule = OCKScheduleElement(start: beginningOfYear, end: nil, interval: daily, duration: .seconds(1))
+        let start = dailySchedule.date(ofOccurrence: 10)
+        XCTAssertEqual(dailySchedule[10].start, start)
+    }
+
+    func testDateOccurrenceAfterExactScheduleEnd() {
+        let nextDay = calendar.date(byAdding: .day, value: 1, to: beginningOfYear)
+        let dailySchedule = OCKScheduleElement(start: beginningOfYear, end: nextDay, interval: daily, duration: .seconds(1))
+        let start = dailySchedule.date(ofOccurrence: 1)
+        XCTAssertNil(start)
+    }
+
+    func testDateOccurrenceAfterScheduleEnd() {
+        let nextDay = calendar.date(byAdding: .hour, value: 1, to: beginningOfYear)
+        let dailySchedule = OCKScheduleElement(start: beginningOfYear, end: nextDay, interval: daily, duration: .seconds(1))
+        let start = dailySchedule.date(ofOccurrence: 1)
+        XCTAssertNil(start)
+    }
+
+    // MARK: - Events between dates
 
     func testNoEventsBeforeStartDateForAllDayEvents() {
         let thisMorning = Calendar.current.startOfDay(for: Date())
@@ -90,10 +150,24 @@ class TestScheduleElement: XCTestCase {
     }
 
     func testEventCannotOccurExactlyOnEndDate() {
-        var finiteElement = element
-        finiteElement.end = Calendar.current.date(byAdding: .year, value: 1, to: date)!
-        let start = Calendar.current.date(byAdding: .second, value: 1, to: finiteElement.start)!
+        
+        var finiteElement = OCKScheduleElement(
+            start: beginningOfYear,
+            end: nil,
+            interval: DateComponents(year: 1),
+            text: "",
+            targetValues: [],
+            duration: .seconds(0)
+        )
+        
+        // End the schedule right when the second event starts
+        finiteElement.end = calendar.date(byAdding: .year, value: 1, to: beginningOfYear)!
+        
+        // Start the query after the first event
+        let start = calendar.date(byAdding: .second, value: 1, to: finiteElement.start)!
+        
         let events = finiteElement.events(from: start, to: finiteElement.end!)
+        
         XCTAssert(events.isEmpty)
     }
 
@@ -128,26 +202,22 @@ class TestScheduleElement: XCTestCase {
         XCTAssert(element.events(betweenOccurrenceIndex: 0, and: 1).count == 1)
     }
 
-    func testEventsBetweeUnequalIndicesReturnsTheCorrectNumberOfElements() {
+    func testEventsBetweenUnequalIndicesReturnsTheCorrectNumberOfElements() {
         XCTAssert(element.events(betweenOccurrenceIndex: 0, and: 2).count == 2)
         XCTAssert(element.events(betweenOccurrenceIndex: 2, and: 5).count == 3)
     }
 
-    func testEventsBetweenIndicesFillsTheArrayWithNilBeyondTheEndDate() {
-        let start = date
-        let end = Calendar.current.date(byAdding: .year, value: 5, to: start)
+    func testEventsBetweenIndicesStopsWhenHittingScheduleEnd() {
+        let end = Calendar.current.date(byAdding: .year, value: 5, to: beginningOfYear)
         let interval = DateComponents(year: 1)
-        let element = OCKScheduleElement(start: start, end: end, interval: interval, text: nil, targetValues: [])
+        let element = OCKScheduleElement(start: beginningOfYear, end: end, interval: interval, text: nil, targetValues: [])
         let events = element.events(betweenOccurrenceIndex: 2, and: 10)
-        for index in 0..<8 {
-            if index <= 2 {
-                XCTAssert(events[index] != nil)
-                XCTAssert(events[index]?.occurrence == index + 2)
-            }
-            if index > 2 {
-                XCTAssert(events[index] == nil)
-            }
-        }
+
+        XCTAssertEqual(events.count, 3)
+
+        let expectedOccurrences = Array(2...4)
+        let observedOccurrences = events.map { $0.occurrence }
+        XCTAssertEqual(expectedOccurrences, observedOccurrences)
     }
 
     func testEventsBetweenDatesIncludesEventsThatStartedBeforeTheStartDateButAreAllDayEvents() {
@@ -189,6 +259,66 @@ class TestScheduleElement: XCTestCase {
         let events = element.events(from: queryStart, to: queryEnd)
         XCTAssert(events.count == 2)
     }
+
+    func testAllDayEventIsFoundWhenScheduleEndsBeforeEventStart() {
+
+        let scheduleStart = beginningOfYear + 2
+        let scheduleEnd = beginningOfYear + 3
+
+        let schedule = OCKScheduleElement(
+            start: scheduleStart,
+            end: scheduleEnd,
+            interval: daily,
+            duration: .allDay
+        )
+
+        let events = schedule.events(from: scheduleEnd, to: scheduleEnd + 1)
+        XCTAssertEqual(events.count, 1)
+    }
+
+    func testAllDayEventIsFoundWhenScheduleEndsBeforeStartOfEvent() {
+
+        let scheduleStart = beginningOfYear + 1
+
+        // Schedule should end before start of the second event
+        let scheduleEnd = calendar.date(
+            byAdding: DateComponents(day: 1),
+            to: scheduleStart
+        )!
+
+        let schedule = OCKScheduleElement(
+            start: scheduleStart,
+            end: scheduleEnd,
+            interval: daily,
+            duration: .allDay
+        )
+
+        let events = schedule.events(from: scheduleStart, to: scheduleEnd)
+        XCTAssertEqual(events.count, 2)
+    }
+
+    func testAllDayEventIsNotFoundWhenScheduleEndsBeforeStartOfEvent() {
+
+        let scheduleStart = beginningOfYear
+
+        // Schedule should end  when the second event starts event ends
+        let scheduleEnd = calendar.date(
+            byAdding: DateComponents(day: 1),
+            to: beginningOfYear
+        )!
+
+        let schedule = OCKScheduleElement(
+            start: scheduleStart,
+            end: scheduleEnd,
+            interval: daily,
+            duration: .allDay
+        )
+
+        let events = schedule.events(from: scheduleStart, to: scheduleEnd)
+        XCTAssertEqual(events.count, 1)
+    }
+
+    // MARK: - Serialization
 
     func testSerialization() throws {
         let morning = Calendar.current.startOfDay(for: Date())

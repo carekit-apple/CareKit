@@ -49,14 +49,8 @@ public struct RectangularCompletionView<Content: View>: View {
         isComplete ? .init(style.color.tertiaryCustomFill) : .accentColor
     }
 
-    private var shape: RoundedRectangle {
-        RoundedRectangle(cornerRadius: style.appearance.cornerRadius2, style: .continuous)
-    }
-
-    private var background: some View {
-        shape
-            .fill(backgroundColor)
-            .if(!isComplete) { $0.inverseMask(content) }
+    private var foregroundColor: Color {
+        isComplete ? .accentColor : .white
     }
 
     private let content: Content
@@ -64,15 +58,15 @@ public struct RectangularCompletionView<Content: View>: View {
 
     public var body: some View {
         VStack {
-            // The content helps determine the frame, but it does not need to be visible because it will be cut into the rectangle using an
-            // `inverseMask`.
             content
-                .if(!isComplete) { $0.hidden() }
         }
-        .clipShape(shape)
-        .background(background)
+        .foregroundColor(foregroundColor)
+        .background(backgroundColor)
+        // Use a clip shape with a continuous rectangle over `.cornerRadius` to create a squircle
+        .clipShape(
+            RoundedRectangle(cornerRadius: style.appearance.cornerRadius2, style: .continuous)
+        )
         .font(Font.subheadline.weight(.medium))
-        .if(isComplete) { $0.foregroundColor(Color.accentColor) }
     }
 
     /// Create an instance.

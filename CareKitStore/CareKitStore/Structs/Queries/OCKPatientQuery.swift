@@ -35,10 +35,24 @@ public struct OCKPatientQuery: Equatable, OCKQueryProtocol {
 
     /// Specifies the order in which query results will be sorted.
     public enum SortDescriptor: Equatable {
+
         case groupIdentifier(ascending: Bool)
         case givenName(ascending: Bool)
         case familyName(ascending: Bool)
         case effectiveDate(ascending: Bool)
+
+        var nsSortDescriptor: NSSortDescriptor {
+            switch self {
+            case let .groupIdentifier(ascending):
+                return NSSortDescriptor(keyPath: \OCKAnyPatient.groupIdentifier, ascending: ascending)
+            case let .givenName(ascending):
+                return NSSortDescriptor(keyPath: \OCKAnyPatient.name.givenName, ascending: ascending)
+            case let .familyName(ascending):
+                return NSSortDescriptor(keyPath: \OCKAnyPatient.name.familyName, ascending: ascending)
+            case let .effectiveDate(ascending):
+                return NSSortDescriptor(keyPath: \OCKAnyPatient.effectiveDate, ascending: ascending)
+            }
+        }
     }
 
     /// The order in which the results will be sorted when returned from the query.

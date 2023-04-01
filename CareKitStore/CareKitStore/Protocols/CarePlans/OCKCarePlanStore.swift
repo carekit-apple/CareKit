@@ -27,11 +27,29 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
 import Foundation
 
-/// Any store from which a single type conforming to `OCKAnyCarePlan` can be queried is considered `OCKAnyReadOnlyCarePlanStore`.
+/// A store that allows for reading care plans.
 public protocol OCKReadableCarePlanStore: OCKAnyReadOnlyCarePlanStore {
-    associatedtype Plan: OCKAnyCarePlan & Equatable & Identifiable
+
+    associatedtype Plan: OCKAnyCarePlan, Equatable, Identifiable
+
+    /// An asynchronous sequence that produces care plans.
+    associatedtype Plans: AsyncSequence where Plans.Element == [Plan]
+
+    /// A continuous stream of care plans that exist in the store.
+    ///
+    /// The stream yields a new value whenever the result changes and yields an error if there's an issue
+    /// accessing the store or fetching results.
+    ///
+    /// Supply a query that'll be used to match care plans in the store. If the query doesn't contain a date
+    /// interval, the result will contain every version of a care plan. Multiple versions of the same care plan will
+    /// have the same ``OCKAnyCarePlan/id`` but a different UUID. If the query does contain a date
+    /// interval, the result will contain the newest version of a care plan that exists in the interval.
+    ///
+    /// - Parameter query: Used to match care plans in the store.
+    func carePlans(matching query: OCKCarePlanQuery) -> Plans
 
     /// `fetchCarePlans` asynchronously retrieves an array of care plans from the store.
     ///
@@ -144,6 +162,16 @@ public extension OCKCarePlanStore {
 // MARK: OCKAnyReadOnlyCarePlanStore conformance for OCKReadableCarePlanStore
 
 public extension OCKReadableCarePlanStore {
+
+    func anyCarePlans(matching query: OCKCarePlanQuery) -> CareStoreQueryResults<OCKAnyCarePlan> {
+
+        let plans = carePlans(matching: query)
+            .map { $0 as [OCKAnyCarePlan] }
+
+        let wrappedPlans = CareStoreQueryResults(wrapping: plans)
+        return wrappedPlans
+    }
+
     func fetchAnyCarePlans(query: OCKCarePlanQuery, callbackQueue: DispatchQueue,
                            completion: @escaping OCKResultClosure<[OCKAnyCarePlan]>) {
         fetchCarePlans(query: query, callbackQueue: callbackQueue) { completion($0.map { $0.map { $0 as OCKAnyCarePlan } }) }
@@ -183,7 +211,6 @@ public extension OCKCarePlanStore {
 
 // MARK: Async methods for OCKReadableCarePlanStore
 
-@available(iOS 15.0, watchOS 8.0, *)
 public extension OCKReadableCarePlanStore {
 
     /// `fetchCarePlans` asynchronously retrieves an array of care plans from the store.
@@ -212,7 +239,6 @@ public extension OCKReadableCarePlanStore {
 
 // MARK: Async methods for OCKCarePlanStore
 
-@available(iOS 15.0, watchOS 8.0, *)
 public extension OCKCarePlanStore {
 
     /// `addCarePlans` asynchronously adds an array of care plans to the store.

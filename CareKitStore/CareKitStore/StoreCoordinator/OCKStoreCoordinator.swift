@@ -28,6 +28,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import AsyncAlgorithms
 import Foundation
 
 /// `OCKStoreCoordinator` is a special kind of pass through store that forwards to a group of other stores.
@@ -42,7 +43,7 @@ import Foundation
 ///
 /// - Note: The order in which stores are registered on an `OCKStoreCoordinator` is important. If two or more stores are
 ///  capable of writing an object, the one that was registered first will be given precedence.
-open class OCKStoreCoordinator: OCKAnyStoreProtocol, OCKResetDelegate {
+open class OCKStoreCoordinator: OCKAnyStoreProtocol {
 
     private (set) var readOnlyPatientStores = [OCKAnyReadOnlyPatientStore]()
     private (set) var readOnlyPlanStores = [OCKAnyReadOnlyCarePlanStore]()
@@ -54,12 +55,25 @@ open class OCKStoreCoordinator: OCKAnyStoreProtocol, OCKResetDelegate {
     private (set) var contactStores = [OCKAnyContactStore]()
     private (set) var eventStores = [OCKAnyEventStore]()
 
+
+    @available(*, unavailable, message: "OCKSynchronizedStoreManager and its related types are no longer available as a mechanism to synchronize with the CareKit store. As a replacement, see the asynchronous streams available directly on a CareKit store. For example, to monitor changes to tasks, see `OCKStore.tasks(query:)`.")
     public weak var patientDelegate: OCKPatientStoreDelegate?
+
+    @available(*, unavailable, message: "OCKSynchronizedStoreManager and its related types are no longer available as a mechanism to synchronize with the CareKit store. As a replacement, see the asynchronous streams available directly on a CareKit store. For example, to monitor changes to tasks, see `OCKStore.tasks(query:)`.")
     public weak var carePlanDelegate: OCKCarePlanStoreDelegate?
+
+    @available(*, unavailable, message: "OCKSynchronizedStoreManager and its related types are no longer available as a mechanism to synchronize with the CareKit store. As a replacement, see the asynchronous streams available directly on a CareKit store. For example, to monitor changes to tasks, see `OCKStore.tasks(query:)`.")
     public weak var contactDelegate: OCKContactStoreDelegate?
+
+    @available(*, unavailable, message: "OCKSynchronizedStoreManager and its related types are no longer available as a mechanism to synchronize with the CareKit store. As a replacement, see the asynchronous streams available directly on a CareKit store. For example, to monitor changes to tasks, see `OCKStore.tasks(query:)`.")
     public weak var taskDelegate: OCKTaskStoreDelegate?
+
+    @available(*, unavailable, message: "OCKSynchronizedStoreManager and its related types are no longer available as a mechanism to synchronize with the CareKit store. As a replacement, see the asynchronous streams available directly on a CareKit store. For example, to monitor changes to tasks, see `OCKStore.tasks(query:)`.")
     public weak var outcomeDelegate: OCKOutcomeStoreDelegate?
+
+    @available(*, unavailable, message: "OCKSynchronizedStoreManager and its related types are no longer available as a mechanism to synchronize with the CareKit store. As a replacement, see the asynchronous streams available directly on a CareKit store. For example, to monitor changes to tasks, see `OCKStore.tasks(query:)`.")
     public weak var resetDelegate: OCKResetDelegate?
+
 
     public init() {}
 
@@ -93,8 +107,6 @@ open class OCKStoreCoordinator: OCKAnyStoreProtocol, OCKResetDelegate {
     /// - Note: The order is which stores are attached is important.
     /// - SeeAlso: `OCKStoreCoordinator`
     open func attach(patientStore: OCKAnyPatientStore) {
-        patientStore.patientDelegate = self
-        patientStore.resetDelegate = self
         patientStores.append(patientStore)
     }
 
@@ -103,8 +115,6 @@ open class OCKStoreCoordinator: OCKAnyStoreProtocol, OCKResetDelegate {
     /// - Note: The order is which stores are attached is important.
     /// - SeeAlso: `OCKStoreCoordinator`
     open func attach(planStore: OCKAnyCarePlanStore) {
-        planStore.carePlanDelegate = self
-        planStore.resetDelegate = self
         planStores.append(planStore)
     }
 
@@ -113,8 +123,6 @@ open class OCKStoreCoordinator: OCKAnyStoreProtocol, OCKResetDelegate {
     /// - Note: The order is which stores are attached is important.
     /// - SeeAlso: `OCKStoreCoordinator`
     open func attach(contactStore: OCKAnyContactStore) {
-        contactStore.contactDelegate = self
-        contactStore.resetDelegate = self
         contactStores.append(contactStore)
     }
 
@@ -123,9 +131,6 @@ open class OCKStoreCoordinator: OCKAnyStoreProtocol, OCKResetDelegate {
     /// - Note: The order is which stores are attached is important.
     /// - SeeAlso: `OCKStoreCoordinator`
     open func attach(eventStore: OCKAnyEventStore) {
-        eventStore.taskDelegate = self
-        eventStore.outcomeDelegate = self
-        eventStore.resetDelegate = self
         eventStores.append(eventStore)
     }
 
@@ -135,8 +140,6 @@ open class OCKStoreCoordinator: OCKAnyStoreProtocol, OCKResetDelegate {
     /// - Note: The order is which stores are attached is important.
     /// - SeeAlso: `OCKStoreCoordinator`
     open func attachReadOnly(patientStore: OCKAnyReadOnlyPatientStore) {
-        patientStore.patientDelegate = self
-        patientStore.resetDelegate = self
         readOnlyPatientStores.append(patientStore)
     }
 
@@ -146,8 +149,6 @@ open class OCKStoreCoordinator: OCKAnyStoreProtocol, OCKResetDelegate {
     /// - Note: The order is which stores are attached is important.
     /// - SeeAlso: `OCKStoreCoordinator`
     open func attachReadOnly(carePlanStore: OCKAnyReadOnlyCarePlanStore) {
-        carePlanStore.carePlanDelegate = self
-        carePlanStore.resetDelegate = self
         readOnlyPlanStores.append(carePlanStore)
     }
 
@@ -157,8 +158,6 @@ open class OCKStoreCoordinator: OCKAnyStoreProtocol, OCKResetDelegate {
     /// - Note: The order is which stores are attached is important.
     /// - SeeAlso: `OCKStoreCoordinator`
     open func attachReadOnly(contactStore: OCKAnyReadOnlyContactStore) {
-        contactStore.contactDelegate = self
-        contactStore.resetDelegate = self
         readOnlyContactStores.append(contactStore)
     }
 
@@ -168,10 +167,71 @@ open class OCKStoreCoordinator: OCKAnyStoreProtocol, OCKResetDelegate {
     /// - Note: The order is which stores are attached is important.
     /// - SeeAlso: `OCKStoreCoordinator`
     open func attachReadOnly(eventStore: OCKAnyReadOnlyEventStore) {
-        eventStore.taskDelegate = self
-        eventStore.outcomeDelegate = self
-        eventStore.resetDelegate = self
         readOnlyEventStores.append(eventStore)
+    }
+
+    func combineMany<T>(
+        sequences: [CareStoreQueryResults<T>],
+        sortingElementsUsing sortDescriptors: [NSSortDescriptor]
+    ) -> CareStoreQueryResults<T> {
+
+        combineMany(sequences: sequences) { combinedValues in
+
+            let nsValues = combinedValues as NSArray
+
+            let sortedValues = nsValues.sortedArray(using: sortDescriptors) as! [T]
+
+            return sortedValues
+        }
+    }
+
+    func combineMany<T>(
+        sequences: [CareStoreQueryResults<T>],
+        sort: @escaping (_ combinedValues: [T]) -> [T]
+    ) -> CareStoreQueryResults<T> {
+
+        // If there are no streams to merge, return an empty stream
+        guard sequences.isEmpty == false else {
+
+            let emptyResult = AsyncStream<[T]> { nil }
+            let wrappedEmptyResult = CareStoreQueryResults(wrapping: emptyResult)
+            return wrappedEmptyResult
+        }
+
+        // Combine each stream into one another one by one. The result is a single combined
+        // stream hat has been built up like a Russian doll. At the moment we have to combine
+        // many streams like this because there is no async algorithm to combine a dynamic
+        // number of async sequences.
+        //
+        // Combining is preferred over merging here. Merging will produce results that
+        // trickle through the stream one at a time. By instead combining the results,
+        // a single combined result is sent through the stream.
+
+        // Create a stream that outputs a single empty result
+        let initialResults: AsyncLazySequence<[[T]]> = [[]].async
+        let wrappedInitialResults = CareStoreQueryResults(wrapping: initialResults)
+
+        let combinedResults = sequences.reduce(wrappedInitialResults) { partiallyCombinedResults, nextResults in
+
+            // Combine the result from both streams
+            let combinedResults = combineLatest(partiallyCombinedResults, nextResults)
+
+            // Merge the combined result from each of the two streams into a single result
+            let mergedResults = combinedResults.map { resultA, resultB -> [T] in
+                let mergedResult = resultA + resultB
+                return mergedResult
+            }
+
+            // Wrap the merged result to simplify the stream type
+            let wrappedMergedResults = CareStoreQueryResults(wrapping: mergedResults)
+            return wrappedMergedResults
+        }
+
+        // Sort the final combined result
+        let sortedResults = combinedResults.map { sort($0) }
+
+        let wrappedSortedResults = CareStoreQueryResults(wrapping: sortedResults)
+        return wrappedSortedResults
     }
 
     // MARK: Handler Routing
@@ -255,8 +315,11 @@ open class OCKStoreCoordinator: OCKAnyStoreProtocol, OCKResetDelegate {
     open func taskStore(_ store: OCKAnyReadOnlyTaskStore, shouldHandleWritingTask task: OCKAnyTask) -> Bool {
 
         #if os(iOS)
-        // HealthKit stores should only respond to HealthKit tasks
-        if store is OCKHealthKitPassthroughStore && !(task is OCKHealthKitTask) { return false }
+        if #available(iOS 15, *) {
+
+            // HealthKit stores should only respond to HealthKit tasks
+            if store is OCKHealthKitPassthroughStore && !(task is OCKHealthKitTask) { return false }
+        }
         #endif
 
         // OCKStore should not respond to HealthKit tasks
@@ -284,18 +347,15 @@ open class OCKStoreCoordinator: OCKAnyStoreProtocol, OCKResetDelegate {
     ///   - store: A candidate store that should or should not handle writing.
     ///   - outcome: The outcome that needs to be written.
     open func outcomeStore(_ store: OCKAnyReadOnlyOutcomeStore, shouldHandleWritingOutcome outcome: OCKAnyOutcome) -> Bool {
+
         #if os(iOS)
-        // Only the HK passthrough store should handle HK outcomes
-        if outcome is OCKHealthKitOutcome || store is OCKHealthKitPassthroughStore {
-            return store is OCKHealthKitPassthroughStore && outcome is OCKHealthKitOutcome
+        if #available(iOS 15, *) {
+            // Only the HK passthrough store should handle HK outcomes
+            if outcome is OCKHealthKitOutcome || store is OCKHealthKitPassthroughStore {
+                return store is OCKHealthKitPassthroughStore && outcome is OCKHealthKitOutcome
+            }
         }
         #endif
         return true
-    }
-
-    // MARK: OCKResetDelegate
-
-    open func storeDidReset(_ store: OCKAnyResettableStore) {
-        resetDelegate?.storeDidReset(store)
     }
 }

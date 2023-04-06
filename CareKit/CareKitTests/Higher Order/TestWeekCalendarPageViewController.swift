@@ -37,23 +37,22 @@ class TestWeekCalendarPageViewController: XCTestCase {
 
     private var viewController: MockWeekCalendarPageViewController!
 
-    var storeManager: OCKSynchronizedStoreManager!
+    var store: OCKAnyStoreProtocol!
 
     let today = Calendar.current.startOfDay(for: Date())
 
     override func setUp() {
         super.setUp()
-        let store = OCKStore(name: "test-store", type: .inMemory)
-        self.storeManager = .init(wrapping: store)
+        store = OCKStore(name: UUID().uuidString, type: .inMemory)
     }
 
     func testCachedSelectedDateStartsAsToday() {
-        viewController = .init(storeManager: storeManager, aggregator: .outcomeExists, selectedDate: today)
+        viewController = MockWeekCalendarPageViewController(store: store, selectedDate: today)
         XCTAssertTrue(Calendar.current.isDate(viewController.cachedSelectedDate, inSameDayAs: today))
     }
 
     func testCachedSelectedDateUpdatesOnManualSelection() {
-        viewController = .init(storeManager: storeManager, aggregator: .outcomeExists, selectedDate: today)
+        viewController = .init(store: store, selectedDate: today)
 
         let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: today)!
         viewController.selectDate(tomorrow, animated: false)
@@ -62,7 +61,7 @@ class TestWeekCalendarPageViewController: XCTestCase {
 
     func testPreviousSelectedDateUpdatesOnPageUpdate() {
         let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: today)!
-        viewController = .init(storeManager: storeManager, aggregator: .outcomeExists, selectedDate: tomorrow)
+        viewController = .init(store: store, selectedDate: tomorrow)
 
         // Simulate the end of the transition to the next page
         viewController.pageViewController(viewController, didFinishAnimating: true, previousViewControllers: [],
@@ -84,8 +83,8 @@ private class MockWeekCalendarPageViewController: OCKWeekCalendarPageViewControl
 
     private let _selectedDate: Date
 
-    init(storeManager: OCKSynchronizedStoreManager, aggregator: OCKAdherenceAggregator, selectedDate: Date) {
+    init(store: OCKAnyStoreProtocol, selectedDate: Date) {
         self._selectedDate = selectedDate
-        super.init(storeManager: storeManager, aggregator: aggregator)
+        super.init(store: store)
     }
 }

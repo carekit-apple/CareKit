@@ -58,6 +58,13 @@ class OCKCDObject: NSManagedObject {
         set(knowledge: managedObjectContext!.knowledgeVector)
     }
 
+    func knowledgeVector() -> OCKRevisionRecord.KnowledgeVector {
+        let pairs = knowledge.map { ($0.uuid, Int($0.time)) }
+        let processes = Dictionary(uniqueKeysWithValues: pairs)
+        let vector = OCKRevisionRecord.KnowledgeVector(processes)
+        return vector
+    }
+
     func set(knowledge vector: OCKRevisionRecord.KnowledgeVector) {
         guard let moc = managedObjectContext else { return }
         knowledge.forEach { moc.delete($0) }

@@ -30,86 +30,102 @@
 
 import Foundation
 
-/// Any store from which types conforming to `OCKAnyTask` can be queried is considered `OCKAnyReadOnlyTaskStore`.
+/// A store that allows for reading tasks.
 public protocol OCKAnyReadOnlyTaskStore: OCKAnyResettableStore {
 
-    /// The delegate receives callbacks when the contents of the care plan store are modified.
-    /// In `CareKit` apps, the delegate will be set automatically, and it should not be modified.
-    var taskDelegate: OCKTaskStoreDelegate? { get set }
+    /// A continuous stream of tasks that exist in the store.
+    ///
+    /// The stream yields a new value whenever the result changes and yields an error if there's an
+    /// issue accessing the store or fetching results.
+    ///
+    /// Supply a query that matches tasks in the store. If the query doesn't contain a date
+    /// interval, the result contains every version of a task. Multiple versions of the same task
+    /// have the same ``OCKAnyTask/id`` but a different UUID. If the query does contain a date
+    /// interval, the result contains the newest version of a task that exists in the interval.
+    ///
+    /// - Parameter query: A query that matches tasks in the store.
+    func anyTasks(matching query: OCKTaskQuery) -> CareStoreQueryResults<OCKAnyTask>
 
-    /// `fetchAnyTasks` asynchronously retrieves an array of tasks from the store.
+    /// Asynchronously retrieve an array of tasks from the store.
     ///
     /// - Parameters:
-    ///   - query: A query used to constrain the values that will be fetched.
-    ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
-    ///   - completion: A callback that will fire on the provided callback queue.
-    func fetchAnyTasks(query: OCKTaskQuery, callbackQueue: DispatchQueue,
-                       completion: @escaping OCKResultClosure<[OCKAnyTask]>)
+    ///   - query: A query that constrain the fetched values.
+    ///   - callbackQueue: The queue that the function calls the closure on. In most cases this is the main queue.
+    ///   - completion: A callback that the function calls on the provided callback queue.
+    func fetchAnyTasks(
+        query: OCKTaskQuery,
+        callbackQueue: DispatchQueue,
+        completion: @escaping OCKResultClosure<[OCKAnyTask]>
+    )
 
     // MARK: Singular Methods - Implementation Provided
 
-    /// `fetchAnyTask` asynchronously retrieves an array of tasks from the store using its user-defined unique identifier. If a task with the
-    /// specified identifier is not found, the completion handler will be called with an error.
+    /// Asynchronously retrieve an array of tasks from the store using its user-defined unique identifier.
+    ///
+    /// If a task with the specified identifier isn't found, the completion handler receives an error.
     ///
     /// - Parameters:
-    ///   - id: The identifier of the item to be fetched.
-    ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
-    ///   - completion: A callback that will fire on the provided callback queue.
-    func fetchAnyTask(withID id: String, callbackQueue: DispatchQueue,
-                      completion: @escaping (Result<OCKAnyTask, OCKStoreError>) -> Void)
+    ///   - id: The identifier of the item to fetch.
+    ///   - callbackQueue: The queue that the function calls the closure on. In most cases this is the main queue.
+    ///   - completion: A callback that the function calls on the provided callback queue.
+    func fetchAnyTask(
+        withID id: String,
+        callbackQueue: DispatchQueue,
+        completion: @escaping (Result<OCKAnyTask, OCKStoreError>) -> Void
+    )
 }
 
 /// Any store able to write to one ore more types conforming to `OCKAnyTask` is considered an `OCKAnyTaskStore`.
 public protocol OCKAnyTaskStore: OCKAnyReadOnlyTaskStore {
 
-    /// `addAnyTasks` asynchronously adds an array of tasks to the store.
+    /// Asynchronously add an array of tasks to the store.
     ///
     /// - Parameters:
-    ///   - tasks: An array of tasks to be added to the store.
-    ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
-    ///   - completion: A callback that will fire on the provided callback queue.
+    ///   - tasks: An array of tasks that the function adds.
+    ///   - callbackQueue: The queue that the function calls the closure on. In most cases this is the main queue.
+    ///   - completion: A callback that the function calls on the provided callback queue.
     func addAnyTasks(_ tasks: [OCKAnyTask], callbackQueue: DispatchQueue, completion: OCKResultClosure<[OCKAnyTask]>?)
 
-    /// `updateAnyTasks` asynchronously updates an array of tasks in the store.
+    /// Asynchronously update an array of tasks in the store.
     ///
     /// - Parameters:
-    ///   - tasks: An array of tasks to be updated. The tasks must already exist in the store.
-    ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
-    ///   - completion: A callback that will fire on the provided callback queue.
+    ///   - tasks: An array of tasks that the function updates. The tasks must already exist in the store.
+    ///   - callbackQueue: The queue that the function calls the closure on. In most cases this is the main queue.
+    ///   - completion: A callback that the function calls on the provided callback queue.
     func updateAnyTasks(_ tasks: [OCKAnyTask], callbackQueue: DispatchQueue, completion: OCKResultClosure<[OCKAnyTask]>?)
 
-    /// `deleteAnyTasks` asynchronously deletes an array of tasks from the store.
+    /// Asynchronously delete an array of tasks from the store.
     ///
     /// - Parameters:
-    ///   - tasks: An array of tasks to be deleted. The tasks must exist in the store.
-    ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
-    ///   - completion: A callback that will fire on the provided callback queue.
+    ///   - tasks: An array of tasks that the function deletes. The tasks must exist in the store.
+    ///   - callbackQueue: The queue that the function calls the closure on. In most cases this is the main queue.
+    ///   - completion: A callback that the function calls on the provided callback queue.
     func deleteAnyTasks(_ tasks: [OCKAnyTask], callbackQueue: DispatchQueue, completion: OCKResultClosure<[OCKAnyTask]>?)
 
     // MARK: Implementation Provided
 
-    /// `addAnyTask` asynchronously adds a task to the store.
+    /// Asynchronously add a task to the store.
     ///
     /// - Parameters:
-    ///   - task: A task to be added to the store.
-    ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
-    ///   - completion: A callback that will fire on the provided callback queue.
+    ///   - task: A task the function adds to the store.
+    ///   - callbackQueue: The queue that the function calls the closure on. In most cases this is the main queue.
+    ///   - completion: A callback that the function calls on the provided callback queue.
     func addAnyTask(_ task: OCKAnyTask, callbackQueue: DispatchQueue, completion: ((Result<OCKAnyTask, OCKStoreError>) -> Void)?)
 
-    /// `updateAnyTask` asynchronously updates a task in the store.
+    /// Asynchronously update a task in the store.
     ///
     /// - Parameters:
-    ///   - task: A task to be updated. The task must already exist in the store.
-    ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
-    ///   - completion: A callback that will fire on the provided callback queue.
+    ///   - task: A task the function updates. The task must already exist in the store.
+    ///   - callbackQueue: The queue that the function calls the closure on. In most cases this is the main queue.
+    ///   - completion: A callback that the function calls on the provided callback queue.
     func updateAnyTask(_ task: OCKAnyTask, callbackQueue: DispatchQueue, completion: ((Result<OCKAnyTask, OCKStoreError>) -> Void)?)
 
-    /// `deleteTask` asynchronously deletes a task from the store.
+    /// Asynchronously delete a task from the store.
     ///
     /// - Parameters:
-    ///   - task: A task to be deleted. The task must exist in the store.
-    ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
-    ///   - completion: A callback that will fire on the provided callback queue.
+    ///   - task: A task the function deletes. The task must exist in the store.
+    ///   - callbackQueue: The queue that the function calls the closure on. In most cases this is the main queue.
+    ///   - completion: A callback that the function calls on the provided callback queue.
     func deleteAnyTask(_ task: OCKAnyTask, callbackQueue: DispatchQueue, completion: ((Result<OCKAnyTask, OCKStoreError>) -> Void)?)
 }
 
@@ -119,6 +135,7 @@ public extension OCKAnyReadOnlyTaskStore {
     func fetchAnyTask(withID id: String, callbackQueue: DispatchQueue = .main, completion: @escaping OCKResultClosure<OCKAnyTask>) {
         var query = OCKTaskQuery(id: id)
         query.sortDescriptors = [.effectiveDate(ascending: false)]
+        query.ids = [id]
         query.limit = 1
         fetchAnyTasks(query: query, callbackQueue: callbackQueue, completion:
             chooseFirst(then: completion, replacementError: .fetchFailed(reason: "No task with matching ID")))
@@ -146,13 +163,12 @@ public extension OCKAnyTaskStore {
 
 // MARK: Async methods for OCKAnyReadOnlyTaskStore
 
-@available(iOS 15.0, watchOS 8.0, *)
 public extension OCKAnyReadOnlyTaskStore {
 
-    /// `fetchAnyTasks` asynchronously retrieves an array of tasks from the store.
+    /// Asynchronously retrieve an array of tasks from the store.
     ///
     /// - Parameters:
-    ///   - query: A query used to constrain the values that will be fetched.
+    ///   - query: A query that constrains the fetched values.
     func fetchAnyTasks(query: OCKTaskQuery) async throws -> [OCKAnyTask] {
         try await withCheckedThrowingContinuation { continuation in
             fetchAnyTasks(query: query, callbackQueue: .main, completion: continuation.resume)
@@ -161,11 +177,12 @@ public extension OCKAnyReadOnlyTaskStore {
 
     // MARK: Singular Methods - Implementation Provided
 
-    /// `fetchAnyTask` asynchronously retrieves an array of tasks from the store using its user-defined unique identifier. If a task with the
-    /// specified identifier is not found, the completion handler will be called with an error.
+    /// Asynchronously retrieve an array of tasks from the store using its user-defined unique identifier.
+    ///
+    /// If a task with the specified identifier isn't found, the completion handler receives an error.
     ///
     /// - Parameters:
-    ///   - id: The identifier of the item to be fetched.
+    ///   - id: The identifier of the item to fetch.
     func fetchAnyTask(withID id: String) async throws -> OCKAnyTask {
         try await withCheckedThrowingContinuation { continuation in
             fetchAnyTask(withID: id, callbackQueue: .main, completion: continuation.resume)
@@ -175,33 +192,32 @@ public extension OCKAnyReadOnlyTaskStore {
 
 // MARK: Async methods for OCKAnyTaskStore
 
-@available(iOS 15.0, watchOS 8.0, *)
 public extension OCKAnyTaskStore {
 
-    /// `addAnyTasks` asynchronously adds an array of tasks to the store.
+    /// Asynchronously add an array of tasks to the store.
     ///
     /// - Parameters:
-    ///   - tasks: An array of tasks to be added to the store.
+    ///   - task: An array of tasks the function adds.
     func addAnyTasks(_ tasks: [OCKAnyTask]) async throws -> [OCKAnyTask] {
         try await withCheckedThrowingContinuation { continuation in
             addAnyTasks(tasks, callbackQueue: .main, completion: continuation.resume)
         }
     }
 
-    /// `updateAnyTasks` asynchronously updates an array of tasks in the store.
+    /// Asynchronously update an array of tasks in the store.
     ///
     /// - Parameters:
-    ///   - tasks: An array of tasks to be updated. The tasks must already exist in the store.
+    ///   - task: An array of tasks the function updates. The tasks must exist in the store.
     func updateAnyTasks(_ tasks: [OCKAnyTask]) async throws -> [OCKAnyTask] {
         try await withCheckedThrowingContinuation { continuation in
             updateAnyTasks(tasks, callbackQueue: .main, completion: continuation.resume)
         }
     }
 
-    /// `deleteAnyTasks` asynchronously deletes an array of tasks from the store.
+    /// Asynchronously delete an array of tasks from the store.
     ///
     /// - Parameters:
-    ///   - tasks: An array of tasks to be deleted. The tasks must exist in the store.
+    ///   - task: An array of tasks the function deletes. The tasks must exist in the store.
     func deleteAnyTasks(_ tasks: [OCKAnyTask]) async throws -> [OCKAnyTask] {
         try await withCheckedThrowingContinuation { continuation in
             deleteAnyTasks(tasks, callbackQueue: .main, completion: continuation.resume)
@@ -210,30 +226,30 @@ public extension OCKAnyTaskStore {
 
     // MARK: Singular Methods - Implementation Provided
 
-    /// `addAnyTask` asynchronously adds a task to the store.
+    /// Asynchronously add a task to the store.
     ///
     /// - Parameters:
-    ///   - task: A task to be added to the store.
+    ///   - task: A task the function adds.
     func addAnyTask(_ task: OCKAnyTask) async throws -> OCKAnyTask {
         try await withCheckedThrowingContinuation { continuation in
             addAnyTask(task, callbackQueue: .main, completion: continuation.resume)
         }
     }
 
-    /// `updateAnyTask` asynchronously updates a task in the store.
+    /// Asynchronously update a task in the store.
     ///
     /// - Parameters:
-    ///   - task: A task to be updated. The task must already exist in the store.
+    ///   - task: A task the function updates. The task must exist in the store.
     func updateAnyTask(_ task: OCKAnyTask) async throws -> OCKAnyTask {
         try await withCheckedThrowingContinuation { continuation in
             updateAnyTask(task, callbackQueue: .main, completion: continuation.resume)
         }
     }
 
-    /// `deleteTask` asynchronously deletes a task from the store.
+    /// Asynchronously delete a task from the store.
     ///
     /// - Parameters:
-    ///   - task: A task to be deleted. The task must exist in the store.
+    ///   - task: A task the function deletes. The task must exist in the store.
     func deleteAnyTask(_ task: OCKAnyTask) async throws -> OCKAnyTask {
         try await withCheckedThrowingContinuation { continuation in
             deleteAnyTask(task, callbackQueue: .main, completion: continuation.resume)

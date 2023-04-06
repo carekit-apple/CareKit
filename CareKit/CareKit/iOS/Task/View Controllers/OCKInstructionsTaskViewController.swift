@@ -32,36 +32,47 @@
 import CareKitStore
 import Foundation
 
-open class OCKInstructionsTaskViewController: OCKTaskViewController<OCKInstructionsTaskController, OCKInstructionsTaskViewSynchronizer> {
+open class OCKInstructionsTaskViewController: OCKTaskViewController<OCKInstructionsTaskViewSynchronizer> {
 
-    override public init(controller: OCKInstructionsTaskController, viewSynchronizer: OCKInstructionsTaskViewSynchronizer) {
-        super.init(controller: controller, viewSynchronizer: viewSynchronizer)
+    @available(*, unavailable, renamed: "init(query:store:viewSynchronizer:)")
+    public init<Controller>(
+        controller: Controller,
+        viewSynchronizer: OCKInstructionsTaskViewSynchronizer
+    ) {
+        fatalError("Unavailable")
     }
 
-    override public init(viewSynchronizer: OCKInstructionsTaskViewSynchronizer, task: OCKAnyTask, eventQuery: OCKEventQuery,
-                         storeManager: OCKSynchronizedStoreManager) {
-        super.init(viewSynchronizer: viewSynchronizer, task: task, eventQuery: eventQuery, storeManager: storeManager)
+    @available(*, unavailable, renamed: "init(query:store:viewSynchronizer:)")
+    public convenience init(
+        viewSynchronizer: OCKInstructionsTaskViewSynchronizer = OCKInstructionsTaskViewSynchronizer(),
+        task: OCKAnyTask,
+        eventQuery: OCKEventQuery,
+        storeManager: OCKSynchronizedStoreManager
+    ) {
+        fatalError("Unavailable")
     }
 
-    override public init(viewSynchronizer: OCKInstructionsTaskViewSynchronizer, taskID: String, eventQuery: OCKEventQuery,
-                         storeManager: OCKSynchronizedStoreManager) {
-        super.init(viewSynchronizer: viewSynchronizer, taskID: taskID, eventQuery: eventQuery, storeManager: storeManager)
+    @available(*, unavailable, renamed: "init(query:store:viewSynchronizer:)")
+    public convenience init(
+        viewSynchronizer: OCKInstructionsTaskViewSynchronizer = OCKInstructionsTaskViewSynchronizer(),
+        taskID: String,
+        eventQuery: OCKEventQuery,
+        storeManager: OCKSynchronizedStoreManager
+    ) {
+        fatalError("Unavailable")
     }
 
-    /// Initialize a view controller that displays a task. Fetches and stays synchronized with events for the task.
-    /// - Parameter task: The task to display.
-    /// - Parameter eventQuery: Used to fetch events for the task.
-    /// - Parameter storeManager: Wraps the store that contains the events to fetch.
-    public init(task: OCKAnyTask, eventQuery: OCKEventQuery, storeManager: OCKSynchronizedStoreManager) {
-        super.init(viewSynchronizer: .init(), task: task, eventQuery: eventQuery, storeManager: storeManager)
-    }
-
-    /// Initialize a view controller that displays task. Fetches and stays synchronized with events for the task.
-    /// - Parameter taskID: User defined id of the task to fetch.
-    /// - Parameter eventQuery: Used to fetch events for the task.
-    /// - Parameter storeManager: Wraps the store that contains the task and events to fetch.
-    public init(taskID: String, eventQuery: OCKEventQuery, storeManager: OCKSynchronizedStoreManager) {
-        super.init(viewSynchronizer: .init(), taskID: taskID, eventQuery: eventQuery, storeManager: storeManager)
+    /// A view controller that displays a task view and keeps it synchronized with a store.
+    /// - Parameters:
+    ///   - query: Used to fetch the task data that will be displayed.
+    ///   - store: Contains the task data that will be displayed.
+    ///   - viewSynchronizer: Capable of creating and updating the view using the task data.
+    public init(
+        query: OCKEventQuery,
+        store: OCKAnyStoreProtocol,
+        viewSynchronizer: OCKInstructionsTaskViewSynchronizer = OCKInstructionsTaskViewSynchronizer()
+    ) {
+        super.init(query: query, store: store, viewSynchronizer: viewSynchronizer)
     }
 }
 

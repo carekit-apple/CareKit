@@ -33,11 +33,6 @@ import Foundation
 /// A query that limits which outcomes will be returned when fetching.
 public struct OCKOutcomeQuery: Equatable, OCKQueryProtocol {
 
-    /// Specifies the order in which query results will be sorted.
-    public enum SortDescriptor: Equatable {
-        case date(ascending: Bool)
-    }
-
     /// An array of task identifiers to match against.
     public var taskIDs: [String] = []
 
@@ -46,9 +41,6 @@ public struct OCKOutcomeQuery: Equatable, OCKQueryProtocol {
 
     /// An array of remote IDs of tasks for which outcomes should be returned.
     public var taskRemoteIDs: [String] = []
-
-    /// The order in which the results will be sorted when returned from the query.
-    public var sortDescriptors: [SortDescriptor] = []
 
     // MARK: OCKQuery
     public var ids: [String] = []

@@ -38,6 +38,7 @@ class OCKCDHealthKitTask: OCKCDTaskBase {
 
     convenience init(task: OCKHealthKitTask, context: NSManagedObjectContext) {
         self.init(entity: Self.entity(), insertInto: context)
+        
         self.copyVersionedValue(value: task, context: context)
         self.title = task.title
         self.instructions = task.instructions

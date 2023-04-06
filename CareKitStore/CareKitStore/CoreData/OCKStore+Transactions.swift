@@ -72,6 +72,7 @@ extension OCKStore {
         updates: [T],
         deletes: [T],
         preInsertValidate: @escaping () throws -> Void = { },
+        preUpdateValidate: @escaping () throws -> Void = { },
         preSaveValidate: @escaping () throws -> Void = { },
         completion: @escaping OCKResultClosure<TransactionResult<T>>) {
 
@@ -89,8 +90,10 @@ extension OCKStore {
                 }
 
                 // Perform updates
+                try preUpdateValidate()
+                
                 if !updates.isEmpty {
-                    try self.validateUpdateIdentifiers(updates.map(\.id))
+                    try self.validateUpdates(updates)
                     result.updates = try updates
                         .map(self.updateValue)
                         .map { $0.makeValue() as! T }
@@ -131,6 +134,7 @@ extension OCKStore {
             throw OCKStoreError.updateFailed(reason: "No previous version exists")
         }
 
+
         let update = value.insert(context: context)
         update.previous = Set(tips)
         update.uuid = UUID()
@@ -161,25 +165,47 @@ extension OCKStore {
             throw OCKStoreError.invalidValue(reason: "Identifiers contains duplicate values! \(ids)")
         }
 
-        let existingPredicate = NSPredicate(format: "(%K IN %@ OR %K IN %@) AND (%K == nil) AND (%K.@count == 0)",
-                                            #keyPath(OCKCDVersionedObject.id), ids,
-                                            #keyPath(OCKCDVersionedObject.uuid), uuids,
-                                            #keyPath(OCKCDVersionedObject.deletedDate),
-                                            #keyPath(OCKCDVersionedObject.next))
+        let existingPredicate = NSPredicate(
+            format: "(%K IN %@) OR (%K IN %@)",
+            #keyPath(OCKCDVersionedObject.id), ids,
+            #keyPath(OCKCDVersionedObject.uuid), uuids
+        )
 
         let request = NSFetchRequest<OCKCDVersionedObject>(entityName: T.entity().name!)
         request.predicate = existingPredicate
 
-        let existing = try context.performAndWait { try context.count(for: request) }
+        let existing = try context.performAndWait {
+            try context.count(for: request)
+        }
 
         if existing > 0 {
-            throw OCKStoreError.invalidValue(reason: "\(T.entity().name!) with conflicting IDs or UUIDs already exists!")
+            throw OCKStoreError.addFailed(reason: "\(T.entity().name!) with conflicting IDs or UUIDs already exists!")
         }
     }
 
-    private func validateUpdateIdentifiers(_ ids: [String]) throws {
-        guard Set(ids).count == ids.count else {
+    private func validateUpdates<T: OCKVersionedObjectCompatible>(_ values: [T]) throws {
+        let ids = Set(values.map(\.id))
+
+        guard ids.count == values.count else {
             throw OCKStoreError.invalidValue(reason: "Identifiers contains duplicate values! [\(ids)]")
+        }
+
+        // Make sure the versions about to be updated aren't deleted already
+        let deletedPredicate = NSPredicate(
+            format: "(%K IN %@) AND (%K != nil)",
+            #keyPath(OCKCDVersionedObject.id), ids,
+            #keyPath(OCKCDVersionedObject.deletedDate)
+        )
+
+        let request = NSFetchRequest<OCKCDVersionedObject>(entityName: T.entity().name!)
+        request.predicate = deletedPredicate
+
+        let deletes = try context.performAndWait {
+            try context.count(for: request)
+        }
+
+        if deletes > 0 {
+            throw OCKStoreError.updateFailed(reason: "\(T.entity().name!) with one of the following ids has been deleted already: [\(ids)]")
         }
     }
 }

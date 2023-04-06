@@ -34,9 +34,9 @@ import CareKitUI
 import Foundation
 
 /// A view synchronizer that creates and updates an `OCKWeekCalendarView`.
-open class OCKWeekCalendarViewSynchronizer: OCKCalendarViewSynchronizerProtocol {
+open class OCKWeekCalendarViewSynchronizer: ViewSynchronizing {
 
-    private let date: Date
+    let date: Date
 
     /// Initialize by specifying a date. The calendar will show the entire week that
     /// the provided date falls within.

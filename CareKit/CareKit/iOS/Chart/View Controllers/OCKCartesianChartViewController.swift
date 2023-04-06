@@ -29,28 +29,78 @@
  */
 #if !os(watchOS)
 
+import CareKitStore
 import CareKitUI
 import Foundation
 
-open class OCKCartesianChartViewController: OCKChartViewController<OCKCartesianChartController, OCKCartesianChartViewSynchronizer> {
+open class OCKCartesianChartViewController: OCKChartViewController<OCKCartesianChartViewSynchronizer> {
 
-    override public init(controller: OCKCartesianChartController, viewSynchronizer: OCKCartesianChartViewSynchronizer) {
-        super.init(controller: controller, viewSynchronizer: viewSynchronizer)
+    @available(*, unavailable, renamed: "init(weekOfDate:configurations:store:viewSynchronizer:)")
+    public init(
+        controller: OCKCartesianChartController,
+        viewSynchronizer: OCKCartesianChartViewSynchronizer
+    ) {
+        fatalError("Unavailable")
     }
 
-    override public init(viewSynchronizer: OCKCartesianChartViewSynchronizer, weekOfDate: Date,
-                         configurations: [OCKDataSeriesConfiguration], storeManager: OCKSynchronizedStoreManager) {
-        super.init(viewSynchronizer: viewSynchronizer, weekOfDate: weekOfDate, configurations: configurations, storeManager: storeManager)
+    @available(*, unavailable, renamed: "init(plotType:selectedDate:configurations:store:)")
+    public convenience init(
+        viewSynchronizer: OCKCartesianChartViewSynchronizer,
+        weekOfDate: Date,
+        configurations: [OCKDataSeriesConfiguration],
+        storeManager: OCKSynchronizedStoreManager
+    ) {
+        fatalError("Unavailable")
     }
 
-    /// Initialize a view controller that displays a chart. Fetches and stays synchronized with insights.
-    /// - Parameter weekOfDate: A date in the week of the insights range to fetch.
-    /// - Parameter configurations: Configurations used to fetch the insights ad display the data.
-    /// - Parameter storeManager: Wraps the store that contains the insight data to fetch.
-    public init(plotType: OCKCartesianGraphView.PlotType, selectedDate: Date,
-                configurations: [OCKDataSeriesConfiguration], storeManager: OCKSynchronizedStoreManager) {
-        let viewSynchronizer = OCKCartesianChartViewSynchronizer(plotType: plotType, selectedDate: selectedDate)
-        super.init(viewSynchronizer: viewSynchronizer, weekOfDate: selectedDate, configurations: configurations, storeManager: storeManager)
+    @available(*, unavailable, renamed: "init(plotType:selectedDate:configurations:store:)")
+    public convenience init(
+        plotType: OCKCartesianGraphView.PlotType,
+        selectedDate: Date,
+        configurations: [OCKDataSeriesConfiguration],
+        storeManager: OCKSynchronizedStoreManager
+    ) {
+        fatalError("Unavailable")
+    }
+
+    /// A view controller that displays a chart view and keep it synchronized with a store.
+    /// - Parameters:
+    ///   - weekOfDate: A date in the week of the insights range to fetch.
+    ///   - configurations: Specifies which data should be queried and how it should be displayed by the graph.
+    ///   - store: Contains the task data that will be displayed.
+    ///   - viewSynchronizer: Capable of creating and updating the view using the data series.
+    override public init(
+        weekOfDate: Date,
+        configurations: [OCKDataSeriesConfiguration],
+        store: OCKAnyStoreProtocol,
+        viewSynchronizer: OCKCartesianChartViewSynchronizer
+    ) {
+        super.init(
+            weekOfDate: weekOfDate,
+            configurations: configurations,
+            store: store,
+            viewSynchronizer: viewSynchronizer
+        )
+    }
+
+    /// A view controller that displays a chart view and keep it synchronized with a store.
+    /// - Parameters:
+    ///   - plotType: The type of plot that is displayed in the view.
+    ///   - selectedDate: The currently selected date in the chart.
+    ///   - configurations: Specifies which data should be queried and how it should be displayed by the graph.
+    ///   - store: Contains the task data that will be displayed.
+    public init(
+        plotType: OCKCartesianGraphView.PlotType,
+        selectedDate: Date,
+        configurations: [OCKDataSeriesConfiguration],
+        store: OCKAnyStoreProtocol
+    ) {
+        super.init(
+            weekOfDate: selectedDate,
+            configurations: configurations,
+            store: store,
+            viewSynchronizer: OCKCartesianChartViewSynchronizer(plotType: plotType, selectedDate: selectedDate)
+        )
     }
 }
 

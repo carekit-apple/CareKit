@@ -31,8 +31,42 @@
 import CoreData
 import Foundation
 import HealthKit
+import os.log
 
 extension OCKStore {
+
+    typealias HealthKitTasks = AsyncMapSequence<
+        AsyncThrowingStream<[OCKCDHealthKitTask], Error>, [OCKHealthKitTask]
+    >
+
+    // Returns `some AsyncSequence where Element == [OCKCDHealthKitTask]`
+    func healthKitTasks(matching query: OCKTaskQuery) -> HealthKitTasks {
+
+        // Setup a live query
+
+        let predicate = buildPredicate(for: query)
+        let sortDescriptors = buildSortDescriptors(for: query)
+
+        let monitor = CoreDataQueryMonitor(
+            OCKCDHealthKitTask.self,
+            predicate: predicate,
+            sortDescriptors: sortDescriptors,
+            context: context
+        )
+
+        // Wrap the live query in an async stream
+
+        let coreDataTasks = monitor.results()
+
+        // Convert Core Data results to DTOs
+
+        let tasks = coreDataTasks
+            .map { tasks in
+                tasks.map { $0.makeTask() }
+            }
+
+        return tasks
+    }
 
     func fetchHealthKitTasks(query: OCKTaskQuery) throws -> [OCKHealthKitTask] {
         var result: Result<[OCKHealthKitTask], Error> = .failure(OCKStoreError.fetchFailed(reason: "Timeout"))

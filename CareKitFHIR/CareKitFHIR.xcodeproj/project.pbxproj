@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -15,8 +15,6 @@
 		031B45692474A1100063E717 /* OCKFHIRContentType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031B45682474A1100063E717 /* OCKFHIRContentType.swift */; };
 		031B456B2474A1380063E717 /* OCKFHIRResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031B456A2474A1380063E717 /* OCKFHIRResource.swift */; };
 		031D4B662374E1D900199EFC /* FHIRModels+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031D4B652374E1D900199EFC /* FHIRModels+Extensions.swift */; };
-		033FF82024B51A2600070941 /* ModelsR4 in Frameworks */ = {isa = PBXBuildFile; productRef = 033FF81F24B51A2600070941 /* ModelsR4 */; };
-		033FF82224B51A2600070941 /* ModelsDSTU2 in Frameworks */ = {isa = PBXBuildFile; productRef = 033FF82124B51A2600070941 /* ModelsDSTU2 */; };
 		0364BB6423C421E30047F952 /* CareKitStore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0364BB6323C421E30047F952 /* CareKitStore.framework */; };
 		0396EF40233D187800C28FC0 /* CareKitFHIR.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0396EF36233D187800C28FC0 /* CareKitFHIR.framework */; };
 		03AFA92B233E697C0091DD45 /* OCKFHIRCodingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03AFA92A233E697C0091DD45 /* OCKFHIRCodingError.swift */; };
@@ -28,8 +26,9 @@
 		03C85E73233D7215002C5901 /* CareKitFHIRTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03C85E72233D7215002C5901 /* CareKitFHIRTests.swift */; };
 		03C85E76233D721F002C5901 /* R4PatientConverterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03C85E75233D721F002C5901 /* R4PatientConverterTests.swift */; };
 		03E5929123736D0D00B6E9DE /* DSTU2TaskConverterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E5929023736D0D00B6E9DE /* DSTU2TaskConverterTests.swift */; };
-		911F09AF24AA4D2100764C86 /* ModelsR4 in Frameworks */ = {isa = PBXBuildFile; productRef = 911F09AE24AA4D2100764C86 /* ModelsR4 */; };
-		911F09B124AA4D2100764C86 /* ModelsDSTU2 in Frameworks */ = {isa = PBXBuildFile; productRef = 911F09B024AA4D2100764C86 /* ModelsDSTU2 */; };
+		51266327291B1E0500C1D7DE /* Project-Shared.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 51266326291B1E0500C1D7DE /* Project-Shared.xcconfig */; };
+		51373774299E051E000AA8E1 /* ModelsDSTU2 in Frameworks */ = {isa = PBXBuildFile; productRef = 51373773299E051E000AA8E1 /* ModelsDSTU2 */; };
+		51373776299E051E000AA8E1 /* ModelsR4 in Frameworks */ = {isa = PBXBuildFile; productRef = 51373775299E051E000AA8E1 /* ModelsR4 */; };
 		E746B33A2378F55600278A95 /* OCKDSTU2ScheduleCoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = E746B3392378F55600278A95 /* OCKDSTU2ScheduleCoder.swift */; };
 		E746B33E2378F6D500278A95 /* OCKDSTU2MedicationOrderCoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = E746B33D2378F6D500278A95 /* OCKDSTU2MedicationOrderCoder.swift */; };
 		E746B3422378F95100278A95 /* DSTU2MedicationOrderConverterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E746B3412378F95100278A95 /* DSTU2MedicationOrderConverterTests.swift */; };
@@ -71,6 +70,8 @@
 		03C85E72233D7215002C5901 /* CareKitFHIRTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CareKitFHIRTests.swift; sourceTree = "<group>"; };
 		03C85E75233D721F002C5901 /* R4PatientConverterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = R4PatientConverterTests.swift; sourceTree = "<group>"; };
 		03E5929023736D0D00B6E9DE /* DSTU2TaskConverterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DSTU2TaskConverterTests.swift; sourceTree = "<group>"; };
+		51266326291B1E0500C1D7DE /* Project-Shared.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Project-Shared.xcconfig"; sourceTree = "<group>"; };
+		51EEB1BA2978D58A001FF52F /* CareKitFHIR.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = CareKitFHIR.docc; sourceTree = "<group>"; };
 		E746B3392378F55600278A95 /* OCKDSTU2ScheduleCoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKDSTU2ScheduleCoder.swift; sourceTree = "<group>"; };
 		E746B33D2378F6D500278A95 /* OCKDSTU2MedicationOrderCoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKDSTU2MedicationOrderCoder.swift; sourceTree = "<group>"; };
 		E746B3412378F95100278A95 /* DSTU2MedicationOrderConverterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DSTU2MedicationOrderConverterTests.swift; sourceTree = "<group>"; };
@@ -83,9 +84,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				911F09B124AA4D2100764C86 /* ModelsDSTU2 in Frameworks */,
-				911F09AF24AA4D2100764C86 /* ModelsR4 in Frameworks */,
 				0364BB6423C421E30047F952 /* CareKitStore.framework in Frameworks */,
+				51373776299E051E000AA8E1 /* ModelsR4 in Frameworks */,
+				51373774299E051E000AA8E1 /* ModelsDSTU2 in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -103,6 +104,7 @@
 		0396EF2C233D187800C28FC0 = {
 			isa = PBXGroup;
 			children = (
+				51EEB1BA2978D58A001FF52F /* CareKitFHIR.docc */,
 				0318342423C6A2F3007CC3E2 /* CareKitFHIR.xctestplan */,
 				0396EF38233D187800C28FC0 /* CareKitFHIR */,
 				0396EF43233D187800C28FC0 /* CareKitFHIRTests */,
@@ -123,6 +125,7 @@
 		0396EF38233D187800C28FC0 /* CareKitFHIR */ = {
 			isa = PBXGroup;
 			children = (
+				51266325291B1E0500C1D7DE /* SharedConfiguration */,
 				E7B2115623615FD300AF5766 /* Tasks */,
 				03AFA92C233E69830091DD45 /* Patients */,
 				031B45662474A0F10063E717 /* OCKFHIRRelease.swift */,
@@ -187,6 +190,15 @@
 			path = "Unit Tests";
 			sourceTree = "<group>";
 		};
+		51266325291B1E0500C1D7DE /* SharedConfiguration */ = {
+			isa = PBXGroup;
+			children = (
+				51266326291B1E0500C1D7DE /* Project-Shared.xcconfig */,
+			);
+			name = SharedConfiguration;
+			path = ../../SharedConfiguration;
+			sourceTree = "<group>";
+		};
 		E7B2115623615FD300AF5766 /* Tasks */ = {
 			isa = PBXGroup;
 			children = (
@@ -226,8 +238,8 @@
 			);
 			name = CareKitFHIR;
 			packageProductDependencies = (
-				911F09AE24AA4D2100764C86 /* ModelsR4 */,
-				911F09B024AA4D2100764C86 /* ModelsDSTU2 */,
+				51373773299E051E000AA8E1 /* ModelsDSTU2 */,
+				51373775299E051E000AA8E1 /* ModelsR4 */,
 			);
 			productName = CareKitFHIR;
 			productReference = 0396EF36233D187800C28FC0 /* CareKitFHIR.framework */;
@@ -281,7 +293,7 @@
 			);
 			mainGroup = 0396EF2C233D187800C28FC0;
 			packageReferences = (
-				911F09AD24AA4D2100764C86 /* XCRemoteSwiftPackageReference "FHIRModels" */,
+				51373772299E051E000AA8E1 /* XCRemoteSwiftPackageReference "FHIRModels" */,
 			);
 			productRefGroup = 0396EF37233D187800C28FC0 /* Products */;
 			projectDirPath = "";
@@ -298,6 +310,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				51266327291B1E0500C1D7DE /* Project-Shared.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -309,6 +322,7 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
 
 /* Begin PBXSourcesBuildPhase section */
 		0396EF32233D187800C28FC0 /* Sources */ = {
@@ -360,6 +374,7 @@
 /* Begin XCBuildConfiguration section */
 		0396EF48233D187800C28FC0 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 51266326291B1E0500C1D7DE /* Project-Shared.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -392,7 +407,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = "$(BUILD_NUMBER)";
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -411,6 +426,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = "$(VERSION_NUMBER)";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -424,6 +440,7 @@
 		};
 		0396EF49233D187800C28FC0 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 51266326291B1E0500C1D7DE /* Project-Shared.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -456,7 +473,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = "$(BUILD_NUMBER)";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -469,6 +486,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = "$(VERSION_NUMBER)";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -482,8 +500,8 @@
 		};
 		0396EF4B233D187800C28FC0 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 51266326291B1E0500C1D7DE /* Project-Shared.xcconfig */;
 			buildSettings = {
-				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
@@ -501,6 +519,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.carekit.CareKitFHIR;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				RUN_DOCUMENTATION_COMPILER = YES;
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_TREAT_WARNINGS_AS_ERRORS = NO;
@@ -511,8 +530,8 @@
 		};
 		0396EF4C233D187800C28FC0 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 51266326291B1E0500C1D7DE /* Project-Shared.xcconfig */;
 			buildSettings = {
-				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
@@ -530,6 +549,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.carekit.CareKitFHIR;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				RUN_DOCUMENTATION_COMPILER = YES;
 				SKIP_INSTALL = YES;
 				SWIFT_TREAT_WARNINGS_AS_ERRORS = NO;
 				SWIFT_VERSION = 5.0;
@@ -611,9 +631,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		911F09AD24AA4D2100764C86 /* XCRemoteSwiftPackageReference "FHIRModels" */ = {
+		51373772299E051E000AA8E1 /* XCRemoteSwiftPackageReference "FHIRModels" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/apple/FHIRModels.git";
+			repositoryURL = "https://github.com/apple/FHIRModels";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 0.1.0;
@@ -622,15 +642,15 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		911F09AE24AA4D2100764C86 /* ModelsR4 */ = {
+		51373773299E051E000AA8E1 /* ModelsDSTU2 */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 911F09AD24AA4D2100764C86 /* XCRemoteSwiftPackageReference "FHIRModels" */;
-			productName = ModelsR4;
-		};
-		911F09B024AA4D2100764C86 /* ModelsDSTU2 */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 911F09AD24AA4D2100764C86 /* XCRemoteSwiftPackageReference "FHIRModels" */;
+			package = 51373772299E051E000AA8E1 /* XCRemoteSwiftPackageReference "FHIRModels" */;
 			productName = ModelsDSTU2;
+		};
+		51373775299E051E000AA8E1 /* ModelsR4 */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 51373772299E051E000AA8E1 /* XCRemoteSwiftPackageReference "FHIRModels" */;
+			productName = ModelsR4;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

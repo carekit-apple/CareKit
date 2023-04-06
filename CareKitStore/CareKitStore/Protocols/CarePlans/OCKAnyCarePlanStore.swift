@@ -30,85 +30,104 @@
 
 import Foundation
 
-/// Any store from which types conforming to `OCKAnyCarePlan` can be queried is considered `OCKAnyReadOnlyCarePlanStore`.
+/// A store that allows for reading care plans.
 public protocol OCKAnyReadOnlyCarePlanStore: OCKAnyResettableStore {
 
-    /// The delegate receives callbacks when the contents of the care plan store are modified.
-    /// In `CareKit` apps, the delegate will be set automatically, and it should not be modified.
-    var carePlanDelegate: OCKCarePlanStoreDelegate? { get set }
+    /// A continuous stream of care plans that exist in the store.
+    ///
+    /// The stream yields a new value whenever the result changes, and yields an error if there's an issue
+    /// accessing the store or fetching results.
+    ///
+    /// Supply a query that'll be used to match care plans in the store. If the query doesn't contain a date
+    /// interval, the result contains every version of a care plan. Multiple versions of the same care plan
+    /// have the same ``OCKAnyCarePlan/id`` but a different UUID. If the query does contain a date
+    /// interval, the result contains the newest version of a care plan that exists in the interval.
+    ///
+    /// - Parameter query: Used to match care plans in the store.
+    func anyCarePlans(matching query: OCKCarePlanQuery) -> CareStoreQueryResults<OCKAnyCarePlan>
 
-    /// `fetchAnyCarePlans` asynchronously retrieves an array of care plans from the store.
+    /// A continuous stream of care plans that exist in the store. The stream yields a new value whenever
+    /// the result changes and yields an error if there's an issue accessing the store or fetching results.
+    ///
+    /// Supply a query that'll be used to match care plans in the store. If the query doesn't contain a date
+    /// interval, the result contains every version of a care plan. Multiple versions of the same care plan
+    /// have the same ``OCKAnyCarePlan/id`` but a different UUID. If the query does contain a date
+    /// interval, the result contains the newest version of a care plan that exists in the interval.
+    ///
+    /// - Parameter query: A query that matches care plans in the store.
     ///
     /// - Parameters:
-    ///   - query: A query used to constrain the values that will be fetched.
-    ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
-    ///   - completion: A callback that will fire on the provided callback queue.
+    ///   - query: A query that constrains the values the method fetches.
+    ///   - callbackQueue: The queue that the method calls the completion closure on. In most cases this is the main queue.
+    ///   - completion: A callback that executes on the provided callback queue.
     func fetchAnyCarePlans(query: OCKCarePlanQuery, callbackQueue: DispatchQueue,
                            completion: @escaping OCKResultClosure<[OCKAnyCarePlan]>)
 
     // MARK: Singular Methods - Implementation Provided
 
-    /// `fetchAnyCarePlan` asynchronously retrieves a single care plans from the store.
+    /// Asynchronously retrieves a single care plan from the store.
     ///
     /// - Parameters:
-    ///   - id: The identifier of the item to be fetched.
-    ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
-    ///   - completion: A callback that will fire on the provided callback queue.
+    ///   - id: The identifier of the fetched item.
+    ///   - callbackQueue: The queue that the method calls the completion closure on. In most cases this is the main queue.
+    ///   - completion: A callback that executes on the provided callback queue.
     func fetchAnyCarePlan(withID id: String, callbackQueue: DispatchQueue, completion: @escaping OCKResultClosure<OCKAnyCarePlan>)
 
 }
 
-/// Any store able to write to one ore more types conforming to `OCKAnyCarePlan` is considered an `OCKAnyCarePlanStore`.
+/// A protocol that enforces conformance to a care plan store.
+///
+/// Any store that can write to one more types conforming to `OCKAnyCarePlan` is considered an `OCKAnyCarePlanStore`.
 public protocol OCKAnyCarePlanStore: OCKAnyReadOnlyCarePlanStore {
 
-    /// `addAnyCarePlans` asynchronously adds an array of care plans to the store.
+    /// Asynchronously adds an array of care plans to the store.
     ///
     /// - Parameters:
-    ///   - plans: An array of plans to be added to the store.
-    ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
-    ///   - completion: A callback that will fire on the provided callback queue.
+    ///   - plans: An array of plans to add to the store.
+    ///   - callbackQueue: The queue that the method calls the completion closure on. In most cases this is the main queue.
+    ///   - completion: A callback that executes on the provided callback queue.
     func addAnyCarePlans(_ plans: [OCKAnyCarePlan], callbackQueue: DispatchQueue, completion: OCKResultClosure<[OCKAnyCarePlan]>?)
 
-    /// `updateAnyCarePlans` asynchronously updates an array of care plans in the store.
+    /// Asynchronously updates an array of care plans in the store.
     ///
     /// - Parameters:
-    ///   - plans: An array of care plans to be updated. The care plans must already exist in the store.
-    ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
-    ///   - completion: A callback that will fire on the provided callback queue.
+    ///   - plans: An array of care plans to update in the store. The care plans must already exist in the store.
+    ///   - callbackQueue: The queue that the method calls the completion closure on. In most cases this is the main queue.
+    ///   - completion: A callback that executes on the provided callback queue.
     func updateAnyCarePlans(_ plans: [OCKAnyCarePlan], callbackQueue: DispatchQueue, completion: OCKResultClosure<[OCKAnyCarePlan]>?)
 
-    /// `deleteAnyCarePlans` asynchronously deletes an array of care plans from the store.
+    /// Asynchronously deletes an array of care plans from the store.
     ///
     /// - Parameters:
-    ///   - plans: An array of care plans to be deleted. The care plans must exist in the store.
-    ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
-    ///   - completion: A callback that will fire on the provided callback queue.
+    ///   - plans: An array of care plans to delete. The care plans must exist in the store.
+    ///   - callbackQueue: The queue that the method calls the completion closure on. In most cases this is the main queue.
+    ///   - completion: A callback that executes on the provided callback queue.
     func deleteAnyCarePlans(_ plans: [OCKAnyCarePlan], callbackQueue: DispatchQueue, completion: OCKResultClosure<[OCKAnyCarePlan]>?)
 
     // MARK: Singular Methods - Implementation Provided
 
-    /// `addAnyCarePlan` asynchronously adds a single care plan to the store.
+    /// Asynchronously adds a single care plan to the store.
     ///
     /// - Parameters:
-    ///   - plan: A single plan to be added to the store.
-    ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
-    ///   - completion: A callback that will fire on the provided callback queue.
+    ///   - plan: A single plan to add to the store.
+    ///   - callbackQueue: The queue that the method calls the completion closure on. In most cases this is the main queue.
+    ///   - completion: A callback that executes on the provided callback queue.
     func addAnyCarePlan(_ plan: OCKAnyCarePlan, callbackQueue: DispatchQueue, completion: OCKResultClosure<OCKAnyCarePlan>?)
 
-    /// `updateAnyCarePlan` asynchronously updates a single care plan in the store.
+    /// Asynchronously updates a single care plan in the store.
     ///
     /// - Parameters:
-    ///   - plan: A single care plan to be updated. The care plans must already exist in the store.
-    ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
-    ///   - completion: A callback that will fire on the provided callback queue.
+    ///   - plan: A single care plan to update. The care plans must already exist in the store.
+    ///   - callbackQueue: The queue that the method calls the completion closure on. In most cases this is the main queue.
+    ///   - completion: A callback that executes on the provided callback queue.
     func updateAnyCarePlan(_ plan: OCKAnyCarePlan, callbackQueue: DispatchQueue, completion: OCKResultClosure<OCKAnyCarePlan>?)
 
-    /// `deleteAnyCarePlan` asynchronously deletes a single care plan from the store.
+    /// Asynchronously deletes a single care plan from the store.
     ///
     /// - Parameters:
-    ///   - plans: A single care plan to be deleted. The care plans must exist in the store.
-    ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
-    ///   - completion: A callback that will fire on the provided callback queue.
+    ///   - plan: A single care plan to delete. The care plans must exist in the store.
+    ///   - callbackQueue: The queue that the method calls the completion closure on. In most cases this is the main queue.
+    ///   - completion: A callback that executes on the provided callback queue.
     func deleteAnyCarePlan(_ plan: OCKAnyCarePlan, callbackQueue: DispatchQueue, completion: OCKResultClosure<OCKAnyCarePlan>?)
 }
 
@@ -148,13 +167,12 @@ public extension OCKAnyCarePlanStore {
 
 // MARK: Async methods for OCKAnyReadOnlyCarePlanStore
 
-@available(iOS 15.0, watchOS 8.0, *)
 public extension OCKAnyReadOnlyCarePlanStore {
 
-    /// `fetchAnyCarePlans` asynchronously retrieves an array of care plans from the store.
+    /// Aynchronously retrieves an array of care plans from the store.
     ///
     /// - Parameters:
-    ///   - query: A query used to constrain the values that will be fetched.
+    ///   - query: A query that constrains the values that the method fetches.
     func fetchAnyCarePlans(query: OCKCarePlanQuery) async throws -> [OCKAnyCarePlan] {
         try await withCheckedThrowingContinuation { continuation in
             fetchAnyCarePlans(query: query, callbackQueue: .main, completion: continuation.resume)
@@ -163,10 +181,10 @@ public extension OCKAnyReadOnlyCarePlanStore {
 
     // MARK: Singular Methods - Implementation Provided
 
-    /// `fetchAnyCarePlan` asynchronously retrieves a single care plans from the store.
+    /// Asynchronously retrieves a single care plans from the store.
     ///
     /// - Parameters:
-    ///   - id: The identifier of the item to be fetched.
+    ///   - id: The identifier of the item the method fetches.
     func fetchAnyCarePlan(withID id: String) async throws -> OCKAnyCarePlan {
         try await withCheckedThrowingContinuation { continuation in
             fetchAnyCarePlan(withID: id, callbackQueue: .main, completion: continuation.resume)
@@ -176,33 +194,32 @@ public extension OCKAnyReadOnlyCarePlanStore {
 
 // MARK: Async methods for OCKAnyCarePlanStore
 
-@available(iOS 15.0, watchOS 8.0, *)
 public extension OCKAnyCarePlanStore {
 
-    /// `addAnyCarePlans` asynchronously adds an array of care plans to the store.
+    /// Asynchronously adds an array of care plans to the store.
     ///
     /// - Parameters:
-    ///   - plans: An array of plans to be added to the store.
+    ///   - plans: An array of plans to add to the store.
     func addAnyCarePlans(_ plans: [OCKAnyCarePlan]) async throws -> [OCKAnyCarePlan] {
         try await withCheckedThrowingContinuation { continuation in
             addAnyCarePlans(plans, callbackQueue: .main, completion: continuation.resume)
         }
     }
 
-    /// `updateAnyCarePlans` asynchronously updates an array of care plans in the store.
+    /// Aynchronously updates an array of care plans in the store.
     ///
     /// - Parameters:
-    ///   - plans: An array of care plans to be updated. The care plans must already exist in the store.
+    ///   - plans: An array of care plans to update. The care plans must already exist in the store.
     func updateAnyCarePlans(_ plans: [OCKAnyCarePlan]) async throws -> [OCKAnyCarePlan] {
         try await withCheckedThrowingContinuation { continuation in
             updateAnyCarePlans(plans, callbackQueue: .main, completion: continuation.resume)
         }
     }
 
-    /// `deleteAnyCarePlans` asynchronously deletes an array of care plans from the store.
+    /// Asynchronously deletes an array of care plans from the store.
     ///
     /// - Parameters:
-    ///   - plans: An array of care plans to be deleted. The care plans must exist in the store.
+    ///   - plans: An array of care plans to delete. The care plans must exist in the store.
     func deleteAnyCarePlans(_ plans: [OCKAnyCarePlan]) async throws -> [OCKAnyCarePlan] {
         try await withCheckedThrowingContinuation { continuation in
             deleteAnyCarePlans(plans, callbackQueue: .main, completion: continuation.resume)
@@ -211,30 +228,30 @@ public extension OCKAnyCarePlanStore {
 
     // MARK: Singular Methods - Implementation Provided
 
-    /// `addAnyCarePlan` asynchronously adds a single care plan to the store.
+    /// Asynchronously adds a single care plan to the store.
     ///
     /// - Parameters:
-    ///   - plan: A single plan to be added to the store.
+    ///   - plan: A single plan to add to the store.
     func addAnyCarePlan(_ plan: OCKAnyCarePlan) async throws -> OCKAnyCarePlan {
         try await withCheckedThrowingContinuation { continuation in
             addAnyCarePlan(plan, callbackQueue: .main, completion: continuation.resume)
         }
     }
 
-    /// `updateAnyCarePlan` asynchronously updates a single care plan in the store.
+    /// Asynchronously updates a single care plan in the store.
     ///
     /// - Parameters:
-    ///   - plan: A single care plan to be updated. The care plans must already exist in the store.
+    ///   - plan: A single care plan to update. The care plans must already exist in the store.
     func updateAnyCarePlan(_ plan: OCKAnyCarePlan) async throws -> OCKAnyCarePlan {
         try await withCheckedThrowingContinuation { continuation in
             updateAnyCarePlan(plan, callbackQueue: .main, completion: continuation.resume)
         }
     }
 
-    /// `deleteAnyCarePlan` asynchronously deletes a single care plan from the store.
+    /// Asynchronously deletes a single care plan from the store.
     ///
     /// - Parameters:
-    ///   - plan: A single care plan to be deleted. The care plans must exist in the store.
+    ///   - plan: A single care plan to delete. The care plans must exist in the store.
     func deleteAnyCarePlan(_ plan: OCKAnyCarePlan) async throws -> OCKAnyCarePlan {
         try await withCheckedThrowingContinuation { continuation in
             deleteAnyCarePlan(plan, callbackQueue: .main, completion: continuation.resume)

@@ -123,7 +123,7 @@ public struct OCKR4PatientCoder: OCKPatientConverterTraits {
         patient.birthDate = FHIRPrimitive(birthday.r4FHIRDateTime.value?.date)
     }
 
-    public var setFHIRAllergies: ([String], Patient) throws -> Void = { allergies, patient in
+    public var setFHIRAllergies: ([String], Patient) throws -> Void = { _, _ in
         // No-op
     }
 

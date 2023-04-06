@@ -27,33 +27,70 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 import Foundation
 
-/// Any store from which a single type conforming to `OCKAnyTask` can be queried is considered a `OCKReadableOutcomeStore`.
+/// A store that allows for reading outcomes.
 public protocol OCKReadableOutcomeStore: OCKAnyReadOnlyOutcomeStore {
-    associatedtype Outcome: OCKAnyOutcome & Equatable & Identifiable
 
-    /// `fetchOutcomes` asynchronously retrieves an array of outcomes from the store.
+    associatedtype Outcome: OCKAnyOutcome, Equatable, Identifiable
+
+    /// An asynchronous sequence that produces outcomes.
+    associatedtype Outcomes: AsyncSequence where Outcomes.Element == [Outcome]
+
+    /// A continuous stream of outcomes that exist in the store.
+    ///
+    /// The stream yields a new value whenever the result changes and yields an error if there's an issue
+    /// accessing the store or fetching results.
+    ///
+    /// Supply a query that'll be used to match outcomes in the store. If the query doesn't contain a date
+    /// interval, the result will contain the latest version of each outcome. If the query does contain a date
+    /// interval, the result will contain outcomes whose events occur within the interval.
+    ///
+    /// This method does not check if an outcome's task is effective in the query interval.
+    ///
+    /// - Parameter query: Used to match outcomes in the store.
+    func outcomes(matching query: OCKOutcomeQuery) -> Outcomes
+
+    /// Fetch a list of events that exist in the store.
+    ///
+    /// The completion will be called with an error if there's an issue accessing the store or fetching results.
+    ///
+    /// Supply a query that'll be used to match outcomes in the store. If the query doesn't contain a date
+    /// interval, the result will contain the latest version of each outcome. If the query does contain a date
+    /// interval, the result will contain outcomes whose events occur within the interval.
+    ///
+    /// This method does not check if an outcome's task is effective in the query interval.
     ///
     /// - Parameters:
-    ///   - query: A query used to constrain the values that will be fetched.
-    ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
-    ///   - completion: A callback that will fire on the provided callback queue.
+    ///   - query: Used to match outcomes in the store.
+    ///   - callbackQueue: The queue that runs the completion. In most cases this should be the
+    ///                    main queue.
+    ///   - completion: A callback that contains the result.
     func fetchOutcomes(query: OCKOutcomeQuery, callbackQueue: DispatchQueue,
                        completion: @escaping OCKResultClosure<[Outcome]>)
 
-    /// `fetchOutcome` asynchronously retrieves a single outcome from the store. If more than one outcome matches the query, only the first
-    /// will be returned. If no matching outcomes exist, the completion handler will be called with an error.
+    /// Fetch a list of events that exist in the store.
+    ///
+    /// If more than one outcome matches the query, only the first will be returned. If no matching outcomes
+    /// exist or there is an error accessing the store, the completion will be called with an error.
+    ///
+    /// Supply a query that'll be used to match outcomes in the store. If the query doesn't contain a date
+    /// interval, the result will contain the latest version of each outcome. If the query does contain a date
+    /// interval, the result will contain outcomes whose events occur within the interval.
+    ///
+    /// This method does not check if an outcome's task is effective in the query interval.
     ///
     /// - Parameters:
-    ///   - query: A query used to constrain the values that will be fetched.
-    ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
-    ///   - completion: A callback that will fire on the provided callback queue.
+    ///   - query: Used to match outcomes in the store.
+    ///   - callbackQueue: The queue that runs the completion. In most cases this should be the
+    ///                    main queue.
+    ///   - completion: A callback that contains the result.
     func fetchOutcome(query: OCKOutcomeQuery, callbackQueue: DispatchQueue,
                       completion: @escaping OCKResultClosure<Outcome>)
 }
 
-public protocol OCKOutcomeStore: OCKAnyOutcomeStore & OCKReadableOutcomeStore {
+public protocol OCKOutcomeStore: OCKAnyOutcomeStore, OCKReadableOutcomeStore {
 
     /// `addOutcomes` asynchronously adds an array of outcomes to the store.
     ///
@@ -109,6 +146,16 @@ public protocol OCKOutcomeStore: OCKAnyOutcomeStore & OCKReadableOutcomeStore {
 // MARK: Singular Methods for OCKReadableOutcomeStore
 
 public extension OCKReadableOutcomeStore {
+
+    func anyOutcomes(matching query: OCKOutcomeQuery) -> CareStoreQueryResults<OCKAnyOutcome> {
+
+        let outcomes = outcomes(matching: query)
+            .map { $0 as [OCKAnyOutcome] }
+
+        let wrappedOutcomes = CareStoreQueryResults(wrapping: outcomes)
+        return wrappedOutcomes
+    }
+
     func fetchOutcome(query: OCKOutcomeQuery, callbackQueue: DispatchQueue = .main,
                       completion: @escaping OCKResultClosure<Outcome>) {
         fetchOutcomes(query: query, callbackQueue: callbackQueue, completion:
@@ -147,6 +194,7 @@ public extension OCKReadableOutcomeStore {
 // MARK: OCKAnyStore conformance for OCKOutcomeStore
 
 public extension OCKOutcomeStore {
+
     func addAnyOutcomes(_ outcomes: [OCKAnyOutcome], callbackQueue: DispatchQueue, completion: OCKResultClosure<[OCKAnyOutcome]>?) {
         guard let outcomes = outcomes as? [Outcome] else {
             let message = "Failed to add outcomes. Not all outcomes were the correct type, \(Outcome.self)."
@@ -177,7 +225,6 @@ public extension OCKOutcomeStore {
 
 // MARK: Async methods for OCKReadableOutcomeStore
 
-@available(iOS 15.0, watchOS 8.0, *)
 public extension OCKReadableOutcomeStore {
 
     /// `fetchOutcomes` asynchronously retrieves an array of outcomes from the store.
@@ -204,7 +251,6 @@ public extension OCKReadableOutcomeStore {
 
 // MARK: Async methods for OCKOutcomeStore
 
-@available(iOS 15.0, watchOS 8.0, *)
 public extension OCKOutcomeStore {
 
     /// `addOutcomes` asynchronously adds an array of outcomes to the store.

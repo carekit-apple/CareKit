@@ -44,7 +44,7 @@ public enum OCKCompletionState: Equatable {
     case zero
 
     /// Progress has been made completing the tasks.
-    case progress(_ value: CGFloat)
+    case progress(_ fractionCompleted: CGFloat)
 }
 
 #endif

@@ -34,7 +34,7 @@ import CareKitUI
 import Foundation
 
 /// A synchronizer specialized for the `OCKChecklistTaskView`
-open class OCKChecklistTaskViewSynchronizer: OCKTaskViewSynchronizerProtocol {
+open class OCKChecklistTaskViewSynchronizer: ViewSynchronizing {
     public init() {}
 
     open func updateView(_ view: OCKChecklistTaskView, context: OCKSynchronizationContext<OCKTaskEvents>) {

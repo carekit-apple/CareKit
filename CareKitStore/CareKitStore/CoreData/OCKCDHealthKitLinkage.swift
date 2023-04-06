@@ -37,6 +37,10 @@ class OCKCDHealthKitLinkage: NSManagedObject {
     @NSManaged var quantityIdentifier: String
     @NSManaged var quantityType: String
     @NSManaged var unitString: String
+
+    convenience init(context: NSManagedObjectContext) {
+        self.init(entity: Self.entity(), insertInto: context)
+    }
     
     convenience init(link: OCKHealthKitLinkage, context: NSManagedObjectContext) {
         self.init(entity: Self.entity(), insertInto: context)

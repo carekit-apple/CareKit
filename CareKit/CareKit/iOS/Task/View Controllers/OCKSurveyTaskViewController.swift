@@ -64,7 +64,7 @@ public extension OCKSurveyTaskViewControllerDelegate {
     }
 }
 
-open class OCKSurveyTaskViewController: OCKTaskViewController<OCKTaskController, OCKSurveyTaskViewSynchronizer>, ORKTaskViewControllerDelegate {
+open class OCKSurveyTaskViewController: OCKTaskViewController<OCKSurveyTaskViewSynchronizer>, ORKTaskViewControllerDelegate {
 
     private let extractOutcome: (ORKTaskResult) -> [OCKOutcomeValue]?
 
@@ -72,18 +72,43 @@ open class OCKSurveyTaskViewController: OCKTaskViewController<OCKTaskController,
 
     public weak var surveyDelegate: OCKSurveyTaskViewControllerDelegate?
 
+    @available(*, deprecated, renamed: "init(query:store:survey:viewSynchronizer:extractOutcome:)")
     public convenience init(
         task: OCKAnyTask,
         eventQuery: OCKEventQuery,
         storeManager: OCKSynchronizedStoreManager,
         survey: ORKTask,
         viewSynchronizer: OCKSurveyTaskViewSynchronizer = OCKSurveyTaskViewSynchronizer(),
-        extractOutcome: @escaping (ORKTaskResult) -> [OCKOutcomeValue]?) {
+        extractOutcome: @escaping (ORKTaskResult) -> [OCKOutcomeValue]?
+    ) {
+
+        var eventQuery = eventQuery
+        eventQuery.taskIDs = [task.id]
 
         self.init(
-            taskID: task.id,
-            eventQuery: eventQuery,
-            storeManager: storeManager,
+            query: eventQuery,
+            store: storeManager.store,
+            survey: survey,
+            viewSynchronizer: viewSynchronizer,
+            extractOutcome: extractOutcome
+        )
+    }
+
+    @available(*, deprecated, renamed: "init(query:store:survey:viewSynchronizer:extractOutcome:)")
+    public init(
+        taskID: String,
+        eventQuery: OCKEventQuery,
+        storeManager: OCKSynchronizedStoreManager,
+        survey: ORKTask,
+        viewSynchronizer: OCKSurveyTaskViewSynchronizer = OCKSurveyTaskViewSynchronizer(),
+        extractOutcome: @escaping (ORKTaskResult) -> [OCKOutcomeValue]?
+    ) {
+        var eventQuery = eventQuery
+        eventQuery.taskIDs = [taskID]
+
+        self.init(
+            query: eventQuery,
+            store: storeManager.store,
             survey: survey,
             viewSynchronizer: viewSynchronizer,
             extractOutcome: extractOutcome
@@ -91,22 +116,16 @@ open class OCKSurveyTaskViewController: OCKTaskViewController<OCKTaskController,
     }
 
     public init(
-        taskID: String,
         eventQuery: OCKEventQuery,
-        storeManager: OCKSynchronizedStoreManager,
+        store: OCKAnyStoreProtocol,
         survey: ORKTask,
         viewSynchronizer: OCKSurveyTaskViewSynchronizer = OCKSurveyTaskViewSynchronizer(),
-        extractOutcome: @escaping (ORKTaskResult) -> [OCKOutcomeValue]?) {
-
+        extractOutcome: @escaping (ORKTaskResult) -> [OCKOutcomeValue]?
+    ) {
         self.survey = survey
         self.extractOutcome = extractOutcome
 
-        super.init(
-            viewSynchronizer: viewSynchronizer,
-            taskID: taskID,
-            eventQuery: eventQuery,
-            storeManager: storeManager
-        )
+        super.init(query: query, store: store, viewSynchronizer: viewSynchronizer)
     }
 
     override open func taskView(
@@ -153,13 +172,7 @@ open class OCKSurveyTaskViewController: OCKTaskViewController<OCKTaskController,
 
             warningAlert.addAction(cancelAction)
             warningAlert.addAction(confirmAction)
-            /*
-             TODO: Remove in the future. Explicitly setting the tint color here to support
-             current developers that have a SwiftUI lifecycle app and wrap this view
-             controller in a `UIViewControllerRepresentable` implementation...Tint color
-             is not propagated...etc.
-             */
-            warningAlert.view.tintColor = determineTintColor(from: view)
+
             present(warningAlert, animated: true, completion: nil)
 
             return
@@ -176,13 +189,6 @@ open class OCKSurveyTaskViewController: OCKTaskViewController<OCKTaskController,
         ).last!.appendingPathComponent("ResearchKit", isDirectory: true)
 
         surveyViewController.outputDirectory = directory
-        /*
-         TODO: Remove in the future. Explicitly setting the tint color here to support
-         current developers that have a SwiftUI lifecycle app and wrap this view
-         controller in a `UIViewControllerRepresentable` implementation...Tint color
-         is not propagated...etc.
-         */
-        surveyViewController.view.tintColor = determineTintColor(from: view)
         surveyViewController.delegate = self
 
         present(surveyViewController, animated: true, completion: nil)

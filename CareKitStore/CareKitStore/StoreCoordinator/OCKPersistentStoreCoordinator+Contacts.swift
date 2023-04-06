@@ -32,18 +32,48 @@ import Foundation
 
 extension OCKStoreCoordinator {
 
-    open func fetchAnyContacts(query: OCKContactQuery, callbackQueue: DispatchQueue = .main,
-                               completion: @escaping (Result<[OCKAnyContact], OCKStoreError>) -> Void) {
+    public func anyContacts(matching query: OCKContactQuery) -> CareStoreQueryResults<OCKAnyContact> {
+
+        let stores = readOnlyContactStores + contactStores
+
+        let relevantStores = stores.filter {
+            contactStore($0, shouldHandleQuery: query)
+        }
+
+        let contactsStreams = relevantStores.map {
+            $0.anyContacts(matching: query)
+        }
+
+        let sortDescriptors = query
+            .sortDescriptors
+            .map(\.nsSortDescriptor)
+
+        let contacts = combineMany(
+            sequences: contactsStreams,
+            sortingElementsUsing: sortDescriptors
+        )
+
+        return contacts
+    }
+
+    public func fetchAnyContacts(
+        query: OCKContactQuery,
+        callbackQueue: DispatchQueue = .main,
+        completion: @escaping (Result<[OCKAnyContact], OCKStoreError>) -> Void
+    ) {
         let readableStores = readOnlyContactStores + contactStores
         let respondingStores = readableStores.filter { contactStore($0, shouldHandleQuery: query) }
         let closures = respondingStores.map({ store in { done in
             store.fetchAnyContacts(query: query, callbackQueue: callbackQueue, completion: done) }
         })
-        aggregate(closures, callbackQueue: callbackQueue, completion: completion)
+        aggregateAndFlatten(closures, callbackQueue: callbackQueue, completion: completion)
     }
 
-    open func addAnyContacts(_ contacts: [OCKAnyContact], callbackQueue: DispatchQueue = .main,
-                             completion: ((Result<[OCKAnyContact], OCKStoreError>) -> Void)? = nil) {
+    public func addAnyContacts(
+        _ contacts: [OCKAnyContact],
+        callbackQueue: DispatchQueue = .main,
+        completion: ((Result<[OCKAnyContact], OCKStoreError>) -> Void)? = nil
+    ) {
         do {
             try findStore(forContacts: contacts).addAnyContacts(contacts, callbackQueue: callbackQueue, completion: completion)
         } catch {
@@ -54,8 +84,11 @@ extension OCKStoreCoordinator {
         }
     }
 
-    open func updateAnyContacts(_ contacts: [OCKAnyContact], callbackQueue: DispatchQueue = .main,
-                                completion: ((Result<[OCKAnyContact], OCKStoreError>) -> Void)? = nil) {
+    public func updateAnyContacts(
+        _ contacts: [OCKAnyContact],
+        callbackQueue: DispatchQueue = .main,
+        completion: ((Result<[OCKAnyContact], OCKStoreError>) -> Void)? = nil
+    ) {
         do {
             try findStore(forContacts: contacts).updateAnyContacts(contacts, callbackQueue: callbackQueue, completion: completion)
         } catch {
@@ -66,8 +99,11 @@ extension OCKStoreCoordinator {
         }
     }
 
-    open func deleteAnyContacts(_ contacts: [OCKAnyContact], callbackQueue: DispatchQueue = .main,
-                                completion: ((Result<[OCKAnyContact], OCKStoreError>) -> Void)? = nil) {
+    public func deleteAnyContacts(
+        _ contacts: [OCKAnyContact],
+        callbackQueue: DispatchQueue = .main,
+        completion: ((Result<[OCKAnyContact], OCKStoreError>) -> Void)? = nil
+    ) {
         do {
             try findStore(forContacts: contacts).deleteAnyContacts(contacts, callbackQueue: callbackQueue, completion: completion)
         } catch {
@@ -84,19 +120,5 @@ extension OCKStoreCoordinator {
         guard let store = matchingStores.first else { throw OCKStoreError.invalidValue(reason: "No store could be found for any contacts.") }
         guard matchingStores.allSatisfy({ $0 === store }) else { throw OCKStoreError.invalidValue(reason: "Not all contacts belong to same store.") }
         return store
-    }
-}
-
-extension OCKStoreCoordinator: OCKContactStoreDelegate {
-    open func contactStore(_ store: OCKAnyReadOnlyContactStore, didAddContacts contacts: [OCKAnyContact]) {
-        contactDelegate?.contactStore(self, didAddContacts: contacts)
-    }
-
-    open func contactStore(_ store: OCKAnyReadOnlyContactStore, didUpdateContacts contacts: [OCKAnyContact]) {
-        contactDelegate?.contactStore(self, didUpdateContacts: contacts)
-    }
-
-    open func contactStore(_ store: OCKAnyReadOnlyContactStore, didDeleteContacts contacts: [OCKAnyContact]) {
-        contactDelegate?.contactStore(self, didDeleteContacts: contacts)
     }
 }

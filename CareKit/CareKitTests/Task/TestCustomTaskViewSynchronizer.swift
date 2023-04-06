@@ -93,7 +93,7 @@ private class MockTaskLabel: UILabel, OCKTaskDisplayable {
     weak var delegate: OCKTaskViewDelegate?
 }
 
-private class CustomTaskViewSynchronizer: OCKTaskViewSynchronizerProtocol {
+private class CustomTaskViewSynchronizer: ViewSynchronizing {
     func makeView() -> MockTaskLabel {
         return .init()
     }

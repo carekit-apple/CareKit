@@ -34,7 +34,7 @@ import CareKitUI
 import Foundation
 
 /// A synchronizer that creates and updates an `OCKButtonLogTaskView`.
-open class OCKButtonLogTaskViewSynchronizer: OCKTaskViewSynchronizerProtocol {
+open class OCKButtonLogTaskViewSynchronizer: ViewSynchronizing {
     public init() {}
 
     open func updateView(_ view: OCKButtonLogTaskView, context: OCKSynchronizationContext<OCKTaskEvents>) {

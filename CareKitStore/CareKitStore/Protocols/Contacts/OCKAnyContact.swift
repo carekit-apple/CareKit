@@ -86,8 +86,16 @@ public protocol OCKAnyContact {
     /// Any array of notes associated with this object.
     var notes: [OCKNote]? { get }
 
+    /// A date specifying when this version of the contact begins taking effect.
+    var effectiveDate: Date { get }
+
     /// Determines if this contact belongs to the given care plan.
     ///
     /// - Parameter plan: A care plan which may or may not own this contact.
     func belongs(to plan: OCKAnyCarePlan) -> Bool
+
+    /// Determines if this contact equals another contact.
+    ///
+    /// - Parameter other: A contact which may or may equal this contact.
+    func isEqual(to other: OCKAnyContact) -> Bool
 }

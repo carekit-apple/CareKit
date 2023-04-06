@@ -43,28 +43,54 @@ func chooseFirst<T>(then singularResultClosure: OCKResultClosure<T>?, replacemen
 }
 
 // Performs an array of operations and completes with the aggregated results or an an error, if any any occurs.
-func aggregate<U>(_ closures: [(@escaping OCKResultClosure<[U]>) -> Void], callbackQueue: DispatchQueue,
-                  completion: @escaping OCKResultClosure<[U]>) {
+func aggregate<Success, Failure: Error>(
+    _ closures: [
+        (@escaping (Result<Success, Failure>) -> Void) -> Void
+    ],
+    callbackQueue: DispatchQueue,
+    completion: @escaping (Result<[Success], Failure>) -> Void
+) {
     let group = DispatchGroup()
-    var error: OCKStoreError?
-    var values: [U] = []
+
+    var lastError: Failure?
+    var results: [Success] = []
 
     for closure in closures {
+
         group.enter()
-        closure({ result in
+
+        closure { result in
             switch result {
-            case .failure(let storeError): error = storeError
-            case .success(let storeValues): values.append(contentsOf: storeValues)
+            case .failure(let error): lastError = error
+            case .success(let result): results.append(result)
             }
             group.leave()
-        })
+        }
     }
 
     group.notify(queue: callbackQueue) {
-        if let error = error { completion(.failure(error)); return }
-        completion(.success(values))
+
+        if let lastError = lastError {
+            completion(.failure(lastError))
+        } else {
+            completion(.success(results))
+        }
     }
- }
+}
+
+func aggregateAndFlatten<Success, Failure: Error>(
+    _ closures: [
+        (@escaping (Result<[Success], Failure>) -> Void) -> Void
+    ],
+    callbackQueue: DispatchQueue,
+    completion: @escaping (Result<[Success], Failure>) -> Void
+) {
+
+    aggregate(closures, callbackQueue: callbackQueue) { result in
+        let flattenedResult = result.map { $0.flatMap { $0 } }
+        completion(flattenedResult)
+    }
+}
 
 // Performs an array of operations and completes with the first result.
 func getFirstValidResult<T>(_ closures: [(@escaping OCKResultClosure<T>) -> Void], callbackQueue: DispatchQueue,

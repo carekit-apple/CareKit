@@ -1,10 +1,10 @@
-// swift-tools-version:5.3
+// swift-tools-version:5.6
 import PackageDescription
 
 let package = Package(
     name: "CareKit",
     defaultLocalization: "en",
-    platforms: [.iOS(.v13), .watchOS(.v6)],
+    platforms: [.iOS(.v13), .macOS(.v10_15), .watchOS(.v6)],
     products: [
         .library(
             name: "CareKit",
@@ -23,7 +23,14 @@ let package = Package(
             targets: ["CareKitFHIR"])
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/FHIRModels.git", from: "0.1.0")
+        .package(
+            url: "https://github.com/apple/FHIRModels.git",
+            from: Version(0, 1, 0)
+        ),
+        .package(
+            url: "https://github.com/apple/swift-async-algorithms",
+            exact: Version(0, 0, 4)
+        )
     ],
     targets: [
         .target(
@@ -39,6 +46,9 @@ let package = Package(
 
         .target(
             name: "CareKitStore",
+            dependencies: [
+                .product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
+            ],
             path: "CareKitStore/CareKitStore",
             exclude: ["Info.plist"],
             resources: [
@@ -77,4 +87,3 @@ let package = Package(
             exclude: ["Info.plist"])
     ]
 )
-

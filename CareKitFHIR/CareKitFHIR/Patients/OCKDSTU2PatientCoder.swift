@@ -123,7 +123,7 @@ public struct OCKDSTU2PatientCoder: OCKPatientConverterTraits {
         patient.birthDate = FHIRPrimitive(birthday.dstu2FHIRDateTime.date)
     }
 
-    public var setFHIRAllergies: ([String], Patient) throws -> Void = { allergies, patient in
+    public var setFHIRAllergies: ([String], Patient) throws -> Void = { _, _ in
         // No-op
     }
 

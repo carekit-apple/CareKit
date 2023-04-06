@@ -54,13 +54,13 @@ open class OCKHeaderView: OCKView {
     /// Configuration for a header view.
     public struct Configuration {
         /// Flag to show a separator under the text in the view.
-        public var showsSeparator: Bool = false
+        public var showsSeparator = false
 
         /// Flag to show an image on the trailing end of the view. The default image is an arrow.
-        public var showsDetailDisclosure: Bool = false
+        public var showsDetailDisclosure = false
 
         /// Flag to show an image on the leading side of the text in the view.
-        public var showsIconImage: Bool = false
+        public var showsIconImage = false
     }
 
     // MARK: Properties

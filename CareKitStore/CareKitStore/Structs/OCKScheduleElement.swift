@@ -88,6 +88,8 @@ public struct OCKScheduleElement: Codable, Equatable {
         }
     }
 
+    private let calendar: Calendar
+
     /// An text about the time this element represents.
     /// e.g. before breakfast on Tuesdays, 5PM every day, etc.
     public var text: String?
@@ -95,8 +97,9 @@ public struct OCKScheduleElement: Codable, Equatable {
     /// The amount of time that the event should take, in seconds.
     public var duration: Duration
 
-    /// The date and time the first event occurs.
     // Note: This must remain a constant because its value is modified by the `isAllDay` flag during initialization.
+    //
+    /// The date and time the first event occurs.
     public let start: Date
 
     /// The latest possible time for an event to occur.
@@ -116,6 +119,9 @@ public struct OCKScheduleElement: Codable, Equatable {
 
     /// Create a `ScheduleElement` by specifying the start date, end date, and interval.
     ///
+    /// - Precondition: `start` < `end`
+    /// - Precondition: `interval` should move forwards in time
+    ///
     /// - Parameters:
     ///   - start: Date specifying the exact day and time that the first occurrence of this task happens.
     ///   - end: Date specifying when the task ends. The end date is not inclusive.
@@ -124,23 +130,32 @@ public struct OCKScheduleElement: Codable, Equatable {
     ///   - targetValues: An array of values that represents goals for this schedule element.
     ///   - duration: A duration in seconds specifying how long the window to complete this event is.
     public init(start: Date, end: Date?, interval: DateComponents, text: String? = nil,
-                targetValues: [OCKOutcomeValue] = [], duration: Duration = .hours(0)) {
-        assert(end == nil || start < end!, "Start date must be before the end date!")
-        assert(interval.movesForwardInTime, "Interval must not progress backwards in time!")
+                targetValues: [OCKOutcomeValue] = [], duration: Duration = .hours(1)) {
 
-        self.start = duration == .allDay ? Calendar.current.startOfDay(for: start) : start
+        let calendar = Calendar.current
+
+        precondition(end == nil || start < end!, "Start date must be before the end date!")
+        precondition(interval.movesForwardInTime(calendar: calendar), "Interval must not progress backwards in time!")
+
+        self.start = duration == .allDay ? calendar.startOfDay(for: start) : start
         self.end = end
         self.interval = interval
         self.text = text
         self.duration = duration
         self.targetValues = targetValues
+        self.calendar = calendar
     }
 
-    /// Returns the Nth event of this schedule.
+    /// Compute the Nth event of this schedule.
     ///
     /// - Parameter occurrence: The Nth occurrence.
     public subscript(occurrence: Int) -> OCKScheduleEvent {
-        makeScheduleEvent(on: date(ofOccurrence: occurrence)!, for: occurrence)
+
+        guard let event = event(forOccurrenceIndex: occurrence) else {
+            fatalError("Invalid occurrence index")
+        }
+
+        return event
     }
 
     @available(*, deprecated, message: "OCKScheduleElement.elements has been deprecated")
@@ -150,92 +165,186 @@ public struct OCKScheduleElement: Codable, Equatable {
 
     /// - Returns: a new instance of with all event times offset by the given value.
     public func offset(by dateComponents: DateComponents) -> OCKScheduleElement {
-        let newStart = Calendar.current.date(byAdding: dateComponents, to: start)!
-        let newEnd = end == nil ? nil : Calendar.current.date(byAdding: dateComponents, to: end!)!
+        let newStart = calendar.date(byAdding: dateComponents, to: start)!
+        let newEnd = end == nil ? nil : calendar.date(byAdding: dateComponents, to: end!)!
         return OCKScheduleElement(start: newStart, end: newEnd, interval: interval,
                                   text: text, targetValues: targetValues, duration: duration)
     }
 
-    /// - Returns: An array containing either an schedule event or nil
-    /// - Remark: Lower bound is inclusive, upper bound is exclusive.
-    public func events(betweenOccurrenceIndex startIndex: Int, and stopIndex: Int) -> [OCKScheduleEvent?] {
-        assert(stopIndex > startIndex, "Stop index must be greater than or equal to start index")
-        let numberOfEvents = stopIndex - startIndex
-        var currentOccurrence = 0
-        var events = [OCKScheduleEvent?](repeating: nil, count: numberOfEvents)
+    /// Compute all events that occur between `startIndex` (inclusive) and `stopIndex` (exclusive). The result
+    /// might not contain the desired events if the schedule ends before a particular event starts.
+    ///
+    /// - Precondition: `startIndex` < `stopIndex`
+    ///
+    /// - Parameters:
+    ///   - startIndex: The inclusive lower bound for the event indices.
+    ///   - stopIndex: The exclusive upper bound for the event indices.
+    public func events(betweenOccurrenceIndex startIndex: Int, and stopIndex: Int) -> [OCKScheduleEvent] {
 
-        // Move to start index
-        var currentDate = start
-        for _ in 0..<startIndex {
-            currentDate = Calendar.current.date(byAdding: interval, to: currentDate)!
-            currentOccurrence += 1
+        precondition(stopIndex > startIndex, "Stop index must be greater than or equal to start index")
+
+        // Compute events from 0 -> stopIndex
+        let eventsUpToStopIndex = computeEventsWhile { event in
+            return event.occurrence < stopIndex
         }
 
-        // Calculate the event at each index in between start and top indices
-        for index in 0..<numberOfEvents {
-            if let endDate = end, currentDate >= endDate { continue }
-            events[index] = makeScheduleEvent(on: currentDate, for: currentOccurrence)
-            currentDate = Calendar.current.date(byAdding: interval, to: currentDate)!
-            currentOccurrence += 1
+        // Drop events 0 -> startIndex. The result is events from startIndex -> stopIndex.
+        let events = eventsUpToStopIndex
+            .dropFirst(startIndex)
+
+        return Array(events)
+    }
+
+    /// Compute all events that occur between `start` (inclusive) and `end` (exclusive).
+    ///
+    /// - Precondition: `start` < `end`
+    ///
+    /// - Parameters:
+    ///   - start: The inclusive earliest start time for an event.
+    ///   - end: The exclusive latest start time for an event.
+    public func events(from start: Date, to end: Date) -> [OCKScheduleEvent] {
+
+        precondition(start < end)
+
+        // Compute event from schedule start -> query end
+        let eventsUpToQueryEnd = computeEventsWhile { event in
+            return isEventStart(event.start, beforeLimit: end)
         }
+
+        // Drop events from schedule start -> query end. The result is events from
+        // query start -> query end.
+        let events = eventsUpToQueryEnd.filter { event in
+            return event.end >= start
+        }
+
         return events
     }
 
-    public func events(from start: Date, to end: Date) -> [OCKScheduleEvent] {
-        let stopDate = determineStopDate(onOrBefore: end)
-        var current = self.start
-        var dates = [Date]()
-        while current < stopDate {
-            dates.append(current)
-            current = Calendar.current.date(byAdding: interval, to: current)!
-        }
-        let events = dates.enumerated().map { index, date in makeScheduleEvent(on: date, for: index) }
-        return events.filter { event in
-            if duration == .allDay {
-                return event.end > start
-            }
-            return event.start + duration.seconds >= start
-        }
-    }
-
-    /// Computes the date of the Nth occurrence of a schedule element. If the Nth occurrence is beyond the end date, then nil will be returned.
+    /// Computes the date of the Nth event. The result will be nil if the Nth event starts after the end of the schedule.
+    ///
+    /// - Precondition: `occurrence >= 0`
+    ///
+    /// - Parameter occurrence: The occurrence of the desired event.
     public func date(ofOccurrence occurrence: Int) -> Date? {
-        assert(occurrence >= 0, "Schedule events cannot have negative occurrence indices")
-        var currentDate = start
-        for _ in 0..<occurrence {
-            guard let nextDate = Calendar.current.date(byAdding: interval, to: currentDate) else { fatalError("Invalid date!") }
-            if let endDate = end, nextDate <= endDate { return nil }
-            currentDate = nextDate
-        }
-        return currentDate
-    }
 
-    /// Determines the last date at which an event could possibly occur
-    private func determineStopDate(onOrBefore date: Date) -> Date {
-        let stopDay = min(date, end ?? date)
+        precondition(occurrence >= 0, "Schedule events cannot have negative occurrence indices")
 
-        guard duration == .allDay else {
-            return stopDay
+        // Compute events from 0 -> occurrence
+        let eventsUpToDesiredOccurrence = computeEventsWhile { event in
+            // +1 to include event occurrence matching `occurrence` due to exclusive upper bound
+            return event.occurrence < occurrence + 1
         }
 
-        let morningOfStopDay = Calendar.current.startOfDay(for: stopDay)
-        let endOfStopDay = Calendar.current.date(byAdding: .init(day: 1, second: -1), to: morningOfStopDay)!
-        return endOfStopDay
+        guard
+            let event = eventsUpToDesiredOccurrence.last,
+            // The occurrence may not exist if the schedule ends too early
+            event.occurrence == occurrence
+        else {
+            return nil
+        }
+
+        return event.start
     }
 
-    private func makeScheduleEvent(on date: Date, for occurrence: Int) -> OCKScheduleEvent {
-        let startDate = duration == .allDay ? Calendar.current.startOfDay(for: date) : date
-        let endDate = duration == .allDay ?
-            Calendar.current.date(byAdding: DateComponents(day: 1, second: -1), to: startDate)! :
-            startDate.addingTimeInterval(duration.seconds)
-        return OCKScheduleEvent(start: startDate, end: endDate, element: self, occurrence: occurrence)
+    func event(forOccurrenceIndex occurrence: Int) -> OCKScheduleEvent? {
+        let events = events(betweenOccurrenceIndex: occurrence, and: occurrence + 1)
+        let event = events.first
+        return event
+    }
+
+    // Compute events starting from the start of the schedule moving forward in time. Stop the computation when
+    // the provided predicate evaluates to `false`, or when the end of the schedule is reached.
+    private func computeEventsWhile(
+        shouldContinue: (OCKScheduleEvent) -> Bool
+    ) -> [OCKScheduleEvent] {
+
+        // The first possible event
+        var nextEvent = computeEvent(on: start, occurrence: 0)
+
+        // The result to accumulate
+        var events: [OCKScheduleEvent] = []
+
+        while
+            let event = nextEvent,
+            shouldContinue(event)
+        {
+            // Store the current event in the result
+            events.append(event)
+
+            // Create a new event for the next iteration
+            let start = calendar.date(byAdding: interval, to: event.start)!
+
+            nextEvent = computeEvent(
+                on: start,
+                occurrence: event.occurrence + 1
+            )
+        }
+
+        return events
+    }
+
+    /// Compute an event on a particular date. Returns nil if the event starts after the end of the schedule.
+    private func computeEvent(
+        on date: Date,
+        occurrence: Int
+    ) -> OCKScheduleEvent? {
+
+        let start: Date
+        let end: Date
+
+        switch duration {
+
+        case .allDay:
+            start = calendar.startOfDay(for: date)
+            end = calendar.date(byAdding: DateComponents(day: 1, second: -1), to: start)!
+
+        case let .seconds(seconds):
+            start = date
+            end = start.addingTimeInterval(seconds)
+        }
+
+        // Don't create an event after the end of the schedule
+        if
+            let scheduleEnd = self.end,
+            isEventStart(start, beforeLimit: scheduleEnd) == false
+        {
+            return nil
+        }
+
+        let event = OCKScheduleEvent(start: start, end: end, element: self, occurrence: occurrence)
+        return event
+    }
+
+    private func isEventStart(
+        _ eventStart: Date,
+        beforeLimit limit: Date
+    ) -> Bool {
+
+        let occursBeforeLimit = eventStart < limit
+
+        switch duration {
+
+        // Fixed length events are valid if they start before the limit
+        case .seconds:
+            return occursBeforeLimit
+
+        // All day events are valid if they start before or on the same day as the limit
+        case .allDay:
+
+            // Subtract a second from the limit to ensure an exclusive end date
+            let adjustedLimit = calendar.date(byAdding: .second, value: -1, to: limit)!
+            let occursOnSameDayAsLimit = calendar.isDate(eventStart, inSameDayAs: adjustedLimit)
+
+            return occursBeforeLimit || occursOnSameDayAsLimit
+        }
     }
 }
 
 private extension DateComponents {
-    var movesForwardInTime: Bool {
+
+    func movesForwardInTime(calendar: Calendar) -> Bool {
         let now = Date()
-        let then = Calendar.current.date(byAdding: self, to: now)!
+        let then = calendar.date(byAdding: self, to: now)!
         return then > now
     }
 }

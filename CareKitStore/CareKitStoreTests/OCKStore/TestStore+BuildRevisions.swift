@@ -41,8 +41,97 @@ class TestStoreBuildRevisions: XCTestCase {
     }
 
     func testEmptyStoreProducesEmptyRevision() throws {
-        let revision = try store.computeRevision(since: store.context.knowledgeVector)
-        XCTAssert(revision.entities.isEmpty)
+        let revisions = try store.computeRevisions(since: store.context.knowledgeVector)
+        XCTAssert(revisions.isEmpty)
+    }
+
+    func testAllEntitiesReturnedForEmptyKnowledgeVector() throws {
+        let uuid1 = UUID()
+        let uuid2 = UUID()
+
+        let patientA = OCKPatient(id: "A", givenName: "a", familyName: "a")
+        let revisionA = OCKRevisionRecord(
+            entities: [.patient(patientA)],
+            knowledgeVector: OCKRevisionRecord.KnowledgeVector([uuid1: 5])
+        )
+
+        let patientB = OCKPatient(id: "B", givenName: "b", familyName: "b")
+        let revisionB = OCKRevisionRecord(
+            entities: [.patient(patientB)],
+            knowledgeVector: OCKRevisionRecord.KnowledgeVector([uuid2: 3])
+        )
+
+        store.mergeRevision(revisionA)
+        store.mergeRevision(revisionB)
+
+        let revisions = try store.computeRevisions(since: .init())
+        let entities = revisions.flatMap { $0.entities }
+        XCTAssert(entities.count == 2)
+    }
+
+    func testKnownEntitiesAreNotReturned() throws {
+        let uuid1 = UUID()
+        let uuid2 = UUID()
+
+        let patient = OCKPatient(id: "A", givenName: "a", familyName: "a")
+        let revisionA = OCKRevisionRecord(
+            entities: [.patient(patient)],
+            knowledgeVector: OCKRevisionRecord.KnowledgeVector([uuid1: 5])
+        )
+
+        let carePlan = OCKCarePlan(id: "B", title: "b", patientUUID: nil)
+        let revisionB = OCKRevisionRecord(
+            entities: [.carePlan(carePlan)],
+            knowledgeVector: OCKRevisionRecord.KnowledgeVector([uuid2: 3])
+        )
+
+        let contactC = OCKContact(id: "C", givenName: "c", familyName: "c", carePlanUUID: nil)
+        let revisionC = OCKRevisionRecord(
+            entities: [.contact(contactC)],
+            knowledgeVector: OCKRevisionRecord.KnowledgeVector([uuid2: 3])
+        )
+
+        store.mergeRevision(revisionA)
+        store.mergeRevision(revisionB)
+        store.mergeRevision(revisionC)
+
+        let knowledge = OCKRevisionRecord.KnowledgeVector([uuid1: 1, uuid2: 3])
+        let revisions = try store.computeRevisions(since: knowledge)
+        XCTAssert(revisions.count == 1)
+        XCTAssert(revisions.first?.entities.count == 1)
+        XCTAssert(revisions.first?.entities.first?.entityType == .patient)
+    }
+
+    func testEntitiesAreGroupedByKnowledgeVector() throws {
+        let uuid1 = UUID()
+        let uuid2 = UUID()
+
+        let patientA = OCKPatient(id: "A", givenName: "a", familyName: "a")
+        let revisionA = OCKRevisionRecord(
+            entities: [.patient(patientA)],
+            knowledgeVector: OCKRevisionRecord.KnowledgeVector([uuid1: 5])
+        )
+
+        let patientB = OCKPatient(id: "B", givenName: "b", familyName: "b")
+        let revisionB = OCKRevisionRecord(
+            entities: [.patient(patientB)],
+            knowledgeVector: OCKRevisionRecord.KnowledgeVector([uuid2: 3])
+        )
+
+        let patientC = OCKPatient(id: "C", givenName: "c", familyName: "c")
+        let revisionC = OCKRevisionRecord(
+            entities: [.patient(patientC)],
+            knowledgeVector: OCKRevisionRecord.KnowledgeVector([uuid2: 3])
+        )
+
+        store.mergeRevision(revisionA)
+        store.mergeRevision(revisionB)
+        store.mergeRevision(revisionC)
+        
+        let knowledge = OCKRevisionRecord.KnowledgeVector([uuid1: 4])
+        let revisions = try store.computeRevisions(since: knowledge)
+
+        XCTAssert(revisions.count == 2)
     }
 
     // MARK: Tasks
@@ -52,9 +141,9 @@ class TestStoreBuildRevisions: XCTestCase {
         let task = OCKTask(id: "a", title: nil, carePlanUUID: nil, schedule: schedule)
         try store.addTaskAndWait(task)
 
-        let revision = try store.computeRevision(since: .init())
-        XCTAssert(revision.entities.count == 1)
-        XCTAssert(revision.entities.first?.entityType == .task)
+        let revision = try store.computeRevisions(since: .init()).first
+        XCTAssert(revision?.entities.count == 1)
+        XCTAssert(revision?.entities.first?.entityType == .task)
     }
 
     func testUpdatingTaskCreatesRevisionRecord() throws {
@@ -66,9 +155,9 @@ class TestStoreBuildRevisions: XCTestCase {
         task.title = "Updated"
         try store.updateTaskAndWait(task)
 
-        let revision = try store.computeRevision(since: .init())
-        XCTAssert(revision.entities.count == 2)
-        XCTAssert(revision.entities.first?.entityType == .task)
+        let revision = try store.computeRevisions(since: .init()).first
+        XCTAssert(revision?.entities.count == 2)
+        XCTAssert(revision?.entities.first?.entityType == .task)
     }
 
     func testRevisionForDeletingTask() throws {
@@ -81,10 +170,10 @@ class TestStoreBuildRevisions: XCTestCase {
         store.context.knowledgeVector.increment(clockFor: store.context.clockID)
         try store.deleteTasksAndWait([taskA2])
         let vector = OCKRevisionRecord.KnowledgeVector([store.context.clockID: 1])
-        let revision = try store.computeRevision(since: vector)
+        let revision = try store.computeRevisions(since: vector).first
 
-        XCTAssert(revision.entities.count == 1)
-        XCTAssert(revision.entities.first?.value.deletedDate != nil)
+        XCTAssert(revision?.entities.count == 1)
+        XCTAssert(revision?.entities.first?.value.deletedDate != nil)
     }
 
     // MARK: Outcomes
@@ -97,7 +186,7 @@ class TestStoreBuildRevisions: XCTestCase {
         let outcome = OCKOutcome(taskUUID: task.uuid, taskOccurrenceIndex: 0, values: [])
         try store.addOutcomeAndWait(outcome)
 
-        let revision = try store.computeRevision(since: .init())
+        let revision = try store.computeRevisions(since: .init()).first!
         XCTAssert(revision.entities.count == 2)
         XCTAssert(revision.entities.last?.entityType == .outcome)
     }
@@ -110,10 +199,10 @@ class TestStoreBuildRevisions: XCTestCase {
         let outcome = OCKOutcome(taskUUID: task.uuid, taskOccurrenceIndex: 0, values: [])
         try store.addOutcomeAndWait(outcome)
         try store.deleteOutcomeAndWait(outcome)
-        let revision = try store.computeRevision(since: .init())
+        let revision = try store.computeRevisions(since: .init()).first
 
-        XCTAssert(revision.entities.last?.entityType == .outcome)
-        XCTAssert(revision.entities.count == 3)
+        XCTAssert(revision?.entities.last?.entityType == .outcome)
+        XCTAssert(revision?.entities.count == 3)
     }
 
     // MARK: Patients
@@ -122,9 +211,9 @@ class TestStoreBuildRevisions: XCTestCase {
         let patient = OCKPatient(id: "id1", givenName: "Amy", familyName: "Frost")
         try store.addPatientAndWait(patient)
 
-        let revision = try store.computeRevision(since: .init())
-        XCTAssert(revision.entities.count == 1)
-        XCTAssert(revision.entities.first?.entityType == .patient)
+        let revision = try store.computeRevisions(since: .init()).first
+        XCTAssert(revision?.entities.count == 1)
+        XCTAssert(revision?.entities.first?.entityType == .patient)
     }
 
     func testUpdatingPatientCreatesRevisionRecord() throws {
@@ -134,9 +223,9 @@ class TestStoreBuildRevisions: XCTestCase {
         patient.asset = "Updated"
         try store.updatePatientAndWait(patient)
 
-        let revision = try store.computeRevision(since: .init())
-        XCTAssert(revision.entities.count == 2)
-        XCTAssert(revision.entities.first?.entityType == .patient)
+        let revision = try store.computeRevisions(since: .init()).first
+        XCTAssert(revision?.entities.count == 2)
+        XCTAssert(revision?.entities.first?.entityType == .patient)
     }
 
     func testRevisionForDeletingPatient() throws {
@@ -144,10 +233,10 @@ class TestStoreBuildRevisions: XCTestCase {
         try store.addPatientAndWait(patient)
 
         try store.deletePatientsAndWait([patient])
-        let revision = try store.computeRevision(since: .init())
+        let revision = try store.computeRevisions(since: .init()).first
 
-        XCTAssert(revision.entities.count == 2)
-        XCTAssert(revision.entities.first?.value.deletedDate != nil)
+        XCTAssert(revision?.entities.count == 2)
+        XCTAssert(revision?.entities.first?.value.deletedDate != nil)
     }
 
     // MARK: CarePlans
@@ -156,9 +245,9 @@ class TestStoreBuildRevisions: XCTestCase {
         let plan = OCKCarePlan(id: "diabetes_type_1", title: "Diabetes Care Plan", patientUUID: nil)
         try store.addCarePlanAndWait(plan)
 
-        let revision = try store.computeRevision(since: .init())
-        XCTAssert(revision.entities.count == 1)
-        XCTAssert(revision.entities.first?.entityType == .carePlan)
+        let revision = try store.computeRevisions(since: .init()).first
+        XCTAssert(revision?.entities.count == 1)
+        XCTAssert(revision?.entities.first?.entityType == .carePlan)
     }
 
     func testUpdatingCarePlanCreatesRevisionRecord() throws {
@@ -168,9 +257,9 @@ class TestStoreBuildRevisions: XCTestCase {
         plan.title = "Updated"
         try store.updateCarePlanAndWait(plan)
 
-        let revision = try store.computeRevision(since: .init())
-        XCTAssert(revision.entities.count == 2)
-        XCTAssert(revision.entities.first?.entityType == .carePlan)
+        let revision = try store.computeRevisions(since: .init()).first
+        XCTAssert(revision?.entities.count == 2)
+        XCTAssert(revision?.entities.first?.entityType == .carePlan)
     }
 
     func testRevisionForDeletingCarePlan() throws {
@@ -178,10 +267,10 @@ class TestStoreBuildRevisions: XCTestCase {
         try store.addCarePlanAndWait(plan)
 
         try store.deleteCarePlansAndWait([plan])
-        let revision = try store.computeRevision(since: .init())
+        let revision = try store.computeRevisions(since: .init()).first
 
-        XCTAssert(revision.entities.count == 2)
-        XCTAssert(revision.entities.first?.value.deletedDate != nil)
+        XCTAssert(revision?.entities.count == 2)
+        XCTAssert(revision?.entities.first?.value.deletedDate != nil)
     }
 
     // MARK: Contact
@@ -190,9 +279,9 @@ class TestStoreBuildRevisions: XCTestCase {
         let contact = OCKContact(id: "contact", givenName: "Amy", familyName: "Frost", carePlanUUID: nil)
         try store.addContactAndWait(contact)
 
-        let revision = try store.computeRevision(since: .init())
-        XCTAssert(revision.entities.count == 1)
-        XCTAssert(revision.entities.first?.entityType == .contact)
+        let revision = try store.computeRevisions(since: .init()).first
+        XCTAssert(revision?.entities.count == 1)
+        XCTAssert(revision?.entities.first?.entityType == .contact)
     }
 
     func testUpdatingContactCreatesRevisionRecord() throws {
@@ -202,9 +291,9 @@ class TestStoreBuildRevisions: XCTestCase {
         contact.organization = "Updated"
         try store.updateContactAndWait(contact)
 
-        let revision = try store.computeRevision(since: .init())
-        XCTAssert(revision.entities.count == 2)
-        XCTAssert(revision.entities.first?.entityType == .contact)
+        let revision = try store.computeRevisions(since: .init()).first
+        XCTAssert(revision?.entities.count == 2)
+        XCTAssert(revision?.entities.first?.entityType == .contact)
     }
 
     func testRevisionForDeletingContact() throws {
@@ -212,9 +301,9 @@ class TestStoreBuildRevisions: XCTestCase {
         try store.addContactAndWait(contact)
 
         try store.deleteContactsAndWait([contact])
-        let revision = try store.computeRevision(since: .init())
+        let revision = try store.computeRevisions(since: .init()).first
 
-        XCTAssert(revision.entities.count == 2)
-        XCTAssert(revision.entities.first?.value.deletedDate != nil)
+        XCTAssert(revision?.entities.count == 2)
+        XCTAssert(revision?.entities.first?.value.deletedDate != nil)
     }
 }

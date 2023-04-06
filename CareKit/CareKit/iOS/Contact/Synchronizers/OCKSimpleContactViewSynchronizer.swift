@@ -34,7 +34,7 @@ import CareKitUI
 import Foundation
 
 /// A view synchronizer that creates and updates an `OCKSimpleContactView`.
-open class OCKSimpleContactViewSynchronizer: OCKContactViewSynchronizerProtocol {
+open class OCKSimpleContactViewSynchronizer: ViewSynchronizing {
 
     public init() {}
 

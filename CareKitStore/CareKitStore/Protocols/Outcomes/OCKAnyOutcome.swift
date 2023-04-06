@@ -30,30 +30,37 @@
 
 import Foundation
 
-/// Conforming a type to `OCKAnyOutcome` allows it to be queried and displayed by CareKit.
+/// A protocol that allows CareKit to query and display outcomes.
 public protocol OCKAnyOutcome {
 
-    /// A user-defined unique identifier, typically human readable.
+    /// A human readable, user-defined unique identifier.
     var id: String { get }
 
-    /// Specifies how many events occured before this outcome was created. For example, if a task is schedule to happen twice per day, then
-    /// the 2nd outcome on the 2nd day will have a `taskOccurrenceIndex` of 3.
+    /// A unique identifier for the specific version of the task that this outcome belongs to.
+    var taskUUID: UUID { get }
+
+    /// A property that specifies how many events occured before this outcome became instantiated.
     ///
-    /// - Note: The task occurrence references a specific version of a task, so if a new version the task is created, the task occurrence index
-    ///  will start again from 0.
+    /// For example, if a task is schedule to happen twice per day, then
+    /// the 2nd outcome on the 2nd day has a `taskOccurrenceIndex` of 3.
+    ///
+    /// - Note: The task occurrence references a specific version of a task. If a new version the task becomes instantiated,
+    /// the task occurrence index restarts from 0.
     var taskOccurrenceIndex: Int { get }
 
-    /// An array of values associated with this outcome. Most outcomes will have 0 or 1 values, but some may have more.
-    /// - Examples:
-    ///   - A task to call a physician might have 0 values, or 1 value containing the time stamp of when the call was placed.
-    ///   - A task to walk 2,000 steps might have 1 value, with that value being the number of steps that were actually taken.
-    ///   - A task to complete a survey might have multiple values corresponding to the answers to the questions in the survey.
+    /// An array of values associated with this outcome.
+    ///
+    /// Most outcomes have 0 or 1 values, but some may have more. For example, a task to call a physician might have 0 values,
+    /// or 1 value containing the time stamp of when the call was placed.
+    /// 
+    /// Another example is a task to walk 2,000 steps that may have 1 value, with that value being the number of steps actually taken.
+    /// Yet another example is a task to complete a survey that may have multiple values corresponding to the answers to the questions in the survey.
     var values: [OCKOutcomeValue] { get set }
 
     /// An identifier for this outcome in a remote store.
     var remoteID: String? { get }
 
-    /// An identifier that can be used to group this outcome with others.
+    /// An identifier you can use to group this outcome with others.
     var groupIdentifier: String? { get }
 
     /// Any array of notes associated with this object.
@@ -61,6 +68,6 @@ public protocol OCKAnyOutcome {
 
     /// Determines if this outcome is associated with the given task.
     /// 
-    /// - Parameter task: A task which may or may not own this outcome.
+    /// - Parameter task: A task that may own this outcome.
     func belongs(to task: OCKAnyTask) -> Bool
 }

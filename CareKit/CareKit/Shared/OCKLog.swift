@@ -50,14 +50,15 @@ public struct OCKLog {
 /// - Parameter error: An optional error to log.
 internal func log(_ level: OSLogType = .info,
                   _ message: StaticString,
-                  error: Error? = nil) {
+                  error: Error? = nil,
+                  args: CVarArg...) {
 
     #if DEBUG
     guard level.rawValue >= OCKLog.level.rawValue else {
         return
     }
 
-    os_log(message, log: .carekit, type: level)
+    os_log(message, log: .carekit, type: level, args)
 
     if let error = error {
         os_log("Error: %{private}@", log: .carekit,
@@ -66,7 +67,7 @@ internal func log(_ level: OSLogType = .info,
     #endif
 }
 
-private extension OSLog {
+extension OSLog {
 
     private static var subsystem = Bundle.main.bundleIdentifier!
 

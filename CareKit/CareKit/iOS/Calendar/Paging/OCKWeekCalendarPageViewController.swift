@@ -45,8 +45,6 @@ public protocol OCKWeekCalendarPageViewControllerDelegate: AnyObject {
     /// - Parameter viewController: The view controller that displays the calendar.
     /// - Parameter interval: The new date interval.
     func weekCalendarPageViewController(_ viewController: OCKWeekCalendarPageViewController, didChangeDateInterval interval: DateInterval)
-
-    func weekCalendarPageViewController(_ viewController: OCKWeekCalendarPageViewController, didEncounterError error: Error)
 }
 
 /// A view controller that allows paging through adjacent weeks of task adherence content.
@@ -59,12 +57,12 @@ UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelega
 
     /// The currently selected date in the calendar.
     public var selectedDate: Date {
-        return currentViewController?.calendarView.selectedDate ?? startingDate
+        return currentViewController?.typedView.selectedDate ?? startingDate
     }
 
     /// The date interval currently being displayed.
     public var dateInterval: DateInterval? {
-        return currentViewController?.calendarView.dateInterval
+        return currentViewController?.typedView.dateInterval
     }
 
     private var currentViewController: OCKWeekCalendarViewController? {
@@ -76,7 +74,7 @@ UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelega
         return viewController
     }
 
-    private let aggregator: OCKAdherenceAggregator
+    private let computeProgress: (OCKAnyEvent) -> CareTaskProgress
 
     // Many of the methods in this class get called when the selected date did change. During those times, this property helps access
     // the previous value.
@@ -85,14 +83,33 @@ UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelega
     /// The initial date displayed when the view controller is loaded.
     private let startingDate = Date()
 
-    let storeManager: OCKSynchronizedStoreManager
+    private let store: OCKAnyStoreProtocol
 
     // MARK: - Life Cycle
 
+    @available(*, unavailable, renamed: "init(store:computeProgress:)")
     public init(storeManager: OCKSynchronizedStoreManager, aggregator: OCKAdherenceAggregator) {
-        self.storeManager = storeManager
-        self.aggregator = aggregator
-        super.init(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
+        fatalError("Unavailable")
+    }
+
+    /// A view controller that allows paging through adjacent weeks of task adherence content.
+    /// - Parameters:
+    ///   - store: Contains the task data for which adherence will be computed.
+    ///   - computeProgress: Used to compute the progress for an event.
+    public init(
+        store: OCKAnyStoreProtocol,
+        computeProgress: @escaping (OCKAnyEvent) -> CareTaskProgress = { event in
+            event.computeProgress(by: .checkingOutcomeExists)
+        }
+    ) {
+        self.store = store
+        self.computeProgress = computeProgress
+
+        super.init(
+            transitionStyle: .scroll,
+            navigationOrientation: .horizontal,
+            options: nil
+        )
     }
 
     @available(*, unavailable)
@@ -107,34 +124,22 @@ UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelega
 
         // Create the first view controller
         let viewController = makeViewController(forDate: startingDate)
-        viewController.calendarView.delegate = self
-        viewController.calendarView.selectDate(startingDate)
+        viewController.typedView.delegate = self
+        viewController.typedView.selectDate(startingDate)
         setViewControllers([viewController], direction: .forward, animated: false, completion: nil)
     }
 
     // MARK: - Methods
 
     private func makeViewController(forDate date: Date) -> OCKWeekCalendarViewController {
-        let viewController = OCKWeekCalendarViewController(weekOfDate: date, aggregator: aggregator, storeManager: storeManager)
-        viewController.calendarView.showDate(date)
-        viewController.calendarView.delegate = self
+        let viewController = OCKWeekCalendarViewController(weekOfDate: date, store: store, computeProgress: computeProgress)
+        viewController.typedView.showDate(date)
+        viewController.typedView.delegate = self
         return viewController
     }
 
-    // Send errors through to the calendarDelegate
-    private func handleResult(_ result: Result<[OCKCompletionState], OCKStoreError>) {
-        switch result {
-        case .failure(let error):
-            if calendarDelegate == nil {
-                log(.error, "A calendar error occurred, but no delegate was set to forward it to!", error: error)
-            }
-            calendarDelegate?.weekCalendarPageViewController(self, didEncounterError: error)
-        case .success: break
-        }
-    }
-
     private func makePage(beside page: OCKWeekCalendarViewController, addingWeeks value: Int) -> OCKWeekCalendarViewController {
-        let baseDate = page.calendarView.selectedDate
+        let baseDate = page.typedView.selectedDate
         let nextDate = Calendar.current.date(byAdding: .weekOfYear, value: value, to: baseDate)!
         let page = makeViewController(forDate: nextDate)
         return page
@@ -158,7 +163,7 @@ UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelega
 
         // If the new date is within the currently displayed week, select it
         if dateInterval.contains(date) {
-            currentViewController?.calendarView.selectDate(date)
+            currentViewController?.typedView.selectDate(date)
             return
         }
 
@@ -189,8 +194,8 @@ UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelega
         pendingViewControllers
             .compactMap { $0 as? OCKWeekCalendarViewController }
             .forEach {
-                let newSelectedDate = Calendar.current.date(bySetting: .weekday, value: weekday, of: $0.calendarView.dateInterval.start)!
-                $0.calendarView.selectDate(newSelectedDate)
+                let newSelectedDate = Calendar.current.date(bySetting: .weekday, value: weekday, of: $0.typedView.dateInterval.start)!
+                $0.typedView.selectDate(newSelectedDate)
             }
     }
 

@@ -30,84 +30,113 @@
 
 import Foundation
 
+/// A store that allows for reading outcomes.
 public protocol OCKAnyReadOnlyOutcomeStore: OCKAnyResettableStore {
 
-    /// The delegate receives callbacks when the contents of the care plan store are modified.
-    /// In `CareKit` apps, the delegate will be set automatically, and it should not be modified.
-    var outcomeDelegate: OCKOutcomeStoreDelegate? { get set }
+    /// A continuous stream of outcomes that exist in the store.
+    ///
+    /// The stream yields a new value whenever the result changes and yields an error if there's an issue
+    /// accessing the store or fetching results.
+    ///
+    /// Supply a query that'll be used to match outcomes in the store. If the query doesn't contain a date
+    /// interval, the result contains the latest version of each outcome. If the query does contain a date
+    /// interval, the result contains outcomes whose events occur within the interval.
+    ///
+    /// This method doesn't check if an outcome's task is effective in the query interval.
+    ///
+    /// - Parameter query: Used to match outcomes in the store.
+    func anyOutcomes(matching query: OCKOutcomeQuery) -> CareStoreQueryResults<OCKAnyOutcome>
 
-    /// `fetchAnyOutcomes` asynchronously retrieves an array of outcomes from the store.
+    /// Fetch a list of outcomes that exist in the store.
+    ///
+    /// The closure receives an error if there's an issue accessing the store or fetching results.
+    ///
+    /// Supply a query that'll be used to match outcomes in the store. If the query doesn't contain a date
+    /// interval, the result contains the latest version of each outcome. If the query does contain a date
+    /// interval, the result contains outcomes whose events occur within the interval.
+    ///
+    /// This method doesn't check if an outcome's task is effective in the query interval.
     ///
     /// - Parameters:
-    ///   - query: A query used to constrain the values that will be fetched.
-    ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
-    ///   - completion: A callback that will fire on the provided callback queue.
+    ///   - query: Used to match outcomes in the store.
+    ///   - callbackQueue: The queue that runs the closure. In most cases this should be the
+    ///                    main queue.
+    ///   - completion: A callback that contains the result.
     func fetchAnyOutcomes(query: OCKOutcomeQuery, callbackQueue: DispatchQueue,
                           completion: @escaping OCKResultClosure<[OCKAnyOutcome]>)
 
     // MARK: Singular Methods - Implementation Provided
 
-    /// `fetchAnyOutcome` asynchronously retrieves a single outcome from the store. If more than one outcome matches the query, only the first
-    /// will be returned. If no matching outcomes exist, the completion handler will be called with an error.
+    /// Fetch an outcome from the store.
+    ///
+    /// If more than one outcome matches the query, only the first returns. If no matching outcomes
+    /// exist, or there is an error accessing the store, the closure receives an error.
+    ///
+    /// Supply a query that'll be used to match outcomes in the store. If the query doesn't contain a date
+    /// interval, the result contains the latest version of each outcome. If the query does contain a date
+    /// interval, the result contains outcomes whose events occur within the interval.
+    ///
+    /// This method doesn't check if an outcome's task is effective in the query interval.
     ///
     /// - Parameters:
-    ///   - query: A query used to constrain the values that will be fetched.
-    ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
-    ///   - completion: A callback that will fire on the provided callback queue.
+    ///   - query: Used to match outcomes in the store.
+    ///   - callbackQueue: The queue that runs the closure. In most cases this should be the
+    ///                    main queue.
+    ///   - completion: A callback that contains the result.
     func fetchAnyOutcome(query: OCKOutcomeQuery, callbackQueue: DispatchQueue,
                          completion: @escaping OCKResultClosure<OCKAnyOutcome>)
 }
 
 public protocol OCKAnyOutcomeStore: OCKAnyReadOnlyOutcomeStore {
 
-    /// `addAnyOutcomes` asynchronously adds an array of outcomes to the store.
+    /// Asynchronously add an array of outcomes to the store.
     ///
     /// - Parameters:
-    ///   - outcomes: An array of outcomes to be added to the store.
-    ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
-    ///   - completion: A callback that will fire on the provided callback queue.
+    ///   - outcomes: An array of outcomes to add to the store.
+    ///   - callbackQueue: The queue that the function calls the closure on. In most cases this is the main queue.
+    ///   - completion: A callback that the function calls on the provided callback queue.
     func addAnyOutcomes(_ outcomes: [OCKAnyOutcome], callbackQueue: DispatchQueue, completion: OCKResultClosure<[OCKAnyOutcome]>?)
 
-    /// `updateAnyOutcomes` asynchronously updates an array of outcomes in the store.
+    /// Asynchronously update an array of outcomes in the store.
     ///
     /// - Parameters:
-    ///   - contacts: An array of outcomes to be updated. The outcomes must already exist in the store.
-    ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
-    ///   - completion: A callback that will fire on the provided callback queue.
+    ///   - outcomes: An array of updated outcomes. The outcomes must already exist in the store.
+    ///   - callbackQueue: The queue that the function calls the closure on. In most cases this is the main queue.
+    ///   - completion: A callback that the function calls on the provided callback queue.
     func updateAnyOutcomes(_ outcomes: [OCKAnyOutcome], callbackQueue: DispatchQueue, completion: OCKResultClosure<[OCKAnyOutcome]>?)
 
-    /// `deleteAnyOutcomes` asynchronously deletes an array of outcomes from the store.
+    /// Asynchronously delete an array of outcomes from the store.
     ///
     /// - Parameters:
     ///   - outcomes: An array of outcomes to be deleted. The outcomes must exist in the store.
-    ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
-    ///   - completion: A callback that will fire on the provided callback queue.
+    ///   - callbackQueue: The queue that the function calls the closure on. In most cases this is the main queue.
+    ///   - completion: A callback that the function calls on the provided callback queue.
     func deleteAnyOutcomes(_ outcomes: [OCKAnyOutcome], callbackQueue: DispatchQueue, completion: OCKResultClosure<[OCKAnyOutcome]>?)
 
     // MARK: Singular Methods - Implementation Provided
 
-    /// `addAnyOutcome` asynchronously adds an outcome to the store.
+    /// Asynchronously add an outcome to the store.
     ///
     /// - Parameters:
-    ///   - outcome: An outcome to be added to the store.
-    ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
-    ///   - completion: A callback that will fire on the provided callback queue.
+    ///   - outcome: An outcome that the function adds to the store.
+    ///   - callbackQueue: The queue that the function calls the closure on. In most cases this is the main queue.
+    ///   - completion: A callback that the function calls on the provided callback queue.
     func addAnyOutcome(_ outcome: OCKAnyOutcome, callbackQueue: DispatchQueue, completion: OCKResultClosure<OCKAnyOutcome>?)
 
-    /// `updateAnyOutcome` asynchronously updates an outcome in the store.
+    /// Asynchronously update an outcome in the store.
     ///
     /// - Parameters:
-    ///   - outcome: An outcome to be updated. The outcome must already exist in the store.
-    ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
-    ///   - completion: A callback that will fire on the provided callback queue.
+    ///   - outcome: An outcome that the function updates. The outcome must already exist in the store.
+    ///   - callbackQueue: The queue that the function calls the closure on. In most cases this is the main queue.
+    ///   - completion: A callback that the function calls on the provided callback queue.
     func updateAnyOutcome(_ outcome: OCKAnyOutcome, callbackQueue: DispatchQueue, completion: OCKResultClosure<OCKAnyOutcome>?)
 
-    /// `deleteAnyOutcome` asynchronously deletes an outcome from the store.
+    /// Asynchronously delete an outcome from the store.
     ///
     /// - Parameters:
-    ///   - outcome: An outcome to be deleted. The outcome must exist in the store.
-    ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
-    ///   - completion: A callback that will fire on the provided callback queue.
+    ///   - outcome: An outcome that the function deletes. The outcome must exist in the store.
+    ///   - callbackQueue: The queue that the function calls the closure on. In most cases this is the main queue.
+    ///   - completion: A callback that the function calls on the provided callback queue.
     func deleteAnyOutcome(_ outcome: OCKAnyOutcome, callbackQueue: DispatchQueue, completion: OCKResultClosure<OCKAnyOutcome>?)
 }
 
@@ -143,13 +172,12 @@ public extension OCKAnyOutcomeStore {
 
 // MARK: Async methods for OCKAnyReadOnlyOutcomeStore
 
-@available(iOS 15.0, watchOS 8.0, *)
 public extension OCKAnyReadOnlyOutcomeStore {
 
-    /// `fetchAnyOutcomes` asynchronously retrieves an array of outcomes from the store.
+    /// Asynchronously retrieve an array of outcomes from the store.
     ///
     /// - Parameters:
-    ///   - query: A query used to constrain the values that will be fetched.
+    ///   - query: A query that constrains the fetched values.
     func fetchAnyOutcomes(query: OCKOutcomeQuery) async throws -> [OCKAnyOutcome] {
         try await withCheckedThrowingContinuation { continuation in
             fetchAnyOutcomes(query: query, callbackQueue: .main, completion: continuation.resume)
@@ -158,11 +186,13 @@ public extension OCKAnyReadOnlyOutcomeStore {
 
     // MARK: Singular Methods - Implementation Provided
 
-    /// `fetchAnyOutcome` asynchronously retrieves a single outcome from the store. If more than one outcome matches the query, only the first
-    /// will be returned. If no matching outcomes exist, the completion handler will be called with an error.
+    /// Asynchronously retrieve a single outcome from the store.
+    ///
+    /// If more than one outcome matches the query, only the first
+    /// returns. If no matching outcomes exist, the completion handler receives an error.
     ///
     /// - Parameters:
-    ///   - query: A query used to constrain the values that will be fetched.
+    ///   - query: A query that constrains the fetched values.
     func fetchAnyOutcome(query: OCKOutcomeQuery) async throws -> OCKAnyOutcome {
         try await withCheckedThrowingContinuation { continuation in
             fetchAnyOutcome(query: query, callbackQueue: .main, completion: continuation.resume)
@@ -172,33 +202,32 @@ public extension OCKAnyReadOnlyOutcomeStore {
 
 // MARK: Async methods for OCKAnyOutcomeStore
 
-@available(iOS 15.0, watchOS 8.0, *)
 public extension OCKAnyOutcomeStore {
 
-    /// `addAnyOutcomes` asynchronously adds an array of outcomes to the store.
+    /// Asynchronously add an array of outcomes to the store.
     ///
     /// - Parameters:
-    ///   - outcomes: An array of outcomes to be added to the store.
+    ///   - outcomes: An array of outcomes added to the store.
     func addAnyOutcomes(_ outcomes: [OCKAnyOutcome]) async throws -> [OCKAnyOutcome] {
         try await withCheckedThrowingContinuation { continuation in
             addAnyOutcomes(outcomes, callbackQueue: .main, completion: continuation.resume)
         }
     }
 
-    /// `updateAnyOutcomes` asynchronously updates an array of outcomes in the store.
+    /// Asynchronously update an array of outcomes in the store.
     ///
     /// - Parameters:
-    ///   - contacts: An array of outcomes to be updated. The outcomes must already exist in the store.
+    ///   - contacts: An array of updated outcomes. The outcomes must already exist in the store.
     func updateAnyOutcomes(_ outcomes: [OCKAnyOutcome]) async throws -> [OCKAnyOutcome] {
         try await withCheckedThrowingContinuation { continuation in
             updateAnyOutcomes(outcomes, callbackQueue: .main, completion: continuation.resume)
         }
     }
 
-    /// `deleteAnyOutcomes` asynchronously deletes an array of outcomes from the store.
+    /// Asynchronously delete an array of outcomes from the store.
     ///
     /// - Parameters:
-    ///   - outcomes: An array of outcomes to be deleted. The outcomes must exist in the store.
+    ///   - outcomes: An array of outcomes that the function deletes. The outcomes must exist in the store.
     func deleteAnyOutcomes(_ outcomes: [OCKAnyOutcome]) async throws -> [OCKAnyOutcome] {
         try await withCheckedThrowingContinuation { continuation in
             deleteAnyOutcomes(outcomes, callbackQueue: .main, completion: continuation.resume)
@@ -207,30 +236,30 @@ public extension OCKAnyOutcomeStore {
 
     // MARK: Singular Methods - Implementation Provided
 
-    /// `addAnyOutcome` asynchronously adds an outcome to the store.
+    /// Asynchronously add an outcome to the store.
     ///
     /// - Parameters:
-    ///   - outcome: An outcome to be added to the store.
+    ///   - outcome: An outcome that the function adds to the store.
     func addAnyOutcome(_ outcome: OCKAnyOutcome) async throws -> OCKAnyOutcome {
         try await withCheckedThrowingContinuation { continuation in
             addAnyOutcome(outcome, callbackQueue: .main, completion: continuation.resume)
         }
     }
 
-    /// `updateAnyOutcome` asynchronously updates an outcome in the store.
+    /// Asynchronously update an outcome in the store.
     ///
     /// - Parameters:
-    ///   - outcome: An outcome to be updated. The outcome must already exist in the store.
+    ///   - outcome: An outcome that the function updates. The outcome must already exist in the store.
     func updateAnyOutcome(_ outcome: OCKAnyOutcome) async throws -> OCKAnyOutcome {
         try await withCheckedThrowingContinuation { continuation in
             updateAnyOutcome(outcome, callbackQueue: .main, completion: continuation.resume)
         }
     }
 
-    /// `deleteAnyOutcome` asynchronously deletes an outcome from the store.
+    /// Asynchronously delete an outcome from the store.
     ///
     /// - Parameters:
-    ///   - outcome: An outcome to be deleted. The outcome must exist in the store.
+    ///   - outcome: An outcome the function deletes. The outcome must exist in the store.
     func deleteAnyOutcome(_ outcome: OCKAnyOutcome) async throws -> OCKAnyOutcome {
         try await withCheckedThrowingContinuation { continuation in
             deleteAnyOutcome(outcome, callbackQueue: .main, completion: continuation.resume)

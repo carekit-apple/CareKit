@@ -72,7 +72,9 @@ protocol OCKPatientConverterTraits: OCKFHIRResourceCoder where Entity == OCKPati
     func newResource() -> Resource
 }
 
+
 extension OCKPatientConverterTraits {
+
 
     /// Converts a CareKit `OCKPatient` into a FHIRModels object
     /// - Parameter entity: An `OCKPatient`

@@ -393,3 +393,4 @@ class TestStoreConsumeRevisions: XCTestCase {
         XCTAssert(contacts.first?.createdDate == date)
     }
 }
+

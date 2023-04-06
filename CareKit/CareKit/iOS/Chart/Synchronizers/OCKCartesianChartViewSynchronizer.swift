@@ -34,7 +34,7 @@ import CareKitUI
 import Foundation
 
 /// A chart view controller capable of displaying charts drawn on a Cartesian coordinate system.
-open class OCKCartesianChartViewSynchronizer: OCKChartViewSynchronizerProtocol {
+open class OCKCartesianChartViewSynchronizer: ViewSynchronizing {
 
     /// The type of the plot that this view controller displays.
     public let plotType: OCKCartesianGraphView.PlotType

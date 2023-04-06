@@ -33,8 +33,17 @@ import Foundation
 /// A query that limits which events will be returned when fetching.
 public struct OCKEventQuery: Equatable {
 
-    /// The date interval in which outcomes should match.
+    /// The date interval in which events should be returned.
     public var dateInterval: DateInterval
+
+    /// The identifiers of tasks to match events against.
+    public var taskIDs: [String] = []
+
+    /// The group identifiers of tasks to match events against.
+    public var taskGroupIdentifiers: [String] = []
+
+    /// The tags of tasks to match events against.
+    public var taskTags: [String] = []
 
     /// Initialize a new `OCKEventQuery` by specifying the start and end dates.
     ///
@@ -52,5 +61,19 @@ public struct OCKEventQuery: Equatable {
         let startOfDay = Calendar.current.startOfDay(for: date)
         let endOfDay = Calendar.current.date(byAdding: DateComponents(day: 1, second: -1), to: startOfDay)!
         self = Self(dateInterval: DateInterval(start: startOfDay, end: endOfDay))
+    }
+
+    var taskQuery: OCKTaskQuery {
+        var taskQuery = OCKTaskQuery(dateInterval: dateInterval)
+        taskQuery.ids = taskIDs
+        taskQuery.groupIdentifiers = taskGroupIdentifiers
+        taskQuery.tags = taskTags
+        return taskQuery
+    }
+
+    var outcomeQuery: OCKOutcomeQuery {
+        var outcomeQuery = OCKOutcomeQuery(dateInterval: dateInterval)
+        outcomeQuery.taskIDs = taskIDs
+        return outcomeQuery
     }
 }

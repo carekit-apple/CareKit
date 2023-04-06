@@ -24,3 +24,6 @@ DerivedData
 
 # SPM
 .build/
+
+# DocC
+.docc-build

@@ -87,7 +87,7 @@ private class MockRemote: OCKRemoteSynchronizable {
 
     weak var delegate: OCKRemoteSynchronizationDelegate?
 
-    var automaticallySynchronizes: Bool = false
+    var automaticallySynchronizes = false
 
     var resolveConflict: (([OCKEntity]) throws -> OCKEntity)!
 
@@ -95,13 +95,16 @@ private class MockRemote: OCKRemoteSynchronizable {
         since knowledgeVector: OCKRevisionRecord.KnowledgeVector,
         mergeRevision: @escaping (OCKRevisionRecord) -> Void,
         completion: @escaping (Error?) -> Void) {
-        fatalError("Not implemented")
+
+        completion(nil)
     }
 
     func pushRevisions(
-        deviceRevision: OCKRevisionRecord,
+        deviceRevisions: [OCKRevisionRecord],
+        deviceKnowledge: OCKRevisionRecord.KnowledgeVector,
         completion: @escaping (Error?) -> Void) {
-        fatalError("Not implemented")
+
+        completion(nil)
     }
 
     func chooseConflictResolution(

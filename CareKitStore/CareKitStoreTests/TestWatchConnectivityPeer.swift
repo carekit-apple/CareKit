@@ -62,8 +62,8 @@ class TestWatchConnectivityPeer: XCTestCase {
         // 1. Sync a task to from A to B, at B's request.
         let schedule = OCKSchedule.dailyAtTime(hour: 0, minutes: 0, start: Date(), end: nil, text: nil)
         var taskA = OCKTask(id: "A", title: "A1", carePlanUUID: nil, schedule: schedule)
-        try storeA.addTaskAndWait(taskA)
 
+        try storeA.addTaskAndWait(taskA)
         try storeB.syncAndWait()
 
         let stateA1 = OCKRevisionRecord.KnowledgeVector([uuidA: 3, uuidB: 2])
@@ -115,14 +115,20 @@ private final class MockPeer: OCKWatchConnectivityPeer {
 
     override func pullRevisions(
         since knowledgeVector: OCKRevisionRecord.KnowledgeVector,
-        mergeRevision: @escaping (OCKRevisionRecord) throws -> Void,
+        mergeRevision: @escaping (OCKRevisionRecord) -> Void,
         completion: @escaping (Error?) -> Void) {
 
         do {
-            let revision = try peersStore.computeRevision(since: knowledgeVector)
-            peersStore.context.knowledgeVector.increment(clockFor: peersStore.context.clockID)
+            let revisions = try peersStore.computeRevisions(since: knowledgeVector)
+            revisions.forEach(mergeRevision)
 
-            try mergeRevision(revision)
+            let catchUp = OCKRevisionRecord(
+                entities: [],
+                knowledgeVector: peersStore.context.knowledgeVector
+            )
+            mergeRevision(catchUp)
+
+            peersStore.context.knowledgeVector.increment(clockFor: peersStore.context.clockID)
             completion(nil)
 
         } catch {
@@ -131,10 +137,14 @@ private final class MockPeer: OCKWatchConnectivityPeer {
     }
 
     override func pushRevisions(
-        deviceRevision: OCKRevisionRecord,
+        deviceRevisions: [OCKRevisionRecord],
+        deviceKnowledge: OCKRevisionRecord.KnowledgeVector,
         completion: @escaping (Error?) -> Void) {
 
-        peersStore.mergeRevision(deviceRevision)
+        deviceRevisions.forEach(peersStore.mergeRevision)
+        let catchUp = OCKRevisionRecord(entities: [], knowledgeVector: deviceKnowledge)
+        peersStore.mergeRevision(catchUp)
+
         peersStore.context.knowledgeVector.increment(clockFor: peersStore.context.clockID)
         self.peersStore.resolveConflicts(completion: completion)
     }

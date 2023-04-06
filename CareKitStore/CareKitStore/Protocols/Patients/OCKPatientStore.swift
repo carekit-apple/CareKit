@@ -27,11 +27,29 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
 import Foundation
 
-/// Any store from which a single type conforming to `OCKAnyPatient` can be queried is considered `OCKAnyReadOnlyPatientStore`.
+/// A store that allows for reading patients.
 public protocol OCKReadablePatientStore: OCKAnyReadOnlyPatientStore {
-    associatedtype Patient: OCKAnyPatient & Equatable & Identifiable
+
+    associatedtype Patient: OCKAnyPatient, Equatable, Identifiable
+
+    /// An asynchronous sequence that produces patients.
+    associatedtype Patients: AsyncSequence where Patients.Element == [Patient]
+
+    /// A continuous stream of patients that exist in the store.
+    ///
+    /// The stream yields a new value whenever the result changes and yields an error if there's an issue
+    /// accessing the store or fetching results.
+    ///
+    /// Supply a query that'll be used to match patients in the store. If the query doesn't contain a date
+    /// interval, the result will contain every version of a patient. Multiple versions of the same patient will
+    /// have the same ``OCKAnyPatient/id`` but a different UUID. If the query does contain a date
+    /// interval, the result will contain the newest version of a patient that exists in the interval.
+    ///
+    /// - Parameter query: Used to match patients in the store.
+    func patients(matching query: OCKPatientQuery) -> Patients
 
     /// `fetchPatients` asynchronously retrieves an array of patients from the store.
     ///
@@ -146,6 +164,16 @@ public extension OCKPatientStore {
 // MARK: OCKAnyReadOnlyPatientStore implementations for OCKReadablePatientStore
 
 public extension OCKReadablePatientStore {
+
+    func anyPatients(matching query: OCKPatientQuery) -> CareStoreQueryResults<OCKAnyPatient> {
+
+        let patients = patients(matching: query)
+            .map { $0 as [OCKAnyPatient] }
+
+        let wrappedPatients = CareStoreQueryResults(wrapping: patients)
+        return wrappedPatients
+    }
+
     func fetchAnyPatients(query: OCKPatientQuery, callbackQueue: DispatchQueue,
                           completion: @escaping OCKResultClosure<[OCKAnyPatient]>) {
         fetchPatients(query: query, callbackQueue: callbackQueue) { completion($0.map { $0.map { $0 as OCKAnyPatient } }) }
@@ -186,7 +214,6 @@ public extension OCKPatientStore {
 
 // MARK: Async methods for OCKReadablePatientStore
 
-@available(iOS 15.0, watchOS 8.0, *)
 public extension OCKReadablePatientStore {
 
     /// `fetchPatients` asynchronously retrieves an array of patients from the store.
@@ -215,7 +242,6 @@ public extension OCKReadablePatientStore {
 
 // MARK: Async methods for OCKPatientStore
 
-@available(iOS 15.0, watchOS 8.0, *)
 public extension OCKPatientStore {
 
     /// `addPatients` asynchronously adds an array of patients to the store.

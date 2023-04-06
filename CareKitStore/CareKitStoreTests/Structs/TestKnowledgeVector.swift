@@ -96,6 +96,7 @@ class TestKnowledgeVector: XCTestCase {
     }
 
     func testEqualVectorsAreNotLessThan() {
+
         let vectorA = OCKRevisionRecord.KnowledgeVector([
             UUID(): 2,
             UUID(): 5,

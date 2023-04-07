@@ -118,6 +118,10 @@ class TestAnyEventStoreExtensions: XCTestCase {
             didUpdate.fulfill()
         }
 
+        #if compiler(>=5.8.0)
+        await fulfillment(of: [didUpdate], timeout: 2)
+        #else
         wait(for: [didUpdate], timeout: 2)
+        #endif
     }
 }

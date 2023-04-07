@@ -28,6 +28,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#if !os(watchOS)
 @testable import CareKit
 @testable import CareKitStore
 import CareKitUI
@@ -102,3 +103,4 @@ class TestDailyTasksPageViewController: XCTestCase {
         XCTAssertNotNil(simpleViewController)
     }
 }
+#endif

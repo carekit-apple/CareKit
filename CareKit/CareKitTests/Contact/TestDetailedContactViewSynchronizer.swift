@@ -28,6 +28,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#if !os(watchOS)
 import CareKit
 import CareKitStore
 import CareKitUI
@@ -165,3 +166,4 @@ class TestDetailedContactViewSynchronizer: XCTestCase {
         XCTAssertTrue(view.messageButton.isHidden)
     }
 }
+#endif

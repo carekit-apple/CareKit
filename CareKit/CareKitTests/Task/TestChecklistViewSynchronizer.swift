@@ -28,6 +28,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#if !os(watchOS)
 @testable import CareKit
 import CareKitUI
 import Foundation
@@ -117,3 +118,4 @@ class TestChecklistTaskViewSynchronizer: XCTestCase {
         XCTAssertEqual(view.items.count, 3)
     }
 }
+#endif

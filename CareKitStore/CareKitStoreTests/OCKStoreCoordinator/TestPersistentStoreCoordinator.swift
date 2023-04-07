@@ -200,6 +200,7 @@ class TestPersistentStoreCoordinator: XCTestCase {
         XCTAssertThrowsError(try coordinator.addAnyTaskAndWait(task))
     }
 
+#if !os(watchOS)
     @available(iOS 15, watchOS 8, *)
     func testStoreCoordinatorDoesNotSendNormalOutcomesToHealthKit() {
         let coordinator = OCKStoreCoordinator()
@@ -217,7 +218,8 @@ class TestPersistentStoreCoordinator: XCTestCase {
         let willHandle = coordinator.outcomeStore(store, shouldHandleWritingOutcome: outcome)
         XCTAssertFalse(willHandle)
     }
-
+#endif
+    
     @available(iOS 15, watchOS 8, *)
     func testCanAssociateHealthKitTaskWithCarePlan() throws {
         let store = OCKStore(name: UUID().uuidString, type: .inMemory)

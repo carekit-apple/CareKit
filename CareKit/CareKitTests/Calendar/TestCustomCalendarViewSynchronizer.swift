@@ -28,6 +28,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#if !os(watchOS)
 import CareKit
 import CareKitUI
 import Foundation
@@ -93,3 +94,4 @@ class TestCustomCalendarViewSynchronizer: XCTestCase {
         XCTAssertTrue(view.completionStates.isEmpty)
     }
 }
+#endif

@@ -35,7 +35,7 @@ import XCTest
 class TestKnowledgeVector: XCTestCase {
 
     func testEncoding() throws {
-        let id = UIDevice.current.identifierForVendor!
+        let id = UUID()
         let vector = OCKRevisionRecord.KnowledgeVector([id: 0])
         let json = try JSONEncoder().encode(vector)
         let string = String(data: json, encoding: .utf8)!
@@ -44,7 +44,7 @@ class TestKnowledgeVector: XCTestCase {
     }
 
     func testDecoding() throws {
-        let id = UIDevice.current.identifierForVendor!
+        let id = UUID()
         let json = "{\"processes\":[{\"id\":\"\(id)\",\"clock\":0}]}"
         let data = json.data(using: .utf8)!
         let vector = try JSONDecoder().decode(OCKRevisionRecord.KnowledgeVector.self, from: data)
@@ -53,7 +53,7 @@ class TestKnowledgeVector: XCTestCase {
 
     func testInitialLogicalTimeForOwnProcess() throws {
         let vect = OCKRevisionRecord.KnowledgeVector()
-        let uuid = UIDevice.current.identifierForVendor!
+        let uuid = UUID()
         let time = vect.clock(for: uuid)
         XCTAssert(time == 0)
     }
@@ -68,7 +68,7 @@ class TestKnowledgeVector: XCTestCase {
     }
 
     func testMergeWithOtherVector() throws {
-        let uuid1 = UIDevice.current.identifierForVendor!
+        let uuid1 = UUID()
         let uuid2 = UUID()
         let uuid3 = UUID()
 

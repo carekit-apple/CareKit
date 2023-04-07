@@ -20,8 +20,6 @@ jobs:
         exclude:
           - destination: 'platform=watchOS\ Simulator,OS=9.1,name=Apple\ Watch\ Series\ 5\ \(40mm\)'
             scheme: 'CareKitUI'
-          - destination: 'platform=watchOS\ Simulator,OS=9.1,name=Apple\ Watch\ Series\ 5\ \(40mm\)'
-            scheme: 'CareKitFHIR' 
     steps:
       - uses: actions/checkout@v2
       - name: Set Xcode Version

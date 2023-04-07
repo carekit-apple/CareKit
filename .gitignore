@@ -24,6 +24,7 @@ DerivedData
 
 # SPM
 .build/
+.swiftpm/
 
 # DocC
 .docc-build

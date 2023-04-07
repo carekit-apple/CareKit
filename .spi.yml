@@ -1,0 +1,9 @@
+version: 1
+external_links:
+  documentation: "https://carekit-apple.github.io/CareKit/documentation/carekit/"
+builder:
+  configs:
+  - platform: ios
+    scheme: "CareKit"
+  - platform: watchos
+    scheme: "CareKit"

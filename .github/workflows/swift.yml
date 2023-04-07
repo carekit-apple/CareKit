@@ -26,5 +26,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Set Xcode Version
         run: sudo xcode-select -s /Applications/Xcode_14.2.app
+      - name: Use multiple cores
+        run: defaults write com.apple.dt.XCBuild EnableSwiftBuildSystemIntegration 1
       - name: Build
         run: set -o pipefail && env NSUnbufferedIO=YES xcodebuild -verbose -workspace CKWorkspace.xcworkspace -scheme ${{ matrix.scheme }} -destination ${{ matrix.destination }} build test | xcpretty

@@ -35,7 +35,7 @@ import AsyncAlgorithms
 import Combine
 import XCTest
 
-@available(iOS 14, *)
+@available(iOS 14, watchOS 7, *)
 class TestCareStoreFetchRequestController: XCTestCase {
 
     private let query = MockQuery(id: 0)

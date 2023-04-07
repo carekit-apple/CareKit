@@ -859,6 +859,7 @@
 		512B013622C2F82900ABCB1D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALLOW_TARGET_PLATFORM_SPECIALIZATION = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				INFOPLIST_FILE = CareKitUITests/Info.plist;
@@ -870,6 +871,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = Apple.CareKitUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -878,6 +881,7 @@
 		512B013722C2F82900ABCB1D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALLOW_TARGET_PLATFORM_SPECIALIZATION = YES;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = CareKitUITests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -888,6 +892,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = Apple.CareKitUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

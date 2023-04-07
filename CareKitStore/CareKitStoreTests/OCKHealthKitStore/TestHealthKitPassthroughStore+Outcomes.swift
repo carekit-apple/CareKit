@@ -33,6 +33,7 @@
 import HealthKit
 import XCTest
 
+@available(iOS 15, watchOS 8, *)
 class TestHealthKitPassthroughStoreOutcomes: XCTestCase {
 
     private let cdStore = OCKStore(

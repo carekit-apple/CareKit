@@ -166,6 +166,7 @@ class TestPersistentStoreCoordinator: XCTestCase {
         XCTAssert(store2.patients.isEmpty)
     }
 
+    @available(iOS 15, watchOS 8, *)
     func testFetchCanResultInAnArrayPopulatedWithDifferentTypes() throws {
         let coordinator = OCKStoreCoordinator()
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
@@ -199,6 +200,7 @@ class TestPersistentStoreCoordinator: XCTestCase {
         XCTAssertThrowsError(try coordinator.addAnyTaskAndWait(task))
     }
 
+    @available(iOS 15, watchOS 8, *)
     func testStoreCoordinatorDoesNotSendNormalOutcomesToHealthKit() {
         let coordinator = OCKStoreCoordinator()
         let store = OCKStore(name: UUID().uuidString, type: .inMemory)
@@ -216,6 +218,7 @@ class TestPersistentStoreCoordinator: XCTestCase {
         XCTAssertFalse(willHandle)
     }
 
+    @available(iOS 15, watchOS 8, *)
     func testCanAssociateHealthKitTaskWithCarePlan() throws {
         let store = OCKStore(name: UUID().uuidString, type: .inMemory)
         let passthrough = OCKHealthKitPassthroughStore(store: store)
@@ -237,6 +240,7 @@ class TestPersistentStoreCoordinator: XCTestCase {
     }
 }
 
+@available(iOS 15, watchOS 8, *)
 private struct SeededTaskStore {
 
     let store: OCKStoreCoordinator

@@ -77,7 +77,7 @@ UIPageViewControllerDataSource, UIPageViewControllerDelegate {
         return weekCalendarPageViewController.selectedDate
     }
 
-    /// The store manager the view controller uses for synchronization
+    /// The store manager the view controller uses for synchronization.
     @available(*, unavailable, renamed: "store")
     public var storeManager: OCKSynchronizedStoreManager!
 

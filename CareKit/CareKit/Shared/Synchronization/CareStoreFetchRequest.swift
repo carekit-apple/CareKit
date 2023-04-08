@@ -55,7 +55,7 @@ import SwiftUI
 /// You can inject the store through the environment like this:
 ///
 ///     ContentView()
-///         .environment(\.careKitStore, store)
+///         .environment(\.careStore, store)
 ///
 /// See the `OCKAnyStoreProtocol` and the `OCKStore` for more information about
 /// creating a CareKit store.

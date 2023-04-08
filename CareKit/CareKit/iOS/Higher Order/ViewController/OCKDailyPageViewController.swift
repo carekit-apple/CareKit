@@ -81,7 +81,8 @@ UIPageViewControllerDataSource, UIPageViewControllerDelegate {
     @available(*, unavailable, renamed: "store")
     public var storeManager: OCKSynchronizedStoreManager!
 
-    let store: OCKAnyStoreProtocol
+    /// The store the view controller uses for synchronization.
+    public let store: OCKAnyStoreProtocol
 
     /// Page view managing ListViewControllers.
     private let pageViewController = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)

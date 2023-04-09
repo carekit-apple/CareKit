@@ -33,8 +33,6 @@ import Foundation
 
 extension CareStoreFetchedResult where Result == OCKAnyEvent {
 
-    @available(iOS 15, *)
-    @available(watchOS 8, *)
     func toggleBooleanOutcome() async throws -> OCKAnyOutcome {
         try await store.toggleBooleanOutcome(for: result)
     }

@@ -47,7 +47,7 @@ class TestAnyEventStoreExtensions: XCTestCase {
         let task = OCKTask.sample(uuid: UUID(), id: "taskA")
         let storedTask = try store.store.addTaskAndWait(task)
         let storedEvent = try store.fetchEventAndWait(forTask: storedTask, occurrence: 0)
-        let outcome = try await store.store.toggleBooleanOutcome(for: storedEvent.anyEvent)
+        let outcome = try await store.toggleBooleanOutcome(for: storedEvent.anyEvent)
         XCTAssertEqual(outcome.values.count, 1)
         XCTAssertEqual(outcome.values.first?.booleanValue, true)
     }

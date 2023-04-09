@@ -3,7 +3,7 @@ external_links:
   documentation: "https://carekit-apple.github.io/CareKit/documentation/carekit/"
 builder:
    configs:
-   - documentation_targets: ["CareKit", "CareKitUI", "CareKitiStore", "CareKitFHIR"]
+   - documentation_targets: ["CareKit", "CareKitUI", "CareKitStore", "CareKitFHIR"]
      platform: ios
    - platform: ios
      scheme: "CareKit"

@@ -88,7 +88,7 @@ public struct OCKScheduleElement: Codable, Equatable {
         }
     }
 
-    private let calendar: Calendar
+    private var calendar = Calendar.current
 
     /// An text about the time this element represents.
     /// e.g. before breakfast on Tuesdays, 5PM every day, etc.
@@ -132,8 +132,6 @@ public struct OCKScheduleElement: Codable, Equatable {
     public init(start: Date, end: Date?, interval: DateComponents, text: String? = nil,
                 targetValues: [OCKOutcomeValue] = [], duration: Duration = .hours(1)) {
 
-        let calendar = Calendar.current
-
         precondition(end == nil || start < end!, "Start date must be before the end date!")
         precondition(interval.movesForwardInTime(calendar: calendar), "Interval must not progress backwards in time!")
 
@@ -143,7 +141,6 @@ public struct OCKScheduleElement: Codable, Equatable {
         self.text = text
         self.duration = duration
         self.targetValues = targetValues
-        self.calendar = calendar
     }
 
     /// Compute the Nth event of this schedule.

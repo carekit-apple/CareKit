@@ -133,65 +133,81 @@ open class OCKSurveyTaskViewController: OCKTaskViewController<OCKSurveyTaskViewS
         didCompleteEvent isComplete: Bool,
         at indexPath: IndexPath,
         sender: Any?) {
-
-        guard isComplete else {
-
-            if let event = controller.eventFor(indexPath: indexPath),
-
-               let delegate = surveyDelegate,
-
-               delegate.surveyTask(
-                    viewController: self,
-                    shouldAllowDeletingOutcomeForEvent: event) == false {
-
-                return
-            }
-
-            let cancelAction = UIAlertAction(
-                title: "Cancel",
-                style: .cancel,
-                handler: nil
-            )
-
-            let confirmAction = UIAlertAction(
-                title: "Delete", style: .destructive) { _ in
+    
+            guard isComplete else {
                 
-                super.taskView(
-                    taskView,
-                    didCompleteEvent: isComplete,
-                    at: indexPath,
-                    sender: sender
+                if let event = controller.eventFor(indexPath: indexPath),
+                   
+                    let delegate = surveyDelegate,
+                   
+                    delegate.surveyTask(
+                        viewController: self,
+                        shouldAllowDeletingOutcomeForEvent: event) == false {
+                    
+                    return
+                }
+                
+                let cancelAction = UIAlertAction(
+                    title: "Cancel",
+                    style: .cancel,
+                    handler: nil
                 )
+                
+                let confirmAction = UIAlertAction(
+                    title: "Delete", style: .destructive) { _ in
+                        
+                        super.taskView(
+                            taskView,
+                            didCompleteEvent: isComplete,
+                            at: indexPath,
+                            sender: sender
+                        )
+                    }
+                
+                let warningAlert = UIAlertController(
+                    title: "Delete",
+                    message: "Are you sure you want to delete your response?",
+                    preferredStyle: .actionSheet
+                )
+                
+                warningAlert.addAction(cancelAction)
+                warningAlert.addAction(confirmAction)
+                
+                /*
+                 TODO: Remove in the future. Explicitly setting the tint color here to support
+                 current developers that have a SwiftUI lifecycle app and wrap this view
+                 controller in a `UIViewControllerRepresentable` implementation...Tint color
+                 is not propagated...etc.
+                 */
+                warningAlert.view.tintColor = determineTintColor(from: view)
+                present(warningAlert, animated: true, completion: nil)
+                
+                return
+                
             }
 
-            let warningAlert = UIAlertController(
-                title: "Delete",
-                message: "Are you sure you want to delete your response?",
-                preferredStyle: .actionSheet
+            let surveyViewController = ORKTaskViewController(
+                task: survey,
+                taskRun: nil
             )
 
-            warningAlert.addAction(cancelAction)
-            warningAlert.addAction(confirmAction)
+            let directory = FileManager.default.urls(
+                for: .documentDirectory,
+                in: .userDomainMask
+            ).last!.appendingPathComponent("ResearchKit", isDirectory: true)
 
-            present(warningAlert, animated: true, completion: nil)
+                surveyViewController.outputDirectory = directory
+                /*
+                 TODO: Remove in the future. Explicitly setting the tint color here to support
+                 current developers that have a SwiftUI lifecycle app and wrap this view
+                 controller in a `UIViewControllerRepresentable` implementation...Tint color
+                 is not propagated...etc.
+                 */
+                surveyViewController.view.tintColor = determineTintColor(from: view)
+        
+            surveyViewController.delegate = self
 
-            return
-        }
-
-        let surveyViewController = ORKTaskViewController(
-            task: survey,
-            taskRun: nil
-        )
-
-        let directory = FileManager.default.urls(
-            for: .documentDirectory,
-            in: .userDomainMask
-        ).last!.appendingPathComponent("ResearchKit", isDirectory: true)
-
-        surveyViewController.outputDirectory = directory
-        surveyViewController.delegate = self
-
-        present(surveyViewController, animated: true, completion: nil)
+            present(surveyViewController, animated: true, completion: nil)
     }
 
     // MARK: ORKTaskViewControllerDelegate
@@ -260,3 +276,4 @@ open class OCKSurveyTaskViewController: OCKTaskViewController<OCKSurveyTaskViewS
 }
 
 #endif
+

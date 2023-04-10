@@ -167,7 +167,7 @@ final class OCKContactViewResponder: NSObject,
          */
         let tintColor = contactViewController.determineTintColor(from: contactView)
         contactViewController.view.tintColor = tintColor
-        contactViewController.navigationController?.navigationBar.tintColor = tintColor
+        contactViewController.navigationItem.rightBarButtonItem?.tintColor = tintColor
         
         let navigationController = UINavigationController(rootViewController: contactViewController)
         presenter?.present(navigationController, animated: true)

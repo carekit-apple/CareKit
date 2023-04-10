@@ -165,7 +165,7 @@ final class OCKContactViewResponder: NSObject,
          controller in a `UIViewControllerRepresentable` implementation...Tint color
          is not propagated...etc.
          */
-        let tintColor = contactViewController.determineTintColor(from: contactViewController.view)
+        let tintColor = contactViewController.determineTintColor(from: contactView)
         contactViewController.view.tintColor = tintColor
         
         let navigationController = UINavigationController(rootViewController: contactViewController)

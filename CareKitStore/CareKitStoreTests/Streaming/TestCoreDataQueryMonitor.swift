@@ -264,7 +264,7 @@ class TestCoreDataQueryMonitor: XCTestCase {
 
         monitor.startQuery()
 
-        wait(for: [didProduceResult, didDeleteTasks], timeout: 2)
+        await fulfillment(of: [didProduceResult, didDeleteTasks], timeout: 2)
 
         monitor.stopQuery()
     }

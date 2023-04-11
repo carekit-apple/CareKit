@@ -2,6 +2,7 @@
 #
 # Xcode
 build/
+IDEWorkspaceChecks.plist
 *.pbxuser
 !default.pbxuser
 *.mode1v3

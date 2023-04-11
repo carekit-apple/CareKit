@@ -214,6 +214,7 @@ class TestCoreDataQueryMonitor: XCTestCase {
         XCTAssertEqual(expectedTitles, observedTitles)
     }
 
+    #if compiler(>=5.8.0)
     func testIrrelevantChangeDoesNotProduceResult() async throws {
 
         // Add tasks to the store
@@ -268,7 +269,8 @@ class TestCoreDataQueryMonitor: XCTestCase {
 
         monitor.stopQuery()
     }
-
+    #endif
+    
     func testCancelledStreamDoesNotProduceResult() throws {
 
         // Add tasks to the store

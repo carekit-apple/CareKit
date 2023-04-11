@@ -70,7 +70,7 @@ class OCKCDTask: OCKCDTaskBase {
             id: id,
             title: title,
             carePlanUUID: carePlan?.uuid,
-            schedule: OCKSchedule(composing: self.scheduleElements.map { $0.makeValue() })
+            schedule: OCKSchedule(composing: scheduleElements.map { $0.makeValue() })
         )
 
         task.copyVersionedValues(from: self)

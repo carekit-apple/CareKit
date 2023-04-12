@@ -88,7 +88,7 @@ public struct OCKScheduleElement: Codable, Equatable {
         }
     }
 
-    private var calendar = Calendar.current
+    private static var calendar = Calendar.current
 
     /// An text about the time this element represents.
     /// e.g. before breakfast on Tuesdays, 5PM every day, etc.
@@ -133,9 +133,9 @@ public struct OCKScheduleElement: Codable, Equatable {
                 targetValues: [OCKOutcomeValue] = [], duration: Duration = .hours(1)) {
 
         precondition(end == nil || start < end!, "Start date must be before the end date!")
-        precondition(interval.movesForwardInTime(calendar: calendar), "Interval must not progress backwards in time!")
+        precondition(interval.movesForwardInTime(calendar: Self.calendar), "Interval must not progress backwards in time!")
 
-        self.start = duration == .allDay ? calendar.startOfDay(for: start) : start
+        self.start = duration == .allDay ? Self.calendar.startOfDay(for: start) : start
         self.end = end
         self.interval = interval
         self.text = text
@@ -162,8 +162,8 @@ public struct OCKScheduleElement: Codable, Equatable {
 
     /// - Returns: a new instance of with all event times offset by the given value.
     public func offset(by dateComponents: DateComponents) -> OCKScheduleElement {
-        let newStart = calendar.date(byAdding: dateComponents, to: start)!
-        let newEnd = end == nil ? nil : calendar.date(byAdding: dateComponents, to: end!)!
+        let newStart = Self.calendar.date(byAdding: dateComponents, to: start)!
+        let newEnd = end == nil ? nil : Self.calendar.date(byAdding: dateComponents, to: end!)!
         return OCKScheduleElement(start: newStart, end: newEnd, interval: interval,
                                   text: text, targetValues: targetValues, duration: duration)
     }
@@ -269,7 +269,7 @@ public struct OCKScheduleElement: Codable, Equatable {
             events.append(event)
 
             // Create a new event for the next iteration
-            let start = calendar.date(byAdding: interval, to: event.start)!
+            let start = Self.calendar.date(byAdding: interval, to: event.start)!
 
             nextEvent = computeEvent(
                 on: start,
@@ -292,8 +292,8 @@ public struct OCKScheduleElement: Codable, Equatable {
         switch duration {
 
         case .allDay:
-            start = calendar.startOfDay(for: date)
-            end = calendar.date(byAdding: DateComponents(day: 1, second: -1), to: start)!
+            start = Self.calendar.startOfDay(for: date)
+            end = Self.calendar.date(byAdding: DateComponents(day: 1, second: -1), to: start)!
 
         case let .seconds(seconds):
             start = date
@@ -329,8 +329,8 @@ public struct OCKScheduleElement: Codable, Equatable {
         case .allDay:
 
             // Subtract a second from the limit to ensure an exclusive end date
-            let adjustedLimit = calendar.date(byAdding: .second, value: -1, to: limit)!
-            let occursOnSameDayAsLimit = calendar.isDate(eventStart, inSameDayAs: adjustedLimit)
+            let adjustedLimit = Self.calendar.date(byAdding: .second, value: -1, to: limit)!
+            let occursOnSameDayAsLimit = Self.calendar.isDate(eventStart, inSameDayAs: adjustedLimit)
 
             return occursBeforeLimit || occursOnSameDayAsLimit
         }

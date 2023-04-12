@@ -92,6 +92,10 @@ final class CareStoreFetchRequestController<Result, Query>: ObservableObject {
         )
     }
 
+    deinit {
+        cancelStreamingTask()
+    }
+
     /// Update the current query that is either pending or streaming. If the query is pending
     /// make sure to call `streamResults(store:)` explicitly to begin the streaming process.
     func update(query: Query) {

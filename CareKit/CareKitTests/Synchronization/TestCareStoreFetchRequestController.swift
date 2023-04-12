@@ -176,8 +176,6 @@ class TestCareStoreFetchRequestController: XCTestCase {
                 let storage = fetchedResults?.storage ?? []
                 observedResults.append(storage)
 
-                print(storage)
-
                 // Update the query. That will trigger a new computation of `fetchedResults`.
                 controller.update(query: newQuery)
 
@@ -231,8 +229,6 @@ class TestCareStoreFetchRequestController: XCTestCase {
                 let storage = fetchedResults?.storage ?? []
                 observedResults.append(storage)
 
-                print(storage)
-
                 // Update the store. That will trigger a new computation of `fetchedResults`.
                 controller.streamResults(from: newStore)
 
@@ -278,8 +274,6 @@ class TestCareStoreFetchRequestController: XCTestCase {
 
                 let storage = fetchedResults?.storage ?? []
                 observedResults.append(storage)
-
-                print(storage)
 
                 // Stream from the same store. That will not trigger a new computation of `fetchedResults`.
                 controller.streamResults(from: self.store)

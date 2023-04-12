@@ -69,29 +69,27 @@ final class CoreDataQueryMonitor<
 
         // Create a controller that will be used to fetch Core Data entities
 
-        DispatchQueue.main.async {
-            self.controller = NSFetchedResultsController(
-                fetchRequest: self.request,
-                managedObjectContext: self.context,
-                sectionNameKeyPath: nil,
-                cacheName: nil
-            )
-            
-            self.controller?.delegate = self
-            
-            // Fetch the initial data from the Core Data store
-            
-            do {
-                try self.controller!.performFetch()
-            } catch {
-                os_log(.error, log: .store, "Query failed: %@", error as NSError)
-                self.resultHandler(.failure(error))
-                return
-            }
-            
-            let result = self.controller!.fetchedObjects ?? []
-            self.resultHandler(.success(result))
+        controller = NSFetchedResultsController(
+            fetchRequest: request,
+            managedObjectContext: context,
+            sectionNameKeyPath: nil,
+            cacheName: nil
+        )
+
+        controller?.delegate = self
+
+        // Fetch the initial data from the Core Data store
+
+        do {
+            try controller!.performFetch()
+        } catch {
+            os_log(.error, log: .store, "Query failed: %@", error as NSError)
+            resultHandler(.failure(error))
+            return
         }
+
+        let result = controller!.fetchedObjects ?? []
+        resultHandler(.success(result))
     }
 
     func stopQuery() {

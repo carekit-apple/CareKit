@@ -56,11 +56,7 @@ extension OCKStore {
 
         let tasks = coreDataTasks
             .map { tasks in
-                let tasks = tasks
-                return tasks.map { task in
-                    let task = task
-                    return task.makeTask()
-                }
+                tasks.map { $0.makeTask() }
             }
 
         // Wrap the final transformed stream to hide all implementation details from

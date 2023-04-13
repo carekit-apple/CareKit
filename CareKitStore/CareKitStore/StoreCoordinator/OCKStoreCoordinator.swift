@@ -208,7 +208,7 @@ open class OCKStoreCoordinator: OCKAnyStoreProtocol {
         // a single combined result is sent through the stream.
 
         // Create a stream that outputs a single empty result
-        let initialResults: AsyncLazySequence<[[T]]> = [[]].async
+        let initialResults: AsyncSyncSequence<[[T]]> = [[]].async
         let wrappedInitialResults = CareStoreQueryResults(wrapping: initialResults)
 
         let combinedResults = sequences.reduce(wrappedInitialResults) { partiallyCombinedResults, nextResults in

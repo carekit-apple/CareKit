@@ -41,7 +41,7 @@ class MockPatientStore: OCKPatientStore {
         patients = []
     }
 
-    func patients(matching query: OCKPatientQuery) -> AsyncLazySequence<[[OCKPatient]]> {
+    func patients(matching query: OCKPatientQuery) -> AsyncSyncSequence<[[OCKPatient]]> {
         return [patients].async
     }
 

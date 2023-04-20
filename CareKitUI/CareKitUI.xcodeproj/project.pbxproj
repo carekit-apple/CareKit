@@ -107,6 +107,7 @@
 		64E1BD4E2309FCF200DFFE52 /* OCKResponsiveLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64E1BD4D2309FCF200DFFE52 /* OCKResponsiveLayout.swift */; };
 		64EEC2382318253B00B1012F /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 64EEC2362318253B00B1012F /* Localizable.strings */; };
 		64EEC23B231825DD00B1012F /* OCKLocalization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64EEC23A231825DD00B1012F /* OCKLocalization.swift */; };
+		70FC4F3229F18489007DF34F /* TestColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 511A854723E0CAA2002A2AFB /* TestColorExtension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -726,6 +727,7 @@
 				51052549244639B3004483D0 /* TestLinkView.swift in Sources */,
 				51746F2B2448B90B00B647E1 /* TestNumericProgressTaskView.swift in Sources */,
 				51AB06C222FE53E300B73FC2 /* TestStylableView.swift in Sources */,
+				70FC4F3229F18489007DF34F /* TestColorExtension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

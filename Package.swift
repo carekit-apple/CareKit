@@ -4,7 +4,7 @@ import PackageDescription
 let package = Package(
     name: "CareKit",
     defaultLocalization: "en",
-    platforms: [.iOS(.v13), .macOS(.v10_15), .watchOS(.v6)],
+    platforms: [.iOS(.v14), .macOS(.v11), .watchOS(.v7)],
     products: [
         .library(
             name: "CareKit",
@@ -73,6 +73,12 @@ let package = Package(
             resources: [
                 .process("CoreDataSchema/Migrations")
             ]),
+
+        .testTarget(
+            name: "CareKitUITests",
+            dependencies: ["CareKitUI"],
+            path: "CareKitUI/CareKitUITests",
+            exclude: ["Info.plist", "CareKitUI.xctestplan"]),
 
         .testTarget(
             name: "CareKitFHIRTests",

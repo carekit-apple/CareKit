@@ -58,7 +58,6 @@ import SwiftUI
 ///     |                                                       |
 ///     +-------------------------------------------------------+
 /// ```
-@available(iOS 14, *)
 public struct LinkView<Header: View>: View {
 
     @Environment(\.careKitStyle)
@@ -122,7 +121,6 @@ public struct LinkView<Header: View>: View {
     }
 }
 
-@available(iOS 14, *)
 public extension LinkView where Header == _LinkViewHeader {
 
     /// Create an instance.
@@ -148,7 +146,6 @@ public extension LinkView where Header == _LinkViewHeader {
 }
 
 /// Default header used by a `LinkView`.
-@available(iOS 14, *)
 public struct _LinkViewHeader: View {
 
     @Environment(\.careKitStyle)
@@ -172,7 +169,6 @@ public struct _LinkViewHeader: View {
 }
 
 #if DEBUG
-@available(iOS 14, *)
 struct LinkViewPreview: PreviewProvider {
 
     static var links: [LinkItem] = [

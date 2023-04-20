@@ -28,6 +28,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#if !os(watchOS)
 import CareKitUI
 import SwiftUI
 import XCTest
@@ -46,3 +47,4 @@ class TestNumericProgressTaskView: XCTestCase {
         _ = NumericProgressTaskView(progress: text, goal: text, isComplete: true, header: { })
     }
 }
+#endif

@@ -39,7 +39,6 @@ import SwiftUI
 ///
 /// - The result is generic, and is computed based on the provided `Result`.
 ///   Going the generic route allows us to create a single controller for all of the entity types in the CareKit store.
-@available(iOS 14, watchOS 7, *)
 final class CareStoreFetchRequestController<Result, Query>: ObservableObject {
 
     typealias ComputeResults = (
@@ -199,7 +198,6 @@ final class CareStoreFetchRequestController<Result, Query>: ObservableObject {
     }
 }
 
-@available(iOS 14, watchOS 7, *)
 private extension CareStoreFetchRequestController {
 
     /// The status of a data stream from the CareKit store.
@@ -221,7 +219,6 @@ private extension CareStoreFetchRequestController {
 // duplicate queries. We could avoid this indirection by making the
 // original generic conform to Equatable, but that locks us into that
 // conformance in the public API.
-@available(iOS 14, watchOS 7, *)
 extension CareStoreFetchRequestController where Query: Equatable {
 
     convenience init(

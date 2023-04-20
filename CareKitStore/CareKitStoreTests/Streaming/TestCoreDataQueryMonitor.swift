@@ -214,6 +214,10 @@ class TestCoreDataQueryMonitor: XCTestCase {
         XCTAssertEqual(expectedTitles, observedTitles)
     }
 
+    /*
+     TODO: Remove in the future when macOS 13 image release for GitHub actions.
+     GitHub actions currently only supports macOS 12 and Xcode 14.2.
+     */
     #if compiler(>=5.8.0)
     func testIrrelevantChangeDoesNotProduceResult() async throws {
 

@@ -43,7 +43,6 @@ import SwiftUI
 ///       | <Title>                                <Image>  |
 ///       +-------------------------------------------------+
 /// ```
-@available(iOS 14, *)
 struct LinkButton<Label: View>: View {
 
     @State private var isInAppContentPresented = false
@@ -98,7 +97,6 @@ struct LinkButton<Label: View>: View {
     }
 }
 
-@available(iOS 14, *)
 extension LinkButton where Label == LinkLabel {
 
     /// Create an instance.

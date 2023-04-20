@@ -28,6 +28,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#if !os(watchOS)
 import Foundation
 import UIKit
 
@@ -48,3 +49,4 @@ extension UIColor {
         return UIColor(red: lightenedRed, green: lightenedGreen, blue: lightenedBlue, alpha: alpha)
     }
 }
+#endif

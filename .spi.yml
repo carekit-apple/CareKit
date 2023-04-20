@@ -7,3 +7,5 @@ builder:
      scheme: "CareKit"
    - platform: watchos
      scheme: "CareKit"
+   - platform: macos
+     scheme: "CareKit"

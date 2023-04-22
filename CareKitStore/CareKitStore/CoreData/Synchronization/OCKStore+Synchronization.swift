@@ -215,8 +215,13 @@ extension OCKStore: OCKRemoteSynchronizationDelegate {
                                 self.context.knowledgeVector.increment(
                                     clockFor: self.context.clockID
                                 )
+                                
+                                // 8. Lock in the changes. If this fails, all
+                                //    merged changes will be rolled back and
+                                //    we'll need to try again later.
+                                try self.context.save()
 
-                                // 8. Push conflict resolutions + local changes to remote
+                                // 9. Push conflict resolutions + local changes to remote
                                 remote.pushRevisions(
                                     deviceRevisions: localRevisions,
                                     deviceKnowledge: localKnowledge) { error in
@@ -225,7 +230,7 @@ extension OCKStore: OCKRemoteSynchronizationDelegate {
                                         os_log("Failed to push revision. %{private}@",
                                                log: .store, type: .error, error as NSError)
                                     }
-                                    // 9. The sync is still considered successful
+                                    // 10. The sync is still considered successful
                                     //    even if the remote doesn't accept the
                                     //    push. The next time we sync with it, it
                                     //    will still have the same knowledge

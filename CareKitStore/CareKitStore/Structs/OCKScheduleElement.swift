@@ -88,9 +88,7 @@ public struct OCKScheduleElement: Codable, Equatable {
         }
     }
 
-    private static var calendar: Calendar = {
-        Calendar.current
-    }()
+    private static var calendar: Calendar { .current }
 
     /// An text about the time this element represents.
     /// e.g. before breakfast on Tuesdays, 5PM every day, etc.

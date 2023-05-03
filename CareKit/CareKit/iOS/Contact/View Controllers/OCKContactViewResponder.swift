@@ -159,6 +159,16 @@ final class OCKContactViewResponder: NSObject,
             action: #selector(dismissViewController)
         )
         
+        /*
+         TODO: Remove in the future. Explicitly setting the tint color here to support
+         current developers that have a SwiftUI lifecycle app and wrap this view
+         controller in a `UIViewControllerRepresentable` implementation...Tint color
+         is not propagated...etc.
+         */
+        let tintColor = contactViewController.determineTintColor(from: contactView)
+        contactViewController.view.tintColor = tintColor
+        contactViewController.navigationItem.rightBarButtonItem?.tintColor = tintColor
+        
         let navigationController = UINavigationController(rootViewController: contactViewController)
         presenter?.present(navigationController, animated: true)
     }

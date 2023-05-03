@@ -28,6 +28,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#if !os(watchOS)
 @testable import CareKitUI
 import Foundation
 import XCTest
@@ -64,3 +65,4 @@ public class TestGridTaskView: XCTestCase {
         XCTAssertEqual(observed, 100)
     }
 }
+#endif

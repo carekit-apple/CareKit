@@ -41,7 +41,7 @@ class MockPatientStore: OCKPatientStore {
         patients = []
     }
 
-    func patients(matching query: OCKPatientQuery) -> AsyncLazySequence<[[OCKPatient]]> {
+    func patients(matching query: OCKPatientQuery) -> AsyncSyncSequence<[[OCKPatient]]> {
         return [patients].async
     }
 
@@ -166,6 +166,7 @@ class TestPersistentStoreCoordinator: XCTestCase {
         XCTAssert(store2.patients.isEmpty)
     }
 
+    @available(iOS 15, watchOS 8, *)
     func testFetchCanResultInAnArrayPopulatedWithDifferentTypes() throws {
         let coordinator = OCKStoreCoordinator()
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
@@ -199,6 +200,8 @@ class TestPersistentStoreCoordinator: XCTestCase {
         XCTAssertThrowsError(try coordinator.addAnyTaskAndWait(task))
     }
 
+#if !os(watchOS)
+    @available(iOS 15, watchOS 8, *)
     func testStoreCoordinatorDoesNotSendNormalOutcomesToHealthKit() {
         let coordinator = OCKStoreCoordinator()
         let store = OCKStore(name: UUID().uuidString, type: .inMemory)
@@ -215,7 +218,9 @@ class TestPersistentStoreCoordinator: XCTestCase {
         let willHandle = coordinator.outcomeStore(store, shouldHandleWritingOutcome: outcome)
         XCTAssertFalse(willHandle)
     }
-
+#endif
+    
+    @available(iOS 15, watchOS 8, *)
     func testCanAssociateHealthKitTaskWithCarePlan() throws {
         let store = OCKStore(name: UUID().uuidString, type: .inMemory)
         let passthrough = OCKHealthKitPassthroughStore(store: store)
@@ -237,6 +242,7 @@ class TestPersistentStoreCoordinator: XCTestCase {
     }
 }
 
+@available(iOS 15, watchOS 8, *)
 private struct SeededTaskStore {
 
     let store: OCKStoreCoordinator

@@ -83,7 +83,8 @@ UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelega
     /// The initial date displayed when the view controller is loaded.
     private let startingDate = Date()
 
-    private let store: OCKAnyStoreProtocol
+    /// The store the view controller uses for synchronization.
+    public let store: OCKAnyStoreProtocol
 
     // MARK: - Life Cycle
 

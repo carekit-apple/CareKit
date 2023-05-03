@@ -28,6 +28,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#if !os(watchOS)
 import CareKit
 import CareKitUI
 import Foundation
@@ -133,3 +134,4 @@ class TestWeekCalendarViewSynchronizer: XCTestCase {
         }
     }
 }
+#endif

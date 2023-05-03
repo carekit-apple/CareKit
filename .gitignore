@@ -2,6 +2,7 @@
 #
 # Xcode
 build/
+IDEWorkspaceChecks.plist
 *.pbxuser
 !default.pbxuser
 *.mode1v3
@@ -24,6 +25,7 @@ DerivedData
 
 # SPM
 .build/
+.swiftpm/
 
 # DocC
 .docc-build

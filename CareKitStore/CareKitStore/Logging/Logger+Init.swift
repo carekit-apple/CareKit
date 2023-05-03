@@ -31,7 +31,6 @@
 import Foundation
 import os.log
 
-@available(iOS 14, watchOS 7, *)
 extension Logger {
 
     static var store: Logger? {

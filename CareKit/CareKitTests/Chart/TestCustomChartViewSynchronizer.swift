@@ -28,6 +28,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#if !os(watchOS)
 import CareKit
 import CareKitStore
 import CareKitUI
@@ -99,3 +100,4 @@ private extension OCKDataSeries {
         return OCKDataSeries(dataPoints: [], title: "")
     }
 }
+#endif

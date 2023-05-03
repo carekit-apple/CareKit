@@ -141,6 +141,13 @@ open class OCKTaskViewController<
             actionSheet.popoverPresentationController?.permittedArrowDirections = .any
         }
 
+        /*
+         TODO: Remove in the future. Explicitly setting the tint color here to support
+         current developers that have a SwiftUI lifecycle app and wrap this view
+         controller in a `UIViewControllerRepresentable` implementation...Tint color
+         is not propagated...etc.
+         */
+        actionSheet.view.tintColor = determineTintColor(from: view)
         present(actionSheet, animated: true, completion: nil)
     }
 
@@ -157,6 +164,13 @@ open class OCKTaskViewController<
         detailViewController.detailView.titleLabel.text = event.task.title
         detailViewController.detailView.bodyLabel.text = event.task.instructions
         detailViewController.detailView.imageView.image = UIImage.asset(event.task.asset)
+        /*
+         TODO: Remove in the future. Explicitly setting the tint color here to support
+         current developers that have a SwiftUI lifecycle app and wrap this view
+         controller in a `UIViewControllerRepresentable` implementation...Tint color
+         is not propagated...etc.
+         */
+        detailViewController.view.tintColor = determineTintColor(from: view)
 
         present(detailViewController, animated: true)
     }

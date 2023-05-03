@@ -55,7 +55,7 @@ import SwiftUI
 /// You can inject the store through the environment like this:
 ///
 ///     ContentView()
-///         .environment(\.careKitStore, store)
+///         .environment(\.careStore, store)
 ///
 /// See the `OCKAnyStoreProtocol` and the `OCKStore` for more information about
 /// creating a CareKit store.
@@ -74,7 +74,6 @@ import SwiftUI
 /// ```
 ///
 /// If you prefer to update the query date at a very specific time interval, see [`TimelineView`](https://www.google.com/search?client=safari&rls=en&q=timelineview&ie=UTF-8&oe=UTF-8&safari_group=3).
-@available(iOS 14, watchOS 7, *)
 @propertyWrapper
 public struct CareStoreFetchRequest<Result, Query>: DynamicProperty {
 
@@ -132,7 +131,6 @@ public struct CareStoreFetchRequest<Result, Query>: DynamicProperty {
 
 // MARK: - Fetching Store Entities
 
-@available(iOS 14, watchOS 7, *)
 public extension CareStoreFetchRequest where
     Result == OCKAnyTask,
     Query == OCKTaskQuery
@@ -155,7 +153,6 @@ public extension CareStoreFetchRequest where
     }
 }
 
-@available(iOS 14, watchOS 7, *)
 public extension CareStoreFetchRequest where
     Result == OCKAnyEvent,
     Query == OCKEventQuery
@@ -178,7 +175,6 @@ public extension CareStoreFetchRequest where
     }
 }
 
-@available(iOS 14, watchOS 7, *)
 public extension CareStoreFetchRequest where
     Result == OCKAnyOutcome,
     Query == OCKOutcomeQuery
@@ -201,7 +197,6 @@ public extension CareStoreFetchRequest where
     }
 }
 
-@available(iOS 14, watchOS 7, *)
 public extension CareStoreFetchRequest where
     Result == OCKAnyContact,
     Query == OCKContactQuery
@@ -224,7 +219,6 @@ public extension CareStoreFetchRequest where
     }
 }
 
-@available(iOS 14, watchOS 7, *)
 public extension CareStoreFetchRequest where
     Result == OCKAnyPatient,
     Query == OCKPatientQuery
@@ -247,7 +241,6 @@ public extension CareStoreFetchRequest where
     }
 }
 
-@available(iOS 14, watchOS 7, *)
 public extension CareStoreFetchRequest where
     Result == OCKAnyCarePlan,
     Query == OCKCarePlanQuery
@@ -270,7 +263,6 @@ public extension CareStoreFetchRequest where
     }
 }
 
-@available(iOS 14, watchOS 7, *)
 private extension CareStoreFetchRequest where Query: Equatable {
 
     init(

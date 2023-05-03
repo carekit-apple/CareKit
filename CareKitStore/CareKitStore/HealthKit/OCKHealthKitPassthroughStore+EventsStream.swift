@@ -68,7 +68,7 @@ extension OCKHealthKitPassthroughStore {
         applyingChanges changes: @escaping ([Event]) -> SampleChanges,
         updateCumulativeSumOfSamples: @escaping UpdateCumulativeSumOfSamples
     ) -> AsyncFlatMapSequence<AsyncMapSequence<AsyncMapSequence<
-        AsyncThrowingMapSequence<CareStoreQueryResults<OCKHealthKitTask>, [[OCKHealthKitPassthroughStore.Task]]>, [PartialEvent<OCKHealthKitPassthroughStore.Task>]>, [OCKHealthKitPassthroughStore.Event]>, AsyncThrowingExclusiveReductionsSequence<AsyncChain2Sequence<AsyncLazySequence<[SampleChange]>, SampleChanges>, [OCKHealthKitPassthroughStore.Event]>
+        AsyncThrowingMapSequence<CareStoreQueryResults<OCKHealthKitTask>, [[OCKHealthKitPassthroughStore.Task]]>, [PartialEvent<OCKHealthKitPassthroughStore.Task>]>, [OCKHealthKitPassthroughStore.Event]>, AsyncThrowingExclusiveReductionsSequence<AsyncChain2Sequence<AsyncSyncSequence<[SampleChange]>, SampleChanges>, [OCKHealthKitPassthroughStore.Event]>
     > where SampleChanges.Element == SampleChange {
 
 

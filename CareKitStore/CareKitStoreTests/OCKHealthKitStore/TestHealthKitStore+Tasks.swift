@@ -31,6 +31,7 @@
 @testable import CareKitStore
 import XCTest
 
+@available(iOS 15, watchOS 8, *)
 class TestHealthKitStoreTasks: XCTestCase {
     var store: OCKHealthKitPassthroughStore!
     let link = OCKHealthKitLinkage(quantityIdentifier: .stepCount, quantityType: .cumulative, unit: .count())

@@ -45,8 +45,9 @@ public struct OCKRevisionRecord: Equatable, Codable {
     /// Create a new instance of `OCKRevisionRecord`.
     ///
     /// - Parameters:
-    ///   - operation: The operation that was performed (add, update, or delete)
-    ///   - entity: The entity that was modified
+    ///   - entities: The entities that were modified.
+    ///   - knowledgeVector: A knowledge vector indicating the last known state
+    ///   of each other device by the device that authored this revision record.
     public init(entities: [OCKEntity], knowledgeVector: KnowledgeVector) {
         self.entities = entities
         self.knowledgeVector = knowledgeVector

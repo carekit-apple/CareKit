@@ -36,8 +36,6 @@ import SwiftUI
 
 extension OCKAnyEventStore {
 
-    @available(iOS 15, *)
-    @available(watchOS 8, *)
     func toggleBooleanOutcome(for event: OCKAnyEvent) async throws -> OCKAnyOutcome {
         return try await withCheckedThrowingContinuation { continuation in
             toggleBooleanOutcome(for: event, completion: continuation.resume)

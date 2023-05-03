@@ -1,10 +1,10 @@
-// swift-tools-version:5.6
+// swift-tools-version:5.7
 import PackageDescription
 
 let package = Package(
     name: "CareKit",
     defaultLocalization: "en",
-    platforms: [.iOS(.v13), .macOS(.v10_15), .watchOS(.v6)],
+    platforms: [.iOS(.v14), .macOS(.v11), .watchOS(.v7)],
     products: [
         .library(
             name: "CareKit",
@@ -29,7 +29,7 @@ let package = Package(
         ),
         .package(
             url: "https://github.com/apple/swift-async-algorithms",
-            exact: Version(0, 0, 4)
+            exact: Version(0, 1, 0)
         )
     ],
     targets: [
@@ -73,6 +73,12 @@ let package = Package(
             resources: [
                 .process("CoreDataSchema/Migrations")
             ]),
+
+        .testTarget(
+            name: "CareKitUITests",
+            dependencies: ["CareKitUI"],
+            path: "CareKitUI/CareKitUITests",
+            exclude: ["Info.plist", "CareKitUI.xctestplan"]),
 
         .testTarget(
             name: "CareKitFHIRTests",

@@ -28,11 +28,11 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#if !os(watchOS)
 import CareKitUI
 import SwiftUI
 import XCTest
 
-@available(iOS 14, *)
 class TestLinkView: XCTestCase {
 
     private let text = Text("Hello World")
@@ -51,3 +51,4 @@ class TestLinkView: XCTestCase {
         _ = LinkView(links: links, header: { })
     }
 }
+#endif

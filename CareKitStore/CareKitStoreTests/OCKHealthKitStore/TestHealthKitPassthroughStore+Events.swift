@@ -37,7 +37,7 @@ import XCTest
 // Note, we test the event stream and not the outcome stream because the outcome stream
 // calls into the event stream. Testing the outcome stream is unnecessary.
 
-
+@available(iOS 15, watchOS 8, *)
 class TestHealthKitPassthroughStoreEvents: XCTestCase {
 
     private let cdStore = OCKStore(
@@ -141,7 +141,7 @@ class TestHealthKitPassthroughStoreEvents: XCTestCase {
 
     func testInitialResultIsEmpty() async throws {
 
-        let noChanges: AsyncLazySequence<[SampleChange]> = [SampleChange()].async
+        let noChanges: AsyncSyncSequence<[SampleChange]> = [SampleChange()].async
 
         let query = OCKTaskQuery()
 
@@ -173,7 +173,7 @@ class TestHealthKitPassthroughStoreEvents: XCTestCase {
         // Create a task query that does not include either of the existing tasks
         let query = OCKTaskQuery(id: "irrelevantTask")
 
-        let noChanges: AsyncLazySequence<[SampleChange]> = [].async
+        let noChanges: AsyncSyncSequence<[SampleChange]> = [].async
 
         let events = passthroughStore.events(
             matching: query,
@@ -219,7 +219,7 @@ class TestHealthKitPassthroughStoreEvents: XCTestCase {
 
         let query = OCKTaskQuery(dateInterval: queryInterval)
 
-        let noChanges: AsyncLazySequence<[SampleChange]> = [].async
+        let noChanges: AsyncSyncSequence<[SampleChange]> = [].async
 
         let events = passthroughStore.events(
             matching: query,
@@ -822,6 +822,7 @@ private struct Event: Equatable {
     var outcome: OCKHealthKitOutcome?
 }
 
+@available(iOS 15, watchOS 8, *)
 private extension Event {
 
     init(_ event: OCKHealthKitPassthroughStore.Event) {

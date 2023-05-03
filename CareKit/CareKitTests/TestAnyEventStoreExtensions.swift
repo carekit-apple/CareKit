@@ -118,6 +118,14 @@ class TestAnyEventStoreExtensions: XCTestCase {
             didUpdate.fulfill()
         }
 
+        /*
+         TODO: Remove in the future when macOS 13 image release for GitHub actions.
+         GitHub actions currently only supports macOS 12 and Xcode 14.2.
+         */
+        #if compiler(>=5.8.0)
+        await fulfillment(of: [didUpdate], timeout: 2)
+        #else
         wait(for: [didUpdate], timeout: 2)
+        #endif
     }
 }

@@ -28,6 +28,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#if !os(watchOS)
 import Foundation
 
 @testable import CareKitUI
@@ -87,3 +88,4 @@ class TestLinkType: XCTestCase {
         XCTAssertNil(observed)
     }
 }
+#endif

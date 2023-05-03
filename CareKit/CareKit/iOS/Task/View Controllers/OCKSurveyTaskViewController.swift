@@ -154,15 +154,17 @@ open class OCKSurveyTaskViewController: OCKTaskViewController<OCKSurveyTaskViewS
                 )
                 
                 let confirmAction = UIAlertAction(
-                    title: "Delete", style: .destructive) { _ in
-                        
-                        super.taskView(
-                            taskView,
-                            didCompleteEvent: isComplete,
-                            at: indexPath,
-                            sender: sender
-                        )
-                    }
+                    title: "Delete",
+                    style: .destructive
+                ) { _ in
+
+                    super.taskView(
+                        taskView,
+                        didCompleteEvent: isComplete,
+                        at: indexPath,
+                        sender: sender
+                    )
+                }
                 
                 let warningAlert = UIAlertController(
                     title: "Delete",

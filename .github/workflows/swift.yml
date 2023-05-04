@@ -15,13 +15,8 @@ jobs:
     runs-on: macos-12
     strategy:
       matrix:
-        destination: ['platform=iOS\ Simulator,OS=16.2,name=iPhone\ 14\ Pro\ Max', 'platform=watchOS\ Simulator,OS=9.1,name=Apple\ Watch\ Series\ 5\ \(40mm\)', platform=macOS]
+        destination: ['platform=iOS\ Simulator,OS=16.2,name=iPhone\ 14\ Pro\ Max', 'platform=watchOS\ Simulator,OS=9.1,name=Apple\ Watch\ Series\ 5\ \(40mm\)']
         scheme: ['CareKit', 'CareKitStore', 'CareKitUI', 'CareKitFHIR']
-        exclude:
-          - destination: 'platform=macOS'
-            scheme: 'CareKit' 
-          - destination: 'platform=macOS'
-            scheme: 'CareKitUI' 
     steps:
       - uses: actions/checkout@v2
       - name: Set Xcode Version

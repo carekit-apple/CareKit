@@ -244,7 +244,9 @@ open class OCKStore: OCKStoreProtocol, Equatable {
         descriptor.url = storeURL
         descriptor.type = NSSQLiteStoreType
         descriptor.shouldAddStoreAsynchronously = false
+        #if !os(macOS)
         descriptor.setOption(storeType.securityClass as NSObject, forKey: NSPersistentStoreFileProtectionKey)
+        #endif
         container.persistentStoreDescriptions = [descriptor]
 
         // This closure runs synchronously because of the settings above

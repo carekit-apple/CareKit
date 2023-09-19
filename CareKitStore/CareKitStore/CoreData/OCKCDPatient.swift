@@ -54,12 +54,14 @@ class OCKCDPatient: OCKCDVersionedObject {
     
     func makePatient() -> OCKPatient {
 
-        var patient = OCKPatient(id: id, name: name.makeValue())
-
-        patient.copyVersionedValues(from: self)
-        patient.sex = sex.map { OCKBiologicalSex(rawValue: $0)! }
-        patient.birthday = birthday
-        patient.allergies = allergies
+        var patient: OCKPatient!
+        self.managedObjectContext!.performAndWait {
+            patient = OCKPatient(id: id, name: name.makeValue())
+            patient.copyVersionedValues(from: self)
+            patient.sex = sex.map { OCKBiologicalSex(rawValue: $0)! }
+            patient.birthday = birthday
+            patient.allergies = allergies
+        }
 
         return patient
     }

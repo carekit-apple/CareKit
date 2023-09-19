@@ -36,7 +36,7 @@ class TestOutcome: XCTestCase {
     func testBelongsToReturnsFalseIfTaskIDsDontMatch() {
         let outcome = OCKOutcome(taskUUID: UUID(), taskOccurrenceIndex: 0, values: [])
         let task = OCKTask(id: "medicine", title: nil, carePlanUUID: nil, schedule: .mealTimesEachDay(start: Date(), end: nil))
-        XCTAssert(outcome.belongs(to: task) == false)
+        XCTAssertFalse(outcome.belongs(to: task))
     }
 
     func testBelongsToReturnsTrueIfTasksIDsDoMatch() {

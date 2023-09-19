@@ -75,8 +75,8 @@ class TestStoreProtocolExtensions: XCTestCase {
         try store.updateTaskAndWait(taskV2)
         let events = try store.fetchEventsAndWait(query: query)
         guard events.count == 6 else { XCTFail("Expected 6 events, but got \(events.count)"); return }
-        for index in 0..<3 { XCTAssert(events[index].task.title == taskV1.title) }
-        for index in 3..<6 { XCTAssert(events[index].task.title == taskV2.title) }
+        for index in 0..<3 { XCTAssertEqual(events[index].task.title, taskV1.title) }
+        for index in 3..<6 { XCTAssertEqual(events[index].task.title, taskV2.title) }
     }
 
     func testFetchEventsAcrossVersionsWithOverlappingInfiniteSchedules() throws {
@@ -99,8 +99,8 @@ class TestStoreProtocolExtensions: XCTestCase {
         try store.updateTaskAndWait(taskV2)
         let events = try store.fetchEventsAndWait(query: query)
         guard events.count == 4 else { XCTFail("Expected 4 events, but got \(events.count)"); return }
-        for index in 0..<1 { XCTAssert(events[index].task.title == taskV1.title) }
-        for index in 1..<4 { XCTAssert(events[index].task.title == taskV2.title) }
+        for index in 0..<1 { XCTAssertEqual(events[index].task.title, taskV1.title) }
+        for index in 1..<4 { XCTAssertEqual(events[index].task.title, taskV2.title) }
     }
 
     func testFetchEventsReturnsEventsWithTheCorrectOccurrenceIndex() throws {
@@ -119,12 +119,12 @@ class TestStoreProtocolExtensions: XCTestCase {
         query.taskIDs = [task.id]
 
         let events = try store.fetchEventsAndWait(query: query)
-        XCTAssert(events.count == 4)
-        XCTAssert(events[0].scheduleEvent.occurrence == 2)
-        XCTAssert(events[1].scheduleEvent.occurrence == 3)
-        XCTAssert(events[2].scheduleEvent.occurrence == 4)
-        XCTAssert(events[3].scheduleEvent.occurrence == 5)
-        XCTAssert(events[1].outcome?.taskOccurrenceIndex == 3)
+        XCTAssertEqual(events.count, 4)
+        XCTAssertEqual(events[0].scheduleEvent.occurrence, 2)
+        XCTAssertEqual(events[1].scheduleEvent.occurrence, 3)
+        XCTAssertEqual(events[2].scheduleEvent.occurrence, 4)
+        XCTAssertEqual(events[3].scheduleEvent.occurrence, 5)
+        XCTAssertEqual(events[1].outcome?.taskOccurrenceIndex, 3)
     }
 
     func testFetchEventsEveryOtherDay() throws {
@@ -211,8 +211,8 @@ class TestStoreProtocolExtensions: XCTestCase {
         query.taskIDs = ["A"]
 
         let events = try store.fetchEventsAndWait(query: query)
-        XCTAssert(events.count == 1, "Expected to get 1 event, but got \(events.count)")
-        XCTAssert(events.first?.task.title == versionA.title)
+        XCTAssertEqual(events.count, 1, "Expected to get 1 event, but got \(events.count)")
+        XCTAssertEqual(events.first?.task.title, versionA.title)
     }
 
     func testFetchEventsReturnsOnlyTheNewerOfTwoEventsWhenTwoVersionsOfATaskHaveEventsAtQueryStart() throws {
@@ -229,8 +229,8 @@ class TestStoreProtocolExtensions: XCTestCase {
         query.taskIDs = ["123"]
 
         let events = try store.fetchEventsAndWait(query: query)
-        XCTAssert(events.count == 1, "Expected 1, but got \(events.count)")
-        XCTAssert(events.first?.task.title == "B")
+        XCTAssertEqual(events.count, 1, "Expected 1, but got \(events.count)")
+        XCTAssertEqual(events.first?.task.title, "B")
     }
 
     func testFetchEventsReturnsAnEventForEachVersionOfATaskWhenEventsAreAllDayDuration() throws {
@@ -249,7 +249,7 @@ class TestStoreProtocolExtensions: XCTestCase {
         query.taskIDs = ["A"]
 
         let events = try store.fetchEventsAndWait(query: query)
-        XCTAssert(events.count == 11)
+        XCTAssertEqual(events.count, 11)
     }
 
     func testFetchingEventsForMultipleTasks() throws {
@@ -261,8 +261,8 @@ class TestStoreProtocolExtensions: XCTestCase {
         let query = OCKEventQuery(for: Date())
         let events = try store.fetchEventsAndWait(query: query)
         let tasks = Set(events.map { $0.task.id })
-        XCTAssert(events.count == 2)
-        XCTAssert(tasks == Set(["A", "B"]))
+        XCTAssertEqual(events.count, 2)
+        XCTAssertEqual(tasks, Set(["A", "B"]))
     }
 
     func testFetchZeroDurationEventWithQueryEndOnEventStart() async throws {
@@ -1066,8 +1066,8 @@ class TestStoreProtocolExtensions: XCTestCase {
         )
 
         let adherence = try store.fetchAdherenceAndWait(query: query)
-        XCTAssert(adherence == [.noTasks, .noTasks, .progress(0.5), .progress(0.5)])
-        XCTAssert(timesCalled == 2)
+        XCTAssertEqual(adherence, [.noTasks, .noTasks, .progress(0.5), .progress(0.5)])
+        XCTAssertEqual(timesCalled, 2)
     }
 
     private func fetchTask(withUUID uuid: UUID) async throws -> OCKTask {

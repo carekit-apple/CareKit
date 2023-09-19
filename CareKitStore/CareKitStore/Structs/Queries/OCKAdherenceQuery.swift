@@ -41,7 +41,9 @@ public struct OCKAdherenceQuery {
 
     /// Computes the combined progress for a series of CareKit events.
     @available(*, unavailable, message: "The aggregator is no longer available and will be removed in a future version of CareKit.")
-    public var aggregator: OCKAdherenceAggregator!
+    public var aggregator: OCKAdherenceAggregator! {
+        fatalError("Property is unavailable")
+    }
 
     let computeProgress: (OCKAnyEvent) -> CareTaskProgress
 

@@ -43,6 +43,6 @@ class TestHealthKitLinkage: XCTestCase {
             quantityType: .discrete,
             unit: unit)
 
-        XCTAssert(linkage.unit == unit)
+        XCTAssertEqual(linkage.unit, unit)
     }
 }

@@ -39,6 +39,6 @@ class TestPatient: XCTestCase {
         XCTAssertNil(patient.age)
 
         patient.birthday = Calendar.current.date(byAdding: .year, value: -50, to: Date())
-        XCTAssert(patient.age == 50)
+        XCTAssertEqual(patient.age, 50)
     }
 }

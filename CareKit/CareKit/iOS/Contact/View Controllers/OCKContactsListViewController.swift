@@ -56,7 +56,9 @@ open class OCKContactsListViewController<
     )
 
     @available(*, unavailable, message: "The storeManager is unavailable.")
-    public var storeManager: OCKSynchronizedStoreManager!
+    public var storeManager: OCKSynchronizedStoreManager! {
+        fatalError("Property is unavailable")
+    }
 
     @available(*, unavailable, renamed: "init(store:contactViewSynchronizer:)")
     public init(storeManager: OCKSynchronizedStoreManager) {

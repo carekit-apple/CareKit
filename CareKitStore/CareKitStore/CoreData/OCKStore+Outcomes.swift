@@ -76,6 +76,7 @@ extension OCKStore {
                 let request = NSFetchRequest<OCKCDOutcome>(entityName: String(describing: OCKCDOutcome.self))
                 request.fetchLimit = query.limit ?? 0
                 request.fetchOffset = query.offset
+                request.returnsObjectsAsFaults = false
                 request.sortDescriptors = self.buildSortDescriptors(for: query)
                 request.predicate = self.buildPredicate(for: query)
                 let objects = try self.context.fetch(request)

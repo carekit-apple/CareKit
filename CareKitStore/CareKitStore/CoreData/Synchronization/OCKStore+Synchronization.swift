@@ -32,6 +32,7 @@ import CoreData
 import Foundation
 import os.log
 
+
 extension NSManagedObjectContext {
 
     var clockID: UUID {
@@ -354,6 +355,8 @@ extension OCKStore: OCKRemoteSynchronizationDelegate {
             NSSortDescriptor(keyPath: \OCKCDObject.updatedDate, ascending: false)
         ]
 
+        request.returnsObjectsAsFaults = false
+
         let objects = try context.fetch(request)
         let grouped = Dictionary(grouping: objects, by: { $0.knowledgeVector() })
         let values = grouped.mapValues({ $0.map { $0.makeValue() } })
@@ -363,6 +366,7 @@ extension OCKStore: OCKRemoteSynchronizationDelegate {
     private func findFirstConflict(entity: NSEntityDescription) throws -> [OCKEntity]? {
         let request = NSFetchRequest<OCKCDVersionedObject>(entityName: entity.name!)
         request.predicate = NSPredicate(format: "%K.@count == 0", #keyPath(OCKCDVersionedObject.next))
+        request.returnsObjectsAsFaults = false
 
         let tips = try context.fetch(request)
         let grouped = Dictionary(grouping: tips, by: \.id).map(\.1)
@@ -394,3 +398,4 @@ extension OCKStore: OCKRemoteSynchronizationDelegate {
         }
     }
 }
+

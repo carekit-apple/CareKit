@@ -1,21 +1,135 @@
 # ``CareKitStore``
 
-CareKit is an open source framework that you can use to build apps to manage and understand health data. You apps can highlight trends, celebrate goals, and create incentives for users. CareKit makes it easy to provide engaging, consistent interfaces with delightful animations, and full interaction with the accessibility features of iOS and iPadOS.
+Store and retrieve patient care data.
 
 ## Overview
 
-This open source framework is written entirely in Swift, and it leverages some of the most powerful Swift language features.
+CareKitStore provides a Core Data solution for storing and retrieving patient care data. It provides the ability to use a custom store, such as a third-party database.
 
-Your CareKit apps can:
+## Topics
 
-- Easily digitize a prescription.
+### Essentials
 
-- Provide meaningful health data and trends to users.
+<doc:Creating-Schedules-for-Tasks>
 
-- Allow users to connect with their care providers.
+### Stores
 
-The framework provides a powerful set of data models for persistence. Your app’s user is represented in CareKit’s data as a patient. A patient needs to complete a set of tasks, like taking a medication or logging their symptoms. Tasks are created with a schedule, so a patient knows when to perform each task. Schedules are composable, so you can build a complex set of requirements by combining simple ones.
+- ``OCKStore``
+- ``OCKCoreDataStoreType``
+- ``OCKHealthKitPassthroughStore``
+- ``OCKStoreCoordinator``
+- ``OCKStoreError``
+- ``OCKAnyStoreProtocol``
+- ``OCKStoreProtocol``
+- ``OCKAnyResettableStore``
+- ``OCKResultClosure``
+- ``CareStoreQueryResults``
 
-The combination of a patient’s tasks make up a care plan. A care plan is designed to help a user improve part of their health, for example, recovering from an operation or managing diabetes. A patient can have multiple care plans, and each care plan can have contacts associated to them. Contacts are the patient’s care providers.
+### Care tasks
 
-When a patient completes a task, the results are stored as outcomes. These outcomes and their associated values enable you to provide charts and graphs for a user, that help them understand the health impact of their care plan.
+- ``OCKTask``
+- ``OCKAnyTask``
+- ``OCKAnyVersionableTask``
+- ``OCKHealthKitTask``
+- ``OCKHealthKitLinkage``
+- ``OCKTaskStore``
+- ``OCKAnyTaskStore``
+- ``OCKReadableTaskStore``
+- ``OCKAnyReadOnlyTaskStore``
+- ``OCKTaskQuery``
+
+### Care task scheduling
+
+- ``OCKSchedule``
+- ``OCKScheduleElement``
+
+### Events
+
+- ``OCKEvent``
+- ``OCKAnyEvent``
+- ``OCKScheduleEvent``
+- ``OCKEventStore``
+- ``OCKAnyEventStore``
+- ``OCKReadOnlyEventStore``
+- ``OCKAnyReadOnlyEventStore``
+- ``OCKEventQuery``
+
+### Outcomes
+
+- ``OCKOutcome``
+- ``OCKAnyOutcome``
+- ``OCKOutcomeValue``
+- ``OCKOutcomeValueType``
+- ``OCKOutcomeValueUnderlyingType``
+- ``OCKHealthKitOutcome``
+- ``OCKOutcomeStore``
+- ``OCKAnyOutcomeStore``
+- ``OCKReadableOutcomeStore``
+- ``OCKAnyReadOnlyOutcomeStore``
+- ``OCKOutcomeQuery``
+
+### Contacts
+
+- ``OCKContact``
+- ``OCKAnyContact``
+- ``OCKPostalAddress``
+- ``OCKBiologicalSex``
+- ``OCKContactCategory``
+- ``OCKLabeledValue``
+- ``OCKContactStore``
+- ``OCKAnyContactStore``
+- ``OCKAnyReadOnlyContactStore``
+- ``OCKReadableContactStore``
+- ``OCKContactQuery``
+
+### Care plans
+
+- ``OCKCarePlan``
+- ``OCKAnyCarePlan``
+- ``OCKCarePlanStore``
+- ``OCKAnyReadOnlyCarePlanStore``
+- ``OCKReadableCarePlanStore``
+- ``OCKAnyCarePlanStore``
+- ``OCKCarePlanQuery``
+
+### Patients
+
+- ``OCKPatient``
+- ``OCKAnyPatient``
+- ``OCKAnyPatientStore``
+- ``OCKAnyReadOnlyPatientStore``
+- ``OCKPatientStore``
+- ``OCKReadablePatientStore``
+- ``OCKPatientQuery``
+
+### Notes
+
+- ``OCKNote``
+
+### Care task progress
+
+- ``CareTaskProgress``
+- ``CareTaskProgressStrategy``
+- ``BinaryCareTaskProgress``
+- ``LinearCareTaskProgress``
+- ``AggregatedCareTaskProgress``
+- ``OCKEventAggregator``
+- ``OCKAdherenceQuery``
+- ``OCKAdherence``
+- ``OCKAdherenceAggregator``
+
+### Synchronization
+
+- ``OCKRemoteSynchronizable``
+- ``OCKRemoteSynchronizationDelegate``
+- ``OCKRevisionRecord``
+- ``OCKEntity``
+- ``OCKWatchConnectivityPeer``
+
+### Schema versioning
+
+- ``OCKSemanticVersion``
+
+### Logging
+
+- ``OCKLog``

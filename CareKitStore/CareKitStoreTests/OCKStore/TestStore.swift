@@ -63,18 +63,18 @@ class TestStore: XCTestCase {
         let store = OCKStore(name: UUID().uuidString, type: .inMemory)
         
         expect(with: store.context) {
-            XCTAssert(store.context.clockTime == 1)
+            XCTAssertEqual(store.context.clockTime, 1)
 
             store.context.knowledgeVector.increment(clockFor: store.context.clockID)
             try store.context.save()
-            XCTAssert(store.context.clockTime == 2)
+            XCTAssertEqual(store.context.clockTime, 2)
 
             store.context.knowledgeVector.increment(clockFor: store.context.clockID)
-            XCTAssert(store.context.clockTime == 3)
+            XCTAssertEqual(store.context.clockTime, 3)
 
             store.context.knowledgeVector.increment(clockFor: store.context.clockID)
             store.context.rollback()
-            XCTAssert(store.context.clockTime == 2)
+            XCTAssertEqual(store.context.clockTime, 2)
         }
     }
 }

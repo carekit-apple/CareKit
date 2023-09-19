@@ -143,6 +143,7 @@ extension OCKStore {
     private func confirmUpdateWillNotCauseDataLoss(tasks: [OCKTask]) throws {
         let request = NSFetchRequest<OCKCDTask>(entityName: OCKCDTask.entity().name!)
         request.predicate = OCKCDTask.headerPredicate(tasks)
+        request.returnsObjectsAsFaults = false
         let heads = try context.fetch(request)
 
         for task in heads {

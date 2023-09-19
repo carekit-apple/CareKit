@@ -55,6 +55,7 @@ extension OCKStore {
                 request.sortDescriptors = sortDescriptors
                 request.fetchLimit = limit ?? 0
                 request.fetchOffset = offset
+                request.returnsObjectsAsFaults = false
 
                 let fetched = try self.context.fetch(request)
 
@@ -127,6 +128,7 @@ extension OCKStore {
 
         let request = NSFetchRequest<OCKCDVersionedObject>(entityName: name)
         request.predicate = OCKCDVersionedObject.headerPredicate([value])
+        request.returnsObjectsAsFaults = false
 
         let tips = try context.fetch(request)
 

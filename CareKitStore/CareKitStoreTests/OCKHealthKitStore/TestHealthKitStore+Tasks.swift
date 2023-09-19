@@ -74,7 +74,7 @@ class TestHealthKitStoreTasks: XCTestCase {
         task.healthKitLinkage = linkage
         task = try store.addTaskAndWait(task)
         XCTAssertNotNil(task.healthKitLinkage)
-        XCTAssert(task.healthKitLinkage == linkage)
+        XCTAssertEqual(task.healthKitLinkage, linkage)
     }
 
     func testAddTaskFailsIfIdentifierAlreadyExists() throws {
@@ -90,7 +90,7 @@ class TestHealthKitStoreTasks: XCTestCase {
         var task = OCKHealthKitTask(id: "benadryl", title: "Benadryl", carePlanUUID: nil, schedule: schedule, healthKitLinkage: link)
         task = try store.addTaskAndWait(task)
         guard let fetchedElement = task.schedule.elements.first else { XCTFail("Bad schedule"); return }
-        XCTAssertTrue(fetchedElement.duration == .allDay)
+        XCTAssertEqual(fetchedElement.duration, .allDay)
     }
 
     // MARK: Querying
@@ -101,8 +101,8 @@ class TestHealthKitStoreTasks: XCTestCase {
         let task2 = OCKHealthKitTask(id: "lunges", title: "Forward Lunges", carePlanUUID: nil, schedule: schedule, healthKitLinkage: link)
         try store.addTasksAndWait([task1, task2])
         let tasks = try store.fetchTasksAndWait(query: OCKTaskQuery(id: task1.id))
-        XCTAssert(tasks.count == 1)
-        XCTAssert(tasks.first?.id == task1.id)
+        XCTAssertEqual(tasks.count, 1)
+        XCTAssertEqual(tasks.first?.id, task1.id)
     }
 
     func testTaskQueryGroupIdentifier() throws {
@@ -117,8 +117,8 @@ class TestHealthKitStoreTasks: XCTestCase {
         query.groupIdentifiers = ["group1"]
 
         let tasks = try store.fetchTasksAndWait(query: query)
-        XCTAssert(tasks.count == 1)
-        XCTAssert(tasks.first?.id == task1.id)
+        XCTAssertEqual(tasks.count, 1)
+        XCTAssertEqual(tasks.first?.id, task1.id)
     }
 
     func testTaskQueryOrdered() throws {
@@ -135,7 +135,7 @@ class TestHealthKitStoreTasks: XCTestCase {
         query.sortDescriptors = [.title(ascending: true)]
 
         let fetched = try store.fetchTasksAndWait(query: query)
-        XCTAssert(fetched.map { $0.title } == [nil, "aa", "bb"])
+        XCTAssertEqual(fetched.map { $0.title }, [nil, "aa", "bb"])
     }
 
     func testTaskQueryLimited() throws {
@@ -151,7 +151,7 @@ class TestHealthKitStoreTasks: XCTestCase {
         query.limit = 2
 
         let tasks = try store.fetchTasksAndWait(query: query)
-        XCTAssert(tasks.count == 2)
+        XCTAssertEqual(tasks.count, 2)
     }
 
     func testTaskQueryTags() throws {
@@ -170,7 +170,7 @@ class TestHealthKitStoreTasks: XCTestCase {
         query.sortDescriptors = [.title(ascending: true)]
 
         let fetched = try store.fetchTasksAndWait(query: query)
-        XCTAssert(fetched.map { $0.title } == ["b", "c"])
+        XCTAssertEqual(fetched.map { $0.title }, ["b", "c"])
     }
 
     func testTaskQueryWithNilQueryReturnsAllTasks() throws {
@@ -180,7 +180,7 @@ class TestHealthKitStoreTasks: XCTestCase {
         let task3 = OCKHealthKitTask(id: "c", title: "c", carePlanUUID: nil, schedule: schedule, healthKitLinkage: link)
         try store.addTasksAndWait([task1, task2, task3])
         let tasks = try store.fetchTasksAndWait()
-        XCTAssert(tasks.count == 3)
+        XCTAssertEqual(tasks.count, 3)
     }
 
     func testQueryTaskByRemoteID() throws {
@@ -193,7 +193,7 @@ class TestHealthKitStoreTasks: XCTestCase {
         query.remoteIDs = ["abc"]
 
         let fetched = try store.fetchTasksAndWait(query: query).first
-        XCTAssert(fetched == task)
+        XCTAssertEqual(fetched, task)
     }
 
     // MARK: Versioning
@@ -204,8 +204,8 @@ class TestHealthKitStoreTasks: XCTestCase {
         let task = try store.addTaskAndWait(version1)
         let version2 = OCKHealthKitTask(id: "meds", title: "New Medication", carePlanUUID: nil, schedule: schedule, healthKitLinkage: link)
         let updatedTask = try store.updateTaskAndWait(version2)
-        XCTAssert(updatedTask.title == "New Medication")
-        XCTAssert(updatedTask.previousVersionUUIDs.first == task.uuid)
+        XCTAssertEqual(updatedTask.title, "New Medication")
+        XCTAssertEqual(updatedTask.previousVersionUUIDs.first, task.uuid)
     }
 
     func testUpdateFailsForUnsavedTasks() {
@@ -227,8 +227,8 @@ class TestHealthKitStoreTasks: XCTestCase {
         try store.addTasksAndWait([task1, task2])
 
         let tasks = try store.fetchTasksAndWait(query: OCKTaskQuery(for: Date()))
-        XCTAssert(tasks.count == 1)
-        XCTAssert(tasks.first?.id == task1.id)
+        XCTAssertEqual(tasks.count, 1)
+        XCTAssertEqual(tasks.first?.id, task1.id)
     }
 
     func testTaskQueryOnPastDateReturnsPastVersionOfATask() throws {
@@ -247,8 +247,8 @@ class TestHealthKitStoreTasks: XCTestCase {
         let interval = DateInterval(start: dateA.addingTimeInterval(10), end: dateB.addingTimeInterval(-10))
         let query = OCKTaskQuery(dateInterval: interval)
         let fetched = try store.fetchTasksAndWait(query: query)
-        XCTAssert(fetched.count == 1, "Expected to get 1 task, but got \(fetched.count)")
-        XCTAssert(fetched.first?.title == taskA.title)
+        XCTAssertEqual(fetched.count, 1, "Expected to get 1 task, but got \(fetched.count)")
+        XCTAssertEqual(fetched.first?.title, taskA.title)
     }
 
     func testTaskQuerySpanningVersionsReturnsNewestVersionOnly() throws {
@@ -267,8 +267,8 @@ class TestHealthKitStoreTasks: XCTestCase {
         let interval = DateInterval(start: dateA.addingTimeInterval(10), end: dateB.addingTimeInterval(10))
         let query = OCKTaskQuery(dateInterval: interval)
         let fetched = try store.fetchTasksAndWait(query: query)
-        XCTAssert(fetched.count == 1)
-        XCTAssert(fetched.first?.title == taskB.title)
+        XCTAssertEqual(fetched.count, 1)
+        XCTAssertEqual(fetched.first?.title, taskB.title)
     }
 
     // MARK: Deletion

@@ -54,7 +54,9 @@ public struct OCKDataSeriesConfiguration {
 
     /// A closure that accepts as an argument a day's worth of events and returns a y-axis value for that day.
     @available(*, unavailable, message: "The aggregator is no longer available and will be removed in a future version of CareKit.")
-    public var aggregator: OCKAdherenceAggregator!
+    public var aggregator: OCKAdherenceAggregator! {
+        fatalError("Property is unavailable")
+    }
 
     let computeProgress: (OCKAnyEvent) -> LinearCareTaskProgress
 

@@ -58,17 +58,17 @@ class TestStoreContacts: XCTestCase {
 
         contact = try store.addContactAndWait(contact)
         let fetchedConctacts = try store.fetchContactsAndWait()
-        XCTAssert([contact] == fetchedConctacts)
-        XCTAssert(contact.address?.state == "CO")
-        XCTAssert(contact.address?.country == "US")
-        XCTAssert(contact.address?.street == "4693 Sweetwood Drive")
-        XCTAssert(contact.messagingNumbers == [OCKLabeledValue(label: "iPhone", value: "303-555-0194")])
-        XCTAssert(contact.phoneNumbers == [OCKLabeledValue(label: "Home", value: "303-555-0108")])
-        XCTAssert(contact.emailAddresses == [OCKLabeledValue(label: "Email", value: "amy_frost44@icloud.com")])
-        XCTAssert(contact.otherContactInfo == [OCKLabeledValue(label: "Facetime", value: "303-555-0121")])
-        XCTAssert(contact.organization == "Apple Dumplings Corp.")
-        XCTAssert(contact.title == "Manager of Apple Peeling")
-        XCTAssert(contact.role == "Official Taste Tester")
+        XCTAssertEqual([contact], fetchedConctacts)
+        XCTAssertEqual(contact.address?.state, "CO")
+        XCTAssertEqual(contact.address?.country, "US")
+        XCTAssertEqual(contact.address?.street, "4693 Sweetwood Drive")
+        XCTAssertEqual(contact.messagingNumbers, [OCKLabeledValue(label: "iPhone", value: "303-555-0194")])
+        XCTAssertEqual(contact.phoneNumbers, [OCKLabeledValue(label: "Home", value: "303-555-0108")])
+        XCTAssertEqual(contact.emailAddresses, [OCKLabeledValue(label: "Email", value: "amy_frost44@icloud.com")])
+        XCTAssertEqual(contact.otherContactInfo, [OCKLabeledValue(label: "Facetime", value: "303-555-0121")])
+        XCTAssertEqual(contact.organization, "Apple Dumplings Corp.")
+        XCTAssertEqual(contact.title, "Manager of Apple Peeling")
+        XCTAssertEqual(contact.role, "Official Taste Tester")
         XCTAssertNotNil(contact.schemaVersion)
         XCTAssertNotNil(contact.uuid)
     }
@@ -86,7 +86,7 @@ class TestStoreContacts: XCTestCase {
         let contact1 = try store.addContactAndWait(OCKContact(id: "contact1", givenName: "Amy", familyName: "Frost", carePlanUUID: nil))
         try store.addContactAndWait(OCKContact(id: "contact2", givenName: "Amy", familyName: "Frost", carePlanUUID: nil))
         let fetchedContacts = try store.fetchContactsAndWait(query: OCKContactQuery(id: "contact1"))
-        XCTAssert(fetchedContacts == [contact1])
+        XCTAssertEqual(fetchedContacts, [contact1])
     }
 
     func testQueryContactsByCarePlanID() throws {
@@ -97,7 +97,7 @@ class TestStoreContacts: XCTestCase {
         var query = OCKContactQuery()
         query.carePlanIDs = [carePlan.id]
         let fetchedContacts = try store.fetchContactsAndWait(query: query)
-        XCTAssert(fetchedContacts == [contact])
+        XCTAssertEqual(fetchedContacts, [contact])
     }
 
     func testContactsQueryGroupIdentifiers() throws {
@@ -109,8 +109,8 @@ class TestStoreContacts: XCTestCase {
         var query = OCKContactQuery(for: Date())
         query.groupIdentifiers = ["Alpha"]
         let fetched = try store.fetchContactsAndWait(query: query)
-        XCTAssert(fetched.count == 1)
-        XCTAssert(fetched.first?.groupIdentifier == "Alpha")
+        XCTAssertEqual(fetched.count, 1)
+        XCTAssertEqual(fetched.first?.groupIdentifier, "Alpha")
     }
 
     func testContactQueryTags() throws {
@@ -124,7 +124,7 @@ class TestStoreContacts: XCTestCase {
         var query = OCKContactQuery(for: Date())
         query.tags = ["C"]
         let fetched = try store.fetchContactsAndWait(query: query)
-        XCTAssert(fetched.map { $0.id }.sorted() == ["B", "C"])
+        XCTAssertEqual(fetched.map { $0.id }.sorted(), ["B", "C"])
     }
 
     func testContactQueryLimited() throws {
@@ -135,7 +135,7 @@ class TestStoreContacts: XCTestCase {
         var query = OCKContactQuery(for: Date())
         query.limit = 2
         let fetched = try store.fetchContactsAndWait(query: query)
-        XCTAssert(fetched.count == 2)
+        XCTAssertEqual(fetched.count, 2)
     }
 
     func testContactQueryOffset() throws {
@@ -146,7 +146,7 @@ class TestStoreContacts: XCTestCase {
         var query = OCKContactQuery(for: Date())
         query.offset = 2
         let fetched = try store.fetchContactsAndWait(query: query)
-        XCTAssert(fetched.count == 1)
+        XCTAssertEqual(fetched.count, 1)
     }
 
     func testContactQuerySorted() throws {
@@ -157,7 +157,7 @@ class TestStoreContacts: XCTestCase {
         var query = OCKContactQuery(for: Date())
         query.sortDescriptors = [.givenName(ascending: true)]
         let fetched = try store.fetchContactsAndWait(query: query)
-        XCTAssert(fetched.map { $0.name.givenName } == ["a", "b", "c"])
+        XCTAssertEqual(fetched.map { $0.name.givenName }, ["a", "b", "c"])
     }
 
     func testContactNilQueryReturnsAllContacts() throws {
@@ -166,7 +166,7 @@ class TestStoreContacts: XCTestCase {
         let contactC = OCKContact(id: "C", givenName: "c", familyName: "cccc", carePlanUUID: nil)
         try store.addContactsAndWait([contactA, contactB, contactC])
         let contacts = try store.fetchContactsAndWait()
-        XCTAssertNotNil(contacts.count == 3)
+        XCTAssertEqual(contacts.count, 3)
     }
 
     func testQueryContactByRemoteID() throws {
@@ -176,7 +176,7 @@ class TestStoreContacts: XCTestCase {
         var query = OCKContactQuery()
         query.remoteIDs = ["abc"]
         let fetched = try store.fetchContactsAndWait(query: query).first
-        XCTAssert(fetched == contact)
+        XCTAssertEqual(fetched, contact)
     }
 
     func testQueryContactByCarePlanRemoteID() throws {
@@ -189,7 +189,7 @@ class TestStoreContacts: XCTestCase {
         var query = OCKContactQuery(for: Date())
         query.carePlanRemoteIDs = ["abc"]
         let fetched = try store.fetchContactsAndWait(query: query).first
-        XCTAssert(fetched == contact)
+        XCTAssertEqual(fetched, contact)
     }
 
     func testQueryContactByCarePlanVersionID() throws {
@@ -198,7 +198,7 @@ class TestStoreContacts: XCTestCase {
         var query = OCKContactQuery(for: Date())
         query.carePlanUUIDs = [plan.uuid]
         let fetched = try store.fetchContactsAndWait(query: query).first
-        XCTAssert(fetched == contact)
+        XCTAssertEqual(fetched, contact)
     }
 
     func testQueryContactByUUID() throws {
@@ -207,7 +207,7 @@ class TestStoreContacts: XCTestCase {
         var query = OCKContactQuery()
         query.uuids = [contact.uuid]
         let fetched = try store.fetchContactsAndWait(query: query).first
-        XCTAssert(fetched == contact)
+        XCTAssertEqual(fetched, contact)
     }
 
     // MARK: Versioning
@@ -215,9 +215,9 @@ class TestStoreContacts: XCTestCase {
     func testUpdateContactCreatesNewVersion() throws {
         let contact = try store.addContactAndWait(OCKContact(id: "contact", givenName: "John", familyName: "Appleseed", carePlanUUID: nil))
         let updated = try store.updateContactAndWait(OCKContact(id: "contact", givenName: "Jane", familyName: "Appleseed", carePlanUUID: nil))
-        XCTAssert(updated.name.givenName == "Jane")
-        XCTAssert(updated.uuid != contact.uuid)
-        XCTAssert(updated.previousVersionUUIDs.first == contact.uuid)
+        XCTAssertEqual(updated.name.givenName, "Jane")
+        XCTAssertNotEqual(updated.uuid, contact.uuid)
+        XCTAssertEqual(updated.previousVersionUUIDs.first, contact.uuid)
     }
 
     func testUpdateFailsForUnsavedContacts() {
@@ -231,8 +231,8 @@ class TestStoreContacts: XCTestCase {
         try store.updateContactAndWait(OCKContact(id: "contact", givenName: "C", familyName: "", carePlanUUID: nil))
         let versionD = try store.updateContactAndWait(OCKContact(id: "contact", givenName: "D", familyName: "", carePlanUUID: nil))
         let fetched = try store.fetchContactAndWait(id: "contact")
-        XCTAssert(fetched?.id == versionD.id)
-        XCTAssert(fetched?.name == versionD.name)
+        XCTAssertEqual(fetched?.id, versionD.id)
+        XCTAssertEqual(fetched?.name, versionD.name)
     }
 
     func testContactQueryWithDateOnlyReturnsLatestVersionOfAContact() throws {
@@ -241,8 +241,8 @@ class TestStoreContacts: XCTestCase {
         try store.updateContactAndWait(OCKContact(id: "contact", givenName: "C", familyName: "", carePlanUUID: nil))
         try store.updateContactAndWait(OCKContact(id: "contact", givenName: "D", familyName: "", carePlanUUID: nil))
         let fetched = try store.fetchContactsAndWait(query: OCKContactQuery(for: Date()))
-        XCTAssert(fetched.count == 1)
-        XCTAssert(fetched.first?.name.givenName == "D")
+        XCTAssertEqual(fetched.count, 1)
+        XCTAssertEqual(fetched.first?.name.givenName, "D")
     }
 
     func testContactQueryWithNoDateReturnsAllVersionsOfAContact() throws {
@@ -251,7 +251,7 @@ class TestStoreContacts: XCTestCase {
         try store.updateContactAndWait(OCKContact(id: "contact", givenName: "C", familyName: "", carePlanUUID: nil))
         try store.updateContactAndWait(OCKContact(id: "contact", givenName: "D", familyName: "", carePlanUUID: nil))
         let fetched = try store.fetchContactsAndWait(query: OCKContactQuery())
-        XCTAssert(fetched.count == 4)
+        XCTAssertEqual(fetched.count, 4)
     }
 
     func testContactQueryOnPastDateReturnsPastVersionOfAContact() throws {
@@ -268,8 +268,8 @@ class TestStoreContacts: XCTestCase {
         let interval = DateInterval(start: dateA.addingTimeInterval(10), end: dateB.addingTimeInterval(-10))
         let query = OCKContactQuery(dateInterval: interval)
         let fetched = try store.fetchContactsAndWait(query: query)
-        XCTAssert(fetched.count == 1)
-        XCTAssert(fetched.first?.name == versionA.name)
+        XCTAssertEqual(fetched.count, 1)
+        XCTAssertEqual(fetched.first?.name, versionA.name)
     }
 
     func testContactQuerySpanningVersionsReturnsNewestVersionOnly() throws {
@@ -287,8 +287,8 @@ class TestStoreContacts: XCTestCase {
         let query = OCKContactQuery(dateInterval: interval)
 
         let fetched = try store.fetchContactsAndWait(query: query)
-        XCTAssert(fetched.count == 1)
-        XCTAssert(fetched.first?.name == versionB.name)
+        XCTAssertEqual(fetched.count, 1)
+        XCTAssertEqual(fetched.first?.name, versionB.name)
     }
 
     func testContactQueryBeforeContactWasCreatedReturnsNoResults() throws {

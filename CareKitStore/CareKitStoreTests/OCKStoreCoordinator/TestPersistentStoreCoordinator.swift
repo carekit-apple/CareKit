@@ -109,7 +109,7 @@ class TestPersistentStoreCoordinator: XCTestCase {
         sut.attach(patientStore: store2)
 
         let patients = try sut.fetchAnyPatientsAndWait(query: OCKPatientQuery())
-        XCTAssert(patients.count == 2)
+        XCTAssertEqual(patients.count, 2)
     }
 
     func testAddPatientActsOnFirstRespondingStore() throws {
@@ -182,9 +182,9 @@ class TestPersistentStoreCoordinator: XCTestCase {
         coordinator.attachReadOnly(eventStore: hkStore)
         coordinator.fetchAnyTasks(query: OCKTaskQuery()) { result in
             let tasks = try? result.get()
-            XCTAssert(tasks?.count == 2)
-            XCTAssert(tasks?.compactMap { $0 as? OCKTask }.count == 1)
-            XCTAssert(tasks?.compactMap { $0 as? OCKHealthKitTask }.count == 1)
+            XCTAssertEqual(tasks?.count, 2)
+            XCTAssertEqual(tasks?.compactMap { $0 as? OCKTask }.count, 1)
+            XCTAssertEqual(tasks?.compactMap { $0 as? OCKHealthKitTask }.count, 1)
         }
     }
 
@@ -238,7 +238,7 @@ class TestPersistentStoreCoordinator: XCTestCase {
 
         let query = OCKTaskQuery(id: "task")
         let fetched = try coordinator.fetchAnyTasksAndWait(query: query)
-        XCTAssert(fetched.first?.belongs(to: plan) == true)
+        XCTAssertEqual(fetched.first?.belongs(to: plan), true)
     }
 }
 

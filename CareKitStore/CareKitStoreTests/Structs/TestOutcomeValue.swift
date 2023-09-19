@@ -35,13 +35,13 @@ class TestOutcomeValue: XCTestCase {
     
     func testValueInitializer() {
         var value = OCKOutcomeValue(37, units: "˚C")
-        XCTAssert(value.type == .integer)
-        XCTAssert(value.integerValue == 37)
+        XCTAssertEqual(value.type, .integer)
+        XCTAssertEqual(value.integerValue, 37)
 
         value.value = 98.3
         value.units = "˚F"
-        XCTAssert(value.type == .double)
-        XCTAssert(value.doubleValue == 98.3)
+        XCTAssertEqual(value.type, .double)
+        XCTAssertEqual(value.doubleValue, 98.3)
     }
 
     func testValueEqualityUnique() {
@@ -57,7 +57,7 @@ class TestOutcomeValue: XCTestCase {
         for (before, after) in beforeAfterValuePairs {
             let value1 = OCKOutcomeValue(before)
             let value2 = OCKOutcomeValue(after)
-            XCTAssert(value1 != value2)
+            XCTAssertNotEqual(value1, value2)
         }
     }
 
@@ -75,7 +75,7 @@ class TestOutcomeValue: XCTestCase {
         for (left, right) in beforeAfterValuePairs {
             let value1 = OCKOutcomeValue(left)
             let value2 = OCKOutcomeValue(right)
-            XCTAssert(value1 == value2)
+            XCTAssertEqual(value1, value2)
         }
     }
 
@@ -162,18 +162,18 @@ class TestOutcomeValue: XCTestCase {
         var value = OCKOutcomeValue("abc")
         let oldType = value.type
         value.value = false
-        XCTAssert(oldType != value.type)
-        XCTAssert(oldType == .text)
-        XCTAssert(value.type == .boolean)
+        XCTAssertNotEqual(oldType, value.type)
+        XCTAssertEqual(oldType, .text)
+        XCTAssertEqual(value.type, .boolean)
 
         value.value = Date()
-        XCTAssert(value.type == .date)
+        XCTAssertEqual(value.type, .date)
 
         value.value = 10.0
-        XCTAssert(value.type == .double)
+        XCTAssertEqual(value.type, .double)
 
         value.value = Int(10)
-        XCTAssert(value.type == .integer)
+        XCTAssertEqual(value.type, .integer)
     }
 
     func testEqualityOfEncodings(outcome1: OCKOutcomeValue, outcome2: OCKOutcomeValue) {
@@ -181,7 +181,7 @@ class TestOutcomeValue: XCTestCase {
         do {
             let encoded1 = try encoder.encode(outcome1)
             let encoded2 = try encoder.encode(outcome2)
-            XCTAssert(encoded1 == encoded2, "OCKOutcomeValue encoding inequality")
+            XCTAssertEqual(encoded1, encoded2, "OCKOutcomeValue encoding inequality")
         } catch {
             XCTFail("unable to encoder or decode OCKOutcomeValue")
         }
@@ -193,7 +193,7 @@ class TestOutcomeValue: XCTestCase {
         do {
             let encoded = try encoder.encode(outcome)
             let decoded = try decoder.decode(OCKOutcomeValue.self, from: encoded)
-            XCTAssert(decoded == outcome, "OCKOutcomeValue not preserved in coding")
+            XCTAssertEqual(decoded, outcome, "OCKOutcomeValue not preserved in coding")
             testEqualityOfEncodings(outcome1: outcome, outcome2: decoded)
         } catch {
             XCTFail("unable to encode or decode OCKOutcomeValue")

@@ -91,22 +91,27 @@ class OCKCDContact: OCKCDVersionedObject {
 
     func makeContact() -> OCKContact {
 
-        var contact = OCKContact(
-            id: id,
-            name: name.makeValue(),
-            carePlanUUID: carePlan?.uuid
-        )
+        var contact: OCKContact!
+        
+        self.managedObjectContext!.performAndWait {
+            contact = OCKContact(
+                id: id,
+                name: name.makeValue(),
+                carePlanUUID: carePlan?.uuid
+            )
+            
+            contact.copyVersionedValues(from: self)
+            contact.emailAddresses = emailAddresses
+            contact.messagingNumbers = messagingNumbers
+            contact.phoneNumbers = phoneNumbers
+            contact.otherContactInfo = otherContactInfo
+            contact.organization = organization
+            contact.title = title
+            contact.role = role
+            contact.category = category.map { OCKContactCategory(rawValue: $0)! }
+            contact.address = address?.makeValue()
+        }
 
-        contact.copyVersionedValues(from: self)
-        contact.emailAddresses = emailAddresses
-        contact.messagingNumbers = messagingNumbers
-        contact.phoneNumbers = phoneNumbers
-        contact.otherContactInfo = otherContactInfo
-        contact.organization = organization
-        contact.title = title
-        contact.role = role
-        contact.category = category.map { OCKContactCategory(rawValue: $0)! }
-        contact.address = address?.makeValue()
         return contact
     }
 }

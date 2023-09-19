@@ -51,7 +51,7 @@ class R4PatientConverterTests: XCTestCase {
 
         let converter = OCKR4PatientCoder()
         let converted = try converter.convert(resource: patient)
-        XCTAssert(converted.id == "abc")
+        XCTAssertEqual(converted.id, "abc")
     }
 
     func testConvertFHIRPatientSetsPatientSourceToFHIR() throws {
@@ -61,7 +61,7 @@ class R4PatientConverterTests: XCTestCase {
 
         let converter = OCKR4PatientCoder()
         let converted = try converter.convert(resource: patient)
-        XCTAssert(converted.source == "FHIR")
+        XCTAssertEqual(converted.source, "FHIR")
     }
 
     func testConvertFHIRPatientSucceedsForCustomIDGetter() throws {
@@ -76,7 +76,7 @@ class R4PatientConverterTests: XCTestCase {
         converter.getCareKitID = { $0.identifier!.first!.value!.value!.string }
 
         let converted = try converter.convert(resource: patient)
-        XCTAssert(converted.id == "abc")
+        XCTAssertEqual(converted.id, "abc")
     }
 
     func testConvertFHIRPatientSucceedsForDefaultNameGetter() throws {
@@ -86,8 +86,8 @@ class R4PatientConverterTests: XCTestCase {
 
         let converter = OCKR4PatientCoder()
         let converted = try converter.convert(resource: patient)
-        XCTAssert(converted.name.familyName == "Bill")
-        XCTAssert(converted.name.givenName == "Bob")
+        XCTAssertEqual(converted.name.familyName, "Bill")
+        XCTAssertEqual(converted.name.givenName, "Bob")
     }
 
     func testConvertFHIRPatientSucceedsForDefaultSexGetter() throws {
@@ -98,7 +98,7 @@ class R4PatientConverterTests: XCTestCase {
 
         let converter = OCKR4PatientCoder()
         let converted = try converter.convert(resource: patient)
-        XCTAssert(converted.sex == .other("other"))
+        XCTAssertEqual(converted.sex, .other("other"))
     }
 
     func testConvertFHIRPatientSucceedsForDefaultBirthdayGetter() throws {
@@ -116,7 +116,7 @@ class R4PatientConverterTests: XCTestCase {
 
         let converter = OCKR4PatientCoder()
         let converted = try converter.convert(resource: patient)
-        XCTAssert(converted.birthday == birthday)
+        XCTAssertEqual(converted.birthday, birthday)
     }
 
     // MARK: Convert OCKPatient to FHIR Patient
@@ -132,9 +132,9 @@ class R4PatientConverterTests: XCTestCase {
         let converter = OCKR4PatientCoder()
         let fhirPatient = try converter.convert(entity: careKitPatient)
 
-        XCTAssert(fhirPatient.name?.first?.family == "A")
-        XCTAssert(fhirPatient.name?.first?.given == ["B"])
-        XCTAssert(fhirPatient.name?.first?.prefix == ["C"])
-        XCTAssert(fhirPatient.name?.first?.suffix == ["D"])
+        XCTAssertEqual(fhirPatient.name?.first?.family, "A")
+        XCTAssertEqual(fhirPatient.name?.first?.given, ["B"])
+        XCTAssertEqual(fhirPatient.name?.first?.prefix, ["C"])
+        XCTAssertEqual(fhirPatient.name?.first?.suffix, ["D"])
     }
 }

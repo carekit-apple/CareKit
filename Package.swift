@@ -4,7 +4,7 @@ import PackageDescription
 let package = Package(
     name: "CareKit",
     defaultLocalization: "en",
-    platforms: [.iOS(.v14), .macOS(.v11), .watchOS(.v7)],
+    platforms: [.iOS(.v14), .macOS(.v13), .watchOS(.v7)],
     products: [
         .library(
             name: "CareKit",
@@ -20,12 +20,13 @@ let package = Package(
 
         .library(
             name: "CareKitFHIR",
-            targets: ["CareKitFHIR"])
+            targets: ["CareKitFHIR"]),
+
     ],
     dependencies: [
         .package(
             url: "https://github.com/apple/FHIRModels.git",
-            from: Version(0, 1, 0)
+            exact: Version(0, 4, 0)
         ),
         .package(
             url: "https://github.com/apple/swift-async-algorithms",
@@ -90,6 +91,7 @@ let package = Package(
             name: "CareKitTests",
             dependencies: ["CareKit"],
             path: "CareKit/CareKitTests",
-            exclude: ["Info.plist"])
+            exclude: ["Info.plist"]),
+
     ]
 )

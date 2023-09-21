@@ -57,22 +57,34 @@ open class OCKStoreCoordinator: OCKAnyStoreProtocol {
 
 
     @available(*, unavailable, message: "OCKSynchronizedStoreManager and its related types are no longer available as a mechanism to synchronize with the CareKit store. As a replacement, see the asynchronous streams available directly on a CareKit store. For example, to monitor changes to tasks, see `OCKStore.tasks(query:)`.")
-    public weak var patientDelegate: OCKPatientStoreDelegate?
+    public weak var patientDelegate: OCKPatientStoreDelegate? {
+        fatalError("Property is unavailable")
+    }
 
     @available(*, unavailable, message: "OCKSynchronizedStoreManager and its related types are no longer available as a mechanism to synchronize with the CareKit store. As a replacement, see the asynchronous streams available directly on a CareKit store. For example, to monitor changes to tasks, see `OCKStore.tasks(query:)`.")
-    public weak var carePlanDelegate: OCKCarePlanStoreDelegate?
+    public weak var carePlanDelegate: OCKCarePlanStoreDelegate? {
+        fatalError("Property is unavailable")
+    }
 
     @available(*, unavailable, message: "OCKSynchronizedStoreManager and its related types are no longer available as a mechanism to synchronize with the CareKit store. As a replacement, see the asynchronous streams available directly on a CareKit store. For example, to monitor changes to tasks, see `OCKStore.tasks(query:)`.")
-    public weak var contactDelegate: OCKContactStoreDelegate?
+    public weak var contactDelegate: OCKContactStoreDelegate? {
+        fatalError("Property is unavailable")
+    }
 
     @available(*, unavailable, message: "OCKSynchronizedStoreManager and its related types are no longer available as a mechanism to synchronize with the CareKit store. As a replacement, see the asynchronous streams available directly on a CareKit store. For example, to monitor changes to tasks, see `OCKStore.tasks(query:)`.")
-    public weak var taskDelegate: OCKTaskStoreDelegate?
+    public weak var taskDelegate: OCKTaskStoreDelegate? {
+        fatalError("Property is unavailable")
+    }
 
     @available(*, unavailable, message: "OCKSynchronizedStoreManager and its related types are no longer available as a mechanism to synchronize with the CareKit store. As a replacement, see the asynchronous streams available directly on a CareKit store. For example, to monitor changes to tasks, see `OCKStore.tasks(query:)`.")
-    public weak var outcomeDelegate: OCKOutcomeStoreDelegate?
+    public weak var outcomeDelegate: OCKOutcomeStoreDelegate? {
+        fatalError("Property is unavailable")
+    }
 
     @available(*, unavailable, message: "OCKSynchronizedStoreManager and its related types are no longer available as a mechanism to synchronize with the CareKit store. As a replacement, see the asynchronous streams available directly on a CareKit store. For example, to monitor changes to tasks, see `OCKStore.tasks(query:)`.")
-    public weak var resetDelegate: OCKResetDelegate?
+    public weak var resetDelegate: OCKResetDelegate? {
+        fatalError("Property is unavailable")
+    }
 
 
     public init() {}

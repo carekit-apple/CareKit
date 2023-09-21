@@ -72,10 +72,10 @@ class TestWatchConnectivityPeer: XCTestCase {
         let tasksA1 = try storeA.fetchTasksAndWait()
         let tasksB1 = try storeA.fetchTasksAndWait()
 
-        XCTAssert(tasksA1.count == 1)
-        XCTAssert(tasksB1.count == 1)
-        XCTAssert(storeA.context.knowledgeVector == stateA1)
-        XCTAssert(storeB.context.knowledgeVector == stateB1)
+        XCTAssertEqual(tasksA1.count, 1)
+        XCTAssertEqual(tasksB1.count, 1)
+        XCTAssertEqual(storeA.context.knowledgeVector, stateA1)
+        XCTAssertEqual(storeB.context.knowledgeVector, stateB1)
 
         // 2. Create conflicting updates on A and B, then sync again.
         //    A goes first, resolves the conflict, and sends the patch to B.
@@ -96,10 +96,10 @@ class TestWatchConnectivityPeer: XCTestCase {
         let tasksA2 = try storeA.fetchTasksAndWait()
         let tasksB2 = try storeB.fetchTasksAndWait()
 
-        XCTAssert(tasksA2.count == 4)
-        XCTAssert(tasksB2.count == 4)
-        XCTAssert(storeA.context.knowledgeVector == stateA2)
-        XCTAssert(storeB.context.knowledgeVector == stateB2)
+        XCTAssertEqual(tasksA2.count, 4)
+        XCTAssertEqual(tasksB2.count, 4)
+        XCTAssertEqual(storeA.context.knowledgeVector, stateA2)
+        XCTAssertEqual(storeB.context.knowledgeVector, stateB2)
     }
 }
 

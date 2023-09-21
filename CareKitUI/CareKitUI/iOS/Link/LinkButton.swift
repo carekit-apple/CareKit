@@ -89,7 +89,7 @@ struct LinkButton<Label: View>: View {
         }
     }
 
-    private func styled<Label: View>(label: Label) -> some View {
+    private func styled(label: Label) -> some View {
         RectangularCompletionView(isComplete: true) {
             label
                 .if(usesDefaultPadding) { $0.padding() }

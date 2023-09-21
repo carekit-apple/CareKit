@@ -54,6 +54,7 @@ class OCKCDClock: NSManagedObject {
     static func fetch(context: NSManagedObjectContext) -> OCKCDClock {
         let request = NSFetchRequest<OCKCDClock>(entityName: String(describing: OCKCDClock.self))
         request.fetchLimit = 1
+        request.returnsObjectsAsFaults = false
 
         if let vector = try! context.fetch(request).first {
             return vector

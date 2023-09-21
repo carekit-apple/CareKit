@@ -35,11 +35,4 @@ public struct OCKScheduleEvent: Equatable {
     public var end: Date
     public var element: OCKScheduleElement
     public var occurrence: Int
-
-    internal init(start: Date, end: Date, element: OCKScheduleElement, occurrence: Int) {
-        self.start = start
-        self.end = end
-        self.element = element
-        self.occurrence = occurrence
-    }
 }

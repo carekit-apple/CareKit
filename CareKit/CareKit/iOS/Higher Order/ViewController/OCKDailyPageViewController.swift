@@ -79,7 +79,9 @@ UIPageViewControllerDataSource, UIPageViewControllerDelegate {
 
     /// The store manager the view controller uses for synchronization.
     @available(*, unavailable, renamed: "store")
-    public var storeManager: OCKSynchronizedStoreManager!
+    public var storeManager: OCKSynchronizedStoreManager! {
+        fatalError("Property is unavailable")
+    }
 
     /// The store the view controller uses for synchronization.
     public let store: OCKAnyStoreProtocol

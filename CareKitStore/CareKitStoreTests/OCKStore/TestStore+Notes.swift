@@ -43,14 +43,14 @@ class TestStoreNotes: XCTestCase {
         var patient = OCKPatient(id: "Mr. John", givenName: "John", familyName: "Appleseed")
         patient.notes = [OCKNote(author: "Johnny", title: "My Diary", content: "Today I studied biochemistry!")]
         let savedPatient = try store.addPatientAndWait(patient)
-        XCTAssert(savedPatient.notes?.count == 1)
+        XCTAssertEqual(savedPatient.notes?.count, 1)
     }
 
     func testCanAttachNotesToCarePlan() throws {
         var plan = OCKCarePlan(id: "obesity", title: "Obesity", patientUUID: nil)
         plan.notes = [OCKNote(author: "Mariana", title: "Refrigerator Notes", content: "Butter, milk, eggs")]
         let savedPlan = try store.addCarePlanAndWait(plan)
-        XCTAssert(savedPlan.notes?.count == 1)
+        XCTAssertEqual(savedPlan.notes?.count, 1)
     }
 
     func testCanAttachNotesToTask() throws {
@@ -58,7 +58,7 @@ class TestStoreNotes: XCTestCase {
         var task = OCKTask(id: "id123", title: "prayer", carePlanUUID: nil, schedule: schedule)
         task.notes = [OCKNote(author: "Jared", title: "Note", content: "Made some remarks")]
         let savedTask = try store.addTaskAndWait(task)
-        XCTAssert(savedTask.notes?.count == 1)
+        XCTAssertEqual(savedTask.notes?.count, 1)
     }
 
     func testCanAttachNotesToOutcome() throws {
@@ -67,6 +67,6 @@ class TestStoreNotes: XCTestCase {
         var outcome = OCKOutcome(taskUUID: task.uuid, taskOccurrenceIndex: 0, values: [])
         outcome.notes = [OCKNote(author: "Jared", title: "My Recipe", content: "Bacon, eggs, and cheese")]
         let savedOutcome = try store.addOutcomeAndWait(outcome)
-        XCTAssert(savedOutcome.notes?.count == 1)
+        XCTAssertEqual(savedOutcome.notes?.count, 1)
     }
 }

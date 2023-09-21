@@ -151,15 +151,17 @@ class TestPartialEvents: XCTestCase {
         let storedTaskA = try store.addTaskAndWait(taskA)
         let storedTaskB = try store.addTaskAndWait(taskB)
 
+        let expectedEventsArray = [
+            PartialEvent(task: storedTaskB, scheduleEvent: mealtimesSchedule[0]),
+            PartialEvent(task: storedTaskB, scheduleEvent: mealtimesSchedule[1]),
+            PartialEvent(task: storedTaskB, scheduleEvent: mealtimesSchedule[2]),
+            PartialEvent(task: storedTaskA, scheduleEvent: mealtimesSchedule[0]),
+            PartialEvent(task: storedTaskA, scheduleEvent: mealtimesSchedule[1]),
+            PartialEvent(task: storedTaskA, scheduleEvent: mealtimesSchedule[2])
+        ]
+
         let expectedEvents = [
-            [
-                PartialEvent(task: storedTaskB, scheduleEvent: mealtimesSchedule[0]),
-                PartialEvent(task: storedTaskB, scheduleEvent: mealtimesSchedule[1]),
-                PartialEvent(task: storedTaskB, scheduleEvent: mealtimesSchedule[2]),
-                PartialEvent(task: storedTaskA, scheduleEvent: mealtimesSchedule[0]),
-                PartialEvent(task: storedTaskA, scheduleEvent: mealtimesSchedule[1]),
-                PartialEvent(task: storedTaskA, scheduleEvent: mealtimesSchedule[2])
-            ]
+            expectedEventsArray
         ]
 
         let query = OCKTaskQuery()
@@ -175,7 +177,17 @@ class TestPartialEvents: XCTestCase {
 
         // Ensure the results are equal
         XCTAssertEqual(expectedEvents, fetchedEvents)
-        XCTAssertEqual(fetchedEvents, streamedEvents)
+
+        guard let streamedEventsArray = streamedEvents.first else {
+            XCTFail("Should have atleast one item")
+            return
+        }
+
+        XCTAssertEqual(expectedEventsArray.count, streamedEventsArray.count)
+        // Streamed tasks are not always in order, check for each one.
+        for streamedEvent in streamedEventsArray {
+            XCTAssertTrue(expectedEventsArray.contains(streamedEvent))
+        }
     }
 
     // MARK: - Utilities

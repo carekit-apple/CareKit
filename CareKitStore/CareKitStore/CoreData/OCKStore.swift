@@ -83,32 +83,44 @@ open class OCKStore: OCKStoreProtocol, Equatable {
     /// The delegate receives callbacks when the contents of the patient store are modified.
     /// In `CareKit` apps, the delegate will be set automatically, and it should not be modified.
     @available(*, unavailable, message: "OCKSynchronizedStoreManager and its related types are no longer available as a mechanism to synchronize with the CareKit store. As a replacement, see the asynchronous streams available directly on a CareKit store. For example, to monitor changes to tasks, see `OCKStore.tasks(query:)`.")
-    public weak var patientDelegate: OCKPatientStoreDelegate?
+    public weak var patientDelegate: OCKPatientStoreDelegate? {
+        fatalError("Property is unavailable")
+    }
 
     /// The delegate receives callbacks when the contents of the care plan store are modified.
     /// In `CareKit` apps, the delegate will be set automatically, and it should not be modified.
     @available(*, unavailable, message: "OCKSynchronizedStoreManager and its related types are no longer available as a mechanism to synchronize with the CareKit store. As a replacement, see the asynchronous streams available directly on a CareKit store. For example, to monitor changes to tasks, see `OCKStore.tasks(query:)`.")
-    public weak var carePlanDelegate: OCKCarePlanStoreDelegate?
+    public weak var carePlanDelegate: OCKCarePlanStoreDelegate? {
+        fatalError("Property is unavailable")
+    }
 
     /// The delegate receives callbacks when the contents of the contacts store are modified.
     /// In `CareKit` apps, the delegate will be set automatically, and it should not be modified.
     @available(*, unavailable, message: "OCKSynchronizedStoreManager and its related types are no longer available as a mechanism to synchronize with the CareKit store. As a replacement, see the asynchronous streams available directly on a CareKit store. For example, to monitor changes to tasks, see `OCKStore.tasks(query:)`.")
-    public weak var contactDelegate: OCKContactStoreDelegate?
+    public weak var contactDelegate: OCKContactStoreDelegate? {
+        fatalError("Property is unavailable")
+    }
 
     /// The delegate receives callbacks when the contents of the tasks store are modified.
     /// In `CareKit` apps, the delegate will be set automatically, and it should not be modified.
     @available(*, unavailable, message: "OCKSynchronizedStoreManager and its related types are no longer available as a mechanism to synchronize with the CareKit store. As a replacement, see the asynchronous streams available directly on a CareKit store. For example, to monitor changes to tasks, see `OCKStore.tasks(query:)`.")
-    public weak var taskDelegate: OCKTaskStoreDelegate?
+    public weak var taskDelegate: OCKTaskStoreDelegate? {
+        fatalError("Property is unavailable")
+    }
 
     /// The delegate receives callbacks when the contents of the outcome store are modified.
     /// In `CareKit` apps, the delegate will be set automatically, and it should not be modified.
     @available(*, unavailable, message: "OCKSynchronizedStoreManager and its related types are no longer available as a mechanism to synchronize with the CareKit store. As a replacement, see the asynchronous streams available directly on a CareKit store. For example, to monitor changes to tasks, see `OCKStore.tasks(query:)`.")
-    public weak var outcomeDelegate: OCKOutcomeStoreDelegate?
+    public weak var outcomeDelegate: OCKOutcomeStoreDelegate? {
+        fatalError("Property is unavailable")
+    }
 
     /// The delegate receives callbacks when the contents of the store are reset.
     /// In `CareKit` apps, the delegate will be set automatically, and it should not be modified.
     @available(*, unavailable, message: "OCKSynchronizedStoreManager and its related types are no longer available as a mechanism to synchronize with the CareKit store. As a replacement, see the asynchronous streams available directly on a CareKit store. For example, to monitor changes to tasks, see `OCKStore.tasks(query:)`.")
-    public weak var resetDelegate: OCKResetDelegate?
+    public weak var resetDelegate: OCKResetDelegate? {
+        fatalError("Property is unavailable")
+    }
 
 
     /// Two instances of `OCKStore` are considered to be equal if they have the same name and store type.

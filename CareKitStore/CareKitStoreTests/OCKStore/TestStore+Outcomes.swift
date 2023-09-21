@@ -63,8 +63,8 @@ class TestStoreOutcomes: XCTestCase {
         outcome = try store.addOutcomeAndWait(outcome)
 
         let outcomes = try store.fetchOutcomesAndWait()
-        XCTAssert(outcomes == [outcome])
-        XCTAssert(outcomes.first?.values.first?.kind == "number")
+        XCTAssertEqual(outcomes, [outcome])
+        XCTAssertEqual(outcomes.first?.values.first?.kind, "number")
         XCTAssertNotNil(outcomes.first?.taskUUID)
         XCTAssertNotNil(outcomes.first?.schemaVersion)
     }
@@ -76,7 +76,7 @@ class TestStoreOutcomes: XCTestCase {
 
         var outcome = OCKOutcome(taskUUID: taskUUID, taskOccurrenceIndex: 2, values: [])
         outcome = try store.addOutcomeAndWait(outcome)
-        XCTAssert(outcome.taskUUID == taskUUID)
+        XCTAssertEqual(outcome.taskUUID, taskUUID)
     }
 
     func testCannotAddTwoOutcomesWithSameTaskAndOccurrenceIndexAtOnce() throws {
@@ -121,7 +121,7 @@ class TestStoreOutcomes: XCTestCase {
         let taskV2 = try store.updateTaskAndWait(task)
         let value = OCKOutcomeValue(123)
         let outcome = OCKOutcome(taskUUID: taskV1.uuid, taskOccurrenceIndex: 1, values: [value])
-        XCTAssert(taskV2.previousVersionUUIDs.first == taskV1.uuid)
+        XCTAssertEqual(taskV2.previousVersionUUIDs.first, taskV1.uuid)
         XCTAssertThrowsError(try store.addOutcomeAndWait(outcome))
     }
 
@@ -179,8 +179,8 @@ class TestStoreOutcomes: XCTestCase {
         var query = OCKOutcomeQuery(for: Date())
         query.groupIdentifiers = ["A"]
         let fetched = try store.fetchOutcomesAndWait(query: query)
-        XCTAssert(fetched.count == 1)
-        XCTAssert(fetched.first?.taskOccurrenceIndex == 0)
+        XCTAssertEqual(fetched.count, 1)
+        XCTAssertEqual(fetched.first?.taskOccurrenceIndex, 0)
     }
 
     func testQueryReturnsOnlyOutcomesInTheQueryDateRange() throws {
@@ -197,7 +197,7 @@ class TestStoreOutcomes: XCTestCase {
         var query = OCKOutcomeQuery(dateInterval: interval)
         query.taskIDs = [task.id]
         let outcomes = try store.fetchOutcomesAndWait(query: query)
-        XCTAssert(outcomes.count == 1)
+        XCTAssertEqual(outcomes.count, 1)
         XCTAssertTrue(outcomes.contains(outcome1))
         XCTAssertFalse(outcomes.contains(outcome2))
     }
@@ -222,7 +222,7 @@ class TestStoreOutcomes: XCTestCase {
 
         let query = OCKOutcomeQuery(for: queryStart)
         let fetched = try store.fetchOutcomesAndWait(query: query)
-        XCTAssert(fetched.count == 1)
+        XCTAssertEqual(fetched.count, 1)
     }
 
     func testOutcomeQueryLimit() throws {
@@ -236,7 +236,7 @@ class TestStoreOutcomes: XCTestCase {
         var query = OCKOutcomeQuery(for: Date())
         query.limit = 1
         let fetched = try store.fetchOutcomesAndWait(query: query)
-        XCTAssert(fetched.count == 1)
+        XCTAssertEqual(fetched.count, 1)
     }
 
     func testQueryOutcomesByRemoteID() throws {
@@ -252,7 +252,7 @@ class TestStoreOutcomes: XCTestCase {
         query.remoteIDs = ["abc"]
 
         let fetched = try store.fetchOutcomesAndWait(query: query).first
-        XCTAssert(fetched == outcome)
+        XCTAssertEqual(fetched, outcome)
     }
 
     func testQueryOutcomeByTaskRemoteID() throws {
@@ -266,7 +266,7 @@ class TestStoreOutcomes: XCTestCase {
         var query = OCKOutcomeQuery(for: Date())
         query.taskRemoteIDs = ["abc"]
         let fetched = try store.fetchOutcomesAndWait(query: query).first
-        XCTAssert(fetched == outcome)
+        XCTAssertEqual(fetched, outcome)
     }
 
     func testQueryOutcomeByTag() throws {
@@ -281,7 +281,7 @@ class TestStoreOutcomes: XCTestCase {
         query.tags = ["123"]
 
         let fetched = try store.fetchOutcomesAndWait(query: query).first
-        XCTAssert(fetched == outcome)
+        XCTAssertEqual(fetched, outcome)
     }
 
     func testQueryOutcomeByUUID() throws {
@@ -295,7 +295,7 @@ class TestStoreOutcomes: XCTestCase {
         query.uuids = [outcome.uuid]
 
         let fetched = try store.fetchOutcomesAndWait(query: query).first
-        XCTAssert(fetched == outcome)
+        XCTAssertEqual(fetched, outcome)
     }
 
     func testFetchOutcomeReturnsLatestVersionEffectiveAfterPreviousVersion() async throws {
@@ -442,7 +442,7 @@ class TestStoreOutcomes: XCTestCase {
 
         let outcomeA = try store.addOutcomeAndWait(OCKOutcome(taskUUID: taskUUID, taskOccurrenceIndex: 0, values: []))
         let outcomeB = try store.updateOutcomeAndWait(outcomeA)
-        XCTAssert(outcomeB.id == outcomeA.id)
+        XCTAssertEqual(outcomeB.id, outcomeA.id)
     }
 
     func testUpdateFailsForUnsavedOutcomes() throws {
@@ -504,8 +504,8 @@ class TestStoreOutcomes: XCTestCase {
 
         let query = OCKOutcomeQuery(for: Date())
         let fetched = try store.fetchOutcomesAndWait(query: query)
-        XCTAssert(fetched.count == 1)
-        XCTAssert(fetched.first?.values.first?.integerValue == 5)
+        XCTAssertEqual(fetched.count, 1)
+        XCTAssertEqual(fetched.first?.values.first?.integerValue, 5)
     }
 }
 

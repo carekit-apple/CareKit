@@ -84,7 +84,7 @@ class TestLinkType: XCTestCase {
     }
 
     func testURLFails() {
-        let observed = LinkItem.website(" ", title: "").url
+        let observed = LinkItem.website("", title: "").url
         XCTAssertNil(observed)
     }
 }

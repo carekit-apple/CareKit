@@ -89,7 +89,7 @@ final class CoreDataQueryMonitor<
         }
 
         let result = controller!.fetchedObjects ?? []
-        resultHandler(.success(result))
+        self.resultHandler(.success(result))
     }
 
     func stopQuery() {

@@ -50,8 +50,8 @@ final class TestStoreSynchronization: XCTestCase {
         let startKnowledgeA = OCKRevisionRecord.KnowledgeVector([uuidA: 1])
         let startKnowledgeB = OCKRevisionRecord.KnowledgeVector([uuidB: 1])
 
-        XCTAssert(startKnowledgeA == storeA.context.knowledgeVector)
-        XCTAssert(startKnowledgeB == storeB.context.knowledgeVector)
+        XCTAssertEqual(startKnowledgeA, storeA.context.knowledgeVector)
+        XCTAssertEqual(startKnowledgeB, storeB.context.knowledgeVector)
         XCTAssert(server.revisions.isEmpty)
 
         // 2. Sync the first version of a task from A to B.
@@ -79,12 +79,12 @@ final class TestStoreSynchronization: XCTestCase {
             uuidB: 2  // Received from B during push
         ])
 
-        XCTAssert(firstTasksA.count == 1, "Expected 1, got \(firstTasksA.count)")
-        XCTAssert(firstTasksB.count == 1, "Expected 1, got \(firstTasksB.count)")
-        XCTAssert(firstKnowledgeA == storeA.context.knowledgeVector)
-        XCTAssert(firstKnowledgeB == storeB.context.knowledgeVector)
-        XCTAssert(firstServerKnowledge == server.knowledgeVector)
-        XCTAssert(server.revisions.count == 1)
+        XCTAssertEqual(firstTasksA.count, 1, "Expected 1, got \(firstTasksA.count)")
+        XCTAssertEqual(firstTasksB.count, 1, "Expected 1, got \(firstTasksB.count)")
+        XCTAssertEqual(firstKnowledgeA, storeA.context.knowledgeVector)
+        XCTAssertEqual(firstKnowledgeB, storeB.context.knowledgeVector)
+        XCTAssertEqual(firstServerKnowledge, server.knowledgeVector)
+        XCTAssertEqual(server.revisions.count, 1)
 
         // 2. Create conflicting updates in both stores.
         //    Neither store will have a conflict yet.
@@ -121,12 +121,12 @@ final class TestStoreSynchronization: XCTestCase {
             uuidB: 4  // latest clock from B
         ])
 
-        XCTAssert(midTasksA.count == 2, "Expected 2, but got \(midTasksA.count)")
-        XCTAssert(midTasksB.count == 4, "Expected 4, but got \(midTasksB.count)")
-        XCTAssert(midKnowledgeA == storeA.context.knowledgeVector)
-        XCTAssert(midKnowledgeB == storeB.context.knowledgeVector)
-        XCTAssert(midServerKnowledge == server.knowledgeVector)
-        XCTAssert(server.revisions.count == 4) // 4 versions with different vectors
+        XCTAssertEqual(midTasksA.count, 2, "Expected 2, but got \(midTasksA.count)")
+        XCTAssertEqual(midTasksB.count, 4, "Expected 4, but got \(midTasksB.count)")
+        XCTAssertEqual(midKnowledgeA, storeA.context.knowledgeVector)
+        XCTAssertEqual(midKnowledgeB, storeB.context.knowledgeVector)
+        XCTAssertEqual(midServerKnowledge, server.knowledgeVector)
+        XCTAssertEqual(server.revisions.count, 4) // 4 versions with different vectors
 
         // 5. Sync storeA: Pull updates from the server (conflict + resolution)
         //    Sync storeB: Already up to date, no observable change
@@ -146,11 +146,11 @@ final class TestStoreSynchronization: XCTestCase {
             uuidB: 7  // +1 post pull, +1 post push
         ])
 
-        XCTAssert(finalTasksA.count == 4, "Expected 4, but got \(finalTasksA.count)")
-        XCTAssert(finalTasksB.count == 4, "Expected 4, but got \(finalTasksB.count)")
-        XCTAssert(finalKnowledgeA == storeA.context.knowledgeVector)
-        XCTAssert(finalKnowledgeB == storeB.context.knowledgeVector)
-        XCTAssert(server.revisions.count == 4)
+        XCTAssertEqual(finalTasksA.count, 4, "Expected 4, but got \(finalTasksA.count)")
+        XCTAssertEqual(finalTasksB.count, 4, "Expected 4, but got \(finalTasksB.count)")
+        XCTAssertEqual(finalKnowledgeA, storeA.context.knowledgeVector)
+        XCTAssertEqual(finalKnowledgeB, storeB.context.knowledgeVector)
+        XCTAssertEqual(server.revisions.count, 4)
     }
 }
 

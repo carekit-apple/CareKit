@@ -41,13 +41,19 @@ public final class OCKHealthKitPassthroughStore: OCKEventStore {
 
 
     @available(*, unavailable, message: "OCKSynchronizedStoreManager and its related types are no longer available as a mechanism to synchronize with the CareKit store. As a replacement, see the asynchronous streams available directly on a CareKit store. For example, to monitor changes to tasks, see `OCKStore.tasks(query:)`.")
-    public weak var outcomeDelegate: OCKOutcomeStoreDelegate?
+    public weak var outcomeDelegate: OCKOutcomeStoreDelegate? {
+        fatalError("Property is unavailable")
+    }
 
     @available(*, unavailable, message: "OCKSynchronizedStoreManager and its related types are no longer available as a mechanism to synchronize with the CareKit store. As a replacement, see the asynchronous streams available directly on a CareKit store. For example, to monitor changes to tasks, see `OCKStore.tasks(query:)`.")
-    public var taskDelegate: OCKTaskStoreDelegate?
+    public var taskDelegate: OCKTaskStoreDelegate? {
+        fatalError("Property is unavailable")
+    }
 
     @available(*, unavailable, message: "OCKSynchronizedStoreManager and its related types are no longer available as a mechanism to synchronize with the CareKit store. As a replacement, see the asynchronous streams available directly on a CareKit store. For example, to monitor changes to tasks, see `OCKStore.tasks(query:)`.")
-    public var resetDelegate: OCKResetDelegate?
+    public var resetDelegate: OCKResetDelegate? {
+        fatalError("Property is unavailable")
+    }
 
 
     let store: OCKStore

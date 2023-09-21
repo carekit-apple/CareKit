@@ -48,7 +48,7 @@ class TestStoreCRDTMergeProperties: XCTestCase {
         }
 
         let patients = try store.fetchPatientsAndWait()
-        XCTAssert(patients.count == 1)
+        XCTAssertEqual(patients.count, 1)
     }
 
     func testMergeIsCommutative() throws {
@@ -61,7 +61,7 @@ class TestStoreCRDTMergeProperties: XCTestCase {
 
         let patients = try store.fetchPatientsAndWait()
         for i in 0..<10 {
-            XCTAssert(patients[i].previousVersionUUIDs.isEmpty == (i == 9))
+            XCTAssertEqual(patients[i].previousVersionUUIDs.isEmpty, (i == 9))
         }
     }
 
@@ -87,9 +87,9 @@ class TestStoreCRDTMergeProperties: XCTestCase {
         let fetchedA = try storeA.fetchPatientsAndWait()
         let fetchedB = try storeB.fetchPatientsAndWait()
 
-        XCTAssert(fetchedA.map(\.name) == fetchedB.map(\.name))
-        XCTAssert(fetchedA.map(\.previousVersionUUIDs) == fetchedB.map(\.previousVersionUUIDs))
-        XCTAssert(fetchedA.map(\.nextVersionUUIDs) == fetchedB.map(\.nextVersionUUIDs))
+        XCTAssertEqual(fetchedA.map(\.name), fetchedB.map(\.name))
+        XCTAssertEqual(fetchedA.map(\.previousVersionUUIDs), fetchedB.map(\.previousVersionUUIDs))
+        XCTAssertEqual(fetchedA.map(\.nextVersionUUIDs), fetchedB.map(\.nextVersionUUIDs))
     }
 
     private func makeRevisions(count: Int) -> [OCKRevisionRecord] {

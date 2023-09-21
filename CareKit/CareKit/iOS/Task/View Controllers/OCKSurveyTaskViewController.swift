@@ -72,7 +72,7 @@ open class OCKSurveyTaskViewController: OCKTaskViewController<OCKSurveyTaskViewS
 
     public weak var surveyDelegate: OCKSurveyTaskViewControllerDelegate?
 
-    @available(*, deprecated, renamed: "init(query:store:survey:viewSynchronizer:extractOutcome:)")
+    @available(*, unavailable, renamed: "init(query:store:survey:viewSynchronizer:extractOutcome:)")
     public convenience init(
         task: OCKAnyTask,
         eventQuery: OCKEventQuery,
@@ -81,20 +81,10 @@ open class OCKSurveyTaskViewController: OCKTaskViewController<OCKSurveyTaskViewS
         viewSynchronizer: OCKSurveyTaskViewSynchronizer = OCKSurveyTaskViewSynchronizer(),
         extractOutcome: @escaping (ORKTaskResult) -> [OCKOutcomeValue]?
     ) {
-
-        var eventQuery = eventQuery
-        eventQuery.taskIDs = [task.id]
-
-        self.init(
-            query: eventQuery,
-            store: storeManager.store,
-            survey: survey,
-            viewSynchronizer: viewSynchronizer,
-            extractOutcome: extractOutcome
-        )
+        fatalError("Unavailable")
     }
 
-    @available(*, deprecated, renamed: "init(query:store:survey:viewSynchronizer:extractOutcome:)")
+    @available(*, unavailable, renamed: "init(query:store:survey:viewSynchronizer:extractOutcome:)")
     public init(
         taskID: String,
         eventQuery: OCKEventQuery,
@@ -103,16 +93,7 @@ open class OCKSurveyTaskViewController: OCKTaskViewController<OCKSurveyTaskViewS
         viewSynchronizer: OCKSurveyTaskViewSynchronizer = OCKSurveyTaskViewSynchronizer(),
         extractOutcome: @escaping (ORKTaskResult) -> [OCKOutcomeValue]?
     ) {
-        var eventQuery = eventQuery
-        eventQuery.taskIDs = [taskID]
-
-        self.init(
-            query: eventQuery,
-            store: storeManager.store,
-            survey: survey,
-            viewSynchronizer: viewSynchronizer,
-            extractOutcome: extractOutcome
-        )
+        fatalError("Unavailable")
     }
 
     public init(
@@ -124,8 +105,7 @@ open class OCKSurveyTaskViewController: OCKTaskViewController<OCKSurveyTaskViewS
     ) {
         self.survey = survey
         self.extractOutcome = extractOutcome
-
-        super.init(query: query, store: store, viewSynchronizer: viewSynchronizer)
+        super.init(query: eventQuery, store: store, viewSynchronizer: viewSynchronizer)
     }
 
     override open func taskView(
@@ -135,17 +115,15 @@ open class OCKSurveyTaskViewController: OCKTaskViewController<OCKSurveyTaskViewS
         sender: Any?) {
     
             guard isComplete else {
-                
-                if let event = controller.eventFor(indexPath: indexPath),
-                   
-                    let delegate = surveyDelegate,
-                   
-                    delegate.surveyTask(
-                        viewController: self,
-                        shouldAllowDeletingOutcomeForEvent: event) == false {
-                    
-                    return
-                }
+
+                let event = viewModel[indexPath.section][indexPath.row]
+
+                let shouldDeleteOutcome = surveyDelegate?.surveyTask(
+                    viewController: self,
+                    shouldAllowDeletingOutcomeForEvent: event
+                )
+
+                guard shouldDeleteOutcome == true else { return }
                 
                 let cancelAction = UIAlertAction(
                     title: "Cancel",
@@ -221,7 +199,7 @@ open class OCKSurveyTaskViewController: OCKTaskViewController<OCKSurveyTaskViewS
 
         taskViewController.dismiss(animated: true, completion: nil)
 
-        guard let task = controller.taskEvents.first?.first?.task else {
+        guard let task = viewModel.first?.first?.task else {
             assertionFailure("Task controller is missing its task")
             return
         }
@@ -240,10 +218,7 @@ open class OCKSurveyTaskViewController: OCKTaskViewController<OCKSurveyTaskViewS
         }
 
         let indexPath = IndexPath(item: 0, section: 0)
-
-        guard let event = controller.eventFor(indexPath: indexPath) else {
-            return
-        }
+        let event = viewModel[indexPath.section][indexPath.row]
 
         guard let values = extractOutcome(taskViewController.result) else {
             return
@@ -255,7 +230,7 @@ open class OCKSurveyTaskViewController: OCKTaskViewController<OCKSurveyTaskViewS
             values: values
         )
 
-        controller.storeManager.store.addAnyOutcome(
+        store.addAnyOutcome(
             outcome,
             callbackQueue: .main) { result in
 

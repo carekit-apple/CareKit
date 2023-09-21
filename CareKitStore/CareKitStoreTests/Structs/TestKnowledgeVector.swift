@@ -37,10 +37,12 @@ class TestKnowledgeVector: XCTestCase {
     func testEncoding() throws {
         let id = UUID()
         let vector = OCKRevisionRecord.KnowledgeVector([id: 0])
-        let json = try JSONEncoder().encode(vector)
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .sortedKeys
+        let json = try encoder.encode(vector)
         let string = String(data: json, encoding: .utf8)!
-        let expected = "{\"processes\":[{\"id\":\"\(id)\",\"clock\":0}]}"
-        XCTAssert(string == expected)
+        let expected = "{\"processes\":[{\"clock\":0,\"id\":\"\(id)\"}]}"
+        XCTAssertEqual(string, expected)
     }
 
     func testDecoding() throws {
@@ -48,14 +50,14 @@ class TestKnowledgeVector: XCTestCase {
         let json = "{\"processes\":[{\"id\":\"\(id)\",\"clock\":0}]}"
         let data = json.data(using: .utf8)!
         let vector = try JSONDecoder().decode(OCKRevisionRecord.KnowledgeVector.self, from: data)
-        XCTAssert(vector == .init([id: 0]))
+        XCTAssertEqual(vector, .init([id: 0]))
     }
 
     func testInitialLogicalTimeForOwnProcess() throws {
         let vect = OCKRevisionRecord.KnowledgeVector()
         let uuid = UUID()
         let time = vect.clock(for: uuid)
-        XCTAssert(time == 0)
+        XCTAssertEqual(time, 0)
     }
 
     func testIncrementProcess() throws {
@@ -64,7 +66,7 @@ class TestKnowledgeVector: XCTestCase {
         vect.increment(clockFor: uuid)
         vect.increment(clockFor: uuid)
         let time = vect.clock(for: uuid)
-        XCTAssert(time == 2)
+        XCTAssertEqual(time, 2)
     }
 
     func testMergeWithOtherVector() throws {
@@ -92,7 +94,7 @@ class TestKnowledgeVector: XCTestCase {
             uuid3: 1
         ])
 
-        XCTAssert(vectorA == expected)
+        XCTAssertEqual(vectorA, expected)
     }
 
     func testEqualVectorsAreNotLessThan() {

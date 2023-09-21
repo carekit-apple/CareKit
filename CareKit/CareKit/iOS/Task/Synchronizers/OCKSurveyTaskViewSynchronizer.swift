@@ -31,7 +31,7 @@
 
 import CareKitUI
 
-open class OCKSurveyTaskViewSynchronizer: ViewSynchronizing {
+open class OCKSurveyTaskViewSynchronizer: OCKInstructionsTaskViewSynchronizer {
 
     override open func makeView() -> OCKInstructionsTaskView {
         let view = super.makeView()

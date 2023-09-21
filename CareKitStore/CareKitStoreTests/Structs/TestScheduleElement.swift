@@ -100,7 +100,7 @@ class TestScheduleElement: XCTestCase {
                                                  text: nil, targetValues: [])
         let offsetElement = originalElement.offset(by: offset)
         let expectedStartDate = Calendar.current.date(byAdding: offset, to: date)!
-        XCTAssert(offsetElement.start == expectedStartDate)
+        XCTAssertEqual(offsetElement.start, expectedStartDate)
     }
 
     // MARK: - Date of occurrence
@@ -140,13 +140,13 @@ class TestScheduleElement: XCTestCase {
         let element = OCKScheduleElement(start: aWeekAgo, end: nil, interval: DateComponents(day: 1),
                                          text: nil, targetValues: [], duration: .allDay)
         let events = element.events(from: thisMorning, to: tonight)
-        XCTAssert(events.count == 1)
+        XCTAssertEqual(events.count, 1)
     }
 
     func testEventOccursExactlyOnStartDate() {
         let justAfter = Calendar.current.date(byAdding: .second, value: 1, to: element.start)!
         let events = element.events(from: date, to: justAfter)
-        XCTAssert(events.first!.start == element.start)
+        XCTAssertEqual(events.first!.start, element.start)
     }
 
     func testEventCannotOccurExactlyOnEndDate() {
@@ -175,9 +175,9 @@ class TestScheduleElement: XCTestCase {
         let mid = Calendar.current.date(byAdding: .year, value: 2, to: date)!
         let end = Calendar.current.date(byAdding: .year, value: 4, to: date)!
         let events = element.events(from: mid, to: end)
-        XCTAssert(events.count == 2)
-        XCTAssert(events[0].occurrence == 2)
-        XCTAssert(events[1].occurrence == 3)
+        XCTAssertEqual(events.count, 2)
+        XCTAssertEqual(events[0].occurrence, 2)
+        XCTAssertEqual(events[1].occurrence, 3)
     }
 
     func testReturnsEmptyArrayIfAskedForEventsStartingAfterEndDate() {
@@ -193,18 +193,18 @@ class TestScheduleElement: XCTestCase {
         let events = element.events(from: element.start, to: stop)
         for (index, event) in events.enumerated() {
             let expectedDate = Calendar.current.date(byAdding: .year, value: index, to: element.start)!
-            XCTAssert(event.start == expectedDate)
-            XCTAssert(event.occurrence == index)
+            XCTAssertEqual(event.start, expectedDate)
+            XCTAssertEqual(event.occurrence, index)
         }
     }
 
     func testEventsBetweenEqualIndicesReturnSingleElementArray() {
-        XCTAssert(element.events(betweenOccurrenceIndex: 0, and: 1).count == 1)
+        XCTAssertEqual(element.events(betweenOccurrenceIndex: 0, and: 1).count, 1)
     }
 
     func testEventsBetweenUnequalIndicesReturnsTheCorrectNumberOfElements() {
-        XCTAssert(element.events(betweenOccurrenceIndex: 0, and: 2).count == 2)
-        XCTAssert(element.events(betweenOccurrenceIndex: 2, and: 5).count == 3)
+        XCTAssertEqual(element.events(betweenOccurrenceIndex: 0, and: 2).count, 2)
+        XCTAssertEqual(element.events(betweenOccurrenceIndex: 2, and: 5).count, 3)
     }
 
     func testEventsBetweenIndicesStopsWhenHittingScheduleEnd() {
@@ -227,7 +227,7 @@ class TestScheduleElement: XCTestCase {
         let afternoon = Calendar.current.startOfDay(for: Date()).addingTimeInterval(60 * 60 * 12) // 12:00
         let evening = Calendar.current.startOfDay(for: Date()).addingTimeInterval(60 * 60 * 20) // 20:00
         let events = allDayElement.events(from: afternoon, to: evening)
-        XCTAssert(events.count == 1, "Expected 1 event, but got: \(events.count)")
+        XCTAssertEqual(events.count, 1, "Expected 1 event, but got: \(events.count)")
     }
 
     func testEventsBetweenDatesIncludesEventsThatStartAfterTheEndDateButAreAllDayEvents() {
@@ -239,7 +239,7 @@ class TestScheduleElement: XCTestCase {
                                                interval: DateComponents(weekOfYear: 1), duration: .allDay)
 
         let events = allDayElement.events(from: morning, to: afternoon)
-        XCTAssert(events.count == 1, "Expected 1 event, but got: \(events.count)")
+        XCTAssertEqual(events.count, 1, "Expected 1 event, but got: \(events.count)")
     }
 
     func testEventsBetweenDatesIncludeEventsWithMultidayDurationsThatStartedOnPreviousDays() {
@@ -248,7 +248,7 @@ class TestScheduleElement: XCTestCase {
         let twoDaysLater = Calendar.current.date(byAdding: .day, value: 2, to: morning)!
         let fourDaysLater = Calendar.current.date(byAdding: .day, value: 4, to: morning)!
         let events = element.events(from: twoDaysLater, to: fourDaysLater)
-        XCTAssert(events.count == 1, "Expected 1 event, but got: \(events.count)")
+        XCTAssertEqual(events.count, 1, "Expected 1 event, but got: \(events.count)")
     }
 
     func testEventsBetweenDatesCanOverlap() {
@@ -257,7 +257,7 @@ class TestScheduleElement: XCTestCase {
         let queryStart = morning.addingTimeInterval(60 * 60 * 1.5)
         let queryEnd = queryStart.addingTimeInterval(1)
         let events = element.events(from: queryStart, to: queryEnd)
-        XCTAssert(events.count == 2)
+        XCTAssertEqual(events.count, 2)
     }
 
     func testAllDayEventIsFoundWhenScheduleEndsBeforeEventStart() {
@@ -325,6 +325,6 @@ class TestScheduleElement: XCTestCase {
         let element = OCKScheduleElement(start: morning, end: nil, interval: DateComponents(hour: 1), duration: .hours(2))
         let data = try JSONEncoder().encode(element)
         let decodedElement = try JSONDecoder().decode(OCKScheduleElement.self, from: data)
-        XCTAssert(element == decodedElement)
+        XCTAssertEqual(element, decodedElement)
     }
 }

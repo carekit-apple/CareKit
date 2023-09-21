@@ -56,13 +56,17 @@ class OCKCDPersonName: NSManagedObject {
     }
 
     func makeValue() -> PersonNameComponents {
+
         var components = PersonNameComponents()
-        components.namePrefix = namePrefix
-        components.givenName = givenName
-        components.familyName = familyName
-        components.nameSuffix = nameSuffix
-        components.nickname = nickname
-        components.phoneticRepresentation = phoneticRepresentation?.makeValue()
+        self.managedObjectContext!.performAndWait {
+            components.namePrefix = namePrefix
+            components.givenName = givenName
+            components.familyName = familyName
+            components.nameSuffix = nameSuffix
+            components.nickname = nickname
+            components.phoneticRepresentation = phoneticRepresentation?.makeValue()
+        }
+
         return components
     }
 }

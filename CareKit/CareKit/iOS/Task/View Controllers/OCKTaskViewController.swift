@@ -41,7 +41,7 @@ open class OCKTaskViewController<
     ViewSynchronizer.ViewModel == OCKTaskEvents
 {
 
-    private let store: OCKAnyStoreProtocol
+    let store: OCKAnyStoreProtocol
 
     /// The view that is being synchronized against the store.
     @available(*, deprecated, renamed: "typedView")

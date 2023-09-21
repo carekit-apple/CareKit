@@ -104,7 +104,7 @@ class OCKResponsiveLayoutTests: XCTestCase {
         let result = defaultTestLayoutDefinition.responsiveLayoutRule(traitCollection: traitCollection)
 
         switch result {
-        case .rotation(let val): XCTAssert(val == 90)
+        case .rotation(let val): XCTAssertEqual(val, 90)
         default: XCTFail("Result was unexpected value")
         }
     }
@@ -114,7 +114,7 @@ class OCKResponsiveLayoutTests: XCTestCase {
         let result = defaultTestLayoutDefinition.responsiveLayoutRule(traitCollection: traitCollection)
 
         switch result {
-        case .rotation(let val): XCTAssert(val == 90)
+        case .rotation(let val): XCTAssertEqual(val, 90)
         default: XCTFail("Result was unexpected value")
         }
     }
@@ -124,7 +124,7 @@ class OCKResponsiveLayoutTests: XCTestCase {
         let result = defaultTestLayoutDefinition.responsiveLayoutRule(traitCollection: traitCollection)
 
         switch result {
-        case .spiral(let val): XCTAssert(val == 3)
+        case .spiral(let val): XCTAssertEqual(val, 3)
         default: XCTFail("Result was unexpected value")
         }
     }
@@ -134,7 +134,7 @@ class OCKResponsiveLayoutTests: XCTestCase {
         let result = defaultTestLayoutDefinition.responsiveLayoutRule(traitCollection: traitCollection)
 
         switch result {
-        case .spiral(let val): XCTAssert(val == 5)
+        case .spiral(let val): XCTAssertEqual(val, 5)
         default: XCTFail("Result was unexpected value")
         }
     }
@@ -144,7 +144,7 @@ class OCKResponsiveLayoutTests: XCTestCase {
         let result = defaultTestLayoutDefinition.responsiveLayoutRule(traitCollection: traitCollection)
 
         switch result {
-        case .spiral(let val): XCTAssert(val == 5)
+        case .spiral(let val): XCTAssertEqual(val, 5)
         default: XCTFail("Result was unexpected value")
         }
     }
@@ -154,7 +154,7 @@ class OCKResponsiveLayoutTests: XCTestCase {
         let result = defaultTestLayoutDefinition.responsiveLayoutRule(traitCollection: traitCollection)
 
         switch result {
-        case .spiral(let val): XCTAssertFalse(val == 3)
+        case .spiral(let val): XCTAssertNotEqual(val, 3)
         default: break
         }
     }
@@ -172,14 +172,14 @@ class OCKResponsiveLayoutTests: XCTestCase {
         let result = missingDefaultLayoutDefinition.responsiveLayoutRule(traitCollection: traitCollection)
 
         switch result {
-        case .spiral(let val): XCTAssert(val == 6)
+        case .spiral(let val): XCTAssertEqual(val, 6)
         default: XCTFail("Layout was unexpected value")
         }
 
         let failureTraitCollection = UITraitCollection(preferredContentSizeCategory: .extraSmall)
 
         switch missingDefaultLayoutDefinition.responsiveLayoutRule(traitCollection: failureTraitCollection) {
-        case .spiral(let val): XCTAssert(val == 5)
+        case .spiral(let val): XCTAssertEqual(val, 5)
         default: XCTFail("Layout was unexpected value")
         }
     }
@@ -194,7 +194,7 @@ class OCKResponsiveLayoutTests: XCTestCase {
         let result = sizeClassTestLayoutDefinition.responsiveLayoutRule(traitCollection: traitCollection)
 
         switch result {
-        case .estimatedWidth(let val): XCTAssert(val == 300)
+        case .estimatedWidth(let val): XCTAssertEqual(val, 300)
         default: XCTFail("Layout was unexpected value")
         }
     }
@@ -239,7 +239,7 @@ class OCKResponsiveLayoutTests: XCTestCase {
         let result = extraSmallTestLayoutDefinition.responsiveLayoutRule(traitCollection: traitCollection)
 
         switch result {
-        case .spiral(let val): XCTAssert(val == 4)
+        case .spiral(let val): XCTAssertEqual(val, 4)
         default: XCTFail("Layout was unexpected value")
         }
     }
@@ -254,7 +254,7 @@ class OCKResponsiveLayoutTests: XCTestCase {
         let result = undefinedTestLayoutDefinition.responsiveLayoutRule(traitCollection: traitCollection)
 
         switch result {
-        case .spiral(let val): XCTAssert(val == 3)
+        case .spiral(let val): XCTAssertEqual(val, 3)
         default: XCTFail("Layout was unexpected value")
         }
     }
@@ -287,7 +287,7 @@ class OCKResponsiveLayoutTests: XCTestCase {
         )
 
         switch result {
-        case .estimatedWidth(let val): XCTAssert(val == 200)
+        case .estimatedWidth(let val): XCTAssertEqual(val, 200)
         default: XCTFail("Layout was unexpected value")
         }
     }

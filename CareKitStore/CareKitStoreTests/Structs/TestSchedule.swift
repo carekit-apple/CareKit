@@ -46,13 +46,13 @@ class TestSchedule: XCTestCase {
         let spacing = DateComponents(day: 1)
         let element = OCKScheduleElement(start: Date(), end: nil, interval: spacing, text: nil, targetValues: [])
         let schedule = OCKSchedule(composing: [element])
-        XCTAssert(schedule.elements == [element], "The schedule elements was not equal to the elements that created it")
+        XCTAssertEqual(schedule.elements, [element], "The schedule elements was not equal to the elements that created it")
     }
 
     func testDailySchedule() {
         let schedule = OCKSchedule.dailyAtTime(hour: 8, minutes: 0, start: Date(), end: nil, text: nil)
         for index in 0..<5 {
-            XCTAssert(schedule[index].start == Calendar.current.date(byAdding: DateComponents(day: index), to: schedule.startDate()))
+            XCTAssertEqual(schedule[index].start, Calendar.current.date(byAdding: DateComponents(day: index), to: schedule.startDate()))
         }
     }
 
@@ -61,10 +61,10 @@ class TestSchedule: XCTestCase {
         let threeDaysFromNow = Calendar.current.date(byAdding: .day, value: 3, to: thisMorning)!
         let schedule = OCKSchedule.dailyAtTime(hour: 8, minutes: 0, start: thisMorning, end: nil, text: nil)
         let events = schedule.events(from: thisMorning, to: threeDaysFromNow)
-        XCTAssert(events.count == 3)
-        XCTAssert(events[0].occurrence == 0)
-        XCTAssert(events[1].occurrence == 1)
-        XCTAssert(events[2].occurrence == 2)
+        XCTAssertEqual(events.count, 3)
+        XCTAssertEqual(events[0].occurrence, 0)
+        XCTAssertEqual(events[1].occurrence, 1)
+        XCTAssertEqual(events[2].occurrence, 2)
     }
 
     func testAllDayEventsCapturedByEventsBetweenDates() {
@@ -75,13 +75,13 @@ class TestSchedule: XCTestCase {
         let allDay = OCKScheduleElement(start: breakfast, end: nil, interval: DateComponents(day: 1), text: "Daily", duration: .allDay)
         let schedule = OCKSchedule(composing: [allDay])
         let events = schedule.events(from: lunch, to: dinner)
-        XCTAssert(events.count == 1, "Expected 1 all day event, but got \(events.count)")
+        XCTAssertEqual(events.count, 1, "Expected 1 all day event, but got \(events.count)")
     }
 
     func testWeeklySchedule() {
         let schedule = OCKSchedule.weeklyAtTime(weekday: 1, hours: 0, minutes: 0, start: Date(), end: nil, targetValues: [], text: nil)
         for index in 0..<5 {
-            XCTAssert(schedule[index].start == Calendar.current.date(byAdding: DateComponents(weekOfYear: index), to: schedule.startDate()))
+            XCTAssertEqual(schedule[index].start, Calendar.current.date(byAdding: DateComponents(weekOfYear: index), to: schedule.startDate()))
         }
     }
 
@@ -95,8 +95,8 @@ class TestSchedule: XCTestCase {
         let hours = Calendar.current.component(.hour, from: weekly.startDate())
         let minutes = Calendar.current.component(.minute, from: weekly.startDate())
 
-        XCTAssert(hours == 5, "Expected 5, but got \(hours)")
-        XCTAssert(minutes == 30, "Expected 30, but got \(minutes)")
+        XCTAssertEqual(hours, 5, "Expected 5, but got \(hours)")
+        XCTAssertEqual(minutes, 30, "Expected 30, but got \(minutes)")
     }
 
     func testScheduleComposition() {
@@ -105,7 +105,7 @@ class TestSchedule: XCTestCase {
         let scheduleA = OCKSchedule.mealTimesEachDay(start: startDate, end: nil)
         let scheduleB = OCKSchedule.mealTimesEachDay(start: startDate, end: nil)
         let schedule = OCKSchedule(composing: [scheduleA, scheduleB])
-        XCTAssert(schedule.elements.count == 6)
+        XCTAssertEqual(schedule.elements.count, 6)
     }
 
     func testStartDate() {
@@ -114,7 +114,7 @@ class TestSchedule: XCTestCase {
         let scheduleA = OCKSchedule.dailyAtTime(hour: 10, minutes: 0, start: earlyDate, end: nil, text: nil)
         let scheduleB = OCKSchedule.dailyAtTime(hour: 11, minutes: 0, start: lateDate, end: nil, text: nil)
         let schedule = OCKSchedule(composing: [scheduleA, scheduleB])
-        XCTAssert(schedule.startDate() == scheduleA.startDate())
+        XCTAssertEqual(schedule.startDate(), scheduleA.startDate())
     }
 
     func testEndDateIsNilIfAnyComponentHasANilStartDate() {
@@ -123,7 +123,7 @@ class TestSchedule: XCTestCase {
         let scheduleA = OCKSchedule.dailyAtTime(hour: 10, minutes: 0, start: earlyDate, end: lateDate, text: nil)
         let scheduleB = OCKSchedule.dailyAtTime(hour: 11, minutes: 0, start: lateDate, end: nil, text: nil)
         let schedule = OCKSchedule(composing: [scheduleA, scheduleB])
-        XCTAssert(schedule.endDate() == nil)
+        XCTAssertNil(schedule.endDate())
     }
 
     func testEndDateIsNonNilAndMatchesLatestEndDateIfAllComponentsHaveFiniteEndDate() {
@@ -133,7 +133,7 @@ class TestSchedule: XCTestCase {
         let scheduleA = OCKSchedule.dailyAtTime(hour: 10, minutes: 0, start: earlyDate, end: lateDate, text: nil)
         let scheduleB = OCKSchedule.dailyAtTime(hour: 11, minutes: 0, start: earlyDate, end: laterDate, text: nil)
         let schedule = OCKSchedule(composing: [scheduleA, scheduleB])
-        XCTAssert(schedule.endDate() == scheduleB.endDate())
+        XCTAssertEqual(schedule.endDate(), scheduleB.endDate())
         XCTAssertNotNil(schedule.endDate())
     }
 
@@ -142,7 +142,7 @@ class TestSchedule: XCTestCase {
         let originalSchedule = OCKSchedule.dailyAtTime(hour: 0, minutes: 0, start: date, end: nil, text: nil)
         let offsetSchedule = originalSchedule.offset(by: DateComponents(hour: 1))
         let expectedSchedule = OCKSchedule.dailyAtTime(hour: 1, minutes: 0, start: date, end: nil, text: nil)
-        XCTAssert(offsetSchedule == expectedSchedule)
+        XCTAssertEqual(offsetSchedule, expectedSchedule)
     }
 
     func testScheduleEventsAreSortedByStartDate() {
@@ -161,7 +161,7 @@ class TestSchedule: XCTestCase {
 
     func testSubscriptZeroIsEqualToStartDate() {
         let schedule = OCKSchedule.dailyAtTime(hour: 8, minutes: 0, start: Date(), end: nil, text: nil)
-        XCTAssert(schedule[0].start == schedule.startDate())
+        XCTAssertEqual(schedule[0].start, schedule.startDate())
     }
 
     func testScheduleSubscriptInterleavesComposedSchedulesEventsInChronologicalOrder() {
@@ -173,9 +173,9 @@ class TestSchedule: XCTestCase {
         let schedule = OCKSchedule(composing: [scheduleA, scheduleB, scheduleC])
 
         func compareScheduleEventExcludingOccurrence(left: OCKScheduleEvent, right: OCKScheduleEvent) {
-            XCTAssert(left.element == right.element)
-            XCTAssert(left.start == right.start)
-            XCTAssert(left.end == right.end)
+            XCTAssertEqual(left.element, right.element)
+            XCTAssertEqual(left.start, right.start)
+            XCTAssertEqual(left.end, right.end)
         }
 
         compareScheduleEventExcludingOccurrence(left: schedule[0], right: scheduleA[0])    // 07:30 Day 1
@@ -189,7 +189,7 @@ class TestSchedule: XCTestCase {
         compareScheduleEventExcludingOccurrence(left: schedule[8], right: scheduleC[1])    // 13:00 Day 2
         compareScheduleEventExcludingOccurrence(left: schedule[9], right: scheduleA[5])    // 17:30 Day 2
         for index in 0..<10 {
-            XCTAssert(schedule[index].occurrence == index)
+            XCTAssertEqual(schedule[index].occurrence, index)
         }
     }
 
@@ -199,18 +199,18 @@ class TestSchedule: XCTestCase {
         let endDate = Calendar.current.date(byAdding: .day, value: 2, to: startDate)!
         let mealSchedule = OCKSchedule.mealTimesEachDay(start: startDate, end: nil)
         let events = mealSchedule.events(from: middleDate, to: endDate)
-        XCTAssert(events.count == 3)
-        XCTAssert(events[0].occurrence == 3)
-        XCTAssert(events[1].occurrence == 4)
-        XCTAssert(events[2].occurrence == 5)
+        XCTAssertEqual(events.count, 3)
+        XCTAssertEqual(events[0].occurrence, 3)
+        XCTAssertEqual(events[1].occurrence, 4)
+        XCTAssertEqual(events[2].occurrence, 5)
     }
 
     func testScheduleIntervalsHaveInclusiveLowerBoundAndExclusiveUpperBound() {
         let element = OCKScheduleElement(start: Date(), end: nil, interval: DateComponents(day: 1), text: nil, targetValues: [], duration: .allDay)
         let schedule = OCKSchedule(composing: [element])
         let events = schedule.events(from: schedule[1].start, to: schedule[1].end)
-        XCTAssert(events.count == 1)
-        XCTAssert(events.first?.occurrence == 1)
+        XCTAssertEqual(events.count, 1)
+        XCTAssertEqual(events.first?.occurrence, 1)
     }
 
     func testAllDayScheduleWithEndDate() throws {
@@ -220,7 +220,7 @@ class TestSchedule: XCTestCase {
         let schedule = OCKSchedule(composing: [element])
         let nextWeek = Calendar.current.date(byAdding: DateComponents(second: 1, weekOfYear: 1), to: beginningOfYear)!
         let events = schedule.events(from: beginningOfYear, to: nextWeek)
-        XCTAssert(events.count == 2, "Expected 2, but got \(events.count)")
+        XCTAssertEqual(events.count, 2, "Expected 2, but got \(events.count)")
     }
 
     // Measure how long it takes to generate 10 years worth of events for a highly complex schedule with hourly events.

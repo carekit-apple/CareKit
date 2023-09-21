@@ -114,7 +114,7 @@ class TestStorePatients: XCTestCase {
         let patientF = OCKPatient(id: "F", givenName: "Mariana", familyName: "Lin")
         try store.addPatientsAndWait([patientA, patientB, patientC, patientD, patientE, patientF])
         let patients = try store.fetchPatientsAndWait(query: OCKPatientQuery())
-        XCTAssert(patients.count == 6)
+        XCTAssertEqual(patients.count, 6)
     }
 
     func testQueryPatientByRemoteID() throws {
@@ -124,7 +124,7 @@ class TestStorePatients: XCTestCase {
         var query = OCKPatientQuery(for: Date())
         query.remoteIDs = ["abc"]
         let fetched = try store.fetchPatientsAndWait(query: query).first
-        XCTAssert(fetched == patient)
+        XCTAssertEqual(fetched, patient)
     }
 
     func testBiologicalSexIsPersistedCorrectly() throws {
@@ -132,7 +132,7 @@ class TestStorePatients: XCTestCase {
         patient.sex = .female
         patient = try store.addPatientAndWait(patient)
         patient = try store.fetchPatientAndWait(id: "A")
-        XCTAssert(patient.sex == .female)
+        XCTAssertEqual(patient.sex, .female)
     }
 
     func testBirthdayIsPersistedCorrectly() throws {
@@ -141,7 +141,7 @@ class TestStorePatients: XCTestCase {
         patient.birthday = now
         patient = try store.addPatientAndWait(patient)
         patient = try store.fetchPatientAndWait(id: "A")
-        XCTAssert(patient.birthday == now)
+        XCTAssertEqual(patient.birthday, now)
     }
 
     func testAllergiesArePersistedCorrectly() throws {
@@ -149,7 +149,7 @@ class TestStorePatients: XCTestCase {
         patient.allergies = ["A", "B", "C"]
         patient = try store.addPatientAndWait(patient)
         patient = try store.fetchPatientAndWait(id: "A")
-        XCTAssert(patient.allergies == ["A", "B", "C"])
+        XCTAssertEqual(patient.allergies, ["A", "B", "C"])
     }
 
     // MARK: Versioning
@@ -157,8 +157,8 @@ class TestStorePatients: XCTestCase {
     func testUpdatePatientCreatesNewVersion() throws {
         let patient = try store.addPatientAndWait(OCKPatient(id: "myID", givenName: "Chris", familyName: "Saari"))
         let updatedPatient = try store.updatePatientAndWait(OCKPatient(id: "myID", givenName: "Chris", familyName: "Sillers"))
-        XCTAssert(updatedPatient.name.familyName == "Sillers")
-        XCTAssert(updatedPatient.previousVersionUUIDs.first == patient.uuid)
+        XCTAssertEqual(updatedPatient.name.familyName, "Sillers")
+        XCTAssertEqual(updatedPatient.previousVersionUUIDs.first, patient.uuid)
     }
 
     func testUpdateFailsForUnsavedPatient() {
@@ -169,7 +169,7 @@ class TestStorePatients: XCTestCase {
         let versionA = try store.addPatientAndWait(OCKPatient(id: "A", givenName: "Jared", familyName: "Gosler"))
         let versionB = try store.updatePatientAndWait(OCKPatient(id: "A", givenName: "John", familyName: "Appleseed"))
         let fetched = try store.fetchPatientAndWait(id: versionA.id)
-        XCTAssert(fetched == versionB)
+        XCTAssertEqual(fetched, versionB)
     }
 
     func testPatientQueryOnPastDateReturnsPastVersionOfAPatient() throws {
@@ -188,8 +188,8 @@ class TestStorePatients: XCTestCase {
         query.ids = ["A"]
 
         let fetched = try store.fetchPatientsAndWait(query: query)
-        XCTAssert(fetched.count == 1)
-        XCTAssert(fetched.first?.name == versionA.name)
+        XCTAssertEqual(fetched.count, 1)
+        XCTAssertEqual(fetched.first?.name, versionA.name)
     }
 
     func testPatientQuerySpanningVersionsReturnsNewestVersionOnly() throws {
@@ -208,8 +208,8 @@ class TestStorePatients: XCTestCase {
         query.ids = ["A"]
 
         let fetched = try store.fetchPatientsAndWait(query: query)
-        XCTAssert(fetched.count == 1)
-        XCTAssert(fetched.first?.name == versionB.name)
+        XCTAssertEqual(fetched.count, 1)
+        XCTAssertEqual(fetched.first?.name, versionB.name)
     }
 
     func testPatientQueryBeforePatientWasCreatedReturnsNoResults() throws {

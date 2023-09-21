@@ -69,7 +69,7 @@ class DSTU2TaskConverterTests: XCTestCase {
 
         let converter = OCKDSTU2CarePlanActivityCoder()
         let task = try converter.convert(resource: activity)
-        XCTAssert(task.id == "abc")
+        XCTAssertEqual(task.id, "abc")
     }
 
     func testConvertFHIRTaskSucceedsForCustomIDGetter() throws {
@@ -90,7 +90,7 @@ class DSTU2TaskConverterTests: XCTestCase {
         converter.getCareKitID = { $0.detail!.description_fhir!.value!.string }
 
         let task = try converter.convert(resource: activity)
-        XCTAssert(task.id == "abc")
+        XCTAssertEqual(task.id, "abc")
     }
 
     func testConvertFHIRTaskSucceedsForDefaultTitleGetter() throws {
@@ -111,7 +111,7 @@ class DSTU2TaskConverterTests: XCTestCase {
 
         let converter = OCKDSTU2CarePlanActivityCoder()
         let task = try converter.convert(resource: activity)
-        XCTAssert(task.title == "title")
+        XCTAssertEqual(task.title, "title")
     }
 
     func testConvertFHIRTaskSucceedsForDefaultScheduleGetter() throws {
@@ -134,9 +134,9 @@ class DSTU2TaskConverterTests: XCTestCase {
 
         let converter = OCKDSTU2CarePlanActivityCoder()
         let task = try converter.convert(resource: activity)
-        XCTAssert(task.schedule.elements.count == 1)
-        XCTAssert(task.schedule.elements.first?.interval == DateComponents(day: 1))
-        XCTAssert(task.schedule.elements.first?.duration == .hours(2))
+        XCTAssertEqual(task.schedule.elements.count, 1)
+        XCTAssertEqual(task.schedule.elements.first?.interval, DateComponents(day: 1))
+        XCTAssertEqual(task.schedule.elements.first?.duration, .hours(2))
     }
 
     func testConvertFHIRTaskSucceedsForAllDayScheduleElement() throws {
@@ -159,9 +159,9 @@ class DSTU2TaskConverterTests: XCTestCase {
 
         let converter = OCKDSTU2CarePlanActivityCoder()
         let task = try converter.convert(resource: activity)
-        XCTAssert(task.schedule.elements.count == 1)
-        XCTAssert(task.schedule.elements.first?.interval == DateComponents(day: 1))
-        XCTAssert(task.schedule.elements.first?.duration == .allDay)
+        XCTAssertEqual(task.schedule.elements.count, 1)
+        XCTAssertEqual(task.schedule.elements.first?.interval, DateComponents(day: 1))
+        XCTAssertEqual(task.schedule.elements.first?.duration, .allDay)
     }
 
     // MARK: Convert OCKTask to FHIR Care Plan Activity
@@ -178,13 +178,13 @@ class DSTU2TaskConverterTests: XCTestCase {
             return
         }
 
-        XCTAssert(activity.id == "abc")
-        XCTAssert(activity.detail?.description_fhir == "title")
-        XCTAssert(timing.repeat?.periodUnits == "d")
-        XCTAssert(timing.repeat?.period == FHIRPrimitive(FHIRDecimal(2)))
-        XCTAssert(timing.repeat?.frequency == FHIRPrimitive(1))
-        XCTAssert(timing.repeat?.durationUnits == "s")
-        XCTAssert(timing.repeat?.duration == FHIRPrimitive(FHIRDecimal(3_600)))
+        XCTAssertEqual(activity.id, "abc")
+        XCTAssertEqual(activity.detail?.description_fhir, "title")
+        XCTAssertEqual(timing.repeat?.periodUnits, "d")
+        XCTAssertEqual(timing.repeat?.period, FHIRPrimitive(FHIRDecimal(2)))
+        XCTAssertEqual(timing.repeat?.frequency, FHIRPrimitive(1))
+        XCTAssertEqual(timing.repeat?.durationUnits, "s")
+        XCTAssertEqual(timing.repeat?.duration, FHIRPrimitive(FHIRDecimal(3_600)))
     }
 
     func testConvertCareKitTaskToFHIRCarePlanActivityConvertsAllDayElementsCorrectly() throws {
@@ -204,14 +204,14 @@ class DSTU2TaskConverterTests: XCTestCase {
             return
         }
 
-        XCTAssert(activity.id == "abc")
-        XCTAssert(activity.detail?.description_fhir == "title")
-        XCTAssert(timing.repeat?.periodUnits == "d")
-        XCTAssert(timing.repeat?.period == FHIRPrimitive(FHIRDecimal(2)))
-        XCTAssert(timing.repeat?.durationUnits == "s")
-        XCTAssert(timing.repeat?.duration == FHIRPrimitive(FHIRDecimal(7_200)))
-        XCTAssert(period.start?.value?.foundationDate == startDate)
-        XCTAssert(period.end?.value?.foundationDate == endDate)
+        XCTAssertEqual(activity.id, "abc")
+        XCTAssertEqual(activity.detail?.description_fhir, "title")
+        XCTAssertEqual(timing.repeat?.periodUnits, "d")
+        XCTAssertEqual(timing.repeat?.period, FHIRPrimitive(FHIRDecimal(2)))
+        XCTAssertEqual(timing.repeat?.durationUnits, "s")
+        XCTAssertEqual(timing.repeat?.duration, FHIRPrimitive(FHIRDecimal(7_200)))
+        XCTAssertEqual(period.start?.value?.foundationDate, startDate)
+        XCTAssertEqual(period.end?.value?.foundationDate, endDate)
 
     }
 

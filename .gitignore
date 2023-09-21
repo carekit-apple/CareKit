@@ -25,7 +25,8 @@ DerivedData
 
 # SPM
 .build/
-.swiftpm/
+.swiftpm/xcode/*
+!.swiftpm/xcode/xcshareddata/
 
 # DocC
 .docc-build

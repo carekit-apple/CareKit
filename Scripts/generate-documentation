@@ -1,0 +1,144 @@
+#!/bin/bash
+#
+# Copyright (c) 2022, Apple Inc. All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without modification,
+# are permitted provided that the following conditions are met:
+#
+# 1.  Redistributions of source code must retain the above copyright notice, this
+# list of conditions and the following disclaimer.
+#
+# 2.  Redistributions in binary form must reproduce the above copyright notice,
+# this list of conditions and the following disclaimer in the documentation and/or
+# other materials provided with the distribution.
+#
+# 3. Neither the name of the copyright holder(s) nor the names of any contributors
+# may be used to endorse or promote products derived from this software without
+# specific prior written permission. No license is granted to the trademarks of
+# the copyright holders even if such marks are included in this software.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+# A `realpath` alternative using the default C implementation.
+filepath() {
+    [[ $1 = /* ]] && echo "$1" || echo "$PWD/${1#./}"
+}
+
+# These variables can be changed to ResearchKit/RKWorkspace to build documentation for that platform.
+KIT_NAME="CareKit"
+KIT_XCODE_PROJECT="CKWorkspace"
+
+# First get the absolute path to this file so we can get the absolute file path to the Swift-DocC root source dir.
+KIT_ROOT="$(dirname $(dirname $(filepath $0)))"
+DOCS_DIR="KIT_ROOT/.build/swift-docc"
+SGFS_DIR="$DOCS_DIR/symbol-graph-files"
+TEMP_WORKSPACE_DIR="$DOCS_DIR/temporary-workspace-holding-directory"
+
+DOCC_CMD=convert
+OUTPUT_PATH="$DOCS_DIR/$KIT_NAME.doccarchive"
+HOSTING_BASE_PATH=""
+PUBLISH="NO"
+
+# Process command line arguments
+OUTPUT_PATH_PROCESSED=0
+HOSTING_BASE_PATH_PROCESSED=0
+while test $# -gt 0; do
+  case "$1" in
+    --help)
+      echo "Usage: $(basename $0) [<output-path>] [<hosting-base-path>] [--preview] [--publish] [--help]"
+      echo
+      echo "Builds $KIT_NAME and generates or previews the Swift-DocC documentation."
+      echo
+      echo "    --preview: Starts a preview server after generating documentation."
+      echo "    --publish: Configures the documentation build for publishing on GitHub pages."
+      echo
+      exit 0
+      ;;
+    --preview)
+      DOCC_CMD=preview
+      shift
+      ;;
+    --publish)
+      PUBLISH="YES"
+      shift
+    ;;
+    *)
+      if [ ${OUTPUT_PATH_PROCESSED} -eq 0 ]; then
+        OUTPUT_PATH="$1"
+        OUTPUT_PATH_PROCESSED=1
+      elif [ ${HOSTING_BASE_PATH_PROCESSED} -eq 0 ]; then
+        HOSTING_BASE_PATH="$1"
+        HOSTING_BASE_PATH_PROCESSED=1
+      else
+        echo "Unrecognised argument \"$1\""
+        exit 1
+      fi
+      ;;
+  esac
+  shift
+done
+
+if [ "$PUBLISH" = "YES" ]; then
+  if [ ${HOSTING_BASE_PATH_PROCESSED} -eq 0 ]; then
+    echo "A hosting base path must be provided if the '--publish' flag is passed."
+    echo "See '--help' for details."
+    exit 1
+  fi
+fi
+
+# Create the output directory for the symbol graphs if needed.
+mkdir -p "$DOCS_DIR"
+mkdir -p "$SGFS_DIR"
+rm -f $SGFS_DIR/*.*
+
+cd "$KIT_ROOT"
+
+# Temporarily move the Xcode workspace aside so that xcodebuild uses the Swift package directly
+mkdir "$TEMP_WORKSPACE_DIR"
+mv $KIT_XCODE_PROJECT.xcworkspace "$TEMP_WORKSPACE_DIR/$KIT_XCODE_PROJECT.xcworkspace"
+
+xcodebuild clean build -scheme $KIT_NAME \
+    -destination generic/platform=iOS \
+    OTHER_SWIFT_FLAGS="-emit-symbol-graph -emit-symbol-graph-dir '$SGFS_DIR'"
+
+mv "$TEMP_WORKSPACE_DIR/$KIT_XCODE_PROJECT.xcworkspace" ./$KIT_XCODE_PROJECT.xcworkspace
+rm -r "$TEMP_WORKSPACE_DIR"
+
+# Pretty print DocC JSON output so that it can be consistently diffed between commits
+export DOCC_JSON_PRETTYPRINT="YES"
+
+# By default pass the --index flag so we produce a full DocC archive.
+EXTRA_DOCC_FLAGS="--index"
+
+# If building for publishing, don't pass the --index flag but pass additional flags for
+# static hosting configuration.
+if [ "$PUBLISH" = "YES" ]; then
+    EXTRA_DOCC_FLAGS="--hosting-base-path $KIT_NAME/$HOSTING_BASE_PATH"
+fi
+
+# Handle the case where a DocC catalog does not exist in the repo
+if [ -d $KIT_NAME.docc ]; then
+    # The DocC catalog exists, so pass it to the docc invocation.
+    DOCC_CMD="$DOCC_CMD $KIT_NAME.docc"
+fi
+
+xcrun docc $DOCC_CMD \
+    --additional-symbol-graph-dir "$SGFS_DIR" \
+    --output-path "$OUTPUT_PATH" $EXTRA_DOCC_FLAGS \
+    --fallback-display-name $KIT_NAME \
+    --fallback-bundle-identifier com.apple.$KIT_NAME \
+    --fallback-bundle-version 1.0.0
+
+if [[ "$DOCC_CMD" == "convert"* ]]; then
+    echo
+    echo "Generated DocC archive at: $OUTPUT_PATH"
+fi

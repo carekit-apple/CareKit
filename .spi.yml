@@ -3,7 +3,6 @@ builder:
    configs:
    - documentation_targets: ["CareKit", "CareKitUI", "CareKitStore", "CareKitFHIR"]
      platform: ios
-   - platform: ios
      scheme: "CareKit"
    - platform: watchos
      scheme: "CareKit"

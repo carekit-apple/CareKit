@@ -39,7 +39,7 @@ KIT_XCODE_PROJECT="CKWorkspace"
 
 # First get the absolute path to this file so we can get the absolute file path to the Swift-DocC root source dir.
 KIT_ROOT="$(dirname $(dirname $(filepath $0)))"
-DOCS_DIR="KIT_ROOT/.build/swift-docc"
+DOCS_DIR="$KIT_ROOT/.build/swift-docc"
 SGFS_DIR="$DOCS_DIR/symbol-graph-files"
 TEMP_WORKSPACE_DIR="$DOCS_DIR/temporary-workspace-holding-directory"
 

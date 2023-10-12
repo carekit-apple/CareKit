@@ -41,7 +41,7 @@ The primary CareKit framework codebase supports iOS and requires Xcode 12.0 or n
 # Getting Started <a name="getting-started"></a>
 
 * [Website](https://www.researchandcare.org)
-* [Documentation](https://carekit-apple.github.io/CareKit/documentation/carekit/)
+* [Documentation](https://swiftpackageindex.com/carekit-apple/CareKit/main/documentation/carekit)
 * [WWDC: ResearchKit and CareKit Reimagined](https://developer.apple.com/videos/play/wwdc2019/217/)
 
 ### Option One: Install using Swift Package Manager

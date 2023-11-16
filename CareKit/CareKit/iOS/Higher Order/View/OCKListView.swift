@@ -87,7 +87,7 @@ internal class OCKListView: OCKView {
     }
 
     private func constrainSubviews() {
-        [scrollView, contentView, stackView].forEach { $0?.translatesAutoresizingMaskIntoConstraints = false }
+        [scrollView, contentView, stackView].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
 
         NSLayoutConstraint.activate([
             contentView.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor),

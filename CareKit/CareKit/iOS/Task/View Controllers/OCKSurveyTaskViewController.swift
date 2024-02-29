@@ -41,7 +41,7 @@ public protocol OCKSurveyTaskViewControllerDelegate: AnyObject {
     func surveyTask(
         viewController: OCKSurveyTaskViewController,
         for task: OCKAnyTask,
-        didFinish result: Result<ORKTaskViewControllerFinishReason, Error>)
+        didFinish result: Result<ORKTaskFinishReason, Error>)
 
     func surveyTask(
         viewController: OCKSurveyTaskViewController,
@@ -53,7 +53,7 @@ public extension OCKSurveyTaskViewControllerDelegate {
     func surveyTask(
         viewController: OCKSurveyTaskViewController,
         for task: OCKAnyTask,
-        didFinish result: Result<ORKTaskViewControllerFinishReason, Error>) {
+        didFinish result: Result<ORKTaskFinishReason, Error>) {
         // No-op
     }
 
@@ -194,7 +194,7 @@ open class OCKSurveyTaskViewController: OCKTaskViewController<OCKSurveyTaskViewS
     
     open func taskViewController(
         _ taskViewController: ORKTaskViewController,
-        didFinishWith reason: ORKTaskViewControllerFinishReason,
+        didFinishWith reason: ORKTaskFinishReason,
         error: Error?) {
 
         taskViewController.dismiss(animated: true, completion: nil)

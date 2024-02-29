@@ -32,6 +32,7 @@
 import CareKitStore
 import CareKitUI
 import ResearchKit
+import ResearchKitUI
 import UIKit
 
 // MARK: OCKSurveyTaskViewControllerDelegate

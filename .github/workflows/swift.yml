@@ -12,15 +12,15 @@ concurrency:
 
 jobs:        
   test:
-    runs-on: macos-12
+    runs-on: macos-13
     strategy:
       matrix:
-        destination: ['platform=iOS\ Simulator,OS=16.2,name=iPhone\ 14\ Pro\ Max', 'platform=watchOS\ Simulator,OS=9.1,name=Apple\ Watch\ Series\ 5\ \(40mm\)']
+        destination: ['platform=iOS\ Simulator,OS=17.2,name=iPhone\ 15\ Pro\ Max', 'platform=watchOS\ Simulator,OS=9.1,name=Apple\ Watch\ Series\ 5\ \(40mm\)']
         scheme: ['CareKit', 'CareKitStore', 'CareKitUI', 'CareKitFHIR']
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Set Xcode Version
-        run: sudo xcode-select -s /Applications/Xcode_14.2.app
+        run: sudo xcode-select -s /Applications/Xcode_15.2.app
       - name: Use multiple cores
         run: defaults write com.apple.dt.XCBuild EnableSwiftBuildSystemIntegration 1
       - name: Build

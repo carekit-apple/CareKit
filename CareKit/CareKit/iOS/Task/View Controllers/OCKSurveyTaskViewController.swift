@@ -32,17 +32,30 @@
 import CareKitStore
 import CareKitUI
 import ResearchKit
+#if canImport(ResearchKitUI)
 import ResearchKitUI
+#endif
 import UIKit
 
 // MARK: OCKSurveyTaskViewControllerDelegate
 
 public protocol OCKSurveyTaskViewControllerDelegate: AnyObject {
 
+    #if canImport(ResearchKitUI)
+
     func surveyTask(
         viewController: OCKSurveyTaskViewController,
         for task: OCKAnyTask,
         didFinish result: Result<ORKTaskFinishReason, Error>)
+
+    #else
+
+    func surveyTask(
+        viewController: OCKSurveyTaskViewController,
+        for task: OCKAnyTask,
+        didFinish result: Result<ORKTaskViewControllerFinishReason, Error>)
+
+    #endif
 
     func surveyTask(
         viewController: OCKSurveyTaskViewController,
@@ -51,12 +64,25 @@ public protocol OCKSurveyTaskViewControllerDelegate: AnyObject {
 
 public extension OCKSurveyTaskViewControllerDelegate {
 
+    #if canImport(ResearchKitUI)
+
     func surveyTask(
         viewController: OCKSurveyTaskViewController,
         for task: OCKAnyTask,
         didFinish result: Result<ORKTaskFinishReason, Error>) {
         // No-op
     }
+
+    #else
+
+    func surveyTask(
+        viewController: OCKSurveyTaskViewController,
+        for task: OCKAnyTask,
+        didFinish result: Result<ORKTaskViewControllerFinishReason, Error>) {
+        // No-op
+    }
+
+    #endif
 
     func surveyTask(
         viewController: OCKSurveyTaskViewController,
@@ -192,7 +218,8 @@ open class OCKSurveyTaskViewController: OCKTaskViewController<OCKSurveyTaskViewS
     }
 
     // MARK: ORKTaskViewControllerDelegate
-    
+    #if canImport(ResearchKitUI)
+
     open func taskViewController(
         _ taskViewController: ORKTaskViewController,
         didFinishWith reason: ORKTaskFinishReason,
@@ -251,6 +278,70 @@ open class OCKSurveyTaskViewController: OCKTaskViewController<OCKSurveyTaskViewS
             )
         }
     }
+
+    #else
+
+    open func taskViewController(
+        _ taskViewController: ORKTaskViewController,
+        didFinishWith reason: ORKTaskViewControllerFinishReason,
+        error: Error?) {
+
+        taskViewController.dismiss(animated: true, completion: nil)
+
+        guard let task = viewModel.first?.first?.task else {
+            assertionFailure("Task controller is missing its task")
+            return
+        }
+
+        if let error = error {
+            surveyDelegate?.surveyTask(
+                viewController: self,
+                for: task,
+                didFinish: .failure(error)
+            )
+            return
+        }
+
+        guard reason == .completed else {
+            return
+        }
+
+        let indexPath = IndexPath(item: 0, section: 0)
+        let event = viewModel[indexPath.section][indexPath.row]
+
+        guard let values = extractOutcome(taskViewController.result) else {
+            return
+        }
+
+        let outcome = OCKOutcome(
+            taskUUID: event.task.uuid,
+            taskOccurrenceIndex: event.scheduleEvent.occurrence,
+            values: values
+        )
+
+        store.addAnyOutcome(
+            outcome,
+            callbackQueue: .main) { result in
+
+            if case let .failure(error) = result {
+
+                self.surveyDelegate?.surveyTask(
+                    viewController: self,
+                    for: task,
+                    didFinish: .failure(error)
+                )
+            }
+
+            self.surveyDelegate?.surveyTask(
+                viewController: self,
+                for: task,
+                didFinish: .success(reason)
+            )
+        }
+    }
+
+    #endif
+
 }
 
 #endif

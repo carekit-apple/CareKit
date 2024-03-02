@@ -178,6 +178,7 @@ class TestOutcomeValue: XCTestCase {
 
     func testEqualityOfEncodings(outcome1: OCKOutcomeValue, outcome2: OCKOutcomeValue) {
         let encoder = JSONEncoder()
+        encoder.outputFormatting = .sortedKeys
         do {
             let encoded1 = try encoder.encode(outcome1)
             let encoded2 = try encoder.encode(outcome2)

@@ -184,7 +184,7 @@ class TestOutcomeValue: XCTestCase {
             let encoded2 = try encoder.encode(outcome2)
             let decoded1 = try XCTUnwrap(String(data: encoded1, encoding: .utf8))
             let decoded2 = try XCTUnwrap(String(data: encoded2, encoding: .utf8))
-            XCTAssertEqual(decoded1, decoded2, "OCKOutcomeValue decoding inequality")
+            XCTAssertEqual(decoded1, decoded2, "OCKOutcomeValue encoding inequality")
         } catch {
             XCTFail("unable to encode or decode OCKOutcomeValue")
         }

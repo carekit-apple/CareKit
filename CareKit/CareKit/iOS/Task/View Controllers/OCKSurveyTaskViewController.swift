@@ -42,21 +42,10 @@ import UIKit
 
 public protocol OCKSurveyTaskViewControllerDelegate: AnyObject {
 
-    #if canImport(ResearchKitUI)
-
-    func surveyTask(
-        viewController: OCKSurveyTaskViewController,
-        for task: OCKAnyTask,
-        didFinish result: Result<ORKTaskFinishReason, Error>)
-
-    #else
-
     func surveyTask(
         viewController: OCKSurveyTaskViewController,
         for task: OCKAnyTask,
         didFinish result: Result<ORKTaskViewControllerFinishReason, Error>)
-
-    #endif
 
     func surveyTask(
         viewController: OCKSurveyTaskViewController,

@@ -34,6 +34,7 @@ import CareKitUI
 import ResearchKit
 #if canImport(ResearchKitUI)
 import ResearchKitUI
+public typealias ORKTaskViewControllerFinishReason = ORKTaskFinishReason
 #endif
 import UIKit
 

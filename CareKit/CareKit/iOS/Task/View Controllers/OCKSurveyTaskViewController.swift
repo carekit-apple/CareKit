@@ -254,7 +254,6 @@ open class OCKSurveyTaskViewController: OCKTaskViewController<OCKSurveyTaskViewS
             )
         }
     }
-
 }
 
 #endif

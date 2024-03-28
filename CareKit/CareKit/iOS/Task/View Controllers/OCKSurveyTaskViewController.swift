@@ -32,6 +32,10 @@
 import CareKitStore
 import CareKitUI
 import ResearchKit
+#if canImport(ResearchKitUI)
+import ResearchKitUI
+public typealias ORKTaskViewControllerFinishReason = ORKTaskFinishReason
+#endif
 import UIKit
 
 // MARK: OCKSurveyTaskViewControllerDelegate
@@ -191,7 +195,7 @@ open class OCKSurveyTaskViewController: OCKTaskViewController<OCKSurveyTaskViewS
     }
 
     // MARK: ORKTaskViewControllerDelegate
-    
+
     open func taskViewController(
         _ taskViewController: ORKTaskViewController,
         didFinishWith reason: ORKTaskViewControllerFinishReason,

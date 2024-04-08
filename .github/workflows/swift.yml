@@ -12,10 +12,10 @@ concurrency:
 
 jobs:        
   test:
-    runs-on: macos-13
+    runs-on: macos-14
     strategy:
       matrix:
-        destination: ['platform=iOS\ Simulator,OS=17.2,name=iPhone\ 15\ Pro\ Max', 'platform=watchOS\ Simulator,OS=10.2,name=Apple\ Watch\ Series\ 7\ \(45mm\)']
+        destination: ['platform=iOS\ Simulator,OS=17.4,name=iPhone\ 15\ Pro\ Max', 'platform=watchOS\ Simulator,OS=10.2,name=Apple\ Watch\ Series\ 7\ \(45mm\)']
         scheme: ['CareKit', 'CareKitStore', 'CareKitUI', 'CareKitFHIR']
     steps:
       - uses: actions/checkout@v4

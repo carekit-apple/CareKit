@@ -17,7 +17,6 @@ jobs:
       matrix:
         destination: ['platform=iOS\ Simulator,OS=17.4,name=iPhone\ 15\ Pro\ Max', 'platform=watchOS\ Simulator,OS=10.4,name=Apple\ Watch\ Series\ 7\ \(45mm\)']
         scheme: ['CareKit', 'CareKitStore', 'CareKitUI', 'CareKitFHIR']
-    name: ${{ matrix.scheme }} Unit Tests
     steps:
       - uses: actions/checkout@v4
       - name: Set Xcode Version

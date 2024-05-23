@@ -64,7 +64,7 @@ public struct LinearCareTaskProgress: CareTaskProgress, Hashable, Sendable {
         didSet { Self.validate(goal: goal) }
     }
 
-    init(
+    public init(
         value: Double,
         goal: Double? = nil
     ) {

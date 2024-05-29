@@ -54,4 +54,12 @@ public struct BinaryCareTaskProgress: CareTaskProgress, Hashable, Sendable {
         let percentCompleted: Double = isCompleted ? 1 : 0
         return percentCompleted
     }
+
+    /// Create user progress by specifying complete or incomplete.
+    ///
+    /// - Parameters:
+    ///   - isCompleted: The user progress for a task is either completed or incomplete.
+    public init(isCompleted: Bool) {
+        self.isCompleted = isCompleted
+    }
 }

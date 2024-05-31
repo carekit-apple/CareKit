@@ -64,12 +64,11 @@ public struct LinearCareTaskProgress: CareTaskProgress, Hashable, Sendable {
         didSet { Self.validate(goal: goal) }
     }
 
-    /// Create user progress by specifying the current value and goal of the progress. 
+    /// Create a structure that defines user progress for a task that can be completed over time.
     /// 
     /// - Parameters: 
-    ///   - value: The current value of a users progress for the task. 
-    ///   - goal: The goal user progress value to consider the task complete. If there's no goal, the task is considered completed if
-    /// the progress value is greater than zero.
+    ///   - value: The progress that's been made towards reaching the goal.
+    ///   - goal: A value that indicates whether the task is complete. When there is no goal, the value is `nil`.  The task is considered completed if the progress value is greater than zero.
     public init(
         value: Double,
         goal: Double? = nil

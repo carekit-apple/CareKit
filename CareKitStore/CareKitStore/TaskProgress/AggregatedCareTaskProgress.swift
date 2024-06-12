@@ -93,7 +93,7 @@ public struct AggregatedCareTaskProgress: CareTaskProgress, Hashable, Sendable {
         self.fractionCompleted = fractionCompleted
     }
 
-    /// Create user progress  by computing and combining the progress for multiple tasks using a single strategy.
+    /// Create user progress by computing and combining the progress for multiple tasks using a single strategy.
     ///
     /// - Parameters:
     ///   - events: The events used to compute progress.

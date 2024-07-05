@@ -1461,7 +1461,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.Apple.CareKitStoreTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTED_PLATFORMS = "watchsimulator watchos iphonesimulator iphoneos";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx watchos watchsimulator";
 				SUPPORTS_MACCATALYST = YES;
 				TARGETED_DEVICE_FAMILY = "1,2,4";
 			};
@@ -1482,7 +1482,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.Apple.CareKitStoreTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTED_PLATFORMS = "watchsimulator watchos iphonesimulator iphoneos";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx watchos watchsimulator";
 				SUPPORTS_MACCATALYST = YES;
 				TARGETED_DEVICE_FAMILY = "1,2,4";
 			};

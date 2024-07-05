@@ -84,12 +84,20 @@ private struct CardModifier: ViewModifier {
         RoundedRectangle(cornerRadius: style.appearance.cornerRadius2, style: .continuous)
     }
 
+    private var foregroundColor: Color {
+        #if !os(macOS)
+        return Color(style.color.secondaryCustomGroupedBackground)
+        #else
+        return style.color.secondaryCustomGroupedBackground
+        #endif
+    }
+
     func body(content: Content) -> some View {
         content
             .clipShape(cardShape)
             .background(
                 cardShape
-                    .foregroundColor(Color(style.color.secondaryCustomGroupedBackground))
+                    .foregroundColor(foregroundColor)
                     .shadow(color: Color(hue: 0, saturation: 0, brightness: 0, opacity: Double(style.appearance.shadowOpacity1)),
                             radius: style.appearance.shadowRadius1,
                             x: style.appearance.shadowOffset1.width,

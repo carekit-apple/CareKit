@@ -120,12 +120,20 @@ private struct InAppContent: View {
         if let url = link.url {
             switch link {
             case .website:
-                SafariView(url: url)
+                webView(withURL: url)
                     .edgesIgnoringSafeArea(.bottom)
             default:
                 fatalError("Link type does not support in-app content")
             }
         }
+    }
+
+    func webView(withURL url: URL) -> some View {
+        #if !os(macOS)
+        return SafariView(url: url)
+        #else
+        return Link(destination: url, label: { EmptyView() })
+        #endif
     }
 }
 

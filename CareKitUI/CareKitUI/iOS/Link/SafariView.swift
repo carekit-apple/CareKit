@@ -43,7 +43,9 @@ struct SafariView: UIViewControllerRepresentable {
 
     func makeUIViewController(context: UIViewControllerRepresentableContext<SafariView>) -> SFSafariViewController {
         let config = SFSafariViewController.Configuration()
+        #if !os(visionOS)
         config.barCollapsingEnabled = true
+        #endif
         return SFSafariViewController(url: url, configuration: config)
     }
 

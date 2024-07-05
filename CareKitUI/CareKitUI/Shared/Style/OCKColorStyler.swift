@@ -36,7 +36,7 @@ import UIKit
 /// Defines color constants.
 public protocol OCKColorStyler {
 
-    #if os(iOS)
+    #if os(iOS) || os(visionOS)
 
     var label: UIColor { get }
     var secondaryLabel: UIColor { get }
@@ -84,7 +84,7 @@ public protocol OCKColorStyler {
 /// Defines default values for color constants.
 public extension OCKColorStyler {
 
-    #if os(iOS)
+    #if os(iOS) || os(visionOS)
 
     var label: UIColor { .label }
     var secondaryLabel: UIColor { .secondaryLabel }
@@ -127,7 +127,7 @@ public extension OCKColorStyler {
     var quaternaryCustomFill: UIColor { #colorLiteral(red: 0.462745098, green: 0.462745098, blue: 0.5019607843, alpha: 0.18) }
 
     #elseif os(macOS)
-    
+
     var secondaryCustomGroupedBackground: Color { .white }
     var tertiaryCustomFill: Color { .white }
     var white: Color { .white }
@@ -136,7 +136,7 @@ public extension OCKColorStyler {
 
     #endif
 
-    #if canImport(UIKit)
+    #if os(iOS) || os(visionOS) || os(watchOS)
 
     var white: UIColor { .white }
     var black: UIColor { .black }

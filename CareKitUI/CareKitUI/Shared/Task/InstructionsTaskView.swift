@@ -32,7 +32,7 @@ import SwiftUI
 
 #if os(iOS)
 private let completionButtonTextPadding: CGFloat = 14
-#elseif os(watchOS) || os(macOS)
+#else
 private let completionButtonTextPadding: CGFloat = 8
 #endif
 

@@ -66,7 +66,11 @@ open class OCKSeparatorView: OCKView {
         super.styleDidChange()
         let cachedStyle = style()
         backgroundColor = cachedStyle.color.separator
+        #if os(iOS)
+        
         heightConstraint?.constant = cachedStyle.dimension.separatorHeight
+        
+        #endif
     }
 }
 #endif

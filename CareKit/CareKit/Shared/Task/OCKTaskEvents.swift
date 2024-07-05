@@ -86,7 +86,10 @@ public struct OCKTaskEvents: Collection, Identifiable {
 
         // First make sure there is no matching event already stored in the data structure.
         let indexPath = self.indexPath(of: event)
-        guard indexPath == nil else { return (self[indexPath!.section][indexPath!.row], false) }
+        guard indexPath == nil else {
+            let indexPathRowValue = rowValueOfIndexPath(indexPath!)
+            return (self[indexPath!.section][indexPathRowValue], false)
+        }
 
         // Append the event to the matching section if one exists.
         if let section = section(for: event.task) {
@@ -113,7 +116,8 @@ public struct OCKTaskEvents: Collection, Identifiable {
     public mutating func remove(event: OCKAnyEvent) -> OCKAnyEvent? {
         guard let indexPath = indexPath(of: event) else { return nil }
         var updatedEvents = events[indexPath.section]
-        let removedEvent = updatedEvents.remove(at: indexPath.row)
+        let indexPathRowValue = rowValueOfIndexPath(indexPath)
+        let removedEvent = updatedEvents.remove(at: indexPathRowValue)
 
         // If the removed event was the last one in the section, remove the whole section.
         guard !updatedEvents.isEmpty else {
@@ -132,7 +136,8 @@ public struct OCKTaskEvents: Collection, Identifiable {
     public mutating func update(event: OCKAnyEvent) -> OCKAnyEvent? {
         // Update the matching event
         if let matchIndexPath = indexPath(of: event) {
-            events[matchIndexPath.section][matchIndexPath.row] = event
+            let matchIndexPathRowValue = rowValueOfIndexPath(matchIndexPath)
+            events[matchIndexPath.section][matchIndexPathRowValue] = event
             return event
         // Else append the event
         } else {
@@ -148,7 +153,19 @@ public struct OCKTaskEvents: Collection, Identifiable {
     private func indexPath(of event: OCKAnyEvent) -> IndexPath? {
         guard let section = section(for: event.task) else { return nil }
         guard let row = events[section].firstIndex(where: { $0.matches(event) }) else { return nil }
+        #if !os(macOS)
         return .init(row: row, section: section)
+        #else
+        return .init(item: row, section: section)
+        #endif
+    }
+
+    private func rowValueOfIndexPath(_ indexPath: IndexPath) -> Int {
+        #if !os(macOS)
+        return indexPath.row
+        #else
+        return indexPath.item
+        #endif
     }
 
     // MARK: - Collection

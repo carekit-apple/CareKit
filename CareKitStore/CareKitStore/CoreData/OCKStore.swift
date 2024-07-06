@@ -251,6 +251,7 @@ open class OCKStore: OCKStoreProtocol, Equatable {
     }
 
     private func loadStore(into container: NSPersistentContainer) -> Bool {
+
         let descriptor = NSPersistentStoreDescription()
         descriptor.url = storeURL
         descriptor.type = NSSQLiteStoreType
@@ -262,6 +263,7 @@ open class OCKStore: OCKStoreProtocol, Equatable {
 
         // This closure runs synchronously because of the settings above
         var loadError: Error?
+
         container.loadPersistentStores(completionHandler: { _, error in
             if let error = error as NSError? {
                 loadError = error
@@ -294,6 +296,7 @@ open class OCKStore: OCKStoreProtocol, Equatable {
     }
 
     private func updateFileProtectionPathAtURL(_ url: URL) throws {
+
         #if os(macOS)
         // Currently only needed for macOS, other OS's set through CoreData.
         let fileManager = FileManager.default
@@ -301,6 +304,7 @@ open class OCKStore: OCKStoreProtocol, Equatable {
         attributes[.protectionKey] = storeType.securityClass
         try fileManager.setAttributes(attributes, ofItemAtPath: url.path)
         #endif
+
     }
 
     @objc

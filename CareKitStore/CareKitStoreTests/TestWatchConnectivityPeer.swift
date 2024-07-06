@@ -28,6 +28,8 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#if !os(macOS)
+
 @testable import CareKitStore
 import XCTest
 
@@ -149,3 +151,5 @@ private final class MockPeer: OCKWatchConnectivityPeer {
         self.peersStore.resolveConflicts(completion: completion)
     }
 }
+
+#endif

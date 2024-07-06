@@ -77,4 +77,46 @@ class TestStore: XCTestCase {
             XCTAssertEqual(store.context.clockTime, 2)
         }
     }
+
+    #if os(macOS)
+    func checkStoreProtection(_ protection: FileProtectionType) throws {
+        let store = OCKStore(name: UUID().uuidString, type: .onDisk(protection: protection))
+        _ = store.context // Storage is created lazily. Access context to force file creation.
+        let fileManager = FileManager.default
+
+        let storePath = store.storeURL.path
+        XCTAssertTrue(FileManager.default.fileExists(atPath: storePath))
+
+        let attributes = try fileManager.attributesOfItem(atPath: storePath)
+        let currentFileProtectionType = try XCTUnwrap(attributes[.protectionKey] as? FileProtectionType)
+
+        // macOS lowest protection level is NSFileProtectionCompleteUntilFirstUserAuthentication.
+        if protection == .none {
+            XCTAssertEqual(currentFileProtectionType, .completeUntilFirstUserAuthentication)
+        } else {
+            XCTAssertEqual(currentFileProtectionType, protection)
+        }
+
+        XCTAssertNoThrow(try store.delete())
+        XCTAssertFalse(fileManager.fileExists(atPath: store.storeURL.path))
+    }
+
+    func testStoreOnDiskComplete() throws {
+        try checkStoreProtection(.complete)
+    }
+
+    func testStoreOnDiskCompleteUnlessOpen() throws {
+        try checkStoreProtection(.completeUnlessOpen)
+    }
+
+    func testStoreOnDiskCompleteUntilFirstUserAuthentication() throws {
+        try checkStoreProtection(.completeUntilFirstUserAuthentication)
+    }
+
+    func testStoreOnDiskNone() throws {
+        try checkStoreProtection(.none)
+    }
+
+    #endif
+
 }

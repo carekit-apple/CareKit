@@ -200,7 +200,7 @@ class TestPersistentStoreCoordinator: XCTestCase {
         XCTAssertThrowsError(try coordinator.addAnyTaskAndWait(task))
     }
 
-#if !os(watchOS) && !os(visionOS)
+#if !os(watchOS) && !os(macOS) && !os(visionOS)
     @available(iOS 15, watchOS 8, *)
     func testStoreCoordinatorDoesNotSendNormalOutcomesToHealthKit() {
         let coordinator = OCKStoreCoordinator()

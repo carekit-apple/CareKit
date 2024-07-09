@@ -1524,7 +1524,7 @@
 			repositoryURL = "https://github.com/apple/swift-async-algorithms";
 			requirement = {
 				kind = exactVersion;
-				version = 1.0.0;
+				version = 1.0.1;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

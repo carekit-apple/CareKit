@@ -30,7 +30,7 @@ let package = Package(
         ),
         .package(
             url: "https://github.com/apple/swift-async-algorithms",
-            exact: Version(1, 0, 0)
+            exact: Version(1, 0, 1)
         )
     ],
     targets: [

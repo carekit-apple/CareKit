@@ -132,7 +132,6 @@ class TestHealthKitPassthroughStoreEvents: XCTestCase {
                 XCTAssertEqual(outcomeValues.first?.doubleValue, 70)
                 XCTAssertEqual(outcomeValues.first?.startDate, heartRateStart)
                 XCTAssertEqual(outcomeValues.first?.endDate, heartRateEnd)
-                #if !os(macOS) && !os(visionOS)
                 XCTAssertEqual(outcomeValues[safe: 1]?.doubleValue, 80)
 
             default:

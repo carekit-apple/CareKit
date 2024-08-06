@@ -123,8 +123,14 @@ class TestCoreDataSchemaMigrations: XCTestCase {
         try FileManager.default.removeItem(at: dir)
     }
     
-    // The `SampleStore2.1` database was saved from the previous migration
-    // The database model version is `CareKitStore2.1`
+    /// The `SampleStore2.1` database was created using the `OCKSample` app checked out
+    /// at release tag 3.0.1-beta.2. The database model version is `CareKitStore2.1`.
+    ///
+    /// It contains:
+    ///   Contacts: 2
+    ///   Tasks: 3
+    ///   Outcomes: 3
+    ///   OutcomeValues: 3
     func testMigrationFrom2_1to3_0() throws {
         
         // 1. Copy the sample store files to a temporary directory
@@ -199,8 +205,5 @@ class TestCoreDataSchemaMigrations: XCTestCase {
         let store = container.persistentStoreCoordinator.persistentStores[0]
         try container.persistentStoreCoordinator.remove(store)
         try FileManager.default.removeItem(at: dir)
-    
     }
-    
-    
 }

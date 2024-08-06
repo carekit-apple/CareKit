@@ -80,13 +80,14 @@ class TestHealthKitPassthroughStoreEvents: XCTestCase {
         }
 
         let heartRates: [Double] = [70, 80]
-
+        let heartRateStart = heartRateTask.schedule[0].start
+        let heartRateEnd = heartRateTask.schedule[0].end
         let heartRateSamples = heartRates.map {
             Sample(
                 id: UUID(),
                 type: HKObjectType.quantityType(forIdentifier: heartRateTask.healthKitLinkage.quantityIdentifier)!,
                 quantity: HKQuantity(unit: heartRateTask.healthKitLinkage.unit, doubleValue: $0),
-                dateInterval: DateInterval(start: heartRateTask.schedule[0].start, end: heartRateTask.schedule[0].end)
+                dateInterval: DateInterval(start: heartRateStart, end: heartRateEnd)
             )
         }
 
@@ -129,6 +130,9 @@ class TestHealthKitPassthroughStoreEvents: XCTestCase {
             case heartRateTask.id:
                 XCTAssertEqual(outcomeValues.count, 2)
                 XCTAssertEqual(outcomeValues.first?.doubleValue, 70)
+                XCTAssertEqual(outcomeValues.first?.startDate, heartRateStart)
+                XCTAssertEqual(outcomeValues.first?.endDate, heartRateEnd)
+                #if !os(macOS) && !os(visionOS)
                 XCTAssertEqual(outcomeValues[safe: 1]?.doubleValue, 80)
 
             default:

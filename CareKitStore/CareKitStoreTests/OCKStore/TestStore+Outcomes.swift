@@ -56,8 +56,12 @@ class TestStoreOutcomes: XCTestCase {
         let task = try store.addTaskAndWait(OCKTask(id: "A", title: "A", carePlanUUID: nil, schedule: schedule))
         let taskUUID = task.uuid
 
+        let startDate = Date()
+        let endDate = startDate + 1
         var value = OCKOutcomeValue(42)
         value.kind = "number"
+        value.startDate = startDate
+        value.endDate = endDate
 
         var outcome = OCKOutcome(taskUUID: taskUUID, taskOccurrenceIndex: 0, values: [value])
         outcome = try store.addOutcomeAndWait(outcome)
@@ -67,6 +71,8 @@ class TestStoreOutcomes: XCTestCase {
         XCTAssertEqual(outcomes.first?.values.first?.kind, "number")
         XCTAssertNotNil(outcomes.first?.taskUUID)
         XCTAssertNotNil(outcomes.first?.schemaVersion)
+        XCTAssertEqual(outcomes.first?.values.first?.startDate, startDate)
+        XCTAssertEqual(outcomes.first?.values.first?.endDate, endDate)
     }
 
     func testAddOutcomeToTask() throws {

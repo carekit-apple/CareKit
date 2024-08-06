@@ -48,7 +48,7 @@ class TestCoreDataSchemaMigrations: XCTestCase {
     ///   Tasks: 3
     ///   Outcomes: 3
     ///   OutcomeValues: 3
-    func testMigrationFrom2_0to2_1() throws {
+    func testMigrationFrom2_0to3_0() throws {
         
         // 1. Copy the sample store files to a temporary directory
         // The temporary directory and it's contents will be deleted automatically.
@@ -56,6 +56,7 @@ class TestCoreDataSchemaMigrations: XCTestCase {
         let tempDir = NSTemporaryDirectory()
         let folder = UUID().uuidString
         let dir = URL(fileURLWithPath: tempDir).appendingPathComponent(folder, isDirectory: true)
+    
 
         try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true, attributes: [:])
 
@@ -101,16 +102,105 @@ class TestCoreDataSchemaMigrations: XCTestCase {
         XCTAssertNotNil(ckTask)
         XCTAssertNotNil(ckSchedule)
         XCTAssertEqual(ckKnowledge?.count, 1)
-        XCTAssertEqual(ckSchema, "2.1.0")
+        XCTAssertEqual(ckSchema, "3.0.0")
 
         let outcomes = ckTask?.value(forKey: "outcomes") as? Set<NSManagedObject>
         let values = outcomes?.map { $0.value(forKey: "values") as? Set<NSManagedObject> }
         XCTAssertNotNil(outcomes)
         XCTAssertNotNil(values)
+        
+        let outcome = outcomes?.first
+        let outcomeValues = outcome?.value(forKey: "values") as? Set<NSManagedObject>
+        let outcomeValue = outcomeValues?.first
+        let startDate = outcomeValue?.value(forKey: "startDate")
+        let endDate = outcomeValue?.value(forKey: "endDate")
+        XCTAssertNil(startDate)
+        XCTAssertNil(endDate)
 
         // 5. Tear down the CoreData stack before the files get deleted
         let store = container.persistentStoreCoordinator.persistentStores[0]
         try container.persistentStoreCoordinator.remove(store)
         try FileManager.default.removeItem(at: dir)
     }
+    
+    // The `SampleStore2.1` database was saved from the previous migration
+    // The database model version is `CareKitStore2.1`
+    func testMigrationFrom2_1to3_0() throws {
+        
+        // 1. Copy the sample store files to a temporary directory
+        // The temporary directory and it's contents will be deleted automatically.
+        
+        let tempDir = NSTemporaryDirectory()
+        let folder = UUID().uuidString
+        let dir = URL(fileURLWithPath: tempDir).appendingPathComponent(folder, isDirectory: true)
+        
+        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true, attributes: [:])
+
+        try FileManager.default.copyItem(
+            at: testsBundle.url(forResource: "SampleStore2.1", withExtension: "sqlite")!,
+            to: dir.appendingPathComponent("SampleStore2.1.sqlite"))
+
+        try FileManager.default.copyItem(
+            at: testsBundle.url(forResource: "SampleStore2.1", withExtension: "sqlite-shm")!,
+            to: dir.appendingPathComponent("SampleStore2.1.sqlite-shm"))
+
+        try FileManager.default.copyItem(
+            at: testsBundle.url(forResource: "SampleStore2.1", withExtension: "sqlite-wal")!,
+            to: dir.appendingPathComponent("SampleStore2.1.sqlite-wal"))
+        
+        // 2. Create a store from the copied SQL files.
+        let descriptor = NSPersistentStoreDescription()
+        descriptor.url = dir.appendingPathComponent("SampleStore2.1.sqlite")
+        descriptor.type = NSSQLiteStoreType
+        descriptor.shouldAddStoreAsynchronously = false
+        #if !os(macOS)
+        descriptor.setOption(FileProtectionType.complete as NSObject, forKey: NSPersistentStoreFileProtectionKey)
+        #endif
+        descriptor.shouldMigrateStoreAutomatically = true
+
+        let container = NSPersistentContainer(name: "sut", managedObjectModel: sharedManagedObjectModel)
+        container.persistentStoreDescriptions = [descriptor]
+
+        // 3. Perform migration and ensure it was successful.
+        // The closure here is executed synchronously.
+        container.loadPersistentStores { _, error in
+            XCTAssertNil(error)
+        }
+        
+        // 4. Query the contents of the store and ensure all the relationships
+        // were setup correctly.
+        let ckRequest = NSFetchRequest<NSManagedObject>(entityName: "OCKCDTask")
+        let ckTasks = try container.viewContext.fetch(ckRequest)
+        XCTAssertEqual(ckTasks.count, 3)
+
+        let ckTask = ckTasks.first
+        let ckSchedule = ckTask?.value(forKey: "scheduleElements")
+        let ckKnowledge = ckTask?.value(forKey: "knowledge") as? Set<NSManagedObject>
+        let ckSchema = ckTask?.value(forKey: "schemaVersion") as? String
+        XCTAssertNotNil(ckTask)
+        XCTAssertNotNil(ckSchedule)
+        XCTAssertEqual(ckKnowledge?.count, 1)
+        XCTAssertEqual(ckSchema, "3.0.0")
+
+        let outcomes = ckTask?.value(forKey: "outcomes") as? Set<NSManagedObject>
+        let values = outcomes?.map { $0.value(forKey: "values") as? Set<NSManagedObject> }
+        XCTAssertNotNil(outcomes)
+        XCTAssertNotNil(values)
+        
+        let outcome = outcomes?.first
+        let outcomeValues = outcome?.value(forKey: "values") as? Set<NSManagedObject>
+        let outcomeValue = outcomeValues?.first
+        let startDate = outcomeValue?.value(forKey: "startDate")
+        let endDate = outcomeValue?.value(forKey: "endDate")
+        XCTAssertNil(startDate)
+        XCTAssertNil(endDate)
+        
+        // 5. Tear down the CoreData stack before the files get deleted
+        let store = container.persistentStoreCoordinator.persistentStores[0]
+        try container.persistentStoreCoordinator.remove(store)
+        try FileManager.default.removeItem(at: dir)
+    
+    }
+    
+    
 }

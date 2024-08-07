@@ -57,7 +57,6 @@ class TestCoreDataSchemaMigrations: XCTestCase {
         let folder = UUID().uuidString
         let dir = URL(fileURLWithPath: tempDir).appendingPathComponent(folder, isDirectory: true)
     
-
         try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true, attributes: [:])
 
         try FileManager.default.copyItem(

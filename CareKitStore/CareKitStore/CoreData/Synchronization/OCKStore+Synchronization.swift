@@ -90,6 +90,7 @@ extension NSManagedObjectContext {
 
         let request = NSFetchRequest<T>(entityName: entityName)
         request.fetchLimit = 1
+        request.returnsObjectsAsFaults = false
 
         request.predicate = NSPredicate(
             format: "%K IN %@",
@@ -105,6 +106,7 @@ extension NSManagedObjectContext {
         let request = NSFetchRequest<T>(entityName: String(describing: T.self))
         request.fetchLimit = 1
         request.predicate = NSPredicate(format: "%K == %@", #keyPath(OCKCDObject.uuid), uuid as CVarArg)
+        request.returnsObjectsAsFaults = false
         guard let object = try fetch(request).first else {
             throw OCKStoreError.fetchFailed(reason: "No object \(T.self) for UUID \(uuid)")
         }

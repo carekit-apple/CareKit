@@ -57,6 +57,7 @@ final class CoreDataQueryMonitor<
 
         request.predicate = predicate
         request.sortDescriptors = sortDescriptors
+        request.returnsObjectsAsFaults = false
 
         self.request = request
         self.context = context

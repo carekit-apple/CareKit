@@ -103,7 +103,8 @@
       "containerPath" : "container:CareKit.xcodeproj",
       "identifier" : "8605A5B91C4F04EC00DD65FF",
       "name" : "CareKit"
-    }
+    },
+    "testRepetitionMode" : "fixedIterations"
   },
   "testTargets" : [
     {

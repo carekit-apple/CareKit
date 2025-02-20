@@ -69,6 +69,12 @@ public struct OCKOutcomeValue: Codable, Equatable, CustomStringConvertible {
     /// The date that this value was created.
     public var createdDate = Date()
 
+    /// The value's start date.
+    public var startDate: Date?
+
+    /// The value's end date.
+    public var endDate: Date?
+    
     /// The underlying value.
     public var value: OCKOutcomeValueUnderlyingType
 
@@ -147,6 +153,8 @@ public struct OCKOutcomeValue: Codable, Equatable, CustomStringConvertible {
         case value
         case type
         case createdDate
+        case startDate
+        case endDate
     }
 
     public init(from decoder: Decoder) throws {
@@ -170,6 +178,8 @@ public struct OCKOutcomeValue: Codable, Equatable, CustomStringConvertible {
 
         kind = try container.decodeIfPresent(String.self, forKey: .kind)
         units = try container.decodeIfPresent(String.self, forKey: .units)
+        startDate = try container.decodeIfPresent(Date.self, forKey: .startDate)
+        endDate = try container.decodeIfPresent(Date.self, forKey: .endDate)
         createdDate = try container.decode(Date.self, forKey: .createdDate)
     }
 
@@ -178,6 +188,8 @@ public struct OCKOutcomeValue: Codable, Equatable, CustomStringConvertible {
 
         try container.encode(type, forKey: .type)
         try container.encode(createdDate, forKey: .createdDate)
+        try container.encodeIfPresent(startDate, forKey: .startDate)
+        try container.encodeIfPresent(endDate, forKey: .endDate)
         try container.encodeIfPresent(kind, forKey: .kind)
         try container.encodeIfPresent(units, forKey: .units)
 

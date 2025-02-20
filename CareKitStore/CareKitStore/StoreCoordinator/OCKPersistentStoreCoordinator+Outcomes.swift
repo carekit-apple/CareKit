@@ -45,7 +45,7 @@ extension OCKStoreCoordinator {
         }
 
         let sortDescriptor = NSSortDescriptor(
-            keyPath: \OCKAnyOutcome.id,
+            keyPath: \OCKCDOutcome.id,
             ascending: true
         )
 

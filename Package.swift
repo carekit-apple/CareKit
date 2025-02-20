@@ -26,11 +26,11 @@ let package = Package(
     dependencies: [
         .package(
             url: "https://github.com/apple/FHIRModels.git",
-            exact: Version(0, 4, 0)
+            exact: Version(0, 5, 0)
         ),
         .package(
             url: "https://github.com/apple/swift-async-algorithms",
-            exact: Version(0, 1, 0)
+            exact: Version(1, 0, 1)
         )
     ],
     targets: [

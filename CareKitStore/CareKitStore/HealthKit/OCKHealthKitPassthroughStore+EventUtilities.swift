@@ -396,6 +396,12 @@ extension OCKHealthKitPassthroughStore {
 
         let descriptors = makeQueryDescriptors(for: events)
 
+        // Only perform query if there are one or more descriptors.
+        guard descriptors.count > 0 else {
+            completion(.success([]))
+            return
+        }
+
         // We're not storing the query anchor because we're only fetching the
         // initial samples, and aren't concerned with changes that occur to the samples
         // in the HK store.

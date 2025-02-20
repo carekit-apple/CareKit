@@ -44,19 +44,19 @@ public struct OCKTaskQuery: Equatable, OCKQueryProtocol {
 
             case let .effectiveDate(ascending):
                 return NSSortDescriptor(
-                    keyPath: \OCKAnyTask.effectiveDate,
+                    keyPath: \OCKCDTask.effectiveDate,
                     ascending: ascending
                 )
 
             case let .groupIdentifier(ascending):
                 return NSSortDescriptor(
-                    keyPath: \OCKAnyTask.groupIdentifier,
+                    keyPath: \OCKCDTask.groupIdentifier,
                     ascending: ascending
                 )
 
             case let .title(ascending):
                 return NSSortDescriptor(
-                    keyPath: \OCKAnyTask.title,
+                    keyPath: \OCKCDTask.title,
                     ascending: ascending
                 )
             }

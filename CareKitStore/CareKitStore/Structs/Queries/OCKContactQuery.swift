@@ -43,11 +43,11 @@ public struct OCKContactQuery: Equatable, OCKQueryProtocol {
         var nsSortDescriptor: NSSortDescriptor {
             switch self {
             case let .effectiveDate(ascending):
-                return NSSortDescriptor(keyPath: \OCKAnyContact.effectiveDate, ascending: ascending)
+                return NSSortDescriptor(keyPath: \OCKCDContact.effectiveDate, ascending: ascending)
             case let .givenName(ascending):
-                return NSSortDescriptor(keyPath: \OCKAnyContact.name.givenName, ascending: ascending)
+                return NSSortDescriptor(keyPath: \OCKCDContact.name.givenName, ascending: ascending)
             case let .familyName(ascending):
-                return NSSortDescriptor(keyPath: \OCKAnyContact.name.familyName, ascending: ascending)
+                return NSSortDescriptor(keyPath: \OCKCDContact.name.familyName, ascending: ascending)
             }
         }
     }

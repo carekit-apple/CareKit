@@ -42,9 +42,9 @@ public struct OCKCarePlanQuery: Equatable, OCKQueryProtocol {
         var nsSortDescriptor: NSSortDescriptor {
             switch self {
             case let .effectiveDate(ascending):
-                return NSSortDescriptor(keyPath: \OCKAnyCarePlan.effectiveDate, ascending: ascending)
+                return NSSortDescriptor(keyPath: \OCKCDCarePlan.effectiveDate, ascending: ascending)
             case let .title(ascending):
-                return NSSortDescriptor(keyPath: \OCKAnyCarePlan.title, ascending: ascending)
+                return NSSortDescriptor(keyPath: \OCKCDCarePlan.title, ascending: ascending)
             }
         }
     }

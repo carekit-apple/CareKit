@@ -44,13 +44,13 @@ public struct OCKPatientQuery: Equatable, OCKQueryProtocol {
         var nsSortDescriptor: NSSortDescriptor {
             switch self {
             case let .groupIdentifier(ascending):
-                return NSSortDescriptor(keyPath: \OCKAnyPatient.groupIdentifier, ascending: ascending)
+                return NSSortDescriptor(keyPath: \OCKCDPatient.groupIdentifier, ascending: ascending)
             case let .givenName(ascending):
-                return NSSortDescriptor(keyPath: \OCKAnyPatient.name.givenName, ascending: ascending)
+                return NSSortDescriptor(keyPath: \OCKCDPatient.name.givenName, ascending: ascending)
             case let .familyName(ascending):
-                return NSSortDescriptor(keyPath: \OCKAnyPatient.name.familyName, ascending: ascending)
+                return NSSortDescriptor(keyPath: \OCKCDPatient.name.familyName, ascending: ascending)
             case let .effectiveDate(ascending):
-                return NSSortDescriptor(keyPath: \OCKAnyPatient.effectiveDate, ascending: ascending)
+                return NSSortDescriptor(keyPath: \OCKCDPatient.effectiveDate, ascending: ascending)
             }
         }
     }

@@ -143,6 +143,46 @@ class TestHealthKitPassthroughStoreOutcomes: XCTestCase {
         try passthroughStore.checkAbilityToDelete(outcomes: outcomes)
     }
 
+    func testTaskQueryDefaultsToCurrentDayDateInterval() async throws {
+        let outcomeTaskQuery = OCKOutcomeQuery()
+        let taskQuery = passthroughStore.makeTaskQuery(from: outcomeTaskQuery)
+        let currentDayDateInterval = Calendar.current.dateInterval(of: .day, for: Date())!
+
+        XCTAssertEqual(
+            taskQuery.dateInterval?.start,
+            currentDayDateInterval.start
+        )
+        XCTAssertEqual(
+            taskQuery.dateInterval?.end,
+            currentDayDateInterval.end
+        )
+    }
+
+    func testTaskQueryBecomesOutcomeQueryDateInterval() async throws {
+        let yesterday = Calendar.current.date(
+            byAdding: .day,
+            value: -1,
+            to: Date()
+        )!
+        let yesterdayDateInterval = Calendar.current.dateInterval(
+            of: .day,
+            for: yesterday
+        )!
+        let outcomeTaskQuery = OCKOutcomeQuery(
+            dateInterval: yesterdayDateInterval
+        )
+        let taskQuery = passthroughStore.makeTaskQuery(from: outcomeTaskQuery)
+
+        XCTAssertEqual(
+            taskQuery.dateInterval?.start,
+            yesterdayDateInterval.start
+        )
+        XCTAssertEqual(
+            taskQuery.dateInterval?.end,
+            yesterdayDateInterval.end
+        )
+    }
+
     // MARK: - Utilities
 
     private func makeStepsTask() -> OCKHealthKitTask {

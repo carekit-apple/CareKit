@@ -15,7 +15,7 @@ jobs:
     runs-on: macos-15
     strategy:
       matrix:
-        destination: ['platform=iOS\ Simulator,OS=18.2,name=iPhone\ 16\ Pro\ Max', 'platform=watchOS\ Simulator,OS=11.2,name=Apple\ Watch\ Series\ 10\ \(45mm\)', 'platform=macOS CODE_SIGN_IDENTITY=""', 'platform=visionOS\ Simulator,OS=2.2,name=Apple\ Vision\ Pro CODE_SIGN_IDENTITY=""']
+        destination: ['platform=iOS\ Simulator,OS=18.2,name=iPhone\ 16\ Pro\ Max', 'platform=watchOS\ Simulator,OS=11.2,name=Apple\ Watch\ Series\ 10\ \(46mm\)', 'platform=macOS CODE_SIGN_IDENTITY=""', 'platform=visionOS\ Simulator,OS=2.2,name=Apple\ Vision\ Pro CODE_SIGN_IDENTITY=""']
         scheme: ['CareKit', 'CareKitStore', 'CareKitUI', 'CareKitFHIR']
     steps:
       - uses: actions/checkout@v4

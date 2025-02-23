@@ -156,9 +156,12 @@ class TestHealthKitPassthroughStoreOutcomes: XCTestCase {
             taskQuery.dateInterval?.end,
             currentDayDateInterval.end
         )
+        XCTAssertEqual(taskQuery.ids, outcomeTaskQuery.taskIDs)
+        XCTAssertEqual(taskQuery.remoteIDs, outcomeTaskQuery.taskRemoteIDs)
+        XCTAssertEqual(taskQuery.uuids, outcomeTaskQuery.taskUUIDs)
     }
 
-    func testTaskQueryBecomesOutcomeQueryDateInterval() async throws {
+    func testTaskQueryPropertiesAdoptsOutcomeQueryProperties() async throws {
         let yesterday = Calendar.current.date(
             byAdding: .day,
             value: -1,
@@ -168,19 +171,18 @@ class TestHealthKitPassthroughStoreOutcomes: XCTestCase {
             of: .day,
             for: yesterday
         )!
-        let outcomeTaskQuery = OCKOutcomeQuery(
+        var outcomeTaskQuery = OCKOutcomeQuery(
             dateInterval: yesterdayDateInterval
         )
+        outcomeTaskQuery.taskIDs = ["id"]
+        outcomeTaskQuery.taskRemoteIDs = ["remoteID"]
+        outcomeTaskQuery.taskUUIDs = [UUID()]
         let taskQuery = passthroughStore.makeTaskQuery(from: outcomeTaskQuery)
 
-        XCTAssertEqual(
-            taskQuery.dateInterval?.start,
-            yesterdayDateInterval.start
-        )
-        XCTAssertEqual(
-            taskQuery.dateInterval?.end,
-            yesterdayDateInterval.end
-        )
+        XCTAssertEqual(taskQuery.dateInterval, outcomeTaskQuery.dateInterval)
+        XCTAssertEqual(taskQuery.ids, outcomeTaskQuery.taskIDs)
+        XCTAssertEqual(taskQuery.remoteIDs, outcomeTaskQuery.taskRemoteIDs)
+        XCTAssertEqual(taskQuery.uuids, outcomeTaskQuery.taskUUIDs)
     }
 
     // MARK: - Utilities

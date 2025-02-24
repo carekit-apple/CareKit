@@ -28,7 +28,6 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Combine
 import Foundation
 
 /// Provides context for a view model value.
@@ -49,15 +48,4 @@ public struct OCKSynchronizationContext<ViewModel> {
     }
 }
 
-extension Publisher {
-
-    func context(currentValue: Output,
-                 animateIf animationCondition: @escaping (_ oldOutput: Output, _ output: Output) -> Bool)
-                 -> Publishers.Scan<Self, OCKSynchronizationContext<Output>> {
-        let context = OCKSynchronizationContext(viewModel: currentValue, oldViewModel: currentValue, animated: false)
-        return scan(context) { previousContext, newValue -> OCKSynchronizationContext<Output> in
-            return OCKSynchronizationContext(viewModel: newValue, oldViewModel: previousContext.viewModel,
-                                             animated: animationCondition(previousContext.viewModel, newValue))
-        }
-    }
-}
+extension OCKSynchronizationContext: Equatable where ViewModel: Equatable {}

@@ -35,7 +35,7 @@ import Foundation
 public struct OCKPatient: Codable, Equatable, Identifiable, OCKAnyPatient {
 
     // MARK: OCKAnyPatient
-    public let id: String
+    public var id: String
     public var name: PersonNameComponents
     public var sex: OCKBiologicalSex?
     public var birthday: Date?

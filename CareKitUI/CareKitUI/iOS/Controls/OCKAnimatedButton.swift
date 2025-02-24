@@ -122,7 +122,7 @@ open class OCKAnimatedButton<Content: UIView>: UIControl, OCKStylable {
     }
 
     /// Handle the selection state automatically when the button is tapped.
-    public var handlesSelection: Bool = true
+    public var handlesSelection = true
 
     /// The highlighted state options.
     public let highlightOptions: Set<HighlightOption>

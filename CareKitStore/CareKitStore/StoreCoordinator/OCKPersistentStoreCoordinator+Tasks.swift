@@ -32,18 +32,48 @@ import Foundation
 
 extension OCKStoreCoordinator {
 
-    open func fetchAnyTasks(query: OCKTaskQuery, callbackQueue: DispatchQueue = .main,
-                            completion: @escaping (Result<[OCKAnyTask], OCKStoreError>) -> Void) {
+    public func anyTasks(matching query: OCKTaskQuery) -> CareStoreQueryResults<OCKAnyTask> {
+
+        let stores = readOnlyEventStores + eventStores
+
+        let relevantStores = stores.filter {
+            taskStore($0, shouldHandleQuery: query)
+        }
+
+        let tasksStreams = relevantStores.map {
+            $0.anyTasks(matching: query)
+        }
+
+        let sortDescriptors = query
+            .sortDescriptors
+            .map(\.nsSortDescriptor)
+
+        let tasks = combineMany(
+            sequences: tasksStreams,
+            sortingElementsUsing: sortDescriptors
+        )
+
+        return tasks
+    }
+
+    public func fetchAnyTasks(
+        query: OCKTaskQuery,
+        callbackQueue: DispatchQueue = .main,
+        completion: @escaping (Result<[OCKAnyTask], OCKStoreError>) -> Void
+    ) {
         let readableStores = readOnlyEventStores + eventStores
         let respondingStores = readableStores.filter { taskStore($0, shouldHandleQuery: query) }
         let closures = respondingStores.map({ store in { done in
             store.fetchAnyTasks(query: query, callbackQueue: callbackQueue, completion: done) }
         })
-        aggregate(closures, callbackQueue: callbackQueue, completion: completion)
+        aggregateAndFlatten(closures, callbackQueue: callbackQueue, completion: completion)
     }
 
-    open func addAnyTasks(_ tasks: [OCKAnyTask], callbackQueue: DispatchQueue = .main,
-                          completion: ((Result<[OCKAnyTask], OCKStoreError>) -> Void)? = nil) {
+    public func addAnyTasks(
+        _ tasks: [OCKAnyTask],
+        callbackQueue: DispatchQueue = .main,
+        completion: ((Result<[OCKAnyTask], OCKStoreError>) -> Void)? = nil
+    ) {
         do {
             try findStore(forTasks: tasks).addAnyTasks(tasks, callbackQueue: callbackQueue, completion: completion)
         } catch {
@@ -54,8 +84,11 @@ extension OCKStoreCoordinator {
         }
     }
 
-    open func updateAnyTasks(_ tasks: [OCKAnyTask], callbackQueue: DispatchQueue = .main,
-                             completion: ((Result<[OCKAnyTask], OCKStoreError>) -> Void)? = nil) {
+    public func updateAnyTasks(
+        _ tasks: [OCKAnyTask],
+        callbackQueue: DispatchQueue = .main,
+        completion: ((Result<[OCKAnyTask], OCKStoreError>) -> Void)? = nil
+    ) {
         do {
             try findStore(forTasks: tasks).updateAnyTasks(tasks, callbackQueue: callbackQueue, completion: completion)
         } catch {
@@ -66,8 +99,11 @@ extension OCKStoreCoordinator {
         }
     }
 
-    open func deleteAnyTasks(_ tasks: [OCKAnyTask], callbackQueue: DispatchQueue = .main,
-                             completion: ((Result<[OCKAnyTask], OCKStoreError>) -> Void)? = nil) {
+    public func deleteAnyTasks(
+        _ tasks: [OCKAnyTask],
+        callbackQueue: DispatchQueue = .main,
+        completion: ((Result<[OCKAnyTask], OCKStoreError>) -> Void)? = nil
+    ) {
         do {
             try findStore(forTasks: tasks).deleteAnyTasks(tasks, callbackQueue: callbackQueue, completion: completion)
         } catch {
@@ -84,19 +120,5 @@ extension OCKStoreCoordinator {
         guard let store = matchingStores.first else { throw OCKStoreError.invalidValue(reason: "No store could be found for any tasks.") }
         guard matchingStores.allSatisfy({ $0 === store }) else { throw OCKStoreError.invalidValue(reason: "Not all tasks belong to same store.") }
         return store
-    }
-}
-
-extension OCKStoreCoordinator: OCKTaskStoreDelegate {
-    open func taskStore(_ store: OCKAnyReadOnlyTaskStore, didAddTasks tasks: [OCKAnyTask]) {
-        taskDelegate?.taskStore(self, didAddTasks: tasks)
-    }
-
-    open func taskStore(_ store: OCKAnyReadOnlyTaskStore, didUpdateTasks tasks: [OCKAnyTask]) {
-        taskDelegate?.taskStore(self, didUpdateTasks: tasks)
-    }
-
-    open func taskStore(_ store: OCKAnyReadOnlyTaskStore, didDeleteTasks tasks: [OCKAnyTask]) {
-        taskDelegate?.taskStore(self, didDeleteTasks: tasks)
     }
 }

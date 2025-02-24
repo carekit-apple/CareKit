@@ -40,7 +40,7 @@ public struct OCKOutcome: Codable, Equatable, Identifiable, OCKAnyOutcome {
     public var taskUUID: UUID
 
     // MARK: OCKAnyOutcome
-    public var id: String { taskUUID.uuidString + "_\(taskOccurrenceIndex)" }
+    public var id: String = UUID().uuidString
     public var taskOccurrenceIndex: Int
     public var values: [OCKOutcomeValue]
 

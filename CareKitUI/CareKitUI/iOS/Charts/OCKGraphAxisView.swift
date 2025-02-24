@@ -92,7 +92,7 @@ private class OCKCircleLabelView: OCKView {
         applyTintColor()
     }
 
-    var isSelected: Bool = false {
+    var isSelected = false {
         didSet {
             updateLabelColor()
             circleLayer.fillColor = isSelected ? tintColor.cgColor : nil

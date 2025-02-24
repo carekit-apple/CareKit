@@ -3,15 +3,15 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 53;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		03089D7F231ED7AF0054EA23 /* Calendar+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03089D7E231ED7AF0054EA23 /* Calendar+Extensions.swift */; };
 		03181064236A158E006D4870 /* OCKCappedSizeLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03181063236A158E006D4870 /* OCKCappedSizeLabel.swift */; };
 		03AD384623625A3500F6E7DC /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 03AD384423625A3500F6E7DC /* Localizable.stringsdict */; };
+		5100538F25B8EA6F00D939AE /* AccessibleStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5100538E25B8EA6F00D939AE /* AccessibleStack.swift */; };
 		5103C55222F37B44007A7403 /* Number+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5103C55122F37B44007A7403 /* Number+Extensions.swift */; };
-		510466F524A283E500D0FD53 /* InstructionsTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51B225A223EDDCFC00A2D11F /* InstructionsTaskView.swift */; };
 		510466F924A2850700D0FD53 /* OCKContactDisplayable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 510466F824A2850700D0FD53 /* OCKContactDisplayable.swift */; };
 		5105254724462BCE004483D0 /* TestLinkType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5105254524462AF5004483D0 /* TestLinkType.swift */; };
 		51052549244639B3004483D0 /* TestLinkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51052548244639B3004483D0 /* TestLinkView.swift */; };
@@ -36,13 +36,9 @@
 		51656029234AB47500F2A21F /* OCKCheckmarkButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51656028234AB47500F2A21F /* OCKCheckmarkButton.swift */; };
 		516A02BA22F363AE00D55AD7 /* NSLayoutConstraint+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 516A02B922F363AE00D55AD7 /* NSLayoutConstraint+Extensions.swift */; };
 		516A02BC22F363D900D55AD7 /* OCKView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 516A02BB22F363D900D55AD7 /* OCKView.swift */; };
-		516A1C46244F703000BBF2D3 /* Number+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5103C55122F37B44007A7403 /* Number+Extensions.swift */; };
 		516A1C48244F766A00BBF2D3 /* OSValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 516A1C47244F766A00BBF2D3 /* OSValue.swift */; };
-		516A1C49244F766A00BBF2D3 /* OSValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 516A1C47244F766A00BBF2D3 /* OSValue.swift */; };
 		516A1C4F244FA7E500BBF2D3 /* View+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 516A1C4E244FA7E500BBF2D3 /* View+Extension.swift */; };
-		516A1C50244FA7E900BBF2D3 /* View+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 516A1C4E244FA7E500BBF2D3 /* View+Extension.swift */; };
 		517309A524AA6D7E00A35C85 /* OCKStyler+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 517309A424AA6D7E00A35C85 /* OCKStyler+Extension.swift */; };
-		517309A624AA6D7E00A35C85 /* OCKStyler+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 517309A424AA6D7E00A35C85 /* OCKStyler+Extension.swift */; };
 		51746F2B2448B90B00B647E1 /* TestNumericProgressTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51746F2A2448B90B00B647E1 /* TestNumericProgressTaskView.swift */; };
 		5178FBDA22E253FC00794353 /* OCKChartDisplayable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5178FBD922E253FC00794353 /* OCKChartDisplayable.swift */; };
 		518F9D8822961BF5009CAA48 /* OCKAddressButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9D4522961BF5009CAA48 /* OCKAddressButton.swift */; };
@@ -97,33 +93,21 @@
 		51B225AB23EDDCFC00A2D11F /* HeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51B2259F23EDDCFC00A2D11F /* HeaderView.swift */; };
 		51B225AD23EDDCFC00A2D11F /* SimpleTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51B225A123EDDCFC00A2D11F /* SimpleTaskView.swift */; };
 		51B225AF23EDDCFC00A2D11F /* InstructionsTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51B225A223EDDCFC00A2D11F /* InstructionsTaskView.swift */; };
-		51D5C97124A2947A00EC45B5 /* OCKLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 510CC633243B843C008BD6B3 /* OCKLog.swift */; };
-		51E214292444F1520063A121 /* RectangularCompletionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51173F3D243FE022004CB150 /* RectangularCompletionView.swift */; };
-		51E2142A2444F1580063A121 /* CircularCompletionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51173F3B243FE007004CB150 /* CircularCompletionView.swift */; };
-		51E76F1D24004F19008B09E7 /* NoHighlightStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51B2259A23EDDCFC00A2D11F /* NoHighlightStyle.swift */; };
-		51E76F1E24004F1F008B09E7 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51B2259E23EDDCFC00A2D11F /* CardView.swift */; };
-		51E76F1F24004F21008B09E7 /* HeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51B2259F23EDDCFC00A2D11F /* HeaderView.swift */; };
-		51E76F2024004F25008B09E7 /* SimpleTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51B225A123EDDCFC00A2D11F /* SimpleTaskView.swift */; };
+		51CD57912978881C005711EA /* CareKitUI.docc in Sources */ = {isa = PBXBuildFile; fileRef = 51CD57902978881C005711EA /* CareKitUI.docc */; };
 		51E77383237D1D8000ED70A2 /* TestGridTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51E77382237D1D8000ED70A2 /* TestGridTaskView.swift */; };
 		51EFC75623FCAE6000536266 /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51EFC75423FCAE6000536266 /* UIColor+Extension.swift */; };
-		51EFC75723FCAE6000536266 /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51EFC75423FCAE6000536266 /* UIColor+Extension.swift */; };
 		51F12D39229C81E200CA265B /* OCKLabeledCheckmarkButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F12D38229C81E200CA265B /* OCKLabeledCheckmarkButton.swift */; };
+		51F5FA9725B8AE69008C6BDF /* Text+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F5FA9625B8AE69008C6BDF /* Text+Extension.swift */; };
+		51F5FAAF25B8D19D008C6BDF /* BackwardsCompatibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F5FAAE25B8D19D008C6BDF /* BackwardsCompatibility.swift */; };
 		51F75B942447DD0B00978C71 /* NumericProgressTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F75B932447DD0B00978C71 /* NumericProgressTaskView.swift */; };
 		51F78FEE22D7C7C100058858 /* OCKCalendarDisplayable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F78FED22D7C7C100058858 /* OCKCalendarDisplayable.swift */; };
-		51F9F13023A9B9F80087C900 /* OCKColorStyler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9D7422961BF5009CAA48 /* OCKColorStyler.swift */; };
-		51F9F13123A9B9F80087C900 /* OCKAnimationStyler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9D7622961BF5009CAA48 /* OCKAnimationStyler.swift */; };
-		51F9F13223A9B9F80087C900 /* OCKAppearanceStyler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9D7722961BF5009CAA48 /* OCKAppearanceStyler.swift */; };
-		51F9F13323A9B9F80087C900 /* OCKDimensionStyler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 518F9D7822961BF5009CAA48 /* OCKDimensionStyler.swift */; };
-		51F9F13423A9B9FF0087C900 /* OCKStyler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 510D862C23020D410073776E /* OCKStyler.swift */; };
-		51F9F16623A9BEC40087C900 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 64EEC2362318253B00B1012F /* Localizable.strings */; };
-		51F9F16723A9BEC70087C900 /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 03AD384423625A3500F6E7DC /* Localizable.stringsdict */; };
-		51F9F16823A9BEC90087C900 /* OCKLocalization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64EEC23A231825DD00B1012F /* OCKLocalization.swift */; };
 		51FEF4C624325903003CE34C /* OCKFeaturedContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51FEF4C324325902003CE34C /* OCKFeaturedContentView.swift */; };
 		64699E9922FC7B5000FF624F /* OCKLogButtonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64699E9822FC7B5000FF624F /* OCKLogButtonCell.swift */; };
 		64E1BD4C2309FCDC00DFFE52 /* OCKResponsiveLayoutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64E1BD4B2309FCDC00DFFE52 /* OCKResponsiveLayoutTests.swift */; };
 		64E1BD4E2309FCF200DFFE52 /* OCKResponsiveLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64E1BD4D2309FCF200DFFE52 /* OCKResponsiveLayout.swift */; };
 		64EEC2382318253B00B1012F /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 64EEC2362318253B00B1012F /* Localizable.strings */; };
 		64EEC23B231825DD00B1012F /* OCKLocalization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64EEC23A231825DD00B1012F /* OCKLocalization.swift */; };
+		70FC4F3229F18489007DF34F /* TestColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 511A854723E0CAA2002A2AFB /* TestColorExtension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -141,6 +125,7 @@
 		03181063236A158E006D4870 /* OCKCappedSizeLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKCappedSizeLabel.swift; sourceTree = "<group>"; };
 		03AD384723625A4100F6E7DC /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = en; path = en.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		05A6B74C237F49F7009D7D1F /* CareKitUI.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = CareKitUI.xctestplan; sourceTree = "<group>"; };
+		5100538E25B8EA6F00D939AE /* AccessibleStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibleStack.swift; sourceTree = "<group>"; };
 		5103C55122F37B44007A7403 /* Number+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Number+Extensions.swift"; sourceTree = "<group>"; };
 		510466F824A2850700D0FD53 /* OCKContactDisplayable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKContactDisplayable.swift; sourceTree = "<group>"; };
 		5105254524462AF5004483D0 /* TestLinkType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestLinkType.swift; sourceTree = "<group>"; };
@@ -154,7 +139,8 @@
 		51178E1423AAAB2F0068BAB1 /* OCKCompletionState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKCompletionState.swift; sourceTree = "<group>"; };
 		511A854723E0CAA2002A2AFB /* TestColorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestColorExtension.swift; sourceTree = "<group>"; };
 		511BCB5B24365E2E00B4D643 /* OCKDetailedImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKDetailedImageView.swift; sourceTree = "<group>"; };
-		512B012E22C2F82900ABCB1D /* CareKitUITests iOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "CareKitUITests iOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		51266314291B123B00C1D7DE /* Project-Shared.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Project-Shared.xcconfig"; sourceTree = "<group>"; };
+		512B012E22C2F82900ABCB1D /* CareKitUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CareKitUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		512B013222C2F82900ABCB1D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		512EE8FF22975F850052F37C /* OCKDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKDetailView.swift; sourceTree = "<group>"; };
 		51367946243BF6EA0026997B /* LinkItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinkItem.swift; sourceTree = "<group>"; };
@@ -227,12 +213,14 @@
 		51B2259F23EDDCFC00A2D11F /* HeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeaderView.swift; sourceTree = "<group>"; };
 		51B225A123EDDCFC00A2D11F /* SimpleTaskView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleTaskView.swift; sourceTree = "<group>"; };
 		51B225A223EDDCFC00A2D11F /* InstructionsTaskView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InstructionsTaskView.swift; sourceTree = "<group>"; };
+		51CD57902978881C005711EA /* CareKitUI.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = CareKitUI.docc; sourceTree = "<group>"; };
 		51E77382237D1D8000ED70A2 /* TestGridTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestGridTaskView.swift; sourceTree = "<group>"; };
 		51EFC75423FCAE6000536266 /* UIColor+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
 		51F12D38229C81E200CA265B /* OCKLabeledCheckmarkButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKLabeledCheckmarkButton.swift; sourceTree = "<group>"; };
+		51F5FA9625B8AE69008C6BDF /* Text+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Text+Extension.swift"; sourceTree = "<group>"; };
+		51F5FAAE25B8D19D008C6BDF /* BackwardsCompatibility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackwardsCompatibility.swift; sourceTree = "<group>"; };
 		51F75B932447DD0B00978C71 /* NumericProgressTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumericProgressTaskView.swift; sourceTree = "<group>"; };
 		51F78FED22D7C7C100058858 /* OCKCalendarDisplayable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKCalendarDisplayable.swift; sourceTree = "<group>"; };
-		51F9F11A23A9B8F00087C900 /* CareKitUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CareKitUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		51FEF4C324325902003CE34C /* OCKFeaturedContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKFeaturedContentView.swift; sourceTree = "<group>"; };
 		64699E9822FC7B5000FF624F /* OCKLogButtonCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKLogButtonCell.swift; sourceTree = "<group>"; };
 		64E1BD4B2309FCDC00DFFE52 /* OCKResponsiveLayoutTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKResponsiveLayoutTests.swift; sourceTree = "<group>"; };
@@ -251,13 +239,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		51742258224185290054E97C /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		51F9F11723A9B8F00087C900 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -295,6 +276,8 @@
 				510CC633243B843C008BD6B3 /* OCKLog.swift */,
 				51B2259A23EDDCFC00A2D11F /* NoHighlightStyle.swift */,
 				516A1C47244F766A00BBF2D3 /* OSValue.swift */,
+				51F5FAAE25B8D19D008C6BDF /* BackwardsCompatibility.swift */,
+				5100538E25B8EA6F00D939AE /* AccessibleStack.swift */,
 				510466F624A2842A00D0FD53 /* Components */,
 				510466EE24A26C1800D0FD53 /* Task */,
 				518F9D7022961BF5009CAA48 /* Style */,
@@ -325,6 +308,7 @@
 			isa = PBXGroup;
 			children = (
 				516A1C4E244FA7E500BBF2D3 /* View+Extension.swift */,
+				51F5FA9625B8AE69008C6BDF /* Text+Extension.swift */,
 				51EFC75423FCAE6000536266 /* UIColor+Extension.swift */,
 				5103C55122F37B44007A7403 /* Number+Extensions.swift */,
 				517309A424AA6D7E00A35C85 /* OCKStyler+Extension.swift */,
@@ -361,13 +345,6 @@
 			path = Task;
 			sourceTree = "<group>";
 		};
-		510466F424A2831200D0FD53 /* Calendar */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Calendar;
-			sourceTree = "<group>";
-		};
 		510466F624A2842A00D0FD53 /* Components */ = {
 			isa = PBXGroup;
 			children = (
@@ -390,6 +367,15 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		51266313291B123B00C1D7DE /* SharedConfiguration */ = {
+			isa = PBXGroup;
+			children = (
+				51266314291B123B00C1D7DE /* Project-Shared.xcconfig */,
+			);
+			name = SharedConfiguration;
+			path = ../../SharedConfiguration;
+			sourceTree = "<group>";
+		};
 		512B012F22C2F82900ABCB1D /* CareKitUITests */ = {
 			isa = PBXGroup;
 			children = (
@@ -399,7 +385,6 @@
 				511A854723E0CAA2002A2AFB /* TestColorExtension.swift */,
 				510466F224A282D400D0FD53 /* Link */,
 				510466F324A2830500D0FD53 /* Task */,
-				510466F424A2831200D0FD53 /* Calendar */,
 				512B013222C2F82900ABCB1D /* Info.plist */,
 			);
 			path = CareKitUITests;
@@ -428,6 +413,7 @@
 		51742251224185290054E97C = {
 			isa = PBXGroup;
 			children = (
+				51CD57902978881C005711EA /* CareKitUI.docc */,
 				5174225D224185290054E97C /* CareKitUI */,
 				512B012F22C2F82900ABCB1D /* CareKitUITests */,
 				5174225C224185290054E97C /* Products */,
@@ -438,8 +424,7 @@
 			isa = PBXGroup;
 			children = (
 				5174225B224185290054E97C /* CareKitUI.framework */,
-				512B012E22C2F82900ABCB1D /* CareKitUITests iOS.xctest */,
-				51F9F11A23A9B8F00087C900 /* CareKitUI.framework */,
+				512B012E22C2F82900ABCB1D /* CareKitUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -447,6 +432,7 @@
 		5174225D224185290054E97C /* CareKitUI */ = {
 			isa = PBXGroup;
 			children = (
+				51266313291B123B00C1D7DE /* SharedConfiguration */,
 				510466EB24A26B1600D0FD53 /* Shared */,
 				510466E924A26B0A00D0FD53 /* iOS */,
 				5174225F224185290054E97C /* Info.plist */,
@@ -633,19 +619,12 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		51F9F11523A9B8F00087C900 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		512B012D22C2F82900ABCB1D /* CareKitUITests iOS */ = {
+		512B012D22C2F82900ABCB1D /* CareKitUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 512B013822C2F82900ABCB1D /* Build configuration list for PBXNativeTarget "CareKitUITests iOS" */;
+			buildConfigurationList = 512B013822C2F82900ABCB1D /* Build configuration list for PBXNativeTarget "CareKitUITests" */;
 			buildPhases = (
 				512B012A22C2F82900ABCB1D /* Sources */,
 				512B012B22C2F82900ABCB1D /* Frameworks */,
@@ -656,14 +635,14 @@
 			dependencies = (
 				512B013522C2F82900ABCB1D /* PBXTargetDependency */,
 			);
-			name = "CareKitUITests iOS";
+			name = CareKitUITests;
 			productName = CareKitUITests;
-			productReference = 512B012E22C2F82900ABCB1D /* CareKitUITests iOS.xctest */;
+			productReference = 512B012E22C2F82900ABCB1D /* CareKitUITests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		5174225A224185290054E97C /* CareKitUI iOS */ = {
+		5174225A224185290054E97C /* CareKitUI */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 51742263224185290054E97C /* Build configuration list for PBXNativeTarget "CareKitUI iOS" */;
+			buildConfigurationList = 51742263224185290054E97C /* Build configuration list for PBXNativeTarget "CareKitUI" */;
 			buildPhases = (
 				51742256224185290054E97C /* Headers */,
 				51742257224185290054E97C /* Sources */,
@@ -674,27 +653,9 @@
 			);
 			dependencies = (
 			);
-			name = "CareKitUI iOS";
+			name = CareKitUI;
 			productName = CareKitViews;
 			productReference = 5174225B224185290054E97C /* CareKitUI.framework */;
-			productType = "com.apple.product-type.framework";
-		};
-		51F9F11923A9B8F00087C900 /* CareKitUI Watch */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 51F9F12123A9B8F00087C900 /* Build configuration list for PBXNativeTarget "CareKitUI Watch" */;
-			buildPhases = (
-				51F9F11523A9B8F00087C900 /* Headers */,
-				51F9F11623A9B8F00087C900 /* Sources */,
-				51F9F11723A9B8F00087C900 /* Frameworks */,
-				51F9F11823A9B8F00087C900 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = "CareKitUI Watch";
-			productName = "CareKitUI Watch";
-			productReference = 51F9F11A23A9B8F00087C900 /* CareKitUI.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
@@ -703,8 +664,9 @@
 		51742252224185290054E97C /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1100;
-				LastUpgradeCheck = 1200;
+				LastUpgradeCheck = 1430;
 				ORGANIZATIONNAME = Apple;
 				TargetAttributes = {
 					512B012D22C2F82900ABCB1D = {
@@ -713,9 +675,6 @@
 					5174225A224185290054E97C = {
 						CreatedOnToolsVersion = 10.1;
 						LastSwiftMigration = 1020;
-					};
-					51F9F11923A9B8F00087C900 = {
-						CreatedOnToolsVersion = 11.3;
 					};
 				};
 			};
@@ -732,9 +691,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				5174225A224185290054E97C /* CareKitUI iOS */,
-				51F9F11923A9B8F00087C900 /* CareKitUI Watch */,
-				512B012D22C2F82900ABCB1D /* CareKitUITests iOS */,
+				5174225A224185290054E97C /* CareKitUI */,
+				512B012D22C2F82900ABCB1D /* CareKitUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -756,15 +714,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		51F9F11823A9B8F00087C900 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				51F9F16623A9BEC40087C900 /* Localizable.strings in Resources */,
-				51F9F16723A9BEC70087C900 /* Localizable.stringsdict in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -778,6 +727,7 @@
 				51052549244639B3004483D0 /* TestLinkView.swift in Sources */,
 				51746F2B2448B90B00B647E1 /* TestNumericProgressTaskView.swift in Sources */,
 				51AB06C222FE53E300B73FC2 /* TestStylableView.swift in Sources */,
+				70FC4F3229F18489007DF34F /* TestColorExtension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -800,6 +750,7 @@
 				516A1C4F244FA7E500BBF2D3 /* View+Extension.swift in Sources */,
 				5105911F237651C8004EDC84 /* OCKAccessibleValue.swift in Sources */,
 				518F9D9A22961BF5009CAA48 /* OCKCartesianCoordinatesLayer.swift in Sources */,
+				51CD57912978881C005711EA /* CareKitUI.docc in Sources */,
 				518F9DBC22961BF6009CAA48 /* OCKCardable.swift in Sources */,
 				518F9DBB22961BF6009CAA48 /* OCKLabel.swift in Sources */,
 				518F9DA122961BF6009CAA48 /* OCKCartesianChartView.swift in Sources */,
@@ -831,6 +782,7 @@
 				51F12D39229C81E200CA265B /* OCKLabeledCheckmarkButton.swift in Sources */,
 				518F9DAE22961BF6009CAA48 /* OCKColorStyler.swift in Sources */,
 				510D862D23020D410073776E /* OCKStyler.swift in Sources */,
+				51F5FA9725B8AE69008C6BDF /* Text+Extension.swift in Sources */,
 				518F9D9D22961BF5009CAA48 /* OCKLineLayer.swift in Sources */,
 				5136794C243BF6EC0026997B /* SafariView.swift in Sources */,
 				51173F3C243FE007004CB150 /* CircularCompletionView.swift in Sources */,
@@ -845,6 +797,7 @@
 				51EFC75623FCAE6000536266 /* UIColor+Extension.swift in Sources */,
 				518F9D9922961BF5009CAA48 /* OCKScatterPlotView.swift in Sources */,
 				5196B54322D5872C00800706 /* OCKTaskDisplayable.swift in Sources */,
+				5100538F25B8EA6F00D939AE /* AccessibleStack.swift in Sources */,
 				518F9DA722961BF6009CAA48 /* OCKCompletionRingView.swift in Sources */,
 				518F9D9122961BF5009CAA48 /* OCKLabeledButton.swift in Sources */,
 				518F9DB222961BF6009CAA48 /* OCKDimensionStyler.swift in Sources */,
@@ -856,6 +809,7 @@
 				517309A524AA6D7E00A35C85 /* OCKStyler+Extension.swift in Sources */,
 				03181064236A158E006D4870 /* OCKCappedSizeLabel.swift in Sources */,
 				518F9DB422961BF6009CAA48 /* OCKHeaderView.swift in Sources */,
+				51F5FAAF25B8D19D008C6BDF /* BackwardsCompatibility.swift in Sources */,
 				518F9D9222961BF5009CAA48 /* OCKSelfSizingCollectionView.swift in Sources */,
 				51B225AD23EDDCFC00A2D11F /* SimpleTaskView.swift in Sources */,
 				518F9D8E22961BF5009CAA48 /* OCKSimpleTaskView.swift in Sources */,
@@ -875,38 +829,12 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		51F9F11623A9B8F00087C900 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				51F9F13023A9B9F80087C900 /* OCKColorStyler.swift in Sources */,
-				51E2142A2444F1580063A121 /* CircularCompletionView.swift in Sources */,
-				517309A624AA6D7E00A35C85 /* OCKStyler+Extension.swift in Sources */,
-				51F9F16823A9BEC90087C900 /* OCKLocalization.swift in Sources */,
-				516A1C50244FA7E900BBF2D3 /* View+Extension.swift in Sources */,
-				51F9F13323A9B9F80087C900 /* OCKDimensionStyler.swift in Sources */,
-				516A1C46244F703000BBF2D3 /* Number+Extensions.swift in Sources */,
-				51E76F1D24004F19008B09E7 /* NoHighlightStyle.swift in Sources */,
-				51F9F13423A9B9FF0087C900 /* OCKStyler.swift in Sources */,
-				51F9F13123A9B9F80087C900 /* OCKAnimationStyler.swift in Sources */,
-				510466F524A283E500D0FD53 /* InstructionsTaskView.swift in Sources */,
-				51E214292444F1520063A121 /* RectangularCompletionView.swift in Sources */,
-				516A1C49244F766A00BBF2D3 /* OSValue.swift in Sources */,
-				51D5C97124A2947A00EC45B5 /* OCKLog.swift in Sources */,
-				51F9F13223A9B9F80087C900 /* OCKAppearanceStyler.swift in Sources */,
-				51E76F1E24004F1F008B09E7 /* CardView.swift in Sources */,
-				51E76F2024004F25008B09E7 /* SimpleTaskView.swift in Sources */,
-				51EFC75723FCAE6000536266 /* UIColor+Extension.swift in Sources */,
-				51E76F1F24004F21008B09E7 /* HeaderView.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
 		512B013522C2F82900ABCB1D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 5174225A224185290054E97C /* CareKitUI iOS */;
+			target = 5174225A224185290054E97C /* CareKitUI */;
 			targetProxy = 512B013422C2F82900ABCB1D /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -934,10 +862,11 @@
 		512B013622C2F82900ABCB1D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALLOW_TARGET_PLATFORM_SPECIALIZATION = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				INFOPLIST_FILE = CareKitUITests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -945,17 +874,21 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = Apple.CareKitUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator watchos watchsimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,4";
 			};
 			name = Debug;
 		};
 		512B013722C2F82900ABCB1D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALLOW_TARGET_PLATFORM_SPECIALIZATION = YES;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = CareKitUITests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -963,14 +896,19 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = Apple.CareKitUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator watchos watchsimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,4";
 			};
 			name = Release;
 		};
 		51742261224185290054E97C /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 51266314291B123B00C1D7DE /* Project-Shared.xcconfig */;
 			buildSettings = {
+				ALLOW_TARGET_PLATFORM_SPECIALIZATION = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ADDRESS_SANITIZER_CONTAINER_OVERFLOW = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1011,7 +949,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = "$(BUILD_NUMBER)";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -1036,24 +974,30 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = "$(VERSION_NUMBER)";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				RUN_CLANG_STATIC_ANALYZER = YES;
-				SDKROOT = iphoneos;
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "watchsimulator watchos iphonesimulator iphoneos";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_TREAT_WARNINGS_AS_ERRORS = NO;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
+				WATCHOS_DEPLOYMENT_TARGET = 7.0;
 			};
 			name = Debug;
 		};
 		51742262224185290054E97C /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 51266314291B123B00C1D7DE /* Project-Shared.xcconfig */;
 			buildSettings = {
+				ALLOW_TARGET_PLATFORM_SPECIALIZATION = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ADDRESS_SANITIZER_CONTAINER_OVERFLOW = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1094,7 +1038,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = "$(BUILD_NUMBER)";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -1113,11 +1057,14 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = "$(VERSION_NUMBER)";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				RUN_CLANG_STATIC_ANALYZER = YES;
-				SDKROOT = iphoneos;
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "watchsimulator watchos iphonesimulator iphoneos";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_TREAT_WARNINGS_AS_ERRORS = NO;
@@ -1125,124 +1072,94 @@
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
+				WATCHOS_DEPLOYMENT_TARGET = 7.0;
 			};
 			name = Release;
 		};
 		51742264224185290054E97C /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 51266314291B123B00C1D7DE /* Project-Shared.xcconfig */;
 			buildSettings = {
-				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
+				DEAD_CODE_STRIPPING = YES;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_BITCODE = NO;
+				ENABLE_MODULE_VERIFIER = YES;
 				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/CareKitUI/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++14";
 				PRODUCT_BUNDLE_IDENTIFIER = org.carekit.CareKitUI;
 				PRODUCT_NAME = "$(PROJECT_NAME)";
+				RUN_DOCUMENTATION_COMPILER = YES;
+				SDKROOT = auto;
 				SKIP_INSTALL = YES;
-				SUPPORTS_MACCATALYST = NO;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator watchos watchsimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_UIKITFORMAC = NO;
 				SWIFT_TREAT_WARNINGS_AS_ERRORS = NO;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2,4";
+				WATCHOS_DEPLOYMENT_TARGET = 7.0;
 			};
 			name = Debug;
 		};
 		51742265224185290054E97C /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 51266314291B123B00C1D7DE /* Project-Shared.xcconfig */;
 			buildSettings = {
-				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
+				DEAD_CODE_STRIPPING = YES;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_BITCODE = NO;
+				ENABLE_MODULE_VERIFIER = YES;
 				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/CareKitUI/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++14";
 				PRODUCT_BUNDLE_IDENTIFIER = org.carekit.CareKitUI;
 				PRODUCT_NAME = "$(PROJECT_NAME)";
+				RUN_DOCUMENTATION_COMPILER = YES;
+				SDKROOT = auto;
 				SKIP_INSTALL = YES;
-				SUPPORTS_MACCATALYST = NO;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator watchos watchsimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_UIKITFORMAC = NO;
 				SWIFT_TREAT_WARNINGS_AS_ERRORS = NO;
-				TARGETED_DEVICE_FAMILY = 1;
-			};
-			name = Release;
-		};
-		51F9F11F23A9B8F00087C900 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				APPLICATION_EXTENSION_API_ONLY = YES;
-				CODE_SIGN_STYLE = Automatic;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = CareKitUI/Info.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.carekit.CareKitUI-Watch";
-				PRODUCT_NAME = "$(PROJECT_NAME)";
-				SDKROOT = watchos;
-				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 6.0;
-			};
-			name = Debug;
-		};
-		51F9F12023A9B8F00087C900 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				APPLICATION_EXTENSION_API_ONLY = YES;
-				CODE_SIGN_STYLE = Automatic;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = CareKitUI/Info.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.carekit.CareKitUI-Watch";
-				PRODUCT_NAME = "$(PROJECT_NAME)";
-				SDKROOT = watchos;
-				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2,4";
+				WATCHOS_DEPLOYMENT_TARGET = 7.0;
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		512B013822C2F82900ABCB1D /* Build configuration list for PBXNativeTarget "CareKitUITests iOS" */ = {
+		512B013822C2F82900ABCB1D /* Build configuration list for PBXNativeTarget "CareKitUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				512B013622C2F82900ABCB1D /* Debug */,
@@ -1260,20 +1177,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		51742263224185290054E97C /* Build configuration list for PBXNativeTarget "CareKitUI iOS" */ = {
+		51742263224185290054E97C /* Build configuration list for PBXNativeTarget "CareKitUI" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				51742264224185290054E97C /* Debug */,
 				51742265224185290054E97C /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		51F9F12123A9B8F00087C900 /* Build configuration list for PBXNativeTarget "CareKitUI Watch" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				51F9F11F23A9B8F00087C900 /* Debug */,
-				51F9F12023A9B8F00087C900 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

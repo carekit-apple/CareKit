@@ -27,116 +27,84 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#if canImport(MessageUI)
+#if !os(watchOS)
 
 import CareKitStore
 import CareKitUI
-import Combine
 import MessageUI
 import UIKit
 
-/// Types wishing to receive updates from calendar view controllers can conform to this protocol.
-public protocol OCKCalendarViewControllerDelegate: AnyObject {
-
-    /// Called when an unhandled error is encountered in a calendar view controller.
-    /// - Parameters:
-    ///   - viewController: The view controller in which the error was encountered.
-    ///   - error: The error that was unhandled.
-    func calendarViewController<C: OCKCalendarController, VS: OCKCalendarViewSynchronizerProtocol>(
-        _ viewController: OCKCalendarViewController<C, VS>, didEncounterError error: Error)
-}
-
 /// A view controller that displays a calendar view and keep it synchronized with a store.
-open class OCKCalendarViewController<Controller: OCKCalendarController, ViewSynchronizer: OCKCalendarViewSynchronizerProtocol>:
-UIViewController, OCKCalendarViewDelegate {
-
-    // MARK: Properties
-
-    /// If set, the delegate will receive updates when import events happen
-    public weak var delegate: OCKCalendarViewControllerDelegate?
-
-    /// Handles the responsibility of updating the view when data in the store changes.
-    public let viewSynchronizer: ViewSynchronizer
-
-    /// Handles the responsibility of interacting with data from the store.
-    public let controller: Controller
+open class OCKCalendarViewController<
+    ViewSynchronizer: ViewSynchronizing
+>: SynchronizedViewController<ViewSynchronizer>, OCKCalendarViewDelegate where
+    ViewSynchronizer.View: OCKCalendarDisplayable,
+    ViewSynchronizer.ViewModel == [OCKCompletionState]
+{
 
     /// The view that is being synchronized against the store.
+    @available(*, deprecated, renamed: "typedView")
     public var calendarView: ViewSynchronizer.View {
-        guard let view = self.view as? ViewSynchronizer.View else { fatalError("View should be of type \(ViewSynchronizer.View.self)") }
-        return view
+        return typedView
     }
 
-    private let aggregator: OCKAdherenceAggregator?
-    private var cancellables: Set<AnyCancellable> = []
-
-    // MARK: - Life Cycle
-
-    /// Initialize with a controller and a synchronizer
-    public init(controller: Controller, viewSynchronizer: ViewSynchronizer) {
-        self.controller = controller
-        self.viewSynchronizer = viewSynchronizer
-        self.aggregator = nil
-        super.init(nibName: nil, bundle: nil)
+    @available(*, unavailable, renamed: "init(dateInterval:store:viewSynchronizer:computeProgress:)")
+    public init<Controller>(
+        controller: Controller,
+        viewSynchronizer: ViewSynchronizer
+    ) {
+        fatalError("Unavailable")
     }
 
-    /// Initialize a view controller that displays adherence. Fetches and stays synchronized with the adherence data.
-    /// - Parameter viewSynchronizer: Manages the calendar view.
-    /// - Parameter dateInterval: The date interval for the adherence range.
-    /// - Parameter aggregator: Used to aggregate adherence over the date interval.
-    /// - Parameter storeManager: Wraps the store that contains the adherence data.
-    public init(viewSynchronizer: ViewSynchronizer, dateInterval: DateInterval,
-                aggregator: OCKAdherenceAggregator, storeManager: OCKSynchronizedStoreManager) {
-        self.controller = Controller(dateInterval: dateInterval, storeManager: storeManager)
-        self.viewSynchronizer = viewSynchronizer
-        self.aggregator = aggregator
-        super.init(nibName: nil, bundle: nil)
+    @available(*, unavailable, renamed: "init(dateInterval:store:viewSynchronizer:computeProgress:)")
+    public convenience init(
+        viewSynchronizer: ViewSynchronizer,
+        dateInterval: DateInterval,
+        aggregator: OCKAdherenceAggregator,
+        storeManager: OCKSynchronizedStoreManager
+    ) {
+        fatalError("Unavailable")
     }
 
-    @available(*, unavailable)
-    public required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    /// Initialize a view controller that displays adherence per date. Fetches and stays synchronized
+    /// with the adherence data.
+    /// - Parameters:
+    ///   - dateInterval: A date interval for which adherence will be displayed.
+    ///   - store: Contains the task data for which adherence will be computed.
+    ///   - viewSynchronizer: Capable of creating and updating the view.
+    ///   - computeProgress: Used to compute the progress for an event.
+    public init(
+        dateInterval: DateInterval,
+        store: OCKAnyStoreProtocol,
+        viewSynchronizer: ViewSynchronizer,
+        computeProgress: @escaping (OCKAnyEvent) -> CareTaskProgress = { event in
+            event.computeProgress(by: .checkingOutcomeExists)
+        }
+    ) {
+
+        let progress = store
+            .dailyProgress(
+                dateInterval: dateInterval,
+                computeProgress: computeProgress
+            )
+            .map(Self.completionStates)
+
+        super.init(
+            initialViewModel: [],
+            viewModels: progress,
+            viewSynchronizer: viewSynchronizer
+        )
     }
 
-    @available(*, unavailable)
-    override open func loadView() {
-        view = viewSynchronizer.makeView()
-    }
+    private static func completionStates(
+        forDailyProgress dailyProgress: [TemporalProgress<CareTaskProgress>]
+    ) -> [OCKCompletionState] {
 
-    override open func viewDidLoad() {
-        super.viewDidLoad()
-        calendarView.delegate = self
+        return dailyProgress.map { dayProgress in
 
-        // Begin listening for changes in the view model. Note, when we subscribe to the view model, it sends its current value through the stream
-        startObservingViewModel()
-
-        // Listen for any errors encountered by the controller.
-        controller.$error
-            .compactMap { $0 }
-            .sink { [unowned self] error in
-                if self.delegate == nil {
-                    log(.error, "A calendar error occurred, but no delegate was set to forward it to!", error: error)
-                }
-                self.delegate?.calendarViewController(self, didEncounterError: error)
-            }
-            .store(in: &self.cancellables)
-
-        // Fetch and observe data if needed.
-        aggregator.map { controller.fetchAndObserveAdherence(usingAggregator: $0) }
-    }
-
-    // MARK: - Methods
-
-    // Create a subscription that updates the view when the view model is updated.
-    private func startObservingViewModel() {
-        controller.$completionStates
-            .context(currentValue: controller.completionStates, animateIf: { oldValue, _ in !oldValue.isEmpty })
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] context in
-                guard let self = self else { return }
-                self.viewSynchronizer.updateView(self.calendarView, context: context)
-            }
-            .store(in: &cancellables)
+            let aggregatedProgress = AggregatedCareTaskProgress(combining: dayProgress.values)
+            return .progress(aggregatedProgress.fractionCompleted)
+        }
     }
 
     // MARK: - OCKCalendarViewDelegate

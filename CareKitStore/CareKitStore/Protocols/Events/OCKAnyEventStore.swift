@@ -30,26 +30,93 @@
 
 import Foundation
 
-/// Any store from which `OCKAnyEvent`s  can be queried is considered `OCKAnyReadOnlyEventStore`.
+/// A store that allows for reading events.
 public protocol OCKAnyReadOnlyEventStore: OCKAnyReadOnlyTaskStore, OCKAnyReadOnlyOutcomeStore {
 
-    /// `fetchAnyEvents` retrieves all the occurrences of the specified task in the interval specified by the provided query.
+    /// A continuous stream of events (occurrences of tasks) that exist in the store.
+    ///
+    /// The stream yields a new value whenever the result changes and yields an error if there's an issue
+    /// accessing the store or fetching results.
+    ///
+    /// The result will contain an event if the event occurs within the query interval *and* the task is effective in the query interval.
+    /// A task is effective if its ``OCKAnyVersionableTask/effectiveDate`` lies in the query interval. The outcome
+    /// attached to the event will always be the most recent version available.
+    ///
+    /// This method will also walk through all versions of a task and compute the events for each version. The events will have the same
+    /// ``OCKAnyTask/id`` but a unique ``OCKAnyTask/uuid``.
+    ///
+    /// It's important to handle events from multiple task version with care. Suppose `newTask` and `oldTask` are two versions of a
+    /// task, where `newTask.effectiveDate < oldTask.effectiveDate`. A few important caveats to consider include:
+    ///
+    /// 1. If there exists an event for `newTask` that overlaps with an event for `oldTask`, both events will be returned by this method.
+    /// Both events are relevant because at some point during each of their durations the associated task is effective, even if not for the
+    /// entire duration.
+    ///
+    /// 2. If there exists an all-day event for `newTask` and an all-day event for `oldTask` on the same day, both events will
+    /// be returned by this method.
+    ///
+    /// Ultimately, be sure to consider the task when handling events returned by this method. If the task is akin to a medication,
+    /// make sure the events are properly spaced out before presenting them to the user to ensure there is no risk of under-dosing or
+    /// over-dosing.
+    ///
+    /// Events returned by this method will be sorted by their start date and task effective date.
+    ///
+    /// - Parameter query: Used to match events in the store.
+    func anyEvents(matching query: OCKEventQuery) -> CareStoreQueryResults<OCKAnyEvent>
+
+    /// Fetch a list of events that exist in the store.
+    ///
+    /// The completion will be called with an error if there's an issue accessing the store or fetching results.
+    ///
+    /// The stream yields a new value whenever the result changes and yields an error if there's an issue
+    /// accessing the store or fetching results.
+    ///
+    /// The result will contain an event if the event occurs within the query interval *and* the task is effective in the query interval.
+    /// A task is effective if its ``OCKAnyVersionableTask/effectiveDate`` lies in the query interval. The outcome
+    /// attached to the event will always be the most recent version available.
+    ///
+    /// This method will also walk through all versions of a task and compute the events for each version. The events will have the same
+    /// ``OCKAnyTask/id`` but a unique ``OCKAnyTask/uuid``.
+    ///
+    /// It's important to handle events from multiple task version with care. Suppose `newTask` and `oldTask` are two versions of a
+    /// task, where `newTask.effectiveDate < oldTask.effectiveDate`. A few important caveats to consider include:
+    ///
+    /// 1. If there exists an event for `newTask` that overlaps with an event for `oldTask`, both events will be returned by this method.
+    /// Both events are relevant because at some point during each of their durations the associated task is effective, even if not for the
+    /// entire duration.
+    ///
+    /// 2. If there exists an all-day event for `newTask` and an all-day event for `oldTask` on the same day, both events will
+    /// be returned by this method.
+    ///
+    /// Ultimately, be sure to consider the task when handling events returned by this method. If the task is akin to a medication,
+    /// make sure the events are properly spaced out before presenting them to the user to ensure there is no risk of under-dosing or
+    /// over-dosing.
+    ///
+    /// Events returned by this method will be sorted by their start date and task effective date.
     ///
     /// - Parameters:
-    ///   - taskID: A user-defined unique identifier for the task.
-    ///   - query: A query used to constrain the values that will be fetched.
+    ///   - query: Used to match events in the store.
+    ///   - callbackQueue: The queue that runs the completion. In most cases this should be the
+    ///                    main queue.
+    ///   - completion: A callback that contains the result.
+    func fetchAnyEvents(
+        query: OCKEventQuery,
+        callbackQueue: DispatchQueue,
+        completion: @escaping OCKResultClosure<[OCKAnyEvent]>
+    )
+
+    /// `fetchAnyEvent` retrieves the occurrence of the specified task.
+    ///
+    /// - Parameters:
+    ///   - task: The task for which to retrieve an event.
+    ///   - occurrence: The occurrence number of the event to be fetched.
     ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on the provided callback queue.
-    func fetchAnyEvents(taskID: String, query: OCKEventQuery, callbackQueue: DispatchQueue,
-                        completion: @escaping OCKResultClosure<[OCKAnyEvent]>)
-
-    /// `fetchAnyEvent` retrieves a single occurrence of the specified task.
-    ///
-    /// - Parameter task: The task for which to retrieve an event.
-    /// - Parameter occurrence: The occurrence index of the desired event.
-    /// - Parameter queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
-    /// - Parameter completion: A callback that will fire on the specified queue.
-    func fetchAnyEvent(forTask task: OCKAnyTask, occurrence: Int, callbackQueue: DispatchQueue, completion: @escaping OCKResultClosure<OCKAnyEvent>)
+    func fetchAnyEvent(
+        forTask task: OCKAnyTask,
+        occurrence: Int,
+        callbackQueue: DispatchQueue,
+        completion: @escaping OCKResultClosure<OCKAnyEvent>)
 
     /// `fetchAdherence` retrieves all the events and calculates the percent of tasks completed for every day between two dates.
     ///
@@ -62,14 +129,6 @@ public protocol OCKAnyReadOnlyEventStore: OCKAnyReadOnlyTaskStore, OCKAnyReadOnl
     ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on the provided callback queue. The result contains an array with one value for each day.
     func fetchAdherence(query: OCKAdherenceQuery, callbackQueue: DispatchQueue, completion: @escaping OCKResultClosure<[OCKAdherence]>)
-
-    /// `fetchInsights` computes a metric for a given task between two dates using the provided closure.
-    ///
-    /// - Parameters:
-    ///   - query: A query used to constrain the values that will be fetched.
-    ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
-    ///   - completion: A callback that will fire on the provided callback queue.
-    func fetchInsights(query: OCKInsightQuery, callbackQueue: DispatchQueue, completion: @escaping OCKResultClosure<[Double]>)
 }
 
 /// Any store from which `OCKAnyEvent`s  can be queried and also written is considered `OCKAnyEventStore`.
@@ -81,8 +140,11 @@ public protocol OCKAnyEventStore: OCKAnyReadOnlyEventStore, OCKAnyTaskStore, OCK
 
 public extension OCKAnyReadOnlyEventStore {
 
-    func fetchAdherence(query: OCKAdherenceQuery, callbackQueue: DispatchQueue = .main,
-                        completion: @escaping OCKResultClosure<[OCKAdherence]>) {
+    func fetchAdherence(
+        query: OCKAdherenceQuery,
+        callbackQueue: DispatchQueue = .main,
+        completion: @escaping OCKResultClosure<[OCKAdherence]>
+    ) {
         var taskQuery = OCKTaskQuery(dateInterval: query.dateInterval)
         taskQuery.ids = query.taskIDs
 
@@ -101,8 +163,11 @@ public extension OCKAnyReadOnlyEventStore {
                 var events: [OCKAnyEvent] = []
                 for id in tasks.map({ $0.id }) {
                     group.enter()
-                    let query = OCKEventQuery(dateInterval: query.dateInterval)
-                    self.fetchAnyEvents(taskID: id, query: query, callbackQueue: callbackQueue, completion: { result in
+
+                    var query = OCKEventQuery(dateInterval: query.dateInterval)
+                    query.taskIDs = [id]
+
+                    self.fetchAnyEvents(query: query, callbackQueue: callbackQueue, completion: { result in
                         switch result {
                         case .failure(let fetchError):
                             error = fetchError
@@ -119,26 +184,33 @@ public extension OCKAnyReadOnlyEventStore {
                         }
                         return
                     }
+
                     let groupedEvents = self.groupEventsByDate(events: events, after: query.dateInterval.start, before: query.dateInterval.end)
                     var adherenceValues = [OCKAdherence](repeating: .noTasks, count: groupedEvents.count)
                     let indicesWithTasks = self.datesWithTasks(query: query, tasks: tasks).enumerated().compactMap { $1 ? $0 : nil }
-                    indicesWithTasks.forEach { adherenceValues[$0] = query.aggregator.aggregate(events: groupedEvents[$0]) }
+                    indicesWithTasks.forEach {
+
+                        // Make sure we have retrieved events
+                        if groupedEvents[$0].isEmpty {
+                            adherenceValues[$0] = .noEvents
+
+                        // Aggregate the progress for the events
+                        } else {
+
+                            let events = groupedEvents[$0]
+
+                            let progressForEvents = events.map { event -> CareTaskProgress in
+                                query.computeProgress(event)
+                            }
+
+                            let aggregatedProgress = AggregatedCareTaskProgress(combining: progressForEvents)
+
+                            adherenceValues[$0] = .progress(aggregatedProgress.fractionCompleted)
+                        }
+                    }
+
                     callbackQueue.async { completion(.success(adherenceValues)) }
                 })
-            }
-        }
-    }
-
-    func fetchInsights(query: OCKInsightQuery, callbackQueue: DispatchQueue = .main,
-                       completion: @escaping OCKResultClosure<[Double]>) {
-        let eventQuery = OCKEventQuery(dateInterval: query.dateInterval)
-        fetchAnyEvents(taskID: query.taskID, query: eventQuery, callbackQueue: callbackQueue) { result in
-            switch result {
-            case .failure(let error): completion(.failure(.fetchFailed(reason: "Failed to fetch insights. \(error.localizedDescription)")))
-            case .success(let events):
-                let eventsByDay = self.groupEventsByDate(events: events, after: query.dateInterval.start, before: query.dateInterval.end)
-                let valuesByDay = eventsByDay.map(query.aggregator.aggregate)
-                completion(.success(valuesByDay))
             }
         }
     }
@@ -166,17 +238,15 @@ public extension OCKAnyReadOnlyEventStore {
 
 // MARK: Async methods for OCKAnyReadOnlyEventStore
 
-@available(iOS 15.0, watchOS 8.0, *)
 public extension OCKAnyReadOnlyEventStore {
 
     /// `fetchAnyEvents` retrieves all the occurrences of the specified task in the interval specified by the provided query.
     ///
     /// - Parameters:
-    ///   - taskID: A user-defined unique identifier for the task.
     ///   - query: A query used to constrain the values that will be fetched.
-    func fetchAnyEvents(taskID: String, query: OCKEventQuery) async throws -> [OCKAnyEvent] {
+    func fetchAnyEvents(query: OCKEventQuery) async throws -> [OCKAnyEvent] {
         try await withCheckedThrowingContinuation { continuation in
-            fetchAnyEvents(taskID: taskID, query: query, callbackQueue: .main, completion: continuation.resume)
+            fetchAnyEvents(query: query, callbackQueue: .main, completion: continuation.resume)
         }
     }
 
@@ -201,16 +271,6 @@ public extension OCKAnyReadOnlyEventStore {
     func fetchAdherence(query: OCKAdherenceQuery) async throws -> [OCKAdherence] {
         try await withCheckedThrowingContinuation { continuation in
             fetchAdherence(query: query, callbackQueue: .main, completion: continuation.resume)
-        }
-    }
-
-    /// `fetchInsights` computes a metric for a given task between two dates using the provided closure.
-    ///
-    /// - Parameters:
-    ///   - query: A query used to constrain the values that will be fetched.
-    func fetchInsights(query: OCKInsightQuery) async throws -> [Double] {
-        try await withCheckedThrowingContinuation { continuation in
-            fetchInsights(query: query, callbackQueue: .main, completion: continuation.resume)
         }
     }
 }

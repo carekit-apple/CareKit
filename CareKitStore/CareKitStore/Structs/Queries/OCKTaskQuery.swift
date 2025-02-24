@@ -38,6 +38,29 @@ public struct OCKTaskQuery: Equatable, OCKQueryProtocol {
         case effectiveDate(ascending: Bool)
         case groupIdentifier(ascending: Bool)
         case title(ascending: Bool)
+
+        var nsSortDescriptor: NSSortDescriptor {
+            switch self {
+
+            case let .effectiveDate(ascending):
+                return NSSortDescriptor(
+                    keyPath: \OCKCDTask.effectiveDate,
+                    ascending: ascending
+                )
+
+            case let .groupIdentifier(ascending):
+                return NSSortDescriptor(
+                    keyPath: \OCKCDTask.groupIdentifier,
+                    ascending: ascending
+                )
+
+            case let .title(ascending):
+                return NSSortDescriptor(
+                    keyPath: \OCKCDTask.title,
+                    ascending: ascending
+                )
+            }
+        }
     }
 
     /// An array of care plan identifiers to match against.
@@ -50,7 +73,7 @@ public struct OCKTaskQuery: Equatable, OCKQueryProtocol {
     public var carePlanRemoteIDs: [String] = []
 
     /// Determines if tasks with no events should be included in the query results or not. False be default.
-    public var excludesTasksWithNoEvents: Bool = false
+    public var excludesTasksWithNoEvents = false
 
     /// The order in which the results will be sorted when returned from the query.
     public var sortDescriptors: [SortDescriptor] = []

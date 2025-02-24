@@ -264,11 +264,11 @@ extension OCKOutcomeStore {
 }
 
 extension OCKReadOnlyEventStore {
-    func fetchEventsAndWait(taskID: String, query: OCKEventQuery) throws -> [OCKEvent<Task, Outcome>] {
-        try performSynchronously { self.fetchEvents(taskID: taskID, query: query, callbackQueue: backgroundQueue, completion: $0) }
+    func fetchEventsAndWait(query: OCKEventQuery) throws -> [OCKEvent<Task, Outcome>] {
+        try performSynchronously { self.fetchEvents(query: query, callbackQueue: backgroundQueue, completion: $0) }
     }
 
-    func fetchEventAndWait(forTask task: Task, occurrence: Int) throws -> Event {
+    func fetchEventAndWait(forTask task: Task, occurrence: Int) throws -> OCKEvent<Task, Outcome> {
         try performSynchronously { self.fetchEvent(forTask: task, occurrence: occurrence, callbackQueue: backgroundQueue, completion: $0) }
     }
 
@@ -276,12 +276,6 @@ extension OCKReadOnlyEventStore {
 
     func fetchAdherenceAndWait(query: OCKAdherenceQuery) throws -> [OCKAdherence] {
         try performSynchronously { self.fetchAdherence(query: query, callbackQueue: backgroundQueue, completion: $0) }
-    }
-
-    // MARK: Insights
-
-    func fetchInsightsAndWait(query: OCKInsightQuery) throws -> [Double] {
-        try performSynchronously { self.fetchInsights(query: query, callbackQueue: backgroundQueue, completion: $0) }
     }
 }
 

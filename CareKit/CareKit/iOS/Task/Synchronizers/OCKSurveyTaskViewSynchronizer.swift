@@ -52,7 +52,7 @@ open class OCKSurveyTaskViewSynchronizer: OCKInstructionsTaskViewSynchronizer {
 
         let isComplete = event.outcome != nil
 
-        view.completionButton.label.text = loc(isComplete ? "COMPLETED" : "BEGIN")
+            view.completionButton.label.text = loc(isComplete ? "COMPLETED" : "BEGIN")
     }
 }
 

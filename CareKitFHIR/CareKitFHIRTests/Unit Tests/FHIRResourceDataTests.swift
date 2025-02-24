@@ -36,12 +36,12 @@ class FHIRResourceDataTests: XCTestCase {
     func testInitializer() {
         let rawData = "abc".data(using: .utf8)!
         let resource = OCKFHIRResourceData<DSTU2, Turtle>(data: rawData)
-        XCTAssert(resource.data == rawData)
+        XCTAssertEqual(resource.data, rawData)
     }
 
     func testDateConversion() {
         let now = Date().truncatingNanoSeconds
         let converted = now.dstu2FHIRDateTime.foundationDate
-        XCTAssert(now == converted)
+        XCTAssertEqual(now, converted)
     }
 }

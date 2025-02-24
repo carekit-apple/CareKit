@@ -32,26 +32,84 @@
 import CareKitStore
 import Foundation
 
-open class OCKWeekCalendarViewController: OCKCalendarViewController<OCKWeekCalendarController, OCKWeekCalendarViewSynchronizer> {
+open class OCKWeekCalendarViewController: OCKCalendarViewController<OCKWeekCalendarViewSynchronizer> {
 
-    override public init(controller: OCKWeekCalendarController, viewSynchronizer: OCKWeekCalendarViewSynchronizer) {
-        super.init(controller: controller, viewSynchronizer: viewSynchronizer)
+    @available(*, unavailable, renamed: "init(dateInterval:store:viewSynchronizer:computeProgress:)")
+    public convenience init(
+        controller: OCKWeekCalendarController,
+        viewSynchronizer: OCKWeekCalendarViewSynchronizer
+    ) {
+        fatalError("Unavailable")
     }
 
-    override public init(viewSynchronizer: OCKWeekCalendarViewSynchronizer, dateInterval: DateInterval,
-                         aggregator: OCKAdherenceAggregator, storeManager: OCKSynchronizedStoreManager) {
-        super.init(viewSynchronizer: viewSynchronizer, dateInterval: dateInterval, aggregator: aggregator, storeManager: storeManager)
+    @available(*, unavailable, renamed: "init(dateInterval:store:viewSynchronizer:computeProgress:)")
+    public convenience init(
+        viewSynchronizer: OCKWeekCalendarViewSynchronizer,
+        dateInterval: DateInterval,
+        aggregator: OCKAdherenceAggregator,
+        storeManager: OCKSynchronizedStoreManager
+    ) {
+        fatalError("Unavailable")
+    }
+
+    @available(*, unavailable, renamed: "init(dateInterval:store:computeProgress:)")
+    public convenience init(
+        weekOfDate date: Date,
+        aggregator: OCKAdherenceAggregator,
+        storeManager: OCKSynchronizedStoreManager
+    ) {
+        fatalError("Unavailable")
     }
 
     /// Initialize a view controller that displays adherence. Fetches and stays synchronized with the adherence data.
-    /// - Parameter weekOfDate: A date in the week for which adherence will be fetched.
-    /// - Parameter aggregator: Used to aggregate adherence over the date interval.
-    /// - Parameter storeManager: Wraps the store that contains the adherence data.
-    public init(weekOfDate date: Date, aggregator: OCKAdherenceAggregator, storeManager: OCKSynchronizedStoreManager) {
+    /// - Parameters:
+    ///   - weekOfDate: A date in the week for which adherence will be fetched.
+    ///   - store: Contains the task data for which adherence will be computed.
+    ///   - computeProgress: Used to compute the progress for an event.
+    public init(
+        weekOfDate date: Date,
+        store: OCKAnyStoreProtocol,
+        computeProgress: @escaping (OCKAnyEvent) -> CareTaskProgress = { event in
+            event.computeProgress(by: .checkingOutcomeExists)
+        }
+    ) {
+        let weekInterval = Self.weekInterval(for: date)
+        let viewSynchronizer = OCKWeekCalendarViewSynchronizer(weekOfDate: date)
+
+        super.init(
+            dateInterval: weekInterval,
+            store: store,
+            viewSynchronizer: viewSynchronizer,
+            computeProgress: computeProgress
+        )
+    }
+
+    /// Initialize a view controller that displays adherence. Fetches and stays synchronized with the adherence data.
+    /// - Parameters:
+    ///   - store: Wraps the store that contains the adherence data.
+    ///   - viewSynchronizer: Capable of creating and updating the view using the data series.
+    ///   - computeProgress: Used to compute the progress for an event.
+    public init(
+        store: OCKAnyStoreProtocol,
+        viewSynchronizer: OCKWeekCalendarViewSynchronizer,
+        computeProgress: @escaping (OCKAnyEvent) -> CareTaskProgress = { event in
+            event.computeProgress(by: .checkingOutcomeExists)
+        }
+    ) {
+        let weekInterval = Self.weekInterval(for: viewSynchronizer.date)
+
+        super.init(
+            dateInterval: weekInterval,
+            store: store,
+            viewSynchronizer: viewSynchronizer,
+            computeProgress: computeProgress
+        )
+    }
+
+    private static func weekInterval(for date: Date) -> DateInterval {
         var weekInterval = Calendar.current.dateInterval(of: .weekOfYear, for: date)!
         weekInterval.duration -= 1  // Standard interval returns 1 second of the next week
-        let viewSynchronizer = OCKWeekCalendarViewSynchronizer(weekOfDate: date)
-        super.init(viewSynchronizer: viewSynchronizer, dateInterval: weekInterval, aggregator: aggregator, storeManager: storeManager)
+        return weekInterval
     }
 }
 

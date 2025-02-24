@@ -46,46 +46,57 @@ import SwiftUI
 ///     |                                                       |
 ///     +-------------------------------------------------------+
 /// ```
-public struct LabeledValueTaskView<Header: View, DetailDisclosure: View>: View {
+public struct LabeledValueTaskView<Header: View>: View {
 
-    // MARK: - Properties
+    @Environment(\.careKitStyle)
+    private var style
 
-    @Environment(\.isCardEnabled) private var isCardEnabled
+    @Environment(\.isCardEnabled)
+    private var isCardEnabled
 
-    private let isHeaderPadded: Bool
-    private let isDetailDisclosurePadded: Bool
+    @Environment(\.sizeCategory)
+    private var sizeCategory
+
+    private let status: LabeledValueTaskViewStatus
     private let header: Header
-    private let detailDisclosure: DetailDisclosure
 
-    public var body: some View {
-        CardView {
-            HStack {
-                VStack { header }
-                    .if(isCardEnabled && isHeaderPadded) { $0.padding([.vertical, .leading]) }
-                Spacer()
-                VStack { detailDisclosure }
-                    .if(isCardEnabled && isDetailDisclosurePadded) { $0.padding([.vertical, .trailing]) }
-            }
+    @ViewBuilder
+    private var labeledValue: some View {
+        AccessibleStack(
+            alignment: Alignment(horizontal: .trailing, vertical: .lastTextBaseline),
+            spacing: 2
+        ) { _ in
+            status.value?
+                .font(Font.title.weight(.bold))
+            status.label?
+                .font(Font.caption.weight(.medium))
         }
     }
 
-    // MARK: - Init
-
-    private init(isHeaderPadded: Bool, isDetailDisclosurePadded: Bool,
-                 @ViewBuilder header: () -> Header, @ViewBuilder detailDisclosure: () -> DetailDisclosure) {
-        self.isHeaderPadded = isHeaderPadded
-        self.isDetailDisclosurePadded = isDetailDisclosurePadded
-        self.header = header()
-        self.detailDisclosure = detailDisclosure()
+    public var body: some View {
+        CardView {
+            HStack(spacing: style.dimension.directionalInsets2.trailing) {
+                VStack { header }
+                Spacer()
+                labeledValue
+                    // Allow multiline text to wrap
+                    .fixedSize(horizontal: false, vertical: true)
+                    .foregroundColor(status.foregroundColor)
+            }
+            .padding(isCardEnabled ? [.all] : [])
+        }
     }
 
     /// Create an instance.
     /// - Parameters:
-    ///   - header: View to inject at the top of the card. Specified content will be stacked vertically
-    ///   - detailDisclosure: View to inject to the right of the header. Specified content will be stacked vertically.
-    public init(@ViewBuilder header: () -> Header,
-                @ViewBuilder detailDisclosure: () -> DetailDisclosure) {
-        self.init(isHeaderPadded: false, isDetailDisclosurePadded: false, header: header, detailDisclosure: detailDisclosure)
+    ///   - status: The status denoted by the view.
+    ///   - header: Injected at the top of the view.
+    public init(
+        status: LabeledValueTaskViewStatus,
+        @ViewBuilder header: () -> Header
+    ) {
+        self.status = status
+        self.header = header()
     }
 }
 
@@ -95,88 +106,47 @@ public extension LabeledValueTaskView where Header == _LabeledValueTaskViewHeade
     /// - Parameters:
     ///   - title: Title text to display in the header.
     ///   - detail: Detail text to display in the header.
-    ///   - detailDisclosure: View to inject to the right of the header. Specified content will be stacked vertically.
-    init(title: Text, detail: Text? = nil, @ViewBuilder detailDisclosure: () -> DetailDisclosure) {
-        self.init(isHeaderPadded: true, isDetailDisclosurePadded: false, header: {
-            _LabeledValueTaskViewHeader(title: title, detail: detail)
-        }, detailDisclosure: detailDisclosure)
+    ///   - status: The status denoted by the view.
+    init(
+        title: Text,
+        detail: Text? = nil,
+        status: LabeledValueTaskViewStatus
+    ) {
+        self.status = status
+        self.header = _LabeledValueTaskViewHeader(title: title, detail: detail)
     }
 }
 
-public extension LabeledValueTaskView where DetailDisclosure == _LabeledValueTaskViewDetailDisclosure {
-
-    /// Create an instance with the default detail disclosure.
-    /// - Parameters:
-    ///   - state: The completion state for the view.
-    ///   - header: View to inject at the top of the card. Specified content will be stacked vertically
-    init(state: LabeledValueTaskViewState, @ViewBuilder header: () -> Header) {
-        self.init(isHeaderPadded: false, isDetailDisclosurePadded: true, header: header, detailDisclosure: {
-            _LabeledValueTaskViewDetailDisclosure(state: state)
-        })
-    }
-}
-
-public extension LabeledValueTaskView where Header == _LabeledValueTaskViewHeader, DetailDisclosure == _LabeledValueTaskViewDetailDisclosure {
-
-    /// Create an instance with the default header and detail disclosure.
-    /// - Parameters:
-    ///   - title: Title text to display in the header.
-    ///   - detail: Detail text to display in the header.
-    ///   - state: The completion state of the view.
-    init(title: Text, detail: Text? = nil, state: LabeledValueTaskViewState) {
-        self.init(isHeaderPadded: true, isDetailDisclosurePadded: true, header: {
-            _LabeledValueTaskViewHeader(title: title, detail: detail)
-        }, detailDisclosure: {
-            _LabeledValueTaskViewDetailDisclosure(state: state)
-        })
-    }
-}
-
-/// The completion state of a `LabeledValueTaskView`.
-public enum LabeledValueTaskViewState {
+/// The  status denoted by a `LabeledValueTaskView`.
+public enum LabeledValueTaskViewStatus {
 
     /// The complete state.
     case complete(_ value: Text, _ label: Text?)
 
     /// The incomplete state.
     case incomplete(_ label: Text)
-}
 
-/// The default detail disclosure used by a `LabeledValueTaskView`.
-public struct _LabeledValueTaskViewDetailDisclosure: View {
-
-    fileprivate let state: LabeledValueTaskViewState
-
-    private var value: Text? {
-        switch state {
+    var value: Text? {
+        switch self {
         case .complete(let value, _): return value
         case .incomplete: return nil
         }
     }
 
-    private var label: Text? {
-        switch state {
+    var label: Text? {
+        switch self {
         case .complete(_, let label): return label
         case .incomplete(let label): return label
         }
     }
 
-    private var foregroundColor: Color {
-        switch state {
+    var foregroundColor: Color {
+        switch self {
         case .complete: return .accentColor
         case .incomplete: return .secondary
         }
     }
 
-    public var body: some View {
-        HStack(alignment: .lastTextBaseline, spacing: 2) {
-            value?
-                .font(Font.title.weight(.bold))
-            label?
-                .font(Font.caption.weight(.medium))
-        }
-        .foregroundColor(foregroundColor)
-    }
 }
 
 /// The default header used by a `LabeledValueTaskView`.
@@ -193,14 +163,54 @@ public struct _LabeledValueTaskViewHeader: View {
 #if DEBUG
 struct NumericTaskView_Previews: PreviewProvider {
     static var previews: some View {
-        VStack(spacing: 16) {
-            LabeledValueTaskView(title: Text("Heart Rate"), detail: Text("Anytime"),
-                                 state: .complete(Text("60"), Text("BPM")))
-            LabeledValueTaskView(title: Text("Heart Rate"), detail: Text("Anytime"),
-                                 state: .complete(Text("60"), nil))
-            LabeledValueTaskView(title: Text("Heart Rate"), detail: Text("Anytime"),
-                                 state: .incomplete(Text("NO DATA")))
-        }.padding()
+
+        ScrollView {
+            VStack {
+
+                // Default - Completed
+                LabeledValueTaskView(
+                    title: Text("Heart Rate"),
+                    detail: Text("6:00pm"),
+                    status: .complete(Text("60"), Text("BPM"))
+                )
+
+                // Default - Incomplete
+                LabeledValueTaskView(
+                    title: Text("Heart Rate"),
+                    detail: Text("6:00pm"),
+                    status: .incomplete(Text("Incomplete"))
+                )
+
+                // Custom header
+                LabeledValueTaskView(
+                    status: .complete(Text("60"), Text("BPM"))
+                ) {
+                    HStack(spacing: 8) {
+                        RoundedRectangle(cornerRadius: 10, style: .continuous)
+                            .fill(Color.accentColor)
+                            .frame(width: 4)
+                        Text("Custom Header").font(.headline)
+                    }
+                }
+
+                // Larger AX size
+                LabeledValueTaskView(
+                    title: Text("Heart Rate"),
+                    detail: Text("6:00pm"),
+                    status: .complete(Text("60"), Text("BPM"))
+                )
+                .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
+
+                // Dark mode
+                LabeledValueTaskView(
+                    title: Text("Heart Rate"),
+                    detail: Text("6:00pm"),
+                    status: .complete(Text("60"), Text("BPM"))
+                )
+                .environment(\.colorScheme, .dark)
+            }
+            .padding()
+        }
     }
 }
 #endif

@@ -35,39 +35,39 @@ import XCTest
 class TestSemanticVersion: XCTestCase {
     func testCorrectlyParsesMajorVersion() throws {
         let version = try OCKSemanticVersion.parse("3.0.1")
-        XCTAssert(version.majorVersion == 3)
+        XCTAssertEqual(version.majorVersion, 3)
     }
 
     func testCorrectlyParsesMinorVersion() throws {
         let version = try OCKSemanticVersion.parse("3.0.1")
-        XCTAssert(version.minorVersion == 0)
+        XCTAssertEqual(version.minorVersion, 0)
     }
 
     func testCorrectlyParsesPatchVersion() throws {
         let version = try OCKSemanticVersion.parse("3.0.1")
-        XCTAssert(version.patchNumber == 1)
+        XCTAssertEqual(version.patchNumber, 1)
     }
 
     func testCorrectlyParsesImpliedMinorVersion() throws {
         let version = try OCKSemanticVersion.parse("4")
-        XCTAssert(version.majorVersion == 4)
-        XCTAssert(version.minorVersion == 0)
-        XCTAssert(version.patchNumber == 0)
+        XCTAssertEqual(version.majorVersion, 4)
+        XCTAssertEqual(version.minorVersion, 0)
+        XCTAssertEqual(version.patchNumber, 0)
     }
 
     func testCorrectlyParsesImpliedPatchNumber() throws {
         let version = try OCKSemanticVersion.parse("4.3")
-        XCTAssert(version.majorVersion == 4)
-        XCTAssert(version.minorVersion == 3)
-        XCTAssert(version.patchNumber == 0)
+        XCTAssertEqual(version.majorVersion, 4)
+        XCTAssertEqual(version.minorVersion, 3)
+        XCTAssertEqual(version.patchNumber, 0)
     }
 
     func testEquatability() {
         let versionA = OCKSemanticVersion(majorVersion: 1, minorVersion: 0, patchNumber: 0)
         let versionB = OCKSemanticVersion(majorVersion: 1, minorVersion: 0, patchNumber: 0)
         let versionC = OCKSemanticVersion(majorVersion: 1, minorVersion: 0, patchNumber: 1)
-        XCTAssert(versionA == versionB)
-        XCTAssert(versionA != versionC)
+        XCTAssertEqual(versionA, versionB)
+        XCTAssertNotEqual(versionA, versionC)
     }
 
     func testComparability() {
@@ -95,36 +95,36 @@ class TestSemanticVersion: XCTestCase {
 
     func testParseThrowsWhenStringIsEmpty() {
         XCTAssertThrowsError(try OCKSemanticVersion.parse(""), "Failed to throw when string is empty") { error in
-            XCTAssert(error as? OCKSemanticVersion.ParsingError == .emptyString)
+            XCTAssertEqual(error as? OCKSemanticVersion.ParsingError, .emptyString)
         }
     }
     func testParseThrowsWhenMissingSeparator() {
         XCTAssertThrowsError(try OCKSemanticVersion.parse("puppy"), "Failed to throw when missing separator") { error in
-            XCTAssert(error as? OCKSemanticVersion.ParsingError == .invalidMajorVersion)
+            XCTAssertEqual(error as? OCKSemanticVersion.ParsingError, .invalidMajorVersion)
         }
     }
 
     func testParseThrowsWhenMajorVersionIsNotAnInt() {
         XCTAssertThrowsError(try OCKSemanticVersion.parse("S.0.1"), "Failed to throw when major version is invalid") { error in
-            XCTAssert(error as? OCKSemanticVersion.ParsingError == .invalidMajorVersion)
+            XCTAssertEqual(error as? OCKSemanticVersion.ParsingError, .invalidMajorVersion)
         }
     }
 
     func testParseThrowsWhenMinorVersionIsNotAnInt() {
         XCTAssertThrowsError(try OCKSemanticVersion.parse("1.S.1"), "Failed to throw when minor version is invalid") { error in
-            XCTAssert(error as? OCKSemanticVersion.ParsingError == .invalidMinorVersion)
+            XCTAssertEqual(error as? OCKSemanticVersion.ParsingError, .invalidMinorVersion)
         }
     }
 
     func testParseThrowsWhenPatchVersionIsNotAnInt() {
         XCTAssertThrowsError(try OCKSemanticVersion.parse("1.1.S"), "Failed to throw when patch version is invalid") { error in
-            XCTAssert(error as? OCKSemanticVersion.ParsingError == .invalidPatchVersion)
+            XCTAssertEqual(error as? OCKSemanticVersion.ParsingError, .invalidPatchVersion)
         }
     }
 
     func testParseThrowsWhenThereAreToManyValues() {
         XCTAssertThrowsError(try OCKSemanticVersion.parse("1.1.1.1"), "Failed to throw when there are too many separators") { error in
-            XCTAssert(error as? OCKSemanticVersion.ParsingError == .tooManySeparators)
+            XCTAssertEqual(error as? OCKSemanticVersion.ParsingError, .tooManySeparators)
         }
     }
 }

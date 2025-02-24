@@ -27,11 +27,29 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
 import Foundation
 
-/// Any store from which a single type conforming to `OCKAnyTask` can be queried is considered a `OCKReadableTaskStore`.
+/// A store that allows for reading tasks.
 public protocol OCKReadableTaskStore: OCKAnyReadOnlyTaskStore {
-    associatedtype Task: OCKAnyTask & Equatable
+
+    associatedtype Task: OCKAnyTask, Equatable
+
+    /// An asynchronous sequence that produces tasks.
+    associatedtype Tasks: AsyncSequence where Tasks.Element == [Task]
+
+    /// A continuous stream of tasks that exist in the store.
+    ///
+    /// The stream yields a new value whenever the result changes and yields an error if there's an
+    /// issue accessing the store or fetching results.
+    ///
+    /// Supply a query that'll be used to match tasks in the store. If the query doesn't contain a date
+    /// interval, the result will contain every version of a task. Multiple versions of the same task will
+    /// have the same ``OCKAnyTask/id`` but a different UUID. If the query does contain a date
+    /// interval, the result will contain the newest version of a task that exists in the interval.
+    ///
+    /// - Parameter query: Used to match tasks in the store.
+    func tasks(matching query: OCKTaskQuery) -> Tasks
 
     /// `fetchTasks` asynchronously retrieves an array of tasks from the store.
     ///
@@ -143,6 +161,16 @@ public extension OCKTaskStore {
 // MARK: OCKAnyReadOnlyStore conformance for OCKReadableStore
 
 public extension OCKReadableTaskStore {
+
+    func anyTasks(matching query: OCKTaskQuery) -> CareStoreQueryResults<OCKAnyTask> {
+
+        let tasks = tasks(matching: query)
+            .map { $0 as [OCKAnyTask] }
+
+        let wrappedTasks = CareStoreQueryResults(wrapping: tasks)
+        return wrappedTasks
+    }
+
     func fetchAnyTasks(query: OCKTaskQuery, callbackQueue: DispatchQueue,
                        completion: @escaping OCKResultClosure<[OCKAnyTask]>) {
         fetchTasks(query: query, callbackQueue: callbackQueue) { completion($0.map { $0.map { $0 as OCKAnyTask } }) }
@@ -152,6 +180,7 @@ public extension OCKReadableTaskStore {
 // MARK: OCKAnyStore conformance for OCKTaskStore
 
 public extension OCKTaskStore {
+
     func addAnyTasks(_ tasks: [OCKAnyTask], callbackQueue: DispatchQueue, completion: OCKResultClosure<[OCKAnyTask]>?) {
         guard let tasks = tasks as? [Task] else {
             let message = "Failed to add tasks. Not all tasks were of the correct type, \(Task.self)."
@@ -182,7 +211,6 @@ public extension OCKTaskStore {
 
 // MARK: Async methods for OCKReadableTaskStore
 
-@available(iOS 15.0, watchOS 8.0, *)
 public extension OCKReadableTaskStore {
 
     /// `fetchTasks` asynchronously retrieves an array of tasks from the store.
@@ -211,7 +239,6 @@ public extension OCKReadableTaskStore {
 
 // MARK: Async methods for OCKTaskStore
 
-@available(iOS 15.0, watchOS 8.0, *)
 public extension OCKTaskStore {
 
     /// `addTasks` asynchronously adds an array of tasks to the store.

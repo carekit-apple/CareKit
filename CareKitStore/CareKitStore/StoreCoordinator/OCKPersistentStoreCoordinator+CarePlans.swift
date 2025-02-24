@@ -32,18 +32,48 @@ import Foundation
 
 extension OCKStoreCoordinator {
 
-    open func fetchAnyCarePlans(query: OCKCarePlanQuery, callbackQueue: DispatchQueue = .main,
-                                completion: @escaping (Result<[OCKAnyCarePlan], OCKStoreError>) -> Void) {
+    public func anyCarePlans(matching query: OCKCarePlanQuery) -> CareStoreQueryResults<OCKAnyCarePlan> {
+
+        let stores = readOnlyPlanStores + planStores
+
+        let relevantStores = stores.filter {
+            carePlanStore($0, shouldHandleQuery: query)
+        }
+
+        let carePlansStreams = relevantStores.map {
+            $0.anyCarePlans(matching: query)
+        }
+
+        let sortDescriptors = query
+            .sortDescriptors
+            .map(\.nsSortDescriptor)
+
+        let carePlans = combineMany(
+            sequences: carePlansStreams,
+            sortingElementsUsing: sortDescriptors
+        )
+
+        return carePlans
+    }
+
+    public func fetchAnyCarePlans(
+        query: OCKCarePlanQuery,
+        callbackQueue: DispatchQueue = .main,
+        completion: @escaping (Result<[OCKAnyCarePlan], OCKStoreError>) -> Void
+    ) {
         let readableStores = readOnlyPlanStores + planStores
         let respondingStores = readableStores.filter { carePlanStore($0, shouldHandleQuery: query) }
         let closures = respondingStores.map({ store in { done in
             store.fetchAnyCarePlans(query: query, callbackQueue: callbackQueue, completion: done) }
         })
-        aggregate(closures, callbackQueue: callbackQueue, completion: completion)
+        aggregateAndFlatten(closures, callbackQueue: callbackQueue, completion: completion)
     }
 
-    open func addAnyCarePlans(_ plans: [OCKAnyCarePlan], callbackQueue: DispatchQueue = .main,
-                              completion: ((Result<[OCKAnyCarePlan], OCKStoreError>) -> Void)? = nil) {
+    public func addAnyCarePlans(
+        _ plans: [OCKAnyCarePlan],
+        callbackQueue: DispatchQueue = .main,
+        completion: ((Result<[OCKAnyCarePlan], OCKStoreError>) -> Void)? = nil
+    ) {
         do {
             try findStore(forCarePlans: plans).addAnyCarePlans(plans, callbackQueue: callbackQueue, completion: completion)
         } catch {
@@ -54,8 +84,11 @@ extension OCKStoreCoordinator {
         }
     }
 
-    open func updateAnyCarePlans(_ plans: [OCKAnyCarePlan], callbackQueue: DispatchQueue = .main,
-                                 completion: ((Result<[OCKAnyCarePlan], OCKStoreError>) -> Void)? = nil) {
+    public func updateAnyCarePlans(
+        _ plans: [OCKAnyCarePlan],
+        callbackQueue: DispatchQueue = .main,
+        completion: ((Result<[OCKAnyCarePlan], OCKStoreError>) -> Void)? = nil
+    ) {
         do {
             try findStore(forCarePlans: plans).updateAnyCarePlans(plans, callbackQueue: callbackQueue, completion: completion)
         } catch {
@@ -66,8 +99,11 @@ extension OCKStoreCoordinator {
         }
     }
 
-    open func deleteAnyCarePlans(_ plans: [OCKAnyCarePlan], callbackQueue: DispatchQueue = .main,
-                                 completion: ((Result<[OCKAnyCarePlan], OCKStoreError>) -> Void)? = nil) {
+    public func deleteAnyCarePlans(
+        _ plans: [OCKAnyCarePlan],
+        callbackQueue: DispatchQueue = .main,
+        completion: ((Result<[OCKAnyCarePlan], OCKStoreError>) -> Void)? = nil
+    ) {
         do {
             try findStore(forCarePlans: plans).deleteAnyCarePlans(plans, callbackQueue: callbackQueue, completion: completion)
         } catch {
@@ -84,17 +120,5 @@ extension OCKStoreCoordinator {
         guard let store = matchingStores.first else { throw OCKStoreError.invalidValue(reason: "No store could be found for any plans.") }
         guard matchingStores.allSatisfy({ $0 === store }) else { throw OCKStoreError.invalidValue(reason: "Not all plans belong to same store.") }
         return store
-    }
-}
-
-extension OCKStoreCoordinator: OCKCarePlanStoreDelegate {
-    open func carePlanStore(_ store: OCKAnyReadOnlyCarePlanStore, didAddCarePlans carePlans: [OCKAnyCarePlan]) {
-        carePlanDelegate?.carePlanStore(self, didAddCarePlans: carePlans)
-    }
-    open func carePlanStore(_ store: OCKAnyReadOnlyCarePlanStore, didUpdateCarePlans carePlans: [OCKAnyCarePlan]) {
-        carePlanDelegate?.carePlanStore(self, didUpdateCarePlans: carePlans)
-    }
-    open func carePlanStore(_ store: OCKAnyReadOnlyCarePlanStore, didDeleteCarePlans carePlans: [OCKAnyCarePlan]) {
-        carePlanDelegate?.carePlanStore(self, didDeleteCarePlans: carePlans)
     }
 }

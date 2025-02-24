@@ -62,8 +62,8 @@ class TestWatchConnectivityPeer: XCTestCase {
         // 1. Sync a task to from A to B, at B's request.
         let schedule = OCKSchedule.dailyAtTime(hour: 0, minutes: 0, start: Date(), end: nil, text: nil)
         var taskA = OCKTask(id: "A", title: "A1", carePlanUUID: nil, schedule: schedule)
-        try storeA.addTaskAndWait(taskA)
 
+        try storeA.addTaskAndWait(taskA)
         try storeB.syncAndWait()
 
         let stateA1 = OCKRevisionRecord.KnowledgeVector([uuidA: 3, uuidB: 2])
@@ -72,10 +72,10 @@ class TestWatchConnectivityPeer: XCTestCase {
         let tasksA1 = try storeA.fetchTasksAndWait()
         let tasksB1 = try storeA.fetchTasksAndWait()
 
-        XCTAssert(tasksA1.count == 1)
-        XCTAssert(tasksB1.count == 1)
-        XCTAssert(storeA.context.knowledgeVector == stateA1)
-        XCTAssert(storeB.context.knowledgeVector == stateB1)
+        XCTAssertEqual(tasksA1.count, 1)
+        XCTAssertEqual(tasksB1.count, 1)
+        XCTAssertEqual(storeA.context.knowledgeVector, stateA1)
+        XCTAssertEqual(storeB.context.knowledgeVector, stateB1)
 
         // 2. Create conflicting updates on A and B, then sync again.
         //    A goes first, resolves the conflict, and sends the patch to B.
@@ -96,10 +96,10 @@ class TestWatchConnectivityPeer: XCTestCase {
         let tasksA2 = try storeA.fetchTasksAndWait()
         let tasksB2 = try storeB.fetchTasksAndWait()
 
-        XCTAssert(tasksA2.count == 4)
-        XCTAssert(tasksB2.count == 4)
-        XCTAssert(storeA.context.knowledgeVector == stateA2)
-        XCTAssert(storeB.context.knowledgeVector == stateB2)
+        XCTAssertEqual(tasksA2.count, 4)
+        XCTAssertEqual(tasksB2.count, 4)
+        XCTAssertEqual(storeA.context.knowledgeVector, stateA2)
+        XCTAssertEqual(storeB.context.knowledgeVector, stateB2)
     }
 }
 
@@ -115,14 +115,20 @@ private final class MockPeer: OCKWatchConnectivityPeer {
 
     override func pullRevisions(
         since knowledgeVector: OCKRevisionRecord.KnowledgeVector,
-        mergeRevision: @escaping (OCKRevisionRecord) throws -> Void,
+        mergeRevision: @escaping (OCKRevisionRecord) -> Void,
         completion: @escaping (Error?) -> Void) {
 
         do {
-            let revision = try peersStore.computeRevision(since: knowledgeVector)
-            peersStore.context.knowledgeVector.increment(clockFor: peersStore.context.clockID)
+            let revisions = try peersStore.computeRevisions(since: knowledgeVector)
+            revisions.forEach(mergeRevision)
 
-            try mergeRevision(revision)
+            let catchUp = OCKRevisionRecord(
+                entities: [],
+                knowledgeVector: peersStore.context.knowledgeVector
+            )
+            mergeRevision(catchUp)
+
+            peersStore.context.knowledgeVector.increment(clockFor: peersStore.context.clockID)
             completion(nil)
 
         } catch {
@@ -131,10 +137,14 @@ private final class MockPeer: OCKWatchConnectivityPeer {
     }
 
     override func pushRevisions(
-        deviceRevision: OCKRevisionRecord,
+        deviceRevisions: [OCKRevisionRecord],
+        deviceKnowledge: OCKRevisionRecord.KnowledgeVector,
         completion: @escaping (Error?) -> Void) {
 
-        peersStore.mergeRevision(deviceRevision)
+        deviceRevisions.forEach(peersStore.mergeRevision)
+        let catchUp = OCKRevisionRecord(entities: [], knowledgeVector: deviceKnowledge)
+        peersStore.mergeRevision(catchUp)
+
         peersStore.context.knowledgeVector.increment(clockFor: peersStore.context.clockID)
         self.peersStore.resolveConflicts(completion: completion)
     }

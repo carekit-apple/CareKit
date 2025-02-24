@@ -78,30 +78,50 @@ open class OCKStore: OCKStoreProtocol, Equatable {
         OCKHealthKitTask.self,
         OCKOutcome.self
     ]
-    
+
+
     /// The delegate receives callbacks when the contents of the patient store are modified.
     /// In `CareKit` apps, the delegate will be set automatically, and it should not be modified.
-    public weak var patientDelegate: OCKPatientStoreDelegate?
+    @available(*, unavailable, message: "OCKSynchronizedStoreManager and its related types are no longer available as a mechanism to synchronize with the CareKit store. As a replacement, see the asynchronous streams available directly on a CareKit store. For example, to monitor changes to tasks, see `OCKStore.tasks(query:)`.")
+    public weak var patientDelegate: OCKPatientStoreDelegate? {
+        fatalError("Property is unavailable")
+    }
 
     /// The delegate receives callbacks when the contents of the care plan store are modified.
     /// In `CareKit` apps, the delegate will be set automatically, and it should not be modified.
-    public weak var carePlanDelegate: OCKCarePlanStoreDelegate?
+    @available(*, unavailable, message: "OCKSynchronizedStoreManager and its related types are no longer available as a mechanism to synchronize with the CareKit store. As a replacement, see the asynchronous streams available directly on a CareKit store. For example, to monitor changes to tasks, see `OCKStore.tasks(query:)`.")
+    public weak var carePlanDelegate: OCKCarePlanStoreDelegate? {
+        fatalError("Property is unavailable")
+    }
 
     /// The delegate receives callbacks when the contents of the contacts store are modified.
     /// In `CareKit` apps, the delegate will be set automatically, and it should not be modified.
-    public weak var contactDelegate: OCKContactStoreDelegate?
+    @available(*, unavailable, message: "OCKSynchronizedStoreManager and its related types are no longer available as a mechanism to synchronize with the CareKit store. As a replacement, see the asynchronous streams available directly on a CareKit store. For example, to monitor changes to tasks, see `OCKStore.tasks(query:)`.")
+    public weak var contactDelegate: OCKContactStoreDelegate? {
+        fatalError("Property is unavailable")
+    }
 
     /// The delegate receives callbacks when the contents of the tasks store are modified.
     /// In `CareKit` apps, the delegate will be set automatically, and it should not be modified.
-    public weak var taskDelegate: OCKTaskStoreDelegate?
+    @available(*, unavailable, message: "OCKSynchronizedStoreManager and its related types are no longer available as a mechanism to synchronize with the CareKit store. As a replacement, see the asynchronous streams available directly on a CareKit store. For example, to monitor changes to tasks, see `OCKStore.tasks(query:)`.")
+    public weak var taskDelegate: OCKTaskStoreDelegate? {
+        fatalError("Property is unavailable")
+    }
 
     /// The delegate receives callbacks when the contents of the outcome store are modified.
     /// In `CareKit` apps, the delegate will be set automatically, and it should not be modified.
-    public weak var outcomeDelegate: OCKOutcomeStoreDelegate?
+    @available(*, unavailable, message: "OCKSynchronizedStoreManager and its related types are no longer available as a mechanism to synchronize with the CareKit store. As a replacement, see the asynchronous streams available directly on a CareKit store. For example, to monitor changes to tasks, see `OCKStore.tasks(query:)`.")
+    public weak var outcomeDelegate: OCKOutcomeStoreDelegate? {
+        fatalError("Property is unavailable")
+    }
 
     /// The delegate receives callbacks when the contents of the store are reset.
     /// In `CareKit` apps, the delegate will be set automatically, and it should not be modified.
-    public weak var resetDelegate: OCKResetDelegate?
+    @available(*, unavailable, message: "OCKSynchronizedStoreManager and its related types are no longer available as a mechanism to synchronize with the CareKit store. As a replacement, see the asynchronous streams available directly on a CareKit store. For example, to monitor changes to tasks, see `OCKStore.tasks(query:)`.")
+    public weak var resetDelegate: OCKResetDelegate? {
+        fatalError("Property is unavailable")
+    }
+
 
     /// Two instances of `OCKStore` are considered to be equal if they have the same name and store type.
     public static func == (lhs: OCKStore, rhs: OCKStore) -> Bool {
@@ -228,8 +248,6 @@ open class OCKStore: OCKStoreProtocol, Equatable {
             }
             try self.context.save()
         }
-
-        resetDelegate?.storeDidReset(self)
     }
 
     private func loadStore(into container: NSPersistentContainer) -> Bool {
@@ -283,80 +301,6 @@ open class OCKStore: OCKStoreProtocol, Equatable {
         let objects = inserts.compactMap { $0 as? OCKCDVersionedObject }
         if !objects.isEmpty {
             autoSynchronizeIfRequired()
-        }
-        
-        let adds = objects.filter { $0.previous.isEmpty && $0.deletedDate == nil }
-        let updates = objects.filter { !$0.previous.isEmpty && $0.deletedDate == nil }
-        let deletes = objects.filter { $0.deletedDate != nil }
-
-        let patientAdds = adds.compactMap { $0 as? OCKCDPatient }
-        let patientUpdates = updates.compactMap { $0 as? OCKCDPatient }
-        let patientDeletes = deletes.compactMap { $0 as? OCKCDPatient }
-
-        if !patientAdds.isEmpty {
-            patientDelegate?.patientStore(self, didAddPatients: patientAdds.map { $0.makePatient() })
-        }
-        if !patientUpdates.isEmpty {
-            patientDelegate?.patientStore(self, didUpdatePatients: patientUpdates.map { $0.makePatient() })
-        }
-        if !patientDeletes.isEmpty {
-            patientDelegate?.patientStore(self, didDeletePatients: patientDeletes.map { $0.makePatient() })
-        }
-
-        let planAdds = adds.compactMap { $0 as? OCKCDCarePlan }
-        let planUpdates = updates.compactMap { $0 as? OCKCDCarePlan }
-        let planDeletes = deletes.compactMap { $0 as? OCKCDCarePlan }
-
-        if !planAdds.isEmpty {
-            carePlanDelegate?.carePlanStore(self, didAddCarePlans: planAdds.map { $0.makePlan() })
-        }
-        if !planUpdates.isEmpty {
-            carePlanDelegate?.carePlanStore(self, didUpdateCarePlans: planUpdates.map { $0.makePlan() })
-        }
-        if !planDeletes.isEmpty {
-            carePlanDelegate?.carePlanStore(self, didDeleteCarePlans: planDeletes.map { $0.makePlan() })
-        }
-
-        let contactAdds = adds.compactMap { $0 as? OCKCDContact }
-        let contactUpdates = updates.compactMap { $0 as? OCKCDContact }
-        let contactDeletes = deletes.compactMap { $0 as? OCKCDContact }
-
-        if !contactAdds.isEmpty {
-            contactDelegate?.contactStore(self, didAddContacts: contactAdds.map { $0.makeContact() })
-        }
-        if !contactUpdates.isEmpty {
-            contactDelegate?.contactStore(self, didUpdateContacts: contactUpdates.map { $0.makeContact() })
-        }
-        if !contactDeletes.isEmpty {
-            contactDelegate?.contactStore(self, didDeleteContacts: contactDeletes.map { $0.makeContact() })
-        }
-
-        let taskAdds = adds.compactMap { $0 as? OCKCDTask }
-        let taskUpdates = updates.compactMap { $0 as? OCKCDTask }
-        let taskDeletes = deletes.compactMap { $0 as? OCKCDTask }
-
-        if !taskAdds.isEmpty {
-            taskDelegate?.taskStore(self, didAddTasks: taskAdds.map { $0.makeTask() })
-        }
-        if !taskUpdates.isEmpty {
-            taskDelegate?.taskStore(self, didUpdateTasks: taskUpdates.map { $0.makeTask() })
-        }
-        if !taskDeletes.isEmpty {
-            taskDelegate?.taskStore(self, didDeleteTasks: taskDeletes.map { $0.makeTask() })
-        }
-
-        let outcomeAdds = adds.compactMap { $0 as? OCKCDOutcome }
-        let outcomeUpdates = updates.compactMap { $0 as? OCKCDOutcome }
-        let outcomeDeletes = deletes.compactMap { $0 as? OCKCDOutcome }
-
-        if !outcomeAdds.isEmpty {
-            outcomeDelegate?.outcomeStore(self, didAddOutcomes: outcomeAdds.map { $0.makeOutcome() })
-        }
-        if !outcomeUpdates.isEmpty {
-            outcomeDelegate?.outcomeStore(self, didUpdateOutcomes: outcomeUpdates.map { $0.makeOutcome() })
-        }
-        if !outcomeDeletes.isEmpty {
-            outcomeDelegate?.outcomeStore(self, didDeleteOutcomes: outcomeDeletes.map { $0.makeOutcome() })
         }
     }
 }

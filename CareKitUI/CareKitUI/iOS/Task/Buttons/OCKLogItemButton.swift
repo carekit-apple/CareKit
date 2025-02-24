@@ -98,7 +98,7 @@ open class OCKLogItemButton: OCKAnimatedButton<OCKStackView> {
     }
 
     private func constrainSubviews() {
-        [contentStackView].forEach { $0?.translatesAutoresizingMaskIntoConstraints = false }
+        contentStackView.translatesAutoresizingMaskIntoConstraints = false
         detailLabel.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         imageView.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         NSLayoutConstraint.activate(

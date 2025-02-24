@@ -58,8 +58,8 @@ class TestStoreConsumeRevisions: XCTestCase {
 
         let tasks = try store.fetchTasksAndWait()
 
-        XCTAssert(tasks.count == 1)
-        XCTAssert(tasks.first?.id == "a")
+        XCTAssertEqual(tasks.count, 1)
+        XCTAssertEqual(tasks.first?.id, "a")
     }
 
     func testUpdatingLatestVersionOfTaskViaRevisionRecord() throws {
@@ -81,9 +81,9 @@ class TestStoreConsumeRevisions: XCTestCase {
 
         let tasks = try store.fetchTasksAndWait(query: OCKTaskQuery(for: taskB.effectiveDate))
 
-        XCTAssert(tasks.count == 1)
-        XCTAssert(tasks.first?.id == "abc123")
-        XCTAssert(tasks.first?.title == "B")
+        XCTAssertEqual(tasks.count, 1)
+        XCTAssertEqual(tasks.first?.id, "abc123")
+        XCTAssertEqual(tasks.first?.title, "B")
     }
 
     func testTasksAddedViaRevisionRecordHaveSameCreatedDateAsRevisionRecord() throws {
@@ -101,7 +101,7 @@ class TestStoreConsumeRevisions: XCTestCase {
         store.mergeRevision(revision)
 
         let tasks = try store.fetchTasksAndWait()
-        XCTAssert(tasks.first?.createdDate == date)
+        XCTAssertEqual(tasks.first?.createdDate, date)
     }
 
     // MARK: Outcomes
@@ -122,8 +122,8 @@ class TestStoreConsumeRevisions: XCTestCase {
         store.mergeRevision(revision)
 
         let outcomes = try store.fetchOutcomesAndWait()
-        XCTAssert(outcomes.count == 1)
-        XCTAssert(outcomes.first?.id == outcome.id)
+        XCTAssertEqual(outcomes.count, 1)
+        XCTAssertEqual(outcomes.first?.id, outcome.id)
     }
 
     func testDeleteExistingOutcomeViaRevisionRecord() throws {
@@ -182,7 +182,7 @@ class TestStoreConsumeRevisions: XCTestCase {
         store.mergeRevision(revision)
 
         let outcomes = try store.fetchOutcomesAndWait()
-        XCTAssert(outcomes.first?.createdDate == date)
+        XCTAssertEqual(outcomes.first?.createdDate, date)
     }
 
     func testTombstonesAddedViaRevisionRecordedHaveSameUUIDAsRevisionRecord() throws {
@@ -207,9 +207,9 @@ class TestStoreConsumeRevisions: XCTestCase {
         expect(with: store.context) {
             let request = NSFetchRequest<OCKCDOutcome>(entityName: "OCKCDOutcome")
             let outcome = try self.store.context.fetch(request).first
-            XCTAssert(outcome?.createdDate == tombstone.createdDate)
-            XCTAssert(outcome?.deletedDate == tombstone.createdDate)
-            XCTAssert(outcome?.uuid == tombstone.uuid)
+            XCTAssertEqual(outcome?.createdDate, tombstone.createdDate)
+            XCTAssertEqual(outcome?.deletedDate, tombstone.createdDate)
+            XCTAssertEqual(outcome?.uuid, tombstone.uuid)
         }
     }
 
@@ -229,8 +229,8 @@ class TestStoreConsumeRevisions: XCTestCase {
 
         let patients = try store.fetchPatientsAndWait()
 
-        XCTAssert(patients.count == 1)
-        XCTAssert(patients.first?.id == "id1")
+        XCTAssertEqual(patients.count, 1)
+        XCTAssertEqual(patients.first?.id, "id1")
     }
 
     func testUpdatingLatestVersionOfPatientViaRevisionRecord() throws {
@@ -251,9 +251,9 @@ class TestStoreConsumeRevisions: XCTestCase {
 
         let patients = try store.fetchPatientsAndWait(query: OCKPatientQuery(for: patientB.effectiveDate))
 
-        XCTAssert(patients.count == 1)
-        XCTAssert(patients.first?.id == "id1")
-        XCTAssert(patients.first?.name.familyName == "Frosty")
+        XCTAssertEqual(patients.count, 1)
+        XCTAssertEqual(patients.first?.id, "id1")
+        XCTAssertEqual(patients.first?.name.familyName, "Frosty")
     }
 
     func testPatientsAddedViaRevisionRecordHaveSameCreatedDateAsRevisionRecord() throws {
@@ -270,7 +270,7 @@ class TestStoreConsumeRevisions: XCTestCase {
         store.mergeRevision(revision)
 
         let patients = try store.fetchPatientsAndWait()
-        XCTAssert(patients.first?.createdDate == date)
+        XCTAssertEqual(patients.first?.createdDate, date)
     }
 
     // MARK: CarePlans
@@ -289,8 +289,8 @@ class TestStoreConsumeRevisions: XCTestCase {
 
         let carePlans = try store.fetchCarePlansAndWait()
 
-        XCTAssert(carePlans.count == 1)
-        XCTAssert(carePlans.first?.id == "diabetes_type_1")
+        XCTAssertEqual(carePlans.count, 1)
+        XCTAssertEqual(carePlans.first?.id, "diabetes_type_1")
     }
 
     func testUpdatingLatestVersionOfCarePlanViaRevisionRecord() throws {
@@ -311,9 +311,9 @@ class TestStoreConsumeRevisions: XCTestCase {
 
         let carePlans = try store.fetchCarePlansAndWait(query: OCKCarePlanQuery(for: carePlanB.effectiveDate))
 
-        XCTAssert(carePlans.count == 1)
-        XCTAssert(carePlans.first?.id == "diabetes_type_1")
-        XCTAssert(carePlans.first?.title == "Diabetes Type II Care Plan")
+        XCTAssertEqual(carePlans.count, 1)
+        XCTAssertEqual(carePlans.first?.id, "diabetes_type_1")
+        XCTAssertEqual(carePlans.first?.title, "Diabetes Type II Care Plan")
     }
 
     func testCarePlansAddedViaRevisionRecordHaveSameCreatedDateAsRevisionRecord() throws {
@@ -330,7 +330,7 @@ class TestStoreConsumeRevisions: XCTestCase {
         store.mergeRevision(revision)
 
         let carePlans = try store.fetchCarePlansAndWait()
-        XCTAssert(carePlans.first?.createdDate == date)
+        XCTAssertEqual(carePlans.first?.createdDate, date)
     }
 
     // MARK: Contacts
@@ -349,8 +349,8 @@ class TestStoreConsumeRevisions: XCTestCase {
 
         let contacts = try store.fetchContactsAndWait()
 
-        XCTAssert(contacts.count == 1)
-        XCTAssert(contacts.first?.id == "contact")
+        XCTAssertEqual(contacts.count, 1)
+        XCTAssertEqual(contacts.first?.id, "contact")
     }
 
     func testUpdatingLatestVersionOfContactViaRevisionRecord() throws {
@@ -371,9 +371,9 @@ class TestStoreConsumeRevisions: XCTestCase {
 
         let contacts = try store.fetchContactsAndWait(query: OCKContactQuery(for: contactB.effectiveDate))
 
-        XCTAssert(contacts.count == 1)
-        XCTAssert(contacts.first?.id == "contact")
-        XCTAssert(contacts.first?.name.familyName == "Frosty")
+        XCTAssertEqual(contacts.count, 1)
+        XCTAssertEqual(contacts.first?.id, "contact")
+        XCTAssertEqual(contacts.first?.name.familyName, "Frosty")
     }
 
     func testContactsAddedViaRevisionRecordHaveSameCreatedDateAsRevisionRecord() throws {
@@ -390,6 +390,7 @@ class TestStoreConsumeRevisions: XCTestCase {
         store.mergeRevision(revision)
 
         let contacts = try store.fetchContactsAndWait()
-        XCTAssert(contacts.first?.createdDate == date)
+        XCTAssertEqual(contacts.first?.createdDate, date)
     }
 }
+

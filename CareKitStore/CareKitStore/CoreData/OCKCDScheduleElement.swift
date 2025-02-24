@@ -66,14 +66,21 @@ class OCKCDScheduleElement: NSManagedObject {
     }
 
     func makeValue() -> OCKScheduleElement {
-        OCKScheduleElement(
-            start: startDate,
-            end: endDate,
-            interval: interval,
-            text: text,
-            targetValues: targetValues.map { $0.makeValue() },
-            duration: duration
-        )
+
+        var scheduleElement: OCKScheduleElement!
+
+        self.managedObjectContext!.performAndWait {
+            scheduleElement = OCKScheduleElement(
+                start: startDate,
+                end: endDate,
+                interval: interval,
+                text: text,
+                targetValues: targetValues.map { $0.makeValue() },
+                duration: duration
+            )
+        }
+
+        return scheduleElement
     }
 
     var duration: OCKScheduleElement.Duration {
@@ -87,13 +94,13 @@ class OCKCDScheduleElement: NSManagedObject {
     var interval: DateComponents {
         get {
             var interval = DateComponents()
-            interval.year = Int(yearsInterval)
-            interval.month = Int(monthsInterval)
-            interval.weekOfYear = Int(weeksInterval)
-            interval.day = Int(daysInterval)
-            interval.hour = Int(hoursInterval)
-            interval.minute = Int(minutesInterval)
-            interval.second = Int(secondsInterval)
+            interval.year = intervalOrNil(from: yearsInterval)
+            interval.month = intervalOrNil(from: monthsInterval)
+            interval.weekOfYear = intervalOrNil(from: weeksInterval)
+            interval.day = intervalOrNil(from: daysInterval)
+            interval.hour = intervalOrNil(from: hoursInterval)
+            interval.minute = intervalOrNil(from: minutesInterval)
+            interval.second = intervalOrNil(from: secondsInterval)
             return interval
         }
 
@@ -106,6 +113,15 @@ class OCKCDScheduleElement: NSManagedObject {
             minutesInterval = Int64(newValue.minute ?? 0)
             secondsInterval = Int64(newValue.second ?? 0)
         }
+    }
+
+    // An interval in a date component is typically considered the same if is
+    // 0 or nil, but actual equality checks don't consider those two intervals
+    // to be equal. Calendar APIs return nil intervals, not 0. So we
+    // should nil out an interval that is 0 to help with equality checks later on.
+    private func intervalOrNil(from interval: Int64) -> Int? {
+        if interval == 0 { return nil }
+        return Int(interval)
     }
 }
 

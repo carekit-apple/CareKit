@@ -28,31 +28,103 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import AsyncAlgorithms
 import Foundation
+import os.log
 
-/// Any store from which a single event type can be queried is considered a `OCKReadOnlyEventStore`.
+/// A store that allows for reading events.
 public protocol OCKReadOnlyEventStore: OCKAnyReadOnlyEventStore, OCKReadableTaskStore, OCKReadableOutcomeStore {
     typealias Event = OCKEvent<Task, Outcome>
 
+    /// An asynchronous sequence that produces events.
+    associatedtype Events: AsyncSequence where Events.Element == [Event]
+
     // MARK: Implementation Provided when Task == OCKTask and Outcome == OCKOutcome
 
-    /// `fetchEvents` retrieves all the occurrences of the specified task in the interval specified by the provided query.
+    /// A continuous stream of events (occurrences of tasks) that exist in the store.
+    ///
+    /// The stream yields a new value whenever the result changes and yields an error if there's an issue
+    /// accessing the store or fetching results.
+    ///
+    /// The result will contain an event if the event occurs within the query interval *and* the task is effective in the query interval.
+    /// A task is effective if its ``OCKAnyVersionableTask/effectiveDate`` lies in the query interval. The outcome
+    /// attached to the event will always be the most recent version available.
+    ///
+    /// This method will also walk through all versions of a task and compute the events for each version. The events will have the same
+    /// ``OCKAnyTask/id`` but a unique ``OCKAnyTask/uuid``.
+    ///
+    /// It's important to handle events from multiple task version with care. Suppose `newTask` and `oldTask` are two versions of a
+    /// task, where `newTask.effectiveDate < oldTask.effectiveDate`. A few important caveats to consider include:
+    ///
+    /// 1. If there exists an event for `newTask` that overlaps with an event for `oldTask`, both events will be returned by this method.
+    /// Both events are relevant because at some point during each of their durations the associated task is effective, even if not for the
+    /// entire duration.
+    ///
+    /// 2. If there exists an all-day event for `newTask` and an all-day event for `oldTask` on the same day, both events will
+    /// be returned by this method.
+    ///
+    /// Ultimately, be sure to consider the task when handling events returned by this method. If the task is akin to a medication,
+    /// make sure the events are properly spaced out before presenting them to the user to ensure there is no risk of under-dosing or
+    /// over-dosing.
+    ///
+    /// Events returned by this method will be sorted by their start date and task effective date.
+    ///
+    /// - Parameter query: Used to match events in the store.
+    func events(matching query: OCKEventQuery) -> Events
+
+    // Fetch a list of events that exist in the store.
+    ///
+    /// The completion will be called with an error if there's an issue accessing the store or fetching results.
+    ///
+    /// The stream yields a new value whenever the result changes and yields an error if there's an issue
+    /// accessing the store or fetching results.
+    ///
+    /// The result will contain an event if the event occurs within the query interval *and* the task is effective in the query interval.
+    /// A task is effective if its ``OCKAnyVersionableTask/effectiveDate`` lies in the query interval. The outcome
+    /// attached to the event will always be the most recent version available.
+    ///
+    /// This method will also walk through all versions of a task and compute the events for each version. The events will have the same
+    /// ``OCKAnyTask/id`` but a unique ``OCKAnyTask/uuid``.
+    ///
+    /// It's important to handle events from multiple task version with care. Suppose `newTask` and `oldTask` are two versions of a
+    /// task, where `newTask.effectiveDate < oldTask.effectiveDate`. A few important caveats to consider include:
+    ///
+    /// 1. If there exists an event for `newTask` that overlaps with an event for `oldTask`, both events will be returned by this method.
+    /// Both events are relevant because at some point during each of their durations the associated task is effective, even if not for the
+    /// entire duration.
+    ///
+    /// 2. If there exists an all-day event for `newTask` and an all-day event for `oldTask` on the same day, both events will
+    /// be returned by this method.
+    ///
+    /// Ultimately, be sure to consider the task when handling events returned by this method. If the task is akin to a medication,
+    /// make sure the events are properly spaced out before presenting them to the user to ensure there is no risk of under-dosing or
+    /// over-dosing.
+    ///
+    /// Events returned by this method will be sorted by their start date and task effective date.
     ///
     /// - Parameters:
-    ///   - taskID: A user-defined unique identifier for the task.
-    ///   - query: A query used to constrain the values that will be fetched.
-    ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
-    ///   - completion: A callback that will fire on the provided callback queue.
-    func fetchEvents(taskID: String, query: OCKEventQuery, callbackQueue: DispatchQueue,
-                     completion: @escaping OCKResultClosure<[Event]>)
+    ///   - query: Used to match events in the store.
+    ///   - callbackQueue: The queue that runs the completion. In most cases this should be the
+    ///                    main queue.
+    ///   - completion: A callback that contains the result.
+    func fetchEvents(
+        query: OCKEventQuery,
+        callbackQueue: DispatchQueue,
+        completion: @escaping OCKResultClosure<[Event]>)
 
     /// `fetchEvent` retrieves a single occurrence of the specified task.
     ///
-    /// - Parameter task: The task for which to retrieve an event.
-    /// - Parameter occurrence: The occurrence index of the desired event.
-    /// - Parameter queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
-    /// - Parameter completion: A callback that will fire on the specified queue.
-    func fetchEvent(forTask task: Task, occurrence: Int, callbackQueue: DispatchQueue, completion: @escaping OCKResultClosure<Event>)
+    /// - Parameters:
+    ///   - task: The task for which to retrieve an event.
+    ///   - occurrence: The occurrence index of the desired event.
+    ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
+    ///   - completion: A callback that will fire on the specified queue.
+    func fetchEvent(
+        forTask task: Task,
+        occurrence: Int,
+        callbackQueue: DispatchQueue,
+        completion: @escaping OCKResultClosure<Event>
+    )
 }
 
 /// Any store in which a single event type can be both queried and written is considered a `OCKEventStore`.
@@ -61,20 +133,49 @@ public protocol OCKEventStore: OCKReadOnlyEventStore, OCKTaskStore, OCKOutcomeSt
 // MARK: OCKAnyReadOnlyEventStore conformance for OCKReadOnlyEventStore
 
 public extension OCKReadOnlyEventStore {
-    func fetchAnyEvents(taskID: String, query: OCKEventQuery, callbackQueue: DispatchQueue,
-                        completion: @escaping OCKResultClosure<[OCKAnyEvent]>) {
-        fetchEvents(taskID: taskID, query: query, callbackQueue: callbackQueue) { completion($0.map { $0.map { $0.anyEvent } }) }
+
+    func anyEvents(matching query: OCKEventQuery) -> CareStoreQueryResults<OCKAnyEvent> {
+
+        let events = events(matching: query)
+            .map { events in
+                events.map { $0.anyEvent }
+            }
+
+        let wrappedEvents = CareStoreQueryResults(wrapping: events)
+        return wrappedEvents
     }
 
-    func fetchAnyEvent(forTask task: OCKAnyTask, occurrence: Int, callbackQueue: DispatchQueue, completion: @escaping OCKResultClosure<OCKAnyEvent>) {
-        guard let typedTask = task as? Task else {
+    func fetchAnyEvents(
+        query: OCKEventQuery,
+        callbackQueue: DispatchQueue,
+        completion: @escaping OCKResultClosure<[OCKAnyEvent]>) {
+
+        fetchEvents(query: query, callbackQueue: callbackQueue) {
+            completion($0.map { $0.map { $0.anyEvent } })
+        }
+    }
+
+    func fetchAnyEvent(
+        forTask task: OCKAnyTask,
+        occurrence: Int,
+        callbackQueue: DispatchQueue,
+        completion: @escaping OCKResultClosure<OCKAnyEvent>) {
+
+        guard let typedTask = task as? Self.Task else {
             callbackQueue.async {
                 let message = "Store of type \(type(of: self)) cannot fetch event with task type \(type(of: task))."
                 completion(.failure(.fetchFailed(reason: message)))
             }
             return
         }
-        fetchEvent(forTask: typedTask, occurrence: occurrence, callbackQueue: callbackQueue) { completion($0.map { $0.anyEvent }) }
+
+        fetchEvent(
+            forTask: typedTask,
+            occurrence: occurrence,
+            callbackQueue: callbackQueue) {
+
+            completion($0.map { $0.anyEvent })
+        }
     }
 }
 
@@ -82,161 +183,161 @@ public extension OCKReadOnlyEventStore {
 
 public extension OCKReadOnlyEventStore where Task: OCKAnyVersionableTask {
 
-    // MARK: Events
+    func events(matching query: OCKEventQuery) -> CareStoreQueryResults<Event> {
 
-    func fetchEvents(taskID: String, query: OCKEventQuery, callbackQueue: DispatchQueue = .main,
-                     completion: @escaping OCKResultClosure<[OCKEvent<Task, Outcome>]>) {
-        var taskQuery = OCKTaskQuery()
-        taskQuery.dateInterval = query.dateInterval
-        taskQuery.limit = 1
-        taskQuery.ids = [taskID]
+        let taskQuery = query.taskQuery
+        let outcomeQuery = query.outcomeQuery
 
-        fetchTasks(query: taskQuery, callbackQueue: callbackQueue, completion: chooseFirst(then: { result in
-            switch result {
-            case .failure(let error):
-                completion(.failure(error))
-            case .success(let task):
-                self.fetchEvents(task: task, query: query, previousEvents: [], callbackQueue: callbackQueue, completion: completion)
+        let partialEvents = partialEvents(matching: taskQuery)
+        let outcomes = outcomes(matching: outcomeQuery)
+
+        let events = combineLatest(partialEvents, outcomes)
+            .map { partialEvents, outcomes in
+                self.join(partialEvents: partialEvents, outcomes: outcomes)
             }
-        }, replacementError: .fetchFailed(reason: "No task with ID matching query")))
+            .removeDuplicates()
+
+        let wrappedEvents = CareStoreQueryResults(wrapping: events)
+        return wrappedEvents
     }
 
-    func fetchEvent(forTask task: Task, occurrence: Int, callbackQueue: DispatchQueue = .main, completion: @escaping OCKResultClosure<Event>) {
-        fetchEvent(withTaskVersion: task.uuid, occurrenceIndex: occurrence, callbackQueue: callbackQueue, completion: completion)
-    }
+    func fetchEvent(
+        forTask task: Self.Task,
+        occurrence: Int,
+        callbackQueue: DispatchQueue,
+        completion: @escaping OCKResultClosure<Event>) {
 
-    private func fetchEvent(withTaskVersion taskVersionUUID: UUID, occurrenceIndex: Int,
-                            callbackQueue: DispatchQueue, completion: @escaping OCKResultClosure<OCKEvent<Task, Outcome>>) {
-        fetchTask(withVersion: taskVersionUUID, callbackQueue: callbackQueue, completion: { (result: Result<Task, OCKStoreError>) in
+        var query = OCKTaskQuery()
+        query.uuids = [task.uuid]
+
+        fetchTask(withVersion: task.uuid, callbackQueue: callbackQueue) { result in
             switch result {
-            case .failure(let error): completion(.failure(.fetchFailed(reason: "Failed to fetch task. \(error.localizedDescription)")))
-            case .success(let task):
-                guard let scheduleEvent = task.schedule.event(forOccurrenceIndex: occurrenceIndex) else {
-                    completion(.failure(.fetchFailed(reason: "Invalid occurrence \(occurrenceIndex) for task with version ID: \(taskVersionUUID)")))
+
+            case let .failure(error):
+                completion(.failure(error))
+
+            case let .success(task):
+
+                guard let scheduleEvent = task.schedule.event(forOccurrenceIndex: occurrence) else {
+                    completion(.failure(.fetchFailed(reason: "Invalid occurence index")))
                     return
                 }
-                let early = scheduleEvent.start.addingTimeInterval(-1)
-                let late = scheduleEvent.end.addingTimeInterval(1)
-                var query = OCKOutcomeQuery(dateInterval: DateInterval(start: early, end: late))
-                query.taskUUIDs = [taskVersionUUID]
-                self.fetchOutcomes(query: query, callbackQueue: callbackQueue, completion: { result in
+
+                // +1 to include the event end date in the query result. CareKit date intervals
+                // are considered inclusive at the start and exclusive at the end.
+                let interval = DateInterval(
+                    start: scheduleEvent.start,
+                    end: scheduleEvent.end + 1
+                )
+
+                var query = OCKOutcomeQuery(dateInterval: interval)
+                query.taskUUIDs = [task.uuid]
+
+                self.fetchOutcomes(query: query, callbackQueue: callbackQueue) { result in
+
                     switch result {
-                    case .failure(let error): completion(.failure(.fetchFailed(reason: "Couldn't find outcome. \(error.localizedDescription)")))
-                    case .success(let outcomes):
-                        let matchingOutcome = outcomes.first(where: { $0.taskOccurrenceIndex == occurrenceIndex })
-                        let event = OCKEvent(task: task, outcome: matchingOutcome, scheduleEvent: scheduleEvent)
+
+                    case let .failure(error):
+                        completion(.failure(error))
+
+                    case let .success(outcomes):
+                        let match = outcomes.first(where: { $0.taskOccurrenceIndex == occurrence })
+                        let event = Event(task: task, outcome: match, scheduleEvent: scheduleEvent)
                         completion(.success(event))
                     }
-                })
-            }
-        })
-    }
-
-    // This is a recursive async function that gets all events within a query for a given task, examining all past versions of the task
-    private func fetchEvents(task: Task, query: OCKEventQuery, previousEvents: [Event],
-                             callbackQueue: DispatchQueue = .main, completion: @escaping (Result<[Event], OCKStoreError>) -> Void) {
-        let start = max(task.effectiveDate, query.dateInterval.start)
-        let scheduledEndDate = task.schedule.endDate()
-        let end = scheduledEndDate == nil ? query.dateInterval.end : min(scheduledEndDate!, query.dateInterval.end)
-        let scheduleEvents = task.schedule.events(from: start, to: end)
-        var outcomeQuery = OCKOutcomeQuery(dateInterval: DateInterval(start: start, end: end))
-        outcomeQuery.taskUUIDs = [task.uuid]
-        self.fetchOutcomes(query: outcomeQuery, callbackQueue: callbackQueue, completion: { result in
-            switch result {
-            case .failure(let error): completion(.failure(error))
-            case .success(let outcomes):
-                let events = self.join(task: task, with: outcomes, and: scheduleEvents) + previousEvents
-
-                // If the query doesn't go back in time beyond the start of this version of the task, we're done.
-                guard query.dateInterval.start < task.effectiveDate else {
-                    completion(.success(events))
-                    return
                 }
-
-                self.fetchNextValidPreviousVersion(for: task, callbackQueue: callbackQueue) { result in
-                    switch result {
-                    case .failure(let error): completion(.failure(error))
-                    case .success(let previousVersion):
-
-                        // If there is no previous version, then we're done fetching all events.
-                        guard let previousVersion = previousVersion else {
-                            completion(.success(events))
-                            return
-                        }
-
-                        // If there is a previous version, fetch the events for it that don't overlap with
-                        // any of the versions we've already fetched events for.
-                        let nextEndDate = task.effectiveDate
-                        let nextStartDate = query.dateInterval.start
-                        let nextInterval = DateInterval(start: nextStartDate, end: nextEndDate)
-                        let nextQuery = OCKEventQuery(dateInterval: nextInterval)
-                        self.fetchEvents(task: previousVersion, query: nextQuery, previousEvents: events,
-                                         callbackQueue: callbackQueue, completion: completion)
-                    }
-
-                }
-            }
-        })
-    }
-
-    private func fetchNextValidPreviousVersion(for task: Task, callbackQueue: DispatchQueue, completion: @escaping OCKResultClosure<Task?>) {
-
-        guard let versionID = task.previousVersionUUIDs.first else {
-            completion(.success(nil))
-            return
-        }
-
-        fetchTask(withVersion: versionID, callbackQueue: callbackQueue) { result in
-            switch result {
-            case .failure(let error): completion(.failure(error))
-            case .success(let previousVersion):
-
-                // If the newer version goes back further in time than the pervious version, skip fetching events for the older version.
-                if task.effectiveDate <= previousVersion.effectiveDate {
-                    self.fetchNextValidPreviousVersion(for: previousVersion, callbackQueue: callbackQueue, completion: completion)
-                    return
-                }
-
-                completion(.success(previousVersion))
             }
         }
     }
 
-    private func fetchTask(withVersion uuid: UUID, callbackQueue: DispatchQueue, completion: @escaping OCKResultClosure<Task>) {
+    func fetchEvents(
+        query: OCKEventQuery,
+        callbackQueue: DispatchQueue = .main,
+        completion: @escaping OCKResultClosure<[OCKEvent<Task, Outcome>]>
+    ) {
+
+        let taskQuery = query.taskQuery
+        let outcomeQuery = query.outcomeQuery
+
+        fetchPartialEvents(
+            query: taskQuery,
+            callbackQueue: callbackQueue
+        ) { result in
+
+            switch result {
+
+            case let .success(partialEvents):
+
+                self.fetchOutcomes(
+                    query: outcomeQuery,
+                    partialEvents: partialEvents,
+                    callbackQueue: callbackQueue,
+                    completion: completion
+                )
+
+            case let .failure(error):
+                completion(.failure(error))
+            }
+        }
+    }
+
+    private func fetchOutcomes(
+        query: OCKOutcomeQuery,
+        partialEvents: [PartialEvent<Task>],
+        callbackQueue: DispatchQueue,
+        completion: @escaping OCKResultClosure<[OCKEvent<Task, Outcome>]>
+    ) {
+        fetchOutcomes(
+            query: query,
+            callbackQueue: callbackQueue
+        ) { result in
+
+            switch result {
+
+            case let .success(outcomes):
+
+                // Join the partial events and the outcomes into a final result
+                let events = self.join(partialEvents: partialEvents, outcomes: outcomes)
+                completion(.success(events))
+
+            case let .failure(error):
+                completion(.failure(error))
+            }
+        }
+    }
+
+    private func fetchTask(
+        withVersion uuid: UUID,
+        callbackQueue: DispatchQueue,
+        completion: @escaping OCKResultClosure<Task>) {
+
         var query = OCKTaskQuery()
         query.uuids = [uuid]
-        fetchTasks(query: query, callbackQueue: callbackQueue, completion:
-            chooseFirst(then: completion, replacementError: .fetchFailed(reason: "No task with UUID: \(uuid)")))
-    }
 
-    private func join(task: Task, with outcomes: [Outcome], and scheduleEvents: [OCKScheduleEvent]) -> [OCKEvent<Task, Outcome>] {
-        guard !scheduleEvents.isEmpty else { return [] }
-        let offset = scheduleEvents[0].occurrence
-        var events = scheduleEvents.map { OCKEvent<Task, Outcome>(task: task, outcome: nil, scheduleEvent: $0) }
-        for outcome in outcomes {
-            events[outcome.taskOccurrenceIndex - offset].outcome = outcome
-        }
-        return events
+        fetchTasks(
+            query: query,
+            callbackQueue: callbackQueue,
+            completion: chooseFirst(
+                then: completion,
+                replacementError: .fetchFailed(reason: "No task with UUID: \(uuid)")
+            )
+        )
     }
 }
 
 // MARK: Async methods for OCKReadOnlyEventStore
 
-@available(iOS 15.0, watchOS 8.0, *)
 public extension OCKReadOnlyEventStore {
 
     /// `fetchEvents` retrieves all the occurrences of the specified task in the interval specified by the provided query.
     ///
     /// - Parameters:
-    ///   - taskID: A user-defined unique identifier for the task.
-    ///   - query: A query used to constrain the values that will be fetched.
-    func fetchEvents(taskID id: String, query: OCKEventQuery) async throws -> [Event] {
+    ///   - query: A query that specifies which events to fetch.
+    func fetchEvents(query: OCKEventQuery) async throws -> [Event] {
         try await withCheckedThrowingContinuation { continuation in
-            fetchEvents(taskID: id, query: query, callbackQueue: .main, completion: continuation.resume)
+            fetchEvents(query: query, callbackQueue: .main, completion: continuation.resume)
         }
     }
-
-    // MARK: Singular Methods - Implementation Provided
 
     /// `fetchEvent` retrieves a single occurrence of the specified task.
     ///

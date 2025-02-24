@@ -32,6 +32,10 @@
 import CareKitStore
 import CareKitUI
 import ResearchKit
+#if canImport(ResearchKitUI)
+import ResearchKitUI
+public typealias ORKTaskViewControllerFinishReason = ORKTaskFinishReason
+#endif
 import UIKit
 
 // MARK: OCKSurveyTaskViewControllerDelegate
@@ -64,7 +68,7 @@ public extension OCKSurveyTaskViewControllerDelegate {
     }
 }
 
-open class OCKSurveyTaskViewController: OCKTaskViewController<OCKTaskController, OCKSurveyTaskViewSynchronizer>, ORKTaskViewControllerDelegate {
+open class OCKSurveyTaskViewController: OCKTaskViewController<OCKSurveyTaskViewSynchronizer>, ORKTaskViewControllerDelegate {
 
     private let extractOutcome: (ORKTaskResult) -> [OCKOutcomeValue]?
 
@@ -72,41 +76,40 @@ open class OCKSurveyTaskViewController: OCKTaskViewController<OCKTaskController,
 
     public weak var surveyDelegate: OCKSurveyTaskViewControllerDelegate?
 
+    @available(*, unavailable, renamed: "init(query:store:survey:viewSynchronizer:extractOutcome:)")
     public convenience init(
         task: OCKAnyTask,
         eventQuery: OCKEventQuery,
         storeManager: OCKSynchronizedStoreManager,
         survey: ORKTask,
         viewSynchronizer: OCKSurveyTaskViewSynchronizer = OCKSurveyTaskViewSynchronizer(),
-        extractOutcome: @escaping (ORKTaskResult) -> [OCKOutcomeValue]?) {
-
-        self.init(
-            taskID: task.id,
-            eventQuery: eventQuery,
-            storeManager: storeManager,
-            survey: survey,
-            viewSynchronizer: viewSynchronizer,
-            extractOutcome: extractOutcome
-        )
+        extractOutcome: @escaping (ORKTaskResult) -> [OCKOutcomeValue]?
+    ) {
+        fatalError("Unavailable")
     }
 
+    @available(*, unavailable, renamed: "init(query:store:survey:viewSynchronizer:extractOutcome:)")
     public init(
         taskID: String,
         eventQuery: OCKEventQuery,
         storeManager: OCKSynchronizedStoreManager,
         survey: ORKTask,
         viewSynchronizer: OCKSurveyTaskViewSynchronizer = OCKSurveyTaskViewSynchronizer(),
-        extractOutcome: @escaping (ORKTaskResult) -> [OCKOutcomeValue]?) {
+        extractOutcome: @escaping (ORKTaskResult) -> [OCKOutcomeValue]?
+    ) {
+        fatalError("Unavailable")
+    }
 
+    public init(
+        eventQuery: OCKEventQuery,
+        store: OCKAnyStoreProtocol,
+        survey: ORKTask,
+        viewSynchronizer: OCKSurveyTaskViewSynchronizer = OCKSurveyTaskViewSynchronizer(),
+        extractOutcome: @escaping (ORKTaskResult) -> [OCKOutcomeValue]?
+    ) {
         self.survey = survey
         self.extractOutcome = extractOutcome
-
-        super.init(
-            viewSynchronizer: viewSynchronizer,
-            taskID: taskID,
-            eventQuery: eventQuery,
-            storeManager: storeManager
-        )
+        super.init(query: eventQuery, store: store, viewSynchronizer: viewSynchronizer)
     }
 
     override open func taskView(
@@ -114,68 +117,85 @@ open class OCKSurveyTaskViewController: OCKTaskViewController<OCKTaskController,
         didCompleteEvent isComplete: Bool,
         at indexPath: IndexPath,
         sender: Any?) {
+    
+            guard isComplete else {
 
-        guard isComplete else {
+                let event = viewModel[indexPath.section][indexPath.row]
 
-            if let event = controller.eventFor(indexPath: indexPath),
-
-               let delegate = surveyDelegate,
-
-               delegate.surveyTask(
+                let shouldDeleteOutcome = surveyDelegate?.surveyTask(
                     viewController: self,
-                    shouldAllowDeletingOutcomeForEvent: event) == false {
-
-                return
-            }
-
-            let cancelAction = UIAlertAction(
-                title: "Cancel",
-                style: .cancel,
-                handler: nil
-            )
-
-            let confirmAction = UIAlertAction(
-                title: "Delete", style: .destructive) { _ in
-                
-                super.taskView(
-                    taskView,
-                    didCompleteEvent: isComplete,
-                    at: indexPath,
-                    sender: sender
+                    shouldAllowDeletingOutcomeForEvent: event
                 )
+
+                guard shouldDeleteOutcome == true else { return }
+                
+                let cancelAction = UIAlertAction(
+                    title: "Cancel",
+                    style: .cancel,
+                    handler: nil
+                )
+                
+                let confirmAction = UIAlertAction(
+                    title: "Delete",
+                    style: .destructive
+                ) { _ in
+
+                    super.taskView(
+                        taskView,
+                        didCompleteEvent: isComplete,
+                        at: indexPath,
+                        sender: sender
+                    )
+                }
+                
+                let warningAlert = UIAlertController(
+                    title: "Delete",
+                    message: "Are you sure you want to delete your response?",
+                    preferredStyle: .actionSheet
+                )
+                
+                warningAlert.addAction(cancelAction)
+                warningAlert.addAction(confirmAction)
+                
+                /*
+                 TODO: Remove in the future. Explicitly setting the tint color here to support
+                 current developers that have a SwiftUI lifecycle app and wrap this view
+                 controller in a `UIViewControllerRepresentable` implementation...Tint color
+                 is not propagated...etc.
+                 */
+                warningAlert.view.tintColor = determineTintColor(from: view)
+                present(warningAlert, animated: true, completion: nil)
+                
+                return
+                
             }
 
-            let warningAlert = UIAlertController(
-                title: "Delete",
-                message: "Are you sure you want to delete your response?",
-                preferredStyle: .actionSheet
+            let surveyViewController = ORKTaskViewController(
+                task: survey,
+                taskRun: nil
             )
 
-            warningAlert.addAction(cancelAction)
-            warningAlert.addAction(confirmAction)
-            present(warningAlert, animated: true, completion: nil)
+            let directory = FileManager.default.urls(
+                for: .documentDirectory,
+                in: .userDomainMask
+            ).last!.appendingPathComponent("ResearchKit", isDirectory: true)
 
-            return
-        }
+                surveyViewController.outputDirectory = directory
+                /*
+                 TODO: Remove in the future. Explicitly setting the tint color here to support
+                 current developers that have a SwiftUI lifecycle app and wrap this view
+                 controller in a `UIViewControllerRepresentable` implementation...Tint color
+                 is not propagated...etc.
+                 */
+                surveyViewController.view.tintColor = determineTintColor(from: view)
+        
+            surveyViewController.delegate = self
 
-        let surveyViewController = ORKTaskViewController(
-            task: survey,
-            taskRun: nil
-        )
-
-        let directory = FileManager.default.urls(
-            for: .documentDirectory,
-            in: .userDomainMask
-        ).last!.appendingPathComponent("ResearchKit", isDirectory: true)
-
-        surveyViewController.outputDirectory = directory
-        surveyViewController.delegate = self
-
-        present(surveyViewController, animated: true, completion: nil)
+            present(surveyViewController, animated: true, completion: nil)
     }
 
     // MARK: ORKTaskViewControllerDelegate
-    
+
     open func taskViewController(
         _ taskViewController: ORKTaskViewController,
         didFinishWith reason: ORKTaskViewControllerFinishReason,
@@ -183,7 +203,7 @@ open class OCKSurveyTaskViewController: OCKTaskViewController<OCKTaskController,
 
         taskViewController.dismiss(animated: true, completion: nil)
 
-        guard let task = controller.taskEvents.first?.first?.task else {
+        guard let task = viewModel.first?.first?.task else {
             assertionFailure("Task controller is missing its task")
             return
         }
@@ -202,10 +222,7 @@ open class OCKSurveyTaskViewController: OCKTaskViewController<OCKTaskController,
         }
 
         let indexPath = IndexPath(item: 0, section: 0)
-
-        guard let event = controller.eventFor(indexPath: indexPath) else {
-            return
-        }
+        let event = viewModel[indexPath.section][indexPath.row]
 
         guard let values = extractOutcome(taskViewController.result) else {
             return
@@ -217,7 +234,7 @@ open class OCKSurveyTaskViewController: OCKTaskViewController<OCKTaskController,
             values: values
         )
 
-        controller.storeManager.store.addAnyOutcome(
+        store.addAnyOutcome(
             outcome,
             callbackQueue: .main) { result in
 
@@ -240,3 +257,4 @@ open class OCKSurveyTaskViewController: OCKTaskViewController<OCKTaskController,
 }
 
 #endif
+

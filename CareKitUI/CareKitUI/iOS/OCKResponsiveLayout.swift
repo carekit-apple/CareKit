@@ -40,11 +40,11 @@ public struct OCKResponsiveLayout<LayoutOption> {
 
     /// A default `SizeClassRuleSet` to apply for different `UIContentSizeCategory`'s when the
     ///  exact `UserInterfaceSizeClass` is not important.
-    public let defaultRuleSet: SizeClassRuleSet<LayoutOption>
+    public let defaultRuleSet: SizeClassRuleSet
 
     /// A set of `UserInterfaceSizeClass` specific rule sets to provide different accessible layouts
     /// for specific size class combinations.
-    public let sizeClassSpecificRuleSets: [SizeClassRuleSet<LayoutOption>]
+    public let sizeClassSpecificRuleSets: [SizeClassRuleSet]
 
     /// A lightweight typealias for a horizontal and vertical `UIUserInterfaceSizeClass` definition.
     ///
@@ -62,11 +62,11 @@ public struct OCKResponsiveLayout<LayoutOption> {
     public init(
         defaultLayout: LayoutOption,
         anySizeClassRuleSet: [OCKResponsiveLayout.Rule<LayoutOption>],
-        sizeClassSpecificRuleSets: [SizeClassRuleSet<LayoutOption>] = []) {
+        sizeClassSpecificRuleSets: [SizeClassRuleSet] = []) {
 
         let defaultRule = Rule(layout: defaultLayout, greaterThanOrEqualToContentSizeCategory: .unspecified)
 
-        self.defaultRuleSet = SizeClassRuleSet<LayoutOption>(
+        self.defaultRuleSet = SizeClassRuleSet(
             sizeClasses: [(horizontal: .unspecified, vertical: .unspecified)],
             rules: [defaultRule] + anySizeClassRuleSet
         )
@@ -100,7 +100,7 @@ public struct OCKResponsiveLayout<LayoutOption> {
     }
 
     /// A set of `UIContentSizeCategory` specific rules for a given size class.
-    public struct SizeClassRuleSet<LayoutOption> {
+    public struct SizeClassRuleSet {
 
         /// A set of rules (combinations of `UIUserInterFaceSizeClass` combinations and user defined layouts.
         public let rules: [OCKResponsiveLayout<LayoutOption>.Rule<LayoutOption>]
@@ -145,7 +145,7 @@ public struct OCKResponsiveLayout<LayoutOption> {
     /// extending this method to respond to `contentSize` or `contentInsets` to maintain this convenience.
     public func responsiveLayoutRule(traitCollection: UITraitCollection) -> LayoutOption {
 
-        func setContainsCurrentSizeClass(set: SizeClassRuleSet<LayoutOption>) -> Bool {
+        func setContainsCurrentSizeClass(set: SizeClassRuleSet) -> Bool {
             return set.sizeClasses.contains { width, height -> Bool in
                 return width == traitCollection.horizontalSizeClass && height == traitCollection.verticalSizeClass
             }
@@ -157,7 +157,7 @@ public struct OCKResponsiveLayout<LayoutOption> {
             }
         }
 
-        func layoutOptionForLayoutRuleSet(set: SizeClassRuleSet<LayoutOption>) -> LayoutOption {
+        func layoutOptionForLayoutRuleSet(set: SizeClassRuleSet) -> LayoutOption {
             let sorted = set.rules.sorted(by: { $0.contentSizeCategory < $1.contentSizeCategory })
 
             guard let layout =

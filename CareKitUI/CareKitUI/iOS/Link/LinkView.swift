@@ -58,128 +58,203 @@ import SwiftUI
 ///     |                                                       |
 ///     +-------------------------------------------------------+
 /// ```
-@available(iOS 14, *)
-public struct LinkView<Header: View, Footer: View>: View {
+public struct LinkView<Header: View>: View {
 
-    @Environment(\.isCardEnabled) private var isCardEnabled
+    @Environment(\.careKitStyle)
+    private var style
 
-    private let isHeaderPadded: Bool
-    private let isFooterPadded: Bool
+    @Environment(\.isCardEnabled)
+    private var isCardEnabled
+
     private let header: Header
-    private let footer: Footer
     private let instructions: Text?
+    private let links: [LinkItem]
+
+    @ViewBuilder
+    private var linkButtons: some View {
+        if !links.isEmpty {
+            VStack {
+                ForEach(links, id: \.hashValue) {
+                    LinkButton(link: $0)
+                        // Allows multiline text to wrap to the next line
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+        }
+    }
 
     public var body: some View {
-        InstructionsTaskView(isHeaderPadded: isHeaderPadded, isFooterPadded: isFooterPadded,
-                             instructions: instructions, header: { header }, footer: { footer })
+        CardView {
+            VStack(
+                alignment: .leading,
+                spacing: style.dimension.directionalInsets1.top
+            ) {
+                VStack { header }
+                instructions?
+                    .font(.subheadline)
+                    .fontWeight(.medium)
+                    // Allows multiline text to wrap to the next line
+                    .fixedSize(horizontal: false, vertical: true)
+                linkButtons
+            }
+            .padding(isCardEnabled ? [.all] : [])
+            .frame(
+                maxWidth: .infinity,
+                alignment: .leading
+            )
+        }
     }
 
     /// Create an instance.
-    /// - Parameter instructions: Instructions text to display under the header.
-    /// - Parameter header: Header to inject at the top of the card. Specified content will be stacked vertically.
-    /// - Parameter footer: View to inject under the instructions. Specified content will be stacked vertically.
-    public init(instructions: Text? = nil, @ViewBuilder header: () -> Header, @ViewBuilder footer: () -> Footer) {
-        self.init(isHeaderPadded: false, isFooterPadded: false, instructions: instructions, header: header, footer: footer)
-    }
-
-    private init(isHeaderPadded: Bool, isFooterPadded: Bool, instructions: Text? = nil,
-                 @ViewBuilder header: () -> Header, @ViewBuilder footer: () -> Footer) {
-        self.isHeaderPadded = isHeaderPadded
-        self.isFooterPadded = isFooterPadded
+    /// - Parameters:
+    ///   - instructions: Longer text displayed in the content of the view.
+    ///   - links: Configurations for each link button.
+    ///   - header: Injected at the top of the view.
+    public init(
+        instructions: Text? = nil,
+        links: [LinkItem],
+        @ViewBuilder header: () -> Header
+    ) {
         self.instructions = instructions
+        self.links = links
         self.header = header()
-        self.footer = footer()
     }
 }
 
-@available(iOS 14, *)
 public extension LinkView where Header == _LinkViewHeader {
 
     /// Create an instance.
-    /// - Parameter title: Title text to display in the header.
-    /// - Parameter detail: Detail text to display in the header.
-    /// - Parameter instructions: Instructions text to display under the header.
-    /// - Parameter footer: View to inject under the instructions. Specified content will be stacked vertically.
-    init(title: Text, detail: Text? = nil, instructions: Text? = nil, @ViewBuilder footer: () -> Footer) {
-        self.init(isHeaderPadded: true, isFooterPadded: false, instructions: instructions, header: {
-            _LinkViewHeader(title: title, detail: detail)
-        }, footer: footer)
-    }
-}
-
-@available(iOS 14, *)
-public extension LinkView where Footer == _LinkViewFooter {
-
-    /// Create an instance.
-    /// - Parameter instructions: Instructions text to display under the header.
-    /// - Parameter links: Configurations for each link button.
-    /// - Parameter header: Header to inject at the top of the card. Specified content will be stacked vertically.
-    init(instructions: Text? = nil, links: [LinkItem], @ViewBuilder header: () -> Header) {
-        self.init(isHeaderPadded: false, isFooterPadded: !links.isEmpty, instructions: instructions, header: header, footer: {
-            _LinkViewFooter(links: links)
-        })
-    }
-}
-
-@available(iOS 14, *)
-public extension LinkView where Header == _LinkViewHeader, Footer == _LinkViewFooter {
-
-    /// Create an instance.
-    /// - Parameter title: Title text to display in the header.
-    /// - Parameter detail: Detail text to display in the header.
-    /// - Parameter instructions: Instructions text to display under the header.
-    /// - Parameter links: Configurations for each link button.
-    init(title: Text, detail: Text? = nil, instructions: Text? = nil, links: [LinkItem]) {
-        self.init(isHeaderPadded: true, isFooterPadded: !links.isEmpty, instructions: instructions, header: {
-            _LinkViewHeader(title: title, detail: detail)
-        }, footer: {
-            _LinkViewFooter(links: links)
-        })
+    /// - Parameters:
+    ///   - title: Title to display in the header.
+    ///   - detail: Detail to display in the header.
+    ///   - instructions: Longer text displayed in the content of the view.
+    ///   - links: Configurations for each link button.
+    init(
+        title: Text,
+        detail: Text? = nil,
+        instructions: Text? = nil,
+        links: [LinkItem]
+    ) {
+        self.instructions = instructions
+        self.links = links
+        self.header = _LinkViewHeader(
+            title: title,
+            detail: detail,
+            showsDivider: instructions != nil || !links.isEmpty
+        )
     }
 }
 
 /// Default header used by a `LinkView`.
-@available(iOS 14, *)
 public struct _LinkViewHeader: View {
 
-    @Environment(\.careKitStyle) private var style
+    @Environment(\.careKitStyle)
+    private var style
 
     fileprivate let title: Text
     fileprivate let detail: Text?
+    fileprivate let showsDivider: Bool
 
     public var body: some View {
-        VStack(alignment: .leading, spacing: style.dimension.directionalInsets1.top) {
+        VStack(
+            alignment: .leading,
+            spacing: style.dimension.directionalInsets1.top
+        ) {
             HeaderView(title: title, detail: detail)
-            Divider()
-        }
-    }
-}
-
-/// Default footer used by a `LinkView`.
-@available(iOS 14, *)
-public struct _LinkViewFooter: View {
-
-    fileprivate let links: [LinkItem]
-
-    public var body: some View {
-        VStack {
-            ForEach(links, id: \.self) { LinkButton(link: $0) }
+            if showsDivider {
+                Divider()
+            }
         }
     }
 }
 
 #if DEBUG
-@available(iOS 14, *)
 struct LinkViewPreview: PreviewProvider {
 
     static var links: [LinkItem] = [
-        .call(phoneNumber: "0000000000", title: "Call"),
-        .email(recipient: "jappleseed@apple.com", title: "Email")
+        .call(phoneNumber: "", title: "Call"),
+        .email(recipient: "", title: "Email"),
+        .appStore(id: "", title: "App Store"),
+        .location("", "", title: "Location"),
+        .website("some-url", title: "Website"),
+        .url(URL(string: "some-url")!, title: "Custom", symbol: "pencil.circle.fill")
     ]
 
     static var previews: some View {
-        LinkView(title: Text("Links"), links: links)
+        ScrollView {
+            VStack {
+
+                // Default
+                LinkView(
+                    title: Text("Title"),
+                    detail: Text("Detail"),
+                    instructions: .loremIpsum,
+                    links: links
+                )
+
+                // Invalid website
+                LinkView(
+                    title: Text("Title"),
+                    detail: Text("Detail"),
+                    instructions: .loremIpsum,
+                    links: [.website("", title: "Website")]
+                )
+
+                // Empty links
+                LinkView(
+                    title: Text("Title"),
+                    detail: Text("Detail"),
+                    instructions: .loremIpsum,
+                    links: []
+                )
+
+                // Empty instructions
+                LinkView(
+                    title: Text("Title"),
+                    detail: Text("Detail"),
+                    links: [links.first!]
+                )
+
+                // Empty fields
+                LinkView(
+                    title: Text("Title"),
+                    detail: Text("Detail"),
+                    links: []
+                )
+
+                // Custom Header
+                LinkView(
+                    instructions: .loremIpsum,
+                    links: [links.first!]
+                ) {
+                    HStack(spacing: 8) {
+                        RoundedRectangle(cornerRadius: 10, style: .continuous)
+                            .fill(Color.accentColor)
+                            .frame(width: 4)
+                        Text("Custom Header").font(.headline)
+                    }
+                }
+
+                // Large AX size
+                LinkView(
+                    title: Text("Title"),
+                    detail: Text("Detail"),
+                    instructions: .loremIpsum,
+                    links: links
+                )
+                .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
+
+                // Dark mode
+                LinkView(
+                    title: Text("Title"),
+                    detail: Text("Detail"),
+                    instructions: .loremIpsum,
+                    links: links
+                )
+                .environment(\.colorScheme, .dark)
+            }
             .padding()
+        }
     }
 }
 #endif

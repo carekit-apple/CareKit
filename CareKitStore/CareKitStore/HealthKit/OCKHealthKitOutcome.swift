@@ -41,7 +41,7 @@ public struct OCKHealthKitOutcome: Codable, Equatable, Identifiable, OCKAnyOutco
     public let isOwnedByApp: Bool
 
     // MARK: OCKAnyOutcome
-    public var id: String { taskUUID.uuidString + "_\(taskOccurrenceIndex)" }
+    public var id: String = UUID().uuidString
     public var taskOccurrenceIndex: Int
     public var values: [OCKOutcomeValue]
     public var remoteID: String?
@@ -64,7 +64,8 @@ public struct OCKHealthKitOutcome: Codable, Equatable, Identifiable, OCKAnyOutco
     public var timezone: TimeZone
 
     /// A record of the HealthKit object that this outcome is derived from. Used for targeted deletions.
-    internal var healthKitUUIDs: Set<UUID>?
+    /// A list of UUIDs at a particular index is associated with an outcome value at the same index in `values`.
+    internal var healthKitUUIDs: [[UUID]] = []
 
     /// Initialize by specifying the version of the task that owns this outcome, how many events have occurred before this outcome, and the values.
     ///
@@ -81,7 +82,7 @@ public struct OCKHealthKitOutcome: Codable, Equatable, Identifiable, OCKAnyOutco
         self.timezone = TimeZone.current
     }
 
-    internal init(taskUUID: UUID, taskOccurrenceIndex: Int, values: [OCKOutcomeValue], isOwnedByApp: Bool, healthKitUUIDs: Set<UUID>) {
+    internal init(taskUUID: UUID, taskOccurrenceIndex: Int, values: [OCKOutcomeValue], isOwnedByApp: Bool, healthKitUUIDs: [[UUID]]) {
         self.taskUUID = taskUUID
         self.taskOccurrenceIndex = taskOccurrenceIndex
         self.values = values

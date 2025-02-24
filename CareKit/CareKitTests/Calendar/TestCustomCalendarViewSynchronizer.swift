@@ -28,6 +28,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#if !os(watchOS)
 import CareKit
 import CareKitUI
 import Foundation
@@ -49,7 +50,7 @@ private class MockCalendarView: UILabel, OCKCalendarDisplayable {
     var completionStates: [OCKCompletionState] = []
 }
 
-private class CustomCalendarViewSynchronizer: OCKCalendarViewSynchronizerProtocol {
+private class CustomCalendarViewSynchronizer: ViewSynchronizing {
     func makeView() -> MockCalendarView {
         return .init()
     }
@@ -93,3 +94,4 @@ class TestCustomCalendarViewSynchronizer: XCTestCase {
         XCTAssertTrue(view.completionStates.isEmpty)
     }
 }
+#endif

@@ -30,8 +30,41 @@
 
 import CoreData
 import Foundation
+import os.log
 
 extension OCKStore {
+
+    public func tasks(matching query: OCKTaskQuery) -> CareStoreQueryResults<OCKTask> {
+
+        // Setup a live query
+
+        let predicate = buildPredicate(for: query)
+        let sortDescriptors = buildSortDescriptors(for: query)
+
+        let monitor = CoreDataQueryMonitor(
+            OCKCDTask.self,
+            predicate: predicate,
+            sortDescriptors: sortDescriptors,
+            context: context
+        )
+
+        // Wrap the live query in an async stream
+
+        let coreDataTasks = monitor.results()
+
+        // Convert Core Data results to DTOs
+
+        let tasks = coreDataTasks
+            .map { tasks in
+                tasks.map { $0.makeTask() }
+            }
+
+        // Wrap the final transformed stream to hide all implementation details from
+        // the public API
+
+        let wrappedTasks = CareStoreQueryResults(wrapping: tasks)
+        return wrappedTasks
+    }
 
     public func fetchTasks(
         query: OCKTaskQuery = OCKTaskQuery(),
@@ -88,7 +121,7 @@ extension OCKStore {
         _ tasks: [OCKTask],
         callbackQueue: DispatchQueue = .main,
         completion: ((Result<[OCKTask], OCKStoreError>) -> Void)? = nil) {
-        
+
         transaction(inserts: [], updates: [], deletes: tasks) { result in
             callbackQueue.async {
                 completion?(result.map(\.deletes))
@@ -110,15 +143,23 @@ extension OCKStore {
     private func confirmUpdateWillNotCauseDataLoss(tasks: [OCKTask]) throws {
         let request = NSFetchRequest<OCKCDTask>(entityName: OCKCDTask.entity().name!)
         request.predicate = OCKCDTask.headerPredicate(tasks)
+        request.returnsObjectsAsFaults = false
         let heads = try context.fetch(request)
 
         for task in heads {
+
+            guard let proposedUpdate = tasks.first(where: { $0.id == task.id })
+                else { fatalError("Fetched an OCKCDTask for which an update was not proposed.") }
 
             // For each task, gather all outcomes
             var allOutcomes: Set<OCKCDOutcome> = []
             var currentVersion: OCKCDTask? = task
             while let version = currentVersion {
-                allOutcomes = allOutcomes.union(version.outcomes)
+
+                let conflictingOutcomes = version.outcomes
+                    .filter { $0.next.isEmpty && $0.deletedDate == nil }
+
+                allOutcomes = allOutcomes.union(conflictingOutcomes)
                 currentVersion = version.previous.first as? OCKCDTask // AUDIT: RISKY CHANGE
             }
 
@@ -126,9 +167,6 @@ extension OCKStore {
             // If there are no outcomes, then any update is safe.
             guard let latestDate = allOutcomes.map({ $0.startDate }).max()
                 else { continue }
-
-            guard let proposedUpdate = tasks.first(where: { $0.id == task.id })
-                else { fatalError("Fetched an OCKCDTask for which an update was not proposed.") }
 
             if proposedUpdate.effectiveDate <= latestDate {
                 throw OCKStoreError.updateFailed(reason: """
@@ -166,9 +204,12 @@ extension OCKStore {
     func buildSortDescriptors(for query: OCKTaskQuery) -> [NSSortDescriptor] {
         query.sortDescriptors.map { order -> NSSortDescriptor in
             switch order {
-            case .effectiveDate(ascending: let ascending): return NSSortDescriptor(keyPath: \OCKCDTask.effectiveDate, ascending: ascending)
-            case .title(let ascending): return NSSortDescriptor(keyPath: \OCKCDTask.title, ascending: ascending)
-            case .groupIdentifier(let ascending): return NSSortDescriptor(keyPath: \OCKCDTask.groupIdentifier, ascending: ascending)
+            case .effectiveDate(ascending: let ascending):
+                return NSSortDescriptor(keyPath: \OCKCDTask.effectiveDate, ascending: ascending)
+            case .title(let ascending):
+                return NSSortDescriptor(keyPath: \OCKCDTask.title, ascending: ascending)
+            case .groupIdentifier(let ascending):
+                return NSSortDescriptor(keyPath: \OCKCDTask.groupIdentifier, ascending: ascending)
             }
         } + query.defaultSortDescriptors()
     }

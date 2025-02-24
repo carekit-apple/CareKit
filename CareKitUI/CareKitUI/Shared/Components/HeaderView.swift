@@ -33,7 +33,8 @@ import SwiftUI
 /// Header used for most CareKit cards.
 ///
 /// # Style
-/// The card supports styling using `careKitStyle(_:)`.
+/// The image color can be set using the `.foregroundColor` modifier on the `HeaderView`.
+/// The card also supports styling using `careKitStyle(_:)`.
 ///
 /// ```
 ///    +----------------------------------------+
@@ -57,14 +58,17 @@ public struct HeaderView: View {
         HStack(spacing: style.dimension.directionalInsets2.trailing) {
             image?
                 .font(.largeTitle)
-                .foregroundColor(Color(UIColor.lightGray))
             VStack(alignment: .leading, spacing: style.dimension.directionalInsets1.top / 4.0) {
                 title
                     .font(.headline)
                     .fontWeight(.bold)
+                    // Allows multiline text to wrap to the next line
+                    .fixedSize(horizontal: false, vertical: true)
                 detail?
                     .font(.caption)
                     .fontWeight(.medium)
+                    // Allows multiline text to wrap to the next line
+                    .fixedSize(horizontal: false, vertical: true)
             }.foregroundColor(Color.primary)
         }
     }

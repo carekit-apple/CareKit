@@ -37,17 +37,17 @@ class CareKitFHIRTests: XCTestCase {
     func testParseFHIRPatient() throws {
         let resource = OCKFHIRResourceData<R4, JSON>(data: samplePatientData)
         let patient = try OCKR4PatientCoder().decode(resource)
-        XCTAssert(patient.id == "pat1")
-        XCTAssert(patient.name.familyName == "Donald")
-        XCTAssert(patient.name.givenName == "Duck")
+        XCTAssertEqual(patient.id, "pat1")
+        XCTAssertEqual(patient.name.familyName, "Donald")
+        XCTAssertEqual(patient.name.givenName, "Duck")
     }
 
     func testParseFHIRCarePlanActivity() throws {
         let resource = OCKFHIRResourceData<DSTU2, JSON>(data: sampleCarePlanActivityData)
         let task = try OCKDSTU2CarePlanActivityCoder().decode(resource)
-        XCTAssert(task.id == "ABC")
-        XCTAssert(task.schedule.elements.first?.interval == DateComponents(day: 2))
-        XCTAssert(task.schedule.elements.first?.duration == .hours(1))
+        XCTAssertEqual(task.id, "ABC")
+        XCTAssertEqual(task.schedule.elements.first?.interval, DateComponents(day: 2))
+        XCTAssertEqual(task.schedule.elements.first?.duration, .hours(1))
     }
 
     func testParseFHIRMedicationOrder() throws {
@@ -55,9 +55,9 @@ class CareKitFHIRTests: XCTestCase {
         var coder = OCKDSTU2MedicationOrderCoder()
         coder.getCareKitSchedule = { _ in OCKSchedule.dailyAtTime(hour: 0, minutes: 0, start: Date(), end: nil, text: nil, duration: .allDay) }
         let task = try coder.decode(resource)
-        XCTAssert(task.id == "24")
-        XCTAssert(task.instructions == "2 puffs every 2-4 hours")
-        XCTAssert(task.schedule.elements.first?.interval == DateComponents(day: 1))
+        XCTAssertEqual(task.id, "24")
+        XCTAssertEqual(task.instructions, "2 puffs every 2-4 hours")
+        XCTAssertEqual(task.schedule.elements.first?.interval, DateComponents(day: 1))
     }
 
     func testParseFailsWhenDataIsCorrupt() {

@@ -31,60 +31,67 @@
 
 import CareKitStore
 import CareKitUI
-import Combine
 import UIKit
 
 /// A task view controller that displays multiple events in a grid collection view.
-open class OCKGridTaskViewController: OCKTaskViewController<OCKGridTaskController, OCKGridTaskViewSynchronizer>, UICollectionViewDataSource {
+open class OCKGridTaskViewController: OCKTaskViewController<OCKGridTaskViewSynchronizer>, UICollectionViewDataSource {
 
-    // MARK: - Initializers
-
-    override public init(controller: OCKGridTaskController, viewSynchronizer: OCKGridTaskViewSynchronizer) {
-        super.init(controller: controller, viewSynchronizer: viewSynchronizer)
+    @available(*, unavailable, renamed: "init(query:store:viewSynchronizer:)")
+    public init<Controller>(
+        controller: Controller,
+        viewSynchronizer: OCKGridTaskViewSynchronizer
+    ) {
+        fatalError("Unavailable")
     }
 
-    override public init(viewSynchronizer: OCKGridTaskViewSynchronizer, task: OCKAnyTask, eventQuery: OCKEventQuery,
-                         storeManager: OCKSynchronizedStoreManager) {
-        super.init(viewSynchronizer: viewSynchronizer, task: task, eventQuery: eventQuery, storeManager: storeManager)
+    @available(*, unavailable, renamed: "init(query:store:viewSynchronizer:)")
+    public convenience init(
+        viewSynchronizer: OCKGridTaskViewSynchronizer = OCKGridTaskViewSynchronizer(),
+        task: OCKAnyTask,
+        eventQuery: OCKEventQuery,
+        storeManager: OCKSynchronizedStoreManager
+    ) {
+        fatalError("Unavailable")
     }
 
-    override public init(viewSynchronizer: OCKGridTaskViewSynchronizer, taskID: String, eventQuery: OCKEventQuery,
-                         storeManager: OCKSynchronizedStoreManager) {
-        super.init(viewSynchronizer: viewSynchronizer, taskID: taskID, eventQuery: eventQuery, storeManager: storeManager)
+    @available(*, unavailable, renamed: "init(query:store:viewSynchronizer:)")
+    public convenience init(
+        viewSynchronizer: OCKGridTaskViewSynchronizer = OCKGridTaskViewSynchronizer(),
+        taskID: String,
+        eventQuery: OCKEventQuery,
+        storeManager: OCKSynchronizedStoreManager
+    ) {
+        fatalError("Unavailable")
     }
 
-    /// Initialize a view controller that displays a task. Fetches and stays synchronized with events for the task.
-    /// - Parameter task: The task to display.
-    /// - Parameter eventQuery: Used to fetch events for the task.
-    /// - Parameter storeManager: Wraps the store that contains the events to fetch.
-    public init(task: OCKAnyTask, eventQuery: OCKEventQuery, storeManager: OCKSynchronizedStoreManager) {
-        super.init(viewSynchronizer: .init(), task: task, eventQuery: eventQuery, storeManager: storeManager)
-    }
-
-    /// Initialize a view controller that displays task. Fetches and stays synchronized with events for the task.
-    /// - Parameter viewSynchronizer: Manages the task view.
-    /// - Parameter taskID: User defined id of the task to fetch.
-    /// - Parameter eventQuery: Used to fetch events for the task.
-    /// - Parameter storeManager: Wraps the store that contains the task and events to fetch.
-    public init(taskID: String, eventQuery: OCKEventQuery, storeManager: OCKSynchronizedStoreManager) {
-        super.init(viewSynchronizer: .init(), taskID: taskID, eventQuery: eventQuery, storeManager: storeManager)
+    /// A view controller that displays a task view and keeps it synchronized with a store.
+    /// - Parameters:
+    ///   - query: Used to fetch the task data that will be displayed.
+    ///   - store: Contains the task data that will be displayed.
+    ///   - viewSynchronizer: Capable of creating and updating the view using the task data.
+    public init(
+        query: OCKEventQuery,
+        store: OCKAnyStoreProtocol,
+        viewSynchronizer: OCKGridTaskViewSynchronizer = OCKGridTaskViewSynchronizer()
+    ) {
+        super.init(query: query, store: store, viewSynchronizer: viewSynchronizer)
     }
 
     // MARK: - Methods
 
     override open func viewDidLoad() {
         super.viewDidLoad()
-        taskView.collectionView.dataSource = self
+        typedView.collectionView.dataSource = self
     }
 
     open func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return controller.taskEvents.first?.count ?? 0
+        return viewModel.first?.count ?? 0
     }
 
     open func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: OCKGridTaskView.defaultCellIdentifier, for: indexPath)
         guard let typedCell = cell as? OCKGridTaskView.DefaultCellType else { return cell }
-        let event = controller.taskEvents[indexPath.section][indexPath.row]
+        let event = viewModel[indexPath.section][indexPath.row]
         typedCell.updateWith(event: event, animated: false)
         return cell
     }

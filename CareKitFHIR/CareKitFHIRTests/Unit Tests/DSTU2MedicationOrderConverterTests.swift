@@ -57,10 +57,10 @@ class DSTU2MedicationOrderConverterTest: XCTestCase {
         medicationOrder.dosageInstruction = [instructions]
 
         let task = try OCKDSTU2MedicationOrderCoder().convert(resource: medicationOrder)
-        XCTAssert(task.id == "ABC")
-        XCTAssert(task.title == "Title")
-        XCTAssert(task.instructions == "Instructions")
-        XCTAssert(task.schedule.elements.first?.interval == DateComponents(day: 1))
+        XCTAssertEqual(task.id, "ABC")
+        XCTAssertEqual(task.title, "Title")
+        XCTAssertEqual(task.instructions, "Instructions")
+        XCTAssertEqual(task.schedule.elements.first?.interval, DateComponents(day: 1))
     }
 
     func testConvertCareKitTaskToFHIRMedicationOrder() throws {
@@ -79,14 +79,14 @@ class DSTU2MedicationOrderConverterTest: XCTestCase {
             return
         }
 
-        XCTAssert(medicationOrder.id?.value?.string == "ABC")
-        XCTAssert(medicationOrder.dosageInstruction?.first?.text == "Instructions")
-        XCTAssert(medicationOrder.dosageInstruction?.first?.timing?.repeat?.periodUnits == "d")
-        XCTAssert(medicationOrder.dosageInstruction?.first?.timing?.repeat?.period == FHIRPrimitive(FHIRDecimal(1)))
-        XCTAssert(medicationOrder.dosageInstruction?.first?.timing?.repeat?.durationUnits == "s")
-        XCTAssert(medicationOrder.dosageInstruction?.first?.timing?.repeat?.duration == FHIRPrimitive(FHIRDecimal(10)))
-        XCTAssert(period.start?.value?.foundationDate == startDate)
-        XCTAssert(period.end?.value?.foundationDate == endDate)
+        XCTAssertEqual(medicationOrder.id?.value?.string, "ABC")
+        XCTAssertEqual(medicationOrder.dosageInstruction?.first?.text, "Instructions")
+        XCTAssertEqual(medicationOrder.dosageInstruction?.first?.timing?.repeat?.periodUnits, "d")
+        XCTAssertEqual(medicationOrder.dosageInstruction?.first?.timing?.repeat?.period, FHIRPrimitive(FHIRDecimal(1)))
+        XCTAssertEqual(medicationOrder.dosageInstruction?.first?.timing?.repeat?.durationUnits, "s")
+        XCTAssertEqual(medicationOrder.dosageInstruction?.first?.timing?.repeat?.duration, FHIRPrimitive(FHIRDecimal(10)))
+        XCTAssertEqual(period.start?.value?.foundationDate, startDate)
+        XCTAssertEqual(period.end?.value?.foundationDate, endDate)
     }
     
     func testOCKScheduleWithDateComponentsNilToTiming() throws {

@@ -43,7 +43,7 @@ public struct OCKHealthKitTask: Codable, Equatable, OCKAnyVersionableTask, OCKAn
     public var healthKitLinkage: OCKHealthKitLinkage
 
     // MARK: OCKAnyTask
-    public let id: String
+    public var id: String
     public var title: String?
     public var instructions: String?
     public var impactsAdherence = true
@@ -70,7 +70,7 @@ public struct OCKHealthKitTask: Codable, Equatable, OCKAnyVersionableTask, OCKAn
     /// Instantiate a new `OCKHealthKitTask`
     ///
     /// - Parameters:
-    ///   - id: A unique id for this health kit task chosen by the developer.
+    ///   - id: A unique id for this HealthKit task chosen by the developer.
     ///   - title: A title that will be used to represent this HealthKit task to the patient.
     ///   - carePlanUUID: The UUID of the care plan that this task belongs to.
     ///   - schedule: A schedule specifying when this task is to be completed.

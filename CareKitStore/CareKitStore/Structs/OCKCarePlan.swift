@@ -41,7 +41,7 @@ public struct OCKCarePlan: Codable, Equatable, Identifiable, OCKAnyCarePlan {
     public var patientUUID: UUID?
 
     // MARK: OCKAnyCarePlan
-    public let id: String
+    public var id: String
     public var title: String
 
     // MARK: OCKVersionedObjectCompatible

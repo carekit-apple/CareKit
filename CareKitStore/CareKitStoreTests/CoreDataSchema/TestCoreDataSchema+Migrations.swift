@@ -40,7 +40,6 @@ private let testsBundle = Bundle(for: TestCoreDataSchemaMigrations.self)
 
 class TestCoreDataSchemaMigrations: XCTestCase {
 
-
     /// The `SampleStore2.0` database was created using the `OCKSample` app checked out
     /// at release tag 2.0.1. The database model version is `CareKitStore2.0`.
     ///
@@ -93,7 +92,7 @@ class TestCoreDataSchemaMigrations: XCTestCase {
         // were setup correctly.
         let ckRequest = NSFetchRequest<NSManagedObject>(entityName: "OCKCDTask")
         let ckTasks = try container.viewContext.fetch(ckRequest)
-        XCTAssert(ckTasks.count == 3)
+        XCTAssertEqual(ckTasks.count, 3)
 
         let ckTask = ckTasks.first
         let ckSchedule = ckTask?.value(forKey: "scheduleElements")
@@ -101,8 +100,8 @@ class TestCoreDataSchemaMigrations: XCTestCase {
         let ckSchema = ckTask?.value(forKey: "schemaVersion") as? String
         XCTAssertNotNil(ckTask)
         XCTAssertNotNil(ckSchedule)
-        XCTAssertTrue(ckKnowledge?.count == 1)
-        XCTAssertTrue(ckSchema == "2.1.0")
+        XCTAssertEqual(ckKnowledge?.count, 1)
+        XCTAssertEqual(ckSchema, "2.1.0")
 
         let outcomes = ckTask?.value(forKey: "outcomes") as? Set<NSManagedObject>
         let values = outcomes?.map { $0.value(forKey: "values") as? Set<NSManagedObject> }

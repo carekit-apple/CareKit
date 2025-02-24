@@ -63,7 +63,7 @@ class TestStoreCarePlans: XCTestCase {
         query.patientIDs = [patient.id]
 
         let fetched = try store.fetchCarePlansAndWait(query: query)
-        XCTAssert(fetched == [plan])
+        XCTAssertEqual(fetched, [plan])
     }
 
     func testCarePlanQueryGroupIdentifier() throws {
@@ -79,8 +79,8 @@ class TestStoreCarePlans: XCTestCase {
         query.groupIdentifiers = ["1"]
 
         let fetched = try store.fetchCarePlansAndWait(query: query)
-        XCTAssert(fetched.count == 1)
-        XCTAssert(fetched.first?.id == "id_1")
+        XCTAssertEqual(fetched.count, 1)
+        XCTAssertEqual(fetched.first?.id, "id_1")
     }
 
     func testCarePlanQueryNilGroupIdentifier() throws {
@@ -96,8 +96,8 @@ class TestStoreCarePlans: XCTestCase {
         query.groupIdentifiers = [nil]
 
         let fetched = try store.fetchCarePlansAndWait(query: query)
-        XCTAssert(fetched.count == 1)
-        XCTAssert(fetched.first?.id == "id_1")
+        XCTAssertEqual(fetched.count, 1)
+        XCTAssertEqual(fetched.first?.id, "id_1")
     }
 
     func testCarePlanQueryLimit() throws {
@@ -107,7 +107,7 @@ class TestStoreCarePlans: XCTestCase {
         var query = OCKCarePlanQuery(for: Date())
         query.limit = 1
         let fetched = try store.fetchCarePlansAndWait(query: query)
-        XCTAssert(fetched.count == 1)
+        XCTAssertEqual(fetched.count, 1)
     }
 
     func testCarePlanQuerySortedOffset() throws {
@@ -119,8 +119,8 @@ class TestStoreCarePlans: XCTestCase {
         query.sortDescriptors = [.title(ascending: true)]
         query.offset = 2
         let fetched = try store.fetchCarePlansAndWait(query: query)
-        XCTAssert(fetched.count == 1)
-        XCTAssert(fetched.first?.id == "C")
+        XCTAssertEqual(fetched.count, 1)
+        XCTAssertEqual(fetched.first?.id, "C")
     }
 
     func testCarePlanQueryWithNilQueryReturnsAllCarePlans() throws {
@@ -129,7 +129,7 @@ class TestStoreCarePlans: XCTestCase {
         let plan3 = OCKCarePlan(id: "3", title: "3", patientUUID: nil)
         try store.addCarePlansAndWait([plan1, plan2, plan3])
         let plans = try store.fetchCarePlansAndWait()
-        XCTAssert(plans.count == 3)
+        XCTAssertEqual(plans.count, 3)
     }
 
     func testCarePlanQueryTags() throws {
@@ -149,7 +149,7 @@ class TestStoreCarePlans: XCTestCase {
         query.sortDescriptors = [.title(ascending: true)]
 
         let fetched = try store.fetchCarePlansAndWait(query: query)
-        XCTAssert(fetched.map { $0.title } == ["A", "B"])
+        XCTAssertEqual(fetched.map { $0.title }, ["A", "B"])
     }
 
     func testCarePlanQueryByRemoteID() throws {
@@ -165,8 +165,8 @@ class TestStoreCarePlans: XCTestCase {
         query.remoteIDs = ["abc"]
 
         let fetched = try store.fetchCarePlansAndWait(query: query)
-        XCTAssert(fetched.count == 1)
-        XCTAssert(fetched.first == plan1)
+        XCTAssertEqual(fetched.count, 1)
+        XCTAssertEqual(fetched.first, plan1)
     }
 
     func testCarePlanQueryByNilRemoteID() throws {
@@ -182,8 +182,8 @@ class TestStoreCarePlans: XCTestCase {
         query.remoteIDs = [nil]
 
         let fetched = try store.fetchCarePlansAndWait(query: query)
-        XCTAssert(fetched.count == 1)
-        XCTAssert(fetched.first == plan1)
+        XCTAssertEqual(fetched.count, 1)
+        XCTAssertEqual(fetched.first, plan1)
     }
 
     func testCarePlaneQueryByPatientUUID() throws {
@@ -194,7 +194,7 @@ class TestStoreCarePlans: XCTestCase {
         query.patientUUIDs = [patient.uuid]
 
         let fetched = try store.fetchCarePlansAndWait(query: query)
-        XCTAssert(fetched == [plan])
+        XCTAssertEqual(fetched, [plan])
     }
 
     // MARK: Versioning
@@ -202,8 +202,8 @@ class TestStoreCarePlans: XCTestCase {
     func testUpdateCarePlanCreatesNewVersion() throws {
         let plan = try store.addCarePlanAndWait(OCKCarePlan(id: "bronchitis", title: "Bronchitis", patientUUID: nil))
         let updatedPlan = try store.updateCarePlanAndWait(OCKCarePlan(id: "bronchitis", title: "Bronchitis Treatment", patientUUID: nil))
-        XCTAssert(updatedPlan.title == "Bronchitis Treatment")
-        XCTAssert(updatedPlan.previousVersionUUIDs.first == plan.uuid)
+        XCTAssertEqual(updatedPlan.title, "Bronchitis Treatment")
+        XCTAssertEqual(updatedPlan.previousVersionUUIDs.first, plan.uuid)
     }
 
     func testUpdateFailsForUnsavedCarePlans() {
@@ -215,8 +215,8 @@ class TestStoreCarePlans: XCTestCase {
         let versionA = try store.addCarePlanAndWait(OCKCarePlan(id: "A", title: "Amy", patientUUID: nil))
         let versionB = try store.updateCarePlanAndWait(OCKCarePlan(id: "A", title: "Jared", patientUUID: nil))
         let fetched = try store.fetchCarePlanAndWait(id: versionA.id)
-        XCTAssert(fetched?.id == versionB.id)
-        XCTAssert(fetched?.previousVersionUUIDs.first == versionA.uuid)
+        XCTAssertEqual(fetched?.id, versionB.id)
+        XCTAssertEqual(fetched?.previousVersionUUIDs.first, versionA.uuid)
     }
 
     func testCarePlanQueryOnPastDateReturnsPastVersionOfACarePlan() throws {
@@ -233,8 +233,8 @@ class TestStoreCarePlans: XCTestCase {
         let interval = DateInterval(start: dateA.addingTimeInterval(10), end: dateB.addingTimeInterval(-10))
         let query = OCKCarePlanQuery(dateInterval: interval)
         let fetched = try store.fetchCarePlansAndWait(query: query)
-        XCTAssert(fetched.count == 1)
-        XCTAssert(fetched.first?.title == versionA.title)
+        XCTAssertEqual(fetched.count, 1)
+        XCTAssertEqual(fetched.first?.title, versionA.title)
     }
 
     func testCarePlanQuerySpanningVersionsReturnsNewestVersionOnly() throws {
@@ -251,8 +251,8 @@ class TestStoreCarePlans: XCTestCase {
         let interval = DateInterval(start: dateA.addingTimeInterval(10), end: dateB.addingTimeInterval(10))
         let query = OCKCarePlanQuery(dateInterval: interval)
         let fetched = try store.fetchCarePlansAndWait(query: query)
-        XCTAssert(fetched.count == 1)
-        XCTAssert(fetched.first?.title == versionB.title)
+        XCTAssertEqual(fetched.count, 1)
+        XCTAssertEqual(fetched.first?.title, versionB.title)
     }
 
     func testCarePlanQueryBeforeCarePlansWasCreatedReturnsNoResults() throws {
@@ -271,7 +271,7 @@ class TestStoreCarePlans: XCTestCase {
         var query = OCKCarePlanQuery(for: Date())
         query.remoteIDs = ["abc"]
         let fetched = try store.fetchCarePlansAndWait(query: query).first
-        XCTAssert(plan == fetched)
+        XCTAssertEqual(plan, fetched)
     }
 
     func testQueryCarePlanByPatientRemoteID() throws {
@@ -286,7 +286,7 @@ class TestStoreCarePlans: XCTestCase {
         query.patientRemoteIDs = ["abc"]
 
         let fetched = try store.fetchCarePlansAndWait(query: query).first
-        XCTAssert(fetched == plan)
+        XCTAssertEqual(fetched, plan)
     }
     // MARK: Deletion
 

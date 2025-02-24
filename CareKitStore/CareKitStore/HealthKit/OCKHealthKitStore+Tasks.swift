@@ -27,12 +27,19 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#if os(iOS)
 
 import Foundation
 import HealthKit
 
+@available(iOS 15, watchOS 8, *)
 public extension OCKHealthKitPassthroughStore {
+
+    func tasks(matching query: OCKTaskQuery) -> CareStoreQueryResults<OCKHealthKitTask> {
+
+        let tasks = store.healthKitTasks(matching: query)
+        let wrappedTasks = CareStoreQueryResults(wrapping: tasks)
+        return wrappedTasks
+    }
 
     func fetchTasks(query: OCKTaskQuery, callbackQueue: DispatchQueue = .main,
                     completion: @escaping (Result<[OCKHealthKitTask], OCKStoreError>) -> Void) {
@@ -52,12 +59,12 @@ public extension OCKHealthKitPassthroughStore {
 
     func addTasks(_ tasks: [OCKHealthKitTask], callbackQueue: DispatchQueue = .main,
                   completion: ((Result<[OCKHealthKitTask], OCKStoreError>) -> Void)? = nil) {
-        store.addHealthKitTasks(tasks, callbackQueue: callbackQueue) { [weak self] result in
-            if case let .success(tasks) = result {
-                tasks.forEach { self?.startObservingHealthKit(task: $0) }
-            }
-            completion?(result)
-        }
+
+        store.addHealthKitTasks(
+            tasks,
+            callbackQueue: callbackQueue,
+            completion: completion
+        )
     }
 
     func updateTasks(_ tasks: [OCKHealthKitTask], callbackQueue: DispatchQueue = .main,
@@ -67,12 +74,12 @@ public extension OCKHealthKitPassthroughStore {
 
     func deleteTasks(_ tasks: [OCKHealthKitTask], callbackQueue: DispatchQueue = .main,
                      completion: ((Result<[OCKHealthKitTask], OCKStoreError>) -> Void)? = nil) {
-        store.deleteHealthKitTasks(tasks, callbackQueue: callbackQueue) { result in
-            if case let .success(tasks) = result {
-                tasks.forEach(self.stopObservingHealthKit)
-            }
-            completion?(result)
-        }
+
+        store.deleteHealthKitTasks(
+            tasks,
+            callbackQueue: callbackQueue,
+            completion: completion
+        )
     }
 
     func fetchTasks(for outcomes: [OCKHealthKitOutcome]) throws -> [OCKHealthKitTask] {
@@ -82,4 +89,3 @@ public extension OCKHealthKitPassthroughStore {
         return tasks
     }
 }
-#endif

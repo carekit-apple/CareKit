@@ -28,6 +28,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#if !os(watchOS)
 @testable import CareKit
 import Foundation
 import XCTest
@@ -42,3 +43,4 @@ class TestListView: XCTestCase {
         XCTAssertEqual(view.contentView.backgroundColor, view.scrollView.backgroundColor)
     }
 }
+#endif

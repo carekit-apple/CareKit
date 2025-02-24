@@ -66,17 +66,21 @@ class OCKCDTask: OCKCDTaskBase {
     
     func makeTask() -> OCKTask {
 
-        var task = OCKTask(
-            id: id,
-            title: title,
-            carePlanUUID: carePlan?.uuid,
-            schedule: OCKSchedule(composing: scheduleElements.map { $0.makeValue() })
-        )
-
-        task.copyVersionedValues(from: self)
-        task.instructions = instructions
-        task.impactsAdherence = impactsAdherence
+        var task: OCKTask!
         
+        self.managedObjectContext!.performAndWait {
+            task = OCKTask(
+                id: id,
+                title: title,
+                carePlanUUID: carePlan?.uuid,
+                schedule: OCKSchedule(composing: scheduleElements.map { $0.makeValue() })
+            )
+            
+            task.copyVersionedValues(from: self)
+            task.instructions = instructions
+            task.impactsAdherence = impactsAdherence
+        }
+
         return task
     }
 }

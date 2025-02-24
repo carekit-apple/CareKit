@@ -57,7 +57,7 @@ class TestStoreResolveConflicts: XCTestCase {
 
         store.mergeRevision(revision)
         try store.resolveConflictsAndWait()
-        XCTAssert(timesCalled == 2)
+        XCTAssertEqual(timesCalled, 2)
     }
 
     func testResolveConflictCanBeCalledWithMoreThanTwoConflicts() throws {
@@ -74,7 +74,7 @@ class TestStoreResolveConflicts: XCTestCase {
         let revision = OCKRevisionRecord(entities: entities, knowledgeVector: vector)
 
         remote.resolveConflict = { conflicts in
-            XCTAssert(conflicts.count == 10)
+            XCTAssertEqual(conflicts.count, 10)
             return conflicts.first!
         }
 
@@ -87,7 +87,7 @@ private class MockRemote: OCKRemoteSynchronizable {
 
     weak var delegate: OCKRemoteSynchronizationDelegate?
 
-    var automaticallySynchronizes: Bool = false
+    var automaticallySynchronizes = false
 
     var resolveConflict: (([OCKEntity]) throws -> OCKEntity)!
 
@@ -95,13 +95,16 @@ private class MockRemote: OCKRemoteSynchronizable {
         since knowledgeVector: OCKRevisionRecord.KnowledgeVector,
         mergeRevision: @escaping (OCKRevisionRecord) -> Void,
         completion: @escaping (Error?) -> Void) {
-        fatalError("Not implemented")
+
+        completion(nil)
     }
 
     func pushRevisions(
-        deviceRevision: OCKRevisionRecord,
+        deviceRevisions: [OCKRevisionRecord],
+        deviceKnowledge: OCKRevisionRecord.KnowledgeVector,
         completion: @escaping (Error?) -> Void) {
-        fatalError("Not implemented")
+
+        completion(nil)
     }
 
     func chooseConflictResolution(

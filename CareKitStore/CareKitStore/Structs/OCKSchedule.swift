@@ -81,25 +81,33 @@ public struct OCKSchedule: Codable, Equatable {
         return lastEndDate
     }
 
-    /// Computes an array of events between two dates.
-    /// The lower bound is inclusive and the upper bound is exclusive.
+    /// Compute a list of events that occur between two dates. The lower bound is inclusive
+    /// and the upper bound is exclusive.
+    ///
+    /// - Precondition: `start` < `end`
     ///
     /// - Parameters:
-    ///   - start: The earliest date at which an event could be returned. Inclusive.
-    ///   - end: The latest date at which an event could be returned. Exclusive.
+    ///   - start: The earliest date (inclusive) when an event can occur.
+    ///   - end: The latest date (exclusive) when an event can occur.
     public func events(from start: Date, to end: Date) -> [OCKScheduleEvent] {
-        var allEvents = elements
-            .flatMap { $0.events(from: self.startDate(), to: end) }
-            .sorted()
-        for index in 0..<allEvents.count {
-            allEvents[index] = allEvents[index].changing(occurrenceIndex: index)
-        }
-        return allEvents.filter { event in
-            if event.element.duration == .allDay {
-                return event.start >= Calendar.current.startOfDay(for: start)
-            }
-            return event.start + event.element.duration.seconds >= start
-        }
+
+        precondition(start < end)
+
+        // Compute events from schedule start -> query end.
+        let eventsBeforeQueryEnd = elements
+            .filter { $0.start < end }
+            .flatMap { $0.events(from: $0.start, to: end) }
+
+        // Compute events from query start -> query end.
+        let eventsMatchingQuery = eventsBeforeQueryEnd
+            .filter { $0.end >= start }
+
+        // Sort the events and adjust their occurrence indices to ensure they are
+        // constantly increasing.
+        let firstOccurrence = eventsBeforeQueryEnd.count - eventsMatchingQuery.count
+        let events = stableSort(events: eventsMatchingQuery, startingOccurrence: firstOccurrence)
+
+        return events
     }
 
     /// Create a new schedule by shifting this schedule.
@@ -121,6 +129,7 @@ public struct OCKSchedule: Codable, Equatable {
         return OCKSchedule(composing: [element])
     }
 
+
     /// Create a schedule that happens once per week, every week, at a fixed time.
     public static func weeklyAtTime(weekday: Int, hours: Int, minutes: Int, start: Date, end: Date?, targetValues: [OCKOutcomeValue],
                                     text: String?, duration: OCKScheduleElement.Duration = .hours(1)) -> OCKSchedule {
@@ -132,22 +141,31 @@ public struct OCKSchedule: Codable, Equatable {
         return OCKSchedule(composing: [element])
     }
 
-    /// Computes the date of the Nth occurrence of a schedule element. If the Nth occurrence is beyond the end date, then nil will be returned.
+    /// Compute the date of the Nth event. The result will be nil if the Nth event starts after the end of the schedule.
+    ///
+    /// - Precondition: `occurrence >= 0`
+    ///
+    /// - Parameter occurrence: The occurrence of the desired event.
     public func event(forOccurrenceIndex occurrence: Int) -> OCKScheduleEvent? {
+
         // This could be optimized. It is not an efficient algorithm.
-        assert(occurrence >= 0, "Schedule events cannot have negative occurrence indices")
-        let events = elements.flatMap { $0.events(betweenOccurrenceIndex: 0, and: occurrence + 1) }
-        let sortedEvents = events.sorted { eventA, eventB -> Bool in
-            if let eventA = eventA, let eventB = eventB {
-                return eventA < eventB
-            } else {
-                return eventA != nil && eventB == nil
-            }
+
+        precondition(occurrence >= 0, "Schedule events cannot have negative occurrence indices")
+
+        // Compute all events from 0 -> occurrence. This upper bound guarantees to compute
+        // event with `occurrence` if it exists in the schedule.
+        let allEvents = elements.flatMap { element in
+            element.events(betweenOccurrenceIndex: 0, and: occurrence + 1)
         }
-        guard let localEvent = sortedEvents[occurrence] else { return nil }
-        let globalEvent = OCKScheduleEvent(start: localEvent.start, end: localEvent.end,
-                                           element: localEvent.element, occurrence: occurrence)
-        return globalEvent
+
+        // Sort the events and adjust their occurrence indices to ensure they are
+        // constantly increasing.
+        let mergedEvents = stableSort(events: allEvents, startingOccurrence: 0)
+
+        // We are not guaranteed to find the occurrence if the schedule ends before it occurs.
+        guard occurrence < mergedEvents.count else { return nil }
+
+        return mergedEvents[occurrence]
     }
 
     func exists(onDay date: Date) -> Bool {
@@ -164,5 +182,31 @@ public struct OCKSchedule: Codable, Equatable {
         let didntEndTooEarly = end > firstMomentOfTheDay
 
         return startedOnTime && didntEndTooEarly
+    }
+
+    /// Sort the events and update their occurrences to range from `startingOccurrence` to n. It's important that
+    /// we use a stable sort on the events because their occurrence indices should never change across calls to this
+    /// method. The occurrence index is computed based on the sort order, and the occurrence index is stored in the
+    /// database when an outcome for the event is created. We need to ensure an occurrence index will always map
+    /// to the same event.
+    private func stableSort(
+        events: [OCKScheduleEvent],
+        startingOccurrence: Int
+    ) -> [OCKScheduleEvent] {
+
+        // Sort events by start time
+        let sortedEvents = events.sorted { $0.start < $1.start }
+
+        // Now that the events are sorted, their occurrence indices are out of order.
+        // Adjust them and make sure they start at `startingOccurrence`.
+        let eventsWithAdjustedOccurrences = sortedEvents
+            .enumerated()
+            .map { occurrenceOffset, event in
+                var newEvent = event
+                newEvent.occurrence = startingOccurrence + occurrenceOffset
+                return newEvent
+            }
+
+        return eventsWithAdjustedOccurrences
     }
 }

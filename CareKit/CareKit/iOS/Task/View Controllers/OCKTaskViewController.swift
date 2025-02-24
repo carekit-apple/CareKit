@@ -31,191 +31,148 @@
 
 import CareKitStore
 import CareKitUI
-import Combine
 import UIKit
 
-/// Types wishing to receive updates from task view controllers can conform to this protocol.
-public protocol OCKTaskViewControllerDelegate: AnyObject {
+/// A view controller that displays a task view and keeps it synchronized with a store.
+open class OCKTaskViewController<
+    ViewSynchronizer: ViewSynchronizing
+>: SynchronizedViewController<ViewSynchronizer>, OCKTaskViewDelegate where
+    ViewSynchronizer.View: OCKTaskDisplayable,
+    ViewSynchronizer.ViewModel == OCKTaskEvents
+{
 
-    /// Called when an unhandled error is encountered in a task view controller.
-    /// - Parameters:
-    ///   - viewController: The view controller in which the error was encountered.
-    ///   - error: The error that was unhandled.
-    func taskViewController<C: OCKTaskController, VS: OCKTaskViewSynchronizerProtocol>(
-        _ viewController: OCKTaskViewController<C, VS>, didEncounterError error: Error)
-}
-
-/// A view controller that displays a task view and keep it synchronized with a store.
-open class OCKTaskViewController<Controller: OCKTaskController, ViewSynchronizer: OCKTaskViewSynchronizerProtocol>:
-UIViewController, OCKTaskViewDelegate {
-
-    // MARK: Properties
-
-    /// If set, the delegate will receive updates when import events happen
-    public weak var delegate: OCKTaskViewControllerDelegate?
-
-    /// Handles the responsibility of updating the view when data in the store changes.
-    public let viewSynchronizer: ViewSynchronizer
-
-    /// Handles the responsibility of interacting with data from the store.
-    public let controller: Controller
+    let store: OCKAnyStoreProtocol
 
     /// The view that is being synchronized against the store.
+    @available(*, deprecated, renamed: "typedView")
     public var taskView: ViewSynchronizer.View {
-        guard let view = self.view as? ViewSynchronizer.View else { fatalError("View should be of type \(ViewSynchronizer.View.self)") }
-        return view
+        return typedView
     }
 
-    private var cancellables: Set<AnyCancellable> = []
-    private let query: OCKSynchronizedTaskQuery?
-
-    // MARK: - Life Cycle
-
-    /// Initialize with a controller and synchronizer.
-    public init(controller: Controller, viewSynchronizer: ViewSynchronizer) {
-        self.controller = controller
-        self.viewSynchronizer = viewSynchronizer
-        self.query = nil
-        super.init(nibName: nil, bundle: nil)
+    @available(*, unavailable, renamed: "init(query:store:viewSynchronizer:modifyTaskEvents:)")
+    public init<Controller>(controller: Controller, viewSynchronizer: ViewSynchronizer) {
+        fatalError("Unavailable")
     }
 
-    /// Initialize a view controller that displays a task. Fetches and stays synchronized with events for the task.
-    /// - Parameter viewSynchronizer: Manages the task view.
-    /// - Parameter task: The task to display.
-    /// - Parameter eventQuery: Used to fetch events for the task.
-    /// - Parameter storeManager: Wraps the store that contains the events to fetch.
-    public init(viewSynchronizer: ViewSynchronizer, task: OCKAnyTask, eventQuery: OCKEventQuery, storeManager: OCKSynchronizedStoreManager) {
-        self.controller = Controller(storeManager: storeManager)
-        self.viewSynchronizer = viewSynchronizer
-        self.query = .tasks([task], eventQuery)
-        super.init(nibName: nil, bundle: nil)
+    @available(*, unavailable, renamed: "init(query:store:viewSynchronizer:modifyTaskEvents:)")
+    public convenience init(
+        viewSynchronizer: ViewSynchronizer,
+        task: OCKAnyTask,
+        eventQuery: OCKEventQuery,
+        storeManager: OCKSynchronizedStoreManager
+    ) {
+        fatalError("Unavailable")
     }
 
-    /// Initialize a view controller that displays tasks. Fetches and stays synchronized with events for the tasks.
-    /// - Parameter viewSynchronizer: Manages the task view.
-    /// - Parameter taskIDs: User defined ids for the tasks to fetch.
-    /// - Parameter eventQuery: Used to fetch events for the tasks.
-    /// - Parameter storeManager: Wraps the store that contains the tasks and events to fetch.
-    public init(viewSynchronizer: ViewSynchronizer, taskIDs: [String], eventQuery: OCKEventQuery, storeManager: OCKSynchronizedStoreManager) {
-        self.controller = Controller(storeManager: storeManager)
-        self.viewSynchronizer = viewSynchronizer
-        self.query = .taskIDs(taskIDs, eventQuery)
-        super.init(nibName: nil, bundle: nil)
+    @available(*, unavailable, renamed: "init(query:store:viewSynchronizer:modifyTaskEvents:)")
+    public convenience init(
+        viewSynchronizer: ViewSynchronizer,
+        taskIDs: [String],
+        eventQuery: OCKEventQuery,
+        storeManager: OCKSynchronizedStoreManager
+    ) {
+        fatalError("Unavailable")
     }
 
-    /// Initialize a view controller that displays task. Fetches and stays synchronized with events for the task.
-    /// - Parameter viewSynchronizer: Manages the task view.
-    /// - Parameter taskID: User defined id of the task to fetch.
-    /// - Parameter eventQuery: Used to fetch events for the task.
-    /// - Parameter storeManager: Wraps the store that contains the task and events to fetch.
-    public init(viewSynchronizer: ViewSynchronizer, taskID: String, eventQuery: OCKEventQuery, storeManager: OCKSynchronizedStoreManager) {
-        self.controller = Controller(storeManager: storeManager)
-        self.viewSynchronizer = viewSynchronizer
-        self.query = .taskIDs([taskID], eventQuery)
-        super.init(nibName: nil, bundle: nil)
+    @available(*, unavailable, renamed: "init(query:store:viewSynchronizer:modifyTaskEvents:)")
+    public convenience init(
+        viewSynchronizer: ViewSynchronizer,
+        taskID: String,
+        eventQuery: OCKEventQuery,
+        storeManager: OCKSynchronizedStoreManager
+    ) {
+        fatalError("Unavailable")
     }
 
-    @available(*, unavailable)
-    public required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    /// A view controller that displays a task view and keeps it synchronized with a store.
+    /// - Parameters:
+    ///   - query: Used to fetch the task data that will be displayed.
+    ///   - store: Contains the task data that will be displayed.
+    ///   - viewSynchronizer: Capable of creating and updating the view using the task data.
+    ///   - modifyTaskEvents: Modify task events before they are applied to the view.
+    public init(
+        query: OCKEventQuery,
+        store: OCKAnyStoreProtocol,
+        viewSynchronizer: ViewSynchronizer,
+        modifyTaskEvents: @escaping (OCKTaskEvents) -> OCKTaskEvents = { $0 }
+    ) {
+        self.store = store
 
-    @available(*, unavailable)
-    override open func loadView() {
-        view = viewSynchronizer.makeView()
+        let taskEvents = store
+            .anyEvents(matching: query)
+            .map { OCKTaskEvents(events: $0) }
+            .map { modifyTaskEvents($0) }
+
+        super.init(
+            initialViewModel: OCKTaskEvents(),
+            viewModels: taskEvents,
+            viewSynchronizer: viewSynchronizer
+        )
     }
 
     override open func viewDidLoad() {
         super.viewDidLoad()
-        taskView.delegate = self
-
-        // Begin listening for changes in the view model. Note, when we subscribe to the view model, it sends its current value through the stream
-        startObservingViewModel()
-
-        // Listen for any errors encountered by the controller.
-        controller.$error
-            .compactMap { $0 }
-            .sink { [unowned self] error in
-                if self.delegate == nil {
-                    log(.error, "A task error occurred, but no delegate was set to forward it to!", error: error)
-                }
-                self.delegate?.taskViewController(self, didEncounterError: error)
-            }
-            .store(in: &self.cancellables)
-
-        // Fetch and observe data if needed.
-        query?.perform(using: controller)
-    }
-
-    // MARK: - Methods
-
-    // Create a subscription that updates the view when the view model is updated.
-    private func startObservingViewModel() {
-        controller.$taskEvents
-            .context(currentValue: controller.taskEvents, animateIf: { oldValue, _ in !oldValue.isEmpty })
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] context in
-                guard let self = self else { return }
-                self.viewSynchronizer.updateView(self.taskView, context: context)
-            }
-            .store(in: &cancellables)
-    }
-
-    // Reset view state on a failure
-    // Note: This is needed because the UI assumes user interactions (lke button taps) will be successful, and displays the corresponding
-    // state immediately. When the interaction is actually unsuccessful, we need to reset the UI.
-    func resetViewState() {
-        controller.taskEvents = controller.taskEvents // triggers an update to the view
-    }
-
-    func notifyDelegateAndResetViewOnError<Success, Error>(result: Result<Success, Error>) {
-        if case let .failure(error) = result {
-            if delegate == nil {
-                log(.error, "A task error occurred, but no delegate was set to forward it to!", error: error)
-            }
-            delegate?.taskViewController(self, didEncounterError: error)
-            resetViewState()
-        }
+        typedView.delegate = self
     }
 
     // MARK: - OCKTaskViewDelegate
 
     open func taskView(_ taskView: UIView & OCKTaskDisplayable, didCompleteEvent isComplete: Bool, at indexPath: IndexPath, sender: Any?) {
-        controller.setEvent(atIndexPath: indexPath, isComplete: isComplete, completion: notifyDelegateAndResetViewOnError)
+        let event = viewModel[indexPath.section][indexPath.row]
+        store.toggleBooleanOutcome(for: event) { [weak self] in
+            self?.resetViewOnError(result: $0)
+        }
     }
 
     open func taskView(_ taskView: UIView & OCKTaskDisplayable, didSelectOutcomeValueAt index: Int, eventIndexPath: IndexPath, sender: Any?) {
-        do {
-            let alert = try controller.initiateDeletionForOutcomeValue(atIndex: index, eventIndexPath: eventIndexPath,
-                                                                       deletionCompletion: notifyDelegateAndResetViewOnError)
-            if let anchor = sender as? UIView {
-                alert.popoverPresentationController?.sourceRect = anchor.bounds
-                alert.popoverPresentationController?.sourceView = anchor
-                alert.popoverPresentationController?.permittedArrowDirections = .any
-            }
-            present(alert, animated: true, completion: nil)
-        } catch {
-            if delegate == nil {
-                log(.error, "A task error occurred, but no delegate was set to forward it to!", error: error)
-            }
-            delegate?.taskViewController(self, didEncounterError: error)
+
+        // Make an action sheet to delete the outcome value
+        let actionSheet = UIAlertController(title: loc("LOG_ENTRY"), message: nil, preferredStyle: .actionSheet)
+        let cancel = UIAlertAction(title: loc("CANCEL"), style: .default, handler: nil)
+        let event = viewModel[eventIndexPath.section][eventIndexPath.row]
+        let delete = UIAlertAction(title: loc("DELETE"), style: .destructive) { [weak self] _ in
+            self?.store.deleteOutcomeValue(at: index, event: event)
         }
+        [delete, cancel].forEach { actionSheet.addAction($0) }
+
+        if let anchor = sender as? UIView {
+            actionSheet.popoverPresentationController?.sourceRect = anchor.bounds
+            actionSheet.popoverPresentationController?.sourceView = anchor
+            actionSheet.popoverPresentationController?.permittedArrowDirections = .any
+        }
+
+        /*
+         TODO: Remove in the future. Explicitly setting the tint color here to support
+         current developers that have a SwiftUI lifecycle app and wrap this view
+         controller in a `UIViewControllerRepresentable` implementation...Tint color
+         is not propagated...etc.
+         */
+        actionSheet.view.tintColor = determineTintColor(from: view)
+        present(actionSheet, animated: true, completion: nil)
     }
 
     open func taskView(_ taskView: UIView & OCKTaskDisplayable, didCreateOutcomeValueAt index: Int, eventIndexPath: IndexPath, sender: Any?) {
-        controller.appendOutcomeValue(value: true, at: eventIndexPath, completion: notifyDelegateAndResetViewOnError)
+        let event = viewModel[eventIndexPath.section][eventIndexPath.row]
+        store.append(outcomeValue: true, event: event) { [weak self] in
+            self?.resetViewOnError(result: $0)
+        }
     }
 
     open func didSelectTaskView(_ taskView: UIView & OCKTaskDisplayable, eventIndexPath: IndexPath) {
-        do {
-            let detailsViewController = try controller.initiateDetailsViewController(forIndexPath: eventIndexPath)
-            present(detailsViewController, animated: true)
-        } catch {
-            if delegate == nil {
-                log(.error, "A task error occurred, but no delegate was set to forward it to!", error: error)
-            }
-            delegate?.taskViewController(self, didEncounterError: error)
-        }
+        let event = viewModel[eventIndexPath.section][eventIndexPath.row]
+        let detailViewController = OCKDetailViewController(showsCloseButton: true)
+        detailViewController.detailView.titleLabel.text = event.task.title
+        detailViewController.detailView.bodyLabel.text = event.task.instructions
+        detailViewController.detailView.imageView.image = UIImage.asset(event.task.asset)
+        /*
+         TODO: Remove in the future. Explicitly setting the tint color here to support
+         current developers that have a SwiftUI lifecycle app and wrap this view
+         controller in a `UIViewControllerRepresentable` implementation...Tint color
+         is not propagated...etc.
+         */
+        detailViewController.view.tintColor = determineTintColor(from: view)
+
+        present(detailViewController, animated: true)
     }
 }
 

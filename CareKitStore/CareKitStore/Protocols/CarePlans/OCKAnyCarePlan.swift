@@ -30,10 +30,12 @@
 
 import Foundation
 
-/// Conforming a type to `OCKAnyCarePlan` allows it to be queried and displayed by CareKit.
+/// A protocol for a CareKit plan.
 public protocol OCKAnyCarePlan {
 
-    /// A user-defined unique identifier, typically human readable.
+    /// A user-defined unique identifier.
+    ///
+    /// Set this property to a human-readable value.
     var id: String { get }
 
     /// A title describing this care plan.
@@ -42,13 +44,16 @@ public protocol OCKAnyCarePlan {
     /// An identifier for this care plan in a remote store.
     var remoteID: String? { get }
 
-    /// An identifier that can be used to group this care plan with others.
+    /// An identifier you use to group this care plan with others.
     var groupIdentifier: String? { get }
 
     /// Any array of notes associated with this object.
     var notes: [OCKNote]? { get }
 
-    /// Determines if this care plan belongs to the given patiehtn.
+    /// A date specifying when this version of the care plan begins to take effect.
+    var effectiveDate: Date { get }
+
+    /// Determines if this care plan belongs to the given patient.
     ///
     /// - Parameter patient: A patient which may or may not own this care plan.
     func belongs(to patient: OCKAnyPatient) -> Bool

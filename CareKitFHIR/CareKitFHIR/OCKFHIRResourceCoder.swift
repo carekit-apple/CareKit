@@ -102,6 +102,7 @@ public extension OCKFHIRResourceCoder {
 
 public extension OCKFHIRResourceCoder where Resource.Release == DSTU2 {
 
+    #if !os(watchOS)
     /// Decode and convert clinical health records from HealthKit into CareKit objects.
     ///
     /// - Parameters:
@@ -167,4 +168,5 @@ public extension OCKFHIRResourceCoder where Resource.Release == DSTU2 {
             store.execute(clinicalQuery)
         }
     }
+    #endif
 }

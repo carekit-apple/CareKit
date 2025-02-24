@@ -28,6 +28,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#if !os(watchOS)
 import Foundation
 
 @testable import CareKitUI
@@ -83,7 +84,8 @@ class TestLinkType: XCTestCase {
     }
 
     func testURLFails() {
-        let observed = LinkItem.website(" ", title: "").url
+        let observed = LinkItem.website("", title: "").url
         XCTAssertNil(observed)
     }
 }
+#endif

@@ -30,8 +30,34 @@
 
 import CareKitStore
 import Foundation
+import SwiftUI
 
 extension OCKAnyEvent {
+
+    /// The title for the event's task.
+    var title: String {
+        task.title ?? ""
+    }
+
+    /// Denotes the time and date of the event.
+    var detail: String? {
+        OCKScheduleUtility.scheduleLabel(for: self)
+    }
+
+    /// Instructions for the event's task.
+    var instructions: String? {
+        task.instructions
+    }
+
+    var detailText: Text? {
+        guard let detail else { return nil }
+        return Text(detail)
+    }
+
+    var instructionsText: Text? {
+        guard let instructions else { return nil }
+        return Text(instructions)
+    }
 
     /// Sort outcome values by descending updated/created date
     func sortedOutcomeValuesByRecency() -> OCKAnyEvent {

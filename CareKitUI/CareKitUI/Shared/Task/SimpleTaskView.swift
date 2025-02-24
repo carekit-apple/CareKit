@@ -46,95 +46,83 @@ import SwiftUI
 ///     |                                                       |
 ///     +-------------------------------------------------------+
 /// ```
-public struct SimpleTaskView<Header: View, DetailDisclosure: View>: View {
+public struct SimpleTaskView<Header: View>: View {
 
-    // MARK: - Properties
+    @Environment(\.careKitStyle)
+    private var style
 
-    @Environment(\.isCardEnabled) private var isCardEnabled
+    @Environment(\.sizeCategory)
+    private var sizeCategory
 
-    private let isHeaderPadded: Bool
-    private let isDetailDisclosurePadded: Bool
+    @Environment(\.isCardEnabled)
+    private var isCardEnabled
+
     private let header: Header
-    private let detailDisclosure: DetailDisclosure
+    private let isComplete: Bool
     private let action: () -> Void
+
+    private var completionView: some View {
+        CircularCompletionView(isComplete: isComplete) {
+            Image(systemName: "checkmark")
+                .resizable()
+                .padding(style.dimension.buttonHeight2 * 0.3)
+                .frame(
+                    width: style.dimension.buttonHeight2,
+                    height: style.dimension.buttonHeight2
+                )
+        }
+    }
 
     public var body: some View {
         CardView {
-            Button {
-                self.action()
-            } label: {
-                HStack {
+            Button(action: action) {
+                HStack(
+                    alignment: .center,
+                    spacing: style.dimension.directionalInsets2.trailing
+                ) {
                     VStack { header }
-                        .if(isCardEnabled && isHeaderPadded) { $0.padding([.vertical, .leading]) }
                     Spacer()
-                    VStack { detailDisclosure }
-                        .if(isCardEnabled && isDetailDisclosurePadded) { $0.padding([.vertical, .trailing]) }
+                    completionView
                 }
+                .padding(isCardEnabled ? [.all] : [])
             }
             .buttonStyle(NoHighlightStyle())
         }
     }
 
-    // MARK: - Init
-
     /// Create an instance.
-    /// - Parameter action: The action to perform when the view is tapped.
-    /// - Parameter header: The header view to inject to the left of the button. The specified content will be stacked vertically.
-    /// - Parameter detailDisclosure: The view to inject to the right of the header. The specified content will be stacked vertically.
-    public init(action: @escaping () -> Void = {}, @ViewBuilder header: () -> Header, @ViewBuilder detailDisclosure: () -> DetailDisclosure) {
-        self.init(isHeaderPadded: false, isDetailDisclosurePadded: false, action: action, header: header, detailDisclosure: detailDisclosure)
-    }
-
-    private init(isHeaderPadded: Bool, isDetailDisclosurePadded: Bool,
-                 action: @escaping () -> Void = {}, @ViewBuilder header: () -> Header, @ViewBuilder detailDisclosure: () -> DetailDisclosure) {
-        self.isHeaderPadded = isHeaderPadded
-        self.isDetailDisclosurePadded = isDetailDisclosurePadded
-        self.header = header()
-        self.detailDisclosure = detailDisclosure()
+    /// - Parameters:
+    ///   - isComplete: True if the view denotes the completed state.
+    ///   - action: The action to perform when the view is tapped.
+    ///   - header: The view to inject in the header.
+    public init(
+        isComplete: Bool,
+        action: @escaping () -> Void = {},
+        @ViewBuilder header: () -> Header
+    ) {
+        self.isComplete = isComplete
         self.action = action
+        self.header = header()
     }
 }
 
 public extension SimpleTaskView where Header == _SimpleTaskViewHeader {
 
     /// Create an instance.
-    /// - Parameter title: The title text to display in the header.
-    /// - Parameter detail: The detail text to display in the header.
-    /// - Parameter action: The action to perform when the whole view is tapped.
-    /// - Parameter detailDisclosure: The view to inject to the right of the header. The specified content will be stacked vertically.
-    init(title: Text, detail: Text? = nil, action: @escaping () -> Void = {}, @ViewBuilder detailDisclosure: () -> DetailDisclosure) {
-        self.init(isHeaderPadded: true, isDetailDisclosurePadded: false, action: action, header: {
-            _SimpleTaskViewHeader(title: title, detail: detail)
-        }, detailDisclosure: detailDisclosure)
-    }
-}
-
-public extension SimpleTaskView where DetailDisclosure == _SimpleTaskViewDetailDisclosure {
-
-    /// Create an instance.
-    /// - Parameter isComplete: True if the circle button is complete.
-    /// - Parameter action: The action to perform when the whole view is tapped.
-    /// - Parameter header: The header view to inject to the left of the button. The specified content will be stacked vertically.
-    init(isComplete: Bool, action: @escaping () -> Void = {}, @ViewBuilder header: () -> Header) {
-        self.init(isHeaderPadded: false, isDetailDisclosurePadded: true, action: action, header: header, detailDisclosure: {
-            _SimpleTaskViewDetailDisclosure(isComplete: isComplete)
-        })
-    }
-}
-
-public extension SimpleTaskView where Header == _SimpleTaskViewHeader, DetailDisclosure == _SimpleTaskViewDetailDisclosure {
-
-    /// Create an instance.
-    /// - Parameter title: The title text to display in the header.
-    /// - Parameter detail: The detail text to display in the header.
-    /// - Parameter isComplete: True if the circle button is complete.
-    /// - Parameter action: The action to perform when the whole view is tapped.
-    init(title: Text, detail: Text? = nil, isComplete: Bool, action: @escaping () -> Void = {}) {
-        self.init(isHeaderPadded: true, isDetailDisclosurePadded: true, action: action, header: {
-            _SimpleTaskViewHeader(title: title, detail: detail)
-        }, detailDisclosure: {
-            _SimpleTaskViewDetailDisclosure(isComplete: isComplete)
-        })
+    /// - Parameters:
+    ///   - title: The title to display in the header.
+    ///   - detail: The detail to display in the header.
+    ///   - isComplete: True if the view denotes the completed state.
+    ///   - action: The action to perform when the whole view is tapped.
+    init(
+        title: Text,
+        detail: Text? = nil,
+        isComplete: Bool,
+        action: @escaping () -> Void = {}
+    ) {
+        self.isComplete = isComplete
+        self.action = action
+        self.header = _SimpleTaskViewHeader(title: title, detail: detail)
     }
 }
 
@@ -149,34 +137,62 @@ public struct _SimpleTaskViewHeader: View {
     }
 }
 
-/// The default detail disclosure used by a `SimpleTaskView`.
-public struct _SimpleTaskViewDetailDisclosure: View {
-
-    @Environment(\.careKitStyle) private var style
-    @Environment(\.sizeCategory) private var sizeCategory
-
-    @OSValue<CGFloat>(values: [.watchOS: 6], defaultValue: 16) private var padding
-
-    fileprivate let isComplete: Bool
-
-    public var body: some View {
-        CircularCompletionView(isComplete: isComplete) {
-            Image(systemName: "checkmark")
-                .resizable()
-                .padding(padding.scaled())
-                .frame(width: style.dimension.buttonHeight2.scaled(), height: style.dimension.buttonHeight2.scaled())
-        }
-    }
-}
-
 #if DEBUG
 struct SimpleTaskView_Previews: PreviewProvider {
     static var previews: some View {
-        VStack {
-            SimpleTaskView(title: Text("Title"), detail: Text("Detail"), isComplete: false, action: {})
-            SimpleTaskView(title: Text("Title"), detail: Text("Detail"), isComplete: true, action: {})
+        ScrollView {
+            VStack {
+
+                // Default - Completed
+                SimpleTaskView(
+                    title: Text("Title"),
+                    detail: Text("Detail"),
+                    isComplete: false,
+                    action: {}
+                )
+
+                // Default - Incomplete
+                SimpleTaskView(
+                    title: Text("Title"),
+                    detail: Text("Detail"),
+                    isComplete: true,
+                    action: {}
+                )
+
+                // Custom Header
+                SimpleTaskView(
+                    isComplete: true,
+                    action: {}
+                ) {
+                    HStack(spacing: 8) {
+                        RoundedRectangle(cornerRadius: 10, style: .continuous)
+                            .fill(Color.accentColor)
+                            .frame(width: 4)
+                        Text("Custom Header").font(.headline)
+                    }
+                }
+
+                // Larger AX size
+                SimpleTaskView(
+                    title: Text("A Longer Title"),
+                    detail: Text("Detail"),
+                    isComplete: true,
+                    action: {}
+                )
+                .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
+
+                // Dark mode
+                SimpleTaskView(
+                    title: Text("Title"),
+                    detail: Text("Detail"),
+                    isComplete: true,
+                    action: {}
+                )
+                .environment(\.colorScheme, .dark)
+
+            }
+            .padding()
         }
-        .padding()
     }
 }
 #endif

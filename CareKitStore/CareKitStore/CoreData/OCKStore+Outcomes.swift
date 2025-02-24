@@ -27,18 +27,56 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 import CoreData
 import Foundation
+import os.log
 
 extension OCKStore {
 
-    open func fetchOutcomes(query: OCKOutcomeQuery = OCKOutcomeQuery(), callbackQueue: DispatchQueue = .main,
-                            completion: @escaping (Result<[OCKOutcome], OCKStoreError>) -> Void) {
+    public func outcomes(matching query: OCKOutcomeQuery) -> CareStoreQueryResults<OCKOutcome> {
+
+        // Setup a live query
+
+        let predicate = buildPredicate(for: query)
+        let sortDescriptors = buildSortDescriptors(for: query)
+
+        let monitor = CoreDataQueryMonitor(
+            OCKCDOutcome.self,
+            predicate: predicate,
+            sortDescriptors: sortDescriptors,
+            context: context
+        )
+
+        // Wrap the live query in an async stream
+
+        let coreDataOutcomes = monitor.results()
+
+        // Convert Core Data results to DTOs
+
+        let outcomes = coreDataOutcomes
+            .map { outcomes in
+                outcomes.map { $0.makeOutcome() }
+            }
+
+        // Wrap the final transformed stream to hide all implementation details from
+        // the public API
+
+        let wrappedOutcomes = CareStoreQueryResults(wrapping: outcomes)
+        return wrappedOutcomes
+    }
+
+    public func fetchOutcomes(
+        query: OCKOutcomeQuery = OCKOutcomeQuery(),
+        callbackQueue: DispatchQueue = .main,
+        completion: @escaping (Result<[OCKOutcome], OCKStoreError>) -> Void
+    ) {
         context.perform {
             do {
                 let request = NSFetchRequest<OCKCDOutcome>(entityName: String(describing: OCKCDOutcome.self))
                 request.fetchLimit = query.limit ?? 0
                 request.fetchOffset = query.offset
+                request.returnsObjectsAsFaults = false
                 request.sortDescriptors = self.buildSortDescriptors(for: query)
                 request.predicate = self.buildPredicate(for: query)
                 let objects = try self.context.fetch(request)
@@ -54,11 +92,18 @@ extension OCKStore {
         }
     }
 
-    open func addOutcomes(_ outcomes: [OCKOutcome], callbackQueue: DispatchQueue = .main,
-                          completion: ((Result<[OCKOutcome], OCKStoreError>) -> Void)? = nil) {
+    public func addOutcomes(
+        _ outcomes: [OCKOutcome],
+        callbackQueue: DispatchQueue = .main,
+        completion: ((Result<[OCKOutcome], OCKStoreError>) -> Void)? = nil
+    ) {
         transaction(
             inserts: outcomes, updates: [], deletes: [],
-            preInsertValidate: { try self.confirmOutcomesAreInValidRegionOfTaskVersionChain(outcomes) }
+            preInsertValidate: {
+                let metadata = try self.computeEventMetadata(for: outcomes)
+                try self.confirmOutcomesAreInValidRegionOfTaskVersionChain(metadata)
+                try self.confirmOutcomesAreUnique(outcomes)
+            }
         ) { result in
             callbackQueue.async {
                 completion?(result.map(\.inserts))
@@ -66,17 +111,29 @@ extension OCKStore {
         }
     }
 
-    open func updateOutcomes(_ outcomes: [OCKOutcome], callbackQueue: DispatchQueue = .main,
-                             completion: ((Result<[OCKOutcome], OCKStoreError>) -> Void)? = nil) {
-        transaction(inserts: [], updates: outcomes, deletes: []) { result in
+    public func updateOutcomes(
+        _ outcomes: [OCKOutcome],
+        callbackQueue: DispatchQueue = .main,
+        completion: ((Result<[OCKOutcome], OCKStoreError>) -> Void)? = nil
+    ) {
+        transaction(
+            inserts: [], updates: outcomes, deletes: [],
+            preUpdateValidate: {
+                let metadata = try self.computeEventMetadata(for: outcomes)
+                try self.confirmOutcomesAreInValidRegionOfTaskVersionChain(metadata)
+            }
+        ) { result in
             callbackQueue.async {
                 completion?(result.map(\.updates))
             }
         }
     }
 
-    open func deleteOutcomes(_ outcomes: [OCKOutcome], callbackQueue: DispatchQueue = .main,
-                             completion: ((Result<[OCKOutcome], OCKStoreError>) -> Void)? = nil) {
+    public func deleteOutcomes(
+        _ outcomes: [OCKOutcome],
+        callbackQueue: DispatchQueue = .main,
+        completion: ((Result<[OCKOutcome], OCKStoreError>) -> Void)? = nil
+    ) {
         transaction(inserts: [], updates: [], deletes: outcomes) { result in
             callbackQueue.async {
                 completion?(result.map(\.deletes))
@@ -85,6 +142,54 @@ extension OCKStore {
     }
 
     // MARK: Private
+
+    private func computeEventMetadata(for outcomes: [Outcome]) throws -> [OutcomeMetadata] {
+
+        // Fetch the task for each outcome. Group the tasks in a dictionary for easy lookup.
+
+        let taskUUIDs = outcomes.map { $0.taskUUID }
+        let tasks: [OCKCDTask] = try context.fetchObjects(withUUIDs: taskUUIDs)
+
+        let tasksGroupedByUUID = Dictionary(
+            grouping: tasks,
+            by: { $0.uuid }
+        )
+
+        // Create outcome metadata by matching up outcomes and tasks
+
+        let metadata = try outcomes.map { outcome -> OutcomeMetadata in
+
+            // Find the task for the outcome
+
+            let taskUUID = outcome.taskUUID
+            let task = tasksGroupedByUUID[taskUUID]?.first
+
+            guard let task else {
+                let msg = "Failed to find task with UUID \(taskUUID)"
+                throw OCKStoreError.invalidValue(reason: msg)
+            }
+
+            // Compute the schedule event for the outcome
+
+            let scheduleElements = task.scheduleElements.map { $0.makeValue() }
+            let schedule = OCKSchedule(composing: scheduleElements)
+            let event = schedule.event(forOccurrenceIndex: outcome.taskOccurrenceIndex)
+
+            // If an event cannot be created, the event occurrence is likely after the end
+            // of the schedule
+            guard let event else {
+                let msg = "Invalid outcome occurrence: \(outcome)"
+                throw OCKStoreError.invalidValue(reason: msg)
+            }
+
+            // Create the metadata for the outcome
+
+            let metadata = OutcomeMetadata(task: task, scheduleEvent: event)
+            return metadata
+        }
+
+        return metadata
+    }
 
     // Confirms that outcomes cannot be added to past versions of a task in regions covered by a newer version.
     //
@@ -96,16 +201,22 @@ extension OCKStore {
     // Throws an error if the outcome is added to V1 outside the region between `a` and `b`.
     // Throws an error if the outcome is added to V2 anywhere because V2 is fully eclipsed.
     // Does not throw an error for outcomes to added to V3 because V3 is the newest version.
-    private func confirmOutcomesAreInValidRegionOfTaskVersionChain(_ outcomes: [Outcome]) throws {
-        for outcome in outcomes {
-            var task: OCKCDTask = try context.fetchObject(uuid: outcome.taskUUID)
-            let schedule = OCKSchedule(composing: task.scheduleElements.map { $0.makeValue() })
+    private func confirmOutcomesAreInValidRegionOfTaskVersionChain(_ metadata: [OutcomeMetadata]) throws {
+
+        for metadata in metadata {
+
+            let eventStart = metadata.scheduleEvent.start
+            var task = metadata.task
+
             while let nextVersion = task.next.first as? OCKCDTask {
-                let eventDate = schedule.event(forOccurrenceIndex: outcome.taskOccurrenceIndex)!.start
-                if nextVersion.effectiveDate <= eventDate {
+
+                if
+                    nextVersion.effectiveDate >= task.effectiveDate &&  // The next version is effective after this version
+                    nextVersion.effectiveDate <= eventStart             // The next version is effective before the start of the event
+                {
                     throw OCKStoreError.invalidValue(reason: """
                         Tried to place an outcome in a date range overshadowed by a future version of task.
-                        The event for the outcome is dated \(eventDate), but a newer version of the task starts on \(nextVersion.effectiveDate).
+                        The event for the outcome is dated \(eventStart), but a newer version of the task starts on \(nextVersion.effectiveDate).
                         """)
                 }
                 task = nextVersion
@@ -113,32 +224,79 @@ extension OCKStore {
         }
     }
 
+    private func confirmOutcomesAreUnique(_ outcomes: [Outcome]) throws {
+
+        // Build a predicate that searches for all effective outcomes
+
+        let query = OCKOutcomeQuery(for: Date())
+        let effectivePredicate = buildPredicate(for: query)
+
+        // Ensure there are no effective outcomes with matching task occurrence
+        // index and task UUID. This essentially checks that there is only one
+        // effective outcome for a single event.
+
+        let uniquenessPredicates = outcomes.map {
+
+            NSPredicate(
+                format: "%K == %@ AND %K == %i",
+                #keyPath(OCKCDOutcome.task.uuid),
+                $0.taskUUID as CVarArg,
+                #keyPath(OCKCDOutcome.taskOccurrenceIndex),
+                $0.taskOccurrenceIndex
+            )
+        }
+
+        let uniquenessPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: uniquenessPredicates)
+
+        let predicate = NSCompoundPredicate(
+            andPredicateWithSubpredicates: [
+                effectivePredicate, uniquenessPredicate
+            ]
+        )
+
+        // Create a fetch request to search for conflicting outcomes
+
+        let entityName = OCKOutcome.entity().name!
+        let request = NSFetchRequest<OCKCDVersionedObject>(entityName: entityName)
+        request.predicate = predicate
+
+        let conflictCount = try context.count(for: request)
+
+        if conflictCount > 0 {
+            let errorMessage = """
+            Tried to add a non-unique outcome to the store. Outcomes are unique on their \
+            task UUID and task occurrence index.
+            """
+            throw OCKStoreError.invalidValue(reason: errorMessage)
+        }
+
+    }
+
     private func buildPredicate(for query: OCKOutcomeQuery) -> NSPredicate {
         var predicate = query.basicPredicate(enforceDateInterval: false)
         
         if let interval = query.dateInterval {
 
-            let beforePredicate = NSPredicate(
-                format: "%K < %@",
-                #keyPath(OCKCDOutcome.startDate),
-                interval.end as NSDate
+
+            // Ensure the event for the outcome occurs in the query interval
+            let doesEventForOutcomeOccurDuringQueryInterval = doesEventForOutcomeOccur(in: interval)
+
+
+            let hasNoPreviousVersionWithNewerEffectiveDate = NSPredicate(
+                format: "SUBQUERY(%K, $x, $x.effectiveDate > %K).@count == 0",
+                #keyPath(OCKCDOutcome.previous),
+                #keyPath(OCKCDOutcome.effectiveDate)
             )
 
-            let afterPredicate = NSPredicate(
-                format: "%K >= %@",
-                #keyPath(OCKCDOutcome.endDate),
-                interval.start as NSDate
-            )
-
-            let nextPredicate = NSPredicate(
-                format: "%K.@count == 0 OR %K.@min > %@",
+            let hasNoNextVersionWithNewerEffectiveDate = NSPredicate(
+                format: "SUBQUERY(%K, $x, $x.effectiveDate >= %K).@count == 0",
                 #keyPath(OCKCDOutcome.next),
-                #keyPath(OCKCDOutcome.next.effectiveDate),
-                interval.end as NSDate
+                #keyPath(OCKCDOutcome.effectiveDate)
             )
             
             predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [
-                predicate, beforePredicate, afterPredicate, nextPredicate
+                predicate, doesEventForOutcomeOccurDuringQueryInterval,
+                hasNoNextVersionWithNewerEffectiveDate, hasNoPreviousVersionWithNewerEffectiveDate
             ])
         }
 
@@ -161,10 +319,33 @@ extension OCKStore {
     }
 
     private func buildSortDescriptors(for query: OCKOutcomeQuery) -> [NSSortDescriptor] {
-        query.sortDescriptors.map { order -> NSSortDescriptor in
-            switch order {
-            case .date(let ascending): return NSSortDescriptor(keyPath: \OCKCDOutcome.startDate, ascending: ascending)
-            }
-        } + query.defaultSortDescriptors()
+        query.defaultSortDescriptors()
     }
+
+    private func doesEventForOutcomeOccur(in interval: DateInterval) -> NSPredicate {
+
+        // Outcome's event starts before the interval end date (exclusive)
+        let doesStartBeforeIntervalEnd = NSPredicate(
+            format: "%K < %@",
+            #keyPath(OCKCDOutcome.startDate),
+            interval.end as NSDate
+        )
+
+        // Outcome's event ends after the interval start date (inclusive)
+        let doesEndAfterIntervalStart = NSPredicate(
+            format: "%K >= %@",
+            #keyPath(OCKCDOutcome.endDate),
+            interval.start as NSDate
+        )
+
+        let subpredicates = [doesStartBeforeIntervalEnd, doesEndAfterIntervalStart]
+        let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: subpredicates)
+        return compoundPredicate
+    }
+}
+
+private struct OutcomeMetadata {
+
+    var task: OCKCDTask
+    var scheduleEvent: OCKScheduleEvent
 }

@@ -42,7 +42,7 @@ class OCKLineLayer: OCKCartesianCoordinatesLayer {
         didSet { gradient.colors = [startColor.cgColor, endColor.cgColor] }
     }
 
-    var outlineColor: UIColor? = nil {
+    var outlineColor: UIColor? {
         didSet { outline.strokeColor = outlineColor?.cgColor }
     }
 

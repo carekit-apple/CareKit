@@ -29,11 +29,47 @@
  */
 
 import Foundation
+import os.log
 
 extension OCKStore {
 
-    open func fetchPatients(query: OCKPatientQuery = OCKPatientQuery(), callbackQueue: DispatchQueue = .main,
-                            completion: @escaping (Result<[OCKPatient], OCKStoreError>) -> Void) {
+    public func patients(matching query: OCKPatientQuery) -> CareStoreQueryResults<OCKPatient> {
+
+        // Setup a live query
+
+        let predicate = query.basicPredicate(enforceDateInterval: true)
+        let sortDescriptors = buildSortDescriptors(from: query)
+
+        let monitor = CoreDataQueryMonitor(
+            OCKCDPatient.self,
+            predicate: predicate,
+            sortDescriptors: sortDescriptors,
+            context: context
+        )
+
+        // Wrap the live query in an async stream
+
+        let coreDataPatients = monitor.results()
+
+        // Convert Core Data results to DTOs
+
+        let patients = coreDataPatients
+            .map { patients in
+                patients.map { $0.makePatient() }
+            }
+
+        // Wrap the final transformed stream to hide all implementation details from
+        // the public API
+
+        let wrappedPatients = CareStoreQueryResults(wrapping: patients)
+        return wrappedPatients
+    }
+
+    public func fetchPatients(
+        query: OCKPatientQuery = OCKPatientQuery(),
+        callbackQueue: DispatchQueue = .main,
+        completion: @escaping (Result<[OCKPatient], OCKStoreError>) -> Void
+    ) {
         fetchValues(
             predicate: query.basicPredicate(enforceDateInterval: true),
             sortDescriptors: buildSortDescriptors(from: query),
@@ -46,8 +82,11 @@ extension OCKStore {
         }
     }
 
-    open func addPatients(_ patients: [OCKPatient], callbackQueue: DispatchQueue = .main,
-                          completion: ((Result<[OCKPatient], OCKStoreError>) -> Void)? = nil) {
+    public func addPatients(
+        _ patients: [OCKPatient],
+        callbackQueue: DispatchQueue = .main,
+        completion: ((Result<[OCKPatient], OCKStoreError>) -> Void)? = nil
+    ) {
         transaction(
             inserts: patients, updates: [], deletes: [],
             preInsertValidate: self.validateNumberOfPatients) { result in
@@ -58,8 +97,11 @@ extension OCKStore {
         }
     }
 
-    open func updatePatients(_ patients: [OCKPatient], callbackQueue: DispatchQueue = .main,
-                             completion: ((Result<[OCKPatient], OCKStoreError>) -> Void)? = nil) {
+    public func updatePatients(
+        _ patients: [OCKPatient],
+        callbackQueue: DispatchQueue = .main,
+        completion: ((Result<[OCKPatient], OCKStoreError>) -> Void)? = nil
+    ) {
         transaction(inserts: [], updates: patients, deletes: []) { result in
             callbackQueue.async {
                 completion?(result.map(\.updates))
@@ -67,8 +109,11 @@ extension OCKStore {
         }
     }
 
-    open func deletePatients(_ patients: [OCKPatient], callbackQueue: DispatchQueue = .main,
-                             completion: ((Result<[OCKPatient], OCKStoreError>) -> Void)? = nil) {
+    public func deletePatients(
+        _ patients: [OCKPatient],
+        callbackQueue: DispatchQueue = .main,
+        completion: ((Result<[OCKPatient], OCKStoreError>) -> Void)? = nil
+    ) {
         transaction(inserts: [], updates: [], deletes: patients) { result in
             callbackQueue.async {
                 completion?(result.map(\.deletes))

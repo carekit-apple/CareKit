@@ -38,6 +38,7 @@ class OCKCDHealthKitTask: OCKCDTaskBase {
 
     convenience init(task: OCKHealthKitTask, context: NSManagedObjectContext) {
         self.init(entity: Self.entity(), insertInto: context)
+        
         self.copyVersionedValue(value: task, context: context)
         self.title = task.title
         self.instructions = task.instructions
@@ -59,17 +60,21 @@ class OCKCDHealthKitTask: OCKCDTaskBase {
     
     func makeTask() -> OCKHealthKitTask {
 
-        var task = OCKHealthKitTask(
-            id: id,
-            title: title,
-            carePlanUUID: carePlan?.uuid,
-            schedule: OCKSchedule(composing: scheduleElements.map { $0.makeValue() }),
-            healthKitLinkage: healthKitLinkage.makeValue()
-        )
-
-        task.copyVersionedValues(from: self)
-        task.instructions = instructions
-        task.impactsAdherence = impactsAdherence
+        var task: OCKHealthKitTask!
+        
+        self.managedObjectContext!.performAndWait {
+            task = OCKHealthKitTask(
+                id: id,
+                title: title,
+                carePlanUUID: carePlan?.uuid,
+                schedule: OCKSchedule(composing: scheduleElements.map { $0.makeValue() }),
+                healthKitLinkage: healthKitLinkage.makeValue()
+            )
+            
+            task.copyVersionedValues(from: self)
+            task.instructions = instructions
+            task.impactsAdherence = impactsAdherence
+        }
 
         return task
     }

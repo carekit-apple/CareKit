@@ -32,6 +32,7 @@ import CoreData
 import Foundation
 import os.log
 
+
 extension NSManagedObjectContext {
 
     var clockID: UUID {
@@ -81,10 +82,31 @@ extension NSManagedObjectContext {
         return value
     }
 
+    func fetchObjects<T: OCKCDObject>(withUUIDs uuids: [UUID]) throws -> [T] {
+
+        guard let entityName = T.entity().name else {
+            return []
+        }
+
+        let request = NSFetchRequest<T>(entityName: entityName)
+        request.fetchLimit = 1
+        request.returnsObjectsAsFaults = false
+
+        request.predicate = NSPredicate(
+            format: "%K IN %@",
+            #keyPath(OCKCDObject.uuid),
+            uuids
+        )
+
+        let results = try fetch(request)
+        return results
+    }
+
     func fetchObject<T: OCKCDObject>(uuid: UUID) throws -> T {
         let request = NSFetchRequest<T>(entityName: String(describing: T.self))
         request.fetchLimit = 1
         request.predicate = NSPredicate(format: "%K == %@", #keyPath(OCKCDObject.uuid), uuid as CVarArg)
+        request.returnsObjectsAsFaults = false
         guard let object = try fetch(request).first else {
             throw OCKStoreError.fetchFailed(reason: "No object \(T.self) for UUID \(uuid)")
         }
@@ -129,6 +151,7 @@ extension OCKStore: OCKRemoteSynchronizationDelegate {
             }
         }
     }
+
 
     /// Synchronize the contents of this instance of `OCKStore` against another store. Only changes
     /// that have been made since the last successful synchronization will be sent to the remote.
@@ -183,23 +206,34 @@ extension OCKStore: OCKRemoteSynchronizationDelegate {
 
                                 // 6. Local revisions will now include any patches
                                 //    that were applied during conflict resolution.
-                                let localRevision = try self.computeRevision(
-                                    since: remoteKnowledge)
+                                let localKnowledge = self.context.knowledgeVector
+
+                                let localRevisions = try self.computeRevisions(
+                                    since: remoteKnowledge
+                                )
 
                                 // 7. Bump knowledge vector to indicate that any
                                 //    objects created beyond this point in time
                                 //    are considered unknown to the peer.
                                 self.context.knowledgeVector.increment(
-                                    clockFor: self.context.clockID)
+                                    clockFor: self.context.clockID
+                                )
+                                
+                                // 8. Lock in the changes. If this fails, all
+                                //    merged changes will be rolled back and
+                                //    we'll need to try again later.
+                                try self.context.save()
 
-                                // 8. Push conflict resolutions + local changes to remote
-                                remote.pushRevisions(deviceRevision: localRevision) { error in
+                                // 9. Push conflict resolutions + local changes to remote
+                                remote.pushRevisions(
+                                    deviceRevisions: localRevisions,
+                                    deviceKnowledge: localKnowledge) { error in
 
                                     if let error = error {
                                         os_log("Failed to push revision. %{private}@",
                                                log: .store, type: .error, error as NSError)
                                     }
-                                    // 9. The sync is still considered successful
+                                    // 10. The sync is still considered successful
                                     //    even if the remote doesn't accept the
                                     //    push. The next time we sync with it, it
                                     //    will still have the same knowledge
@@ -220,21 +254,33 @@ extension OCKStore: OCKRemoteSynchronizationDelegate {
         }
     }
 
-    func computeRevision(since vector: OCKRevisionRecord.KnowledgeVector) throws -> OCKRevisionRecord {
 
-        let localRevisions = try context.performAndWait {
-            try supportedTypes
-                .map { ($0.entity(), vector) }
-                .flatMap(changedQuery)
-                .map { $0.entity() }
+    func computeRevisions(since vector: OCKRevisionRecord.KnowledgeVector) throws -> [OCKRevisionRecord] {
+
+        var entitiesGroupedByKnowledge: [OCKRevisionRecord.KnowledgeVector: [OCKEntity]] = [:]
+
+        try context.performAndWait {
+
+            for entity in supportedTypes {
+
+                let groupedByKnowledge = try changedQuery(
+                    entity: entity.entity(),
+                    since: vector
+                )
+
+                for (vector, values) in groupedByKnowledge {
+                    let existing = entitiesGroupedByKnowledge[vector] ?? []
+                    let combined = existing + values.map { $0.entity() }
+                    entitiesGroupedByKnowledge[vector] = combined
+                }
+            }
         }
 
-        let record = OCKRevisionRecord(
-            entities: localRevisions,
-            knowledgeVector: context.knowledgeVector
-        )
+        let localRevisions = entitiesGroupedByKnowledge.map { knowledge, entities in
+            OCKRevisionRecord(entities: entities, knowledgeVector: knowledge)
+        }
 
-        return record
+        return localRevisions
     }
 
     func mergeRevision(_ revision: OCKRevisionRecord) {
@@ -278,32 +324,51 @@ extension OCKStore: OCKRemoteSynchronizationDelegate {
     /// to be pushed to the server as part of a sync operation.
     private func changedQuery(
         entity: NSEntityDescription,
-        since vector: OCKRevisionRecord.KnowledgeVector) throws -> [OCKVersionedObjectCompatible] {
-
-        let uuid = context.clockID
-        let time = Int64(vector.clock(for: uuid))
+        since vector: OCKRevisionRecord.KnowledgeVector) throws -> [OCKRevisionRecord.KnowledgeVector: [OCKVersionedObjectCompatible]] {
 
         let knowledgeKey = #keyPath(OCKCDObject.knowledge)
         let uuidKey = #keyPath(OCKCDKnowledgeElement.uuid)
         let timeKey = #keyPath(OCKCDKnowledgeElement.time)
-        let subquery = "SUBQUERY(\(knowledgeKey), $element, $element.\(uuidKey) == %@ AND $element.\(timeKey) > %lld).@count > 0"
+
+        let predicates = vector.processes.map { uuid, time -> NSPredicate in
+
+            let greaterSubquery = "SUBQUERY(\(knowledgeKey), $element, $element.\(uuidKey) == %@ AND $element.\(timeKey) > %lld).@count > 0"
+            let greaterPredicate = NSPredicate(
+                format: greaterSubquery,
+                uuid as CVarArg, time
+            )
+
+            return greaterPredicate
+        }
+
+        let missingSubquery = "SUBQUERY(\(knowledgeKey), $element, $element.\(uuidKey) IN %@).@count == 0"
+        let missingPredicate = NSPredicate(
+            format: missingSubquery,
+            Array(vector.processes.keys)
+        )
 
         let request = NSFetchRequest<OCKCDVersionedObject>(entityName: entity.name!)
 
-        request.predicate = NSPredicate(format: subquery, uuid as CVarArg, time)
+        request.predicate = NSCompoundPredicate(
+            orPredicateWithSubpredicates: predicates + [missingPredicate]
+        )
 
         request.sortDescriptors = [
             NSSortDescriptor(keyPath: \OCKCDObject.updatedDate, ascending: false)
         ]
 
+        request.returnsObjectsAsFaults = false
+
         let objects = try context.fetch(request)
-        let values = objects.map { $0.makeValue() }
+        let grouped = Dictionary(grouping: objects, by: { $0.knowledgeVector() })
+        let values = grouped.mapValues({ $0.map { $0.makeValue() } })
         return values
     }
 
     private func findFirstConflict(entity: NSEntityDescription) throws -> [OCKEntity]? {
         let request = NSFetchRequest<OCKCDVersionedObject>(entityName: entity.name!)
         request.predicate = NSPredicate(format: "%K.@count == 0", #keyPath(OCKCDVersionedObject.next))
+        request.returnsObjectsAsFaults = false
 
         let tips = try context.fetch(request)
         let grouped = Dictionary(grouping: tips, by: \.id).map(\.1)
@@ -335,3 +400,4 @@ extension OCKStore: OCKRemoteSynchronizationDelegate {
         }
     }
 }
+

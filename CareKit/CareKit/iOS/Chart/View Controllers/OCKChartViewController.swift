@@ -31,118 +31,153 @@
 
 import CareKitStore
 import CareKitUI
-import Combine
 import MessageUI
+import os.log
 import UIKit
 
-/// Types wishing to receive updates from chart view controllers can conform to this protocol.
-public protocol OCKChartViewControllerDelegate: AnyObject {
-
-    /// Called when an unhandled error is encountered in a calendar view controller.
-    /// - Parameters:
-    ///   - viewController: The view controller in which the error was encountered.
-    ///   - error: The error that was unhandled.
-    func chartViewController<C: OCKChartController, VS: OCKChartViewSynchronizerProtocol>(
-        _ viewController: OCKChartViewController<C, VS>, didEncounterError error: Error)
-}
-
 /// A view controller that displays a chart view and keep it synchronized with a store.
-open class OCKChartViewController<Controller: OCKChartController, ViewSynchronizer: OCKChartViewSynchronizerProtocol>:
-UIViewController, OCKChartViewDelegate {
-
-    // MARK: Properties
-
-    /// If set, the delegate will receive updates when import events happen
-    public weak var delegate: OCKChartViewControllerDelegate?
-
-    /// Handles the responsibility of updating the view when data in the store changes.
-    public let viewSynchronizer: ViewSynchronizer
-
-    /// Handles the responsibility of interacting with data from the store.
-    public let controller: Controller
+open class OCKChartViewController<
+    ViewSynchronizer: ViewSynchronizing
+>: SynchronizedViewController<ViewSynchronizer>, OCKChartViewDelegate where
+    ViewSynchronizer.View: OCKChartDisplayable,
+    ViewSynchronizer.ViewModel == [OCKDataSeries]
+{
 
     /// The view that is being synchronized against the store.
+    @available(*, deprecated, renamed: "typedView")
     public var chartView: ViewSynchronizer.View {
-        guard let view = self.view as? ViewSynchronizer.View else { fatalError("View should be of type \(ViewSynchronizer.View.self)") }
-        return view
+        return typedView
     }
 
-    private let configurations: [OCKDataSeriesConfiguration]
-    private var cancellables: Set<AnyCancellable> = []
-
-    // MARK: - Life Cycle
-
-    public init(controller: Controller, viewSynchronizer: ViewSynchronizer) {
-        self.controller = controller
-        self.viewSynchronizer = viewSynchronizer
-        self.configurations = []
-        super.init(nibName: nil, bundle: nil)
+    @available(*, unavailable, renamed: "init(weekOfDate:configurations:store:viewSynchronizer:)")
+    public init<Controller>(
+        controller: Controller,
+        viewSynchronizer: ViewSynchronizer
+    ) {
+        fatalError("Unavailable")
     }
 
-    /// Initialize a view controller that displays a chart. Fetches and stays synchronized with insights.
-    /// - Parameter viewSynchronizer: Manages the chart view.
-    /// - Parameter weekOfDate: A date in the week of the insights range to fetch.
-    /// - Parameter configurations: Configurations used to fetch the insights ad display the data.
-    /// - Parameter storeManager: Wraps the store that contains the insight data to fetch.
-    public init(viewSynchronizer: ViewSynchronizer, weekOfDate: Date,
-                configurations: [OCKDataSeriesConfiguration], storeManager: OCKSynchronizedStoreManager) {
-        self.controller = Controller(weekOfDate: weekOfDate, storeManager: storeManager)
-        self.viewSynchronizer = viewSynchronizer
-        self.configurations = configurations
-        super.init(nibName: nil, bundle: nil)
+    @available(*, unavailable, renamed: "init(weekOfDate:configurations:store:viewSynchronizer:)")
+    public convenience init(
+        viewSynchronizer: ViewSynchronizer,
+        weekOfDate: Date,
+        configurations: [OCKDataSeriesConfiguration],
+        storeManager: OCKSynchronizedStoreManager
+    ) {
+        fatalError("Unavailable")
     }
 
-    @available(*, unavailable)
-    public required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    /// A view controller that displays a chart view and keep it synchronized with a store.
+    /// - Parameters:
+    ///   - weekOfDate: A date in the week of the insights range to fetch.
+    ///   - configurations: Specifies which data should be queried and how it should be displayed by the graph.
+    ///   - store: Contains the task data that will be displayed.
+    ///   - viewSynchronizer: Capable of creating and updating the view using the data series.
+    public init(
+        weekOfDate: Date,
+        configurations: [OCKDataSeriesConfiguration],
+        store: OCKAnyStoreProtocol,
+        viewSynchronizer: ViewSynchronizer
+    ) {
+        // Convert the params to an event query
+        let weekInterval = Calendar.current.dateIntervalOfWeek(for: weekOfDate)
+        var query = OCKEventQuery(dateInterval: weekInterval)
+        query.taskIDs = configurations.map(\.taskID)
 
-    @available(*, unavailable)
-    override open func loadView() {
-        view = viewSynchronizer.makeView()
+        let progressSplitByTask = store.dailyProgressSplitByTask(
+            query: query,
+            dateInterval: weekInterval,
+            computeProgress: { event in
+                Self.computeProgress(for: event, configurations: configurations)
+            }
+        )
+
+        // Convert the progress to data series recognized by the chart
+        let dataSeries = progressSplitByTask.map { dailyProgressForAllTasks -> [OCKDataSeries] in
+
+            // Iterating first through the configurations ensures the final data series order
+            // matches the order of the configurations
+            let dataSeries = configurations.map { configuration -> OCKDataSeries in
+
+                let dailyProgress = dailyProgressForAllTasks
+                    .first { $0.taskID == configuration.taskID }?
+                    .progressPerDates
+
+                let dataSeries = Self.dataSeries(
+                    forDailyProgress: dailyProgress ?? [],
+                    configuration: configuration
+                )
+
+                return dataSeries
+            }
+
+            return dataSeries
+        }
+
+        super.init(
+            initialViewModel: [],
+            viewModels: dataSeries,
+            viewSynchronizer: viewSynchronizer
+        )
     }
 
     override open func viewDidLoad() {
         super.viewDidLoad()
-        chartView.delegate = self
-
-        // Begin listening for changes in the view model. Note, when we subscribe to the view model, it sends its current value through the stream
-        startObservingViewModel()
-
-        // Listen for any errors encountered by the controller.
-        controller.$error
-            .compactMap { $0 }
-            .sink { [unowned self] error in
-                if self.delegate == nil {
-                    log(.error, "A chart error occurred, but no delegate was set to forward it to!", error: error)
-                }
-                self.delegate?.chartViewController(self, didEncounterError: error)
-            }
-            .store(in: &self.cancellables)
-
-        // Fetch and observe data if needed.
-        if !configurations.isEmpty {
-            controller.fetchAndObserveInsights(forConfigurations: configurations)
-        }
+        typedView.delegate = self
     }
 
-    // MARK: - Methods
+    private static func dataSeries(
+        forDailyProgress dailyProgress: [TemporalProgress<LinearCareTaskProgress>],
+        configuration: OCKDataSeriesConfiguration
+    ) -> OCKDataSeries {
 
-    // Create a subscription that updates the view when the view model is updated.
-    private func startObservingViewModel() {
-        controller.$dataSeries
-            .context(currentValue: controller.dataSeries, animateIf: { oldValue, _ in !oldValue.isEmpty })
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] context in
-                guard let self = self else { return }
-                self.viewSynchronizer.updateView(self.chartView, context: context)
-            }
-            .store(in: &cancellables)
+        let summedProgressValuesPerDay = dailyProgress.map { progressOnDay -> CGFloat in
+
+            let summedProgressValue = progressOnDay.values
+                .map { $0.value }
+                .reduce(0, +)
+
+            return summedProgressValue
+        }
+
+        var series = OCKDataSeries(
+            values: summedProgressValuesPerDay,
+            title: configuration.legendTitle,
+            gradientStartColor: configuration.gradientStartColor,
+            gradientEndColor: configuration.gradientEndColor,
+            size: configuration.markerSize
+        )
+
+        let accessibilityLabels = zip(
+            Calendar.current.orderedWeekdaySymbols(),
+            summedProgressValuesPerDay
+        )
+        .map { "\(configuration.legendTitle), \($0), \($1)" }
+
+        series.accessibilityLabels = accessibilityLabels
+
+        return series
+    }
+
+    private static func computeProgress(
+        for event: OCKAnyEvent,
+        configurations: [OCKDataSeriesConfiguration]
+    ) -> LinearCareTaskProgress {
+
+        let computeProgress = configurations
+            .first { $0.taskID == event.task.id }?
+            .computeProgress
+
+        guard let computeProgress else {
+            return event.computeProgress(by: .summingOutcomeValues)
+        }
+
+        return computeProgress(event)
+
     }
 
     // MARK: - OCKChartViewDelegate
 
     open func didSelectChartView(_ chartView: UIView & OCKChartDisplayable) {}
 }
-
 #endif

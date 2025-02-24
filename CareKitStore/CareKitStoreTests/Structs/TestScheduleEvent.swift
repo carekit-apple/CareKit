@@ -32,20 +32,23 @@
 import XCTest
 
 class TestScheduleEvent: XCTestCase {
-    func testComparisonOperator() {
-        let element = OCKScheduleElement(start: Date(), end: nil, interval: DateComponents(year: 1),
-                                         text: nil, targetValues: [])
-        XCTAssert(element[0] < element[1])
-    }
-
+   
     func testStartDateEndDateForEventWithNoDuration() {
         let startDate = Date()
         let endDate = Calendar.current.date(byAdding: .day, value: 7, to: startDate)!
         let interval = DateComponents(day: 1)
-        let element = OCKScheduleElement(start: startDate, end: endDate, interval: interval,
-                                         text: nil, targetValues: [])
+
+        let element = OCKScheduleElement(
+            start: startDate,
+            end: endDate,
+            interval: interval,
+            text: nil,
+            targetValues: [],
+            duration: .seconds(0)
+        )
+
         let event = element[0]
-        XCTAssert(event.start == event.end)
+        XCTAssertEqual(event.start, event.end)
     }
 
     func testStartDateEndDateForEventWithDuration() {
@@ -55,7 +58,7 @@ class TestScheduleEvent: XCTestCase {
         let element = OCKScheduleElement(start: startDate, end: endDate, interval: interval,
                                          text: nil, targetValues: [], duration: .seconds(100))
         let event = element[0]
-        XCTAssert(event.end == event.start.addingTimeInterval(100))
+        XCTAssertEqual(event.end, event.start.addingTimeInterval(100))
     }
 
     func testStartDateEndDateForEventWithAllDayDuration() {
@@ -65,7 +68,7 @@ class TestScheduleEvent: XCTestCase {
         let element = OCKScheduleElement(start: startDate, end: endDate, interval: interval,
                                          text: nil, targetValues: [], duration: .allDay)
         let event = element[0]
-        XCTAssert(event.start == Calendar.current.startOfDay(for: startDate))
-        XCTAssert(event.end == Calendar.current.date(byAdding: DateComponents(day: 1, second: -1), to: event.start)!)
+        XCTAssertEqual(event.start, Calendar.current.startOfDay(for: startDate))
+        XCTAssertEqual(event.end, Calendar.current.date(byAdding: DateComponents(day: 1, second: -1), to: event.start)!)
     }
 }

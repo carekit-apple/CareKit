@@ -27,11 +27,29 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
 import Foundation
 
-/// Any store from which a single type conforming to `OCKAnyContact` can be queried is considered `OCKAReadableCarePlanStore`.
+/// A store that allows for reading contacts.
 public protocol OCKReadableContactStore: OCKAnyReadOnlyContactStore {
-    associatedtype Contact: OCKAnyContact & Equatable & Identifiable
+
+    associatedtype Contact: OCKAnyContact, Equatable, Identifiable
+
+    /// An asynchronous sequence that produces contacts.
+    associatedtype Contacts: AsyncSequence where Contacts.Element == [Contact]
+
+    /// A continuous stream of contacts that exist in the store.
+    ///
+    /// The stream yields a new value whenever the result changes and yields an error if there's an issue
+    /// accessing the store or fetching results.
+    ///
+    /// Supply a query that'll be used to match contacts in the store. If the query doesn't contain a date
+    /// interval, the result will contain every version of a contact. Multiple versions of the same contact will
+    /// have the same ``OCKAnyContact/id`` but a different UUID. If the query does contain a date
+    /// interval, the result will contain the newest version of a contact that exists in the interval.
+    ///
+    /// - Parameter query: Used to match contacts in the store.
+    func contacts(matching query: OCKContactQuery) -> Contacts
 
     /// `fetchContacts` asynchronously retrieves an array of contacts from the store.
     ///
@@ -143,6 +161,16 @@ public extension OCKContactStore {
 // MARK: OCKAnyReadbaleContactStore conformance for OCKReadableContactStore
 
 public extension OCKReadableContactStore {
+
+    func anyContacts(matching query: OCKContactQuery) -> CareStoreQueryResults<OCKAnyContact> {
+
+        let contacts = contacts(matching: query)
+            .map { $0 as [OCKAnyContact] }
+
+        let wrappedContacts = CareStoreQueryResults(wrapping: contacts)
+        return wrappedContacts
+    }
+
     func fetchAnyContacts(query: OCKContactQuery, callbackQueue: DispatchQueue,
                           completion: @escaping OCKResultClosure<[OCKAnyContact]>) {
         fetchContacts(query: query, callbackQueue: callbackQueue) { completion($0.map { $0.map { $0 as OCKAnyContact } }) }
@@ -182,7 +210,6 @@ public extension OCKContactStore {
 
 // MARK: Async methods for OCKReadableContactStore
 
-@available(iOS 15.0, watchOS 8.0, *)
 public extension OCKReadableContactStore {
 
     /// `fetchContacts` asynchronously retrieves an array of contacts from the store.
@@ -211,7 +238,6 @@ public extension OCKReadableContactStore {
 
 // MARK: Async methods for OCKContactStore
 
-@available(iOS 15.0, watchOS 8.0, *)
 public extension OCKContactStore {
 
     /// `addContacts` asynchronously adds an array of contacts to the store.

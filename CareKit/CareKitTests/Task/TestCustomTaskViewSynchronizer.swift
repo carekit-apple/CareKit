@@ -28,6 +28,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#if !os(watchOS)
 import CareKit
 import CareKitStore
 import CareKitUI
@@ -93,7 +94,7 @@ private class MockTaskLabel: UILabel, OCKTaskDisplayable {
     weak var delegate: OCKTaskViewDelegate?
 }
 
-private class CustomTaskViewSynchronizer: OCKTaskViewSynchronizerProtocol {
+private class CustomTaskViewSynchronizer: ViewSynchronizing {
     func makeView() -> MockTaskLabel {
         return .init()
     }
@@ -134,3 +135,4 @@ class TestCustomTaskViewSynchronizer: XCTestCase {
         XCTAssertNil(view.text)
     }
 }
+#endif

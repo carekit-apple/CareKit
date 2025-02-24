@@ -43,7 +43,6 @@ import SwiftUI
 ///       | <Title>                                <Image>  |
 ///       +-------------------------------------------------+
 /// ```
-@available(iOS 14, *)
 struct LinkButton<Label: View>: View {
 
     @State private var isInAppContentPresented = false
@@ -90,7 +89,7 @@ struct LinkButton<Label: View>: View {
         }
     }
 
-    private func styled<Label: View>(label: Label) -> some View {
+    private func styled(label: Label) -> some View {
         RectangularCompletionView(isComplete: true) {
             label
                 .if(usesDefaultPadding) { $0.padding() }
@@ -98,7 +97,6 @@ struct LinkButton<Label: View>: View {
     }
 }
 
-@available(iOS 14, *)
 extension LinkButton where Label == LinkLabel {
 
     /// Create an instance.

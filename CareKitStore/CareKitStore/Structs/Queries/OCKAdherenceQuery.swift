@@ -39,18 +39,48 @@ public struct OCKAdherenceQuery {
     /// The date interval for which to return adherence information.
     public var dateInterval: DateInterval
 
-    /// An aggregator used to derive an adherence value from a series of events.
-    public var aggregator: OCKAdherenceAggregator
+    /// Computes the combined progress for a series of CareKit events.
+    @available(*, unavailable, message: "The aggregator is no longer available and will be removed in a future version of CareKit.")
+    public var aggregator: OCKAdherenceAggregator! {
+        fatalError("Property is unavailable")
+    }
+
+    let computeProgress: (OCKAnyEvent) -> CareTaskProgress
 
     /// Initialize a new query by specifying the taskIDs, dates, and aggregator.
     /// - Parameters:
     ///   - taskIDs: The identifiers of the tasks for which adherence should be computed.
     ///   - dateInterval: The date interval for which to return adherence information.
-    ///   - aggregator: An aggregator that will be used to compute adherence. Uses `.outcomesExists` by default.
-    public init(taskIDs: [String], dateInterval: DateInterval, aggregator: OCKAdherenceAggregator = .outcomeExists) {
+    ///   - aggregator: Produce a single progress value from an event.
+    @available(*, deprecated, renamed: "init(taskIDs:dateInterval:computeProgress:)")
+    public init(
+        taskIDs: [String],
+        dateInterval: DateInterval,
+        aggregator: OCKAdherenceAggregator
+    ) {
         self.taskIDs = taskIDs
         self.dateInterval = dateInterval
-        self.aggregator = aggregator
+
+        computeProgress = { event in
+            event.computeProgress(by: .checkingOutcomeExists)
+        }
+    }
+
+    /// Initialize a new query by specifying the taskIDs, dates, and aggregator.
+    /// - Parameters:
+    ///   - taskIDs: The identifiers of the tasks for which adherence should be computed.
+    ///   - dateInterval: The date interval for which to return adherence information.
+    ///   - computeProgress: Used to compute progress for an event.
+    public init(
+        taskIDs: [String],
+        dateInterval: DateInterval,
+        computeProgress: @escaping (OCKAnyEvent) -> CareTaskProgress = { event in
+            event.computeProgress(by: .checkingOutcomeExists)
+        }
+    ) {
+        self.taskIDs = taskIDs
+        self.dateInterval = dateInterval
+        self.computeProgress = computeProgress
     }
 
     func dates() -> [Date] {

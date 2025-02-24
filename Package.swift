@@ -1,10 +1,10 @@
-// swift-tools-version:5.3
+// swift-tools-version:5.7
 import PackageDescription
 
 let package = Package(
     name: "CareKit",
     defaultLocalization: "en",
-    platforms: [.iOS(.v13), .watchOS(.v6)],
+    platforms: [.iOS(.v14), .macOS(.v13), .watchOS(.v7)],
     products: [
         .library(
             name: "CareKit",
@@ -20,10 +20,18 @@ let package = Package(
 
         .library(
             name: "CareKitFHIR",
-            targets: ["CareKitFHIR"])
+            targets: ["CareKitFHIR"]),
+
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/FHIRModels.git", from: "0.1.0")
+        .package(
+            url: "https://github.com/apple/FHIRModels.git",
+            exact: Version(0, 5, 0)
+        ),
+        .package(
+            url: "https://github.com/apple/swift-async-algorithms",
+            exact: Version(1, 0, 1)
+        )
     ],
     targets: [
         .target(
@@ -39,6 +47,9 @@ let package = Package(
 
         .target(
             name: "CareKitStore",
+            dependencies: [
+                .product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
+            ],
             path: "CareKitStore/CareKitStore",
             exclude: ["Info.plist"],
             resources: [
@@ -65,6 +76,12 @@ let package = Package(
             ]),
 
         .testTarget(
+            name: "CareKitUITests",
+            dependencies: ["CareKitUI"],
+            path: "CareKitUI/CareKitUITests",
+            exclude: ["Info.plist", "CareKitUI.xctestplan"]),
+
+        .testTarget(
             name: "CareKitFHIRTests",
             dependencies: ["CareKitFHIR"],
             path: "CareKitFHIR/CareKitFHIRTests",
@@ -74,7 +91,7 @@ let package = Package(
             name: "CareKitTests",
             dependencies: ["CareKit"],
             path: "CareKit/CareKitTests",
-            exclude: ["Info.plist"])
+            exclude: ["Info.plist"]),
+
     ]
 )
-

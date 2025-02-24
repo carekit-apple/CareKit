@@ -57,7 +57,7 @@ class TestTask: XCTestCase {
         let queryEnd = Calendar.current.date(byAdding: .hour, value: 4, to: schedule.startDate())! // 13:00
         let interval = DateInterval(start: queryStart, end: queryEnd)
         let filtered = [task].filtered(dateInterval: interval, excludeTasksWithNoEvents: false)
-        XCTAssert(filtered == [task])
+        XCTAssertEqual(filtered, [task])
     }
 
     func testFilteringIncludesAllDayEventsThatStartBeforeTheQuery() {
@@ -70,7 +70,7 @@ class TestTask: XCTestCase {
         let queryEnd = Calendar.current.date(byAdding: .hour, value: 13, to: thisMorning)! // 13:00
         let interval = DateInterval(start: queryStart, end: queryEnd)
         let filtered = [task].filtered(dateInterval: interval, excludeTasksWithNoEvents: false)
-        XCTAssert(filtered == [task])
+        XCTAssertEqual(filtered, [task])
     }
 
     func testFilteringIncludesAllDayEventsThatStartAfterTheQuery() {
@@ -84,7 +84,7 @@ class TestTask: XCTestCase {
         let queryEnd = Calendar.current.date(byAdding: .hour, value: 13, to: thisMorning)! // 13:00
         let interval = DateInterval(start: queryStart, end: queryEnd)
         let filtered = [task].filtered(dateInterval: interval, excludeTasksWithNoEvents: false)
-        XCTAssert(filtered == [task])
+        XCTAssertEqual(filtered, [task])
     }
 
     func testFilteringIncludesTasksForWhichNoEventOccursDuringTheQueryRange() {
@@ -96,7 +96,7 @@ class TestTask: XCTestCase {
         let queryEnd = Calendar.current.date(byAdding: .hour, value: 13, to: thisMorning)! // 13:00
         let interval = DateInterval(start: queryStart, end: queryEnd)
         let filtered = [task].filtered(dateInterval: interval, excludeTasksWithNoEvents: false)
-        XCTAssert(filtered == [task])
+        XCTAssertEqual(filtered, [task])
     }
 
     func testFilteringIncludesEventsThatStartedOnThePreviousDay() {
@@ -109,7 +109,7 @@ class TestTask: XCTestCase {
         let queryEnd = Calendar.current.date(byAdding: .hour, value: 2, to: thisMorning)!
         let interval = DateInterval(start: queryStart, end: queryEnd)
         let filtered = [task].filtered(dateInterval: interval, excludeTasksWithNoEvents: false)
-        XCTAssert(filtered == [task])
+        XCTAssertEqual(filtered, [task])
     }
 
     func testFilteringRespectsEffectiveDate() throws {
@@ -122,7 +122,7 @@ class TestTask: XCTestCase {
 
         let interval = DateInterval(start: thisMorning, end: tomorrow)
         let filtered = [task].filtered(dateInterval: interval, excludeTasksWithNoEvents: false)
-        XCTAssert(filtered == [task])
+        XCTAssertEqual(filtered, [task])
     }
 
     func testFilteringExcludesTasksNotDefinedInTheQueryInterval() {
@@ -152,7 +152,7 @@ class TestTask: XCTestCase {
             let filtered = [task].filtered(
                 dateInterval: query.dateInterval,
                 excludeTasksWithNoEvents: query.excludesTasksWithNoEvents)
-            XCTAssert(filtered == [task], "Failed on offset: \(dayOffset)")
+            XCTAssertEqual(filtered, [task], "Failed on offset: \(dayOffset)")
         }
 
         for dayOffset in 4...7 {
@@ -162,7 +162,7 @@ class TestTask: XCTestCase {
             let filtered = [task].filtered(
                 dateInterval: query.dateInterval,
                 excludeTasksWithNoEvents: query.excludesTasksWithNoEvents)
-            XCTAssert(filtered == [], "Failed on offset: \(dayOffset)")
+            XCTAssertEqual(filtered, [], "Failed on offset: \(dayOffset)")
         }
     }
 

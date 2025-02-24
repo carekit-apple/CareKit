@@ -28,6 +28,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#if !os(watchOS)
 @testable import CareKitUI
 import XCTest
 
@@ -83,7 +84,7 @@ class TestStylableView: XCTestCase {
         XCTAssertEqual(view.layer.cornerRadius, defaultStyle.appearance.cornerRadius1)
     }
 
-    // default style should pass linearly through subviews
+    // Default style should pass linearly through subviews
     func testDefaultLinearInheritance() {
         let views = (0..<3).map { _ in MockStylableView() }
         views[0].addSubview(views[1])
@@ -153,7 +154,7 @@ class TestStylableView: XCTestCase {
         }
     }
 
-    // Custom style should propogate through view that has two children
+    // Custom style should propagate through view that has two children
     func testCustomBranchingInheritance() {
         // On the first iteration, set the style then embed the view. On the second, embed the view then set the style
         for iteration in (0..<2) {
@@ -200,3 +201,4 @@ class TestStylableView: XCTestCase {
         XCTAssertEqual(innerView.layer.cornerRadius, MockOverridingView.cornerRadius)
     }
 }
+#endif

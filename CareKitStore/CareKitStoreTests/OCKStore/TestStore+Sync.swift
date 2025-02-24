@@ -50,8 +50,8 @@ final class TestStoreSynchronization: XCTestCase {
         let startKnowledgeA = OCKRevisionRecord.KnowledgeVector([uuidA: 1])
         let startKnowledgeB = OCKRevisionRecord.KnowledgeVector([uuidB: 1])
 
-        XCTAssert(startKnowledgeA == storeA.context.knowledgeVector)
-        XCTAssert(startKnowledgeB == storeB.context.knowledgeVector)
+        XCTAssertEqual(startKnowledgeA, storeA.context.knowledgeVector)
+        XCTAssertEqual(startKnowledgeB, storeB.context.knowledgeVector)
         XCTAssert(server.revisions.isEmpty)
 
         // 2. Sync the first version of a task from A to B.
@@ -74,16 +74,17 @@ final class TestStoreSynchronization: XCTestCase {
             uuidB: 3  // +1 post pull, +1 post push
         ])
 
-        let firstRevisionStamp = OCKRevisionRecord.KnowledgeVector([
-            uuidA: 2  // Latest value on server
+        let firstServerKnowledge = OCKRevisionRecord.KnowledgeVector([
+            uuidA: 2, // Received from A during push
+            uuidB: 2  // Received from B during push
         ])
 
-        XCTAssert(firstTasksA.count == 1, "Expected 1, got \(firstTasksA.count)")
-        XCTAssert(firstTasksB.count == 1, "Expected 1, got \(firstTasksB.count)")
-        XCTAssert(firstKnowledgeA == storeA.context.knowledgeVector)
-        XCTAssert(firstKnowledgeB == storeB.context.knowledgeVector)
-        XCTAssert(firstRevisionStamp == server.revisions.last?.stamp)
-        XCTAssert(server.revisions.count == 1)
+        XCTAssertEqual(firstTasksA.count, 1, "Expected 1, got \(firstTasksA.count)")
+        XCTAssertEqual(firstTasksB.count, 1, "Expected 1, got \(firstTasksB.count)")
+        XCTAssertEqual(firstKnowledgeA, storeA.context.knowledgeVector)
+        XCTAssertEqual(firstKnowledgeB, storeB.context.knowledgeVector)
+        XCTAssertEqual(firstServerKnowledge, server.knowledgeVector)
+        XCTAssertEqual(server.revisions.count, 1)
 
         // 2. Create conflicting updates in both stores.
         //    Neither store will have a conflict yet.
@@ -111,21 +112,21 @@ final class TestStoreSynchronization: XCTestCase {
         ])
 
         let midKnowledgeB = OCKRevisionRecord.KnowledgeVector([
-            uuidA: 4, // latest value on server from A
+            uuidA: 4, // latest clock on server from A
             uuidB: 5  // +1 post pull, +1 post push
         ])
 
-        let midRevisionStamp = OCKRevisionRecord.KnowledgeVector([
-            uuidA: 4,  // B's knowledge of A when it pushed
-            uuidB: 4   // B's clock when it pushed
+        let midServerKnowledge = OCKRevisionRecord.KnowledgeVector([
+            uuidA: 4, // latest clock from A
+            uuidB: 4  // latest clock from B
         ])
 
-        XCTAssert(midTasksA.count == 2, "Expected 2, but got \(midTasksA.count)")
-        XCTAssert(midTasksB.count == 4, "Expected 4, but got \(midTasksB.count)")
-        XCTAssert(midKnowledgeA == storeA.context.knowledgeVector)
-        XCTAssert(midKnowledgeB == storeB.context.knowledgeVector)
-        XCTAssert(midRevisionStamp == server.revisions.last?.stamp)
-        XCTAssert(server.revisions.count == 3)
+        XCTAssertEqual(midTasksA.count, 2, "Expected 2, but got \(midTasksA.count)")
+        XCTAssertEqual(midTasksB.count, 4, "Expected 4, but got \(midTasksB.count)")
+        XCTAssertEqual(midKnowledgeA, storeA.context.knowledgeVector)
+        XCTAssertEqual(midKnowledgeB, storeB.context.knowledgeVector)
+        XCTAssertEqual(midServerKnowledge, server.knowledgeVector)
+        XCTAssertEqual(server.revisions.count, 4) // 4 versions with different vectors
 
         // 5. Sync storeA: Pull updates from the server (conflict + resolution)
         //    Sync storeB: Already up to date, no observable change
@@ -145,48 +146,59 @@ final class TestStoreSynchronization: XCTestCase {
             uuidB: 7  // +1 post pull, +1 post push
         ])
 
-        let finalRevisionStamp = midRevisionStamp // No changes pushed
-
-        XCTAssert(finalTasksA.count == 4, "Expected 4, but got \(finalTasksA.count)")
-        XCTAssert(finalTasksB.count == 4, "Expected 4, but got \(finalTasksB.count)")
-        XCTAssert(finalKnowledgeA == storeA.context.knowledgeVector)
-        XCTAssert(finalKnowledgeB == storeB.context.knowledgeVector)
-        XCTAssert(finalRevisionStamp == server.revisions.last?.stamp)
-        XCTAssert(server.revisions.count == 3)
+        XCTAssertEqual(finalTasksA.count, 4, "Expected 4, but got \(finalTasksA.count)")
+        XCTAssertEqual(finalTasksB.count, 4, "Expected 4, but got \(finalTasksB.count)")
+        XCTAssertEqual(finalKnowledgeA, storeA.context.knowledgeVector)
+        XCTAssertEqual(finalKnowledgeB, storeB.context.knowledgeVector)
+        XCTAssertEqual(server.revisions.count, 4)
     }
+}
+
+private struct SimulatedPayload: Codable {
+    let knowledgeVector: OCKRevisionRecord.KnowledgeVector
+    let encryptedRevisions: [EncryptedRevision]
+}
+
+private struct EncryptedRevision: Codable {
+    let knowledgeVector: OCKRevisionRecord.KnowledgeVector
+    let encryptedData: Data
 }
 
 private final class SimulatedServer {
 
-    private(set) var revisions = [(stamp: OCKRevisionRecord.KnowledgeVector, data: Data)]()
+    private(set) var revisions = [EncryptedRevision]()
 
-    private var knowledge = OCKRevisionRecord.KnowledgeVector()
+    private(set) var knowledgeVector = OCKRevisionRecord.KnowledgeVector()
 
     func upload(
-        data: Data?,
-        deviceKnowledge: OCKRevisionRecord.KnowledgeVector,
+        payload: SimulatedPayload,
         from remote: SimulatedRemote) throws {
 
-        if let latest = revisions.last?.stamp, latest >= deviceKnowledge {
+        if let latest = revisions.last?.knowledgeVector,
+           latest >= payload.knowledgeVector {
+
             let problem = "New knowledge on server. Pull first then try again"
             throw OCKStoreError.remoteSynchronizationFailed(reason: problem)
         }
 
-        knowledge.merge(with: deviceKnowledge)
-
-        if let data = data {
-            revisions.append((stamp: deviceKnowledge, data: data))
-        }
+        knowledgeVector.merge(with: payload.knowledgeVector)
+        revisions.append(contentsOf: payload.encryptedRevisions)
     }
 
     func updates(
         for deviceKnowledge: OCKRevisionRecord.KnowledgeVector,
-        from remote: SimulatedRemote) -> (stamp: OCKRevisionRecord.KnowledgeVector, data: [Data]) {
+        from remote: SimulatedRemote) -> SimulatedPayload {
 
-        let newToRemote = revisions.filter { $0.stamp >= deviceKnowledge }
-        let newData = newToRemote.map(\.data)
+        let newToRemote = revisions.filter {
+            $0.knowledgeVector >= deviceKnowledge
+        }
 
-        return (stamp: knowledge, newData)
+        let payload = SimulatedPayload(
+            knowledgeVector: knowledgeVector,
+            encryptedRevisions: newToRemote
+        )
+
+        return payload
     }
 }
 
@@ -198,7 +210,7 @@ private final class SimulatedRemote: OCKRemoteSynchronizable {
 
     weak var delegate: OCKRemoteSynchronizationDelegate?
 
-    var automaticallySynchronizes: Bool = false
+    var automaticallySynchronizes = false
 
     init(name: String, server: SimulatedServer) {
         self.name = name
@@ -211,11 +223,25 @@ private final class SimulatedRemote: OCKRemoteSynchronizable {
         completion: @escaping (Error?) -> Void) {
 
         do {
-            let response = server.updates(for: knowledgeVector, from: self)
-            let decoder = JSONDecoder()
-            let entities = try response.data.flatMap { try decoder.decode([OCKEntity].self, from: $0) }
-            let revision = OCKRevisionRecord(entities: entities, knowledgeVector: response.stamp)
-            mergeRevision(revision)
+            let payload = server.updates(for: knowledgeVector, from: self)
+
+            let decryptor = JSONDecoder() // Simulated decryption
+
+            let revisions = try payload.encryptedRevisions.map {
+                try decryptor.decode(
+                    OCKRevisionRecord.self,
+                    from: $0.encryptedData
+                )
+            }
+
+            let catchUp = OCKRevisionRecord(
+                entities: [],
+                knowledgeVector: payload.knowledgeVector
+            )
+
+            revisions.forEach(mergeRevision)
+            mergeRevision(catchUp)
+
             completion(nil)
         } catch {
             completion(error)
@@ -223,16 +249,27 @@ private final class SimulatedRemote: OCKRemoteSynchronizable {
     }
 
     func pushRevisions(
-        deviceRevision: OCKRevisionRecord,
+        deviceRevisions: [OCKRevisionRecord],
+        deviceKnowledge: OCKRevisionRecord.KnowledgeVector,
         completion: @escaping (Error?) -> Void) {
 
         do {
-            let data = deviceRevision.entities.isEmpty ?
-                nil : try! JSONEncoder().encode(deviceRevision.entities)
 
-            let knowledge = deviceRevision.knowledgeVector
+            let encryptor = JSONEncoder() // Simulated encryption
 
-            try server.upload(data: data, deviceKnowledge: knowledge, from: self)
+            let encryptedRevisions = try deviceRevisions.map {
+                EncryptedRevision(
+                    knowledgeVector: $0.knowledgeVector,
+                    encryptedData: try encryptor.encode($0)
+                )
+            }
+
+            let payload = SimulatedPayload(
+                knowledgeVector: deviceKnowledge,
+                encryptedRevisions: encryptedRevisions
+            )
+
+            try server.upload(payload: payload, from: self)
 
             completion(nil)
 

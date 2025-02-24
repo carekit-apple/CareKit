@@ -32,18 +32,49 @@ import Foundation
 
 extension OCKStoreCoordinator {
 
-    open func fetchAnyOutcomes(query: OCKOutcomeQuery, callbackQueue: DispatchQueue = .main,
-                               completion: @escaping (Result<[OCKAnyOutcome], OCKStoreError>) -> Void) {
+    public func anyOutcomes(matching query: OCKOutcomeQuery) -> CareStoreQueryResults<OCKAnyOutcome> {
+
+        let stores = readOnlyEventStores + eventStores
+
+        let relevantStores = stores.filter {
+            outcomeStore($0, shouldHandleQuery: query)
+        }
+
+        let outcomesStreams = relevantStores.map {
+            $0.anyOutcomes(matching: query)
+        }
+
+        let sortDescriptor = NSSortDescriptor(
+            keyPath: \OCKCDOutcome.id,
+            ascending: true
+        )
+
+        let outcomes = combineMany(
+            sequences: outcomesStreams,
+            sortingElementsUsing: [sortDescriptor]
+        )
+
+        return outcomes
+    }
+
+    public func fetchAnyOutcomes(
+        query: OCKOutcomeQuery,
+        callbackQueue: DispatchQueue = .main,
+        completion: @escaping (Result<[OCKAnyOutcome], OCKStoreError>) -> Void
+    ) {
         let readableStores = readOnlyEventStores + eventStores
         let respondingStores = readableStores.filter { outcomeStore($0, shouldHandleQuery: query) }
         let closures = respondingStores.map({ store in { done in
             store.fetchAnyOutcomes(query: query, callbackQueue: callbackQueue, completion: done) }
         })
-        aggregate(closures, callbackQueue: callbackQueue, completion: completion)
+        aggregateAndFlatten(closures, callbackQueue: callbackQueue, completion: completion)
     }
 
-    open func addAnyOutcomes(_ outcomes: [OCKAnyOutcome], callbackQueue: DispatchQueue = .main,
-                             completion: ((Result<[OCKAnyOutcome], OCKStoreError>) -> Void)? = nil) {
+    public func addAnyOutcomes(
+        _ outcomes: [OCKAnyOutcome],
+        callbackQueue: DispatchQueue = .main,
+        completion: ((Result<[OCKAnyOutcome], OCKStoreError>) -> Void)? = nil
+    ) {
         do {
             try findStore(forOutcomes: outcomes).addAnyOutcomes(outcomes, callbackQueue: callbackQueue, completion: completion)
         } catch {
@@ -54,8 +85,11 @@ extension OCKStoreCoordinator {
         }
     }
 
-    open func updateAnyOutcomes(_ outcomes: [OCKAnyOutcome], callbackQueue: DispatchQueue = .main,
-                                completion: ((Result<[OCKAnyOutcome], OCKStoreError>) -> Void)? = nil) {
+    public func updateAnyOutcomes(
+        _ outcomes: [OCKAnyOutcome],
+        callbackQueue: DispatchQueue = .main,
+        completion: ((Result<[OCKAnyOutcome], OCKStoreError>) -> Void)? = nil
+    ) {
         do {
             try findStore(forOutcomes: outcomes).updateAnyOutcomes(outcomes, callbackQueue: callbackQueue, completion: completion)
         } catch {
@@ -66,8 +100,11 @@ extension OCKStoreCoordinator {
         }
     }
 
-    open func deleteAnyOutcomes(_ outcomes: [OCKAnyOutcome], callbackQueue: DispatchQueue = .main,
-                                completion: ((Result<[OCKAnyOutcome], OCKStoreError>) -> Void)? = nil) {
+    public func deleteAnyOutcomes(
+        _ outcomes: [OCKAnyOutcome],
+        callbackQueue: DispatchQueue = .main,
+        completion: ((Result<[OCKAnyOutcome], OCKStoreError>) -> Void)? = nil
+    ) {
         do {
             try findStore(forOutcomes: outcomes).deleteAnyOutcomes(outcomes, callbackQueue: callbackQueue, completion: completion)
         } catch {
@@ -84,23 +121,5 @@ extension OCKStoreCoordinator {
         guard let store = matchingStores.first else { throw OCKStoreError.invalidValue(reason: "No store could be found for any outcomes.") }
         guard matchingStores.allSatisfy({ $0 === store }) else { throw OCKStoreError.invalidValue(reason: "Not all outcomes belong to same store.") }
         return store
-    }
-}
-
-extension OCKStoreCoordinator: OCKOutcomeStoreDelegate {
-    open func outcomeStore(_ store: OCKAnyReadOnlyOutcomeStore, didAddOutcomes outcomes: [OCKAnyOutcome]) {
-        outcomeDelegate?.outcomeStore(self, didAddOutcomes: outcomes)
-    }
-
-    open func outcomeStore(_ store: OCKAnyReadOnlyOutcomeStore, didUpdateOutcomes outcomes: [OCKAnyOutcome]) {
-        outcomeDelegate?.outcomeStore(self, didUpdateOutcomes: outcomes)
-    }
-
-    open func outcomeStore(_ store: OCKAnyReadOnlyOutcomeStore, didDeleteOutcomes outcomes: [OCKAnyOutcome]) {
-        outcomeDelegate?.outcomeStore(self, didDeleteOutcomes: outcomes)
-    }
-
-    public func outcomeStore(_ store: OCKAnyReadOnlyOutcomeStore, didEncounterUnknownChange change: String) {
-        outcomeDelegate?.outcomeStore(self, didEncounterUnknownChange: change)
     }
 }

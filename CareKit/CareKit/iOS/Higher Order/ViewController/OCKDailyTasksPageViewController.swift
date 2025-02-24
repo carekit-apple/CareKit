@@ -31,12 +31,11 @@
 
 import CareKitStore
 import CareKitUI
-import Combine
 import SwiftUI
 import UIKit
 
 /// Handles events related to an `OCKDailyTasksPageViewController`.
-public protocol OCKDailyTasksPageViewControllerDelegate: OCKTaskViewControllerDelegate {
+public protocol OCKDailyTasksPageViewControllerDelegate: AnyObject {
 
     /// Return a view controller to display for the given task and events.
     /// - Parameters:
@@ -63,7 +62,7 @@ open class OCKDailyTasksPageViewController: OCKDailyPageViewController {
 
     private func fetchTasks(for date: Date, andPopulateIn listViewController: OCKListViewController) {
         let taskQuery = OCKTaskQuery(for: date)
-        storeManager.store.fetchAnyTasks(query: taskQuery, callbackQueue: .main) { [weak self] result in
+        store.fetchAnyTasks(query: taskQuery, callbackQueue: .main) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .failure(let error): self.delegate?.dailyPageViewController(self, didFailWithError: error)
@@ -103,8 +102,11 @@ open class OCKDailyTasksPageViewController: OCKDailyPageViewController {
         result: @escaping (UIViewController?) -> Void) {
 
         guard let dateInterval = query.dateInterval else { fatalError("Task query should have a set date") }
-        let eventQuery = OCKEventQuery(dateInterval: dateInterval)
-        self.storeManager.store.fetchAnyEvents(taskID: task.id, query: eventQuery, callbackQueue: .main) { [weak self] fetchResult in
+
+        var eventQuery = OCKEventQuery(dateInterval: dateInterval)
+        eventQuery.taskIDs = [task.id]
+
+        self.store.fetchAnyEvents(query: eventQuery, callbackQueue: .main) { [weak self] fetchResult in
             guard let self = self else { return }
             switch fetchResult {
             case .failure(let error): self.delegate?.dailyPageViewController(self, didFailWithError: error)
@@ -133,30 +135,26 @@ open class OCKDailyTasksPageViewController: OCKDailyPageViewController {
         events: [OCKAnyEvent],
         eventQuery: OCKEventQuery) -> UIViewController? {
 
-        // If the task is linked to HealthKit, show a view geared towards displaying HealthKit data
-        if #available(iOS 14, *), task is OCKHealthKitTask {
-            let controller = OCKNumericProgressTaskController(storeManager: storeManager)
-            controller.setViewModelAndObserve(events: events, query: eventQuery)
-            return NumericProgressTaskView(controller: controller)
-                .hosted()
-
         // Show the button log if the task does not impact adherence
-        } else if !task.impactsAdherence {
-            let taskViewController = OCKButtonLogTaskViewController(controller: .init(storeManager: self.storeManager), viewSynchronizer: .init())
-            taskViewController.controller.setViewModelAndObserve(events: events, query: eventQuery)
-            return taskViewController
+        if task.impactsAdherence == false {
+            return OCKButtonLogTaskViewController(
+                query: eventQuery,
+                store: store
+            )
 
         // Show the simple if there is only one event. Visually this is the best style for a single event.
         } else if events.count == 1 {
-            let taskViewController = OCKSimpleTaskViewController(controller: .init(storeManager: self.storeManager), viewSynchronizer: .init())
-            taskViewController.controller.setViewModelAndObserve(events: events, query: eventQuery)
-            return taskViewController
+            return OCKSimpleTaskViewController(
+                query: eventQuery,
+                store: store
+            )
 
         // Else default to the grid
         } else {
-            let taskViewController = OCKGridTaskViewController(controller: .init(storeManager: self.storeManager), viewSynchronizer: .init())
-            taskViewController.controller.setViewModelAndObserve(events: events, query: eventQuery)
-            return taskViewController
+            return OCKGridTaskViewController(
+                query: eventQuery,
+                store: store
+            )
         }
     }
 }

@@ -28,25 +28,27 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#if !os(watchOS)
 import CareKitUI
 import SwiftUI
 import XCTest
 
-@available(iOS 14, *)
 class TestLinkView: XCTestCase {
+
+    private let text = Text("Hello World")
 
     private var links: [LinkItem] {
         [.url(URL(string: "urlstring")!, title: "", symbol: "")]
     }
 
     func testDefaultInitializers() {
-        _ = LinkView(title: Text(""), detail: Text(""), instructions: Text(""), links: links)
-        _ = LinkView(title: Text(""), detail: nil, instructions: nil, links: links)
+        _ = LinkView(title: text, detail: text, instructions: text, links: links)
+        _ = LinkView(title: text, links: links)
     }
 
     func testCustomInitializers() {
-        _ = LinkView(instructions: nil, header: { EmptyView() }, footer: { EmptyView() })
-        _ = LinkView(title: Text(""), detail: nil, instructions: nil, footer: { EmptyView() })
-        _ = LinkView(instructions: nil, links: links, header: { EmptyView() })
+        _ = LinkView(instructions: text, links: links, header: { })
+        _ = LinkView(links: links, header: { })
     }
 }
+#endif

@@ -143,6 +143,48 @@ class TestHealthKitPassthroughStoreOutcomes: XCTestCase {
         try passthroughStore.checkAbilityToDelete(outcomes: outcomes)
     }
 
+    func testTaskQueryDefaultsToCurrentDayDateInterval() async throws {
+        let outcomeTaskQuery = OCKOutcomeQuery()
+        let taskQuery = passthroughStore.makeTaskQuery(from: outcomeTaskQuery)
+        let currentDayDateInterval = Calendar.current.dateInterval(of: .day, for: Date())!
+
+        XCTAssertEqual(
+            taskQuery.dateInterval?.start,
+            currentDayDateInterval.start
+        )
+        XCTAssertEqual(
+            taskQuery.dateInterval?.end,
+            currentDayDateInterval.end
+        )
+        XCTAssertEqual(taskQuery.ids, outcomeTaskQuery.taskIDs)
+        XCTAssertEqual(taskQuery.remoteIDs, outcomeTaskQuery.taskRemoteIDs)
+        XCTAssertEqual(taskQuery.uuids, outcomeTaskQuery.taskUUIDs)
+    }
+
+    func testTaskQueryPropertiesAdoptsOutcomeQueryProperties() async throws {
+        let yesterday = Calendar.current.date(
+            byAdding: .day,
+            value: -1,
+            to: Date()
+        )!
+        let yesterdayDateInterval = Calendar.current.dateInterval(
+            of: .day,
+            for: yesterday
+        )!
+        var outcomeTaskQuery = OCKOutcomeQuery(
+            dateInterval: yesterdayDateInterval
+        )
+        outcomeTaskQuery.taskIDs = ["id"]
+        outcomeTaskQuery.taskRemoteIDs = ["remoteID"]
+        outcomeTaskQuery.taskUUIDs = [UUID()]
+        let taskQuery = passthroughStore.makeTaskQuery(from: outcomeTaskQuery)
+
+        XCTAssertEqual(taskQuery.dateInterval, outcomeTaskQuery.dateInterval)
+        XCTAssertEqual(taskQuery.ids, outcomeTaskQuery.taskIDs)
+        XCTAssertEqual(taskQuery.remoteIDs, outcomeTaskQuery.taskRemoteIDs)
+        XCTAssertEqual(taskQuery.uuids, outcomeTaskQuery.taskUUIDs)
+    }
+
     // MARK: - Utilities
 
     private func makeStepsTask() -> OCKHealthKitTask {

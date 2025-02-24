@@ -44,17 +44,15 @@ public struct OCKOutcome: Codable, Equatable, Identifiable, OCKAnyOutcome {
     public var taskOccurrenceIndex: Int
     public var values: [OCKOutcomeValue]
 
-    // MARK: OCKVersionable
+    // MARK: OCKVersionedObjectCompatible
     public var effectiveDate: Date
-    public var deletedDate: Date?
-    public var uuid = UUID()
-    public var nextVersionUUIDs: [UUID] = []
-    public var previousVersionUUIDs: [UUID] = []
-    
-    // MARK: OCKObjectCompatible
-    public var createdDate: Date?
-    public var updatedDate: Date?
-    public var schemaVersion: OCKSemanticVersion?
+    public internal(set) var deletedDate: Date?
+    public internal(set) var uuid = UUID()
+    public internal(set) var nextVersionUUIDs: [UUID] = []
+    public internal(set) var previousVersionUUIDs: [UUID] = []
+    public internal(set) var createdDate: Date?
+    public internal(set) var updatedDate: Date?
+    public internal(set) var schemaVersion: OCKSemanticVersion?
     public var remoteID: String?
     public var groupIdentifier: String?
     public var tags: [String]?

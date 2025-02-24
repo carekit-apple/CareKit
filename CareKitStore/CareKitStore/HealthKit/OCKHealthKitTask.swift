@@ -51,14 +51,12 @@ public struct OCKHealthKitTask: Codable, Equatable, OCKAnyVersionableTask, OCKAn
     public var groupIdentifier: String?
     public var tags: [String]?
 
-    // MARK: OCKVersionable
+    // MARK: OCKVersionedObjectCompatible
     public var effectiveDate: Date
     public internal(set) var deletedDate: Date?
     public internal(set) var uuid = UUID()
     public internal(set) var nextVersionUUIDs: [UUID] = []
     public internal(set) var previousVersionUUIDs: [UUID] = []
-
-    // MARK: OCKObjectCompatible
     public internal(set) var createdDate: Date?
     public internal(set) var updatedDate: Date?
     public internal(set) var schemaVersion: OCKSemanticVersion?

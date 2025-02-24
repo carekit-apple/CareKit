@@ -28,6 +28,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import CoreData
 import Foundation
 import HealthKit
 
@@ -40,12 +41,27 @@ public struct OCKHealthKitOutcome: Codable, Equatable, Identifiable, OCKAnyOutco
     public let isOwnedByApp: Bool
 
     // MARK: OCKAnyOutcome
-    public var id: String { taskUUID.uuidString + "_\(taskOccurrenceIndex)" }
+    public var id: String = UUID().uuidString
     public var taskOccurrenceIndex: Int
     public var values: [OCKOutcomeValue]
     public var remoteID: String?
     public var groupIdentifier: String?
     public var notes: [OCKNote]?
+
+    // MARK: OCKVersionedObjectCompatible
+    public var effectiveDate: Date
+    public internal(set) var deletedDate: Date?
+    public internal(set) var uuid = UUID()
+    public internal(set) var nextVersionUUIDs: [UUID] = []
+    public internal(set) var previousVersionUUIDs: [UUID] = []
+    public internal(set) var createdDate: Date?
+    public internal(set) var updatedDate: Date?
+    public internal(set) var schemaVersion: OCKSemanticVersion?
+    public var tags: [String]?
+    public var source: String?
+    public var userInfo: [String: String]?
+    public var asset: String?
+    public var timezone: TimeZone
 
     /// A record of the HealthKit object that this outcome is derived from. Used for targeted deletions.
     /// A list of UUIDs at a particular index is associated with an outcome value at the same index in `values`.
@@ -62,6 +78,8 @@ public struct OCKHealthKitOutcome: Codable, Equatable, Identifiable, OCKAnyOutco
         self.taskOccurrenceIndex = taskOccurrenceIndex
         self.values = values
         self.isOwnedByApp = true
+        self.effectiveDate = Date()
+        self.timezone = TimeZone.current
     }
 
     internal init(taskUUID: UUID, taskOccurrenceIndex: Int, values: [OCKOutcomeValue], isOwnedByApp: Bool, healthKitUUIDs: [[UUID]]) {
@@ -70,10 +88,27 @@ public struct OCKHealthKitOutcome: Codable, Equatable, Identifiable, OCKAnyOutco
         self.values = values
         self.isOwnedByApp = isOwnedByApp
         self.healthKitUUIDs = healthKitUUIDs
+        self.effectiveDate = Date()
+        self.timezone = TimeZone.current
     }
 
     public func belongs(to task: OCKAnyTask) -> Bool {
         guard let task = task as? OCKHealthKitTask else { return false }
         return task.uuid == taskUUID
+    }
+}
+
+extension OCKHealthKitOutcome: OCKVersionedObjectCompatible {
+
+    static func entity() -> NSEntityDescription {
+        OCKCDHealthKitOutcome.entity()
+    }
+
+    func entity() -> OCKEntity {
+        .healthKitOutcome(self)
+    }
+    
+    func insert(context: NSManagedObjectContext) -> OCKCDVersionedObject {
+        OCKCDHealthKitOutcome(outcome: self, context: context)
     }
 }

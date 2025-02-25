@@ -28,6 +28,8 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#if canImport(UIKit)
+
 import Foundation
 import UIKit
 
@@ -42,3 +44,5 @@ extension UIImage {
         return otherUrlImage ?? appAssetsImage ?? symbol
     }
 }
+
+#endif

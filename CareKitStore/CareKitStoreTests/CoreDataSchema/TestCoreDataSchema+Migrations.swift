@@ -76,7 +76,9 @@ class TestCoreDataSchemaMigrations: XCTestCase {
         descriptor.url = dir.appendingPathComponent("SampleStore2.0.sqlite")
         descriptor.type = NSSQLiteStoreType
         descriptor.shouldAddStoreAsynchronously = false
+        #if !os(macOS)
         descriptor.setOption(FileProtectionType.complete as NSObject, forKey: NSPersistentStoreFileProtectionKey)
+        #endif
         descriptor.shouldMigrateStoreAutomatically = true
 
         let container = NSPersistentContainer(name: "sut", managedObjectModel: sharedManagedObjectModel)

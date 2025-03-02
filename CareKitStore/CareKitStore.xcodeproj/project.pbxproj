@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 53;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -1565,7 +1565,7 @@
 			repositoryURL = "https://github.com/apple/swift-async-algorithms";
 			requirement = {
 				kind = exactVersion;
-				version = 0.1.0;
+				version = 1.0.1;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

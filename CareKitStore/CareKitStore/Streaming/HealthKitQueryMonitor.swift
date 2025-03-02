@@ -57,6 +57,9 @@ final class HealthKitQueryMonitor: QueryMonitor {
         // Don't perform the query again if it's already running
         guard query == nil else { return }
 
+        // Only perform query if there are one or more descriptors.
+        guard queryDescriptors.count > 0 else { return }
+
         // Create a query for the initial results
         query = HKAnchoredObjectQuery(
             queryDescriptors: queryDescriptors,

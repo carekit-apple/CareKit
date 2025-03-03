@@ -44,14 +44,13 @@ extension OCKStoreCoordinator {
             $0.anyOutcomes(matching: query)
         }
 
-        let sortDescriptor = NSSortDescriptor(
-            keyPath: \OCKCDOutcome.id,
-            ascending: true
-        )
+        let sortDescriptors = query
+            .sortDescriptors
+            .map(\.nsSortDescriptor)
 
         let outcomes = combineMany(
             sequences: outcomesStreams,
-            sortingElementsUsing: [sortDescriptor]
+            sortingElementsUsing: sortDescriptors
         )
 
         return outcomes

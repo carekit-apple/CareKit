@@ -39,15 +39,18 @@ public struct OCKContactQuery: Equatable, OCKQueryProtocol {
         case givenName(ascending: Bool)
         case familyName(ascending: Bool)
         case effectiveDate(ascending: Bool)
+        case groupIdentifier(ascending: Bool)
 
         var nsSortDescriptor: NSSortDescriptor {
             switch self {
-            case let .effectiveDate(ascending):
-                return NSSortDescriptor(keyPath: \OCKCDContact.effectiveDate, ascending: ascending)
             case let .givenName(ascending):
                 return NSSortDescriptor(keyPath: \OCKCDContact.name.givenName, ascending: ascending)
             case let .familyName(ascending):
                 return NSSortDescriptor(keyPath: \OCKCDContact.name.familyName, ascending: ascending)
+            case let .effectiveDate(ascending):
+                return NSSortDescriptor(keyPath: \OCKCDContact.effectiveDate, ascending: ascending)
+            case let .groupIdentifier(ascending):
+                return NSSortDescriptor(keyPath: \OCKCDContact.groupIdentifier, ascending: ascending)
             }
         }
     }

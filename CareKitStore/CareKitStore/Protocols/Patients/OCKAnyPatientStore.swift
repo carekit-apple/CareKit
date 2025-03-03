@@ -127,7 +127,7 @@ public extension OCKAnyReadOnlyPatientStore {
                          completion: @escaping OCKResultClosure<OCKAnyPatient>) {
         var query = OCKPatientQuery(for: Date())
         query.limit = 1
-        query.sortDescriptors = [.effectiveDate(ascending: true)]
+        query.sortDescriptors = [.effectiveDate(ascending: false)]
         query.ids = [id]
 
         fetchAnyPatients(query: query, callbackQueue: callbackQueue, completion:

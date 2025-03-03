@@ -159,6 +159,7 @@ class TestHealthKitPassthroughStoreOutcomes: XCTestCase {
         XCTAssertEqual(taskQuery.ids, outcomeTaskQuery.taskIDs)
         XCTAssertEqual(taskQuery.remoteIDs, outcomeTaskQuery.taskRemoteIDs)
         XCTAssertEqual(taskQuery.uuids, outcomeTaskQuery.taskUUIDs)
+        XCTAssertTrue(taskQuery.sortDescriptors.isEmpty)
     }
 
     func testTaskQueryPropertiesAdoptsOutcomeQueryProperties() async throws {
@@ -177,12 +178,21 @@ class TestHealthKitPassthroughStoreOutcomes: XCTestCase {
         outcomeTaskQuery.taskIDs = ["id"]
         outcomeTaskQuery.taskRemoteIDs = ["remoteID"]
         outcomeTaskQuery.taskUUIDs = [UUID()]
+        outcomeTaskQuery.sortDescriptors = [
+            .effectiveDate(ascending: true),
+            .groupIdentifier(ascending: true)
+        ]
         let taskQuery = passthroughStore.makeTaskQuery(from: outcomeTaskQuery)
+        let expectedTaskSortDescriptors: [OCKTaskQuery.SortDescriptor] = [
+            .effectiveDate(ascending: true),
+            .groupIdentifier(ascending: true)
+        ]
 
         XCTAssertEqual(taskQuery.dateInterval, outcomeTaskQuery.dateInterval)
         XCTAssertEqual(taskQuery.ids, outcomeTaskQuery.taskIDs)
         XCTAssertEqual(taskQuery.remoteIDs, outcomeTaskQuery.taskRemoteIDs)
         XCTAssertEqual(taskQuery.uuids, outcomeTaskQuery.taskUUIDs)
+        XCTAssertEqual(taskQuery.sortDescriptors, expectedTaskSortDescriptors)
     }
 
     // MARK: - Utilities

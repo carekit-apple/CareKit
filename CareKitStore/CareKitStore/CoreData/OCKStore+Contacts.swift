@@ -145,6 +145,7 @@ extension OCKStore {
             case .effectiveDate(ascending: let ascending): return NSSortDescriptor(keyPath: \OCKCDContact.effectiveDate, ascending: ascending)
             case .familyName(ascending: let ascending): return NSSortDescriptor(keyPath: \OCKCDContact.name.familyName, ascending: ascending)
             case .givenName(ascending: let ascending): return NSSortDescriptor(keyPath: \OCKCDContact.name.givenName, ascending: ascending)
+            case .groupIdentifier(let ascending): return NSSortDescriptor(keyPath: \OCKCDContact.groupIdentifier, ascending: ascending)
             }
         } + query.defaultSortDescriptors()
     }

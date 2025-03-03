@@ -134,7 +134,7 @@ public extension OCKReadablePatientStore {
         var query = OCKPatientQuery(for: Date())
         query.limit = 1
         query.ids = [id]
-        query.sortDescriptors = [.effectiveDate(ascending: true)]
+        query.sortDescriptors = [.effectiveDate(ascending: false)]
 
         fetchPatients(query: query, callbackQueue: callbackQueue, completion:
             chooseFirst(then: completion, replacementError: .fetchFailed(reason: "No patient with matching ID")))

@@ -131,7 +131,7 @@ public extension OCKReadableCarePlanStore {
     func fetchCarePlan(withID id: String, callbackQueue: DispatchQueue = .main, completion: @escaping OCKResultClosure<Plan>) {
         var query = OCKCarePlanQuery(for: Date())
         query.limit = 1
-        query.sortDescriptors = [.effectiveDate(ascending: true)]
+        query.sortDescriptors = [.effectiveDate(ascending: false)]
         query.ids = [id]
 
         fetchCarePlans(query: query, callbackQueue: callbackQueue, completion:

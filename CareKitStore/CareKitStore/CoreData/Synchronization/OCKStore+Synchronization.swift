@@ -89,7 +89,6 @@ extension NSManagedObjectContext {
         }
 
         let request = NSFetchRequest<T>(entityName: entityName)
-        request.fetchLimit = 1
         request.returnsObjectsAsFaults = false
 
         request.predicate = NSPredicate(

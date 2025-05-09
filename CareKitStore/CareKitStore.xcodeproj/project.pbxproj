@@ -136,10 +136,10 @@
 		70C4A7042C61B3AE00A83FC4 /* SampleStore2.1.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 70C4A7012C61B3AE00A83FC4 /* SampleStore2.1.sqlite */; };
 		70C4A7052C61B3AE00A83FC4 /* SampleStore2.1.sqlite-wal in Resources */ = {isa = PBXBuildFile; fileRef = 70C4A7022C61B3AE00A83FC4 /* SampleStore2.1.sqlite-wal */; };
 		70C4A7062C61B3AE00A83FC4 /* SampleStore2.1.sqlite-shm in Resources */ = {isa = PBXBuildFile; fileRef = 70C4A7032C61B3AE00A83FC4 /* SampleStore2.1.sqlite-shm */; };
-		70C4A70C2C61B42200A83FC4 /* 2.0_3.0_Mapping.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 70C4A7072C61B42200A83FC4 /* 2.0_3.0_Mapping.xcmappingmodel */; };
 		70C4A70D2C61B42200A83FC4 /* OCKStoreMigration2_0To3_0Policy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70C4A7082C61B42200A83FC4 /* OCKStoreMigration2_0To3_0Policy.swift */; };
-		70C4A70E2C61B42200A83FC4 /* 2.1_3.0_Mapping.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 70C4A70A2C61B42200A83FC4 /* 2.1_3.0_Mapping.xcmappingmodel */; };
 		70C4A7112C61C63500A83FC4 /* CareKitStore.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 70C4A6FC2C61B33F00A83FC4 /* CareKitStore.xcdatamodeld */; };
+		70E55D522DCE80A400FA85DD /* 2.0_3.0_Mapping.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 70E55D512DCE80A400FA85DD /* 2.0_3.0_Mapping.xcmappingmodel */; };
+		70E55D542DCE81B600FA85DD /* 2.1_3.0_Mapping.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 70E55D532DCE81B600FA85DD /* 2.1_3.0_Mapping.xcmappingmodel */; };
 		E7131DC12241FAA80001861B /* OCKTaskQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7131DC02241FAA80001861B /* OCKTaskQuery.swift */; };
 		E7131DC5224200640001861B /* OCKOutcomeQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7131DC4224200640001861B /* OCKOutcomeQuery.swift */; };
 		E7131DCB22420A520001861B /* OCKPatientQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7131DCA22420A520001861B /* OCKPatientQuery.swift */; };
@@ -344,9 +344,9 @@
 		70C4A7012C61B3AE00A83FC4 /* SampleStore2.1.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = SampleStore2.1.sqlite; sourceTree = "<group>"; };
 		70C4A7022C61B3AE00A83FC4 /* SampleStore2.1.sqlite-wal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "SampleStore2.1.sqlite-wal"; sourceTree = "<group>"; };
 		70C4A7032C61B3AE00A83FC4 /* SampleStore2.1.sqlite-shm */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SampleStore2.1.sqlite-shm"; sourceTree = "<group>"; };
-		70C4A7072C61B42200A83FC4 /* 2.0_3.0_Mapping.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = 2.0_3.0_Mapping.xcmappingmodel; sourceTree = "<group>"; };
 		70C4A7082C61B42200A83FC4 /* OCKStoreMigration2_0To3_0Policy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCKStoreMigration2_0To3_0Policy.swift; sourceTree = "<group>"; };
-		70C4A70A2C61B42200A83FC4 /* 2.1_3.0_Mapping.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = 2.1_3.0_Mapping.xcmappingmodel; sourceTree = "<group>"; };
+		70E55D512DCE80A400FA85DD /* 2.0_3.0_Mapping.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = 2.0_3.0_Mapping.xcmappingmodel; sourceTree = "<group>"; };
+		70E55D532DCE81B600FA85DD /* 2.1_3.0_Mapping.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = 2.1_3.0_Mapping.xcmappingmodel; sourceTree = "<group>"; };
 		E7131DC02241FAA80001861B /* OCKTaskQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKTaskQuery.swift; sourceTree = "<group>"; };
 		E7131DC4224200640001861B /* OCKOutcomeQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKOutcomeQuery.swift; sourceTree = "<group>"; };
 		E7131DCA22420A520001861B /* OCKPatientQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCKPatientQuery.swift; sourceTree = "<group>"; };
@@ -702,7 +702,7 @@
 		70C4A7092C61B42200A83FC4 /* 2_0To_3_0 */ = {
 			isa = PBXGroup;
 			children = (
-				70C4A7072C61B42200A83FC4 /* 2.0_3.0_Mapping.xcmappingmodel */,
+				70E55D512DCE80A400FA85DD /* 2.0_3.0_Mapping.xcmappingmodel */,
 				70C4A7082C61B42200A83FC4 /* OCKStoreMigration2_0To3_0Policy.swift */,
 			);
 			path = 2_0To_3_0;
@@ -711,7 +711,7 @@
 		70C4A70B2C61B42200A83FC4 /* 2_1To3_0 */ = {
 			isa = PBXGroup;
 			children = (
-				70C4A70A2C61B42200A83FC4 /* 2.1_3.0_Mapping.xcmappingmodel */,
+				70E55D532DCE81B600FA85DD /* 2.1_3.0_Mapping.xcmappingmodel */,
 			);
 			path = 2_1To3_0;
 			sourceTree = "<group>";
@@ -1029,13 +1029,12 @@
 				70C4A7112C61C63500A83FC4 /* CareKitStore.xcdatamodeld in Sources */,
 				51D2F63D2878FBE900D19C2D /* PartialEvent.swift in Sources */,
 				E7AE85502232F24600AF7C32 /* OCKTask.swift in Sources */,
+				70E55D522DCE80A400FA85DD /* 2.0_3.0_Mapping.xcmappingmodel in Sources */,
 				E7AE855A2232F24600AF7C32 /* OCKCDPatient.swift in Sources */,
 				51DF5B2A287C84A10067795E /* OCKReadOnlyEventStore+VersioningUtilities.swift in Sources */,
 				E7AE85472232F24600AF7C32 /* OCKStoreProtocol.swift in Sources */,
 				51DF5B32287DE9210067795E /* Sample.swift in Sources */,
 				51DF5B30287DE8F90067795E /* SampleChange.swift in Sources */,
-				70C4A70C2C61B42200A83FC4 /* 2.0_3.0_Mapping.xcmappingmodel in Sources */,
-				70C4A70E2C61B42200A83FC4 /* 2.1_3.0_Mapping.xcmappingmodel in Sources */,
 				51EB47532901AA2C00734820 /* CareTaskProgress.swift in Sources */,
 				51CD578F29788807005711EA /* CareKitStore.docc in Sources */,
 				E7BC32FE22332FD00055CA62 /* OCKScheduleElement.swift in Sources */,
@@ -1066,6 +1065,7 @@
 				E77374892280FB6100F31F94 /* OCKNote.swift in Sources */,
 				E7B023B62241BF43001F9552 /* OCKCarePlanQuery.swift in Sources */,
 				03678DF02343B21F00E27926 /* OCKAnyEvent.swift in Sources */,
+				70E55D542DCE81B600FA85DD /* 2.1_3.0_Mapping.xcmappingmodel in Sources */,
 				E77DD23222333D6B00E194A9 /* OCKSchedule.swift in Sources */,
 				03534C1723426DFD00BA1C67 /* OCKAnyCarePlan.swift in Sources */,
 				03503C122310A52400BEE859 /* OCKOutcomeStore.swift in Sources */,
@@ -1587,7 +1587,6 @@
 				70C4A6FF2C61B33F00A83FC4 /* CareKitStore2.0.xcdatamodel */,
 			);
 			currentVersion = 70C4A6FE2C61B33F00A83FC4 /* CareKitStore3.0.xcdatamodel */;
-			name = CareKitStore.xcdatamodeld;
 			path = CareKitStore.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

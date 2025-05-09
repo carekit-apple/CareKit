@@ -111,9 +111,7 @@ class TestCoreDataSchemaMigrations: XCTestCase {
         let outcome = outcomes?.first
         let outcomeValues = outcome?.value(forKey: "values") as? Set<NSManagedObject>
         let outcomeValue = outcomeValues?.first
-        let startDate = outcomeValue?.value(forKey: "startDate")
         let endDate = outcomeValue?.value(forKey: "endDate")
-        XCTAssertNil(startDate)
         XCTAssertNil(endDate)
 
         // 5. Tear down the CoreData stack before the files get deleted
@@ -195,9 +193,7 @@ class TestCoreDataSchemaMigrations: XCTestCase {
         let outcome = outcomes?.first
         let outcomeValues = outcome?.value(forKey: "values") as? Set<NSManagedObject>
         let outcomeValue = outcomeValues?.first
-        let startDate = outcomeValue?.value(forKey: "startDate")
         let endDate = outcomeValue?.value(forKey: "endDate")
-        XCTAssertNil(startDate)
         XCTAssertNil(endDate)
         
         // 5. Tear down the CoreData stack before the files get deleted

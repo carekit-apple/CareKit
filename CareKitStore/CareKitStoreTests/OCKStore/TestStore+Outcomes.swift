@@ -60,7 +60,7 @@ class TestStoreOutcomes: XCTestCase {
         let endDate = startDate + 1
         var value = OCKOutcomeValue(42)
         value.kind = "number"
-        value.startDate = startDate
+        value.createdDate = startDate
         value.endDate = endDate
 
         var outcome = OCKOutcome(taskUUID: taskUUID, taskOccurrenceIndex: 0, values: [value])
@@ -71,7 +71,7 @@ class TestStoreOutcomes: XCTestCase {
         XCTAssertEqual(outcomes.first?.values.first?.kind, "number")
         XCTAssertNotNil(outcomes.first?.taskUUID)
         XCTAssertNotNil(outcomes.first?.schemaVersion)
-        XCTAssertEqual(outcomes.first?.values.first?.startDate, startDate)
+        XCTAssertEqual(outcomes.first?.values.first?.createdDate, startDate)
         XCTAssertEqual(outcomes.first?.values.first?.endDate, endDate)
     }
 

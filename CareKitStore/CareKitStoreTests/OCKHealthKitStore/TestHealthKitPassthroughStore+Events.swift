@@ -130,7 +130,7 @@ class TestHealthKitPassthroughStoreEvents: XCTestCase {
             case heartRateTask.id:
                 XCTAssertEqual(outcomeValues.count, 2)
                 XCTAssertEqual(outcomeValues.first?.doubleValue, 70)
-                XCTAssertEqual(outcomeValues.first?.startDate, heartRateStart)
+                XCTAssertEqual(outcomeValues.first?.createdDate, heartRateStart)
                 XCTAssertEqual(outcomeValues.first?.endDate, heartRateEnd)
                 XCTAssertEqual(outcomeValues[safe: 1]?.doubleValue, 80)
 

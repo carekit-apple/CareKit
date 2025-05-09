@@ -252,7 +252,7 @@ extension OCKHealthKitPassthroughStore {
             units: event.task.healthKitLinkage.unit.unitString
         )
         
-        outcomeValue.startDate = sample.dateInterval.start
+        outcomeValue.createdDate = sample.dateInterval.start
         outcomeValue.endDate = sample.dateInterval.end
 
         var updatedEvent = event

@@ -174,7 +174,7 @@ extension OCKHealthKitPassthroughStore {
 
         case .cumulative:
             intersectingSamples.forEach { sample in
-                updatedEvent = invalidateCumulativeOutcome(addedSampleID: sample.id, event: updatedEvent)
+                updatedEvent = invalidateCumulativeOutcome(addedSample: sample, event: updatedEvent)
             }
         }
 
@@ -322,10 +322,11 @@ extension OCKHealthKitPassthroughStore {
     /// that will affect the sum value. We do store the sample ID for the new sample, but set the outcome
     /// value to -1 to indicate that the sum needs to be recomputed.
     private func invalidateCumulativeOutcome(
-        addedSampleID: UUID,
+        addedSample: Sample,
         event: Event
     ) -> Event {
 
+		let addedSampleID = addedSample.id
         var updatedEvent = event
 
         // Create an outcome if one doesn't already exist
@@ -337,8 +338,11 @@ extension OCKHealthKitPassthroughStore {
             event.outcome?.healthKitUUIDs.first != nil
         else {
 
+			let value = -1
             let units = event.task.healthKitLinkage.unit.unitString
-            let outcomeValue = OCKOutcomeValue(-1, units: units)
+            var outcomeValue = OCKOutcomeValue(-1, units: units)
+			outcomeValue.createdDate = addedSample.dateInterval.start
+			outcomeValue.endDate = addedSample.dateInterval.end
 
             updatedEvent.outcome?.values.append(outcomeValue)
             updatedEvent.outcome?.healthKitUUIDs.append([addedSampleID])
@@ -348,6 +352,8 @@ extension OCKHealthKitPassthroughStore {
 
         // Invalidate the first outcome value
         updatedEvent.outcome?.values[0].value = -1
+		updatedEvent.outcome?.values[0].createdDate = addedSample.dateInterval.start
+		updatedEvent.outcome?.values[0].endDate = addedSample.dateInterval.end
 
         // Track the new sample ID
         updatedEvent.outcome?.healthKitUUIDs[0].append(addedSampleID)
@@ -544,7 +550,9 @@ extension OCKHealthKitPassthroughStore {
         updatedEvent.outcome = event.outcome ?? makeOutcome(for: event)
 
         let units = event.task.healthKitLinkage.unit.unitString
-        let outcomeValue = OCKOutcomeValue(newSum, units: units)
+        var outcomeValue = event.outcome?.values.first ?? OCKOutcomeValue(newSum, units: units)
+		outcomeValue.value = newSum
+		outcomeValue.units = units
 
         updatedEvent.outcome!.values = [outcomeValue]
 

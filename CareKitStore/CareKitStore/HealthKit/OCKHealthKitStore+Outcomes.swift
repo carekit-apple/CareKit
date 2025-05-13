@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2020, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -32,7 +32,7 @@ import Foundation
 import HealthKit
 import os.log
 
-@available(iOS 15, watchOS 8, *)
+@available(iOS 15, watchOS 8, macOS 13.0, *)
 public extension OCKHealthKitPassthroughStore {
 
     func addOutcomes(_ outcomes: [OCKHealthKitOutcome], callbackQueue: DispatchQueue = .main,

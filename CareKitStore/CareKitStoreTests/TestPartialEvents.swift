@@ -35,6 +35,8 @@ import XCTest
 
 class TestPartialEvents: XCTestCase {
 
+    private let calendar = Calendar(identifier: .gregorian)
+
     private let store = OCKStore(
         name: "TestPartialEventFetcher.Store",
         type: .inMemory
@@ -159,6 +161,7 @@ class TestPartialEvents: XCTestCase {
             PartialEvent(task: storedTaskA, scheduleEvent: mealtimesSchedule[1]),
             PartialEvent(task: storedTaskA, scheduleEvent: mealtimesSchedule[2])
         ]
+        .sorted()
 
         let expectedEvents = [
             expectedEventsArray
@@ -188,6 +191,96 @@ class TestPartialEvents: XCTestCase {
         for streamedEvent in streamedEventsArray {
             XCTAssertTrue(expectedEventsArray.contains(streamedEvent))
         }
+    }
+
+    func testAllDayScheduleDoesNotReturnEventsAfterScheduleEnd() async throws {
+
+        let now = Date(timeIntervalSinceReferenceDate: 0)
+
+        let schedule = OCKScheduleElement(
+            start: now,
+            end: nil,
+            interval: DateComponents(day: 1),
+            text: nil,
+            targetValues: [],
+            duration: .allDay
+        )
+
+        let taskA = OCKTask(id: "task", title: nil, carePlanUUID: nil, schedule: OCKSchedule(composing: [schedule]))
+        let persistedTaskA = try await store.addTask(taskA)
+
+        let updatedDate = now + 10
+        var endedSchedule = schedule
+        endedSchedule.end = updatedDate
+        var taskB = persistedTaskA
+        taskB.schedule = OCKSchedule(composing: [endedSchedule])
+        taskB.effectiveDate = updatedDate
+        _ = try await store.updateTask(taskB)
+
+        // Storing new version taskB causes a change to taskA. Fetch the changes.
+        let updatedTaskA = try await store
+            .fetchTasks(query: OCKTaskQuery())
+            .first { $0.uuid == taskA.uuid }
+            ?? persistedTaskA
+
+        let queryInterval = DateInterval(
+            start: now,
+            end: calendar.date(byAdding: .year, value: 1, to: now)!
+        )
+
+        let query = OCKTaskQuery(dateInterval: queryInterval)
+        let fetchedEvents = [waitForPartialEvents(query: query)]
+        let eventsStream = store.partialEvents(matching: query)
+        let streamedEvents = try await accumulate(eventsStream, expectedCount: 1)
+        let expectedEvents = [[PartialEvent(task: updatedTaskA, scheduleEvent: schedule[0])]]
+
+        XCTAssertEqual(fetchedEvents, expectedEvents)
+        XCTAssertEqual(streamedEvents, expectedEvents)
+    }
+
+    func testLimitedDurationScheduleDoesNotReturnEventsAfterScheduleEnd() async throws {
+
+        let now = Date(timeIntervalSinceReferenceDate: 0)
+
+        let schedule = OCKScheduleElement(
+            start: now,
+            end: nil,
+            interval: DateComponents(day: 1),
+            text: nil,
+            targetValues: [],
+            duration: .seconds(100)
+        )
+
+        let taskA = OCKTask(id: "task", title: nil, carePlanUUID: nil, schedule: OCKSchedule(composing: [schedule]))
+        let persistedTaskA = try await store.addTask(taskA)
+
+        let updatedDate = now + 10
+        var endedSchedule = schedule
+        endedSchedule.end = updatedDate
+        var taskB = persistedTaskA
+        taskB.schedule = OCKSchedule(composing: [endedSchedule])
+        taskB.effectiveDate = updatedDate
+        _ = try await store.updateTask(taskB)
+
+        // Storing new version taskB causes a change to taskA. Fetch the changes.
+        let updatedTaskA = try await store
+            .fetchTasks(query: OCKTaskQuery())
+            .first { $0.uuid == taskA.uuid }
+            ?? persistedTaskA
+
+        let queryInterval = DateInterval(
+            start: now,
+            end: calendar.date(byAdding: .year, value: 1, to: now)!
+        )
+
+        let query = OCKTaskQuery(dateInterval: queryInterval)
+        let fetchedEvents = [waitForPartialEvents(query: query)]
+        let eventsStream = store.partialEvents(matching: query)
+        let streamedEvents = try await accumulate(eventsStream, expectedCount: 1)
+        let expectedEvents = [[PartialEvent(task: updatedTaskA, scheduleEvent: schedule[0])]]
+
+        XCTAssertEqual(fetchedEvents, expectedEvents)
+        XCTAssertEqual(streamedEvents, expectedEvents)
     }
 
     // MARK: - Utilities

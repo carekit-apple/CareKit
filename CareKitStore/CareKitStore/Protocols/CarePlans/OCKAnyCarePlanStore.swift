@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -54,10 +54,9 @@ public protocol OCKAnyReadOnlyCarePlanStore: OCKAnyResettableStore {
     /// have the same ``OCKAnyCarePlan/id`` but a different UUID. If the query does contain a date
     /// interval, the result contains the newest version of a care plan that exists in the interval.
     ///
-    /// - Parameter query: A query that matches care plans in the store.
     ///
     /// - Parameters:
-    ///   - query: A query that constrains the values the method fetches.
+    ///   - query: A query that constrains care plans the method fetches.
     ///   - callbackQueue: The queue that the method calls the completion closure on. In most cases this is the main queue.
     ///   - completion: A callback that executes on the provided callback queue.
     func fetchAnyCarePlans(query: OCKCarePlanQuery, callbackQueue: DispatchQueue,
@@ -175,7 +174,7 @@ public extension OCKAnyReadOnlyCarePlanStore {
     ///   - query: A query that constrains the values that the method fetches.
     func fetchAnyCarePlans(query: OCKCarePlanQuery) async throws -> [OCKAnyCarePlan] {
         try await withCheckedThrowingContinuation { continuation in
-            fetchAnyCarePlans(query: query, callbackQueue: .main, completion: continuation.resume)
+            fetchAnyCarePlans(query: query, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 
@@ -187,7 +186,7 @@ public extension OCKAnyReadOnlyCarePlanStore {
     ///   - id: The identifier of the item the method fetches.
     func fetchAnyCarePlan(withID id: String) async throws -> OCKAnyCarePlan {
         try await withCheckedThrowingContinuation { continuation in
-            fetchAnyCarePlan(withID: id, callbackQueue: .main, completion: continuation.resume)
+            fetchAnyCarePlan(withID: id, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 }
@@ -202,7 +201,7 @@ public extension OCKAnyCarePlanStore {
     ///   - plans: An array of plans to add to the store.
     func addAnyCarePlans(_ plans: [OCKAnyCarePlan]) async throws -> [OCKAnyCarePlan] {
         try await withCheckedThrowingContinuation { continuation in
-            addAnyCarePlans(plans, callbackQueue: .main, completion: continuation.resume)
+            addAnyCarePlans(plans, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 
@@ -212,7 +211,7 @@ public extension OCKAnyCarePlanStore {
     ///   - plans: An array of care plans to update. The care plans must already exist in the store.
     func updateAnyCarePlans(_ plans: [OCKAnyCarePlan]) async throws -> [OCKAnyCarePlan] {
         try await withCheckedThrowingContinuation { continuation in
-            updateAnyCarePlans(plans, callbackQueue: .main, completion: continuation.resume)
+            updateAnyCarePlans(plans, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 
@@ -222,7 +221,7 @@ public extension OCKAnyCarePlanStore {
     ///   - plans: An array of care plans to delete. The care plans must exist in the store.
     func deleteAnyCarePlans(_ plans: [OCKAnyCarePlan]) async throws -> [OCKAnyCarePlan] {
         try await withCheckedThrowingContinuation { continuation in
-            deleteAnyCarePlans(plans, callbackQueue: .main, completion: continuation.resume)
+            deleteAnyCarePlans(plans, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 
@@ -234,7 +233,7 @@ public extension OCKAnyCarePlanStore {
     ///   - plan: A single plan to add to the store.
     func addAnyCarePlan(_ plan: OCKAnyCarePlan) async throws -> OCKAnyCarePlan {
         try await withCheckedThrowingContinuation { continuation in
-            addAnyCarePlan(plan, callbackQueue: .main, completion: continuation.resume)
+            addAnyCarePlan(plan, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 
@@ -244,7 +243,7 @@ public extension OCKAnyCarePlanStore {
     ///   - plan: A single care plan to update. The care plans must already exist in the store.
     func updateAnyCarePlan(_ plan: OCKAnyCarePlan) async throws -> OCKAnyCarePlan {
         try await withCheckedThrowingContinuation { continuation in
-            updateAnyCarePlan(plan, callbackQueue: .main, completion: continuation.resume)
+            updateAnyCarePlan(plan, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 
@@ -254,7 +253,7 @@ public extension OCKAnyCarePlanStore {
     ///   - plan: A single care plan to delete. The care plans must exist in the store.
     func deleteAnyCarePlan(_ plan: OCKAnyCarePlan) async throws -> OCKAnyCarePlan {
         try await withCheckedThrowingContinuation { continuation in
-            deleteAnyCarePlan(plan, callbackQueue: .main, completion: continuation.resume)
+            deleteAnyCarePlan(plan, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 }

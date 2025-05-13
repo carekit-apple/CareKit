@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -33,7 +33,7 @@ import CareKitStore
 import CareKitUI
 import UIKit
 
-/// Describes a view synchronizer for charts.
+/// A protocol that describes a view synchronizer for charts.
 @available(*, deprecated, renamed: "ViewSynchronizing")
 public protocol OCKChartViewSynchronizerProtocol {
 

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2021, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -35,7 +35,7 @@ import CareKitUI
 import UIKit
 
 
-/// Queries for and displays contacts in a store.
+/// A view controller that queries and displays contacts in a store.
 open class OCKContactsListViewController<
     ContactViewSynchronizer: ViewSynchronizing
 >: SynchronizedViewController<_OCKContactsListViewSynchronizer<ContactViewSynchronizer>> where
@@ -65,9 +65,9 @@ open class OCKContactsListViewController<
         fatalError("Unavailable")
     }
 
-    /// Queries for and displays contacts in a store.
+    /// Creates a view controller that queries and displays contacts in a store.
     /// - Parameters:
-    ///   - store: Contains the contact data that will be displayed.
+    ///   - store: Contains the contact data to display.
     ///   - contactViewSynchronizer: Capable of creating and updating a contact view in the list.
     public init(
         store: OCKAnyStoreProtocol,
@@ -100,9 +100,11 @@ public extension OCKContactsListViewController where ContactViewSynchronizer == 
         fatalError("Unavailable")
     }
 
-    /// Queries for and displays contacts in a store. Displays simple contact views by default.
+    /// Creates a view controller that queries and displays contacts in a store. 
+    ///
+    /// Displays simple contact views by default.
     /// - Parameters:
-    ///   - storeManager: Contains the contact data that will be displayed.
+    ///   - store: Contains the contact data to display.
     convenience init(store: OCKAnyStoreProtocol) {
         self.init(
             store: store,

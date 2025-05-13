@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -33,8 +33,9 @@ import CareKitStore
 import CareKitUI
 import UIKit
 
-/// A view controller displaying views in an `OCKListView`.
-/// `OCKDailyPageViewController` uses `OCKListViewController`s to display scrollable stacks of
+/// A view controller displaying views in a list view.
+///
+/// `OCKDailyPageViewController` uses `OCKListViewController` to display scrollable stacks of
 /// embedded view controllers.
 open class OCKListViewController: UIViewController {
 

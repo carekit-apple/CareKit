@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -31,13 +31,13 @@
 
 import UIKit
 
-/// Any object that can display and handle interactions with a contact.
+/// Objects that display and handle interactions with a contact.
 public protocol OCKContactDisplayable: AnyObject {
-    /// Handles events related to an `OCKContactDisplayable` object.
+    /// An object that handles events related to a contact object.
     var delegate: OCKContactViewDelegate? { get set }
 }
 
-/// Handles events related to an `OCKContactDisplayable` object.
+/// A protocol that handles events related to a contact object.
 public protocol OCKContactViewDelegate: AnyObject {
     /// Called when the user would like to call the contact.
     /// - Parameter contactView: The view that displays the contact.

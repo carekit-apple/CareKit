@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -32,6 +32,7 @@
 import CareKitStore
 import Foundation
 
+/// A view controller that displays a simple contact view and keeps it synchronized with a store.
 open class OCKSimpleContactViewController: OCKContactViewController<OCKSimpleContactViewSynchronizer> {
 
     @available(*, unavailable, renamed: "init(query:store:viewSynchronizer:)")

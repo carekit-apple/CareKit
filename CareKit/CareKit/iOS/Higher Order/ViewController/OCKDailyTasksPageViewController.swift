@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -34,7 +34,7 @@ import CareKitUI
 import SwiftUI
 import UIKit
 
-/// Handles events related to an `OCKDailyTasksPageViewController`.
+/// A protocol that handles events related to a daily tasks page view controller.
 public protocol OCKDailyTasksPageViewControllerDelegate: AnyObject {
 
     /// Return a view controller to display for the given task and events.
@@ -47,8 +47,9 @@ public protocol OCKDailyTasksPageViewControllerDelegate: AnyObject {
                                       events: [OCKAnyEvent], eventQuery: OCKEventQuery) -> UIViewController?
 }
 
-/// Displays a calendar page view controller in the header, and a collection of tasks
-/// in the body. The tasks are automatically queried based on the selection in the calendar.
+/// A view controller that displays a calendar page view controller in the header and a collection of tasks in the body.
+///
+/// The selection in the calendar generates an automatic query that populates the tasks.
 open class OCKDailyTasksPageViewController: OCKDailyPageViewController {
 
     private let emptyLabelMargin: CGFloat = 4

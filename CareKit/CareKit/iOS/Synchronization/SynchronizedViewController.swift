@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2021, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -32,7 +32,7 @@
 
 import UIKit
 
-/// A view controller that updates its view using a stream of data.
+/// A view controller that updates a view using a stream of data.
 ///
 /// This view controller observes a stream of data from the view it's mapped to,
 /// according to `viewSynchronizer`.
@@ -87,10 +87,10 @@ open class SynchronizedViewController<ViewSynchronizer: ViewSynchronizing>: UIVi
     private var updateViewWhenNeeded: () async -> Void = {}
     private var context: OCKSynchronizationContext<ViewSynchronizer.ViewModel>
 
-    /// A view controller that updates its view using a stream of data.
+    /// Creates a view controller that updates its view using a stream of data.
     ///
     /// - Parameters:
-    ///   - initialViewModel: The initial value displayed in the view.
+    ///   - initialViewModel: The initial value that appears in the view.
     ///   - viewModels: An asynchronous sequence of data that appears in the view.
     ///   - viewSynchronizer: The object that creates and updates the view.
     public init<S: AsyncSequence>(
@@ -140,8 +140,8 @@ open class SynchronizedViewController<ViewSynchronizer: ViewSynchronizing>: UIVi
 
     /// Reset the state of the view if an error occurs.
     ///
-    /// The user interface assumes successful user interactions, and displays the corresponding state immediately.
-    /// If an interaction is unsuccessful, use this method to reset the user interface.
+    /// The UI assumes successful user interactions, and displays the corresponding state immediately.
+    /// If an interaction is unsuccessful, use this method to reset the UI.
     func resetViewOnError<Success, Error>(result: Result<Success, Error>) {
 
         guard case .failure = result else { return }

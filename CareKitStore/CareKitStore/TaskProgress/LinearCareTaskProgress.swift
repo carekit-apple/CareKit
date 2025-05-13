@@ -68,7 +68,8 @@ public struct LinearCareTaskProgress: CareTaskProgress, Hashable, Sendable {
     /// 
     /// - Parameters: 
     ///   - value: The progress that's been made towards reaching the goal.
-    ///   - goal: A value that indicates whether the task is complete. When there is no goal, the value is `nil`.  The task is considered completed if the progress value is greater than zero.
+    ///   - goal: A value that indicates whether the task is complete. When there is no goal, the value is `nil`. The task is considered completed
+    ///   if the progress value is greater than zero.
     public init(
         value: Double,
         goal: Double? = nil

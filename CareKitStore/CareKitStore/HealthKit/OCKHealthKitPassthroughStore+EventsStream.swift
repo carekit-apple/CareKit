@@ -32,7 +32,7 @@ import AsyncAlgorithms
 import Foundation
 import os.log
 
-@available(iOS 15, watchOS 8, *)
+@available(iOS 15, watchOS 8, macOS 13.0, *)
 public extension OCKHealthKitPassthroughStore {
 
     func events(matching query: OCKEventQuery) -> CareStoreQueryResults<OCKEvent<Task, Outcome>> {
@@ -57,7 +57,7 @@ public extension OCKHealthKitPassthroughStore {
     }
 }
 
-@available(iOS 15, watchOS 8, *)
+@available(iOS 15, watchOS 8, macOS 13.0, *)
 extension OCKHealthKitPassthroughStore {
 
 
@@ -120,7 +120,7 @@ extension OCKHealthKitPassthroughStore {
                 events,
                 applyingChange: change,
                 updateCumulativeSumOfSamples: updateCumulativeSumOfSamples,
-                completion: continuation.resume
+                completion: { continuation.resume(with: $0) }
             )
         }
     }

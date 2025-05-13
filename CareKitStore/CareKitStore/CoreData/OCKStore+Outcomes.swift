@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -148,7 +148,7 @@ extension OCKStore {
         // Fetch the task for each outcome. Group the tasks in a dictionary for easy lookup.
 
         let taskUUIDs = outcomes.map { $0.taskUUID }
-        let tasks: [OCKCDTask] = try context.fetchObjects(withUUIDs: taskUUIDs)
+        let tasks: [OCKCDTask] = try context.fetchObjects(withUUIDs: Set(taskUUIDs))
 
         let tasksGroupedByUUID = Dictionary(
             grouping: tasks,

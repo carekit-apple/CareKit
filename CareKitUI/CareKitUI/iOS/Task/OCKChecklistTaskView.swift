@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -31,6 +31,32 @@
 
 import UIKit
 
+// ```
+//     +-------------------------------------------------------+
+//     | +------+                                              |
+//     | | icon | [title]                       [detail        |
+//     | | img  | [detail]                       disclosure]   |
+//     | +------+                                              |
+//     |                                                       |
+//     |  --------------------------------------------------   |
+//     |                                                       |
+//     |  +-------------------------------------------------+  |
+//     |  | [title]                                   [img] |  |
+//     |  +-------------------------------------------------+  |
+//     |  +-------------------------------------------------+  |
+//     |  | [title]                                   [img] |  |
+//     |  +-------------------------------------------------+  |
+//     |                         .                             |
+//     |                         .                             |
+//     |                         .                             |
+//     |  +-------------------------------------------------+  |
+//     |  | [title]                                   [img] |  |
+//     |  +-------------------------------------------------+  |
+//     |                                                       |
+//     |  [instructions]                                       |
+//     +-------------------------------------------------------+
+// ```
+
 /// A card that displays a vertically stacked checklist of items. In CareKit, this view is intended to display
 /// multiple events for a particular task.
 ///
@@ -38,32 +64,6 @@ import UIKit
 /// stack of checklist items and an instructions label underneath. To access the checklist item buttons, for instance
 /// to hook them up to target actions, see the `items` array. To modify the checklist, see
 /// `updateItem`, `appendItem`, `insertItem`, `removeItem` and `clearItems`.
-///
-/// ```
-///     +-------------------------------------------------------+
-///     | +------+                                              |
-///     | | icon | [title]                       [detail        |
-///     | | img  | [detail]                       disclosure]   |
-///     | +------+                                              |
-///     |                                                       |
-///     |  --------------------------------------------------   |
-///     |                                                       |
-///     |  +-------------------------------------------------+  |
-///     |  | [title]                                   [img] |  |
-///     |  +-------------------------------------------------+  |
-///     |  +-------------------------------------------------+  |
-///     |  | [title]                                   [img] |  |
-///     |  +-------------------------------------------------+  |
-///     |                         .                             |
-///     |                         .                             |
-///     |                         .                             |
-///     |  +-------------------------------------------------+  |
-///     |  | [title]                                   [img] |  |
-///     |  +-------------------------------------------------+  |
-///     |                                                       |
-///     |  [instructions]                                       |
-///     +-------------------------------------------------------+
-/// ```
 open class OCKChecklistTaskView: OCKView, OCKTaskDisplayable {
 
     // MARK: Properties
@@ -92,10 +92,10 @@ open class OCKChecklistTaskView: OCKView, OCKTaskDisplayable {
         return stackView
     }()
 
-    /// Handles events related to an `OCKTaskDisplayable` object.
+    /// An object that handles events related to a task object.
     public weak var delegate: OCKTaskViewDelegate?
 
-    /// The header that shows a `detailDisclosureImage`.
+    /// A header that shows a detailed disclosure image.
     public let headerView = OCKHeaderView {
         $0.showsDetailDisclosure = true
     }

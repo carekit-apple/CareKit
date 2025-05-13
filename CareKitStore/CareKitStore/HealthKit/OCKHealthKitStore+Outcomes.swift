@@ -133,6 +133,10 @@ public extension OCKHealthKitPassthroughStore {
                             reason: "Failed to delete HealthKit samples. Error: \(error.localizedDescription)")))
                     }
                     return
+                } else {
+                    callbackQueue.async {
+                        completion?(.success(outcomes))
+                    }
                 }
             }
         } catch {

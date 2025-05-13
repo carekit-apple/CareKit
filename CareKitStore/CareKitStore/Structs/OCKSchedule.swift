@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -93,6 +93,15 @@ public struct OCKSchedule: Codable, Equatable {
 
         precondition(start < end)
 
+        // Algorithm:
+        //
+        // 1. Compute ALL events since the start of the schedule. Need to do that in order to
+        //    compute the right occurrence index for each event. This is key and creates a need
+        //    for the next complicated steps, and also makes this algorithm somewhat inefficient.
+        // 2. Filter out events that fall outside of the query interval
+        // 3. Sort all events and recompute their occurrence indices
+        // 4. Remove events whose schedules ended before the query interval
+
         // Compute events from schedule start -> query end.
         let eventsBeforeQueryEnd = elements
             .filter { $0.start < end }
@@ -107,7 +116,12 @@ public struct OCKSchedule: Codable, Equatable {
         let firstOccurrence = eventsBeforeQueryEnd.count - eventsMatchingQuery.count
         let events = stableSort(events: eventsMatchingQuery, startingOccurrence: firstOccurrence)
 
-        return events
+        // Filter out events whose schedules have ended
+        let eventWithActiveSchedules = events.filter { event in
+            event.element.end ?? .distantFuture > start
+        }
+
+        return eventWithActiveSchedules
     }
 
     /// Create a new schedule by shifting this schedule.

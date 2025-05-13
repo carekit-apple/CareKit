@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -32,7 +32,8 @@
 import CareKitUI
 import UIKit
 
-/// A view controller that can be customized to display the details of another view.
+/// A view controller that displays a detailed description of a care task.
+///
 /// The detail view's content stack view can be populated with arbitrary content.
 open class OCKDetailViewController: UIViewController {
 

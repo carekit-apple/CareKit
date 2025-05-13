@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -31,13 +31,13 @@
 
 import UIKit
 
-/// Any object that can display and handle interactions with a chart.
+/// An object that displays and handles interactions with a chart.
 public protocol OCKChartDisplayable: AnyObject {
-    /// Handles events related to an `OCKChartDisplayable` object.
+    /// An object that handles events related to a chart object.
     var delegate: OCKChartViewDelegate? { get set }
 }
 
-/// Handles events related to an `OCKChartDisplayable` object.
+/// A protocol that handles chart object events.
 public protocol OCKChartViewDelegate: AnyObject {
     /// Called when the view displaying the chart was selected.
     /// - Parameter chartView: The view displaying the chart.

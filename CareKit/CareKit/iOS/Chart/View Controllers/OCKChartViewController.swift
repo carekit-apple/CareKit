@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -35,7 +35,7 @@ import MessageUI
 import os.log
 import UIKit
 
-/// A view controller that displays a chart view and keep it synchronized with a store.
+/// A view controller that displays a chart view and keeps it synchronized with a store.
 open class OCKChartViewController<
     ViewSynchronizer: ViewSynchronizing
 >: SynchronizedViewController<ViewSynchronizer>, OCKChartViewDelegate where
@@ -67,7 +67,7 @@ open class OCKChartViewController<
         fatalError("Unavailable")
     }
 
-    /// A view controller that displays a chart view and keep it synchronized with a store.
+    /// A view controller that displays a chart view and keeps it synchronized with a store.
     /// - Parameters:
     ///   - weekOfDate: A date in the week of the insights range to fetch.
     ///   - configurations: Specifies which data should be queried and how it should be displayed by the graph.

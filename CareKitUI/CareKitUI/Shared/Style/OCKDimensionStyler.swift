@@ -28,7 +28,16 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import Foundation
+#if canImport(UIKit)
+
 import UIKit
+
+#elseif canImport(AppKit)
+
+import AppKit
+
+#endif
 
 /// Defines constants for view dimension styling.
 public protocol OCKDimensionStyler {
@@ -119,8 +128,12 @@ public struct OCKDimensionStyle: OCKDimensionStyler {
     public init() {}
 }
 
+#if canImport(UIKit) || canImport(AppKit)
+
 private extension NSDirectionalEdgeInsets {
     init(value: CGFloat) {
         self.init(top: value, leading: value, bottom: value, trailing: value)
     }
 }
+
+#endif

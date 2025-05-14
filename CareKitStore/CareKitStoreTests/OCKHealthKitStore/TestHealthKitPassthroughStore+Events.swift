@@ -135,7 +135,7 @@ class TestHealthKitPassthroughStoreEvents: XCTestCase {
             case heartRateTask.id:
                 XCTAssertEqual(outcomeValues.count, 2)
                 XCTAssertEqual(outcomeValues.first?.doubleValue, 70)
-                XCTAssertEqual(outcomeValues[safe: 1]?.doubleValue, 80)
+                XCTAssertEqual(outcomeValues[1].doubleValue, 80)
 
             default:
                 XCTFail("Unexpected task")

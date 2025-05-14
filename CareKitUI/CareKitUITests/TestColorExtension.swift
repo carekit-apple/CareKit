@@ -28,6 +28,8 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#if canImport(UIKit)
+
 @testable import CareKitUI
 import Foundation
 import XCTest
@@ -60,3 +62,5 @@ class TestColorExtension: XCTestCase {
         XCTAssertEqual(lightened, UIColor(red: 1, green: 1, blue: 1, alpha: 1))
     }
 }
+
+#endif

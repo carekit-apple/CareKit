@@ -188,7 +188,25 @@ class TestPersistentStoreCoordinator: XCTestCase {
         }
     }
 
-    func testPersistentStoreCoordinatorDoesNotSendHealthKitTasksToOCKStore() {
+	@available(iOS 15, watchOS 8, macOS 13.0, *)
+	func testStoreCoordinatorDoesNotSendNormalTasksToOCKStore() {
+		let coordinator = OCKStoreCoordinator()
+		let store = OCKStore(name: UUID().uuidString, type: .inMemory)
+		let passthrough = OCKHealthKitPassthroughStore(store: store)
+		coordinator.attach(store: store)
+		coordinator.attach(eventStore: passthrough)
+
+		let schedule = OCKSchedule.dailyAtTime(hour: 9, minutes: 0, start: Date(), end: nil, text: nil)
+		let task = OCKTask(
+			id: "task", title: nil,
+			carePlanUUID: nil,
+			schedule: schedule
+		)
+		let willHandle = coordinator.taskStore(passthrough, shouldHandleWritingTask: task)
+		XCTAssertFalse(willHandle)
+	}
+
+    func testStoreCoordinatorDoesNotSendHealthKitTasksToOCKStore() {
         let coordinator = OCKStoreCoordinator()
         let store = OCKStore(name: UUID().uuidString, type: .inMemory)
         coordinator.attach(store: store)
@@ -200,12 +218,13 @@ class TestPersistentStoreCoordinator: XCTestCase {
         XCTAssertThrowsError(try coordinator.addAnyTaskAndWait(task))
     }
 
-#if !os(watchOS) && !os(macOS) && !os(visionOS)
-    @available(iOS 15, watchOS 8, *)
+    @available(iOS 15, watchOS 8, macOS 13.0, *)
     func testStoreCoordinatorDoesNotSendNormalOutcomesToHealthKit() {
         let coordinator = OCKStoreCoordinator()
         let store = OCKStore(name: UUID().uuidString, type: .inMemory)
         let passthrough = OCKHealthKitPassthroughStore(store: store)
+		coordinator.attach(store: store)
+		coordinator.attach(eventStore: passthrough)
         let outcome = OCKOutcome(taskUUID: UUID(), taskOccurrenceIndex: 0, values: [])
         let willHandle = coordinator.outcomeStore(passthrough, shouldHandleWritingOutcome: outcome)
         XCTAssertFalse(willHandle)
@@ -214,11 +233,11 @@ class TestPersistentStoreCoordinator: XCTestCase {
     func testStoreCoordinatorDoesNotSendHealthKitOutcomesToOCKStore() {
         let coordinator = OCKStoreCoordinator()
         let store = OCKStore(name: UUID().uuidString, type: .inMemory)
+		coordinator.attach(store: store)
         let outcome = OCKHealthKitOutcome(taskUUID: UUID(), taskOccurrenceIndex: 0, values: [])
         let willHandle = coordinator.outcomeStore(store, shouldHandleWritingOutcome: outcome)
         XCTAssertFalse(willHandle)
     }
-#endif
     
     @available(iOS 15, watchOS 8, macOS 13.0, *)
     func testCanAssociateHealthKitTaskWithCarePlan() throws {

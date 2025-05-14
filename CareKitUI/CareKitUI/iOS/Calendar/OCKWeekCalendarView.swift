@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -46,16 +46,16 @@ open class OCKWeekCalendarView: OCKView, OCKCalendarDisplayable {
     // MARK: Properties
 
     /// The currently selected date in the calendar.
-    public private (set) var selectedDate: Date
+    public private(set) var selectedDate: Date
 
-    /// Handles events related to an `OCKCalendarDisplayable` object.
+    /// An object that handles events related to a calendar object.
     public weak var delegate: OCKCalendarViewDelegate?
 
     /// The date interval of the week currently being displayed.
-    public private (set) var dateInterval = Calendar.current.dateIntervalOfWeek(for: Date())
+    public private(set) var dateInterval = Calendar.current.dateIntervalOfWeek(for: Date())
 
     /// The completion ring buttons in the view. There will be one ring for each day in the `dateInterval`.
-    public private (set) lazy var completionRingButtons: [OCKCompletionRingButton] = {
+    public private(set) lazy var completionRingButtons: [OCKCompletionRingButton] = {
         var rings = [OCKCompletionRingButton]()
         let numberOfDays = Calendar.current.dateComponents([.day], from: dateInterval.start, to: dateInterval.end).day!
         for _ in 0...numberOfDays {

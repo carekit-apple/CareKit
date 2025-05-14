@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -171,7 +171,7 @@ public extension OCKAnyReadOnlyTaskStore {
     ///   - query: A query that constrains the fetched values.
     func fetchAnyTasks(query: OCKTaskQuery) async throws -> [OCKAnyTask] {
         try await withCheckedThrowingContinuation { continuation in
-            fetchAnyTasks(query: query, callbackQueue: .main, completion: continuation.resume)
+            fetchAnyTasks(query: query, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 
@@ -185,7 +185,7 @@ public extension OCKAnyReadOnlyTaskStore {
     ///   - id: The identifier of the item to fetch.
     func fetchAnyTask(withID id: String) async throws -> OCKAnyTask {
         try await withCheckedThrowingContinuation { continuation in
-            fetchAnyTask(withID: id, callbackQueue: .main, completion: continuation.resume)
+            fetchAnyTask(withID: id, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 }
@@ -197,30 +197,30 @@ public extension OCKAnyTaskStore {
     /// Asynchronously add an array of tasks to the store.
     ///
     /// - Parameters:
-    ///   - task: An array of tasks the function adds.
+    ///   - tasks: An array of tasks the function adds.
     func addAnyTasks(_ tasks: [OCKAnyTask]) async throws -> [OCKAnyTask] {
         try await withCheckedThrowingContinuation { continuation in
-            addAnyTasks(tasks, callbackQueue: .main, completion: continuation.resume)
+            addAnyTasks(tasks, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 
     /// Asynchronously update an array of tasks in the store.
     ///
     /// - Parameters:
-    ///   - task: An array of tasks the function updates. The tasks must exist in the store.
+    ///   - tasks: An array of tasks the function updates. The tasks must exist in the store.
     func updateAnyTasks(_ tasks: [OCKAnyTask]) async throws -> [OCKAnyTask] {
         try await withCheckedThrowingContinuation { continuation in
-            updateAnyTasks(tasks, callbackQueue: .main, completion: continuation.resume)
+            updateAnyTasks(tasks, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 
     /// Asynchronously delete an array of tasks from the store.
     ///
     /// - Parameters:
-    ///   - task: An array of tasks the function deletes. The tasks must exist in the store.
+    ///   - tasks: An array of tasks the function deletes. The tasks must exist in the store.
     func deleteAnyTasks(_ tasks: [OCKAnyTask]) async throws -> [OCKAnyTask] {
         try await withCheckedThrowingContinuation { continuation in
-            deleteAnyTasks(tasks, callbackQueue: .main, completion: continuation.resume)
+            deleteAnyTasks(tasks, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 
@@ -232,7 +232,7 @@ public extension OCKAnyTaskStore {
     ///   - task: A task the function adds.
     func addAnyTask(_ task: OCKAnyTask) async throws -> OCKAnyTask {
         try await withCheckedThrowingContinuation { continuation in
-            addAnyTask(task, callbackQueue: .main, completion: continuation.resume)
+            addAnyTask(task, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 
@@ -242,7 +242,7 @@ public extension OCKAnyTaskStore {
     ///   - task: A task the function updates. The task must exist in the store.
     func updateAnyTask(_ task: OCKAnyTask) async throws -> OCKAnyTask {
         try await withCheckedThrowingContinuation { continuation in
-            updateAnyTask(task, callbackQueue: .main, completion: continuation.resume)
+            updateAnyTask(task, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 
@@ -252,7 +252,7 @@ public extension OCKAnyTaskStore {
     ///   - task: A task the function deletes. The task must exist in the store.
     func deleteAnyTask(_ task: OCKAnyTask) async throws -> OCKAnyTask {
         try await withCheckedThrowingContinuation { continuation in
-            deleteAnyTask(task, callbackQueue: .main, completion: continuation.resume)
+            deleteAnyTask(task, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 }

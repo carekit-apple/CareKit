@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -163,7 +163,7 @@ public extension OCKAnyReadOnlyContactStore {
     ///   - query: A query used to constrain the values that will be fetched.
     func fetchAnyContacts(query: OCKContactQuery) async throws -> [OCKAnyContact] {
         try await withCheckedThrowingContinuation { continuation in
-            fetchAnyContacts(query: query, callbackQueue: .main, completion: continuation.resume)
+            fetchAnyContacts(query: query, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 
@@ -175,7 +175,7 @@ public extension OCKAnyReadOnlyContactStore {
     ///   - id: The identifier of the item to be fetched.
     func fetchAnyContact(withID id: String) async throws -> OCKAnyContact {
         try await withCheckedThrowingContinuation { continuation in
-            fetchAnyContact(withID: id, callbackQueue: .main, completion: continuation.resume)
+            fetchAnyContact(withID: id, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 }
@@ -190,7 +190,7 @@ public extension OCKAnyContactStore {
     ///   - contacts: An array of contacts to be added to the store.
     func addAnyContacts(_ contacts: [OCKAnyContact]) async throws -> [OCKAnyContact] {
         try await withCheckedThrowingContinuation { continuation in
-            addAnyContacts(contacts, callbackQueue: .main, completion: continuation.resume)
+            addAnyContacts(contacts, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 
@@ -200,7 +200,7 @@ public extension OCKAnyContactStore {
     ///   - contacts: An array of contacts to be updated. The contacts must already exist in the store.
     func updateAnyContacts(_ contacts: [OCKAnyContact]) async throws -> [OCKAnyContact] {
         try await withCheckedThrowingContinuation { continuation in
-            updateAnyContacts(contacts, callbackQueue: .main, completion: continuation.resume)
+            updateAnyContacts(contacts, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 
@@ -210,7 +210,7 @@ public extension OCKAnyContactStore {
     ///   - contacts: An array of contacts to be deleted. The contacts must exist in the store.
     func deleteAnyContacts(_ contacts: [OCKAnyContact]) async throws -> [OCKAnyContact] {
         try await withCheckedThrowingContinuation { continuation in
-            deleteAnyContacts(contacts, callbackQueue: .main, completion: continuation.resume)
+            deleteAnyContacts(contacts, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 
@@ -222,7 +222,7 @@ public extension OCKAnyContactStore {
     ///   - contact: A single contact to be added to the store.
     func addAnyContact(_ contact: OCKAnyContact) async throws -> OCKAnyContact {
         try await withCheckedThrowingContinuation { continuation in
-            addAnyContact(contact, callbackQueue: .main, completion: continuation.resume)
+            addAnyContact(contact, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 
@@ -232,7 +232,7 @@ public extension OCKAnyContactStore {
     ///   - contact: A single contact to be updated. The contact must already exist in the store.
     func updateAnyContact(_ contact: OCKAnyContact) async throws -> OCKAnyContact {
         try await withCheckedThrowingContinuation { continuation in
-            updateAnyContact(contact, callbackQueue: .main, completion: continuation.resume)
+            updateAnyContact(contact, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 
@@ -242,7 +242,7 @@ public extension OCKAnyContactStore {
     ///   - contact: A single contact to be deleted. The contact must exist in the store.
     func deleteAnyContact(_ contact: OCKAnyContact) async throws -> OCKAnyContact {
         try await withCheckedThrowingContinuation { continuation in
-            deleteAnyContact(contact, callbackQueue: .main, completion: continuation.resume)
+            deleteAnyContact(contact, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 }

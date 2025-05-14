@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -32,6 +32,7 @@
 import CareKitStore
 import Foundation
 
+/// A view controller that displays a weekly calendar view and synchronizes it with a store.
 open class OCKWeekCalendarViewController: OCKCalendarViewController<OCKWeekCalendarViewSynchronizer> {
 
     @available(*, unavailable, renamed: "init(dateInterval:store:viewSynchronizer:computeProgress:)")
@@ -63,7 +64,7 @@ open class OCKWeekCalendarViewController: OCKCalendarViewController<OCKWeekCalen
 
     /// Initialize a view controller that displays adherence. Fetches and stays synchronized with the adherence data.
     /// - Parameters:
-    ///   - weekOfDate: A date in the week for which adherence will be fetched.
+    ///   - date: A date in the week for which adherence will be fetched.
     ///   - store: Contains the task data for which adherence will be computed.
     ///   - computeProgress: Used to compute the progress for an event.
     public init(

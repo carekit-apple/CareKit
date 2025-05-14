@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -57,7 +57,9 @@ public struct OCKOutcomeValue: Codable, Equatable, CustomStringConvertible {
     public static func == (lhs: OCKOutcomeValue, rhs: OCKOutcomeValue) -> Bool {
         lhs.hasSameValueAs(rhs) &&
         lhs.type == rhs.type &&
-        lhs.kind == rhs.kind
+        lhs.kind == rhs.kind &&
+        lhs.units == rhs.units &&
+        lhs.createdDate == rhs.createdDate
     }
 
     /// An optional property that can be used to specify what kind of value this is (e.g. blood pressure, qualitative stress, weight)

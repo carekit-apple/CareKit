@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -164,7 +164,7 @@ public extension OCKAnyReadOnlyPatientStore {
     ///   - query: A query used to constrain the values that will be fetched.
     func fetchAnyPatients(query: OCKPatientQuery) async throws -> [OCKAnyPatient] {
         try await withCheckedThrowingContinuation { continuation in
-            fetchAnyPatients(query: query, callbackQueue: .main, completion: continuation.resume)
+            fetchAnyPatients(query: query, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 
@@ -176,7 +176,7 @@ public extension OCKAnyReadOnlyPatientStore {
     ///   - id: The identifier of the item to be fetched.
     func fetchAnyPatient(withID id: String) async throws -> OCKAnyPatient {
         try await withCheckedThrowingContinuation { continuation in
-            fetchAnyPatient(withID: id, callbackQueue: .main, completion: continuation.resume)
+            fetchAnyPatient(withID: id, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 }
@@ -191,7 +191,7 @@ public extension OCKAnyPatientStore {
     ///   - patients: An array of patients to be added to the store.
     func addAnyPatients(_ patients: [OCKAnyPatient]) async throws -> [OCKAnyPatient] {
         try await withCheckedThrowingContinuation { continuation in
-            addAnyPatients(patients, callbackQueue: .main, completion: continuation.resume)
+            addAnyPatients(patients, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 
@@ -201,7 +201,7 @@ public extension OCKAnyPatientStore {
     ///   - patients: An array of patients to be updated. The patients must already exist in the store.
     func updateAnyPatients(_ patients: [OCKAnyPatient]) async throws -> [OCKAnyPatient] {
         try await withCheckedThrowingContinuation { continuation in
-            updateAnyPatients(patients, callbackQueue: .main, completion: continuation.resume)
+            updateAnyPatients(patients, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 
@@ -211,7 +211,7 @@ public extension OCKAnyPatientStore {
     ///   - patients: An array of patients to be deleted. The patients must exist in the store.
     func deleteAnyPatients(_ patients: [OCKAnyPatient]) async throws -> [OCKAnyPatient] {
         try await withCheckedThrowingContinuation { continuation in
-            deleteAnyPatients(patients, callbackQueue: .main, completion: continuation.resume)
+            deleteAnyPatients(patients, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 
@@ -223,7 +223,7 @@ public extension OCKAnyPatientStore {
     ///   - patient: A single patient to be added to the store.
     func addAnyPatient(_ patient: OCKAnyPatient) async throws -> OCKAnyPatient {
         try await withCheckedThrowingContinuation { continuation in
-            addAnyPatient(patient, callbackQueue: .main, completion: continuation.resume)
+            addAnyPatient(patient, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 
@@ -233,7 +233,7 @@ public extension OCKAnyPatientStore {
     ///   - patient: A single patient to be updated. The patients must already exist in the store.
     func updateAnyPatient(_ patient: OCKAnyPatient) async throws -> OCKAnyPatient {
         try await withCheckedThrowingContinuation { continuation in
-            updateAnyPatient(patient, callbackQueue: .main, completion: continuation.resume)
+            updateAnyPatient(patient, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 
@@ -243,7 +243,7 @@ public extension OCKAnyPatientStore {
     ///   - patient: A single patient to be deleted. The patients must exist in the store.
     func deleteAnyPatient(_ patient: OCKAnyPatient) async throws -> OCKAnyPatient {
         try await withCheckedThrowingContinuation { continuation in
-            deleteAnyPatient(patient, callbackQueue: .main, completion: continuation.resume)
+            deleteAnyPatient(patient, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 }

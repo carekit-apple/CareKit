@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -32,6 +32,7 @@
 import CareKitStore
 import Foundation
 
+/// A view controller that shows a detailed description for a single complete or incomplete event.
 open class OCKInstructionsTaskViewController: OCKTaskViewController<OCKInstructionsTaskViewSynchronizer> {
 
     @available(*, unavailable, renamed: "init(query:store:viewSynchronizer:)")
@@ -62,7 +63,8 @@ open class OCKInstructionsTaskViewController: OCKTaskViewController<OCKInstructi
         fatalError("Unavailable")
     }
 
-    /// A view controller that displays a task view and keeps it synchronized with a store.
+    /// Creates a view controller that displays a task view and keeps it synchronized with a store.
+    /// 
     /// - Parameters:
     ///   - query: Used to fetch the task data that will be displayed.
     ///   - store: Contains the task data that will be displayed.

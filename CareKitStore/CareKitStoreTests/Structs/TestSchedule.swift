@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -280,5 +280,27 @@ class TestSchedule: XCTestCase {
         let expectedOccurrences = Array(5...7)
         let observedOccurrences = events.map { $0.occurrence }
         XCTAssertEqual(expectedOccurrences, observedOccurrences)
+    }
+
+    func testOccurrenceIsCorrectWhenScheduleHasElementThatEnded() {
+
+        let now = Date(timeIntervalSinceReferenceDate: 0)
+
+        let schedule = OCKSchedule(composing: [
+            OCKScheduleElement(start: now, end: now + 60, interval: DateComponents(day: 1), duration: .minutes(1)),
+            OCKScheduleElement(start: now, end: now + 60, interval: DateComponents(day: 1), duration: .hours(1)),
+            OCKScheduleElement(start: now + 60, end: nil, interval: DateComponents(day: 1), duration: .minutes(1)),
+            OCKScheduleElement(start: now + 60, end: now + 120, interval: DateComponents(day: 1), duration: .hours(1))
+        ])
+
+        let events = schedule.events(from: now + 60, to: now + 120)
+
+        // The key thing to test here is that the occurrence index is correct
+        let expectedEvents = [
+            OCKScheduleEvent(start: now + 60, end: now + 120, element: schedule.elements[2], occurrence: 2),
+            OCKScheduleEvent(start: now + 60, end: now + 3_660, element: schedule.elements[3], occurrence: 3)
+        ]
+
+        XCTAssertEqual(events, expectedEvents)
     }
 }

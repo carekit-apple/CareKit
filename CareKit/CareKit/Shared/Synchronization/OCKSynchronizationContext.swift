@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -30,7 +30,7 @@
 
 import Foundation
 
-/// Provides context for a view model value.
+/// A data structure that provides context for a view model value.
 public struct OCKSynchronizationContext<ViewModel> {
     /// The current view model value.
     public let viewModel: ViewModel
@@ -38,7 +38,7 @@ public struct OCKSynchronizationContext<ViewModel> {
     /// The previous view model value.
     public let oldViewModel: ViewModel
 
-    /// Animated flag.
+    /// A Boolean value that indicates the view model is animated.
     public let animated: Bool
 
     public init(viewModel: ViewModel, oldViewModel: ViewModel, animated: Bool) {

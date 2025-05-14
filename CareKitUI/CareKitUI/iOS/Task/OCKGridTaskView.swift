@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -31,28 +31,28 @@
 
 import UIKit
 
+// ```
+//     +-------------------------------------------------------+
+//     |                                                       |
+//     |  [title]                               [detail        |
+//     |  [detail]                              disclosure]    |
+//     |                                                       |
+//     |                                                       |
+//     |  --------------------------------------------------   |
+//     |     o o      o o      o o                     o o     |
+//     |    o   o    o   o    o   o        ...        o   o    |
+//     |     o o      o o      o o                     o o     |
+//     |                                                       |
+//     |   [instructions]                                      |
+//     +-------------------------------------------------------+
+// ```
+
 /// A card that displays a header, grid of buttons, and a multi-line label In CareKit, this view is intended to display
 /// multiple events for a particular task. The state of each button in the grid indicates the completion state of the
 /// corresponding event.
 ///
 /// To insert custom views vertically the view, see `contentStack`. To modify the data in the grid, set a `dataSource`
 /// for the `collectionView`.
-///
-/// ```
-///     +-------------------------------------------------------+
-///     |                                                       |
-///     |  [title]                               [detail        |
-///     |  [detail]                              disclosure]    |
-///     |                                                       |
-///     |                                                       |
-///     |  --------------------------------------------------   |
-///     |     o o      o o      o o                     o o     |
-///     |    o   o    o   o    o   o        ...        o   o    |
-///     |     o o      o o      o o                     o o     |
-///     |                                                       |
-///     |   [instructions]                                      |
-///     +-------------------------------------------------------+
-/// ```
 open class OCKGridTaskView: OCKView, OCKTaskDisplayable, UICollectionViewDelegate {
 
     private enum Constants {
@@ -69,23 +69,25 @@ open class OCKGridTaskView: OCKView, OCKTaskDisplayable, UICollectionViewDelegat
         return stackView
     }()
 
-    /// Handles events related to an `OCKTaskDisplayable` object.
+    /// An object that handles events related to a task object.
     public weak var delegate: OCKTaskViewDelegate?
 
-    /// A header view that shows a separator and a `detailDisclosureImage`.
+    /// A header view that shows a separator and a detail disclosure image.
     public let headerView = OCKHeaderView {
         $0.showsSeparator = true
         $0.showsDetailDisclosure = true
     }
 
-    /// The default cell identifier that is registered for the collection view.
+    /// The default cell identifier registered for the collection view.
     public static let defaultCellIdentifier = "outcome-value"
 
-    /// The default cell type that is used for the `collectionView`.
+    /// The default cell type for the collection view.
     public typealias DefaultCellType = OCKGridTaskCell
 
-    /// A collection view that sizes itself based on the size of its content. Cells used should have a constant width constraint. The
-    /// default cell that is used is an `OCKGridTaskView.DefaultCellType` (`OCKGridTaskCell`). Set a data source to control the content
+    /// A collection view that sizes itself based on the size of its content.
+    ///
+    /// Ensure that cells have a constant width constraint. The
+    /// default cell is an `OCKGridTaskView.DefaultCellType` (`OCKGridTaskCell`). Set a data source to control the content
     /// of the grid.
     public private(set) lazy var collectionView: UICollectionView = {
         let collectionView = OCKSelfSizingCollectionView(frame: .zero, collectionViewLayout: makeLayout())
@@ -96,7 +98,7 @@ open class OCKGridTaskView: OCKView, OCKTaskDisplayable, UICollectionViewDelegat
         return collectionView
     }()
 
-    /// Multi-line label below the `collectionView`.
+    /// A multi-line label below the collection view.
     public let instructionsLabel: OCKLabel = {
         let label = OCKLabel(textStyle: .caption1, weight: .regular)
         label.numberOfLines = 0

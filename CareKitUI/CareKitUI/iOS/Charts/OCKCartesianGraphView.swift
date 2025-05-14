@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -31,21 +31,22 @@
 
 import UIKit
 
-/// Displays a `OCKMultiGraphableView` above an axis. The initializer takes an enum `PlotType` that allows you to choose from
-/// several common graph types.
+//     +-------------------------------------------------------+
+//     |                                                       |
+//     | [title]                                               |
+//     | [detail]                                              |
+//     |                                                       |
+//     | [graph]                                               |
+//     |                                                       |
+//     +-------------------------------------------------------+
+//
+
+/// A view that displays a graphable view above an axis.
 ///
-///     +-------------------------------------------------------+
-///     |                                                       |
-///     | [title]                                               |
-///     | [detail]                                              |
-///     |                                                       |
-///     | [graph]                                               |
-///     |                                                       |
-///     +-------------------------------------------------------+
-///
+/// The initializer takes a `PlotType` that allows you to choose from several common graph types.
 open class OCKCartesianGraphView: OCKView, OCKMultiPlotable {
 
-    /// An enumerator specifying the types of plots this view can display.
+    /// An enumeration that specifies the types of plots this view can display.
     public enum PlotType: String, CaseIterable {
         case line
         case scatter
@@ -54,7 +55,7 @@ open class OCKCartesianGraphView: OCKView, OCKMultiPlotable {
 
     // MARK: Properties
 
-    /// The data points displayed in the graph.
+    /// The data points in the graph.
     public var dataSeries: [OCKDataSeries] {
         get { return plotView.dataSeries }
         set {
@@ -69,13 +70,13 @@ open class OCKCartesianGraphView: OCKView, OCKMultiPlotable {
         didSet { axisView.axisMarkers = horizontalAxisMarkers }
     }
 
-    /// A number formatter used for the vertical axis values
+    /// A number formatter for the vertical axis values.
     public var numberFormatter: NumberFormatter {
         get { gridView.numberFormatter }
         set { gridView.numberFormatter = newValue }
     }
 
-    /// Get the bounds of the graph.
+    /// Gets the bounds of the graph.
     ///
     /// - Returns: The bounds of the graph.
     public func graphBounds() -> CGRect {
@@ -133,9 +134,9 @@ open class OCKCartesianGraphView: OCKView, OCKMultiPlotable {
 
     // MARK: - Life Cycle
 
-    /// Create a graph view with the specified style.
+    /// Creates a graph view with the specified style.
     ///
-    /// - Parameter plotType: The style of the graph view.
+    /// - Parameter type: The style of the graph view.
     public init(type: PlotType) {
         self.gridView = OCKGridView()
         self.axisView = OCKGraphAxisView()

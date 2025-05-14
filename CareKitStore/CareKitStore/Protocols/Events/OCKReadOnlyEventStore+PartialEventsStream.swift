@@ -67,13 +67,15 @@ extension OCKReadOnlyEventStore where Task: OCKAnyVersionableTask {
         // events can be used later to create full fledged events.
         let partialEvents = taskVersionChains.map { taskVersionChains in
 
-            return taskVersionChains.flatMap { taskVersionChain in
-
-                return self.makePartialEvents(
-                    taskVersionChain: taskVersionChain,
-                    dateInterval: dateInterval
-                )
-            }
+            return taskVersionChains
+                .flatMap { taskVersionChain in
+                    return self.makePartialEvents(
+                        taskVersionChain: taskVersionChain,
+                        dateInterval: dateInterval
+                    )
+                }
+                // Guarantee a stable sort order in UIs with lists of events
+                .sorted { $0.isOrderedBefore(other: $1) }
         }
 
         return partialEvents
@@ -131,7 +133,7 @@ extension OCKReadOnlyEventStore where Task: OCKAnyVersionableTask {
                 effectiveAfter: startDate,
                 previousResult: [],
                 callbackQueue: DispatchQueue.global(qos: .userInitiated),
-                completion: continuation.resume
+                completion: { continuation.resume(with: $0) }
             )
         }
     }

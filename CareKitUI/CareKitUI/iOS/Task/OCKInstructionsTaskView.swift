@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -31,29 +31,30 @@
 
 import UIKit
 
-/// A card that displays a header, multi-line label, and a completion button. In CareKit, this view is
-/// intended to display a particular event for a task. The state of the completion button indicates
+// ```
+//     +-------------------------------------------------------+
+//     |                                                       |
+//     | [title]                                [detail        |
+//     | [detail]                               disclosure]    |
+//     |                                                       |
+//     |                                                       |
+//     |  --------------------------------------------------   |
+//     |                                                       |
+//     |   [instructions]                                      |
+//     |                                                       |
+//     |  +-------------------------------------------------+  |
+//     |  |                    [title]                      |  |
+//     |  +-------------------------------------------------+  |
+//     |                                                       |
+//     +-------------------------------------------------------+
+// ```
+
+/// A card that displays a header, multi-line label, and a completion button.
+///
+/// In CareKit, this view displays a particular event for a task. The state of the completion button indicates
 /// the completion state of the event.
 ///
-/// To insert custom views vertically the view, see `contentStack`
-///
-/// ```
-///     +-------------------------------------------------------+
-///     |                                                       |
-///     | [title]                                [detail        |
-///     | [detail]                               disclosure]    |
-///     |                                                       |
-///     |                                                       |
-///     |  --------------------------------------------------   |
-///     |                                                       |
-///     |   [instructions]                                      |
-///     |                                                       |
-///     |  +-------------------------------------------------+  |
-///     |  |                    [title]                      |  |
-///     |  +-------------------------------------------------+  |
-///     |                                                       |
-///     +-------------------------------------------------------+
-/// ```
+/// To insert custom views vertically the view, see `contentStack`.
 open class OCKInstructionsTaskView: OCKView, OCKTaskDisplayable {
 
     // MARK: Properties
@@ -76,14 +77,16 @@ open class OCKInstructionsTaskView: OCKView, OCKTaskDisplayable {
         return stack
     }()
 
-    /// Handles events related to an `OCKTaskDisplayable` object.
+    /// An object that handles events related to a task object.
     public weak var delegate: OCKTaskViewDelegate?
 
-    /// The button on the bottom of the view. The background color is the `tintColor` when in a normal state. and gray when
+    /// The button on the bottom of the instructions task view. 
+    ///
+    /// The background color is the `tintColor` when in a normal state, and gray when
     /// in a selected state.
     public let completionButton = OCKLabeledButton()
 
-    /// Multi-line label over the `completionButton`.
+    /// A multi-line label over the completion button.
     public let instructionsLabel: OCKLabel = {
         let label = OCKLabel(textStyle: .subheadline, weight: .medium)
         label.numberOfLines = 0
@@ -91,7 +94,7 @@ open class OCKInstructionsTaskView: OCKView, OCKTaskDisplayable {
         return label
     }()
 
-    /// A header view that shows a separator and a `detailDisclosureImage`.
+    /// A header view that shows a separator and a detail disclosure image.
     public let headerView = OCKHeaderView {
         $0.showsSeparator = true
         $0.showsDetailDisclosure = true

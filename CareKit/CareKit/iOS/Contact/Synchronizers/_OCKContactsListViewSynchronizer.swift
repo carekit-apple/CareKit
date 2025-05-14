@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2021, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -35,7 +35,7 @@ import CareKitUI
 import UIKit
 
 
-/// A view synchronizer that creates and updates a list of contact views.
+/// A synchronizer that creates and updates a list of contact views.
 public final class _OCKContactsListViewSynchronizer<
     ContactViewSynchronizer: ViewSynchronizing
 >: ViewSynchronizing where

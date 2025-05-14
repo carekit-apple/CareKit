@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -60,10 +60,10 @@ open class OCKLogTaskView: OCKView, OCKTaskDisplayable {
         return stack
     }()
 
-    /// Handles events related to an `OCKTaskDisplayable` object.
+    /// An object that handles events related to a task object.
     public weak var delegate: OCKTaskViewDelegate?
 
-    /// The header view that shows a separator and a `detailDisclosureImage`.
+    /// The header view that shows a separator and a detailed disclosure image.
     public let headerView = OCKHeaderView {
         $0.showsSeparator = true
         $0.showsDetailDisclosure = true
@@ -137,7 +137,7 @@ open class OCKLogTaskView: OCKView, OCKTaskDisplayable {
         contentStackView.directionalLayoutMargins = style.dimension.directionalInsets1
     }
 
-    /// Update the text for an item at a particular index.
+    /// Updates the text for an item at a particular index.
     ///
     /// - Parameters:
     ///   - index: The index of the item to update.
@@ -154,7 +154,7 @@ open class OCKLogTaskView: OCKView, OCKTaskDisplayable {
         return button
     }
 
-    /// Insert an item in the list of logged items.
+    /// Inserts an item in the list of logged items.
     ///
     /// - Parameters:
     ///   - title: The title text to display in the item.
@@ -169,7 +169,7 @@ open class OCKLogTaskView: OCKView, OCKTaskDisplayable {
         return button
     }
 
-    /// Append an item to the list of logged items.
+    /// Appends an item to the list of logged items.
     ///
     /// - Parameters:
     ///   - title: The detail text to display in the item. The text is tinted by default.

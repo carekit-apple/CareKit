@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -82,7 +82,7 @@ open class OCKButtonLogTaskView: OCKLogTaskView, UICollectionViewDelegate, UICol
     public static let defaultCellIdentifier = "log-button-cell"
 
     /// Collection view holding the log buttons.
-    public private (set) var logButtonsCollectionView: UICollectionView!
+    public private(set) var logButtonsCollectionView: UICollectionView!
 
     /// Multi-line label below the header.
     public let instructionsLabel: OCKLabel = {

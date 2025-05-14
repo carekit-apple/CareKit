@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -31,15 +31,18 @@
 
 import UIKit
 
-/// Any object that can display and handle interactions with a calendar. A calendar displays information about a specified range of days.
+/// An object that can display and handle interactions with a calendar. 
+///
+/// A calendar displays information about a specified range of days.
 public protocol OCKCalendarDisplayable: AnyObject {
-    /// Handles events related to an `OCKCalendarDisplayable` object.
+    /// An object that handles events related to a calendar object.
     var delegate: OCKCalendarViewDelegate? { get set }
 }
 
-/// Handles events related to an `OCKCalendarDisplayable` object.
+/// A protocol that handles events related to a calendar object.
 public protocol OCKCalendarViewDelegate: AnyObject {
-    /// Called when a particular date in the calendar was selected.
+    /// Tells the delegate when a person selects a particular date in the calendar.
+    /// 
     /// - Parameter calendarView: The view displaying the calendar.
     /// - Parameter date: The date that was selected.
     /// - Parameter index: The index of the date that was selected with respect to the collection of days in the current `dateInterval`.

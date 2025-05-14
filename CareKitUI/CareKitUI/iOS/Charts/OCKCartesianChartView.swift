@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -40,17 +40,17 @@ open class OCKCartesianChartView: OCKView, OCKChartDisplayable {
 
     private let headerContainerView = UIView()
 
-    /// Handles events related to an `OCKChartDisplayable` object.
+    /// An object that handles events related to a chart object.
     public weak var delegate: OCKChartViewDelegate?
 
-    /// Vertical stack view that
+    /// A vertical stack view that contains the primary content in the chart view.
     public let contentStackView: OCKStackView = {
         let stackView = OCKStackView()
         stackView.axis = .vertical
         return stackView
     }()
 
-    /// A default `OCKHeaderView`.
+    /// A default header view.
     public let headerView = OCKHeaderView()
 
     /// The main content of the view.
@@ -58,9 +58,9 @@ open class OCKCartesianChartView: OCKView, OCKChartDisplayable {
 
     // MARK: - Life Cycle
 
-    /// Create a chart with a specified type. Available charts include bar, plot, and scatter.
+    /// Creates a chart with a specified type.
     ///
-    /// - Parameter type: The type of the chart.
+    /// - Parameter type: The type of the chart. Available charts include bar, plot, and scatter.
     public init(type: OCKCartesianGraphView.PlotType) {
         graphView = OCKCartesianGraphView(type: type)
         super.init()

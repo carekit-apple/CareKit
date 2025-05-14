@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -252,13 +252,30 @@ open class OCKStore: OCKStoreProtocol, Equatable {
 
     private func loadStore(into container: NSPersistentContainer) -> Bool {
 
+        if case .onDisk(let protection) = self.storeType {
+            let fileManager = FileManager()
+            let attributes: [FileAttributeKey: Any] = [
+                FileAttributeKey(kCFURLIsExcludedFromBackupKey as String): true,
+                FileAttributeKey.protectionKey: protection
+            ]
+
+            do {
+                try fileManager.createDirectory(
+                    at: storeDirectory,
+                    withIntermediateDirectories: true,
+                    attributes: attributes
+                )
+            } catch {
+                os_log("Failed to create directory for CareKit's store. %{private}@",
+                       log: .store, type: .fault, error as NSError)
+                return false
+            }
+        }
+
         let descriptor = NSPersistentStoreDescription()
         descriptor.url = storeURL
         descriptor.type = NSSQLiteStoreType
         descriptor.shouldAddStoreAsynchronously = false
-        #if !os(macOS)
-        descriptor.setOption(storeType.securityClass as NSObject, forKey: NSPersistentStoreFileProtectionKey)
-        #endif
         container.persistentStoreDescriptions = [descriptor]
 
         // This closure runs synchronously because of the settings above
@@ -269,21 +286,6 @@ open class OCKStore: OCKStoreProtocol, Equatable {
                 loadError = error
                 return
             }
-
-            if case .onDisk = self.storeType {
-                do {
-                    guard var storeUrl = descriptor.url else {
-                        loadError = OCKStoreError.invalidValue(reason: "Bad URL")
-                        return
-                    }
-                    var resourceValues = URLResourceValues()
-                    resourceValues.isExcludedFromBackup = true
-                    try storeUrl.setResourceValues(resourceValues)
-                    try self.updateFileProtectionPathAtURL(storeUrl)
-                } catch {
-                    loadError = error
-                }
-            }
         })
 
         if let error = loadError {
@@ -293,18 +295,6 @@ open class OCKStore: OCKStoreProtocol, Equatable {
         }
 
         return true
-    }
-
-    private func updateFileProtectionPathAtURL(_ url: URL) throws {
-
-        #if os(macOS)
-        // Currently only needed for macOS, other OS's set through CoreData.
-        let fileManager = FileManager.default
-        var attributes = try fileManager.attributesOfItem(atPath: url.path)
-        attributes[.protectionKey] = storeType.securityClass
-        try fileManager.setAttributes(attributes, ofItemAtPath: url.path)
-        #endif
-
     }
 
     @objc

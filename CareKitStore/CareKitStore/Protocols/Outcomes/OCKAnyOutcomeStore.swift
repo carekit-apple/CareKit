@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -180,7 +180,7 @@ public extension OCKAnyReadOnlyOutcomeStore {
     ///   - query: A query that constrains the fetched values.
     func fetchAnyOutcomes(query: OCKOutcomeQuery) async throws -> [OCKAnyOutcome] {
         try await withCheckedThrowingContinuation { continuation in
-            fetchAnyOutcomes(query: query, callbackQueue: .main, completion: continuation.resume)
+            fetchAnyOutcomes(query: query, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 
@@ -195,7 +195,7 @@ public extension OCKAnyReadOnlyOutcomeStore {
     ///   - query: A query that constrains the fetched values.
     func fetchAnyOutcome(query: OCKOutcomeQuery) async throws -> OCKAnyOutcome {
         try await withCheckedThrowingContinuation { continuation in
-            fetchAnyOutcome(query: query, callbackQueue: .main, completion: continuation.resume)
+            fetchAnyOutcome(query: query, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 }
@@ -210,17 +210,17 @@ public extension OCKAnyOutcomeStore {
     ///   - outcomes: An array of outcomes added to the store.
     func addAnyOutcomes(_ outcomes: [OCKAnyOutcome]) async throws -> [OCKAnyOutcome] {
         try await withCheckedThrowingContinuation { continuation in
-            addAnyOutcomes(outcomes, callbackQueue: .main, completion: continuation.resume)
+            addAnyOutcomes(outcomes, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 
     /// Asynchronously update an array of outcomes in the store.
     ///
     /// - Parameters:
-    ///   - contacts: An array of updated outcomes. The outcomes must already exist in the store.
+    ///   - outcomes: An array of updated outcomes. The outcomes must already exist in the store.
     func updateAnyOutcomes(_ outcomes: [OCKAnyOutcome]) async throws -> [OCKAnyOutcome] {
         try await withCheckedThrowingContinuation { continuation in
-            updateAnyOutcomes(outcomes, callbackQueue: .main, completion: continuation.resume)
+            updateAnyOutcomes(outcomes, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 
@@ -230,7 +230,7 @@ public extension OCKAnyOutcomeStore {
     ///   - outcomes: An array of outcomes that the function deletes. The outcomes must exist in the store.
     func deleteAnyOutcomes(_ outcomes: [OCKAnyOutcome]) async throws -> [OCKAnyOutcome] {
         try await withCheckedThrowingContinuation { continuation in
-            deleteAnyOutcomes(outcomes, callbackQueue: .main, completion: continuation.resume)
+            deleteAnyOutcomes(outcomes, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 
@@ -242,7 +242,7 @@ public extension OCKAnyOutcomeStore {
     ///   - outcome: An outcome that the function adds to the store.
     func addAnyOutcome(_ outcome: OCKAnyOutcome) async throws -> OCKAnyOutcome {
         try await withCheckedThrowingContinuation { continuation in
-            addAnyOutcome(outcome, callbackQueue: .main, completion: continuation.resume)
+            addAnyOutcome(outcome, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 
@@ -252,7 +252,7 @@ public extension OCKAnyOutcomeStore {
     ///   - outcome: An outcome that the function updates. The outcome must already exist in the store.
     func updateAnyOutcome(_ outcome: OCKAnyOutcome) async throws -> OCKAnyOutcome {
         try await withCheckedThrowingContinuation { continuation in
-            updateAnyOutcome(outcome, callbackQueue: .main, completion: continuation.resume)
+            updateAnyOutcome(outcome, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 
@@ -262,7 +262,7 @@ public extension OCKAnyOutcomeStore {
     ///   - outcome: An outcome the function deletes. The outcome must exist in the store.
     func deleteAnyOutcome(_ outcome: OCKAnyOutcome) async throws -> OCKAnyOutcome {
         try await withCheckedThrowingContinuation { continuation in
-            deleteAnyOutcome(outcome, callbackQueue: .main, completion: continuation.resume)
+            deleteAnyOutcome(outcome, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 }

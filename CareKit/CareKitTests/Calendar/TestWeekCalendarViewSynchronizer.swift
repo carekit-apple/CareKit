@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -91,10 +91,10 @@ class TestWeekCalendarViewSynchronizer: XCTestCase {
 
     func testAccessibilityInInitialState() {
         view.accessibilityHint = loc("THREE_FINGER_SWIPE_WEEK")
-        view.completionRingButtons.enumerated().forEach {
-            XCTAssertNil($1.accessibilityValue)
-            XCTAssertNil($1.accessibilityLabel)
-            XCTAssertEqual($1.accessibilityTraits, .none)
+        view.completionRingButtons.forEach {
+            XCTAssertNil($0.accessibilityValue)
+            XCTAssertNil($0.accessibilityLabel)
+            XCTAssertEqual($0.accessibilityTraits, .none)
         }
     }
 

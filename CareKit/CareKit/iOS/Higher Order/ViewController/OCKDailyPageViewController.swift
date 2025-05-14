@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -33,7 +33,7 @@ import CareKitStore
 import CareKitUI
 import UIKit
 
-/// Conform to this protocol to receive callbacks when important events occur in an `OCKDailyPageViewController`.
+/// A protocol that provides callbacks when important events occur in a page view controller.
 public protocol OCKDailyPageViewControllerDelegate: AnyObject {
     /// This method will be called anytime an unhandled error is encountered.
     ///
@@ -52,7 +52,7 @@ public extension OCKDailyPageViewControllerDelegate {
     func dailyPageViewController(_ dailyPageViewController: OCKDailyPageViewController, didFailWithError error: Error) {}
 }
 
-/// Any class that can provide content for an `OCKDailyPageViewController` should conform to this protocol.
+/// A protocol for classes that provides content to a page view controller.
 public protocol OCKDailyPageViewControllerDataSource: AnyObject {
     /// - Parameters:
     ///   - dailyPageViewController: The daily page view controller for which content should be provided.
@@ -62,8 +62,9 @@ public protocol OCKDailyPageViewControllerDataSource: AnyObject {
                                  prepare listViewController: OCKListViewController, for date: Date)
 }
 
-/// Displays a calendar page view controller in the header, and a view controllers in the body. The view controllers must
-/// be manually queried and set from outside of the class.
+/// A view controller that displays a calendar page view controller in the header and a view controller in the body.
+///
+/// Manually query these view controllers and set them from outside of the class.
 open class OCKDailyPageViewController: UIViewController,
 OCKDailyPageViewControllerDataSource, OCKDailyPageViewControllerDelegate, OCKWeekCalendarPageViewControllerDelegate,
 UIPageViewControllerDataSource, UIPageViewControllerDelegate {

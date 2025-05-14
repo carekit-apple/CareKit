@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -33,14 +33,15 @@ import UIKit
 
 /// Any object that can display and handle interactions with a task.
 public protocol OCKTaskDisplayable: AnyObject {
-    /// Handles events related to an `OCKTaskDisplayable` object.
+    /// An object that handles events related to a task object.
     var delegate: OCKTaskViewDelegate? { get set }
 }
 
-/// Handles events related to an `OCKTaskDisplayable` object.
+/// A protocol that handles events related to a task object.
 public protocol OCKTaskViewDelegate: AnyObject {
 
-    /// Called when an event is completed.
+    /// Tells the delegate that an event is completed.
+    ///
     /// - Parameters:
     ///   - taskView: View displaying the event.
     ///   - isComplete: True if the event is complete.
@@ -48,7 +49,8 @@ public protocol OCKTaskViewDelegate: AnyObject {
     ///   - sender: Sender that initiated the completion.
     func taskView(_ taskView: UIView & OCKTaskDisplayable, didCompleteEvent isComplete: Bool, at indexPath: IndexPath, sender: Any?)
 
-    /// Called when an outcome value was selected for a particular event.
+    /// Tells the delegate that the conforming object selected the outcome value for a particular event.
+    ///
     /// - Parameters:
     ///   - taskView: View displaying the outcome value.
     ///   - index: Index of the outcome value in the event's outcome.
@@ -56,7 +58,8 @@ public protocol OCKTaskViewDelegate: AnyObject {
     ///   - sender: Sender that initiated the selection.
     func taskView(_ taskView: UIView & OCKTaskDisplayable, didSelectOutcomeValueAt index: Int, eventIndexPath: IndexPath, sender: Any?)
 
-    /// Called when an outcome value has been created at a particular index.
+    /// Tells the delegate that the conforming object created a value at a particular index.
+    ///
     /// - Parameters:
     ///   - taskView: View displaying the outcome.
     ///   - index: Index of the new outcome value.
@@ -64,10 +67,11 @@ public protocol OCKTaskViewDelegate: AnyObject {
     ///   - sender: Sender that initiated the outcome value creation.
     func taskView(_ taskView: UIView & OCKTaskDisplayable, didCreateOutcomeValueAt index: Int, eventIndexPath: IndexPath, sender: Any?)
 
-    /// Called when the task view has been selected.
+    /// Tells the delegate that the conforming object selected the task view.
+    ///
     /// - Parameters:
-    ///   - taskView: The task view that has been selected.
-    ///   - eventIndexPath: The index path of the event displayed by the task view.
+    ///   - taskView: The selected task view.
+    ///   - eventIndexPath: The event's displayed index path.
     func didSelectTaskView(_ taskView: UIView & OCKTaskDisplayable, eventIndexPath: IndexPath)
 }
 #endif

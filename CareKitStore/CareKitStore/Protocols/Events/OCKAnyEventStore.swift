@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -246,7 +246,7 @@ public extension OCKAnyReadOnlyEventStore {
     ///   - query: A query used to constrain the values that will be fetched.
     func fetchAnyEvents(query: OCKEventQuery) async throws -> [OCKAnyEvent] {
         try await withCheckedThrowingContinuation { continuation in
-            fetchAnyEvents(query: query, callbackQueue: .main, completion: continuation.resume)
+            fetchAnyEvents(query: query, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 
@@ -256,7 +256,7 @@ public extension OCKAnyReadOnlyEventStore {
     /// - Parameter occurrence: The occurrence index of the desired event.
     func fetchAnyEvent(forTask task: OCKAnyTask, occurrence: Int) async throws -> OCKAnyEvent {
         try await withCheckedThrowingContinuation { continuation in
-            fetchAnyEvent(forTask: task, occurrence: occurrence, callbackQueue: .main, completion: continuation.resume)
+            fetchAnyEvent(forTask: task, occurrence: occurrence, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 
@@ -270,7 +270,7 @@ public extension OCKAnyReadOnlyEventStore {
     ///   - query: A query used to constrain the values that will be fetched.
     func fetchAdherence(query: OCKAdherenceQuery) async throws -> [OCKAdherence] {
         try await withCheckedThrowingContinuation { continuation in
-            fetchAdherence(query: query, callbackQueue: .main, completion: continuation.resume)
+            fetchAdherence(query: query, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 }

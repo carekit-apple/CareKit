@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -64,17 +64,19 @@ open class OCKSimpleTaskView: OCKView, OCKTaskDisplayable {
         return stack
     }()
 
-    /// The button in the trailing end of the card. Has an image that is defaulted to a checkmark when selected.
+    /// The button in the trailing end of the card.
+    ///
+    /// The button contains an image that defaults to a checkmark when selected.
     public let completionButton: OCKCheckmarkButton = {
         let button = OCKCheckmarkButton()
         button.isUserInteractionEnabled = false
         return button
     }()
 
-    /// Handles events related to an `OCKTaskDisplayable` object.
+    /// An object that handles events related to a task object.
     public weak var delegate: OCKTaskViewDelegate?
 
-    /// A default version of an `OCKHeaderView`.
+    /// A default implementation of a header view.
     public let headerView = OCKHeaderView()
 
     // MARK: Methods

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -45,15 +45,15 @@ import Foundation
 ///  capable of writing an object, the one that was registered first will be given precedence.
 open class OCKStoreCoordinator: OCKAnyStoreProtocol {
 
-    private (set) var readOnlyPatientStores = [OCKAnyReadOnlyPatientStore]()
-    private (set) var readOnlyPlanStores = [OCKAnyReadOnlyCarePlanStore]()
-    private (set) var readOnlyContactStores = [OCKAnyReadOnlyContactStore]()
-    private (set) var readOnlyEventStores = [OCKAnyReadOnlyEventStore]()
+    private(set) var readOnlyPatientStores = [OCKAnyReadOnlyPatientStore]()
+    private(set) var readOnlyPlanStores = [OCKAnyReadOnlyCarePlanStore]()
+    private(set) var readOnlyContactStores = [OCKAnyReadOnlyContactStore]()
+    private(set) var readOnlyEventStores = [OCKAnyReadOnlyEventStore]()
 
-    private (set) var patientStores = [OCKAnyPatientStore]()
-    private (set) var planStores = [OCKAnyCarePlanStore]()
-    private (set) var contactStores = [OCKAnyContactStore]()
-    private (set) var eventStores = [OCKAnyEventStore]()
+    private(set) var patientStores = [OCKAnyPatientStore]()
+    private(set) var planStores = [OCKAnyCarePlanStore]()
+    private(set) var contactStores = [OCKAnyContactStore]()
+    private(set) var eventStores = [OCKAnyEventStore]()
 
 
     @available(*, unavailable, message: "OCKSynchronizedStoreManager and its related types are no longer available as a mechanism to synchronize with the CareKit store. As a replacement, see the asynchronous streams available directly on a CareKit store. For example, to monitor changes to tasks, see `OCKStore.tasks(query:)`.")
@@ -327,7 +327,7 @@ open class OCKStoreCoordinator: OCKAnyStoreProtocol {
     open func taskStore(_ store: OCKAnyReadOnlyTaskStore, shouldHandleWritingTask task: OCKAnyTask) -> Bool {
 
         #if os(iOS)
-        if #available(iOS 15, watchOS 8, *) {
+        if #available(iOS 15, watchOS 8, macOS 13.0, *) {
 
             // HealthKit stores should only respond to HealthKit tasks
             if store is OCKHealthKitPassthroughStore && !(task is OCKHealthKitTask) { return false }
@@ -360,8 +360,8 @@ open class OCKStoreCoordinator: OCKAnyStoreProtocol {
     ///   - outcome: The outcome that needs to be written.
     open func outcomeStore(_ store: OCKAnyReadOnlyOutcomeStore, shouldHandleWritingOutcome outcome: OCKAnyOutcome) -> Bool {
 
-        #if os(iOS)
-        if #available(iOS 15, watchOS 8, *) {
+        #if os(iOS) || os(macOS)
+        if #available(iOS 15, watchOS 8, macOS 13.0, *) {
             // Only the HK passthrough store should handle HK outcomes
             if outcome is OCKHealthKitOutcome || store is OCKHealthKitPassthroughStore {
                 return store is OCKHealthKitPassthroughStore && outcome is OCKHealthKitOutcome

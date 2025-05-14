@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -35,7 +35,7 @@ import Contacts
 import ContactsUI
 import UIKit
 
-/// A view controller that displays a contact view and keep it synchronized with a store.
+/// A view controller that displays a contact view and keeps it synchronized with a store.
 open class OCKContactViewController<
     ViewSynchronizer: ViewSynchronizing
 >: SynchronizedViewController<ViewSynchronizer> where

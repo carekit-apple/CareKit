@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -34,7 +34,7 @@ import Foundation
 ///
 /// The event contains a copy of the task itself, the
 /// schedule event, and an outcome that's non-`nil` if progress is made on the task.
-public struct OCKEvent<Task: OCKAnyTask & Equatable, Outcome: OCKAnyOutcome & Equatable>: Identifiable, Equatable {
+public struct OCKEvent<Task: OCKAnyTask & Equatable, Outcome: OCKAnyOutcome & Equatable>: Identifiable, Comparable {
 
     /// The stable identifier to use.
     public let id: String
@@ -84,5 +84,14 @@ public struct OCKEvent<Task: OCKAnyTask & Equatable, Outcome: OCKAnyOutcome & Eq
 
         let progress = strategy.computeProgress(anyEvent)
         return progress
+    }
+
+    // MARK: - Comparable
+
+    public static func < (lhs: Self, rhs: Self) -> Bool {
+
+        let partialEventA = PartialEvent(task: lhs.task, scheduleEvent: lhs.scheduleEvent)
+        let partialEventB = PartialEvent(task: rhs.task, scheduleEvent: rhs.scheduleEvent)
+        return partialEventA.isOrderedBefore(other: partialEventB)
     }
 }

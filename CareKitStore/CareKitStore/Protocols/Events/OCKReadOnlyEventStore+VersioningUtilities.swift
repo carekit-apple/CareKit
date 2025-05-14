@@ -201,21 +201,16 @@ extension OCKReadOnlyEventStore where Task: OCKAnyVersionableTask {
             return events
         }
 
-        // Stable sort by schedule start to ensure a consistent sort order across
-        // calls to `makePartialEvents` and ultimately in UIs. We also want to reverse the
-        // order of `eventsPerTask` so that we return tasks in ascending effective order.
+        // Reverse the order of `eventsPerTask` so that we return tasks in ascending effective order.
         //
         // The tasks are now sorted by:
-        // 1. Ascending start date
         // 1. Ascending effective date
         // 2. Ascending version
-
-        let eventsSortedByStartDate = eventsPerTask
+        let mostRecentlyEffectiveEvents = eventsPerTask
             .reversed()
             .flatMap { $0 }
-            .sorted { $0.scheduleEvent.start < $1.scheduleEvent.start }
 
-        return eventsSortedByStartDate
+        return mostRecentlyEffectiveEvents
     }
 
     func makeLatestTaskVersionsQuery(from query: OCKTaskQuery) -> OCKTaskQuery {

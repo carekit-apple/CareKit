@@ -34,6 +34,35 @@ struct PartialEvent<Task: OCKAnyTask> {
 
     var task: Task
     var scheduleEvent: OCKScheduleEvent
+
+    // A PartialEvent is not always Equatable because the underlying Task is type erased,
+    // so creating a compare method that doesn't rely on Equatable.
+    func isOrderedBefore(other: PartialEvent<Task>) -> Bool {
+
+        if scheduleEvent.start != other.scheduleEvent.start {
+            return scheduleEvent.start < other.scheduleEvent.start
+        }
+
+        if task.uuid != other.task.uuid {
+            return task.uuid.uuidString < other.task.uuid.uuidString
+        }
+
+        // At this point, the two events belong to the same task version and occur at the same time. Sort by occurrence
+        // which should be guaranteed to be increasing between two events for the same task version.
+
+        if scheduleEvent.occurrence == other.scheduleEvent.occurrence {
+            assertionFailure("Unexpectedly found two events for the same task version with equal occurrences")
+        }
+
+        return scheduleEvent.occurrence < other.scheduleEvent.occurrence
+    }
 }
 
 extension PartialEvent: Equatable where Task: Equatable {}
+
+extension PartialEvent: Comparable where Task: Equatable {
+
+    static func < (lhs: Self, rhs: Self) -> Bool {
+        return lhs.isOrderedBefore(other: rhs)
+    }
+}

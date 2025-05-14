@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2020, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -29,7 +29,6 @@
  */
 
 #if canImport(WatchConnectivity)
-
 import Foundation
 import WatchConnectivity
 
@@ -68,7 +67,7 @@ open class OCKWatchConnectivityPeer: OCKRemoteSynchronizable {
     public func reply(
         to peerMessage: [String: Any],
         store: OCKStore,
-        sendReply: @escaping(_ message: [String: Any]) -> Void) {
+        sendReply: @escaping (_ message: [String: Any]) -> Void) {
 
         do {
             // If the peer requested the latest revision, compute and return it.
@@ -247,5 +246,4 @@ open class OCKWatchConnectivityPeer: OCKRemoteSynchronizable {
         #endif
     }
 }
-
 #endif

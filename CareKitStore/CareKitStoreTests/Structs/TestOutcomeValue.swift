@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -32,7 +32,7 @@
 import XCTest
 
 class TestOutcomeValue: XCTestCase {
-    
+
     func testValueInitializer() {
         var value = OCKOutcomeValue(37, units: "˚C")
         XCTAssertEqual(value.type, .integer)
@@ -56,7 +56,8 @@ class TestOutcomeValue: XCTestCase {
 
         for (before, after) in beforeAfterValuePairs {
             let value1 = OCKOutcomeValue(before)
-            let value2 = OCKOutcomeValue(after)
+            var value2 = OCKOutcomeValue(after)
+            value2.createdDate = value1.createdDate
             XCTAssertNotEqual(value1, value2)
         }
     }
@@ -74,7 +75,8 @@ class TestOutcomeValue: XCTestCase {
 
         for (left, right) in beforeAfterValuePairs {
             let value1 = OCKOutcomeValue(left)
-            let value2 = OCKOutcomeValue(right)
+            var value2 = OCKOutcomeValue(right)
+            value2.createdDate = value1.createdDate
             XCTAssertEqual(value1, value2)
         }
     }
@@ -90,8 +92,11 @@ class TestOutcomeValue: XCTestCase {
         ]
 
         for (before, after) in beforeAfterValuePairs {
+
             let value1 = OCKOutcomeValue(before)
-            let value2 = OCKOutcomeValue(after)
+            var value2 = OCKOutcomeValue(after)
+            value2.createdDate = value1.createdDate
+
             testPreservationOfCodingHelper(outcome: value1)
             testPreservationOfCodingHelper(outcome: value2)
 
@@ -117,6 +122,41 @@ class TestOutcomeValue: XCTestCase {
             value2.createdDate = value1.createdDate
             testEqualityOfEncodings(outcome1: value1, outcome2: value2)
         }
+    }
+
+    func testValuesAreEqual() {
+
+        var value1 = OCKOutcomeValue(1, units: "m")
+        value1.kind = "length"
+
+        var value2 = OCKOutcomeValue(1, units: "m")
+        value2.kind = "length"
+        value2.createdDate = value1.createdDate
+
+        XCTAssertEqual(value1, value2)
+    }
+
+    func testValuesAreNotEqual() {
+
+        var value1 = OCKOutcomeValue(1, units: "m")
+        value1.kind = "length"
+        value1.createdDate = Date(timeIntervalSinceReferenceDate: 0)
+
+        var value2 = OCKOutcomeValue(2, units: "in")
+        value2.createdDate = Date(timeIntervalSinceReferenceDate: 1)
+        XCTAssertNotEqual(value1, value2)
+
+        value2.value = 1
+        XCTAssertNotEqual(value1, value2)
+
+        value2.units = "m"
+        XCTAssertNotEqual(value1, value2)
+
+        value2.kind = "length"
+        XCTAssertNotEqual(value1, value2)
+
+        value2.createdDate = value1.createdDate
+        XCTAssertEqual(value1, value2)
     }
 
     func testProperDecodingWhenMissingValues() throws {

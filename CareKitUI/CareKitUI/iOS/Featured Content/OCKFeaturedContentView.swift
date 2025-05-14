@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2020, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -39,22 +39,24 @@ public protocol OCKFeaturedContentViewDelegate: AnyObject {
     func didTapView(_ view: OCKFeaturedContentView)
 }
 
-/// A card that displays a large background image. The whole view is tappable.
+// ```
+//     +-------------------------------------------------------+
+//     |                                                       |
+//     |                                                       |
+//     |                                                       |
+//     |                        <Image>                        |
+//     |                                                       |
+//     |                                                       |
+//     |   <Label>                                             |
+//     +-------------------------------------------------------+
+// ```
+
+/// A card that displays a large background image.
+///
+/// The whole view is tappable.
 ///
 /// # Style
 /// The card supports styling using `careKitStyle(_:)`.
-///
-/// ```
-///     +-------------------------------------------------------+
-///     |                                                       |
-///     |                                                       |
-///     |                                                       |
-///     |                        <Image>                        |
-///     |                                                       |
-///     |                                                       |
-///     |   <Label>                                             |
-///     +-------------------------------------------------------+
-/// ```
 open class OCKFeaturedContentView: OCKView, OCKCardable {
 
     // MARK: - OCKCardable
@@ -67,7 +69,7 @@ open class OCKFeaturedContentView: OCKView, OCKCardable {
     private let detailedImageView: OCKDetailedImageView
     private let button: OCKAnimatedButton<UIView>
 
-    /// Handles events related to the view.
+    /// An object that handles events related to the view.
     public weak var delegate: OCKFeaturedContentViewDelegate?
 
     /// Primary multi-line label.
@@ -80,7 +82,8 @@ open class OCKFeaturedContentView: OCKView, OCKCardable {
 
     // MARK: - Initializers
 
-    /// Create an instance.
+    /// Create a featured content view.
+    ///
     /// - Parameter imageOverlayStyle: The interface style of the overlay over the image. Use `.unspecified` for no overlay.
     public init(imageOverlayStyle: UIUserInterfaceStyle = .unspecified) {
         self.detailedImageView = .init(overlayStyle: imageOverlayStyle)

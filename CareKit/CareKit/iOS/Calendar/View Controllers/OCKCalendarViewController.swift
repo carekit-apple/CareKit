@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -34,7 +34,7 @@ import CareKitUI
 import MessageUI
 import UIKit
 
-/// A view controller that displays a calendar view and keep it synchronized with a store.
+/// A view controller that displays a calendar view and synchronizes it with a store.
 open class OCKCalendarViewController<
     ViewSynchronizer: ViewSynchronizing
 >: SynchronizedViewController<ViewSynchronizer>, OCKCalendarViewDelegate where

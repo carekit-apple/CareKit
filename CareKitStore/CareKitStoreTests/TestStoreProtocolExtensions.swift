@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -660,6 +660,7 @@ class TestStoreProtocolExtensions: XCTestCase {
             try await store.fetchEvent(forTask: storedTaskA, occurrence: 0),
             try await store.fetchEvent(forTask: storedTaskB, occurrence: 0)
         ]
+        .sorted()
 
         // Validate the result, expecting an event from each task
 
@@ -667,6 +668,7 @@ class TestStoreProtocolExtensions: XCTestCase {
             Event(task: storedTaskA, outcome: storedOutcomeA, scheduleEvent: dailySchedule[0]),
             Event(task: storedTaskB, outcome: storedOutcomeB, scheduleEvent: dailySchedule[0])
         ]
+        .sorted()
 
         XCTAssertEqual(expectedEvents, fetchedEvents)
         XCTAssertEqual(expectedEvents, fetchedEventsByOccurrence)
@@ -711,6 +713,7 @@ class TestStoreProtocolExtensions: XCTestCase {
             try await store.fetchEvent(forTask: storedTaskA, occurrence: 0),
             try await store.fetchEvent(forTask: storedTaskB, occurrence: 0)
         ]
+        .sorted()
 
         // Validate the result, expecting an event from each task
 
@@ -718,6 +721,7 @@ class TestStoreProtocolExtensions: XCTestCase {
             Event(task: storedTaskA, outcome: storedOutcomeA, scheduleEvent: dailySchedule[0]),
             Event(task: storedTaskB, outcome: storedOutcomeB, scheduleEvent: dailySchedule[0])
         ]
+        .sorted()
 
         XCTAssertEqual(expectedEvents, fetchedEvents)
         XCTAssertEqual(expectedEvents, fetchedEventsByOccurrence)
@@ -905,6 +909,7 @@ class TestStoreProtocolExtensions: XCTestCase {
             Event(task: storedTaskA, outcome: storedOutcomeA, scheduleEvent: mealtimes[0]),
             Event(task: storedTaskB, outcome: storedOutcomeB, scheduleEvent: daily[0])
         ]
+        .sorted()
 
         XCTAssertEqual(expectedEvents, fetchedEvents)
         XCTAssertEqual(expectedEvents, fetchedEventsByOccurrence)
@@ -961,6 +966,7 @@ class TestStoreProtocolExtensions: XCTestCase {
             Event(task: storedTaskA, outcome: storedOutcomeA2, scheduleEvent: mealtimes[1]),
             Event(task: storedTaskB, outcome: storedOutcomeB, scheduleEvent: daily[0])
         ]
+        .sorted()
 
         XCTAssertEqual(expectedEvents, fetchedEvents)
         XCTAssertEqual(expectedEvents, fetchedEventsByOccurrence)
@@ -1017,10 +1023,64 @@ class TestStoreProtocolExtensions: XCTestCase {
             Event(task: storedTaskA, outcome: storedOutcomeA2, scheduleEvent: mealtimes[1]),
             Event(task: storedTaskB, outcome: storedOutcomeB, scheduleEvent: daily[0])
         ]
+        .sorted()
 
         XCTAssertEqual(expectedEvents, fetchedEvents)
         XCTAssertEqual(expectedEvents, fetchedEventsByOccurrence)
         XCTAssertEqual(fetchedEventsByOccurrence, streamedEvents)
+    }
+
+    func testFetchEventsWithSameScheduleReturnsSortedEvents() async throws {
+
+        // Generate multiple duplicate tasks
+
+        let scheduleWithDuplicateEvents = OCKSchedule(
+            composing: [
+                OCKScheduleElement(start: beginningOfYear, end: nil, interval: DateComponents(day: 1)),
+                OCKScheduleElement(start: beginningOfYear, end: nil, interval: DateComponents(day: 1)),
+                OCKScheduleElement(start: beginningOfYear, end: nil, interval: DateComponents(day: 1))
+            ]
+        )
+
+        var tasks = [
+            OCKTask(id: "b", title: nil, carePlanUUID: nil, schedule: scheduleWithDuplicateEvents),
+            OCKTask(id: "c", title: nil, carePlanUUID: nil, schedule: scheduleWithDuplicateEvents),
+            OCKTask(id: "a", title: nil, carePlanUUID: nil, schedule: scheduleWithDuplicateEvents)
+        ]
+
+        // Choosing UUIDs helps us determine what the final event sort order will be
+        tasks[0].uuid = UUID(uuidString: "cccccccc-cccc-cccc-cccc-cccccccccccc")!
+        tasks[1].uuid = UUID(uuidString: "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb")!
+        tasks[2].uuid = UUID(uuidString: "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa")!
+
+        let storedTasks = try await store.addTasks(tasks)
+
+        // Fetch events from the store
+        let query = OCKEventQuery(for: beginningOfYear)
+        let fetchedEvents = try await store.fetchEvents(query: query)
+        let streamedEvents = try await accumulate(store.events(matching: query), expectedCount: 1).flatMap { $0 }
+
+        // Validate the result
+
+        let expectedEvents: [OCKEvent<OCKTask, OCKOutcome>] = [
+            OCKEvent(task: storedTasks[0], outcome: nil, scheduleEvent: storedTasks[0].schedule.event(forOccurrenceIndex: 0)!),
+            OCKEvent(task: storedTasks[0], outcome: nil, scheduleEvent: storedTasks[0].schedule.event(forOccurrenceIndex: 1)!),
+            OCKEvent(task: storedTasks[0], outcome: nil, scheduleEvent: storedTasks[0].schedule.event(forOccurrenceIndex: 2)!),
+            OCKEvent(task: storedTasks[1], outcome: nil, scheduleEvent: storedTasks[1].schedule.event(forOccurrenceIndex: 0)!),
+            OCKEvent(task: storedTasks[1], outcome: nil, scheduleEvent: storedTasks[1].schedule.event(forOccurrenceIndex: 1)!),
+            OCKEvent(task: storedTasks[1], outcome: nil, scheduleEvent: storedTasks[1].schedule.event(forOccurrenceIndex: 2)!),
+            OCKEvent(task: storedTasks[2], outcome: nil, scheduleEvent: storedTasks[1].schedule.event(forOccurrenceIndex: 0)!),
+            OCKEvent(task: storedTasks[2], outcome: nil, scheduleEvent: storedTasks[1].schedule.event(forOccurrenceIndex: 1)!),
+            OCKEvent(task: storedTasks[2], outcome: nil, scheduleEvent: storedTasks[1].schedule.event(forOccurrenceIndex: 2)!)
+        ]
+
+        let expectedSortedEvents = expectedEvents.sorted()
+
+        // Make sure the events don't happen to be sorted coincidentally
+        XCTAssertNotEqual(expectedEvents, fetchedEvents)
+
+        XCTAssertEqual(fetchedEvents, expectedSortedEvents)
+        XCTAssertEqual(streamedEvents, expectedSortedEvents)
     }
 
     // MARK: Adherence

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -31,39 +31,40 @@
 
 import UIKit
 
-/// A card that displays information for a contact. The header is an `OCKHeaderView`
-/// The body contains a multi-line instructions label, and four buttons; call, message,
+// ```
+//     +-------------------------------------------------------+
+//     | +------+                                              |
+//     | | icon | [title]                                      |
+//     | | img  | [detail]                                     |
+//     | +------+                                              |
+//     |                                                       |
+//     |  --------------------------------------------------   |
+//     |                                                       |
+//     | [Instructions]                                        |
+//     |                                                       |
+//     | +------------+      +------------+     +------------+ |
+//     | |  [title]   |      |   [title]  |     |   [title]  | |
+//     | |            |      |            |     |            | |
+//     | +------------+      +------------+     +------------+ |
+//     |                                                       |
+//     | +---------------------------------------------------+ |
+//     | |  [title]                                          | |
+//     | |  [detail]                                         | |
+//     | |                                                   | |
+//     | +---------------------------------------------------+ |
+//     +-------------------------------------------------------+
+// ```
+
+/// A card that displays information for a contact.
+///
+/// The header is an `OCKHeaderView`. The body contains a multi-line instructions label, and four buttons; call, message,
 /// email, and address. The first three buttons have title labels and image views that can
 /// be modified, while the last has a title label, body label, and image view.
-///
-/// ```
-///     +-------------------------------------------------------+
-///     | +------+                                              |
-///     | | icon | [title]                                      |
-///     | | img  | [detail]                                     |
-///     | +------+                                              |
-///     |                                                       |
-///     |  --------------------------------------------------   |
-///     |                                                       |
-///     | [Instructions]                                        |
-///     |                                                       |
-///     | +------------+      +------------+     +------------+ |
-///     | |  [title]   |      |   [title]  |     |   [title]  | |
-///     | |            |      |            |     |            | |
-///     | +------------+      +------------+     +------------+ |
-///     |                                                       |
-///     | +---------------------------------------------------+ |
-///     | |  [title]                                          | |
-///     | |  [detail]                                         | |
-///     | |                                                   | |
-///     | +---------------------------------------------------+ |
-///     +-------------------------------------------------------+
-/// ```
 open class OCKDetailedContactView: OCKView, OCKContactDisplayable {
 
     // MARK: Properties
 
-    /// Handles events related to an `OCKContactDisplayable` object.
+    /// An object that handles contact object events.
     public weak var delegate: OCKContactViewDelegate?
 
     /// A vertical stack view that holds the main content in the view.
@@ -73,13 +74,13 @@ open class OCKDetailedContactView: OCKView, OCKContactDisplayable {
         return stackView
     }()
 
-    /// Header stack view that shows an `iconImageView` and a separator.
+    /// Header stack view that shows an icon image view and a separator.
     public let headerView = OCKHeaderView {
         $0.showsIconImage = true
         $0.showsSeparator = true
     }
 
-    /// Multi-line label under the `headerView`.
+    /// The multi-line label under the header view.
     public let instructionsLabel: OCKLabel = {
         let label = OCKLabel(textStyle: .subheadline, weight: .medium)
         label.numberOfLines = 0
@@ -87,23 +88,27 @@ open class OCKDetailedContactView: OCKView, OCKContactDisplayable {
         return label
     }()
 
-    /// Button with a phone image and title label.
+    /// A button with a phone image and title label.
+    ///
     /// Set the `isHidden` property to `false` to hide the button.
     public let callButton = OCKContactButton(type: .call)
 
-    /// Button with a messages images and title label.
+    /// A button with a messages image and title label.
+    ///
     /// Set the `isHidden` property to `false` to hide the button.
     public let messageButton = OCKContactButton(type: .message)
 
-    /// Button with an email image and title label.
-    /// Set the `isHidden` property to `false` to hide the button.
+    /// A button with an email image and title label.
+    ///
+    /// Set `isHidden` to `false` to hide the button.
     public let emailButton = OCKContactButton(type: .email)
 
-    /// Button with a location image, title and detail labels.
-    /// Set the `isHidden` property to `false` to hide the button.
+    /// A button with a location image, title and detail labels.
+    ///
+    /// Set `isHidden` to `false` to hide the button.
     public let addressButton = OCKAddressButton()
 
-    /// The default image that can be used as a placeholder for the `iconImageView` in the `headerView`.
+    /// The default image you use as a placeholder for the icon image view in the header view.
     public static let defaultImage = UIImage(systemName: "person.crop.circle")!
 
     let contentView = OCKView()
@@ -116,7 +121,7 @@ open class OCKDetailedContactView: OCKView, OCKContactDisplayable {
         return buttons.compactMap { $0 as? OCKContactButton }
     }
 
-    /// Stack view that holds phone, message, and email contact action buttons.
+    /// A stack view that holds phone, message, and email contact action buttons.
     private lazy var contactStackView: OCKStackView = {
         let stackView = OCKStackView()
         stackView.axis = self.contactStackAxisDirection()
@@ -124,8 +129,9 @@ open class OCKDetailedContactView: OCKView, OCKContactDisplayable {
         return stackView
     }()
 
-    /// Stack view that holds buttons in `contactStack` and `directionsButton`.
-    /// You may choose to add or hide buttons
+    /// A stack view that holds buttons in contact stack and directions button.
+    ///
+    /// You may choose to add or hide buttons.
     private let buttonStackView: OCKStackView = {
         let stackView = OCKStackView.vertical()
         stackView.distribution = .equalSpacing
@@ -134,7 +140,7 @@ open class OCKDetailedContactView: OCKView, OCKContactDisplayable {
 
     // MARK: - Methods
 
-    /// Prepares interface after initialization
+    /// Prepares interface after initialization.
     override func setup() {
         super.setup()
         addSubviews()

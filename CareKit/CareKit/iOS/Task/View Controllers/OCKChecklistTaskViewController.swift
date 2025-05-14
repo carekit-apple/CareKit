@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -32,6 +32,7 @@
 import CareKitStore
 import Foundation
 
+/// A view controller that shows detailed descriptions for complete or incomplete events, organized in a checklist.
 open class OCKChecklistTaskViewController: OCKTaskViewController<OCKChecklistTaskViewSynchronizer> {
 
     @available(*, unavailable, renamed: "init(query:store:viewSynchronizer:)")
@@ -62,10 +63,11 @@ open class OCKChecklistTaskViewController: OCKTaskViewController<OCKChecklistTas
         fatalError("Unavailable")
     }
 
-    /// A view controller that displays a task view and keeps it synchronized with a store.
+    /// Creates a view controller that displays a task view and keeps it synchronized with a store.
+    ///
     /// - Parameters:
-    ///   - query: Used to fetch the task data that will be displayed.
-    ///   - store: Contains the task data that will be displayed.
+    ///   - query: Fetches the task data to display.
+    ///   - store: Contains the task data to display.
     ///   - viewSynchronizer: Capable of creating and updating the view using the task data.
     public init(
         query: OCKEventQuery,

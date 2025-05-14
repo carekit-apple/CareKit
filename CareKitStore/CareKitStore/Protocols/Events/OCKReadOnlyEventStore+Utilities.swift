@@ -48,8 +48,8 @@ extension OCKReadOnlyEventStore {
             OCKEvent<Task, Outcome>(task: $0.task, outcome: nil, scheduleEvent: $0.scheduleEvent)
         }
 
-        // Fill in the outcomes for each event by matching the task UUID
-        // and occurrence index
+        // Fill in the outcomes for each event by matching the task UUID and occurrence index. It's important to
+        // iterate through events and return them in the same order to help maintain the existing sort order.
         for i in 0..<events.count {
 
             let event = events[i]

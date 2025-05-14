@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -233,7 +233,7 @@ public extension OCKReadableOutcomeStore {
     ///   - query: A query used to constrain the values that will be fetched.
     func fetchOutcomes(query: OCKOutcomeQuery) async throws -> [Outcome] {
         try await withCheckedThrowingContinuation { continuation in
-            fetchOutcomes(query: query, callbackQueue: .main, completion: continuation.resume)
+            fetchOutcomes(query: query, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 
@@ -244,7 +244,7 @@ public extension OCKReadableOutcomeStore {
     ///   - query: A query used to constrain the values that will be fetched.
     func fetchOutcome(query: OCKOutcomeQuery) async throws -> Outcome {
         try await withCheckedThrowingContinuation { continuation in
-            fetchOutcome(query: query, callbackQueue: .main, completion: continuation.resume)
+            fetchOutcome(query: query, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 }
@@ -259,7 +259,7 @@ public extension OCKOutcomeStore {
     ///   - outcomes: An array of outcomes to be added to the store.
     func addOutcomes(_ outcomes: [Outcome]) async throws -> [Outcome] {
         try await withCheckedThrowingContinuation { continuation in
-            addOutcomes(outcomes, callbackQueue: .main, completion: continuation.resume)
+            addOutcomes(outcomes, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 
@@ -269,7 +269,7 @@ public extension OCKOutcomeStore {
     ///   - outcomes: An array of outcomes to be updated. The outcomes must already exist in the store.
     func updateOutcomes(_ outcomes: [Outcome]) async throws -> [Outcome] {
         try await withCheckedThrowingContinuation { continuation in
-            updateOutcomes(outcomes, callbackQueue: .main, completion: continuation.resume)
+            updateOutcomes(outcomes, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 
@@ -279,7 +279,7 @@ public extension OCKOutcomeStore {
     ///   - outcomes: An array of outcomes to be deleted. The outcomes must exist in the store.
     func deleteOutcomes(_ outcomes: [Outcome]) async throws -> [Outcome] {
         try await withCheckedThrowingContinuation { continuation in
-            deleteOutcomes(outcomes, callbackQueue: .main, completion: continuation.resume)
+            deleteOutcomes(outcomes, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 
@@ -291,7 +291,7 @@ public extension OCKOutcomeStore {
     ///   - outcome: An outcome to be added to the store.
     func addOutcome(_ outcome: Outcome) async throws -> Outcome {
         try await withCheckedThrowingContinuation { continuation in
-            addOutcome(outcome, callbackQueue: .main, completion: continuation.resume)
+            addOutcome(outcome, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 
@@ -301,7 +301,7 @@ public extension OCKOutcomeStore {
     ///   - outcome: An outcome to be updated. The outcome must already exist in the store.
     func updateOutcome(_ outcome: Outcome) async throws -> Outcome {
         try await withCheckedThrowingContinuation { continuation in
-            updateOutcome(outcome, callbackQueue: .main, completion: continuation.resume)
+            updateOutcome(outcome, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 
@@ -311,7 +311,7 @@ public extension OCKOutcomeStore {
     ///   - outcome: An outcome to be deleted. The outcome must exist in the store.
     func deleteOutcome(_ outcome: Outcome) async throws -> Outcome {
         try await withCheckedThrowingContinuation { continuation in
-            deleteOutcome(outcome, callbackQueue: .main, completion: continuation.resume)
+            deleteOutcome(outcome, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 }

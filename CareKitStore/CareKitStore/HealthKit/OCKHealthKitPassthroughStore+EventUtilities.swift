@@ -32,7 +32,7 @@ import Foundation
 import HealthKit
 
 
-@available(iOS 15, watchOS 8, *)
+@available(iOS 15, watchOS 8, macOS 13.0, *)
 extension OCKHealthKitPassthroughStore {
 
     // Element == SampleChange
@@ -247,10 +247,12 @@ extension OCKHealthKitPassthroughStore {
             .quantity
             .doubleValue(for: event.task.healthKitLinkage.unit)
 
-        let outcomeValue = OCKOutcomeValue(
+        var outcomeValue = OCKOutcomeValue(
             doubleValue,
             units: event.task.healthKitLinkage.unit.unitString
         )
+
+        outcomeValue.createdDate = now
 
         var updatedEvent = event
 
@@ -335,7 +337,8 @@ extension OCKHealthKitPassthroughStore {
         else {
 
             let units = event.task.healthKitLinkage.unit.unitString
-            let outcomeValue = OCKOutcomeValue(-1, units: units)
+            var outcomeValue = OCKOutcomeValue(-1, units: units)
+            outcomeValue.createdDate = now
 
             updatedEvent.outcome?.values.append(outcomeValue)
             updatedEvent.outcome?.healthKitUUIDs.append([addedSampleID])
@@ -397,7 +400,7 @@ extension OCKHealthKitPassthroughStore {
         let descriptors = makeQueryDescriptors(for: events)
 
         // Only perform query if there are one or more descriptors.
-        guard descriptors.count > 0 else {
+        guard descriptors.isEmpty == false else {
             completion(.success([]))
             return
         }
@@ -541,7 +544,8 @@ extension OCKHealthKitPassthroughStore {
         updatedEvent.outcome = event.outcome ?? makeOutcome(for: event)
 
         let units = event.task.healthKitLinkage.unit.unitString
-        let outcomeValue = OCKOutcomeValue(newSum, units: units)
+        var outcomeValue = OCKOutcomeValue(newSum, units: units)
+        outcomeValue.createdDate = now
 
         updatedEvent.outcome!.values = [outcomeValue]
 

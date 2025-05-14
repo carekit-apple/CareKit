@@ -31,7 +31,7 @@
 import Foundation
 import HealthKit
 
-@available(iOS 15, watchOS 8, *)
+@available(iOS 15, watchOS 8, macOS 13.0, *)
 extension HealthKitQueryMonitor {
 
     struct QueryResult {

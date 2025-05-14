@@ -30,7 +30,7 @@
 
 import Foundation
 
-@available(iOS 15, watchOS 8, *)
+@available(iOS 15, watchOS 8, macOS 13.0, *)
 public extension OCKHealthKitPassthroughStore {
 
     func fetchOutcomes(

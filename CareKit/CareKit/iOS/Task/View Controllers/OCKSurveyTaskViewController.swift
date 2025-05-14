@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2021, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -27,15 +27,12 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#if !os(watchOS) && canImport(ResearchKit)
+#if !os(watchOS) && canImport(ResearchKit) && canImport(ResearchKitUI)
 
 import CareKitStore
 import CareKitUI
 import ResearchKit
-#if canImport(ResearchKitUI)
 import ResearchKitUI
-public typealias ORKTaskViewControllerFinishReason = ORKTaskFinishReason
-#endif
 import UIKit
 
 // MARK: OCKSurveyTaskViewControllerDelegate
@@ -45,7 +42,7 @@ public protocol OCKSurveyTaskViewControllerDelegate: AnyObject {
     func surveyTask(
         viewController: OCKSurveyTaskViewController,
         for task: OCKAnyTask,
-        didFinish result: Result<ORKTaskViewControllerFinishReason, Error>)
+        didFinish result: Result<ORKTaskFinishReason, Error>)
 
     func surveyTask(
         viewController: OCKSurveyTaskViewController,
@@ -57,7 +54,7 @@ public extension OCKSurveyTaskViewControllerDelegate {
     func surveyTask(
         viewController: OCKSurveyTaskViewController,
         for task: OCKAnyTask,
-        didFinish result: Result<ORKTaskViewControllerFinishReason, Error>) {
+        didFinish result: Result<ORKTaskFinishReason, Error>) {
         // No-op
     }
 
@@ -198,7 +195,7 @@ open class OCKSurveyTaskViewController: OCKTaskViewController<OCKSurveyTaskViewS
 
     open func taskViewController(
         _ taskViewController: ORKTaskViewController,
-        didFinishWith reason: ORKTaskViewControllerFinishReason,
+        didFinishWith reason: ORKTaskFinishReason,
         error: Error?) {
 
         taskViewController.dismiss(animated: true, completion: nil)

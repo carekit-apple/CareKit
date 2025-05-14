@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -33,6 +33,7 @@ import CareKitStore
 import CareKitUI
 import Foundation
 
+/// A view controller that displays a Cartesian chart view and keeps it synchronized with a store.
 open class OCKCartesianChartViewController: OCKChartViewController<OCKCartesianChartViewSynchronizer> {
 
     @available(*, unavailable, renamed: "init(weekOfDate:configurations:store:viewSynchronizer:)")
@@ -63,10 +64,11 @@ open class OCKCartesianChartViewController: OCKChartViewController<OCKCartesianC
         fatalError("Unavailable")
     }
 
-    /// A view controller that displays a chart view and keep it synchronized with a store.
+    /// Creates a view controller that displays a chart view and keeps it synchronized with a store.
+    ///
     /// - Parameters:
     ///   - weekOfDate: A date in the week of the insights range to fetch.
-    ///   - configurations: Specifies which data should be queried and how it should be displayed by the graph.
+    ///   - configurations: Specifies which data to query and how it to display in on the graph.
     ///   - store: Contains the task data that will be displayed.
     ///   - viewSynchronizer: Capable of creating and updating the view using the data series.
     override public init(
@@ -83,12 +85,13 @@ open class OCKCartesianChartViewController: OCKChartViewController<OCKCartesianC
         )
     }
 
-    /// A view controller that displays a chart view and keep it synchronized with a store.
+    /// Creates a view controller that displays a chart view and keeps it synchronized with a store.
+    /// 
     /// - Parameters:
     ///   - plotType: The type of plot that is displayed in the view.
     ///   - selectedDate: The currently selected date in the chart.
-    ///   - configurations: Specifies which data should be queried and how it should be displayed by the graph.
-    ///   - store: Contains the task data that will be displayed.
+    ///   - configurations: Specifies which data to query and how to display it on the graph.
+    ///   - store: Contains the task data to display.
     public init(
         plotType: OCKCartesianGraphView.PlotType,
         selectedDate: Date,

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2021, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -32,39 +32,44 @@ import CareKitStore
 import Foundation
 import SwiftUI
 
-
 /// A property wrapper useful for streaming data from a CareKit store.
 ///
 /// The property wrapper offers a few initializers matching the different entities available in
 /// the CareKit store. Each initializer requires a query that is used to locate the desired data.
 ///
+/// ```swift
 ///     @CareStoreFetchRequest(query: OCKTaskQuery())
 ///     private var tasks
+/// ```
 ///
-/// CareKit stores the fetched results in the `wrappedValue` and will always stay up to date
+/// CareKit stores the fetched results in the `wrappedValue` and stays up to date
 /// with changes to the store.
 ///
-/// The property wrapper also offers a binding to the query in the case it needs to be modified.
-/// Modifying the query  triggers a new fetch request.
+/// The property wrapper also offers a binding to the query in case you need to modify it.
+/// Modifying the query initiates a new fetch request.
 ///
+/// ```swift
 ///     Button("Update Query") {
 ///         tasks.query = newQuery
 ///     }
+/// ```
 ///
 /// Define the property wrapper on a `View` that contains the store in its environment.
 /// You can inject the store through the environment like this:
 ///
+/// ```swift
 ///     ContentView()
 ///         .environment(\.careStore, store)
-///
+/// ```
+/// 
 /// See the `OCKAnyStoreProtocol` and the `OCKStore` for more information about
 /// creating a CareKit store.
 ///
-/// You may need to update the query over time. For example, suppose you're using
-/// the property wrapper to fetch and display tasks for "today." After midnight passes,
-/// the notion of "today" changes and you need to fetch new results. To detect events such
+/// You may need to update the query over time. For example, you're using
+/// the property wrapper to fetch and display tasks for `today`. After midnight passes,
+/// `today` changes, so you need to fetch new results. To detect events such
 /// as the passage of a day or a change of time zone, observe
-/// [significant time change notifications](https://developer.apple.com/documentation/uikit/uiapplication/1623059-significanttimechangenotificatio).
+/// [`significantTimeChangeNotification`](https://developer.apple.com/documentation/uikit/uiapplication/1623059-significanttimechangenotificatio).
 ///
 /// ```swift
 ///     ContentView()
@@ -73,12 +78,11 @@ import SwiftUI
 ///     }
 /// ```
 ///
-/// If you prefer to update the query date at a very specific time interval, see [`TimelineView`](https://www.google.com/search?client=safari&rls=en&q=timelineview&ie=UTF-8&oe=UTF-8&safari_group=3).
+/// If you prefer to update the query date at a very specific time interval, see <doc://com.apple.documentation/documentation/swiftui/timelineview>.
 @propertyWrapper
 public struct CareStoreFetchRequest<Result, Query>: DynamicProperty {
 
-
-    /// Contains query information used to stream data from a CareKit store.
+    /// A structure that contains query information you use to stream data from a CareKit store.
     public struct Configuration {
 
         /// The query that matches data in the store during a fetch request.
@@ -91,24 +95,30 @@ public struct CareStoreFetchRequest<Result, Query>: DynamicProperty {
     @Environment(\.careStore)
     private var store
 
-    /// A binding to the parameters used to fetch data from the CareKit store. Modifying
-    /// the parameters execute a new fetch request.
+    /// A binding to the parameters you use to fetch data from a CareKit store.
+    ///
+    /// Modifying the parameters executes a new fetch request.
     ///
     /// Here's an example for fetching tasks from a store:
     ///
+    /// ```swift
     ///     @CareStoreFetchRequest(query: OCKTaskQuery())
     ///     private var tasks
+    /// ```
     ///
     /// You can change the configuration dynamically:
     ///
+    /// ```swift
     ///     Button("Update Query") {
     ///         tasks.query = newQuery
     ///     }
+    ///    ```
     public var projectedValue: Binding<Configuration> {
         Binding(
             get: { Configuration(query: controller.query) },
             set: { controller.update(query: $0.query) }
         )
+        
     }
 
     /// The result fetched from the CareKit store.

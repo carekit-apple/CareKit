@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2020, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -82,7 +82,7 @@ extension NSManagedObjectContext {
         return value
     }
 
-    func fetchObjects<T: OCKCDObject>(withUUIDs uuids: [UUID]) throws -> [T] {
+    func fetchObjects<T: OCKCDObject>(withUUIDs uuids: Set<UUID>) throws -> [T] {
 
         guard let entityName = T.entity().name else {
             return []
@@ -132,10 +132,9 @@ extension OCKStore: OCKRemoteSynchronizationDelegate {
     /// the remote with the data from the other.
     ///
     /// - Parameters:
-    ///   - policy: The synchronization policy. Defaults to `.mergeDeviceRecordsWithRemote`
     ///   - completion: A completion closure that will be called when syncing completes.
     /// - SeeAlso: OCKRemoteSynchronizable
-    public func synchronize(completion: @escaping(Error?) -> Void) {
+    public func synchronize(completion: @escaping (Error?) -> Void) {
         pullThenPush(completion: completion)
     }
 

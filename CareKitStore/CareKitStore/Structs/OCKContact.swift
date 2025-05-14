@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -91,8 +91,9 @@ public struct OCKContact: Codable, Equatable, Identifiable, OCKAnyContact {
     ///
     /// - Parameters:
     ///   - id: A user-defined id
-    ///   - name: The contact's name
-    ///   - carePlanID: The local database id of the careplan with which this contact is associated.
+    ///   - givenName: The contact's given name
+    ///   - familyName: The contact's family name
+    ///   - carePlanUUID: The local database id of the care plan with which this contact is associated.
     public init(id: String, givenName: String, familyName: String, carePlanUUID: UUID?) {
         self.name = PersonNameComponents()
         self.name.givenName = givenName

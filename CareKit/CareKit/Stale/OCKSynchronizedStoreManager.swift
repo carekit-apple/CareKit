@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -44,7 +44,7 @@ OCKPatientStoreDelegate, OCKCarePlanStoreDelegate, OCKContactStoreDelegate, OCKT
     public let store: OCKAnyStoreProtocol
 
     internal lazy var subject = PassthroughSubject<OCKStoreNotification, Never>()
-    public private (set) lazy var notificationPublisher = subject.share().eraseToAnyPublisher()
+    public private(set) lazy var notificationPublisher = subject.share().eraseToAnyPublisher()
 
     /// Initialize by wrapping a store.
     ///

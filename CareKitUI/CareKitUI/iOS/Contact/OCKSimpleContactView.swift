@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -45,7 +45,7 @@ open class OCKSimpleContactView: OCKView, OCKContactDisplayable {
 
     // MARK: Properties
 
-    /// Handles events related to an `OCKContactDisplayable` object.
+    /// An object that handles events related to a contact object.
     public weak var delegate: OCKContactViewDelegate?
 
     /// A vertical stack view that holds the main content in the view.
@@ -55,7 +55,7 @@ open class OCKSimpleContactView: OCKView, OCKContactDisplayable {
         return stackView
     }()
 
-    /// Header stack view that shows an `iconImageView` and a separator.
+    /// A header stack view that shows an icon image view and a separator.
     public let headerView = OCKHeaderView {
         $0.showsIconImage = true
         $0.showsDetailDisclosure = true
@@ -67,13 +67,13 @@ open class OCKSimpleContactView: OCKView, OCKContactDisplayable {
         return view
     }()
 
-    // Button that displays the highlighted state for the view.
+    // A button that displays the highlighted state for the view.
     private lazy var backgroundButton = OCKAnimatedButton(contentView: contentStackView, highlightOptions: [.defaultOverlay, .defaultDelayOnSelect],
                                                           handlesSelection: false)
 
     // MARK: - Methods
 
-    /// Prepares interface after initialization
+    /// Prepares interface after initialization.
     override func setup() {
         super.setup()
         addSubviews()

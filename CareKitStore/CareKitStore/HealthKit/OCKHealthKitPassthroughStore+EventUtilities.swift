@@ -255,8 +255,6 @@ extension OCKHealthKitPassthroughStore {
         outcomeValue.createdDate = sample.dateInterval.start
         outcomeValue.endDate = sample.dateInterval.end
 
-        outcomeValue.createdDate = now
-
         var updatedEvent = event
 
         // Create an outcome if one doesn't already exist

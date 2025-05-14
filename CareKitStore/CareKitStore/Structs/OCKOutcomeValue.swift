@@ -59,7 +59,8 @@ public struct OCKOutcomeValue: Codable, Equatable, CustomStringConvertible {
         lhs.type == rhs.type &&
         lhs.kind == rhs.kind &&
         lhs.units == rhs.units &&
-        lhs.createdDate == rhs.createdDate
+        lhs.createdDate == rhs.createdDate &&
+		lhs.endDate == rhs.endDate
     }
 
     /// An optional property that can be used to specify what kind of value this is (e.g. blood pressure, qualitative stress, weight)

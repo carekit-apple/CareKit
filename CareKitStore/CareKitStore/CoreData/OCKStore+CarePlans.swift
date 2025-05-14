@@ -144,6 +144,7 @@ extension OCKStore {
             switch order {
             case .effectiveDate(let ascending): return NSSortDescriptor(keyPath: \OCKCDCarePlan.effectiveDate, ascending: ascending)
             case .title(let ascending): return NSSortDescriptor(keyPath: \OCKCDCarePlan.title, ascending: ascending)
+            case .groupIdentifier(let ascending): return NSSortDescriptor(keyPath: \OCKCDCarePlan.groupIdentifier, ascending: ascending)
             }
         } + query.defaultSortDescriptors()
     }

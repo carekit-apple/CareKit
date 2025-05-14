@@ -38,6 +38,7 @@ public struct OCKCarePlanQuery: Equatable, OCKQueryProtocol {
 
         case title(ascending: Bool)
         case effectiveDate(ascending: Bool)
+        case groupIdentifier(ascending: Bool)
 
         var nsSortDescriptor: NSSortDescriptor {
             switch self {
@@ -45,6 +46,8 @@ public struct OCKCarePlanQuery: Equatable, OCKQueryProtocol {
                 return NSSortDescriptor(keyPath: \OCKCDCarePlan.effectiveDate, ascending: ascending)
             case let .title(ascending):
                 return NSSortDescriptor(keyPath: \OCKCDCarePlan.title, ascending: ascending)
+            case let .groupIdentifier(ascending):
+                return NSSortDescriptor(keyPath: \OCKCDCarePlan.groupIdentifier, ascending: ascending)
             }
         }
     }

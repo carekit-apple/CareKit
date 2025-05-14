@@ -72,7 +72,7 @@ public struct OCKTaskQuery: Equatable, OCKQueryProtocol {
     /// The remote IDs of the care plans for which tasks should match.
     public var carePlanRemoteIDs: [String] = []
 
-    /// Determines if tasks with no events should be included in the query results or not. False be default.
+    /// Determines if tasks with no events should be included in the query results or not. False by default.
     public var excludesTasksWithNoEvents = false
 
     /// The order in which the results will be sorted when returned from the query.

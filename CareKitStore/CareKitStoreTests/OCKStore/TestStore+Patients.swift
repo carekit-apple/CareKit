@@ -172,6 +172,30 @@ class TestStorePatients: XCTestCase {
         XCTAssertEqual(fetched, versionB)
     }
 
+    func testPatientQueryByIdConvenienceMethodReturnsLatestVersionOfAPatient() throws {
+        let versionA = try store.addPatientAndWait(OCKPatient(id: "A", givenName: "Jared", familyName: "Gosler"))
+        let versionB = try store.updatePatientAndWait(OCKPatient(id: "A", givenName: "John", familyName: "Appleseed"))
+        let expect = expectation(description: "Fetches versionB")
+        store.fetchPatient(withID: versionA.id) { result in
+            let fetched = try? result.get()
+            XCTAssertEqual(fetched?.name.familyName, versionB.name.familyName)
+            expect.fulfill()
+        }
+        waitForExpectations(timeout: 0.1, handler: nil)
+    }
+
+    func testAnyPatientQueryByIdConvenienceMethodReturnsLatestVersionOfAPatient() throws {
+        let versionA = try store.addPatientAndWait(OCKPatient(id: "A", givenName: "Jared", familyName: "Gosler"))
+        let versionB = try store.updatePatientAndWait(OCKPatient(id: "A", givenName: "John", familyName: "Appleseed"))
+        let expect = expectation(description: "Fetches versionB")
+        store.fetchAnyPatient(withID: versionA.id) { result in
+            let fetched = try? result.get()
+            XCTAssertEqual(fetched?.name.familyName, versionB.name.familyName)
+            expect.fulfill()
+        }
+        waitForExpectations(timeout: 0.1, handler: nil)
+    }
+
     func testPatientQueryOnPastDateReturnsPastVersionOfAPatient() throws {
         let dateA = Date().addingTimeInterval(-100)
         var versionA = OCKPatient(id: "A", givenName: "Jared", familyName: "Gosler")

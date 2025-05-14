@@ -219,6 +219,30 @@ class TestStoreCarePlans: XCTestCase {
         XCTAssertEqual(fetched?.previousVersionUUIDs.first, versionA.uuid)
     }
 
+    func testCarePlanQueryByIdConvenienceMethodReturnsLatestVersionOfACarePlan() throws {
+        let versionA = try store.addCarePlanAndWait(OCKCarePlan(id: "A", title: "Amy", patientUUID: nil))
+        let versionB = try store.updateCarePlanAndWait(OCKCarePlan(id: "A", title: "Jared", patientUUID: nil))
+        let expect = expectation(description: "Fetches versionB")
+        store.fetchCarePlan(withID: versionA.id) { result in
+            let fetched = try? result.get()
+            XCTAssertEqual(fetched?.title, versionB.title)
+            expect.fulfill()
+        }
+        waitForExpectations(timeout: 0.1, handler: nil)
+    }
+
+    func testAnyCarePlanQueryByIdConvenienceMethodReturnsLatestVersionOfACarePlan() throws {
+        let versionA = try store.addCarePlanAndWait(OCKCarePlan(id: "A", title: "Amy", patientUUID: nil))
+        let versionB = try store.updateCarePlanAndWait(OCKCarePlan(id: "A", title: "Jared", patientUUID: nil))
+        let expect = expectation(description: "Fetches versionB")
+        store.fetchAnyCarePlan(withID: versionA.id) { result in
+            let fetched = try? result.get()
+            XCTAssertEqual(fetched?.title, versionB.title)
+            expect.fulfill()
+        }
+        waitForExpectations(timeout: 0.1, handler: nil)
+    }
+
     func testCarePlanQueryOnPastDateReturnsPastVersionOfACarePlan() throws {
         let dateA = Date().addingTimeInterval(-100)
         var versionA = OCKCarePlan(id: "A", title: "a", patientUUID: nil)

@@ -130,7 +130,7 @@ public protocol OCKTaskStore: OCKReadableTaskStore, OCKAnyTaskStore {
 public extension OCKReadableTaskStore {
     func fetchTask(withID id: String, callbackQueue: DispatchQueue = .main, completion: @escaping OCKResultClosure<Task>) {
         var query = OCKTaskQuery(for: Date())
-        query.sortDescriptors = [.effectiveDate(ascending: true)]
+        query.sortDescriptors = [.effectiveDate(ascending: false)]
         query.ids = [id]
         query.limit = 1
 

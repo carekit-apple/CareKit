@@ -235,6 +235,32 @@ class TestStoreContacts: XCTestCase {
         XCTAssertEqual(fetched?.name, versionD.name)
     }
 
+    func testContactQueryByIdConvenienceMethodReturnsLatestVersionOfAContact() throws {
+        let versionA = try store.addContactAndWait(OCKContact(id: "contact", givenName: "A", familyName: "", carePlanUUID: nil))
+        let versionB = try store.updateContactAndWait(OCKContact(id: "contact", givenName: "B", familyName: "", carePlanUUID: nil))
+
+        let expect = expectation(description: "Fetches versionB")
+        store.fetchContact(withID: versionA.id) { result in
+            let fetched = try? result.get()
+            XCTAssertEqual(fetched?.name.givenName, versionB.name.givenName)
+            expect.fulfill()
+        }
+        waitForExpectations(timeout: 0.1, handler: nil)
+    }
+
+    func testAnyContactQueryByIdConvenienceMethodReturnsLatestVersionOfAContact() throws {
+        let versionA = try store.addContactAndWait(OCKContact(id: "contact", givenName: "A", familyName: "", carePlanUUID: nil))
+        let versionB = try store.updateContactAndWait(OCKContact(id: "contact", givenName: "B", familyName: "", carePlanUUID: nil))
+
+        let expect = expectation(description: "Fetches versionB")
+        store.fetchAnyContact(withID: versionA.id) { result in
+            let fetched = try? result.get()
+            XCTAssertEqual(fetched?.name.givenName, versionB.name.givenName)
+            expect.fulfill()
+        }
+        waitForExpectations(timeout: 0.1, handler: nil)
+    }
+
     func testContactQueryWithDateOnlyReturnsLatestVersionOfAContact() throws {
         try store.addContactAndWait(OCKContact(id: "contact", givenName: "A", familyName: "", carePlanUUID: nil))
         try store.updateContactAndWait(OCKContact(id: "contact", givenName: "B", familyName: "", carePlanUUID: nil))

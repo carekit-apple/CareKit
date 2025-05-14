@@ -566,12 +566,23 @@ extension OCKHealthKitPassthroughStore {
 
     func makeTaskQuery(from outcomeQuery: OCKOutcomeQuery) -> OCKTaskQuery {
 
-        let dateInterval = Calendar.current.dateInterval(of: .day, for: Date())!
+        // Search over the interval provided by OCKOutcomeQuery if present
+        // or else constrain sample query over the current day.
+        let dateInterval = outcomeQuery.dateInterval ??
+            Calendar.current.dateInterval(of: .day, for: Date())!
 
         var taskQuery = OCKTaskQuery(dateInterval: dateInterval)
         taskQuery.ids = outcomeQuery.taskIDs
         taskQuery.remoteIDs = outcomeQuery.taskRemoteIDs
         taskQuery.uuids = outcomeQuery.taskUUIDs
+        taskQuery.sortDescriptors = outcomeQuery.sortDescriptors.map { descriptor in
+            switch descriptor {
+            case .effectiveDate(ascending: let ascending):
+                return OCKTaskQuery.SortDescriptor.effectiveDate(ascending: ascending)
+            case .groupIdentifier(ascending: let ascending):
+                return OCKTaskQuery.SortDescriptor.groupIdentifier(ascending: ascending)
+            }
+        }
 
         return taskQuery
     }

@@ -67,6 +67,8 @@ extension OCKReadOnlyEventStore where Task: OCKAnyVersionableTask {
                             dateInterval: dateInterval
                         )
                     }
+                    // Guarantee a stable sort order in UIs with lists of events
+                    .sorted { $0.isOrderedBefore(other: $1) }
 
                 completion(.success(partialEvents))
 

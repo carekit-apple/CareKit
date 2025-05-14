@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -166,7 +166,7 @@ class TestPersistentStoreCoordinator: XCTestCase {
         XCTAssert(store2.patients.isEmpty)
     }
 
-    @available(iOS 15, watchOS 8, *)
+    @available(iOS 15, watchOS 8, macOS 13.0, *)
     func testFetchCanResultInAnArrayPopulatedWithDifferentTypes() throws {
         let coordinator = OCKStoreCoordinator()
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
@@ -201,7 +201,7 @@ class TestPersistentStoreCoordinator: XCTestCase {
     }
 
 #if !os(watchOS)
-    @available(iOS 15, watchOS 8, *)
+    @available(iOS 15, watchOS 8, macOS 13.0, *)
     func testStoreCoordinatorDoesNotSendNormalOutcomesToHealthKit() {
         let coordinator = OCKStoreCoordinator()
         let store = OCKStore(name: UUID().uuidString, type: .inMemory)
@@ -220,7 +220,7 @@ class TestPersistentStoreCoordinator: XCTestCase {
     }
 #endif
     
-    @available(iOS 15, watchOS 8, *)
+    @available(iOS 15, watchOS 8, macOS 13.0, *)
     func testCanAssociateHealthKitTaskWithCarePlan() throws {
         let store = OCKStore(name: UUID().uuidString, type: .inMemory)
         let passthrough = OCKHealthKitPassthroughStore(store: store)
@@ -242,7 +242,7 @@ class TestPersistentStoreCoordinator: XCTestCase {
     }
 }
 
-@available(iOS 15, watchOS 8, *)
+@available(iOS 15, watchOS 8, macOS 13.0, *)
 private struct SeededTaskStore {
 
     let store: OCKStoreCoordinator

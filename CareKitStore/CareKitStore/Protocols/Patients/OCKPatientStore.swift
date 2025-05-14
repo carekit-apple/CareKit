@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2019, Apple Inc. All rights reserved.
+Copyright (c) 2016-2025, Apple Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
@@ -222,7 +222,7 @@ public extension OCKReadablePatientStore {
     ///   - query: A query used to constrain the values that will be fetched.
     func fetchPatients(query: OCKPatientQuery) async throws -> [Patient] {
         try await withCheckedThrowingContinuation { continuation in
-            fetchPatients(query: query, callbackQueue: .main, completion: continuation.resume)
+            fetchPatients(query: query, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 
@@ -235,7 +235,7 @@ public extension OCKReadablePatientStore {
     ///   - id: The identifier of the item to be fetched.
     func fetchPatient(withID id: String) async throws -> Patient {
         try await withCheckedThrowingContinuation { continuation in
-            fetchPatient(withID: id, callbackQueue: .main, completion: continuation.resume)
+            fetchPatient(withID: id, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 }
@@ -250,7 +250,7 @@ public extension OCKPatientStore {
     ///   - patients: An array of patients to be added to the store.
     func addPatients(_ patients: [Patient]) async throws -> [Patient] {
         try await withCheckedThrowingContinuation { continuation in
-            addPatients(patients, callbackQueue: .main, completion: continuation.resume)
+            addPatients(patients, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 
@@ -260,7 +260,7 @@ public extension OCKPatientStore {
     ///   - patients: An array of patients to be updated. The patients must already exist in the store.
     func updatePatients(_ patients: [Patient]) async throws -> [Patient] {
         try await withCheckedThrowingContinuation { continuation in
-            updatePatients(patients, callbackQueue: .main, completion: continuation.resume)
+            updatePatients(patients, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 
@@ -270,7 +270,7 @@ public extension OCKPatientStore {
     ///   - patients: An array of patients to be deleted. The patients must exist in the store.
     func deletePatients(_ patients: [Patient]) async throws -> [Patient] {
         try await withCheckedThrowingContinuation { continuation in
-            deletePatients(patients, callbackQueue: .main, completion: continuation.resume)
+            deletePatients(patients, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 
@@ -282,7 +282,7 @@ public extension OCKPatientStore {
     ///   - patient: A patient to be added to the store.
     func addPatient(_ patient: Patient) async throws -> Patient {
         try await withCheckedThrowingContinuation { continuation in
-            addPatient(patient, callbackQueue: .main, completion: continuation.resume)
+            addPatient(patient, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 
@@ -292,7 +292,7 @@ public extension OCKPatientStore {
     ///   - patient: A patient to be updated. The patient must already exist in the store.
     func updatePatient(_ patient: Patient) async throws -> Patient {
         try await withCheckedThrowingContinuation { continuation in
-            updatePatient(patient, callbackQueue: .main, completion: continuation.resume)
+            updatePatient(patient, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 
@@ -302,7 +302,7 @@ public extension OCKPatientStore {
     ///   - patient: A patient to be deleted. The patient must exist in the store.
     func deletePatient(_ patient: Patient) async throws -> Patient {
         try await withCheckedThrowingContinuation { continuation in
-            deletePatient(patient, callbackQueue: .main, completion: continuation.resume)
+            deletePatient(patient, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 }

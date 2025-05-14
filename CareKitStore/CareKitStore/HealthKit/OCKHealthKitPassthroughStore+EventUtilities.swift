@@ -32,7 +32,7 @@ import Foundation
 import HealthKit
 
 
-@available(iOS 15, watchOS 8, *)
+@available(iOS 15, watchOS 8, macOS 13.0, *)
 extension OCKHealthKitPassthroughStore {
 
     // Element == SampleChange
@@ -255,6 +255,8 @@ extension OCKHealthKitPassthroughStore {
         outcomeValue.createdDate = sample.dateInterval.start
         outcomeValue.endDate = sample.dateInterval.end
 
+        outcomeValue.createdDate = now
+
         var updatedEvent = event
 
         // Create an outcome if one doesn't already exist
@@ -406,7 +408,7 @@ extension OCKHealthKitPassthroughStore {
         let descriptors = makeQueryDescriptors(for: events)
 
         // Only perform query if there are one or more descriptors.
-        guard descriptors.count > 0 else {
+        guard descriptors.isEmpty == false else {
             completion(.success([]))
             return
         }

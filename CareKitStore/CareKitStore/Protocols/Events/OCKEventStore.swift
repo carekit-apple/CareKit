@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -117,7 +117,7 @@ public protocol OCKReadOnlyEventStore: OCKAnyReadOnlyEventStore, OCKReadableTask
     /// - Parameters:
     ///   - task: The task for which to retrieve an event.
     ///   - occurrence: The occurrence index of the desired event.
-    ///   - queue: The queue that the completion closure should be called on. In most cases this should be the main queue.
+    ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on the specified queue.
     func fetchEvent(
         forTask task: Task,
@@ -335,7 +335,7 @@ public extension OCKReadOnlyEventStore {
     ///   - query: A query that specifies which events to fetch.
     func fetchEvents(query: OCKEventQuery) async throws -> [Event] {
         try await withCheckedThrowingContinuation { continuation in
-            fetchEvents(query: query, callbackQueue: .main, completion: continuation.resume)
+            fetchEvents(query: query, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 
@@ -345,7 +345,7 @@ public extension OCKReadOnlyEventStore {
     /// - Parameter occurrence: The occurrence index of the desired event.
     func fetchEvent(forTask task: Task, occurrence: Int) async throws -> Event {
         try await withCheckedThrowingContinuation { continuation in
-            fetchEvent(forTask: task, occurrence: occurrence, callbackQueue: .main, completion: continuation.resume)
+            fetchEvent(forTask: task, occurrence: occurrence, callbackQueue: .main, completion: { continuation.resume(with: $0) })
         }
     }
 }

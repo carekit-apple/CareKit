@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -30,15 +30,19 @@
 import Foundation
 import os.log
 
+/// A structure that provides logging services to CareKit.
 public struct OCKLog {
 
-    /// Controls the log level for all of CareKit. You may set this value from within your CareKit app.
-    /// To see messages that are helpful for app developers, use `.fault` or `.error`.
-    /// To see messages that are helpful for framework developers, use `.debug` or `.info`.
+    /// A property that controls the log level for all of CareKit.
+    ///
+    /// You set this value from within your CareKit app.
+    /// To see messages that are helpful for app debugging, use `.fault` or `.error`.
+    /// To see messages that are helpful for framework debugging, use `.debug` or `.info`.
     public static var level: OSLogType = .debug
 }
 
 /// Prints a message to the console that may be useful to app or framework developers.
+/// 
 /// Messages that are intended for app developers should typically be logged at level `.error`.
 /// Messages for framework developers can use any appropriate log level.
 ///

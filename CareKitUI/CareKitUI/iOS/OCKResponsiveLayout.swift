@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2019, Apple Inc. All rights reserved.
+Copyright (c) 2016-2025, Apple Inc. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
@@ -55,10 +55,12 @@ public struct OCKResponsiveLayout<LayoutOption> {
     // MARK: - Initializers
 
     /// Initialize a `OCKResponsiveLayout` with default and specific size class rules.
-    ///
-    /// - Parameter defaultRuleSet: The default layout rules  for when no matching size class rule is
-    /// provided, usually when layouts need to support dynamic type, but not size class.
-    /// - Parameter sizeClassSpecificRuleSets: Size class specific layout rule sets
+    ///  
+    /// - Parameters:
+    ///   - defaultLayout: The default layout rules for when no matching size class rule is provided, usually when layouts need to support
+    ///   dynamic type, but not size class
+    ///   - anySizeClassRuleSet: Rule sets responsive to content size category but no specific size classes
+    ///   - sizeClassSpecificRuleSets: Size class specific layout rule sets
     public init(
         defaultLayout: LayoutOption,
         anySizeClassRuleSet: [OCKResponsiveLayout.Rule<LayoutOption>],

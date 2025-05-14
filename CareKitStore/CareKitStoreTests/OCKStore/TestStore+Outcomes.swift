@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -169,6 +169,23 @@ class TestStoreOutcomes: XCTestCase {
         } catch {
             // no-op
         }
+    }
+
+    func testCanSaveOutcomesForDifferentTasks() async throws {
+
+        let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
+
+        let taskA = OCKTask(id: "A", title: "A", carePlanUUID: nil, schedule: schedule)
+        let taskB = OCKTask(id: "B", title: "B", carePlanUUID: nil, schedule: schedule)
+        _ = try await store.addTasks([taskA, taskB])
+
+        let outcomeA = OCKOutcome(taskUUID: taskA.uuid, taskOccurrenceIndex: 0, values: [])
+        let outcomeB = OCKOutcome(taskUUID: taskB.uuid, taskOccurrenceIndex: 0, values: [])
+
+        _ = try await store.addOutcomes([outcomeA, outcomeB])
+
+        let persistedOutcomes = try await store.fetchOutcomes(query: OCKOutcomeQuery())
+        XCTAssertEqual(persistedOutcomes.count, 2)
     }
 
     // MARK: Querying

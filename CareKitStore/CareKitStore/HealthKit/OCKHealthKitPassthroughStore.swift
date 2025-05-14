@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -34,7 +34,7 @@ import HealthKit
 import os.log
 
 /// A specialized store that transparently manipulates outcomes in HealthKit.
-@available(iOS 15, watchOS 8, *)
+@available(iOS 15, watchOS 8, macOS 13.0, *)
 public final class OCKHealthKitPassthroughStore: OCKEventStore {
     public typealias Task = OCKHealthKitTask
     public typealias Outcome = OCKHealthKitOutcome
@@ -88,5 +88,13 @@ public final class OCKHealthKitPassthroughStore: OCKEventStore {
             completion(OCKStoreError.invalidValue(
                 reason: "Failed HealthKit permission check: Error: \(error.localizedDescription)"))
         }
+    }
+
+    // MARK: - Test seams
+
+    var _now: Date?
+
+    var now: Date {
+        return _now ?? Date()
     }
 }

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -33,9 +33,9 @@ import CareKitStore
 import CareKitUI
 import UIKit
 
-/// Handles events related to an `OCKWeekCalendarPageViewController`.
+/// A protocol that handles events related to a weekly calendar page view controller.
 public protocol OCKWeekCalendarPageViewControllerDelegate: AnyObject {
-    /// Called when a date in the calendar has been selected.
+    /// Called when a person selects a date in the calendar.
     /// - Parameter viewController: The view controller that displays the calendar.
     /// - Parameter date: The newly selected date.
     /// - Parameter previousDate: The previously selected date.
@@ -52,7 +52,7 @@ open class OCKWeekCalendarPageViewController:
 UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate, OCKCalendarViewDelegate {
     // MARK: Properties
 
-    /// Handles events related to an `OCKCalendarPageViewController`.
+    /// An object that handles events related to a weekly calendar page view controller.
     public weak var calendarDelegate: OCKWeekCalendarPageViewControllerDelegate?
 
     /// The currently selected date in the calendar.

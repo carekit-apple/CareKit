@@ -79,6 +79,70 @@ class TestStoreOutcomes: XCTestCase {
         XCTAssertEqual(outcome.taskUUID, taskUUID)
     }
 
+	func testAddMultipleOutcomesRelatedToMultipleTasks() async throws {
+		let task1 = OCKTask(
+			id: "task1",
+			title: "My Task",
+			carePlanUUID: nil,
+			schedule: .mealTimesEachDay(
+				start: Date(),
+				end: nil
+			)
+		)
+		let task2 = OCKTask(
+			id: "task2",
+			title: "My Task2",
+			carePlanUUID: nil,
+			schedule: .mealTimesEachDay(
+				start: Date(),
+				end: nil
+			)
+		)
+		let savedTasks = try await store.addTasks(
+			[
+				task1,
+				task2
+			]
+		)
+
+		let savedTask1 = try XCTUnwrap(savedTasks.first)
+		let savedTask2 = try XCTUnwrap(savedTasks.last)
+		XCTAssertEqual(savedTasks.count, 2)
+		XCTAssertNotEqual(savedTask1.uuid, savedTask2.uuid)
+		XCTAssertNotEqual(savedTask1.id, savedTask2.id)
+
+		let outcome1 = OCKOutcome(
+			taskUUID: savedTask1.uuid,
+			taskOccurrenceIndex: 1,
+			values: []
+		)
+		let outcome2 = OCKOutcome(
+			taskUUID: savedTask2.uuid,
+			taskOccurrenceIndex: 1,
+			values: []
+		)
+		let savedOutcomes = try await store.addOutcomes(
+			[
+				outcome1,
+				outcome2
+			]
+		)
+		let savedOutcome1 = try XCTUnwrap(savedOutcomes.first)
+		let savedOutcome2 = try XCTUnwrap(savedOutcomes.last)
+		XCTAssertEqual(savedOutcomes.count, 2)
+		XCTAssertNotEqual(savedOutcome1.uuid, savedOutcome2.uuid)
+		XCTAssertNotNil(
+			savedTasks.first(
+				where: { $0.uuid == savedOutcome1.taskUUID }
+			) != nil
+		)
+		XCTAssertNotNil(
+			savedTasks.first(
+				where: { $0.uuid == savedOutcome2.taskUUID }
+			) != nil
+		)
+	}
+
     func testCannotAddTwoOutcomesWithSameTaskAndOccurrenceIndexAtOnce() throws {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
         let task = OCKTask(id: "A", title: "A", carePlanUUID: nil, schedule: schedule)

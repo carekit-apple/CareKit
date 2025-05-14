@@ -182,6 +182,7 @@ class TestOutcomeValue: XCTestCase {
         value.kind = "whale"
         value.units = "m/s"
         value.createdDate = Date().addingTimeInterval(-200)
+        value.endDate = Date().addingTimeInterval(-50)
 
         let encoded = try JSONEncoder().encode(value)
         let decoded = try JSONDecoder().decode(OCKOutcomeValue.self, from: encoded)
@@ -189,6 +190,7 @@ class TestOutcomeValue: XCTestCase {
         XCTAssertEqual(decoded.kind, value.kind)
         XCTAssertEqual(decoded.units, value.units)
         XCTAssertEqual(decoded.createdDate, value.createdDate)
+        XCTAssertEqual(decoded.endDate, value.endDate)
 
         if let decodedUnderValue = decoded.value as? Int,
             let currentUnderValue = value.value as? Int {

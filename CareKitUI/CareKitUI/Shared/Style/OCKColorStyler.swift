@@ -28,12 +28,15 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import SwiftUI
+#if canImport(UIKit)
 import UIKit
+#endif
 
 /// Defines color constants.
 public protocol OCKColorStyler {
 
-    #if os(iOS)
+    #if os(iOS) || os(visionOS)
 
     var label: UIColor { get }
     var secondaryLabel: UIColor { get }
@@ -54,7 +57,7 @@ public protocol OCKColorStyler {
     var customGray4: UIColor { get }
     var customGray5: UIColor { get }
 
-    #endif
+    #elseif os(watchOS)
 
     var white: UIColor { get }
     var black: UIColor { get }
@@ -66,12 +69,22 @@ public protocol OCKColorStyler {
     var customGroupedBackground: UIColor { get }
     var secondaryCustomGroupedBackground: UIColor { get }
     var tertiaryCustomGroupedBackground: UIColor { get }
+
+    #elseif os(macOS)
+
+    var secondaryCustomGroupedBackground: Color { get }
+    var tertiaryCustomFill: Color { get }
+    var white: Color { get }
+    var black: Color { get }
+    var clear: Color { get }
+
+    #endif
 }
 
 /// Defines default values for color constants.
 public extension OCKColorStyler {
 
-    #if os(iOS)
+    #if os(iOS) || os(visionOS)
 
     var label: UIColor { .label }
     var secondaryLabel: UIColor { .secondaryLabel }
@@ -113,11 +126,23 @@ public extension OCKColorStyler {
     var tertiaryCustomFill: UIColor { #colorLiteral(red: 0.462745098, green: 0.462745098, blue: 0.5019607843, alpha: 0.24) }
     var quaternaryCustomFill: UIColor { #colorLiteral(red: 0.462745098, green: 0.462745098, blue: 0.5019607843, alpha: 0.18) }
 
+    #elseif os(macOS)
+
+    var secondaryCustomGroupedBackground: Color { .white }
+    var tertiaryCustomFill: Color { .white }
+    var white: Color { .white }
+    var black: Color { .black }
+    var clear: Color { .clear }
+
     #endif
+
+    #if os(iOS) || os(visionOS) || os(watchOS)
 
     var white: UIColor { .white }
     var black: UIColor { .black }
     var clear: UIColor { .clear }
+
+    #endif
 }
 
 /// Concrete object for color constants.

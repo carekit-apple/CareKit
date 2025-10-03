@@ -27,7 +27,7 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#if !os(watchOS)
+#if !os(watchOS) && !os(macOS)
 
 import Foundation
 import UIKit
@@ -66,7 +66,11 @@ open class OCKSeparatorView: OCKView {
         super.styleDidChange()
         let cachedStyle = style()
         backgroundColor = cachedStyle.color.separator
+        #if os(iOS)
+        
         heightConstraint?.constant = cachedStyle.dimension.separatorHeight
+        
+        #endif
     }
 }
 #endif

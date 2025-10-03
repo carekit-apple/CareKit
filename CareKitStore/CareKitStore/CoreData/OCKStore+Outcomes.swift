@@ -319,7 +319,12 @@ extension OCKStore {
     }
 
     private func buildSortDescriptors(for query: OCKOutcomeQuery) -> [NSSortDescriptor] {
-        query.defaultSortDescriptors()
+        query.sortDescriptors.map { order -> NSSortDescriptor in
+            switch order {
+            case .effectiveDate(let ascending): return NSSortDescriptor(keyPath: \OCKCDOutcome.effectiveDate, ascending: ascending)
+            case .groupIdentifier(let ascending): return NSSortDescriptor(keyPath: \OCKCDOutcome.groupIdentifier, ascending: ascending)
+            }
+        } + query.defaultSortDescriptors()
     }
 
     private func doesEventForOutcomeOccur(in interval: DateInterval) -> NSPredicate {

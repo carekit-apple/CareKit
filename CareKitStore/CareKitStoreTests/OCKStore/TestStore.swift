@@ -59,10 +59,10 @@ class TestStore: XCTestCase {
         XCTAssertNoThrow(try store.delete())
     }
 
-    func testRollingBackContextRollsBackKnowledgeVector() throws {
+    func testRollingBackContextRollsBackKnowledgeVector() async throws {
         let store = OCKStore(name: UUID().uuidString, type: .inMemory)
         
-        expect(with: store.context) {
+        try await store.context.perform {
             XCTAssertEqual(store.context.clockTime, 1)
 
             store.context.knowledgeVector.increment(clockFor: store.context.clockID)

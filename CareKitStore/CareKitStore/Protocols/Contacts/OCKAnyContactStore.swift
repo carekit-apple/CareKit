@@ -31,7 +31,7 @@
 import Foundation
 
 /// A store that allows for reading contacts.
-public protocol OCKAnyReadOnlyContactStore: OCKAnyResettableStore {
+public protocol OCKAnyReadOnlyContactStore: OCKAnyResettableStore, Sendable {
 
     /// A continuous stream of contacts that exist in the store.
     ///
@@ -188,6 +188,7 @@ public extension OCKAnyContactStore {
     ///
     /// - Parameters:
     ///   - contacts: An array of contacts to be added to the store.
+    @discardableResult
     func addAnyContacts(_ contacts: [OCKAnyContact]) async throws -> [OCKAnyContact] {
         try await withCheckedThrowingContinuation { continuation in
             addAnyContacts(contacts, callbackQueue: .main, completion: { continuation.resume(with: $0) })
@@ -198,6 +199,7 @@ public extension OCKAnyContactStore {
     ///
     /// - Parameters:
     ///   - contacts: An array of contacts to be updated. The contacts must already exist in the store.
+    @discardableResult
     func updateAnyContacts(_ contacts: [OCKAnyContact]) async throws -> [OCKAnyContact] {
         try await withCheckedThrowingContinuation { continuation in
             updateAnyContacts(contacts, callbackQueue: .main, completion: { continuation.resume(with: $0) })
@@ -208,6 +210,7 @@ public extension OCKAnyContactStore {
     ///
     /// - Parameters:
     ///   - contacts: An array of contacts to be deleted. The contacts must exist in the store.
+    @discardableResult
     func deleteAnyContacts(_ contacts: [OCKAnyContact]) async throws -> [OCKAnyContact] {
         try await withCheckedThrowingContinuation { continuation in
             deleteAnyContacts(contacts, callbackQueue: .main, completion: { continuation.resume(with: $0) })
@@ -220,6 +223,7 @@ public extension OCKAnyContactStore {
     ///
     /// - Parameters:
     ///   - contact: A single contact to be added to the store.
+    @discardableResult
     func addAnyContact(_ contact: OCKAnyContact) async throws -> OCKAnyContact {
         try await withCheckedThrowingContinuation { continuation in
             addAnyContact(contact, callbackQueue: .main, completion: { continuation.resume(with: $0) })
@@ -230,6 +234,7 @@ public extension OCKAnyContactStore {
     ///
     /// - Parameters:
     ///   - contact: A single contact to be updated. The contact must already exist in the store.
+    @discardableResult
     func updateAnyContact(_ contact: OCKAnyContact) async throws -> OCKAnyContact {
         try await withCheckedThrowingContinuation { continuation in
             updateAnyContact(contact, callbackQueue: .main, completion: { continuation.resume(with: $0) })
@@ -240,6 +245,7 @@ public extension OCKAnyContactStore {
     ///
     /// - Parameters:
     ///   - contact: A single contact to be deleted. The contact must exist in the store.
+    @discardableResult
     func deleteAnyContact(_ contact: OCKAnyContact) async throws -> OCKAnyContact {
         try await withCheckedThrowingContinuation { continuation in
             deleteAnyContact(contact, callbackQueue: .main, completion: { continuation.resume(with: $0) })

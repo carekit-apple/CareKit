@@ -30,7 +30,7 @@
 
 import Foundation
 
-public struct OCKScheduleEvent: Equatable {
+public struct OCKScheduleEvent: Equatable, Sendable {
     public var start: Date
     public var end: Date
     public var element: OCKScheduleElement

@@ -31,7 +31,7 @@
 import Foundation
 
 /// `OCKAdherence` specifies how many of their assigned tasks a patient has completed.
-public enum OCKAdherence: Equatable {
+public enum OCKAdherence: Equatable, Sendable {
 
     /// Indicates that there were no tasks scheduled anytime during the interval in which adherence was computed.
     case noTasks

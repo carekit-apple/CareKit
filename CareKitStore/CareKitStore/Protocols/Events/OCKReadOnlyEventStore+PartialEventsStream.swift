@@ -32,13 +32,7 @@ import Foundation
 
 extension OCKReadOnlyEventStore where Task: OCKAnyVersionableTask {
 
-    typealias PartialEvents = AsyncMapSequence<
-        AsyncThrowingMapSequence<Tasks, [[Task]]>,
-        [PartialEvent<Task>]
-    >
-
-    // Returns `some AsyncSequence where Element == [PartialEvent<Task>]`
-    func partialEvents(matching query: OCKTaskQuery) -> PartialEvents {
+    func partialEvents(matching query: OCKTaskQuery) -> some AsyncSequence<[PartialEvent<Task>], Error> & Sendable {
 
         let latestTaskVersionsQuery = makeLatestTaskVersionsQuery(from: query)
 

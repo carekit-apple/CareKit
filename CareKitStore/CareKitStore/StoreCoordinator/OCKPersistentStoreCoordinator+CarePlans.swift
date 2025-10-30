@@ -34,23 +34,19 @@ extension OCKStoreCoordinator {
 
     public func anyCarePlans(matching query: OCKCarePlanQuery) -> CareStoreQueryResults<OCKAnyCarePlan> {
 
-        let stores = readOnlyPlanStores + planStores
-
-        let relevantStores = stores.filter {
-            carePlanStore($0, shouldHandleQuery: query)
-        }
+        let relevantStores = storesHandlingQuery(query)
 
         let carePlansStreams = relevantStores.map {
             $0.anyCarePlans(matching: query)
         }
 
-        let sortDescriptors = query
-            .sortDescriptors
-            .map(\.nsSortDescriptor)
-
         let carePlans = combineMany(
             sequences: carePlansStreams,
-            sortingElementsUsing: sortDescriptors
+            makeSortDescriptors: {
+                return query
+                    .sortDescriptors
+                    .map(\.nsSortDescriptor)
+            }
         )
 
         return carePlans
@@ -59,10 +55,10 @@ extension OCKStoreCoordinator {
     public func fetchAnyCarePlans(
         query: OCKCarePlanQuery,
         callbackQueue: DispatchQueue = .main,
-        completion: @escaping (Result<[OCKAnyCarePlan], OCKStoreError>) -> Void
+        completion: @Sendable @escaping (Result<[OCKAnyCarePlan], OCKStoreError>) -> Void
     ) {
-        let readableStores = readOnlyPlanStores + planStores
-        let respondingStores = readableStores.filter { carePlanStore($0, shouldHandleQuery: query) }
+
+        let respondingStores = storesHandlingQuery(query)
         let closures = respondingStores.map({ store in { done in
             store.fetchAnyCarePlans(query: query, callbackQueue: callbackQueue, completion: done) }
         })
@@ -72,10 +68,11 @@ extension OCKStoreCoordinator {
     public func addAnyCarePlans(
         _ plans: [OCKAnyCarePlan],
         callbackQueue: DispatchQueue = .main,
-        completion: ((Result<[OCKAnyCarePlan], OCKStoreError>) -> Void)? = nil
+        completion: (@Sendable (Result<[OCKAnyCarePlan], OCKStoreError>) -> Void)? = nil
     ) {
         do {
-            try findStore(forCarePlans: plans).addAnyCarePlans(plans, callbackQueue: callbackQueue, completion: completion)
+            let store = try firstStoreHandlingCarePlans(plans)
+            store.addAnyCarePlans(plans, callbackQueue: callbackQueue, completion: completion)
         } catch {
             callbackQueue.async {
                 completion?(.failure(.addFailed(
@@ -87,10 +84,11 @@ extension OCKStoreCoordinator {
     public func updateAnyCarePlans(
         _ plans: [OCKAnyCarePlan],
         callbackQueue: DispatchQueue = .main,
-        completion: ((Result<[OCKAnyCarePlan], OCKStoreError>) -> Void)? = nil
+        completion: (@Sendable (Result<[OCKAnyCarePlan], OCKStoreError>) -> Void)? = nil
     ) {
         do {
-            try findStore(forCarePlans: plans).updateAnyCarePlans(plans, callbackQueue: callbackQueue, completion: completion)
+            let store = try firstStoreHandlingCarePlans(plans)
+            store.updateAnyCarePlans(plans, callbackQueue: callbackQueue, completion: completion)
         } catch {
             callbackQueue.async {
                 completion?(.failure(.updateFailed(
@@ -102,10 +100,11 @@ extension OCKStoreCoordinator {
     public func deleteAnyCarePlans(
         _ plans: [OCKAnyCarePlan],
         callbackQueue: DispatchQueue = .main,
-        completion: ((Result<[OCKAnyCarePlan], OCKStoreError>) -> Void)? = nil
+        completion: (@Sendable (Result<[OCKAnyCarePlan], OCKStoreError>) -> Void)? = nil
     ) {
         do {
-            try findStore(forCarePlans: plans).deleteAnyCarePlans(plans, callbackQueue: callbackQueue, completion: completion)
+            let store = try firstStoreHandlingCarePlans(plans)
+            store.deleteAnyCarePlans(plans, callbackQueue: callbackQueue, completion: completion)
         } catch {
             callbackQueue.async {
                 completion?(.failure(.deleteFailed(
@@ -114,11 +113,39 @@ extension OCKStoreCoordinator {
         }
     }
 
-    private func findStore(forCarePlans plans: [OCKAnyCarePlan]) throws -> OCKAnyCarePlanStore {
-        let matchingStores = plans.compactMap { plan in planStores.first(where: { carePlanStore($0, shouldHandleWritingCarePlan: plan) }) }
-        guard matchingStores.count == plans.count else { throw OCKStoreError.invalidValue(reason: "No store could be found for some plans.") }
-        guard let store = matchingStores.first else { throw OCKStoreError.invalidValue(reason: "No store could be found for any plans.") }
-        guard matchingStores.allSatisfy({ $0 === store }) else { throw OCKStoreError.invalidValue(reason: "Not all plans belong to same store.") }
-        return store
+    private func firstStoreHandlingCarePlans(_ plans: [OCKAnyCarePlan]) throws -> OCKAnyCarePlanStore {
+
+        let firstMatchingStore = state.withLock { state in
+
+            return state.planStores.first { store in
+                return plans.allSatisfy { plan in
+                    return
+                        state.delegate?.carePlanStore(store, shouldHandleWritingCarePlan: plan) ??
+                        carePlanStore(store, shouldHandleWritingCarePlan: plan)
+                }
+            }
+        }
+
+        guard let firstMatchingStore else {
+            throw OCKStoreError.invalidValue(reason: "Cannot find store to handle care plans")
+        }
+
+        return firstMatchingStore
+    }
+
+    private func storesHandlingQuery(_ query: OCKCarePlanQuery) -> [OCKAnyReadOnlyCarePlanStore] {
+
+        return state.withLock { state in
+
+            let stores = state.readOnlyPlanStores + state.planStores
+
+            let respondingStores = stores.filter { store in
+                return
+                    state.delegate?.carePlanStore(store, shouldHandleQuery: query) ??
+                    carePlanStore(store, shouldHandleQuery: query)
+            }
+
+            return respondingStores
+        }
     }
 }

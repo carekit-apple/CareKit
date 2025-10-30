@@ -29,7 +29,17 @@
  */
 import Foundation
 import os.log
+import Synchronization
 
 public struct OCKLog {
-    public static var isEnabled = true
+
+    private static let _isEnabled = Mutex(true)
+
+    public static var isEnabled: Bool {
+        get {
+            return _isEnabled.value()
+        } set {
+            _isEnabled.setValue(newValue)
+        }
+    }
 }

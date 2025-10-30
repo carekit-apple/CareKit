@@ -36,7 +36,7 @@ public protocol OCKReadablePatientStore: OCKAnyReadOnlyPatientStore {
     associatedtype Patient: OCKAnyPatient, Equatable, Identifiable
 
     /// An asynchronous sequence that produces patients.
-    associatedtype Patients: AsyncSequence where Patients.Element == [Patient]
+    associatedtype Patients: AsyncSequence & Sendable where Patients.Element == [Patient]
 
     /// A continuous stream of patients that exist in the store.
     ///
@@ -248,6 +248,7 @@ public extension OCKPatientStore {
     ///
     /// - Parameters:
     ///   - patients: An array of patients to be added to the store.
+    @discardableResult
     func addPatients(_ patients: [Patient]) async throws -> [Patient] {
         try await withCheckedThrowingContinuation { continuation in
             addPatients(patients, callbackQueue: .main, completion: { continuation.resume(with: $0) })
@@ -258,6 +259,7 @@ public extension OCKPatientStore {
     ///
     /// - Parameters:
     ///   - patients: An array of patients to be updated. The patients must already exist in the store.
+    @discardableResult
     func updatePatients(_ patients: [Patient]) async throws -> [Patient] {
         try await withCheckedThrowingContinuation { continuation in
             updatePatients(patients, callbackQueue: .main, completion: { continuation.resume(with: $0) })
@@ -268,6 +270,7 @@ public extension OCKPatientStore {
     ///
     /// - Parameters:
     ///   - patients: An array of patients to be deleted. The patients must exist in the store.
+    @discardableResult
     func deletePatients(_ patients: [Patient]) async throws -> [Patient] {
         try await withCheckedThrowingContinuation { continuation in
             deletePatients(patients, callbackQueue: .main, completion: { continuation.resume(with: $0) })
@@ -280,6 +283,7 @@ public extension OCKPatientStore {
     ///
     /// - Parameters:
     ///   - patient: A patient to be added to the store.
+    @discardableResult
     func addPatient(_ patient: Patient) async throws -> Patient {
         try await withCheckedThrowingContinuation { continuation in
             addPatient(patient, callbackQueue: .main, completion: { continuation.resume(with: $0) })
@@ -290,6 +294,7 @@ public extension OCKPatientStore {
     ///
     /// - Parameters:
     ///   - patient: A patient to be updated. The patient must already exist in the store.
+    @discardableResult
     func updatePatient(_ patient: Patient) async throws -> Patient {
         try await withCheckedThrowingContinuation { continuation in
             updatePatient(patient, callbackQueue: .main, completion: { continuation.resume(with: $0) })
@@ -300,6 +305,7 @@ public extension OCKPatientStore {
     ///
     /// - Parameters:
     ///   - patient: A patient to be deleted. The patient must exist in the store.
+    @discardableResult
     func deletePatient(_ patient: Patient) async throws -> Patient {
         try await withCheckedThrowingContinuation { continuation in
             deletePatient(patient, callbackQueue: .main, completion: { continuation.resume(with: $0) })

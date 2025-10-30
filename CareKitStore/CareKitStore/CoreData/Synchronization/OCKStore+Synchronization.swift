@@ -31,13 +31,14 @@
 import CoreData
 import Foundation
 import os.log
+import Synchronization
 
 
 extension NSManagedObjectContext {
 
     var clockID: UUID {
         get {
-            performAndWait {
+            return performAndWait {
                 return OCKCDClock.fetch(context: self).uuid
             }
         } set {
@@ -49,12 +50,10 @@ extension NSManagedObjectContext {
 
     var knowledgeVector: OCKRevisionRecord.KnowledgeVector {
         get {
-            performAndWait {
+            return performAndWait {
                 return OCKCDClock.fetch(context: self).vector
             }
-        }
-
-        set {
+        } set {
             performAndWait {
                 OCKCDClock.fetch(context: self).vector = newValue
             }
@@ -63,23 +62,6 @@ extension NSManagedObjectContext {
 
     var clockTime: Int {
         knowledgeVector.clock(for: clockID)
-    }
-
-    func performAndWait<T>(_ work: () throws -> T) throws -> T {
-        var result = Result<T, Error>.failure(OCKStoreError.invalidValue(reason: "timeout"))
-        performAndWait {
-            result = Result(catching: work)
-        }
-        let value = try result.get()
-        return value
-    }
-
-    func performAndWait<T>(_ work: () -> T) -> T {
-        var value: T!
-        performAndWait {
-            value = work()
-        }
-        return value
     }
 
     func fetchObjects<T: OCKCDObject>(withUUIDs uuids: Set<UUID>) throws -> [T] {
@@ -134,8 +116,26 @@ extension OCKStore: OCKRemoteSynchronizationDelegate {
     /// - Parameters:
     ///   - completion: A completion closure that will be called when syncing completes.
     /// - SeeAlso: OCKRemoteSynchronizable
-    public func synchronize(completion: @escaping (Error?) -> Void) {
+    public func synchronize(completion: @escaping @Sendable (Error?) -> Void) {
         pullThenPush(completion: completion)
+    }
+
+    /// Synchronizes the on device store with one on a remote server.
+    ///
+    /// Depending on the mode, it possible to overwrite the entire contents of the device or
+    /// the remote with the data from the other.
+    ///
+    /// - SeeAlso: OCKRemoteSynchronizable
+    public func synchronize() async throws {
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            pullThenPush { error in
+                if let error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume()
+                }
+            }
+        }
     }
 
     /// Calls synchronize if the remote is set and requests to notified after each database modification.
@@ -153,7 +153,7 @@ extension OCKStore: OCKRemoteSynchronizationDelegate {
 
     /// Synchronize the contents of this instance of `OCKStore` against another store. Only changes
     /// that have been made since the last successful synchronization will be sent to the remote.
-    private func pullThenPush(completion: @escaping (Error?) -> Void) {
+    private func pullThenPush(completion: @escaping @Sendable (Error?) -> Void) {
         context.perform {
 
             // 1. Make sure a remote is setup
@@ -166,11 +166,14 @@ extension OCKStore: OCKRemoteSynchronizationDelegate {
             // 2. Pull and merge revisions
             //    Keep track of what the remote knows so that we can send
             //    it the appropriate revision after resolving conflicts.
-            var remoteKnowledge = OCKRevisionRecord.KnowledgeVector()
+            let remoteKnowledge = Mutex(OCKRevisionRecord.KnowledgeVector())
 
             remote.pullRevisions(since: self.context.knowledgeVector) { revision in
 
-                remoteKnowledge.merge(with: revision.knowledgeVector)
+                remoteKnowledge.withLock { remoteKnowledge in
+                    remoteKnowledge.merge(with: revision.knowledgeVector)
+                }
+
                 self.mergeRevision(revision)
 
             } completion: { error in
@@ -206,9 +209,7 @@ extension OCKStore: OCKRemoteSynchronizationDelegate {
                                 //    that were applied during conflict resolution.
                                 let localKnowledge = self.context.knowledgeVector
 
-                                let localRevisions = try self.computeRevisions(
-                                    since: remoteKnowledge
-                                )
+                                let localRevisions = try self.computeRevisions(since: remoteKnowledge.value())
 
                                 // 7. Bump knowledge vector to indicate that any
                                 //    objects created beyond this point in time
@@ -375,7 +376,19 @@ extension OCKStore: OCKRemoteSynchronizationDelegate {
         return entities
     }
 
-    func resolveConflicts(completion: @escaping (Error?) -> Void) {
+    func resolveConflicts() async throws {
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            resolveConflicts { error in
+                if let error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume()
+                }
+            }
+        }
+    }
+
+    func resolveConflicts(completion: @escaping @Sendable (Error?) -> Void) {
         do {
             guard let next = try findNextConflict() else {
                 completion(nil)

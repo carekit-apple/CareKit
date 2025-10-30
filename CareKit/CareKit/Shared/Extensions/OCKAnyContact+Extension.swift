@@ -60,7 +60,7 @@ extension OCKAnyContact {
 
         // Generate the map item that pinpoints the contact's address
         let geoloc = CLGeocoder()
-        geoloc.geocodePostalAddress(address) { placemarks, error in
+        geoloc.geocodePostalAddress(address.cnPostalAddress()) { placemarks, error in
 
             if let error {
                 log(.error, "Failed to geocode postal address", error: error)

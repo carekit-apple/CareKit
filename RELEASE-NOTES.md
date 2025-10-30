@@ -1,5 +1,7 @@
 # CareKit Release Notes
 
+Release notes have moved to the [Github Releases Page](https://github.com/carekit-apple/CareKit/releases).
+
 ## CareKit 3.0 Release Notes
 
 *CareKit 3.0* supports *iOS* and *watchOS* and requires *Xcode 14.0* or later. The minimum supported *Base SDK* is *13.0* for *iOS* and *6.0* for *watchOS*.

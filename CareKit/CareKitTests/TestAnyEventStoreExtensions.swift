@@ -45,8 +45,8 @@ class TestAnyEventStoreExtensions: XCTestCase {
 
     func testToggleBooleanOutcome_OutcomeIsCreated() async throws {
         let task = OCKTask.sample(uuid: UUID(), id: "taskA")
-        let storedTask = try store.store.addTaskAndWait(task)
-        let storedEvent = try store.fetchEventAndWait(forTask: storedTask, occurrence: 0)
+        let storedTask = try await store.store.addTask(task)
+        let storedEvent = try await store.fetchEvent(forTask: storedTask, occurrence: 0)
         let outcome = try await store.toggleBooleanOutcome(for: storedEvent.anyEvent)
         XCTAssertEqual(outcome.values.count, 1)
         XCTAssertEqual(outcome.values.first?.booleanValue, true)
@@ -54,8 +54,8 @@ class TestAnyEventStoreExtensions: XCTestCase {
 
     func testToggleBooleanOutcome_OutcomeIsDeleted() async throws {
         let task = OCKTask.sample(uuid: UUID(), id: "taskA")
-        let storedTask = try store.store.addTaskAndWait(task)
-        let storedEvent = try store.fetchEventAndWait(forTask: storedTask, occurrence: 0)
+        let storedTask = try await store.store.addTask(task)
+        let storedEvent = try await store.fetchEvent(forTask: storedTask, occurrence: 0)
         let addedOutcome = try await store.toggleBooleanOutcome(for: storedEvent.anyEvent)
         let deletedOutcome = try await store.toggleBooleanOutcome(for: storedEvent.anyEvent)
         XCTAssertEqual(deletedOutcome.values.count, 1)
@@ -65,8 +65,8 @@ class TestAnyEventStoreExtensions: XCTestCase {
 
     func testToggleBooleanOutcome_Fails() async throws {
         let task = OCKTask.sample(uuid: UUID(), id: "taskA")
-        let storedTask = try store.store.addTaskAndWait(task)
-        let storedEvent = try store.fetchEventAndWait(forTask: storedTask, occurrence: 0)
+        let storedTask = try await store.store.addTask(task)
+        let storedEvent = try await store.fetchEvent(forTask: storedTask, occurrence: 0)
         store.errorOverride = OCKStoreError.fetchFailed(reason: "Error override")
         let addedOutcome = try? await store.toggleBooleanOutcome(for: storedEvent.anyEvent)
         XCTAssertNil(addedOutcome)

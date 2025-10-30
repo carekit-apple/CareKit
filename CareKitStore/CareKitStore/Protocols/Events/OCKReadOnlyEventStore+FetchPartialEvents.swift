@@ -42,7 +42,7 @@ extension OCKReadOnlyEventStore where Task: OCKAnyVersionableTask {
     func fetchPartialEvents(
         query: OCKTaskQuery,
         callbackQueue: DispatchQueue,
-        completion: @escaping (Result<[PartialEvent<Task>], OCKStoreError>) -> Void
+        completion: @escaping @Sendable (Result<[PartialEvent<Task>], OCKStoreError>) -> Void
     ) {
         let latestTaskVersionsQuery = makeLatestTaskVersionsQuery(from: query)
 

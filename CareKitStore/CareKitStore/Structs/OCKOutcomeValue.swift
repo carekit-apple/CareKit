@@ -31,7 +31,7 @@
 import Foundation
 
 /// Any value that can be persisted to `OCKStore` must conform to this protocol.
-public protocol OCKOutcomeValueUnderlyingType: Codable {}
+public protocol OCKOutcomeValueUnderlyingType: Codable, Sendable {}
 
 extension Int: OCKOutcomeValueUnderlyingType {}
 extension Double: OCKOutcomeValueUnderlyingType {}
@@ -52,7 +52,7 @@ public enum OCKOutcomeValueType: String, Codable {
 
 /// An `OCKOutcomeValue` is a representation of any response of measurement that a user gives in response to a task. The underlying type could be
 /// any of a number of types including integers, booleans, dates, text, and binary data, among others.
-public struct OCKOutcomeValue: Codable, Equatable, CustomStringConvertible {
+public struct OCKOutcomeValue: Codable, Equatable, Sendable, CustomStringConvertible {
 
     public static func == (lhs: OCKOutcomeValue, rhs: OCKOutcomeValue) -> Bool {
         lhs.hasSameValueAs(rhs) &&

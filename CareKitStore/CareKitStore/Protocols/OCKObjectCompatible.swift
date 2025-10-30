@@ -31,7 +31,7 @@
 import CoreData
 import Foundation
 
-protocol OCKVersionedObjectCompatible {
+protocol OCKVersionedObjectCompatible: Sendable {
 
     /// A human readable unique identifier. It is used strictly by the developer and will never be shown to a user.
     var id: String { get set }

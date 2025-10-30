@@ -37,13 +37,13 @@ extension CareTaskProgressStrategy {
         let outcomeValues = event.outcome?.values ?? []
 
         let summedOutcomesValue = outcomeValues
-            .map(accumulableDoubleValue)
+            .map { Self.accumulableDoubleValue(for: $0) }
             .reduce(0, +)
 
         let targetValues = event.scheduleEvent.element.targetValues
 
         let summedTargetValue = targetValues
-            .map(accumulableDoubleValue)
+            .map { Self.accumulableDoubleValue(for: $0) }
             .reduce(nil) { partialResult, nextTarget -> Double? in
                 return sum(partialResult, nextTarget)
             }

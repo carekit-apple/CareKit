@@ -32,11 +32,13 @@ import Foundation
 import HealthKit
 import os.log
 
-@available(iOS 15, watchOS 8, macOS 13.0, *)
 public extension OCKHealthKitPassthroughStore {
 
-    func addOutcomes(_ outcomes: [OCKHealthKitOutcome], callbackQueue: DispatchQueue = .main,
-                     completion: ((Result<[OCKHealthKitOutcome], OCKStoreError>) -> Void)? = nil) {
+    func addOutcomes(
+        _ outcomes: [OCKHealthKitOutcome],
+        callbackQueue: DispatchQueue = .main,
+        completion: (@Sendable (Result<[OCKHealthKitOutcome], OCKStoreError>) -> Void)? = nil
+    ) {
         do {
             let tasks = try fetchTasks(for: outcomes)
             let samples = try outcomes.map { outcome throws -> HKObject in
@@ -84,15 +86,21 @@ public extension OCKHealthKitPassthroughStore {
         }
     }
 
-    func updateOutcomes(_ outcomes: [OCKHealthKitOutcome], callbackQueue: DispatchQueue = .main,
-                        completion: ((Result<[OCKHealthKitOutcome], OCKStoreError>) -> Void)? = nil) {
+    func updateOutcomes(
+        _ outcomes: [OCKHealthKitOutcome],
+        callbackQueue: DispatchQueue = .main,
+        completion: (@Sendable (Result<[OCKHealthKitOutcome], OCKStoreError>) -> Void)? = nil
+    ) {
         callbackQueue.async {
             completion?(.failure(.updateFailed(reason: "Data in HealthKit can only be added and deleted. Updates are not allowed.")))
         }
     }
 
-    func deleteOutcomes(_ outcomes: [OCKHealthKitOutcome], callbackQueue: DispatchQueue = .main,
-                        completion: ((Result<[OCKHealthKitOutcome], OCKStoreError>) -> Void)? = nil) {
+    func deleteOutcomes(
+        _ outcomes: [OCKHealthKitOutcome],
+        callbackQueue: DispatchQueue = .main,
+        completion: (@Sendable (Result<[OCKHealthKitOutcome], OCKStoreError>) -> Void)? = nil
+    ) {
 
         do {
 

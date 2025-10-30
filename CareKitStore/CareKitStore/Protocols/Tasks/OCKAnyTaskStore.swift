@@ -31,7 +31,7 @@
 import Foundation
 
 /// A store that allows for reading tasks.
-public protocol OCKAnyReadOnlyTaskStore: OCKAnyResettableStore {
+public protocol OCKAnyReadOnlyTaskStore: OCKAnyResettableStore, Sendable {
 
     /// A continuous stream of tasks that exist in the store.
     ///
@@ -71,7 +71,7 @@ public protocol OCKAnyReadOnlyTaskStore: OCKAnyResettableStore {
     func fetchAnyTask(
         withID id: String,
         callbackQueue: DispatchQueue,
-        completion: @escaping (Result<OCKAnyTask, OCKStoreError>) -> Void
+        completion: @escaping @Sendable (Result<OCKAnyTask, OCKStoreError>) -> Void
     )
 }
 
@@ -110,7 +110,7 @@ public protocol OCKAnyTaskStore: OCKAnyReadOnlyTaskStore {
     ///   - task: A task the function adds to the store.
     ///   - callbackQueue: The queue that the function calls the closure on. In most cases this is the main queue.
     ///   - completion: A callback that the function calls on the provided callback queue.
-    func addAnyTask(_ task: OCKAnyTask, callbackQueue: DispatchQueue, completion: ((Result<OCKAnyTask, OCKStoreError>) -> Void)?)
+    func addAnyTask(_ task: OCKAnyTask, callbackQueue: DispatchQueue, completion: (@Sendable (Result<OCKAnyTask, OCKStoreError>) -> Void)?)
 
     /// Asynchronously update a task in the store.
     ///
@@ -118,7 +118,7 @@ public protocol OCKAnyTaskStore: OCKAnyReadOnlyTaskStore {
     ///   - task: A task the function updates. The task must already exist in the store.
     ///   - callbackQueue: The queue that the function calls the closure on. In most cases this is the main queue.
     ///   - completion: A callback that the function calls on the provided callback queue.
-    func updateAnyTask(_ task: OCKAnyTask, callbackQueue: DispatchQueue, completion: ((Result<OCKAnyTask, OCKStoreError>) -> Void)?)
+    func updateAnyTask(_ task: OCKAnyTask, callbackQueue: DispatchQueue, completion: (@Sendable (Result<OCKAnyTask, OCKStoreError>) -> Void)?)
 
     /// Asynchronously delete a task from the store.
     ///
@@ -126,7 +126,7 @@ public protocol OCKAnyTaskStore: OCKAnyReadOnlyTaskStore {
     ///   - task: A task the function deletes. The task must exist in the store.
     ///   - callbackQueue: The queue that the function calls the closure on. In most cases this is the main queue.
     ///   - completion: A callback that the function calls on the provided callback queue.
-    func deleteAnyTask(_ task: OCKAnyTask, callbackQueue: DispatchQueue, completion: ((Result<OCKAnyTask, OCKStoreError>) -> Void)?)
+    func deleteAnyTask(_ task: OCKAnyTask, callbackQueue: DispatchQueue, completion: (@Sendable (Result<OCKAnyTask, OCKStoreError>) -> Void)?)
 }
 
 // MARK: Singular Methods for OCKAnyReadOnlyTaskStore
@@ -198,6 +198,7 @@ public extension OCKAnyTaskStore {
     ///
     /// - Parameters:
     ///   - tasks: An array of tasks the function adds.
+    @discardableResult
     func addAnyTasks(_ tasks: [OCKAnyTask]) async throws -> [OCKAnyTask] {
         try await withCheckedThrowingContinuation { continuation in
             addAnyTasks(tasks, callbackQueue: .main, completion: { continuation.resume(with: $0) })
@@ -208,6 +209,7 @@ public extension OCKAnyTaskStore {
     ///
     /// - Parameters:
     ///   - tasks: An array of tasks the function updates. The tasks must exist in the store.
+    @discardableResult
     func updateAnyTasks(_ tasks: [OCKAnyTask]) async throws -> [OCKAnyTask] {
         try await withCheckedThrowingContinuation { continuation in
             updateAnyTasks(tasks, callbackQueue: .main, completion: { continuation.resume(with: $0) })
@@ -218,6 +220,7 @@ public extension OCKAnyTaskStore {
     ///
     /// - Parameters:
     ///   - tasks: An array of tasks the function deletes. The tasks must exist in the store.
+    @discardableResult
     func deleteAnyTasks(_ tasks: [OCKAnyTask]) async throws -> [OCKAnyTask] {
         try await withCheckedThrowingContinuation { continuation in
             deleteAnyTasks(tasks, callbackQueue: .main, completion: { continuation.resume(with: $0) })
@@ -230,6 +233,7 @@ public extension OCKAnyTaskStore {
     ///
     /// - Parameters:
     ///   - task: A task the function adds.
+    @discardableResult
     func addAnyTask(_ task: OCKAnyTask) async throws -> OCKAnyTask {
         try await withCheckedThrowingContinuation { continuation in
             addAnyTask(task, callbackQueue: .main, completion: { continuation.resume(with: $0) })
@@ -240,6 +244,7 @@ public extension OCKAnyTaskStore {
     ///
     /// - Parameters:
     ///   - task: A task the function updates. The task must exist in the store.
+    @discardableResult
     func updateAnyTask(_ task: OCKAnyTask) async throws -> OCKAnyTask {
         try await withCheckedThrowingContinuation { continuation in
             updateAnyTask(task, callbackQueue: .main, completion: { continuation.resume(with: $0) })
@@ -250,6 +255,7 @@ public extension OCKAnyTaskStore {
     ///
     /// - Parameters:
     ///   - task: A task the function deletes. The task must exist in the store.
+    @discardableResult
     func deleteAnyTask(_ task: OCKAnyTask) async throws -> OCKAnyTask {
         try await withCheckedThrowingContinuation { continuation in
             deleteAnyTask(task, callbackQueue: .main, completion: { continuation.resume(with: $0) })

@@ -32,7 +32,7 @@ import Foundation
 
 /// Revision records are exchanged by the CareKit and a remote database during synchronization.
 /// Each revision record contains an array of entities as well as a knowledge vector.
-public struct OCKRevisionRecord: Equatable, Codable {
+public struct OCKRevisionRecord: Equatable, Codable, Sendable {
 
     /// The entities that were modified, in the order the were inserted into the database.
     /// The first entity is the oldest and the last entity is the newest.
@@ -58,7 +58,7 @@ public struct OCKRevisionRecord: Equatable, Codable {
     /// vector is less than another, it means that the first event happened before the second. If
     /// one cannot be shown to be less than the other, it means the events are concurrent and
     /// require resolution.
-    public struct KnowledgeVector: Codable, Hashable, Comparable {
+    public struct KnowledgeVector: Codable, Hashable, Comparable, Sendable {
 
         /// Each store involved in synchronization is termed a process and given a unique UUID. The corresponding
         /// integer for a process is an indication of time. If two processes have the same integer value, they both

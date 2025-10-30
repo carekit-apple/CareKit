@@ -56,14 +56,16 @@ class TestContact: XCTestCase {
         contact.phoneNumbers = [OCKLabeledValue(label: CNLabelWork, value: "(324) 555-7415")]
         contact.messagingNumbers = [OCKLabeledValue(label: CNLabelWork, value: "(324) 555-7415")]
 
-        contact.address = {
-            let address = OCKPostalAddress()
-            address.street = "2598 Reposa Way"
-            address.city = "San Francisco"
-            address.state = "CA"
-            address.postalCode = "94127"
-            return address
-        }()
+        contact.address = OCKPostalAddress(
+            street: "2598 Reposa Way",
+            city: "San Francisco",
+            state: "CA",
+            postalCode: "94127",
+            country: "",
+            isoCountryCode: "",
+            subAdministrativeArea: "",
+            subLocality: ""
+        )
 
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.prettyPrinted]

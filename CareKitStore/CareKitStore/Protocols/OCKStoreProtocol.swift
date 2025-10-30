@@ -44,7 +44,7 @@ import Foundation
 public typealias OCKStoreProtocol = OCKPatientStore & OCKCarePlanStore & OCKContactStore & OCKEventStore
 public typealias OCKAnyStoreProtocol = OCKAnyPatientStore & OCKAnyCarePlanStore & OCKAnyContactStore & OCKAnyEventStore
 
-public protocol OCKAnyResettableStore: AnyObject {
+public protocol OCKAnyResettableStore: AnyObject, Sendable {
 
     func reset() throws
 }

@@ -31,7 +31,7 @@
 import Foundation
 
 /// A protocol for a CareKit plan.
-public protocol OCKAnyCarePlan {
+public protocol OCKAnyCarePlan: Sendable {
 
     /// A user-defined unique identifier.
     ///

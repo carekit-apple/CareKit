@@ -31,7 +31,7 @@
 import Foundation
 
 /// A store that allows for reading outcomes.
-public protocol OCKAnyReadOnlyOutcomeStore: OCKAnyResettableStore {
+public protocol OCKAnyReadOnlyOutcomeStore: OCKAnyResettableStore, Sendable {
 
     /// A continuous stream of outcomes that exist in the store.
     ///
@@ -208,6 +208,7 @@ public extension OCKAnyOutcomeStore {
     ///
     /// - Parameters:
     ///   - outcomes: An array of outcomes added to the store.
+    @discardableResult
     func addAnyOutcomes(_ outcomes: [OCKAnyOutcome]) async throws -> [OCKAnyOutcome] {
         try await withCheckedThrowingContinuation { continuation in
             addAnyOutcomes(outcomes, callbackQueue: .main, completion: { continuation.resume(with: $0) })
@@ -218,6 +219,7 @@ public extension OCKAnyOutcomeStore {
     ///
     /// - Parameters:
     ///   - outcomes: An array of updated outcomes. The outcomes must already exist in the store.
+    @discardableResult
     func updateAnyOutcomes(_ outcomes: [OCKAnyOutcome]) async throws -> [OCKAnyOutcome] {
         try await withCheckedThrowingContinuation { continuation in
             updateAnyOutcomes(outcomes, callbackQueue: .main, completion: { continuation.resume(with: $0) })
@@ -228,6 +230,7 @@ public extension OCKAnyOutcomeStore {
     ///
     /// - Parameters:
     ///   - outcomes: An array of outcomes that the function deletes. The outcomes must exist in the store.
+    @discardableResult
     func deleteAnyOutcomes(_ outcomes: [OCKAnyOutcome]) async throws -> [OCKAnyOutcome] {
         try await withCheckedThrowingContinuation { continuation in
             deleteAnyOutcomes(outcomes, callbackQueue: .main, completion: { continuation.resume(with: $0) })
@@ -240,6 +243,7 @@ public extension OCKAnyOutcomeStore {
     ///
     /// - Parameters:
     ///   - outcome: An outcome that the function adds to the store.
+    @discardableResult
     func addAnyOutcome(_ outcome: OCKAnyOutcome) async throws -> OCKAnyOutcome {
         try await withCheckedThrowingContinuation { continuation in
             addAnyOutcome(outcome, callbackQueue: .main, completion: { continuation.resume(with: $0) })
@@ -250,6 +254,7 @@ public extension OCKAnyOutcomeStore {
     ///
     /// - Parameters:
     ///   - outcome: An outcome that the function updates. The outcome must already exist in the store.
+    @discardableResult
     func updateAnyOutcome(_ outcome: OCKAnyOutcome) async throws -> OCKAnyOutcome {
         try await withCheckedThrowingContinuation { continuation in
             updateAnyOutcome(outcome, callbackQueue: .main, completion: { continuation.resume(with: $0) })
@@ -260,6 +265,7 @@ public extension OCKAnyOutcomeStore {
     ///
     /// - Parameters:
     ///   - outcome: An outcome the function deletes. The outcome must exist in the store.
+    @discardableResult
     func deleteAnyOutcome(_ outcome: OCKAnyOutcome) async throws -> OCKAnyOutcome {
         try await withCheckedThrowingContinuation { continuation in
             deleteAnyOutcome(outcome, callbackQueue: .main, completion: { continuation.resume(with: $0) })

@@ -34,9 +34,9 @@ import HealthKit
 extension HKQuantityTypeIdentifier: Codable {}
 
 /// Describes how a task outcome values should be retrieved from HealthKit.
-public struct OCKHealthKitLinkage: Equatable, Codable {
+public struct OCKHealthKitLinkage: Equatable, Codable, Sendable {
 
-    public enum QuantityType: String, Codable {
+    public enum QuantityType: String, Codable, Sendable {
         /// Quantities that are defined over a period of time, such as step count or calories burned.
         case cumulative
 

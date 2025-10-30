@@ -56,7 +56,7 @@ class TestStoreEventsStream: XCTestCase {
             schedule: .mealTimesEachDay(start: Date(), end: nil)
         )
 
-        let storedTask = try store.addTaskAndWait(task)
+        let storedTask = try await store.addTask(task)
 
         let expectedEvents = [
             [
@@ -92,7 +92,7 @@ class TestStoreEventsStream: XCTestCase {
             schedule: .mealTimesEachDay(start: Date(), end: nil)
         )
 
-        let storedTask = try store.addTaskAndWait(task)
+        let storedTask = try await store.addTask(task)
 
         // Update the task, effective after the first event
 
@@ -100,7 +100,7 @@ class TestStoreEventsStream: XCTestCase {
         updatedTask.effectiveDate = task.schedule[1].start
         updatedTask.title = "taskB"
 
-        let storedUpdatedTask = try store.updateTaskAndWait(updatedTask)
+        let storedUpdatedTask = try await store.updateTask(updatedTask)
 
         let expectedEvents = [
             [
@@ -136,7 +136,7 @@ class TestStoreEventsStream: XCTestCase {
             schedule: .mealTimesEachDay(start: Date(), end: nil)
         )
 
-        let storedTask = try store.addTaskAndWait(task)
+        let storedTask = try await store.addTask(task)
 
         let expectedEvents = [
             [
@@ -177,7 +177,7 @@ class TestStoreEventsStream: XCTestCase {
             schedule: .mealTimesEachDay(start: Date(), end: nil)
         )
 
-        let storedTask = try store.addTaskAndWait(task)
+        let storedTask = try await store.addTask(task)
 
         // Stream and validate the events from the store
 

@@ -33,7 +33,7 @@ import Foundation
 
 extension OCKStore {
 
-    struct TransactionResult<T> {
+    struct TransactionResult<T: Sendable>: Sendable {
         var inserts: [T] = []
         var updates: [T] = []
         var deletes: [T] = []

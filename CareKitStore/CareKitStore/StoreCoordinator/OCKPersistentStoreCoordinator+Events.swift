@@ -34,7 +34,9 @@ extension OCKStoreCoordinator {
 
     public func anyEvents(matching query: OCKEventQuery) -> CareStoreQueryResults<OCKAnyEvent> {
 
-        let stores = readOnlyEventStores + eventStores
+        let stores = state.withLock { state in
+            return state.readOnlyEventStores + state.eventStores
+        }
 
         let eventsStreams = stores.map {
             $0.anyEvents(matching: query)
@@ -55,7 +57,9 @@ extension OCKStoreCoordinator {
         callbackQueue: DispatchQueue,
         completion: @escaping OCKResultClosure<[OCKAnyEvent]>) {
 
-        let stores: [OCKAnyReadOnlyEventStore] = readOnlyEventStores + eventStores
+        let stores = state.withLock { state in
+            return state.readOnlyEventStores + state.eventStores
+        }
 
         let closures = stores.map({ store in { done in
             store.fetchAnyEvents(query: query, callbackQueue: callbackQueue, completion: done) }
@@ -70,7 +74,9 @@ extension OCKStoreCoordinator {
         callbackQueue: DispatchQueue,
         completion: @escaping OCKResultClosure<OCKAnyEvent>) {
 
-        let stores: [OCKAnyReadOnlyEventStore] = readOnlyEventStores + eventStores
+        let stores = state.withLock { state in
+            return state.readOnlyEventStores + state.eventStores
+        }
 
         let closures = stores.map({ store in { done in
             store.fetchAnyEvent(forTask: task, occurrence: occurrence, callbackQueue: callbackQueue, completion: done) }
@@ -84,18 +90,24 @@ extension OCKStoreCoordinator {
         let group = DispatchGroup()
         var respondingStore: OCKAnyReadOnlyEventStore?
 
-        for store in eventStores + readOnlyEventStores {
+        let stores = state.withLock { state in
+            return state.readOnlyEventStores + state.eventStores
+        }
+
+        for store in stores {
             group.enter()
             store.fetchAnyTask(withID: taskID, callbackQueue: .main) { result in
-                switch result {
-                case .failure:
-                    // The store didn't contain the task. (Fetching a task by id errors if there is no match)
-                    break
-                case .success:
-                    assert(respondingStore == nil, "Two stores should never contain tasks with the same id!")
-                    respondingStore = store
+                DispatchQueue.main.async {
+                    switch result {
+                    case .failure:
+                        // The store didn't contain the task. (Fetching a task by id errors if there is no match)
+                        break
+                    case .success:
+                        assert(respondingStore == nil, "Two stores should never contain tasks with the same id!")
+                        respondingStore = store
+                    }
+                    group.leave()
                 }
-                group.leave()
             }
         }
 

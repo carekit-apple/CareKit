@@ -44,196 +44,218 @@ class TestStorePatients: XCTestCase {
 
     // MARK: Insertion
 
-    func testAddPatient() throws {
-        let patient = try store.addPatientAndWait(OCKPatient(id: "myID", givenName: "Amy", familyName: "Frost"))
+    func testAddPatient() async throws {
+        let patient = try await store.addPatient(OCKPatient(id: "myID", givenName: "Amy", familyName: "Frost"))
         XCTAssertNotNil(patient.uuid)
         XCTAssertNotNil(patient.schemaVersion)
     }
 
-    func testAddPatientForAnyPatientBeyondTheFirstPatient() throws {
+    func testAddPatientForAnyPatientBeyondTheFirstPatient() async throws {
         let patient1 = OCKPatient(id: "id1", givenName: "Amy", familyName: "Frost")
         let patient2 = OCKPatient(id: "id2", givenName: "Christopher", familyName: "Foss")
-        try store.addPatientAndWait(patient1)
-        XCTAssertThrowsError(try store.addPatientAndWait(patient2))
+        try await store.addPatient(patient1)
+
+        do {
+            try await store.addPatient(patient2)
+            XCTFail("Expected to fail")
+        } catch {
+            // no-op
+        }
     }
 
-    func testAddPatientFailsIfIdentifierAlreadyExists() throws {
+    func testAddPatientFailsIfIdentifierAlreadyExists() async throws {
         let patient1 = OCKPatient(id: "myID", givenName: "Amy", familyName: "Frost")
         let patient2 = OCKPatient(id: "myID", givenName: "Jared", familyName: "Gosler")
-        try store.addPatientAndWait(patient1)
-        XCTAssertThrowsError(try store.addPatientAndWait(patient2))
+        try await store.addPatient(patient1)
+
+        do {
+            try await store.addPatient(patient2)
+            XCTFail("Expected to fail")
+        } catch {
+            // no-op
+        }
     }
 
     // MARK: Querying
 
-    func testPatientQueryGroupIdentifierFiltersOutPatients() throws {
+    func testPatientQueryGroupIdentifierFiltersOutPatients() async throws {
         let patient = OCKPatient(id: "myID", givenName: "Amy", familyName: "Frost")
-        try store.addPatientAndWait(patient)
+        try await store.addPatient(patient)
         var query = OCKPatientQuery(for: Date())
         query.groupIdentifiers = ["children"]
-        let fetched = try store.fetchPatientsAndWait(query: query)
+        let fetched = try await store.fetchPatients(query: query)
         XCTAssert(fetched.isEmpty)
     }
 
-    func testPatientQueryGroupIdentifierIncludesPatients() throws {
+    func testPatientQueryGroupIdentifierIncludesPatients() async throws {
         var patient = OCKPatient(id: "myID", givenName: "Amy", familyName: "Frost")
         patient.groupIdentifier = "children"
-        try store.addPatientAndWait(patient)
+        try await store.addPatient(patient)
         var query = OCKPatientQuery(for: Date())
         query.groupIdentifiers = ["children"]
-        let fetched = try store.fetchPatientsAndWait(query: query)
+        let fetched = try await store.fetchPatients(query: query)
         XCTAssert(!fetched.isEmpty)
     }
 
-    func testPatientQueryTagIncludesPatient() throws {
+    func testPatientQueryTagIncludesPatient() async throws {
         var patient = OCKPatient(id: "myID", givenName: "Amy", familyName: "Frost")
         patient.tags = ["A", "B"]
-        try store.addPatientAndWait(patient)
+        try await store.addPatient(patient)
         var query = OCKPatientQuery(for: Date())
         query.tags = ["B", "C"]
-        let fetched = try store.fetchPatientsAndWait(query: query)
+        let fetched = try await store.fetchPatients(query: query)
         XCTAssert(!fetched.isEmpty)
     }
 
-    func testPatientQueryTagExcludesPatient() throws {
+    func testPatientQueryTagExcludesPatient() async throws {
         var patient = OCKPatient(id: "myID", givenName: "Amy", familyName: "Frost")
         patient.tags = ["A", "B"]
-        try store.addPatientAndWait(patient)
+        try await store.addPatient(patient)
         var query = OCKPatientQuery(for: Date())
         query.tags = ["C"]
-        let fetched = try store.fetchPatientsAndWait(query: query)
+        let fetched = try await store.fetchPatients(query: query)
         XCTAssert(fetched.isEmpty)
     }
 
-    func testPatientQueryWithNilIdentifiersReturnsAllPatients() throws {
+    func testPatientQueryWithNilIdentifiersReturnsAllPatients() async throws {
         let patientA = OCKPatient(id: "A", givenName: "Amy", familyName: "Frost")
         let patientB = OCKPatient(id: "B", givenName: "Christopher", familyName: "Foss")
         let patientC = OCKPatient(id: "C", givenName: "Jared", familyName: "Gosler")
         let patientD = OCKPatient(id: "D", givenName: "Joyce", familyName: "Sohn")
         let patientE = OCKPatient(id: "E", givenName: "Lauren", familyName: "Trottier")
         let patientF = OCKPatient(id: "F", givenName: "Mariana", familyName: "Lin")
-        try store.addPatientsAndWait([patientA, patientB, patientC, patientD, patientE, patientF])
-        let patients = try store.fetchPatientsAndWait(query: OCKPatientQuery())
+        try await store.addPatients([patientA, patientB, patientC, patientD, patientE, patientF])
+        let patients = try await store.fetchPatients(query: OCKPatientQuery())
         XCTAssertEqual(patients.count, 6)
     }
 
-    func testQueryPatientByRemoteID() throws {
+    func testQueryPatientByRemoteID() async throws {
         var patient = OCKPatient(id: "A", givenName: "B", familyName: "C")
         patient.remoteID = "abc"
-        patient = try store.addPatientAndWait(patient)
+        patient = try await store.addPatient(patient)
         var query = OCKPatientQuery(for: Date())
         query.remoteIDs = ["abc"]
-        let fetched = try store.fetchPatientsAndWait(query: query).first
+        let fetched = try await store.fetchPatients(query: query).first
         XCTAssertEqual(fetched, patient)
     }
 
-    func testBiologicalSexIsPersistedCorrectly() throws {
+    func testBiologicalSexIsPersistedCorrectly() async throws {
         var patient = OCKPatient(id: "A", givenName: "Amy", familyName: "Frost")
         patient.sex = .female
-        patient = try store.addPatientAndWait(patient)
-        patient = try store.fetchPatientAndWait(id: "A")
+        patient = try await store.addPatient(patient)
+        patient = try await store.fetchPatient(withID: "A")
         XCTAssertEqual(patient.sex, .female)
     }
 
-    func testBirthdayIsPersistedCorrectly() throws {
+    func testBirthdayIsPersistedCorrectly() async throws {
         let now = Date()
         var patient = OCKPatient(id: "A", givenName: "Amy", familyName: "Frost")
         patient.birthday = now
-        patient = try store.addPatientAndWait(patient)
-        patient = try store.fetchPatientAndWait(id: "A")
+        patient = try await store.addPatient(patient)
+        patient = try await store.fetchPatient(withID: "A")
         XCTAssertEqual(patient.birthday, now)
     }
 
-    func testAllergiesArePersistedCorrectly() throws {
+    func testAllergiesArePersistedCorrectly() async throws {
         var patient = OCKPatient(id: "A", givenName: "Amy", familyName: "Frost")
         patient.allergies = ["A", "B", "C"]
-        patient = try store.addPatientAndWait(patient)
-        patient = try store.fetchPatientAndWait(id: "A")
+        patient = try await store.addPatient(patient)
+        patient = try await store.fetchPatient(withID: "A")
         XCTAssertEqual(patient.allergies, ["A", "B", "C"])
     }
 
     // MARK: Versioning
 
-    func testUpdatePatientCreatesNewVersion() throws {
-        let patient = try store.addPatientAndWait(OCKPatient(id: "myID", givenName: "Chris", familyName: "Saari"))
-        let updatedPatient = try store.updatePatientAndWait(OCKPatient(id: "myID", givenName: "Chris", familyName: "Sillers"))
+    func testUpdatePatientCreatesNewVersion() async throws {
+        let patient = try await store.addPatient(OCKPatient(id: "myID", givenName: "Chris", familyName: "Saari"))
+        let updatedPatient = try await store.updatePatient(OCKPatient(id: "myID", givenName: "Chris", familyName: "Sillers"))
         XCTAssertEqual(updatedPatient.name.familyName, "Sillers")
         XCTAssertEqual(updatedPatient.previousVersionUUIDs.first, patient.uuid)
     }
 
-    func testUpdateFailsForUnsavedPatient() {
-        XCTAssertThrowsError(try store.updatePatientAndWait(OCKPatient(id: "myID", givenName: "Christoper", familyName: "Foss")))
+    func testUpdateFailsForUnsavedPatient() async {
+        do {
+            try await store.updatePatient(OCKPatient(id: "myID", givenName: "Christoper", familyName: "Foss"))
+            XCTFail("Expected to fail")
+        } catch {
+            // no-op
+        }
     }
 
-    func testPatientQueryWithNoDateOnlyReturnsLatestVersionOfAPatient() throws {
-        let versionA = try store.addPatientAndWait(OCKPatient(id: "A", givenName: "Jared", familyName: "Gosler"))
-        let versionB = try store.updatePatientAndWait(OCKPatient(id: "A", givenName: "John", familyName: "Appleseed"))
-        let fetched = try store.fetchPatientAndWait(id: versionA.id)
+    func testPatientQueryWithNoDateOnlyReturnsLatestVersionOfAPatient() async throws {
+        let versionA = try await store.addPatient(OCKPatient(id: "A", givenName: "Jared", familyName: "Gosler"))
+        let versionB = try await store.updatePatient(OCKPatient(id: "A", givenName: "John", familyName: "Appleseed"))
+        let fetched = try await store.fetchPatient(withID: versionA.id)
         XCTAssertEqual(fetched, versionB)
     }
 
-    func testPatientQueryOnPastDateReturnsPastVersionOfAPatient() throws {
+    func testPatientQueryOnPastDateReturnsPastVersionOfAPatient() async throws {
         let dateA = Date().addingTimeInterval(-100)
         var versionA = OCKPatient(id: "A", givenName: "Jared", familyName: "Gosler")
         versionA.effectiveDate = dateA
-        versionA = try store.addPatientAndWait(versionA)
+        versionA = try await store.addPatient(versionA)
 
         let dateB = Date().addingTimeInterval(100)
         var versionB = OCKPatient(id: "A", givenName: "John", familyName: "Appleseed")
         versionB.effectiveDate = dateB
-        versionB = try store.updatePatientAndWait(versionB)
+        versionB = try await store.updatePatient(versionB)
 
         let interval = DateInterval(start: dateA.addingTimeInterval(10), end: dateB.addingTimeInterval(-10))
         var query = OCKPatientQuery(dateInterval: interval)
         query.ids = ["A"]
 
-        let fetched = try store.fetchPatientsAndWait(query: query)
+        let fetched = try await store.fetchPatients(query: query)
         XCTAssertEqual(fetched.count, 1)
         XCTAssertEqual(fetched.first?.name, versionA.name)
     }
 
-    func testPatientQuerySpanningVersionsReturnsNewestVersionOnly() throws {
+    func testPatientQuerySpanningVersionsReturnsNewestVersionOnly() async throws {
         let dateA = Date().addingTimeInterval(-100)
         var versionA = OCKPatient(id: "A", givenName: "Jared", familyName: "Gosler")
         versionA.effectiveDate = dateA
-        versionA = try store.addPatientAndWait(versionA)
+        versionA = try await store.addPatient(versionA)
 
         let dateB = Date().addingTimeInterval(100)
         var versionB = OCKPatient(id: "A", givenName: "John", familyName: "Appleseed")
         versionB.effectiveDate = dateB
-        versionB = try store.updatePatientAndWait(versionB)
+        versionB = try await store.updatePatient(versionB)
 
         let interval = DateInterval(start: dateA.addingTimeInterval(10), end: dateB.addingTimeInterval(10))
         var query = OCKPatientQuery(dateInterval: interval)
         query.ids = ["A"]
 
-        let fetched = try store.fetchPatientsAndWait(query: query)
+        let fetched = try await store.fetchPatients(query: query)
         XCTAssertEqual(fetched.count, 1)
         XCTAssertEqual(fetched.first?.name, versionB.name)
     }
 
-    func testPatientQueryBeforePatientWasCreatedReturnsNoResults() throws {
+    func testPatientQueryBeforePatientWasCreatedReturnsNoResults() async throws {
         let dateA = Date()
-        try store.addPatientAndWait(OCKPatient(id: "A", givenName: "Jared", familyName: "Gosler"))
+        try await store.addPatient(OCKPatient(id: "A", givenName: "Jared", familyName: "Gosler"))
 
         let interval = DateInterval(start: dateA.addingTimeInterval(-100), end: dateA)
         var query = OCKPatientQuery(dateInterval: interval)
         query.ids = ["A"]
 
-        let fetched = try store.fetchPatientsAndWait(query: query)
+        let fetched = try await store.fetchPatients(query: query)
         XCTAssertTrue(fetched.isEmpty)
     }
 
     // MARK: Deletion
 
-    func testDeletePatient() throws {
-        let patient = try store.addPatientAndWait(OCKPatient(id: "myID", givenName: "John", familyName: "Appleseed"))
-        try store.deletePatientAndWait(patient)
-        let fetched = try store.fetchPatientsAndWait(query: .init(for: Date()))
+    func testDeletePatient() async throws {
+        let patient = try await store.addPatient(OCKPatient(id: "myID", givenName: "John", familyName: "Appleseed"))
+        try await store.deletePatient(patient)
+        let fetched = try await store.fetchPatients(query: .init(for: Date()))
         XCTAssert(fetched.isEmpty)
     }
 
-    func testDeletePatientFailsIfPatientDoesntExist() {
-        XCTAssertThrowsError(try store.deletePatientAndWait(OCKPatient(id: "myID", givenName: "John", familyName: "Appleseed")))
+    func testDeletePatientFailsIfPatientDoesntExist() async {
+        do {
+            try await store.deletePatient(OCKPatient(id: "myID", givenName: "John", familyName: "Appleseed"))
+            XCTFail("Expected to fail")
+        } catch {
+            // no-op
+        }
     }
 }

@@ -31,13 +31,13 @@
 import Foundation
 
 /// An enumerator specifying which group a contact belongs to.
-public enum OCKContactCategory: String, Codable {
+public enum OCKContactCategory: String, Codable, Sendable {
     case careProvider
     case friendsAndFamily
 }
 
 /// Conforming a type to `OCKAnyContact` allows it to be queried and displayed by CareKit.
-public protocol OCKAnyContact {
+public protocol OCKAnyContact: Sendable {
 
     /// A user-defined unique identifier, typically human readable.
     var id: String { get }

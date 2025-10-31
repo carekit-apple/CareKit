@@ -31,7 +31,7 @@
 import Foundation
 
 /// A query that limits which outcomes will be returned when fetching.
-public struct OCKOutcomeQuery: Equatable, OCKQueryProtocol {
+public struct OCKOutcomeQuery: Equatable, Sendable, OCKQueryProtocol {
 
     /// An array of task identifiers to match against.
     public var taskIDs: [String] = []

@@ -39,34 +39,34 @@ class TestStoreNotes: XCTestCase {
         store = OCKStore(name: UUID().uuidString, type: .inMemory)
     }
 
-    func testCanAttachNotesToPatient() throws {
+    func testCanAttachNotesToPatient() async throws {
         var patient = OCKPatient(id: "Mr. John", givenName: "John", familyName: "Appleseed")
         patient.notes = [OCKNote(author: "Johnny", title: "My Diary", content: "Today I studied biochemistry!")]
-        let savedPatient = try store.addPatientAndWait(patient)
+        let savedPatient = try await store.addPatient(patient)
         XCTAssertEqual(savedPatient.notes?.count, 1)
     }
 
-    func testCanAttachNotesToCarePlan() throws {
+    func testCanAttachNotesToCarePlan() async throws {
         var plan = OCKCarePlan(id: "obesity", title: "Obesity", patientUUID: nil)
         plan.notes = [OCKNote(author: "Mariana", title: "Refrigerator Notes", content: "Butter, milk, eggs")]
-        let savedPlan = try store.addCarePlanAndWait(plan)
+        let savedPlan = try await store.addCarePlan(plan)
         XCTAssertEqual(savedPlan.notes?.count, 1)
     }
 
-    func testCanAttachNotesToTask() throws {
+    func testCanAttachNotesToTask() async throws {
         let schedule = OCKSchedule.dailyAtTime(hour: 06, minutes: 0, start: Date(), end: nil, text: nil)
         var task = OCKTask(id: "id123", title: "prayer", carePlanUUID: nil, schedule: schedule)
         task.notes = [OCKNote(author: "Jared", title: "Note", content: "Made some remarks")]
-        let savedTask = try store.addTaskAndWait(task)
+        let savedTask = try await store.addTask(task)
         XCTAssertEqual(savedTask.notes?.count, 1)
     }
 
-    func testCanAttachNotesToOutcome() throws {
+    func testCanAttachNotesToOutcome() async throws {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
-        let task = try store.addTaskAndWait(OCKTask(id: "A", title: "A", carePlanUUID: nil, schedule: schedule))
+        let task = try await store.addTask(OCKTask(id: "A", title: "A", carePlanUUID: nil, schedule: schedule))
         var outcome = OCKOutcome(taskUUID: task.uuid, taskOccurrenceIndex: 0, values: [])
         outcome.notes = [OCKNote(author: "Jared", title: "My Recipe", content: "Bacon, eggs, and cheese")]
-        let savedOutcome = try store.addOutcomeAndWait(outcome)
+        let savedOutcome = try await store.addOutcome(outcome)
         XCTAssertEqual(savedOutcome.notes?.count, 1)
     }
 }

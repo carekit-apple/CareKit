@@ -31,7 +31,6 @@
 import Foundation
 import HealthKit
 
-@available(iOS 15, watchOS 8, macOS 13.0, *)
 public extension OCKHealthKitPassthroughStore {
 
     func fetchEvents(
@@ -60,19 +59,18 @@ public extension OCKHealthKitPassthroughStore {
     }
 }
 
-@available(iOS 15, watchOS 8, macOS 13.0, *)
 extension OCKHealthKitPassthroughStore {
 
     /// Test seam. Allows us to abstract HK out of the business logic.
     func fetchEvents(
         query: OCKTaskQuery,
         callbackQueue: DispatchQueue,
-        fetchSamples: @escaping (
+        fetchSamples: @Sendable @escaping (
             _ events: [Event],
-            _ completion: @escaping (Result<[Sample], Error>) -> Void
+            _ completion: @Sendable @escaping (Result<[Sample], Error>) -> Void
         ) -> Void,
         updateCumulativeSumOfSamples: @escaping UpdateCumulativeSumOfSamples,
-        completion: @escaping (Result<[Event], Error>) -> Void
+        completion: @Sendable @escaping (Result<[Event], Error>) -> Void
     ) {
 
         fetchPartialEvents(
@@ -101,15 +99,15 @@ extension OCKHealthKitPassthroughStore {
 
     private func fetchOutcomes(
         events: [Event],
-        fetchSamples: @escaping (
+        fetchSamples: @escaping @Sendable (
             _ events: [Event],
-            _ completion: @escaping (Result<[Sample], Error>) -> Void
+            _ completion: @escaping @Sendable (Result<[Sample], Error>) -> Void
         ) -> Void,
-        updateCumulativeSumOfSamples: @escaping (
+        updateCumulativeSumOfSamples: @escaping @Sendable (
             _ events: [Event],
-            _ completion: @escaping (Result<[Event], Error>) -> Void
+            _ completion: @escaping @Sendable (Result<[Event], Error>) -> Void
         ) -> Void,
-        completion: @escaping (Result<[Event], Error>) -> Void
+        completion: @escaping @Sendable (Result<[Event], Error>) -> Void
     ) {
 
         fetchSamples(events) { samplesResult in

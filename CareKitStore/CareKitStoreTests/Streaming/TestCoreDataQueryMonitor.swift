@@ -28,6 +28,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import AsyncAlgorithms
 import Foundation
 import XCTest
 
@@ -62,16 +63,13 @@ class TestCoreDataQueryMonitor: XCTestCase {
 
         // Validate the initial result
 
-        let monitor = CoreDataQueryMonitor(
+        let tasks = AsyncStreamFactory.coreDataResults(
             OCKCDTask.self,
             predicate: NSPredicate(value: true),
             sortDescriptors: [NSSortDescriptor(keyPath: \OCKCDTask.title, ascending: true)],
             context: store.context
         )
-
-        let tasks = monitor
-            .results()
-            .map { $0.map { $0.makeTask() } }
+        .map { $0 as! [OCKTask] }
 
         let accumulatedTasks = try await accumulate(tasks, expectedCount: 1)
 
@@ -94,21 +92,18 @@ class TestCoreDataQueryMonitor: XCTestCase {
             sampleTasks.map(\.title)
         ]
 
-        let monitor = CoreDataQueryMonitor(
+        let tasks = AsyncStreamFactory.coreDataResults(
             OCKCDTask.self,
             predicate: NSPredicate(value: true),
             sortDescriptors: [NSSortDescriptor(keyPath: \OCKCDTask.title, ascending: true)],
             context: store.context
         )
-
-        let tasks = monitor
-            .results()
-            .map { $0.map { $0.makeTask() } }
+        .map { $0 as! [OCKTask] }
 
         let accumulatedTasks = try await accumulate(tasks, expectedCount: 2) { iter in
 
             guard iter == 1 else { return }
-            try store.addTasksAndWait(sampleTasks)
+            try await store.addTasks(sampleTasks)
         }
 
         let observedTitles = accumulatedTasks.map {
@@ -136,16 +131,13 @@ class TestCoreDataQueryMonitor: XCTestCase {
 
         // Stream tasks from the store
 
-        let monitor = CoreDataQueryMonitor(
+        let tasks = AsyncStreamFactory.coreDataResults(
             OCKCDTask.self,
             predicate: NSPredicate(value: true),
             sortDescriptors: [NSSortDescriptor(keyPath: \OCKCDTask.title, ascending: true)],
             context: store.context
         )
-
-        let tasks = monitor
-            .results()
-            .map { $0.map { $0.makeTask() } }
+        .map { $0 as! [OCKTask] }
 
         let accumulatedTasks = try await accumulate(tasks, expectedCount: 2) { iter in
 
@@ -190,21 +182,18 @@ class TestCoreDataQueryMonitor: XCTestCase {
 
         // Stream tasks from the store
 
-        let monitor = CoreDataQueryMonitor(
+        let tasks = AsyncStreamFactory.coreDataResults(
             OCKCDTask.self,
             predicate: NSPredicate(value: true),
             sortDescriptors: [NSSortDescriptor(keyPath: \OCKCDTask.title, ascending: true)],
             context: store.context
         )
-
-        let tasks = monitor
-            .results()
-            .map { $0.map { $0.makeTask() } }
+        .map { $0 as! [OCKTask] }
 
         let accumulatedTasks = try await accumulate(tasks, expectedCount: 2) { iter in
 
             guard iter == 1 else { return }
-            try self.store.updateTasksAndWait(updatedTasks)
+            try await self.store.updateTasks(updatedTasks)
         }
 
         let observedTitles = accumulatedTasks.map {
@@ -232,20 +221,13 @@ class TestCoreDataQueryMonitor: XCTestCase {
             makeSampleTask(idAndTitle: "taskC")
         ]
 
-        let storedIrrelevantTasks = try store.addTasksAndWait(irrelevantTasks)
-        try store.addTasksAndWait(relevantTasks)
+        let storedIrrelevantTasks = try await store.addTasks(irrelevantTasks)
+        try await store.addTasks(relevantTasks)
 
         let predicate = NSPredicate(
             format: "%K == %@",
             #keyPath(OCKCDTask.id),
             "taskC"
-        )
-
-        let monitor = CoreDataQueryMonitor(
-            OCKCDTask.self,
-            predicate: predicate,
-            sortDescriptors: [],
-            context: store.context
         )
 
         let didProduceResult = expectation(description: "Produced result")
@@ -254,18 +236,21 @@ class TestCoreDataQueryMonitor: XCTestCase {
 
         let didDeleteTasks = expectation(description: "Tasks deleted")
 
-        // Falling back to the result handler here for more control
-        // instead of using the `monitor.results()` stream
-        monitor.resultHandler = { _ in
+        let monitor = CoreDataQueryMonitor(
+            OCKCDTask.self,
+            predicate: predicate,
+            sortDescriptors: [],
+            context: store.context,
+            resultHandler: { [store] result in
+                store.deleteTasks(storedIrrelevantTasks) { result in
+                    let didSucceed = (try? result.get()) != nil
+                    XCTAssertTrue(didSucceed)
+                    didDeleteTasks.fulfill()
+                }
 
-            self.store.deleteTasks(storedIrrelevantTasks) { result in
-                let didSucceed = (try? result.get()) != nil
-                XCTAssertTrue(didSucceed)
-                didDeleteTasks.fulfill()
+                didProduceResult.fulfill()
             }
-
-            didProduceResult.fulfill()
-        }
+        )
 
         monitor.startQuery()
 
@@ -275,7 +260,7 @@ class TestCoreDataQueryMonitor: XCTestCase {
     }
     #endif
     
-    func testCancelledStreamDoesNotProduceResult() throws {
+    func testCancelledStreamDoesNotProduceResult() async throws {
 
         // Add tasks to the store
 
@@ -284,24 +269,24 @@ class TestCoreDataQueryMonitor: XCTestCase {
             makeSampleTask(idAndTitle: "taskB")
         ]
 
-        try store.addTasksAndWait(careTasks)
+        try await store.addTasks(careTasks)
 
         let predicate = NSPredicate(value: true)
 
-        let monitor = CoreDataQueryMonitor(
+        let didProduceResult = expectation(description: "Produced result")
+        didProduceResult.expectedFulfillmentCount = 1
+        didProduceResult.assertForOverFulfill = true
+
+        var monitor: CoreDataQueryMonitor<OCKCDTask>!
+
+        monitor = CoreDataQueryMonitor(
             OCKCDTask.self,
             predicate: predicate,
             sortDescriptors: [],
             context: store.context
         )
 
-        let didProduceResult = expectation(description: "Produced result")
-        didProduceResult.expectedFulfillmentCount = 1
-        didProduceResult.assertForOverFulfill = true
-
-        // Falling back to the result handler here for more control
-        // instead of using the `monitor.results()` stream
-        monitor.resultHandler = { [weak monitor] _ in
+        monitor.resultHandler = { [weak monitor, store] _ in
 
             didProduceResult.fulfill()
             monitor?.stopQuery()
@@ -309,7 +294,7 @@ class TestCoreDataQueryMonitor: XCTestCase {
             // Resetting the store should not trigger the `resultHandler`
             // because the query has been stopped
             do {
-                try self.store.reset()
+                try store.reset()
             } catch {
                 XCTFail(error.localizedDescription)
             }
@@ -317,7 +302,7 @@ class TestCoreDataQueryMonitor: XCTestCase {
 
         monitor.startQuery()
 
-        wait(for: [didProduceResult], timeout: 2)
+        await fulfillment(of: [didProduceResult], timeout: 2)
     }
 
     // MARK: Utilities

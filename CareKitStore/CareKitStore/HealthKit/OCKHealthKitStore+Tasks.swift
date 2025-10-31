@@ -31,7 +31,6 @@
 import Foundation
 import HealthKit
 
-@available(iOS 15, watchOS 8, macOS 13.0, *)
 public extension OCKHealthKitPassthroughStore {
 
     func tasks(matching query: OCKTaskQuery) -> CareStoreQueryResults<OCKHealthKitTask> {
@@ -41,8 +40,11 @@ public extension OCKHealthKitPassthroughStore {
         return wrappedTasks
     }
 
-    func fetchTasks(query: OCKTaskQuery, callbackQueue: DispatchQueue = .main,
-                    completion: @escaping (Result<[OCKHealthKitTask], OCKStoreError>) -> Void) {
+    func fetchTasks(
+        query: OCKTaskQuery,
+        callbackQueue: DispatchQueue = .main,
+        completion: @Sendable @escaping (Result<[OCKHealthKitTask], OCKStoreError>) -> Void
+    ) {
         store.context.perform {
             do {
                 let tasks = try self.store.fetchHealthKitTasks(query: query)
@@ -57,8 +59,11 @@ public extension OCKHealthKitPassthroughStore {
         }
     }
 
-    func addTasks(_ tasks: [OCKHealthKitTask], callbackQueue: DispatchQueue = .main,
-                  completion: ((Result<[OCKHealthKitTask], OCKStoreError>) -> Void)? = nil) {
+    func addTasks(
+        _ tasks: [OCKHealthKitTask],
+        callbackQueue: DispatchQueue = .main,
+        completion: (@Sendable (Result<[OCKHealthKitTask], OCKStoreError>) -> Void)? = nil
+    ) {
 
         store.addHealthKitTasks(
             tasks,
@@ -67,13 +72,19 @@ public extension OCKHealthKitPassthroughStore {
         )
     }
 
-    func updateTasks(_ tasks: [OCKHealthKitTask], callbackQueue: DispatchQueue = .main,
-                     completion: ((Result<[OCKHealthKitTask], OCKStoreError>) -> Void)? = nil) {
+    func updateTasks(
+        _ tasks: [OCKHealthKitTask],
+        callbackQueue: DispatchQueue = .main,
+        completion: (@Sendable (Result<[OCKHealthKitTask], OCKStoreError>) -> Void)? = nil
+    ) {
         store.updateHealthKitTasks(tasks, callbackQueue: callbackQueue, completion: completion)
     }
 
-    func deleteTasks(_ tasks: [OCKHealthKitTask], callbackQueue: DispatchQueue = .main,
-                     completion: ((Result<[OCKHealthKitTask], OCKStoreError>) -> Void)? = nil) {
+    func deleteTasks(
+        _ tasks: [OCKHealthKitTask],
+        callbackQueue: DispatchQueue = .main,
+        completion: (@Sendable (Result<[OCKHealthKitTask], OCKStoreError>) -> Void)? = nil
+    ) {
 
         store.deleteHealthKitTasks(
             tasks,

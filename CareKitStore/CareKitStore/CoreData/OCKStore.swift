@@ -31,9 +31,10 @@
 import CoreData
 import Foundation
 import os.log
+import Synchronization
 
 /// An enumerator specifying the type of stores that may be chosen.
-public enum OCKCoreDataStoreType: Equatable {
+public enum OCKCoreDataStoreType: Equatable, Sendable {
 
     /// An in memory store runs in RAM. It is fast and is not persisted between app launches.
     /// Its primary use case is for testing.
@@ -52,22 +53,30 @@ public enum OCKCoreDataStoreType: Equatable {
     }
 }
 
-// The managed object model can only be loaded once
-// per app invocation, so we load it here and reuse
-// the shared MoM each time a store is instantiated.
-let sharedManagedObjectModel: NSManagedObjectModel = {
-    #if SWIFT_PACKAGE
-    let bundle = Bundle.module // Use the SPM package's module
-    #else
-    let bundle = Bundle(for: OCKStore.self)
-    #endif
-    let modelUrl = bundle.url(forResource: "CareKitStore", withExtension: "momd")!
-    let mom = NSManagedObjectModel(contentsOf: modelUrl)!
-    return mom
-}()
-
 /// The default store used in CareKit. The underlying database used is CoreData.
-open class OCKStore: OCKStoreProtocol, Equatable {
+public final class OCKStore: OCKStoreProtocol, Equatable {
+
+    private struct State {
+        var context: NSManagedObjectContext?
+        var isStoreLoaded = false
+    }
+
+    // The managed object model can only be loaded once
+    // per app invocation, so we load it here and reuse
+    // the shared MoM each time a store is instantiated.
+    // At the time of writing this, `NSManagedObjectModel` does not conform to Sendable so requiring a single instance
+    // and exposing this a an internal variable seems impossible without `nonisolated(unsafe)`. Take care not to access
+    // this type concurrently across multiple threads.
+    static nonisolated(unsafe) let sharedManagedObjectModel: NSManagedObjectModel = {
+        #if SWIFT_PACKAGE
+        let bundle = Bundle.module // Use the SPM package's module
+        #else
+        let bundle = Bundle(for: OCKStore.self)
+        #endif
+        let modelUrl = bundle.url(forResource: "CareKitStore", withExtension: "momd")!
+        let mom = NSManagedObjectModel(contentsOf: modelUrl)!
+        return mom
+    }()
 
     /// A list of all the types that `OCKStore` supports.
     let supportedTypes: [OCKVersionedObjectCompatible.Type] = [
@@ -136,26 +145,31 @@ open class OCKStore: OCKStoreProtocol, Equatable {
 
     /// The store type determines where data is stored. Generally `onDisk` should be chosen in order to persist data, but `inMemory` may be useful
     /// for development and testing purposes.
-    internal let storeType: OCKCoreDataStoreType
+    let storeType: OCKCoreDataStoreType
 
     /// A remote store synchronizer.
-    internal let remote: OCKRemoteSynchronizable?
+    let remote: OCKRemoteSynchronizable?
 
-    private lazy var persistentContainer = NSPersistentContainer(
-        name: self.name,
-        managedObjectModel: sharedManagedObjectModel
-    )
+    private let persistentContainer: NSPersistentContainer
 
-    private lazy var _context = persistentContainer.newBackgroundContext()
-
-    private var isStoreLoaded = false
+    private let state = Mutex(State())
 
     var context: NSManagedObjectContext {
-        if isStoreLoaded {
-            return _context
-        } else {
-            isStoreLoaded = loadStore(into: persistentContainer)
-            return _context
+
+        return state.withLock { state in
+
+            if state.isStoreLoaded == false {
+                state.isStoreLoaded = loadStore(into: persistentContainer)
+            }
+
+            if let context = state.context {
+                return context
+            }
+
+            let context = persistentContainer.newBackgroundContext()
+            state.context = context
+
+            return context
         }
     }
 
@@ -210,6 +224,12 @@ open class OCKStore: OCKStoreProtocol, Equatable {
         self.name = name
         self.securityApplicationGroupIdentifier = securityApplicationGroupIdentifier
         self.remote = remote
+
+        persistentContainer = NSPersistentContainer(
+            name: self.name,
+            managedObjectModel: Self.sharedManagedObjectModel
+        )
+
         self.remote?.delegate = remote?.delegate ?? self
 
         NotificationCenter.default.addObserver(

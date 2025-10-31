@@ -34,24 +34,23 @@ extension OCKStoreCoordinator {
 
     public func anyOutcomes(matching query: OCKOutcomeQuery) -> CareStoreQueryResults<OCKAnyOutcome> {
 
-        let stores = readOnlyEventStores + eventStores
-
-        let relevantStores = stores.filter {
-            outcomeStore($0, shouldHandleQuery: query)
-        }
+        let relevantStores = storesHandlingQuery(query)
 
         let outcomesStreams = relevantStores.map {
             $0.anyOutcomes(matching: query)
         }
 
-        let sortDescriptor = NSSortDescriptor(
-            keyPath: \OCKCDOutcome.id,
-            ascending: true
-        )
-
         let outcomes = combineMany(
             sequences: outcomesStreams,
-            sortingElementsUsing: [sortDescriptor]
+            makeSortDescriptors: {
+
+                let sortDescriptor = NSSortDescriptor(
+                    keyPath: \OCKCDOutcome.id,
+                    ascending: true
+                )
+
+                return [sortDescriptor]
+            }
         )
 
         return outcomes
@@ -60,10 +59,10 @@ extension OCKStoreCoordinator {
     public func fetchAnyOutcomes(
         query: OCKOutcomeQuery,
         callbackQueue: DispatchQueue = .main,
-        completion: @escaping (Result<[OCKAnyOutcome], OCKStoreError>) -> Void
+        completion: @escaping @Sendable (Result<[OCKAnyOutcome], OCKStoreError>) -> Void
     ) {
-        let readableStores = readOnlyEventStores + eventStores
-        let respondingStores = readableStores.filter { outcomeStore($0, shouldHandleQuery: query) }
+
+        let respondingStores = storesHandlingQuery(query)
         let closures = respondingStores.map({ store in { done in
             store.fetchAnyOutcomes(query: query, callbackQueue: callbackQueue, completion: done) }
         })
@@ -73,10 +72,11 @@ extension OCKStoreCoordinator {
     public func addAnyOutcomes(
         _ outcomes: [OCKAnyOutcome],
         callbackQueue: DispatchQueue = .main,
-        completion: ((Result<[OCKAnyOutcome], OCKStoreError>) -> Void)? = nil
+        completion: (@Sendable (Result<[OCKAnyOutcome], OCKStoreError>) -> Void)? = nil
     ) {
         do {
-            try findStore(forOutcomes: outcomes).addAnyOutcomes(outcomes, callbackQueue: callbackQueue, completion: completion)
+            let store = try firstStoreHandlingOutcomes(outcomes)
+            store.addAnyOutcomes(outcomes, callbackQueue: callbackQueue, completion: completion)
         } catch {
             callbackQueue.async {
                 completion?(.failure(.addFailed(
@@ -88,10 +88,11 @@ extension OCKStoreCoordinator {
     public func updateAnyOutcomes(
         _ outcomes: [OCKAnyOutcome],
         callbackQueue: DispatchQueue = .main,
-        completion: ((Result<[OCKAnyOutcome], OCKStoreError>) -> Void)? = nil
+        completion: (@Sendable (Result<[OCKAnyOutcome], OCKStoreError>) -> Void)? = nil
     ) {
         do {
-            try findStore(forOutcomes: outcomes).updateAnyOutcomes(outcomes, callbackQueue: callbackQueue, completion: completion)
+            let store = try firstStoreHandlingOutcomes(outcomes)
+            store.updateAnyOutcomes(outcomes, callbackQueue: callbackQueue, completion: completion)
         } catch {
             callbackQueue.async {
                 completion?(.failure(.updateFailed(
@@ -103,10 +104,11 @@ extension OCKStoreCoordinator {
     public func deleteAnyOutcomes(
         _ outcomes: [OCKAnyOutcome],
         callbackQueue: DispatchQueue = .main,
-        completion: ((Result<[OCKAnyOutcome], OCKStoreError>) -> Void)? = nil
+        completion: (@Sendable (Result<[OCKAnyOutcome], OCKStoreError>) -> Void)? = nil
     ) {
         do {
-            try findStore(forOutcomes: outcomes).deleteAnyOutcomes(outcomes, callbackQueue: callbackQueue, completion: completion)
+            let store = try firstStoreHandlingOutcomes(outcomes)
+            store.deleteAnyOutcomes(outcomes, callbackQueue: callbackQueue, completion: completion)
         } catch {
             callbackQueue.async {
                 completion?(.failure(.deleteFailed(
@@ -115,11 +117,39 @@ extension OCKStoreCoordinator {
         }
     }
 
-    private func findStore(forOutcomes outcomes: [OCKAnyOutcome]) throws -> OCKAnyOutcomeStore {
-        let matchingStores = outcomes.compactMap { outcome in eventStores.first(where: { outcomeStore($0, shouldHandleWritingOutcome: outcome) }) }
-        guard matchingStores.count == outcomes.count else { throw OCKStoreError.invalidValue(reason: "No store could be found for some outcomes.") }
-        guard let store = matchingStores.first else { throw OCKStoreError.invalidValue(reason: "No store could be found for any outcomes.") }
-        guard matchingStores.allSatisfy({ $0 === store }) else { throw OCKStoreError.invalidValue(reason: "Not all outcomes belong to same store.") }
-        return store
+    private func firstStoreHandlingOutcomes(_ outcomes: [OCKAnyOutcome]) throws -> OCKAnyOutcomeStore {
+
+        let firstMatchingStore = state.withLock { state in
+
+            return state.eventStores.first { store in
+                return outcomes.allSatisfy { outcome in
+                    return
+                        state.delegate?.outcomeStore(store, shouldHandleWritingOutcome: outcome) ??
+                        outcomeStore(store, shouldHandleWritingOutcome: outcome)
+                }
+            }
+        }
+
+        guard let firstMatchingStore else {
+            throw OCKStoreError.invalidValue(reason: "Cannot find store to handle outcomes")
+        }
+
+        return firstMatchingStore
+    }
+
+    private func storesHandlingQuery(_ query: OCKOutcomeQuery) -> [OCKAnyReadOnlyOutcomeStore] {
+
+        return state.withLock { state in
+
+            let stores = state.readOnlyEventStores + state.eventStores
+
+            let respondingStores = stores.filter { store in
+                return
+                    state.delegate?.outcomeStore(store, shouldHandleQuery: query) ??
+                    outcomeStore(store, shouldHandleQuery: query)
+            }
+
+            return respondingStores
+        }
     }
 }

@@ -136,39 +136,39 @@ class TestStoreBuildRevisions: XCTestCase {
 
     // MARK: Tasks
 
-    func testAddingTaskCreatesRevisionRecord() throws {
+    func testAddingTaskCreatesRevisionRecord() async throws {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
         let task = OCKTask(id: "a", title: nil, carePlanUUID: nil, schedule: schedule)
-        try store.addTaskAndWait(task)
+        try await store.addTask(task)
 
         let revision = try store.computeRevisions(since: .init()).first
         XCTAssertEqual(revision?.entities.count, 1)
         XCTAssertEqual(revision?.entities.first?.entityType, .task)
     }
 
-    func testUpdatingTaskCreatesRevisionRecord() throws {
+    func testUpdatingTaskCreatesRevisionRecord() async throws {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
 
         var task = OCKTask(id: "a", title: nil, carePlanUUID: nil, schedule: schedule)
-        try store.addTaskAndWait(task)
+        try await store.addTask(task)
 
         task.title = "Updated"
-        try store.updateTaskAndWait(task)
+        try await store.updateTask(task)
 
         let revision = try store.computeRevisions(since: .init()).first
         XCTAssertEqual(revision?.entities.count, 2)
         XCTAssertEqual(revision?.entities.first?.entityType, .task)
     }
 
-    func testRevisionForDeletingTask() throws {
+    func testRevisionForDeletingTask() async throws {
         let schedule = OCKSchedule.dailyAtTime(hour: 12, minutes: 0, start: Date(), end: nil, text: nil)
         let taskA1 = OCKTask(id: "A", title: "A1", carePlanUUID: nil, schedule: schedule)
-        try store.addTaskAndWait(taskA1)
+        try await store.addTask(taskA1)
 
         let taskA2 = OCKTask(id: "A", title: "A2", carePlanUUID: nil, schedule: schedule)
-        try store.updateTaskAndWait(taskA2)
+        try await store.updateTask(taskA2)
         store.context.knowledgeVector.increment(clockFor: store.context.clockID)
-        try store.deleteTasksAndWait([taskA2])
+        try await store.deleteTasks([taskA2])
         let vector = OCKRevisionRecord.KnowledgeVector([store.context.clockID: 1])
         let revision = try store.computeRevisions(since: vector).first
 
@@ -178,27 +178,27 @@ class TestStoreBuildRevisions: XCTestCase {
 
     // MARK: Outcomes
 
-    func testAddingOutcomeCreatesRevisionRecord() throws {
+    func testAddingOutcomeCreatesRevisionRecord() async throws {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
         var task = OCKTask(id: "a", title: nil, carePlanUUID: nil, schedule: schedule)
-        task = try store.addTaskAndWait(task)
+        task = try await store.addTask(task)
 
         let outcome = OCKOutcome(taskUUID: task.uuid, taskOccurrenceIndex: 0, values: [])
-        try store.addOutcomeAndWait(outcome)
+        try await store.addOutcome(outcome)
 
         let revision = try store.computeRevisions(since: .init()).first!
         XCTAssertEqual(revision.entities.count, 2)
         XCTAssertEqual(revision.entities.last?.entityType, .outcome)
     }
 
-    func testDeletingOutcomeCreatesRevisionRecords() throws {
+    func testDeletingOutcomeCreatesRevisionRecords() async throws {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
         var task = OCKTask(id: "a", title: nil, carePlanUUID: nil, schedule: schedule)
-        task = try store.addTaskAndWait(task)
+        task = try await store.addTask(task)
 
         let outcome = OCKOutcome(taskUUID: task.uuid, taskOccurrenceIndex: 0, values: [])
-        try store.addOutcomeAndWait(outcome)
-        try store.deleteOutcomeAndWait(outcome)
+        try await store.addOutcome(outcome)
+        try await store.deleteOutcome(outcome)
         let revision = try store.computeRevisions(since: .init()).first
 
         XCTAssertEqual(revision?.entities.last?.entityType, .outcome)
@@ -207,32 +207,32 @@ class TestStoreBuildRevisions: XCTestCase {
 
     // MARK: Patients
 
-    func testAddingPatientCreatesRevisionRecord() throws {
+    func testAddingPatientCreatesRevisionRecord() async throws {
         let patient = OCKPatient(id: "id1", givenName: "Amy", familyName: "Frost")
-        try store.addPatientAndWait(patient)
+        try await store.addPatient(patient)
 
         let revision = try store.computeRevisions(since: .init()).first
         XCTAssertEqual(revision?.entities.count, 1)
         XCTAssertEqual(revision?.entities.first?.entityType, .patient)
     }
 
-    func testUpdatingPatientCreatesRevisionRecord() throws {
+    func testUpdatingPatientCreatesRevisionRecord() async throws {
         var patient = OCKPatient(id: "id1", givenName: "Amy", familyName: "Frost")
-        try store.addPatientAndWait(patient)
+        try await store.addPatient(patient)
 
         patient.asset = "Updated"
-        try store.updatePatientAndWait(patient)
+        try await store.updatePatient(patient)
 
         let revision = try store.computeRevisions(since: .init()).first
         XCTAssertEqual(revision?.entities.count, 2)
         XCTAssertEqual(revision?.entities.first?.entityType, .patient)
     }
 
-    func testRevisionForDeletingPatient() throws {
+    func testRevisionForDeletingPatient() async throws {
         let patient = OCKPatient(id: "id1", givenName: "Amy", familyName: "Frost")
-        try store.addPatientAndWait(patient)
+        try await store.addPatient(patient)
 
-        try store.deletePatientsAndWait([patient])
+        try await store.deletePatients([patient])
         let revision = try store.computeRevisions(since: .init()).first
 
         XCTAssertEqual(revision?.entities.count, 2)
@@ -241,32 +241,32 @@ class TestStoreBuildRevisions: XCTestCase {
 
     // MARK: CarePlans
 
-    func testAddingCarePlanCreatesRevisionRecord() throws {
+    func testAddingCarePlanCreatesRevisionRecord() async throws {
         let plan = OCKCarePlan(id: "diabetes_type_1", title: "Diabetes Care Plan", patientUUID: nil)
-        try store.addCarePlanAndWait(plan)
+        try await store.addCarePlan(plan)
 
         let revision = try store.computeRevisions(since: .init()).first
         XCTAssertEqual(revision?.entities.count, 1)
         XCTAssertEqual(revision?.entities.first?.entityType, .carePlan)
     }
 
-    func testUpdatingCarePlanCreatesRevisionRecord() throws {
+    func testUpdatingCarePlanCreatesRevisionRecord() async throws {
         var plan = OCKCarePlan(id: "diabetes_type_1", title: "Diabetes Care Plan", patientUUID: nil)
-        try store.addCarePlanAndWait(plan)
+        try await store.addCarePlan(plan)
 
         plan.title = "Updated"
-        try store.updateCarePlanAndWait(plan)
+        try await store.updateCarePlan(plan)
 
         let revision = try store.computeRevisions(since: .init()).first
         XCTAssertEqual(revision?.entities.count, 2)
         XCTAssertEqual(revision?.entities.first?.entityType, .carePlan)
     }
 
-    func testRevisionForDeletingCarePlan() throws {
+    func testRevisionForDeletingCarePlan() async throws {
         let plan = OCKCarePlan(id: "diabetes_type_1", title: "Diabetes Care Plan", patientUUID: nil)
-        try store.addCarePlanAndWait(plan)
+        try await store.addCarePlan(plan)
 
-        try store.deleteCarePlansAndWait([plan])
+        try await store.deleteCarePlans([plan])
         let revision = try store.computeRevisions(since: .init()).first
 
         XCTAssertEqual(revision?.entities.count, 2)
@@ -275,32 +275,32 @@ class TestStoreBuildRevisions: XCTestCase {
 
     // MARK: Contact
 
-    func testAddingContactCreatesRevisionRecord() throws {
+    func testAddingContactCreatesRevisionRecord() async throws {
         let contact = OCKContact(id: "contact", givenName: "Amy", familyName: "Frost", carePlanUUID: nil)
-        try store.addContactAndWait(contact)
+        try await store.addContact(contact)
 
         let revision = try store.computeRevisions(since: .init()).first
         XCTAssertEqual(revision?.entities.count, 1)
         XCTAssertEqual(revision?.entities.first?.entityType, .contact)
     }
 
-    func testUpdatingContactCreatesRevisionRecord() throws {
+    func testUpdatingContactCreatesRevisionRecord() async throws {
         var contact = OCKContact(id: "contact", givenName: "Amy", familyName: "Frost", carePlanUUID: nil)
-        try store.addContactAndWait(contact)
+        try await store.addContact(contact)
 
         contact.organization = "Updated"
-        try store.updateContactAndWait(contact)
+        try await store.updateContact(contact)
 
         let revision = try store.computeRevisions(since: .init()).first
         XCTAssertEqual(revision?.entities.count, 2)
         XCTAssertEqual(revision?.entities.first?.entityType, .contact)
     }
 
-    func testRevisionForDeletingContact() throws {
+    func testRevisionForDeletingContact() async throws {
         let contact = OCKContact(id: "contact", givenName: "Amy", familyName: "Frost", carePlanUUID: nil)
-        try store.addContactAndWait(contact)
+        try await store.addContact(contact)
 
-        try store.deleteContactsAndWait([contact])
+        try await store.deleteContacts([contact])
         let revision = try store.computeRevisions(since: .init()).first
 
         XCTAssertEqual(revision?.entities.count, 2)

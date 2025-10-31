@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2022, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -28,43 +28,15 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Foundation
-import os.log
+import Synchronization
 
-/// A protocol that describes user progress for a task.
-public protocol CareTaskProgress {
+extension Mutex where Value: Sendable {
 
-    /// The fraction of the task that completed between 0 and 1 inclusive.
-    ///
-    /// When using CareKit, the value is clamped to ensure it's within the proper range.
-    var fractionCompleted: Double { get }
-}
-
-extension CareTaskProgress {
-
-    var clampedFractionCompleted: Double {
-
-        let isClampingRequired = fractionCompleted < 0 || fractionCompleted > 1
-
-        // Make sure to notify the developer if we need to clamp the value. The need to clamp
-        // the value is typically an indicator that there's an issue in their implementation of
-        // `fractionCompleted`.
-        if isClampingRequired {
-            Logger.store?.error(
-                "Clamping progress value of \(fractionCompleted, privacy: .public) to be within range [0, 1]."
-            )
-        }
-
-        return min(max(fractionCompleted, 0), 1)
+    func value() -> Value {
+        return withLock { $0 }
     }
-}
 
-public extension CareTaskProgress {
-
-    /// A property set to `true` if the task is considered completed.
-    var isCompleted: Bool {
-
-        let isCompleted = fractionCompleted >= 1
-        return isCompleted
+    func setValue(_ value: Value) {
+        withLock { $0 = value }
     }
 }

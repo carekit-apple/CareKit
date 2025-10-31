@@ -30,6 +30,7 @@
 
 #if canImport(WatchConnectivity)
 import Foundation
+import Synchronization
 import WatchConnectivity
 
 private let revisionRequestKey = "OCKPeerRevisionRequest"
@@ -45,12 +46,19 @@ private let revisionErrorKey = "OCKPeerRevisionErrorKey"
 /// synchronize with the phone at any time. The phone however, cannot wake the watch, so
 /// synchronizations initiated from the phone will only succeed when the companion app is in a
 /// reachable state.
-open class OCKWatchConnectivityPeer: OCKRemoteSynchronizable {
+public final class OCKWatchConnectivityPeer: OCKRemoteSynchronizable {
 
-    struct Payload: Codable {
+    private struct State {
+        var automaticallySynchronizes = true
+        weak var delegate: OCKRemoteSynchronizationDelegate?
+    }
+
+    struct Payload: Codable, Sendable {
         let knowledgeVector: OCKRevisionRecord.KnowledgeVector
         let revisions: [OCKRevisionRecord]
     }
+
+    private let state = Mutex(State())
 
     public init() {}
 
@@ -106,9 +114,21 @@ open class OCKWatchConnectivityPeer: OCKRemoteSynchronizable {
 
     // MARK: OCKRemoteSynchronizable
 
-    public var automaticallySynchronizes = true
+    public var automaticallySynchronizes: Bool {
+        get {
+            return state.withLock { $0.automaticallySynchronizes }
+        } set {
+            state.withLock { $0.automaticallySynchronizes = newValue }
+        }
+    }
 
-    public weak var delegate: OCKRemoteSynchronizationDelegate?
+    public var delegate: OCKRemoteSynchronizationDelegate?  {
+        get {
+            return state.withLock { $0.delegate }
+        } set {
+            state.withLock { $0.delegate = newValue }
+        }
+    }
 
     public func pullRevisions(
         since knowledgeVector: OCKRevisionRecord.KnowledgeVector,
@@ -194,7 +214,9 @@ open class OCKWatchConnectivityPeer: OCKRemoteSynchronizable {
 
     // MARK: Internal
 
-    fileprivate let session = WCSession.default
+    fileprivate var session: WCSession {
+        return .default
+    }
 
     // MARK: Test Seams
 

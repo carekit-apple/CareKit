@@ -31,7 +31,7 @@
 import Foundation
 
 /// A store that allows for reading patients.
-public protocol OCKAnyReadOnlyPatientStore: OCKAnyResettableStore {
+public protocol OCKAnyReadOnlyPatientStore: OCKAnyResettableStore, Sendable {
 
     /// A continuous stream of patients that exist in the store.
     ///
@@ -52,8 +52,10 @@ public protocol OCKAnyReadOnlyPatientStore: OCKAnyResettableStore {
     ///   - query: A query used to constrain the values that will be fetched.
     ///   - callbackQueue: The queue that the completion closure should be called on. In most cases this should be the main queue.
     ///   - completion: A callback that will fire on the provided callback queue.
-    func fetchAnyPatients(query: OCKPatientQuery, callbackQueue: DispatchQueue,
-                          completion: @escaping OCKResultClosure<[OCKAnyPatient]>)
+    func fetchAnyPatients(
+        query: OCKPatientQuery, callbackQueue: DispatchQueue,
+        completion: @escaping OCKResultClosure<[OCKAnyPatient]>
+    )
 
     // MARK: Singular Methods - Implementation Provided
 
@@ -123,8 +125,12 @@ public protocol OCKAnyPatientStore: OCKAnyReadOnlyPatientStore {
 // MARK: Singular Methods for OCKAnyReadOnlyPatientStore
 
 public extension OCKAnyReadOnlyPatientStore {
-    func fetchAnyPatient(withID id: String, callbackQueue: DispatchQueue = .main,
-                         completion: @escaping OCKResultClosure<OCKAnyPatient>) {
+
+    func fetchAnyPatient(
+        withID id: String,
+        callbackQueue: DispatchQueue = .main,
+        completion: @escaping OCKResultClosure<OCKAnyPatient>
+    ) {
         var query = OCKPatientQuery(for: Date())
         query.limit = 1
         query.sortDescriptors = [.effectiveDate(ascending: true)]
@@ -189,6 +195,7 @@ public extension OCKAnyPatientStore {
     ///
     /// - Parameters:
     ///   - patients: An array of patients to be added to the store.
+    @discardableResult
     func addAnyPatients(_ patients: [OCKAnyPatient]) async throws -> [OCKAnyPatient] {
         try await withCheckedThrowingContinuation { continuation in
             addAnyPatients(patients, callbackQueue: .main, completion: { continuation.resume(with: $0) })
@@ -199,6 +206,7 @@ public extension OCKAnyPatientStore {
     ///
     /// - Parameters:
     ///   - patients: An array of patients to be updated. The patients must already exist in the store.
+    @discardableResult
     func updateAnyPatients(_ patients: [OCKAnyPatient]) async throws -> [OCKAnyPatient] {
         try await withCheckedThrowingContinuation { continuation in
             updateAnyPatients(patients, callbackQueue: .main, completion: { continuation.resume(with: $0) })
@@ -209,6 +217,7 @@ public extension OCKAnyPatientStore {
     ///
     /// - Parameters:
     ///   - patients: An array of patients to be deleted. The patients must exist in the store.
+    @discardableResult
     func deleteAnyPatients(_ patients: [OCKAnyPatient]) async throws -> [OCKAnyPatient] {
         try await withCheckedThrowingContinuation { continuation in
             deleteAnyPatients(patients, callbackQueue: .main, completion: { continuation.resume(with: $0) })
@@ -221,6 +230,7 @@ public extension OCKAnyPatientStore {
     ///
     /// - Parameters:
     ///   - patient: A single patient to be added to the store.
+    @discardableResult
     func addAnyPatient(_ patient: OCKAnyPatient) async throws -> OCKAnyPatient {
         try await withCheckedThrowingContinuation { continuation in
             addAnyPatient(patient, callbackQueue: .main, completion: { continuation.resume(with: $0) })
@@ -231,6 +241,7 @@ public extension OCKAnyPatientStore {
     ///
     /// - Parameters:
     ///   - patient: A single patient to be updated. The patients must already exist in the store.
+    @discardableResult
     func updateAnyPatient(_ patient: OCKAnyPatient) async throws -> OCKAnyPatient {
         try await withCheckedThrowingContinuation { continuation in
             updateAnyPatient(patient, callbackQueue: .main, completion: { continuation.resume(with: $0) })
@@ -241,6 +252,7 @@ public extension OCKAnyPatientStore {
     ///
     /// - Parameters:
     ///   - patient: A single patient to be deleted. The patients must exist in the store.
+    @discardableResult
     func deleteAnyPatient(_ patient: OCKAnyPatient) async throws -> OCKAnyPatient {
         try await withCheckedThrowingContinuation { continuation in
             deleteAnyPatient(patient, callbackQueue: .main, completion: { continuation.resume(with: $0) })

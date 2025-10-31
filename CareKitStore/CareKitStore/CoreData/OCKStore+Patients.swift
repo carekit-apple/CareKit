@@ -33,42 +33,26 @@ import os.log
 
 extension OCKStore {
 
-    public func patients(matching query: OCKPatientQuery) -> CareStoreQueryResults<OCKPatient> {
+    public func patients(matching query: OCKPatientQuery) -> some AsyncSequence<[OCKPatient], Error> & Sendable {
 
         // Setup a live query
 
         let predicate = query.basicPredicate(enforceDateInterval: true)
         let sortDescriptors = buildSortDescriptors(from: query)
 
-        let monitor = CoreDataQueryMonitor(
+        return AsyncStreamFactory.coreDataResults(
             OCKCDPatient.self,
             predicate: predicate,
             sortDescriptors: sortDescriptors,
             context: context
         )
-
-        // Wrap the live query in an async stream
-
-        let coreDataPatients = monitor.results()
-
-        // Convert Core Data results to DTOs
-
-        let patients = coreDataPatients
-            .map { patients in
-                patients.map { $0.makePatient() }
-            }
-
-        // Wrap the final transformed stream to hide all implementation details from
-        // the public API
-
-        let wrappedPatients = CareStoreQueryResults(wrapping: patients)
-        return wrappedPatients
+        .map { $0 as! [Patient] }
     }
 
     public func fetchPatients(
         query: OCKPatientQuery = OCKPatientQuery(),
         callbackQueue: DispatchQueue = .main,
-        completion: @escaping (Result<[OCKPatient], OCKStoreError>) -> Void
+        completion: @Sendable @escaping (Result<[OCKPatient], OCKStoreError>) -> Void
     ) {
         fetchValues(
             predicate: query.basicPredicate(enforceDateInterval: true),
@@ -85,7 +69,7 @@ extension OCKStore {
     public func addPatients(
         _ patients: [OCKPatient],
         callbackQueue: DispatchQueue = .main,
-        completion: ((Result<[OCKPatient], OCKStoreError>) -> Void)? = nil
+        completion: (@Sendable (Result<[OCKPatient], OCKStoreError>) -> Void)? = nil
     ) {
         transaction(
             inserts: patients, updates: [], deletes: [],
@@ -100,7 +84,7 @@ extension OCKStore {
     public func updatePatients(
         _ patients: [OCKPatient],
         callbackQueue: DispatchQueue = .main,
-        completion: ((Result<[OCKPatient], OCKStoreError>) -> Void)? = nil
+        completion: (@Sendable (Result<[OCKPatient], OCKStoreError>) -> Void)? = nil
     ) {
         transaction(inserts: [], updates: patients, deletes: []) { result in
             callbackQueue.async {
@@ -112,7 +96,7 @@ extension OCKStore {
     public func deletePatients(
         _ patients: [OCKPatient],
         callbackQueue: DispatchQueue = .main,
-        completion: ((Result<[OCKPatient], OCKStoreError>) -> Void)? = nil
+        completion: (@Sendable (Result<[OCKPatient], OCKStoreError>) -> Void)? = nil
     ) {
         transaction(inserts: [], updates: [], deletes: patients) { result in
             callbackQueue.async {

@@ -34,42 +34,26 @@ import os.log
 
 extension OCKStore {
 
-    public func outcomes(matching query: OCKOutcomeQuery) -> CareStoreQueryResults<OCKOutcome> {
+    public func outcomes(matching query: OCKOutcomeQuery) -> some AsyncSequence<[OCKOutcome], Error> & Sendable {
 
         // Setup a live query
 
         let predicate = buildPredicate(for: query)
         let sortDescriptors = buildSortDescriptors(for: query)
 
-        let monitor = CoreDataQueryMonitor(
+        return AsyncStreamFactory.coreDataResults(
             OCKCDOutcome.self,
             predicate: predicate,
             sortDescriptors: sortDescriptors,
             context: context
         )
-
-        // Wrap the live query in an async stream
-
-        let coreDataOutcomes = monitor.results()
-
-        // Convert Core Data results to DTOs
-
-        let outcomes = coreDataOutcomes
-            .map { outcomes in
-                outcomes.map { $0.makeOutcome() }
-            }
-
-        // Wrap the final transformed stream to hide all implementation details from
-        // the public API
-
-        let wrappedOutcomes = CareStoreQueryResults(wrapping: outcomes)
-        return wrappedOutcomes
+        .map { $0 as! [Outcome] }
     }
 
     public func fetchOutcomes(
         query: OCKOutcomeQuery = OCKOutcomeQuery(),
         callbackQueue: DispatchQueue = .main,
-        completion: @escaping (Result<[OCKOutcome], OCKStoreError>) -> Void
+        completion: @Sendable @escaping (Result<[OCKOutcome], OCKStoreError>) -> Void
     ) {
         context.perform {
             do {
@@ -95,7 +79,7 @@ extension OCKStore {
     public func addOutcomes(
         _ outcomes: [OCKOutcome],
         callbackQueue: DispatchQueue = .main,
-        completion: ((Result<[OCKOutcome], OCKStoreError>) -> Void)? = nil
+        completion: (@Sendable (Result<[OCKOutcome], OCKStoreError>) -> Void)? = nil
     ) {
         transaction(
             inserts: outcomes, updates: [], deletes: [],
@@ -114,7 +98,7 @@ extension OCKStore {
     public func updateOutcomes(
         _ outcomes: [OCKOutcome],
         callbackQueue: DispatchQueue = .main,
-        completion: ((Result<[OCKOutcome], OCKStoreError>) -> Void)? = nil
+        completion: (@Sendable (Result<[OCKOutcome], OCKStoreError>) -> Void)? = nil
     ) {
         transaction(
             inserts: [], updates: outcomes, deletes: [],
@@ -132,7 +116,7 @@ extension OCKStore {
     public func deleteOutcomes(
         _ outcomes: [OCKOutcome],
         callbackQueue: DispatchQueue = .main,
-        completion: ((Result<[OCKOutcome], OCKStoreError>) -> Void)? = nil
+        completion: (@Sendable (Result<[OCKOutcome], OCKStoreError>) -> Void)? = nil
     ) {
         transaction(inserts: [], updates: [], deletes: outcomes) { result in
             callbackQueue.async {

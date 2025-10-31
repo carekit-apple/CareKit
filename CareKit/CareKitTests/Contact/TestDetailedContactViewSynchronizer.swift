@@ -45,12 +45,15 @@ private extension OCKContact {
         contact.title = "Family Practice"
         contact.messagingNumbers = phoneNumbers
         contact.emailAddresses = [OCKLabeledValue(label: "work", value: "lexitorres@icloud.com")]
-        let address = OCKPostalAddress()
-        address.street = "26 E Centerline Rd"
-        address.city = "Victor"
-        address.state = "MI"
-        address.postalCode = "48848"
-        contact.address = address
+
+        contact.address = OCKPostalAddress(
+            street: "26 E Centerline Rd",
+            city: "Victor",
+            state: "MI",
+            postalCode:  "48848",
+            country: ""
+        )
+
         return contact
     }
 }
@@ -99,7 +102,7 @@ class TestDetailedContactViewSynchronizer: XCTestCase {
         XCTAssertEqual(view.headerView.detailLabel.text, contact.title)
         XCTAssertEqual(view.headerView.iconImageView?.image, UIImage(systemName: "person.crop.circle"))
         XCTAssertEqual(view.instructionsLabel.text, contact.role)
-        XCTAssertEqual(view.addressButton.detailLabel.text, addressFormatter.string(from: contact.address!))
+        XCTAssertEqual(view.addressButton.detailLabel.text, addressFormatter.string(from: contact.address!.cnPostalAddress()))
         XCTAssertFalse(view.addressButton.isHidden)
         XCTAssertFalse(view.callButton.isHidden)
         XCTAssertFalse(view.emailButton.isHidden)

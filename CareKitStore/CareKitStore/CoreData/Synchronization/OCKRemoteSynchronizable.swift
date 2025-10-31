@@ -31,7 +31,7 @@
 import Foundation
 
 /// Implement this protocol to listen for important events coming from an `OCKRemoteSynchronizable`.
-public protocol OCKRemoteSynchronizationDelegate: AnyObject {
+public protocol OCKRemoteSynchronizationDelegate: AnyObject, Sendable {
 
     /// This method will be called whenever a remote endpoint has changes that need to
     /// be reflected in the device's database.
@@ -49,7 +49,7 @@ public protocol OCKRemoteSynchronizationDelegate: AnyObject {
 }
 
 /// Implement this protocol to allow CareKitStore to synchronize against an endpoint of your choosing.
-public protocol OCKRemoteSynchronizable: AnyObject {
+public protocol OCKRemoteSynchronizable: AnyObject, Sendable {
 
     /// If set, the delegate will be alerted to important events delivered by the remote store.
     var delegate: OCKRemoteSynchronizationDelegate? { get set }
@@ -67,7 +67,7 @@ public protocol OCKRemoteSynchronizable: AnyObject {
     func pullRevisions(
         since knowledgeVector: OCKRevisionRecord.KnowledgeVector,
         mergeRevision: @escaping (OCKRevisionRecord) -> Void,
-        completion: @escaping (Error?) -> Void)
+        completion: @escaping @Sendable (Error?) -> Void)
 
     /// Push a revision from a device up to the server.
     ///
@@ -78,7 +78,7 @@ public protocol OCKRemoteSynchronizable: AnyObject {
     func pushRevisions(
         deviceRevisions: [OCKRevisionRecord],
         deviceKnowledge: OCKRevisionRecord.KnowledgeVector,
-        completion: @escaping (Error?) -> Void)
+        completion: @escaping @Sendable (Error?) -> Void)
 
     /// This method will be called when CareKit detects a conflict between changes made to an entity in
     /// the device's local store and the changes made to the same entity in other device's stores. Inspect the
@@ -92,5 +92,6 @@ public protocol OCKRemoteSynchronizable: AnyObject {
     ///   - completion: A closure that should be called with the version to keep.
     func chooseConflictResolution(
         conflicts: [OCKEntity],
-        completion: @escaping OCKResultClosure<OCKEntity>)
+        completion: @escaping OCKResultClosure<OCKEntity>
+    )
 }

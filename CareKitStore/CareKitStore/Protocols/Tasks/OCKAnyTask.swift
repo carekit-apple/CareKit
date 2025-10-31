@@ -31,7 +31,7 @@
 import Foundation
 
 /// Conforming a type to `OCKAnyTask` allows it to be queried and displayed by CareKit.
-public protocol OCKAnyTask {
+public protocol OCKAnyTask: Sendable {
 
     /// A user-defined unique identifier, typically human readable.
     var id: String { get }

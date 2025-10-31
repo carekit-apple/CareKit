@@ -38,7 +38,7 @@ extension OCKReadOnlyEventStore where Task: OCKAnyVersionableTask {
         query: OCKTaskQuery,
         effectiveAfter startDate: Date,
         callbackQueue: DispatchQueue,
-        completion: @escaping (Result<[[Task]], OCKStoreError>) -> Void
+        completion: @escaping @Sendable (Result<[[Task]], OCKStoreError>) -> Void
     ) {
 
         fetchTasks(
@@ -80,7 +80,7 @@ extension OCKReadOnlyEventStore where Task: OCKAnyVersionableTask {
         effectiveAfter startDate: Date,
         previousResult: [Task],
         callbackQueue: DispatchQueue,
-        completion: @escaping (Result<[Task], OCKStoreError>) -> Void
+        completion: @escaping @Sendable (Result<[Task], OCKStoreError>) -> Void
     ) {
 
         // If there is no task, return
@@ -100,8 +100,7 @@ extension OCKReadOnlyEventStore where Task: OCKAnyVersionableTask {
         }
 
         // Store the current task. Task chain is ordered by descending `effectiveDate`
-        var taskVersionChain = previousResult
-        taskVersionChain.append(task)
+        let taskVersionChain = previousResult + [task]
 
         // If there are no previous versions, we can return early
         guard let previousTaskVersionUUID = task
@@ -222,7 +221,7 @@ extension OCKReadOnlyEventStore where Task: OCKAnyVersionableTask {
         // given date interval, and not all versions of the task
 
         let dateInterval = latestTaskVersionsQuery.dateInterval ??
-            Calendar.current.dateInterval(of: .day, for: Date())!
+            Calendar.autoupdatingCurrent.dateInterval(of: .day, for: Date())!
 
         latestTaskVersionsQuery.dateInterval = dateInterval
 

@@ -31,10 +31,10 @@
 import Foundation
 
 /// A query that limits which tasks will be returned when fetching.
-public struct OCKTaskQuery: Equatable, OCKQueryProtocol {
+public struct OCKTaskQuery: Equatable, Sendable, OCKQueryProtocol {
 
     /// Specifies the order in which query results will be sorted.
-    public enum SortDescriptor: Equatable {
+    public enum SortDescriptor: Equatable, Sendable {
         case effectiveDate(ascending: Bool)
         case groupIdentifier(ascending: Bool)
         case title(ascending: Bool)
@@ -96,8 +96,8 @@ public struct OCKTaskQuery: Equatable, OCKQueryProtocol {
 
     /// Create a query with that spans the entire day on the date given.
     public init(for date: Date) {
-        let startOfDay = Calendar.current.startOfDay(for: date)
-        let endOfDay = Calendar.current.date(byAdding: DateComponents(day: 1, second: -1), to: startOfDay)!
+        let startOfDay = Calendar.autoupdatingCurrent.startOfDay(for: date)
+        let endOfDay = Calendar.autoupdatingCurrent.date(byAdding: DateComponents(day: 1, second: -1), to: startOfDay)!
         self = Self(dateInterval: DateInterval(start: startOfDay, end: endOfDay))
     }
 

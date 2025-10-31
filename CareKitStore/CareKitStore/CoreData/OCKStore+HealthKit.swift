@@ -35,37 +35,21 @@ import os.log
 
 extension OCKStore {
 
-    typealias HealthKitTasks = AsyncMapSequence<
-        AsyncThrowingStream<[OCKCDHealthKitTask], Error>, [OCKHealthKitTask]
-    >
-
     // Returns `some AsyncSequence where Element == [OCKCDHealthKitTask]`
-    func healthKitTasks(matching query: OCKTaskQuery) -> HealthKitTasks {
+    func healthKitTasks(matching query: OCKTaskQuery) -> some AsyncSequence<[OCKHealthKitTask], Error> & Sendable {
 
         // Setup a live query
 
         let predicate = buildPredicate(for: query)
         let sortDescriptors = buildSortDescriptors(for: query)
 
-        let monitor = CoreDataQueryMonitor(
+        return AsyncStreamFactory.coreDataResults(
             OCKCDHealthKitTask.self,
             predicate: predicate,
             sortDescriptors: sortDescriptors,
             context: context
         )
-
-        // Wrap the live query in an async stream
-
-        let coreDataTasks = monitor.results()
-
-        // Convert Core Data results to DTOs
-
-        let tasks = coreDataTasks
-            .map { tasks in
-                tasks.map { $0.makeTask() }
-            }
-
-        return tasks
+        .map { $0 as! [OCKHealthKitTask] }
     }
 
     func fetchHealthKitTasks(query: OCKTaskQuery) throws -> [OCKHealthKitTask] {
@@ -97,7 +81,7 @@ extension OCKStore {
     func addHealthKitTasks(
         _ tasks: [OCKHealthKitTask],
         callbackQueue: DispatchQueue = .main,
-        completion: ((Result<[OCKHealthKitTask], OCKStoreError>) -> Void)? = nil) {
+        completion: (@Sendable (Result<[OCKHealthKitTask], OCKStoreError>) -> Void)? = nil) {
 
         transaction(inserts: tasks, updates: [], deletes: []) { result in
             callbackQueue.async {
@@ -109,7 +93,7 @@ extension OCKStore {
     func updateHealthKitTasks(
         _ tasks: [OCKHealthKitTask],
         callbackQueue: DispatchQueue = .main,
-        completion: ((Result<[OCKHealthKitTask], OCKStoreError>) -> Void)? = nil) {
+        completion: (@Sendable (Result<[OCKHealthKitTask], OCKStoreError>) -> Void)? = nil) {
 
         transaction(inserts: [], updates: tasks, deletes: []) { result in
             callbackQueue.async {
@@ -121,7 +105,7 @@ extension OCKStore {
     func deleteHealthKitTasks(
         _ tasks: [OCKHealthKitTask],
         callbackQueue: DispatchQueue = .main,
-        completion: ((Result<[OCKHealthKitTask], OCKStoreError>) -> Void)? = nil) {
+        completion: (@Sendable (Result<[OCKHealthKitTask], OCKStoreError>) -> Void)? = nil) {
 
         transaction(inserts: [], updates: [], deletes: tasks) { result in
             callbackQueue.async {

@@ -31,28 +31,39 @@
 import CoreData
 import Foundation
 import os.log
+import Synchronization
 
 /// A wrapper around Core Data that allows for starting and stopping a live query.
-final class CoreDataQueryMonitor<
-    QueryResultElement: NSManagedObject
->: NSObject, QueryMonitor, NSFetchedResultsControllerDelegate {
+final class CoreDataQueryMonitor<Element: OCKCDVersionedObject>: NSObject, Sendable, NSFetchedResultsControllerDelegate {
 
-    private let request: NSFetchRequest<QueryResultElement>
-    private let context: NSManagedObjectContext
+    private struct State {
+        nonisolated(unsafe) var controller: NSFetchedResultsController<Element>?
+        var resultHandler: @Sendable (Result<[OCKVersionedObjectCompatible], Error>) -> Void = { _ in }
+    }
 
-    private var controller: NSFetchedResultsController<QueryResultElement>?
+    private let state: Mutex<State>
 
-    var resultHandler: (Result<[QueryResultElement], Error>) -> Void = { _ in }
+    private nonisolated(unsafe) let request: NSFetchRequest<Element>
+    private nonisolated(unsafe) let context: NSManagedObjectContext
+
+    var resultHandler: @Sendable (Result<[OCKVersionedObjectCompatible], Error>) -> Void {
+        get {
+            return state.withLock { $0.resultHandler }
+        } set {
+            state.withLock { $0.resultHandler = newValue }
+        }
+    }
 
     /// A wrapper around Core Data that allows for starting and stopping a live query.
     init(
-        _ elementType: QueryResultElement.Type,
+        _ elementType: Element.Type,
         predicate: NSPredicate,
         sortDescriptors: [NSSortDescriptor],
-        context: NSManagedObjectContext
+        context: NSManagedObjectContext,
+        resultHandler: @Sendable @escaping (Result<[OCKVersionedObjectCompatible], Error>) -> Void = { _ in }
     ) {
-        let request = NSFetchRequest<QueryResultElement>(
-            entityName: QueryResultElement.entity().name!
+        let request = NSFetchRequest<Element>(
+            entityName: Element.entity().name!
         )
 
         request.predicate = predicate
@@ -61,57 +72,76 @@ final class CoreDataQueryMonitor<
 
         self.request = request
         self.context = context
+        state = Mutex(State(resultHandler: resultHandler))
     }
     
     func startQuery() {
 
-        // Don't perform the query again if it's already running
-        guard controller == nil else { return }
+        let initialResult: Result<[OCKVersionedObjectCompatible], Error>? = state.withLock { state in
 
-        // Create a controller that will be used to fetch Core Data entities
+            // Don't perform the query again if it's already running
+            guard state.controller == nil else {
+                return nil
+            }
 
-        controller = NSFetchedResultsController(
-            fetchRequest: request,
-            managedObjectContext: context,
-            sectionNameKeyPath: nil,
-            cacheName: nil
-        )
+            // Create a controller that will be used to fetch Core Data entities
 
-        controller?.delegate = self
+            state.controller = NSFetchedResultsController(
+                fetchRequest: request,
+                managedObjectContext: context,
+                sectionNameKeyPath: nil,
+                cacheName: nil
+            )
 
-        // Fetch the initial data from the Core Data store
+            state.controller?.delegate = self
 
-        do {
-            try controller!.performFetch()
-        } catch {
-            os_log(.error, log: .store, "Query failed: %@", error as NSError)
-            resultHandler(.failure(error))
-            return
+            // Fetch the initial data from the Core Data store
+
+            do {
+                try state.controller!.performFetch()
+            } catch {
+                os_log(.error, log: .store, "Query failed: %@", error as NSError)
+                return .failure(error)
+            }
+
+            let results = state.controller?.fetchedObjects ?? []
+            let transformedResults = results.map { $0.makeValue() }
+            return .success(transformedResults)
         }
 
-        let result = controller!.fetchedObjects ?? []
-        self.resultHandler(.success(result))
+        if let initialResult {
+            resultHandler(initialResult)
+        }
     }
 
     func stopQuery() {
-        controller?.delegate = nil
-        controller = nil
+        state.withLock { state in
+            state.controller?.delegate = nil
+            state.controller = nil
+        }
     }
 
     // MARK: - NSFetchedResultsControllerDelegate
 
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
 
-        // Forward an updated query result whenever a change is detected
+        let results: [OCKVersionedObjectCompatible]? = state.withLock { state in
 
-        guard
-            let storedController = self.controller,
-            storedController == controller
-        else {
-            return
+            guard
+                let storedController = state.controller,
+                storedController == controller
+            else {
+                return nil
+            }
+
+            let results = storedController.fetchedObjects ?? []
+            let transformedResults = results.map { $0.makeValue() }
+            return transformedResults
         }
 
-        let result = storedController.fetchedObjects ?? []
-        resultHandler(.success(result))
+        // Forward an updated query result whenever a change is detected
+        if let results {
+            resultHandler(.success(results))
+        }
     }
 }

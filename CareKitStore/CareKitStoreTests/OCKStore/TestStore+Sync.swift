@@ -29,11 +29,12 @@
  */
 
 @testable import CareKitStore
+import Synchronization
 import XCTest
 
 final class TestStoreSynchronization: XCTestCase {
 
-    func testMergeConflictResolution() throws {
+    func testMergeConflictResolution() async throws {
 
         // 1. Setup the a server with two sync'd stores
         let server = SimulatedServer()
@@ -57,13 +58,13 @@ final class TestStoreSynchronization: XCTestCase {
         // 2. Sync the first version of a task from A to B.
         let schedule = OCKSchedule.dailyAtTime(hour: 0, minutes: 0, start: Date(), end: nil, text: nil)
         var task = OCKTask(id: "a", title: "A", carePlanUUID: nil, schedule: schedule)
-        task = try storeA.addTasksAndWait([task]).first!
+        task = try await storeA.addTasks([task]).first!
 
-        try storeA.syncAndWait()
-        try storeB.syncAndWait()
+        try await storeA.synchronize()
+        try await storeB.synchronize()
 
-        let firstTasksA = try storeA.fetchTasksAndWait()
-        let firstTasksB = try storeB.fetchTasksAndWait()
+        let firstTasksA = try await storeA.fetchTasks(query: OCKTaskQuery())
+        let firstTasksB = try await storeB.fetchTasks(query: OCKTaskQuery())
 
         let firstKnowledgeA = OCKRevisionRecord.KnowledgeVector([
             uuidA: 3 // +1 post pull, +1 post push
@@ -88,23 +89,23 @@ final class TestStoreSynchronization: XCTestCase {
 
         // 2. Create conflicting updates in both stores.
         //    Neither store will have a conflict yet.
-        var taskA = try storeA.fetchTasksAndWait().first!
+        var taskA = try await storeA.fetchTasks(query: OCKTaskQuery()).first!
         taskA.title = "A2"
-        try storeA.updateTasksAndWait([taskA])
+        try await storeA.updateTasks([taskA])
 
-        var taskB = try storeB.fetchTasksAndWait().first!
+        var taskB = try await storeB.fetchTasks(query: OCKTaskQuery()).first!
         taskB.title = "B2"
-        try storeB.updateTasksAndWait([taskB])
+        try await storeB.updateTasks([taskB])
 
         // 3. Sync storeA: Put the new version on the server
         //    Sync storeB: Resolve the conflict locally and push to server
-        try storeA.syncAndWait()
-        try storeB.syncAndWait()
+        try await storeA.synchronize()
+        try await storeB.synchronize()
 
         // 4. Check that A has only it's two local versions
         //    Check that B has the original, both conflicts, and the resolution
-        let midTasksA = try storeA.fetchTasksAndWait()
-        let midTasksB = try storeB.fetchTasksAndWait()
+        let midTasksA = try await storeA.fetchTasks(query: OCKTaskQuery())
+        let midTasksB = try await storeB.fetchTasks(query: OCKTaskQuery())
 
         let midKnowledgeA = OCKRevisionRecord.KnowledgeVector([
             uuidA: 5, // +1 post pull, +1 post push
@@ -130,11 +131,11 @@ final class TestStoreSynchronization: XCTestCase {
 
         // 5. Sync storeA: Pull updates from the server (conflict + resolution)
         //    Sync storeB: Already up to date, no observable change
-        try storeA.syncAndWait()
-        try storeB.syncAndWait()
+        try await storeA.synchronize()
+        try await storeB.synchronize()
 
-        let finalTasksA = try storeA.fetchTasksAndWait()
-        let finalTasksB = try storeB.fetchTasksAndWait()
+        let finalTasksA = try await storeA.fetchTasks(query: OCKTaskQuery())
+        let finalTasksB = try await storeB.fetchTasks(query: OCKTaskQuery())
 
         let finalKnowledgeA = OCKRevisionRecord.KnowledgeVector([
             uuidA: 7, // +1 post pull, +1 post push
@@ -164,53 +165,90 @@ private struct EncryptedRevision: Codable {
     let encryptedData: Data
 }
 
-private final class SimulatedServer {
+private final class SimulatedServer: Sendable {
 
-    private(set) var revisions = [EncryptedRevision]()
+    private struct State {
+        var revisions = [EncryptedRevision]()
+        var knowledgeVector = OCKRevisionRecord.KnowledgeVector()
+    }
 
-    private(set) var knowledgeVector = OCKRevisionRecord.KnowledgeVector()
+    private let state = Mutex(State())
+
+    var revisions: [EncryptedRevision] {
+        return state.withLock { $0.revisions }
+    }
+
+    var knowledgeVector: OCKRevisionRecord.KnowledgeVector {
+        return state.withLock { $0.knowledgeVector }
+    }
 
     func upload(
         payload: SimulatedPayload,
-        from remote: SimulatedRemote) throws {
+        from remote: SimulatedRemote
+    ) throws {
 
-        if let latest = revisions.last?.knowledgeVector,
-           latest >= payload.knowledgeVector {
+        try state.withLock { state in
 
-            let problem = "New knowledge on server. Pull first then try again"
-            throw OCKStoreError.remoteSynchronizationFailed(reason: problem)
+            if
+                let latest = state.revisions.last?.knowledgeVector,
+                latest >= payload.knowledgeVector
+            {
+                let problem = "New knowledge on server. Pull first then try again"
+                throw OCKStoreError.remoteSynchronizationFailed(reason: problem)
+            }
+
+            state.knowledgeVector.merge(with: payload.knowledgeVector)
+            state.revisions.append(contentsOf: payload.encryptedRevisions)
         }
-
-        knowledgeVector.merge(with: payload.knowledgeVector)
-        revisions.append(contentsOf: payload.encryptedRevisions)
     }
 
     func updates(
         for deviceKnowledge: OCKRevisionRecord.KnowledgeVector,
-        from remote: SimulatedRemote) -> SimulatedPayload {
+        from remote: SimulatedRemote
+    ) -> SimulatedPayload {
 
-        let newToRemote = revisions.filter {
-            $0.knowledgeVector >= deviceKnowledge
+        return state.withLock { state in
+
+            let newToRemote = state.revisions.filter {
+                $0.knowledgeVector >= deviceKnowledge
+            }
+
+            let payload = SimulatedPayload(
+                knowledgeVector: state.knowledgeVector,
+                encryptedRevisions: newToRemote
+            )
+
+            return payload
         }
-
-        let payload = SimulatedPayload(
-            knowledgeVector: knowledgeVector,
-            encryptedRevisions: newToRemote
-        )
-
-        return payload
     }
 }
 
 private final class SimulatedRemote: OCKRemoteSynchronizable {
 
-    let name: String
+    private struct State {
+        weak var delegate: OCKRemoteSynchronizationDelegate?
+        var automaticallySynchronizes = false
+    }
 
+    private let state = Mutex(State())
+    let name: String
     let server: SimulatedServer
 
-    weak var delegate: OCKRemoteSynchronizationDelegate?
+    var delegate: OCKRemoteSynchronizationDelegate? {
+        get {
+            return state.withLock { $0.delegate }
+        } set {
+            state.withLock { $0.delegate = newValue }
+        }
+    }
 
-    var automaticallySynchronizes = false
+    var automaticallySynchronizes: Bool {
+        get {
+            return state.withLock { $0.automaticallySynchronizes }
+        } set {
+            state.withLock { $0.automaticallySynchronizes = newValue }
+        }
+    }
 
     init(name: String, server: SimulatedServer) {
         self.name = name
@@ -220,7 +258,7 @@ private final class SimulatedRemote: OCKRemoteSynchronizable {
     func pullRevisions(
         since knowledgeVector: OCKRevisionRecord.KnowledgeVector,
         mergeRevision: @escaping (OCKRevisionRecord) -> Void,
-        completion: @escaping (Error?) -> Void) {
+        completion: @escaping @Sendable (Error?) -> Void) {
 
         do {
             let payload = server.updates(for: knowledgeVector, from: self)
@@ -251,7 +289,7 @@ private final class SimulatedRemote: OCKRemoteSynchronizable {
     func pushRevisions(
         deviceRevisions: [OCKRevisionRecord],
         deviceKnowledge: OCKRevisionRecord.KnowledgeVector,
-        completion: @escaping (Error?) -> Void) {
+        completion: @escaping @Sendable (Error?) -> Void) {
 
         do {
 

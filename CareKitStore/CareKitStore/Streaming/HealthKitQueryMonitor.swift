@@ -30,42 +30,63 @@
 
 import Foundation
 import HealthKit
+import Synchronization
 
 /// A wrapper around HealthKit that allows for starting and stopping a live query of samples.
-@available(iOS 15, watchOS 8, macOS 13.0, *)
-final class HealthKitQueryMonitor: QueryMonitor {
+final class HealthKitQueryMonitor: Sendable {
+
+    private struct State {
+        var query: HKAnchoredObjectQuery?
+        var anchor: HKQueryAnchor?
+    }
 
     private let store: HKHealthStore
     private let queryDescriptors: [HKQueryDescriptor]
-
-    private var query: HKAnchoredObjectQuery?
-    private var anchor: HKQueryAnchor?
-
-    var resultHandler: (Result<QueryResult, Error>) -> Void = { _ in }
+    private let state = Mutex(State())
+    private let resultHandler: @Sendable (Result<QueryResult, Error>) -> Void
 
     /// A wrapper around HealthKit that allows for starting and stopping a live query of samples.
     init(
         queryDescriptors: [HKQueryDescriptor],
-        store: HKHealthStore
+        store: HKHealthStore,
+        resultHandler: @Sendable @escaping (Result<QueryResult, Error>) -> Void = { _ in }
     ) {
         self.queryDescriptors = queryDescriptors
         self.store = store
+        self.resultHandler = resultHandler
     }
 
     func startQuery() {
 
-        // Don't perform the query again if it's already running
-        guard query == nil else { return }
+        state.withLock { state in
 
-        // Only perform query if there are one or more descriptors.
-        guard queryDescriptors.isEmpty == false else { return }
+            guard
+                // Don't perform the query again if it's already running
+                state.query == nil,
+                // Only perform query if there are one or more descriptors else we'll hit a runtime crash.
+                queryDescriptors.isEmpty == false
+            else {
+                return
+            }
 
-        // Create a query for the initial results
-        query = HKAnchoredObjectQuery(
-            queryDescriptors: queryDescriptors,
-            anchor: anchor,
-            limit: HKObjectQueryNoLimit,
-            resultsHandler: { [weak self] _, samples, deletedObjects, anchor, error in
+            // Create a query for the initial results
+            state.query = HKAnchoredObjectQuery(
+                queryDescriptors: queryDescriptors,
+                anchor: state.anchor,
+                limit: HKObjectQueryNoLimit,
+                resultsHandler: { [weak self] _, samples, deletedObjects, anchor, error in
+
+                    self?.handleQueryResult(
+                        samples: samples,
+                        deletedObjects: deletedObjects,
+                        anchor: anchor,
+                        error: error
+                    )
+                }
+            )
+
+            // Forward subsequent changes to the result
+            state.query!.updateHandler = { [weak self] _, samples, deletedObjects, anchor, error in
 
                 self?.handleQueryResult(
                     samples: samples,
@@ -74,26 +95,22 @@ final class HealthKitQueryMonitor: QueryMonitor {
                     error: error
                 )
             }
-        )
 
-        // Forward subsequent changes to the result
-        query!.updateHandler = { [weak self] _, samples, deletedObjects, anchor, error in
-
-            self?.handleQueryResult(
-                samples: samples,
-                deletedObjects: deletedObjects,
-                anchor: anchor,
-                error: error
-            )
+            store.execute(state.query!)
         }
-
-        store.execute(query!)
     }
 
     func stopQuery() {
-        guard let query = query else { return }
-        store.stop(query)
-        self.query = nil
+
+        state.withLock { state in
+
+            guard let query = state.query else {
+                return
+            }
+
+            store.stop(query)
+            state.query = nil
+        }
     }
 
     private func handleQueryResult(
@@ -102,9 +119,6 @@ final class HealthKitQueryMonitor: QueryMonitor {
         anchor: HKQueryAnchor?,
         error: Error?
     ) {
-        // Update the anchors to ensure the next update does not contain
-        // duplicate samples
-        self.anchor = anchor
 
         // Note, when an error is encountered, the result handler will not get called again
         if let error = error {
@@ -112,11 +126,18 @@ final class HealthKitQueryMonitor: QueryMonitor {
             return
         }
 
-        let result = QueryResult(
-            samples: samples ?? [],
-            deletedObjects: deletedObjects ?? []
-        )
+        let queryResult = state.withLock { state in
 
-        resultHandler(.success(result))
+            // Update the anchors to ensure the next update does not contain
+            // duplicate samples
+            state.anchor = anchor
+
+            return QueryResult(
+                samples: samples ?? [],
+                deletedObjects: deletedObjects ?? []
+            )
+        }
+
+        resultHandler(.success(queryResult))
     }
 }

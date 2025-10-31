@@ -30,17 +30,24 @@
 
 @testable import CareKitStore
 import Foundation
+import Synchronization
 import XCTest
 
 class TestStoreResolveConflicts: XCTestCase {
 
-    func testResolveMultipleConflictsCallsResolutionMethodRepeatedly() throws {
+    func testResolveMultipleConflictsCallsResolutionMethodRepeatedly() async throws {
 
-        let remote = MockRemote()
+        let timesCalled = Mutex(0)
+
+        let remote = MockRemote(resolveConflict: { conflicts in
+            timesCalled.withLock { $0 += 1 }
+            return conflicts.first!
+        })
+
         let store = OCKStore(name: UUID().uuidString, type: .inMemory, remote: remote)
         let patientA = OCKPatient(id: "A", givenName: "a", familyName: "aa")
         let patientB = OCKPatient(id: "B", givenName: "b", familyName: "bb")
-        try store.addPatientsAndWait([patientA, patientB])
+        try await store.addPatients([patientA, patientB])
 
         let vector = OCKRevisionRecord.KnowledgeVector([UUID(): 1])
         let conflictA = OCKPatient(id: "A", givenName: "A", familyName: "AA")
@@ -48,23 +55,21 @@ class TestStoreResolveConflicts: XCTestCase {
         let entities = [OCKEntity.patient(conflictA), .patient(conflictB)]
         let revision = OCKRevisionRecord(entities: entities, knowledgeVector: vector)
 
-        var timesCalled = 0
-
-        remote.resolveConflict = { conflicts in
-            timesCalled += 1
-            return conflicts.first!
-        }
-
         store.mergeRevision(revision)
-        try store.resolveConflictsAndWait()
-        XCTAssertEqual(timesCalled, 2)
+        try await store.resolveConflicts()
+        XCTAssertEqual(timesCalled.withLock { $0 }, 2)
     }
 
-    func testResolveConflictCanBeCalledWithMoreThanTwoConflicts() throws {
-        let remote = MockRemote()
+    func testResolveConflictCanBeCalledWithMoreThanTwoConflicts() async throws {
+
+        let remote = MockRemote(resolveConflict: { conflicts in
+            XCTAssertEqual(conflicts.count, 10)
+            return conflicts.first!
+        })
+
         let store = OCKStore(name: UUID().uuidString, type: .inMemory, remote: remote)
         let patientA = OCKPatient(id: "A", givenName: "a", familyName: "aa")
-        try store.addPatientAndWait(patientA)
+        try await store.addPatient(patientA)
 
         let conflicts = Array(1...9).map { i in
             OCKPatient(id: "A", givenName: "\(i)", familyName: "")
@@ -72,24 +77,32 @@ class TestStoreResolveConflicts: XCTestCase {
         let vector = OCKRevisionRecord.KnowledgeVector([UUID(): 1])
         let entities = conflicts.map { OCKEntity.patient($0) }
         let revision = OCKRevisionRecord(entities: entities, knowledgeVector: vector)
-
-        remote.resolveConflict = { conflicts in
-            XCTAssertEqual(conflicts.count, 10)
-            return conflicts.first!
-        }
-
         store.mergeRevision(revision)
-        try store.resolveConflictsAndWait()
+        try await store.resolveConflicts()
     }
 }
 
-private class MockRemote: OCKRemoteSynchronizable {
+private final class MockRemote: OCKRemoteSynchronizable {
 
-    weak var delegate: OCKRemoteSynchronizationDelegate?
+    private struct State {
+        weak var delegate: OCKRemoteSynchronizationDelegate?
+    }
 
-    var automaticallySynchronizes = false
+    weak var delegate: OCKRemoteSynchronizationDelegate? {
+        get {
+            return state.withLock { $0.delegate }
+        } set {
+            state.withLock { $0.delegate = newValue }
+        }
+    }
 
-    var resolveConflict: (([OCKEntity]) throws -> OCKEntity)!
+    private let state = Mutex(State())
+    private let resolveConflict: @Sendable ([OCKEntity]) throws -> OCKEntity
+    let automaticallySynchronizes = false
+
+    init(resolveConflict: @Sendable @escaping ([OCKEntity]) throws -> OCKEntity) {
+        self.resolveConflict = resolveConflict
+    }
 
     func pullRevisions(
         since knowledgeVector: OCKRevisionRecord.KnowledgeVector,
@@ -114,6 +127,7 @@ private class MockRemote: OCKRemoteSynchronizable {
         do {
             let result = try resolveConflict(conflicts)
             completion(.success(result))
+
         } catch {
             completion(.failure(.remoteSynchronizationFailed(reason: "Fail")))
         }

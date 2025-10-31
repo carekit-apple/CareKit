@@ -32,12 +32,17 @@ import CoreData
 import Foundation
 import HealthKit
 import os.log
+import Synchronization
 
 /// A specialized store that transparently manipulates outcomes in HealthKit.
-@available(iOS 15, watchOS 8, macOS 13.0, *)
-public final class OCKHealthKitPassthroughStore: OCKEventStore {
+public final class OCKHealthKitPassthroughStore: OCKEventStore, Sendable {
+
     public typealias Task = OCKHealthKitTask
     public typealias Outcome = OCKHealthKitOutcome
+
+    private struct State {
+        var now: Date?
+    }
 
 
     @available(*, unavailable, message: "OCKSynchronizedStoreManager and its related types are no longer available as a mechanism to synchronize with the CareKit store. As a replacement, see the asynchronous streams available directly on a CareKit store. For example, to monitor changes to tasks, see `OCKStore.tasks(query:)`.")
@@ -55,6 +60,8 @@ public final class OCKHealthKitPassthroughStore: OCKEventStore {
         fatalError("Property is unavailable")
     }
 
+
+    private let state = Mutex(State())
 
     let store: OCKStore
 
@@ -77,7 +84,7 @@ public final class OCKHealthKitPassthroughStore: OCKEventStore {
     /// Presents a standard HealthKit permission sheet prompting the user to grant permission for
     /// all data types required to read and write outcomes for the tasks in this store.
     /// - Parameter completion:
-    public func requestHealthKitPermissionsForAllTasksInStore(completion: @escaping (Error?) -> Void = { _ in }) {
+    public func requestHealthKitPermissionsForAllTasksInStore(completion: @escaping @Sendable (Error?) -> Void = { _ in }) {
         do {
             let tasks = try store.fetchHealthKitTasks(query: OCKTaskQuery())
             let quantities = tasks.map { HKQuantityType.quantityType(forIdentifier: $0.healthKitLinkage.quantityIdentifier)! }
@@ -92,7 +99,13 @@ public final class OCKHealthKitPassthroughStore: OCKEventStore {
 
     // MARK: - Test seams
 
-    var _now: Date?
+    var _now: Date? {
+        get {
+            return state.withLock { $0.now }
+        } set {
+            state.withLock { $0.now = newValue }
+        }
+    }
 
     var now: Date {
         return _now ?? Date()

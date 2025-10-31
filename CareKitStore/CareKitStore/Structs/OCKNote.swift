@@ -33,7 +33,7 @@ import Foundation
 /// `OCKNote` can be attached to all other CareKit objects and values. Use cases may include a physician leaving a note on a task when it is modified
 /// to explain why a medication dose was changed, or a note left from a patient to a care provider explaining why they weren't able to complete a
 /// task on a certain occasion.
-public struct OCKNote: Codable, Equatable {
+public struct OCKNote: Codable, Equatable, Sendable {
 
     /// The person who created this note.
     public var author: String?

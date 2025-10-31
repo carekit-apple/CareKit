@@ -36,7 +36,7 @@ public protocol OCKReadableTaskStore: OCKAnyReadOnlyTaskStore {
     associatedtype Task: OCKAnyTask, Equatable
 
     /// An asynchronous sequence that produces tasks.
-    associatedtype Tasks: AsyncSequence where Tasks.Element == [Task]
+    associatedtype Tasks: AsyncSequence & Sendable where Tasks.Element == [Task]
 
     /// A continuous stream of tasks that exist in the store.
     ///
@@ -245,6 +245,7 @@ public extension OCKTaskStore {
     ///
     /// - Parameters:
     ///   - tasks: An array of tasks to be added to the store.
+    @discardableResult
     func addTasks(_ tasks: [Task]) async throws -> [Task] {
         try await withCheckedThrowingContinuation { continuation in
             addTasks(tasks, callbackQueue: .main, completion: { continuation.resume(with: $0) })
@@ -255,6 +256,7 @@ public extension OCKTaskStore {
     ///
     /// - Parameters:
     ///   - tasks: An array of tasks to be updated. The tasks must already exist in the store.
+    @discardableResult
     func updateTasks(_ tasks: [Task]) async throws -> [Task] {
         try await withCheckedThrowingContinuation { continuation in
             updateTasks(tasks, callbackQueue: .main, completion: { continuation.resume(with: $0) })
@@ -265,6 +267,7 @@ public extension OCKTaskStore {
     ///
     /// - Parameters:
     ///   - tasks: An array of tasks to be deleted. The tasks must exist in the store.
+    @discardableResult
     func deleteTasks(_ tasks: [Task]) async throws -> [Task] {
         try await withCheckedThrowingContinuation { continuation in
             deleteTasks(tasks, callbackQueue: .main, completion: { continuation.resume(with: $0) })
@@ -277,6 +280,7 @@ public extension OCKTaskStore {
     ///
     /// - Parameters:
     ///   - task: A task to be added to the store.
+    @discardableResult
     func addTask(_ task: Task) async throws -> Task {
         try await withCheckedThrowingContinuation { continuation in
             addTask(task, callbackQueue: .main, completion: { continuation.resume(with: $0) })
@@ -287,6 +291,7 @@ public extension OCKTaskStore {
     ///
     /// - Parameters:
     ///   - task: A task to be updated. The task must already exist in the store.
+    @discardableResult
     func updateTask(_ task: Task) async throws -> Task {
         try await withCheckedThrowingContinuation { continuation in
             updateTask(task, callbackQueue: .main, completion: { continuation.resume(with: $0) })
@@ -297,6 +302,7 @@ public extension OCKTaskStore {
     ///
     /// - Parameters:
     ///   - task: A task to be deleted. The task must exist in the store.
+    @discardableResult
     func deleteTask(_ task: Task) async throws -> Task {
         try await withCheckedThrowingContinuation { continuation in
             deleteTask(task, callbackQueue: .main, completion: { continuation.resume(with: $0) })

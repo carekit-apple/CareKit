@@ -34,7 +34,7 @@ import Foundation
 ///
 /// The event contains a copy of the task itself, as well as the
 /// schedule event and an outcome that is non-`nil` if progress occurred on the task.
-public struct OCKAnyEvent {
+public struct OCKAnyEvent: Sendable {
 
     /// The stable identifier that can be used for the `Identifiable` protocol.
     public let id: String

@@ -34,7 +34,7 @@ private let maleStringRepresentation = "male"
 private let femaleStringRepresentation = "female"
 
 /// Represents a person's biological sex.
-public enum OCKBiologicalSex: RawRepresentable, Codable, Equatable, Sendable {
+public enum OCKBiologicalSex: RawRepresentable, Codable, Hashable, Sendable {
     case male
     case female
     case other(String)

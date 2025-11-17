@@ -107,7 +107,7 @@ class TestCareStoreFetchRequestController: XCTestCase {
             }
         )
 
-        let expectedResults = [
+        let expectedResults: [Set<CareStoreFetchedResult<Int>>] = [
             [],
             [
                 CareStoreFetchedResult(id: "", result: 1, store: store),
@@ -115,7 +115,7 @@ class TestCareStoreFetchRequestController: XCTestCase {
             ]
         ]
 
-        var observedResults: [[CareStoreFetchedResult<Int>]] = []
+        var observedResults: [Set<CareStoreFetchedResult<Int>>] = []
 
         let didStreamResult = XCTestExpectation(description: "Result streamed")
         didStreamResult.assertForOverFulfill = true
@@ -124,7 +124,7 @@ class TestCareStoreFetchRequestController: XCTestCase {
         handleFetchedResults = controller.$fetchedResults.sink { fetchedResults in
 
             let storage = fetchedResults?.storage ?? []
-            observedResults.append(storage)
+            observedResults.append(Set(storage))
             didStreamResult.fulfill()
         }
 

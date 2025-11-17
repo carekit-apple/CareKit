@@ -158,6 +158,62 @@ class TestOutcomeValue: XCTestCase {
         value2.createdDate = value1.createdDate
         XCTAssertEqual(value1, value2)
     }
+    
+    func testValuesHashesAreEqual() {
+        var value1 = OCKOutcomeValue(1.012, units: "m")
+        value1.kind = "length"
+
+        var value2 = OCKOutcomeValue(1.012, units: "m")
+        value2.kind = "length"
+        value2.createdDate = value1.createdDate
+
+        XCTAssertEqual(value1.hashValue, value2.hashValue)
+    }
+    
+    func testValuesHashesAreUnique() {
+        let referenceValue = OCKOutcomeValue(1, units: "m")
+        var set: Set<OCKOutcomeValue> = []
+        var uniqueElements: Int = 0
+        
+        var mutableValue = referenceValue
+        set.insert(mutableValue)
+        uniqueElements += 1
+        
+        mutableValue.kind = "length"
+        set.insert(mutableValue)
+        uniqueElements += 1
+        
+        mutableValue.createdDate = Date(timeIntervalSinceReferenceDate: 0)
+        set.insert(mutableValue)
+        uniqueElements += 1
+     
+        mutableValue.value = 2.03
+        set.insert(mutableValue)
+        uniqueElements += 1
+        
+        mutableValue.units = "in"
+        set.insert(mutableValue)
+        uniqueElements += 1
+        
+        mutableValue.value = Date(timeIntervalSinceReferenceDate: 1)
+        set.insert(mutableValue)
+        uniqueElements += 1
+        
+        mutableValue.units = nil
+        mutableValue.value = true
+        set.insert(mutableValue)
+        uniqueElements += 1
+        
+        mutableValue.value = "some"
+        set.insert(mutableValue)
+        uniqueElements += 1
+        
+        mutableValue.value = "some".data(using: .utf8) ?? .init()
+        set.insert(mutableValue)
+        uniqueElements += 1
+        
+        XCTAssertEqual(uniqueElements, set.count)
+    }
 
     func testProperDecodingWhenMissingValues() throws {
         let valueToDecode = "{\"value\": 10,\"type\": \"\(OCKOutcomeValueType.integer.rawValue)\",\"createdDate\": 0}"

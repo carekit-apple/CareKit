@@ -37,7 +37,7 @@ import Foundation
 /// - Note: A variety of initializers are provided to quickly create commonly used schedules. Used in
 ///         combination with the offset method, building up complex schedules can be performed quite
 ///         efficiently.
-public struct OCKSchedule: Codable, Equatable, Sendable {
+public struct OCKSchedule: Codable, Hashable, Sendable {
 
     /// The constituent components this schedule was built from.
     public let elements: [OCKScheduleElement]

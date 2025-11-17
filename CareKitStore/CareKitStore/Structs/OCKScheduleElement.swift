@@ -32,7 +32,7 @@ import Foundation
 
 /// The simplest possible `OCKSchedulable`, representing a single event that repeats at
 /// fixed intervals. It may have fixed duration or repeat indefinitely.
-public struct OCKScheduleElement: Codable, Equatable, Sendable {
+public struct OCKScheduleElement: Codable, Hashable, Sendable {
 
     // Disabled because nested types are an internal implementation detail.
 

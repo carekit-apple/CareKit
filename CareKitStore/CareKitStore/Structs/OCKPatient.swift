@@ -32,7 +32,7 @@ import CoreData
 import Foundation
 
 /// Represents a patient
-public struct OCKPatient: Codable, Equatable, Identifiable, OCKAnyPatient {
+public struct OCKPatient: Codable, Hashable, Identifiable, OCKAnyPatient {
 
     // MARK: OCKAnyPatient
     public var id: String

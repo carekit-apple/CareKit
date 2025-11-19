@@ -31,7 +31,7 @@
 import Foundation
 
 /// A protocol that allows CareKit to query and display outcomes.
-public protocol OCKAnyOutcome {
+public protocol OCKAnyOutcome: Sendable {
 
     /// A human readable, user-defined unique identifier.
     var id: String { get }

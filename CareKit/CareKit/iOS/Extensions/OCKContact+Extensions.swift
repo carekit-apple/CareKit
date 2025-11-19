@@ -39,7 +39,7 @@ private extension OCKLabeledValue {
 }
 
 private extension OCKPostalAddress {
-    func toCNLabeledValue() -> CNLabeledValue<CNPostalAddress> { CNLabeledValue(label: "", value: self) }
+    func toCNLabeledValue() -> CNLabeledValue<CNPostalAddress> { CNLabeledValue(label: "", value: cnPostalAddress()) }
 }
 
 

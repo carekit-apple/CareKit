@@ -34,16 +34,11 @@ import XCTest
 
 class TestStoreConsumeRevisions: XCTestCase {
 
-    private var store: OCKStore!
-
-    override func setUp() {
-        super.setUp()
-        store = OCKStore(name: UUID().uuidString, type: .inMemory)
-    }
+    private var store = OCKStore(name: UUID().uuidString, type: .inMemory)
 
     // MARK: Tasks
 
-    func testAddingNewTaskViaRevisionRecord() throws {
+    func testAddingNewTaskViaRevisionRecord() async throws {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
         var task = OCKTask(id: "a", title: nil, carePlanUUID: nil, schedule: schedule)
         task.uuid = UUID()
@@ -56,15 +51,15 @@ class TestStoreConsumeRevisions: XCTestCase {
 
         store.mergeRevision(revision)
 
-        let tasks = try store.fetchTasksAndWait()
+        let tasks = try await store.fetchTasks(query: OCKTaskQuery())
 
         XCTAssertEqual(tasks.count, 1)
         XCTAssertEqual(tasks.first?.id, "a")
     }
 
-    func testUpdatingLatestVersionOfTaskViaRevisionRecord() throws {
+    func testUpdatingLatestVersionOfTaskViaRevisionRecord() async throws {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
-        let taskA = try store.addTaskAndWait(OCKTask(id: "abc123", title: "A", carePlanUUID: nil, schedule: schedule))
+        let taskA = try await store.addTask(OCKTask(id: "abc123", title: "A", carePlanUUID: nil, schedule: schedule))
 
         var taskB = OCKTask(id: "abc123", title: "B", carePlanUUID: nil, schedule: schedule)
         taskB.uuid = UUID()
@@ -79,19 +74,19 @@ class TestStoreConsumeRevisions: XCTestCase {
 
         store.mergeRevision(revision)
 
-        let tasks = try store.fetchTasksAndWait(query: OCKTaskQuery(for: taskB.effectiveDate))
+        let tasks = try await store.fetchTasks(query: OCKTaskQuery(for: taskB.effectiveDate))
 
         XCTAssertEqual(tasks.count, 1)
         XCTAssertEqual(tasks.first?.id, "abc123")
         XCTAssertEqual(tasks.first?.title, "B")
     }
 
-    func testTasksAddedViaRevisionRecordHaveSameCreatedDateAsRevisionRecord() throws {
+    func testTasksAddedViaRevisionRecordHaveSameCreatedDateAsRevisionRecord() async throws {
         let date = Calendar.current.startOfDay(for: Date())
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
         var task = OCKTask(id: "abc123", title: "A", carePlanUUID: nil, schedule: schedule)
         task.createdDate = date
-        task = try store.addTaskAndWait(task)
+        task = try await store.addTask(task)
         task.uuid = UUID()
 
         let revision = OCKRevisionRecord(
@@ -100,15 +95,15 @@ class TestStoreConsumeRevisions: XCTestCase {
 
         store.mergeRevision(revision)
 
-        let tasks = try store.fetchTasksAndWait()
+        let tasks = try await store.fetchTasks(query: OCKTaskQuery())
         XCTAssertEqual(tasks.first?.createdDate, date)
     }
 
     // MARK: Outcomes
 
-    func testAddingNewOutcomeViaRevisionRecord() throws {
+    func testAddingNewOutcomeViaRevisionRecord() async throws {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
-        let task = try store.addTaskAndWait(OCKTask(id: "abc123", title: "A", carePlanUUID: nil, schedule: schedule))
+        let task = try await store.addTask(OCKTask(id: "abc123", title: "A", carePlanUUID: nil, schedule: schedule))
 
         var outcome = OCKOutcome(taskUUID: task.uuid, taskOccurrenceIndex: 0, values: [])
         outcome.uuid = UUID()
@@ -121,15 +116,15 @@ class TestStoreConsumeRevisions: XCTestCase {
 
         store.mergeRevision(revision)
 
-        let outcomes = try store.fetchOutcomesAndWait()
+        let outcomes = try await store.fetchOutcomes(query: OCKOutcomeQuery())
         XCTAssertEqual(outcomes.count, 1)
         XCTAssertEqual(outcomes.first?.id, outcome.id)
     }
 
-    func testDeleteExistingOutcomeViaRevisionRecord() throws {
+    func testDeleteExistingOutcomeViaRevisionRecord() async throws {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
-        let task = try store.addTaskAndWait(OCKTask(id: "abc123", title: "A", carePlanUUID: nil, schedule: schedule))
-        let original = try store.addOutcomeAndWait(OCKOutcome(taskUUID: task.uuid, taskOccurrenceIndex: 0, values: []))
+        let task = try await store.addTask(OCKTask(id: "abc123", title: "A", carePlanUUID: nil, schedule: schedule))
+        let original = try await store.addOutcome(OCKOutcome(taskUUID: task.uuid, taskOccurrenceIndex: 0, values: []))
 
         var outcome = OCKOutcome(taskUUID: task.uuid, taskOccurrenceIndex: 0, values: [])
         outcome.uuid = UUID()
@@ -144,13 +139,13 @@ class TestStoreConsumeRevisions: XCTestCase {
 
         store.mergeRevision(revision)
 
-        let outcomes = try store.fetchOutcomesAndWait()
+        let outcomes = try await store.fetchOutcomes(query: OCKOutcomeQuery())
         XCTAssert(outcomes.isEmpty)
     }
 
-    func testDeletingNonExistentOutcomeViaRevisionRecordDoesNotThrowError() throws {
+    func testDeletingNonExistentOutcomeViaRevisionRecordDoesNotThrowError() async throws {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
-        let task = try store.addTaskAndWait(OCKTask(id: "abc123", title: "A", carePlanUUID: nil, schedule: schedule))
+        let task = try await store.addTask(OCKTask(id: "abc123", title: "A", carePlanUUID: nil, schedule: schedule))
 
         var outcome = OCKOutcome(taskUUID: task.uuid, taskOccurrenceIndex: 0, values: [])
         outcome.uuid = UUID()
@@ -165,10 +160,10 @@ class TestStoreConsumeRevisions: XCTestCase {
         store.mergeRevision(revision)
     }
 
-    func testOutcomesAddedViaRevisionRecordedHaveSameCreatedDateAsRevisionRecord() throws {
+    func testOutcomesAddedViaRevisionRecordedHaveSameCreatedDateAsRevisionRecord() async throws {
         let date = Calendar.current.startOfDay(for: Date())
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
-        let task = try store.addTaskAndWait(OCKTask(id: "abc123", title: "A", carePlanUUID: nil, schedule: schedule))
+        let task = try await store.addTask(OCKTask(id: "abc123", title: "A", carePlanUUID: nil, schedule: schedule))
 
         var outcome = OCKOutcome(taskUUID: task.uuid, taskOccurrenceIndex: 0, values: [])
         outcome.uuid = UUID()
@@ -181,13 +176,13 @@ class TestStoreConsumeRevisions: XCTestCase {
 
         store.mergeRevision(revision)
 
-        let outcomes = try store.fetchOutcomesAndWait()
+        let outcomes = try await store.fetchOutcomes(query: OCKOutcomeQuery())
         XCTAssertEqual(outcomes.first?.createdDate, date)
     }
 
-    func testTombstonesAddedViaRevisionRecordedHaveSameUUIDAsRevisionRecord() throws {
+    func testTombstonesAddedViaRevisionRecordedHaveSameUUIDAsRevisionRecord() async throws {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
-        let task = try store.addTaskAndWait(OCKTask(id: "abc123", title: "A", carePlanUUID: nil, schedule: schedule))
+        let task = try await store.addTask(OCKTask(id: "abc123", title: "A", carePlanUUID: nil, schedule: schedule))
 
         var tombstone = OCKOutcome(taskUUID: task.uuid, taskOccurrenceIndex: 0, values: [])
         tombstone.uuid = UUID()
@@ -201,12 +196,12 @@ class TestStoreConsumeRevisions: XCTestCase {
 
         store.mergeRevision(revision)
 
-        let outcomes = try store.fetchOutcomesAndWait()
+        let outcomes = try await store.fetchOutcomes(query: OCKOutcomeQuery())
         XCTAssert(outcomes.isEmpty)
 
-        expect(with: store.context) {
+        try await store.context.perform { [tombstone, store] in
             let request = NSFetchRequest<OCKCDOutcome>(entityName: "OCKCDOutcome")
-            let outcome = try self.store.context.fetch(request).first
+            let outcome = try store.context.fetch(request).first
             XCTAssertEqual(outcome?.createdDate, tombstone.createdDate)
             XCTAssertEqual(outcome?.deletedDate, tombstone.createdDate)
             XCTAssertEqual(outcome?.uuid, tombstone.uuid)
@@ -215,7 +210,7 @@ class TestStoreConsumeRevisions: XCTestCase {
 
     // MARK: Patients
 
-    func testAddingNewPatientViaRevisionRecord() throws {
+    func testAddingNewPatientViaRevisionRecord() async throws {
         var patient = OCKPatient(id: "id1", givenName: "Amy", familyName: "Frost")
         patient.uuid = UUID()
         patient.createdDate = Date()
@@ -227,14 +222,14 @@ class TestStoreConsumeRevisions: XCTestCase {
 
         store.mergeRevision(revision)
 
-        let patients = try store.fetchPatientsAndWait()
+        let patients = try await store.fetchPatients(query: OCKPatientQuery())
 
         XCTAssertEqual(patients.count, 1)
         XCTAssertEqual(patients.first?.id, "id1")
     }
 
-    func testUpdatingLatestVersionOfPatientViaRevisionRecord() throws {
-        let patientA = try store.addPatientAndWait(OCKPatient(id: "id1", givenName: "Amy", familyName: "Frost"))
+    func testUpdatingLatestVersionOfPatientViaRevisionRecord() async throws {
+        let patientA = try await store.addPatient(OCKPatient(id: "id1", givenName: "Amy", familyName: "Frost"))
 
         var patientB = OCKPatient(id: "id1", givenName: "Amy", familyName: "Frosty")
         patientB.uuid = UUID()
@@ -249,18 +244,18 @@ class TestStoreConsumeRevisions: XCTestCase {
 
         store.mergeRevision(revision)
 
-        let patients = try store.fetchPatientsAndWait(query: OCKPatientQuery(for: patientB.effectiveDate))
+        let patients = try await store.fetchPatients(query: OCKPatientQuery(for: patientB.effectiveDate))
 
         XCTAssertEqual(patients.count, 1)
         XCTAssertEqual(patients.first?.id, "id1")
         XCTAssertEqual(patients.first?.name.familyName, "Frosty")
     }
 
-    func testPatientsAddedViaRevisionRecordHaveSameCreatedDateAsRevisionRecord() throws {
+    func testPatientsAddedViaRevisionRecordHaveSameCreatedDateAsRevisionRecord() async throws {
         var patient = OCKPatient(id: "id1", givenName: "Amy", familyName: "Frost")
         let date = Calendar.current.startOfDay(for: Date())
         patient.createdDate = date
-        patient = try store.addPatientAndWait(patient)
+        patient = try await store.addPatient(patient)
         patient.uuid = UUID()
 
         let revision = OCKRevisionRecord(
@@ -269,13 +264,13 @@ class TestStoreConsumeRevisions: XCTestCase {
 
         store.mergeRevision(revision)
 
-        let patients = try store.fetchPatientsAndWait()
+        let patients = try await store.fetchPatients(query: OCKPatientQuery())
         XCTAssertEqual(patients.first?.createdDate, date)
     }
 
     // MARK: CarePlans
 
-    func testAddingNewCarePlanViaRevisionRecord() throws {
+    func testAddingNewCarePlanViaRevisionRecord() async throws {
         var carePlan = OCKCarePlan(id: "diabetes_type_1", title: "Diabetes Care Plan", patientUUID: nil)
         carePlan.uuid = UUID()
         carePlan.createdDate = Date()
@@ -287,14 +282,14 @@ class TestStoreConsumeRevisions: XCTestCase {
 
         store.mergeRevision(revision)
 
-        let carePlans = try store.fetchCarePlansAndWait()
+        let carePlans = try await store.fetchCarePlans(query: OCKCarePlanQuery())
 
         XCTAssertEqual(carePlans.count, 1)
         XCTAssertEqual(carePlans.first?.id, "diabetes_type_1")
     }
 
-    func testUpdatingLatestVersionOfCarePlanViaRevisionRecord() throws {
-        let carePlanA = try store.addCarePlanAndWait(OCKCarePlan(id: "diabetes_type_1", title: "Diabetes Care Plan", patientUUID: nil))
+    func testUpdatingLatestVersionOfCarePlanViaRevisionRecord() async throws {
+        let carePlanA = try await store.addCarePlan(OCKCarePlan(id: "diabetes_type_1", title: "Diabetes Care Plan", patientUUID: nil))
 
         var carePlanB = OCKCarePlan(id: "diabetes_type_1", title: "Diabetes Type II Care Plan", patientUUID: nil)
         carePlanB.uuid = UUID()
@@ -309,18 +304,18 @@ class TestStoreConsumeRevisions: XCTestCase {
 
         store.mergeRevision(revision)
 
-        let carePlans = try store.fetchCarePlansAndWait(query: OCKCarePlanQuery(for: carePlanB.effectiveDate))
+        let carePlans = try await store.fetchCarePlans(query: OCKCarePlanQuery(for: carePlanB.effectiveDate))
 
         XCTAssertEqual(carePlans.count, 1)
         XCTAssertEqual(carePlans.first?.id, "diabetes_type_1")
         XCTAssertEqual(carePlans.first?.title, "Diabetes Type II Care Plan")
     }
 
-    func testCarePlansAddedViaRevisionRecordHaveSameCreatedDateAsRevisionRecord() throws {
+    func testCarePlansAddedViaRevisionRecordHaveSameCreatedDateAsRevisionRecord() async throws {
         var carePlan = OCKCarePlan(id: "diabetes_type_1", title: "Diabetes Care Plan", patientUUID: nil)
         let date = Calendar.current.startOfDay(for: Date())
         carePlan.createdDate = date
-        carePlan = try store.addCarePlanAndWait(carePlan)
+        carePlan = try await store.addCarePlan(carePlan)
         carePlan.uuid = UUID()
 
         let revision = OCKRevisionRecord(
@@ -329,13 +324,13 @@ class TestStoreConsumeRevisions: XCTestCase {
 
         store.mergeRevision(revision)
 
-        let carePlans = try store.fetchCarePlansAndWait()
+        let carePlans = try await store.fetchCarePlans(query: OCKCarePlanQuery())
         XCTAssertEqual(carePlans.first?.createdDate, date)
     }
 
     // MARK: Contacts
 
-    func testAddingNewContactViaRevisionRecord() throws {
+    func testAddingNewContactViaRevisionRecord() async throws {
         var contact = OCKContact(id: "contact", givenName: "Amy", familyName: "Frost", carePlanUUID: nil)
         contact.uuid = UUID()
         contact.createdDate = Date()
@@ -347,14 +342,14 @@ class TestStoreConsumeRevisions: XCTestCase {
 
         store.mergeRevision(revision)
 
-        let contacts = try store.fetchContactsAndWait()
+        let contacts = try await store.fetchContacts(query: OCKContactQuery())
 
         XCTAssertEqual(contacts.count, 1)
         XCTAssertEqual(contacts.first?.id, "contact")
     }
 
-    func testUpdatingLatestVersionOfContactViaRevisionRecord() throws {
-        let contactA = try store.addContactAndWait(OCKContact(id: "contact", givenName: "Amy", familyName: "Frost", carePlanUUID: nil))
+    func testUpdatingLatestVersionOfContactViaRevisionRecord() async throws {
+        let contactA = try await store.addContact(OCKContact(id: "contact", givenName: "Amy", familyName: "Frost", carePlanUUID: nil))
 
         var contactB = OCKContact(id: "contact", givenName: "Amy", familyName: "Frosty", carePlanUUID: nil)
         contactB.uuid = UUID()
@@ -369,18 +364,18 @@ class TestStoreConsumeRevisions: XCTestCase {
 
         store.mergeRevision(revision)
 
-        let contacts = try store.fetchContactsAndWait(query: OCKContactQuery(for: contactB.effectiveDate))
+        let contacts = try await store.fetchContacts(query: OCKContactQuery(for: contactB.effectiveDate))
 
         XCTAssertEqual(contacts.count, 1)
         XCTAssertEqual(contacts.first?.id, "contact")
         XCTAssertEqual(contacts.first?.name.familyName, "Frosty")
     }
 
-    func testContactsAddedViaRevisionRecordHaveSameCreatedDateAsRevisionRecord() throws {
+    func testContactsAddedViaRevisionRecordHaveSameCreatedDateAsRevisionRecord() async throws {
         var contact = OCKContact(id: "contact", givenName: "Amy", familyName: "Frost", carePlanUUID: nil)
         let date = Calendar.current.startOfDay(for: Date())
         contact.createdDate = date
-        contact = try store.addContactAndWait(contact)
+        contact = try await store.addContact(contact)
         contact.uuid = UUID()
 
         let revision = OCKRevisionRecord(
@@ -389,7 +384,7 @@ class TestStoreConsumeRevisions: XCTestCase {
 
         store.mergeRevision(revision)
 
-        let contacts = try store.fetchContactsAndWait()
+        let contacts = try await store.fetchContacts(query: OCKContactQuery())
         XCTAssertEqual(contacts.first?.createdDate, date)
     }
 }

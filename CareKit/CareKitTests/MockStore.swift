@@ -49,7 +49,7 @@ class MockStore: OCKStoreProtocol {
 
     // MARK: - Care Plan
 
-    func carePlans(matching query: OCKCarePlanQuery) -> CareStoreQueryResults<OCKCarePlan> {
+    func carePlans(matching query: OCKCarePlanQuery) -> some AsyncSequence<[OCKCarePlan], Error> & Sendable {
         store.carePlans(matching: query)
     }
 
@@ -103,7 +103,7 @@ class MockStore: OCKStoreProtocol {
 
     // MARK: - Contact
 
-    func contacts(matching query: OCKContactQuery) -> CareStoreQueryResults<OCKContact> {
+    func contacts(matching query: OCKContactQuery) -> some AsyncSequence<[OCKContact], Error> & Sendable {
         store.contacts(matching: query)
     }
 
@@ -157,7 +157,7 @@ class MockStore: OCKStoreProtocol {
 
     // MARK: - Patient
 
-    func patients(matching query: OCKPatientQuery) -> CareStoreQueryResults<OCKPatient> {
+    func patients(matching query: OCKPatientQuery) -> some AsyncSequence<[OCKPatient], Error> & Sendable {
         store.patients(matching: query)
     }
 
@@ -211,7 +211,7 @@ class MockStore: OCKStoreProtocol {
 
     // MARK: - Tasks
 
-    func tasks(matching query: OCKTaskQuery) -> CareStoreQueryResults<OCKTask> {
+    func tasks(matching query: OCKTaskQuery) -> some AsyncSequence<[OCKTask], Error> & Sendable {
         store.tasks(matching: query)
     }
 
@@ -290,7 +290,7 @@ class MockStore: OCKStoreProtocol {
 
     // MARK: - Outcomes
 
-    func outcomes(matching query: OCKOutcomeQuery) -> CareStoreQueryResults<OCKOutcome> {
+    func outcomes(matching query: OCKOutcomeQuery) -> some AsyncSequence<[OCKOutcome], Error> & Sendable {
         store.outcomes(matching: query)
     }
 

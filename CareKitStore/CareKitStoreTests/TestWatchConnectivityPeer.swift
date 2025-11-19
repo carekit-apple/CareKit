@@ -30,6 +30,7 @@
 
 #if canImport(WatchConnectivity)
 @testable import CareKitStore
+import Synchronization
 import XCTest
 
 class TestWatchConnectivityPeer: XCTestCase {
@@ -56,7 +57,7 @@ class TestWatchConnectivityPeer: XCTestCase {
         peerB.automaticallySynchronizes = false
     }
 
-    func testWatchConnectivityPeers() throws {
+    func testWatchConnectivityPeers() async throws {
         let uuidA = storeA.context.clockID
         let uuidB = storeB.context.clockID
 
@@ -64,14 +65,14 @@ class TestWatchConnectivityPeer: XCTestCase {
         let schedule = OCKSchedule.dailyAtTime(hour: 0, minutes: 0, start: Date(), end: nil, text: nil)
         var taskA = OCKTask(id: "A", title: "A1", carePlanUUID: nil, schedule: schedule)
 
-        try storeA.addTaskAndWait(taskA)
-        try storeB.syncAndWait()
+        try await storeA.addTask(taskA)
+        try await storeB.synchronize()
 
         let stateA1 = OCKRevisionRecord.KnowledgeVector([uuidA: 3, uuidB: 2])
         let stateB1 = OCKRevisionRecord.KnowledgeVector([uuidA: 1, uuidB: 3])
 
-        let tasksA1 = try storeA.fetchTasksAndWait()
-        let tasksB1 = try storeA.fetchTasksAndWait()
+        let tasksA1 = try await storeA.fetchTasks(query: OCKTaskQuery())
+        let tasksB1 = try await storeA.fetchTasks(query: OCKTaskQuery())
 
         XCTAssertEqual(tasksA1.count, 1)
         XCTAssertEqual(tasksB1.count, 1)
@@ -84,18 +85,18 @@ class TestWatchConnectivityPeer: XCTestCase {
         //    Both store should end with the original version, both conflicted
         //    versions, and the final non-conflicted version, totally 4 tasks.
         taskA.title = "A2"
-        try storeA.updateTaskAndWait(taskA)
+        try await storeA.updateTask(taskA)
 
         taskA.title = "B2"
-        try storeB.updateTaskAndWait(taskA)
+        try await storeB.updateTask(taskA)
 
-        try storeA.syncAndWait()
+        try await storeA.synchronize()
 
         let stateA2 = OCKRevisionRecord.KnowledgeVector([uuidA: 5, uuidB: 3])
         let stateB2 = OCKRevisionRecord.KnowledgeVector([uuidA: 4, uuidB: 5])
 
-        let tasksA2 = try storeA.fetchTasksAndWait()
-        let tasksB2 = try storeB.fetchTasksAndWait()
+        let tasksA2 = try await storeA.fetchTasks(query: OCKTaskQuery())
+        let tasksB2 = try await storeB.fetchTasks(query: OCKTaskQuery())
 
         XCTAssertEqual(tasksA2.count, 4)
         XCTAssertEqual(tasksB2.count, 4)
@@ -104,22 +105,64 @@ class TestWatchConnectivityPeer: XCTestCase {
     }
 }
 
-private final class MockPeer: OCKWatchConnectivityPeer {
+private final class MockPeer: Sendable, OCKRemoteSynchronizable {
 
-    weak var peersStore: OCKStore!
+    private struct State {
+        weak var peersStore: OCKStore?
+    }
+
+    private let state = Mutex(State())
+    private let wrappedPeer = OCKWatchConnectivityPeer()
 
     let name: String
+
+    var peersStore: OCKStore? {
+        get {
+            return state.withLock { $0.peersStore }
+        } set {
+            state.withLock { $0.peersStore = newValue }
+        }
+    }
+
+    var delegate: OCKRemoteSynchronizationDelegate? {
+        get {
+            return wrappedPeer.delegate
+        } set {
+            wrappedPeer.delegate = newValue
+        }
+    }
+
+    var automaticallySynchronizes: Bool {
+        get {
+            return wrappedPeer.automaticallySynchronizes
+        } set {
+            wrappedPeer.automaticallySynchronizes = newValue
+        }
+    }
 
     init(name: String) {
         self.name = name
     }
 
-    override func pullRevisions(
+    func chooseConflictResolution(
+        conflicts: [OCKEntity],
+        completion: @escaping OCKResultClosure<OCKEntity>
+    ) {
+        wrappedPeer.chooseConflictResolution(conflicts: conflicts, completion: completion)
+    }
+
+    func pullRevisions(
         since knowledgeVector: OCKRevisionRecord.KnowledgeVector,
         mergeRevision: @escaping (OCKRevisionRecord) -> Void,
-        completion: @escaping (Error?) -> Void) {
+        completion: @escaping (Error?) -> Void
+    ) {
 
         do {
+            guard let peersStore = state.withLock({ $0.peersStore }) else {
+                completion(nil)
+                return
+            }
+
             let revisions = try peersStore.computeRevisions(since: knowledgeVector)
             revisions.forEach(mergeRevision)
 
@@ -137,17 +180,23 @@ private final class MockPeer: OCKWatchConnectivityPeer {
         }
     }
 
-    override func pushRevisions(
+    func pushRevisions(
         deviceRevisions: [OCKRevisionRecord],
         deviceKnowledge: OCKRevisionRecord.KnowledgeVector,
-        completion: @escaping (Error?) -> Void) {
+        completion: @escaping @Sendable (Error?) -> Void
+    ) {
+
+        guard let peersStore = state.withLock({ $0.peersStore }) else {
+            completion(nil)
+            return
+        }
 
         deviceRevisions.forEach(peersStore.mergeRevision)
         let catchUp = OCKRevisionRecord(entities: [], knowledgeVector: deviceKnowledge)
         peersStore.mergeRevision(catchUp)
 
         peersStore.context.knowledgeVector.increment(clockFor: peersStore.context.clockID)
-        self.peersStore.resolveConflicts(completion: completion)
+        peersStore.resolveConflicts(completion: completion)
     }
 }
 #endif

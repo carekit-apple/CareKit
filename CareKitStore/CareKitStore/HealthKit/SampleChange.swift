@@ -32,13 +32,12 @@ import Foundation
 import HealthKit
 
 // Needed for testing because we can't create our own `HKSample`s
-struct SampleChange {
+struct SampleChange: Sendable {
 
     var deletedIDs: Set<UUID> = []
     var addedSamples: [Sample] = []
 }
 
-@available(iOS 15, watchOS 8, macOS 13.0, *)
 extension SampleChange {
 
     init(_ output: HealthKitQueryMonitor.QueryResult) {

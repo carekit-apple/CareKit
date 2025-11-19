@@ -46,16 +46,16 @@ class TestDailyTasksPageViewController: XCTestCase {
         dailyTasksViewController = OCKDailyTasksPageViewController(store: store)
     }
 
-    func testGridIsCreated() throws {
+    func testGridIsCreated() async throws {
         let task = OCKTask.sample(
             uuid: UUID(),
             id: "task",
             schedule: .mealTimesEachDay(startingOn: Date())
         )
-        try store.addAnyTaskAndWait(task)
+        try await store.addAnyTask(task)
         let events = task.anyEvents(for: Date())
 
-        let gridViewController = dailyTasksViewController.dailyTasksPageViewController(
+        let gridViewController = await dailyTasksViewController.dailyTasksPageViewController(
             dailyTasksViewController,
             viewControllerForTask: task,
             events: events,
@@ -66,17 +66,17 @@ class TestDailyTasksPageViewController: XCTestCase {
         XCTAssertNotNil(gridViewController)
     }
 
-    func testButtonLogIsCreated() throws {
+    func testButtonLogIsCreated() async throws {
         let task = OCKTask.sample(
             uuid: UUID(),
             id: "task",
             schedule: .mealTimesEachDay(startingOn: Date()),
             impactsAdherence: false
         )
-        try store.addAnyTaskAndWait(task)
+        try await store.addAnyTask(task)
         let events = task.anyEvents(for: Date())
 
-        let buttonLogViewController = dailyTasksViewController.dailyTasksPageViewController(
+        let buttonLogViewController = await dailyTasksViewController.dailyTasksPageViewController(
             dailyTasksViewController,
             viewControllerForTask: task,
             events: events,
@@ -87,12 +87,12 @@ class TestDailyTasksPageViewController: XCTestCase {
         XCTAssertNotNil(buttonLogViewController)
     }
 
-    func testSimpleIsCreated() throws {
+    func testSimpleIsCreated() async throws {
         let task = OCKTask.sample(uuid: UUID(), id: "task")
-        try store.addAnyTaskAndWait(task)
+        try await store.addAnyTask(task)
         let events = task.anyEvents(for: Date())
 
-        let simpleViewController = dailyTasksViewController.dailyTasksPageViewController(
+        let simpleViewController = await dailyTasksViewController.dailyTasksPageViewController(
             dailyTasksViewController,
             viewControllerForTask: task,
             events: events,

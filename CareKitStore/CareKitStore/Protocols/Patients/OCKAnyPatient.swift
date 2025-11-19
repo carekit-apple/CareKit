@@ -31,7 +31,7 @@
 import Foundation
 
 /// Conforming a type to `OCKAnyPatient` allows it to be queried and displayed by CareKit.
-public protocol OCKAnyPatient {
+public protocol OCKAnyPatient: Sendable {
 
     /// A user-defined unique identifier, typically human readable.
     var id: String { get }

@@ -36,7 +36,7 @@ public protocol OCKReadableContactStore: OCKAnyReadOnlyContactStore {
     associatedtype Contact: OCKAnyContact, Equatable, Identifiable
 
     /// An asynchronous sequence that produces contacts.
-    associatedtype Contacts: AsyncSequence where Contacts.Element == [Contact]
+    associatedtype Contacts: AsyncSequence & Sendable where Contacts.Element == [Contact]
 
     /// A continuous stream of contacts that exist in the store.
     ///
@@ -244,6 +244,7 @@ public extension OCKContactStore {
     ///
     /// - Parameters:
     ///   - contacts: An array of contacts to be added to the store.
+    @discardableResult
     func addContacts(_ contacts: [Contact]) async throws -> [Contact] {
         try await withCheckedThrowingContinuation { continuation in
             addContacts(contacts, callbackQueue: .main, completion: { continuation.resume(with: $0) })
@@ -254,6 +255,7 @@ public extension OCKContactStore {
     ///
     /// - Parameters:
     ///   - contacts: An array of contacts to be updated. The contacts must already exist in the store.
+    @discardableResult
     func updateContacts(_ contacts: [Contact]) async throws -> [Contact] {
         try await withCheckedThrowingContinuation { continuation in
             updateContacts(contacts, callbackQueue: .main, completion: { continuation.resume(with: $0) })
@@ -264,6 +266,7 @@ public extension OCKContactStore {
     ///
     /// - Parameters:
     ///   - contacts: An array of contacts to be deleted. The contacts must exist in the store.
+    @discardableResult
     func deleteContacts(_ contacts: [Contact]) async throws -> [Contact] {
         try await withCheckedThrowingContinuation { continuation in
             deleteContacts(contacts, callbackQueue: .main, completion: { continuation.resume(with: $0) })
@@ -276,6 +279,7 @@ public extension OCKContactStore {
     ///
     /// - Parameters:
     ///   - contact: A contact to be added to the store.
+    @discardableResult
     func addContact(_ contact: Contact) async throws -> Contact {
         try await withCheckedThrowingContinuation { continuation in
             addContact(contact, callbackQueue: .main, completion: { continuation.resume(with: $0) })
@@ -286,6 +290,7 @@ public extension OCKContactStore {
     ///
     /// - Parameters:
     ///   - contact: A contact to be updated. The contact must already exist in the store.
+    @discardableResult
     func updateContact(_ contact: Contact) async throws -> Contact {
         try await withCheckedThrowingContinuation { continuation in
             updateContact(contact, callbackQueue: .main, completion: { continuation.resume(with: $0) })
@@ -296,6 +301,7 @@ public extension OCKContactStore {
     ///
     /// - Parameters:
     ///   - contact: A contact to be deleted. The contact must exist in the store.
+    @discardableResult
     func deleteContact(_ contact: Contact) async throws -> Contact {
         try await withCheckedThrowingContinuation { continuation in
             deleteContact(contact, callbackQueue: .main, completion: { continuation.resume(with: $0) })

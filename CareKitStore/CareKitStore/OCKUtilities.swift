@@ -43,15 +43,14 @@ func chooseFirst<T>(then singularResultClosure: OCKResultClosure<T>?, replacemen
 }
 
 // Performs an array of operations and completes with the aggregated results or an an error, if any any occurs.
-func aggregate<Success, Failure: Error>(
+func aggregate<Success: Sendable, Failure: Error>(
     _ closures: [
-        (@escaping (Result<Success, Failure>) -> Void) -> Void
+        (@Sendable @escaping (Result<Success, Failure>) -> Void) -> Void
     ],
     callbackQueue: DispatchQueue,
-    completion: @escaping (Result<[Success], Failure>) -> Void
+    completion: sending @escaping (Result<[Success], Failure>) -> Void
 ) {
     let group = DispatchGroup()
-
     var lastError: Failure?
     var results: [Success] = []
 
@@ -60,11 +59,15 @@ func aggregate<Success, Failure: Error>(
         group.enter()
 
         closure { result in
-            switch result {
-            case .failure(let error): lastError = error
-            case .success(let result): results.append(result)
+            DispatchQueue.main.async {
+                switch result {
+                case .failure(let error):
+                    lastError = error
+                case .success(let result):
+                    results.append(result)
+                }
+                group.leave()
             }
-            group.leave()
         }
     }
 
@@ -78,12 +81,12 @@ func aggregate<Success, Failure: Error>(
     }
 }
 
-func aggregateAndFlatten<Success, Failure: Error>(
+func aggregateAndFlatten<Success: Sendable, Failure: Error>(
     _ closures: [
-        (@escaping (Result<[Success], Failure>) -> Void) -> Void
+        (@Sendable @escaping (Result<[Success], Failure>) -> Void) -> Void
     ],
     callbackQueue: DispatchQueue,
-    completion: @escaping (Result<[Success], Failure>) -> Void
+    completion: sending @escaping (Result<[Success], Failure>) -> Void
 ) {
 
     aggregate(closures, callbackQueue: callbackQueue) { result in
@@ -93,21 +96,28 @@ func aggregateAndFlatten<Success, Failure: Error>(
 }
 
 // Performs an array of operations and completes with the first result.
-func getFirstValidResult<T>(_ closures: [(@escaping OCKResultClosure<T>) -> Void], callbackQueue: DispatchQueue,
-                            completion: @escaping OCKResultClosure<T>) {
+func getFirstValidResult<T: Sendable>(
+    _ closures: [(@escaping OCKResultClosure<T>) -> Void],
+    callbackQueue: DispatchQueue,
+    completion: sending @escaping OCKResultClosure<T>
+) {
     let group = DispatchGroup()
     var values: [T] = []
 
     for closure in closures {
+
         group.enter()
-        closure({ result in
-            switch result {
-            case .failure: break
-            case .success(let fetchedValue):
-                values.append(fetchedValue)
+
+        closure { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .failure: break
+                case .success(let fetchedValue):
+                    values.append(fetchedValue)
+                }
+                group.leave()
             }
-            group.leave()
-        })
+        }
     }
 
     group.notify(queue: callbackQueue) {

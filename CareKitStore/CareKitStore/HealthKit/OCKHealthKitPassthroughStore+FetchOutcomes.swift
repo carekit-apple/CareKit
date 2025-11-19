@@ -30,13 +30,12 @@
 
 import Foundation
 
-@available(iOS 15, watchOS 8, macOS 13.0, *)
 public extension OCKHealthKitPassthroughStore {
 
     func fetchOutcomes(
         query: OCKOutcomeQuery,
         callbackQueue: DispatchQueue = .main,
-        completion: @escaping (Result<[Outcome], OCKStoreError>) -> Void
+        completion: @escaping @Sendable (Result<[Outcome], OCKStoreError>) -> Void
     ) {
 
         // Outcomes are created from HealthKit samples stored in the health store. The best way to determine

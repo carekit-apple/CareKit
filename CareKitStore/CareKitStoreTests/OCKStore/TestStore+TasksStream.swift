@@ -53,7 +53,7 @@ class TestStoreTasksStream: XCTestCase {
             schedule: .mealTimesEachDay(start: Date(), end: nil)
         )
 
-        let storedTask = try store.addTaskAndWait(task)
+        let storedTask = try await store.addTask(task)
 
         let query = OCKTaskQuery(for: Date())
         let tasks = store.tasks(matching: query)

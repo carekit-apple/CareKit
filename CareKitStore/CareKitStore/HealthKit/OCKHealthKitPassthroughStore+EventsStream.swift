@@ -32,10 +32,9 @@ import AsyncAlgorithms
 import Foundation
 import os.log
 
-@available(iOS 15, watchOS 8, macOS 13.0, *)
 public extension OCKHealthKitPassthroughStore {
 
-    func events(matching query: OCKEventQuery) -> CareStoreQueryResults<OCKEvent<Task, Outcome>> {
+    func events(matching query: OCKEventQuery) -> some AsyncSequence<[OCKEvent<OCKHealthKitTask, OCKHealthKitOutcome>], Error> & Sendable {
 
         // Overrides the default `events(matching:)`. The default implementation
         // fetches partial events and outcomes separately. The HK store implementation
@@ -45,32 +44,23 @@ public extension OCKHealthKitPassthroughStore {
 
         let taskQuery = query.taskQuery
 
-        let events = events(
+        return events(
             matching: taskQuery,
             applyingChanges: healthKitSampleChanges,
             updateCumulativeSumOfSamples: updateCumulativeSumOfHealthKitSamples
         )
         .removeDuplicates()
-
-        let wrappedEvents = CareStoreQueryResults(wrapping: events)
-        return wrappedEvents
     }
 }
 
-@available(iOS 15, watchOS 8, macOS 13.0, *)
 extension OCKHealthKitPassthroughStore {
 
-
     // Test seam. Allows us to abstract HK out of the business logic.
-    // Returns `some AsyncSequence where Element == [Event]`
-    func events<SampleChanges: AsyncSequence>(
+    func events<SampleChanges: AsyncSequence & Sendable>(
         matching query: OCKTaskQuery,
-        applyingChanges changes: @escaping ([Event]) -> SampleChanges,
+        applyingChanges changes: @escaping @Sendable ([Event]) -> SampleChanges,
         updateCumulativeSumOfSamples: @escaping UpdateCumulativeSumOfSamples
-    ) -> AsyncFlatMapSequence<AsyncMapSequence<AsyncMapSequence<
-        AsyncThrowingMapSequence<CareStoreQueryResults<OCKHealthKitTask>, [[OCKHealthKitPassthroughStore.Task]]>, [PartialEvent<OCKHealthKitPassthroughStore.Task>]>, [OCKHealthKitPassthroughStore.Event]>, AsyncThrowingExclusiveReductionsSequence<AsyncChain2Sequence<AsyncSyncSequence<[SampleChange]>, SampleChanges>, [OCKHealthKitPassthroughStore.Event]>
-    > where SampleChanges.Element == SampleChange {
-
+    ) -> some AsyncSequence<[Event], Error> & Sendable where SampleChanges.Element == SampleChange {
 
         // Compute partial event data
         let partialEvents = partialEvents(matching: query)
@@ -111,7 +101,7 @@ extension OCKHealthKitPassthroughStore {
     private func updateEvents(
         _ events: [Event],
         applyingChange change: SampleChange,
-        updateCumulativeSumOfSamples: @escaping UpdateCumulativeSumOfSamples
+        updateCumulativeSumOfSamples: UpdateCumulativeSumOfSamples
     ) async throws -> [Event] {
 
         return try await withCheckedThrowingContinuation { continuation in

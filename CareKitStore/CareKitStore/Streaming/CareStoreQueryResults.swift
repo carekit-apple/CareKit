@@ -52,34 +52,35 @@ import Foundation
 ///
 /// You can't instantiate this stream directly. Instead, use methods like ``OCKReadableTaskStore/tasks(matching:)`` to create
 /// one. Similarly named methods exist for streaming other entities in a store.
-public struct CareStoreQueryResults<Result>: AsyncSequence, AsyncIteratorProtocol {
+public struct CareStoreQueryResults<Result>: AsyncSequence, Sendable {
 
-    public typealias Element = [Result]
+    public struct AsyncIterator: AsyncIteratorProtocol {
 
-    private let _next: () async throws -> Element?
+        let _next: () async throws -> [Result]?
 
-    public func makeAsyncIterator() -> CareStoreQueryResults<Result> {
-        self
-    }
+        init<I: AsyncIteratorProtocol>(wrapping wrappedIterator: I) where I.Element == [Result] {
 
-    public mutating func next() async throws -> Element? {
+            var mutableWrappedIterator = wrappedIterator
 
-        let element = try await _next()
-        return element
-    }
-
-    init<S: AsyncSequence>(wrapping wrappedSequence: S) where S.Element == Element {
-
-        // Avoid storing the sequence as an instance property. That way
-        // its `Element` type can be obfuscated. We'll immediately create
-        // an iterator and hang onto the `next` method to be called
-        // later on when needed.
-        var wrappedIterator = wrappedSequence.makeAsyncIterator()
-
-        _next = {
-
-            let element = try await wrappedIterator.next()
-            return element
+            _next = {
+                try await mutableWrappedIterator.next()
+            }
         }
+
+        public mutating func next() async throws -> [Result]? {
+            return try await _next()
+        }
+    }
+
+    private let _makeAsyncIterator: @Sendable () -> AsyncIterator
+
+    init<S: AsyncSequence & Sendable>(wrapping wrappedSequence: S) where S.Element == [Result] {
+        _makeAsyncIterator = {
+            return AsyncIterator(wrapping: wrappedSequence.makeAsyncIterator())
+        }
+    }
+
+    public func makeAsyncIterator() -> AsyncIterator {
+        return _makeAsyncIterator()
     }
 }

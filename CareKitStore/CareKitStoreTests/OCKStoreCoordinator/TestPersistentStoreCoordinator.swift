@@ -31,18 +31,48 @@
 @testable import CareKitStore
 
 import AsyncAlgorithms
+import Synchronization
 import XCTest
 
-class MockPatientStore: OCKPatientStore {
+final class MockPatientStore: OCKPatientStore {
 
-    var patients = [OCKPatient]()
+    private struct State {
 
-    func reset() throws {
-        patients = []
+        var patients: [OCKPatient] = [] {
+            didSet {
+                patientsContinuation.yield(patients)
+            }
+        }
+
+        let patientsStream: AsyncThrowingStream<[OCKPatient], Error>
+        let patientsContinuation: AsyncThrowingStream<[OCKPatient], Error>.Continuation
+
+        init() {
+
+            var patientsContinuation: AsyncThrowingStream<[OCKPatient], Error>.Continuation!
+
+            patientsStream = AsyncThrowingStream { cont in
+                patientsContinuation = cont
+            }
+
+            self.patientsContinuation = patientsContinuation
+        }
     }
 
-    func patients(matching query: OCKPatientQuery) -> AsyncSyncSequence<[[OCKPatient]]> {
-        return [patients].async
+    private let state = Mutex(State())
+
+    init() {
+
+    }
+
+    func reset() throws {
+        state.withLock { state in
+            state.patients = []
+        }
+    }
+
+    func patients(matching query: OCKPatientQuery) -> AsyncThrowingStream<[OCKPatient], Error> {
+        return state.withLock { $0.patientsStream }
     }
 
     func fetchPatients(
@@ -50,7 +80,10 @@ class MockPatientStore: OCKPatientStore {
         callbackQueue: DispatchQueue,
         completion: @escaping OCKResultClosure<[OCKPatient]>
     ) {
-        callbackQueue.async { completion(.success(self.patients)) }
+        callbackQueue.async {
+            let patients = self.state.withLock { $0.patients }
+            completion(.success(patients))
+        }
     }
 
     func addPatients(
@@ -58,8 +91,14 @@ class MockPatientStore: OCKPatientStore {
         callbackQueue: DispatchQueue,
         completion: OCKResultClosure<[OCKPatient]>?
     ) {
-        self.patients.append(contentsOf: patients)
-        callbackQueue.async { completion?(.success(patients)) }
+        let patients = state.withLock { state in
+            state.patients.append(contentsOf: patients)
+            return state.patients
+        }
+
+        callbackQueue.async {
+            completion?(.success(patients))
+        }
     }
 
     func updatePatients(
@@ -74,20 +113,27 @@ class MockPatientStore: OCKPatientStore {
         callbackQueue: DispatchQueue,
         completion: OCKResultClosure<[OCKPatient]>?
     ) {
-        self.patients = []
-        callbackQueue.async { completion?(.success(patients)) }
+        let patients = state.withLock { state in
+            state.patients = []
+            return state.patients
+        }
+
+        callbackQueue.async {
+            completion?(.success(patients))
+        }
     }
 }
 
-class MockCoordinator: OCKStoreCoordinator {
-    private let handler: (OCKAnyPatientStore, OCKAnyPatient) -> Bool
+final class MockStoreCoordinatorDelegate: OCKStoreCoordinatorDelegate {
 
-    init(patientStoreHandlesWrite: @escaping (OCKAnyPatientStore, OCKAnyPatient) -> Bool) {
-        handler = patientStoreHandlesWrite
+    private let shouldHandleWritingPatient: @Sendable (OCKAnyPatientStore, OCKAnyPatient) -> Bool
+
+    init(shouldHandleWritingPatient: @escaping @Sendable (OCKAnyPatientStore, OCKAnyPatient) -> Bool) {
+        self.shouldHandleWritingPatient = shouldHandleWritingPatient
     }
 
-    override func patientStore(_ store: OCKAnyPatientStore, shouldHandleWritingPatient patient: OCKAnyPatient) -> Bool {
-        handler(store, patient)
+    func patientStore(_ store: OCKAnyPatientStore, shouldHandleWritingPatient patient: OCKAnyPatient) -> Bool {
+        shouldHandleWritingPatient(store, patient)
     }
 }
 
@@ -97,22 +143,22 @@ class TestPersistentStoreCoordinator: XCTestCase {
         super.setUp()
     }
 
-    func testFetchPatientsFromMultipleStores() throws {
+    func testFetchPatientsFromMultipleStores() async throws {
         let store1 = MockPatientStore()
-        store1.patients = [OCKPatient(id: "A", givenName: "A", familyName: "A")]
+        try await store1.addPatients([OCKPatient(id: "A", givenName: "A", familyName: "A")])
 
         let store2 = MockPatientStore()
-        store2.patients = [OCKPatient(id: "B", givenName: "B", familyName: "B")]
+        try await store2.addPatients([OCKPatient(id: "B", givenName: "B", familyName: "B")])
 
         let sut = OCKStoreCoordinator()
         sut.attach(patientStore: store1)
         sut.attach(patientStore: store2)
 
-        let patients = try sut.fetchAnyPatientsAndWait(query: OCKPatientQuery())
+        let patients = try await sut.fetchAnyPatients(query: OCKPatientQuery())
         XCTAssertEqual(patients.count, 2)
     }
 
-    func testAddPatientActsOnFirstRespondingStore() throws {
+    func testAddPatientActsOnFirstRespondingStore() async throws {
         let store1 = MockPatientStore()
         let store2 = MockPatientStore()
         let sut = OCKStoreCoordinator()
@@ -120,38 +166,56 @@ class TestPersistentStoreCoordinator: XCTestCase {
         sut.attach(patientStore: store2)
 
         let patient = OCKPatient(id: "A", givenName: "A", familyName: "A")
-        try sut.addAnyPatientAndWait(patient)
+        try await sut.addAnyPatient(patient)
 
-        XCTAssert(!store1.patients.isEmpty)
-        XCTAssert(store2.patients.isEmpty)
+        let patients1 = try await store1.fetchPatients(query: OCKPatientQuery())
+        let patients2 = try await store2.fetchPatients(query: OCKPatientQuery())
+
+        XCTAssert(!patients1.isEmpty)
+        XCTAssert(patients2.isEmpty)
     }
 
-    func testAddPatientFailsIfNoStoresRespond() throws {
+    func testAddPatientFailsIfNoStoresRespond() async throws {
         let sut = OCKStoreCoordinator()
         let patient = OCKPatient(id: "A", givenName: "A", familyName: "A")
-        XCTAssertThrowsError(try sut.addAnyPatientAndWait(patient))
+
+        do {
+            try await sut.addAnyPatient(patient)
+            XCTFail("Expected to fail")
+        } catch {
+            // no-op
+        }
     }
 
-    func testAddPatientsFailsIfPatientsDontAllBelongToTheSameStore() throws {
+    func testAddPatientsFailsIfPatientsDontAllBelongToTheSameStore() async throws {
         let patientA = OCKPatient(id: "A", givenName: "A", familyName: "A")
         let storeA = MockPatientStore()
 
         let patientB = OCKPatient(id: "B", givenName: "B", familyName: "B")
         let storeB = MockPatientStore()
 
-        let sut = MockCoordinator { store, patient in
+        let coordinator = OCKStoreCoordinator()
+
+        let delegate = MockStoreCoordinatorDelegate(shouldHandleWritingPatient: { store, patient in
             if store === storeA && patient as? OCKPatient == patientA { return true }
             if store === storeB && patient as? OCKPatient == patientB { return true }
             return false
+        })
+
+        coordinator.delegate = delegate
+
+        coordinator.attach(patientStore: storeA)
+        coordinator.attach(patientStore: storeB)
+
+        do {
+            try await coordinator.addAnyPatients([patientA, patientB])
+            XCTFail("Expected to fail")
+        } catch {
+            // no-op
         }
-
-        sut.attach(patientStore: storeA)
-        sut.attach(patientStore: storeB)
-
-        XCTAssertThrowsError(try sut.addAnyPatientsAndWait([patientA, patientB]))
     }
 
-    func testAddPatientActsOnFirstRespondingStoreOnly() throws {
+    func testAddPatientActsOnFirstRespondingStoreOnly() async throws {
         let patient = OCKPatient(id: "A", givenName: "A", familyName: "A")
         let store1 = MockPatientStore()
         let store2 = MockPatientStore()
@@ -160,35 +224,36 @@ class TestPersistentStoreCoordinator: XCTestCase {
         sut.attach(patientStore: store1)
         sut.attach(patientStore: store2)
 
-        try sut.addAnyPatientAndWait(patient)
+        try await sut.addAnyPatient(patient)
 
-        XCTAssert(!store1.patients.isEmpty)
-        XCTAssert(store2.patients.isEmpty)
+        let patients1 = try await store1.fetchPatients(query: OCKPatientQuery())
+        let patients2 = try await store2.fetchPatients(query: OCKPatientQuery())
+
+        XCTAssert(!patients1.isEmpty)
+        XCTAssert(patients2.isEmpty)
     }
 
-    @available(iOS 15, watchOS 8, macOS 13.0, *)
-    func testFetchCanResultInAnArrayPopulatedWithDifferentTypes() throws {
+    func testFetchCanResultInAnArrayPopulatedWithDifferentTypes() async throws {
         let coordinator = OCKStoreCoordinator()
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
         let store = OCKStore(name: UUID().uuidString, type: .inMemory)
         let link = OCKHealthKitLinkage(quantityIdentifier: .stepCount, quantityType: .cumulative, unit: .count())
         let hkStore = OCKHealthKitPassthroughStore(store: store)
-        try hkStore.addTaskAndWait(OCKHealthKitTask(id: "A", title: "A", carePlanUUID: nil, schedule: schedule, healthKitLinkage: link))
+        try await hkStore.addTask(OCKHealthKitTask(id: "A", title: "A", carePlanUUID: nil, schedule: schedule, healthKitLinkage: link))
 
         let ckStore = OCKStore(name: UUID().uuidString, type: .inMemory)
-        try ckStore.addTaskAndWait(OCKTask(id: "B", title: "B", carePlanUUID: nil, schedule: schedule))
+        try await ckStore.addTask(OCKTask(id: "B", title: "B", carePlanUUID: nil, schedule: schedule))
 
         coordinator.attachReadOnly(eventStore: ckStore)
         coordinator.attachReadOnly(eventStore: hkStore)
-        coordinator.fetchAnyTasks(query: OCKTaskQuery()) { result in
-            let tasks = try? result.get()
-            XCTAssertEqual(tasks?.count, 2)
-            XCTAssertEqual(tasks?.compactMap { $0 as? OCKTask }.count, 1)
-            XCTAssertEqual(tasks?.compactMap { $0 as? OCKHealthKitTask }.count, 1)
-        }
+
+        let tasks = try await coordinator.fetchAnyTasks(query: OCKTaskQuery())
+        XCTAssertEqual(tasks.count, 2)
+        XCTAssertEqual(tasks.compactMap { $0 as? OCKTask }.count, 1)
+        XCTAssertEqual(tasks.compactMap { $0 as? OCKHealthKitTask }.count, 1)
     }
 
-    func testPersistentStoreCoordinatorDoesNotSendHealthKitTasksToOCKStore() {
+    func testPersistentStoreCoordinatorDoesNotSendHealthKitTasksToOCKStore() async {
         let coordinator = OCKStoreCoordinator()
         let store = OCKStore(name: UUID().uuidString, type: .inMemory)
         coordinator.attach(store: store)
@@ -197,31 +262,34 @@ class TestPersistentStoreCoordinator: XCTestCase {
         let link = OCKHealthKitLinkage(quantityIdentifier: .stepCount, quantityType: .cumulative, unit: .count())
         let task = OCKHealthKitTask(id: "A", title: nil, carePlanUUID: nil, schedule: schedule, healthKitLinkage: link)
 
-        XCTAssertThrowsError(try coordinator.addAnyTaskAndWait(task))
+        do {
+            try await coordinator.addAnyTask(task)
+            XCTFail("Expected to fail")
+        } catch {
+            // no-op
+        }
     }
 
-#if !os(watchOS)
-    @available(iOS 15, watchOS 8, macOS 13.0, *)
-    func testStoreCoordinatorDoesNotSendNormalOutcomesToHealthKit() {
+    #if !os(watchOS)
+    func testStoreCoordinatorDoesNotSendNormalOutcomesToHealthKit() throws {
         let coordinator = OCKStoreCoordinator()
         let store = OCKStore(name: UUID().uuidString, type: .inMemory)
         let passthrough = OCKHealthKitPassthroughStore(store: store)
         let outcome = OCKOutcome(taskUUID: UUID(), taskOccurrenceIndex: 0, values: [])
-        let willHandle = coordinator.outcomeStore(passthrough, shouldHandleWritingOutcome: outcome)
+        let willHandle = try XCTUnwrap(coordinator.delegate?.outcomeStore(passthrough, shouldHandleWritingOutcome: outcome))
         XCTAssertFalse(willHandle)
     }
 
-    func testStoreCoordinatorDoesNotSendHealthKitOutcomesToOCKStore() {
+    func testStoreCoordinatorDoesNotSendHealthKitOutcomesToOCKStore() throws {
         let coordinator = OCKStoreCoordinator()
         let store = OCKStore(name: UUID().uuidString, type: .inMemory)
         let outcome = OCKHealthKitOutcome(taskUUID: UUID(), taskOccurrenceIndex: 0, values: [])
-        let willHandle = coordinator.outcomeStore(store, shouldHandleWritingOutcome: outcome)
+        let willHandle = try XCTUnwrap(coordinator.delegate?.outcomeStore(store, shouldHandleWritingOutcome: outcome))
         XCTAssertFalse(willHandle)
     }
-#endif
+    #endif
     
-    @available(iOS 15, watchOS 8, macOS 13.0, *)
-    func testCanAssociateHealthKitTaskWithCarePlan() throws {
+    func testCanAssociateHealthKitTaskWithCarePlan() async throws {
         let store = OCKStore(name: UUID().uuidString, type: .inMemory)
         let passthrough = OCKHealthKitPassthroughStore(store: store)
 
@@ -230,25 +298,24 @@ class TestPersistentStoreCoordinator: XCTestCase {
         coordinator.attach(eventStore: passthrough)
 
         let plan = OCKCarePlan(id: "plan", title: "My Plan", patientUUID: nil)
-        try coordinator.addAnyCarePlanAndWait(plan)
+        try await coordinator.addAnyCarePlan(plan)
 
         let schedule = OCKSchedule.dailyAtTime(hour: 0, minutes: 0, start: Date(), end: nil, text: nil)
         let task = OCKTask(id: "task", title: "My Task", carePlanUUID: plan.uuid, schedule: schedule)
-        try coordinator.addAnyTaskAndWait(task)
+        try await coordinator.addAnyTask(task)
 
         let query = OCKTaskQuery(id: "task")
-        let fetched = try coordinator.fetchAnyTasksAndWait(query: query)
+        let fetched = try await coordinator.fetchAnyTasks(query: query)
         XCTAssertEqual(fetched.first?.belongs(to: plan), true)
     }
 }
 
-@available(iOS 15, watchOS 8, macOS 13.0, *)
 private struct SeededTaskStore {
 
     let store: OCKStoreCoordinator
     let task: OCKTask
 
-    init() throws {
+    init() async throws {
         let cdStore = OCKStore(name: UUID().uuidString, type: .inMemory)
         let passthrough = OCKHealthKitPassthroughStore(store: cdStore)
 
@@ -268,7 +335,7 @@ private struct SeededTaskStore {
             schedule: schedule
         )
         let outcome = OCKOutcome(taskUUID: task.uuid, taskOccurrenceIndex: 0, values: [])
-        try cdStore.addAnyTaskAndWait(task)
-        try cdStore.addOutcomeAndWait(outcome)
+        try await cdStore.addAnyTask(task)
+        try await cdStore.addOutcome(outcome)
     }
 }

@@ -31,11 +31,14 @@
 import Foundation
 import HealthKit
 
-class OCKHealthKitProxy {
+final class OCKHealthKitProxy: Sendable {
 
     private let store = HKHealthStore()
 
-    func requestPermissionIfNecessary(writeTypes: Set<HKSampleType>, completion: @escaping (Error?) -> Void) {
+    func requestPermissionIfNecessary(
+        writeTypes: Set<HKSampleType>,
+        completion: @escaping @Sendable (Error?) -> Void
+    ) {
         let authStatuses = writeTypes.map { store.authorizationStatus(for: $0) }
         let needsAuthorization = authStatuses.contains(.notDetermined)
 

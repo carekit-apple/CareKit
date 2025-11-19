@@ -43,7 +43,7 @@ extension OCKDetailedContactView: OCKContactUpdatable {
         }
 
         instructionsLabel.text = contact.role
-        addressButton.detailLabel.text = OCKContactUtility.string(from: contact.address)
+        addressButton.detailLabel.text = OCKContactUtility.string(from: contact.address?.cnPostalAddress())
 
         // Show the contact buttons if the contact has relevant data
         addressButton.setIsHiddenIfNeeded(contact.address == nil)

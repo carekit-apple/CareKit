@@ -30,4 +30,4 @@
 
 import Foundation
 
-public typealias OCKResultClosure<T> = (Result<T, OCKStoreError>) -> Void
+public typealias OCKResultClosure<T> = @Sendable (Result<T, OCKStoreError>) -> Void

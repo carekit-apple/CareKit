@@ -30,7 +30,7 @@
 
 import Foundation
 
-struct PartialEvent<Task: OCKAnyTask> {
+struct PartialEvent<Task: OCKAnyTask>: Sendable {
 
     var task: Task
     var scheduleEvent: OCKScheduleEvent

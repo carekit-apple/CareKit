@@ -30,6 +30,7 @@
 
 import AsyncAlgorithms
 import Foundation
+import Synchronization
 
 /// `OCKStoreCoordinator` is a special kind of pass through store that forwards to a group of other stores.
 /// It has different behavior during **read** and **write** operations.
@@ -43,17 +44,19 @@ import Foundation
 ///
 /// - Note: The order in which stores are registered on an `OCKStoreCoordinator` is important. If two or more stores are
 ///  capable of writing an object, the one that was registered first will be given precedence.
-open class OCKStoreCoordinator: OCKAnyStoreProtocol {
+public final class OCKStoreCoordinator: OCKAnyStoreProtocol, OCKStoreCoordinatorDelegate {
 
-    private(set) var readOnlyPatientStores = [OCKAnyReadOnlyPatientStore]()
-    private(set) var readOnlyPlanStores = [OCKAnyReadOnlyCarePlanStore]()
-    private(set) var readOnlyContactStores = [OCKAnyReadOnlyContactStore]()
-    private(set) var readOnlyEventStores = [OCKAnyReadOnlyEventStore]()
-
-    private(set) var patientStores = [OCKAnyPatientStore]()
-    private(set) var planStores = [OCKAnyCarePlanStore]()
-    private(set) var contactStores = [OCKAnyContactStore]()
-    private(set) var eventStores = [OCKAnyEventStore]()
+    struct State {
+        weak var delegate: OCKStoreCoordinatorDelegate?
+        var readOnlyPatientStores = [OCKAnyReadOnlyPatientStore]()
+        var readOnlyPlanStores = [OCKAnyReadOnlyCarePlanStore]()
+        var readOnlyContactStores = [OCKAnyReadOnlyContactStore]()
+        var readOnlyEventStores = [OCKAnyReadOnlyEventStore]()
+        var patientStores = [OCKAnyPatientStore]()
+        var planStores = [OCKAnyCarePlanStore]()
+        var contactStores = [OCKAnyContactStore]()
+        var eventStores = [OCKAnyEventStore]()
+    }
 
 
     @available(*, unavailable, message: "OCKSynchronizedStoreManager and its related types are no longer available as a mechanism to synchronize with the CareKit store. As a replacement, see the asynchronous streams available directly on a CareKit store. For example, to monitor changes to tasks, see `OCKStore.tasks(query:)`.")
@@ -86,19 +89,37 @@ open class OCKStoreCoordinator: OCKAnyStoreProtocol {
         fatalError("Property is unavailable")
     }
 
+    public var delegate: OCKStoreCoordinatorDelegate? {
+        get {
+            return state.withLock { $0.delegate }
+        } set {
+            state.withLock { $0.delegate = newValue }
+        }
+    }
 
-    public init() {}
+    let state = Mutex(State())
+
+
+    public init() {
+        state.withLock { [weak self] state in
+            state.delegate = self
+        }
+    }
 
     public func reset() throws {
-        try readOnlyPatientStores.forEach { try $0.reset() }
-        try readOnlyPlanStores.forEach { try $0.reset() }
-        try readOnlyContactStores.forEach { try $0.reset() }
-        try readOnlyEventStores.forEach { try $0.reset() }
 
-        try patientStores.forEach { try $0.reset() }
-        try planStores.forEach { try $0.reset() }
-        try contactStores.forEach { try $0.reset() }
-        try eventStores.forEach { try $0.reset() }
+        try state.withLock { state in
+
+            try state.readOnlyPatientStores.forEach { try $0.reset() }
+            try state.readOnlyPlanStores.forEach { try $0.reset() }
+            try state.readOnlyContactStores.forEach { try $0.reset() }
+            try state.readOnlyEventStores.forEach { try $0.reset() }
+
+            try state.patientStores.forEach { try $0.reset() }
+            try state.planStores.forEach { try $0.reset() }
+            try state.contactStores.forEach { try $0.reset() }
+            try state.eventStores.forEach { try $0.reset() }
+        }
     }
 
     /// Attaches a new store. The new store must be capable of handling reading and writing to all object types.
@@ -106,11 +127,13 @@ open class OCKStoreCoordinator: OCKAnyStoreProtocol {
     /// - Parameter store: Any store that conforms to `OCKAnyStoreProtocol`.
     /// - Note: The order is which stores are attached is important.
     /// - SeeAlso: `OCKStoreCoordinator`
-    open func attach(store: OCKAnyStoreProtocol) {
-        attach(patientStore: store)
-        attach(planStore: store)
-        attach(contactStore: store)
-        attach(eventStore: store)
+    public func attach(store: OCKAnyStoreProtocol) {
+        state.withLock { state in
+            state.patientStores.append(store)
+            state.planStores.append(store)
+            state.contactStores.append(store)
+            state.eventStores.append(store)
+        }
     }
 
     /// Attaches a new store. The new store must be capable of reading and writing patients.
@@ -118,32 +141,40 @@ open class OCKStoreCoordinator: OCKAnyStoreProtocol {
     /// - Parameter patientStore: Any store that conforms to `OCKAnyPatientStore`.
     /// - Note: The order is which stores are attached is important.
     /// - SeeAlso: `OCKStoreCoordinator`
-    open func attach(patientStore: OCKAnyPatientStore) {
-        patientStores.append(patientStore)
+    public func attach(patientStore: OCKAnyPatientStore) {
+        state.withLock { state in
+            state.patientStores.append(patientStore)
+        }
     }
 
     /// Attaches a new store. The new store must be capable of reading and writing care plans.
     /// - Parameter planStore: Any store that conforms to `OCKAnyCarePlanStore`.
     /// - Note: The order is which stores are attached is important.
     /// - SeeAlso: `OCKStoreCoordinator`
-    open func attach(planStore: OCKAnyCarePlanStore) {
-        planStores.append(planStore)
+    public func attach(planStore: OCKAnyCarePlanStore) {
+        state.withLock { state in
+            state.planStores.append(planStore)
+        }
     }
 
     /// Attaches a new store. The new store must be capable of reading and writing contacts.
     /// - Parameter contactStore: Any store that conforms to `OCKAnyContactStore`.
     /// - Note: The order is which stores are attached is important.
     /// - SeeAlso: `OCKStoreCoordinator`
-    open func attach(contactStore: OCKAnyContactStore) {
-        contactStores.append(contactStore)
+    public func attach(contactStore: OCKAnyContactStore) {
+        state.withLock { state in
+            state.contactStores.append(contactStore)
+        }
     }
 
     /// Attaches a new store. The new store must be capable of reading and writing tasks and outcomes.
     /// - Parameter eventStore: Any store that conforms to `OCKAnyEventStore`.
     /// - Note: The order is which stores are attached is important.
     /// - SeeAlso: `OCKStoreCoordinator`
-    open func attach(eventStore: OCKAnyEventStore) {
-        eventStores.append(eventStore)
+    public func attach(eventStore: OCKAnyEventStore) {
+        state.withLock { state in
+            state.eventStores.append(eventStore)
+        }
     }
 
     /// Attaches a new store. The new store must be capable of reading patients.
@@ -151,8 +182,10 @@ open class OCKStoreCoordinator: OCKAnyStoreProtocol {
     /// - Parameter patientStore: Any store that conforms to `OCKAnyReadOnlyPatientStore`.
     /// - Note: The order is which stores are attached is important.
     /// - SeeAlso: `OCKStoreCoordinator`
-    open func attachReadOnly(patientStore: OCKAnyReadOnlyPatientStore) {
-        readOnlyPatientStores.append(patientStore)
+    public func attachReadOnly(patientStore: OCKAnyReadOnlyPatientStore) {
+        state.withLock { state in
+            state.readOnlyPatientStores.append(patientStore)
+        }
     }
 
     /// Attaches a new store. The new store must be capable of reading care plans.
@@ -160,8 +193,10 @@ open class OCKStoreCoordinator: OCKAnyStoreProtocol {
     /// - Parameter carePlanStore: Any store that conforms to `OCKAnyReadOnlyCarePlanStore`.
     /// - Note: The order is which stores are attached is important.
     /// - SeeAlso: `OCKStoreCoordinator`
-    open func attachReadOnly(carePlanStore: OCKAnyReadOnlyCarePlanStore) {
-        readOnlyPlanStores.append(carePlanStore)
+    public func attachReadOnly(carePlanStore: OCKAnyReadOnlyCarePlanStore) {
+        state.withLock { state in
+            state.readOnlyPlanStores.append(carePlanStore)
+        }
     }
 
     /// Attaches a new store. The new store must be capable of reading contacts.
@@ -169,8 +204,10 @@ open class OCKStoreCoordinator: OCKAnyStoreProtocol {
     /// - Parameter contactStore: Any store that conforms to `OCKAnyReadOnlyContactStore`.
     /// - Note: The order is which stores are attached is important.
     /// - SeeAlso: `OCKStoreCoordinator`
-    open func attachReadOnly(contactStore: OCKAnyReadOnlyContactStore) {
-        readOnlyContactStores.append(contactStore)
+    public func attachReadOnly(contactStore: OCKAnyReadOnlyContactStore) {
+        state.withLock { state in
+            state.readOnlyContactStores.append(contactStore)
+        }
     }
 
     /// Attaches a new store. The new store must be capable of reading events.
@@ -178,18 +215,21 @@ open class OCKStoreCoordinator: OCKAnyStoreProtocol {
     /// - Parameter eventStore: Any store that conforms to `OCKAnyReadOnlyEventStore`.
     /// - Note: The order is which stores are attached is important.
     /// - SeeAlso: `OCKStoreCoordinator`
-    open func attachReadOnly(eventStore: OCKAnyReadOnlyEventStore) {
-        readOnlyEventStores.append(eventStore)
+    public func attachReadOnly(eventStore: OCKAnyReadOnlyEventStore) {
+        state.withLock { state in
+            state.readOnlyEventStores.append(eventStore)
+        }
     }
 
-    func combineMany<T>(
+    func combineMany<T: Sendable>(
         sequences: [CareStoreQueryResults<T>],
-        sortingElementsUsing sortDescriptors: [NSSortDescriptor]
+        makeSortDescriptors: @escaping @Sendable () -> [NSSortDescriptor] // NSSortDescriptor is not sendable, so creating a layer of indirection here
     ) -> CareStoreQueryResults<T> {
 
         combineMany(sequences: sequences) { combinedValues in
 
             let nsValues = combinedValues as NSArray
+            let sortDescriptors = makeSortDescriptors()
 
             let sortedValues = nsValues.sortedArray(using: sortDescriptors) as! [T]
 
@@ -197,9 +237,9 @@ open class OCKStoreCoordinator: OCKAnyStoreProtocol {
         }
     }
 
-    func combineMany<T>(
+    func combineMany<T: Sendable>(
         sequences: [CareStoreQueryResults<T>],
-        sort: @escaping (_ combinedValues: [T]) -> [T]
+        sort: @escaping @Sendable (_ combinedValues: [T]) -> [T]
     ) -> CareStoreQueryResults<T> {
 
         // If there are no streams to merge, return an empty stream
@@ -244,130 +284,5 @@ open class OCKStoreCoordinator: OCKAnyStoreProtocol {
 
         let wrappedSortedResults = CareStoreQueryResults(wrapping: sortedResults)
         return wrappedSortedResults
-    }
-
-    // MARK: Handler Routing
-
-    /// Determines whether or not a store is intended to handle a given query. If true is returned, the persistent store coordinator
-    /// will execute the query against the store and include the result together with results from any other stores that also respond
-    /// to this query.
-    ///
-    /// - Parameter store: A candidate store that should or should not handle the query.
-    /// - Parameter query: The query that is about to be executed.
-    open func patientStore(_ store: OCKAnyReadOnlyPatientStore, shouldHandleQuery query: OCKPatientQuery) -> Bool {
-        true
-    }
-
-    /// Determines whether or not a store is intended to handle a certain write operation. The persistent store coordinator will call this method
-    /// against all its stores in the order they were registered and execute the write on the first store that returns true for this method.
-    ///
-    /// - Parameters:
-    ///   - store: A candidate store that should or should not handle writing.
-    ///   - patient: The patient that needs to be written.
-    open func patientStore(_ store: OCKAnyPatientStore, shouldHandleWritingPatient patient: OCKAnyPatient) -> Bool {
-        true
-    }
-
-    /// Determines whether or not a store is intended to handle a given query. If true is returned, the persistent store coordinator
-    /// will execute the query against the store and include the result together with results from any other stores that also respond
-    /// to this query.
-    ///
-    /// - Parameter store: A candidate store that should or should not handle the query.
-    /// - Parameter query: The query that is about to be executed.
-    open func carePlanStore(_ store: OCKAnyReadOnlyCarePlanStore, shouldHandleQuery query: OCKCarePlanQuery) -> Bool {
-        true
-    }
-
-    /// Determines whether or not a store is intended to handle a certain write operation. The persistent store coordinator will call this method
-    /// against all its stores in the order they were registered and execute the write on the first store that returns true for this method.
-    ///
-    /// - Parameters:
-    ///   - store: A candidate store that should or should not handle writing.
-    ///   - plan: The plan that needs to be written.
-    open func carePlanStore(_ store: OCKAnyCarePlanStore, shouldHandleWritingCarePlan plan: OCKAnyCarePlan) -> Bool {
-        true
-    }
-
-    /// Determines whether or not a store is intended to handle a given query. If true is returned, the persistent store coordinator
-    /// will execute the query against the store and include the result together with results from any other stores that also respond
-    /// to this query.
-    ///
-    /// - Parameter store: A candidate store that should or should not handle the query.
-    /// - Parameter query: The query that is about to be executed.
-    open func contactStore(_ store: OCKAnyReadOnlyContactStore, shouldHandleQuery query: OCKContactQuery) -> Bool {
-        true
-    }
-
-    /// Determines whether or not a store is intended to handle a certain write operation. The persistent store coordinator will call this method
-    /// against all its stores in the order they were registered and execute the write on the first store that returns true for this method.
-    ///
-    /// - Parameters:
-    ///   - store: A candidate store that should or should not handle writing.
-    ///   - contact: The contact that needs to be written.
-    open func contactStore(_ store: OCKAnyReadOnlyContactStore, shouldHandleWritingContact contact: OCKAnyContact) -> Bool {
-        return true
-    }
-
-    /// Determines whether or not a store is intended to handle a given query. If true is returned, the persistent store coordinator
-    /// will execute the query against the store and include the result together with results from any other stores that also respond
-    /// to this query.
-    ///
-    /// - Parameter store: A candidate store that should or should not handle the query.
-    /// - Parameter query: The query that is about to be executed.
-    open func taskStore(_ store: OCKAnyReadOnlyTaskStore, shouldHandleQuery query: OCKTaskQuery) -> Bool {
-        true
-    }
-
-    /// Determines whether or not a store is intended to handle a certain write operation. The persistent store coordinator will call this method
-    /// against all its stores in the order they were registered and execute the write on the first store that returns true for this method.
-    ///
-    /// - Parameters:
-    ///   - store: A candidate store that should or should not handle writing.
-    ///   - task: The task that needs to be written.
-    open func taskStore(_ store: OCKAnyReadOnlyTaskStore, shouldHandleWritingTask task: OCKAnyTask) -> Bool {
-
-        #if os(iOS)
-        if #available(iOS 15, watchOS 8, macOS 13.0, *) {
-
-            // HealthKit stores should only respond to HealthKit tasks
-            if store is OCKHealthKitPassthroughStore && !(task is OCKHealthKitTask) { return false }
-        }
-        #endif
-
-        // OCKStore should not respond to HealthKit tasks
-        #if os(iOS)
-        if store is OCKStore && task is OCKHealthKitTask { return false }
-        #endif
-
-        return true
-    }
-
-    /// Determines whether or not a store is intended to handle a given query. If true is returned, the persistent store coordinator
-    /// will execute the query against the store and include the result together with results from any other stores that also respond
-    /// to this query.
-    ///
-    /// - Parameter store: A candidate store that should or should not handle the query.
-    /// - Parameter query: The query that is about to be executed.
-    open func outcomeStore(_ store: OCKAnyReadOnlyOutcomeStore, shouldHandleQuery query: OCKOutcomeQuery) -> Bool {
-        true
-    }
-
-    /// Determines whether or not a store is intended to handle a certain write operation. The persistent store coordinator will call this method
-    /// against all its stores in the order they were registered and execute the write on the first store that returns true for this method.
-    ///
-    /// - Parameters:
-    ///   - store: A candidate store that should or should not handle writing.
-    ///   - outcome: The outcome that needs to be written.
-    open func outcomeStore(_ store: OCKAnyReadOnlyOutcomeStore, shouldHandleWritingOutcome outcome: OCKAnyOutcome) -> Bool {
-
-        #if os(iOS) || os(macOS)
-        if #available(iOS 15, watchOS 8, macOS 13.0, *) {
-            // Only the HK passthrough store should handle HK outcomes
-            if outcome is OCKHealthKitOutcome || store is OCKHealthKitPassthroughStore {
-                return store is OCKHealthKitPassthroughStore && outcome is OCKHealthKitOutcome
-            }
-        }
-        #endif
-        return true
     }
 }

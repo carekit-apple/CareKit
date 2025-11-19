@@ -34,42 +34,26 @@ import os.log
 
 extension OCKStore {
 
-    public func carePlans(matching query: OCKCarePlanQuery) -> CareStoreQueryResults<OCKCarePlan> {
+    public func carePlans(matching query: OCKCarePlanQuery) -> some AsyncSequence<[OCKCarePlan], Error> & Sendable {
 
         // Setup a live query
 
         let predicate = buildPredicate(for: query)
         let sortDescriptors = buildSortDescriptors(from: query)
 
-        let monitor = CoreDataQueryMonitor(
+        return AsyncStreamFactory.coreDataResults(
             OCKCDCarePlan.self,
             predicate: predicate,
             sortDescriptors: sortDescriptors,
             context: context
         )
-
-        // Wrap the live query in an async stream
-
-        let coreDataCarePlans = monitor.results()
-
-        // Convert Core Data results to DTOs
-
-        let carePlans = coreDataCarePlans
-            .map { carePlans in
-                carePlans.map { $0.makePlan() }
-            }
-
-        // Wrap the final transformed stream to hide all implementation details from
-        // the public API
-
-        let wrappedCarePlans = CareStoreQueryResults(wrapping: carePlans)
-        return wrappedCarePlans
+        .map { $0 as! [Plan] }
     }
 
     public func fetchCarePlans(
         query: OCKCarePlanQuery = OCKCarePlanQuery(),
         callbackQueue: DispatchQueue = .main,
-        completion: @escaping (Result<[OCKCarePlan], OCKStoreError>) -> Void
+        completion: @Sendable @escaping (Result<[OCKCarePlan], OCKStoreError>) -> Void
     ) {
         fetchValues(
             predicate: buildPredicate(for: query),
@@ -86,7 +70,7 @@ extension OCKStore {
     public func addCarePlans(
         _ plans: [OCKCarePlan],
         callbackQueue: DispatchQueue = .main,
-        completion: ((Result<[OCKCarePlan], OCKStoreError>) -> Void)? = nil
+        completion: (@Sendable (Result<[OCKCarePlan], OCKStoreError>) -> Void)? = nil
     ) {
         transaction(inserts: plans, updates: [], deletes: []) { result in
             callbackQueue.async {
@@ -98,7 +82,7 @@ extension OCKStore {
     public func updateCarePlans(
         _ plans: [OCKCarePlan],
         callbackQueue: DispatchQueue = .main,
-        completion: ((Result<[OCKCarePlan], OCKStoreError>) -> Void)? = nil
+        completion: (@Sendable (Result<[OCKCarePlan], OCKStoreError>) -> Void)? = nil
     ) {
         transaction(inserts: [], updates: plans, deletes: []) { result in
             callbackQueue.async {
@@ -109,7 +93,7 @@ extension OCKStore {
 
     public func deleteCarePlans(
         _ plans: [OCKCarePlan], callbackQueue: DispatchQueue = .main,
-        completion: ((Result<[OCKCarePlan], OCKStoreError>) -> Void)? = nil
+        completion: (@Sendable (Result<[OCKCarePlan], OCKStoreError>) -> Void)? = nil
     ) {
         transaction(inserts: [], updates: [], deletes: plans) { result in
             callbackQueue.async {

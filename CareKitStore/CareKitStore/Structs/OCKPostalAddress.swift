@@ -27,53 +27,77 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 import Contacts
+import Foundation
 
-/// A `Codable` subclass of `CNMutablePostalAddress`.
-@objc // We subclass for sole purpose of adding conformance to Codable.
-public class OCKPostalAddress: CNMutablePostalAddress, Codable {
+/// A representation of the postal address for a contact.
+public struct OCKPostalAddress: Hashable, Codable, Sendable {
 
-    public required init(from decoder: Decoder) throws {
-        super.init()
-        let container = try decoder.container(keyedBy: Keys.self)
-        self.street = try container.decode(String.self, forKey: .street)
-        self.subLocality = try container.decode(String.self, forKey: .subLocality)
-        self.city = try container.decode(String.self, forKey: .city)
-        self.subAdministrativeArea = try container.decode(String.self, forKey: .subAdministrativeArea)
-        self.state = try container.decode(String.self, forKey: .state)
-        self.postalCode = try container.decode(String.self, forKey: .postalCode)
-        self.country = try container.decode(String.self, forKey: .country)
-        self.isoCountryCode = try container.decode(String.self, forKey: .isoCountryCode)
+    /// The street name of the address.
+    public var street: String
+
+    /// The city name of the address.
+    public var city: String
+
+    /// The state name of the address.
+    public var state: String
+
+    /// The postal code of the address.
+    public var postalCode: String
+
+    /// The country or region name of the address.
+    public var country: String
+
+    /// The ISO country code, using the ISO 3166-1 alpha-2 standard.
+    public var isoCountryCode: String
+
+    /// The subadministrative area (such as a county or other region) in a postal address.
+    public var subAdministrativeArea: String
+
+    /// Additional information associated with the location, typically defined at the city or town level, in a postal address.
+    public var subLocality: String
+
+    /// A representation of the postal address for a contact.
+    /// - Parameters:
+    ///   - street: The street name of the address.
+    ///   - city: The city name of the address.
+    ///   - state: The state name of the address.
+    ///   - postalCode: The postal code of the address.
+    ///   - country: The country or region name of the address.
+    ///   - isoCountryCode: The ISO country code, using the ISO 3166-1 alpha-2 standard.
+    ///   - subAdministrativeArea: The subadministrative area (such as a county or other region) in a postal address.
+    ///   - subLocality: Additional information associated with the location, typically defined at the city or town level, in a postal address.
+    public init(
+        street: String,
+        city: String,
+        state: String,
+        postalCode: String,
+        country: String,
+        isoCountryCode: String = "",
+        subAdministrativeArea: String = "",
+        subLocality: String = ""
+    ) {
+        self.street = street
+        self.city = city
+        self.state = state
+        self.postalCode = postalCode
+        self.country = country
+        self.isoCountryCode = isoCountryCode
+        self.subAdministrativeArea = subAdministrativeArea
+        self.subLocality = subLocality
     }
 
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: Keys.self)
-        try container.encode(street, forKey: .street)
-        try container.encode(subLocality, forKey: .subLocality)
-        try container.encode(city, forKey: .city)
-        try container.encode(subAdministrativeArea, forKey: .subAdministrativeArea)
-        try container.encode(state, forKey: .state)
-        try container.encode(postalCode, forKey: .postalCode)
-        try container.encode(country, forKey: .country)
-        try container.encode(isoCountryCode, forKey: .isoCountryCode)
-    }
-
-    override public init() {
-        super.init()
-    }
-
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-    }
-
-    private enum Keys: CodingKey, CaseIterable {
-        case street
-        case subLocality
-        case city
-        case subAdministrativeArea
-        case state
-        case postalCode
-        case country
-        case isoCountryCode
+    public func cnPostalAddress() -> CNPostalAddress {
+        let address = CNMutablePostalAddress()
+        address.street = street
+        address.city = city
+        address.state = state
+        address.postalCode = postalCode
+        address.country = country
+        address.isoCountryCode = isoCountryCode
+        address.subAdministrativeArea = subAdministrativeArea
+        address.subLocality = subLocality
+        return address
     }
 }

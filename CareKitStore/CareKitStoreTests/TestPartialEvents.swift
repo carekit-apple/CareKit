@@ -56,9 +56,7 @@ class TestPartialEvents: XCTestCase {
         let query = OCKTaskQuery()
 
         // Fetch events
-        let fetchedEvents = [
-            waitForPartialEvents(query: query)
-        ]
+        let fetchedEvents = try await [fetchPartialEvents(query: query)]
 
         // Accumulate streamed events
         let eventsStream = store.partialEvents(matching: query)
@@ -74,7 +72,7 @@ class TestPartialEvents: XCTestCase {
         // Add a task to the store
         let mealtimesSchedule = OCKSchedule.mealTimesEachDay(start: startOfDay, end: nil)
         let task = OCKTask(id: "task", title: nil, carePlanUUID: nil, schedule: mealtimesSchedule)
-        let storedTask = try store.addTaskAndWait(task)
+        let storedTask = try await store.addTask(task)
 
         let expectedEvents = [
             [
@@ -87,9 +85,7 @@ class TestPartialEvents: XCTestCase {
         let query = OCKTaskQuery()
 
         // Fetch events
-        let fetchedEvents = [
-            waitForPartialEvents(query: query)
-        ]
+        let fetchedEvents = try await [fetchPartialEvents(query: query)]
 
         // Accumulate streamed events
         let eventsStream = store.partialEvents(matching: query)
@@ -105,17 +101,17 @@ class TestPartialEvents: XCTestCase {
         // Create the initial task
         let mealtimesSchedule = OCKSchedule.mealTimesEachDay(start: startOfDay, end: nil)
         let taskV1 = OCKTask(id: "task", title: nil, carePlanUUID: nil, schedule: mealtimesSchedule)
-        let storedTaskV1 = try store.addTaskAndWait(taskV1)
+        let storedTaskV1 = try await store.addTask(taskV1)
 
         // Update the task schedule. It should occur once at the end of the day
         var taskV2 = storedTaskV1
         let dailySchedule = OCKSchedule.dailyAtTime(hour: 23, minutes: 59, start: startOfDay, end: nil, text: nil)
         taskV2.schedule = dailySchedule
         taskV2.effectiveDate = mealtimesSchedule[1].start
-        try store.updateTaskAndWait(taskV2)
+        try await store.updateTask(taskV2)
 
         // Fetch both task versions
-        let tasks = try store.fetchTasksAndWait()
+        let tasks = try await store.fetchTasks(query: OCKTaskQuery())
         guard tasks.count == 2 else {
             XCTFail("Unexpected tasks")
             return
@@ -131,9 +127,7 @@ class TestPartialEvents: XCTestCase {
         let query = OCKTaskQuery()
 
         // Fetch events
-        let fetchedEvents = [
-            waitForPartialEvents(query: query)
-        ]
+        let fetchedEvents = try await [fetchPartialEvents(query: query)]
 
         // Accumulate streamed events
         let eventsStream = store.partialEvents(matching: query)
@@ -150,8 +144,8 @@ class TestPartialEvents: XCTestCase {
         let mealtimesSchedule = OCKSchedule.mealTimesEachDay(start: startOfDay, end: nil)
         let taskA = OCKTask(id: "taskA", title: nil, carePlanUUID: nil, schedule: mealtimesSchedule)
         let taskB = OCKTask(id: "taskB", title: nil, carePlanUUID: nil, schedule: mealtimesSchedule)
-        let storedTaskA = try store.addTaskAndWait(taskA)
-        let storedTaskB = try store.addTaskAndWait(taskB)
+        let storedTaskA = try await store.addTask(taskA)
+        let storedTaskB = try await store.addTask(taskB)
 
         let expectedEventsArray = [
             PartialEvent(task: storedTaskB, scheduleEvent: mealtimesSchedule[0]),
@@ -170,9 +164,7 @@ class TestPartialEvents: XCTestCase {
         let query = OCKTaskQuery()
 
         // Fetch events
-        let fetchedEvents = [
-            waitForPartialEvents(query: query)
-        ]
+        let fetchedEvents = try await [fetchPartialEvents(query: query)]
 
         // Accumulate streamed events
         let eventsStream = store.partialEvents(matching: query)
@@ -229,7 +221,7 @@ class TestPartialEvents: XCTestCase {
         )
 
         let query = OCKTaskQuery(dateInterval: queryInterval)
-        let fetchedEvents = [waitForPartialEvents(query: query)]
+        let fetchedEvents = try await [fetchPartialEvents(query: query)]
         let eventsStream = store.partialEvents(matching: query)
         let streamedEvents = try await accumulate(eventsStream, expectedCount: 1)
         let expectedEvents = [[PartialEvent(task: updatedTaskA, scheduleEvent: schedule[0])]]
@@ -274,7 +266,7 @@ class TestPartialEvents: XCTestCase {
         )
 
         let query = OCKTaskQuery(dateInterval: queryInterval)
-        let fetchedEvents = [waitForPartialEvents(query: query)]
+        let fetchedEvents = try await [fetchPartialEvents(query: query)]
         let eventsStream = store.partialEvents(matching: query)
         let streamedEvents = try await accumulate(eventsStream, expectedCount: 1)
         let expectedEvents = [[PartialEvent(task: updatedTaskA, scheduleEvent: schedule[0])]]
@@ -285,30 +277,16 @@ class TestPartialEvents: XCTestCase {
 
     // MARK: - Utilities
 
-    private func waitForPartialEvents(query: OCKTaskQuery) -> [PartialEvent<OCKTask>] {
+    private func fetchPartialEvents(query: OCKTaskQuery) async throws -> [PartialEvent<OCKTask>] {
 
-        let didFetch = XCTestExpectation(description: "fetch completed")
-        didFetch.assertForOverFulfill = true
-
-        var result: Result<[PartialEvent<OCKTask>], OCKStoreError>!
-
-        store.fetchPartialEvents(
-            query: query,
-            callbackQueue: .main,
-            completion: {
-                result = $0
-                didFetch.fulfill()
-            }
-        )
-
-        wait(for: [didFetch], timeout: 2)
-
-        switch result! {
-        case let .success(partialEvents):
-            return partialEvents
-        case let .failure(error):
-            XCTFail(error.localizedDescription)
-            return []
+        return try await withCheckedThrowingContinuation { [store] continuation in
+            store.fetchPartialEvents(
+                query: query,
+                callbackQueue: .main,
+                completion: { result in
+                    continuation.resume(with: result)
+                }
+            )
         }
     }
 }

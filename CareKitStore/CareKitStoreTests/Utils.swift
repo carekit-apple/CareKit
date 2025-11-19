@@ -34,13 +34,7 @@ import Foundation
 import XCTest
 
 extension Result {
-    var value: Success? {
-        switch self {
-        case .success(let value): return value
-        case .failure: return nil
-        }
-    }
-
+    
     var error: Failure? {
         switch self {
         case .success: return nil
@@ -59,31 +53,5 @@ extension OCKSchedule {
         let dinner = OCKSchedule.dailyAtTime(hour: 17, minutes: 30, start: startDate, end: end,
                                              text: "Dinner", targetValues: targetValues)
         return OCKSchedule(composing: [breakfast, lunch, dinner])
-    }
-}
-
-extension XCTestCase {
-
-    func expect(
-        with context: NSManagedObjectContext,
-        shouldThrow: Bool = false,
-        _ work: @escaping () throws -> Void) {
-
-        let expect = expectation(description: "work completes")
-
-        context.perform {
-            do {
-                try work()
-                if !shouldThrow {
-                    expect.fulfill()
-                }
-            } catch {
-                if shouldThrow {
-                    expect.fulfill()
-                }
-            }
-        }
-
-        waitForExpectations(timeout: 10.0, handler: nil)
     }
 }

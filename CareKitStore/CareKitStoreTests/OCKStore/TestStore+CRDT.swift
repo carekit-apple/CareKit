@@ -38,7 +38,7 @@ import XCTest
 ///  - **Associative**: Any grouping produces the same result. `A U (B U C) = (A U B) U C`
 class TestStoreCRDTMergeProperties: XCTestCase {
 
-    func testMergeIsIdempotent() throws {
+    func testMergeIsIdempotent() async throws {
         let store = OCKStore(name: "idempotent", type: .inMemory)
         let revision = makeRevisions(count: 1).first!
         let repeated = [OCKRevisionRecord](repeating: revision, count: 10)
@@ -47,11 +47,11 @@ class TestStoreCRDTMergeProperties: XCTestCase {
             store.mergeRevision(revision)
         }
 
-        let patients = try store.fetchPatientsAndWait()
+        let patients = try await store.fetchPatients(query: OCKPatientQuery())
         XCTAssertEqual(patients.count, 1)
     }
 
-    func testMergeIsCommutative() throws {
+    func testMergeIsCommutative() async throws {
         let store = OCKStore(name: "commutative", type: .inMemory)
         let revisions = makeRevisions(count: 10).shuffled()
 
@@ -59,13 +59,13 @@ class TestStoreCRDTMergeProperties: XCTestCase {
             store.mergeRevision(revision)
         }
 
-        let patients = try store.fetchPatientsAndWait()
+        let patients = try await store.fetchPatients(query: OCKPatientQuery())
         for i in 0..<10 {
             XCTAssertEqual(patients[i].previousVersionUUIDs.isEmpty, (i == 9))
         }
     }
 
-    func testMergeIsAssociative() throws {
+    func testMergeIsAssociative() async throws {
 
         // Merging individually
         let storeA = OCKStore(name: "individual", type: .inMemory)
@@ -84,8 +84,8 @@ class TestStoreCRDTMergeProperties: XCTestCase {
         storeB.mergeRevision(group2)
 
         // Check that the end result is the same in both cases
-        let fetchedA = try storeA.fetchPatientsAndWait()
-        let fetchedB = try storeB.fetchPatientsAndWait()
+        let fetchedA = try await storeA.fetchPatients(query: OCKPatientQuery())
+        let fetchedB = try await storeB.fetchPatients(query: OCKPatientQuery())
 
         XCTAssertEqual(fetchedA.map(\.name), fetchedB.map(\.name))
         XCTAssertEqual(fetchedA.map(\.previousVersionUUIDs), fetchedB.map(\.previousVersionUUIDs))

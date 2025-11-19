@@ -31,7 +31,7 @@
 import Foundation
 
 /// A store that allows for reading care plans.
-public protocol OCKAnyReadOnlyCarePlanStore: OCKAnyResettableStore {
+public protocol OCKAnyReadOnlyCarePlanStore: OCKAnyResettableStore, Sendable {
 
     /// A continuous stream of care plans that exist in the store.
     ///
@@ -199,6 +199,7 @@ public extension OCKAnyCarePlanStore {
     ///
     /// - Parameters:
     ///   - plans: An array of plans to add to the store.
+    @discardableResult
     func addAnyCarePlans(_ plans: [OCKAnyCarePlan]) async throws -> [OCKAnyCarePlan] {
         try await withCheckedThrowingContinuation { continuation in
             addAnyCarePlans(plans, callbackQueue: .main, completion: { continuation.resume(with: $0) })
@@ -209,6 +210,7 @@ public extension OCKAnyCarePlanStore {
     ///
     /// - Parameters:
     ///   - plans: An array of care plans to update. The care plans must already exist in the store.
+    @discardableResult
     func updateAnyCarePlans(_ plans: [OCKAnyCarePlan]) async throws -> [OCKAnyCarePlan] {
         try await withCheckedThrowingContinuation { continuation in
             updateAnyCarePlans(plans, callbackQueue: .main, completion: { continuation.resume(with: $0) })
@@ -219,6 +221,7 @@ public extension OCKAnyCarePlanStore {
     ///
     /// - Parameters:
     ///   - plans: An array of care plans to delete. The care plans must exist in the store.
+    @discardableResult
     func deleteAnyCarePlans(_ plans: [OCKAnyCarePlan]) async throws -> [OCKAnyCarePlan] {
         try await withCheckedThrowingContinuation { continuation in
             deleteAnyCarePlans(plans, callbackQueue: .main, completion: { continuation.resume(with: $0) })
@@ -231,6 +234,7 @@ public extension OCKAnyCarePlanStore {
     ///
     /// - Parameters:
     ///   - plan: A single plan to add to the store.
+    @discardableResult
     func addAnyCarePlan(_ plan: OCKAnyCarePlan) async throws -> OCKAnyCarePlan {
         try await withCheckedThrowingContinuation { continuation in
             addAnyCarePlan(plan, callbackQueue: .main, completion: { continuation.resume(with: $0) })
@@ -241,6 +245,7 @@ public extension OCKAnyCarePlanStore {
     ///
     /// - Parameters:
     ///   - plan: A single care plan to update. The care plans must already exist in the store.
+    @discardableResult
     func updateAnyCarePlan(_ plan: OCKAnyCarePlan) async throws -> OCKAnyCarePlan {
         try await withCheckedThrowingContinuation { continuation in
             updateAnyCarePlan(plan, callbackQueue: .main, completion: { continuation.resume(with: $0) })
@@ -251,6 +256,7 @@ public extension OCKAnyCarePlanStore {
     ///
     /// - Parameters:
     ///   - plan: A single care plan to delete. The care plans must exist in the store.
+    @discardableResult
     func deleteAnyCarePlan(_ plan: OCKAnyCarePlan) async throws -> OCKAnyCarePlan {
         try await withCheckedThrowingContinuation { continuation in
             deleteAnyCarePlan(plan, callbackQueue: .main, completion: { continuation.resume(with: $0) })

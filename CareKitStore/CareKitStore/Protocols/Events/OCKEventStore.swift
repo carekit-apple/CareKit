@@ -37,7 +37,7 @@ public protocol OCKReadOnlyEventStore: OCKAnyReadOnlyEventStore, OCKReadableTask
     typealias Event = OCKEvent<Task, Outcome>
 
     /// An asynchronous sequence that produces events.
-    associatedtype Events: AsyncSequence where Events.Element == [Event]
+    associatedtype Events: AsyncSequence & Sendable where Events.Element == [Event]
 
     // MARK: Implementation Provided when Task == OCKTask and Outcome == OCKOutcome
 

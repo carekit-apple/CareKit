@@ -168,13 +168,15 @@ public extension OCKAnyReadOnlyEventStore {
                     query.taskIDs = [id]
 
                     self.fetchAnyEvents(query: query, callbackQueue: callbackQueue, completion: { result in
-                        switch result {
-                        case .failure(let fetchError):
-                            error = fetchError
-                        case .success(let fetchedEvents):
-                            events.append(contentsOf: fetchedEvents)
+                        DispatchQueue.main.async {
+                            switch result {
+                            case .failure(let fetchError):
+                                error = fetchError
+                            case .success(let fetchedEvents):
+                                events.append(contentsOf: fetchedEvents)
+                            }
+                            group.leave()
                         }
-                        group.leave()
                     })
                 }
                 group.notify(queue: .global(qos: .userInitiated), execute: {
@@ -188,6 +190,7 @@ public extension OCKAnyReadOnlyEventStore {
                     let groupedEvents = self.groupEventsByDate(events: events, after: query.dateInterval.start, before: query.dateInterval.end)
                     var adherenceValues = [OCKAdherence](repeating: .noTasks, count: groupedEvents.count)
                     let indicesWithTasks = self.datesWithTasks(query: query, tasks: tasks).enumerated().compactMap { $1 ? $0 : nil }
+
                     indicesWithTasks.forEach {
 
                         // Make sure we have retrieved events
@@ -209,7 +212,9 @@ public extension OCKAnyReadOnlyEventStore {
                         }
                     }
 
-                    callbackQueue.async { completion(.success(adherenceValues)) }
+                    callbackQueue.async { [adherenceValues] in  // capture a copy to avoid reference semantics for the `adherenceValues` struct
+                        completion(.success(adherenceValues))
+                    }
                 })
             }
         }

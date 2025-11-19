@@ -31,7 +31,7 @@
 import Foundation
 
 /// A semantic version with major, minor, and patch version numbers. Semantic versions parsed from strings and compared.
-public struct OCKSemanticVersion: Codable, Equatable, Comparable, LosslessStringConvertible {
+public struct OCKSemanticVersion: Codable, Equatable, Sendable, Comparable, LosslessStringConvertible {
 
     /// The major version number, i.e. the *3* in 3.11.2.
     public let majorVersion: Int

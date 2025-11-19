@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2022, Apple Inc. All rights reserved.
+ Copyright (c) 2016-2025, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -28,40 +28,63 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import CoreData
 import Foundation
+import HealthKit
 
-protocol QueryMonitor: AnyObject {
+struct AsyncStreamFactory {
 
-    associatedtype QueryResult
+    private init() {}
 
-    var resultHandler: (Result<QueryResult, Error>) -> Void { get set }
+    static func coreDataResults<Element: OCKCDVersionedObject>(
+        _ elementType: Element.Type,
+        predicate: NSPredicate,
+        sortDescriptors: [NSSortDescriptor],
+        context: NSManagedObjectContext
+    ) -> AsyncThrowingStream<[OCKVersionedObjectCompatible], Error> {
 
-    func startQuery()
-    func stopQuery()
-}
+        return AsyncThrowingStream { continuation in
 
-extension QueryMonitor {
-
-    func results() -> AsyncThrowingStream<QueryResult, Error> {
-
-        // The stream needs to hold a strong reference to the monitor, or else
-        // the monitor will get deallocated.
-        let values = AsyncThrowingStream { continuation in
-
-            self.resultHandler = { result in
-
-                guard Task.isCancelled == false else { return }
-
-                continuation.yield(with: result)
-            }
+            let monitor = CoreDataQueryMonitor(
+                elementType,
+                predicate: predicate,
+                sortDescriptors: sortDescriptors,
+                context: context,
+                resultHandler: { result in
+                    guard Task.isCancelled == false else { return }
+                    continuation.yield(with: result)
+                }
+            )
 
             continuation.onTermination = { _ in
-                self.stopQuery()
+                monitor.stopQuery()
             }
 
-            self.startQuery()
+            monitor.startQuery()
         }
+    }
 
-        return values
+    static func healthKitResults(
+        queryDescriptors: [HKQueryDescriptor],
+        store: HKHealthStore
+    ) -> AsyncThrowingStream<HealthKitQueryMonitor.QueryResult, Error> {
+
+        return AsyncThrowingStream { continuation in
+
+            let monitor = HealthKitQueryMonitor(
+                queryDescriptors: queryDescriptors,
+                store: store,
+                resultHandler: { result in
+                    guard Task.isCancelled == false else { return }
+                    continuation.yield(with: result)
+                }
+            )
+
+            continuation.onTermination = { _ in
+                monitor.stopQuery()
+            }
+
+            monitor.startQuery()
+        }
     }
 }

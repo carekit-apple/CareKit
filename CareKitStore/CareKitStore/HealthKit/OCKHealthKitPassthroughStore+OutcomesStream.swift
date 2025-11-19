@@ -32,10 +32,9 @@ import Foundation
 import HealthKit
 import os.log
 
-@available(iOS 15, watchOS 8, macOS 13.0, *)
 public extension OCKHealthKitPassthroughStore {
 
-    func outcomes(matching query: OCKOutcomeQuery) -> CareStoreQueryResults<OCKHealthKitOutcome> {
+    func outcomes(matching query: OCKOutcomeQuery) -> some AsyncSequence<[OCKHealthKitOutcome], Error> & Sendable {
 
         // Outcomes are created from HealthKit samples stored in the health store. The best way to determine
         // which samples are relevant is to determine the events for a task, then find the HealthKit samples
@@ -49,11 +48,8 @@ public extension OCKHealthKitPassthroughStore {
             updateCumulativeSumOfSamples: updateCumulativeSumOfHealthKitSamples
         )
 
-        let outcomes = events.map { events in
+        return events.map { events in
             events.compactMap(\.outcome)
         }
-
-        let wrappedOutcomes = CareStoreQueryResults(wrapping: outcomes)
-        return wrappedOutcomes
     }
 }

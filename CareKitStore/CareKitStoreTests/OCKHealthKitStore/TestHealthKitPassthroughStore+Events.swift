@@ -86,13 +86,14 @@ class TestHealthKitPassthroughStoreEvents: XCTestCase {
         }
 
         let heartRates: [Double] = [70, 80]
-
+        let heartRateStart = heartRateTask.schedule[0].start
+        let heartRateEnd = heartRateTask.schedule[0].end
         let heartRateSamples = heartRates.map {
             Sample(
                 id: UUID(),
                 type: HKObjectType.quantityType(forIdentifier: heartRateTask.healthKitLinkage.quantityIdentifier)!,
                 quantity: HKQuantity(unit: heartRateTask.healthKitLinkage.unit, doubleValue: $0),
-                dateInterval: DateInterval(start: heartRateTask.schedule[0].start, end: heartRateTask.schedule[0].end)
+                dateInterval: DateInterval(start: heartRateStart, end: heartRateEnd)
             )
         }
 
@@ -137,6 +138,8 @@ class TestHealthKitPassthroughStoreEvents: XCTestCase {
             case heartRateTask.id:
                 XCTAssertEqual(outcomeValues.count, 2)
                 XCTAssertEqual(outcomeValues.first?.doubleValue, 70)
+                XCTAssertEqual(outcomeValues.first?.createdDate, heartRateStart)
+                XCTAssertEqual(outcomeValues.first?.endDate, heartRateEnd)
                 XCTAssertEqual(outcomeValues[safe: 1]?.doubleValue, 80)
 
             default:
@@ -277,24 +280,32 @@ class TestHealthKitPassthroughStoreEvents: XCTestCase {
         // Generate samples that match the event date
 
         let steps: [Double] = [10, 20]
+		let stepsDateInterval = DateInterval(
+			start: stepsTask.schedule[0].start,
+			end: stepsTask.schedule[0].end
+		)
 
         let stepsSamples = steps.map {
             Sample(
                 id: UUID(),
                 type: HKObjectType.quantityType(forIdentifier: stepsTask.healthKitLinkage.quantityIdentifier)!,
                 quantity: HKQuantity(unit: stepsTask.healthKitLinkage.unit, doubleValue: $0),
-                dateInterval: DateInterval(start: stepsTask.schedule[0].start, end: stepsTask.schedule[0].end)
+                dateInterval: stepsDateInterval
             )
         }
 
         let heartRates: [Double] = [70, 80]
+		let heartRateDateInterval = DateInterval(
+			start: heartRateTask.schedule[0].start,
+			end: heartRateTask.schedule[0].end
+		)
 
         let heartRateSamples = heartRates.map {
             Sample(
                 id: UUID(),
                 type: HKObjectType.quantityType(forIdentifier: heartRateTask.healthKitLinkage.quantityIdentifier)!,
                 quantity: HKQuantity(unit: heartRateTask.healthKitLinkage.unit, doubleValue: $0),
-                dateInterval: DateInterval(start: heartRateTask.schedule[0].start, end: heartRateTask.schedule[0].end)
+                dateInterval: heartRateDateInterval
             )
         }
 
@@ -345,7 +356,7 @@ class TestHealthKitPassthroughStoreEvents: XCTestCase {
                         values: [
                             // -1 indicates a stale cumulative sum. That's expected because we aren't actually going
                             // and fetching a cumulative sum from HK after we detect a change while unit testing
-                            makeOutcomeValue(-1.0, units: "count")
+							makeOutcomeValue(-1.0, units: "count", dateInterval: stepsDateInterval)
                         ],
                         isOwnedByApp: true,
                         healthKitUUIDs: [stepsSamples.map(\.id)]
@@ -358,8 +369,8 @@ class TestHealthKitPassthroughStoreEvents: XCTestCase {
                         taskUUID: heartRateTask.uuid,
                         taskOccurrenceIndex: 0,
                         values: [
-                            makeOutcomeValue(70.0, units: "count/min"),
-                            makeOutcomeValue(80.0, units: "count/min")
+                            makeOutcomeValue(70.0, units: "count/min", dateInterval: heartRateDateInterval),
+                            makeOutcomeValue(80.0, units: "count/min", dateInterval: heartRateDateInterval)
                         ],
                         isOwnedByApp: true,
                         healthKitUUIDs: [
@@ -382,6 +393,14 @@ class TestHealthKitPassthroughStoreEvents: XCTestCase {
         _ = try await passthroughStore.addTask(heartRateTask)
 
         // Generate samples that match the event date
+		let sampleOneDateInterval = DateInterval(
+			start: heartRateTask.schedule[0].start - 1,
+			end: heartRateTask.schedule[0].start
+		)
+		let sampleTwoDateInterval = DateInterval(
+			start: heartRateTask.schedule[0].end - 1,
+			end: heartRateTask.schedule[0].end
+		)
         let samples = [
 
             // Intersects with the lower bound of the event
@@ -389,7 +408,7 @@ class TestHealthKitPassthroughStoreEvents: XCTestCase {
                 id: UUID(),
                 type: HKObjectType.quantityType(forIdentifier: heartRateTask.healthKitLinkage.quantityIdentifier)!,
                 quantity: HKQuantity(unit: heartRateTask.healthKitLinkage.unit, doubleValue: 1),
-                dateInterval: DateInterval(start: heartRateTask.schedule[0].start - 1, end: heartRateTask.schedule[0].start)
+                dateInterval: sampleOneDateInterval
             ),
 
             // Intersects with the upper bound of the event
@@ -397,7 +416,7 @@ class TestHealthKitPassthroughStoreEvents: XCTestCase {
                 id: UUID(),
                 type: HKObjectType.quantityType(forIdentifier: heartRateTask.healthKitLinkage.quantityIdentifier)!,
                 quantity: HKQuantity(unit: heartRateTask.healthKitLinkage.unit, doubleValue: 2),
-                dateInterval: DateInterval(start: heartRateTask.schedule[0].end - 1, end: heartRateTask.schedule[0].end)
+                dateInterval: sampleTwoDateInterval
             ),
 
             // Misses the lower bound of the event
@@ -456,8 +475,8 @@ class TestHealthKitPassthroughStoreEvents: XCTestCase {
                         taskUUID: heartRateTask.uuid,
                         taskOccurrenceIndex: 0,
                         values: [
-                            makeOutcomeValue(1.0, units: "count/min"),
-                            makeOutcomeValue(2.0, units: "count/min")
+                            makeOutcomeValue(1.0, units: "count/min", dateInterval: sampleOneDateInterval),
+                            makeOutcomeValue(2.0, units: "count/min", dateInterval: sampleTwoDateInterval)
                         ],
                         isOwnedByApp: true,
                         healthKitUUIDs: [
@@ -480,12 +499,15 @@ class TestHealthKitPassthroughStoreEvents: XCTestCase {
         _ = try await passthroughStore.addTask(stepsTask)
 
         // Generate samples that match the dates for two events
-
+		let stepsDateInterval = DateInterval(
+			start: stepsTask.schedule[0].start,
+			end: stepsTask.schedule[1].end
+		)
         let sample = Sample(
             id: UUID(),
             type: HKObjectType.quantityType(forIdentifier: stepsTask.healthKitLinkage.quantityIdentifier)!,
             quantity: HKQuantity(unit: stepsTask.healthKitLinkage.unit, doubleValue: 10),
-            dateInterval: DateInterval(start: stepsTask.schedule[0].start, end: stepsTask.schedule[1].end)
+            dateInterval: stepsDateInterval
         )
 
         let sampleChange = SampleChange(addedSamples: [sample])
@@ -537,7 +559,7 @@ class TestHealthKitPassthroughStoreEvents: XCTestCase {
                         taskUUID: stepsTask.uuid,
                         taskOccurrenceIndex: 0,
                         values: [
-                            makeOutcomeValue(-1.0, units: "count")
+                            makeOutcomeValue(-1.0, units: "count", dateInterval: stepsDateInterval)
                         ],
                         isOwnedByApp: true,
                         healthKitUUIDs: [[sample.id]]
@@ -550,7 +572,7 @@ class TestHealthKitPassthroughStoreEvents: XCTestCase {
                         taskUUID: stepsTask.uuid,
                         taskOccurrenceIndex: 1,
                         values: [
-                            makeOutcomeValue(-1.0, units: "count")
+                            makeOutcomeValue(-1.0, units: "count", dateInterval: stepsDateInterval)
                         ],
                         isOwnedByApp: true,
                         healthKitUUIDs: [[sample.id]]
@@ -575,21 +597,29 @@ class TestHealthKitPassthroughStoreEvents: XCTestCase {
         // Generate samples that match the dates for two events
 
         let weightSampleUUID = UUID()
+		let weightDateInterval = DateInterval(
+			start: weightTask.schedule[0].start,
+			end: weightTask.schedule[1].end
+		)
 
         let weightSample = Sample(
             id: weightSampleUUID,
             type: HKObjectType.quantityType(forIdentifier: weightTask.healthKitLinkage.quantityIdentifier)!,
             quantity: HKQuantity(unit: weightTask.healthKitLinkage.unit, doubleValue: 70),
-            dateInterval: DateInterval(start: weightTask.schedule[0].start, end: weightTask.schedule[1].end)
+            dateInterval: weightDateInterval
         )
 
         let stepsSampleUUID = UUID()
+		let stepsDateInterval = DateInterval(
+			start: stepsTask.schedule[0].start,
+			end: stepsTask.schedule[1].end
+		)
 
         let stepsSample = Sample(
             id: stepsSampleUUID,
             type: HKObjectType.quantityType(forIdentifier: stepsTask.healthKitLinkage.quantityIdentifier)!,
             quantity: HKQuantity(unit: stepsTask.healthKitLinkage.unit, doubleValue: 10),
-            dateInterval: DateInterval(start: stepsTask.schedule[0].start, end: stepsTask.schedule[1].end)
+            dateInterval: stepsDateInterval
         )
 
         let sampleChanges = [
@@ -641,7 +671,7 @@ class TestHealthKitPassthroughStoreEvents: XCTestCase {
                         taskUUID: stepsTask.uuid,
                         taskOccurrenceIndex: 0,
                         values: [
-                            makeOutcomeValue(-1.0, units: "count")
+                            makeOutcomeValue(-1.0, units: "count", dateInterval: stepsDateInterval)
                         ],
                         isOwnedByApp: true,
                         healthKitUUIDs: [[stepsSample.id]]
@@ -654,7 +684,7 @@ class TestHealthKitPassthroughStoreEvents: XCTestCase {
                         taskUUID: weightTask.uuid,
                         taskOccurrenceIndex: 0,
                         values: [
-                            makeOutcomeValue(70.0, units: "g")
+                            makeOutcomeValue(70.0, units: "g", dateInterval: weightDateInterval)
                         ],
                         isOwnedByApp: true,
                         healthKitUUIDs: [[weightSample.id]]
@@ -669,7 +699,7 @@ class TestHealthKitPassthroughStoreEvents: XCTestCase {
                         taskUUID: stepsTask.uuid,
                         taskOccurrenceIndex: 0,
                         values: [
-                            makeOutcomeValue(-1.0, units: "count")
+                            makeOutcomeValue(-1.0, units: "count", dateInterval: stepsDateInterval)
                         ],
                         isOwnedByApp: true,
                         healthKitUUIDs: [[stepsSample.id]]
@@ -689,7 +719,7 @@ class TestHealthKitPassthroughStoreEvents: XCTestCase {
                         taskUUID: stepsTask.uuid,
                         taskOccurrenceIndex: 0,
                         values: [
-                            makeOutcomeValue(-1.0, units: "count")
+                            makeOutcomeValue(-1.0, units: "count", dateInterval: stepsDateInterval)
                         ],
                         isOwnedByApp: true,
                         healthKitUUIDs: [[stepsSample.id]]
@@ -702,7 +732,7 @@ class TestHealthKitPassthroughStoreEvents: XCTestCase {
                         taskUUID: weightTask.uuid,
                         taskOccurrenceIndex: 0,
                         values: [
-                            makeOutcomeValue(70.0, units: "g")
+                            makeOutcomeValue(70.0, units: "g", dateInterval: weightDateInterval)
                         ],
                         isOwnedByApp: true,
                         healthKitUUIDs: [[weightSample.id]]
@@ -722,7 +752,7 @@ class TestHealthKitPassthroughStoreEvents: XCTestCase {
                         taskUUID: weightTask.uuid,
                         taskOccurrenceIndex: 0,
                         values: [
-                            makeOutcomeValue(70.0, units: "g")
+                            makeOutcomeValue(70.0, units: "g", dateInterval: weightDateInterval)
                         ],
                         isOwnedByApp: true,
                         healthKitUUIDs: [[weightSample.id]]
@@ -761,9 +791,14 @@ class TestHealthKitPassthroughStoreEvents: XCTestCase {
         completion(.success(updatedEvents))
     }
 
-    private func makeOutcomeValue(_ value: OCKOutcomeValueUnderlyingType, units: String?) -> OCKOutcomeValue {
+    private func makeOutcomeValue(
+		_ value: OCKOutcomeValueUnderlyingType,
+		units: String?,
+		dateInterval: DateInterval? = nil
+	) -> OCKOutcomeValue {
         var outcomeValue = OCKOutcomeValue(value, units: units)
-        outcomeValue.createdDate = now
+		outcomeValue.createdDate = dateInterval?.start ?? now
+		outcomeValue.endDate = dateInterval?.end
         return outcomeValue
     }
 }

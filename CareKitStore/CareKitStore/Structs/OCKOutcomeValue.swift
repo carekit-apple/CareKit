@@ -59,7 +59,8 @@ public struct OCKOutcomeValue: Codable, Equatable, Sendable, CustomStringConvert
         lhs.type == rhs.type &&
         lhs.kind == rhs.kind &&
         lhs.units == rhs.units &&
-        lhs.createdDate == rhs.createdDate
+        lhs.createdDate == rhs.createdDate &&
+		lhs.endDate == rhs.endDate
     }
 
     /// An optional property that can be used to specify what kind of value this is (e.g. blood pressure, qualitative stress, weight)
@@ -71,6 +72,9 @@ public struct OCKOutcomeValue: Codable, Equatable, Sendable, CustomStringConvert
     /// The date that this value was created.
     public var createdDate = Date()
 
+    /// The value's end date.
+    public var endDate: Date?
+    
     /// The underlying value.
     public var value: OCKOutcomeValueUnderlyingType
 
@@ -149,6 +153,7 @@ public struct OCKOutcomeValue: Codable, Equatable, Sendable, CustomStringConvert
         case value
         case type
         case createdDate
+        case endDate
     }
 
     public init(from decoder: Decoder) throws {
@@ -172,6 +177,7 @@ public struct OCKOutcomeValue: Codable, Equatable, Sendable, CustomStringConvert
 
         kind = try container.decodeIfPresent(String.self, forKey: .kind)
         units = try container.decodeIfPresent(String.self, forKey: .units)
+        endDate = try container.decodeIfPresent(Date.self, forKey: .endDate)
         createdDate = try container.decode(Date.self, forKey: .createdDate)
     }
 
@@ -180,6 +186,7 @@ public struct OCKOutcomeValue: Codable, Equatable, Sendable, CustomStringConvert
 
         try container.encode(type, forKey: .type)
         try container.encode(createdDate, forKey: .createdDate)
+        try container.encodeIfPresent(endDate, forKey: .endDate)
         try container.encodeIfPresent(kind, forKey: .kind)
         try container.encodeIfPresent(units, forKey: .units)
 

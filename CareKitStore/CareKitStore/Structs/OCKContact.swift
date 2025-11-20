@@ -33,7 +33,7 @@ import Foundation
 
 /// An `OCKContact` represents a contact that a user may want to get in touch with. A contact may be a care provider, a friend, or a family
 /// member. Contacts must have at least a name, and may optionally have numerous other addresses at which to be contacted.
-public struct OCKContact: Codable, Equatable, Identifiable, OCKAnyContact {
+public struct OCKContact: Codable, Hashable, Identifiable, OCKAnyContact {
 
     /// The version id in the local database for the care plan associated with this contact.
     public var carePlanUUID: UUID?

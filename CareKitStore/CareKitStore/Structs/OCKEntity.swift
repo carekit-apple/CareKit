@@ -31,7 +31,7 @@
 import Foundation
 
 /// Holds one of several possible modified entities.
-public enum OCKEntity: Equatable, Sendable, Codable {
+public enum OCKEntity: Hashable, Sendable, Codable {
 
     /// A patient entity.
     case patient(OCKPatient)

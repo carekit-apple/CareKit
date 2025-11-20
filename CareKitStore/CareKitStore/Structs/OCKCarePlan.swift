@@ -35,7 +35,7 @@ import Foundation
 /// or her treatment for a specific condition. For example, a care plan for obesity may include tasks requiring the patient to exercise, record their
 /// weight, and log meals. As the care plan evolves with the patient's progress, the care provider may modify the exercises and include notes each
 /// time about why the changes were made.
-public struct OCKCarePlan: Codable, Equatable, Identifiable, OCKAnyCarePlan {
+public struct OCKCarePlan: Codable, Hashable, Identifiable, OCKAnyCarePlan {
 
     /// The UUID of the patient to whom this care plan belongs.
     public var patientUUID: UUID?

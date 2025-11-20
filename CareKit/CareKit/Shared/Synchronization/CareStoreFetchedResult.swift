@@ -52,3 +52,11 @@ extension CareStoreFetchedResult: Equatable where Result: Equatable {
             lhs.store === rhs.store
     }
 }
+
+extension CareStoreFetchedResult: Hashable where Result: Hashable {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+        hasher.combine(result)
+        hasher.combine(ObjectIdentifier(store))
+    }
+}

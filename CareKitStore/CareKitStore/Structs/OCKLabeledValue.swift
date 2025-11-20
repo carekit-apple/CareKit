@@ -32,7 +32,7 @@ import Foundation
 
 /// An optional label paired with a value used to represent contact information.
 /// The label will typically indicate what kind of information the value carries.
-public struct OCKLabeledValue: Codable, Equatable, Sendable {
+public struct OCKLabeledValue: Codable, Hashable, Sendable {
     // Note: We cannot simply subclass `CNLabeledValue` the same we do with `CNMutablePostalAddress` because it is a generic class and not visible
     // to @objc. Instead, we use this struct and convert to and from `CNLabeledValue` when required. This is all to get `Codable`.
 

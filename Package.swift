@@ -16,7 +16,6 @@ let sharedSwiftSettings: [SwiftSetting] = [
     .enableUpcomingFeature("SWIFT_UPCOMING_FEATURE_GLOBAL_CONCURRENCY"),
     .enableUpcomingFeature("SWIFT_UPCOMING_FEATURE_NONFROZEN_ENUM_EXHAUSTIVITY"),
     .enableUpcomingFeature("SWIFT_UPCOMING_FEATURE_REGION_BASED_ISOLATION"),
-    .enableUpcomingFeature("SWIFT_UPCOMING_FEATURE_INFER_SENDABLE_FROM_CAPTURES"),
     .enableExperimentalFeature("StrictConcurrency=complete")
 ]
 

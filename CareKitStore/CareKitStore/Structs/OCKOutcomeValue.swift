@@ -59,7 +59,8 @@ public struct OCKOutcomeValue: Codable, Hashable, Sendable, CustomStringConverti
         lhs.type == rhs.type &&
         lhs.kind == rhs.kind &&
         lhs.units == rhs.units &&
-        lhs.createdDate == rhs.createdDate
+        lhs.createdDate == rhs.createdDate &&
+		lhs.endDate == rhs.endDate
     }
     
     public func hash(into hasher: inout Hasher) {
@@ -86,6 +87,9 @@ public struct OCKOutcomeValue: Codable, Hashable, Sendable, CustomStringConverti
     /// The date that this value was created.
     public var createdDate = Date()
 
+    /// The value's end date.
+    public var endDate: Date?
+    
     /// The underlying value.
     public var value: OCKOutcomeValueUnderlyingType
 
@@ -164,6 +168,7 @@ public struct OCKOutcomeValue: Codable, Hashable, Sendable, CustomStringConverti
         case value
         case type
         case createdDate
+        case endDate
     }
 
     public init(from decoder: Decoder) throws {
@@ -187,6 +192,7 @@ public struct OCKOutcomeValue: Codable, Hashable, Sendable, CustomStringConverti
 
         kind = try container.decodeIfPresent(String.self, forKey: .kind)
         units = try container.decodeIfPresent(String.self, forKey: .units)
+        endDate = try container.decodeIfPresent(Date.self, forKey: .endDate)
         createdDate = try container.decode(Date.self, forKey: .createdDate)
     }
 
@@ -195,6 +201,7 @@ public struct OCKOutcomeValue: Codable, Hashable, Sendable, CustomStringConverti
 
         try container.encode(type, forKey: .type)
         try container.encode(createdDate, forKey: .createdDate)
+        try container.encodeIfPresent(endDate, forKey: .endDate)
         try container.encodeIfPresent(kind, forKey: .kind)
         try container.encodeIfPresent(units, forKey: .units)
 

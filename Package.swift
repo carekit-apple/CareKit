@@ -78,6 +78,7 @@ let package = Package(
             path: "CareKitStore/CareKitStore",
             exclude: ["Info.plist"],
             resources: [
+                .process("CoreData/CareKitStore.xcdatamodeld"),
                 .process("CoreData/Migrations/2_0To2_1/2.0_2.1_Mapping.xcmappingmodel")
             ],
             swiftSettings: sharedSwiftSettings

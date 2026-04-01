@@ -31,7 +31,7 @@
 import Foundation
 
 /// `OCKStoreError`s will be emitted from `OCKStoreProtocol` conformers if there is problem during a transaction.
-public enum OCKStoreError: LocalizedError {
+public enum OCKStoreError: LocalizedError, Hashable {
     /// Occurs when a fetch fails.
     case fetchFailed(reason: String)
 

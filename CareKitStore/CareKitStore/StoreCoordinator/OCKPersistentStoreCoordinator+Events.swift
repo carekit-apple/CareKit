@@ -29,6 +29,7 @@
  */
 
 import Foundation
+import Synchronization
 
 extension OCKStoreCoordinator {
 
@@ -83,42 +84,5 @@ extension OCKStoreCoordinator {
         })
 
         getFirstValidResult(closures, callbackQueue: callbackQueue, completion: completion)
-    }
-
-    // Determines which store holds the task with a given id.
-    private func findStore(taskID: String, completion: @escaping OCKResultClosure<OCKAnyReadOnlyEventStore>) {
-        let group = DispatchGroup()
-        var respondingStore: OCKAnyReadOnlyEventStore?
-
-        let stores = state.withLock { state in
-            return state.readOnlyEventStores + state.eventStores
-        }
-
-        for store in stores {
-            group.enter()
-            store.fetchAnyTask(withID: taskID, callbackQueue: .main) { result in
-                DispatchQueue.main.async {
-                    switch result {
-                    case .failure:
-                        // The store didn't contain the task. (Fetching a task by id errors if there is no match)
-                        break
-                    case .success:
-                        assert(respondingStore == nil, "Two stores should never contain tasks with the same id!")
-                        respondingStore = store
-                    }
-                    group.leave()
-                }
-            }
-        }
-
-        group.notify(queue: .main) {
-            guard let store = respondingStore else {
-                completion(.failure(.fetchFailed(
-                    reason: "Unable to find a task with the given id.")))
-                return
-            }
-
-            completion(.success(store))
-        }
     }
 }

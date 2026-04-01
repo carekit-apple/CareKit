@@ -29,6 +29,7 @@
  */
 
 import Foundation
+import Synchronization
 
 /// A store that allows for reading events.
 public protocol OCKAnyReadOnlyEventStore: OCKAnyReadOnlyTaskStore, OCKAnyReadOnlyOutcomeStore {
@@ -159,8 +160,9 @@ public extension OCKAnyReadOnlyEventStore {
                     return
                 }
                 let group = DispatchGroup()
-                var error: Error?
-                var events: [OCKAnyEvent] = []
+
+                let protectedState: Mutex<(lastError: OCKStoreError?, events: [OCKAnyEvent])> = Mutex((nil, []))
+
                 for id in tasks.map({ $0.id }) {
                     group.enter()
 
@@ -168,52 +170,66 @@ public extension OCKAnyReadOnlyEventStore {
                     query.taskIDs = [id]
 
                     self.fetchAnyEvents(query: query, callbackQueue: callbackQueue, completion: { result in
-                        DispatchQueue.main.async {
-                            switch result {
-                            case .failure(let fetchError):
-                                error = fetchError
-                            case .success(let fetchedEvents):
-                                events.append(contentsOf: fetchedEvents)
+                        switch result {
+                        case .failure(let fetchError):
+                            protectedState.withLock { $0.lastError = fetchError }
+                        case .success(let fetchedEvents):
+                            protectedState.withLock { state in
+                                state.events.append(contentsOf: fetchedEvents)
                             }
-                            group.leave()
                         }
+                        group.leave()
                     })
                 }
                 group.notify(queue: .global(qos: .userInitiated), execute: {
-                    if let error = error {
+
+                    let completionOnCallbackQueue = { result in
                         callbackQueue.async {
-                            completion(.failure(.fetchFailed(reason: "Failed to fetch completion for tasks! \(error.localizedDescription)")))
+                            completion(result)
                         }
-                        return
                     }
 
-                    let groupedEvents = self.groupEventsByDate(events: events, after: query.dateInterval.start, before: query.dateInterval.end)
-                    var adherenceValues = [OCKAdherence](repeating: .noTasks, count: groupedEvents.count)
-                    let indicesWithTasks = self.datesWithTasks(query: query, tasks: tasks).enumerated().compactMap { $1 ? $0 : nil }
-
-                    indicesWithTasks.forEach {
-
-                        // Make sure we have retrieved events
-                        if groupedEvents[$0].isEmpty {
-                            adherenceValues[$0] = .noEvents
-
-                        // Aggregate the progress for the events
+                    let result: Result<[OCKAnyEvent], OCKStoreError> = protectedState.withLock { state in
+                        if let lastError = state.lastError {
+                            return .failure(lastError)
                         } else {
-
-                            let events = groupedEvents[$0]
-
-                            let progressForEvents = events.map { event -> CareTaskProgress in
-                                query.computeProgress(event)
-                            }
-
-                            let aggregatedProgress = AggregatedCareTaskProgress(combining: progressForEvents)
-
-                            adherenceValues[$0] = .progress(aggregatedProgress.fractionCompleted)
+                            return .success(state.events)
                         }
                     }
 
-                    callbackQueue.async { [adherenceValues] in  // capture a copy to avoid reference semantics for the `adherenceValues` struct
-                        completion(.success(adherenceValues))
+                    switch result {
+
+                    case let .failure(error):
+                        completionOnCallbackQueue(.failure(error))
+
+                    case let .success(events):
+
+                        let groupedEvents = self.groupEventsByDate(events: events, after: query.dateInterval.start, before: query.dateInterval.end)
+                        var adherenceValues = [OCKAdherence](repeating: .noTasks, count: groupedEvents.count)
+                        let indicesWithTasks = self.datesWithTasks(query: query, tasks: tasks).enumerated().compactMap { $1 ? $0 : nil }
+
+                        indicesWithTasks.forEach {
+
+                            // Make sure we have retrieved events
+                            if groupedEvents[$0].isEmpty {
+                                adherenceValues[$0] = .noEvents
+
+                            // Aggregate the progress for the events
+                            } else {
+
+                                let events = groupedEvents[$0]
+
+                                let progressForEvents = events.map { event -> CareTaskProgress in
+                                    query.computeProgress(event)
+                                }
+
+                                let aggregatedProgress = AggregatedCareTaskProgress(combining: progressForEvents)
+
+                                adherenceValues[$0] = .progress(aggregatedProgress.fractionCompleted)
+                            }
+                        }
+
+                        completionOnCallbackQueue(.success(adherenceValues))
                     }
                 })
             }

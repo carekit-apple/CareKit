@@ -29,6 +29,7 @@
  */
 
 import Foundation
+import Synchronization
 
 func chooseFirst<T>(then singularResultClosure: OCKResultClosure<T>?, replacementError: OCKStoreError) -> OCKResultClosure<[T]> {
     return { arrayResult in
@@ -48,36 +49,39 @@ func aggregate<Success: Sendable, Failure: Error>(
         (@Sendable @escaping (Result<Success, Failure>) -> Void) -> Void
     ],
     callbackQueue: DispatchQueue,
-    completion: sending @escaping (Result<[Success], Failure>) -> Void
+    completion: @Sendable @escaping (Result<[Success], Failure>) -> Void
 ) {
     let group = DispatchGroup()
-    var lastError: Failure?
-    var results: [Success] = []
+    let protectedState: Mutex<(lastError: Failure?, results: [Success])> = Mutex((nil, []))
 
     for closure in closures {
 
         group.enter()
 
         closure { result in
-            DispatchQueue.main.async {
+            protectedState.withLock { state in
                 switch result {
                 case .failure(let error):
-                    lastError = error
+                    state.lastError = error
                 case .success(let result):
-                    results.append(result)
+                    state.results.append(result)
                 }
-                group.leave()
             }
+            group.leave()
         }
     }
 
     group.notify(queue: callbackQueue) {
 
-        if let lastError = lastError {
-            completion(.failure(lastError))
-        } else {
-            completion(.success(results))
+        let result: Result<[Success], Failure> = protectedState.withLock { state in
+            if let lastError = state.lastError {
+                return .failure(lastError)
+            } else {
+                return .success(state.results)
+            }
         }
+
+        completion(result)
     }
 }
 
@@ -86,7 +90,7 @@ func aggregateAndFlatten<Success: Sendable, Failure: Error>(
         (@Sendable @escaping (Result<[Success], Failure>) -> Void) -> Void
     ],
     callbackQueue: DispatchQueue,
-    completion: sending @escaping (Result<[Success], Failure>) -> Void
+    completion: @Sendable @escaping (Result<[Success], Failure>) -> Void
 ) {
 
     aggregate(closures, callbackQueue: callbackQueue) { result in
@@ -102,29 +106,33 @@ func getFirstValidResult<T: Sendable>(
     completion: sending @escaping OCKResultClosure<T>
 ) {
     let group = DispatchGroup()
-    var values: [T] = []
+
+    let protectedValues: Mutex<[T]> = Mutex([])
 
     for closure in closures {
 
         group.enter()
 
         closure { result in
-            DispatchQueue.main.async {
-                switch result {
-                case .failure: break
-                case .success(let fetchedValue):
-                    values.append(fetchedValue)
-                }
-                group.leave()
+            switch result {
+            case .failure: break
+            case .success(let fetchedValue):
+                protectedValues.withLock { $0.append(fetchedValue) }
             }
+            group.leave()
         }
     }
 
     group.notify(queue: callbackQueue) {
-        guard let firstValue = values.first else {
-            completion(.failure(.invalidValue(reason: "All of the operations failed.")))
-            return
+
+        let result: Result<T, OCKStoreError> = protectedValues.withLock { values in
+            if let firstValue = values.first {
+                return .success(firstValue)
+            } else {
+                return .failure(.invalidValue(reason: "All of the operations failed."))
+            }
         }
-        completion(.success(firstValue))
+
+        completion(result)
     }
 }

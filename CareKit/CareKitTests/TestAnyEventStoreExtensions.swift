@@ -30,13 +30,18 @@
 
 @testable import CareKit
 @testable import CareKitStore
-
 import Foundation
+import Synchronization
 import XCTest
 
 class TestAnyEventStoreExtensions: XCTestCase {
 
     private var store: MockStore!
+
+    private var queuesToTest: [DispatchQueue] = [
+        DispatchQueue.main,
+        DispatchQueue(label: "WorkQueue")
+    ]
 
     override func setUp() {
         super.setUp()
@@ -127,5 +132,84 @@ class TestAnyEventStoreExtensions: XCTestCase {
         #else
         wait(for: [didUpdate], timeout: 2)
         #endif
+    }
+
+    // MARK: Adherence
+
+    func testFetchAdherenceAggregatesEventsAcrossTasks() async throws {
+        let start = Calendar.current.startOfDay(for: Date())
+        let twoDaysEarly = Calendar.current.date(byAdding: .day, value: -2, to: start)!
+        let twoDaysLater = Calendar.current.date(byAdding: DateComponents(day: 2, second: -1), to: start)!
+        let element = OCKScheduleElement(start: start, end: nil, interval: DateComponents(day: 2))
+        let schedule = OCKSchedule(composing: [element])
+        let task1 = OCKTask(id: "meditate", title: "Medidate", carePlanUUID: nil, schedule: schedule)
+        let task2 = OCKTask(id: "sleep", title: "Nap", carePlanUUID: nil, schedule: schedule)
+        let task = try await store.addTasks([task1, task2]).first!
+        let taskID = task.uuid
+        let value = OCKOutcomeValue(20.0, units: "minutes")
+        let outcome = OCKOutcome(taskUUID: taskID, taskOccurrenceIndex: 0, values: [value])
+        try await store.addOutcome(outcome)
+        let query = OCKAdherenceQuery(taskIDs: [task1.id, task2.id], dateInterval: DateInterval(start: twoDaysEarly, end: twoDaysLater))
+        let adherence = try await store.fetchAdherence(query: query)
+        XCTAssertEqual(
+            adherence,
+            [.noTasks, .noTasks, .progress(0.5), .noEvents]
+        )
+    }
+
+    func testFetchAdherenceWithCustomAggregator() async throws {
+        let start = Calendar.current.startOfDay(for: Date())
+        let twoDaysEarly = Calendar.current.date(byAdding: .day, value: -2, to: start)!
+        let twoDaysLater = Calendar.current.date(byAdding: DateComponents(day: 2, second: -1), to: start)!
+        let schedule = OCKSchedule.dailyAtTime(hour: 12, minutes: 0, start: start, end: nil, text: nil)
+        let task = OCKTask(id: "meditate", title: "Medidate", carePlanUUID: nil, schedule: schedule)
+        try await store.addTask(task)
+
+        let timesCalled = Mutex(0)
+
+        let query = OCKAdherenceQuery(
+            taskIDs: [task.id],
+            dateInterval: DateInterval(start: twoDaysEarly, end: twoDaysLater),
+            computeProgress: { _ in
+                timesCalled.withLock { $0 += 1 }
+                return LinearCareTaskProgress(value: 1, goal: 2)
+            }
+        )
+
+        let adherence = try await store.fetchAdherence(query: query)
+        XCTAssertEqual(adherence, [.noTasks, .noTasks, .progress(0.5), .progress(0.5)])
+        XCTAssertEqual(timesCalled.value(), 2)
+    }
+
+    func testFetchAdherenceSucceedsWithEmptyResult() {
+
+        for queue in queuesToTest {
+
+            let completionFired = XCTestExpectation(description: "completion fired")
+
+            let query = OCKAdherenceQuery(
+                taskIDs: [],
+                dateInterval: DateInterval()
+            )
+
+            store.fetchAdherence(
+                query: query,
+                callbackQueue: queue
+            ) { result in
+
+                dispatchPrecondition(condition: .onQueue(queue))
+
+                switch result {
+                case let .success(adherence):
+                    XCTAssertEqual(adherence, [])
+                case let .failure(error):
+                    XCTFail(error.localizedDescription)
+                }
+
+                completionFired.fulfill()
+            }
+
+            wait(for: [completionFired], timeout: 2)
+        }
     }
 }

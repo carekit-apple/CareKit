@@ -33,7 +33,7 @@ import Foundation
 /// A store that allows for reading outcomes.
 public protocol OCKReadableOutcomeStore: OCKAnyReadOnlyOutcomeStore {
 
-    associatedtype Outcome: OCKAnyOutcome, Equatable, Identifiable
+    associatedtype Outcome: OCKAnyOutcome, Hashable, Identifiable
 
     /// An asynchronous sequence that produces outcomes.
     associatedtype Outcomes: AsyncSequence & Sendable where Outcomes.Element == [Outcome]

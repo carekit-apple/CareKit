@@ -35,9 +35,9 @@ import Foundation
 /// The event contains a copy of the task itself, the
 /// schedule event, and an outcome that's non-`nil` if progress is made on the task.
 public struct OCKEvent<
-    Task: OCKAnyTask & Equatable,
-    Outcome: OCKAnyOutcome & Equatable
->: Identifiable, Comparable, Sendable {
+    Task: OCKAnyTask & Hashable,
+    Outcome: OCKAnyOutcome & Hashable
+>: Identifiable, Hashable, Comparable, Sendable {
 
     /// The stable identifier to use.
     public let id: String

@@ -31,7 +31,7 @@
 import Foundation
 import HealthKit
 
-public struct OCKHealthKitOutcome: Codable, Equatable, Identifiable, OCKAnyOutcome {
+public struct OCKHealthKitOutcome: Codable, Hashable, Identifiable, OCKAnyOutcome {
 
     /// The UUID of the task to which this outcome belongs.
     public var taskUUID: UUID

@@ -33,7 +33,7 @@ import Foundation
 /// A store that allows for reading tasks.
 public protocol OCKReadableTaskStore: OCKAnyReadOnlyTaskStore {
 
-    associatedtype Task: OCKAnyTask, Equatable
+    associatedtype Task: OCKAnyTask, Hashable
 
     /// An asynchronous sequence that produces tasks.
     associatedtype Tasks: AsyncSequence & Sendable where Tasks.Element == [Task]

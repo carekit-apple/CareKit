@@ -86,6 +86,11 @@ class OCKCDOutcome: OCKCDVersionedObject {
             return
         }
 
+        // Fix: If this outcome has a next version, skip duplicate validation.
+        if next.count > 0 {
+            return
+        }
+
         let request = NSFetchRequest<OCKCDObject>(entityName: entity.name!)
 
         request.predicate = NSPredicate(

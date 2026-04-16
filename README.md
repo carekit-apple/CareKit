@@ -36,7 +36,11 @@ CareKit™ is an open source software framework for creating apps that help peop
 
 # Requirements <a name="requirements"></a>
 
-The primary CareKit framework codebase supports iOS and requires Xcode 12.0 or newer. The CareKit framework has a Base SDK version of 13.0.
+- Xcode 14.0+ (as indicated by the badge above)
+- Swift tools 5.7+ (see `// swift-tools-version:5.7`)
+- Supported platforms: iOS 15+, macOS 13+, watchOS 8+
+
+These align with the Package.swift configuration and the APIs used across the packages (Swift Concurrency, SwiftUI updates, and AsyncAlgorithms).
 
 # Getting Started <a name="getting-started"></a>
 

@@ -61,8 +61,39 @@ public enum OCKStoreError: LocalizedError, Hashable {
         case .updateFailed(let reason): return "Failed to update: \(reason)"
         case .deleteFailed(let reason): return "Failed to delete: \(reason)"
         case .remoteSynchronizationFailed(let reason): return "Sync failed: \(reason)"
-        case .timedOut(let reason): return "Timed out: \(reason)"
         case .invalidValue(let reason): return "Invalid value: \(reason)"
+        case .timedOut(let reason): return "Timed out: \(reason)"
+        }
+    }
+
+    public var failureReason: String? {
+        switch self {
+        case .fetchFailed(let reason): return reason
+        case .addFailed(let reason): return reason
+        case .updateFailed(let reason): return reason
+        case .deleteFailed(let reason): return reason
+        case .remoteSynchronizationFailed(let reason): return reason
+        case .invalidValue(let reason): return reason
+        case .timedOut(let reason): return reason
+        }
+    }
+
+    public var recoverySuggestion: String? {
+        switch self {
+        case .fetchFailed:
+            return "Verify that the query parameters are valid and the store has been initialized."
+        case .addFailed:
+            return "Ensure the entity has a unique identifier and does not already exist in the store."
+        case .updateFailed:
+            return "Confirm the entity exists in the store before attempting to update it."
+        case .deleteFailed:
+            return "Confirm the entity exists in the store before attempting to delete it."
+        case .remoteSynchronizationFailed:
+            return "Check network connectivity and verify the remote server is reachable."
+        case .invalidValue:
+            return "Review the provided value and ensure it conforms to the expected format and constraints."
+        case .timedOut:
+            return "Check network connectivity or consider increasing the timeout interval."
         }
     }
 }

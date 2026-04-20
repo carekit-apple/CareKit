@@ -230,6 +230,20 @@ class TestStoreCarePlans: XCTestCase {
         XCTAssertEqual(fetched.previousVersionUUIDs.first, versionA.uuid)
     }
 
+    func testCarePlanQueryByIdConvenienceMethodReturnsLatestVersionOfACarePlan() async throws {
+        let versionA = try await store.addCarePlan(OCKCarePlan(id: "A", title: "Amy", patientUUID: nil))
+        let versionB = try await store.updateCarePlan(OCKCarePlan(id: "A", title: "Jared", patientUUID: nil))
+        let fetched = try await store.fetchCarePlan(withID: versionA.id)
+		XCTAssertEqual(fetched.title, versionB.title)
+    }
+
+    func testAnyCarePlanQueryByIdConvenienceMethodReturnsLatestVersionOfACarePlan() async throws {
+        let versionA = try await store.addCarePlan(OCKCarePlan(id: "A", title: "Amy", patientUUID: nil))
+        let versionB = try await store.updateCarePlan(OCKCarePlan(id: "A", title: "Jared", patientUUID: nil))
+        let fetched = try await store.fetchAnyCarePlan(withID: versionA.id)
+		XCTAssertEqual(fetched.title, versionB.title)
+    }
+
     func testCarePlanQueryOnPastDateReturnsPastVersionOfACarePlan() async throws {
         let dateA = Date().addingTimeInterval(-100)
         var versionA = OCKCarePlan(id: "A", title: "a", patientUUID: nil)

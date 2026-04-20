@@ -252,11 +252,28 @@ class TestStoreContacts: XCTestCase {
         XCTAssertEqual(fetched.name, versionD.name)
     }
 
+    func testContactQueryByIdConvenienceMethodReturnsLatestVersionOfAContact() async throws {
+        let versionA = try await store.addContact(OCKContact(id: "contact", givenName: "A", familyName: "", carePlanUUID: nil))
+        let versionB = try await store.updateContact(OCKContact(id: "contact", givenName: "B", familyName: "", carePlanUUID: nil))
+
+        let fetched = try await store.fetchContact(withID: versionA.id)
+		XCTAssertEqual(fetched.name.givenName, versionB.name.givenName)
+    }
+
+    func testAnyContactQueryByIdConvenienceMethodReturnsLatestVersionOfAContact() async throws {
+        let versionA = try await store.addContact(OCKContact(id: "contact", givenName: "A", familyName: "", carePlanUUID: nil))
+        let versionB = try await store.updateContact(OCKContact(id: "contact", givenName: "B", familyName: "", carePlanUUID: nil))
+
+        let fetched = try await store.fetchContact(withID: versionA.id)
+		XCTAssertEqual(fetched.name.givenName, versionB.name.givenName)
+    }
+
     func testContactQueryWithDateOnlyReturnsLatestVersionOfAContact() async throws {
         try await store.addContact(OCKContact(id: "contact", givenName: "A", familyName: "", carePlanUUID: nil))
         try await store.updateContact(OCKContact(id: "contact", givenName: "B", familyName: "", carePlanUUID: nil))
         try await store.updateContact(OCKContact(id: "contact", givenName: "C", familyName: "", carePlanUUID: nil))
         try await store.updateContact(OCKContact(id: "contact", givenName: "D", familyName: "", carePlanUUID: nil))
+
         let fetched = try await store.fetchContacts(query: OCKContactQuery(for: Date()))
         XCTAssertEqual(fetched.count, 1)
         XCTAssertEqual(fetched.first?.name.givenName, "D")

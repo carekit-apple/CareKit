@@ -126,7 +126,7 @@ public extension OCKAnyReadOnlyContactStore {
                          completion: @escaping OCKResultClosure<OCKAnyContact>) {
         var query = OCKContactQuery(for: Date())
         query.limit = 1
-        query.sortDescriptors = [.effectiveDate(ascending: true)]
+        query.sortDescriptors = [.effectiveDate(ascending: false)]
         query.ids = [id]
 
         fetchAnyContacts(query: query, callbackQueue: callbackQueue, completion:

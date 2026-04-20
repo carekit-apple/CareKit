@@ -44,12 +44,11 @@ extension OCKStoreCoordinator {
             sequences: outcomesStreams,
             makeSortDescriptors: {
 
-                let sortDescriptor = NSSortDescriptor(
-                    keyPath: \OCKCDOutcome.id,
-                    ascending: true
-                )
+                let sortDescriptors = query
+                    .sortDescriptors
+                    .map(\.nsSortDescriptor)
 
-                return [sortDescriptor]
+                return sortDescriptors
             }
         )
 

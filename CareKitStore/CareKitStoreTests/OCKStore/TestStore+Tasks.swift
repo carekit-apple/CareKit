@@ -374,11 +374,27 @@ class TestStoreTasks: XCTestCase {
 
         var taskV2 = taskV1
         taskV2.title = "V2"
-        taskV2.effectiveDate = Calendar.current.date(byAdding: .year, value: 1, to: Date())!
+        taskV2 = try await store.updateTask(taskV2)
+
+		let task = try await store.fetchTask(withID: "task")
+		XCTAssertEqual(task.title, taskV2.title)
+    }
+
+    func testFetchAnyTaskByIdConvenienceMethodReturnsNewestVersionOfTask() async throws {
+        let coordinator = OCKStoreCoordinator()
+        let store = OCKStore(name: "test", type: .inMemory)
+        coordinator.attach(store: store)
+
+        let schedule = OCKSchedule.dailyAtTime(hour: 0, minutes: 0, start: Date(), end: nil, text: nil)
+        var taskV1 = OCKTask(id: "task", title: "V1", carePlanUUID: nil, schedule: schedule)
+        taskV1 = try await store.addTask(taskV1)
+
+        var taskV2 = taskV1
+        taskV2.title = "V2"
         taskV2 = try await store.updateTask(taskV2)
 
         let fetchedTask = try await store.fetchAnyTask(withID: "task")
-        XCTAssertEqual(fetchedTask.title, "V2")
+        XCTAssertEqual(fetchedTask.title, taskV2.title)
     }
 
     func testTaskQueryStartingExactlyOnEffectiveDateOfNewVersion() async throws {

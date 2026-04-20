@@ -189,6 +189,20 @@ class TestStorePatients: XCTestCase {
         XCTAssertEqual(fetched, versionB)
     }
 
+    func testPatientQueryByIdConvenienceMethodReturnsLatestVersionOfAPatient() async throws {
+        let versionA = try await store.addPatient(OCKPatient(id: "A", givenName: "Jared", familyName: "Gosler"))
+        let versionB = try await store.updatePatient(OCKPatient(id: "A", givenName: "John", familyName: "Appleseed"))
+        let fetched = try await store.fetchPatient(withID: versionA.id)
+		XCTAssertEqual(fetched.name.familyName, versionB.name.familyName)
+    }
+
+    func testAnyPatientQueryByIdConvenienceMethodReturnsLatestVersionOfAPatient() async throws {
+        let versionA = try await store.addPatient(OCKPatient(id: "A", givenName: "Jared", familyName: "Gosler"))
+        let versionB = try await store.updatePatient(OCKPatient(id: "A", givenName: "John", familyName: "Appleseed"))
+        let fetched = try await store.fetchPatient(withID: versionA.id)
+		XCTAssertEqual(fetched.name.familyName, versionB.name.familyName)
+    }
+
     func testPatientQueryOnPastDateReturnsPastVersionOfAPatient() async throws {
         let dateA = Date().addingTimeInterval(-100)
         var versionA = OCKPatient(id: "A", givenName: "Jared", familyName: "Gosler")

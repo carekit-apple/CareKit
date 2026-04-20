@@ -132,7 +132,7 @@ public extension OCKReadableContactStore {
         var query = OCKContactQuery(for: Date())
         query.limit = 1
         query.ids = [id]
-        query.sortDescriptors = [.effectiveDate(ascending: true)]
+        query.sortDescriptors = [.effectiveDate(ascending: false)]
 
         fetchContacts(query: query, callbackQueue: callbackQueue, completion:
             chooseFirst(then: completion, replacementError: .fetchFailed(reason: "No contact with matching ID")))

@@ -46,7 +46,11 @@ public struct RectangularCompletionView<Content: View>: View {
     @Environment(\.careKitStyle) private var style
 
     private var backgroundColor: Color {
-        isComplete ? .init(style.color.tertiaryCustomFill) : .accentColor
+        #if !os(macOS)
+        return isComplete ? .init(style.color.tertiaryCustomFill) : .accentColor
+        #else
+        return isComplete ? style.color.tertiaryCustomFill : .accentColor
+        #endif
     }
 
     private var foregroundColor: Color {

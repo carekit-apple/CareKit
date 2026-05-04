@@ -28,7 +28,11 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import Foundation
+import SwiftUI
+#if canImport(UIKit)
 import UIKit
+#endif
 
 extension Double {
     var normalized: Double {
@@ -40,7 +44,16 @@ extension CGFloat {
 
     /// Scaled value for the current size category.
     func scaled() -> CGFloat {
-        UIFontMetrics.default.scaledValue(for: self)
+
+        #if canImport(UIKit)
+
+        return  UIFontMetrics.default.scaledValue(for: self)
+
+        #else
+
+        return 1
+
+        #endif
     }
 
     /// The value between `self` and `end` with distance of `factor` between 0 and 1.

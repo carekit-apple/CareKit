@@ -28,7 +28,9 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#if canImport(UIKit)
 import UIKit
+#endif
 
 // An object that can be styled.
 public protocol OCKStylable {
@@ -43,7 +45,7 @@ public protocol OCKStylable {
     func styleDidChange()
 }
 
-#if !os(watchOS)
+#if !os(watchOS) && !os(macOS)
 
 /// In order to propagate style through the view hierarchy:
 /// 1. Call `styleChildren()` from a `didSet` observer on `customStyle`.

@@ -253,6 +253,23 @@ class TestPersistentStoreCoordinator: XCTestCase {
         XCTAssertEqual(tasks.compactMap { $0 as? OCKHealthKitTask }.count, 1)
     }
 
+    func testStoreCoordinatorDoesNotSendNormalTasksToOCKStore() {
+        let coordinator = OCKStoreCoordinator()
+        let store = OCKStore(name: UUID().uuidString, type: .inMemory)
+        let passthrough = OCKHealthKitPassthroughStore(store: store)
+        coordinator.attach(store: store)
+        coordinator.attach(eventStore: passthrough)
+
+        let schedule = OCKSchedule.dailyAtTime(hour: 9, minutes: 0, start: Date(), end: nil, text: nil)
+        let task = OCKTask(
+          id: "task", title: nil,
+          carePlanUUID: nil,
+          schedule: schedule
+        )
+        let willHandle = coordinator.taskStore(passthrough, shouldHandleWritingTask: task)
+        XCTAssertFalse(willHandle)
+    }
+
     func testPersistentStoreCoordinatorDoesNotSendHealthKitTasksToOCKStore() async {
         let coordinator = OCKStoreCoordinator()
         let store = OCKStore(name: UUID().uuidString, type: .inMemory)
@@ -270,11 +287,12 @@ class TestPersistentStoreCoordinator: XCTestCase {
         }
     }
 
-    #if !os(watchOS)
     func testStoreCoordinatorDoesNotSendNormalOutcomesToHealthKit() throws {
         let coordinator = OCKStoreCoordinator()
         let store = OCKStore(name: UUID().uuidString, type: .inMemory)
         let passthrough = OCKHealthKitPassthroughStore(store: store)
+		coordinator.attach(store: store)
+		coordinator.attach(eventStore: passthrough)
         let outcome = OCKOutcome(taskUUID: UUID(), taskOccurrenceIndex: 0, values: [])
         let willHandle = try XCTUnwrap(coordinator.delegate?.outcomeStore(passthrough, shouldHandleWritingOutcome: outcome))
         XCTAssertFalse(willHandle)
@@ -283,11 +301,11 @@ class TestPersistentStoreCoordinator: XCTestCase {
     func testStoreCoordinatorDoesNotSendHealthKitOutcomesToOCKStore() throws {
         let coordinator = OCKStoreCoordinator()
         let store = OCKStore(name: UUID().uuidString, type: .inMemory)
+		coordinator.attach(store: store)
         let outcome = OCKHealthKitOutcome(taskUUID: UUID(), taskOccurrenceIndex: 0, values: [])
         let willHandle = try XCTUnwrap(coordinator.delegate?.outcomeStore(store, shouldHandleWritingOutcome: outcome))
         XCTAssertFalse(willHandle)
     }
-    #endif
     
     func testCanAssociateHealthKitTaskWithCarePlan() async throws {
         let store = OCKStore(name: UUID().uuidString, type: .inMemory)

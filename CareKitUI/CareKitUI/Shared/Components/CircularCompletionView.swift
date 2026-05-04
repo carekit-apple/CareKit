@@ -49,7 +49,11 @@ public struct CircularCompletionView<Content: View>: View {
     @Environment(\.careKitStyle) private var style
 
     private var fillColor: Color {
-        isComplete ? Color.accentColor : Color(style.color.clear)
+        #if !os(macOS)
+        return isComplete ? Color.accentColor : Color(style.color.clear)
+        #else
+        return isComplete ? Color.accentColor : style.color.clear
+        #endif
     }
 
     private var background: some View {

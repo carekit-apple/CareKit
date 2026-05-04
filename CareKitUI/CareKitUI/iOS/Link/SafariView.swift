@@ -27,7 +27,7 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-#if canImport(SafariServices)
+#if canImport(SafariServices) && canImport(UIKit)
 
 import Foundation
 import SafariServices
@@ -43,7 +43,9 @@ struct SafariView: UIViewControllerRepresentable {
 
     func makeUIViewController(context: UIViewControllerRepresentableContext<SafariView>) -> SFSafariViewController {
         let config = SFSafariViewController.Configuration()
+        #if !os(visionOS)
         config.barCollapsingEnabled = true
+        #endif
         return SFSafariViewController(url: url, configuration: config)
     }
 

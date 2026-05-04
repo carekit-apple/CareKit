@@ -28,7 +28,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#if !os(watchOS)
+#if !os(watchOS) && !os(macOS)
 @testable import CareKit
 import Foundation
 import XCTest

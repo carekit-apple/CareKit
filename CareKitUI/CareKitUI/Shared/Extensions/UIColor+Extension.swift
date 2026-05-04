@@ -28,7 +28,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import Foundation
+#if canImport(UIKit)
 import UIKit
 
 extension UIColor {
@@ -48,3 +48,4 @@ extension UIColor {
         return UIColor(red: lightenedRed, green: lightenedGreen, blue: lightenedBlue, alpha: alpha)
     }
 }
+#endif

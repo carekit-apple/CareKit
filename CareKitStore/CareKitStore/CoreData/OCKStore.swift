@@ -306,6 +306,13 @@ public final class OCKStore: OCKStoreProtocol, Equatable {
                 loadError = error
                 return
             }
+			if case .onDisk = self.storeType {
+				do {
+					try self.updateFileProtectionPathAtURL(self.storeURL)
+				} catch {
+					loadError = error
+				}
+			}
         })
 
         if let error = loadError {
@@ -316,6 +323,14 @@ public final class OCKStore: OCKStoreProtocol, Equatable {
 
         return true
     }
+
+	private func updateFileProtectionPathAtURL(_ url: URL) throws {
+		#if os(macOS)
+		// Currently only needed for macOS, other OS's set through CoreData.
+		let fileManager = FileManager.default
+		try fileManager.setAttributes([.protectionKey: storeType.securityClass], ofItemAtPath: url.path)
+		#endif
+	}
 
     @objc
     private func contextDidSave(_ notification: Notification) {

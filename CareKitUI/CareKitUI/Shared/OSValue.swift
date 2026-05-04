@@ -31,7 +31,7 @@
 import Foundation
 
 enum OS: String {
-    case iOS, watchOS
+    case iOS, watchOS, macOS, visionOS
 }
 
 @propertyWrapper
@@ -45,6 +45,10 @@ struct OSValue<Value> {
         return values[.iOS] ?? defaultValue
         #elseif os(watchOS)
         return values[.watchOS] ?? defaultValue
+        #elseif os(macOS)
+        return values[.macOS] ?? defaultValue
+        #elseif os(visionOS)
+        return values[.visionOS] ?? defaultValue
         #else
         return defaultValue
         #endif

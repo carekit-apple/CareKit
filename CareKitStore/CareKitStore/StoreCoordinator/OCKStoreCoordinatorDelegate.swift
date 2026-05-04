@@ -191,10 +191,8 @@ public extension OCKStoreCoordinatorDelegate {
     ///   - task: The task that needs to be written.
     func taskStore(_ store: OCKAnyReadOnlyTaskStore, shouldHandleWritingTask task: OCKAnyTask) -> Bool {
 
-        #if os(iOS)
         if store is OCKHealthKitPassthroughStore && !(task is OCKHealthKitTask) { return false }
         if store is OCKStore && task is OCKHealthKitTask { return false }
-        #endif
 
         return true
     }
@@ -217,12 +215,10 @@ public extension OCKStoreCoordinatorDelegate {
     ///   - outcome: The outcome that needs to be written.
     func outcomeStore(_ store: OCKAnyReadOnlyOutcomeStore, shouldHandleWritingOutcome outcome: OCKAnyOutcome) -> Bool {
 
-        #if os(iOS) || os(macOS)
         // Only the HK passthrough store should handle HK outcomes
         if outcome is OCKHealthKitOutcome || store is OCKHealthKitPassthroughStore {
             return store is OCKHealthKitPassthroughStore && outcome is OCKHealthKitOutcome
         }
-        #endif
         return true
     }
 }

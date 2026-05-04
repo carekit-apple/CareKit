@@ -30,7 +30,6 @@
 
 import CareKitStore
 import Foundation
-import UIKit
 
 extension OCKAnyReadOnlyEventStore {
 

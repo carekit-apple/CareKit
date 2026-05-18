@@ -68,13 +68,32 @@ extension OCKMultiPlotable {
     /// Computes the bounds of the area shown on the graph in graph coordinate space.
     func graphBounds() -> CGRect {
         let xCoords = dataSeries.flatMap { $0.dataPoints }.map { $0.x }
-        let xMin = xMinimum ?? xCoords.min() ?? 0
-        let xMax = xMaximum ?? xCoords.max() ?? Self.defaultWidth
+        var xMin = xMinimum ?? xCoords.min() ?? 0
+        var xMax = xMaximum ?? xCoords.max() ?? Self.defaultWidth
+        // A single data point produces xMin == xMax and a zero-width rect, which collapses
+        // bar/line/scatter rendering. Pad the inferred range so the point has room to render.
+        if xMin == xMax {
+            xMin -= 0.5
+            xMax += 0.5
+        }
         let width = xMax - xMin
 
         let yCoords = dataSeries.flatMap { $0.dataPoints }.map { $0.y }
-        let yMin = yMinimum ?? yCoords.min() ?? 0
-        let yMax = yMaximum ?? yCoords.max() ?? Self.defaultHeight
+        var yMin = yMinimum ?? yCoords.min() ?? 0
+        var yMax = yMaximum ?? yCoords.max() ?? Self.defaultHeight
+        // Same issue on the y axis. For positive values, snap the lower bound to 0 so a single
+        // value renders as a full-height bar from the natural baseline (matching the
+        // workaround documented in carekit-apple/CareKit#575).
+        if yMin == yMax {
+            if yMax > 0 {
+                yMin = 0
+            } else if yMin < 0 {
+                yMax = 0
+            } else {
+                yMin -= 0.5
+                yMax += 0.5
+            }
+        }
         let height = yMax - yMin
 
         return CGRect(x: xMin, y: yMin, width: width, height: height)

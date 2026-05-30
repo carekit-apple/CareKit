@@ -275,7 +275,6 @@ public final class OCKStore: OCKStoreProtocol, Equatable {
         if case .onDisk(let protection) = self.storeType {
             let fileManager = FileManager()
             let attributes: [FileAttributeKey: Any] = [
-                FileAttributeKey(kCFURLIsExcludedFromBackupKey as String): true,
                 FileAttributeKey.protectionKey: protection
             ]
 
@@ -296,6 +295,7 @@ public final class OCKStore: OCKStoreProtocol, Equatable {
         descriptor.url = storeURL
         descriptor.type = NSSQLiteStoreType
         descriptor.shouldAddStoreAsynchronously = false
+        descriptor.setOption(storeType.securityClass as NSObject, forKey: NSPersistentStoreFileProtectionKey)
         container.persistentStoreDescriptions = [descriptor]
 
         // This closure runs synchronously because of the settings above
@@ -305,6 +305,20 @@ public final class OCKStore: OCKStoreProtocol, Equatable {
             if let error = error as NSError? {
                 loadError = error
                 return
+            }
+
+            if case .onDisk = self.storeType {
+                do {
+                    guard var storeUrl = descriptor.url else {
+                        loadError = OCKStoreError.invalidValue(reason: "Bad URL")
+                        return
+                    }
+                    var resourceValues = URLResourceValues()
+                    resourceValues.isExcludedFromBackup = true
+                    try storeUrl.setResourceValues(resourceValues)
+                } catch {
+                    loadError = error
+                }
             }
         })
 

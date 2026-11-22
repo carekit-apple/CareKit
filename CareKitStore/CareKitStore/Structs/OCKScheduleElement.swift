@@ -175,7 +175,8 @@ public struct OCKScheduleElement: Codable, Hashable, Sendable {
         let newStart = calendar.date(byAdding: dateComponents, to: start)!
         let newEnd = end == nil ? nil : calendar.date(byAdding: dateComponents, to: end!)!
         return OCKScheduleElement(start: newStart, end: newEnd, interval: interval,
-                                  text: text, targetValues: targetValues, duration: duration)
+                                  text: text, targetValues: targetValues, duration: duration,
+                                  calendar: calendar)
     }
 
     /// Compute all events that occur between `startIndex` (inclusive) and `stopIndex` (exclusive). The result

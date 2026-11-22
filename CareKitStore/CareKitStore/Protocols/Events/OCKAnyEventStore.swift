@@ -1,5 +1,6 @@
 /*
  Copyright (c) 2016-2025, Apple Inc. All rights reserved.
+ Copyright (c) 2026, Snehal Mehta.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -204,7 +205,7 @@ public extension OCKAnyReadOnlyEventStore {
 
                     case let .success(events):
 
-                        let groupedEvents = self.groupEventsByDate(events: events, after: query.dateInterval.start, before: query.dateInterval.end)
+                        let groupedEvents = self.groupEventsByDate(events: events, dates: query.dates())
                         var adherenceValues = [OCKAdherence](repeating: .noTasks, count: groupedEvents.count)
                         let indicesWithTasks = self.datesWithTasks(query: query, tasks: tasks).enumerated().compactMap { $1 ? $0 : nil }
 
@@ -236,16 +237,17 @@ public extension OCKAnyReadOnlyEventStore {
         }
     }
 
-    private func groupEventsByDate(events: [OCKAnyEvent], after start: Date, before end: Date) -> [[OCKAnyEvent]] {
-        var days: [[OCKAnyEvent]] = []
-        let grabDayIndex = { (date: Date) in Calendar.current.dateComponents(Set([.day]), from: start, to: date).day! }
-        let numberOfDays = grabDayIndex(end) + 1
-        for _ in 0..<numberOfDays {
-            days.append([])
-        }
+    // Groups the events by the day they start on, with one entry for each date in `dates`. Matching on
+    // calendar days keeps the result the same length as `dates`, places events on the right day when
+    // the interval doesn't start at midnight, and leaves out events that started before the first day.
+    private func groupEventsByDate(events: [OCKAnyEvent], dates: [Date]) -> [[OCKAnyEvent]] {
+        let calendar = Calendar.current
+        var days = [[OCKAnyEvent]](repeating: [], count: dates.count)
         for event in events {
-            let dayIndex = grabDayIndex(event.scheduleEvent.start)
-            days[dayIndex].append(event)
+            let dayIndex = dates.firstIndex { calendar.isDate(event.scheduleEvent.start, inSameDayAs: $0) }
+            if let dayIndex {
+                days[dayIndex].append(event)
+            }
         }
         return days
     }

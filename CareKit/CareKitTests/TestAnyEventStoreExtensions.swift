@@ -1,5 +1,6 @@
 /*
  Copyright (c) 2016-2025, Apple Inc. All rights reserved.
+ Copyright (c) 2026, Snehal Mehta.
 
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -211,5 +212,55 @@ class TestAnyEventStoreExtensions: XCTestCase {
 
             wait(for: [completionFired], timeout: 2)
         }
+    }
+
+    func testFetchAdherenceReturnsOneValuePerDayWhenTheIntervalEndsAtMidnight() async throws {
+        let start = Calendar.current.date(byAdding: .day, value: -3, to: Calendar.current.startOfDay(for: Date()))!
+        let threeDaysLater = Calendar.current.date(byAdding: .day, value: 3, to: start)!
+        let schedule = OCKSchedule.dailyAtTime(hour: 9, minutes: 0, start: start, end: nil, text: nil)
+        let task = try await store.addTask(OCKTask(id: "pill", title: "Pill", carePlanUUID: nil, schedule: schedule))
+
+        let query = OCKAdherenceQuery(taskIDs: [task.id], dateInterval: DateInterval(start: start, end: threeDaysLater))
+        let adherence = try await store.fetchAdherence(query: query)
+
+        XCTAssertEqual(adherence, [.progress(0), .progress(0), .progress(0)])
+    }
+
+    func testFetchAdherencePlacesEventsOnTheirDayWhenTheIntervalStartsAtNoon() async throws {
+        let calendar = Calendar.current
+        let day1 = calendar.date(byAdding: .day, value: -5, to: calendar.startOfDay(for: Date()))!
+        let schedule = OCKSchedule.dailyAtTime(hour: 9, minutes: 0, start: day1, end: nil, text: nil)
+        let task = try await store.addTask(OCKTask(id: "pill", title: "Pill", carePlanUUID: nil, schedule: schedule))
+        try await store.addOutcome(OCKOutcome(taskUUID: task.uuid, taskOccurrenceIndex: 1, values: [OCKOutcomeValue(true)]))
+
+        let noonOnDay1 = calendar.date(byAdding: .hour, value: 12, to: day1)!
+        let threeDaysLater = calendar.date(byAdding: .day, value: 3, to: noonOnDay1)!
+        let query = OCKAdherenceQuery(taskIDs: [task.id], dateInterval: DateInterval(start: noonOnDay1, end: threeDaysLater))
+        let adherence = try await store.fetchAdherence(query: query)
+
+        // Day 1's 9:00 event is before the interval, and the completed event is on day 2.
+        XCTAssertEqual(adherence, [.noEvents, .progress(1), .progress(0)])
+    }
+
+    func testFetchAdherenceHandlesEventsThatStartedBeforeTheInterval() async throws {
+        let calendar = Calendar.current
+        let day0 = calendar.date(byAdding: .day, value: -6, to: calendar.startOfDay(for: Date()))!
+        let element = OCKScheduleElement(
+            start: calendar.date(byAdding: .hour, value: 9, to: day0)!,
+            end: nil,
+            interval: DateComponents(day: 3),
+            duration: .hours(48)
+        )
+        let task = try await store.addTask(
+            OCKTask(id: "longTask", title: "Long task", carePlanUUID: nil, schedule: OCKSchedule(composing: [element]))
+        )
+
+        // The first event started more than a day before the interval and is still in progress.
+        let start = calendar.date(byAdding: .day, value: 2, to: day0)!
+        let end = calendar.date(byAdding: .day, value: 3, to: start)!
+        let query = OCKAdherenceQuery(taskIDs: [task.id], dateInterval: DateInterval(start: start, end: end))
+        let adherence = try await store.fetchAdherence(query: query)
+
+        XCTAssertEqual(adherence, [.noEvents, .progress(0), .noEvents])
     }
 }

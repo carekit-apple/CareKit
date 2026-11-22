@@ -1,5 +1,6 @@
 /*
  Copyright (c) 2016-2025, Apple Inc. All rights reserved.
+ Copyright (c) 2026, Snehal Mehta.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -101,6 +102,34 @@ class TestScheduleElement: XCTestCase {
         let offsetElement = originalElement.offset(by: offset)
         let expectedStartDate = Calendar.current.date(byAdding: offset, to: date)!
         XCTAssertEqual(offsetElement.start, expectedStartDate)
+    }
+
+    func testOffsetKeepsTheCalendar() {
+        // A time zone that none of the test plan's configurations use.
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(identifier: "Pacific/Kiritimati")!
+
+        let originalElement = OCKScheduleElement(start: date, end: nil, interval: interval, calendar: calendar)
+        let offsetElement = originalElement.offset(by: DateComponents(day: 1))
+
+        XCTAssertEqual(offsetElement.calendar, calendar)
+    }
+
+    func testOffsetAllDayElementStartsAtMidnightInItsCalendar() {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(identifier: "Pacific/Kiritimati")!
+
+        let originalElement = OCKScheduleElement(
+            start: date,
+            end: nil,
+            interval: interval,
+            duration: .allDay,
+            calendar: calendar
+        )
+        let offsetElement = originalElement.offset(by: DateComponents(day: 1))
+
+        let expectedStart = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: date))!
+        XCTAssertEqual(offsetElement.start, expectedStart)
     }
 
     // MARK: - Date of occurrence

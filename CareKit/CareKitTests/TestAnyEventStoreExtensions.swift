@@ -1,5 +1,6 @@
 /*
  Copyright (c) 2016-2025, Apple Inc. All rights reserved.
+ Copyright (c) 2026, Snehal Mehta.
 
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -179,6 +180,38 @@ class TestAnyEventStoreExtensions: XCTestCase {
         let adherence = try await store.fetchAdherence(query: query)
         XCTAssertEqual(adherence, [.noTasks, .noTasks, .progress(0.5), .progress(0.5)])
         XCTAssertEqual(timesCalled.value(), 2)
+    }
+
+    func testFetchAdherenceIncludesDaysCoveredByAnOlderTaskVersion() async throws {
+        // Regression test for https://github.com/carekit-apple/CareKit/issues/655
+        let calendar = Calendar.current
+        let day1 = calendar.date(byAdding: .day, value: -2, to: calendar.startOfDay(for: Date()))!
+        let day4 = calendar.date(byAdding: .day, value: 3, to: day1)!
+
+        let daily = OCKScheduleElement(start: day1, end: nil, interval: DateComponents(day: 1), duration: .allDay)
+        var task = OCKTask(id: "pill", title: "Pill", carePlanUUID: nil, schedule: OCKSchedule(composing: [daily]))
+        task.effectiveDate = day1
+        task = try await store.addTask(task)
+        try await store.addOutcomes([0, 1].map {
+            OCKOutcome(taskUUID: task.uuid, taskOccurrenceIndex: $0, values: [OCKOutcomeValue(true)])
+        })
+
+        // Reschedule the task to every other day starting on day 4, keeping the completed days.
+        var rescheduled = task
+        let everyOtherDay = OCKScheduleElement(start: day4, end: nil, interval: DateComponents(day: 2), duration: .allDay)
+        rescheduled.schedule = OCKSchedule(composing: [everyOtherDay])
+        rescheduled.effectiveDate = day4
+        try await store.updateTask(rescheduled)
+
+        let sixDaysLater = calendar.date(byAdding: DateComponents(day: 6, second: -1), to: day1)!
+        let query = OCKAdherenceQuery(taskIDs: [task.id], dateInterval: DateInterval(start: day1, end: sixDaysLater))
+        let adherence = try await store.fetchAdherence(query: query)
+
+        // Days 1-3 use the first version of the task, and days 4-6 use the rescheduled version.
+        XCTAssertEqual(
+            adherence,
+            [.progress(1), .progress(1), .progress(0), .progress(0), .noEvents, .progress(0)]
+        )
     }
 
     func testFetchAdherenceSucceedsWithEmptyResult() {

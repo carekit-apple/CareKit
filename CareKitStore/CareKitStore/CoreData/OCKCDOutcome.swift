@@ -82,6 +82,14 @@ class OCKCDOutcome: OCKCDVersionedObject {
     override func validateForInsert() throws {
         try super.validateForInsert()
 
+        // An outcome that has already been superseded by a newer version is not the
+        // latest version for its task occurrence, so it can't be a duplicate of it.
+        // This happens during synchronization, when a single revision contains both
+        // an outcome and its newer version.
+        guard next.isEmpty else {
+            return
+        }
+
         guard let context = managedObjectContext else {
             return
         }

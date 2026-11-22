@@ -206,7 +206,13 @@ public extension OCKAnyReadOnlyEventStore {
 
                         let groupedEvents = self.groupEventsByDate(events: events, after: query.dateInterval.start, before: query.dateInterval.end)
                         var adherenceValues = [OCKAdherence](repeating: .noTasks, count: groupedEvents.count)
-                        let indicesWithTasks = self.datesWithTasks(query: query, tasks: tasks).enumerated().compactMap { $1 ? $0 : nil }
+                        // Tasks are fetched as their newest version in the interval, so a day covered only by an
+                        // older version (for example, before the task was rescheduled) isn't found by checking the
+                        // fetched schedules. A day that has events always has a task.
+                        let daysWithTasks = self.datesWithTasks(query: query, tasks: tasks)
+                        let indicesWithTasks = daysWithTasks.enumerated().compactMap { index, hasTasks in
+                            hasTasks || !groupedEvents[index].isEmpty ? index : nil
+                        }
 
                         indicesWithTasks.forEach {
 

@@ -143,6 +143,45 @@ class TestStoreConsumeRevisions: XCTestCase {
         XCTAssert(outcomes.isEmpty)
     }
 
+    func testOutcomeAndItsNextVersionInTheSameRevisionCanBeSaved() async throws {
+        // Regression test for https://github.com/carekit-apple/CareKit/issues/700
+        let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
+        let task = try await store.addTask(OCKTask(id: "abc123", title: "A", carePlanUUID: nil, schedule: schedule))
+
+        var outcomeA = OCKOutcome(taskUUID: task.uuid, taskOccurrenceIndex: 0, values: [])
+        outcomeA.uuid = UUID()
+        outcomeA.createdDate = Date()
+        outcomeA.updatedDate = outcomeA.createdDate
+        outcomeA.effectiveDate = outcomeA.createdDate!
+
+        var outcomeB = OCKOutcome(taskUUID: task.uuid, taskOccurrenceIndex: 0, values: [])
+        outcomeB.uuid = UUID()
+        outcomeB.createdDate = outcomeA.createdDate!.addingTimeInterval(10)
+        outcomeB.updatedDate = outcomeB.createdDate
+        outcomeB.effectiveDate = outcomeB.createdDate!
+        outcomeB.previousVersionUUIDs = [outcomeA.uuid]
+        outcomeA.nextVersionUUIDs = [outcomeB.uuid]
+
+        let revision = OCKRevisionRecord(
+            entities: [.outcome(outcomeA), .outcome(outcomeB)],
+            knowledgeVector: .init())
+
+        store.mergeRevision(revision)
+
+        // Saving validates both inserted outcomes. Outcome A must not be rejected
+        // as a duplicate of its own next version.
+        try await store.context.perform { [outcomeA, outcomeB, store] in
+            try store.context.save()
+
+            let request = NSFetchRequest<OCKCDOutcome>(entityName: "OCKCDOutcome")
+            request.predicate = NSPredicate(format: "%K.@count == 0", #keyPath(OCKCDOutcome.next))
+            let latestVersions = try store.context.fetch(request)
+
+            XCTAssertEqual(latestVersions.map(\.uuid), [outcomeB.uuid])
+            XCTAssertEqual(latestVersions.first?.previous.map(\.uuid), [outcomeA.uuid])
+        }
+    }
+
     func testDeletingNonExistentOutcomeViaRevisionRecordDoesNotThrowError() async throws {
         let schedule = OCKSchedule.mealTimesEachDay(start: Date(), end: nil)
         let task = try await store.addTask(OCKTask(id: "abc123", title: "A", carePlanUUID: nil, schedule: schedule))
